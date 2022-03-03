@@ -25,6 +25,14 @@ public class GenericType {
         return new GenericType(declaringClass, typeVariable);
     }
 
+    public Class<?> getDeclaringClass() {
+        return declaringClass;
+    }
+
+    public String getTypeVariable() {
+        return typeVariable;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

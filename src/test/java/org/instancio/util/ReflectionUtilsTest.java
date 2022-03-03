@@ -1,9 +1,6 @@
 package org.instancio.util;
 
 import experimental.reflection.nodes.GenericType;
-import lombok.Getter;
-import lombok.ToString;
-import org.junit.jupiter.api.Test;
 import org.instancio.Pair;
 import org.instancio.pojo.generics.FooContainer;
 import org.instancio.pojo.generics.MiscFields;
@@ -20,6 +17,7 @@ import org.instancio.pojo.inheritance.Inheritance;
 import org.instancio.pojo.person.Address;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Phone;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -29,31 +27,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
-import java.util.Objects;
 import java.util.Queue;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ReflectionUtilsTest {
-
-    @Getter
-    @ToString
-    static class SomeClass<T> {
-
-        private final Supplier<? extends T> ctor;
-
-        private T field;
-
-        SomeClass(Supplier<? extends T> ctor) {
-            this.ctor = Objects.requireNonNull(ctor);
-        }
-
-        public void myMethod() {
-            field = ctor.get();
-        }
-    }
 
     @Test
     void getDeclaredAndSuperclassFields() {
@@ -61,13 +40,6 @@ class ReflectionUtilsTest {
 
         assertThat(results.stream().map(Field::getName))
                 .containsExactly("childField", "privateBaseField", "protectedBaseField");
-    }
-
-    @Test
-    void someClass() {
-        SomeClass<StringBuilder> it = new SomeClass<>(StringBuilder::new);
-        it.myMethod();
-        System.out.println(it);
     }
 
     @Test

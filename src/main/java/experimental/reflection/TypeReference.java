@@ -44,13 +44,27 @@ public abstract class TypeReference<T> {
         return this.type;
     }
 
-    public static void main(String[] args) throws Exception {
-        List<String> l1 = new TypeReference<ArrayList<String>>() {}.newInstance();
-        List l2 = new TypeReference<ArrayList>() {}.newInstance();
+    public static <T> T create(TypeReference<T> ref) throws Exception {
+        return ref.newInstance();
+    }
 
-        l1.add("test str");
-        l2.add("test obj");
+    public static void main(String[] args) throws Exception {
+        List<String> l1 = new TypeReference<ArrayList<String>>() {
+        }.newInstance();
+
+        List<String> l2 = create(new TypeReference<ArrayList<String>>() {
+        });
+
+        l1.add("test l1");
+        l2.add("test l2");
+
         System.out.println(l1);
         System.out.println(l2);
+
+        // this will  fail since List is an interface (no constructor)
+        List<String> l3 = create(new TypeReference<List<String>>() {
+        });
+        l3.add("test l3");
+        System.out.println(l3);
     }
 }

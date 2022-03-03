@@ -1,14 +1,11 @@
 package org.instancio;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.instancio.pojo.arrays.WithObjectArrays.PojoWithEnumArray;
 import org.instancio.pojo.arrays.WithObjectArrays.PojoWithPojoArray;
 import org.instancio.pojo.arrays.WithObjectArrays.PojoWithStringArray;
 import org.instancio.pojo.arrays.WithPrimitiveArrays.PojoWithIntArray;
-import org.instancio.pojo.circular.BidirectionalOneToOne.Parent;
+import org.instancio.pojo.circular.BidirectionalOneToOne;
 import org.instancio.pojo.circular.HierarchyWithMultipleInterfaceImpls;
-import org.instancio.pojo.circular.IndirectCircularRef;
 import org.instancio.pojo.generics.FooContainer;
 import org.instancio.pojo.generics.container.GenericContainer;
 import org.instancio.pojo.generics.container.GenericItemContainer;
@@ -21,6 +18,8 @@ import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
 import org.instancio.pojo.person.PreInitialized;
 import org.instancio.util.Random;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -59,34 +58,6 @@ class InstancioTest {
         Instancio.of(HierarchyWithMultipleInterfaceImpls.A.class).create();
     }
 
-
-    @Test
-    void indirectCircularRef() {
-        IndirectCircularRef.A a = Instancio.of(IndirectCircularRef.A.class).create();
-
-        assertThat(a.getB()).isNotNull();
-        assertThat(a.getB().getC()).isNotNull();
-        assertThat(a.getB().getC().getA()).isNull();
-    }
-
-    @Test
-    void parentChildCreateParent() {
-        Parent parent = Instancio.of(Parent.class).create();
-
-        assertThat(parent.getChild()).isNotNull();
-        assertThat(parent.getChild().getParent()).as("Do not populate parent reference").isNull();
-    }
-
-    @Test
-    void parentChildCreateChild() {
-        Child child = Instancio.of(Child.class).create();
-
-        assertThat(child.getParent()).isNotNull();
-        assertThat(child.getParent().getChild())
-                .as("Do not populate child reference")
-                .isNull();
-    }
-
     @Test
     void arrays() {
         assertThat(Instancio.of(PojoWithEnumArray.class).create().getValues()).hasSize(2).doesNotContainNull();
@@ -112,10 +83,10 @@ class InstancioTest {
     @Test
     void generatePersonWithNullAndNullable() {
         Person person = Instancio.of(Person.class)
-                                 .withNullable("name")
-                                 .with("address.city", nullValue())
-                                 .with("pets", nullValue())
-                                 .create();
+                .withNullable("name")
+                .with("address.city", nullValue())
+                .with("pets", nullValue())
+                .create();
 
         System.out.println("Person name " + person.getName());
 
@@ -129,8 +100,8 @@ class InstancioTest {
     void exclusions() {
         PreInitialized expected = new PreInitialized();
         PreInitialized actual = Instancio.of(PreInitialized.class)
-                                         .exclude("person", "someString", "someInt")
-                                         .create();
+                .exclude("person", "someString", "someInt")
+                .create();
 
         assertThat(actual.getPerson())
                 .as("Should retain pre-initialized values")
@@ -140,10 +111,10 @@ class InstancioTest {
     @Test
     void generatePersonWithExclusions() {
         Person person = Instancio.of(Person.class)
-                                 .exclude("gender", "lastModified", "address.city")
-                                 //.exclude("address.phone.countryCode") // TODO broken - figure out what paths should look like for nested objects
-                                 //.exclude("pet.name") // TODO broken
-                                 .create();
+                .exclude("gender", "lastModified", "address.city")
+                //.exclude("address.phone.countryCode") // TODO broken - figure out what paths should look like for nested objects
+                //.exclude("pet.name") // TODO broken
+                .create();
 
         assertThat(person).isNotNull();
         assertThat(person.getLastModified()).isNull();
@@ -159,8 +130,8 @@ class InstancioTest {
         //  find a way to deal with this. does it make sense to use generators
         //  in a decorator fashion?
         Person person = Instancio.of(Person.class)
-                                 .with("name", () -> oneOf("1", "2", "3"))
-                                 .create();
+                .with("name", () -> oneOf("1", "2", "3"))
+                .create();
     }
 
     @Test
@@ -168,13 +139,13 @@ class InstancioTest {
         String[] names = {"Jane", "John", "Bob"};
 
         Person person = Instancio.of(Person.class)
-                                 .with("name", oneOf(names))
-                                 .with("gender", () -> Gender.FEMALE)
-                                 .with("lastModified", () -> LocalDateTime.now(ZoneOffset.UTC))
-                                 .with("address.city", () -> "city-" + Random.intBetween(100, 999))
-                                 //                .with("address.phone.countryCode", () -> "+1") // TODO broken
-                                 //                .with("pet.name", () -> "Fido")
-                                 .create();
+                .with("name", oneOf(names))
+                .with("gender", () -> Gender.FEMALE)
+                .with("lastModified", () -> LocalDateTime.now(ZoneOffset.UTC))
+                .with("address.city", () -> "city-" + Random.intBetween(100, 999))
+                //                .with("address.phone.countryCode", () -> "+1") // TODO broken
+                //                .with("pet.name", () -> "Fido")
+                .create();
 
         assertThat(person).isNotNull();
         assertThat(person.getName()).isIn(names);
@@ -226,9 +197,9 @@ class InstancioTest {
     @Test
     void stringFieldGeneratorWithCustomFormat() {
         Person person = Instancio.of(Person.class)
-                                 .with("name", withPrefix("name-"))
-                                 .with("age", oneOf(18, 28, 38, 48))
-                                 .create();
+                .with("name", withPrefix("name-"))
+                .with("age", oneOf(18, 28, 38, 48))
+                .create();
 
         System.out.println(person);
         assertThat(person.getName()).isNotBlank();
@@ -241,9 +212,9 @@ class InstancioTest {
 
         // All String fields should use custom prefix except Address.city
         Person person = Instancio.of(Person.class)
-                                 .with("address.city", () -> expectedCity)
-                                 .with(String.class, withPrefix(prefix))
-                                 .create();
+                .with("address.city", () -> expectedCity)
+                .with(String.class, withPrefix(prefix))
+                .create();
 
         assertThat(person.getAddress().getCity()).isEqualTo(expectedCity);
         assertThat(person.getName()).startsWith(prefix);
@@ -265,12 +236,12 @@ class InstancioTest {
     void api() {
         // Generics
         Instancio.of(GenericContainer.class)
-                 //.withGenericType(String.class)
-                 .create();
+                //.withGenericType(String.class)
+                .create();
 
         Instancio.of(GenericItemContainer.class)
-                 //.withGenericType(Integer.class, String.class)
-                 .create();
+                //.withGenericType(Integer.class, String.class)
+                .create();
 
         // Domain settings
 //        Instancio.of(Person.class)
@@ -278,12 +249,12 @@ class InstancioTest {
 //                .create();
 
         Instancio.of(FooContainer.class)
-                 .with("item", () -> {
+                .with("item", () -> {
                     FooContainer.Foo<String> foo = new FooContainer.Foo<>();
                     foo.setFooValue("test");
                     return foo;
                 })
-                 .create();
+                .create();
 
         // (?) might not be worth to deal with arrays
 //        Person[] personArray = Instancio.ofArray(Person.class/*, size(5)*/)
@@ -307,23 +278,35 @@ class InstancioTest {
 //                .create();
 
 
+        // TODO clean up awkward API.. return an instance of Instancio instead? e.g.
+        //  Instancio<> instancio = Instancio.of(Person.class);
+        //  Person p = instancio.create();
+        //  //Array
+        //  (option 1) ArrayInstancio<> instancio = Instancio.ofArray(Person.class);
+        //  (option 2) Instancio<> instancio = Instancio.ofArray(Person.class);
+        //  Person[] p = instancio.create();
+        //
+        ObjectCreationSettingsAPI<Person, ?> settings = Instancio.of(Person.class).exclude("address.city");
+        Person p = settings.create();
+        // ===========
+
         Instancio.of(Person.class)
-                 .exclude("gender")
-                 .exclude("address.city")
-                 .with("country", () -> "some other value")
-                 .with("someInt", () -> 12345)
-                 //                .with("age", min(18))
-                 //.with("someInt", between(100,999))
-                 //                .with("phoneNumbers", size(5))
-                 //                .with("phone.countryCode", "+1")
-                 //                .with("pets.name", withPrefix("pet-name-"))
-                 //
-                 // ParentSetter / Bi-directional associations
-                 //.with("pet.owner", root())
-                 //
-                 // Family->FamilyMember[]->Vehicle(->familyMember)
-                 //.with("vehicle.owner", parent("familyMember"))
-                 //
-                 .create();
+                .exclude("gender")
+                .exclude("address.city")
+                .with("country", () -> "some other value")
+                .with("someInt", () -> 12345)
+                //                .with("age", min(18))
+                //.with("someInt", between(100,999))
+                //                .with("phoneNumbers", size(5))
+                //                .with("phone.countryCode", "+1")
+                //                .with("pets.name", withPrefix("pet-name-"))
+                //
+                // ParentSetter / Bi-directional associations
+                //.with("pet.owner", root())
+                //
+                // Family->FamilyMember[]->Vehicle(->familyMember)
+                //.with("vehicle.owner", parent("familyMember"))
+                //
+                .create();
     }
 }

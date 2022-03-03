@@ -21,7 +21,7 @@ public class GenericItemContainer<L, R> {
     private List<GenericItem<L>> itemListR;
 
     // pair
-    private GenericPair<L, R> pairValue;
-    private GenericPair<L, R>[] pairArray;
-    private List<GenericPair<L, R>> pairList;
+    private Pair<L, R> pairValue;
+    private Pair<L, R>[] pairArray;
+    private List<Pair<L, R>> pairList;
 }

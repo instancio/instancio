@@ -2,16 +2,24 @@ package org.instancio;
 
 import org.instancio.generator.ValueGenerator;
 
-// What is C?
-public interface CreationSettingsAPI<C, T extends CreationSettingsAPI<C, T>> {
+/**
+ *
+ * @param <T> object type being created
+ * @param <C> creation settings type
+ */
+// TODO cleanup/simplify
+public interface CreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>> {
 
-    CreationSettingsAPI<C, T> exclude(String... fields);
+  CreationSettingsAPI<T, C> exclude(String... fields);
 
-    <V> CreationSettingsAPI<C, T> with(String field, ValueGenerator<V> generator);
+  <V> CreationSettingsAPI<T, C> with(String field, ValueGenerator<V> generator);
 
-    <V> CreationSettingsAPI<C, T> with(Class<V> klass, ValueGenerator<V> generator);
+  <V> CreationSettingsAPI<T, C> with(Class<V> klass, ValueGenerator<V> generator);
 
-    CreationSettingsAPI<C, T> withNullable(String field);
+  CreationSettingsAPI<T, C> withNullable(String field);
 
-    CreationSettingsAPI<C, T> withType(Class<?>... types);
+  // TODO support for allowing null values by Class (what about subtypes of given class)?
+  // CreationSettingsAPI<T, C> withNullable(Class<?> klass);
+
+  CreationSettingsAPI<T, C> withType(Class<?>... types);
 }

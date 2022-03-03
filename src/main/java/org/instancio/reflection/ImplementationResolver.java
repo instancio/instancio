@@ -1,9 +1,9 @@
 package org.instancio.reflection;
 
-import java.util.Set;
+import java.util.Optional;
 
 public interface ImplementationResolver {
 
-    Set<Class<?>> resolve(Class<?> interfaceClass);
+    Optional<Class<?>> resolve(Class<?> interfaceClass);
 
 }

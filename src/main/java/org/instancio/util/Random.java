@@ -32,8 +32,7 @@ public final class Random {
      * @return a random long between the min and max, exclusive
      */
     public static long longBetween(final long min, final long max) {
-        // startInclusive + RANDOM.nextInt(endExclusive - startInclusive)
-        return ThreadLocalRandom.current().nextLong(max - min) + min;
+        return ThreadLocalRandom.current().nextLong(min, max);
     }
 
     public static int positiveInt() {

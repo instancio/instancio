@@ -16,22 +16,22 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class AbstractCreationSettingsAPI<C, T extends CreationSettingsAPI<C, T>> implements CreationSettingsAPI<C, T> {
+public class AbstractCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>> implements CreationSettingsAPI<T, C> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCreationSettingsAPI.class);
 
-    protected final Class<C> klass;
+    protected final Class<T> klass;
     protected final Set<Field> exclusions = new HashSet<>();
     protected final Set<Field> nullables = new HashSet<>();
     protected final Map<Field, ValueGenerator<?>> fieldValueGenerators = new HashMap<>();
     protected final Map<Class<?>, ValueGenerator<?>> classValueGenerators = new HashMap<>();
     protected final Deque<Class<?>> genericTypes = new ArrayDeque<>();
 
-    AbstractCreationSettingsAPI(Class<C> klass) {
+    AbstractCreationSettingsAPI(Class<T> klass) {
         this.klass = klass;
     }
 
     @Override
-    public AbstractCreationSettingsAPI<C, T> exclude(String... fields) {
+    public AbstractCreationSettingsAPI<T, C> exclude(String... fields) {
         Verify.notEmpty(fields, "'exclude(String... fields)' requires at least one field to be specified");
 
         for (String field : fields) {
@@ -43,7 +43,7 @@ public class AbstractCreationSettingsAPI<C, T extends CreationSettingsAPI<C, T>>
     }
 
     @Override
-    public <V> AbstractCreationSettingsAPI<C, T> with(String field, ValueGenerator<V> generator) {
+    public <V> AbstractCreationSettingsAPI<T, C> with(String field, ValueGenerator<V> generator) {
         Verify.notNull(field, "'with(String field, ValueGenerator generator)' field must not be null");
         Verify.notNull(generator, "'with(String field, ValueGenerator generator)' generator must not be null");
 
@@ -56,7 +56,7 @@ public class AbstractCreationSettingsAPI<C, T extends CreationSettingsAPI<C, T>>
     }
 
     @Override
-    public <V> AbstractCreationSettingsAPI<C, T> with(Class<V> klass, ValueGenerator<V> generator) {
+    public <V> AbstractCreationSettingsAPI<T, C> with(Class<V> klass, ValueGenerator<V> generator) {
         Verify.notNull(klass, "'with(Class klass, ValueGenerator generator)' class must not be null");
         Verify.notNull(generator, "'with(Class klass, ValueGenerator generator)' generator must not be null");
 
@@ -68,7 +68,7 @@ public class AbstractCreationSettingsAPI<C, T extends CreationSettingsAPI<C, T>>
     }
 
     @Override
-    public AbstractCreationSettingsAPI<C, T> withNullable(String fieldPath) {
+    public AbstractCreationSettingsAPI<T, C> withNullable(String fieldPath) {
         Verify.notNull(fieldPath, "Field must not be null");
 
         final Field field = ReflectionUtils.getField(klass, fieldPath);
@@ -78,7 +78,7 @@ public class AbstractCreationSettingsAPI<C, T extends CreationSettingsAPI<C, T>>
     }
 
     @Override
-    public AbstractCreationSettingsAPI<C, T> withType(Class<?>... types) {
+    public AbstractCreationSettingsAPI<T, C> withType(Class<?>... types) {
         Verify.notEmpty(types, "'withType(Class... types)' requires at least one type to be specified");
         LOG.debug("Specified generic types: {}", Arrays.toString(types));
         Collections.addAll(genericTypes, types);

@@ -64,7 +64,6 @@ class InstancioDriver {
 
             final Field field = entry.getField();
 
-            // TODO don't add static fields to Queue
             if (context.isExcluded(field) || Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
@@ -72,6 +71,8 @@ class InstancioDriver {
             final Object fieldOwner = entry.getOwner();
             final Class<?> fieldType = field.getType();
 
+            // TODO test.. what does it mean to return null GeneratorResult
+            //
             final GeneratorResult<?> generatorResult = generatorFacade.create(entry);
             if (generatorResult == null)
                 continue;
@@ -109,7 +110,9 @@ class InstancioDriver {
 
         List<CreateItem> queueEntries = new ArrayList<>();
         for (int i = 0; i < Array.getLength(array); i++) {
-            final GeneratorResult<?> generatorResult = generatorFacade.createInstanceOfClass(componentType, owner);
+            final GeneratorResult<?> generatorResult = generatorFacade.createInstanceOfClass(
+                    componentType, owner, Collections.emptyMap()); // XXX typeMap?
+
             Array.set(array, i, generatorResult.getValue());
             queueEntries.addAll(generatorResult.getFieldsToEnqueue());
         }
@@ -136,6 +139,8 @@ class InstancioDriver {
             if (createItem.getTypeMap().get(typeVariable).isEmpty()) {
                 typeVariable = collectionField.getType().getTypeParameters()[0].getName();
             }
+        } else {
+            typeVariable = collectionField.getType().getTypeParameters()[0].getName();
         }
 
         Deque<Class<?>> pTypes = createItem.getTypeMap().get(typeVariable);
@@ -150,10 +155,8 @@ class InstancioDriver {
                 final Map<String, Deque<Class<?>>> typeMapCopy = new HashMap<>();
 
                 typeMapCopy.put(typeVariable, new ArrayDeque<>(typeMap.get(typeVariable))); // XXX clone map
-                //typeMapCopy.put("[T]", new ArrayDeque<>(typeMap.get("[T]"))); // XXX clone map
 
                 final GeneratorResult<?> generatorResult = generatorFacade.createInstanceOfClass(typeClass, owner, typeMapCopy);
-//                final GeneratorResult<?> generatorResult = generatorFacade.create(createItem); // this will create value for the collection field
                 collectionToPopulate.add(generatorResult.getValue());
                 queueEntries.addAll(generatorResult.getFieldsToEnqueue());
             }
@@ -175,8 +178,9 @@ class InstancioDriver {
             final Class<?> valueClass = typeClassOpt.get().getRight();
 
             for (int i = 0; i < 2; i++) {
-                final GeneratorResult<?> keyResult = generatorFacade.createInstanceOfClass(keyClass, owner);
-                final GeneratorResult<?> valueResult = generatorFacade.createInstanceOfClass(valueClass, owner);
+                // XXX typeMap?
+                final GeneratorResult<?> keyResult = generatorFacade.createInstanceOfClass(keyClass, owner, Collections.emptyMap());
+                final GeneratorResult<?> valueResult = generatorFacade.createInstanceOfClass(valueClass, owner, Collections.emptyMap());
 
                 map.put(keyResult.getValue(), valueResult.getValue());
                 queueEntries.addAll(keyResult.getFieldsToEnqueue());

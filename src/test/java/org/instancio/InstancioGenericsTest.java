@@ -1,18 +1,19 @@
 package org.instancio;
 
-import org.junit.jupiter.api.Test;
 import org.instancio.exception.InstancioException;
 import org.instancio.pojo.generics.FooContainer;
+import org.instancio.pojo.generics.MiscFields;
 import org.instancio.pojo.generics.container.GenericContainer;
 import org.instancio.pojo.generics.container.GenericItem;
 import org.instancio.pojo.generics.container.GenericItemContainer;
-import org.instancio.pojo.generics.container.GenericPair;
+import org.instancio.pojo.generics.container.Pair;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.FooBarBazContainer;
 import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
 import org.instancio.pojo.person.Address;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -20,6 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class InstancioGenericsTest {
+
+    // TODO
+    @Test
+    void miscFields() {
+        MiscFields<Long, String, Integer> result = Instancio.of(MiscFields.class)
+                .withType(Long.class, String.class, Integer.class)
+                .create();
+
+        System.out.println(result);
+    }
 
     @Test
     void address() {
@@ -47,12 +58,12 @@ public class InstancioGenericsTest {
     @Test
     void fooContainerWithUserSuppliedInstance() {
         FooContainer result = Instancio.of(FooContainer.class)
-                                       .with("item", () -> {
+                .with("item", () -> {
                     FooContainer.Foo<String> foo = new FooContainer.Foo<>();
                     foo.setFooValue("test");
                     return foo;
                 })
-                                       .create();
+                .create();
 
         assertThat(result).isNotNull();
         assertThat(result.getItem()).isNotNull();
@@ -73,25 +84,25 @@ public class InstancioGenericsTest {
         // If 'withTypes()' is omitted, should through an error saying
         // "unbound generic types. use `withTypes()` to specify the types"
         GenericItemContainer<Integer, String> container = Instancio.of(GenericItemContainer.class)
-                                                                   .withType(Integer.class, String.class)
-                                                                   .create();
+                .withType(Integer.class, String.class)
+                .create();
         System.out.println(container);
     }
 
     @Test
     void genericItem() {
         GenericItem genericItem = Instancio.of(GenericItem.class)
-                                           .withType(String.class)
-                                           .create();
+                .withType(String.class)
+                .create();
 
         System.out.println(genericItem.toString());
     }
 
     @Test
     void genericPair() {
-        GenericPair<String, Integer> genericItem = Instancio.of(GenericPair.class)
-                                                            .withType(String.class, Integer.class)
-                                                            .create();
+        Pair<String, Integer> genericItem = Instancio.of(Pair.class)
+                .withType(String.class, Integer.class)
+                .create();
 
         System.out.println(genericItem.toString());
     }
@@ -112,8 +123,8 @@ public class InstancioGenericsTest {
     @Test
     void genericContainer() {
         GenericContainer<String> container = Instancio.of(GenericContainer.class)
-                                                      .withType(String.class)
-                                                      .create();
+                .withType(String.class)
+                .create();
 
         assertThat(container.getValue()).isInstanceOf(String.class);
         assertThat(container.getList()).isNotEmpty().hasOnlyElementsOfType(String.class);
