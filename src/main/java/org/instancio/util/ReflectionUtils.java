@@ -1,6 +1,5 @@
 package org.instancio.util;
 
-import experimental.reflection.nodes.GenericType;
 import org.instancio.Pair;
 import org.instancio.exception.InstancioException;
 import org.slf4j.Logger;
@@ -14,17 +13,15 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class ReflectionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
     private ReflectionUtils() {
+        // non-instantiable
     }
 
     public static List<Field> getDeclaredAndSuperclassFields(Class<?> klass) {
@@ -37,48 +34,9 @@ public class ReflectionUtils {
         return results;
     }
 
-    public static Optional<Class<?>> getCollectionType(Field collectionField) {
-
-        System.out.println(collectionField);
-
-        final Type type = collectionField.getGenericType();
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType pType = (ParameterizedType) type;
-            // Type: { ParameterizedType, TypeVariable, GenericArrayType, WildCardType
-            final Type[] typeArgs = pType.getActualTypeArguments();
-            LOG.debug("typeArgs: {}", Arrays.toString(typeArgs));
-
-            if (typeArgs[0] instanceof ParameterizedType) {
-                final ParameterizedType nestedType = (ParameterizedType) typeArgs[0];
-                final Type[] nestedTypeArgs = nestedType.getActualTypeArguments();
-
-
-                return Optional.of((Class<?>) nestedTypeArgs[0]);
-            }
-
-            return Optional.of((Class<?>) typeArgs[0]);
-        }
-        return Optional.empty();
-    }
-
     public static Deque<Class<?>> getParameterizedTypes(final Field field) {
         final Type type = field.getGenericType();
         return getParameterizedTypes(type);
-    }
-
-    public static Deque<Class<?>> getParameterizedTypes(final Class<?> klass, final String field) {
-        final Field f = getField(klass, field);
-
-        final Deque<Class<?>> parameterizedTypes = getParameterizedTypes(f.getGenericType());
-
-        LOG.debug("---> klass {}", klass.getCanonicalName());
-
-        LOG.debug("---> Field '{}' <{}>, type: {}, genSuperClass: {}",
-                f.getName(), f.getGenericType(), f.getType(), f.getType().getGenericSuperclass());
-
-        LOG.debug("---> Field '{}' pTypes: {}", f.getName(), parameterizedTypes);
-
-        return parameterizedTypes;
     }
 
     public static Deque<Class<?>> getParameterizedTypes(final Type type) {
@@ -105,62 +63,6 @@ public class ReflectionUtils {
             results.pollFirst(); // XXX hack...
 
         return results;
-    }
-
-    public static Map<GenericType, Class<?>> getTypeMap(final Field field) {
-        if (field.getType().getTypeParameters().length == 0) {
-            return Collections.emptyMap();
-        }
-
-        return getTypeMap(field.getType(), field.getGenericType());
-    }
-
-    public static Map<GenericType, Class<?>> getTypeMap(Class<?> declaringClass, final Type genericType) {
-
-        LOG.debug("\n\n---- getTypeMap for\ndeclaringClass: {}\ngenericType: {}\n", declaringClass.getSimpleName(), genericType);
-        final Map<GenericType, Class<?>> map = new HashMap<>();
-        final TypeVariable<?>[] typeVars = declaringClass.getTypeParameters();
-
-        if (genericType instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) genericType;
-            Type[] typeArgs = pType.getActualTypeArguments();
-
-            if (typeVars.length != typeArgs.length) {
-                throw new RuntimeException("typeVars.length = " + typeVars.length + ", typeArgs.length = " + typeArgs.length
-                        + "\n typeVars = " + Arrays.toString(typeVars)
-                        + "\n typeArgs = " + Arrays.toString(typeArgs)
-                );
-            }
-
-            LOG.debug("pType: {}", pType);
-            LOG.debug("actualTypeArguments: {}", Arrays.toString(typeArgs));
-
-            for (int i = 0; i < typeArgs.length; i++) {
-                TypeVariable<?> tvar = typeVars[i];
-                Type actualType = typeArgs[i];
-
-                LOG.debug(" --> tvar: {}, actualType: {}", tvar, actualType);
-
-                if (actualType instanceof TypeVariable) {
-                    map.put(GenericType.with(declaringClass, tvar.getName()), null);
-                } else if (actualType instanceof ParameterizedType) {
-                    Class<?> c = (Class<?>) ((ParameterizedType) actualType).getRawType();
-                    ParameterizedType nestedPType = (ParameterizedType) actualType;
-
-                    map.put(GenericType.with(declaringClass, tvar.getName()), c);
-
-                    map.putAll(getTypeMap(c, nestedPType));
-                } else if (actualType instanceof Class) {
-                    map.put(GenericType.with(declaringClass, tvar.getName()), (Class<?>) actualType);
-                } else {
-                    throw new RuntimeException("Handle type: " + actualType);
-                }
-            }
-        } else {
-            throw new UnsupportedOperationException("Else?");
-        }
-
-        return map;
     }
 
     public static Optional<Pair<Class<?>, Class<?>>> getMapType(Field mapField) {

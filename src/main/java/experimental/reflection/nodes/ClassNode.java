@@ -23,7 +23,7 @@ public class ClassNode {
         this.typeMap = validateTypeMap(klass, typeMap);
         this.children = Arrays.stream(klass.getDeclaredFields())
                 .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .map(FieldNode::new)
+                .map(field -> new FieldNode(field, field.getType(), field.getGenericType(), /* parent field */ null, typeMap))
                 .collect(toList());
 
     }

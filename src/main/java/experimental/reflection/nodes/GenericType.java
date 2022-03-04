@@ -12,6 +12,7 @@ import java.util.Objects;
  *  Map<K,V> => {Map.class, "K"}, {Map.class, "V"}
  * }</pre>
  */
+// TODO delete
 public class GenericType {
     private final Class<?> declaringClass;
     private final String typeVariable;

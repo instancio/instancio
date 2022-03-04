@@ -1,5 +1,7 @@
 package org.instancio;
 
+import java.util.StringJoiner;
+
 public class Pair<L, R> {
     private final L left;
     private final R right;
@@ -19,5 +21,13 @@ public class Pair<L, R> {
 
     public R getRight() {
         return right;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Pair.class.getSimpleName() + "[", "]")
+                .add("left=" + left)
+                .add("right=" + right)
+                .toString();
     }
 }

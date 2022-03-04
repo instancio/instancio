@@ -2,18 +2,17 @@
     <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>
-                %d{HH:mm:ss.SSS} [%t] %-5level %logger{16}.%M:%line - %msg%n
-            </Pattern>
-        </layout>
+        <file>testFile.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{16}.%M:%line - %msg%n</pattern>
+        </encoder>
     </appender>
 
     <logger name="org.instancio" level="debug" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <root level="error">
+    <root level="debug">
         <appender-ref ref="CONSOLE"/>
     </root>
 
