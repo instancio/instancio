@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,7 +21,7 @@ public class AbstractCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
     protected final Set<Field> nullables = new HashSet<>();
     protected final Map<Field, ValueGenerator<?>> fieldValueGenerators = new HashMap<>();
     protected final Map<Class<?>, ValueGenerator<?>> classValueGenerators = new HashMap<>();
-    protected final Deque<Class<?>> genericTypes = new ArrayDeque<>();
+    protected Class<?>[] genericTypes;
 
     AbstractCreationSettingsAPI(Class<T> klass) {
         this.klass = klass;
@@ -81,7 +78,7 @@ public class AbstractCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
     public AbstractCreationSettingsAPI<T, C> withType(Class<?>... types) {
         Verify.notEmpty(types, "'withType(Class... types)' requires at least one type to be specified");
         LOG.debug("Specified generic types: {}", Arrays.toString(types));
-        Collections.addAll(genericTypes, types);
+        this.genericTypes = types;
         return this;
     }
 }

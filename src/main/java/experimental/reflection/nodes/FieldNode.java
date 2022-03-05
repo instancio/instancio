@@ -11,6 +11,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,6 +56,7 @@ public class FieldNode {
 
         if (classDeclaringTheTypeVariable == null) {
             this.actualFieldType = field.getType();
+            classDeclaringTheTypeVariable = field.getType();
         } else {
             LOG.debug("Setting field node for '{}' to '{}'", field.getName(), classDeclaringTheTypeVariable);
             this.actualFieldType = classDeclaringTheTypeVariable;
@@ -118,7 +120,31 @@ public class FieldNode {
     }
 
     public Class<?> getActualFieldType() {
+        if (actualFieldType.equals(Object.class) && rootTypeMap.containsKey(field.getGenericType().getTypeName())) {
+            // Handle fields like:
+            // class SomeClass<T> { T field; }
+            return rootTypeMap.get(field.getGenericType().getTypeName());
+        }
         return actualFieldType;
+    }
+
+    public Class<?> getCollectionType() {
+        if (!Collection.class.isAssignableFrom(field.getType())) {
+            throw new IllegalStateException("Not a collection field: " + field.getName());
+        }
+
+        // XXX can there be more than one type arg?
+        final Type typeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+        Class<?> resolvedTypeArg = null;
+
+        if (typeArgument instanceof TypeVariable) {
+            resolvedTypeArg = rootTypeMap.get(((TypeVariable<?>) typeArgument).getName());
+        } else if (typeArgument instanceof Class) {
+            resolvedTypeArg = (Class<?>) typeArgument;
+        }
+
+        return resolvedTypeArg;
     }
 
     public List<FieldNode> getChildren() {

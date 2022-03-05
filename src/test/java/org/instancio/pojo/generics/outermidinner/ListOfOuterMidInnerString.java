@@ -10,6 +10,6 @@ import java.util.List;
 @ToString
 public class ListOfOuterMidInnerString {
 
-    private List<Outer<Mid<Inner<String>>>> items = new ArrayList<>();
+    private List<Outer<Mid<Inner<String>>>> listOfOuter = new ArrayList<>();
 
 }

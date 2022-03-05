@@ -7,6 +7,11 @@ import org.instancio.pojo.generics.container.Triplet;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
+import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
+import org.instancio.pojo.generics.outermidinner.Outer;
+import org.instancio.pojo.person.Address;
+import org.instancio.pojo.person.Person;
+import org.instancio.pojo.person.Phone;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -119,7 +124,6 @@ class FieldNodeTest {
                 .hasEmptyTypeMap();
     }
 
-
     @Test
     void test_IndirectCircularRef_b() {
         final String rootField = "b";
@@ -151,5 +155,42 @@ class FieldNodeTest {
                 .hasActualFieldType(IndirectCircularRef.B.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren();  // but no children this time
+    }
+
+    @Test
+    void test_ListOfOuterMidInnerString_listOfOuter() {
+        final String rootField = "listOfOuter";
+        final FieldNode node = new FieldNode(ReflectionUtils.getField(ListOfOuterMidInnerString.class, rootField), rootTypeMap);
+
+        assertFieldNode(node)
+                .hasFieldName(rootField)
+                .hasActualFieldType(List.class)
+                .hasTypeMappedTo("E", Outer.class)
+                .hasTypeMapWithSize(1)
+                .hasChildrenOfSize(0); // TODO
+
+        System.out.println(node);
+    }
+
+    @Test
+    void test_Person_address() {
+        final String rootField = "address";
+        final FieldNode node = new FieldNode(ReflectionUtils.getField(Person.class, rootField), rootTypeMap);
+
+        assertFieldNode(node)
+                .hasFieldName(rootField)
+                .hasActualFieldType(Address.class)
+                .hasEmptyTypeMap()
+                .hasChildrenOfSize(4);
+
+        final FieldNode phoneNumbersFieldNode = node.getChildByFieldName("phoneNumbers");
+
+        assertFieldNode(phoneNumbersFieldNode)
+                .hasFieldName("phoneNumbers")
+                .hasActualFieldType(List.class)
+                .hasTypeMappedTo("E", Phone.class)
+                .hasTypeMapWithSize(1)
+                .hasChildrenOfSize(0);
+
     }
 }

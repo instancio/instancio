@@ -36,6 +36,7 @@ public class InstancioGenericsTest {
     void address() {
         Address result = Instancio.of(Address.class).create();
 
+        System.out.println(result);
         assertThat(result.getPhoneNumbers()).isNotEmpty();
 
         result.getPhoneNumbers().forEach(phone -> {
@@ -122,13 +123,15 @@ public class InstancioGenericsTest {
 
     @Test
     void genericContainer() {
-        GenericContainer<String> container = Instancio.of(GenericContainer.class)
+        GenericContainer<String> result = Instancio.of(GenericContainer.class)
                 .withType(String.class)
                 .create();
 
-        assertThat(container.getValue()).isInstanceOf(String.class);
-        assertThat(container.getList()).isNotEmpty().hasOnlyElementsOfType(String.class);
-        assertThat(container.getArray()).isNotEmpty().hasOnlyElementsOfType(String.class);
+        System.out.println(result);
+
+        assertThat(result.getValue()).isInstanceOf(String.class);
+        assertThat(result.getList()).isNotEmpty().hasOnlyElementsOfType(String.class);
+        assertThat(result.getArray()).isNotEmpty().hasOnlyElementsOfType(String.class);
     }
 
     @Test
@@ -156,11 +159,11 @@ public class InstancioGenericsTest {
     void listOfOuterMidInnerString() {
         ListOfOuterMidInnerString result = Instancio.of(ListOfOuterMidInnerString.class).create();
         assertThat(result).isNotNull();
-        assertThat(result.getItems()).isNotEmpty();
+        assertThat(result.getListOfOuter()).isNotEmpty();
 
         System.out.println(result);
 
-        result.getItems().forEach(outer -> {
+        result.getListOfOuter().forEach(outer -> {
             assertThat(outer).isNotNull();
             assertThat(outer.getOuterList()).isNotEmpty();
 

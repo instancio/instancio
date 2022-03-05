@@ -108,7 +108,7 @@ class ReflectionUtilsTest {
                         Baz.class,
                         String.class);
 
-        assertThat(getParameterizedTypes(ListOfOuterMidInnerString.class, "listOfFooBarBaz"))
+        assertThat(getParameterizedTypes(ListOfOuterMidInnerString.class, "leftOuterMidInnerString"))
                 .containsExactly(
                         Outer.class,
                         Mid.class,

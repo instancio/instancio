@@ -1,5 +1,7 @@
 package org.instancio;
 
+import experimental.reflection.nodes.ClassNode;
+import experimental.reflection.nodes.FieldNode;
 import org.instancio.generator.GeneratorMap;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
@@ -9,20 +11,18 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
+
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 class InstancioDriver {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioDriver.class);
@@ -40,29 +40,18 @@ class InstancioDriver {
     }
 
     <C> C create(Class<C> klass) {
-        final Map<String, Deque<Class<?>>> typeMap = new HashMap<>();
 
-        if (context.getGenericTypes() != null) {
-            final TypeVariable<Class<C>>[] typeParameters = klass.getTypeParameters();
-            final Deque<Class<?>> genericTypes = context.getGenericTypes();
-
-            for (TypeVariable<?> typeVariable : typeParameters) {
-                Deque<Class<?>> d = new ArrayDeque<>();
-                // XXX do we always map only the first element???
-                d.add(genericTypes.pollFirst());
-                typeMap.put(typeVariable.getName(), d);
-            }
-        }
-
-        final GeneratorResult<C> rootResult = generatorFacade.createInstanceOfClass(klass, null, typeMap);
+        final GeneratorResult<C> rootResult = generatorFacade.createInstanceOfClass(klass, null);
         final Object rootObject = rootResult.getValue();
+
         final Queue<CreateItem> queue = new ArrayDeque<>(rootResult.getFieldsToEnqueue());
 
         while (!queue.isEmpty()) {
             final CreateItem entry = queue.poll();
             LOG.debug("-------------------\n\n-- {}\n", entry);
 
-            final Field field = entry.getField();
+            final FieldNode node = entry.getFieldNode();
+            final Field field = node.getField();
 
             if (context.isExcluded(field) || Modifier.isStatic(field.getModifiers())) {
                 continue;
@@ -98,21 +87,12 @@ class InstancioDriver {
             return Collections.emptyList();
         }
         final Object owner = createItem.getOwner();
-        final Field arrayField = createItem.getField();
-
-        Class<?> componentType = arrayField.getType().getComponentType();
-
-        if (arrayField.getGenericType() instanceof GenericArrayType) {
-            String typeVariable = ((GenericArrayType) arrayField.getGenericType()).getGenericComponentType().getTypeName();
-            Deque<Class<?>> types = createItem.getTypeMap().get(typeVariable);
-            componentType = types.peekFirst(); // XXX
-        }
+        final Field arrayField = createItem.getFieldNode().getField();
+        final Class<?> componentType = arrayField.getType().getComponentType();
 
         List<CreateItem> queueEntries = new ArrayList<>();
         for (int i = 0; i < Array.getLength(array); i++) {
-            final GeneratorResult<?> generatorResult = generatorFacade.createInstanceOfClass(
-                    componentType, owner, Collections.emptyMap()); // XXX typeMap?
-
+            GeneratorResult<?> generatorResult = generatorFacade.createInstanceOfClass(componentType, owner);
             Array.set(array, i, generatorResult.getValue());
             queueEntries.addAll(generatorResult.getFieldsToEnqueue());
         }
@@ -125,41 +105,23 @@ class InstancioDriver {
         }
 
         final Object owner = createItem.getOwner();
-        final Field collectionField = createItem.getField();
+        final List<CreateItem> nextNodes = createItem.getFieldNode().getChildren()
+                .stream()
+                .map(n -> new CreateItem(n, collectionToPopulate))
+                .collect(toList());
 
-        LOG.debug("XXXX CreateItem: field: {}, typeMap: {}", createItem.getField().getName(), createItem.getTypeMap());
-        LOG.debug("XXXX collectionToPopulate type vars: {} ", Arrays.toString(collectionToPopulate.getClass().getTypeParameters()));
-        LOG.debug("XXXX owner type vars: {} ", Arrays.toString(owner.getClass().getTypeParameters()));
-
-        // Lookup type variable by owner first... if not bound, try by collectionField
-        // NOTE what if there are two?
-        String typeVariable = "NONE";
-        if (owner.getClass().getTypeParameters().length > 0) {
-            typeVariable = owner.getClass().getTypeParameters()[0].getName();
-            if (createItem.getTypeMap().get(typeVariable).isEmpty()) {
-                typeVariable = collectionField.getType().getTypeParameters()[0].getName();
-            }
-        } else {
-            typeVariable = collectionField.getType().getTypeParameters()[0].getName();
-        }
-
-        Deque<Class<?>> pTypes = createItem.getTypeMap().get(typeVariable);
 
         final List<CreateItem> queueEntries = new ArrayList<>();
 
-        if (!pTypes.isEmpty()) {
-            final Class<?> typeClass = pTypes.pollFirst();
+        final Class<?> collectionEntryClass = createItem.getFieldNode().getCollectionType();
 
-            for (int i = 0; i < 2; i++) {
-                final Map<String, Deque<Class<?>>> typeMap = createItem.getTypeMap();
-                final Map<String, Deque<Class<?>>> typeMapCopy = new HashMap<>();
+        for (int i = 0; i < 2; i++) {
 
-                typeMapCopy.put(typeVariable, new ArrayDeque<>(typeMap.get(typeVariable))); // XXX clone map
+            GeneratorResult<?> result = generatorFacade.createInstanceOfClass(collectionEntryClass, owner);
 
-                final GeneratorResult<?> generatorResult = generatorFacade.createInstanceOfClass(typeClass, owner, typeMapCopy);
-                collectionToPopulate.add(generatorResult.getValue());
-                queueEntries.addAll(generatorResult.getFieldsToEnqueue());
-            }
+            collectionToPopulate.add(result.getValue());
+            queueEntries.addAll(result.getFieldsToEnqueue());
+            //queueEntries.addAll(nextNodes);
         }
 
         return queueEntries;
@@ -178,9 +140,8 @@ class InstancioDriver {
             final Class<?> valueClass = typeClassOpt.get().getRight();
 
             for (int i = 0; i < 2; i++) {
-                // XXX typeMap?
-                final GeneratorResult<?> keyResult = generatorFacade.createInstanceOfClass(keyClass, owner, Collections.emptyMap());
-                final GeneratorResult<?> valueResult = generatorFacade.createInstanceOfClass(valueClass, owner, Collections.emptyMap());
+                final GeneratorResult<?> keyResult = generatorFacade.createInstanceOfClass(keyClass, owner);
+                final GeneratorResult<?> valueResult = generatorFacade.createInstanceOfClass(valueClass, owner);
 
                 map.put(keyResult.getValue(), valueResult.getValue());
                 queueEntries.addAll(keyResult.getFieldsToEnqueue());

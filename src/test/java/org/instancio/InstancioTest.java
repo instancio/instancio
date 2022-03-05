@@ -4,7 +4,6 @@ import org.instancio.pojo.arrays.WithObjectArrays.PojoWithEnumArray;
 import org.instancio.pojo.arrays.WithObjectArrays.PojoWithPojoArray;
 import org.instancio.pojo.arrays.WithObjectArrays.PojoWithStringArray;
 import org.instancio.pojo.arrays.WithPrimitiveArrays.PojoWithIntArray;
-import org.instancio.pojo.circular.BidirectionalOneToOne;
 import org.instancio.pojo.circular.HierarchyWithMultipleInterfaceImpls;
 import org.instancio.pojo.generics.FooContainer;
 import org.instancio.pojo.generics.container.GenericContainer;
@@ -32,7 +31,6 @@ import static org.assertj.core.api.Assertions.within;
 import static org.instancio.Generators.nullValue;
 import static org.instancio.Generators.oneOf;
 import static org.instancio.Generators.withPrefix;
-import static org.instancio.pojo.circular.BidirectionalOneToOne.Child;
 
 class InstancioTest {
 
@@ -164,8 +162,13 @@ class InstancioTest {
     }
 
     @Test
-    void generatePrimitive() {
+    void generateIntegerAndPrimitiveInt() {
         assertThat(Instancio.of(Integer.class).create()).isNotNull();
+        assertThat(Instancio.of(int.class).create()).isNotNull();
+    }
+
+    @Test
+    void generateString() {
         assertThat(Instancio.of(String.class).create()).isNotNull();
     }
 
@@ -221,6 +224,7 @@ class InstancioTest {
         assertThat(person.getAddress().getAddress()).startsWith(prefix);
         assertThat(person.getAddress().getCountry()).startsWith(prefix);
 
+        // FIXME failing due to array generation code needing refactoring
         person.getAddress().getPhoneNumbers().forEach(phone -> {
             assertThat(phone.getCountryCode()).startsWith(prefix);
             assertThat(phone.getNumber()).startsWith(prefix);

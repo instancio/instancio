@@ -1,5 +1,7 @@
 package org.instancio;
 
+import experimental.reflection.nodes.ClassNode;
+import experimental.reflection.nodes.FieldNode;
 import org.instancio.generator.GeneratorMap;
 import org.instancio.generator.ValueGenerator;
 import org.instancio.reflection.ImplementationResolver;
@@ -11,14 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,25 +35,26 @@ class GeneratorFacade {
         this.context = context;
     }
 
-    <C> GeneratorResult<C> create(CreateItem createItem) {
-        final Field field = createItem.getField();
+    <C> GeneratorResult<C> create(final CreateItem createItem) {
+        final FieldNode node = createItem.getFieldNode();
+        final Field field = node.getField();
         final Object owner = createItem.getOwner();
 
-        LOG.debug("Creating value for field '{}', genericType: {}, typeMap: {}",
-                field.getName(), field.getGenericType(), createItem.getTypeMap());
+        LOG.debug("Creating value for field '{}', genericType: {}",
+                field.getName(), field.getGenericType());
 
-        Optional<GeneratorResult<C>> optionalResult = attemptGenerateViaContent(field);
+        Optional<GeneratorResult<C>> optionalResult = attemptGenerateViaContext(field);
         if (optionalResult.isPresent()) {
             return optionalResult.get();
         }
 
-        final Class<?> fieldType = field.getType();
+        final Class<?> actualFieldType = node.getActualFieldType();
 
-        if (fieldType.isPrimitive()) {
-            return new GeneratorResult<>((C) generatorMap.get(fieldType).generate(), Collections.emptyList());
+        if (actualFieldType.isPrimitive()) {
+            return new GeneratorResult<>((C) generatorMap.get(actualFieldType).generate(), Collections.emptyList());
         }
 
-        final Object ancestor = hierarchy.getAncestorWithClass(owner, fieldType);
+        final Object ancestor = hierarchy.getAncestorWithClass(owner, actualFieldType);
 
         if (ancestor != null) {
             LOG.debug("{} has a circular dependency to {}. Not setting field value.",
@@ -65,14 +62,12 @@ class GeneratorFacade {
             return null;
         }
 
-        if (fieldType.isArray()) {
+        if (actualFieldType.isArray()) {
             Class<?> arrayType = field.getType().getComponentType();
 
-            if (field.getGenericType() instanceof GenericArrayType) {
-                String typeVariable = ((GenericArrayType) field.getGenericType()).getGenericComponentType().getTypeName();
-                Deque<Class<?>> types = createItem.getTypeMap().get(typeVariable);
-                arrayType = types.peekFirst(); // XXX
-            }
+//            if (field.getGenericType() instanceof GenericArrayType) {
+//                arrayType = actualFieldType;
+//            }
 
             final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
             final Object arrayObject = generator.generate();
@@ -80,87 +75,44 @@ class GeneratorFacade {
             return new GeneratorResult<>((C) arrayObject, Collections.emptyList()); // XXX pass in type map
         }
 
-        final ValueGenerator<?> generator = generatorMap.get(fieldType);
+        final ValueGenerator<?> generator = generatorMap.get(actualFieldType);
 
         final C value;
-        List<CreateItem> fields = Collections.emptyList();
 
         if (generator == null) {
 
-            if (fieldType.isInterface()) {
-                return resolveImplementationAndGenerate(owner, fieldType);
+            if (actualFieldType.isInterface()) {
+                return resolveImplementationAndGenerate(owner, actualFieldType);
             }
 
-            LOG.debug("XXX field {}, typeName: {}, typeMap: {}",
-                    field.getName(), field.getGenericType().getTypeName(), createItem.getTypeMap());
+            LOG.debug("XXX field {}, typeName: {}", field.getName(), field.getGenericType().getTypeName());
 
-            final Deque<Class<?>> genericTypes = createItem.getTypeMap().get(field.getGenericType().getTypeName());
+            value = (C) ReflectionUtils.instantiate(actualFieldType);
 
+            List<CreateItem> fields = node.getChildren().stream()
+                    .map(n -> new CreateItem(n, value))
+                    .collect(toList());
 
-            if (genericTypes != null) {
+            return new GeneratorResult<>(value, fields);
 
-                // XXX toggle pollFirst and peekFirst to break either one or other half of the tests
-//                final Class<?> typeToCreate = genericTypes.pollFirst();
-                final Class<?> typeToCreate = genericTypes.peekFirst();
-                return (GeneratorResult<C>) createInstanceOfClass(typeToCreate, owner, createItem.getTypeMap());
-            } else {
-                LOG.debug("Generator not found for '{}': instantiating via constructor", fieldType.getName());
-                value = (C) ReflectionUtils.instantiate(fieldType);
-
-            }
-
-            // NOTE if it's generic, then create a Map of TypeVariable to Class, e.g. {"T" -> String.class}
-            final Map<String, Deque<Class<?>>> typeVariableMap = new HashMap<>();
-            //typeVariableMap.putAll(createItem.getTypeMap()); // NOTE need this?
-
-            if (field.getGenericType() instanceof ParameterizedType) {
-
-                final Deque<Class<?>> parameterizedTypes = ReflectionUtils.getParameterizedTypes(field);
-
-                final Deque<Class<?>> pTypes = genericTypes != null && !genericTypes.isEmpty()
-                        ? genericTypes
-                        : parameterizedTypes;
-
-                typeVariableMap.put(
-                        field.getType().getTypeParameters()[0].getName(),
-                        pTypes); // XXX picking only last is not correct.. does not work for Foo<Bar<Baz<String>>>
-            }
-
-            // Do not collect fields for JDK classes
-            if (!fieldType.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
-
-                fields = Arrays.stream(fieldType.getDeclaredFields())
-                        .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                        .map(f -> {
-                            Map<String, Deque<Class<?>>> map;
-                            if (typeVariableMap.isEmpty()) {
-                                map = new HashMap<>();
-                                final Deque<Class<?>> parameterizedTypes = ReflectionUtils.getParameterizedTypes(f);
-                                if (!parameterizedTypes.isEmpty()) {
-                                    String typeVar = f.getType().getTypeParameters()[0].getName();
-                                    map.put(typeVar, parameterizedTypes);
-                                }
-                            } else {
-                                map = typeVariableMap;
-                            }
-                            return new CreateItem(f, value, map);
-                        }) //TODO check pTypes
-                        .collect(toList());
-            }
         } else {
-            LOG.debug("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), fieldType.getName());
+            LOG.debug("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), actualFieldType.getName());
 
             // If we already know how to generate this object, we don't need to collect its fields
             value = (C) generator.generate();
             LOG.trace("Generated {} using '{}' generator ", value, generator.getClass().getSimpleName());
         }
 
+        List<CreateItem> fields = node.getChildren().stream()
+                .map(n -> new CreateItem(n, value))
+                .collect(toList());
+
         hierarchy.setAncestorOf(value, owner);
         return new GeneratorResult<>(value, fields);
 
     }
 
-    <C> GeneratorResult<C> createInstanceOfClass(Class<C> klass, Object owner, Map<String, Deque<Class<?>>> typeMap) {
+    <C> GeneratorResult<C> createInstanceOfClass(Class<C> klass, Object owner) {
 
         if (klass.isPrimitive()) {
             return new GeneratorResult<>((C) generatorMap.get(klass).generate(), Collections.emptyList());
@@ -175,10 +127,11 @@ class GeneratorFacade {
         }
 
 
-        final ValueGenerator<?> generator = generatorMap.get(klass);
+        final ClassNode classNode = new ClassNode(klass, context.getRootTypeMap());
 
         final C value;
-        List<CreateItem> fields = Collections.emptyList();
+
+        final ValueGenerator<?> generator = generatorMap.get(klass);
 
         if (generator == null) {
 
@@ -189,27 +142,6 @@ class GeneratorFacade {
             LOG.debug("Generator not found for '{}': will attempt to instantiate via constructor", klass.getName());
             value = ReflectionUtils.instantiate(klass);
 
-            // Do not collect fields for JDK classes
-            if (!klass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
-                // XXX temporarily disable inheritance
-                //fields = ReflectionUtils.getDeclaredAndSuperclassFields(klass).stream()
-                fields = Arrays.stream(klass.getDeclaredFields())
-                        .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                        .map(f -> {
-                            Map<String, Deque<Class<?>>> fieldTypeMap = new HashMap<>();
-                            if (typeMap.isEmpty()) {
-                                Deque<Class<?>> typeClasses = ReflectionUtils.getParameterizedTypes(f);
-                                if (!typeClasses.isEmpty()) {
-                                    final String typeVariable = f.getType().getTypeParameters()[0].getName();
-                                    fieldTypeMap.put(typeVariable, typeClasses);
-                                }
-                            } else {
-                                fieldTypeMap = typeMap;
-                            }
-                            return new CreateItem(f, value, fieldTypeMap);
-                        })
-                        .collect(toList());
-            }
         } else {
             LOG.debug("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), klass.getName());
 
@@ -218,8 +150,12 @@ class GeneratorFacade {
             LOG.trace("Generated {} using '{}' generator ", value, generator.getClass().getSimpleName());
         }
 
+        final List<CreateItem> nextItems = classNode.getChildren().stream()
+                .map(node -> new CreateItem(node, value))
+                .collect(toList());
+
         hierarchy.setAncestorOf(value, owner);
-        return new GeneratorResult<>(value, fields);
+        return new GeneratorResult<>(value, nextItems);
     }
 
     /**
@@ -238,7 +174,7 @@ class GeneratorFacade {
             return null;
         }
 
-        return (GeneratorResult<C>) createInstanceOfClass(implementor, owner, Collections.emptyMap()); // XXX typeMap?
+        return (GeneratorResult<C>) createInstanceOfClass(implementor, owner);
     }
 
     /**
@@ -248,7 +184,7 @@ class GeneratorFacade {
      * TODO: hierarchy.setAncestorOf(value, owner) must be done for all generated objects
      *  unless they are from JDK classes
      */
-    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContent(Field field) {
+    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(Field field) {
         GeneratorResult<C> result = null;
         if (context.isNullable(field) && Random.trueOrFalse()) {
             // We can return a null 'GeneratorResult' or a null 'GeneratorResult.value'
@@ -256,12 +192,10 @@ class GeneratorFacade {
             // will be overwritten with null. Otherwise, field value would retain its
             // old value (if one was assigned).
             result = new GeneratorResult<>(null, Collections.emptyList());
-        }
-        if (context.getUserSuppliedFieldValueGenerators().containsKey(field)) {
+        } else if (context.getUserSuppliedFieldValueGenerators().containsKey(field)) {
             ValueGenerator<?> generator = context.getUserSuppliedFieldValueGenerators().get(field);
             result = new GeneratorResult<>((C) generator.generate(), Collections.emptyList());
-        }
-        if (context.getUserSuppliedClassValueGenerators().containsKey(field.getType())) {
+        } else if (context.getUserSuppliedClassValueGenerators().containsKey(field.getType())) {
             ValueGenerator<?> generator = context.getUserSuppliedClassValueGenerators().get(field.getType());
             // TODO need fields to enqueue instead of empty list??
             result = new GeneratorResult<>((C) generator.generate(), Collections.emptyList());

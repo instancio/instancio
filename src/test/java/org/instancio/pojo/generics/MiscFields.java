@@ -1,7 +1,6 @@
 package org.instancio.pojo.generics;
 
 import lombok.Getter;
-import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.pojo.generics.container.Pair;
@@ -11,7 +10,6 @@ import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
 
 import java.util.List;
-import java.util.StringJoiner;
 
 @Getter
 public class MiscFields<A, B, C> {
