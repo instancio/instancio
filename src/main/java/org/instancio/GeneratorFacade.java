@@ -63,11 +63,7 @@ class GeneratorFacade {
         }
 
         if (actualFieldType.isArray()) {
-            Class<?> arrayType = field.getType().getComponentType();
-
-//            if (field.getGenericType() instanceof GenericArrayType) {
-//                arrayType = actualFieldType;
-//            }
+            Class<?> arrayType = node.getArrayType();
 
             final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
             final Object arrayObject = generator.generate();

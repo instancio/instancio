@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -126,6 +127,17 @@ public class FieldNode {
             return rootTypeMap.get(field.getGenericType().getTypeName());
         }
         return actualFieldType;
+    }
+
+    public Class<?> getArrayType() {
+        if (field.getGenericType() instanceof GenericArrayType) {
+            final GenericArrayType arrayType = (GenericArrayType) field.getGenericType();
+            Type compType = arrayType.getGenericComponentType();
+            if (compType instanceof TypeVariable) {
+                return rootTypeMap.get(compType.getTypeName());
+            }
+        }
+        return field.getType().getComponentType();
     }
 
     public Class<?> getCollectionType() {

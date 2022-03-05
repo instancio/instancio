@@ -87,8 +87,7 @@ class InstancioDriver {
             return Collections.emptyList();
         }
         final Object owner = createItem.getOwner();
-        final Field arrayField = createItem.getFieldNode().getField();
-        final Class<?> componentType = arrayField.getType().getComponentType();
+        final Class<?> componentType = createItem.getFieldNode().getArrayType();
 
         List<CreateItem> queueEntries = new ArrayList<>();
         for (int i = 0; i < Array.getLength(array); i++) {
