@@ -40,8 +40,8 @@ public class FieldNode {
     private final Class<?> actualFieldType;
     private final String[] typeVariables;
     private List<FieldNode> children = null;
-    private final Map<String, Type> typeMap;
-    private final Map<String, Class<?>> rootTypeMap;
+    private final Map<Type, Type> typeMap;
+    private final Map<Type, Class<?>> rootTypeMap;
     private final FieldNode parentFieldNode;  // TODO delete
 
     private final Class<?> classDeclaringTheTypeVariable; // e.g. List<E> => List.class (declares E)
@@ -51,7 +51,7 @@ public class FieldNode {
     private final Set<FieldNode> visited;
 
     public FieldNode(Field field, Class<?> classDeclaringTheTypeVariable, Type genericType, FieldNode parentFieldNode,
-                     Map<String, Class<?>> rootTypeMap, Set<FieldNode> visited) {
+                     Map<Type, Class<?>> rootTypeMap, Set<FieldNode> visited) {
 
         this.field = Verify.notNull(field, "Field must not be null");
 
@@ -72,7 +72,7 @@ public class FieldNode {
         this.visited = visited;
     }
 
-    public FieldNode(Field field, Map<String, Class<?>> rootTypeMap) {
+    public FieldNode(Field field, Map<Type, Class<?>> rootTypeMap) {
         this(field, field.getType(), field.getGenericType(), /* parent = */ null, rootTypeMap, new HashSet<>());
     }
 
@@ -86,13 +86,13 @@ public class FieldNode {
         final List<FieldNode> childNodes = new ArrayList<>();
 
         for (Field childField : childFields) {
-            final String typeParameter = childField.getGenericType().getTypeName();
+            final Type typeParameter = childField.getGenericType();
 
             Class<?> resolvedTypeArg = null;
             Type typeArgument = typeMap.get(typeParameter);
 
             if (typeArgument instanceof TypeVariable) {
-                resolvedTypeArg = rootTypeMap.get(((TypeVariable<?>) typeArgument).getName());
+                resolvedTypeArg = rootTypeMap.get(typeArgument);
             } else if (typeArgument instanceof Class) {
                 resolvedTypeArg = (Class<?>) typeArgument;
             }
@@ -121,10 +121,10 @@ public class FieldNode {
     }
 
     public Class<?> getActualFieldType() {
-        if (actualFieldType.equals(Object.class) && rootTypeMap.containsKey(field.getGenericType().getTypeName())) {
+        if (actualFieldType.equals(Object.class) && rootTypeMap.containsKey(field.getGenericType())) {
             // Handle fields like:
             // class SomeClass<T> { T field; }
-            return rootTypeMap.get(field.getGenericType().getTypeName());
+            return rootTypeMap.get(field.getGenericType());
         }
         return actualFieldType;
     }
@@ -134,7 +134,7 @@ public class FieldNode {
             final GenericArrayType arrayType = (GenericArrayType) field.getGenericType();
             Type compType = arrayType.getGenericComponentType();
             if (compType instanceof TypeVariable) {
-                return rootTypeMap.get(compType.getTypeName());
+                return rootTypeMap.get(compType);
             }
         }
         return field.getType().getComponentType();
@@ -151,7 +151,7 @@ public class FieldNode {
         Class<?> resolvedTypeArg = null;
 
         if (typeArgument instanceof TypeVariable) {
-            resolvedTypeArg = rootTypeMap.get(((TypeVariable<?>) typeArgument).getName());
+            resolvedTypeArg = rootTypeMap.get(typeArgument);
         } else if (typeArgument instanceof Class) {
             resolvedTypeArg = (Class<?>) typeArgument;
         }
@@ -180,7 +180,7 @@ public class FieldNode {
         return field.getGenericType().getTypeName();
     }
 
-    public Map<String, Type> getTypeMap() {
+    public Map<Type, Type> getTypeMap() {
         return typeMap;
     }
 
@@ -208,12 +208,12 @@ public class FieldNode {
         return typeVariables;
     }
 
-    private Map<String, Type> getTypeMap(Class<?> declaringClass, final Type genericType) {
+    private Map<Type, Type> getTypeMap(Class<?> declaringClass, final Type genericType) {
         if (declaringClass == null) {
             return Collections.emptyMap();
         }
 
-        final Map<String, Type> map = new HashMap<>();
+        final Map<Type, Type> map = new HashMap<>();
         final TypeVariable<?>[] typeVars = declaringClass.getTypeParameters();
 
         if (genericType instanceof ParameterizedType) {
@@ -228,18 +228,26 @@ public class FieldNode {
                 Type actualType = typeArgs[i];
 
                 //LOG.debug(" --> tvar: {}, actualType: {}", tvar, actualType);
-
+                // XXX typeMap should use Type objects as keys? what about user rootTypeMap?
+                //  Problem is using strings can overwrite values when string keys are the same,
+                //  even though they might represent different Type objects...
+                //  Need to isolate this scenario and test it.
                 if (actualType instanceof TypeVariable) {
-                    map.put(tvar.getName(), actualType);
+                    final String actualTypeVariableName = ((TypeVariable<?>) actualType).getName();
+                    map.put(tvar, actualType);
+
+                    if (rootTypeMap.containsKey(actualType)) {
+                        map.put(actualType, rootTypeMap.get(actualType));
+                    }
                 } else if (actualType instanceof ParameterizedType) {
                     Class<?> c = (Class<?>) ((ParameterizedType) actualType).getRawType();
                     ParameterizedType nestedPType = (ParameterizedType) actualType;
 
-                    map.put(tvar.getName(), c);
+                    map.put(tvar, c);
 
                     nestedTypes.add(new PType(c, nestedPType));
                 } else if (actualType instanceof Class) {
-                    map.put(tvar.getName(), actualType);
+                    map.put(tvar, actualType);
                 } else {
                     throw new IllegalStateException("Unhandled type: " + actualType);
                 }

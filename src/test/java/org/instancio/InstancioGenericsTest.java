@@ -113,7 +113,7 @@ public class InstancioGenericsTest {
         assertThatThrownBy(() -> Instancio.of(GenericItemContainer.class).create())
                 .isInstanceOf(InstancioException.class)
                 .hasMessage("Generic class %s " +
-                        "has 2 type parameters: [L, R]. Please specify all type parameters using " +
+                        "has 2 type parameters: [X, Y]. Please specify all type parameters using " +
                         "'withType(Class... types)`", GenericItemContainer.class.getName());
 
         assertThatThrownBy(() -> Instancio.of(List.class).create())

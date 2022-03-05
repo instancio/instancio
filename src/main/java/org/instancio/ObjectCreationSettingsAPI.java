@@ -3,6 +3,7 @@ package org.instancio;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.ValueGenerator;
 
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,13 +61,13 @@ public class ObjectCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
         }
 
 
-        Map<String, Class<?>> rootTypeMap = new HashMap<>();
+        Map<Type, Class<?>> rootTypeMap = new HashMap<>();
         TypeVariable<Class<T>>[] typeParameters = klass.getTypeParameters();
 
         for (int i = 0; i < suppliedTypeArguments; i++) {
             final TypeVariable<?> typeParameter = typeParameters[i];
             final Class<?> actualType = genericTypes[i];
-            rootTypeMap.put(typeParameter.getName(), actualType);
+            rootTypeMap.put(typeParameter, actualType);
         }
 
         InstancioContext context = new InstancioContext(

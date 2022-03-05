@@ -12,6 +12,8 @@ class InstancioCircularReferencesTest {
     void indirectCircularRef() {
         IndirectCircularRef.A a = Instancio.of(IndirectCircularRef.A.class).create();
 
+        System.out.println(a);
+
         assertThat(a.getB()).isNotNull();
         assertThat(a.getB().getC()).isNotNull();
         assertThat(a.getB().getC().getA()).isNull();

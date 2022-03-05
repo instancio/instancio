@@ -38,20 +38,28 @@ public class FieldNodeAssert extends AbstractAssert<FieldNodeAssert, FieldNode> 
         return this;
     }
 
-    public FieldNodeAssert hasTypeMappedTo(String expectedTypeParameter, Class<?> expectedClass) {
-        isNotNull();
-        assertThat(actual.getTypeMap()).containsEntry(expectedTypeParameter, expectedClass);
-        return this;
-    }
-    public FieldNodeAssert hasTypeMappedTo(String expectedTypeParameter, String typeVariable) {
-        isNotNull();
-        final Map<String, Type> typeMap = actual.getTypeMap();
-        final Type expectedType = typeMap.get(expectedTypeParameter);
-        assertThat(expectedType).isNotNull()
-                .isInstanceOf(TypeVariable.class)
-                .extracting(Type::getTypeName)
-                .isEqualTo(typeVariable);
+//    public FieldNodeAssert hasTypeMappedTo(String expectedTypeParameter, Class<?> expectedClass) {
+//        isNotNull();
+//
+//        // FIXME - do lookup by Type
+//        final Set<Map.Entry<Type, Type>> entries = actual.getTypeMap().entrySet();
+//        for (Map.Entry<Type, Type> entry : entries) {
+//            if (entry.getValue().getTypeName().equals(expectedTypeParameter)) {
+//                assertThat(entry.getValue()).isEqualTo(expectedClass);
+//                return this;
+//            }
+//        }
+//
+//        fail("Did not find expected type parameter '%s' in the type map: %s",
+//                expectedTypeParameter, actual.getTypeMap());
+//        //assertThat(actual.getTypeMap()).containsEntry(expectedTypeParameter, expectedClass);
+//        return this;
+//    }
 
+    public FieldNodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, Type typeMapping) {
+        isNotNull();
+        final Map<Type, Type> typeMap = actual.getTypeMap();
+        assertThat(typeMap.get(typeVariable)).isEqualTo(typeMapping);
         return this;
     }
 

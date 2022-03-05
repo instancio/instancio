@@ -3,6 +3,7 @@ package experimental.reflection.nodes;
 import org.instancio.util.Verify;
 
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,11 +17,11 @@ import static java.util.stream.Collectors.toList;
 public class ClassNode {
 
     private static final String JAVA_PKG_PREFIX = "java";
-    private final Map<String, Class<?>> typeMap;
+    private final Map<Type, Class<?>> typeMap;
     private final Class<?> klass;
     private final List<FieldNode> children;
 
-    public ClassNode(final Class<?> klass, final Map<String, Class<?>> typeMap) {
+    public ClassNode(final Class<?> klass, final Map<Type, Class<?>> typeMap) {
         this.klass = klass;
         this.typeMap = validateTypeMap(klass, typeMap);
 
@@ -45,7 +46,7 @@ public class ClassNode {
         return children;
     }
 
-    private static Map<String, Class<?>> validateTypeMap(Class<?> klass, Map<String, Class<?>> typeMap) {
+    private static Map<Type, Class<?>> validateTypeMap(Class<?> klass, Map<Type, Class<?>> typeMap) {
         final TypeVariable<?>[] typeParameters = klass.getTypeParameters();
         final String msg = String.format("Type map should map each type parameter:\ntype map: %s\ntype parameters: %s",
                 typeMap, Arrays.toString(typeParameters));
@@ -54,7 +55,7 @@ public class ClassNode {
         Verify.isTrue(typeMap.size() >= typeParameters.length, msg);
 
         for (TypeVariable<?> typeVar : typeParameters) {
-            Verify.isTrue(typeMap.containsKey(typeVar.getName()), msg);
+            Verify.isTrue(typeMap.containsKey(typeVar), msg);
         }
 
         return Collections.unmodifiableMap(typeMap);

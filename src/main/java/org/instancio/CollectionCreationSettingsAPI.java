@@ -2,6 +2,7 @@ package org.instancio;
 
 import org.instancio.generator.ValueGenerator;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class CollectionCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C
     }
 
     public List<T> create() {
-        Map<String, Class<?>> rootTypeMap = new HashMap<>(); // TODO - populate
+        Map<Type, Class<?>> rootTypeMap = new HashMap<>(); // TODO - populate
 
         InstancioContext context = new InstancioContext(
                 klass, exclusions, nullables, fieldValueGenerators, classValueGenerators, rootTypeMap);
