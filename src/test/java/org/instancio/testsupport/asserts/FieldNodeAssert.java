@@ -58,7 +58,7 @@ public class FieldNodeAssert extends AbstractAssert<FieldNodeAssert, FieldNode> 
 
     public FieldNodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, Type typeMapping) {
         isNotNull();
-        final Map<Type, Type> typeMap = actual.getTypeMap();
+        final Map<TypeVariable<?>, Type> typeMap = actual.getTypeMap();
         assertThat(typeMap.get(typeVariable)).isEqualTo(typeMapping);
         return this;
     }

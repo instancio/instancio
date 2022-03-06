@@ -1,5 +1,6 @@
 package experimental.reflection.nodes;
 
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -40,8 +41,8 @@ public class FieldNode {
     private final Class<?> actualFieldType;
     private final String[] typeVariables;
     private List<FieldNode> children = null;
-    private final Map<Type, Type> typeMap;
-    private final Map<Type, Class<?>> rootTypeMap;
+    private final Map<TypeVariable<?>, Type> typeMap;
+    private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final FieldNode parentFieldNode;  // TODO delete
 
     private final Class<?> classDeclaringTheTypeVariable; // e.g. List<E> => List.class (declares E)
@@ -51,7 +52,7 @@ public class FieldNode {
     private final Set<FieldNode> visited;
 
     public FieldNode(Field field, Class<?> classDeclaringTheTypeVariable, Type genericType, FieldNode parentFieldNode,
-                     Map<Type, Class<?>> rootTypeMap, Set<FieldNode> visited) {
+                     Map<TypeVariable<?>, Class<?>> rootTypeMap, Set<FieldNode> visited) {
 
         this.field = Verify.notNull(field, "Field must not be null");
 
@@ -72,7 +73,7 @@ public class FieldNode {
         this.visited = visited;
     }
 
-    public FieldNode(Field field, Map<Type, Class<?>> rootTypeMap) {
+    public FieldNode(Field field, Map<TypeVariable<?>, Class<?>> rootTypeMap) {
         this(field, field.getType(), field.getGenericType(), /* parent = */ null, rootTypeMap, new HashSet<>());
     }
 
@@ -146,14 +147,19 @@ public class FieldNode {
         }
 
         // XXX can there be more than one type arg?
-        final Type typeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+        final ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+        Type typeArgument = genericType.getActualTypeArguments()[0];
 
         Class<?> resolvedTypeArg = null;
 
         if (typeArgument instanceof TypeVariable) {
+            final TypeVariable<?> collectionTypeParameter = field.getType().getTypeParameters()[0]; // E
+            typeArgument = ObjectUtils.defaultIfNull(typeMap.get(collectionTypeParameter), typeArgument);
             resolvedTypeArg = rootTypeMap.get(typeArgument);
         } else if (typeArgument instanceof Class) {
             resolvedTypeArg = (Class<?>) typeArgument;
+        } else if (typeArgument instanceof ParameterizedType) {
+            resolvedTypeArg = (Class<?>) ((ParameterizedType) typeArgument).getRawType();
         }
 
         return resolvedTypeArg;
@@ -180,7 +186,7 @@ public class FieldNode {
         return field.getGenericType().getTypeName();
     }
 
-    public Map<Type, Type> getTypeMap() {
+    public Map<TypeVariable<?>, Type> getTypeMap() {
         return typeMap;
     }
 
@@ -208,15 +214,16 @@ public class FieldNode {
         return typeVariables;
     }
 
-    private Map<Type, Type> getTypeMap(Class<?> declaringClass, final Type genericType) {
+    private Map<TypeVariable<?>, Type> getTypeMap(Class<?> declaringClass, final Type genericType) {
         if (declaringClass == null) {
             return Collections.emptyMap();
         }
 
-        final Map<Type, Type> map = new HashMap<>();
+        final Map<TypeVariable<?>, Type> map = new HashMap<>();
         final TypeVariable<?>[] typeVars = declaringClass.getTypeParameters();
 
         if (genericType instanceof ParameterizedType) {
+
             ParameterizedType pType = (ParameterizedType) genericType;
             Type[] typeArgs = pType.getActualTypeArguments();
 
@@ -233,11 +240,11 @@ public class FieldNode {
                 //  even though they might represent different Type objects...
                 //  Need to isolate this scenario and test it.
                 if (actualType instanceof TypeVariable) {
-                    final String actualTypeVariableName = ((TypeVariable<?>) actualType).getName();
+
                     map.put(tvar, actualType);
 
                     if (rootTypeMap.containsKey(actualType)) {
-                        map.put(actualType, rootTypeMap.get(actualType));
+                        map.put((TypeVariable<?>) actualType, rootTypeMap.get(actualType));
                     }
                 } else if (actualType instanceof ParameterizedType) {
                     Class<?> c = (Class<?>) ((ParameterizedType) actualType).getRawType();

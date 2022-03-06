@@ -18,7 +18,6 @@ import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -30,8 +29,8 @@ import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
 
 class FieldNodeTest {
 
-    private final Map<Type, Class<?>> classMiscFieldsTypeMap = new HashMap<>();
-    private final Map<Type, Class<?>> classGenericItemContainerTypeMap = new HashMap<>();
+    private final Map<TypeVariable<?>, Class<?>> classMiscFieldsTypeMap = new HashMap<>();
+    private final Map<TypeVariable<?>, Class<?>> classGenericItemContainerTypeMap = new HashMap<>();
 
     private static TypeVariable<?> getTypeVar(Class<?> klass, String typeParameter) {
         for (TypeVariable<?> tvar : klass.getTypeParameters()) {

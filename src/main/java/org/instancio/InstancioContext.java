@@ -3,7 +3,7 @@ package org.instancio;
 import org.instancio.generator.ValueGenerator;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +15,7 @@ class InstancioContext {
     private final Set<Field> nullables;
     private final Map<Field, ValueGenerator<?>> userSuppliedFieldValueGenerators;
     private final Map<Class<?>, ValueGenerator<?>> userSuppliedClassValueGenerators;
-    private final Map<Type, Class<?>> rootTypeMap;
+    private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
 
     public InstancioContext(
             final Class<?> klass,
@@ -23,7 +23,7 @@ class InstancioContext {
             final Set<Field> nullables,
             final Map<Field, ValueGenerator<?>> userSuppliedFieldValueGenerators,
             final Map<Class<?>, ValueGenerator<?>> userSuppliedClassValueGenerators,
-            final Map<Type, Class<?>> rootTypeMap) {
+            final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
 
         this.klass = klass;
         this.exclusions = Collections.unmodifiableSet(exclusions);
@@ -53,7 +53,7 @@ class InstancioContext {
         return userSuppliedClassValueGenerators;
     }
 
-    public Map<Type, Class<?>> getRootTypeMap() {
+    public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
         return rootTypeMap;
     }
 }

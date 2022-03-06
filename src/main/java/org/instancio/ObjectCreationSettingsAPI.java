@@ -61,7 +61,7 @@ public class ObjectCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
         }
 
 
-        Map<Type, Class<?>> rootTypeMap = new HashMap<>();
+        Map<TypeVariable<?>, Class<?>> rootTypeMap = new HashMap<>();
         TypeVariable<Class<T>>[] typeParameters = klass.getTypeParameters();
 
         for (int i = 0; i < suppliedTypeArguments; i++) {
