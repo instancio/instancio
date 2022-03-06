@@ -1,9 +1,10 @@
 package org.instancio;
 
-import org.instancio.model.ClassNode;
-import org.instancio.model.FieldNode;
 import org.instancio.generator.GeneratorMap;
 import org.instancio.generator.ValueGenerator;
+import org.instancio.model.ClassNode;
+import org.instancio.model.FieldNode;
+import org.instancio.model.NodeContext;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
 import org.instancio.util.Random;
@@ -36,7 +37,7 @@ class GeneratorFacade {
     }
 
     <C> GeneratorResult<C> create(final CreateItem createItem) {
-        final FieldNode node = createItem.getFieldNode();
+        final FieldNode node = (FieldNode) createItem.getNode(); // FIXME
         final Field field = node.getField();
         final Object owner = createItem.getOwner();
 
@@ -123,7 +124,7 @@ class GeneratorFacade {
         }
 
 
-        final ClassNode classNode = new ClassNode(klass, context.getRootTypeMap());
+        final ClassNode classNode = new ClassNode(new NodeContext(context.getRootTypeMap()), klass);
 
         final C value;
 

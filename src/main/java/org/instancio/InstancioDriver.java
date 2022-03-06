@@ -1,7 +1,7 @@
 package org.instancio;
 
-import org.instancio.model.FieldNode;
 import org.instancio.generator.GeneratorMap;
+import org.instancio.model.FieldNode;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
 import org.instancio.util.ReflectionUtils;
@@ -48,7 +48,7 @@ class InstancioDriver {
             final CreateItem entry = queue.poll();
             LOG.debug("-------------------\n\n-- {}\n", entry);
 
-            final FieldNode node = entry.getFieldNode();
+            final FieldNode node = (FieldNode) entry.getNode(); // FIXME
             final Field field = node.getField();
 
             if (context.isExcluded(field) || Modifier.isStatic(field.getModifiers())) {
@@ -85,7 +85,8 @@ class InstancioDriver {
             return Collections.emptyList();
         }
         final Object owner = createItem.getOwner();
-        final Class<?> componentType = createItem.getFieldNode().getArrayType();
+        final FieldNode node = (FieldNode) createItem.getNode();
+        final Class<?> componentType = node.getArrayType();
 
         List<CreateItem> queueEntries = new ArrayList<>();
         for (int i = 0; i < Array.getLength(array); i++) {
@@ -102,7 +103,9 @@ class InstancioDriver {
         }
 
         final Object owner = createItem.getOwner();
-        final List<CreateItem> nextNodes = createItem.getFieldNode().getChildren()
+        final FieldNode node = (FieldNode) createItem.getNode(); // FIXME
+
+        final List<CreateItem> nextNodes = node.getChildren()
                 .stream()
                 .map(n -> new CreateItem(n, collectionToPopulate))
                 .collect(toList());
@@ -110,7 +113,7 @@ class InstancioDriver {
 
         final List<CreateItem> queueEntries = new ArrayList<>();
 
-        final Class<?> collectionEntryClass = createItem.getFieldNode().getCollectionType();
+        final Class<?> collectionEntryClass = node.getCollectionType();
 
         for (int i = 0; i < 2; i++) {
 

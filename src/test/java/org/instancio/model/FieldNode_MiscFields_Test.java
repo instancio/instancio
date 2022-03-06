@@ -20,19 +20,22 @@ import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 class FieldNode_MiscFields_Test {
 
-    private final Map<TypeVariable<?>, Class<?>> classMiscFieldsTypeMap = new HashMap<>();
+    private NodeContext nodeContext;
+
 
     @BeforeEach
     void setUp() {
-        classMiscFieldsTypeMap.put(getTypeVar(MiscFields.class, "A"), Long.class);
-        classMiscFieldsTypeMap.put(getTypeVar(MiscFields.class, "B"), String.class);
-        classMiscFieldsTypeMap.put(getTypeVar(MiscFields.class, "C"), Integer.class);
+        Map<TypeVariable<?>, Class<?>> typeMap = new HashMap<>();
+        typeMap.put(getTypeVar(MiscFields.class, "A"), Long.class);
+        typeMap.put(getTypeVar(MiscFields.class, "B"), String.class);
+        typeMap.put(getTypeVar(MiscFields.class, "C"), Integer.class);
+
+        nodeContext = new NodeContext(typeMap);
     }
 
     @Test
     void pairAPairIntegerString() {
-        final FieldNode node = new FieldNode(ReflectionUtils.getField(MiscFields.class, "pairAPairIntegerString"),
-                classMiscFieldsTypeMap);
+        final FieldNode node = new FieldNode(nodeContext, ReflectionUtils.getField(MiscFields.class, "pairAPairIntegerString"));
 
         System.out.println(node);
         assertFieldNode(node)
@@ -58,8 +61,7 @@ class FieldNode_MiscFields_Test {
     @Test
     void test_MiscFields_tripletA_FooBarBazString_ListOfC() {
         final String rootField = "tripletA_FooBarBazString_ListOfC";
-        final FieldNode node = new FieldNode(ReflectionUtils.getField(MiscFields.class, rootField),
-                classMiscFieldsTypeMap);
+        final FieldNode node = new FieldNode(nodeContext, ReflectionUtils.getField(MiscFields.class, rootField));
 
         assertFieldNode(node)
                 .hasFieldName(rootField)

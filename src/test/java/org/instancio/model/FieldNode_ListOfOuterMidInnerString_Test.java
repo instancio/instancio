@@ -13,15 +13,16 @@ import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 class FieldNode_ListOfOuterMidInnerString_Test {
 
+    private final NodeContext nodeContext = new NodeContext(Collections.emptyMap());
+
     @Test
     void listOfOuter() {
         final String rootField = "listOfOuter";
-        final FieldNode node = new FieldNode(ReflectionUtils.getField(ListOfOuterMidInnerString.class, rootField),
-                Collections.emptyMap());
+        final FieldNode listOfOuterFieldNode = new FieldNode(nodeContext, ReflectionUtils.getField(ListOfOuterMidInnerString.class, rootField));
 
-        System.out.println(node);
+        System.out.println(listOfOuterFieldNode);
 
-        assertFieldNode(node)
+        assertFieldNode(listOfOuterFieldNode)
                 .hasFieldName(rootField)
                 .hasActualFieldType(List.class)
                 .hasTypeMappedTo(getTypeVar(List.class, "E"), Outer.class)

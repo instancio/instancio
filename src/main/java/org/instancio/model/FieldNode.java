@@ -23,11 +23,11 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
-public class FieldNode {
+public class FieldNode extends Node {
     private static final Logger LOG = LoggerFactory.getLogger(FieldNode.class);
 
     private static final String JAVA_PKG_PREFIX = "java";
@@ -40,9 +40,7 @@ public class FieldNode {
      */
     private final Class<?> actualFieldType;
     private final String[] typeVariables;
-    private List<FieldNode> children = null;
     private final Map<TypeVariable<?>, Type> typeMap;
-    private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final FieldNode parentFieldNode;  // TODO delete
 
     private final Class<?> classDeclaringTheTypeVariable; // e.g. List<E> => List.class (declares E)
@@ -51,8 +49,16 @@ public class FieldNode {
     private final List<PType> nestedTypes = new ArrayList<>();
     private final Set<FieldNode> visited;
 
-    public FieldNode(Field field, Class<?> classDeclaringTheTypeVariable, Type genericType, FieldNode parentFieldNode,
-                     Map<TypeVariable<?>, Class<?>> rootTypeMap, Set<FieldNode> visited) {
+
+    public FieldNode(
+            final NodeContext nodeContext,
+            final Field field,
+            Class<?> classDeclaringTheTypeVariable,
+            final Type genericType,
+            final FieldNode parentFieldNode,
+            final Set<FieldNode> visited) {
+
+        super(nodeContext, field.getType(), genericType);
 
         this.field = Verify.notNull(field, "Field must not be null");
 
@@ -68,23 +74,40 @@ public class FieldNode {
         this.classDeclaringTheTypeVariable = classDeclaringTheTypeVariable;
         this.genericType = genericType;
         this.parentFieldNode = parentFieldNode;
-        this.rootTypeMap = rootTypeMap;
         this.typeMap = getTypeMap(classDeclaringTheTypeVariable, genericType);
         this.visited = visited;
+
+        setChildren(makeChildren());
     }
 
-    public FieldNode(Field field, Map<TypeVariable<?>, Class<?>> rootTypeMap) {
-        this(field, field.getType(), field.getGenericType(), /* parent = */ null, rootTypeMap, new HashSet<>());
+    public FieldNode(NodeContext nodeContext, Field field) {
+        this(nodeContext, field, field.getType(), field.getGenericType(), /* parent = */ null, new HashSet<>());
     }
 
-    private List<FieldNode> makeChildren() {
+    private List<Node> makeChildren() {
+        if (Collection.class.isAssignableFrom(field.getType())) {
+            return getCollectionElementTypeAsChildNode();
+        }
+
+
         final Package fieldPackage = actualFieldType.getPackage();
         if (fieldPackage == null || fieldPackage.getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList(); // Exclude JDK classes
         }
 
+        return getDeclaredFieldsAsChildNodes();
+    }
+
+    private List<Node> getCollectionElementTypeAsChildNode() {
+        LOG.debug("Getting collection element as child node: {}", field.getType());
+        final List<Node> childNodes = new ArrayList<>();
+
+        return childNodes;
+    }
+
+    private List<Node> getDeclaredFieldsAsChildNodes() {
         final Field[] childFields = actualFieldType.getDeclaredFields();
-        final List<FieldNode> childNodes = new ArrayList<>();
+        final List<Node> childNodes = new ArrayList<>();
 
         for (Field childField : childFields) {
             final Type typeParameter = childField.getGenericType();
@@ -93,7 +116,7 @@ public class FieldNode {
             Type typeArgument = typeMap.get(typeParameter);
 
             if (typeArgument instanceof TypeVariable) {
-                resolvedTypeArg = rootTypeMap.get(typeArgument);
+                resolvedTypeArg = getRootTypeMap().get(typeArgument);
             } else if (typeArgument instanceof Class) {
                 resolvedTypeArg = (Class<?>) typeArgument;
             }
@@ -103,7 +126,7 @@ public class FieldNode {
                     .map(PType::getParameterizedType);
 
             Type genericType = classParameterizedTypePType.orElse(childField.getGenericType());
-            FieldNode childNode = new FieldNode(childField, resolvedTypeArg, genericType, this, rootTypeMap, visited);
+            FieldNode childNode = new FieldNode(getNodeContext(), childField, resolvedTypeArg, genericType, this, visited);
             if (!visited.contains(childNode)) {
                 childNodes.add(childNode);
                 visited.add(childNode);
@@ -122,10 +145,10 @@ public class FieldNode {
     }
 
     public Class<?> getActualFieldType() {
-        if (actualFieldType.equals(Object.class) && rootTypeMap.containsKey(field.getGenericType())) {
+        if (actualFieldType.equals(Object.class) && getRootTypeMap().containsKey(field.getGenericType())) {
             // Handle fields like:
             // class SomeClass<T> { T field; }
-            return rootTypeMap.get(field.getGenericType());
+            return getRootTypeMap().get(field.getGenericType());
         }
         return actualFieldType;
     }
@@ -135,7 +158,7 @@ public class FieldNode {
             final GenericArrayType arrayType = (GenericArrayType) field.getGenericType();
             Type compType = arrayType.getGenericComponentType();
             if (compType instanceof TypeVariable) {
-                return rootTypeMap.get(compType);
+                return getRootTypeMap().get(compType);
             }
         }
         return field.getType().getComponentType();
@@ -155,7 +178,7 @@ public class FieldNode {
         if (typeArgument instanceof TypeVariable) {
             final TypeVariable<?> collectionTypeParameter = field.getType().getTypeParameters()[0]; // E
             typeArgument = ObjectUtils.defaultIfNull(typeMap.get(collectionTypeParameter), typeArgument);
-            resolvedTypeArg = rootTypeMap.get(typeArgument);
+            resolvedTypeArg = getRootTypeMap().get(typeArgument);
         } else if (typeArgument instanceof Class) {
             resolvedTypeArg = (Class<?>) typeArgument;
         } else if (typeArgument instanceof ParameterizedType) {
@@ -165,12 +188,6 @@ public class FieldNode {
         return resolvedTypeArg;
     }
 
-    public List<FieldNode> getChildren() {
-        if (children == null) {
-            children = makeChildren();
-        }
-        return children;
-    }
 
     /**
      * Returns type name of the declared field, e.g.
@@ -183,6 +200,7 @@ public class FieldNode {
      * }</pre>
      */
     public String getTypeName() {
+
         return field.getGenericType().getTypeName();
     }
 
@@ -191,18 +209,25 @@ public class FieldNode {
     }
 
     public FieldNode getChildByTypeParameter(final String typeParameter) {
-        return getChild(n -> Objects.equals(typeParameter, n.getTypeName()))
+        return getFieldNodeStream()
+                .filter(it -> Objects.equals(typeParameter, it.getGenericType().getTypeName()))
+                .findAny()
                 .orElseThrow(() -> new NoSuchElementException("No child with type parameter: " + typeParameter));
     }
 
     public FieldNode getChildByFieldName(String name) {
-        return getChild(n -> n.getFieldName().equals(name))
+        return getFieldNodeStream()
+                .filter(it -> it.getFieldName().equals(name))
+                .findAny()
                 .orElseThrow(() -> new NoSuchElementException("Field with name '" + name + "' not found"));
     }
 
-    private Optional<FieldNode> getChild(final Predicate<FieldNode> predicate) {
-        return children.stream().filter(predicate).findAny();
+    private Stream<FieldNode> getFieldNodeStream() {
+        return getChildren().stream()
+                .filter(it -> it instanceof FieldNode)
+                .map(it -> (FieldNode) it);
     }
+
 
     private static String[] getTypeVariables(Field field) {
         TypeVariable<?>[] typeParameters = field.getType().getTypeParameters();
@@ -243,8 +268,8 @@ public class FieldNode {
 
                     map.put(tvar, actualType);
 
-                    if (rootTypeMap.containsKey(actualType)) {
-                        map.put((TypeVariable<?>) actualType, rootTypeMap.get(actualType));
+                    if (getRootTypeMap().containsKey(actualType)) {
+                        map.put((TypeVariable<?>) actualType, getRootTypeMap().get(actualType));
                     }
                 } else if (actualType instanceof ParameterizedType) {
                     Class<?> c = (Class<?>) ((ParameterizedType) actualType).getRawType();
@@ -291,7 +316,9 @@ public class FieldNode {
                 + " -> classDeclaringTheTypeVariable: " + classDeclaringTheTypeVariable + "\n";
 
         if (getChildren() != null)
-            s += " -> children: " + getChildren().stream().map(f -> f.field.getName()).collect(joining(",")) + "\n";
+            s += " -> children: " + getChildren().stream()
+                    .map(it -> it instanceof FieldNode ? ((FieldNode) it).field.getName() : "ClassNode: " + it.getKlass())
+                    .collect(joining(",")) + "\n";
 
         return s;
     }

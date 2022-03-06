@@ -1,21 +1,21 @@
 package org.instancio;
 
-import org.instancio.model.FieldNode;
+import org.instancio.model.Node;
 
 import java.util.StringJoiner;
 
 class CreateItem {
 
-    private final FieldNode fieldNode;
+    private final Node node;
     private final Object owner;
 
-    public CreateItem(FieldNode fieldNode, Object owner) {
-        this.fieldNode = fieldNode;
+    public CreateItem(Node node, Object owner) {
+        this.node = node;
         this.owner = owner;
     }
 
-    public FieldNode getFieldNode() {
-        return fieldNode;
+    public Node getNode() {
+        return node;
     }
 
     public Object getOwner() {
@@ -25,7 +25,7 @@ class CreateItem {
     @Override
     public String toString() {
         return new StringJoiner(", ", CreateItem.class.getSimpleName() + "[", "]")
-                .add("fieldNode=" + fieldNode)
+                .add("node=" + node)
                 .add("owner=" + owner.getClass().getName())
                 .toString();
     }

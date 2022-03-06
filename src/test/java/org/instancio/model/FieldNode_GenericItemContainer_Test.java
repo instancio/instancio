@@ -16,19 +16,21 @@ import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 class FieldNode_GenericItemContainer_Test {
 
-    private final Map<TypeVariable<?>, Class<?>> classGenericItemContainerTypeMap = new HashMap<>();
+    private NodeContext nodeContext;
 
     @BeforeEach
     void setUp() {
-        classGenericItemContainerTypeMap.put(getTypeVar(GenericItemContainer.class, "X"), String.class);
-        classGenericItemContainerTypeMap.put(getTypeVar(GenericItemContainer.class, "Y"), LocalDateTime.class);
+        Map<TypeVariable<?>, Class<?>> typeMap = new HashMap<>();
+        typeMap.put(getTypeVar(GenericItemContainer.class, "X"), String.class);
+        typeMap.put(getTypeVar(GenericItemContainer.class, "Y"), LocalDateTime.class);
+
+        nodeContext = new NodeContext(typeMap);
     }
 
     @Test
     void itemValueL() {
         final String rootField = "itemValueL";
-        final FieldNode node = new FieldNode(ReflectionUtils.getField(GenericItemContainer.class, rootField),
-                classGenericItemContainerTypeMap);
+        final FieldNode node = new FieldNode(nodeContext, ReflectionUtils.getField(GenericItemContainer.class, rootField));
 
         assertFieldNode(node)
                 .hasFieldName(rootField)

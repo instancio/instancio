@@ -14,11 +14,12 @@ import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 class FieldNode_Person_Test {
 
+    private final NodeContext nodeContext = new NodeContext(Collections.emptyMap());
+
     @Test
     void address() {
         final String rootField = "address";
-        final FieldNode node = new FieldNode(ReflectionUtils.getField(Person.class, rootField),
-                Collections.emptyMap()); // empty type map
+        final FieldNode node = new FieldNode(nodeContext, ReflectionUtils.getField(Person.class, rootField));
 
         assertFieldNode(node)
                 .hasFieldName(rootField)

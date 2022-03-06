@@ -10,11 +10,12 @@ import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
 
 class FieldNode_IndirectCircularRef_Test {
 
+    private final NodeContext nodeContext = new NodeContext(Collections.emptyMap());
+
     @Test
     void b() {
         final String rootField = "b";
-        final FieldNode bFieldNode = new FieldNode(ReflectionUtils.getField(IndirectCircularRef.A.class, rootField),
-                Collections.emptyMap()); // empty type map
+        final FieldNode bFieldNode = new FieldNode(nodeContext, ReflectionUtils.getField(IndirectCircularRef.A.class, rootField));
 
         assertFieldNode(bFieldNode)
                 .hasFieldName(rootField)
