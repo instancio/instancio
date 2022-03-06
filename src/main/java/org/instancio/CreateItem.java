@@ -1,6 +1,6 @@
 package org.instancio;
 
-import experimental.reflection.nodes.FieldNode;
+import org.instancio.model.FieldNode;
 
 import java.util.StringJoiner;
 

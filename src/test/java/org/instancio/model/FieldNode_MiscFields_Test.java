@@ -1,73 +1,36 @@
-package experimental.reflection.nodes;
+package org.instancio.model;
 
-import org.instancio.pojo.circular.IndirectCircularRef;
 import org.instancio.pojo.generics.MiscFields;
-import org.instancio.pojo.generics.container.GenericItem;
-import org.instancio.pojo.generics.container.GenericItemContainer;
 import org.instancio.pojo.generics.container.Pair;
 import org.instancio.pojo.generics.container.Triplet;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
-import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
-import org.instancio.pojo.generics.outermidinner.Outer;
-import org.instancio.pojo.person.Address;
-import org.instancio.pojo.person.Person;
-import org.instancio.pojo.person.Phone;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.TypeVariable;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
+import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
-class FieldNodeTest {
+class FieldNode_MiscFields_Test {
 
     private final Map<TypeVariable<?>, Class<?>> classMiscFieldsTypeMap = new HashMap<>();
-    private final Map<TypeVariable<?>, Class<?>> classGenericItemContainerTypeMap = new HashMap<>();
-
-    private static TypeVariable<?> getTypeVar(Class<?> klass, String typeParameter) {
-        for (TypeVariable<?> tvar : klass.getTypeParameters()) {
-            if (tvar.getName().equals(typeParameter)) {
-                return tvar;
-            }
-        }
-        throw new IllegalArgumentException(String.format("Invalid type parameter '%s' for %s", typeParameter, klass));
-    }
 
     @BeforeEach
     void setUp() {
         classMiscFieldsTypeMap.put(getTypeVar(MiscFields.class, "A"), Long.class);
         classMiscFieldsTypeMap.put(getTypeVar(MiscFields.class, "B"), String.class);
         classMiscFieldsTypeMap.put(getTypeVar(MiscFields.class, "C"), Integer.class);
-
-        classGenericItemContainerTypeMap.put(getTypeVar(GenericItemContainer.class, "X"), String.class);
-        classGenericItemContainerTypeMap.put(getTypeVar(GenericItemContainer.class, "Y"), LocalDateTime.class);
     }
 
     @Test
-    void test_MiscFields_pairAPairIntegerString() {
-
-        // class Pair<L, R> {}
-        //
-        // class MiscFields<A, B, C> {
-        //     Pair<A, Pair<Integer, String>> pairAPairIntegerString
-        // }
-        //
-        // Pair.L -> MiscFields.A;
-        // MiscFields.A -> Long.class
-        // Pair.R -> Pair.class
-        //
-        // classMiscFieldsTypeMap.put("A", Long.class);
-        // classMiscFieldsTypeMap.put("B", String.class);
-        // classMiscFieldsTypeMap.put("C", Integer.class);
-
+    void pairAPairIntegerString() {
         final FieldNode node = new FieldNode(ReflectionUtils.getField(MiscFields.class, "pairAPairIntegerString"),
                 classMiscFieldsTypeMap);
 
@@ -161,93 +124,5 @@ class FieldNodeTest {
                 .hasActualFieldType(String.class)
                 .hasNoChildren()
                 .hasEmptyTypeMap();
-    }
-
-    @Test
-    void test_IndirectCircularRef_b() {
-        final String rootField = "b";
-        final FieldNode bFieldNode = new FieldNode(ReflectionUtils.getField(IndirectCircularRef.A.class, rootField),
-                Collections.emptyMap()); // empty type map
-
-        assertFieldNode(bFieldNode)
-                .hasFieldName(rootField)
-                .hasActualFieldType(IndirectCircularRef.B.class)
-                .hasEmptyTypeMap()
-                .hasChildrenOfSize(1);
-
-        final FieldNode cFieldNode = bFieldNode.getChildByFieldName("c");
-        assertFieldNode(cFieldNode)
-                .hasFieldName("c")
-                .hasActualFieldType(IndirectCircularRef.C.class)
-                .hasEmptyTypeMap()
-                .hasChildrenOfSize(1);
-
-        final FieldNode aFieldNode = cFieldNode.getChildByFieldName("a");
-        assertFieldNode(aFieldNode)
-                .hasFieldName("a")
-                .hasActualFieldType(IndirectCircularRef.A.class)
-                .hasEmptyTypeMap()
-                .hasChildrenOfSize(1);
-
-        final FieldNode cyclicBFieldNode = aFieldNode.getChildByFieldName(rootField);
-        assertFieldNode(cyclicBFieldNode)
-                .hasFieldName(rootField) // back to root field
-                .hasActualFieldType(IndirectCircularRef.B.class)
-                .hasEmptyTypeMap()
-                .hasNoChildren();  // but no children this time
-    }
-
-    @Test
-    void test_ListOfOuterMidInnerString_listOfOuter() {
-        final String rootField = "listOfOuter";
-        final FieldNode node = new FieldNode(ReflectionUtils.getField(ListOfOuterMidInnerString.class, rootField),
-                Collections.emptyMap());
-
-        assertFieldNode(node)
-                .hasFieldName(rootField)
-                .hasActualFieldType(List.class)
-                .hasTypeMappedTo(getTypeVar(List.class, "E"), Outer.class)
-                .hasTypeMapWithSize(1)
-                .hasChildrenOfSize(0); // TODO
-
-        System.out.println(node);
-    }
-
-    @Test
-    void test_Person_address() {
-        final String rootField = "address";
-        final FieldNode node = new FieldNode(ReflectionUtils.getField(Person.class, rootField),
-                Collections.emptyMap()); // empty type map
-
-        assertFieldNode(node)
-                .hasFieldName(rootField)
-                .hasActualFieldType(Address.class)
-                .hasEmptyTypeMap()
-                .hasChildrenOfSize(4);
-
-        final FieldNode phoneNumbersFieldNode = node.getChildByFieldName("phoneNumbers");
-
-        assertFieldNode(phoneNumbersFieldNode)
-                .hasFieldName("phoneNumbers")
-                .hasActualFieldType(List.class)
-                .hasTypeMappedTo(getTypeVar(List.class, "E"), Phone.class)
-                .hasTypeMapWithSize(1)
-                .hasChildrenOfSize(0);
-    }
-
-    @Test
-    void test_GenericItemContainer_itemValueL() {
-        final String rootField = "itemValueL";
-        final FieldNode node = new FieldNode(ReflectionUtils.getField(GenericItemContainer.class, rootField),
-                classGenericItemContainerTypeMap);
-
-        assertFieldNode(node)
-                .hasFieldName(rootField)
-                .hasActualFieldType(GenericItem.class)
-                .hasTypeMappedTo(getTypeVar(GenericItem.class, "K"), getTypeVar(GenericItemContainer.class, "X"))
-                .hasTypeMappedTo(getTypeVar(GenericItemContainer.class, "X"), String.class)
-                .hasTypeMapWithSize(2)
-                .hasChildrenOfSize(1);
-
     }
 }

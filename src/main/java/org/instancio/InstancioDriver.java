@@ -1,7 +1,6 @@
 package org.instancio;
 
-import experimental.reflection.nodes.ClassNode;
-import experimental.reflection.nodes.FieldNode;
+import org.instancio.model.FieldNode;
 import org.instancio.generator.GeneratorMap;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
@@ -21,7 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 
-import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 class InstancioDriver {

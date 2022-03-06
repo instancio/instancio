@@ -1,7 +1,7 @@
 package org.instancio;
 
-import experimental.reflection.nodes.ClassNode;
-import experimental.reflection.nodes.FieldNode;
+import org.instancio.model.ClassNode;
+import org.instancio.model.FieldNode;
 import org.instancio.generator.GeneratorMap;
 import org.instancio.generator.ValueGenerator;
 import org.instancio.reflection.ImplementationResolver;

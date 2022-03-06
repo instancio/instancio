@@ -1,4 +1,4 @@
-package experimental.reflection.nodes;
+package org.instancio.model;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.StringJoiner;

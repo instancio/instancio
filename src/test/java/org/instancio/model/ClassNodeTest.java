@@ -1,11 +1,6 @@
-package experimental.reflection.nodes;
+package org.instancio.model;
 
-import org.instancio.pojo.generics.MiscFields;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 class ClassNodeTest {
 

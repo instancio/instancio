@@ -1,4 +1,4 @@
-package experimental.reflection.nodes;
+package org.instancio.model;
 
 import org.instancio.util.ObjectUtils;
 import org.instancio.util.ReflectionUtils;

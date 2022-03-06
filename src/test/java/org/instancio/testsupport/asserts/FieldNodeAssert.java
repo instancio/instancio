@@ -1,6 +1,6 @@
 package org.instancio.testsupport.asserts;
 
-import experimental.reflection.nodes.FieldNode;
+import org.instancio.model.FieldNode;
 import org.assertj.core.api.AbstractAssert;
 
 import java.lang.reflect.Type;
