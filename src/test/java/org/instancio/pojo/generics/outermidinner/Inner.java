@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @ToString
 public class Inner<T> {
-    private List<T> bazList = new ArrayList<>();
+    private List<T> innerList = new ArrayList<>();
 }

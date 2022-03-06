@@ -1,7 +1,7 @@
 package org.instancio.testsupport.asserts;
 
-import org.instancio.model.FieldNode;
 import org.assertj.core.api.AbstractAssert;
+import org.instancio.model.FieldNode;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;

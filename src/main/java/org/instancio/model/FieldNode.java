@@ -98,9 +98,34 @@ public class FieldNode extends Node {
         return getDeclaredFieldsAsChildNodes();
     }
 
+    // Collection element raw class + generic type (actual type arg)
     private List<Node> getCollectionElementTypeAsChildNode() {
         LOG.debug("Getting collection element as child node: {}", field.getType());
+
         final List<Node> childNodes = new ArrayList<>();
+
+        //final Type genericType = field.getGenericType();
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) genericType;
+
+            final Type[] actualTypeArgs = pType.getActualTypeArguments();
+            final TypeVariable<?>[] typeVars = field.getType().getTypeParameters();
+
+            for (int i = 0; i < actualTypeArgs.length; i++) {
+                final Type actualTypeArg = actualTypeArgs[i];
+                final TypeVariable<?> typeVar = typeVars[i];
+                LOG.debug("actualTypeArg {}: {}, typeVar: {}", actualTypeArg.getClass().getSimpleName(), actualTypeArg, typeVar);
+
+                if (actualTypeArg instanceof ParameterizedType) {
+                    ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
+                    Class<?> actualRawType = (Class<?>) actualPType.getRawType();
+
+                    Node node = new ClassNode(getNodeContext(), actualRawType, actualPType);
+                    childNodes.add(node);
+                }
+
+            }
+        }
 
         return childNodes;
     }
@@ -145,6 +170,7 @@ public class FieldNode extends Node {
     }
 
     public Class<?> getActualFieldType() {
+        // XXX this.genericType or field.getGenericType()?
         if (actualFieldType.equals(Object.class) && getRootTypeMap().containsKey(field.getGenericType())) {
             // Handle fields like:
             // class SomeClass<T> { T field; }
