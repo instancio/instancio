@@ -10,7 +10,8 @@ import org.instancio.pojo.generics.container.GenericContainer;
 import org.instancio.pojo.generics.container.GenericItemContainer;
 import org.instancio.pojo.interfaces.MultipleInterfaceImpls;
 import org.instancio.pojo.interfaces.SingleInterfaceImpl;
-import org.instancio.pojo.maps.WithMap;
+import org.instancio.pojo.maps.IntegerStringMap;
+import org.instancio.pojo.maps.StringPersonMap;
 import org.instancio.pojo.maps.WithMiscMapInterfaces;
 import org.instancio.pojo.person.Gender;
 import org.instancio.pojo.person.Person;
@@ -174,9 +175,9 @@ class InstancioTest {
 
     @Test
     void integerStringMap() {
-        WithMap.IntegerString result = Instancio.of(WithMap.IntegerString.class).create();
-        assertThat(result.getMap()).isNotEmpty().hasSize(2);
-        assertThat(result.getMap().entrySet()).doesNotContainNull();
+        IntegerStringMap result = Instancio.of(IntegerStringMap.class).create();
+        assertThat(result.getMapField()).isNotEmpty().hasSize(2);
+        assertThat(result.getMapField().entrySet()).doesNotContainNull();
     }
 
     // FIXME
@@ -191,9 +192,9 @@ class InstancioTest {
 
     @Test
     void stringPersonMap() {
-        WithMap.StringPerson result = Instancio.of(WithMap.StringPerson.class).create();
-        assertThat(result.getMap()).isNotEmpty().hasSize(2);
-        assertThat(result.getMap().entrySet()).doesNotContainNull();
+        StringPersonMap result = Instancio.of(StringPersonMap.class).create();
+        assertThat(result.getMapField()).isNotEmpty().hasSize(2);
+        assertThat(result.getMapField().entrySet()).doesNotContainNull();
         System.out.println(result);
     }
 

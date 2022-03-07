@@ -92,6 +92,9 @@ public class FieldNode extends Node {
             return getCollectionElementTypeAsChildNode();
         }
 
+        if (Map.class.isAssignableFrom(field.getType())) {
+            return getCollectionElementTypeAsChildNode();
+        }
 
         final Package fieldPackage = actualFieldType.getPackage();
         if (fieldPackage == null || fieldPackage.getName().startsWith(JAVA_PKG_PREFIX)) {
