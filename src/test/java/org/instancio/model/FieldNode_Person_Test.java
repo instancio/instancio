@@ -3,6 +3,7 @@ package org.instancio.model;
 import org.instancio.pojo.person.Address;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Phone;
+import org.instancio.testsupport.tags.ModelTag;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
+@ModelTag
 class FieldNode_Person_Test {
 
     private final NodeContext nodeContext = new NodeContext(Collections.emptyMap());

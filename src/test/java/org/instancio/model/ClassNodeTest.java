@@ -1,7 +1,9 @@
 package org.instancio.model;
 
+import org.instancio.testsupport.tags.ModelTag;
 import org.junit.jupiter.api.Test;
 
+@ModelTag
 class ClassNodeTest {
 
 
