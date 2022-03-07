@@ -1,0 +1,13 @@
+*.iml
+*.bak
+*.out
+*.log
+*.attach_pid*
+NOTES.md
+
+.classpath
+.project
+.settings/
+.idea/
+.run/
+target/
