@@ -9,4 +9,5 @@ NOTES.md
 .project
 .settings/
 .idea/
+.run/
 target/
