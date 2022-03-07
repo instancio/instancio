@@ -5,6 +5,7 @@ import org.instancio.pojo.generics.MiscFields;
 import org.instancio.pojo.generics.container.Pair;
 import org.instancio.pojo.generics.container.Triplet;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
+import org.instancio.testsupport.tags.CreateTag;
 import org.instancio.testsupport.tags.GenericsTag;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +14,13 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@CreateTag
 @GenericsTag
-public class MiscFieldsGenTest {
+public class MiscFieldsGenerationTest {
 
     @Test
     void generate() {
-        final MiscFields result = Instancio.of(MiscFields.class)
+        final MiscFields<?, ?, ?> result = Instancio.of(MiscFields.class)
                 .withType(UUID.class, String.class, Long.class)
                 .create();
 

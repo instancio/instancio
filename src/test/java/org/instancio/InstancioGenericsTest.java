@@ -2,16 +2,7 @@ package org.instancio;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.pojo.generics.FooContainer;
-import org.instancio.pojo.generics.MiscFields;
-import org.instancio.pojo.generics.container.GenericContainer;
-import org.instancio.pojo.generics.container.GenericItem;
 import org.instancio.pojo.generics.container.GenericItemContainer;
-import org.instancio.pojo.generics.container.Pair;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.FooBarBazContainer;
-import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
 import org.instancio.pojo.person.Address;
 import org.junit.jupiter.api.Test;
 
@@ -21,16 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class InstancioGenericsTest {
-
-    // TODO
-    @Test
-    void miscFields() {
-        MiscFields<Long, String, Integer> result = Instancio.of(MiscFields.class)
-                .withType(Long.class, String.class, Integer.class)
-                .create();
-
-        System.out.println(result);
-    }
 
     @Test
     void address() {
@@ -43,17 +24,6 @@ public class InstancioGenericsTest {
             assertThat(phone.getCountryCode()).isNotBlank();
             assertThat(phone.getNumber()).isNotBlank();
         });
-    }
-
-    @Test
-    void fooContainer() {
-        FooContainer result = Instancio.of(FooContainer.class).create();
-
-        System.out.println(result);
-        assertThat(result).isNotNull();
-        assertThat(result.getItem()).isNotNull();
-        assertThat(result.getItem().getFooValue()).isNotNull().isInstanceOf(String.class);
-        assertThat(result.getItem().getOtherFooValue()).isNotNull();
     }
 
     @Test
@@ -72,41 +42,6 @@ public class InstancioGenericsTest {
         assertThat(result.getItem().getOtherFooValue()).as("Value was not set").isNull();
     }
 
-    // FIXME
-    @Test
-    void genericItemContainer() {
-        // NOTE Unbound type variables, so this will not work...
-        // Need a way to specify type variables, e.g.
-        //
-        // Instancio.of(GenericItemContainer.class)
-        //       .withTypes(Integer.class, String.class)
-        //       .create();
-        //
-        // If 'withTypes()' is omitted, should through an error saying
-        // "unbound generic types. use `withTypes()` to specify the types"
-        GenericItemContainer<Integer, String> container = Instancio.of(GenericItemContainer.class)
-                .withType(Integer.class, String.class)
-                .create();
-        System.out.println(container);
-    }
-
-    @Test
-    void genericItem() {
-        GenericItem genericItem = Instancio.of(GenericItem.class)
-                .withType(String.class)
-                .create();
-
-        System.out.println(genericItem.toString());
-    }
-
-    @Test
-    void genericPair() {
-        Pair<String, Integer> genericItem = Instancio.of(Pair.class)
-                .withType(String.class, Integer.class)
-                .create();
-
-        System.out.println(genericItem.toString());
-    }
 
     @Test
     void unboundTypeVariablesErrorMessage() {
@@ -121,58 +56,5 @@ public class InstancioGenericsTest {
                         " Please specify all type parameters using 'withType(Class... types)`");
     }
 
-    @Test
-    void genericContainer() {
-        GenericContainer<String> result = Instancio.of(GenericContainer.class)
-                .withType(String.class)
-                .create();
-
-        System.out.println(result);
-
-        assertThat(result.getValue()).isInstanceOf(String.class);
-        assertThat(result.getList()).isNotEmpty().hasOnlyElementsOfType(String.class);
-        assertThat(result.getArray()).isNotEmpty().hasOnlyElementsOfType(String.class);
-    }
-
-    @Test
-    void fooBarBazContainer() {
-
-        FooBarBazContainer result = Instancio.of(FooBarBazContainer.class).create();
-        assertThat(result).isNotNull();
-
-        System.out.println(result);
-
-        final Foo<Bar<Baz<String>>> item = result.getItem();
-        assertThat(item).isNotNull();
-        assertThat(item.getOtherFooValue()).isExactlyInstanceOf(Object.class);
-
-        final Bar<Baz<String>> fooValue = item.getFooValue();
-        assertThat(fooValue).isExactlyInstanceOf(Bar.class);
-        assertThat(fooValue.getOtherBarValue()).isExactlyInstanceOf(Object.class);
-
-        final Baz<String> barValue = fooValue.getBarValue();
-        assertThat(barValue).isExactlyInstanceOf(Baz.class);
-        assertThat(barValue.getBazValue()).isInstanceOf(String.class);
-    }
-
-    @Test
-    void listOfOuterMidInnerString() {
-        ListOfOuterMidInnerString result = Instancio.of(ListOfOuterMidInnerString.class).create();
-        assertThat(result).isNotNull();
-        assertThat(result.getListOfOuter()).isNotEmpty();
-
-        System.out.println(result);
-
-        result.getListOfOuter().forEach(outer -> {
-            assertThat(outer).isNotNull();
-            assertThat(outer.getOuterList()).isNotEmpty();
-
-            outer.getOuterList().forEach(mid -> {
-                assertThat(mid).isNotNull();
-                assertThat(mid.getMidList()).isNotEmpty();
-            });
-        });
-
-    }
 
 }
