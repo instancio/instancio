@@ -27,7 +27,12 @@ class FieldNode_IntegerStringMap_Test {
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2);
 
-        final ClassNode integerClassNode = (ClassNode) mapFieldNode.getChild(it -> it.getKlass() == Integer.class)
+        final ClassNode integerClassNode = (ClassNode) mapFieldNode
+                .getChildren().stream()
+                .filter(it -> it instanceof ClassNode)
+                .map(it -> (ClassNode) it)
+                .filter(it -> it.getKlass() == Integer.class)
+                .findAny()
                 .orElseGet(() -> fail("Expected Integer child node"));
 
         assertClassNode(integerClassNode)
@@ -36,8 +41,7 @@ class FieldNode_IntegerStringMap_Test {
                 .hasParent(mapFieldNode)
                 .hasNoChildren();
 
-        final ClassNode stringClassNode = (ClassNode) mapFieldNode.getChild(it -> it.getKlass() == String.class)
-                .orElseGet(() -> fail("Expected String child node"));
+        final ClassNode stringClassNode = NodeUtil.getChildClassNode(mapFieldNode, String.class);
 
         assertClassNode(stringClassNode)
                 .hasKlass(String.class)

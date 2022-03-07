@@ -13,7 +13,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 // ClassNode can only have type variables
-public class ClassNode extends Node {
+public class ClassNode extends BaseNode {
     private static final Logger LOG = LoggerFactory.getLogger(ClassNode.class);
 
     public ClassNode(final NodeContext nodeContext,

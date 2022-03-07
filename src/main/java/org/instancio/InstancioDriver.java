@@ -3,6 +3,7 @@ package org.instancio;
 import org.instancio.generator.GeneratorMap;
 import org.instancio.model.ClassNode;
 import org.instancio.model.FieldNode;
+import org.instancio.model.MapNode;
 import org.instancio.model.Node;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
@@ -13,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +24,6 @@ import java.util.Optional;
 import java.util.Queue;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 class InstancioDriver {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioDriver.class);
@@ -84,7 +82,7 @@ class InstancioDriver {
 //                } else if (Map.class.isAssignableFrom(fieldType)) {
 //                    queue.addAll(populateMap(fieldOwner, field, (Map<Object, Object>) fieldValue));
 //                }
-            } else {
+            } else if (node instanceof ClassNode) {
                 final ClassNode classNode = (ClassNode) node; // FIXME
                 final FieldNode parent = (FieldNode) classNode.getParent();
 
@@ -102,31 +100,32 @@ class InstancioDriver {
                                 .map(it -> new CreateItem(it, createdValue))
                                 .collect(toList()));
                     }
-                } else if (Map.class.isAssignableFrom(parent.getActualFieldType())) {
-                    final Map<Object, Object> owner = (Map<Object, Object>) createItem.getOwner();
-
-                    final Map<Type, TypeVariable<?>> reverseTypeMap = parent.getTypeMap()
-                            .entrySet().stream()
-                            .collect(toMap(Map.Entry::getValue, Map.Entry::getKey));
-
-                    final TypeVariable<?> typeVariable = reverseTypeMap.get(classNode.getKlass());
-
-                    for (int i = 0; i < 2; i++) {
-                        final GeneratorResult<?> result = generatorFacade.createInstanceOfClass(classNode.getKlass(), owner);
-
-                        final Object createdValue = result.getValue();
-                        //owner.add(createdValue);
-                        //queue.addAll(result.getFieldsToEnqueue()); // XXX this child list is not complete!
-
-                        queue.addAll(classNode.getChildren().stream()
-                                .map(it -> new CreateItem(it, createdValue))
-                                .collect(toList()));
-                    }
-
                 }
+            } else if (node instanceof MapNode) {
+                final MapNode mapNode = (MapNode) node; // FIXME
+                final ClassNode keyNode = mapNode.getKeyNode();
+                final ClassNode valueNode = mapNode.getValueNode();
+
+                final Map<Object, Object> owner = (Map<Object, Object>) createItem.getOwner();
+
+                for (int i = 0; i < 2; i++) {
+                    final GeneratorResult<?> keyResult = generatorFacade.createInstanceOfClass(keyNode.getKlass(), owner);
+                    final Object mapEntryKey = keyResult.getValue();
+                    queue.addAll(keyNode.getChildren().stream()
+                            .map(it -> new CreateItem(it, mapEntryKey))
+                            .collect(toList()));
+
+                    final GeneratorResult<?> valueResult = generatorFacade.createInstanceOfClass(valueNode.getKlass(), owner);
+                    final Object mapEntryValue = valueResult.getValue();
+                    queue.addAll(valueNode.getChildren().stream()
+                            .map(it -> new CreateItem(it, mapEntryValue))
+                            .collect(toList()));
+
+                    owner.put(mapEntryKey, mapEntryValue);
+                }
+
             }
         }
-
         return (C) rootObject;
     }
 

@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.joining;
  *
  * </pre>
  */
-public class FieldNode extends Node {
+public class FieldNode extends BaseNode {
     private static final Logger LOG = LoggerFactory.getLogger(FieldNode.class);
 
     private static final String JAVA_PKG_PREFIX = "java";
@@ -93,7 +93,7 @@ public class FieldNode extends Node {
         }
 
         if (Map.class.isAssignableFrom(field.getType())) {
-            return getCollectionElementTypeAsChildNode();
+            return getMapKeyValueElementTypesAsChildNode();
         }
 
         final Package fieldPackage = actualFieldType.getPackage();
@@ -102,6 +102,59 @@ public class FieldNode extends Node {
         }
 
         return getDeclaredFieldsAsChildNodes();
+    }
+
+    private List<Node> getMapKeyValueElementTypesAsChildNode() {
+        LOG.debug("Getting collection element as child node: {}", field.getType());
+
+        final List<Node> childNodes = new ArrayList<>();
+
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) genericType;
+
+            final Type[] actualTypeArgs = pType.getActualTypeArguments();
+            final TypeVariable<?>[] typeVars = field.getType().getTypeParameters();
+
+            ClassNode keyNode = null;
+            ClassNode valueNode = null;
+
+            for (int i = 0; i < actualTypeArgs.length; i++) {
+                final Type actualTypeArg = actualTypeArgs[i];
+                final TypeVariable<?> typeVar = typeVars[i];
+                LOG.debug("actualTypeArg {}: {}, typeVar: {}", actualTypeArg.getClass().getSimpleName(), actualTypeArg, typeVar);
+                ClassNode node = null;
+
+                if (actualTypeArg instanceof Class) {
+                    node = new ClassNode(getNodeContext(), (Class<?>) actualTypeArg, null, this);
+
+                } else if (actualTypeArg instanceof ParameterizedType) {
+                    ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
+                    Class<?> actualRawType = (Class<?>) actualPType.getRawType();
+
+                    node = new ClassNode(getNodeContext(), actualRawType, actualPType, this);
+                } else if (actualTypeArg instanceof TypeVariable) {
+                    Type mappedType = typeMap.get(actualTypeArg);
+                    LOG.debug("actualTypeArg '{}' mpapped to '{}'", ((TypeVariable<?>) actualTypeArg).getName(), mappedType);
+                    if (mappedType instanceof Class) {
+                        node = new ClassNode(getNodeContext(), (Class<?>) mappedType, null, this);
+                    }
+                }
+
+                if (typeVar.getName().equals("K")) {
+                    keyNode = node;
+                } else {
+                    valueNode = node;
+                }
+            }
+
+            if (keyNode != null && valueNode != null) {
+                childNodes.add(new MapNode(getNodeContext(), keyNode, valueNode, this));
+            } else {
+                LOG.debug("Could not resolve Map key/value types.\nKey: {}\nValue:{}", keyNode, valueNode);
+            }
+        }
+
+        return childNodes;
     }
 
     // Collection element raw class + generic type (actual type arg)
@@ -361,7 +414,18 @@ public class FieldNode extends Node {
 
         if (getChildren() != null)
             s += " -> children: " + getChildren().stream()
-                    .map(it -> it instanceof FieldNode ? ((FieldNode) it).field.getName() : "ClassNode: " + it.getKlass())
+                    .map(it -> {
+                        if (it instanceof FieldNode) {
+                            return ((FieldNode) it).field.getName();
+                        }
+                        if (it instanceof ClassNode) {
+                            return "ClassNode: " + ((ClassNode) it).getKlass();
+                        }
+                        if (it instanceof MapNode) {
+                            return "MapNode";
+                        }
+                        return it.toString();
+                    })
                     .collect(joining(",")) + "\n";
 
         return s;
