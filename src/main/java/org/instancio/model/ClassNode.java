@@ -8,7 +8,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -35,9 +34,8 @@ public class ClassNode extends Node {
                     .map(field -> {
                         Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
                         LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
-                        return new FieldNode(
-                                nodeContext, field, field.getType(), passedOnGenericType, /* parent field */ null); // TODO set parent
-                    }) // XXX visited per root field node or share across all?
+                        return new FieldNode(nodeContext, field, field.getType(), passedOnGenericType, this);
+                    })
 
                     .collect(toList());
 

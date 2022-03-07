@@ -60,9 +60,9 @@ public class FieldNode extends Node {
             final Field field,
             Class<?> classDeclaringTheTypeVariable,
             final Type genericType,
-            final FieldNode parentFieldNode) {
+            final Node parent) {
 
-        super(nodeContext, field.getType(), genericType, parentFieldNode);
+        super(nodeContext, field.getType(), genericType, parent);
 
         this.field = Verify.notNull(field, "Field must not be null");
 
@@ -128,6 +128,13 @@ public class FieldNode extends Node {
 
                     Node node = new ClassNode(getNodeContext(), actualRawType, actualPType, this);
                     childNodes.add(node);
+                } else if (actualTypeArg instanceof TypeVariable) {
+                    Type mappedType = typeMap.get(actualTypeArg);
+                    LOG.debug("actualTypeArg '{}' mpapped to '{}'", ((TypeVariable<?>) actualTypeArg).getName(), mappedType);
+                    if (mappedType instanceof Class) {
+                        Node node = new ClassNode(getNodeContext(), (Class<?>) mappedType, null, this);
+                        childNodes.add(node);
+                    }
                 }
 
             }

@@ -96,8 +96,12 @@ class FieldNode_ListOfOuterMidInnerString_Test {
                 .hasActualFieldType(List.class)
                 .hasTypeMappedTo(getTypeVar(List.class, "E"), String.class)
                 .hasTypeMapWithSize(1) // 2
-                .hasNoChildren();
+                .hasChildrenOfSize(1);
 
+        final ClassNode listElementClassNode = (ClassNode) innerListFieldNode.getChildren().get(0);
 
+        assertThat(listElementClassNode.getKlass()).isEqualTo(String.class);
+        assertThat(listElementClassNode.getGenericType()).isNull();
+        assertThat(listElementClassNode.getChildren()).isEmpty();
     }
 }
