@@ -16,13 +16,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -121,7 +119,10 @@ public class FieldNode extends Node {
                 final TypeVariable<?> typeVar = typeVars[i];
                 LOG.debug("actualTypeArg {}: {}, typeVar: {}", actualTypeArg.getClass().getSimpleName(), actualTypeArg, typeVar);
 
-                if (actualTypeArg instanceof ParameterizedType) {
+                if (actualTypeArg instanceof Class) {
+                    Node node = new ClassNode(getNodeContext(), (Class<?>) actualTypeArg, null, this);
+                    childNodes.add(node);
+                } else if (actualTypeArg instanceof ParameterizedType) {
                     ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
                     Class<?> actualRawType = (Class<?>) actualPType.getRawType();
 
