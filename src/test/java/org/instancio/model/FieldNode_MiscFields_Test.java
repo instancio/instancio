@@ -37,7 +37,6 @@ class FieldNode_MiscFields_Test {
     void pairAPairIntegerString() {
         final FieldNode node = new FieldNode(nodeContext, ReflectionUtils.getField(MiscFields.class, "pairAPairIntegerString"));
 
-        System.out.println(node);
         assertFieldNode(node)
                 .hasActualFieldType(Pair.class)
                 .hasTypeMappedTo(getTypeVar(Pair.class, "L"), getTypeVar(MiscFields.class, "A"))

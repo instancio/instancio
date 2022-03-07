@@ -31,7 +31,7 @@ public class ClassNode extends Node {
             List<Node> children = Arrays.stream(klass.getDeclaredFields())
                     .filter(f -> !Modifier.isStatic(f.getModifiers()))
                     .map(field -> {
-                        Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getType());
+                        Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
                         LOG.debug("Pasing generic type to child field node: {}", passedOnGenericType);
                         return new FieldNode(
                                 nodeContext, field, field.getType(), passedOnGenericType, /* parent field */ null,

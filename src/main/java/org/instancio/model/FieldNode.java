@@ -27,6 +27,15 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
+/**
+ * <pre>
+ * To address:
+ *  - confusion between "this.genericType" and "this.field.getGenericType()".
+ *  -- When to use one vs the other?
+ *  -- rename this.genericType
+ *
+ * </pre>
+ */
 public class FieldNode extends Node {
     private static final Logger LOG = LoggerFactory.getLogger(FieldNode.class);
 
@@ -236,7 +245,7 @@ public class FieldNode extends Node {
 
     public FieldNode getChildByTypeParameter(final String typeParameter) {
         return getFieldNodeStream()
-                .filter(it -> Objects.equals(typeParameter, it.getGenericType().getTypeName()))
+                .filter(it -> Objects.equals(typeParameter, it.getField().getGenericType().getTypeName()))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException("No child with type parameter: " + typeParameter));
     }

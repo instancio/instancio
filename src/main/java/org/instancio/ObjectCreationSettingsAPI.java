@@ -3,7 +3,6 @@ package org.instancio;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.ValueGenerator;
 
-import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -73,6 +72,6 @@ public class ObjectCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
         InstancioContext context = new InstancioContext(
                 klass, exclusions, nullables, fieldValueGenerators, classValueGenerators, rootTypeMap);
         InstancioDriver driver = new InstancioDriver(context);
-        return driver.create(klass);
+        return driver.createClassEntryPoint(klass);
     }
 }

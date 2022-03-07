@@ -37,9 +37,9 @@ class InstancioDriver {
         this.generatorFacade = new GeneratorFacade(context);
     }
 
-    <C> C create(Class<C> klass) {
+    <C> C createClassEntryPoint(Class<C> rootClass) {
 
-        final GeneratorResult<C> rootResult = generatorFacade.createInstanceOfClass(klass, null);
+        final GeneratorResult<C> rootResult = generatorFacade.createInstanceOfClass(rootClass, null);
         final Object rootObject = rootResult.getValue();
 
         final Queue<CreateItem> queue = new ArrayDeque<>(rootResult.getFieldsToEnqueue());
