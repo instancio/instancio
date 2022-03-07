@@ -1,7 +1,9 @@
 package org.instancio;
 
 import org.instancio.generator.GeneratorMap;
+import org.instancio.model.ClassNode;
 import org.instancio.model.FieldNode;
+import org.instancio.model.Node;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
 import org.instancio.util.ReflectionUtils;
@@ -45,35 +47,60 @@ class InstancioDriver {
         final Queue<CreateItem> queue = new ArrayDeque<>(rootResult.getFieldsToEnqueue());
 
         while (!queue.isEmpty()) {
-            final CreateItem entry = queue.poll();
-            LOG.debug("-------------------\n\n-- {}\n", entry);
+            final CreateItem createItem = queue.poll();
+            LOG.debug("-------------------\n\n-- {}\n", createItem);
 
-            final FieldNode node = (FieldNode) entry.getNode(); // FIXME
-            final Field field = node.getField();
+            final Node node = createItem.getNode();
 
-            if (context.isExcluded(field) || Modifier.isStatic(field.getModifiers())) {
-                continue;
-            }
+            if (node instanceof FieldNode) {
+                final FieldNode fieldNode = (FieldNode) node; // FIXME
+                final Field field = fieldNode.getField();
 
-            final Object fieldOwner = entry.getOwner();
-            final Class<?> fieldType = field.getType();
+                if (context.isExcluded(field) || Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
 
-            // TODO test.. what does it mean to return null GeneratorResult
-            //
-            final GeneratorResult<?> generatorResult = generatorFacade.create(entry);
-            if (generatorResult == null)
-                continue;
+                final Object fieldOwner = createItem.getOwner();
+                final Class<?> fieldType = field.getType();
 
-            final Object fieldValue = generatorResult.getValue();
-            queue.addAll(generatorResult.getFieldsToEnqueue());
-            ReflectionUtils.setField(fieldOwner, field, fieldValue);
+                // TODO test.. what does it mean to return null GeneratorResult
+                //
+                final GeneratorResult<?> generatorResult = generatorFacade.create(createItem);
+                if (generatorResult == null)
+                    continue;
 
-            if (fieldType.isArray()) {
-                queue.addAll(populateArray(entry, fieldValue));
-            } else if (Collection.class.isAssignableFrom(fieldType)) {
-                queue.addAll(populateCollection(entry, (Collection<Object>) fieldValue));
-            } else if (Map.class.isAssignableFrom(fieldType)) {
-                queue.addAll(populateMap(fieldOwner, field, (Map<Object, Object>) fieldValue));
+                final Object fieldValue = generatorResult.getValue();
+                queue.addAll(generatorResult.getFieldsToEnqueue());
+                ReflectionUtils.setField(fieldOwner, field, fieldValue);
+
+                if (fieldType.isArray()) {
+                    queue.addAll(populateArray(createItem, fieldValue));
+                }
+//                else if (Collection.class.isAssignableFrom(fieldType)) {
+//                    queue.addAll(populateCollection(createItem, (Collection<Object>) fieldValue));
+//                } else if (Map.class.isAssignableFrom(fieldType)) {
+//                    queue.addAll(populateMap(fieldOwner, field, (Map<Object, Object>) fieldValue));
+//                }
+            } else {
+                final ClassNode classNode = (ClassNode) node; // FIXME
+                final FieldNode parent = (FieldNode) classNode.getParent();
+
+                if (Collection.class.isAssignableFrom(parent.getActualFieldType())) {
+                    final Collection<Object> owner = (Collection<Object>) createItem.getOwner();
+
+                    for (int i = 0; i < 2; i++) {
+                        final GeneratorResult<?> result = generatorFacade.createInstanceOfClass(classNode.getKlass(), owner);
+
+                        final Object createdValue = result.getValue();
+                        owner.add(createdValue);
+                        //queue.addAll(result.getFieldsToEnqueue()); // XXX this child list is not complete!
+
+                        queue.addAll(classNode.getChildren().stream()
+                                .map(it -> new CreateItem(it, createdValue))
+                                .collect(toList()));
+                    }
+                }
+
             }
         }
 
@@ -115,9 +142,13 @@ class InstancioDriver {
 
         final Class<?> collectionEntryClass = node.getCollectionType();
 
+        //final ClassNode collectionChild = (ClassNode) createItem.getNode().getChildren().get(0);
+
+
         for (int i = 0; i < 2; i++) {
 
             GeneratorResult<?> result = generatorFacade.createInstanceOfClass(collectionEntryClass, owner);
+            //GeneratorResult<?> result = generatorFacade.createInstanceOfClass(collectionChild.getKlass(), owner);
 
             collectionToPopulate.add(result.getValue());
             queueEntries.addAll(result.getFieldsToEnqueue());
