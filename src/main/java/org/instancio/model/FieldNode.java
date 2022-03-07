@@ -55,7 +55,6 @@ public class FieldNode extends Node {
     private final Type genericType;
 
     private final List<PType> nestedTypes = new ArrayList<>();
-    private final Set<FieldNode> visited;
 
 
     public FieldNode(
@@ -63,8 +62,7 @@ public class FieldNode extends Node {
             final Field field,
             Class<?> classDeclaringTheTypeVariable,
             final Type genericType,
-            final FieldNode parentFieldNode,
-            final Set<FieldNode> visited) {
+            final FieldNode parentFieldNode) {
 
         super(nodeContext, field.getType(), genericType, parentFieldNode);
 
@@ -82,13 +80,13 @@ public class FieldNode extends Node {
         this.classDeclaringTheTypeVariable = classDeclaringTheTypeVariable;
         this.genericType = genericType;
         this.typeMap = getTypeMap(classDeclaringTheTypeVariable, genericType);
-        this.visited = visited;
 
+        nodeContext.visited(field);
         setChildren(makeChildren());
     }
 
     public FieldNode(NodeContext nodeContext, Field field) {
-        this(nodeContext, field, field.getType(), field.getGenericType(), /* parent = */ null, new HashSet<>());
+        this(nodeContext, field, field.getType(), field.getGenericType(), /* parent = */ null); // TODO set parent
     }
 
     private List<Node> makeChildren() {
@@ -158,11 +156,13 @@ public class FieldNode extends Node {
                     .map(PType::getParameterizedType);
 
             Type genericType = classParameterizedTypePType.orElse(childField.getGenericType());
-            FieldNode childNode = new FieldNode(getNodeContext(), childField, resolvedTypeArg, genericType, this, visited);
-            if (!visited.contains(childNode)) {
+
+            if (getNodeContext().isUnvisited(childField)) {
+                FieldNode childNode = new FieldNode(getNodeContext(), childField, resolvedTypeArg, genericType, this);
                 childNodes.add(childNode);
-                visited.add(childNode);
+                getNodeContext().visited(childField);
             }
+
         }
 
         return childNodes;

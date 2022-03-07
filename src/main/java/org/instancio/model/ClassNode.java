@@ -31,12 +31,12 @@ public class ClassNode extends Node {
 
             List<Node> children = Arrays.stream(klass.getDeclaredFields())
                     .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                    .filter(nodeContext::isUnvisited)
                     .map(field -> {
                         Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
-                        LOG.debug("Pasing generic type to child field node: {}", passedOnGenericType);
+                        LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
                         return new FieldNode(
-                                nodeContext, field, field.getType(), passedOnGenericType, /* parent field */ null,
-                                new HashSet<>());
+                                nodeContext, field, field.getType(), passedOnGenericType, /* parent field */ null); // TODO set parent
                     }) // XXX visited per root field node or share across all?
 
                     .collect(toList());
