@@ -18,29 +18,31 @@ import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 @ModelTag
 class FieldNode_GenericItemContainer_Test {
 
+    private static final Class<GenericItemContainer> ROOT_CLASS = GenericItemContainer.class;
+
     private NodeContext nodeContext;
 
     @BeforeEach
     void setUp() {
         Map<TypeVariable<?>, Class<?>> typeMap = new HashMap<>();
-        typeMap.put(getTypeVar(GenericItemContainer.class, "X"), String.class);
-        typeMap.put(getTypeVar(GenericItemContainer.class, "Y"), LocalDateTime.class);
+        typeMap.put(getTypeVar(ROOT_CLASS, "X"), String.class);
+        typeMap.put(getTypeVar(ROOT_CLASS, "Y"), LocalDateTime.class);
 
         nodeContext = new NodeContext(typeMap);
     }
 
     @Test
-    void itemValueL() {
-        final String rootField = "itemValueL";
-        final FieldNode node = new FieldNode(nodeContext, ReflectionUtils.getField(GenericItemContainer.class, rootField));
+    void itemValueX() {
+        final String rootField = "itemValueX";
+        final FieldNode node = new FieldNode(nodeContext, ReflectionUtils.getField(ROOT_CLASS, rootField));
 
         assertFieldNode(node)
                 .hasFieldName(rootField)
                 .hasActualFieldType(GenericItem.class)
-                .hasTypeMappedTo(getTypeVar(GenericItem.class, "K"), getTypeVar(GenericItemContainer.class, "X"))
-                .hasTypeMappedTo(getTypeVar(GenericItemContainer.class, "X"), String.class)
+                .hasTypeMappedTo(getTypeVar(GenericItem.class, "K"), getTypeVar(ROOT_CLASS, "X"))
+                .hasTypeMappedTo(getTypeVar(ROOT_CLASS, "X"), String.class)
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(1);
-
     }
+
 }

@@ -4,7 +4,6 @@ import org.instancio.Instancio;
 import org.instancio.pojo.generics.container.GenericItem;
 import org.instancio.pojo.generics.container.GenericItemContainer;
 import org.instancio.pojo.generics.container.Pair;
-import org.instancio.testsupport.Constants;
 import org.instancio.testsupport.tags.CreateTag;
 import org.instancio.testsupport.tags.GenericsTag;
 import org.junit.jupiter.api.Test;
@@ -28,17 +27,11 @@ public class GenericItemContainerGenerationTest {
 
         System.out.println(result);
 
-        assertThat(result.getItemValueL()).isInstanceOf(GenericItem.class);
-        assertThat(result.getItemArrayL())
-                .hasSize(Constants.ARRAY_SIZE)
-                .isInstanceOf(GenericItem[].class)
-                .hasOnlyElementsOfType(Integer.class);
+        assertThat(result.getItemValueX()).isInstanceOf(GenericItem.class);
+        assertThat(result.getItemListX()).isInstanceOf(List.class);
 
-        assertThat(result.getItemListL()).isInstanceOf(List.class);
-
-        assertThat(result.getItemValueR()).isInstanceOf(GenericItem.class);
-        assertThat(result.getItemArrayR()).isInstanceOf(GenericItem[].class);
-        assertThat(result.getItemListR()).isInstanceOf(List.class);
+        assertThat(result.getItemValueY()).isInstanceOf(GenericItem.class);
+        assertThat(result.getItemListY()).isInstanceOf(List.class);
 
         assertThat(result.getPairValue()).isInstanceOf(Pair.class);
         assertThat(result.getPairArray()).isInstanceOf(Pair[].class);

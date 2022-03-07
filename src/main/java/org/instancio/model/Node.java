@@ -36,4 +36,12 @@ public abstract class Node {
         return this.nodeContext.getRootTypeMap();
     }
 
+    // TODO delete after testing
+    public void print() {
+        System.out.println("-----------------------------------------");
+        System.out.println(this);
+        System.out.println(" ----> num children: " + getChildren().size());
+        getChildren().forEach(Node::print);
+    }
+
 }

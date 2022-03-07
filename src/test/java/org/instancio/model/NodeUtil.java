@@ -11,6 +11,14 @@ public class NodeUtil {
                 .filter(it -> it.getKlass() == classToMatch)
                 .findAny()
                 .orElseGet(() -> fail("Expected {} child node", classToMatch.getSimpleName()));
+    }
 
+    static FieldNode getChildFieldNode(Node parent, String fieldName) {
+        return parent.getChildren().stream()
+                .filter(it -> it instanceof FieldNode)
+                .map(it -> (FieldNode) it)
+                .filter(it -> it.getField().getName().equals(fieldName))
+                .findAny()
+                .orElseGet(() -> fail("Expected child field node '{}' ", fieldName));
     }
 }

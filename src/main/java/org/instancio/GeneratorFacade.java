@@ -69,7 +69,11 @@ class GeneratorFacade {
             final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
             final Object arrayObject = generator.generate();
 
-            return new GeneratorResult<>((C) arrayObject, Collections.emptyList()); // XXX pass in type map
+            List<CreateItem> fields = node.getChildren().stream()
+                    .map(n -> new CreateItem(n, arrayObject))
+                    .collect(toList());
+
+            return new GeneratorResult<>((C) arrayObject, fields);
         }
 
         final ValueGenerator<?> generator = generatorMap.get(actualFieldType);
@@ -123,8 +127,7 @@ class GeneratorFacade {
             return null;
         }
 
-
-        final ClassNode classNode = new ClassNode(new NodeContext(context.getRootTypeMap()), klass);
+        final ClassNode classNode = ClassNode.createRootNode(new NodeContext(context.getRootTypeMap()), klass);
 
         final C value;
 

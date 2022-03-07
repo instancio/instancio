@@ -10,15 +10,13 @@ import java.util.List;
 @Getter
 @Setter
 public class GenericItemContainer<X, Y> {
-    // item L
-    private GenericItem<X> itemValueL;
-    private GenericItem<X>[] itemArrayL;
-    private List<GenericItem<X>> itemListL;
+    // item X
+    private GenericItem<X> itemValueX;
+    private List<GenericItem<X>> itemListX;
 
-    // item R
-    private GenericItem<X> itemValueR;
-    private GenericItem<X>[] itemArrayR;
-    private List<GenericItem<X>> itemListR;
+    // item Y
+    private GenericItem<Y> itemValueY;
+    private List<GenericItem<Y>> itemListY;
 
     // pair
     private Pair<X, Y> pairValue;

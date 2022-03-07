@@ -7,11 +7,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Getter
 @Setter
-public class GenericItem<K> {
-    private K value;
+public class GenericArrayContainer<X, Y> {
 
-    @Override
+    private GenericItem<X>[] itemArrayX;
+
+    private GenericItem<Y>[] itemArrayY;
+
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }

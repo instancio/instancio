@@ -26,27 +26,25 @@ public class ClassNode extends BaseNode {
         if (klass.getPackage() == null || klass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             setChildren(Collections.emptyList());
         } else {
-
-
-            List<Node> children = Arrays.stream(klass.getDeclaredFields())
-                    .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                    .filter(nodeContext::isUnvisited)
-                    .map(field -> {
-                        Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
-                        LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
-                        return new FieldNode(nodeContext, field, field.getType(), passedOnGenericType, this);
-                    })
-
-                    .collect(toList());
-
+            List<Node> children = makeChildren(nodeContext, klass, genericType);
             setChildren(children);
         }
     }
 
-    public ClassNode(final NodeContext nodeContext,
-                     final Class<?> klass) {
+    private List<Node> makeChildren(NodeContext nodeContext, Class<?> klass, Type genericType) {
+        return Arrays.stream(klass.getDeclaredFields())
+                .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                .filter(nodeContext::isUnvisited)
+                .map(field -> {
+                    Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
+                    LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
+                    return new FieldNode(nodeContext, field, field.getType(), passedOnGenericType, this);
+                })
+                .collect(toList());
+    }
 
-        this(nodeContext, klass, null, null);
+    public static ClassNode createRootNode(final NodeContext nodeContext, final Class<?> klass) {
+        return new ClassNode(nodeContext, klass, null, null);
     }
 
 
