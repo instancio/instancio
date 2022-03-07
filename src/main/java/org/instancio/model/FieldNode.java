@@ -50,7 +50,6 @@ public class FieldNode extends Node {
     private final Class<?> actualFieldType;
     private final String[] typeVariables;
     private final Map<TypeVariable<?>, Type> typeMap;
-    private final FieldNode parentFieldNode;  // TODO delete
 
     private final Class<?> classDeclaringTheTypeVariable; // e.g. List<E> => List.class (declares E)
     private final Type genericType;
@@ -67,7 +66,7 @@ public class FieldNode extends Node {
             final FieldNode parentFieldNode,
             final Set<FieldNode> visited) {
 
-        super(nodeContext, field.getType(), genericType);
+        super(nodeContext, field.getType(), genericType, parentFieldNode);
 
         this.field = Verify.notNull(field, "Field must not be null");
 
@@ -82,7 +81,6 @@ public class FieldNode extends Node {
         this.typeVariables = getTypeVariables(field);
         this.classDeclaringTheTypeVariable = classDeclaringTheTypeVariable;
         this.genericType = genericType;
-        this.parentFieldNode = parentFieldNode;
         this.typeMap = getTypeMap(classDeclaringTheTypeVariable, genericType);
         this.visited = visited;
 
@@ -129,7 +127,7 @@ public class FieldNode extends Node {
                     ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
                     Class<?> actualRawType = (Class<?>) actualPType.getRawType();
 
-                    Node node = new ClassNode(getNodeContext(), actualRawType, actualPType);
+                    Node node = new ClassNode(getNodeContext(), actualRawType, actualPType, this);
                     childNodes.add(node);
                 }
 

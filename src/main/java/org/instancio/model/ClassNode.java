@@ -19,9 +19,10 @@ public class ClassNode extends Node {
 
     public ClassNode(final NodeContext nodeContext,
                      final Class<?> klass,
-                     final Type genericType) {
+                     final Type genericType,
+                     final Node parent) {
 
-        super(nodeContext, klass, genericType);
+        super(nodeContext, klass, genericType, parent);
 
         if (klass.getPackage() == null || klass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             setChildren(Collections.emptyList());
@@ -47,7 +48,7 @@ public class ClassNode extends Node {
     public ClassNode(final NodeContext nodeContext,
                      final Class<?> klass) {
 
-        this(nodeContext, klass, null);
+        this(nodeContext, klass, null, null);
     }
 
 

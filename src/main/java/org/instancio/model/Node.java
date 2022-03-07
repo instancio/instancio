@@ -13,16 +13,19 @@ public class Node {
     private final NodeContext nodeContext;
     private final Class<?> klass;
     private final Type genericType;
+    private final Node parent;
     private List<Node> children;
 
     public Node(
             final NodeContext nodeContext,
             final Class<?> klass,
-            final Type genericType) {
+            final Type genericType,
+            final Node parent) {
 
         this.nodeContext = nodeContext;
         this.klass = klass;
         this.genericType = genericType;
+        this.parent = parent;
     }
 
     public NodeContext getNodeContext() {
@@ -35,6 +38,10 @@ public class Node {
 
     public Type getGenericType() {
         return genericType;
+    }
+
+    public Node getParent() {
+        return parent;
     }
 
     public List<Node> getChildren() {
