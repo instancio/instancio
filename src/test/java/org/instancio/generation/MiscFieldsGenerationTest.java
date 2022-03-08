@@ -7,6 +7,7 @@ import org.instancio.pojo.generics.container.Triplet;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
+import org.instancio.testsupport.Constants;
 import org.instancio.testsupport.tags.CreateTag;
 import org.instancio.testsupport.tags.GenericsTag;
 import org.junit.jupiter.api.Test;
@@ -53,17 +54,17 @@ public class MiscFieldsGenerationTest {
         assertThat(list)
                 // List<Foo>
                 .isInstanceOf(List.class)
-                .hasSize(2)
+                .hasSize(Constants.COLLECTION_SIZE)
                 .hasOnlyElementsOfType(Foo.class)
                 .allSatisfy(foo -> assertThat(foo.getFooValue())
                         // List<Bar>
                         .isInstanceOf(List.class)
-                        .hasSize(2)
+                        .hasSize(Constants.COLLECTION_SIZE)
                         .hasOnlyElementsOfType(Bar.class)
                         .allSatisfy(bar -> assertThat(bar.getBarValue())
                                 // List<Baz>
                                 .isInstanceOf(List.class)
-                                .hasSize(2)
+                                .hasSize(Constants.COLLECTION_SIZE)
                                 .hasOnlyElementsOfType(Baz.class)
                                 .allSatisfy(str -> assertThat(str)
                                         .isInstanceOf(String.class))));
@@ -93,19 +94,20 @@ public class MiscFieldsGenerationTest {
     }
 
     private void assertArrayOfInts(MiscFields<?, ?, ?> result) {
-        assertThat(result.getArrayOfInts()).isInstanceOf(int[].class).hasSize(2);
+        assertThat(result.getArrayOfInts()).isInstanceOf(int[].class)
+                .hasSize(Constants.ARRAY_SIZE);
     }
 
     private void assertArrayOfCs(MiscFields<?, ?, ?> result) {
         assertThat(result.getArrayOfCs()).isInstanceOf(Long[].class)
-                .hasSize(2)
+                .hasSize(Constants.ARRAY_SIZE)
                 .hasOnlyElementsOfType(Long.class)
                 .doesNotContainNull();
     }
 
     private void assertListOfBazStrings(MiscFields<?, ?, ?> result) {
         assertThat(result.getListOfBazStrings()).isInstanceOf(List.class)
-                .hasSize(2)
+                .hasSize(Constants.COLLECTION_SIZE)
                 .hasOnlyElementsOfType(Baz.class)
                 .allSatisfy(baz ->
                         assertThat(baz.getBazValue()).isInstanceOf(String.class));
@@ -113,7 +115,7 @@ public class MiscFieldsGenerationTest {
 
     private void assertListOfCs(MiscFields<?, ?, ?> result) {
         assertThat(result.getListOfCs()).isInstanceOf(List.class)
-                .hasSize(2)
+                .hasSize(Constants.COLLECTION_SIZE)
                 .hasOnlyElementsOfType(Long.class);
     }
 
@@ -160,7 +162,7 @@ public class MiscFieldsGenerationTest {
         });
 
         assertThat(triplet.getRight()).isInstanceOf(List.class)
-                .hasSize(2)
+                .hasSize(Constants.COLLECTION_SIZE)
                 .hasOnlyElementsOfType(Long.class);
     }
 

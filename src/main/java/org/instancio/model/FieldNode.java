@@ -441,7 +441,7 @@ public class FieldNode extends BaseNode {
     }
 
     @Override
-    String getNodeName() {
+    public String getNodeName() {
         return String.format("FieldNode[%s]", field);
     }
 

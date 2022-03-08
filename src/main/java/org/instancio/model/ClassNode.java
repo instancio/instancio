@@ -51,7 +51,7 @@ public class ClassNode extends BaseNode {
     }
 
     @Override
-    String getNodeName() {
+    public String getNodeName() {
         return String.format("ClassNode[%s, %s]", getKlass().getName(), getGenericType());
     }
 

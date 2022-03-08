@@ -15,7 +15,7 @@ public abstract class Node {
     // TODO delete.. tmp method
     abstract List<Node> collectChildren();
 
-    abstract String getNodeName();
+    public abstract String getNodeName();
 
     public Node(final NodeContext nodeContext, final Node parent) {
         this.nodeContext = nodeContext;

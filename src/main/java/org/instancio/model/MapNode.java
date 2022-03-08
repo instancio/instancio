@@ -68,7 +68,7 @@ public class MapNode extends Node {
     }
 
     @Override
-    String getNodeName() {
+    public String getNodeName() {
         return String.format("MapNode[%s, %s]", keyNode.getNodeName(), valueNode.getNodeName());
     }
 

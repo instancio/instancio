@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.instancio.testsupport.asserts.ClassNodeAssert.assertClassNode;
 import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
@@ -42,12 +43,19 @@ class FieldNode_GenericContainer_Test {
     @Test
     void array() {
         final String rootField = "array";
-        final FieldNode node = new FieldNode(nodeContext, ReflectionUtils.getField(GenericContainer.class, rootField));
+        final FieldNode arrayNode = new FieldNode(nodeContext, ReflectionUtils.getField(GenericContainer.class, rootField));
 
-        assertFieldNode(node)
+        assertFieldNode(arrayNode)
                 .hasFieldName(rootField)
                 .hasActualFieldType(Object[].class)
                 .hasEmptyTypeMap()
+                .hasChildrenOfSize(1);
+
+        final ClassNode stringClassNode = (ClassNode) arrayNode.getChildren().get(0);
+
+        assertClassNode(stringClassNode)
+                .hasParent(arrayNode)
+                .hasKlass(String.class)
                 .hasNoChildren();
     }
 
