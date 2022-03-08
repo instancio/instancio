@@ -1,7 +1,6 @@
 package org.instancio.model;
 
 import org.instancio.util.ObjectUtils;
-import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -468,7 +467,6 @@ public class FieldNode extends BaseNode {
         String s = "";
         s += "Field name: '" + field.getName() + "' " + field.getType().getSimpleName() + ", actual type: " + actualFieldType.getSimpleName() + "\n"
                 + " -> typeVars: " + Arrays.toString(typeVariables) + "\n"
-                + " -> pTypes: " + ReflectionUtils.getParameterizedTypes(field) + "\n"
                 + " -> typeName: " + getTypeName() + "\n"
                 + " -> typeMap: " + typeMap + "\n"
                 + " -> nestedTypes: " + nestedTypes + "\n"

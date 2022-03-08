@@ -15,12 +15,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Queue;
 
 import static java.util.stream.Collectors.toList;
@@ -134,82 +131,6 @@ class InstancioDriver {
             }
         }
         return (C) rootObject;
-    }
-
-    private List<CreateItem> populateArray(CreateItem createItem, Object array) {
-        if (array == null || Array.getLength(array) == 0) {
-            return Collections.emptyList();
-        }
-        final Object owner = createItem.getOwner();
-        final FieldNode node = (FieldNode) createItem.getNode();
-        final Class<?> componentType = node.getArrayType();
-
-        List<CreateItem> queueEntries = new ArrayList<>();
-        for (int i = 0; i < Array.getLength(array); i++) {
-            GeneratorResult<?> generatorResult = generatorFacade.createInstanceOfClass(componentType, owner);
-            Array.set(array, i, generatorResult.getValue());
-            queueEntries.addAll(generatorResult.getFieldsToEnqueue());
-        }
-        return queueEntries;
-    }
-
-    private List<CreateItem> populateCollection(CreateItem createItem, Collection<Object> collectionToPopulate) {
-        if (collectionToPopulate == null) {
-            return Collections.emptyList();
-        }
-
-        final Object owner = createItem.getOwner();
-        final FieldNode node = (FieldNode) createItem.getNode(); // FIXME
-
-        final List<CreateItem> nextNodes = node.getChildren()
-                .stream()
-                .map(n -> new CreateItem(n, collectionToPopulate))
-                .collect(toList());
-
-
-        final List<CreateItem> queueEntries = new ArrayList<>();
-
-        final Class<?> collectionEntryClass = node.getCollectionType();
-
-        //final ClassNode collectionChild = (ClassNode) createItem.getNode().getChildren().get(0);
-
-
-        for (int i = 0; i < 2; i++) {
-
-            GeneratorResult<?> result = generatorFacade.createInstanceOfClass(collectionEntryClass, owner);
-            //GeneratorResult<?> result = generatorFacade.createInstanceOfClass(collectionChild.getKlass(), owner);
-
-            collectionToPopulate.add(result.getValue());
-            queueEntries.addAll(result.getFieldsToEnqueue());
-            //queueEntries.addAll(nextNodes);
-        }
-
-        return queueEntries;
-    }
-
-    private List<CreateItem> populateMap(Object owner, Field mapField, Map<Object, Object> map) {
-        if (map == null) {
-            return Collections.emptyList();
-        }
-
-        final Optional<Pair<Class<?>, Class<?>>> typeClassOpt = ReflectionUtils.getMapType(mapField);
-        final List<CreateItem> queueEntries = new ArrayList<>();
-
-        if (typeClassOpt.isPresent()) {
-            final Class<?> keyClass = typeClassOpt.get().getLeft();
-            final Class<?> valueClass = typeClassOpt.get().getRight();
-
-            for (int i = 0; i < 2; i++) {
-                final GeneratorResult<?> keyResult = generatorFacade.createInstanceOfClass(keyClass, owner);
-                final GeneratorResult<?> valueResult = generatorFacade.createInstanceOfClass(valueClass, owner);
-
-                map.put(keyResult.getValue(), valueResult.getValue());
-                queueEntries.addAll(keyResult.getFieldsToEnqueue());
-                queueEntries.addAll(valueResult.getFieldsToEnqueue());
-            }
-        }
-
-        return queueEntries;
     }
 
     <C> List<C> createList(Class<C> klass) {
