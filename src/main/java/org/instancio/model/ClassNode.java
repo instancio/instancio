@@ -51,18 +51,24 @@ public class ClassNode extends BaseNode {
     }
 
     @Override
+    String getNodeName() {
+        return String.format("ClassNode[%s, %s]", getKlass().getName(), getGenericType());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
         ClassNode other = (ClassNode) o;
         return Objects.equals(this.getKlass(), other.getKlass())
-                && Objects.equals(this.getGenericType(), other.getGenericType());
+                && Objects.equals(this.getGenericType(), other.getGenericType())
+                && Objects.equals(this.getParent().getNodeName(), other.getParent().getNodeName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKlass(), getGenericType());
+        return Objects.hash(getKlass(), getGenericType(), getParent().getNodeName());
     }
 
     @Override
