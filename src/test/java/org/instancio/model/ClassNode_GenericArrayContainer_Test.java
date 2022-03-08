@@ -35,8 +35,6 @@ class ClassNode_GenericArrayContainer_Test {
     void classNode() {
         ClassNode rootNode = ClassNode.createRootNode(nodeContext, ROOT_CLASS);
 
-        rootNode.print();
-
         assertClassNode(rootNode)
                 .hasKlass(ROOT_CLASS)
                 .hasParent(null)

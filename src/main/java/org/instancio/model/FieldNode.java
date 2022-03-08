@@ -447,13 +447,14 @@ public class FieldNode extends BaseNode {
         if (this.getClass() != o.getClass()) return false;
         FieldNode other = (FieldNode) o;
         return Objects.equals(getActualFieldType(), other.getActualFieldType())
+                && Objects.equals(getParent(), other.getParent())
                 && Objects.equals(getGenericType(), other.getGenericType())
                 && Objects.equals(getField(), other.getField());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getActualFieldType(), getGenericType(), getField());
+        return Objects.hash(getActualFieldType(), getParent(), getGenericType(), getField());
     }
 
     @Override
