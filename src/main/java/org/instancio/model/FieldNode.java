@@ -78,16 +78,10 @@ public class FieldNode extends BaseNode {
         this.classDeclaringTheTypeVariable = classDeclaringTheTypeVariable;
         this.genericType = genericType;
         this.typeMap = getTypeMap(classDeclaringTheTypeVariable, genericType);
-
-        nodeContext.visited(field);
-        setChildren(makeChildren());
     }
 
-    public FieldNode(NodeContext nodeContext, Field field) {
-        this(nodeContext, field, field.getType(), field.getGenericType(), /* parent = */ null); // TODO set parent
-    }
-
-    private List<Node> makeChildren() {
+    @Override
+    List<Node> collectChildren() {
         if (Collection.class.isAssignableFrom(field.getType())) {
             return getCollectionElementTypeAsChildNode();
         }
@@ -96,12 +90,46 @@ public class FieldNode extends BaseNode {
             return getMapKeyValueElementTypesAsChildNode();
         }
 
+        if (field.getType().isArray()) {
+            return getArrayComponentTypeAsChildNode();
+        }
+
         final Package fieldPackage = actualFieldType.getPackage();
         if (fieldPackage == null || fieldPackage.getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList(); // Exclude JDK classes
         }
 
         return getDeclaredFieldsAsChildNodes();
+    }
+
+    public FieldNode(NodeContext nodeContext, Field field) {
+        this(nodeContext, field, field.getType(), field.getGenericType(), /* parent = */ null); // TODO set parent
+    }
+
+    private List<Node> getArrayComponentTypeAsChildNode() {
+        LOG.debug("Getting array component as child node: {}", field.getType());
+
+        final List<Node> childNodes = new ArrayList<>();
+
+        if (field.getGenericType() instanceof GenericArrayType) {
+            final GenericArrayType arrayType = (GenericArrayType) field.getGenericType();
+            Type compType = arrayType.getGenericComponentType();
+            if (compType instanceof TypeVariable) {
+                final Class<?> rawType = getRootTypeMap().get(compType);
+                ClassNode node = new ClassNode(getNodeContext(), rawType, null, this);
+                childNodes.add(node);
+            } else if (compType instanceof ParameterizedType) {
+                ParameterizedType pType = (ParameterizedType) compType;
+
+                Node node = new ClassNode(getNodeContext(), (Class<?>) pType.getRawType(), pType, this);
+                childNodes.add(node);
+            }
+        } else {
+            ClassNode node = new ClassNode(getNodeContext(), field.getType().getComponentType(), null, this);
+            childNodes.add(node);
+        }
+
+        return childNodes;
     }
 
     private List<Node> getMapKeyValueElementTypesAsChildNode() {
@@ -221,10 +249,10 @@ public class FieldNode extends BaseNode {
 
             Type genericType = classParameterizedTypePType.orElse(childField.getGenericType());
 
-            if (getNodeContext().isUnvisited(childField)) {
-                FieldNode childNode = new FieldNode(getNodeContext(), childField, resolvedTypeArg, genericType, this);
+            FieldNode childNode = new FieldNode(getNodeContext(), childField, resolvedTypeArg, genericType, this);
+            if (getNodeContext().isUnvisited(childNode)) {
                 childNodes.add(childNode);
-                getNodeContext().visited(childField);
+                getNodeContext().visited(childNode);
             }
 
         }
@@ -240,12 +268,31 @@ public class FieldNode extends BaseNode {
         return field.getName();
     }
 
+    // TODO clean up the mess
     public Class<?> getActualFieldType() {
         // XXX this.genericType or field.getGenericType()?
-        if (actualFieldType.equals(Object.class) && getRootTypeMap().containsKey(field.getGenericType())) {
-            // Handle fields like:
-            // class SomeClass<T> { T field; }
-            return getRootTypeMap().get(field.getGenericType());
+        if (actualFieldType.equals(Object.class)) {
+            Type mappedType = null;
+            if (typeMap.containsKey(field.getGenericType())) {
+
+                mappedType = typeMap.get(field.getGenericType());
+
+                if (mappedType instanceof Class) {
+                    return (Class<?>) mappedType;
+                }
+            }
+
+            if (getRootTypeMap().containsKey(mappedType)) {
+                return getRootTypeMap().get(mappedType);
+            }
+
+            if (getRootTypeMap().containsKey(field.getGenericType())) {
+                // Handle fields like:
+                // class SomeClass<T> { T field; }
+                return getRootTypeMap().get(field.getGenericType());
+            }
+
+
         }
         return actualFieldType;
     }
@@ -341,6 +388,11 @@ public class FieldNode extends BaseNode {
             return Collections.emptyMap();
         }
 
+        // FIXME test hack
+        if (genericType instanceof ParameterizedType) {
+            declaringClass = (Class<?>) ((ParameterizedType) genericType).getRawType();
+        }
+
         final Map<TypeVariable<?>, Type> map = new HashMap<>();
         final TypeVariable<?>[] typeVars = declaringClass.getTypeParameters();
 
@@ -389,22 +441,32 @@ public class FieldNode extends BaseNode {
     }
 
     @Override
+    String getNodeName() {
+        return String.format("FieldNode[%s]", field);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FieldNode)) return false;
-        FieldNode fieldNode = (FieldNode) o;
-        return field.equals(fieldNode.field) && actualFieldType.equals(fieldNode.actualFieldType);
+        if (o == null) return false;
+        if (this.getClass() != o.getClass()) return false;
+        FieldNode other = (FieldNode) o;
+
+        return Objects.equals(getActualFieldType(), other.getActualFieldType())
+                && Objects.equals(getParent().getNodeName(), other.getParent().getNodeName())
+                && Objects.equals(getGenericType(), other.getGenericType())
+                && Objects.equals(getField(), other.getField());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(field, actualFieldType);
+        return Objects.hash(getActualFieldType(), getParent().getNodeName(), getGenericType(), getField());
     }
 
     @Override
     public String toString() {
         String s = "";
-        s += "Field: " + field.getName() + " " + field.getType().getSimpleName() + ", actual type: " + actualFieldType.getSimpleName() + "\n"
+        s += "Field name: '" + field.getName() + "' " + field.getType().getSimpleName() + ", actual type: " + actualFieldType.getSimpleName() + "\n"
                 + " -> typeVars: " + Arrays.toString(typeVariables) + "\n"
                 + " -> pTypes: " + ReflectionUtils.getParameterizedTypes(field) + "\n"
                 + " -> typeName: " + getTypeName() + "\n"

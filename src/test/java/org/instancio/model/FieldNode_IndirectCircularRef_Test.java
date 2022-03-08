@@ -1,6 +1,7 @@
 package org.instancio.model;
 
 import org.instancio.pojo.circular.IndirectCircularRef;
+import org.instancio.testsupport.tags.ModelTag;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +9,7 @@ import java.util.Collections;
 
 import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
 
+@ModelTag
 class FieldNode_IndirectCircularRef_Test {
 
     private final NodeContext nodeContext = new NodeContext(Collections.emptyMap());

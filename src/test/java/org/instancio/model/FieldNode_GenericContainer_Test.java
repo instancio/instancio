@@ -1,6 +1,7 @@
 package org.instancio.model;
 
 import org.instancio.pojo.generics.container.GenericContainer;
+import org.instancio.testsupport.tags.ModelTag;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import java.util.Map;
 import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
+@ModelTag
 class FieldNode_GenericContainer_Test {
 
     private NodeContext nodeContext;

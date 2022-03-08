@@ -62,7 +62,6 @@ class InstancioDriver {
                 }
 
                 final Object fieldOwner = createItem.getOwner();
-                final Class<?> fieldType = field.getType();
 
                 // TODO test.. what does it mean to return null GeneratorResult
                 //
@@ -74,17 +73,25 @@ class InstancioDriver {
                 queue.addAll(generatorResult.getFieldsToEnqueue());
                 ReflectionUtils.setField(fieldOwner, field, fieldValue);
 
-                if (fieldType.isArray()) {
-                    queue.addAll(populateArray(createItem, fieldValue));
-                }
-//                else if (Collection.class.isAssignableFrom(fieldType)) {
-//                    queue.addAll(populateCollection(createItem, (Collection<Object>) fieldValue));
-//                } else if (Map.class.isAssignableFrom(fieldType)) {
-//                    queue.addAll(populateMap(fieldOwner, field, (Map<Object, Object>) fieldValue));
-//                }
             } else if (node instanceof ClassNode) {
                 final ClassNode classNode = (ClassNode) node; // FIXME
                 final FieldNode parent = (FieldNode) classNode.getParent();
+
+                if (parent.getField().getType().isArray()) {
+                    final Object owner = createItem.getOwner();
+
+                    for (int i = 0; i < 2; i++) {
+                        final GeneratorResult<?> result = generatorFacade.createInstanceOfClass(classNode.getKlass(), owner);
+
+                        final Object createdValue = result.getValue();
+                        Array.set(owner, i, createdValue);
+                        //queue.addAll(result.getFieldsToEnqueue()); // XXX this child list is not complete!
+
+                        queue.addAll(classNode.getChildren().stream()
+                                .map(it -> new CreateItem(it, createdValue))
+                                .collect(toList()));
+                    }
+                }
 
                 if (Collection.class.isAssignableFrom(parent.getActualFieldType())) {
                     final Collection<Object> owner = (Collection<Object>) createItem.getOwner();

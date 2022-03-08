@@ -1,6 +1,7 @@
 package org.instancio.model;
 
 import org.instancio.pojo.maps.IntegerStringMap;
+import org.instancio.testsupport.tags.ModelTag;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 
@@ -12,9 +13,10 @@ import static org.instancio.testsupport.asserts.ClassNodeAssert.assertClassNode;
 import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
+@ModelTag
 class FieldNode_IntegerStringMap_Test {
 
-    private NodeContext nodeContext = new NodeContext(Collections.emptyMap());
+    private final NodeContext nodeContext = new NodeContext(Collections.emptyMap());
 
     @Test
     void mapField() {

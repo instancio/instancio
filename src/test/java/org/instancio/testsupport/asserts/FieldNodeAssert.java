@@ -2,6 +2,7 @@ package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
 import org.instancio.model.FieldNode;
+import org.instancio.model.Node;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -18,6 +19,12 @@ public class FieldNodeAssert extends AbstractAssert<FieldNodeAssert, FieldNode> 
 
     public static FieldNodeAssert assertFieldNode(FieldNode actual) {
         return new FieldNodeAssert(actual);
+    }
+
+    public FieldNodeAssert hasParent(Node expected) {
+        isNotNull();
+        assertThat(actual.getParent()).isSameAs(expected);
+        return this;
     }
 
     public FieldNodeAssert hasFieldName(String expected) {

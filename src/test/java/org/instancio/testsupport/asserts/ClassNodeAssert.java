@@ -31,6 +31,13 @@ public class ClassNodeAssert extends AbstractAssert<ClassNodeAssert, ClassNode> 
         return this;
     }
 
+    public ClassNodeAssert hasGenericTypeName(String expected) {
+        isNotNull();
+        assertThat(actual.getGenericType()).isNotNull();
+        assertThat(actual.getGenericType().getTypeName()).isEqualTo(expected);
+        return this;
+    }
+
     public ClassNodeAssert hasParent(Node expected) {
         isNotNull();
         assertThat(actual.getParent()).isSameAs(expected);

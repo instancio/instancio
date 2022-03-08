@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -22,33 +23,53 @@ public class ClassNode extends BaseNode {
                      final Node parent) {
 
         super(nodeContext, klass, genericType, parent);
+    }
 
-        if (klass.getPackage() == null || klass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
-            setChildren(Collections.emptyList());
+    @Override
+    List<Node> collectChildren() {
+        if (getKlass().getPackage() == null || getKlass().getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
+            return Collections.emptyList();
         } else {
-
-
-            List<Node> children = Arrays.stream(klass.getDeclaredFields())
-                    .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                    .filter(nodeContext::isUnvisited)
-                    .map(field -> {
-                        Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
-                        LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
-                        return new FieldNode(nodeContext, field, field.getType(), passedOnGenericType, this);
-                    })
-
-                    .collect(toList());
-
-            setChildren(children);
+            return makeChildren(getNodeContext(), getKlass(), getGenericType());
         }
     }
 
-    public ClassNode(final NodeContext nodeContext,
-                     final Class<?> klass) {
-
-        this(nodeContext, klass, null, null);
+    private List<Node> makeChildren(NodeContext nodeContext, Class<?> klass, Type genericType) {
+        return Arrays.stream(klass.getDeclaredFields())
+                .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                .map(field -> {
+                    Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
+                    LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
+                    return new FieldNode(nodeContext, field, field.getType(), passedOnGenericType, this);
+                })
+                .filter(it -> getNodeContext().isUnvisited(it))
+                .collect(toList());
     }
 
+    public static ClassNode createRootNode(final NodeContext nodeContext, final Class<?> klass) {
+        return new ClassNode(nodeContext, klass, null, null);
+    }
+
+    @Override
+    String getNodeName() {
+        return String.format("ClassNode[%s, %s]", getKlass().getName(), getGenericType());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if (this.getClass() != o.getClass()) return false;
+        ClassNode other = (ClassNode) o;
+        return Objects.equals(this.getKlass(), other.getKlass())
+                && Objects.equals(this.getGenericType(), other.getGenericType())
+                && Objects.equals(this.getParent().getNodeName(), other.getParent().getNodeName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getKlass(), getGenericType(), getParent().getNodeName());
+    }
 
     @Override
     public String toString() {
