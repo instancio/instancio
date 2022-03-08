@@ -1,6 +1,5 @@
 package org.instancio.model;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.TypeVariable;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,7 +7,7 @@ import java.util.Set;
 
 public class NodeContext {
 
-    private final Set<Field> visited = new HashSet<>();
+    private final Set<Node> visited = new HashSet<>();
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
 
     public NodeContext(final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
@@ -19,11 +18,11 @@ public class NodeContext {
         return rootTypeMap;
     }
 
-    public void visited(final Field field) { // XXX use Nodes or Fields?
-        visited.add(field);
+    public void visited(final Node node) {
+        visited.add(node);
     }
 
-    public boolean isUnvisited(final Field field) {
-        return !visited.contains(field);
+    public boolean isUnvisited(final Node node) {
+        return !visited.contains(node);
     }
 }

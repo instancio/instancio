@@ -20,16 +20,16 @@ public class GenericArrayContainerGenerationTest {
                 .withType(Integer.class, String.class)
                 .create();
 
-        System.out.println(result);
-
         assertThat(result.getItemArrayX())
                 .hasSize(Constants.ARRAY_SIZE)
                 .isInstanceOf(GenericItem[].class)
-                .hasOnlyElementsOfType(Integer.class);
+                .hasOnlyElementsOfType(GenericItem.class)
+                .extracting(it -> assertThat(it.getValue()).isInstanceOf(Integer.class));
 
         assertThat(result.getItemArrayY())
                 .hasSize(Constants.ARRAY_SIZE)
                 .isInstanceOf(GenericItem[].class)
-                .hasOnlyElementsOfType(String.class);
+                .hasOnlyElementsOfType(GenericItem.class)
+                .extracting(it -> assertThat(it.getValue()).isInstanceOf(String.class));
     }
 }

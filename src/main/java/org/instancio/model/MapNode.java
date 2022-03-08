@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,12 +29,15 @@ public class MapNode extends Node {
 
         this.keyNode = keyNode;
         this.valueNode = valueNode;
+    }
 
+    @Override
+    List<Node> collectChildren() {
         // TODO MapNode children are redundant... verify and remove
         List<Node> children = new ArrayList<>();
         children.addAll(collectChildren(keyNode));
         children.addAll(collectChildren(valueNode));
-        setChildren(children);
+        return children;
         // -----
     }
 
@@ -46,12 +50,12 @@ public class MapNode extends Node {
 
         return Arrays.stream(klass.getDeclaredFields())
                 .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .filter(getNodeContext()::isUnvisited)
                 .map(field -> {
                     Type passedOnGenericType = ObjectUtils.defaultIfNull(node.getGenericType(), field.getGenericType());
                     LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
                     return new FieldNode(getNodeContext(), field, field.getType(), passedOnGenericType, this);
                 })
+                .filter(it -> getNodeContext().isUnvisited(it))
                 .collect(toList());
     }
 
@@ -62,6 +66,22 @@ public class MapNode extends Node {
     public ClassNode getValueNode() {
         return valueNode;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if (this.getClass() != o.getClass()) return false;
+        MapNode other = (MapNode) o;
+        return Objects.equals(this.getKeyNode(), other.getKeyNode())
+                && Objects.equals(this.getValueNode(), other.getValueNode());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getKeyNode(), getValueNode());
+    }
+
 
     @Override
     public String toString() {

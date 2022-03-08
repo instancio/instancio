@@ -2,7 +2,7 @@ package org.instancio.model;
 
 import java.lang.reflect.Type;
 
-public class BaseNode extends Node {
+abstract class BaseNode extends Node {
     static final String JAVA_PKG_PREFIX = "java";
 
     private final Class<?> klass;
@@ -19,7 +19,6 @@ public class BaseNode extends Node {
         this.klass = klass;
         this.genericType = genericType;
     }
-
 
     public Class<?> getKlass() {
         return klass;
