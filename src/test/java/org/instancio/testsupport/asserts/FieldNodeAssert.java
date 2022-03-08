@@ -42,14 +42,15 @@ public class FieldNodeAssert extends AbstractAssert<FieldNodeAssert, FieldNode> 
 
     public FieldNodeAssert hasTypeMapWithSize(int expected) {
         isNotNull();
-        assertThat(actual.getTypeMap()).hasSize(expected);
+        assertThat(actual.getTypeMap())
+                .as("Actual type map: %s", actual.getTypeMap())
+                .hasSize(expected);
         return this;
     }
 
     public FieldNodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, Type typeMapping) {
         isNotNull();
         final Map<TypeVariable<?>, Type> typeMap = actual.getTypeMap();
-
         assertThat(typeMap.get(typeVariable))
                 .as("Actual type map: %s", typeMap)
                 .isEqualTo(typeMapping);

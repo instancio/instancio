@@ -53,7 +53,7 @@ public class MapNode extends Node {
                 .map(field -> {
                     Type passedOnGenericType = ObjectUtils.defaultIfNull(node.getGenericType(), field.getGenericType());
                     LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
-                    return new FieldNode(getNodeContext(), field, field.getType(), passedOnGenericType, this);
+                    return new FieldNode(getNodeContext(), field, field.getType(), passedOnGenericType, this); // XXX or MapNode.this?
                 })
                 .filter(it -> getNodeContext().isUnvisited(it))
                 .collect(toList());
