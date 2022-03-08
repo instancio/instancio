@@ -1,6 +1,11 @@
 package org.instancio.testsupport;
 
-public interface Constants {
-    int ARRAY_SIZE = 2;
-    int COLLECTION_SIZE = 2;
+public final class Constants {
+    private Constants() {
+        // non-instantiable
+    }
+
+    public static final int ARRAY_SIZE = 2;
+    public static final int COLLECTION_SIZE = 2;
+    public static final int MAP_SIZE = 2;
 }

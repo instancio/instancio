@@ -51,7 +51,6 @@ class FieldNode_ListOfOuterMidInnerString_Test {
                 .hasParent(outerClassNode)
                 .hasFieldName("outerList")
                 .hasActualFieldType(List.class)
-                .hasTypeMappedTo(getTypeVar(List.class, "E"), Mid.class)
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1);
 
@@ -72,7 +71,7 @@ class FieldNode_ListOfOuterMidInnerString_Test {
                 .hasParent(midClassNode)
                 .hasFieldName("midList")
                 .hasActualFieldType(List.class)
-                .hasTypeMappedTo(getTypeVar(List.class, "E"), Inner.class)
+                .hasTypeMappedTo(getTypeVar(Mid.class, "T"), Inner.class)
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1);
 
@@ -91,7 +90,7 @@ class FieldNode_ListOfOuterMidInnerString_Test {
                 .hasParent(innerClassNode)
                 .hasFieldName("innerList")
                 .hasActualFieldType(List.class)
-                .hasTypeMappedTo(getTypeVar(List.class, "E"), String.class)
+                .hasTypeMappedTo(getTypeVar(Inner.class, "T"), String.class)
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1);
 

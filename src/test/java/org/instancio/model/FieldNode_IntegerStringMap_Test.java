@@ -27,25 +27,22 @@ class FieldNode_IntegerStringMap_Test {
                 .hasTypeMappedTo(getTypeVar(Map.class, "K"), Integer.class)
                 .hasTypeMappedTo(getTypeVar(Map.class, "V"), String.class)
                 .hasTypeMapWithSize(2)
-                .hasChildrenOfSize(2);
+                .hasChildrenOfSize(1);
 
-        final ClassNode integerClassNode = (ClassNode) mapFieldNode
+        final MapNode mapNode = mapFieldNode
                 .getChildren().stream()
-                .filter(it -> it instanceof ClassNode)
-                .map(it -> (ClassNode) it)
-                .filter(it -> it.getKlass() == Integer.class)
+                .filter(it -> it instanceof MapNode)
+                .map(it -> (MapNode) it)
                 .findAny()
                 .orElseGet(() -> fail("Expected Integer child node"));
 
-        assertClassNode(integerClassNode)
+        assertClassNode(mapNode.getKeyNode())
                 .hasKlass(Integer.class)
                 .hasGenericType(null)
                 .hasParent(mapFieldNode)
                 .hasNoChildren();
 
-        final ClassNode stringClassNode = NodeUtil.getChildClassNode(mapFieldNode, String.class);
-
-        assertClassNode(stringClassNode)
+        assertClassNode(mapNode.getValueNode())
                 .hasKlass(String.class)
                 .hasGenericType(null)
                 .hasParent(mapFieldNode)
