@@ -8,6 +8,12 @@ public final class ArrayUtils {
         // non-instantiable
     }
 
+    public static <T> List<T> toList(T... values) {
+        List<T> result = new ArrayList<>();
+        for (T v : values) result.add(v);
+        return result;
+    }
+
     public static List<Byte> toList(byte... values) {
         List<Byte> result = new ArrayList<>();
         for (byte v : values) result.add(v);

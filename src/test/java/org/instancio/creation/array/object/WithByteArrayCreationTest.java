@@ -1,4 +1,4 @@
-package org.instancio.creation.array.primitive;
+package org.instancio.creation.array.object;
 
 import org.instancio.pojo.arrays.object.WithByteArray;
 import org.instancio.testsupport.annotations.NonDeterministic;
