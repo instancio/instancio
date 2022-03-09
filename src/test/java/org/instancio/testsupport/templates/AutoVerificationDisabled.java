@@ -1,4 +1,4 @@
-package org.instancio.testsupport.base;
+package org.instancio.testsupport.templates;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

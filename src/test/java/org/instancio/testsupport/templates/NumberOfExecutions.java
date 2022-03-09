@@ -1,4 +1,4 @@
-package org.instancio.testsupport.base;
+package org.instancio.testsupport.templates;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,9 +14,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NumberOfExecutions {
 
+    int DEFAULT_VALUE = 10;
+
     /**
      * Number of times a test will be executed.
      * This is how many times an object will be created.
      */
-    int value();
+    int value() default DEFAULT_VALUE;
 }

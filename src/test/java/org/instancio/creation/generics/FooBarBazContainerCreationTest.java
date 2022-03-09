@@ -4,7 +4,7 @@ import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.FooBarBazContainer;
-import org.instancio.testsupport.base.CreationTestTemplate;
+import org.instancio.testsupport.templates.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
 
 import static org.assertj.core.api.Assertions.assertThat;

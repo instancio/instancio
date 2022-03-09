@@ -1,4 +1,4 @@
-package org.instancio.testsupport.base;
+package org.instancio.testsupport.templates;
 
 import org.instancio.Instancio;
 import org.instancio.testsupport.asserts.ReflectionAssert;

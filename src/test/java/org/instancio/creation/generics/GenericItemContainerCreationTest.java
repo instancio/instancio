@@ -3,7 +3,7 @@ package org.instancio.creation.generics;
 import org.instancio.pojo.generics.container.GenericItem;
 import org.instancio.pojo.generics.container.GenericItemContainer;
 import org.instancio.pojo.generics.container.Pair;
-import org.instancio.testsupport.base.CreationTestTemplate;
+import org.instancio.testsupport.templates.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
 
 import java.util.List;
