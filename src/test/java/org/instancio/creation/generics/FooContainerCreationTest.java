@@ -1,22 +1,16 @@
-package org.instancio.generation;
+package org.instancio.creation.generics;
 
-import org.instancio.Instancio;
 import org.instancio.pojo.generics.FooContainer;
-import org.instancio.testsupport.tags.CreateTag;
+import org.instancio.testsupport.templates.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@CreateTag
 @GenericsTag
-public class FooContainerGenerationTest {
+public class FooContainerCreationTest extends CreationTestTemplate<FooContainer> {
 
-    @Test
-    void generate() {
-        FooContainer result = Instancio.of(FooContainer.class).create();
-
-        assertThat(result).isNotNull();
+    @Override
+    protected void verify(FooContainer result) {
         assertThat(result.getItem()).isNotNull();
         assertThat(result.getItem().getFooValue()).isInstanceOf(String.class);
         assertThat(result.getItem().getOtherFooValue()).isNotNull();

@@ -7,11 +7,15 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
+import static org.instancio.model.FieldNode.getCollectionElementTypeAsChildNode;
+import static org.instancio.model.FieldNode.getMapKeyValueElementTypesAsChildNode;
 
 // ClassNode can only have type variables
 public class ClassNode extends BaseNode {
@@ -27,6 +31,14 @@ public class ClassNode extends BaseNode {
 
     @Override
     List<Node> collectChildren() {
+        if (Collection.class.isAssignableFrom(getKlass())) {
+            return getCollectionElementTypeAsChildNode(this);
+        }
+
+        if (Map.class.isAssignableFrom(getKlass())) {
+            return getMapKeyValueElementTypesAsChildNode(this);
+        }
+
         if (getKlass().getPackage() == null || getKlass().getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList();
         } else {

@@ -1,25 +1,18 @@
-package org.instancio.generation;
+package org.instancio.creation.generics;
 
-import org.instancio.Instancio;
 import org.instancio.pojo.generics.container.GenericArrayContainer;
 import org.instancio.pojo.generics.container.GenericItem;
 import org.instancio.testsupport.Constants;
-import org.instancio.testsupport.tags.CreateTag;
+import org.instancio.testsupport.templates.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@CreateTag
 @GenericsTag
-public class GenericArrayContainerGenerationTest {
+public class GenericArrayContainerCreationTest extends CreationTestTemplate<GenericArrayContainer<Integer, String>> {
 
-    @Test
-    void generate() {
-        GenericArrayContainer<?, ?> result = Instancio.of(GenericArrayContainer.class)
-                .withType(Integer.class, String.class)
-                .create();
-
+    @Override
+    protected void verify(GenericArrayContainer<Integer, String> result) {
         assertThat(result.getItemArrayX())
                 .hasSize(Constants.ARRAY_SIZE)
                 .isInstanceOf(GenericItem[].class)

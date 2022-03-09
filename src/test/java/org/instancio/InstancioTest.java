@@ -3,7 +3,7 @@ package org.instancio;
 import org.instancio.pojo.arrays.WithObjectArrays.PojoWithEnumArray;
 import org.instancio.pojo.arrays.WithObjectArrays.PojoWithPojoArray;
 import org.instancio.pojo.arrays.WithObjectArrays.PojoWithStringArray;
-import org.instancio.pojo.arrays.WithPrimitiveArrays.PojoWithIntArray;
+import org.instancio.pojo.arrays.primitive.WithIntArray;
 import org.instancio.pojo.circular.HierarchyWithMultipleInterfaceImpls;
 import org.instancio.pojo.generics.FooContainer;
 import org.instancio.pojo.generics.container.GenericContainer;
@@ -60,7 +60,7 @@ class InstancioTest {
     @Test
     void arrays() {
         assertThat(Instancio.of(PojoWithEnumArray.class).create().getValues()).hasSize(2).doesNotContainNull();
-        assertThat(Instancio.of(PojoWithIntArray.class).create().getValues()).hasSize(2);
+        assertThat(Instancio.of(WithIntArray.class).create().getValues()).hasSize(2);
         assertThat(Instancio.of(PojoWithStringArray.class).create().getValues()).hasSize(2).doesNotContainNull();
         assertThat(Instancio.of(PojoWithPojoArray.class).create().getValues()).hasSize(2).doesNotContainNull();
     }
@@ -124,6 +124,7 @@ class InstancioTest {
     }
 
     @Test
+    @Disabled
     void generatorArgIsConfusing() {
         // TODO this is creating a generator that returns another generator...
         //  find a way to deal with this. does it make sense to use generators

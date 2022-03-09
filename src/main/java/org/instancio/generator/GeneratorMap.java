@@ -16,12 +16,22 @@ public class GeneratorMap {
     private final Map<Class<?>, ValueGenerator<?>> arrayGeneratorMap = new HashMap<>();
 
     public GeneratorMap() {
+        generatorMap.put(byte.class, new ByteGenerator());
+        generatorMap.put(short.class, new ShortGenerator());
         generatorMap.put(int.class, new IntegerGenerator());
         generatorMap.put(long.class, new LongGenerator());
+        generatorMap.put(float.class, new FloatGenerator());
+        generatorMap.put(double.class, new DoubleGenerator());
         generatorMap.put(boolean.class, new BooleanGenerator());
+        generatorMap.put(char.class, new CharacterGenerator());
+        generatorMap.put(Byte.class, new ByteGenerator());
+        generatorMap.put(Short.class, new ShortGenerator());
         generatorMap.put(Integer.class, new IntegerGenerator());
         generatorMap.put(Long.class, new LongGenerator());
+        generatorMap.put(Float.class, new FloatGenerator());
+        generatorMap.put(Double.class, new DoubleGenerator());
         generatorMap.put(Boolean.class, new BooleanGenerator());
+        generatorMap.put(Character.class, new CharacterGenerator());
         generatorMap.put(String.class, new StringGenerator());
         generatorMap.put(UUID.class, new UUIDGenerator());
         generatorMap.put(BigDecimal.class, new BigDecimalGenerator());
