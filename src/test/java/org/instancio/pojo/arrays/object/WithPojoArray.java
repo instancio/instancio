@@ -1,5 +1,6 @@
-package org.instancio.pojo.arrays;
+package org.instancio.pojo.arrays.object;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -9,6 +10,8 @@ public class WithPojoArray {
     private PojoItem[] values;
 
     @Getter
+    @ToString
+    @EqualsAndHashCode
     public static class PojoItem {
         private int id;
         private String name;
