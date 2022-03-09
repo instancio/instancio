@@ -1,6 +1,5 @@
-package org.instancio.generation;
+package org.instancio.creation.generics;
 
-import org.instancio.Instancio;
 import org.instancio.pojo.generics.MiscFields;
 import org.instancio.pojo.generics.container.Pair;
 import org.instancio.pojo.generics.container.Triplet;
@@ -8,27 +7,19 @@ import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
 import org.instancio.testsupport.Constants;
-import org.instancio.testsupport.tags.CreateTag;
+import org.instancio.testsupport.base.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@CreateTag
 @GenericsTag
-public class MiscFieldsGenerationTest {
+public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID, String, Long>> {
 
-    @Test
-    void generate() {
-        final MiscFields<?, ?, ?> result = Instancio.of(MiscFields.class)
-                .withType(UUID.class, String.class, Long.class)
-                .create();
-
-        System.out.println(result);
-
+    @Override
+    protected void verify(MiscFields<UUID, String, Long> result) {
         assertArrayOfCs(result);
         assertArrayOfInts(result);
         assertFieldA(result);

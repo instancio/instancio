@@ -1,23 +1,17 @@
-package org.instancio.generation;
+package org.instancio.creation.generics;
 
-import org.instancio.Instancio;
 import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
 import org.instancio.testsupport.Constants;
-import org.instancio.testsupport.tags.CreateTag;
+import org.instancio.testsupport.base.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@CreateTag
 @GenericsTag
-public class ListOfOuterMidInnerStringGenerationTest {
+public class ListOfOuterMidInnerStringCreationTest extends CreationTestTemplate<ListOfOuterMidInnerString> {
 
-    @Test
-    void generate() {
-        ListOfOuterMidInnerString result = Instancio.of(ListOfOuterMidInnerString.class).create();
-
-        assertThat(result).isNotNull();
+    @Override
+    protected void verify(ListOfOuterMidInnerString result) {
         assertThat(result.getListOfOuter()).hasSize(Constants.COLLECTION_SIZE);
 
         result.getListOfOuter().forEach(outer -> {
@@ -36,7 +30,5 @@ public class ListOfOuterMidInnerStringGenerationTest {
                 });
             });
         });
-
-
     }
 }

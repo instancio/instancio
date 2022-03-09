@@ -8,11 +8,15 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
+import static org.instancio.model.FieldNode.getCollectionElementTypeAsChildNode;
+import static org.instancio.model.FieldNode.getMapKeyValueElementTypesAsChildNode;
 
 public class MapNode extends Node {
     private static final Logger LOG = LoggerFactory.getLogger(MapNode.class);
@@ -43,6 +47,13 @@ public class MapNode extends Node {
 
     private List<Node> collectChildren(ClassNode node) {
         Class<?> klass = node.getKlass();
+        if (Collection.class.isAssignableFrom(node.getKlass())) {
+            return getCollectionElementTypeAsChildNode(node);
+        }
+
+        if (Map.class.isAssignableFrom(node.getKlass())) {
+            return getMapKeyValueElementTypesAsChildNode(node);
+        }
 
         if (klass.getPackage() == null || klass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList();

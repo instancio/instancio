@@ -124,6 +124,7 @@ class InstancioTest {
     }
 
     @Test
+    @Disabled
     void generatorArgIsConfusing() {
         // TODO this is creating a generator that returns another generator...
         //  find a way to deal with this. does it make sense to use generators

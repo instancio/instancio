@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -46,12 +45,9 @@ public class FieldNode extends BaseNode {
      */
     private final Class<?> actualFieldType;
     private final String[] typeVariables;
-    private final Map<TypeVariable<?>, Type> typeMap;
 
     private final Class<?> classDeclaringTheTypeVariable; // e.g. List<E> => List.class (declares E)
     private final Type genericType;
-
-    private final List<PType> nestedTypes = new ArrayList<>();
 
 
     public FieldNode(
@@ -76,17 +72,16 @@ public class FieldNode extends BaseNode {
         this.typeVariables = getTypeVariables(field);
         this.classDeclaringTheTypeVariable = classDeclaringTheTypeVariable;
         this.genericType = genericType;
-        this.typeMap = getTypeMap(classDeclaringTheTypeVariable, genericType);
     }
 
     @Override
     List<Node> collectChildren() {
         if (Collection.class.isAssignableFrom(field.getType())) {
-            return getCollectionElementTypeAsChildNode();
+            return getCollectionElementTypeAsChildNode(this);
         }
 
         if (Map.class.isAssignableFrom(field.getType())) {
-            return getMapKeyValueElementTypesAsChildNode();
+            return getMapKeyValueElementTypesAsChildNode(this);
         }
 
         if (field.getType().isArray()) {
@@ -131,16 +126,18 @@ public class FieldNode extends BaseNode {
         return childNodes;
     }
 
-    private List<Node> getMapKeyValueElementTypesAsChildNode() {
-        LOG.debug("Getting collection element as child node: {}", field.getType());
+    static List<Node> getMapKeyValueElementTypesAsChildNode(BaseNode parent) {
+        LOG.debug("Getting collection element as child node: {}", parent.getKlass());
 
+        final Type genericType = parent.getGenericType();
+        final Class<?> rawClass = parent.getKlass();
         final List<Node> childNodes = new ArrayList<>();
 
         if (genericType instanceof ParameterizedType) {
             ParameterizedType pType = (ParameterizedType) genericType;
 
             final Type[] actualTypeArgs = pType.getActualTypeArguments();
-            final TypeVariable<?>[] typeVars = field.getType().getTypeParameters();
+            final TypeVariable<?>[] typeVars = rawClass.getTypeParameters();
 
             ClassNode keyNode = null;
             ClassNode valueNode = null;
@@ -152,18 +149,18 @@ public class FieldNode extends BaseNode {
                 ClassNode node = null;
 
                 if (actualTypeArg instanceof Class) {
-                    node = new ClassNode(getNodeContext(), (Class<?>) actualTypeArg, null, this);
+                    node = new ClassNode(parent.getNodeContext(), (Class<?>) actualTypeArg, null, parent);
 
                 } else if (actualTypeArg instanceof ParameterizedType) {
                     ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
                     Class<?> actualRawType = (Class<?>) actualPType.getRawType();
 
-                    node = new ClassNode(getNodeContext(), actualRawType, actualPType, this);
+                    node = new ClassNode(parent.getNodeContext(), actualRawType, actualPType, parent);
                 } else if (actualTypeArg instanceof TypeVariable) {
-                    Type mappedType = typeMap.get(actualTypeArg);
+                    Type mappedType = parent.getTypeMap().get(actualTypeArg);
                     LOG.debug("actualTypeArg '{}' mpapped to '{}'", ((TypeVariable<?>) actualTypeArg).getName(), mappedType);
                     if (mappedType instanceof Class) {
-                        node = new ClassNode(getNodeContext(), (Class<?>) mappedType, null, this);
+                        node = new ClassNode(parent.getNodeContext(), (Class<?>) mappedType, null, parent);
                     }
                 }
 
@@ -175,7 +172,7 @@ public class FieldNode extends BaseNode {
             }
 
             if (keyNode != null && valueNode != null) {
-                childNodes.add(new MapNode(getNodeContext(), keyNode, valueNode, this));
+                childNodes.add(new MapNode(parent.getNodeContext(), keyNode, valueNode, parent));
             } else {
                 LOG.debug("Could not resolve Map key/value types.\nKey: {}\nValue:{}", keyNode, valueNode);
             }
@@ -183,6 +180,51 @@ public class FieldNode extends BaseNode {
 
         return childNodes;
     }
+
+    // TODO move
+    static List<Node> getCollectionElementTypeAsChildNode(BaseNode parent) {
+        LOG.debug("Getting collection element as child node: {}", parent.getKlass());
+
+        final Class<?> rawClass = parent.getKlass();
+        final Type genericType = parent.getGenericType();
+        final Map<TypeVariable<?>, Type> typeMap = parent.getTypeMap();
+        final List<Node> childNodes = new ArrayList<>();
+
+        //final Type genericType = field.getGenericType();
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) genericType;
+
+            final Type[] actualTypeArgs = pType.getActualTypeArguments();
+            final TypeVariable<?>[] typeVars = rawClass.getTypeParameters();
+
+            for (int i = 0; i < actualTypeArgs.length; i++) {
+                final Type actualTypeArg = actualTypeArgs[i];
+                final TypeVariable<?> typeVar = typeVars[i];
+                LOG.debug("actualTypeArg {}: {}, typeVar: {}", actualTypeArg.getClass().getSimpleName(), actualTypeArg, typeVar);
+
+                if (actualTypeArg instanceof Class) {
+                    Node node = new ClassNode(parent.getNodeContext(), (Class<?>) actualTypeArg, null, parent);
+                    childNodes.add(node);
+                } else if (actualTypeArg instanceof ParameterizedType) {
+                    ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
+                    Class<?> actualRawType = (Class<?>) actualPType.getRawType();
+
+                    Node node = new ClassNode(parent.getNodeContext(), actualRawType, actualPType, parent);
+                    childNodes.add(node);
+                } else if (actualTypeArg instanceof TypeVariable) {
+                    Type mappedType = typeMap.get(actualTypeArg);
+                    LOG.debug("actualTypeArg '{}' mpapped to '{}'", ((TypeVariable<?>) actualTypeArg).getName(), mappedType);
+                    if (mappedType instanceof Class) {
+                        Node node = new ClassNode(parent.getNodeContext(), (Class<?>) mappedType, null, parent);
+                        childNodes.add(node);
+                    }
+                }
+            }
+        }
+
+        return childNodes;
+    }
+
 
     // Collection element raw class + generic type (actual type arg)
     private List<Node> getCollectionElementTypeAsChildNode() {
@@ -212,7 +254,7 @@ public class FieldNode extends BaseNode {
                     Node node = new ClassNode(getNodeContext(), actualRawType, actualPType, this);
                     childNodes.add(node);
                 } else if (actualTypeArg instanceof TypeVariable) {
-                    Type mappedType = typeMap.get(actualTypeArg);
+                    Type mappedType = getTypeMap().get(actualTypeArg);
                     LOG.debug("actualTypeArg '{}' mpapped to '{}'", ((TypeVariable<?>) actualTypeArg).getName(), mappedType);
                     if (mappedType instanceof Class) {
                         Node node = new ClassNode(getNodeContext(), (Class<?>) mappedType, null, this);
@@ -234,7 +276,7 @@ public class FieldNode extends BaseNode {
             final Type typeParameter = childField.getGenericType();
 
             Class<?> resolvedTypeArg = null;
-            Type typeArgument = typeMap.get(typeParameter);
+            Type typeArgument = getTypeMap().get(typeParameter);
 
             if (typeArgument instanceof TypeVariable) {
                 resolvedTypeArg = getRootTypeMap().get(typeArgument);
@@ -242,7 +284,7 @@ public class FieldNode extends BaseNode {
                 resolvedTypeArg = (Class<?>) typeArgument;
             }
 
-            final Optional<Type> classParameterizedTypePType = nestedTypes.stream()
+            final Optional<Type> classParameterizedTypePType = getNestedTypes().stream()
                     .filter(pType -> pType.getRawType().equals(typeArgument)).findAny()
                     .map(PType::getParameterizedType);
 
@@ -272,9 +314,9 @@ public class FieldNode extends BaseNode {
         // XXX this.genericType or field.getGenericType()?
         if (actualFieldType.equals(Object.class)) {
             Type mappedType = null;
-            if (typeMap.containsKey(field.getGenericType())) {
+            if (getTypeMap().containsKey(field.getGenericType())) {
 
-                mappedType = typeMap.get(field.getGenericType());
+                mappedType = getTypeMap().get(field.getGenericType());
 
                 if (mappedType instanceof Class) {
                     return (Class<?>) mappedType;
@@ -320,7 +362,7 @@ public class FieldNode extends BaseNode {
 
         if (typeArgument instanceof TypeVariable) {
             final TypeVariable<?> collectionTypeParameter = field.getType().getTypeParameters()[0]; // E
-            typeArgument = ObjectUtils.defaultIfNull(typeMap.get(collectionTypeParameter), typeArgument);
+            typeArgument = ObjectUtils.defaultIfNull(getTypeMap().get(collectionTypeParameter), typeArgument);
             resolvedTypeArg = getRootTypeMap().get(typeArgument);
         } else if (typeArgument instanceof Class) {
             resolvedTypeArg = (Class<?>) typeArgument;
@@ -345,10 +387,6 @@ public class FieldNode extends BaseNode {
     public String getTypeName() {
 
         return field.getGenericType().getTypeName();
-    }
-
-    public Map<TypeVariable<?>, Type> getTypeMap() {
-        return typeMap;
     }
 
     public FieldNode getChildByTypeParameter(final String typeParameter) {
@@ -382,62 +420,6 @@ public class FieldNode extends BaseNode {
         return typeVariables;
     }
 
-    private Map<TypeVariable<?>, Type> getTypeMap(Class<?> declaringClass, final Type genericType) {
-        if (declaringClass == null) {
-            return Collections.emptyMap();
-        }
-
-        // FIXME test hack
-        if (genericType instanceof ParameterizedType) {
-            declaringClass = (Class<?>) ((ParameterizedType) genericType).getRawType();
-        }
-
-        final Map<TypeVariable<?>, Type> map = new HashMap<>();
-        final TypeVariable<?>[] typeVars = declaringClass.getTypeParameters();
-
-        if (genericType instanceof ParameterizedType) {
-
-            ParameterizedType pType = (ParameterizedType) genericType;
-            Type[] typeArgs = pType.getActualTypeArguments();
-
-//            LOG.debug("pType: {}", pType);
-//            LOG.debug("actualTypeArguments: {}", Arrays.toString(typeArgs));
-
-            for (int i = 0; i < typeArgs.length; i++) {
-                TypeVariable<?> tvar = typeVars[i];
-                Type actualType = typeArgs[i];
-
-                //LOG.debug(" --> tvar: {}, actualType: {}", tvar, actualType);
-                // XXX typeMap should use Type objects as keys? what about user rootTypeMap?
-                //  Problem is using strings can overwrite values when string keys are the same,
-                //  even though they might represent different Type objects...
-                //  Need to isolate this scenario and test it.
-                if (actualType instanceof TypeVariable) {
-
-                    map.put(tvar, actualType);
-
-                    if (getRootTypeMap().containsKey(actualType)) {
-                        map.put((TypeVariable<?>) actualType, getRootTypeMap().get(actualType));
-                    }
-                } else if (actualType instanceof ParameterizedType) {
-                    Class<?> c = (Class<?>) ((ParameterizedType) actualType).getRawType();
-                    ParameterizedType nestedPType = (ParameterizedType) actualType;
-
-                    map.put(tvar, c);
-
-                    nestedTypes.add(new PType(c, nestedPType));
-                } else if (actualType instanceof Class) {
-                    map.put(tvar, actualType);
-                } else {
-                    throw new IllegalStateException("Unhandled type: " + actualType);
-                }
-            }
-        } else {
-            LOG.debug("No generic info for declaringClass: {}, genericType: {}", declaringClass, genericType);
-        }
-
-        return map;
-    }
 
     @Override
     public String getNodeName() {
@@ -468,8 +450,8 @@ public class FieldNode extends BaseNode {
         s += "Field name: '" + field.getName() + "' " + field.getType().getSimpleName() + ", actual type: " + actualFieldType.getSimpleName() + "\n"
                 + " -> typeVars: " + Arrays.toString(typeVariables) + "\n"
                 + " -> typeName: " + getTypeName() + "\n"
-                + " -> typeMap: " + typeMap + "\n"
-                + " -> nestedTypes: " + nestedTypes + "\n"
+                + " -> typeMap: " + getTypeMap() + "\n"
+                + " -> nestedTypes: " + getNestedTypes() + "\n"
                 + " -> classDeclaringTheTypeVariable: " + classDeclaringTheTypeVariable + "\n";
 
         if (getChildren() != null)

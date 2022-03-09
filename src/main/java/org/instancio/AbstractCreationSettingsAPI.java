@@ -76,7 +76,6 @@ public class AbstractCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
 
     @Override
     public AbstractCreationSettingsAPI<T, C> withType(Class<?>... types) {
-        Verify.notEmpty(types, "'withType(Class... types)' requires at least one type to be specified");
         LOG.debug("Specified generic types: {}", Arrays.toString(types));
         this.genericTypes = types;
         return this;

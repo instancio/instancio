@@ -1,30 +1,19 @@
-package org.instancio.generation;
+package org.instancio.creation.generics;
 
-import org.instancio.Instancio;
 import org.instancio.pojo.generics.NestedMaps;
 import org.instancio.testsupport.Constants;
-import org.instancio.testsupport.tags.CreateTag;
+import org.instancio.testsupport.base.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
-import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@CreateTag
 @GenericsTag
-public class NestedMapsGenerationTest {
+public class NestedMapsCreationTest extends CreationTestTemplate<NestedMaps<String, Integer>> {
 
-    @Test
-    void generate() {
-        NestedMaps<?, ?> result = Instancio.of(NestedMaps.class)
-                .withType(String.class, Integer.class)
-                .create();
-
-        System.out.println(result);
-        assertThat(result).isNotNull();
-
-        // FIXME nested map is not being populated due to missing children
+    @Override
+    protected void verify(NestedMaps<String, Integer> result) {
         assertMap1(result.getMap1());
         assertMap2(result.getMap2());
     }
