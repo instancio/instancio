@@ -2,8 +2,8 @@ package org.instancio.creation.generics;
 
 import org.instancio.pojo.generics.NestedMaps;
 import org.instancio.testsupport.Constants;
-import org.instancio.testsupport.templates.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
+import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import java.util.Map;
 

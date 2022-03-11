@@ -4,6 +4,7 @@ import static org.assertj.core.api.Fail.fail;
 
 public class NodeUtil {
 
+    // TODO delete
     static ClassNode getChildClassNode(Node parent, Class<?> classToMatch) {
         return parent.getChildren().stream()
                 .filter(it -> it instanceof ClassNode)

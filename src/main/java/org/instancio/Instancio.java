@@ -2,6 +2,10 @@ package org.instancio;
 
 public class Instancio {
 
+    private Instancio() {
+        // non-instantiable
+    }
+
     public static <C, T extends CreationSettingsAPI<C, T>> ObjectCreationSettingsAPI<C, T> of(Class<C> klass) {
         return new ObjectCreationSettingsAPI<>(klass);
     }

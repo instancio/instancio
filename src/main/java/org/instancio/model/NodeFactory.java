@@ -49,6 +49,8 @@ public class NodeFactory {
             result = new ClassNode(nodeContext, field, klass, genericType, parent);
         }
 
+        LOG.debug("Created node: {}", result);
+
         result.getChildren(); // TODO delete
         return result;
     }
@@ -183,11 +185,22 @@ public class NodeFactory {
                     node = this.createNode(nodeContext, actualRawType, actualPType, null, parent);
                 } else if (actualTypeArg instanceof TypeVariable) {
                     Type mappedType = parent.getTypeMap().get(actualTypeArg);
+                    if (mappedType == null) {
+                        mappedType = nodeContext.getRootTypeMap().get(actualTypeArg);
+                    }
                     LOG.debug("actualTypeArg '{}' mpapped to '{}'", ((TypeVariable<?>) actualTypeArg).getName(), mappedType);
                     if (mappedType instanceof Class) {
                         node = this.createNode(nodeContext, (Class<?>) mappedType, null, field, parent);
                     }
                 }
+
+                Verify.notNull(node, "Failed creating node. Args:"
+                                + "\n -> rawType: %s"
+                                + "\n -> genericType: %s"
+                                + "\n -> field: %s"
+                                + "\n -> actualTypeArg: %s"
+                                + "\n -> typeVar: %s",
+                        rawClass, genericType, field, actualTypeArg, typeVar);
 
                 if (typeVar.getName().equals("K")) {
                     keyNode = node;

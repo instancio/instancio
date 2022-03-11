@@ -57,6 +57,7 @@ public abstract class Node {
         return field;
     }
 
+    // TODO rename to avoid confusion with getClass()
     public Class<?> getKlass() {
         return klass;
     }
@@ -206,8 +207,8 @@ public abstract class Node {
                 + " -> field: " + getField() + "\n"
                 + " -> typeMap: " + getTypeMap() + "\n";
 
-        if (getChildren() != null)
-            s += " -> children (effective class): { " + getChildren().stream()
+        if (children != null && !children.isEmpty())
+            s += " -> children (effective class): { " + children.stream()
                     .map(it -> it.getEffectiveType().getRawType().getSimpleName())
                     .collect(joining(", ")) + " }\n";
 

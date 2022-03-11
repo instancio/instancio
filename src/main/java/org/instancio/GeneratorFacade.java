@@ -13,6 +13,7 @@ import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,14 +35,11 @@ class GeneratorFacade {
         this.context = context;
     }
 
-    <C> GeneratorResult<C> create(final CreateItem createItem) {
-        final Node node = createItem.getNode(); // FIXME
+    <C> GeneratorResult<C> generateNodeValue(Node node, Object owner) {
         final Field field = node.getField();
-        final Object owner = createItem.getOwner();
 
         if (field != null) {
-            LOG.debug("Creating value for field '{}', genericType: {}",
-                    field.getName(), field.getGenericType());
+            LOG.debug("Creating value for field '{}', genericType: {}", field.getName(), field.getGenericType());
         }
 
         Optional<GeneratorResult<C>> optionalResult = attemptGenerateViaContext(field);
@@ -49,13 +47,13 @@ class GeneratorFacade {
             return optionalResult.get();
         }
 
-        final Class<?> actualFieldType = node.getEffectiveType().getRawType();
+        final Class<?> effectiveType = node.getEffectiveType().getRawType();
 
-        if (actualFieldType.isPrimitive()) {
-            return new GeneratorResult<>((C) generatorMap.get(actualFieldType).generate(), Collections.emptyList());
+        if (effectiveType.isPrimitive()) {
+            return new GeneratorResult<>((C) generatorMap.get(effectiveType).generate(), Collections.emptyList());
         }
 
-        final Object ancestor = hierarchy.getAncestorWithClass(owner, actualFieldType);
+        final Object ancestor = hierarchy.getAncestorWithClass(owner, effectiveType);
 
         if (ancestor != null) {
             LOG.debug("{} has a circular dependency to {}. Not setting field value.",
@@ -65,31 +63,21 @@ class GeneratorFacade {
 
 
         if (node instanceof ArrayNode) {
-            Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
-
-            final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
-            final Object arrayObject = generator.generate();
-
-            List<CreateItem> fields = node.getChildren().stream()
-                    .map(n -> new CreateItem(n, arrayObject)) // XXX
-                    .collect(toList());
-
-            return new GeneratorResult<>((C) arrayObject, fields);
+            return generateArray(node);
         }
 
-        final ValueGenerator<?> generator = generatorMap.get(actualFieldType);
+        final ValueGenerator<?> generator = generatorMap.get(effectiveType);
 
         final C value;
 
         if (generator == null) {
 
-            if (actualFieldType.isInterface()) {
-                return resolveImplementationAndGenerate(node, owner, actualFieldType);
+            if (effectiveType.isInterface()) {
+                return resolveImplementationAndGenerate(node, owner, effectiveType);
             }
 
-            LOG.debug("XXX field {}, typeName: {}", field.getName(), field.getGenericType().getTypeName());
 
-            value = (C) ReflectionUtils.instantiate(actualFieldType);
+            value = (C) ReflectionUtils.instantiate(effectiveType);
 
             List<CreateItem> fields = node.getChildren().stream()
                     .map(n -> new CreateItem(n, value))
@@ -98,7 +86,7 @@ class GeneratorFacade {
             return new GeneratorResult<>(value, fields);
 
         } else {
-            LOG.debug("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), actualFieldType.getName());
+            LOG.debug("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
 
             // If we already know how to generate this object, we don't need to collect its fields
             value = (C) generator.generate();
@@ -111,52 +99,18 @@ class GeneratorFacade {
 
         hierarchy.setAncestorOf(value, owner);
         return new GeneratorResult<>(value, fields);
-
     }
 
-    <C> GeneratorResult<C> createInstanceOfClassNode(Node nodeToCreate, Object owner) {
+    private <C> GeneratorResult<C> generateArray(Node node) {
+        final Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
+        final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
+        final Object arrayObject = generator.generate();
 
-        Class<C> klass = (Class<C>) nodeToCreate.getKlass();
-
-        if (klass.isPrimitive()) {
-            return new GeneratorResult<>((C) generatorMap.get(klass).generate(), Collections.emptyList());
-        }
-
-        final Object ancestor = hierarchy.getAncestorWithClass(owner, klass);
-
-        if (ancestor != null) {
-            LOG.debug("{} has a circular dependency to {}. Not setting field value.",
-                    owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
-            return null;
-        }
-
-        final C value;
-
-        final ValueGenerator<?> generator = generatorMap.get(klass);
-
-        if (generator == null) {
-
-            if (klass.isInterface()) {
-                return resolveImplementationAndGenerate(nodeToCreate, owner, klass);
-            }
-
-            LOG.debug("Generator not found for '{}': will attempt to instantiate via constructor", klass.getName());
-            value = ReflectionUtils.instantiate(klass);
-
-        } else {
-            LOG.debug("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), klass.getName());
-
-            // If we already know how to generate this object, we don't need to collect its fields
-            value = (C) generator.generate();
-            LOG.trace("Generated {} using '{}' generator ", value, generator.getClass().getSimpleName());
-        }
-
-        final List<CreateItem> nextItems = nodeToCreate.getChildren().stream()
-                .map(node -> new CreateItem(node, value))
+        final List<CreateItem> fields = node.getChildren().stream()
+                .map(n -> new CreateItem(n, arrayObject)) // XXX
                 .collect(toList());
 
-        hierarchy.setAncestorOf(value, owner);
-        return new GeneratorResult<>(value, nextItems);
+        return new GeneratorResult<>((C) arrayObject, fields);
     }
 
     /**
@@ -175,7 +129,7 @@ class GeneratorFacade {
             return null;
         }
         ClassNode implementorClassNode = new ClassNode(parentNode.getNodeContext(), null, implementor, null, parentNode);
-        return createInstanceOfClassNode(implementorClassNode, owner);
+        return generateNodeValue(implementorClassNode, owner);
     }
 
     /**
@@ -185,7 +139,9 @@ class GeneratorFacade {
      * TODO: hierarchy.setAncestorOf(value, owner) must be done for all generated objects
      *  unless they are from JDK classes
      */
-    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(Field field) {
+    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(@Nullable Field field) {
+        if (field == null) return Optional.empty();
+
         GeneratorResult<C> result = null;
         if (context.isNullable(field) && Random.trueOrFalse()) {
             // We can return a null 'GeneratorResult' or a null 'GeneratorResult.value'

@@ -46,8 +46,8 @@ public class GenericType {
     @Override
     public String toString() {
         return new StringJoiner(", ", GenericType.class.getSimpleName() + "[", "]")
-                .add("rawType=" + rawType.getSimpleName())
-                .add("genericType=" + genericType)
+                .add(rawType.getSimpleName())
+                .add(genericType == null ? null : genericType.toString())
                 .toString();
     }
 }

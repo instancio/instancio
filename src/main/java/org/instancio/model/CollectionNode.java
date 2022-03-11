@@ -1,8 +1,6 @@
 package org.instancio.model;
 
 import org.instancio.util.Verify;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -13,7 +11,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class CollectionNode extends Node {
-    private static final Logger LOG = LoggerFactory.getLogger(CollectionNode.class);
 
     private final Node elementNode;
 
