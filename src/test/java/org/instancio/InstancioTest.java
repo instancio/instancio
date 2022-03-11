@@ -160,6 +160,8 @@ class InstancioTest {
 
     @Test
     void generateString() {
+        // TODO add test case for each core type
+        assertThat(Instancio.of(Integer.class).create()).isNotNull();
         assertThat(Instancio.of(String.class).create()).isNotNull();
     }
 

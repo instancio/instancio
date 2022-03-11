@@ -1,7 +1,6 @@
 package org.instancio.model;
 
 import org.instancio.pojo.generics.container.GenericArrayContainer;
-import org.instancio.pojo.generics.container.GenericItem;
 import org.instancio.testsupport.tags.ModelTag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +10,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.instancio.testsupport.asserts.ClassNodeAssert.assertClassNode;
-import static org.instancio.testsupport.asserts.FieldNodeAssert.assertFieldNode;
+import static org.assertj.core.api.Fail.fail;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 @ModelTag
@@ -33,6 +31,8 @@ class ClassNode_GenericArrayContainer_Test {
 
     @Test
     void classNode() {
+        fail("TODO");
+/*
         ClassNode rootNode = ClassNode.createRootNode(nodeContext, ROOT_CLASS);
 
         assertClassNode(rootNode)
@@ -94,5 +94,6 @@ class ClassNode_GenericArrayContainer_Test {
                 .hasTypeMappedTo(getTypeVar(ROOT_CLASS, "Y"), LocalDateTime.class)
                 .hasTypeMapWithSize(2)
                 .hasNoChildren();
+*/
     }
 }

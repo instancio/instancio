@@ -3,6 +3,7 @@
 *.out
 *.log
 *.attach_pid*
+TEMP_*
 NOTES.md
 
 .classpath

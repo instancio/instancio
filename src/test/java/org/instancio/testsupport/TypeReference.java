@@ -1,11 +1,11 @@
-package experimental.reflection;
+package org.instancio.testsupport;
+
+import org.instancio.util.Verify;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class TypeReference<T> {
 
@@ -14,9 +14,7 @@ public abstract class TypeReference<T> {
 
     protected TypeReference() {
         Type superclass = getClass().getGenericSuperclass();
-        if (superclass instanceof Class) {
-            throw new RuntimeException("Missing type parameter.");
-        }
+        Verify.isTrue(superclass instanceof ParameterizedType, "Missing type parameter");
         this.type = ((ParameterizedType) superclass).getActualTypeArguments()[0];
     }
 
@@ -46,25 +44,5 @@ public abstract class TypeReference<T> {
 
     public static <T> T create(TypeReference<T> ref) throws Exception {
         return ref.newInstance();
-    }
-
-    public static void main(String[] args) throws Exception {
-        List<String> l1 = new TypeReference<ArrayList<String>>() {
-        }.newInstance();
-
-        List<String> l2 = create(new TypeReference<ArrayList<String>>() {
-        });
-
-        l1.add("test l1");
-        l2.add("test l2");
-
-        System.out.println(l1);
-        System.out.println(l2);
-
-        // this will  fail since List is an interface (no constructor)
-        List<String> l3 = create(new TypeReference<List<String>>() {
-        });
-        l3.add("test l3");
-        System.out.println(l3);
     }
 }

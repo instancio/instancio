@@ -1,80 +1,49 @@
 package org.instancio.model;
 
-import org.instancio.util.ObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.instancio.util.Verify;
 
-import java.lang.reflect.Modifier;
+import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.toList;
-import static org.instancio.model.FieldNode.getCollectionElementTypeAsChildNode;
-import static org.instancio.model.FieldNode.getMapKeyValueElementTypesAsChildNode;
-
 public class MapNode extends Node {
-    private static final Logger LOG = LoggerFactory.getLogger(MapNode.class);
 
-    private final ClassNode keyNode;
-    private final ClassNode valueNode;
+    private final Node keyNode;
+    private final Node valueNode;
 
     public MapNode(final NodeContext nodeContext,
-                   final ClassNode keyNode,
-                   final ClassNode valueNode,
-                   final Node parent) {
+                   @Nullable final Field field,
+                   final Class<?> klass,
+                   @Nullable final Type genericType,
+                   final Node keyNode,
+                   final Node valueNode,
+                   @Nullable final Node parent) {
 
-        super(nodeContext, parent);
+        super(nodeContext, field, klass, genericType, parent);
 
-        this.keyNode = keyNode;
-        this.valueNode = valueNode;
+        Verify.isTrue(Map.class.isAssignableFrom(klass), "Not a map type: %s ", klass.getName());
+
+        this.keyNode = Verify.notNull(keyNode, "keyNode is null");
+        this.valueNode = Verify.notNull(valueNode, "valueNode is null");
     }
 
+    /**
+     * Children come from the {@link #getKeyNode()} and {@link #getValueNode()}.
+     */
     @Override
     List<Node> collectChildren() {
-        // TODO MapNode children are redundant... verify and remove
-        List<Node> children = new ArrayList<>();
-        children.addAll(collectChildren(keyNode));
-        children.addAll(collectChildren(valueNode));
-        return children;
-        // -----
+        return Collections.emptyList();
     }
 
-    private List<Node> collectChildren(ClassNode node) {
-        Class<?> klass = node.getKlass();
-        if (Collection.class.isAssignableFrom(node.getKlass())) {
-            return getCollectionElementTypeAsChildNode(node);
-        }
-
-        if (Map.class.isAssignableFrom(node.getKlass())) {
-            return getMapKeyValueElementTypesAsChildNode(node);
-        }
-
-        if (klass.getPackage() == null || klass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
-            return Collections.emptyList();
-        }
-
-        return Arrays.stream(klass.getDeclaredFields())
-                .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .map(field -> {
-                    Type passedOnGenericType = ObjectUtils.defaultIfNull(node.getGenericType(), field.getGenericType());
-                    LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
-                    return new FieldNode(getNodeContext(), field, field.getType(), passedOnGenericType, this); // XXX or MapNode.this?
-                })
-                .filter(it -> getNodeContext().isUnvisited(it))
-                .collect(toList());
-    }
-
-    public ClassNode getKeyNode() {
+    public Node getKeyNode() {
         return keyNode;
     }
 
-    public ClassNode getValueNode() {
+    public Node getValueNode() {
         return valueNode;
     }
 
@@ -84,7 +53,7 @@ public class MapNode extends Node {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
@@ -97,16 +66,5 @@ public class MapNode extends Node {
     public int hashCode() {
         return Objects.hash(getKeyNode(), getValueNode());
     }
-
-
-    @Override
-    public String toString() {
-        String s = "";
-        s += "MapNode: key class: " + keyNode.getKlass().getSimpleName() + "\n"
-                + " -> value class: " + valueNode.getKlass().getSimpleName() + "\n"
-                + " -> typeMap: " + getNodeContext().getRootTypeMap() + "\n";
-        return s;
-    }
-
 
 }

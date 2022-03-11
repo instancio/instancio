@@ -10,15 +10,13 @@ public class NodeUtil {
                 .map(it -> (ClassNode) it)
                 .filter(it -> it.getKlass() == classToMatch)
                 .findAny()
-                .orElseGet(() -> fail("Expected {} child node", classToMatch.getSimpleName()));
+                .orElseGet(() -> fail("Expected %s child node", classToMatch.getSimpleName()));
     }
 
-    static FieldNode getChildFieldNode(Node parent, String fieldName) {
+    static Node getChildNode(Node parent, String fieldName) {
         return parent.getChildren().stream()
-                .filter(it -> it instanceof FieldNode)
-                .map(it -> (FieldNode) it)
-                .filter(it -> it.getField().getName().equals(fieldName))
+                .filter(it -> it.getField() != null && it.getField().getName().equals(fieldName))
                 .findAny()
-                .orElseGet(() -> fail("Expected child field node '{}' ", fieldName));
+                .orElseGet(() -> fail("Expected child field node '%s' ", fieldName));
     }
 }

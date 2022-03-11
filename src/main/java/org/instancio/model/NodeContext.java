@@ -1,17 +1,19 @@
 package org.instancio.model;
 
 import java.lang.reflect.TypeVariable;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+// TODO rename
 public class NodeContext {
 
     private final Set<Node> visited = new HashSet<>();
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
 
     public NodeContext(final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
-        this.rootTypeMap = rootTypeMap;
+        this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
     }
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
