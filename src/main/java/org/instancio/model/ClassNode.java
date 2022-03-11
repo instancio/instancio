@@ -1,95 +1,76 @@
 package org.instancio.model;
 
-import org.instancio.util.ObjectUtils;
+import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
-import static org.instancio.model.FieldNode.getCollectionElementTypeAsChildNode;
-import static org.instancio.model.FieldNode.getMapKeyValueElementTypesAsChildNode;
 
-// ClassNode can only have type variables
-public class ClassNode extends BaseNode {
+public class ClassNode extends Node {
     private static final Logger LOG = LoggerFactory.getLogger(ClassNode.class);
 
     public ClassNode(final NodeContext nodeContext,
+                     @Nullable final Field field,
                      final Class<?> klass,
-                     final Type genericType,
-                     final Node parent) {
+                     @Nullable final Type genericType,
+                     @Nullable final Node parent) {
 
-        super(nodeContext, klass, genericType, parent);
+        super(nodeContext, field, klass, genericType, parent);
+
+        Verify.isNotArrayCollectionOrMap(klass);
     }
 
     @Override
     List<Node> collectChildren() {
-        if (Collection.class.isAssignableFrom(getKlass())) {
-            return getCollectionElementTypeAsChildNode(this);
-        }
+        final GenericType effectiveType = getEffectiveType();
+        final Class<?> effectiveClass = effectiveType.getRawType();
+        final Type effectiveGenericType = effectiveType.getGenericType();
 
-        if (Map.class.isAssignableFrom(getKlass())) {
-            return getMapKeyValueElementTypesAsChildNode(this);
-        }
-
-        if (getKlass().getPackage() == null || getKlass().getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
+        if (effectiveClass.getPackage() == null || effectiveClass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList();
-        } else {
-            return makeChildren(getNodeContext(), getKlass(), getGenericType());
         }
+        return makeChildren(getNodeContext(), effectiveClass, effectiveGenericType);
     }
 
-    private List<Node> makeChildren(NodeContext nodeContext, Class<?> klass, Type genericType) {
+    private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass, final Type genericType) {
+
+        final NodeFactory nodeFactory = new NodeFactory();
+
         return Arrays.stream(klass.getDeclaredFields())
                 .filter(f -> !Modifier.isStatic(f.getModifiers()))
                 .map(field -> {
-                    Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
+                    /// TOGGLE
+                    Type passedOnGenericType;
+                    if (genericType instanceof ParameterizedType) {
+                        passedOnGenericType = genericType;
+                    } else {
+                        passedOnGenericType = field.getGenericType();
+//                    Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
+
+                        if (passedOnGenericType instanceof TypeVariable && getTypeMap().containsKey(passedOnGenericType)) {
+                            passedOnGenericType = getTypeMap().get(passedOnGenericType);
+                        }
+                    }
+
                     LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
-                    return new FieldNode(nodeContext, field, field.getType(), passedOnGenericType, this);
+                    return nodeFactory.createNode(nodeContext, field.getType(), passedOnGenericType, field, this);
                 })
                 .filter(it -> getNodeContext().isUnvisited(it))
                 .collect(toList());
-    }
-
-    public static ClassNode createRootNode(final NodeContext nodeContext, final Class<?> klass) {
-        return new ClassNode(nodeContext, klass, null, null);
     }
 
     @Override
     public String getNodeName() {
         return String.format("ClassNode[%s, %s]", getKlass().getName(), getGenericType());
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (this.getClass() != o.getClass()) return false;
-        ClassNode other = (ClassNode) o;
-        return Objects.equals(this.getKlass(), other.getKlass())
-                && Objects.equals(this.getGenericType(), other.getGenericType())
-                && Objects.equals(this.getParent().getNodeName(), other.getParent().getNodeName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getKlass(), getGenericType(), getParent().getNodeName());
-    }
-
-    @Override
-    public String toString() {
-        String s = "";
-        s += "ClassNode: " + getKlass().getSimpleName() + "\n"
-                + " -> typeMap: " + getNodeContext().getRootTypeMap() + "\n";
-        return s;
-    }
-
-
 }

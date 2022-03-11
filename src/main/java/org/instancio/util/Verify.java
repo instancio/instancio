@@ -1,5 +1,7 @@
 package org.instancio.util;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 public final class Verify {
@@ -19,6 +21,15 @@ public final class Verify {
     public static void isTrue(final boolean condition, final String message, final Object... values) {
         if (!condition) {
             throw new IllegalArgumentException(String.format(message, values));
+        }
+    }
+
+    public static void isNotArrayCollectionOrMap(final Class<?> klass) {
+        if (klass.isArray()
+                || Collection.class.isAssignableFrom(klass)
+                || Map.class.isAssignableFrom(klass)) {
+
+            throw new IllegalArgumentException("Unexpected: " + klass);
         }
     }
 

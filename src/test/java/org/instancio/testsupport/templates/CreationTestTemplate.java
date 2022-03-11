@@ -73,6 +73,8 @@ public abstract class CreationTestTemplate<T> {
     @MethodSource("generatedObjectSource")
     @ParameterizedTest(name = "{index}: {0}")
     protected final void verifyingGenerated(Object result) {
+        assertThat(result).isNotNull();
+
         verify((T) result); // manual verification
 
         if (isAutoVerificationEnabled()) {

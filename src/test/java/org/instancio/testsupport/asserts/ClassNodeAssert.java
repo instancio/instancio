@@ -25,6 +25,12 @@ public class ClassNodeAssert extends AbstractAssert<ClassNodeAssert, ClassNode> 
         return this;
     }
 
+    public ClassNodeAssert hasEffectiveClass(Class<?> expected) {
+        isNotNull();
+        assertThat(actual.getEffectiveType().getRawType()).isEqualTo(expected);
+        return this;
+    }
+
     public ClassNodeAssert hasGenericType(Type expected) {
         isNotNull();
         assertThat(actual.getGenericType()).isEqualTo(expected);
@@ -36,6 +42,14 @@ public class ClassNodeAssert extends AbstractAssert<ClassNodeAssert, ClassNode> 
         assertThat(actual.getGenericType()).isNotNull();
         assertThat(actual.getGenericType().getTypeName()).isEqualTo(expected);
         return this;
+    }
+
+    public ClassNodeAssert hasFieldName(String expected) {
+        isNotNull();
+        assertThat(actual.getField()).isNotNull();
+        assertThat(actual.getField().getName()).isEqualTo(expected);
+        return this;
+
     }
 
     public ClassNodeAssert hasParent(Node expected) {
@@ -55,5 +69,4 @@ public class ClassNodeAssert extends AbstractAssert<ClassNodeAssert, ClassNode> 
         assertThat(actual.getChildren()).isEmpty();
         return this;
     }
-
 }

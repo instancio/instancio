@@ -2,9 +2,9 @@ package org.instancio;
 
 import org.instancio.generator.GeneratorMap;
 import org.instancio.generator.ValueGenerator;
+import org.instancio.model.ArrayNode;
 import org.instancio.model.ClassNode;
-import org.instancio.model.FieldNode;
-import org.instancio.model.NodeContext;
+import org.instancio.model.Node;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
 import org.instancio.util.Random;
@@ -25,8 +25,6 @@ import static java.util.stream.Collectors.toList;
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
-    private static final String JAVA_PKG_PREFIX = "java";
-
     private final Hierarchy hierarchy = new Hierarchy();
     private final GeneratorMap generatorMap = new GeneratorMap();
     private final ImplementationResolver implementationResolver = new InterfaceImplementationResolver();
@@ -37,19 +35,21 @@ class GeneratorFacade {
     }
 
     <C> GeneratorResult<C> create(final CreateItem createItem) {
-        final FieldNode node = (FieldNode) createItem.getNode(); // FIXME
+        final Node node = createItem.getNode(); // FIXME
         final Field field = node.getField();
         final Object owner = createItem.getOwner();
 
-        LOG.debug("Creating value for field '{}', genericType: {}",
-                field.getName(), field.getGenericType());
+        if (field != null) {
+            LOG.debug("Creating value for field '{}', genericType: {}",
+                    field.getName(), field.getGenericType());
+        }
 
         Optional<GeneratorResult<C>> optionalResult = attemptGenerateViaContext(field);
         if (optionalResult.isPresent()) {
             return optionalResult.get();
         }
 
-        final Class<?> actualFieldType = node.getActualFieldType();
+        final Class<?> actualFieldType = node.getEffectiveType().getRawType();
 
         if (actualFieldType.isPrimitive()) {
             return new GeneratorResult<>((C) generatorMap.get(actualFieldType).generate(), Collections.emptyList());
@@ -63,14 +63,15 @@ class GeneratorFacade {
             return null;
         }
 
-        if (actualFieldType.isArray()) {
-            Class<?> arrayType = node.getArrayType();
+
+        if (node instanceof ArrayNode) {
+            Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
 
             final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
             final Object arrayObject = generator.generate();
 
             List<CreateItem> fields = node.getChildren().stream()
-                    .map(n -> new CreateItem(n, arrayObject))
+                    .map(n -> new CreateItem(n, arrayObject)) // XXX
                     .collect(toList());
 
             return new GeneratorResult<>((C) arrayObject, fields);
@@ -83,7 +84,7 @@ class GeneratorFacade {
         if (generator == null) {
 
             if (actualFieldType.isInterface()) {
-                return resolveImplementationAndGenerate(owner, actualFieldType);
+                return resolveImplementationAndGenerate(node, owner, actualFieldType);
             }
 
             LOG.debug("XXX field {}, typeName: {}", field.getName(), field.getGenericType().getTypeName());
@@ -113,7 +114,9 @@ class GeneratorFacade {
 
     }
 
-    <C> GeneratorResult<C> createInstanceOfClass(Class<C> klass, Object owner) {
+    <C> GeneratorResult<C> createInstanceOfClassNode(Node nodeToCreate, Object owner) {
+
+        Class<C> klass = (Class<C>) nodeToCreate.getKlass();
 
         if (klass.isPrimitive()) {
             return new GeneratorResult<>((C) generatorMap.get(klass).generate(), Collections.emptyList());
@@ -127,8 +130,6 @@ class GeneratorFacade {
             return null;
         }
 
-        final ClassNode classNode = ClassNode.createRootNode(new NodeContext(context.getRootTypeMap()), klass);
-
         final C value;
 
         final ValueGenerator<?> generator = generatorMap.get(klass);
@@ -136,7 +137,7 @@ class GeneratorFacade {
         if (generator == null) {
 
             if (klass.isInterface()) {
-                return resolveImplementationAndGenerate(owner, klass);
+                return resolveImplementationAndGenerate(nodeToCreate, owner, klass);
             }
 
             LOG.debug("Generator not found for '{}': will attempt to instantiate via constructor", klass.getName());
@@ -150,7 +151,7 @@ class GeneratorFacade {
             LOG.trace("Generated {} using '{}' generator ", value, generator.getClass().getSimpleName());
         }
 
-        final List<CreateItem> nextItems = classNode.getChildren().stream()
+        final List<CreateItem> nextItems = nodeToCreate.getChildren().stream()
                 .map(node -> new CreateItem(node, value))
                 .collect(toList());
 
@@ -162,7 +163,7 @@ class GeneratorFacade {
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private <C> GeneratorResult<C> resolveImplementationAndGenerate(Object owner, Class<?> interfaceClass) {
+    private <C> GeneratorResult<C> resolveImplementationAndGenerate(Node parentNode, Object owner, Class<?> interfaceClass) {
         Verify.isTrue(!Collection.class.isAssignableFrom(interfaceClass)
                 && !Map.class.isAssignableFrom(interfaceClass), "Must not be a collection interface!");
 
@@ -173,8 +174,8 @@ class GeneratorFacade {
             LOG.debug("Interface '{}' has no implementation", interfaceClass.getName());
             return null;
         }
-
-        return (GeneratorResult<C>) createInstanceOfClass(implementor, owner);
+        ClassNode implementorClassNode = new ClassNode(parentNode.getNodeContext(), null, implementor, null, parentNode);
+        return createInstanceOfClassNode(implementorClassNode, owner);
     }
 
     /**

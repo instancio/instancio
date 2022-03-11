@@ -1,5 +1,6 @@
 package org.instancio.util;
 
+import org.instancio.testsupport.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
@@ -7,6 +8,7 @@ import java.util.regex.Pattern;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Percentage.withPercentage;
 
+@NonDeterministicTag
 class RandomTest {
 
     private static final int SAMPLE_SIZE = 10000;

@@ -12,9 +12,9 @@ public class ListOfOuterMidInnerStringCreationTest extends CreationTestTemplate<
 
     @Override
     protected void verify(ListOfOuterMidInnerString result) {
-        assertThat(result.getListOfOuter()).hasSize(Constants.COLLECTION_SIZE);
+        assertThat(result.getRootList()).hasSize(Constants.COLLECTION_SIZE);
 
-        result.getListOfOuter().forEach(outer -> {
+        result.getRootList().forEach(outer -> {
             assertThat(outer).isNotNull();
             assertThat(outer.getOuterList()).hasSize(Constants.COLLECTION_SIZE);
 

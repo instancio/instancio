@@ -16,7 +16,7 @@ public class EnumGenerator implements ValueGenerator<Enum<?>> {
         try {
             Method m = enumClass.getDeclaredMethod("values");
             Enum<?>[] res = (Enum<?>[]) m.invoke(null);
-            return res[Random.intBetween(0, res.length - 1)];
+            return res[Random.intBetween(0, res.length)];
         } catch (Exception e) {
             e.printStackTrace();
         }
