@@ -1,11 +1,11 @@
 package org.instancio.model;
 
-import org.instancio.pojo.generics.container.Pair;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.FooBarBazContainer;
 import org.instancio.testsupport.tags.ModelTag;
+import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.CollectionUtils;
@@ -53,7 +53,7 @@ class ClassNode_FooBarBazContainer_Test {
                         "String>>>")
                 .hasChildrenOfSize(2);
 
-        final ClassNode fooValueNode = (ClassNode) NodeUtil.getChildNode(itemNode, "fooValue");
+        final ClassNode fooValueNode = (ClassNode) NodeUtils.getChildNode(itemNode, "fooValue");
         assertClassNode(fooValueNode)
                 .hasKlass(Object.class)
                 .hasEffectiveClass(Bar.class)
@@ -76,7 +76,7 @@ class ClassNode_FooBarBazContainer_Test {
                 .hasChildrenOfSize(1);
 
 
-        final ClassNode otherFooValueNode = (ClassNode) NodeUtil.getChildNode(itemNode, "otherFooValue");
+        final ClassNode otherFooValueNode = (ClassNode) NodeUtils.getChildNode(itemNode, "otherFooValue");
         assertClassNode(otherFooValueNode)
                 .hasKlass(Object.class)
                 .hasEffectiveClass(Object.class)

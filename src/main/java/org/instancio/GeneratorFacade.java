@@ -4,6 +4,7 @@ import org.instancio.generator.GeneratorMap;
 import org.instancio.generator.ValueGenerator;
 import org.instancio.model.ArrayNode;
 import org.instancio.model.ClassNode;
+import org.instancio.model.MapNode;
 import org.instancio.model.Node;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
@@ -16,12 +17,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
@@ -35,14 +32,10 @@ class GeneratorFacade {
         this.context = context;
     }
 
-    <C> GeneratorResult<C> generateNodeValue(Node node, Object owner) {
+    <C> C generateNodeValue(Node node, Object owner) {
         final Field field = node.getField();
 
-        if (field != null) {
-            LOG.debug("Creating value for field '{}', genericType: {}", field.getName(), field.getGenericType());
-        }
-
-        Optional<GeneratorResult<C>> optionalResult = attemptGenerateViaContext(field);
+        final Optional<C> optionalResult = attemptGenerateViaContext(field);
         if (optionalResult.isPresent()) {
             return optionalResult.get();
         }
@@ -50,7 +43,7 @@ class GeneratorFacade {
         final Class<?> effectiveType = node.getEffectiveType().getRawType();
 
         if (effectiveType.isPrimitive()) {
-            return new GeneratorResult<>((C) generatorMap.get(effectiveType).generate(), Collections.emptyList());
+            return (C) generatorMap.get(effectiveType).generate();
         }
 
         final Object ancestor = hierarchy.getAncestorWithClass(owner, effectiveType);
@@ -61,14 +54,13 @@ class GeneratorFacade {
             return null;
         }
 
-
         if (node instanceof ArrayNode) {
             return generateArray(node);
         }
 
         final ValueGenerator<?> generator = generatorMap.get(effectiveType);
 
-        final C value;
+        final Object result;
 
         if (generator == null) {
 
@@ -76,48 +68,32 @@ class GeneratorFacade {
                 return resolveImplementationAndGenerate(node, owner, effectiveType);
             }
 
-
-            value = (C) ReflectionUtils.instantiate(effectiveType);
-
-            List<CreateItem> fields = node.getChildren().stream()
-                    .map(n -> new CreateItem(n, value))
-                    .collect(toList());
-
-            return new GeneratorResult<>(value, fields);
+            result = ReflectionUtils.instantiate(effectiveType);
 
         } else {
-            LOG.debug("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
+            LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
 
             // If we already know how to generate this object, we don't need to collect its fields
-            value = (C) generator.generate();
-            LOG.trace("Generated {} using '{}' generator ", value, generator.getClass().getSimpleName());
+            result = generator.generate();
+            LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
         }
 
-        List<CreateItem> fields = node.getChildren().stream()
-                .map(n -> new CreateItem(n, value))
-                .collect(toList());
-
-        hierarchy.setAncestorOf(value, owner);
-        return new GeneratorResult<>(value, fields);
+        hierarchy.setAncestorOf(result, owner);
+        return (C) result;
     }
 
-    private <C> GeneratorResult<C> generateArray(Node node) {
+    private <C> C generateArray(Node node) {
         final Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
         final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
         final Object arrayObject = generator.generate();
-
-        final List<CreateItem> fields = node.getChildren().stream()
-                .map(n -> new CreateItem(n, arrayObject)) // XXX
-                .collect(toList());
-
-        return new GeneratorResult<>((C) arrayObject, fields);
+        return (C) arrayObject;
     }
 
     /**
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private <C> GeneratorResult<C> resolveImplementationAndGenerate(Node parentNode, Object owner, Class<?> interfaceClass) {
+    private <C> C resolveImplementationAndGenerate(Node parentNode, Object owner, Class<?> interfaceClass) {
         Verify.isTrue(!Collection.class.isAssignableFrom(interfaceClass)
                 && !Map.class.isAssignableFrom(interfaceClass), "Must not be a collection interface!");
 
@@ -139,25 +115,26 @@ class GeneratorFacade {
      * TODO: hierarchy.setAncestorOf(value, owner) must be done for all generated objects
      *  unless they are from JDK classes
      */
-    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(@Nullable Field field) {
+    private <C> Optional<C> attemptGenerateViaContext(@Nullable Field field) {
         if (field == null) return Optional.empty();
 
-        GeneratorResult<C> result = null;
         if (context.isNullable(field) && Random.trueOrFalse()) {
             // We can return a null 'GeneratorResult' or a null 'GeneratorResult.value'
             // Returning a null 'GeneratorResult.value' will ensure that a field value
             // will be overwritten with null. Otherwise, field value would retain its
             // old value (if one was assigned).
-            result = new GeneratorResult<>(null, Collections.emptyList());
-        } else if (context.getUserSuppliedFieldValueGenerators().containsKey(field)) {
+            return Optional.empty();
+        }
+
+        Object result = null;
+        if (context.getUserSuppliedFieldValueGenerators().containsKey(field)) {
             ValueGenerator<?> generator = context.getUserSuppliedFieldValueGenerators().get(field);
-            result = new GeneratorResult<>((C) generator.generate(), Collections.emptyList());
+            result = generator.generate();
         } else if (context.getUserSuppliedClassValueGenerators().containsKey(field.getType())) {
             ValueGenerator<?> generator = context.getUserSuppliedClassValueGenerators().get(field.getType());
-            // TODO need fields to enqueue instead of empty list??
-            result = new GeneratorResult<>((C) generator.generate(), Collections.emptyList());
+            result = generator.generate();
         }
-        return Optional.ofNullable(result);
+        return Optional.ofNullable((C) result);
     }
 
 }

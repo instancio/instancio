@@ -52,12 +52,17 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return this;
     }
 
+    public NodeAssert hasNullField() {
+        isNotNull();
+        assertThat(actual.getField()).isNull();
+        return this;
+    }
+
     public NodeAssert hasFieldName(String expected) {
         isNotNull();
         assertThat(actual.getField()).isNotNull();
         assertThat(actual.getField().getName()).isEqualTo(expected);
         return this;
-
     }
 
     public NodeAssert hasTypeMapWithSize(int expected) {

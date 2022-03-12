@@ -2,6 +2,7 @@ package org.instancio.model;
 
 import org.instancio.pojo.generics.container.Pair;
 import org.instancio.testsupport.tags.ModelTag;
+import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,14 +39,14 @@ class ClassNode_Pair_Test {
                 .hasParent(null)
                 .hasChildrenOfSize(2);
 
-        final ClassNode leftNode = (ClassNode) NodeUtil.getChildNode(rootNode, "left");
+        final ClassNode leftNode = (ClassNode) NodeUtils.getChildNode(rootNode, "left");
         assertClassNode(leftNode)
                 .hasKlass(Object.class)
                 .hasEffectiveClass(String.class)
                 .hasGenericTypeName("L")
                 .hasNoChildren();
 
-        final ClassNode rightNode = (ClassNode) NodeUtil.getChildNode(rootNode, "right");
+        final ClassNode rightNode = (ClassNode) NodeUtils.getChildNode(rootNode, "right");
         assertClassNode(rightNode)
                 .hasKlass(Object.class)
                 .hasEffectiveClass(Integer.class)

@@ -10,7 +10,6 @@ import java.util.List;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
-@ModelTag
 class NestedListsModelTest extends ModelTestTemplate<NestedLists> {
 
     @Override
@@ -22,6 +21,7 @@ class NestedListsModelTest extends ModelTestTemplate<NestedLists> {
         // List<List<String>>
         final CollectionNode outerListNode = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasNoChildren()
+                .hasFieldName("nested")
                 .hasEffectiveType(Types.LIST_LIST_STRING.getType())
                 .getAs(CollectionNode.class);
 
@@ -30,6 +30,7 @@ class NestedListsModelTest extends ModelTestTemplate<NestedLists> {
 
         assertNode(outerListElementNode)
                 .hasKlass(List.class)
+                .hasNullField()
                 .hasEffectiveType(Types.LIST_STRING.getType())
                 .hasNoChildren()
                 .getAs(CollectionNode.class);
@@ -37,6 +38,7 @@ class NestedListsModelTest extends ModelTestTemplate<NestedLists> {
         // String
         assertNode(outerListElementNode.getElementNode())
                 .hasKlass(String.class)
+                .hasNullField()
                 .hasNoChildren();
     }
 }

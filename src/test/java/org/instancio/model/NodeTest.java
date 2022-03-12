@@ -7,6 +7,7 @@ import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
 import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
 import org.instancio.testsupport.TypeReference;
 import org.instancio.testsupport.fixtures.Types;
+import org.instancio.testsupport.tags.ModelTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
+@ModelTag
 class NodeTest {
     private static final NodeContext EMPTY_CONTEXT = new NodeContext(Collections.emptyMap());
 

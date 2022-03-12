@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.joining;
-
 public abstract class Node {
     private static final Logger LOG = LoggerFactory.getLogger(Node.class);
 
@@ -150,8 +148,6 @@ public abstract class Node {
             ParameterizedType pType = (ParameterizedType) genericType;
             Type[] typeArgs = pType.getActualTypeArguments();
 
-//            LOG.debug("pType: {}", pType);
-//            LOG.debug("actualTypeArguments: {}", Arrays.toString(typeArgs));
 
             for (int i = 0; i < typeArgs.length; i++) {
                 TypeVariable<?> tvar = typeVars[i];
@@ -179,7 +175,7 @@ public abstract class Node {
                 }
             }
         } else {
-            LOG.debug("No generic info for: {}, genericType: {}", klass, genericType);
+            LOG.trace("No generic info for: {}, genericType: {}", klass, genericType);
         }
 
         return map;
@@ -190,30 +186,26 @@ public abstract class Node {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node other = (Node) o;
+//        String thisParentNodeName = this.getParent() == null ? null : this.getParent().getNodeName();
+//        String otherParentNodeName = other.getParent() == null ? null : other.getParent().getNodeName();
+
         return this.getKlass().equals(other.getKlass())
                 && Objects.equals(this.getGenericType(), other.getGenericType())
-                && Objects.equals(this.getParent(), other.getParent());
+                //&& Objects.equals(thisParentNodeName, otherParentNodeName)
+                ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKlass(), getGenericType(), getParent());
+        return Objects.hash(getKlass(), getGenericType());
     }
 
     @Override
     public final String toString() {
-        String s = "[" + this.getClass().getSimpleName() + ": " + getKlass().getSimpleName() + "\n";
-        s += " -> effectiveType: " + getEffectiveType() + "\n"
-                + " -> field: " + getField() + "\n"
-                + " -> typeMap: " + getTypeMap() + "\n";
-
-        if (children != null && !children.isEmpty())
-            s += " -> children (effective class): { " + children.stream()
-                    .map(it -> it.getEffectiveType().getRawType().getSimpleName())
-                    .collect(joining(", ")) + " }\n";
-
-        s += "]";
-        return s;
+        String fieldName = field == null ? "null" : field.getName();
+        String numChildren = String.format("[%s]", (children == null ? 0 : children.size()));
+        return this.getClass().getSimpleName() + numChildren + "["
+                + getEffectiveType() + ", field: " + fieldName + "]";
     }
 
     // TODO delete after testing

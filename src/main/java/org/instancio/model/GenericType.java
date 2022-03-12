@@ -45,7 +45,7 @@ public class GenericType {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", GenericType.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", "(", ")")
                 .add(rawType.getSimpleName())
                 .add(genericType == null ? null : genericType.toString())
                 .toString();

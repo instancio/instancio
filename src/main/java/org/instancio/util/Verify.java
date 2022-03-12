@@ -9,6 +9,10 @@ public final class Verify {
     private Verify() {
     }
 
+    public static <T> T notNull(final T object) {
+        return Objects.requireNonNull(object);
+    }
+
     public static <T> T notNull(final T object, final String message, final Object... values) {
         return Objects.requireNonNull(object, () -> String.format(message, values));
     }

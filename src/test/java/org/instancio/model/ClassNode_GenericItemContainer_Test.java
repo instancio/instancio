@@ -5,6 +5,7 @@ import org.instancio.pojo.generics.container.GenericItemContainer;
 import org.instancio.pojo.generics.container.Pair;
 import org.instancio.testsupport.tags.ModelTag;
 import org.instancio.testsupport.utils.CollectionUtils;
+import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,15 +52,15 @@ class ClassNode_GenericItemContainer_Test {
 
         assertPairValue(rootNode);
 
-        final Node pairArrayNode = NodeUtil.getChildNode(rootNode, "pairArray");
+        final Node pairArrayNode = NodeUtils.getChildNode(rootNode, "pairArray");
 
-        final Node pairListNode = NodeUtil.getChildNode(rootNode, "pairList");
+        final Node pairListNode = NodeUtils.getChildNode(rootNode, "pairList");
 
     }
 
     private void assertPairValue(Node rootNode) {
         // Pair<X, Y> pairValue
-        final Node pairValueNode = NodeUtil.getChildNode(rootNode, "pairValue");
+        final Node pairValueNode = NodeUtils.getChildNode(rootNode, "pairValue");
 
         assertNode(pairValueNode)
                 .hasParent(rootNode)
@@ -72,7 +73,7 @@ class ClassNode_GenericItemContainer_Test {
                 .hasTypeMapWithSize(4)
                 .hasChildrenOfSize(2);
 
-        assertNode(NodeUtil.getChildNode(pairValueNode, "left"))
+        assertNode(NodeUtils.getChildNode(pairValueNode, "left"))
                 .hasParent(pairValueNode)
                 .hasKlass(Object.class)
                 .hasEffectiveClass(String.class)
@@ -83,7 +84,7 @@ class ClassNode_GenericItemContainer_Test {
                 .hasTypeMapWithSize(4)
                 .hasNoChildren();
 
-        assertNode(NodeUtil.getChildNode(pairValueNode, "right"))
+        assertNode(NodeUtils.getChildNode(pairValueNode, "right"))
                 .hasParent(pairValueNode)
                 .hasKlass(Object.class)
                 .hasEffectiveClass(LocalDateTime.class)
@@ -96,7 +97,7 @@ class ClassNode_GenericItemContainer_Test {
     }
 
     private void assertItemsX(Node rootNode) {
-        final Node itemValueXNode = NodeUtil.getChildNode(rootNode, "itemValueX");
+        final Node itemValueXNode = NodeUtils.getChildNode(rootNode, "itemValueX");
         assertNode(itemValueXNode)
                 .hasParent(rootNode)
                 .hasKlass(GenericItem.class)
@@ -115,7 +116,7 @@ class ClassNode_GenericItemContainer_Test {
                 .hasTypeMapWithSize(2)
                 .hasNoChildren();
 
-        final CollectionNode itemListXNode = (CollectionNode) NodeUtil.getChildNode(rootNode, "itemListX");
+        final CollectionNode itemListXNode = (CollectionNode) NodeUtils.getChildNode(rootNode, "itemListX");
 
         assertNode(itemListXNode)
                 .hasParent(rootNode)
@@ -138,7 +139,7 @@ class ClassNode_GenericItemContainer_Test {
 
 
     private void assertItemsY(Node rootNode) {
-        final Node itemValueYNode = NodeUtil.getChildNode(rootNode, "itemValueY");
+        final Node itemValueYNode = NodeUtils.getChildNode(rootNode, "itemValueY");
         assertNode(itemValueYNode)
                 .hasParent(rootNode)
                 .hasKlass(GenericItem.class)
@@ -157,7 +158,7 @@ class ClassNode_GenericItemContainer_Test {
                 .hasTypeMapWithSize(2)
                 .hasNoChildren();
 
-        final CollectionNode itemListYNode = (CollectionNode) NodeUtil.getChildNode(rootNode, "itemListY");
+        final CollectionNode itemListYNode = (CollectionNode) NodeUtils.getChildNode(rootNode, "itemListY");
 
         assertNode(itemListYNode)
                 .hasParent(rootNode)
