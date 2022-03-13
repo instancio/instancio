@@ -41,7 +41,7 @@ public class ClassNode extends Node {
         return makeChildren(getNodeContext(), effectiveClass, effectiveGenericType);
     }
 
-    private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass, final Type genericType) {
+    private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass, @Nullable final Type genericType) {
 
         final NodeFactory nodeFactory = new NodeFactory();
 

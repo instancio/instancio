@@ -2,7 +2,7 @@ package org.instancio;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.pojo.generics.FooContainer;
-import org.instancio.pojo.generics.container.GenericItemContainer;
+import org.instancio.pojo.generics.container.ItemContainer;
 import org.instancio.pojo.person.Address;
 import org.junit.jupiter.api.Test;
 
@@ -45,11 +45,11 @@ public class InstancioGenericsTest {
 
     @Test
     void unboundTypeVariablesErrorMessage() {
-        assertThatThrownBy(() -> Instancio.of(GenericItemContainer.class).create())
+        assertThatThrownBy(() -> Instancio.of(ItemContainer.class).create())
                 .isInstanceOf(InstancioException.class)
                 .hasMessage("Generic class %s " +
                         "has 2 type parameters: [X, Y]. Please specify all type parameters using " +
-                        "'withType(Class... types)`", GenericItemContainer.class.getName());
+                        "'withType(Class... types)`", ItemContainer.class.getName());
 
         assertThatThrownBy(() -> Instancio.of(List.class).create())
                 .hasMessage("Generic class java.util.List has 1 type parameters: [E]." +

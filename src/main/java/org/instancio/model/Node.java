@@ -28,6 +28,7 @@ public abstract class Node {
     private final Node parent;
     private List<Node> children;
     private final Map<TypeVariable<?>, Type> typeMap;
+    private final GenericType effectiveType;
 
     Node(final NodeContext nodeContext,
          @Nullable final Field field,
@@ -41,6 +42,7 @@ public abstract class Node {
         this.genericType = genericType;
         this.parent = parent;
         this.typeMap = initTypeMap(klass, genericType);
+        this.effectiveType = initEffectiveType();
     }
 
     abstract List<Node> collectChildren();
@@ -65,6 +67,10 @@ public abstract class Node {
     }
 
     public GenericType getEffectiveType() {
+        return effectiveType;
+    }
+
+    private GenericType initEffectiveType() {
         if (genericType == null || (field != null && field.getGenericType() instanceof Class))
             return GenericType.of(klass);
 
@@ -82,7 +88,16 @@ public abstract class Node {
             }
         } else if (genericType instanceof ParameterizedType) {
             final ParameterizedType pType = (ParameterizedType) genericType;
-            final Type actualTypeArgument = pType.getActualTypeArguments()[0]; // XXX hardcoded
+            if (field != null) {
+                final Type fieldGenericType = field.getGenericType();
+                final Type mappedType = typeMap.getOrDefault(fieldGenericType, fieldGenericType);
+                if (getRootTypeMap().containsKey(mappedType)) {
+
+                    return GenericType.of(getRootTypeMap().get(mappedType) /* pass generic type?? */);
+                }
+            }
+
+            final Type actualTypeArgument = pType.getActualTypeArguments()[0]; // FIXME this is not breaking Pair<X,Y>
 
             if (actualTypeArgument instanceof Class) {
                 return GenericType.of((Class<?>) actualTypeArgument);

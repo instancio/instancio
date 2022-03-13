@@ -1,10 +1,10 @@
 package org.instancio.model;
 
-import org.instancio.pojo.generics.container.GenericItem;
-import org.instancio.pojo.generics.container.Pair;
-import org.instancio.pojo.generics.container.Triplet;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
+import org.instancio.pojo.generics.Item;
+import org.instancio.pojo.generics.Pair;
+import org.instancio.pojo.generics.Triplet;
+import org.instancio.pojo.generics.foobarbaz.Baz;
+import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.testsupport.TypeReference;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.tags.ModelTag;
@@ -81,6 +81,13 @@ class NodeTest {
         }
 
         @Test
+        void pairOfIntegerString() {
+            assertNode(createNode(Pair.class, rootTypeMap, Types.PAIR_INTEGER_STRING))
+                    .hasEffectiveClass(Pair.class)
+                    .hasEffectiveType(getTypeOf(Types.PAIR_INTEGER_STRING));
+        }
+
+        @Test
         void tripletOfBooleanStringInteger() {
             assertNode(createNode(Triplet.class, rootTypeMap, Types.TRIPLET_BOOLEAN_INTEGER_STRING))
                     .hasEffectiveClass(Triplet.class)
@@ -89,7 +96,7 @@ class NodeTest {
 
         @Test
         void pairOfGenericItemFooList() {
-            final TypeReference<?> typeRef = new TypeReference<Pair<GenericItem<Foo<List<Integer>>>, Map<Integer, Foo<String>>>>() {
+            final TypeReference<?> typeRef = new TypeReference<Pair<Item<Foo<List<Integer>>>, Map<Integer, Foo<String>>>>() {
             };
 
             assertNode(createNode(Pair.class, rootTypeMap, typeRef))
@@ -130,7 +137,7 @@ class NodeTest {
             final Type typeRefLeft = getTypeOf(Types.GENERIC_ITEM_STRING);
             final Type typeRefRight = getTypeOf(Types.FOO_LIST_INTEGER);
 
-            assertNode(createNode(Pair.class, rootTypeMap, new TypeReference<Pair<GenericItem<String>, Foo<List<Integer>>>>() {
+            assertNode(createNode(Pair.class, rootTypeMap, new TypeReference<Pair<Item<String>, Foo<List<Integer>>>>() {
             }))
                     .hasTypeMappedTo(getTypeVar(Pair.class, "L"), typeRefLeft)
                     .hasTypeMappedTo(getTypeVar(Pair.class, "R"), typeRefRight)

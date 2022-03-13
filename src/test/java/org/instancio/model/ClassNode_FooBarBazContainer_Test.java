@@ -1,9 +1,9 @@
 package org.instancio.model;
 
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.FooBarBazContainer;
+import org.instancio.pojo.generics.foobarbaz.Bar;
+import org.instancio.pojo.generics.foobarbaz.Baz;
+import org.instancio.pojo.generics.foobarbaz.Foo;
+import org.instancio.pojo.generics.foobarbaz.FooBarBazContainer;
 import org.instancio.testsupport.tags.ModelTag;
 import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.jupiter.api.BeforeEach;

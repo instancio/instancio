@@ -45,7 +45,7 @@ public class NodeFactory {
         } else if (Map.class.isAssignableFrom(klass)) {
             result = createMapNode(nodeContext, klass, genericType, field, parent);
         } else {
-            //result = createClassNode(nodeContext, klass, genericType, field, parent);
+//            result = createClassNode(nodeContext, klass, genericType, field, parent);
             result = new ClassNode(nodeContext, field, klass, genericType, parent);
         }
 
@@ -132,8 +132,14 @@ public class NodeFactory {
             }
 
             if (elementNode != null) {
-                Class<?> rawType = (Class<?>) pType.getRawType(); // Map.class and Map<> pType
-                result = new CollectionNode(nodeContext, field, rawType, pType, elementNode, parent);
+
+                // XXX handle with this properly
+                if (field != null) {
+                    result = new CollectionNode(nodeContext, field, (Class) ((ParameterizedType) field.getGenericType()).getRawType(), field.getGenericType(), elementNode, parent);
+                } else {
+                    Class<?> rawType = (Class<?>) pType.getRawType(); // Map.class and Map<> pType
+                    result = new CollectionNode(nodeContext, field, rawType, pType, elementNode, parent);
+                }
             } else {
                 LOG.warn("Could not resolve Collection element type.");
             }
@@ -260,13 +266,16 @@ public class NodeFactory {
 //                    Type mappedType = parent.getTypeMap().get(actualTypeArg);
 //                    LOG.debug("actualTypeArg '{}' mpapped to '{}'", ((TypeVariable<?>) actualTypeArg).getName(), mappedType);
 //                    if (mappedType instanceof Class) {
-//                        result = this.createNode(nodeContext, (Class<?>) mappedType, null, field, parent);
+//                        result = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
 //                    }
 //                }
 //
 //
 //            }
 //        }
+//
+//        if (result == null)
+//            return new ClassNode(nodeContext, field, klass, null, parent);
 //
 //        return result;
 //    }

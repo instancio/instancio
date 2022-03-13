@@ -4,15 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.instancio.pojo.generics.Pair;
+
+import java.util.List;
 
 @Getter
 @Setter
-public class GenericArrayContainer<X, Y> {
+public class PairListContainer<X, Y> {
 
-    private GenericItem<X>[] itemArrayX;
+    private List<Pair<X, Y>> pairList;
 
-    private GenericItem<Y>[] itemArrayY;
-
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }

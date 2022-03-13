@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.pojo.generics.container.GenericItemContainer;
+import org.instancio.pojo.generics.container.ItemContainer;
 import org.instancio.testsupport.tags.ModelTag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +13,9 @@ import java.util.Map;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 @ModelTag
-class FieldNode_GenericItemContainer_Test {
+class FieldNode_ItemContainer_Test {
 
-    private static final Class<GenericItemContainer> ROOT_CLASS = GenericItemContainer.class;
+    private static final Class<ItemContainer> ROOT_CLASS = ItemContainer.class;
 
     private NodeContext nodeContext;
 

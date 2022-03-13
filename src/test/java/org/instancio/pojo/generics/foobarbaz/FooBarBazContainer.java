@@ -1,4 +1,4 @@
-package org.instancio.pojo.generics.foobarbaz.itemcontainer;
+package org.instancio.pojo.generics.foobarbaz;
 
 import lombok.Getter;
 import lombok.Setter;
