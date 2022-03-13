@@ -87,16 +87,20 @@ public abstract class Node {
                 return GenericType.of(nodeContext.getRootTypeMap().get(mappedType), mappedType);
             }
         } else if (genericType instanceof ParameterizedType) {
-            final ParameterizedType pType = (ParameterizedType) genericType;
+
             if (field != null) {
                 final Type fieldGenericType = field.getGenericType();
                 final Type mappedType = typeMap.getOrDefault(fieldGenericType, fieldGenericType);
+                if (mappedType instanceof Class) {
+                    return GenericType.of((Class<?>) mappedType /*pass generic type? */);
+                }
                 if (getRootTypeMap().containsKey(mappedType)) {
 
                     return GenericType.of(getRootTypeMap().get(mappedType) /* pass generic type?? */);
                 }
             }
 
+            final ParameterizedType pType = (ParameterizedType) genericType;
             final Type actualTypeArgument = pType.getActualTypeArguments()[0]; // FIXME this is not breaking Pair<X,Y>
 
             if (actualTypeArgument instanceof Class) {

@@ -22,7 +22,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public <T extends Node> T getAs(Class<T> nodeType) {
         isNotNull();
-        assertThat(actual.getClass()).isEqualTo(nodeType);
+        assertThat(actual.getClass()).isAssignableFrom(nodeType);
         return nodeType.cast(actual);
     }
 

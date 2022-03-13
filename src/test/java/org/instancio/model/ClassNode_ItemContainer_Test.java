@@ -1,8 +1,8 @@
 package org.instancio.model;
 
-import org.instancio.pojo.generics.Item;
+import org.instancio.pojo.generics.basic.Item;
 import org.instancio.pojo.generics.container.ItemContainer;
-import org.instancio.pojo.generics.Pair;
+import org.instancio.pojo.generics.basic.Pair;
 import org.instancio.testsupport.tags.ModelTag;
 import org.instancio.testsupport.utils.CollectionUtils;
 import org.instancio.testsupport.utils.NodeUtils;

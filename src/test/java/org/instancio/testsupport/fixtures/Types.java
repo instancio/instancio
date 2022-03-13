@@ -1,8 +1,8 @@
 package org.instancio.testsupport.fixtures;
 
-import org.instancio.pojo.generics.Item;
-import org.instancio.pojo.generics.Pair;
-import org.instancio.pojo.generics.Triplet;
+import org.instancio.pojo.generics.basic.Item;
+import org.instancio.pojo.generics.basic.Pair;
+import org.instancio.pojo.generics.basic.Triplet;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.testsupport.TypeReference;
 

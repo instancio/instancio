@@ -1,18 +1,14 @@
-package org.instancio.pojo.generics.container;
+package org.instancio.pojo.generics;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.pojo.generics.basic.Pair;
 
-import java.util.List;
-
 @Getter
-@Setter
-public class PairListContainer<X, Y> {
+public class PairLongPairIntegerString {
 
-    private List<Pair<X, Y>> pairList;
+    private Pair<Long, Pair<Integer, String>> pairLongPairIntegerString;
 
     @Override
     public String toString() {

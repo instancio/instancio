@@ -1,6 +1,6 @@
 package org.instancio.creation.generics;
 
-import org.instancio.pojo.generics.FooContainer;
+import org.instancio.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
 
@@ -11,9 +11,9 @@ public class FooContainerCreationTest extends CreationTestTemplate<FooContainer>
 
     @Override
     protected void verify(FooContainer result) {
-        assertThat(result.getItem()).isNotNull();
-        assertThat(result.getItem().getFooValue()).isInstanceOf(String.class);
-        assertThat(result.getItem().getOtherFooValue()).isNotNull();
+        assertThat(result.getStringFoo()).isNotNull();
+        assertThat(result.getStringFoo().getFooValue()).isInstanceOf(String.class);
+        assertThat(result.getStringFoo().getOtherFooValue()).isNotNull();
     }
 
 }

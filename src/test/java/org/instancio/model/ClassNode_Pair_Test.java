@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.pojo.generics.Pair;
+import org.instancio.pojo.generics.basic.Pair;
 import org.instancio.testsupport.tags.ModelTag;
 import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.jupiter.api.BeforeEach;

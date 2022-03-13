@@ -1,6 +1,6 @@
 package org.instancio.creation.generics;
 
-import org.instancio.pojo.generics.Pair;
+import org.instancio.pojo.generics.basic.Pair;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
 
