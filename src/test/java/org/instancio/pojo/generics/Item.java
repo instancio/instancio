@@ -1,13 +1,11 @@
-package org.instancio.pojo.generics.container;
+package org.instancio.pojo.generics;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Getter
-@Setter
-public class GenericItem<K> {
+public class Item<K> {
     private K value;
 
     @Override

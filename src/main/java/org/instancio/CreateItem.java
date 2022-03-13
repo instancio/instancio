@@ -25,8 +25,8 @@ class CreateItem {
     @Override
     public String toString() {
         return new StringJoiner(", ", CreateItem.class.getSimpleName() + "[", "]")
-                .add("node=" + node)
-                .add("owner=" + owner.getClass().getName())
+                .add(node.toString())
+                .add("owner=" + owner.getClass().getSimpleName())
                 .toString();
     }
 }

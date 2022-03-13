@@ -14,11 +14,11 @@ public class ArrayNode extends Node {
     private final Node elementNode;
 
     public ArrayNode(final NodeContext nodeContext,
-                     final Field field,
+                     @Nullable final Field field,
                      final Class<?> klass,
-                     final Type genericType,
+                     @Nullable final Type genericType,
                      final Node elementNode,
-                     final Node parent) {
+                     @Nullable final Node parent) {
 
         super(nodeContext, field, klass, genericType, parent);
 

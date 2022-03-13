@@ -3,12 +3,12 @@ package org.instancio;
 import org.instancio.pojo.circular.HierarchyWithMultipleInterfaceImpls;
 import org.instancio.pojo.generics.FooContainer;
 import org.instancio.pojo.generics.container.GenericContainer;
-import org.instancio.pojo.generics.container.GenericItemContainer;
+import org.instancio.pojo.generics.container.ItemContainer;
 import org.instancio.pojo.interfaces.MultipleInterfaceImpls;
 import org.instancio.pojo.interfaces.SingleInterfaceImpl;
-import org.instancio.pojo.maps.IntegerStringMap;
-import org.instancio.pojo.maps.StringPersonMap;
-import org.instancio.pojo.maps.WithMiscMapInterfaces;
+import org.instancio.pojo.collections.IntegerStringMap;
+import org.instancio.pojo.collections.StringPersonMap;
+import org.instancio.pojo.collections.WithMiscMapInterfaces;
 import org.instancio.pojo.person.Gender;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
@@ -236,7 +236,7 @@ class InstancioTest {
                 //.withGenericType(String.class)
                 .create();
 
-        Instancio.of(GenericItemContainer.class)
+        Instancio.of(ItemContainer.class)
                 //.withGenericType(Integer.class, String.class)
                 .create();
 

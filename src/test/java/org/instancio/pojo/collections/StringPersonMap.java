@@ -1,4 +1,4 @@
-package org.instancio.pojo.maps;
+package org.instancio.pojo.collections;
 
 import lombok.Getter;
 import lombok.ToString;

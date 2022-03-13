@@ -1,16 +1,16 @@
-package org.instancio.pojo.generics.outermidinner;
+package org.instancio.pojo.generics.container;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.instancio.pojo.generics.Item;
 
 @Getter
-public class ListOfOuterMidInnerString {
-
-    private List<Outer<Mid<Inner<String>>>> rootList = new ArrayList<>();
+@Setter
+public class ItemContainer<X, Y> {
+    private Item<X> itemValueX;
+    private Item<Y> itemValueY;
 
     @Override
     public String toString() {

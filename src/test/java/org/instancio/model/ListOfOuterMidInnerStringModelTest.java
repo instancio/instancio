@@ -3,35 +3,24 @@ package org.instancio.model;
 import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
 import org.instancio.pojo.generics.outermidinner.Mid;
 import org.instancio.pojo.generics.outermidinner.Outer;
-import org.instancio.testsupport.tags.ModelTag;
-import org.junit.jupiter.api.Test;
+import org.instancio.testsupport.templates.ModelTestTemplate;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
+import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
-@ModelTag
-class FieldNode_ListOfOuterMidInnerString_Test {
+class ListOfOuterMidInnerStringModelTest extends ModelTestTemplate<ListOfOuterMidInnerString> {
 
-    private final NodeContext nodeContext = new NodeContext(Collections.emptyMap());
-
-    // TODO cleanup
-    @Test
-    void rootList() {
-
-        NodeFactory nodeFactory = new NodeFactory();
-
-        final String rootField = "rootList";
-
-        Node rootNode = nodeFactory.createNode(nodeContext, ListOfOuterMidInnerString.class, null, null, null);
+    @Override
+    protected void verify(Node rootNode) {
 
         // List<Outer<Mid<Inner<String>>>> rootList
         assertNode(rootNode)
                 .hasParent(null)
-                //.hasFieldName(rootField)
-                //.hasTypeMappedTo(getTypeVar(List.class, "E"), Outer.class)
-                //.hasTypeMapWithSize(1)
+                .hasFieldName("rootList")
+                .hasTypeMappedTo(getTypeVar(List.class, "E"), Outer.class)
+                .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1);
 
         // list: List<Outer<Mid<Inner<String>>>> rootList

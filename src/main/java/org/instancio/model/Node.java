@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.joining;
-
 public abstract class Node {
     private static final Logger LOG = LoggerFactory.getLogger(Node.class);
 
@@ -30,6 +28,7 @@ public abstract class Node {
     private final Node parent;
     private List<Node> children;
     private final Map<TypeVariable<?>, Type> typeMap;
+    private final GenericType effectiveType;
 
     Node(final NodeContext nodeContext,
          @Nullable final Field field,
@@ -43,6 +42,7 @@ public abstract class Node {
         this.genericType = genericType;
         this.parent = parent;
         this.typeMap = initTypeMap(klass, genericType);
+        this.effectiveType = initEffectiveType();
     }
 
     abstract List<Node> collectChildren();
@@ -57,6 +57,7 @@ public abstract class Node {
         return field;
     }
 
+    // TODO rename to avoid confusion with getClass()
     public Class<?> getKlass() {
         return klass;
     }
@@ -66,6 +67,10 @@ public abstract class Node {
     }
 
     public GenericType getEffectiveType() {
+        return effectiveType;
+    }
+
+    private GenericType initEffectiveType() {
         if (genericType == null || (field != null && field.getGenericType() instanceof Class))
             return GenericType.of(klass);
 
@@ -83,7 +88,16 @@ public abstract class Node {
             }
         } else if (genericType instanceof ParameterizedType) {
             final ParameterizedType pType = (ParameterizedType) genericType;
-            final Type actualTypeArgument = pType.getActualTypeArguments()[0]; // XXX hardcoded
+            if (field != null) {
+                final Type fieldGenericType = field.getGenericType();
+                final Type mappedType = typeMap.getOrDefault(fieldGenericType, fieldGenericType);
+                if (getRootTypeMap().containsKey(mappedType)) {
+
+                    return GenericType.of(getRootTypeMap().get(mappedType) /* pass generic type?? */);
+                }
+            }
+
+            final Type actualTypeArgument = pType.getActualTypeArguments()[0]; // FIXME this is not breaking Pair<X,Y>
 
             if (actualTypeArgument instanceof Class) {
                 return GenericType.of((Class<?>) actualTypeArgument);
@@ -149,8 +163,6 @@ public abstract class Node {
             ParameterizedType pType = (ParameterizedType) genericType;
             Type[] typeArgs = pType.getActualTypeArguments();
 
-//            LOG.debug("pType: {}", pType);
-//            LOG.debug("actualTypeArguments: {}", Arrays.toString(typeArgs));
 
             for (int i = 0; i < typeArgs.length; i++) {
                 TypeVariable<?> tvar = typeVars[i];
@@ -178,7 +190,7 @@ public abstract class Node {
                 }
             }
         } else {
-            LOG.debug("No generic info for: {}, genericType: {}", klass, genericType);
+            LOG.trace("No generic info for: {}, genericType: {}", klass, genericType);
         }
 
         return map;
@@ -189,30 +201,26 @@ public abstract class Node {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node other = (Node) o;
+//        String thisParentNodeName = this.getParent() == null ? null : this.getParent().getNodeName();
+//        String otherParentNodeName = other.getParent() == null ? null : other.getParent().getNodeName();
+
         return this.getKlass().equals(other.getKlass())
                 && Objects.equals(this.getGenericType(), other.getGenericType())
-                && Objects.equals(this.getParent(), other.getParent());
+                //&& Objects.equals(thisParentNodeName, otherParentNodeName)
+                ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKlass(), getGenericType(), getParent());
+        return Objects.hash(getKlass(), getGenericType());
     }
 
     @Override
     public final String toString() {
-        String s = "[" + this.getClass().getSimpleName() + ": " + getKlass().getSimpleName() + "\n";
-        s += " -> effectiveType: " + getEffectiveType() + "\n"
-                + " -> field: " + getField() + "\n"
-                + " -> typeMap: " + getTypeMap() + "\n";
-
-        if (getChildren() != null)
-            s += " -> children (effective class): { " + getChildren().stream()
-                    .map(it -> it.getEffectiveType().getRawType().getSimpleName())
-                    .collect(joining(", ")) + " }\n";
-
-        s += "]";
-        return s;
+        String fieldName = field == null ? "null" : field.getName();
+        String numChildren = String.format("[%s]", (children == null ? 0 : children.size()));
+        return this.getClass().getSimpleName() + numChildren + "["
+                + getEffectiveType() + ", field: " + fieldName + "]";
     }
 
     // TODO delete after testing

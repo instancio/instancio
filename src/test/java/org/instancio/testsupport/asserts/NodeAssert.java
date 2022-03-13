@@ -20,6 +20,13 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return new NodeAssert(actual);
     }
 
+    public <T extends Node> T getAs(Class<T> nodeType) {
+        isNotNull();
+        assertThat(actual.getClass()).isEqualTo(nodeType);
+        return nodeType.cast(actual);
+    }
+
+
     public NodeAssert hasKlass(Class<?> expected) {
         isNotNull();
         assertThat(actual.getKlass()).isEqualTo(expected);
@@ -45,12 +52,17 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return this;
     }
 
+    public NodeAssert hasNullField() {
+        isNotNull();
+        assertThat(actual.getField()).isNull();
+        return this;
+    }
+
     public NodeAssert hasFieldName(String expected) {
         isNotNull();
         assertThat(actual.getField()).isNotNull();
         assertThat(actual.getField().getName()).isEqualTo(expected);
         return this;
-
     }
 
     public NodeAssert hasTypeMapWithSize(int expected) {
@@ -61,12 +73,27 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return this;
     }
 
-    public NodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, Type typeMapping) {
+    public NodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, Type expectedMapping) {
         isNotNull();
         final Map<TypeVariable<?>, Type> typeMap = actual.getTypeMap();
-        assertThat(typeMap.get(typeVariable))
+        final Type actualMapping = typeMap.get(typeVariable);
+
+        assertThat(actualMapping)
                 .as("Actual type map: %s", typeMap)
-                .isEqualTo(typeMapping);
+                .isEqualTo(expectedMapping);
+        return this;
+    }
+
+    public NodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, String expectedMappingAsString) {
+        isNotNull();
+        final Map<TypeVariable<?>, Type> typeMap = actual.getTypeMap();
+        final Type actualMapping = typeMap.get(typeVariable);
+
+        assertThat(actualMapping)
+                .as("Actual type map: %s", typeMap)
+                .isNotNull()
+                .extracting(Object::toString)
+                .isEqualTo(expectedMappingAsString);
         return this;
     }
 

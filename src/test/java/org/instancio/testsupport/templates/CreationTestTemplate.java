@@ -1,7 +1,6 @@
 package org.instancio.testsupport.templates;
 
 import org.instancio.Instancio;
-import org.instancio.testsupport.asserts.ReflectionAssert;
 import org.instancio.testsupport.tags.CreateTag;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
@@ -12,14 +11,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 /**
@@ -42,22 +40,28 @@ public abstract class CreationTestTemplate<T> {
     private Class<?>[] typeArguments;
 
     @BeforeAll
-    protected void creationTemplateSetup() {
-        final Class<?> klass = this.getClass();
-        final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
-        final Type typeToCreate = genericSuperclass.getActualTypeArguments()[0];
+    protected final void templateSetup() {
+        TypeContext typeContext = new TypeContext(this.getClass());
+        typeClass = typeContext.getTypeClass();
+        typeArguments = typeContext.getTypeArguments();
+    }
 
-        this.typeClass = typeToCreate instanceof ParameterizedType
-                ? (Class<?>) ((ParameterizedType) typeToCreate).getRawType()
-                : (Class<?>) typeToCreate;
+    /**
+     * Kicks off the test method.
+     */
+    @MethodSource("instancioCreatedObjects")
+    @ParameterizedTest(name = "{index}: {0}")
+    protected final void verifyingGenerated(Object result) {
+        assertThat(result).isNotNull();
 
-        final Type[] actualTypeArgs = typeToCreate instanceof ParameterizedType
-                ? ((ParameterizedType) typeToCreate).getActualTypeArguments()
-                : new Type[0];
+        verify((T) result); // manual verification
 
-        this.typeArguments = Arrays.stream(actualTypeArgs)
-                .map(it -> (Class<?>) it)
-                .toArray(Class<?>[]::new);
+        if (isAutoVerificationEnabled()) {
+            assertThatObject(result)
+                    .as("Auto-verification failed for object of class '%s':\n%s",
+                            result.getClass().getName(), result)
+                    .isFullyPopulated();
+        }
     }
 
     /**
@@ -67,30 +71,15 @@ public abstract class CreationTestTemplate<T> {
      */
     protected abstract void verify(T result);
 
-    /**
-     * Kicks off the test method.
-     */
-    @MethodSource("generatedObjectSource")
-    @ParameterizedTest(name = "{index}: {0}")
-    protected final void verifyingGenerated(Object result) {
-        assertThat(result).isNotNull();
-
-        verify((T) result); // manual verification
-
-        if (isAutoVerificationEnabled()) {
-            ReflectionAssert.assertThatObject(result)
-                    .as("Auto-verification failed for object of class '%s':\n%s",
-                            result.getClass().getName(), result)
-                    .isFullyPopulated();
-        }
-    }
-
-    private Stream<Arguments> generatedObjectSource() {
+    private Stream<Arguments> instancioCreatedObjects() {
         final String displayName = getTestDisplayName();
         final Arguments[] arguments = new Arguments[numberOfExecutions()];
 
         for (int i = 0; i < arguments.length; i++) {
-            T result = (T) Instancio.of(typeClass).withType(typeArguments).create();
+            Object result = Instancio.of(typeClass)
+                    .withType(typeArguments)
+                    .create();
+
             arguments[i] = Arguments.of(Named.of(displayName, result));
         }
 
@@ -137,6 +126,5 @@ public abstract class CreationTestTemplate<T> {
             throw new AssertionError("Could not get number of executions", ex);
         }
     }
-
 
 }

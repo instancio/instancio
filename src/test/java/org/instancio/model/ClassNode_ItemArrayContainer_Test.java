@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.pojo.generics.container.GenericArrayContainer;
+import org.instancio.pojo.generics.container.ItemArrayContainer;
 import org.instancio.testsupport.tags.ModelTag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,9 +14,9 @@ import static org.assertj.core.api.Fail.fail;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 @ModelTag
-class ClassNode_GenericArrayContainer_Test {
+class ClassNode_ItemArrayContainer_Test {
 
-    private static final Class<GenericArrayContainer> ROOT_CLASS = GenericArrayContainer.class;
+    private static final Class<ItemArrayContainer> ROOT_CLASS = ItemArrayContainer.class;
 
     private NodeContext nodeContext;
 

@@ -1,14 +1,14 @@
 package org.instancio.creation.generics;
 
 import org.instancio.pojo.generics.MiscFields;
-import org.instancio.pojo.generics.container.Pair;
-import org.instancio.pojo.generics.container.Triplet;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Bar;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Baz;
-import org.instancio.pojo.generics.foobarbaz.itemcontainer.Foo;
+import org.instancio.pojo.generics.Pair;
+import org.instancio.pojo.generics.Triplet;
+import org.instancio.pojo.generics.foobarbaz.Bar;
+import org.instancio.pojo.generics.foobarbaz.Baz;
+import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.testsupport.Constants;
-import org.instancio.testsupport.templates.CreationTestTemplate;
 import org.instancio.testsupport.tags.GenericsTag;
+import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,13 +21,11 @@ public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID
     @Override
     protected void verify(MiscFields<UUID, String, Long> result) {
         assertArrayOfCs(result);
-        assertArrayOfInts(result);
         assertFieldA(result);
         assertFooBarBazString(result);
         assertFooBarPairBC(result);
         assertListOfBazStrings(result);
         assertListOfCs(result);
-        assertListOfFoo_ListOfBar_ListOfBaz_ListOfString(result);
         assertPairAB(result);
         assertPairAFooBarB(result);
         assertPairAPairIntegerString(result);
@@ -36,29 +34,6 @@ public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID
         assertPairFooBarStringB(result);
         assertPairLongPairIntegerString(result);
         assertTripletA_FooBarBazString_ListOfC(result);
-    }
-
-    private void assertListOfFoo_ListOfBar_ListOfBaz_ListOfString(MiscFields<?, ?, ?> result) {
-        // List<Foo<List<Bar<List<Baz<List<String>>>>>>> listOfFoo_ListOfBar_ListOfBaz_ListOfString
-
-        final List<Foo<List<Bar<List<Baz<List<String>>>>>>> list = result.getListOfFoo_ListOfBar_ListOfBaz_ListOfString();
-        assertThat(list)
-                // List<Foo>
-                .isInstanceOf(List.class)
-                .hasSize(Constants.COLLECTION_SIZE)
-                .hasOnlyElementsOfType(Foo.class)
-                .allSatisfy(foo -> assertThat(foo.getFooValue())
-                        // List<Bar>
-                        .isInstanceOf(List.class)
-                        .hasSize(Constants.COLLECTION_SIZE)
-                        .hasOnlyElementsOfType(Bar.class)
-                        .allSatisfy(bar -> assertThat(bar.getBarValue())
-                                // List<Baz>
-                                .isInstanceOf(List.class)
-                                .hasSize(Constants.COLLECTION_SIZE)
-                                .hasOnlyElementsOfType(Baz.class)
-                                .allSatisfy(str -> assertThat(str)
-                                        .isInstanceOf(String.class))));
     }
 
     private void assertFooBarBazString(MiscFields<?, ?, ?> result) {
@@ -82,11 +57,6 @@ public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID
                     assertThat(pair.getLeft()).isInstanceOf(String.class);
                     assertThat(pair.getRight()).isInstanceOf(Long.class);
                 });
-    }
-
-    private void assertArrayOfInts(MiscFields<?, ?, ?> result) {
-        assertThat(result.getArrayOfInts()).isInstanceOf(int[].class)
-                .hasSize(Constants.ARRAY_SIZE);
     }
 
     private void assertArrayOfCs(MiscFields<?, ?, ?> result) {

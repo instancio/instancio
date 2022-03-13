@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -42,27 +41,16 @@ public class ClassNode extends Node {
         return makeChildren(getNodeContext(), effectiveClass, effectiveGenericType);
     }
 
-    private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass, final Type genericType) {
+    private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass, @Nullable final Type genericType) {
 
         final NodeFactory nodeFactory = new NodeFactory();
 
         return Arrays.stream(klass.getDeclaredFields())
                 .filter(f -> !Modifier.isStatic(f.getModifiers()))
                 .map(field -> {
-                    /// TOGGLE
-                    Type passedOnGenericType;
-                    if (genericType instanceof ParameterizedType) {
-                        passedOnGenericType = genericType;
-                    } else {
-                        passedOnGenericType = field.getGenericType();
-//                    Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
+                    Type passedOnGenericType = ObjectUtils.defaultIfNull(genericType, field.getGenericType());
 
-                        if (passedOnGenericType instanceof TypeVariable && getTypeMap().containsKey(passedOnGenericType)) {
-                            passedOnGenericType = getTypeMap().get(passedOnGenericType);
-                        }
-                    }
-
-                    LOG.debug("Passing generic type to child field node: {}", passedOnGenericType);
+                    LOG.trace("Passing generic type to child field node: {}", passedOnGenericType);
                     return nodeFactory.createNode(nodeContext, field.getType(), passedOnGenericType, field, this);
                 })
                 .filter(it -> getNodeContext().isUnvisited(it))
