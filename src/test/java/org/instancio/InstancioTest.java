@@ -1,14 +1,15 @@
 package org.instancio;
 
 import org.instancio.pojo.circular.HierarchyWithMultipleInterfaceImpls;
-import org.instancio.pojo.generics.FooContainer;
-import org.instancio.pojo.generics.container.GenericContainer;
-import org.instancio.pojo.generics.container.ItemContainer;
-import org.instancio.pojo.interfaces.MultipleInterfaceImpls;
-import org.instancio.pojo.interfaces.SingleInterfaceImpl;
 import org.instancio.pojo.collections.IntegerStringMap;
 import org.instancio.pojo.collections.StringPersonMap;
 import org.instancio.pojo.collections.WithMiscMapInterfaces;
+import org.instancio.pojo.generics.container.GenericContainer;
+import org.instancio.pojo.generics.container.ItemContainer;
+import org.instancio.pojo.generics.foobarbaz.Foo;
+import org.instancio.pojo.generics.foobarbaz.FooContainer;
+import org.instancio.pojo.interfaces.MultipleInterfaceImpls;
+import org.instancio.pojo.interfaces.SingleInterfaceImpl;
 import org.instancio.pojo.person.Gender;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
@@ -247,7 +248,7 @@ class InstancioTest {
 
         Instancio.of(FooContainer.class)
                 .with("item", () -> {
-                    FooContainer.Foo<String> foo = new FooContainer.Foo<>();
+                    Foo<String> foo = new Foo<>();
                     foo.setFooValue("test");
                     return foo;
                 })

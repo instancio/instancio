@@ -17,26 +17,35 @@ public class ListFooListBarListBazListStringCreationTest extends CreationTestTem
 
     @Override
     protected void verify(ListFooListBarListBazListString result) {
-        // List<Foo<List<Bar<List<Baz<List<String>>>>>>>
-
         final List<Foo<List<Bar<List<Baz<List<String>>>>>>> list = result.getListOfFoo_ListOfBar_ListOfBaz_ListOfString();
+
         assertThat(list)
                 // List<Foo>
                 .isInstanceOf(List.class)
                 .hasSize(Constants.COLLECTION_SIZE)
-                .hasOnlyElementsOfType(Foo.class)
+                .hasOnlyElementsOfType(Foo.class);
+
+        assertThat(list)
+                .extracting(Foo::getOtherFooValue)
+                .allSatisfy(it -> assertThat(it).isExactlyInstanceOf(Object.class));
+
+        assertThat(list)
+                // Foo
                 .allSatisfy(foo -> assertThat(foo.getFooValue())
-                        // List<Bar>
                         .isInstanceOf(List.class)
                         .hasSize(Constants.COLLECTION_SIZE)
                         .hasOnlyElementsOfType(Bar.class)
+                        // Bar
                         .allSatisfy(bar -> assertThat(bar.getBarValue())
-                                // List<Baz>
                                 .isInstanceOf(List.class)
                                 .hasSize(Constants.COLLECTION_SIZE)
                                 .hasOnlyElementsOfType(Baz.class)
-                                .allSatisfy(str -> assertThat(str)
-                                        .isInstanceOf(String.class))));
+                                // Baz
+                                .allSatisfy(baz -> assertThat(baz.getBazValue())
+                                        .isInstanceOf(List.class)
+                                        .hasSize(Constants.COLLECTION_SIZE)
+                                        .hasOnlyElementsOfType(String.class))));
+
     }
 
 }

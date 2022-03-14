@@ -1,8 +1,9 @@
 package org.instancio;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.pojo.generics.FooContainer;
 import org.instancio.pojo.generics.container.ItemContainer;
+import org.instancio.pojo.generics.foobarbaz.Foo;
+import org.instancio.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.pojo.person.Address;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class InstancioGenericsTest {
+class InstancioGenericsTest {
 
     @Test
     void address() {
@@ -30,16 +31,16 @@ public class InstancioGenericsTest {
     void fooContainerWithUserSuppliedInstance() {
         FooContainer result = Instancio.of(FooContainer.class)
                 .with("item", () -> {
-                    FooContainer.Foo<String> foo = new FooContainer.Foo<>();
+                    Foo<String> foo = new Foo<>();
                     foo.setFooValue("test");
                     return foo;
                 })
                 .create();
 
         assertThat(result).isNotNull();
-        assertThat(result.getItem()).isNotNull();
-        assertThat(result.getItem().getFooValue()).isNotNull().isInstanceOf(String.class);
-        assertThat(result.getItem().getOtherFooValue()).as("Value was not set").isNull();
+        assertThat(result.getStringFoo()).isNotNull();
+        assertThat(result.getStringFoo().getFooValue()).isNotNull().isInstanceOf(String.class);
+        assertThat(result.getStringFoo().getOtherFooValue()).as("Value was not set").isNull();
     }
 
 

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.instancio.pojo.generics.Item;
+import org.instancio.pojo.generics.basic.Item;
 
 import java.util.List;
 

@@ -3,13 +3,12 @@ package org.instancio.pojo.generics.foobarbaz;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import java.util.List;
+import org.instancio.pojo.generics.basic.Pair;
 
 @Getter
-public class ListFooListBarListBazListString {
+public class PairAFooBarB<A, B> {
 
-    private List<Foo<List<Bar<List<Baz<List<String>>>>>>> listOfFoo_ListOfBar_ListOfBaz_ListOfString;
+    private Pair<A, Foo<Bar<B>>> pairAFooBarB;
 
     @Override
     public String toString() {

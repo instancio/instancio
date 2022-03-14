@@ -1,8 +1,7 @@
 package org.instancio.creation.generics;
 
 import org.instancio.pojo.generics.MiscFields;
-import org.instancio.pojo.generics.Pair;
-import org.instancio.pojo.generics.Triplet;
+import org.instancio.pojo.generics.basic.Pair;
 import org.instancio.pojo.generics.foobarbaz.Bar;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
@@ -27,13 +26,8 @@ public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID
         assertListOfBazStrings(result);
         assertListOfCs(result);
         assertPairAB(result);
-        assertPairAFooBarB(result);
-        assertPairAPairIntegerString(result);
-        assertPairAString(result);
         assertPairBA(result);
         assertPairFooBarStringB(result);
-        assertPairLongPairIntegerString(result);
-        assertTripletA_FooBarBazString_ListOfC(result);
     }
 
     private void assertFooBarBazString(MiscFields<?, ?, ?> result) {
@@ -80,53 +74,6 @@ public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID
                 .hasOnlyElementsOfType(Long.class);
     }
 
-    private void assertPairAString(MiscFields<?, ?, ?> result) {
-        assertThat(result.getPairAString()).isInstanceOf(Pair.class)
-                .satisfies(pair -> {
-                    assertThat(pair.getLeft()).isInstanceOf(UUID.class);
-                    assertThat(pair.getRight()).isInstanceOf(String.class);
-                });
-    }
-
-    private void assertPairAFooBarB(MiscFields<?, ?, ?> result) {
-        // Pair<A, Foo<Bar<B>>> pairAFooBarB
-
-        assertThat(result.getPairAFooBarB()).isInstanceOf(Pair.class);
-        assertThat(result.getPairAFooBarB().getLeft()).isInstanceOf(UUID.class);
-        assertThat(result.getPairAFooBarB().getRight()).isInstanceOf(Foo.class)
-                .satisfies(foo -> {
-                    assertThat(foo.getOtherFooValue()).isExactlyInstanceOf(Object.class);
-                    assertThat(foo.getFooValue()).isInstanceOf(Bar.class)
-                            .satisfies(bar -> {
-                                assertThat(bar.getOtherBarValue()).isExactlyInstanceOf(Object.class);
-                                assertThat(bar.getBarValue()).isInstanceOf(String.class);
-                            });
-                });
-    }
-
-    private void assertTripletA_FooBarBazString_ListOfC(MiscFields<?, ?, ?> result) {
-        //Triplet<A, Foo<Bar<Baz<String>>>, List<C>> tripletA_FooBarBazString_ListOfC
-
-        final Triplet<?, Foo<Bar<Baz<String>>>, ? extends List<?>> triplet = result.getTripletA_FooBarBazString_ListOfC();
-        assertThat(triplet).isInstanceOf(Triplet.class);
-
-        assertThat(triplet.getLeft()).isInstanceOf(UUID.class);
-
-        assertThat(triplet.getMid()).isInstanceOf(Foo.class).satisfies(foo -> {
-            assertThat(foo.getOtherFooValue()).isExactlyInstanceOf(Object.class);
-            assertThat(foo.getFooValue()).isInstanceOf(Bar.class)
-                    .satisfies(bar -> {
-                        assertThat(bar.getOtherBarValue()).isExactlyInstanceOf(Object.class);
-                        assertThat(bar.getBarValue()).isInstanceOf(Baz.class)
-                                .satisfies(baz -> assertThat(baz.getBazValue()).isInstanceOf(String.class).isNotBlank());
-                    });
-        });
-
-        assertThat(triplet.getRight()).isInstanceOf(List.class)
-                .hasSize(Constants.COLLECTION_SIZE)
-                .hasOnlyElementsOfType(Long.class);
-    }
-
     private void assertPairFooBarStringB(MiscFields<?, ?, ?> result) {
         // Pair<Foo<Bar<String>>, B> pairFooBarStringB
 
@@ -139,28 +86,6 @@ public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID
         assertThat(left.getFooValue().getOtherBarValue()).isNotNull();
 
         assertThat(result.getPairFooBarStringB().getRight()).isInstanceOf(String.class);
-    }
-
-    private void assertPairAPairIntegerString(MiscFields<?, ?, ?> result) {
-        assertThat(result.getPairAPairIntegerString()).isInstanceOf(Pair.class).satisfies(pair -> {
-            assertThat(pair.getLeft()).isInstanceOf(UUID.class);
-            assertThat(pair.getRight()).isInstanceOf(Pair.class).satisfies(nestedPair -> {
-                assertThat(nestedPair.getLeft()).isInstanceOf(Integer.class);
-                assertThat(nestedPair.getRight()).isInstanceOf(String.class);
-            });
-        });
-    }
-
-    private void assertPairLongPairIntegerString(MiscFields<?, ?, ?> result) {
-        assertThat(result.getPairLongPairIntegerString()).isInstanceOf(Pair.class);
-        assertThat(result.getPairLongPairIntegerString().getLeft()).isInstanceOf(Long.class);
-
-        final Pair<Integer, String> nestedPair = result.getPairLongPairIntegerString().getRight();
-
-        assertThat(nestedPair).satisfies(pair -> {
-            assertThat(pair.getLeft()).isInstanceOf(Integer.class);
-            assertThat(pair.getRight()).isInstanceOf(String.class);
-        });
     }
 
     private void assertPairBA(MiscFields<?, ?, ?> result) {

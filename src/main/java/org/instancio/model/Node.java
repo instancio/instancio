@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +27,7 @@ public abstract class Node {
     private final Type genericType;
     private final Node parent;
     private List<Node> children;
-    private final Map<TypeVariable<?>, Type> typeMap;
+    private final Map<Type, Type> typeMap;
     private final GenericType effectiveType;
 
     Node(final NodeContext nodeContext,
@@ -41,7 +41,9 @@ public abstract class Node {
         this.klass = Verify.notNull(klass, "klass is null");
         this.genericType = genericType;
         this.parent = parent;
-        this.typeMap = initTypeMap(klass, genericType);
+        this.typeMap = new TypeMapResolver(nodeContext.getRootTypeMap(),
+                ObjectUtils.defaultIfNull(genericType, klass)).getTypeMap();
+
         this.effectiveType = initEffectiveType();
     }
 
@@ -87,16 +89,20 @@ public abstract class Node {
                 return GenericType.of(nodeContext.getRootTypeMap().get(mappedType), mappedType);
             }
         } else if (genericType instanceof ParameterizedType) {
-            final ParameterizedType pType = (ParameterizedType) genericType;
+
             if (field != null) {
                 final Type fieldGenericType = field.getGenericType();
                 final Type mappedType = typeMap.getOrDefault(fieldGenericType, fieldGenericType);
+                if (mappedType instanceof Class) {
+                    return GenericType.of((Class<?>) mappedType /*pass generic type? */);
+                }
                 if (getRootTypeMap().containsKey(mappedType)) {
 
                     return GenericType.of(getRootTypeMap().get(mappedType) /* pass generic type?? */);
                 }
             }
 
+            final ParameterizedType pType = (ParameterizedType) genericType;
             final Type actualTypeArgument = pType.getActualTypeArguments()[0]; // FIXME this is not breaking Pair<X,Y>
 
             if (actualTypeArgument instanceof Class) {
@@ -123,7 +129,7 @@ public abstract class Node {
         return parent;
     }
 
-    public Map<TypeVariable<?>, Type> getTypeMap() {
+    public Map<Type, Type> getTypeMap() {
         return typeMap;
     }
 
@@ -146,54 +152,6 @@ public abstract class Node {
 
     protected final Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
         return nodeContext.getRootTypeMap();
-    }
-
-    private Map<TypeVariable<?>, Type> initTypeMap(Class<?> klass, @Nullable final Type genericType) {
-
-        // FIXME test hack
-        if (genericType instanceof ParameterizedType) {
-            klass = (Class<?>) ((ParameterizedType) genericType).getRawType();
-        }
-
-        final Map<TypeVariable<?>, Type> map = new HashMap<>();
-        final TypeVariable<?>[] typeVars = klass.getTypeParameters();
-
-        if (genericType instanceof ParameterizedType) {
-
-            ParameterizedType pType = (ParameterizedType) genericType;
-            Type[] typeArgs = pType.getActualTypeArguments();
-
-
-            for (int i = 0; i < typeArgs.length; i++) {
-                TypeVariable<?> tvar = typeVars[i];
-                Type actualType = typeArgs[i];
-
-                //LOG.debug(" --> tvar: {}, actualType: {}", tvar, actualType);
-                if (actualType instanceof TypeVariable) {
-
-                    map.put(tvar, actualType);
-
-                    if (getRootTypeMap().containsKey(actualType)) {
-                        map.put((TypeVariable<?>) actualType, getRootTypeMap().get(actualType));
-                    }
-                } else if (actualType instanceof ParameterizedType) {
-                    Class<?> c = (Class<?>) ((ParameterizedType) actualType).getRawType();
-                    ParameterizedType nestedPType = (ParameterizedType) actualType;
-
-                    //map.put(tvar, c);
-                    map.put(tvar, actualType);
-
-                } else if (actualType instanceof Class) {
-                    map.put(tvar, actualType);
-                } else {
-                    throw new IllegalStateException("Unhandled type: " + actualType);
-                }
-            }
-        } else {
-            LOG.trace("No generic info for: {}, genericType: {}", klass, genericType);
-        }
-
-        return map;
     }
 
     @Override

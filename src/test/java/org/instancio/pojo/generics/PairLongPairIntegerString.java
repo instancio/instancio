@@ -1,15 +1,14 @@
-package org.instancio.pojo.generics.foobarbaz;
+package org.instancio.pojo.generics;
 
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import java.util.List;
+import org.instancio.pojo.generics.basic.Pair;
 
 @Getter
-public class ListFooListBarListBazListString {
+public class PairLongPairIntegerString {
 
-    private List<Foo<List<Bar<List<Baz<List<String>>>>>>> listOfFoo_ListOfBar_ListOfBaz_ListOfString;
+    private Pair<Long, Pair<Integer, String>> pairLongPairIntegerString;
 
     @Override
     public String toString() {

@@ -1,11 +1,13 @@
 package org.instancio.model;
 
+import org.instancio.pojo.generics.basic.Pair;
+import org.instancio.pojo.generics.container.ItemContainer;
 import org.instancio.pojo.generics.container.PairContainer;
-import org.instancio.pojo.generics.Pair;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
+import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 class PairContainerModelTest extends ModelTestTemplate<PairContainer<Integer, String>> {
 
@@ -21,9 +23,9 @@ class PairContainerModelTest extends ModelTestTemplate<PairContainer<Integer, St
                 .hasFieldName(pairValueFieldName)
                 .hasKlass(Pair.class)
                 .hasEffectiveClass(Pair.class)
-                .hasGenericTypeName("org.instancio.pojo.generics.container.Pair<X, Y>")
+                .hasGenericTypeName("org.instancio.pojo.generics.basic.Pair<X, Y>")
                 // TODO
-                //.hasTypeMappedTo(getTypeVar(Pair.class, "L"), getTypeVar(GenericItemContainer.class, "X"))
+                //.hasTypeMappedTo(getTypeVar(Pair.class, "L"), getTypeVar(ItemContainer.class, "X"))
                 .hasChildrenOfSize(2)
                 .hasTypeMapWithSize(4)
                 .getAs(ClassNode.class);
