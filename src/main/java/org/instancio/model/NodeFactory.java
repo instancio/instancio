@@ -135,7 +135,25 @@ public class NodeFactory {
 
                 // XXX handle with this properly
                 if (field != null) {
-                    result = new CollectionNode(nodeContext, field, (Class) ((ParameterizedType) field.getGenericType()).getRawType(), field.getGenericType(), elementNode, parent);
+                    final Type fieldGenericType = field.getGenericType();
+                    final Type passedOnType;
+
+                    if (fieldGenericType instanceof TypeVariable) {
+                        final Type mappedType = parent.getTypeMap().get(fieldGenericType);
+
+                        passedOnType = mappedType instanceof ParameterizedType
+                                ? ((ParameterizedType) mappedType).getRawType()
+                                : (Class<?>) mappedType;
+
+                    } else if (fieldGenericType instanceof ParameterizedType) {
+                        passedOnType = ((ParameterizedType) fieldGenericType).getRawType();
+                    } else if (fieldGenericType instanceof Class) {
+                        passedOnType = fieldGenericType;
+                    } else {
+                        throw new IllegalStateException("Failed resolving collection type");
+                    }
+
+                    result = new CollectionNode(nodeContext, field, (Class<?>) passedOnType, fieldGenericType, elementNode, parent);
                 } else {
                     Class<?> rawType = (Class<?>) pType.getRawType(); // Map.class and Map<> pType
                     result = new CollectionNode(nodeContext, field, rawType, pType, elementNode, parent);

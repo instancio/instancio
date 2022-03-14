@@ -75,7 +75,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public NodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, Type expectedMapping) {
         isNotNull();
-        final Map<TypeVariable<?>, Type> typeMap = actual.getTypeMap();
+        final Map<Type, Type> typeMap = actual.getTypeMap();
         final Type actualMapping = typeMap.get(typeVariable);
 
         assertThat(actualMapping)
@@ -86,7 +86,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public NodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, String expectedMappingAsString) {
         isNotNull();
-        final Map<TypeVariable<?>, Type> typeMap = actual.getTypeMap();
+        final Map<Type, Type> typeMap = actual.getTypeMap();
         final Type actualMapping = typeMap.get(typeVariable);
 
         assertThat(actualMapping)
