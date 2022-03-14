@@ -35,7 +35,7 @@ public class MapNode extends Node {
      * Children come from the {@link #getKeyNode()} and {@link #getValueNode()}.
      */
     @Override
-    List<Node> collectChildren() {
+    protected List<Node> collectChildren() {
         return Collections.emptyList();
     }
 

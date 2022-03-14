@@ -7,10 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Tag for tests verifying correctness of the model.
+ * Tag for tests verifying behaviour in the presence of circular references.
  */
-@Tag("model")
+@Tag("circular-refs")
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ModelTag {
+public @interface CircularRefsTag {
 }

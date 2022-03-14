@@ -11,7 +11,7 @@ import static org.assertj.core.data.Percentage.withPercentage;
 @NonDeterministicTag
 class RandomTest {
 
-    private static final int SAMPLE_SIZE = 10000;
+    private static final int SAMPLE_SIZE = 10_000;
     private static final int PERCENTAGE_THRESHOLD = 20;
     private static final Pattern ALPHABETIC_PATTERN = Pattern.compile("^[A-Z]*$");
 
@@ -36,6 +36,11 @@ class RandomTest {
         }
     }
 
+    /**
+     * Generate {@code #SAMPLE_SIZE} strings (A-Z) with length 26
+     * and verify each letter shows up expected number of times within
+     * the {@code #PERCENTAGE_THRESHOLD}.
+     */
     @Test
     void alphabeticWithAllCharactersIncluded() {
         final int length = 26;
@@ -51,8 +56,7 @@ class RandomTest {
         }
 
         for (int count : counts) {
-            assertThat(count)
-                    .isCloseTo(SAMPLE_SIZE / (length), withPercentage(PERCENTAGE_THRESHOLD));
+            assertThat(count).isCloseTo(SAMPLE_SIZE, withPercentage(PERCENTAGE_THRESHOLD));
         }
     }
 

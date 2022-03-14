@@ -8,7 +8,6 @@ import org.instancio.testsupport.utils.NodeUtils;
 import java.util.UUID;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
-import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 class PairAStringModelTest extends ModelTestTemplate<PairAString<UUID>> {
 
@@ -25,33 +24,22 @@ class PairAStringModelTest extends ModelTestTemplate<PairAString<UUID>> {
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
                 .hasEffectiveClass(Pair.class)
-                .hasTypeMappedTo(getTypeVar(Pair.class, "L"), getTypeVar(PairAString.class, "A"))
-                .hasTypeMappedTo(getTypeVar(Pair.class, "R"), String.class)
-                .hasTypeMappedTo(getTypeVar(PairAString.class, "A"), UUID.class)
-                .hasTypeMapWithSize(3)
+                .hasTypeMappedTo(Pair.class, "L", UUID.class)
+                .hasTypeMappedTo(Pair.class, "R", String.class)
+                .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
                 .getAs(ClassNode.class);
 
         assertNode(NodeUtils.getChildNode(pair, "left"))
                 .hasFieldName("left")
                 .hasParent(pair)
-                .hasKlass(Object.class)
-                .hasEffectiveClass(UUID.class)
-                .hasTypeMappedTo(getTypeVar(Pair.class, "L"), getTypeVar(PairAString.class, "A"))
-                .hasTypeMappedTo(getTypeVar(Pair.class, "R"), String.class)
-                .hasTypeMappedTo(getTypeVar(PairAString.class, "A"), UUID.class)
-                .hasTypeMapWithSize(3)
+                .hasKlass(UUID.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(pair, "right"))
                 .hasFieldName("right")
                 .hasParent(pair)
-                .hasKlass(Object.class)
-                .hasEffectiveClass(String.class)
-                .hasTypeMappedTo(getTypeVar(Pair.class, "L"), getTypeVar(PairAString.class, "A"))
-                .hasTypeMappedTo(getTypeVar(Pair.class, "R"), String.class)
-                .hasTypeMappedTo(getTypeVar(PairAString.class, "A"), UUID.class)
-                .hasTypeMapWithSize(3)
+                .hasKlass(String.class)
                 .hasNoChildren();
     }
 }

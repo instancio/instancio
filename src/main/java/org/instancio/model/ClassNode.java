@@ -31,7 +31,7 @@ public class ClassNode extends Node {
     }
 
     @Override
-    List<Node> collectChildren() {
+    protected List<Node> collectChildren() {
         final GenericType effectiveType = getEffectiveType();
         final Class<?> effectiveClass = effectiveType.getRawType();
         final Type effectiveGenericType = effectiveType.getGenericType();
@@ -68,7 +68,6 @@ public class ClassNode extends Node {
                     LOG.trace("Passing generic type to child field node: {}", passedOnGenericType);
                     return nodeFactory.createNode(nodeContext, t, passedOnGenericType, field, this);
                 })
-                .filter(it -> getNodeContext().isUnvisited(it))
                 .collect(toList());
     }
 

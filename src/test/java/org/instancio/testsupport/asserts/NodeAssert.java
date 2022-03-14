@@ -8,6 +8,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 @SuppressWarnings("UnusedReturnValue")
 public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
@@ -22,7 +23,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public <T extends Node> T getAs(Class<T> nodeType) {
         isNotNull();
-        assertThat(actual.getClass()).isAssignableFrom(nodeType);
+        assertThat(nodeType).isAssignableFrom(actual.getClass());
         return nodeType.cast(actual);
     }
 
@@ -73,6 +74,33 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return this;
     }
 
+    public NodeAssert hasTypeMappedTo(Class<?> klass, String typeVariable, Type expectedMapping) {
+        isNotNull();
+        final Type typeVar = getTypeVar(klass, typeVariable);
+        final Map<Type, Type> typeMap = actual.getTypeMap();
+        final Type actualMapping = typeMap.get(typeVar);
+
+        assertThat(actualMapping)
+                .as("Actual type map: %s", typeMap)
+                .isEqualTo(expectedMapping);
+        return this;
+    }
+
+    public NodeAssert hasTypeMappedTo(Class<?> klass, String typeVariable, String expectedTypeName) {
+        isNotNull();
+        final Type typeVar = getTypeVar(klass, typeVariable);
+        final Map<Type, Type> typeMap = actual.getTypeMap();
+        final Type actualMapping = typeMap.get(typeVar);
+
+        assertThat(actualMapping)
+                .as("Actual type map: %s", typeMap)
+                .isNotNull()
+                .extracting(Type::getTypeName)
+                .isEqualTo(expectedTypeName);
+        return this;
+    }
+
+    @Deprecated
     public NodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, Type expectedMapping) {
         isNotNull();
         final Map<Type, Type> typeMap = actual.getTypeMap();

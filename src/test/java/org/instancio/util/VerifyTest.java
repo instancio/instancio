@@ -1,31 +1,76 @@
 package org.instancio.util;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
 
 class VerifyTest {
 
-    private static final String MESSAGE = "a message: %s";
+    private static final String MESSAGE_TEMPLATE = "a message: %s";
+    private static final String MESSAGE_ARG = "msg-val";
 
     @Test
-    void notNull() {
-        assertThatThrownBy(() -> Verify.notNull(null, MESSAGE, "msg-val"))
+    void notNullThrowsExceptionWithExpectedMessage() {
+        assertThatThrownBy(() -> Verify.notNull(null, MESSAGE_TEMPLATE, MESSAGE_ARG))
                 .isInstanceOf(NullPointerException.class)
-                .hasMessage("a message: msg-val");
-
-        assertThat(Verify.notNull("value", MESSAGE)).isEqualTo("value");
+                .hasMessage(String.format(MESSAGE_TEMPLATE, MESSAGE_ARG));
     }
 
     @Test
-    void notEmpty() {
-        fail("TODO");
+    void notNullReturnsTheArgument() {
+        final String valueToCheck = "value";
+        assertThat(Verify.notNull(valueToCheck, MESSAGE_TEMPLATE, MESSAGE_ARG)).isSameAs(valueToCheck);
     }
 
     @Test
-    void isTrue() {
-        fail("TODO");
+    void notEmptyThrowsExceptionWhenGivenEmptyArray() {
+        assertThatThrownBy(() -> Verify.notEmpty(new String[0], MESSAGE_TEMPLATE, MESSAGE_ARG))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format(MESSAGE_TEMPLATE, MESSAGE_ARG));
+    }
+
+    @Test
+    void notEmptyReturnsTheArrayArgument() {
+        final String[] arrayToCheck = new String[]{"test-array"};
+        assertThat(Verify.notEmpty(arrayToCheck, MESSAGE_TEMPLATE, MESSAGE_ARG)).isSameAs(arrayToCheck);
+    }
+
+    @Test
+    void isTrueThrowsExceptionWithExpectedMessageWhenConditionIsFalse() {
+        assertThatThrownBy(() -> Verify.isTrue(false, MESSAGE_TEMPLATE, MESSAGE_ARG))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format(MESSAGE_TEMPLATE, MESSAGE_ARG));
+    }
+
+    @Test
+    @SuppressWarnings("java:S2699")
+    void isTrueDoesNotThrowExceptionWhenConditionIsTrue() {
+        final String valueToCheck = "value";
+        Verify.isTrue(true, MESSAGE_TEMPLATE, MESSAGE_ARG); // no exception thrown
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {ArrayList.class, List.class, Map.class, Set.class, SortedSet.class, int[].class, String[].class})
+    void isNotArrayCollectionOrMapThrowsExceptionWhenGivenOffendingClass(Class<?> klass) {
+        assertThatThrownBy(() -> Verify.isNotArrayCollectionOrMap(klass))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Unexpected: " + klass);
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {Object.class, String.class, int.class, Array.class})
+    @SuppressWarnings("java:S2699")
+    void isNotArrayCollectionOrMapDoesNotThrowException(Class<?> klass) {
+        Verify.isNotArrayCollectionOrMap(klass); // no exception thrown
     }
 }

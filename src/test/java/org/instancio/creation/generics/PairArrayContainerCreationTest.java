@@ -12,6 +12,11 @@ public class PairArrayContainerCreationTest extends CreationTestTemplate<PairArr
 
     @Override
     protected void verify(PairArrayContainer<Integer, String> result) {
-        assertThat(result.getPairArray()).isInstanceOf(Pair[].class);
+        assertThat(result.getPairArray())
+                .isInstanceOf(Pair[].class)
+                .allSatisfy(pair -> {
+                    assertThat(pair.getLeft()).isInstanceOf(Integer.class);
+                    assertThat(pair.getRight()).isInstanceOf(String.class);
+                });
     }
 }

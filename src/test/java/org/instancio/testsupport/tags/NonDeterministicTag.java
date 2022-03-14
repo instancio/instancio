@@ -6,7 +6,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that Indicates that a test makes assertions
+ * An annotation that indicates that a test makes assertions
  * on randomly generated values. While the intention is for the test to pass,
  * there is a very small chance it might fail.
  * <p>
@@ -16,4 +16,6 @@ import java.lang.annotation.Target;
 @Tag("non-deterministic")
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface NonDeterministicTag {
+
+    String value() default "";
 }

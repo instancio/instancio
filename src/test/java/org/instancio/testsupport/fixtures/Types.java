@@ -29,13 +29,13 @@ public class Types {
     public static final TypeReference<?> MAP_INTEGER_STRING = new TypeReference<Map<Integer, String>>() {
     };
 
+    public static final TypeReference<?> ITEM_STRING = new TypeReference<Item<String>>() {
+    };
+
     public static final TypeReference<?> PAIR_INTEGER_STRING = new TypeReference<Pair<Integer, String>>() {
     };
 
     public static final TypeReference<?> TRIPLET_BOOLEAN_INTEGER_STRING = new TypeReference<Triplet<Boolean, Integer, String>>() {
-    };
-
-    public static final TypeReference<?> GENERIC_ITEM_STRING = new TypeReference<Item<String>>() {
     };
 
     public static final TypeReference<?> FOO_LIST_INTEGER = new TypeReference<Foo<List<Integer>>>() {

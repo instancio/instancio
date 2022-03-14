@@ -49,9 +49,13 @@ public class NodeFactory {
             result = new ClassNode(nodeContext, field, klass, genericType, parent);
         }
 
-        LOG.debug("Created node: {}", result);
 
-        result.getChildren(); // TODO delete
+        LOG.debug("Created node: {}", result);
+        if (nodeContext.isUnvisited(result)) {
+            nodeContext.visited(result);
+            result.getChildren(); // TODO delete
+
+        }
         return result;
     }
 
