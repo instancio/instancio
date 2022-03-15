@@ -120,7 +120,7 @@ class GeneratorFacade {
             // Returning a null 'GeneratorResult.value' will ensure that a field value
             // will be overwritten with null. Otherwise, field value would retain its
             // old value (if one was assigned).
-            return Optional.empty();
+            return Optional.of(new GeneratorResult<>(null));
         }
 
         GeneratorResult<C> result = null;

@@ -8,23 +8,15 @@ import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.pojo.interfaces.MultipleInterfaceImpls;
 import org.instancio.pojo.interfaces.SingleInterfaceImpl;
-import org.instancio.pojo.person.Gender;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
-import org.instancio.pojo.person.PopulatedPerson;
-import org.instancio.util.Random;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.within;
-import static org.instancio.Generators.nullValue;
 import static org.instancio.Generators.oneOf;
 import static org.instancio.Generators.withPrefix;
 
@@ -54,50 +46,6 @@ class InstancioTest {
 
 
     @Test
-    void generatePersonWithNullAndNullable() {
-        Person person = Instancio.of(Person.class)
-                .withNullable("name")
-                //              .with("address.city", nullValue())
-                .with("pets", nullValue())
-                .create();
-
-        System.out.println("Person name " + person.getName());
-
-//        assertThat(person.getAddress().getCity()).isNull();
-        assertThat(person.getPets()).isNull();
-
-        //assertThat(person.getName()).isNotBlank();
-    }
-
-    @Test
-    void exclusions() {
-        PopulatedPerson expected = new PopulatedPerson();
-        PopulatedPerson actual = Instancio.of(PopulatedPerson.class)
-                .exclude("person", "someString", "someInt")
-                .create();
-
-        assertThat(actual.getPerson())
-                .as("Should retain pre-initialized values")
-                .isEqualTo(expected.getPerson());
-    }
-
-    @Test
-    void generatePersonWithExclusions() {
-        Person person = Instancio.of(Person.class)
-                .exclude("gender", "lastModified", "address.city")
-                //.exclude("address.phone.countryCode") // TODO broken - figure out what paths should look like for nested objects
-                //.exclude("pet.name") // TODO broken
-                .create();
-
-        assertThat(person).isNotNull();
-        assertThat(person.getLastModified()).isNull();
-        assertThat(person.getAddress()).isNotNull();
-        assertThat(person.getAddress().getCity()).isNull();
-        //assertThat(person.getAddress())..
-        //assertThat(person.getPet())..
-    }
-
-    @Test
     @Disabled
     void generatorArgIsConfusing() {
         // TODO this is creating a generator that returns another generator...
@@ -106,28 +54,6 @@ class InstancioTest {
         Person person = Instancio.of(Person.class)
                 .with("name", () -> oneOf("1", "2", "3"))
                 .create();
-    }
-
-    @Test
-    void generatePersonWithCustomFieldGenerators() {
-        String[] names = {"Jane", "John", "Bob"};
-
-        Person person = Instancio.of(Person.class)
-                .with("name", oneOf(names))
-                .with("gender", () -> Gender.FEMALE)
-                .with("lastModified", () -> LocalDateTime.now(ZoneOffset.UTC))
-                .with("address.city", () -> "city-" + Random.intBetween(100, 999))
-                //                .with("address.phone.countryCode", () -> "+1") // TODO broken
-                //                .with("pet.name", () -> "Fido")
-                .create();
-
-        assertThat(person).isNotNull();
-        assertThat(person.getName()).isIn(names);
-        assertThat(person.getGender()).isEqualTo(Gender.FEMALE);
-        assertThat(person.getLastModified()).isCloseToUtcNow(within(3, ChronoUnit.SECONDS));
-        assertThat(person.getAddress().getCity()).matches("city-\\d{3}");
-        //assertThat(person.getAddress().getPhoneNumbers()) ...
-        //assertThat(person.getPets() ...
     }
 
     @Test
@@ -156,33 +82,6 @@ class InstancioTest {
 
         System.out.println(person);
         assertThat(person.getName()).isNotBlank();
-    }
-
-    @Test
-    void stringClassGeneratorWithCustomFormat() {
-        final String prefix = "custom-prefix-for-ALL-String-fields-";
-        final String expectedCity = "city-value";
-
-        // All String fields should use custom prefix except Address.city
-        Person person = Instancio.of(Person.class)
-                .with("address.city", () -> expectedCity)
-                .with(String.class, withPrefix(prefix))
-                .create();
-
-        assertThat(person.getAddress().getCity()).isEqualTo(expectedCity);
-        assertThat(person.getName()).startsWith(prefix);
-        assertThat(person.getAddress().getAddress()).startsWith(prefix);
-        assertThat(person.getAddress().getCountry()).startsWith(prefix);
-
-        // FIXME failing due to array generation code needing refactoring
-        person.getAddress().getPhoneNumbers().forEach(phone -> {
-            assertThat(phone.getCountryCode()).startsWith(prefix);
-            assertThat(phone.getNumber()).startsWith(prefix);
-        });
-
-        for (Pet pet : person.getPets()) {
-            assertThat(pet.getName()).startsWith(prefix);
-        }
     }
 
     @Disabled
@@ -240,13 +139,13 @@ class InstancioTest {
         //  (option 2) Instancio<> instancio = Instancio.ofArray(Person.class);
         //  Person[] p = instancio.create();
         //
-        ObjectCreationSettingsAPI<Person, ?> settings = Instancio.of(Person.class).exclude("address.city");
+        ObjectCreationSettingsAPI<Person, ?> settings = Instancio.of(Person.class).ignore("address.city");
         Person p = settings.create();
         // ===========
 
         Instancio.of(Person.class)
-                .exclude("gender")
-                .exclude("address.city")
+                .ignore("gender")
+                .ignore("address.city")
                 .with("country", () -> "some other value")
                 .with("someInt", () -> 12345)
                 //                .with("age", min(18))

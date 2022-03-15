@@ -10,7 +10,7 @@ import org.instancio.generator.ValueGenerator;
 // TODO cleanup/simplify
 public interface CreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>> {
 
-  CreationSettingsAPI<T, C> exclude(String... fields);
+  CreationSettingsAPI<T, C> ignore(String... fields);
 
   <V> CreationSettingsAPI<T, C> with(String field, ValueGenerator<V> generator);
 

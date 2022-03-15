@@ -64,6 +64,7 @@ class InstancioDriver {
         final Object createdValue = generatorResult.getValue();
 
         if (createdValue == null) {
+            ReflectionUtils.setField(createItem.getOwner(), field, null);
             return;
         }
 

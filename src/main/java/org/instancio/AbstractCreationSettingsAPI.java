@@ -17,7 +17,7 @@ public class AbstractCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCreationSettingsAPI.class);
 
     protected final Class<T> klass;
-    protected final Set<Field> exclusions = new HashSet<>();
+    protected final Set<Field> ignored = new HashSet<>();
     protected final Set<Field> nullables = new HashSet<>();
     protected final Map<Field, ValueGenerator<?>> fieldValueGenerators = new HashMap<>();
     protected final Map<Class<?>, ValueGenerator<?>> classValueGenerators = new HashMap<>();
@@ -28,12 +28,12 @@ public class AbstractCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
     }
 
     @Override
-    public AbstractCreationSettingsAPI<T, C> exclude(String... fields) {
+    public AbstractCreationSettingsAPI<T, C> ignore(String... fields) {
         Verify.notEmpty(fields, "'exclude(String... fields)' requires at least one field to be specified");
 
         for (String field : fields) {
             final Field targetField = ReflectionUtils.getField(klass, field);
-            exclusions.add(targetField);
+            ignored.add(targetField);
             LOG.debug("Added '{}' to exclusion list", targetField);
         }
         return this;

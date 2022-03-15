@@ -39,12 +39,14 @@ public class ReflectionUtils {
         }
     }
 
+    @SuppressWarnings("java:S3011")
     public static <T> T instantiate(Class<T> klass) {
         try {
             final Constructor<?>[] constructors = klass.getConstructors();
 
             for (Constructor<?> c : constructors) {
                 if (c.getParameterCount() == 0) {
+                    c.setAccessible(true);
                     return (T) c.newInstance();
                 }
             }

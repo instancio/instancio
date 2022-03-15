@@ -96,6 +96,7 @@ public abstract class Node {
                 }
             }
 
+            // TODO <---------------- delete
             final ParameterizedType pType = (ParameterizedType) genericType;
             final Type actualTypeArgument = pType.getActualTypeArguments()[0]; // FIXME this is not breaking Pair<X,Y>
 
@@ -111,7 +112,7 @@ public abstract class Node {
                 final Type rawType = nestedPType.getRawType();
                 return GenericType.of((Class<?>) rawType, actualTypeArgument);
             }
-
+            // TODO --------------->
         } else if (genericType instanceof Class) {
             return GenericType.of((Class<?>) genericType, null);
         }
