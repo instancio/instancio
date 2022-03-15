@@ -1,29 +1,27 @@
 package org.instancio.util;
 
 import org.instancio.exception.InstancioException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 public class ReflectionUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
     private ReflectionUtils() {
         // non-instantiable
     }
 
+    @SuppressWarnings("java:S3011")
     public static void setField(Object target, Field field, Object value) {
         try {
             field.setAccessible(true);
             field.set(target, value);
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex); // TODO
+            throw new InstancioException("Could not set value to the field: " + field, ex);
         }
     }
 
-    public static Field getField(final Class<?> klass, final String fieldPath) throws RuntimeException {
+    public static Field getField(final Class<?> klass, final String fieldPath) {
         try {
             final String[] pathItems = fieldPath.split("\\.");
             Class<?> currentClass = klass;
@@ -37,7 +35,7 @@ public class ReflectionUtils {
 
             return result;
         } catch (Exception ex) {
-            throw new RuntimeException("Invalid field '" + fieldPath + "' for " + klass, ex);
+            throw new InstancioException("Invalid field '" + fieldPath + "' for " + klass, ex);
         }
     }
 

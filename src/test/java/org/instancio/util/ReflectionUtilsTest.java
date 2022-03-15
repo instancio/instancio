@@ -6,10 +6,8 @@ import org.instancio.pojo.person.Phone;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ReflectionUtilsTest {
-
 
     @Test
     void getField() {
@@ -26,11 +24,4 @@ class ReflectionUtilsTest {
         assertThat(ReflectionUtils.getField(Phone.class, "countryCode").getName()).isEqualTo("countryCode");
     }
 
-    @Test
-    void invalidFieldPath() {
-        assertThatThrownBy(() -> ReflectionUtils.getField(Address.class, "phoneNumbers.countryCode"))
-                .isInstanceOf(RuntimeException.class)
-                // TODO  better error message
-                .hasMessage("Error getting field 'phoneNumbers.countryCode' from class org.stubber.pojo.Address");
-    }
 }

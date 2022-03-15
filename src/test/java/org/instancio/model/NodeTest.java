@@ -23,11 +23,9 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
-import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 @ModelTag
 class NodeTest {
-    private static final NodeContext EMPTY_CONTEXT = new NodeContext(Collections.emptyMap());
 
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap = new HashMap<>();
 
@@ -49,18 +47,6 @@ class NodeTest {
             assertThat(bazString).isEqualTo(bazString).hasSameHashCodeAs(bazString);
             assertThat(bazString).isNotEqualTo(bazInteger).doesNotHaveSameHashCodeAs(bazInteger);
             assertThat(bazInteger).isNotEqualTo(bazIntegerClassNode).doesNotHaveSameHashCodeAs(bazIntegerClassNode);
-        }
-
-        @Test
-        void equalsHashCodeWithDifferentParents() {
-            Node parent1 = createNode(List.class, rootTypeMap, Types.STRING);
-            Node parent2 = createNode(List.class, rootTypeMap, Types.INTEGER);
-
-            Node node1 = new NodeImpl(EMPTY_CONTEXT, null, String.class, null, parent1);
-            Node node2 = new NodeImpl(EMPTY_CONTEXT, null, String.class, null, parent2);
-
-            assertThat(parent1).isNotEqualTo(parent2).doesNotHaveSameHashCodeAs(parent2);
-            assertThat(node1).isNotEqualTo(node2).doesNotHaveSameHashCodeAs(node2);
         }
     }
 
@@ -114,24 +100,24 @@ class NodeTest {
         @Test
         void listOfStrings() {
             assertNode(createNode(List.class, rootTypeMap, Types.LIST_STRING))
-                    .hasTypeMappedTo(getTypeVar(List.class, "E"), String.class)
+                    .hasTypeMappedTo(List.class, "E", String.class)
                     .hasTypeMapWithSize(1);
         }
 
         @Test
         void mapOfIntegerString() {
             assertNode(createNode(Map.class, rootTypeMap, Types.MAP_INTEGER_STRING))
-                    .hasTypeMappedTo(getTypeVar(Map.class, "K"), Integer.class)
-                    .hasTypeMappedTo(getTypeVar(Map.class, "V"), String.class)
+                    .hasTypeMappedTo(Map.class, "K", Integer.class)
+                    .hasTypeMappedTo(Map.class, "V", String.class)
                     .hasTypeMapWithSize(2);
         }
 
         @Test
         void tripletOfBooleanStringInteger() {
             assertNode(createNode(Triplet.class, rootTypeMap, Types.TRIPLET_BOOLEAN_INTEGER_STRING))
-                    .hasTypeMappedTo(getTypeVar(Triplet.class, "M"), Boolean.class)
-                    .hasTypeMappedTo(getTypeVar(Triplet.class, "N"), Integer.class)
-                    .hasTypeMappedTo(getTypeVar(Triplet.class, "O"), String.class)
+                    .hasTypeMappedTo(Triplet.class, "M", Boolean.class)
+                    .hasTypeMappedTo(Triplet.class, "N", Integer.class)
+                    .hasTypeMappedTo(Triplet.class, "O", String.class)
                     .hasTypeMapWithSize(3);
         }
 
@@ -142,8 +128,8 @@ class NodeTest {
 
             assertNode(createNode(Pair.class, rootTypeMap, new TypeReference<Pair<Item<String>, Foo<List<Integer>>>>() {
             }))
-                    .hasTypeMappedTo(getTypeVar(Pair.class, "L"), typeRefLeft)
-                    .hasTypeMappedTo(getTypeVar(Pair.class, "R"), typeRefRight)
+                    .hasTypeMappedTo(Pair.class, "L", typeRefLeft)
+                    .hasTypeMappedTo(Pair.class, "R", typeRefRight)
                     .hasTypeMapWithSize(2);
         }
     }
@@ -168,9 +154,9 @@ class NodeTest {
             super(nodeContext, field, klass, genericType, parent);
         }
 
-        // @formatter:off
-        @Override protected List<Node> collectChildren() { return Collections.emptyList(); }
-        @Override public String getNodeName() { return "Test-Node"; }
-        // @formatter:on
+        @Override
+        protected List<Node> collectChildren() {
+            return Collections.emptyList();
+        }
     }
 }
