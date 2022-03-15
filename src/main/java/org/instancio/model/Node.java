@@ -2,23 +2,18 @@ package org.instancio.model;
 
 import org.instancio.util.ObjectUtils;
 import org.instancio.util.Verify;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public abstract class Node {
-    private static final Logger LOG = LoggerFactory.getLogger(Node.class);
-
     static final String JAVA_PKG_PREFIX = "java";
 
     private final NodeContext nodeContext;
@@ -48,8 +43,6 @@ public abstract class Node {
     }
 
     protected abstract List<Node> collectChildren();
-
-    abstract String getNodeName(); // TODO delete
 
     public NodeContext getNodeContext() {
         return nodeContext;
@@ -103,6 +96,7 @@ public abstract class Node {
                 }
             }
 
+            // TODO <---------------- delete
             final ParameterizedType pType = (ParameterizedType) genericType;
             final Type actualTypeArgument = pType.getActualTypeArguments()[0]; // FIXME this is not breaking Pair<X,Y>
 
@@ -118,7 +112,7 @@ public abstract class Node {
                 final Type rawType = nestedPType.getRawType();
                 return GenericType.of((Class<?>) rawType, actualTypeArgument);
             }
-
+            // TODO --------------->
         } else if (genericType instanceof Class) {
             return GenericType.of((Class<?>) genericType, null);
         }
@@ -136,17 +130,7 @@ public abstract class Node {
 
     public List<Node> getChildren() {
         if (children == null) {
-            children = new ArrayList<>();
-            List<Node> collected = collectChildren();
-
-//            for (Node child : collected) {
-//                if (nodeContext.isUnvisited(child)) {
-//                    children.add(child);
-//                    nodeContext.visited(child);
-//                }
-//            }
-//            // FIXME
-            children = Collections.unmodifiableList(collected);
+            children = Collections.unmodifiableList(collectChildren());
         }
         return children;
     }
@@ -160,15 +144,10 @@ public abstract class Node {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node other = (Node) o;
-        String thisParentNodeName = this.getParent() == null ? null : this.getParent().getNodeName();
-        String otherParentNodeName = other.getParent() == null ? null : other.getParent().getNodeName();
 
         return this.getKlass().equals(other.getKlass())
                 && Objects.equals(this.getGenericType(), other.getGenericType())
-                && Objects.equals(this.getField(), other.getField())
-//                && Objects.equals(this.getParent(), other.getParent())
-//                && Objects.equals(thisParentNodeName, otherParentNodeName)
-                ;
+                && Objects.equals(this.getField(), other.getField());
     }
 
     @Override
@@ -183,13 +162,4 @@ public abstract class Node {
         return this.getClass().getSimpleName() + numChildren + "["
                 + getEffectiveType() + ", field: " + fieldName + "]";
     }
-
-    // TODO delete after testing
-    public void print() {
-        System.out.println("-----------------------------------------");
-        System.out.println(this);
-        System.out.println(" ----> num children: " + getChildren().size());
-        getChildren().forEach(Node::print);
-    }
-
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 
 @Getter
 @ToString
-public class IntegerItemOfStringMap {
+public class MapIntegerItemOfString {
+
     private Map<Integer, Item<String>> mapField;
 }

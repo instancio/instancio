@@ -16,8 +16,8 @@ public class ObjectCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
     }
 
     @Override
-    public ObjectCreationSettingsAPI<T, C> exclude(String... fields) {
-        super.exclude(fields);
+    public ObjectCreationSettingsAPI<T, C> ignore(String... fields) {
+        super.ignore(fields);
         return this;
     }
 
@@ -70,7 +70,7 @@ public class ObjectCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
         }
 
         InstancioContext context = new InstancioContext(
-                klass, exclusions, nullables, fieldValueGenerators, classValueGenerators, rootTypeMap);
+                klass, ignored, nullables, fieldValueGenerators, classValueGenerators, rootTypeMap);
         InstancioDriver driver = new InstancioDriver(context);
         return driver.createClassEntryPoint(klass);
     }

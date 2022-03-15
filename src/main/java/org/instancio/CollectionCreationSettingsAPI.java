@@ -2,7 +2,6 @@ package org.instancio;
 
 import org.instancio.generator.ValueGenerator;
 
-import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +15,8 @@ public class CollectionCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C
     }
 
     @Override
-    public CollectionCreationSettingsAPI<T, C> exclude(String... fields) {
-        super.exclude(fields);
+    public CollectionCreationSettingsAPI<T, C> ignore(String... fields) {
+        super.ignore(fields);
         return this;
     }
 
@@ -49,7 +48,7 @@ public class CollectionCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C
         Map<TypeVariable<?>, Class<?>> rootTypeMap = new HashMap<>(); // TODO - populate
 
         InstancioContext context = new InstancioContext(
-                klass, exclusions, nullables, fieldValueGenerators, classValueGenerators, rootTypeMap);
+                klass, ignored, nullables, fieldValueGenerators, classValueGenerators, rootTypeMap);
         InstancioDriver driver = new InstancioDriver(context);
         return driver.createList(klass);
     }

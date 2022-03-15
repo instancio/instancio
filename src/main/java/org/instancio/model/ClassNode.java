@@ -71,8 +71,4 @@ public class ClassNode extends Node {
                 .collect(toList());
     }
 
-    @Override
-    public String getNodeName() {
-        return String.format("ClassNode[%s, %s]", getKlass().getName(), getGenericType());
-    }
 }

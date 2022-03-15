@@ -66,26 +66,30 @@ public class NodeFactory {
             @Nullable final Field field,
             @Nullable final Node parent) {
 
-        Node result = null;
+        Node elementNode = null;
 
-        if (field.getGenericType() instanceof GenericArrayType) {
-            final GenericArrayType arrayType = (GenericArrayType) field.getGenericType();
-            final Type compType = arrayType.getGenericComponentType();
+        if (field != null) {
+            if (field.getGenericType() instanceof GenericArrayType) {
+                final GenericArrayType arrayType = (GenericArrayType) field.getGenericType();
+                final Type compType = arrayType.getGenericComponentType();
 
-            if (compType instanceof TypeVariable) {
-                final Class<?> rawType = nodeContext.getRootTypeMap().get(compType);
-                result = this.createNode(nodeContext, rawType, null, null, parent);
+                if (compType instanceof TypeVariable) {
+                    final Class<?> rawType = nodeContext.getRootTypeMap().get(compType);
+                    elementNode = this.createNode(nodeContext, rawType, null, null, parent);
 
-            } else if (compType instanceof ParameterizedType) {
-                ParameterizedType pType = (ParameterizedType) compType;
+                } else if (compType instanceof ParameterizedType) {
+                    ParameterizedType pType = (ParameterizedType) compType;
 
-                result = this.createNode(nodeContext, (Class<?>) pType.getRawType(), pType, null, parent);
+                    elementNode = this.createNode(nodeContext, (Class<?>) pType.getRawType(), pType, null, parent);
+                }
+            } else {
+                elementNode = this.createNode(nodeContext, field.getType().getComponentType(), null, null, parent);
             }
         } else {
-            result = this.createNode(nodeContext, field.getType().getComponentType(), null, field, parent);
+            elementNode = this.createNode(nodeContext, klass.getComponentType(), null, null, parent);
         }
 
-        return new ArrayNode(nodeContext, field, klass, genericType, Verify.notNull(result), parent);
+        return new ArrayNode(nodeContext, field, klass, genericType, Verify.notNull(elementNode), parent);
     }
 
     private Node createCollectionNode(

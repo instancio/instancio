@@ -8,6 +8,6 @@ import java.util.Map;
 
 @Getter
 @ToString
-public class StringPersonMap {
+public class MapStringPerson {
     private Map<String, Person> mapField;
 }

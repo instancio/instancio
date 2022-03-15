@@ -64,6 +64,7 @@ class InstancioDriver {
         final Object createdValue = generatorResult.getValue();
 
         if (createdValue == null) {
+            ReflectionUtils.setField(createItem.getOwner(), field, null);
             return;
         }
 
@@ -80,14 +81,17 @@ class InstancioDriver {
             populateMap((MapNode) node, mapInstance, mapOwner);
         } else if (node instanceof ArrayNode) {
             final Object arrayOwner = createItem.getOwner();
-            extracted((ArrayNode) node, createdValue, arrayOwner);
+            populateArray((ArrayNode) node, createdValue, arrayOwner);
         }
     }
 
-    private void extracted(ArrayNode arrayNode, Object createdValue, Object arrayOwner) {
+    private void populateArray(ArrayNode arrayNode, Object createdValue, Object arrayOwner) {
         final Node elementNode = arrayNode.getElementNode();
 
-        ReflectionUtils.setField(arrayOwner, arrayNode.getField(), createdValue);
+        // Field can be null when array is an element of a collection
+        if (arrayNode.getField() != null) {
+            ReflectionUtils.setField(arrayOwner, arrayNode.getField(), createdValue);
+        }
 
         for (int i = 0; i < 2; i++) {
             final GeneratorResult<Object> generatorResult = generatorFacade.generateNodeValue(elementNode, createdValue);
@@ -120,6 +124,8 @@ class InstancioDriver {
         }
     }
 
+    // TODO refactor populate* methods to remove instanceof conditionals
+
     private void populateMap(MapNode mapNode, Map<Object, Object> mapInstance, Object mapOwner) {
         final Node keyNode = mapNode.getKeyNode();
         final Node valueNode = mapNode.getValueNode();
@@ -149,6 +155,10 @@ class InstancioDriver {
 
             if (valueNode instanceof MapNode) {
                 populateMap((MapNode) valueNode, (Map<Object, Object>) mapValue, mapInstance);
+            } else if (valueNode instanceof CollectionNode) {
+                populateCollection((CollectionNode) valueNode, (Collection<Object>) mapValue, mapInstance);
+            } else if (valueNode instanceof ArrayNode) {
+                populateArray((ArrayNode) valueNode, mapValue, mapInstance);
             }
         }
     }
