@@ -48,11 +48,6 @@ public class MapNode extends Node {
     }
 
     @Override
-    public String getNodeName() {
-        return String.format("MapNode[%s, %s]", keyNode.getNodeName(), valueNode.getNodeName());
-    }
-
-    @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null) return false;

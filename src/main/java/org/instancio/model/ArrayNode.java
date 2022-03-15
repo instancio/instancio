@@ -40,11 +40,6 @@ public class ArrayNode extends Node {
     }
 
     @Override
-    public String getNodeName() {
-        return String.format("CollectionNode[%s, %s]", getKlass().getSimpleName(), elementNode.getNodeName());
-    }
-
-    @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null) return false;
