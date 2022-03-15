@@ -1,12 +1,8 @@
 package org.instancio.model;
 
-import org.instancio.pojo.collections.MapIntegerArrayString;
-import org.instancio.pojo.collections.MapIntegerListString;
-import org.instancio.pojo.collections.MapIntegerString;
-import org.instancio.testsupport.fixtures.Types;
+import org.instancio.pojo.collections.maps.MapIntegerArrayString;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;

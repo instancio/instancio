@@ -15,12 +15,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @NonDeterministicTag
 class WithNullableFieldTest {
 
+    private static final int SAMPLE_SIZE = 30;
+
     @Test
     @DisplayName("A 'nullable' will randomly be set to null")
     void nullableField() {
         Set<Object> results = new HashSet<>();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
             final StringHolder holder = Instancio.of(StringHolder.class)
                     .withNullable("value")
                     .create();
@@ -38,7 +40,7 @@ class WithNullableFieldTest {
     void nullableInitializedField() {
         Set<Object> results = new HashSet<>();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
             final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
                     .withNullable("value")
                     .create();

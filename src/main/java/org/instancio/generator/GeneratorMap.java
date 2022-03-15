@@ -6,8 +6,14 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.NavigableSet;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentNavigableMap;
 
 public class GeneratorMap {
 
@@ -16,6 +22,7 @@ public class GeneratorMap {
     private final Map<Class<?>, ValueGenerator<?>> arrayGeneratorMap = new HashMap<>();
 
     public GeneratorMap() {
+        // Core types
         generatorMap.put(byte.class, new ByteGenerator());
         generatorMap.put(short.class, new ShortGenerator());
         generatorMap.put(int.class, new IntegerGenerator());
@@ -33,13 +40,23 @@ public class GeneratorMap {
         generatorMap.put(Boolean.class, new BooleanGenerator());
         generatorMap.put(Character.class, new CharacterGenerator());
         generatorMap.put(String.class, new StringGenerator());
+
         generatorMap.put(UUID.class, new UUIDGenerator());
         generatorMap.put(BigDecimal.class, new BigDecimalGenerator());
         generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator());
-        generatorMap.put(List.class, new ListGenerator<>());
-        generatorMap.put(Map.class, new MapGenerator<>());
-        generatorMap.put(Set.class, new SetGenerator<>());
         generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator());
+
+        // Collections
+        generatorMap.put(List.class, new ArrayListGenerator<>());
+        generatorMap.put(Map.class, new HashMapGenerator<>());
+        generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>());
+        generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>());
+        generatorMap.put(SortedMap.class, new TreeMapGenerator<>());
+        generatorMap.put(NavigableMap.class, new TreeMapGenerator<>());
+        generatorMap.put(Set.class, new HashSetGenerator<>());
+        generatorMap.put(SortedSet.class, new TreeSetGenerator<>());
+        generatorMap.put(NavigableSet.class, new TreeSetGenerator<>());
+
     }
 
     public ValueGenerator<?> get(Class<?> klass) {

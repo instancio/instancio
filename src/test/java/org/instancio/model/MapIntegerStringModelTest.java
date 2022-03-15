@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.pojo.collections.MapIntegerString;
+import org.instancio.pojo.collections.maps.MapIntegerString;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 
 import java.util.Map;
@@ -18,7 +18,7 @@ class MapIntegerStringModelTest extends ModelTestTemplate<MapIntegerString> {
 
         final MapNode map = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
-                .hasFieldName("mapField")
+                .hasFieldName("map")
                 .hasKlass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", String.class)
