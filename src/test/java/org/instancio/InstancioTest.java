@@ -1,8 +1,6 @@
 package org.instancio;
 
 import org.instancio.pojo.circular.HierarchyWithMultipleInterfaceImpls;
-import org.instancio.pojo.collections.IntegerStringMap;
-import org.instancio.pojo.collections.StringPersonMap;
 import org.instancio.pojo.collections.WithMiscMapInterfaces;
 import org.instancio.pojo.generics.container.GenericContainer;
 import org.instancio.pojo.generics.container.ItemContainer;
@@ -56,24 +54,10 @@ class InstancioTest {
 
 
     @Test
-    void smokeTest() {
-        Person person = Instancio.of(Person.class).create();
-
-        System.out.println(person);
-
-        assertThat(person).isNotNull();
-        assertThat(person.getName()).isNotBlank();
-        assertThat(person.getAddress()).isNotNull();
-        assertThat(person.getAddress().getPhoneNumbers()).isNotEmpty();
-        assertThat(person.getAddress().getCity()).isNotNull();
-        assertThat(Person.getStaticField()).isNull();
-    }
-
-    @Test
     void generatePersonWithNullAndNullable() {
         Person person = Instancio.of(Person.class)
                 .withNullable("name")
-  //              .with("address.city", nullValue())
+                //              .with("address.city", nullValue())
                 .with("pets", nullValue())
                 .create();
 
@@ -153,26 +137,6 @@ class InstancioTest {
                 .hasMessage("Can not set java.lang.String field org.instancio.pojo.person.Person.name to java.lang.Integer");
     }
 
-    @Test
-    void generateIntegerAndPrimitiveInt() {
-        assertThat(Instancio.of(Integer.class).create()).isNotNull();
-        assertThat(Instancio.of(int.class).create()).isNotNull();
-    }
-
-    @Test
-    void generateString() {
-        // TODO add test case for each core type
-        assertThat(Instancio.of(Integer.class).create()).isNotNull();
-        assertThat(Instancio.of(String.class).create()).isNotNull();
-    }
-
-    @Test
-    void integerStringMap() {
-        IntegerStringMap result = Instancio.of(IntegerStringMap.class).create();
-        assertThat(result.getMapField()).isNotEmpty().hasSize(2);
-        assertThat(result.getMapField().entrySet()).doesNotContainNull();
-    }
-
     // FIXME
     @Test
     void withMiscMapInterfaces() {
@@ -181,14 +145,6 @@ class InstancioTest {
         assertThat(result.getSortedMap()).isNotEmpty().hasSize(2);
         assertThat(result.getNavigableMap().entrySet()).doesNotContainNull();
         assertThat(result.getConcurrentNavigableMap().entrySet()).doesNotContainNull();
-    }
-
-    @Test
-    void stringPersonMap() {
-        StringPersonMap result = Instancio.of(StringPersonMap.class).create();
-        assertThat(result.getMapField()).isNotEmpty().hasSize(2);
-        assertThat(result.getMapField().entrySet()).doesNotContainNull();
-        System.out.println(result);
     }
 
     @Test

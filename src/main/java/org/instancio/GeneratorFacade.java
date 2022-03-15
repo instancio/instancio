@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 class GeneratorFacade {
@@ -94,8 +92,7 @@ class GeneratorFacade {
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
     private <C> GeneratorResult<C> resolveImplementationAndGenerate(Node parentNode, Object owner, Class<?> interfaceClass) {
-        Verify.isTrue(!Collection.class.isAssignableFrom(interfaceClass)
-                && !Map.class.isAssignableFrom(interfaceClass), "Must not be a collection interface!");
+        Verify.isNotArrayCollectionOrMap(interfaceClass);
 
         LOG.debug("No generator for interface '{}'", interfaceClass.getName());
 
