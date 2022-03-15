@@ -47,7 +47,7 @@ public abstract class Node {
         this.effectiveType = initEffectiveType();
     }
 
-    abstract List<Node> collectChildren();
+    protected abstract List<Node> collectChildren();
 
     abstract String getNodeName(); // TODO delete
 
@@ -72,6 +72,7 @@ public abstract class Node {
         return effectiveType;
     }
 
+    // TODO review and clean up
     private GenericType initEffectiveType() {
         if (genericType == null || (field != null && field.getGenericType() instanceof Class))
             return GenericType.of(klass);
@@ -144,7 +145,7 @@ public abstract class Node {
 //                    nodeContext.visited(child);
 //                }
 //            }
-            // FIXME
+//            // FIXME
             children = Collections.unmodifiableList(collected);
         }
         return children;
@@ -159,18 +160,20 @@ public abstract class Node {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node other = (Node) o;
-//        String thisParentNodeName = this.getParent() == null ? null : this.getParent().getNodeName();
-//        String otherParentNodeName = other.getParent() == null ? null : other.getParent().getNodeName();
+        String thisParentNodeName = this.getParent() == null ? null : this.getParent().getNodeName();
+        String otherParentNodeName = other.getParent() == null ? null : other.getParent().getNodeName();
 
         return this.getKlass().equals(other.getKlass())
                 && Objects.equals(this.getGenericType(), other.getGenericType())
-                //&& Objects.equals(thisParentNodeName, otherParentNodeName)
+                && Objects.equals(this.getField(), other.getField())
+//                && Objects.equals(this.getParent(), other.getParent())
+//                && Objects.equals(thisParentNodeName, otherParentNodeName)
                 ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKlass(), getGenericType());
+        return Objects.hash(getKlass(), getGenericType(), getField());
     }
 
     @Override

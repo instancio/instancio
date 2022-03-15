@@ -39,16 +39,15 @@ class InstancioDriver {
         final Node rootNode = nodeFactory.createNode(
                 new NodeContext(context.getRootTypeMap()), rootClass, null, null, null);
 
-        final C rootObject = generatorFacade.generateNodeValue(rootNode, null);
+        final GeneratorResult<C> rootResult = generatorFacade.generateNodeValue(rootNode, null);
 
-
-        enqueueChildrenOf(rootNode, rootObject, queue);
+        enqueueChildrenOf(rootNode, rootResult, queue);
 
         while (!queue.isEmpty()) {
             processNestItem(queue.poll());
         }
 
-        return rootObject;
+        return rootResult.getValue();
     }
 
     private void processNestItem(final CreateItem createItem) {
@@ -61,22 +60,21 @@ class InstancioDriver {
             return;
         }
 
-        final Object createdValue = generatorFacade.generateNodeValue(node, createItem.getOwner());
+        final GeneratorResult<?> generatorResult = generatorFacade.generateNodeValue(node, createItem.getOwner());
+        final Object createdValue = generatorResult.getValue();
 
         if (createdValue == null) {
             return;
         }
 
-        enqueueChildrenOf(node, createdValue, queue);
+        enqueueChildrenOf(node, generatorResult, queue);
 
         if (node instanceof ClassNode) {
             ReflectionUtils.setField(createItem.getOwner(), field, createdValue);
-        }
-        else if (node instanceof CollectionNode) {
+        } else if (node instanceof CollectionNode) {
             final Object collectionOwner = createItem.getOwner();
             populateCollection((CollectionNode) node, (Collection<Object>) createdValue, collectionOwner);
-        }
-        else if (node instanceof MapNode) {
+        } else if (node instanceof MapNode) {
             final Map<Object, Object> mapInstance = (Map<Object, Object>) createdValue;
             final Object mapOwner = createItem.getOwner();
             populateMap((MapNode) node, mapInstance, mapOwner);
@@ -92,10 +90,11 @@ class InstancioDriver {
         ReflectionUtils.setField(arrayOwner, arrayNode.getField(), createdValue);
 
         for (int i = 0; i < 2; i++) {
-            final Object elementValue = generatorFacade.generateNodeValue(elementNode, createdValue);
+            final GeneratorResult<Object> generatorResult = generatorFacade.generateNodeValue(elementNode, createdValue);
+            final Object elementValue = generatorResult.getValue();
             Array.set(createdValue, i, elementValue);
 
-            enqueueChildrenOf(elementNode, elementValue, queue);
+            enqueueChildrenOf(elementNode, generatorResult, queue);
         }
     }
 
@@ -107,7 +106,8 @@ class InstancioDriver {
             ReflectionUtils.setField(collectionOwner, collectionNode.getField(), collectionInstance);
 
         for (int i = 0; i < 2; i++) {
-            final Object elementValue = generatorFacade.generateNodeValue(elementNode, collectionInstance);
+            final GeneratorResult<Object> generatorResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
+            final Object elementValue = generatorResult.getValue();
             collectionInstance.add(elementValue);
 
             // nested list
@@ -115,7 +115,7 @@ class InstancioDriver {
                 populateCollection((CollectionNode) elementNode, (Collection<Object>) elementValue, collectionInstance);
             }
 
-            enqueueChildrenOf(elementNode, elementValue, queue);
+            enqueueChildrenOf(elementNode, generatorResult, queue);
 
         }
     }
@@ -123,9 +123,6 @@ class InstancioDriver {
     private void populateMap(MapNode mapNode, Map<Object, Object> mapInstance, Object mapOwner) {
         final Node keyNode = mapNode.getKeyNode();
         final Node valueNode = mapNode.getValueNode();
-
-        enqueueChildrenOf(keyNode, mapInstance, queue);
-        enqueueChildrenOf(valueNode, mapInstance, queue);
 
         if (mapNode.getField() != null)
             ReflectionUtils.setField(mapOwner, mapNode.getField(), mapInstance);
@@ -140,12 +137,15 @@ class InstancioDriver {
 
 
         for (int i = 0; i < 2; i++) {
-            final Object mapKey = generatorFacade.generateNodeValue(keyNode, mapInstance);
-            final Object mapValue = generatorFacade.generateNodeValue(valueNode, mapInstance);
+            final GeneratorResult<Object> generatorKeyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
+            final GeneratorResult<Object> generatorValueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
+
+            final Object mapKey = generatorKeyResult.getValue();
+            final Object mapValue = generatorValueResult.getValue();
             mapInstance.put(mapKey, mapValue);
 
-            enqueueChildrenOf(keyNode, mapKey, queue);
-            enqueueChildrenOf(valueNode, mapValue, queue);
+            enqueueChildrenOf(keyNode, generatorKeyResult, queue);
+            enqueueChildrenOf(valueNode, generatorValueResult, queue);
 
             if (valueNode instanceof MapNode) {
                 populateMap((MapNode) valueNode, (Map<Object, Object>) mapValue, mapInstance);
@@ -153,10 +153,13 @@ class InstancioDriver {
         }
     }
 
-    private static void enqueueChildrenOf(Node node, Object owner, Queue<CreateItem> queue) {
-        queue.addAll(node.getChildren().stream()
-                .map(it -> new CreateItem(it, owner))
-                .collect(toList()));
+    private static void enqueueChildrenOf(Node node, GeneratorResult<?> result, Queue<CreateItem> queue) {
+        if (!result.ignoreChildren()) {
+            final Object owner = result.getValue();
+            queue.addAll(node.getChildren().stream()
+                    .map(it -> new CreateItem(it, owner))
+                    .collect(toList()));
+        }
 
     }
 

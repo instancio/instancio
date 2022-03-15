@@ -29,17 +29,18 @@ class InstancioGenericsTest {
 
     @Test
     void fooContainerWithUserSuppliedInstance() {
+        final String expectedFooString = "expected-foo";
         FooContainer result = Instancio.of(FooContainer.class)
-                .with("item", () -> {
+                .with("stringFoo", () -> {
                     Foo<String> foo = new Foo<>();
-                    foo.setFooValue("test");
+                    foo.setFooValue(expectedFooString);
                     return foo;
                 })
                 .create();
 
         assertThat(result).isNotNull();
         assertThat(result.getStringFoo()).isNotNull();
-        assertThat(result.getStringFoo().getFooValue()).isNotNull().isInstanceOf(String.class);
+        assertThat(result.getStringFoo().getFooValue()).isEqualTo(expectedFooString);
         assertThat(result.getStringFoo().getOtherFooValue()).as("Value was not set").isNull();
     }
 

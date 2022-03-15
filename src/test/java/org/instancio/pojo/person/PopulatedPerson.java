@@ -6,18 +6,19 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
 @Getter
 @EqualsAndHashCode
-public class PreInitialized {
+public class PopulatedPerson {
 
     private Person person;
     private String someString = "test";
     private int someInt = 1234;
 
-    public PreInitialized() {
+    public PopulatedPerson() {
         this.person = createPerson();
     }
 
@@ -47,7 +48,7 @@ public class PreInitialized {
         address.setAddress("address");
         address.setCity("city");
         address.setCountry("country");
-        address.setPhoneNumbers(Arrays.asList(phone));
+        address.setPhoneNumbers(Collections.singletonList(phone));
         return address;
     }
 }

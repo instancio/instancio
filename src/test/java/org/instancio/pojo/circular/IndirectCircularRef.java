@@ -3,7 +3,11 @@ package org.instancio.pojo.circular;
 import lombok.Getter;
 import lombok.ToString;
 
+@Getter
+@ToString
 public class IndirectCircularRef {
+
+    private A startA;
 
     @Getter
     @ToString
@@ -20,6 +24,6 @@ public class IndirectCircularRef {
     @Getter
     @ToString
     public static class C {
-        private A a;
+        private A endA;
     }
 }

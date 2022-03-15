@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.pojo.generics.outermidinner.Inner;
 import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
 import org.instancio.pojo.generics.outermidinner.Mid;
 import org.instancio.pojo.generics.outermidinner.Outer;
@@ -8,109 +9,114 @@ import org.instancio.testsupport.templates.ModelTestTemplate;
 import java.util.List;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
-import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
+import static org.instancio.testsupport.utils.CollectionUtils.getOnlyElement;
 
 class ListOfOuterMidInnerStringModelTest extends ModelTestTemplate<ListOfOuterMidInnerString> {
 
     @Override
     protected void verify(Node rootNode) {
-
-        // List<Outer<Mid<Inner<String>>>> rootList
         assertNode(rootNode)
                 .hasParent(null)
-                .hasFieldName("rootList")
-                .hasTypeMappedTo(getTypeVar(List.class, "E"), Outer.class)
-                .hasTypeMapWithSize(1)
+                .hasNullField()
+                .hasKlass(ListOfOuterMidInnerString.class)
+                .hasEmptyTypeMap()
                 .hasChildrenOfSize(1);
 
-        // list: List<Outer<Mid<Inner<String>>>> rootList
-        final CollectionNode rootListCollectionNode = (CollectionNode) rootNode.getChildren().get(0);
-        assertNode(rootListCollectionNode)
+        //  List<Outer<Mid<Inner<String>>>>
+        final Node rootListElement = assertRootListAndItsElement(rootNode);
+
+        // List<T> outerList
+        final Node outerElement = assertOuterList(rootListElement);
+
+        // List<T> midList
+        final Node midListElement = assertMidList(outerElement);
+
+        // List<T> innerList
+        assertInnerList(midListElement);
+    }
+
+    private Node assertRootListAndItsElement(Node rootNode) {
+        final CollectionNode rootList = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
                 .hasFieldName("rootList")
-                .hasEffectiveClass(List.class);
+                .hasTypeMappedTo(List.class, "E", "org.instancio.pojo.generics.outermidinner." +
+                        "Outer<org.instancio.pojo.generics.outermidinner." +
+                        "Mid<org.instancio.pojo.generics.outermidinner." +
+                        "Inner<java.lang.String>>>")
+                .hasTypeMapWithSize(1)
+                .hasEffectiveClass(List.class)
+                .getAs(CollectionNode.class);
 
-        // element: Outer
-        final Node rootListElementNode = rootListCollectionNode.getElementNode();
-
-        assertNode(rootListElementNode)
-                .hasParent(rootNode)    // XXX correct parent?
+        // Outer
+        assertNode(rootList.getElementNode())
+                .hasParent(rootNode)
+                .hasNullField()
                 .hasKlass(Outer.class)
+                .hasTypeMappedTo(Outer.class, "T", "org.instancio.pojo.generics.outermidinner." +
+                        "Mid<org.instancio.pojo.generics.outermidinner." +
+                        "Inner<java.lang.String>>")
                 .hasGenericTypeName("org.instancio.pojo.generics.outermidinner." +
                         "Outer<org.instancio.pojo.generics.outermidinner." +
                         "Mid<org.instancio.pojo.generics.outermidinner." +
                         "Inner<java.lang.String>>>")
                 .hasChildrenOfSize(1);
 
+        return rootList.getElementNode();
+    }
 
-        // class Outer { List<T> outerList }
-        final CollectionNode outerListCollectionNode = (CollectionNode) rootListElementNode.getChildren().get(0);
-        assertNode(outerListCollectionNode)
-                /// .hasParent(rootListElementNode) FIXME parent is null
+    private Node assertOuterList(Node rootListElement) {
+        final CollectionNode outerList = assertNode(getOnlyElement(rootListElement.getChildren()))
+                .hasParent(rootListElement)
                 .hasFieldName("outerList")
-                .hasEffectiveClass(List.class);
+                .hasEffectiveClass(List.class)
+                .getAs(CollectionNode.class);
 
-        // Mid
-        final Node midClassNode = outerListCollectionNode.getElementNode();
-
-        assertNode(midClassNode)
-                .hasParent(rootListElementNode)
+        assertNode(outerList.getElementNode())
+                .hasParent(rootListElement)
+                .hasNullField()
                 .hasKlass(Mid.class)
-                // TODO should have a generic type!
-//                .hasGenericTypeName("org.instancio.pojo.generics.outermidinner." +
-//                        "Mid<org.instancio.pojo.generics.outermidinner." +
-//                        "Inner<java.lang.String>>")
+                .hasGenericTypeName("org.instancio.pojo.generics.outermidinner." +
+                        "Mid<org.instancio.pojo.generics.outermidinner." +
+                        "Inner<java.lang.String>>")
+                .hasTypeMappedTo(Mid.class, "T", "org.instancio.pojo.generics.outermidinner." +
+                        "Inner<java.lang.String>")
                 .hasChildrenOfSize(1);
 
-        // Node representing 'List<T> midList' field of Mid.class
-        final CollectionNode midListCollectionNode = (CollectionNode) midClassNode.getChildren().get(0);
+        return outerList.getElementNode();
+    }
 
-        assertNode(midListCollectionNode)
-                .hasParent(midClassNode)
-                .hasKlass(List.class)
-                .hasNoChildren();
-
-        final Node midListElementNode = midListCollectionNode.getElementNode();
-
-        assertNode(midListElementNode)
-                .hasParent(midClassNode)
+    private Node assertMidList(Node outerElement) {
+        final CollectionNode midList = assertNode(getOnlyElement(outerElement.getChildren()))
+                .hasParent(outerElement)
                 .hasFieldName("midList")
-//                .hasActualFieldType(List.class)
-//                .hasTypeMappedTo(getTypeVar(Mid.class, "T"), Inner.class)
-//                .hasTypeMapWithSize(1)
+                .hasKlass(List.class)
+                .hasNoChildren()
+                .getAs(CollectionNode.class);
+
+        assertNode(midList.getElementNode())
+                .hasParent(outerElement)
+                .hasNullField()
+                .hasKlass(Inner.class)
+                .hasTypeMappedTo(Inner.class, "T", String.class)
+                .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1);
 
-        final CollectionNode innerListCollectionNode = (CollectionNode) midListElementNode.getChildren().get(0);
+        return midList.getElementNode();
+    }
 
-        assertNode(innerListCollectionNode)
-                .hasParent(midListElementNode)
+    private void assertInnerList(Node midListElement) {
+        final CollectionNode innerList = assertNode(getOnlyElement(midListElement.getChildren()))
+                .hasParent(midListElement)
+                .hasFieldName("innerList")
                 .hasKlass(List.class)
-                .hasNoChildren();
+                .hasNoChildren()
+                .getAs(CollectionNode.class);
 
-        final Node innerListElementNode = innerListCollectionNode.getElementNode();
-
-        assertNode(innerListElementNode)
-                .hasParent(midListElementNode)
+        assertNode(innerList.getElementNode())
+                .hasParent(midListElement)
+                .hasNullField()
                 .hasKlass(String.class)
+                .hasEmptyTypeMap()
                 .hasNoChildren();
-//
-//        // Node representing 'List<T> innerList' field of Inner.class
-//        final FieldNode innerListFieldNode = (FieldNode) innerClassNode.getChildren().get(0);
-//
-//        assertFieldNode(innerListFieldNode)
-//                .hasParent(innerClassNode)
-//                .hasFieldName("innerList")
-//                .hasActualFieldType(List.class)
-//                .hasTypeMappedTo(getTypeVar(Inner.class, "T"), String.class)
-//                .hasTypeMapWithSize(1)
-//                .hasChildrenOfSize(1);
-//
-//        final ClassNode listElementClassNode = (ClassNode) innerListFieldNode.getChildren().get(0);
-//
-//        assertNode(listElementClassNode)
-//                .hasParent(innerListFieldNode)
-//                .hasKlass(String.class)
-//                .hasGenericType(null)
-//                .hasNoChildren();
     }
 }

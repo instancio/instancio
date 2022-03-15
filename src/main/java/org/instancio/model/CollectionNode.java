@@ -32,7 +32,7 @@ public class CollectionNode extends Node {
      * Returns an empty list; children come from the {@link #getElementNode()}.
      */
     @Override
-    List<Node> collectChildren() {
+    protected List<Node> collectChildren() {
         return Collections.emptyList();
     }
 

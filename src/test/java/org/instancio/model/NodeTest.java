@@ -7,6 +7,7 @@ import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.testsupport.TypeReference;
 import org.instancio.testsupport.fixtures.Types;
+import org.instancio.testsupport.tags.GenericsTag;
 import org.instancio.testsupport.tags.ModelTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,7 @@ class NodeTest {
     }
 
     @Nested
+    @GenericsTag
     class EffectiveTypeTests {
 
         @Test
@@ -106,6 +108,7 @@ class NodeTest {
     }
 
     @Nested
+    @GenericsTag
     class TypeMapTests {
 
         @Test
@@ -134,7 +137,7 @@ class NodeTest {
 
         @Test
         void pairOfGenericItemFooList() {
-            final Type typeRefLeft = getTypeOf(Types.GENERIC_ITEM_STRING);
+            final Type typeRefLeft = getTypeOf(Types.ITEM_STRING);
             final Type typeRefRight = getTypeOf(Types.FOO_LIST_INTEGER);
 
             assertNode(createNode(Pair.class, rootTypeMap, new TypeReference<Pair<Item<String>, Foo<List<Integer>>>>() {
@@ -166,7 +169,7 @@ class NodeTest {
         }
 
         // @formatter:off
-        @Override List<Node> collectChildren() { return Collections.emptyList(); }
+        @Override protected List<Node> collectChildren() { return Collections.emptyList(); }
         @Override public String getNodeName() { return "Test-Node"; }
         // @formatter:on
     }

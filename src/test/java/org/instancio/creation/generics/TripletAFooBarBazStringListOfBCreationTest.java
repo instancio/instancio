@@ -1,7 +1,7 @@
 package org.instancio.creation.generics;
 
-import org.instancio.pojo.generics.basic.Triplet;
 import org.instancio.pojo.generics.TripletAFooBarBazStringListOfB;
+import org.instancio.pojo.generics.basic.Triplet;
 import org.instancio.pojo.generics.foobarbaz.Bar;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
@@ -19,8 +19,6 @@ public class TripletAFooBarBazStringListOfBCreationTest extends CreationTestTemp
 
     @Override
     protected void verify(TripletAFooBarBazStringListOfB<UUID, Long> result) {
-        // Triplet<A, Foo<Bar<Baz<String>>>, List<B>>
-
         final Triplet<?, Foo<Bar<Baz<String>>>, ? extends List<?>> triplet = result.getTripletA_FooBarBazString_ListOfB();
         assertThat(triplet).isInstanceOf(Triplet.class);
 

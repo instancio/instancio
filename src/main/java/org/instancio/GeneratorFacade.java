@@ -4,7 +4,6 @@ import org.instancio.generator.GeneratorMap;
 import org.instancio.generator.ValueGenerator;
 import org.instancio.model.ArrayNode;
 import org.instancio.model.ClassNode;
-import org.instancio.model.MapNode;
 import org.instancio.model.Node;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
@@ -32,10 +31,10 @@ class GeneratorFacade {
         this.context = context;
     }
 
-    <C> C generateNodeValue(Node node, Object owner) {
+    <C> GeneratorResult<C> generateNodeValue(Node node, Object owner) {
         final Field field = node.getField();
 
-        final Optional<C> optionalResult = attemptGenerateViaContext(field);
+        final Optional<GeneratorResult<C>> optionalResult = attemptGenerateViaContext(field);
         if (optionalResult.isPresent()) {
             return optionalResult.get();
         }
@@ -43,7 +42,8 @@ class GeneratorFacade {
         final Class<?> effectiveType = node.getEffectiveType().getRawType();
 
         if (effectiveType.isPrimitive()) {
-            return (C) generatorMap.get(effectiveType).generate();
+            final C result = (C) generatorMap.get(effectiveType).generate();
+            return new GeneratorResult<>(result, true);
         }
 
         final Object ancestor = hierarchy.getAncestorWithClass(owner, effectiveType);
@@ -51,7 +51,7 @@ class GeneratorFacade {
         if (ancestor != null) {
             LOG.debug("{} has a circular dependency to {}. Not setting field value.",
                     owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
-            return null;
+            return new GeneratorResult<>(null);
         }
 
         if (node instanceof ArrayNode) {
@@ -79,21 +79,21 @@ class GeneratorFacade {
         }
 
         hierarchy.setAncestorOf(result, owner);
-        return (C) result;
+        return new GeneratorResult<>((C) result);
     }
 
-    private <C> C generateArray(Node node) {
+    private <C> GeneratorResult<C> generateArray(Node node) {
         final Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
         final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
         final Object arrayObject = generator.generate();
-        return (C) arrayObject;
+        return new GeneratorResult<>((C) arrayObject);
     }
 
     /**
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private <C> C resolveImplementationAndGenerate(Node parentNode, Object owner, Class<?> interfaceClass) {
+    private <C> GeneratorResult<C> resolveImplementationAndGenerate(Node parentNode, Object owner, Class<?> interfaceClass) {
         Verify.isTrue(!Collection.class.isAssignableFrom(interfaceClass)
                 && !Map.class.isAssignableFrom(interfaceClass), "Must not be a collection interface!");
 
@@ -115,7 +115,7 @@ class GeneratorFacade {
      * TODO: hierarchy.setAncestorOf(value, owner) must be done for all generated objects
      *  unless they are from JDK classes
      */
-    private <C> Optional<C> attemptGenerateViaContext(@Nullable Field field) {
+    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(@Nullable Field field) {
         if (field == null) return Optional.empty();
 
         if (context.isNullable(field) && Random.trueOrFalse()) {
@@ -126,15 +126,15 @@ class GeneratorFacade {
             return Optional.empty();
         }
 
-        Object result = null;
+        GeneratorResult<C> result = null;
         if (context.getUserSuppliedFieldValueGenerators().containsKey(field)) {
             ValueGenerator<?> generator = context.getUserSuppliedFieldValueGenerators().get(field);
-            result = generator.generate();
+            result = new GeneratorResult<C>((C) generator.generate(), true);
         } else if (context.getUserSuppliedClassValueGenerators().containsKey(field.getType())) {
             ValueGenerator<?> generator = context.getUserSuppliedClassValueGenerators().get(field.getType());
-            result = generator.generate();
+            result = new GeneratorResult<C>((C) generator.generate(), true);
         }
-        return Optional.ofNullable((C) result);
+        return Optional.ofNullable(result);
     }
 
 }

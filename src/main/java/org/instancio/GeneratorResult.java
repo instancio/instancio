@@ -1,30 +1,33 @@
 package org.instancio;
 
-import java.util.List;
 import java.util.StringJoiner;
 
 class GeneratorResult<T> {
     private final T value;
-    private final List<CreateItem> fieldsToEnqueue;
+    private final boolean ignoreChildren;
 
-    public GeneratorResult(T value, List<CreateItem> fieldsToEnqueue) {
+    public GeneratorResult(T value, boolean ignoreChildren) {
         this.value = value;
-        this.fieldsToEnqueue = fieldsToEnqueue;
+        this.ignoreChildren = ignoreChildren;
+    }
+
+    public GeneratorResult(T value) {
+        this(value, false);
     }
 
     public T getValue() {
         return value;
     }
 
-    public List<CreateItem> getFieldsToEnqueue() {
-        return fieldsToEnqueue;
+    public boolean ignoreChildren() {
+        return ignoreChildren;
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", GeneratorResult.class.getSimpleName() + "[", "]")
                 .add("value=" + value)
-                .add("fieldsToEnqueue=" + fieldsToEnqueue)
+                .add("ignoreChildren=" + ignoreChildren)
                 .toString();
     }
 }

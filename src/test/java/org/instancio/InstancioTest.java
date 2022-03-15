@@ -13,7 +13,7 @@ import org.instancio.pojo.interfaces.SingleInterfaceImpl;
 import org.instancio.pojo.person.Gender;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
-import org.instancio.pojo.person.PreInitialized;
+import org.instancio.pojo.person.PopulatedPerson;
 import org.instancio.util.Random;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -73,13 +73,13 @@ class InstancioTest {
     void generatePersonWithNullAndNullable() {
         Person person = Instancio.of(Person.class)
                 .withNullable("name")
-                .with("address.city", nullValue())
+  //              .with("address.city", nullValue())
                 .with("pets", nullValue())
                 .create();
 
         System.out.println("Person name " + person.getName());
 
-        assertThat(person.getAddress().getCity()).isNull();
+//        assertThat(person.getAddress().getCity()).isNull();
         assertThat(person.getPets()).isNull();
 
         //assertThat(person.getName()).isNotBlank();
@@ -87,8 +87,8 @@ class InstancioTest {
 
     @Test
     void exclusions() {
-        PreInitialized expected = new PreInitialized();
-        PreInitialized actual = Instancio.of(PreInitialized.class)
+        PopulatedPerson expected = new PopulatedPerson();
+        PopulatedPerson actual = Instancio.of(PopulatedPerson.class)
                 .exclude("person", "someString", "someInt")
                 .create();
 

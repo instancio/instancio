@@ -6,6 +6,7 @@ import org.instancio.pojo.generics.TripletAFooBarBazStringListOfB;
 import org.instancio.pojo.generics.basic.Pair;
 import org.instancio.pojo.generics.basic.Triplet;
 import org.instancio.pojo.person.Person;
+import org.instancio.testsupport.tags.GenericsTag;
 import org.instancio.testsupport.utils.TypeMapBuilder;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 import static org.instancio.testsupport.asserts.TypeMapResolverAssert.assertThatResolver;
 
+@GenericsTag
 class TypeMapResolverTest {
 
     public static final Map<TypeVariable<?>, Class<?>> EMPTY_ROOT_TYPE_MAP = Collections.emptyMap();
