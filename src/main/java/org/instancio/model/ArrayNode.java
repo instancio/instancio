@@ -14,13 +14,13 @@ public class ArrayNode extends Node {
     private final Node elementNode;
 
     public ArrayNode(final NodeContext nodeContext,
-                     @Nullable final Field field,
                      final Class<?> klass,
-                     @Nullable final Type genericType,
                      final Node elementNode,
+                     @Nullable final Field field,
+                     @Nullable final Type genericType,
                      @Nullable final Node parent) {
 
-        super(nodeContext, field, klass, genericType, parent);
+        super(nodeContext, klass, field, genericType, parent);
 
         Verify.isTrue(klass.isArray(), "Not an array type: %s", klass.getName());
 

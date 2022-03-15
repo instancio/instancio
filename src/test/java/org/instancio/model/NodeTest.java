@@ -41,8 +41,8 @@ class NodeTest {
 
             Node bazInteger = createNode(List.class, rootTypeMap, typeRefBazInteger);
             Node bazString = createNode(List.class, rootTypeMap, typeRefBazString);
-            Node bazIntegerClassNode = new ClassNode(new NodeContext(rootTypeMap), null,
-                    Baz.class, getTypeOf(typeRefBazInteger), null);
+            Node bazIntegerClassNode = new ClassNode(new NodeContext(rootTypeMap), Baz.class, null,
+                    getTypeOf(typeRefBazInteger), null);
 
             assertThat(bazString).isEqualTo(bazString).hasSameHashCodeAs(bazString);
             assertThat(bazString).isNotEqualTo(bazInteger).doesNotHaveSameHashCodeAs(bazInteger);
@@ -136,7 +136,7 @@ class NodeTest {
 
     private static Node createNode(Class<?> klass, Map<TypeVariable<?>, Class<?>> rootTypeMap, TypeReference<?> typeRef) {
         final NodeContext nodeContext = new NodeContext(rootTypeMap);
-        return new NodeImpl(nodeContext, null, klass, getTypeOf(typeRef), null);
+        return new NodeImpl(nodeContext, klass, null, getTypeOf(typeRef), null);
     }
 
     private static Type getTypeOf(TypeReference<?> typeRef) {
@@ -146,12 +146,12 @@ class NodeTest {
 
     private static class NodeImpl extends Node {
         NodeImpl(NodeContext nodeContext,
-                 @Nullable Field field,
                  Class<?> klass,
+                 @Nullable Field field,
                  @Nullable Type genericType,
                  @Nullable Node parent) {
 
-            super(nodeContext, field, klass, genericType, parent);
+            super(nodeContext, klass, field, genericType, parent);
         }
 
         @Override

@@ -7,11 +7,11 @@
         </encoder>
     </appender>
 
-    <logger name="org.instancio" level="debug" additivity="false">
+    <logger name="org.instancio" level="warn" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="CONSOLE"/>
     </root>
 
