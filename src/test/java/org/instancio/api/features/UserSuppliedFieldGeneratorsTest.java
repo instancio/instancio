@@ -1,6 +1,8 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
+import org.instancio.pojo.generics.foobarbaz.Foo;
+import org.instancio.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.pojo.person.Address;
 import org.instancio.pojo.person.Gender;
 import org.instancio.pojo.person.Person;
@@ -38,6 +40,24 @@ class UserSuppliedFieldGeneratorsTest {
         assertThat(person.getGender()).isEqualTo(Gender.FEMALE);
         assertThat(person.getLastModified()).isCloseToUtcNow(within(3, ChronoUnit.SECONDS));
         assertThat(person.getAddress()).isSameAs(customAddress);
+    }
+
+    @Test
+    void fooContainerWithUserSuppliedInstance() {
+        final String expectedFooString = "expected-foo";
+        final FooContainer result = Instancio.of(FooContainer.class)
+                .with("stringFoo", () -> {
+                    Foo<String> foo = new Foo<>();
+                    foo.setFooValue(expectedFooString);
+                    return foo;
+                })
+                .create();
+
+        assertThat(result.getStringFoo()).isNotNull();
+        assertThat(result.getStringFoo().getFooValue()).isEqualTo(expectedFooString);
+        assertThat(result.getStringFoo().getOtherFooValue())
+                .as("Value should not be set on user-supplied instance")
+                .isNull();
     }
 
 }
