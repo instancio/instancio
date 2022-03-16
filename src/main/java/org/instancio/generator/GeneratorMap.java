@@ -42,9 +42,10 @@ public class GeneratorMap {
         generatorMap.put(Character.class, new CharacterGenerator());
         generatorMap.put(String.class, new StringGenerator());
 
-        generatorMap.put(UUID.class, new UUIDGenerator());
+        generatorMap.put(Number.class, new IntegerGenerator());
         generatorMap.put(BigDecimal.class, new BigDecimalGenerator());
         generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator());
+        generatorMap.put(UUID.class, new UUIDGenerator());
         generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator());
 
         // Collections

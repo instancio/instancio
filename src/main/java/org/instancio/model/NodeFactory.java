@@ -10,6 +10,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Collection;
 import java.util.Map;
 
@@ -110,7 +111,6 @@ public class NodeFactory {
             ParameterizedType pType = (ParameterizedType) genericType;
 
             final Type[] actualTypeArgs = pType.getActualTypeArguments();
-            final TypeVariable<?>[] typeVars = rawClass.getTypeParameters();
 
             Node elementNode = null;
 
@@ -143,6 +143,19 @@ public class NodeFactory {
                         Class<?> rawType = (Class<?>) ((ParameterizedType) mappedType).getRawType();
                         elementNode = this.createNode(nodeContext, rawType, mappedType, null, parent);
                     }
+                } else if (actualTypeArg instanceof WildcardType) {
+                    final WildcardType wildcardType = (WildcardType) actualTypeArg;
+                    final Type[] upperBounds = wildcardType.getUpperBounds();
+                    final Type upperBound = upperBounds[0];
+                    if (upperBound instanceof Class) {
+                        elementNode = this.createNode(nodeContext, (Class<?>) upperBound, null, null, parent);
+                    } else if (upperBound instanceof ParameterizedType) {
+                        final ParameterizedType upperPType = (ParameterizedType) upperBound;
+                        elementNode = this.createNode(nodeContext, (Class<?>) upperPType.getRawType(), upperPType, null, parent);
+                    } else {
+                        throw new UnsupportedOperationException("Unsupported upper bound type: " + upperBound.getClass());
+                    }
+
                 }
             }
 
@@ -170,7 +183,7 @@ public class NodeFactory {
 
                     result = new CollectionNode(nodeContext, (Class<?>) passedOnType, elementNode, field, fieldGenericType, parent);
                 } else {
-                    Class<?> rawType = (Class<?>) pType.getRawType(); // Map.class and Map<> pType
+                    Class<?> rawType = (Class<?>) pType.getRawType(); // Collection.class and Collection<> pType
                     result = new CollectionNode(nodeContext, rawType, elementNode, field, pType, parent);
                 }
             } else {
