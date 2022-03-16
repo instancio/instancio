@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.pojo.collections.MapIntegerListString;
+import org.instancio.pojo.collections.maps.MapIntegerListString;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 

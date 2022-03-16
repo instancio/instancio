@@ -1,5 +1,6 @@
 package org.instancio;
 
+import org.instancio.exception.InstancioException;
 import org.instancio.generator.ValueGenerator;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
@@ -65,12 +66,15 @@ public class AbstractCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
     }
 
     @Override
-    public AbstractCreationSettingsAPI<T, C> withNullable(String fieldPath) {
-        Verify.notNull(fieldPath, "Field must not be null");
+    public AbstractCreationSettingsAPI<T, C> withNullable(String fieldName) {
+        Verify.notNull(fieldName, "Field must not be null");
 
-        final Field field = ReflectionUtils.getField(klass, fieldPath);
+        final Field field = ReflectionUtils.getField(klass, fieldName);
+        if (field.getType().isPrimitive()) {
+            throw new InstancioException(String.format("Primitive field '%s' cannot be set to null", field));
+        }
         nullables.add(field);
-        LOG.debug("Added " + fieldPath + " to nullables");
+        LOG.debug("Added {} to nullables", fieldName);
         return this;
     }
 

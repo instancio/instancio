@@ -3,6 +3,8 @@ package org.instancio.testsupport.asserts;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.SoftAssertions;
 import org.instancio.testsupport.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +20,7 @@ import static org.assertj.core.api.Fail.fail;
 
 @SuppressWarnings("UnusedReturnValue")
 public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
+    private static final Logger LOG = LoggerFactory.getLogger(ReflectionAssert.class);
 
     private final SoftAssertions softly = new SoftAssertions();
 
@@ -38,8 +41,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
 
         softly.assertThat(actual).hasNoNullFieldsOrProperties();
 
-        // TODO cleanup + add additional info on what's failing
-        System.out.println("ASSERT OBJ " + actual.getClass());
+        LOG.debug("ASSERT OBJ " + actual.getClass());
 
         final List<Method> methods = Arrays.stream(actual.getClass().getDeclaredMethods())
                 .filter(it -> it.getName().startsWith("get") && it.getParameterCount() == 0)
@@ -49,22 +51,21 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         for (Method method : methods) {
 
             try {
-                System.out.println("calling method: " + method);
+                LOG.debug("calling method: " + method);
+
                 Object result = method.invoke(actual);
                 softly.assertThat(result)
                         .as("Method '%s' returned a null", method)
                         .isNotNull();
 
-                if (result != null) {
-                    if (Collection.class.isAssignableFrom(result.getClass())) {
-                        assertCollection(method, (Collection<?>) result);
-                    } else if (Map.class.isAssignableFrom(result.getClass())) {
-                        assertMap(method, (Map<?, ?>) result);
-                    } else if (result.getClass().isArray()) {
-                        assertArray(method, result);
-                    } else {
-                        assertThatObject(result).isFullyPopulated(); // recurse
-                    }
+                if (Collection.class.isAssignableFrom(result.getClass())) {
+                    assertCollection(method, (Collection<?>) result);
+                } else if (Map.class.isAssignableFrom(result.getClass())) {
+                    assertMap(method, (Map<?, ?>) result);
+                } else if (result.getClass().isArray()) {
+                    assertArray(method, result);
+                } else {
+                    assertThatObject(result).isFullyPopulated(); // recurse
                 }
 
             } catch (IllegalAccessException | InvocationTargetException ex) {

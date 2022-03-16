@@ -8,7 +8,6 @@ import org.instancio.testsupport.utils.NodeUtils;
 import java.util.Map;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
-import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
 
@@ -26,8 +25,8 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
                 .hasEffectiveClass(Map.class)
-                .hasTypeMappedTo(getTypeVar(Map.class, "K"), Long.class)
-                .hasTypeMappedTo(getTypeVar(Map.class, "V"), Types.MAP_STRING_BOOLEAN.getType())
+                .hasTypeMappedTo(Map.class, "K", Long.class)
+                .hasTypeMappedTo(Map.class, "V", Types.MAP_STRING_BOOLEAN.getType())
                 .hasTypeMapWithSize(2)
                 .hasNoChildren()
                 .getAs(MapNode.class);
@@ -38,16 +37,14 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
     private void map2(Node rootNode) {
         // Map<OKEY, Map<IKEY, Boolean>> map2
         final String fieldName = "map2";
-        final String expectedNestedMapGenericType = "java.util.Map<IKEY, java.lang.Boolean>";
 
         final MapNode outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
                 .hasEffectiveClass(Map.class)
-                .hasTypeMappedTo(getTypeVar(Map.class, "K"), getTypeVar(NestedMaps.class, "OKEY"))
-                .hasTypeMappedTo(getTypeVar(NestedMaps.class, "OKEY"), Long.class)
-                .hasTypeMappedTo(getTypeVar(Map.class, "V"), expectedNestedMapGenericType)
-                .hasTypeMapWithSize(3)
+                .hasTypeMappedTo(Map.class, "K", Long.class)
+                .hasTypeMappedTo(Map.class, "V", "java.util.Map<IKEY, java.lang.Boolean>")
+                .hasTypeMapWithSize(2)
                 .hasNoChildren()
                 .getAs(MapNode.class);
 
@@ -56,16 +53,14 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
 
     private void assertNestedMap(MapNode outerMap) {
         assertNode(outerMap.getKeyNode())
-                .hasParent(outerMap)
+                .hasParent(outerMap.getParent()) // parent is grandparent
                 .hasNullField()
                 .hasKlass(Long.class)
                 .hasEffectiveClass(Long.class)
                 .hasNoChildren();
 
         final MapNode innerMapNode = assertNode(outerMap.getValueNode())
-                // nested map belongs to the "value" node of the MapNode,
-                // not the outer MapNode itself.
-                .hasParent(outerMap)
+                .hasParent(outerMap.getParent()) // parent is grandparent
                 .hasNullField()
                 .hasKlass(Map.class)
                 .hasEffectiveClass(Map.class)
@@ -73,14 +68,14 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
                 .getAs(MapNode.class);
 
         assertNode(innerMapNode.getKeyNode())
-                .hasParent(innerMapNode)
+                .hasParent(innerMapNode.getParent()) // parent is grandparent
                 .hasNullField()
                 .hasKlass(String.class)
                 .hasEffectiveClass(String.class)
                 .hasNoChildren();
 
         assertNode(innerMapNode.getValueNode())
-                .hasParent(innerMapNode)
+                .hasParent(innerMapNode.getParent()) // parent is grandparent
                 .hasNullField()
                 .hasKlass(Boolean.class)
                 .hasEffectiveClass(Boolean.class)

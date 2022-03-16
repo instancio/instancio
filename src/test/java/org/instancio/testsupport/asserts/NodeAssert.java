@@ -4,7 +4,6 @@ import org.assertj.core.api.AbstractAssert;
 import org.instancio.model.Node;
 
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -97,31 +96,6 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
                 .isNotNull()
                 .extracting(Type::getTypeName)
                 .isEqualTo(expectedTypeName);
-        return this;
-    }
-
-    @Deprecated
-    public NodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, Type expectedMapping) {
-        isNotNull();
-        final Map<Type, Type> typeMap = actual.getTypeMap();
-        final Type actualMapping = typeMap.get(typeVariable);
-
-        assertThat(actualMapping)
-                .as("Actual type map: %s", typeMap)
-                .isEqualTo(expectedMapping);
-        return this;
-    }
-
-    public NodeAssert hasTypeMappedTo(TypeVariable<?> typeVariable, String expectedMappingAsString) {
-        isNotNull();
-        final Map<Type, Type> typeMap = actual.getTypeMap();
-        final Type actualMapping = typeMap.get(typeVariable);
-
-        assertThat(actualMapping)
-                .as("Actual type map: %s", typeMap)
-                .isNotNull()
-                .extracting(Object::toString)
-                .isEqualTo(expectedMappingAsString);
         return this;
     }
 

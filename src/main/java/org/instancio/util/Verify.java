@@ -28,6 +28,12 @@ public final class Verify {
         }
     }
 
+    public static void isFalse(final boolean condition, final String message, final Object... values) {
+        if (condition) {
+            throw new IllegalArgumentException(String.format(message, values));
+        }
+    }
+
     public static void isNotArrayCollectionOrMap(final Class<?> klass) {
         if (klass.isArray()
                 || Collection.class.isAssignableFrom(klass)
