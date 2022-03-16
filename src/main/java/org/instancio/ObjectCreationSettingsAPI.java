@@ -34,8 +34,8 @@ public class ObjectCreationSettingsAPI<T, C extends CreationSettingsAPI<T, C>>
     }
 
     @Override
-    public ObjectCreationSettingsAPI<T, C> withNullable(String field) {
-        super.withNullable(field);
+    public ObjectCreationSettingsAPI<T, C> withNullable(String fieldName) {
+        super.withNullable(fieldName);
         return this;
     }
 

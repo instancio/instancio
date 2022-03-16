@@ -46,6 +46,7 @@ class VerifyTest {
     }
 
     @Test
+    @SuppressWarnings("ConstantConditions")
     void isTrueThrowsExceptionWithExpectedMessageWhenConditionIsFalse() {
         assertThatThrownBy(() -> Verify.isTrue(false, MESSAGE_TEMPLATE, MESSAGE_ARG))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -55,8 +56,21 @@ class VerifyTest {
     @Test
     @SuppressWarnings("java:S2699")
     void isTrueDoesNotThrowExceptionWhenConditionIsTrue() {
-        final String valueToCheck = "value";
         Verify.isTrue(true, MESSAGE_TEMPLATE, MESSAGE_ARG); // no exception thrown
+    }
+
+    @Test
+    @SuppressWarnings("ConstantConditions")
+    void isFalseThrowsExceptionWithExpectedMessageWhenConditionIsTrue() {
+        assertThatThrownBy(() -> Verify.isFalse(true, MESSAGE_TEMPLATE, MESSAGE_ARG))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format(MESSAGE_TEMPLATE, MESSAGE_ARG));
+    }
+
+    @Test
+    @SuppressWarnings("java:S2699")
+    void isFalseDoesNotThrowExceptionWhenConditionIsFalse() {
+        Verify.isFalse(false, MESSAGE_TEMPLATE, MESSAGE_ARG); // no exception thrown
     }
 
     @ParameterizedTest
