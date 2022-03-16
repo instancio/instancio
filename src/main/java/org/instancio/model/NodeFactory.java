@@ -116,9 +116,11 @@ public class NodeFactory {
 
             // no field value added to element nodes since elements are added via Collection.add(obj) method
             // will only loop once since Collection<E> has only one type variable
+
+            Verify.isTrue(actualTypeArgs.length == 1, "Expected only 1 type arg");
+
             for (int i = 0; i < actualTypeArgs.length; i++) {
                 final Type actualTypeArg = actualTypeArgs[i];
-                final TypeVariable<?> typeVar = typeVars[i];
 
                 if (actualTypeArg instanceof Class) {
 
@@ -174,9 +176,13 @@ public class NodeFactory {
             } else {
                 LOG.warn("Could not resolve Collection element type.");
             }
+        } else if (genericType instanceof Class) { // collection without type specified... 'List list'
+            Node elementNode = new ClassNode(nodeContext, Object.class, null, null, parent);
+            result = new CollectionNode(nodeContext, rawClass, elementNode, field, rawClass, parent);
         }
 
-        return Verify.notNull(result);
+        return Verify.notNull(result, "Unable to create a CollectionNode for class: " + rawClass.getName()
+                + ", generic type: " + genericType);
     }
 
 
