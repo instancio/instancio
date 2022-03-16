@@ -21,7 +21,6 @@ public class ListFooListBarListBazListStringCreationTest extends CreationTestTem
 
         assertThat(list)
                 // List<Foo>
-                .isInstanceOf(List.class)
                 .hasSize(Constants.COLLECTION_SIZE)
                 .hasOnlyElementsOfType(Foo.class);
 

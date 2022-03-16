@@ -18,11 +18,16 @@ public class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
     /**
+     * The expect {@code klass} parametera are:
+     * <ul>
+     *   <li>{@link CollectionNode} - List.class, Set.class, etc</li>
+     *   <li>{@link MapNode} - Map.class</li>
+     *   <li>{@link ArrayNode} - String[].class</li>
+     *   <li>{@link ClassNode} - for any other class</li>
+     * </ul>
+     *
      * @param nodeContext
      * @param klass       of the node.
-     *                    <li>For {@link CollectionNode}s this will be List.class, Set.class, etc</li>
-     *                    <li>For {@link MapNode} this will be Map.class</li>
-     *                    <li>For {@link ClassNode} this will be any other class</li>
      * @param genericType
      * @param field
      * @param parent
@@ -46,7 +51,7 @@ public class NodeFactory {
             result = createMapNode(nodeContext, klass, genericType, field, parent);
         } else {
 //            result = createClassNode(nodeContext, klass, genericType, field, parent);
-            result = new ClassNode(nodeContext, field, klass, genericType, parent);
+            result = new ClassNode(nodeContext, klass, field, genericType, parent);
         }
 
 
@@ -89,7 +94,7 @@ public class NodeFactory {
             elementNode = this.createNode(nodeContext, klass.getComponentType(), null, null, parent);
         }
 
-        return new ArrayNode(nodeContext, field, klass, genericType, Verify.notNull(elementNode), parent);
+        return new ArrayNode(nodeContext, klass, Verify.notNull(elementNode), field, genericType, parent);
     }
 
     private Node createCollectionNode(
@@ -111,9 +116,11 @@ public class NodeFactory {
 
             // no field value added to element nodes since elements are added via Collection.add(obj) method
             // will only loop once since Collection<E> has only one type variable
+
+            Verify.isTrue(actualTypeArgs.length == 1, "Expected only 1 type arg");
+
             for (int i = 0; i < actualTypeArgs.length; i++) {
                 final Type actualTypeArg = actualTypeArgs[i];
-                final TypeVariable<?> typeVar = typeVars[i];
 
                 if (actualTypeArg instanceof Class) {
 
@@ -161,17 +168,21 @@ public class NodeFactory {
                         throw new IllegalStateException("Failed resolving collection type");
                     }
 
-                    result = new CollectionNode(nodeContext, field, (Class<?>) passedOnType, fieldGenericType, elementNode, parent);
+                    result = new CollectionNode(nodeContext, (Class<?>) passedOnType, elementNode, field, fieldGenericType, parent);
                 } else {
                     Class<?> rawType = (Class<?>) pType.getRawType(); // Map.class and Map<> pType
-                    result = new CollectionNode(nodeContext, field, rawType, pType, elementNode, parent);
+                    result = new CollectionNode(nodeContext, rawType, elementNode, field, pType, parent);
                 }
             } else {
                 LOG.warn("Could not resolve Collection element type.");
             }
+        } else if (genericType instanceof Class) { // collection without type specified... 'List list'
+            Node elementNode = new ClassNode(nodeContext, Object.class, null, null, parent);
+            result = new CollectionNode(nodeContext, rawClass, elementNode, field, rawClass, parent);
         }
 
-        return Verify.notNull(result);
+        return Verify.notNull(result, "Unable to create a CollectionNode for class: " + rawClass.getName()
+                + ", generic type: " + genericType);
     }
 
 
@@ -245,7 +256,7 @@ public class NodeFactory {
 
             if (keyNode != null && valueNode != null) {
                 Class<?> mapClass = (Class<?>) pType.getRawType();
-                result = new MapNode(nodeContext, field, mapClass, pType, keyNode, valueNode, parent);
+                result = new MapNode(nodeContext, mapClass, keyNode, valueNode, field, pType, parent);
             } else {
                 LOG.debug("Could not resolve Map key/value types.\nKey: {}\nValue:{}", keyNode, valueNode);
             }

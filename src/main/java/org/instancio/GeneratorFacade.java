@@ -101,7 +101,7 @@ class GeneratorFacade {
             LOG.debug("Interface '{}' has no implementation", interfaceClass.getName());
             return null;
         }
-        ClassNode implementorClassNode = new ClassNode(parentNode.getNodeContext(), null, implementor, null, parentNode);
+        ClassNode implementorClassNode = new ClassNode(parentNode.getNodeContext(), implementor, null, null, parentNode);
         return generateNodeValue(implementorClassNode, owner);
     }
 

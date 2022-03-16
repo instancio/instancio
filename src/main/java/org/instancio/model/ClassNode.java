@@ -18,12 +18,12 @@ public class ClassNode extends Node {
     private static final Logger LOG = LoggerFactory.getLogger(ClassNode.class);
 
     public ClassNode(final NodeContext nodeContext,
-                     @Nullable final Field field,
                      final Class<?> klass,
+                     @Nullable final Field field,
                      @Nullable final Type genericType,
                      @Nullable final Node parent) {
 
-        super(nodeContext, field, klass, genericType, parent);
+        super(nodeContext, klass,field, genericType, parent);
 
         Verify.isNotArrayCollectionOrMap(klass);
     }
