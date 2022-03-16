@@ -2,6 +2,7 @@ package org.instancio.generator;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class GeneratorMap {
 
         generatorMap.put(Number.class, new IntegerGenerator());
         generatorMap.put(BigDecimal.class, new BigDecimalGenerator());
+        generatorMap.put(LocalDate.class, new LocalDateGenerator());
         generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator());
         generatorMap.put(UUID.class, new UUIDGenerator());
         generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator());
