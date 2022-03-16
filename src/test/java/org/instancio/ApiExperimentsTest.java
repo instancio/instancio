@@ -1,7 +1,7 @@
 package org.instancio;
 
 import org.instancio.pojo.circular.HierarchyWithMultipleInterfaceImpls;
-import org.instancio.pojo.inheritance.Inheritance;
+import org.instancio.pojo.inheritance.BaseClasSubClassInheritance;
 import org.instancio.pojo.interfaces.MultipleInterfaceImpls;
 import org.instancio.pojo.interfaces.SingleInterfaceImpl;
 import org.instancio.pojo.person.Person;
@@ -21,13 +21,13 @@ class ApiExperimentsTest {
 
     @Test
     void inheritanceChildClass() {
-        Inheritance.ChildClass result = Instancio.of(Inheritance.ChildClass.class).create();
+        BaseClasSubClassInheritance.SubClass result = Instancio.of(BaseClasSubClassInheritance.SubClass.class).create();
 
         System.out.println(result);
 
-        assertThat(result.getChildField()).isNotBlank();
-        assertThat(result.getProtectedBaseField()).isNotBlank();
-        assertThat(result.getPrivateBaseField()).isNotBlank();
+        assertThat(result.getSubClassField()).isNotBlank();
+        assertThat(result.getProtectedBaseClassField()).isNotBlank();
+        assertThat(result.getPrivateBaseClassField()).isNotBlank();
     }
 
     @Test

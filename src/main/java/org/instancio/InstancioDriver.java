@@ -25,6 +25,11 @@ import static java.util.stream.Collectors.toList;
 class InstancioDriver {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioDriver.class);
 
+    // TODO
+    private static final int ARRAY_SIZE = 2;
+    private static final int MAP_SIZE = 2;
+    private static final int COLLECTION_SIZE = 2;
+
     private final InstancioContext context;
     private final GeneratorFacade generatorFacade;
     private final Queue<CreateItem> queue = new ArrayDeque<>();
@@ -93,7 +98,7 @@ class InstancioDriver {
             ReflectionUtils.setField(arrayOwner, arrayNode.getField(), createdValue);
         }
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             final GeneratorResult<Object> generatorResult = generatorFacade.generateNodeValue(elementNode, createdValue);
             final Object elementValue = generatorResult.getValue();
             Array.set(createdValue, i, elementValue);
@@ -109,7 +114,7 @@ class InstancioDriver {
         if (collectionNode.getField() != null)
             ReflectionUtils.setField(collectionOwner, collectionNode.getField(), collectionInstance);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < COLLECTION_SIZE; i++) {
             final GeneratorResult<Object> generatorResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
             final Object elementValue = generatorResult.getValue();
             collectionInstance.add(elementValue);
@@ -142,7 +147,7 @@ class InstancioDriver {
         // option2: check if value node is a Map/Collection/Array node... then get element/key/value nodes children (UGLY)
 
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < MAP_SIZE; i++) {
             final GeneratorResult<Object> generatorKeyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
             final GeneratorResult<Object> generatorValueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
 

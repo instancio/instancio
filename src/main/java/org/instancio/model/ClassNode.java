@@ -6,11 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,9 +42,9 @@ public class ClassNode extends Node {
 
     private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass, @Nullable final Type genericType) {
         final NodeFactory nodeFactory = new NodeFactory();
+        final List<Field> fields = nodeContext.getFieldCollector().getFields(klass);
 
-        return Arrays.stream(klass.getDeclaredFields())
-                .filter(f -> !Modifier.isStatic(f.getModifiers()))
+        return fields.stream()
                 .map(field -> {
                     Type passedOnGenericType = field.getGenericType();
 
@@ -63,7 +61,6 @@ public class ClassNode extends Node {
                             t = (Class<?>) pType.getRawType();
                         }
                     }
-
 
                     LOG.trace("Passing generic type to child field node: {}", passedOnGenericType);
                     return nodeFactory.createNode(nodeContext, t, passedOnGenericType, field, this);

@@ -1,5 +1,9 @@
 package org.instancio.model;
 
+import org.instancio.reflection.DeclaredAndInheritedFieldsCollector;
+import org.instancio.reflection.DeclaredFieldsCollector;
+import org.instancio.reflection.FieldCollector;
+
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,6 +13,7 @@ import java.util.Set;
 // TODO rename
 public class NodeContext {
 
+    private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
     private final Set<Node> visited = new HashSet<>();
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
 
@@ -26,5 +31,9 @@ public class NodeContext {
 
     public boolean isUnvisited(final Node node) {
         return !visited.contains(node);
+    }
+
+    public FieldCollector getFieldCollector() {
+        return fieldCollector;
     }
 }
