@@ -43,13 +43,15 @@ public class TypeMapResolver {
      * Some possible field declarations and their generic types:
      *
      * <pre>{@code
-     *   Type          | Generic type class | Generic type
-     *   --------------+--------------------+---------------------------------------
-     *   int           | Class              | int
-     *   Integer       | Class              | Integer.class
-     *   Item<Integer> | ParameterizedType  | org.example.Item<java.lang.Integer>
-     *   Item<T>       | ParameterizedType  | org.example.Item<T>
-     *   T             | TypeVariable       | T
+     *   Type                | Generic type class
+     *   --------------------+-------------------
+     *   int                 | Class
+     *   Integer             | Class
+     *   Item<Integer>       | ParameterizedType
+     *   Item<T>             | ParameterizedType
+     *   T                   | TypeVariable
+     *   Item<?>             | WildcardType
+     *   Item<? extends Foo> | WildcardType
      * }</pre>
      */
     private void initTypeMap() {

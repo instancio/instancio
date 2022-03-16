@@ -20,6 +20,9 @@ public class Types {
     public static final TypeReference<?> LIST_STRING = new TypeReference<List<String>>() {
     };
 
+    public static final TypeReference<?> LIST_ITEM_STRING = new TypeReference<List<Item<String>>>() {
+    };
+
     public static final TypeReference<?> LIST_LIST_STRING = new TypeReference<List<List<String>>>() {
     };
 

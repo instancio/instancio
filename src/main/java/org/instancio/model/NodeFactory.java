@@ -46,21 +46,20 @@ public class NodeFactory {
             result = createArrayNode(nodeContext, klass, genericType, field, parent);
         } else if (Collection.class.isAssignableFrom(klass)) {
             result = createCollectionNode(nodeContext, klass, genericType, field, parent);
-
-            ((CollectionNode) result).getElementNode().getChildren(); // TODO delete
         } else if (Map.class.isAssignableFrom(klass)) {
             result = createMapNode(nodeContext, klass, genericType, field, parent);
         } else {
-//            result = createClassNode(nodeContext, klass, genericType, field, parent);
             result = new ClassNode(nodeContext, klass, field, genericType, parent);
         }
 
 
         LOG.debug("Created node: {}", result);
         if (nodeContext.isUnvisited(result)) {
+            // mark is visited before invoking getChildren() to avoid stack overflow
             nodeContext.visited(result);
-            result.getChildren(); // TODO delete
 
+            result.getChildren(); // TODO delete
+//            ((CollectionNode) result).getElementNode().getChildren(); // TODO delete
         }
         return result;
     }

@@ -1,7 +1,6 @@
 package org.instancio.model;
 
 import org.instancio.reflection.DeclaredAndInheritedFieldsCollector;
-import org.instancio.reflection.DeclaredFieldsCollector;
 import org.instancio.reflection.FieldCollector;
 
 import java.lang.reflect.TypeVariable;
