@@ -8,6 +8,7 @@ import org.instancio.model.Node;
 import org.instancio.model.NodeContext;
 import org.instancio.model.NodeFactory;
 import org.instancio.util.ReflectionUtils;
+import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +70,7 @@ class InstancioDriver {
         final Object createdValue = generatorResult.getValue();
 
         if (createdValue == null) {
+            Verify.notNull(createItem.getOwner());
             ReflectionUtils.setField(createItem.getOwner(), field, null);
             return;
         }
@@ -117,7 +119,9 @@ class InstancioDriver {
         for (int i = 0; i < COLLECTION_SIZE; i++) {
             final GeneratorResult<Object> generatorResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
             final Object elementValue = generatorResult.getValue();
-            collectionInstance.add(elementValue);
+            if (elementValue != null) {
+                collectionInstance.add(elementValue);
+            }
 
             // nested list
             if (elementNode instanceof CollectionNode) {
@@ -153,17 +157,20 @@ class InstancioDriver {
 
             final Object mapKey = generatorKeyResult.getValue();
             final Object mapValue = generatorValueResult.getValue();
-            mapInstance.put(mapKey, mapValue);
 
-            enqueueChildrenOf(keyNode, generatorKeyResult, queue);
-            enqueueChildrenOf(valueNode, generatorValueResult, queue);
+            if (mapKey != null) {
+                mapInstance.put(mapKey, mapValue);
 
-            if (valueNode instanceof MapNode) {
-                populateMap((MapNode) valueNode, (Map<Object, Object>) mapValue, mapInstance);
-            } else if (valueNode instanceof CollectionNode) {
-                populateCollection((CollectionNode) valueNode, (Collection<Object>) mapValue, mapInstance);
-            } else if (valueNode instanceof ArrayNode) {
-                populateArray((ArrayNode) valueNode, mapValue, mapInstance);
+                enqueueChildrenOf(keyNode, generatorKeyResult, queue);
+                enqueueChildrenOf(valueNode, generatorValueResult, queue);
+
+                if (valueNode instanceof MapNode) {
+                    populateMap((MapNode) valueNode, (Map<Object, Object>) mapValue, mapInstance);
+                } else if (valueNode instanceof CollectionNode) {
+                    populateCollection((CollectionNode) valueNode, (Collection<Object>) mapValue, mapInstance);
+                } else if (valueNode instanceof ArrayNode) {
+                    populateArray((ArrayNode) valueNode, mapValue, mapInstance);
+                }
             }
         }
     }

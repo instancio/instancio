@@ -3,6 +3,7 @@ package org.instancio.model;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,8 +82,11 @@ public class TypeMapResolver {
             return typeArg;
         } else if (typeArg instanceof Class) {
             return typeArg;
+        } else if (typeArg instanceof WildcardType) {
+            WildcardType wType = (WildcardType) typeArg;
+            return resolveTypeMapping(wType.getUpperBounds()[0]); // TODO multiple bounds
         }
-        throw new IllegalStateException("Unhandled type: " + typeArg); // "shouldn't happen"
+        throw new UnsupportedOperationException("Unsupported type: " + typeArg.getClass());
     }
 
     @Override
