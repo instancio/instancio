@@ -1,5 +1,7 @@
 package org.instancio.model;
 
+import org.instancio.util.Verify;
+
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Objects;
@@ -10,7 +12,7 @@ public class GenericType {
     private final Type genericType;
 
     private GenericType(final Class<?> rawType, @Nullable final Type genericType) {
-        this.rawType = rawType;
+        this.rawType = Verify.notNull(rawType, "rawType must not be null");
         this.genericType = genericType;
     }
 

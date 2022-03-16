@@ -49,7 +49,7 @@ class GeneratorFacade {
         if (ancestor != null) {
             LOG.debug("{} has a circular dependency to {}. Not setting field value.",
                     owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
-            return new GeneratorResult<>(null);
+            return new GeneratorResult<>(null, true);
         }
 
         if (node instanceof ArrayNode) {
