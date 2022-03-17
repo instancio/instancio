@@ -1,16 +1,23 @@
 package org.instancio;
 
+/**
+ * TODO javadoc
+ */
 public class Instancio {
 
     private Instancio() {
         // non-instantiable
     }
 
-    public static <C, T extends CreationSettingsAPI<C, T>> ObjectCreationSettingsAPI<C, T> of(Class<C> klass) {
-        return new ObjectCreationSettingsAPI<>(klass);
+    public static <T> ClassCreationApi<T> of(Class<T> klass) {
+        return new ClassCreationApi<>(klass);
     }
 
-    public static <C, T extends CreationSettingsAPI<C, T>> CollectionCreationSettingsAPI<C, T> ofList(Class<C> klass) {
-        return new CollectionCreationSettingsAPI<>(klass);
+    public static <T> GenericTypeCreationApi<T> of(TypeTokenSupplier<T> typeToken) {
+        return new GenericTypeCreationApi<>(typeToken);
+    }
+
+    public static <T> CreationApi<T> of(Model<T> model) {
+        return new ModelCreationApi<>(model);
     }
 }

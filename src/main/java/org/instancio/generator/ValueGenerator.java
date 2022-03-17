@@ -6,6 +6,7 @@ package org.instancio.generator;
  * @param <T> type to generate
  * @see org.instancio.Generators
  */
+@FunctionalInterface
 public interface ValueGenerator<T> {
 
     /**

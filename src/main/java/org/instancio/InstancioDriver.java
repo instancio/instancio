@@ -1,12 +1,11 @@
 package org.instancio;
 
 import org.instancio.model.ArrayNode;
-import org.instancio.model.ClassNode;
 import org.instancio.model.CollectionNode;
+import org.instancio.model.InternalModel;
 import org.instancio.model.MapNode;
+import org.instancio.model.ModelContext;
 import org.instancio.model.Node;
-import org.instancio.model.NodeContext;
-import org.instancio.model.NodeFactory;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -31,20 +30,19 @@ class InstancioDriver {
     private static final int MAP_SIZE = 2;
     private static final int COLLECTION_SIZE = 2;
 
-    private final InstancioContext context;
     private final GeneratorFacade generatorFacade;
     private final Queue<CreateItem> queue = new ArrayDeque<>();
 
-    public InstancioDriver(InstancioContext context) {
-        this.context = context;
+    private final ModelContext context;
+    private final Node rootNode;
+
+    public InstancioDriver(InternalModel model) {
+        this.context = model.getModelContext();
+        this.rootNode = model.getRootNode();
         this.generatorFacade = new GeneratorFacade(context);
     }
 
-    <C> C createClassEntryPoint(Class<C> rootClass) {
-        final NodeFactory nodeFactory = new NodeFactory();
-        final Node rootNode = nodeFactory.createNode(
-                new NodeContext(context.getRootTypeMap()), rootClass, null, null, null);
-
+    <C> C createEntryPoint() {
         final GeneratorResult<C> rootResult = generatorFacade.generateNodeValue(rootNode, null);
 
         enqueueChildrenOf(rootNode, rootResult, queue);
@@ -56,13 +54,17 @@ class InstancioDriver {
         return rootResult.getValue();
     }
 
+
     private void processNestItem(final CreateItem createItem) {
         LOG.debug("Creating: {}", createItem);
 
         final Node node = createItem.getNode();
         final Field field = node.getField();
 
-        if (field == null || context.isExcluded(field) || Modifier.isStatic(field.getModifiers())) {
+        if (field == null
+                || context.getIgnoredFields().contains(field)
+                || context.getIgnoredClasses().contains(node.getEffectiveType().getRawType())
+                || Modifier.isStatic(field.getModifiers())) {
             return;
         }
 
@@ -75,11 +77,17 @@ class InstancioDriver {
             return;
         }
 
+        ReflectionUtils.setField(createItem.getOwner(), field, createdValue);
+
+        if (generatorResult.ignoreChildren()) {
+            // do not populate arrays/collections
+            // or fields of objects created by user-supplied generators
+            return;
+        }
+
         enqueueChildrenOf(node, generatorResult, queue);
 
-        if (node instanceof ClassNode) {
-            ReflectionUtils.setField(createItem.getOwner(), field, createdValue);
-        } else if (node instanceof CollectionNode) {
+        if (node instanceof CollectionNode) {
             final Object collectionOwner = createItem.getOwner();
             populateCollection((CollectionNode) node, (Collection<Object>) createdValue, collectionOwner);
         } else if (node instanceof MapNode) {

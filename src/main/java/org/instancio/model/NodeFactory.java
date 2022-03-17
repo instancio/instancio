@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,13 @@ import java.util.Map;
 public class NodeFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
+
+    public Node createRootNode(final NodeContext nodeContext,
+                               final Class<?> klass,
+                               @Nullable final Type genericType) {
+
+        return createNode(nodeContext, klass, genericType, null, null);
+    }
 
     /**
      * The expect {@code klass} parametera are:
@@ -79,7 +87,12 @@ public class NodeFactory {
                 final Type compType = arrayType.getGenericComponentType();
 
                 if (compType instanceof TypeVariable) {
-                    final Class<?> rawType = nodeContext.getRootTypeMap().get(compType);
+                    final Class<?> rawType = (Class<?>) ObjectUtils.defaultIfNull(
+                            nodeContext.getRootTypeMap().get(compType),
+                            parent == null ? null : parent.getTypeMap().get(compType)
+                    );
+
+                    Verify.notNull(rawType, "Failed resolving array component type from type variable: '%s'", compType);
                     elementNode = this.createNode(nodeContext, rawType, null, null, parent);
 
                 } else if (compType instanceof ParameterizedType) {
@@ -130,7 +143,7 @@ public class NodeFactory {
                     Class<?> actualRawType = (Class<?>) actualPType.getRawType();
                     elementNode = this.createNode(nodeContext, actualRawType, actualPType, null, parent);
                 } else if (actualTypeArg instanceof TypeVariable) {
-                    Type mappedType = parent.getTypeMap().get(actualTypeArg);
+                    Type mappedType = parent == null ? null : parent.resolveTypeVariable((TypeVariable<?>) actualTypeArg);
 
                     if (mappedType == null) {
                         mappedType = nodeContext.getRootTypeMap().get(actualTypeArg);

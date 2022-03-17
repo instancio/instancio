@@ -21,7 +21,7 @@ class ItemContainerStringLongModelTest extends ModelTestTemplate<ItemContainer<S
                 .hasParent(rootNode)
                 .hasFieldName(itemValueXField)
                 .hasKlass(Item.class)
-                .hasTypeMappedTo(Item.class, "K", String.class)
+                .hasTypeMappedTo(Item.class, "K", "X")
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
@@ -29,7 +29,8 @@ class ItemContainerStringLongModelTest extends ModelTestTemplate<ItemContainer<S
         assertNode(getOnlyElement(itemValueX.getChildren()))
                 .hasParent(itemValueX)
                 .hasFieldName("value")
-                .hasKlass(String.class)
+                .hasKlass(Object.class)
+                .hasEffectiveClass(String.class)
                 .hasNoChildren();
 
         final String itemValueYField = "itemValueY";
@@ -37,7 +38,7 @@ class ItemContainerStringLongModelTest extends ModelTestTemplate<ItemContainer<S
                 .hasParent(rootNode)
                 .hasFieldName(itemValueYField)
                 .hasKlass(Item.class)
-                .hasTypeMappedTo(Item.class, "K", Long.class)
+                .hasTypeMappedTo(Item.class, "K", "Y")
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
@@ -45,7 +46,8 @@ class ItemContainerStringLongModelTest extends ModelTestTemplate<ItemContainer<S
         assertNode(getOnlyElement(itemValueY.getChildren()))
                 .hasParent(itemValueY)
                 .hasFieldName("value")
-                .hasKlass(Long.class)
+                .hasKlass(Object.class)
+                .hasEffectiveClass(Long.class)
                 .hasNoChildren();
     }
 }

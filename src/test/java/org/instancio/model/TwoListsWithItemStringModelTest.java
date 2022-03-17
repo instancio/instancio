@@ -27,7 +27,7 @@ class TwoListsWithItemStringModelTest extends ModelTestTemplate<TwoListsWithItem
     private void assertListNode(Node rootNode, String listField) {
         final CollectionNode list = assertNode(NodeUtils.getChildNode(rootNode, listField))
                 .hasNoChildren()
-                .hasEffectiveType(Types.LIST_ITEM_STRING.getType())
+                .hasEffectiveType(Types.LIST_ITEM_STRING.get())
                 .getAs(CollectionNode.class);
 
         assertNode(list.getElementNode())

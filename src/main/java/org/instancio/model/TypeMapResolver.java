@@ -1,10 +1,11 @@
 package org.instancio.model;
 
+import org.instancio.util.ObjectUtils;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -21,7 +22,7 @@ public class TypeMapResolver {
     public TypeMapResolver(final Map<TypeVariable<?>, Class<?>> rootTypeMap,
                            final Type genericType) {
 
-        this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
+        this.rootTypeMap = rootTypeMap;
         this.genericType = genericType;
         initTypeMap();
     }
@@ -59,7 +60,7 @@ public class TypeMapResolver {
             return; // non-generic class; nothing to resolve
         }
 
-        if (genericType instanceof TypeVariable) {
+        if (genericType instanceof TypeVariable && rootTypeMap.containsKey(genericType)) {
             final Class<?> mappedType = rootTypeMap.get(genericType);
             typeMap.put(genericType, mappedType);
             return;
@@ -72,7 +73,10 @@ public class TypeMapResolver {
             final Type[] typeArgs = pType.getActualTypeArguments();
 
             for (int i = 0; i < typeArgs.length; i++) {
-                typeMap.put(typeVars[i], resolveTypeMapping(typeArgs[i]));
+                final Type mappedType = resolveTypeMapping(typeArgs[i]);
+                // Mapped type can be null when a type variable isn't in the root type map.
+                // In this case with map type variable to type variable
+                typeMap.put(typeVars[i], ObjectUtils.defaultIfNull(mappedType, typeArgs[i]));
             }
         }
     }

@@ -36,9 +36,11 @@ public abstract class Node {
         this.field = field;
         this.genericType = genericType;
         this.parent = parent;
-        this.typeMap = new TypeMapResolver(nodeContext.getRootTypeMap(),
-                ObjectUtils.defaultIfNull(genericType, klass)).getTypeMap();
 
+        final TypeMapResolver typeMapResolver = new TypeMapResolver(
+                nodeContext.getRootTypeMap(), ObjectUtils.defaultIfNull(genericType, klass));
+
+        this.typeMap = Collections.unmodifiableMap(typeMapResolver.getTypeMap());
         this.effectiveType = initEffectiveType();
     }
 
@@ -65,6 +67,25 @@ public abstract class Node {
         return effectiveType;
     }
 
+    final Type resolveTypeVariable(TypeVariable<?> typeVariable) {
+        Type mappedType = typeMap.get(typeVariable);
+
+        Node ancestor = parent;
+        if ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
+            mappedType = ancestor.getTypeMap().get(typeVariable);
+        }
+
+        if (mappedType instanceof Class || mappedType instanceof ParameterizedType) {
+            return mappedType;
+        }
+
+        if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
+            return nodeContext.getRootTypeMap().get(mappedType);
+        }
+
+        throw new IllegalStateException("Failed resolving type variable: " + typeVariable);
+    }
+
     // TODO review and clean up
     private GenericType initEffectiveType() {
         if (genericType == null || (field != null && field.getGenericType() instanceof Class))
@@ -75,6 +96,16 @@ public abstract class Node {
 
         if (genericType instanceof TypeVariable) {
             Type mappedType = typeMap.getOrDefault(genericType, genericType);
+
+            Node ancestor = parent;
+            while ((mappedType == null || !nodeContext.getRootTypeMap().containsKey(mappedType)) && ancestor != null) {
+                mappedType = ancestor.getTypeMap().getOrDefault(mappedType, mappedType);
+
+                if (mappedType instanceof Class || mappedType instanceof ParameterizedType)
+                    break;
+
+                ancestor = ancestor.getParent();
+            }
 
             if (mappedType instanceof Class) {
                 return GenericType.of((Class<?>) mappedType, mappedType);

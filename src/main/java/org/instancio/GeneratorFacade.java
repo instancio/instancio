@@ -4,6 +4,7 @@ import org.instancio.generator.GeneratorMap;
 import org.instancio.generator.ValueGenerator;
 import org.instancio.model.ArrayNode;
 import org.instancio.model.ClassNode;
+import org.instancio.model.ModelContext;
 import org.instancio.model.Node;
 import org.instancio.reflection.ImplementationResolver;
 import org.instancio.reflection.InterfaceImplementationResolver;
@@ -23,9 +24,9 @@ class GeneratorFacade {
     private final Hierarchy hierarchy = new Hierarchy();
     private final GeneratorMap generatorMap = new GeneratorMap();
     private final ImplementationResolver implementationResolver = new InterfaceImplementationResolver();
-    private final InstancioContext context;
+    private final ModelContext context;
 
-    public GeneratorFacade(InstancioContext context) {
+    public GeneratorFacade(final ModelContext context) {
         this.context = context;
     }
 
@@ -115,7 +116,7 @@ class GeneratorFacade {
     private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(@Nullable Field field) {
         if (field == null) return Optional.empty();
 
-        if (context.isNullable(field) && Random.trueOrFalse()) {
+        if (context.getNullableFields().contains(field) && Random.trueOrFalse()) {
             // We can return a null 'GeneratorResult' or a null 'GeneratorResult.value'
             // Returning a null 'GeneratorResult.value' will ensure that a field value
             // will be overwritten with null. Otherwise, field value would retain its
@@ -124,11 +125,11 @@ class GeneratorFacade {
         }
 
         GeneratorResult<C> result = null;
-        if (context.getUserSuppliedFieldValueGenerators().containsKey(field)) {
-            ValueGenerator<?> generator = context.getUserSuppliedFieldValueGenerators().get(field);
+        if (context.getUserSuppliedFieldGenerators().containsKey(field)) {
+            ValueGenerator<?> generator = context.getUserSuppliedFieldGenerators().get(field);
             result = new GeneratorResult<C>((C) generator.generate(), true);
-        } else if (context.getUserSuppliedClassValueGenerators().containsKey(field.getType())) {
-            ValueGenerator<?> generator = context.getUserSuppliedClassValueGenerators().get(field.getType());
+        } else if (context.getUserSuppliedClassGenerators().containsKey(field.getType())) {
+            ValueGenerator<?> generator = context.getUserSuppliedClassGenerators().get(field.getType());
             result = new GeneratorResult<C>((C) generator.generate(), true);
         }
         return Optional.ofNullable(result);

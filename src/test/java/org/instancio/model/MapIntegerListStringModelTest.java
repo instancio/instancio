@@ -23,7 +23,7 @@ class MapIntegerListStringModelTest extends ModelTestTemplate<MapIntegerListStri
                 .hasFieldName("map")
                 .hasKlass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
-                .hasTypeMappedTo(Map.class, "V", Types.LIST_STRING.getType())
+                .hasTypeMappedTo(Map.class, "V", Types.LIST_STRING.get())
                 .hasTypeMapWithSize(2)
                 .hasNoChildren()
                 .getAs(MapNode.class);
