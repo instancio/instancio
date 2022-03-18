@@ -2,7 +2,7 @@ package org.instancio.generator;
 
 import org.instancio.util.Random;
 
-public class FloatGenerator implements ValueGenerator<Float> {
+public class FloatGenerator implements Generator<Float> {
 
     @Override
     public Float generate() {

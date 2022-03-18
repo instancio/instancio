@@ -20,8 +20,8 @@ import java.util.concurrent.ConcurrentNavigableMap;
 public class GeneratorMap {
 
     private static final int DEFAULT_ARRAY_LENGTH = 2;
-    private final Map<Class<?>, ValueGenerator<?>> generatorMap = new HashMap<>();
-    private final Map<Class<?>, ValueGenerator<?>> arrayGeneratorMap = new HashMap<>();
+    private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
+    private final Map<Class<?>, Generator<?>> arrayGeneratorMap = new HashMap<>();
 
     public GeneratorMap() {
         // Core types
@@ -64,8 +64,8 @@ public class GeneratorMap {
 
     }
 
-    public ValueGenerator<?> get(Class<?> klass) {
-        ValueGenerator<?> generator = generatorMap.get(klass);
+    public Generator<?> get(Class<?> klass) {
+        Generator<?> generator = generatorMap.get(klass);
 
         if (generator == null) {
             if (klass.isEnum()) {
@@ -79,8 +79,8 @@ public class GeneratorMap {
         return generator;
     }
 
-    public ValueGenerator<?> getArrayGenerator(Class<?> klass) {
-        ValueGenerator<?> generator = arrayGeneratorMap.get(klass);
+    public Generator<?> getArrayGenerator(Class<?> klass) {
+        Generator<?> generator = arrayGeneratorMap.get(klass);
 
         if (generator == null) {
             generator = new ArrayGenerator(klass, DEFAULT_ARRAY_LENGTH);

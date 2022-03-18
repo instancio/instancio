@@ -1,7 +1,7 @@
 package org.instancio.model;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.generator.ValueGenerator;
+import org.instancio.generator.Generator;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -29,8 +29,8 @@ public class ModelContext {
     private final Set<Field> nullableFields;
     private final Set<Class<?>> ignoredClasses;
     private final Set<Class<?>> nullableClasses;
-    private final Map<Field, ValueGenerator<?>> userSuppliedFieldGenerators;
-    private final Map<Class<?>, ValueGenerator<?>> userSuppliedClassGenerators;
+    private final Map<Field, Generator<?>> userSuppliedFieldGenerators;
+    private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators;
     private final Map<Class<?>, Class<?>> subtypeMap;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
 
@@ -87,11 +87,11 @@ public class ModelContext {
         return nullableClasses;
     }
 
-    public Map<Field, ValueGenerator<?>> getUserSuppliedFieldGenerators() {
+    public Map<Field, Generator<?>> getUserSuppliedFieldGenerators() {
         return userSuppliedFieldGenerators;
     }
 
-    public Map<Class<?>, ValueGenerator<?>> getUserSuppliedClassGenerators() {
+    public Map<Class<?>, Generator<?>> getUserSuppliedClassGenerators() {
         return userSuppliedClassGenerators;
     }
 
@@ -134,8 +134,8 @@ public class ModelContext {
         private final Set<Field> nullableFields = new HashSet<>();
         private final Set<Class<?>> ignoredClasses = new HashSet<>();
         private final Set<Class<?>> nullableClasses = new HashSet<>();
-        private final Map<Field, ValueGenerator<?>> userSuppliedFieldGenerators = new HashMap<>();
-        private final Map<Class<?>, ValueGenerator<?>> userSuppliedClassGenerators = new HashMap<>();
+        private final Map<Field, Generator<?>> userSuppliedFieldGenerators = new HashMap<>();
+        private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
 
         private Builder(final Class<?> rootClass, final Type rootType) {
@@ -177,12 +177,12 @@ public class ModelContext {
             return this;
         }
 
-        public Builder withFieldGenerator(final Field field, final ValueGenerator<?> generator) {
+        public Builder withFieldGenerator(final Field field, final Generator<?> generator) {
             this.userSuppliedFieldGenerators.put(field, generator);
             return this;
         }
 
-        public Builder withClassGenerator(final Class<?> klass, final ValueGenerator<?> generator) {
+        public Builder withClassGenerator(final Class<?> klass, final Generator<?> generator) {
             this.userSuppliedClassGenerators.put(klass, generator);
             return this;
         }

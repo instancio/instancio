@@ -4,7 +4,7 @@ import org.instancio.util.Random;
 
 import java.lang.reflect.Method;
 
-public class EnumGenerator implements ValueGenerator<Enum<?>> {
+public class EnumGenerator implements Generator<Enum<?>> {
     private final Class<?> enumClass;
 
     public EnumGenerator(Class<?> enumClass) {

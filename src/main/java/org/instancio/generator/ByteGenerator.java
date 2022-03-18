@@ -2,7 +2,7 @@ package org.instancio.generator;
 
 import org.instancio.util.Random;
 
-public class ByteGenerator implements ValueGenerator<Byte> {
+public class ByteGenerator implements Generator<Byte> {
 
     @Override
     public Byte generate() {

@@ -1,7 +1,7 @@
 package org.instancio;
 
 import org.instancio.generator.GeneratorMap;
-import org.instancio.generator.ValueGenerator;
+import org.instancio.generator.Generator;
 import org.instancio.model.ArrayNode;
 import org.instancio.model.ClassNode;
 import org.instancio.model.ModelContext;
@@ -57,7 +57,7 @@ class GeneratorFacade {
             return generateArray(node);
         }
 
-        final ValueGenerator<?> generator = generatorMap.get(effectiveType);
+        final Generator<?> generator = generatorMap.get(effectiveType);
 
         final Object result;
 
@@ -83,7 +83,7 @@ class GeneratorFacade {
 
     private <C> GeneratorResult<C> generateArray(Node node) {
         final Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
-        final ValueGenerator<?> generator = generatorMap.getArrayGenerator(arrayType);
+        final Generator<?> generator = generatorMap.getArrayGenerator(arrayType);
         final Object arrayObject = generator.generate();
         return new GeneratorResult<>((C) arrayObject);
     }
@@ -126,10 +126,10 @@ class GeneratorFacade {
 
         GeneratorResult<C> result = null;
         if (context.getUserSuppliedFieldGenerators().containsKey(field)) {
-            ValueGenerator<?> generator = context.getUserSuppliedFieldGenerators().get(field);
+            Generator<?> generator = context.getUserSuppliedFieldGenerators().get(field);
             result = new GeneratorResult<C>((C) generator.generate(), true);
         } else if (context.getUserSuppliedClassGenerators().containsKey(field.getType())) {
-            ValueGenerator<?> generator = context.getUserSuppliedClassGenerators().get(field.getType());
+            Generator<?> generator = context.getUserSuppliedClassGenerators().get(field.getType());
             result = new GeneratorResult<C>((C) generator.generate(), true);
         }
         return Optional.ofNullable(result);

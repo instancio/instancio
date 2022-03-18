@@ -9,7 +9,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class XMLGregorianCalendarGenerator implements ValueGenerator<XMLGregorianCalendar> {
+public class XMLGregorianCalendarGenerator implements Generator<XMLGregorianCalendar> {
     private static final Logger LOG = LoggerFactory.getLogger(XMLGregorianCalendarGenerator.class);
 
     @Override

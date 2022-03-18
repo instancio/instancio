@@ -1,6 +1,6 @@
 package org.instancio;
 
-import org.instancio.generator.ValueGenerator;
+import org.instancio.generator.Generator;
 
 public interface CreationApi<T> {
 
@@ -79,9 +79,9 @@ public interface CreationApi<T> {
      * @param <V>       type of the value to create
      * @return
      */
-    <V> CreationApi<T> with(String field, ValueGenerator<V> generator);
+    <V> CreationApi<T> with(String field, Generator<V> generator);
 
-    <V> CreationApi<T> with(Class<?> klass, String field, ValueGenerator<V> generator);
+    <V> CreationApi<T> with(Class<?> klass, String field, Generator<V> generator);
 
     /**
      * @param klass     to bind the generator to
@@ -89,7 +89,7 @@ public interface CreationApi<T> {
      * @param <V>       type of the value to create
      * @return
      */
-    <V> CreationApi<T> with(Class<V> klass, ValueGenerator<V> generator);
+    <V> CreationApi<T> with(Class<V> klass, Generator<V> generator);
 
     Model<T> toModel();
 

@@ -1,6 +1,6 @@
 package org.instancio;
 
-import org.instancio.generator.ValueGenerator;
+import org.instancio.generator.Generator;
 import org.instancio.model.InternalModel;
 import org.instancio.model.ModelContext;
 
@@ -62,19 +62,19 @@ public class ModelCreationApi<T> implements CreationApi<T> {
     }
 
     @Override
-    public <V> ModelCreationApi<T> with(String field, ValueGenerator<V> generator) {
+    public <V> ModelCreationApi<T> with(String field, Generator<V> generator) {
         modelContextBuilder.withFieldGenerator(getField(this.rootClass, field), generator);
         return this;
     }
 
     @Override
-    public <V> ModelCreationApi<T> with(Class<?> klass, String field, ValueGenerator<V> generator) {
+    public <V> ModelCreationApi<T> with(Class<?> klass, String field, Generator<V> generator) {
         modelContextBuilder.withFieldGenerator(getField(klass, field), generator);
         return this;
     }
 
     @Override
-    public <V> ModelCreationApi<T> with(Class<V> klass, ValueGenerator<V> generator) {
+    public <V> ModelCreationApi<T> with(Class<V> klass, Generator<V> generator) {
         modelContextBuilder.withClassGenerator(klass, generator);
         return this;
     }

@@ -1,6 +1,6 @@
 package org.instancio;
 
-import org.instancio.generator.ValueGenerator;
+import org.instancio.generator.Generator;
 import org.instancio.util.Random;
 
 /**
@@ -14,7 +14,7 @@ import org.instancio.util.Random;
  *         .create();
  * }</pre>
  *
- * @see org.instancio.generator.ValueGenerator
+ * @see Generator
  */
 public final class Generators {
 
@@ -22,16 +22,16 @@ public final class Generators {
         // non-instantiable
     }
 
-    public static ValueGenerator<String> withPrefix(String prefix) {
+    public static Generator<String> withPrefix(String prefix) {
         return () -> prefix + Random.positiveInt();
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> ValueGenerator<T> oneOf(T... values) {
+    public static <T> Generator<T> oneOf(T... values) {
         return () -> Random.from(values);
     }
 
-    public static <T> ValueGenerator<T> nullValue() {
+    public static <T> Generator<T> nullValue() {
         return () -> null;
     }
 

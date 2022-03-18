@@ -7,7 +7,7 @@ package org.instancio.generator;
  * @see org.instancio.Generators
  */
 @FunctionalInterface
-public interface ValueGenerator<T> {
+public interface Generator<T> {
 
     /**
      * Depending on implementation, repeated invocations may return different values.

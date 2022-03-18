@@ -2,7 +2,7 @@ package org.instancio.generator;
 
 import org.instancio.util.Random;
 
-public class BooleanGenerator implements ValueGenerator<Boolean> {
+public class BooleanGenerator implements Generator<Boolean> {
 
     @Override
     public Boolean generate() {
