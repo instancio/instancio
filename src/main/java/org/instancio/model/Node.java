@@ -23,7 +23,7 @@ public abstract class Node {
     private final Node parent;
     private List<Node> children;
     private final Map<Type, Type> typeMap;
-    private final GenericType effectiveType;
+    private final GenericType<?> effectiveType;
 
     Node(final NodeContext nodeContext,
          final Class<?> klass,

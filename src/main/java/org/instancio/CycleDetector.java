@@ -1,25 +1,40 @@
 package org.instancio;
 
+import org.instancio.model.Node;
+
 import javax.annotation.Nullable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public class Hierarchy {
+class CycleDetector {
+
+    static class InstanceNode {
+        private final Object instance;
+        private final Node node;
+
+        InstanceNode(@Nullable final Object instance, final Node node) {
+            this.instance = instance;
+            this.node = node;
+        }
+    }
 
     /**
      * Maps object instance to its ancestor instance
      */
-    private final Map<Object, Object> idMap = new IdentityHashMap<>();
+    private final Map<Object, InstanceNode> idMap = new IdentityHashMap<>();
 
-    public void setAncestorOf(final Object instance, final Object ancestor) {
+    void setAncestorOf(final Object instance, final InstanceNode ancestor) {
         idMap.put(instance, ancestor);
     }
 
-    public Object getAncestorWithClass(@Nullable final Object instance, final Class<?> ancestorClass) {
-        Object ancestor = idMap.get(instance);
+    Object getAncestorWithClass(@Nullable final Object instance, final Node node, final Class<?> ancestorClass) {
+        InstanceNode ancestor = idMap.get(instance);
 
         while (ancestor != null) {
-            if (ancestor.getClass() == ancestorClass) {
+            if (ancestor.instance != null
+                    && ancestor.instance.getClass() == ancestorClass
+                    && node.equals(ancestor.node)) { // XXX check for same Class and Node?
+
                 return ancestor;
             }
             ancestor = idMap.get(ancestor);

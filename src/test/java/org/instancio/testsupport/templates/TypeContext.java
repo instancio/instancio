@@ -6,7 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * TODO: refactor
+ * Extracts type information from a class.
  */
 public class TypeContext {
     private final Type genericType;

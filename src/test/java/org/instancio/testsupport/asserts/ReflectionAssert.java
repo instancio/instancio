@@ -33,7 +33,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
     }
 
     public ReflectionAssert isFullyPopulated() {
-        isNotNull();
+        as("Object contains a null value: %s", actual).isNotNull();
 
         if (actual.getClass().getPackage() == null || actual.getClass().getPackage().getName().startsWith("java")) {
             return this;
@@ -41,7 +41,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
 
         softly.assertThat(actual).hasNoNullFieldsOrProperties();
 
-        LOG.debug("ASSERT OBJ " + actual.getClass());
+        LOG.trace("ASSERT OBJ " + actual.getClass());
 
         final List<Method> methods = Arrays.stream(actual.getClass().getDeclaredMethods())
                 .filter(it -> it.getName().startsWith("get") && it.getParameterCount() == 0)
@@ -51,21 +51,25 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         for (Method method : methods) {
 
             try {
-                LOG.debug("calling method: " + method);
+                LOG.trace("calling method: " + method);
 
                 Object result = method.invoke(actual);
                 softly.assertThat(result)
                         .as("Method '%s' returned a null", method)
                         .isNotNull();
 
-                if (Collection.class.isAssignableFrom(result.getClass())) {
-                    assertCollection(method, (Collection<?>) result);
-                } else if (Map.class.isAssignableFrom(result.getClass())) {
-                    assertMap(method, (Map<?, ?>) result);
-                } else if (result.getClass().isArray()) {
-                    assertArray(method, result);
-                } else {
-                    assertThatObject(result).isFullyPopulated(); // recurse
+                // False positive: 'result != null' is not always true due to soft assertions
+                // noinspection ConstantConditions
+                if (result != null) {
+                    if (Collection.class.isAssignableFrom(result.getClass())) {
+                        assertCollection(method, (Collection<?>) result);
+                    } else if (Map.class.isAssignableFrom(result.getClass())) {
+                        assertMap(method, (Map<?, ?>) result);
+                    } else if (result.getClass().isArray()) {
+                        assertArray(method, result);
+                    } else {
+                        assertThatObject(result).isFullyPopulated(); // recurse
+                    }
                 }
 
             } catch (IllegalAccessException | InvocationTargetException ex) {

@@ -32,7 +32,7 @@ public class ClassNode extends Node {
     protected List<Node> collectChildren() {
         final GenericType effectiveType = getEffectiveType();
         final Class<?> effectiveClass = effectiveType.getRawType();
-        final Type effectiveGenericType = effectiveType.getGenericType();
+        final Type effectiveGenericType = effectiveType.getType();
 
         if (effectiveClass.getPackage() == null || effectiveClass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList();

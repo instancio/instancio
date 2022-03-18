@@ -60,8 +60,8 @@ public class ClassCreationApi<T> implements CreationApi<T> {
     }
 
     @Override
-    public ClassCreationApi<T> map(Class<?> from, Class<?> to) {
-        modelContextBuilder.withSubtypeMapping(from, to);
+    public ClassCreationApi<T> map(Class<?> baseClass, Class<?> subClass) {
+        modelContextBuilder.withSubtypeMapping(baseClass, subClass);
         return this;
     }
 

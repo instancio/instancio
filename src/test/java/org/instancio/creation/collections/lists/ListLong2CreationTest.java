@@ -1,16 +1,17 @@
 package org.instancio.creation.collections.lists;
 
-import org.instancio.pojo.collections.lists.ListLong;
 import org.instancio.testsupport.Constants;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ListLongCreationTest extends CreationTestTemplate<ListLong> {
+public class ListLong2CreationTest extends CreationTestTemplate<List<Long>> {
 
     @Override
-    protected void verify(ListLong result) {
-        assertThat(result.getList())
+    protected void verify(List<Long> result) {
+        assertThat(result)
                 .hasSize(Constants.COLLECTION_SIZE)
                 .hasOnlyElementsOfType(Long.class);
     }

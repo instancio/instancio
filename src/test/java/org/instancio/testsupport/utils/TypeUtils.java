@@ -13,5 +13,10 @@ public class TypeUtils {
         throw new IllegalArgumentException(String.format("Invalid type parameter '%s' for %s", typeParameter, klass));
     }
 
+    public static String shortenPackageNames(String typeName) {
+        return typeName
+                .replaceAll("org\\.[a-z\\.]*", "")
+                .replaceAll("java\\.[a-z\\.]*", "");
+    }
 
 }

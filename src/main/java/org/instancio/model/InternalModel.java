@@ -24,6 +24,6 @@ public class InternalModel<T> implements Model<T> {
         final NodeFactory nodeFactory = new NodeFactory();
         final NodeContext nodeContext = new NodeContext(modelContext.getRootTypeMap());
         return nodeFactory.createRootNode(nodeContext,
-                modelContext.getRootClass(), modelContext.getRootGenericType());
+                modelContext.getRootClass(), modelContext.getRootType());
     }
 }

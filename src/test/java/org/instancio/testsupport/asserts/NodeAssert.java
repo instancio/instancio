@@ -41,7 +41,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public NodeAssert hasEffectiveType(Type expected) {
         isNotNull();
-        assertThat(actual.getEffectiveType().getGenericType()).isEqualTo(expected);
+        assertThat(actual.getEffectiveType().getType()).isEqualTo(expected);
         return this;
     }
 

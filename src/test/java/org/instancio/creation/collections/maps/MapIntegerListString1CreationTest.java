@@ -11,7 +11,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @GenericsTag
-public class MapIntegerListStringCreationTest extends CreationTestTemplate<MapIntegerListString> {
+public class MapIntegerListString1CreationTest extends CreationTestTemplate<MapIntegerListString> {
 
     @Override
     protected void verify(MapIntegerListString result) {
