@@ -1,7 +1,7 @@
 package org.instancio;
 
-import org.instancio.generator.GeneratorMap;
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorMap;
 import org.instancio.model.ArrayNode;
 import org.instancio.model.ClassNode;
 import org.instancio.model.ModelContext;
@@ -30,7 +30,7 @@ class GeneratorFacade {
         this.context = context;
     }
 
-    <C> GeneratorResult<C> generateNodeValue(Node node, Object owner) {
+    <C> GeneratorResult<C> generateNodeValue(Node node, @Nullable Object owner) {
         final Field field = node.getField();
 
         final Optional<GeneratorResult<C>> optionalResult = attemptGenerateViaContext(field);
@@ -92,7 +92,10 @@ class GeneratorFacade {
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private <C> GeneratorResult<C> resolveImplementationAndGenerate(Node parentNode, Object owner, Class<?> interfaceClass) {
+    private <C> GeneratorResult<C> resolveImplementationAndGenerate(
+            final Node parentNode,
+            @Nullable final Object owner,
+            final Class<?> interfaceClass) {
         Verify.isNotArrayCollectionOrMap(interfaceClass);
 
         LOG.debug("No generator for interface '{}'", interfaceClass.getName());
@@ -113,7 +116,7 @@ class GeneratorFacade {
      * TODO: hierarchy.setAncestorOf(value, owner) must be done for all generated objects
      *  unless they are from JDK classes
      */
-    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(@Nullable Field field) {
+    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(@Nullable final Field field) {
         if (field == null) return Optional.empty();
 
         if (context.getNullableFields().contains(field) && Random.trueOrFalse()) {

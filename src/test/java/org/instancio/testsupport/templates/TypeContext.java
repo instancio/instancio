@@ -1,5 +1,7 @@
 package org.instancio.testsupport.templates;
 
+import org.instancio.util.TypeUtils;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -13,9 +15,7 @@ public class TypeContext {
     public TypeContext(final Class<?> klass) {
         final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
         this.genericType = genericSuperclass.getActualTypeArguments()[0];
-        this.typeClass = genericType instanceof Class
-                ? (Class<?>) genericType
-                : (Class<?>) ((ParameterizedType) genericType).getRawType();
+        this.typeClass = TypeUtils.getRawType(genericType);
     }
 
     public Type getGenericType() {

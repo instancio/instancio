@@ -13,6 +13,9 @@ public class ReflectionUtils {
 
     @SuppressWarnings("java:S3011")
     public static void setField(Object target, Field field, Object value) {
+        if (target == null) {
+            return;
+        }
         try {
             field.setAccessible(true);
             field.set(target, value);

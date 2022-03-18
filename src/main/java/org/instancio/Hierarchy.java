@@ -1,5 +1,6 @@
 package org.instancio;
 
+import javax.annotation.Nullable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -10,11 +11,15 @@ public class Hierarchy {
      */
     private final Map<Object, Object> idMap = new IdentityHashMap<>();
 
-    public void setAncestorOf(Object instance, Object ancestor) {
+    public void setAncestorOf(final Object instance, final Object ancestor) {
         idMap.put(instance, ancestor);
     }
 
-    public Object getAncestorWithClass(Object instance, Class<?> ancestorClass) {
+    public Object getAncestorWithClass(@Nullable final Object instance, final Class<?> ancestorClass) {
+        if (instance == null) {
+            return null;
+        }
+
         Object ancestor = idMap.get(instance);
 
         while (ancestor != null) {

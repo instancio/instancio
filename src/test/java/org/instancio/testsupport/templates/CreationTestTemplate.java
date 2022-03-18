@@ -108,7 +108,7 @@ public abstract class CreationTestTemplate<T> {
             final Method verifyMethod = getClass().getDeclaredMethod("verify", methodArgType);
             return Optional.ofNullable(verifyMethod.getAnnotation(annotationClass));
         } catch (Exception ex) {
-            throw new AssertionError("Could not get number of executions", ex);
+            throw new AssertionError(String.format("'verify(%s)' method not found", methodArgType.getSimpleName()), ex);
         }
     }
 

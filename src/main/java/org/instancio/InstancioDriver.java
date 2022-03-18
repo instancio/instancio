@@ -11,6 +11,7 @@ import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -32,7 +33,6 @@ class InstancioDriver {
 
     private final GeneratorFacade generatorFacade;
     private final Queue<CreateItem> queue = new ArrayDeque<>();
-
     private final ModelContext context;
     private final Node rootNode;
 
@@ -45,15 +45,16 @@ class InstancioDriver {
     <C> C createEntryPoint() {
         final GeneratorResult<C> rootResult = generatorFacade.generateNodeValue(rootNode, null);
 
+        final C value = rootResult.getValue();
         enqueueChildrenOf(rootNode, rootResult, queue);
+        populateDataStructures(null, rootNode, value);
 
         while (!queue.isEmpty()) {
             processNestItem(queue.poll());
         }
 
-        return rootResult.getValue();
+        return value;
     }
-
 
     private void processNestItem(final CreateItem createItem) {
         LOG.debug("Creating: {}", createItem);
@@ -87,16 +88,17 @@ class InstancioDriver {
 
         enqueueChildrenOf(node, generatorResult, queue);
 
+        populateDataStructures(null, node, createdValue);
+    }
+
+    private void populateDataStructures(@Nullable Object owner, Node node, Object createdValue) {
         if (node instanceof CollectionNode) {
-            final Object collectionOwner = createItem.getOwner();
-            populateCollection((CollectionNode) node, (Collection<Object>) createdValue, collectionOwner);
+            populateCollection((CollectionNode) node, (Collection<Object>) createdValue, owner);
         } else if (node instanceof MapNode) {
             final Map<Object, Object> mapInstance = (Map<Object, Object>) createdValue;
-            final Object mapOwner = createItem.getOwner();
-            populateMap((MapNode) node, mapInstance, mapOwner);
+            populateMap((MapNode) node, mapInstance, owner);
         } else if (node instanceof ArrayNode) {
-            final Object arrayOwner = createItem.getOwner();
-            populateArray((ArrayNode) node, createdValue, arrayOwner);
+            populateArray((ArrayNode) node, createdValue, owner);
         }
     }
 
