@@ -4,7 +4,7 @@ import org.instancio.util.Random;
 
 import java.time.LocalDateTime;
 
-public class LocalDateTimeGenerator implements ValueGenerator<LocalDateTime> {
+public class LocalDateTimeGenerator implements Generator<LocalDateTime> {
 
     @Override
     public LocalDateTime generate() {

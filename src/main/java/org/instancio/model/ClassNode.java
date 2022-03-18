@@ -23,7 +23,7 @@ public class ClassNode extends Node {
                      @Nullable final Type genericType,
                      @Nullable final Node parent) {
 
-        super(nodeContext, klass,field, genericType, parent);
+        super(nodeContext, klass, field, genericType, parent);
 
         Verify.isNotArrayCollectionOrMap(klass);
     }

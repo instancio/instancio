@@ -1,17 +1,17 @@
 package org.instancio;
 
 import org.instancio.model.ArrayNode;
-import org.instancio.model.ClassNode;
 import org.instancio.model.CollectionNode;
+import org.instancio.model.InternalModel;
 import org.instancio.model.MapNode;
+import org.instancio.model.ModelContext;
 import org.instancio.model.Node;
-import org.instancio.model.NodeContext;
-import org.instancio.model.NodeFactory;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -31,29 +31,29 @@ class InstancioDriver {
     private static final int MAP_SIZE = 2;
     private static final int COLLECTION_SIZE = 2;
 
-    private final InstancioContext context;
     private final GeneratorFacade generatorFacade;
     private final Queue<CreateItem> queue = new ArrayDeque<>();
+    private final ModelContext context;
+    private final Node rootNode;
 
-    public InstancioDriver(InstancioContext context) {
-        this.context = context;
+    public InstancioDriver(InternalModel model) {
+        this.context = model.getModelContext();
+        this.rootNode = model.getRootNode();
         this.generatorFacade = new GeneratorFacade(context);
     }
 
-    <C> C createClassEntryPoint(Class<C> rootClass) {
-        final NodeFactory nodeFactory = new NodeFactory();
-        final Node rootNode = nodeFactory.createNode(
-                new NodeContext(context.getRootTypeMap()), rootClass, null, null, null);
-
+    <C> C createEntryPoint() {
         final GeneratorResult<C> rootResult = generatorFacade.generateNodeValue(rootNode, null);
 
+        final C value = rootResult.getValue();
         enqueueChildrenOf(rootNode, rootResult, queue);
+        populateDataStructures(null, rootNode, value);
 
         while (!queue.isEmpty()) {
             processNestItem(queue.poll());
         }
 
-        return rootResult.getValue();
+        return value;
     }
 
     private void processNestItem(final CreateItem createItem) {
@@ -62,7 +62,10 @@ class InstancioDriver {
         final Node node = createItem.getNode();
         final Field field = node.getField();
 
-        if (field == null || context.isExcluded(field) || Modifier.isStatic(field.getModifiers())) {
+        if (field == null
+                || context.getIgnoredFields().contains(field)
+                || context.getIgnoredClasses().contains(node.getEffectiveType().getRawType())
+                || Modifier.isStatic(field.getModifiers())) {
             return;
         }
 
@@ -75,20 +78,27 @@ class InstancioDriver {
             return;
         }
 
+        ReflectionUtils.setField(createItem.getOwner(), field, createdValue);
+
+        if (generatorResult.ignoreChildren()) {
+            // do not populate arrays/collections
+            // or fields of objects created by user-supplied generators
+            return;
+        }
+
         enqueueChildrenOf(node, generatorResult, queue);
 
-        if (node instanceof ClassNode) {
-            ReflectionUtils.setField(createItem.getOwner(), field, createdValue);
-        } else if (node instanceof CollectionNode) {
-            final Object collectionOwner = createItem.getOwner();
-            populateCollection((CollectionNode) node, (Collection<Object>) createdValue, collectionOwner);
+        populateDataStructures(null, node, createdValue);
+    }
+
+    private void populateDataStructures(@Nullable Object owner, Node node, Object createdValue) {
+        if (node instanceof CollectionNode) {
+            populateCollection((CollectionNode) node, (Collection<Object>) createdValue, owner);
         } else if (node instanceof MapNode) {
             final Map<Object, Object> mapInstance = (Map<Object, Object>) createdValue;
-            final Object mapOwner = createItem.getOwner();
-            populateMap((MapNode) node, mapInstance, mapOwner);
+            populateMap((MapNode) node, mapInstance, owner);
         } else if (node instanceof ArrayNode) {
-            final Object arrayOwner = createItem.getOwner();
-            populateArray((ArrayNode) node, createdValue, arrayOwner);
+            populateArray((ArrayNode) node, createdValue, owner);
         }
     }
 

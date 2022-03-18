@@ -1,11 +1,11 @@
 package org.instancio.model;
 
+import org.instancio.TypeToken;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.pojo.generics.basic.Pair;
 import org.instancio.pojo.generics.basic.Triplet;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
-import org.instancio.testsupport.TypeReference;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.tags.GenericsTag;
 import org.instancio.testsupport.tags.ModelTag;
@@ -34,15 +34,15 @@ class NodeTest {
 
         @Test
         void equalsHashCode() {
-            TypeReference<?> typeRefBazInteger = new TypeReference<Baz<Integer>>() {
+            TypeToken<?> typeBazInteger = new TypeToken<Baz<Integer>>() {
             };
-            TypeReference<?> typeRefBazString = new TypeReference<Baz<String>>() {
+            TypeToken<?> typeBazString = new TypeToken<Baz<String>>() {
             };
 
-            Node bazInteger = createNode(List.class, rootTypeMap, typeRefBazInteger);
-            Node bazString = createNode(List.class, rootTypeMap, typeRefBazString);
+            Node bazInteger = createNode(List.class, rootTypeMap, typeBazInteger);
+            Node bazString = createNode(List.class, rootTypeMap, typeBazString);
             Node bazIntegerClassNode = new ClassNode(new NodeContext(rootTypeMap), Baz.class, null,
-                    getTypeOf(typeRefBazInteger), null);
+                    getTypeOf(typeBazInteger), null);
 
             assertThat(bazString).isEqualTo(bazString).hasSameHashCodeAs(bazString);
             assertThat(bazString).isNotEqualTo(bazInteger).doesNotHaveSameHashCodeAs(bazInteger);
@@ -84,12 +84,12 @@ class NodeTest {
 
         @Test
         void pairOfGenericItemFooList() {
-            final TypeReference<?> typeRef = new TypeReference<Pair<Item<Foo<List<Integer>>>, Map<Integer, Foo<String>>>>() {
+            final TypeToken<?> type = new TypeToken<Pair<Item<Foo<List<Integer>>>, Map<Integer, Foo<String>>>>() {
             };
 
-            assertNode(createNode(Pair.class, rootTypeMap, typeRef))
+            assertNode(createNode(Pair.class, rootTypeMap, type))
                     .hasEffectiveClass(Pair.class)
-                    .hasEffectiveType(getTypeOf(typeRef));
+                    .hasEffectiveType(getTypeOf(type));
         }
     }
 
@@ -123,24 +123,24 @@ class NodeTest {
 
         @Test
         void pairOfGenericItemFooList() {
-            final Type typeRefLeft = getTypeOf(Types.ITEM_STRING);
-            final Type typeRefRight = getTypeOf(Types.FOO_LIST_INTEGER);
+            final Type typeLeft = getTypeOf(Types.ITEM_STRING);
+            final Type typeRight = getTypeOf(Types.FOO_LIST_INTEGER);
 
-            assertNode(createNode(Pair.class, rootTypeMap, new TypeReference<Pair<Item<String>, Foo<List<Integer>>>>() {
+            assertNode(createNode(Pair.class, rootTypeMap, new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {
             }))
-                    .hasTypeMappedTo(Pair.class, "L", typeRefLeft)
-                    .hasTypeMappedTo(Pair.class, "R", typeRefRight)
+                    .hasTypeMappedTo(Pair.class, "L", typeLeft)
+                    .hasTypeMappedTo(Pair.class, "R", typeRight)
                     .hasTypeMapWithSize(2);
         }
     }
 
-    private static Node createNode(Class<?> klass, Map<TypeVariable<?>, Class<?>> rootTypeMap, TypeReference<?> typeRef) {
+    private static Node createNode(Class<?> klass, Map<TypeVariable<?>, Class<?>> rootTypeMap, TypeToken<?> type) {
         final NodeContext nodeContext = new NodeContext(rootTypeMap);
-        return new NodeImpl(nodeContext, klass, null, getTypeOf(typeRef), null);
+        return new NodeImpl(nodeContext, klass, null, getTypeOf(type), null);
     }
 
-    private static Type getTypeOf(TypeReference<?> typeRef) {
-        return typeRef.getType();
+    private static Type getTypeOf(TypeToken<?> type) {
+        return type.get();
     }
 
 

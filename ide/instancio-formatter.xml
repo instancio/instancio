@@ -1,0 +1,19 @@
+<code_scheme name="Instancio-formatter" version="173">
+  <option name="FORMATTER_TAGS_ENABLED" value="true" />
+  <JavaCodeStyleSettings>
+    <option name="GENERATE_FINAL_LOCALS" value="true" />
+    <option name="GENERATE_FINAL_PARAMETERS" value="true" />
+    <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
+    <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
+  </JavaCodeStyleSettings>
+  <JetCodeStyleSettings>
+    <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+  </JetCodeStyleSettings>
+  <codeStyleSettings language="JAVA">
+    <option name="KEEP_SIMPLE_CLASSES_IN_ONE_LINE" value="true" />
+    <option name="WRAP_ON_TYPING" value="0" />
+  </codeStyleSettings>
+  <codeStyleSettings language="kotlin">
+    <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+  </codeStyleSettings>
+</code_scheme>

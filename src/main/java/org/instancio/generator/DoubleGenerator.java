@@ -2,7 +2,7 @@ package org.instancio.generator;
 
 import org.instancio.util.Random;
 
-public class DoubleGenerator implements ValueGenerator<Double> {
+public class DoubleGenerator implements Generator<Double> {
 
     @Override
     public Double generate() {

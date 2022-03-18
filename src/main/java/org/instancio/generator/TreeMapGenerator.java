@@ -2,7 +2,7 @@ package org.instancio.generator;
 
 import java.util.TreeMap;
 
-public class TreeMapGenerator<K, V> implements ValueGenerator<TreeMap<K, V>> {
+public class TreeMapGenerator<K, V> implements Generator<TreeMap<K, V>> {
 
     @Override
     @SuppressWarnings("SortedCollectionWithNonComparableKeys")

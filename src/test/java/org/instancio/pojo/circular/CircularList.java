@@ -9,7 +9,5 @@ import java.util.List;
 @ToString
 public class CircularList {
 
-    // TODO test
-    List<CircularList> list;
-
+    private List<CircularList> items;
 }

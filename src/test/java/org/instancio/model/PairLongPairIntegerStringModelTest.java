@@ -24,7 +24,7 @@ class PairLongPairIntegerStringModelTest extends ModelTestTemplate<PairLongPairI
                 .hasFieldName(fieldName)
                 .hasEffectiveClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", Long.class)
-                .hasTypeMappedTo(Pair.class, "R", Types.PAIR_INTEGER_STRING.getType())
+                .hasTypeMappedTo(Pair.class, "R", Types.PAIR_INTEGER_STRING.get())
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
                 .getAs(ClassNode.class);

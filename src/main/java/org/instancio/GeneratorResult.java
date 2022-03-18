@@ -1,12 +1,13 @@
 package org.instancio;
 
+import javax.annotation.Nullable;
 import java.util.StringJoiner;
 
 class GeneratorResult<T> {
     private final T value;
     private final boolean ignoreChildren;
 
-    public GeneratorResult(T value, boolean ignoreChildren) {
+    public GeneratorResult(@Nullable final T value, final boolean ignoreChildren) {
         this.value = value;
         this.ignoreChildren = ignoreChildren;
     }

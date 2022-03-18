@@ -32,7 +32,7 @@ class ItemArrayStringIntegerContainerModelTest extends ModelTestTemplate<ItemArr
                 .hasEmptyTypeMap()
                 .getAs(ArrayNode.class);
 
-        assertElementNode(array.getElementNode(), rootNode, String.class);
+        assertElementNode(array.getElementNode(), rootNode, "X");
     }
 
     private void assertItemArrayY(Node rootNode) {
@@ -45,10 +45,10 @@ class ItemArrayStringIntegerContainerModelTest extends ModelTestTemplate<ItemArr
                 .hasEmptyTypeMap()
                 .getAs(ArrayNode.class);
 
-        assertElementNode(array.getElementNode(), rootNode, Integer.class);
+        assertElementNode(array.getElementNode(), rootNode, "Y");
     }
 
-    private void assertElementNode(Node elementNode, Node expectedParent, Class<?> expectedType) {
+    private void assertElementNode(Node elementNode, Node expectedParent, String expectedType) {
         assertNode(elementNode)
                 .hasKlass(Item.class)
                 .hasNullField()

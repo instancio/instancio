@@ -1,6 +1,7 @@
 package org.instancio.testsupport.templates;
 
 import org.instancio.Instancio;
+import org.instancio.TypeTokenSupplier;
 import org.instancio.testsupport.tags.CreateTag;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
@@ -11,11 +12,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -36,14 +36,14 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @TestInstance(PER_CLASS)
 public abstract class CreationTestTemplate<T> {
 
+    private Type genericType;
     private Class<?> typeClass;
-    private Class<?>[] typeArguments;
 
     @BeforeAll
     protected final void templateSetup() {
         TypeContext typeContext = new TypeContext(this.getClass());
+        genericType = typeContext.getGenericType();
         typeClass = typeContext.getTypeClass();
-        typeArguments = typeContext.getTypeArguments();
     }
 
     /**
@@ -72,31 +72,16 @@ public abstract class CreationTestTemplate<T> {
     protected abstract void verify(T result);
 
     private Stream<Arguments> instancioCreatedObjects() {
-        final String displayName = getTestDisplayName();
+        final String displayName = "of type " + genericType.getTypeName();
         final Arguments[] arguments = new Arguments[numberOfExecutions()];
 
         for (int i = 0; i < arguments.length; i++) {
-            Object result = Instancio.of(typeClass)
-                    .withType(typeArguments)
-                    .create();
-
+            TypeTokenSupplier<Type> typeSupplier = () -> genericType;
+            Object result = Instancio.of(typeSupplier).create();
             arguments[i] = Arguments.of(Named.of(displayName, result));
         }
 
         return Stream.of(arguments);
-    }
-
-    private String getTestDisplayName() {
-        String displayName = "of type " + typeClass.getSimpleName();
-
-        if (typeArguments.length > 0) {
-            String types = Arrays.stream(typeArguments)
-                    .map(Class::getSimpleName)
-                    .collect(joining(","));
-
-            displayName += "<" + types + ">";
-        }
-        return displayName;
     }
 
     private boolean isAutoVerificationEnabled() {
@@ -118,12 +103,12 @@ public abstract class CreationTestTemplate<T> {
         return numExecutions;
     }
 
-    private <A extends Annotation> Optional<A> getVerifyMethodAnnotation(Class<?> rawClass, Class<A> annotationClass) {
+    private <A extends Annotation> Optional<A> getVerifyMethodAnnotation(Class<?> methodArgType, Class<A> annotationClass) {
         try {
-            final Method verifyMethod = getClass().getDeclaredMethod("verify", rawClass);
+            final Method verifyMethod = getClass().getDeclaredMethod("verify", methodArgType);
             return Optional.ofNullable(verifyMethod.getAnnotation(annotationClass));
         } catch (Exception ex) {
-            throw new AssertionError("Could not get number of executions", ex);
+            throw new AssertionError(String.format("'verify(%s)' method not found", methodArgType.getSimpleName()), ex);
         }
     }
 

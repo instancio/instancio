@@ -26,7 +26,7 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
                 .hasFieldName(fieldName)
                 .hasEffectiveClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Long.class)
-                .hasTypeMappedTo(Map.class, "V", Types.MAP_STRING_BOOLEAN.getType())
+                .hasTypeMappedTo(Map.class, "V", Types.MAP_STRING_BOOLEAN.get())
                 .hasTypeMapWithSize(2)
                 .hasNoChildren()
                 .getAs(MapNode.class);
@@ -42,7 +42,7 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
                 .hasEffectiveClass(Map.class)
-                .hasTypeMappedTo(Map.class, "K", Long.class)
+                .hasTypeMappedTo(Map.class, "K", "OKEY")
                 .hasTypeMappedTo(Map.class, "V", "java.util.Map<IKEY, java.lang.Boolean>")
                 .hasTypeMapWithSize(2)
                 .hasNoChildren()

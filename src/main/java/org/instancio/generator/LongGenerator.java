@@ -2,7 +2,7 @@ package org.instancio.generator;
 
 import org.instancio.util.Random;
 
-public class LongGenerator implements ValueGenerator<Long> {
+public class LongGenerator implements Generator<Long> {
 
     @Override
     public Long generate() {

@@ -7,7 +7,7 @@ import org.instancio.testsupport.utils.NodeUtils;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
-class PairContainerModelTest extends ModelTestTemplate<PairContainer<Integer, String>> {
+class PairContainerIntegerStringModelTest extends ModelTestTemplate<PairContainer<Integer, String>> {
 
     @Override
     protected void verify(Node rootNode) {
@@ -22,8 +22,8 @@ class PairContainerModelTest extends ModelTestTemplate<PairContainer<Integer, St
                 .hasKlass(Pair.class)
                 .hasEffectiveClass(Pair.class)
                 .hasGenericTypeName("org.instancio.pojo.generics.basic.Pair<X, Y>")
-                .hasTypeMappedTo(Pair.class, "L", Integer.class)
-                .hasTypeMappedTo(Pair.class, "R", String.class)
+                .hasTypeMappedTo(Pair.class, "L", "X")
+                .hasTypeMappedTo(Pair.class, "R", "Y")
                 .hasChildrenOfSize(2)
                 .hasTypeMapWithSize(2)
                 .getAs(ClassNode.class);

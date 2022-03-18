@@ -4,7 +4,7 @@ import org.instancio.util.Random;
 
 import java.math.BigDecimal;
 
-public class BigDecimalGenerator implements ValueGenerator<BigDecimal> {
+public class BigDecimalGenerator implements Generator<BigDecimal> {
 
     @Override
     public BigDecimal generate() {

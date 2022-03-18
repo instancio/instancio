@@ -21,7 +21,7 @@ class ListListStringModelTest extends ModelTestTemplate<ListListString> {
         final CollectionNode outerListNode = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasNoChildren()
                 .hasFieldName("nested")
-                .hasEffectiveType(Types.LIST_LIST_STRING.getType())
+                .hasEffectiveType(Types.LIST_LIST_STRING.get())
                 .getAs(CollectionNode.class);
 
         // List<String>
@@ -30,7 +30,7 @@ class ListListStringModelTest extends ModelTestTemplate<ListListString> {
         assertNode(outerListElementNode)
                 .hasKlass(List.class)
                 .hasNullField()
-                .hasEffectiveType(Types.LIST_STRING.getType())
+                .hasEffectiveType(Types.LIST_STRING.get())
                 .hasNoChildren()
                 .getAs(CollectionNode.class);
 

@@ -8,7 +8,7 @@ import org.instancio.testsupport.templates.CreationTestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @GenericsTag
-public class PairContainerCreationTest extends CreationTestTemplate<PairContainer<Integer, String>> {
+public class PairContainerIntegerStringCreationTest extends CreationTestTemplate<PairContainer<Integer, String>> {
 
     @Override
     protected void verify(PairContainer<Integer, String> result) {

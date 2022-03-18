@@ -2,7 +2,7 @@ package org.instancio.generator;
 
 import org.instancio.util.Random;
 
-public class StringGenerator implements ValueGenerator<String> {
+public class StringGenerator implements Generator<String> {
 
     @Override
     public String generate() {

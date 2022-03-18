@@ -1,7 +1,7 @@
 package org.instancio.api.errorhandling;
 
 import org.instancio.Instancio;
-import org.instancio.exception.InstancioException;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.pojo.generics.container.ItemContainer;
 import org.junit.jupiter.api.Test;
 
@@ -14,13 +14,15 @@ class ErrorMessagesTest {
     @Test
     void unboundTypeVariablesErrorMessage() {
         assertThatThrownBy(() -> Instancio.of(ItemContainer.class).create())
-                .isInstanceOf(InstancioException.class)
-                .hasMessage("Generic class %s " +
-                        "has 2 type parameters: [X, Y]. Please specify all type parameters using " +
-                        "'withType(Class... types)`", ItemContainer.class.getName());
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContainingAll(
+                        "Class 'org.instancio.pojo.generics.container.ItemContainer' has 2 type parameters: [X, Y].",
+                        "Please specify the required type parameters using 'withType(Class... types)`");
 
         assertThatThrownBy(() -> Instancio.of(List.class).create())
-                .hasMessage("Generic class java.util.List has 1 type parameters: [E]." +
-                        " Please specify all type parameters using 'withType(Class... types)`");
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContainingAll(
+                        "Class 'java.util.List' has 1 type parameters: [E].",
+                        "Please specify the required type parameters using 'withType(Class... types)`");
     }
 }

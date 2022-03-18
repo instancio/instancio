@@ -1,6 +1,6 @@
 package org.instancio;
 
-import org.instancio.generator.ValueGenerator;
+import org.instancio.generator.Generator;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.TypeVariable;
@@ -13,16 +13,16 @@ class InstancioContext {
     private final Class<?> klass;
     private final Set<Field> exclusions;
     private final Set<Field> nullables;
-    private final Map<Field, ValueGenerator<?>> userSuppliedFieldValueGenerators;
-    private final Map<Class<?>, ValueGenerator<?>> userSuppliedClassValueGenerators;
+    private final Map<Field, Generator<?>> userSuppliedFieldValueGenerators;
+    private final Map<Class<?>, Generator<?>> userSuppliedClassValueGenerators;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
 
     public InstancioContext(
             final Class<?> klass,
             final Set<Field> exclusions,
             final Set<Field> nullables,
-            final Map<Field, ValueGenerator<?>> userSuppliedFieldValueGenerators,
-            final Map<Class<?>, ValueGenerator<?>> userSuppliedClassValueGenerators,
+            final Map<Field, Generator<?>> userSuppliedFieldValueGenerators,
+            final Map<Class<?>, Generator<?>> userSuppliedClassValueGenerators,
             final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
 
         this.klass = klass;
@@ -45,11 +45,11 @@ class InstancioContext {
         return nullables.contains(field);
     }
 
-    public Map<Field, ValueGenerator<?>> getUserSuppliedFieldValueGenerators() {
+    public Map<Field, Generator<?>> getUserSuppliedFieldValueGenerators() {
         return userSuppliedFieldValueGenerators;
     }
 
-    public Map<Class<?>, ValueGenerator<?>> getUserSuppliedClassValueGenerators() {
+    public Map<Class<?>, Generator<?>> getUserSuppliedClassValueGenerators() {
         return userSuppliedClassValueGenerators;
     }
 

@@ -1,13 +1,10 @@
 package org.instancio.api.features;
 
-import lombok.Getter;
-import lombok.ToString;
 import org.instancio.Instancio;
+import org.instancio.pojo.collections.TwoStringCollections;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
-import org.instancio.testsupport.Constants;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -45,33 +42,31 @@ class UserSuppliedClassGeneratorsTest {
         }
     }
 
-    @Nested
-    class OverrideDefaultCollectionTypeTest {
+    @Test
+    @DisplayName("All Collection declarations should be assigned a HashSet with a new instance each time")
+    void userSuppliedCollectionClassGeneratorWithGeneratorReturningANewInstanceEachTime() {
+        final TwoStringCollections result = Instancio.of(TwoStringCollections.class)
+                .with(Collection.class, HashSet::new) // new instance
+                .create();
 
-        @Test
-        @DisplayName("Collections should default to Set instead of List")
-        void userSuppliedCollectionClassGenerator() {
-            final UserSuppliedClassGeneratorsTest.TwoCollections result =
-                    Instancio.of(UserSuppliedClassGeneratorsTest.TwoCollections.class)
-                            .with(Collection.class, HashSet::new)
-                            .create();
-
-            assertThat(result.getOne())
-                    .isInstanceOf(Set.class)
-                    .hasOnlyElementsOfType(Integer.class)
-                    .hasSize(Constants.COLLECTION_SIZE)
-                    .isNotEqualTo(result.getTwo());
-
-            assertThat(result.getTwo())
-                    .isInstanceOf(Set.class)
-                    .hasOnlyElementsOfType(Integer.class);
-        }
+        assertThat(result.getOne()).isInstanceOf(Set.class).isEmpty();
+        assertThat(result.getTwo()).isInstanceOf(Set.class).isEmpty();
+        assertThat(result.getOne())
+                .as("Expecting a different instance")
+                .isNotSameAs(result.getTwo());
     }
 
-    @Getter
-    @ToString
-    public static class TwoCollections {
-        private Collection<Integer> one;
-        private Collection<Integer> two;
+    @Test
+    @DisplayName("All Collection declarations should be assigned a HashSet with the sane instance each time")
+    void userSuppliedCollectionClassGeneratorWithGeneratorReturningSameInstanceEachTime() {
+        final Set<String> expectedValue = new HashSet<>();
+        final TwoStringCollections result = Instancio.of(TwoStringCollections.class)
+                .with(Collection.class, () -> expectedValue) // same instance
+                .create();
+
+        assertThat(result.getOne()).isSameAs(result.getTwo())
+                .isSameAs(expectedValue);
     }
+
+
 }
