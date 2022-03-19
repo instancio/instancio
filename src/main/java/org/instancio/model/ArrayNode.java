@@ -24,6 +24,8 @@ public class ArrayNode extends Node {
 
         Verify.isTrue(klass.isArray(), "Not an array type: %s", klass.getName());
 
+        elementNode.setParent(this);
+
         this.elementNode = elementNode;
     }
 

@@ -15,6 +15,7 @@ import java.lang.reflect.WildcardType;
 import java.util.Collection;
 import java.util.Map;
 
+// TODO this class needs refactoring
 public class NodeFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);

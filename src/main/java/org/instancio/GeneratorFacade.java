@@ -21,8 +21,8 @@ import java.util.Optional;
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
-    private final Hierarchy hierarchy = new Hierarchy();
     private final GeneratorMap generatorMap = new GeneratorMap();
+    private final AncestorTree ancestorTree = new AncestorTree();
     private final ImplementationResolver implementationResolver = new InterfaceImplementationResolver();
     private final ModelContext context;
 
@@ -32,12 +32,12 @@ class GeneratorFacade {
 
     GeneratorResult<?> generateNodeValue(Node node, @Nullable Object owner) {
         final Class<?> effectiveType = node.getEffectiveType().getRawType();
-        final Object ancestor = hierarchy.getAncestorWithClass(owner, effectiveType);
+        final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
 
         if (ancestor != null) {
             LOG.debug("{} has a circular dependency to {}. Not setting field value.",
                     owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
-            LOG.debug("Hierarchy:\n{}", hierarchy);
+
             return new GeneratorResult<>(null, true);
         }
 
@@ -75,7 +75,7 @@ class GeneratorFacade {
         }
 
 
-        hierarchy.setAncestorOf(result, owner);
+        ancestorTree.setObjectAncestor(result, new AncestorTree.InstanceNode(owner, node.getParent()));
         return new GeneratorResult<>(result);
     }
 

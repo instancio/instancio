@@ -19,10 +19,10 @@ public interface Generator<T> {
      *
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *         .with("name", withPrefix("name-"))  // returns a random string prefix with "name-"
-     *         .with("age", oneOf(20, 30, 40, 50)) // returns a random value from the given array
-     *         .with("lastModified", () -> LocalDateTime.now()) // returns current time each time
-     *         .with("location", () -> "Canada") // returns the same value "Canada" each time
+     *         .with("name", withPrefix("name-"))
+     *         .with("age", oneOf(20, 30, 40, 50))
+     *         .with("lastModified", () -> LocalDateTime.now())
+     *         .with("location", () -> "Canada")
      *         .create();
      * }</pre>
      *

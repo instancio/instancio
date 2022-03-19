@@ -27,12 +27,12 @@ class MapIntegerArrayStringModelTest extends ModelTestTemplate<MapIntegerArraySt
                 .getAs(MapNode.class);
 
         assertNode(map.getKeyNode())
-                .hasParent(rootNode)
+                .hasParent(map)
                 .hasKlass(Integer.class)
                 .hasNoChildren();
 
         final ArrayNode array = assertNode(map.getValueNode())
-                .hasParent(rootNode)
+                .hasParent(map)
                 .hasNullField()
                 .hasKlass(String[].class)
                 .hasNoChildren()
@@ -40,7 +40,7 @@ class MapIntegerArrayStringModelTest extends ModelTestTemplate<MapIntegerArraySt
 
         assertNode(array.getElementNode())
                 .hasNoChildren()
-                .hasParent(rootNode)
+                .hasParent(array)
                 .hasKlass(String.class)
                 .hasNoChildren();
     }

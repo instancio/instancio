@@ -29,11 +29,11 @@ class MapIntegerItemOfStringModelTest extends ModelTestTemplate<MapIntegerItemOf
                 .getAs(MapNode.class);
 
         assertNode(outerMap.getKeyNode())
-                .hasParent(rootNode)
+                .hasParent(outerMap)
                 .hasKlass(Integer.class);
 
         assertNode(outerMap.getValueNode())
-                .hasParent(rootNode)
+                .hasParent(outerMap)
                 .hasKlass(Item.class)
                 .hasChildrenOfSize(1);
 

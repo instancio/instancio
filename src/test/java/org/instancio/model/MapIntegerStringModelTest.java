@@ -27,12 +27,12 @@ class MapIntegerStringModelTest extends ModelTestTemplate<MapIntegerString> {
                 .getAs(MapNode.class);
 
         assertNode(map.getKeyNode())
-                .hasParent(rootNode)
+                .hasParent(map)
                 .hasKlass(Integer.class)
                 .hasNoChildren();
 
         assertNode(map.getValueNode())
-                .hasParent(rootNode)
+                .hasParent(map)
                 .hasKlass(String.class)
                 .hasNoChildren();
     }

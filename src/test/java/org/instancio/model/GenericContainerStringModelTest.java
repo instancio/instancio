@@ -38,7 +38,7 @@ class GenericContainerStringModelTest extends ModelTestTemplate<GenericContainer
                 .getAs(ArrayNode.class);
 
         assertNode(array.getElementNode())
-                .hasParent(rootNode)
+                .hasParent(array)
                 .hasNullField()
                 .hasKlass(String.class)
                 .hasEffectiveClass(String.class)
@@ -57,7 +57,7 @@ class GenericContainerStringModelTest extends ModelTestTemplate<GenericContainer
                 .getAs(CollectionNode.class);
 
         assertNode(list.getElementNode())
-                .hasParent(rootNode)
+                .hasParent(list)
                 .hasNullField()
                 .hasKlass(String.class)
                 .hasEffectiveClass(String.class)

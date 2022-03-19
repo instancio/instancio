@@ -43,8 +43,8 @@ class InstancioDriver {
 
     <T> T createEntryPoint() {
         final GeneratorResult<?> rootResult = generatorFacade.generateNodeValue(rootNode, null);
-
         final Object value = rootResult.getValue();
+
         enqueueChildrenOf(rootNode, rootResult, queue);
         populateDataStructures(null, rootNode, value);
 

@@ -27,6 +27,9 @@ public class MapNode extends Node {
 
         Verify.isTrue(Map.class.isAssignableFrom(klass), "Not a map type: %s ", klass.getName());
 
+        keyNode.setParent(this);
+        valueNode.setParent(this);
+
         this.keyNode = Verify.notNull(keyNode, "keyNode is null");
         this.valueNode = Verify.notNull(valueNode, "valueNode is null");
     }
