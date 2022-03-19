@@ -29,8 +29,7 @@ class ItemContainerStringLongModelTest extends ModelTestTemplate<ItemContainer<S
         assertNode(getOnlyElement(itemValueX.getChildren()))
                 .hasParent(itemValueX)
                 .hasFieldName("value")
-                .hasKlass(Object.class)
-                .hasEffectiveClass(String.class)
+                .hasKlass(String.class)
                 .hasNoChildren();
 
         final String itemValueYField = "itemValueY";
@@ -46,8 +45,7 @@ class ItemContainerStringLongModelTest extends ModelTestTemplate<ItemContainer<S
         assertNode(getOnlyElement(itemValueY.getChildren()))
                 .hasParent(itemValueY)
                 .hasFieldName("value")
-                .hasKlass(Object.class)
-                .hasEffectiveClass(Long.class)
+                .hasKlass(Long.class)
                 .hasNoChildren();
     }
 }

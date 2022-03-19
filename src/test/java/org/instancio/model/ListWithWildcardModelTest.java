@@ -21,7 +21,6 @@ class ListWithWildcardModelTest extends ModelTestTemplate<ListWithWildcard> {
                 .hasFieldName("list")
                 .hasNoChildren()
                 .hasKlass(List.class)
-                .hasEffectiveClass(List.class)
                 .getAs(CollectionNode.class);
 
         assertNode(list.getElementNode())

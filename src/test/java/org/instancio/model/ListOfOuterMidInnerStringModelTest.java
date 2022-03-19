@@ -39,12 +39,12 @@ class ListOfOuterMidInnerStringModelTest extends ModelTestTemplate<ListOfOuterMi
         final CollectionNode rootList = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
                 .hasFieldName("rootList")
+                .hasKlass(List.class)
                 .hasTypeMappedTo(List.class, "E", "org.instancio.pojo.generics.outermidinner." +
                         "Outer<org.instancio.pojo.generics.outermidinner." +
                         "Mid<org.instancio.pojo.generics.outermidinner." +
                         "Inner<java.lang.String>>>")
                 .hasTypeMapWithSize(1)
-                .hasEffectiveClass(List.class)
                 .getAs(CollectionNode.class);
 
         // Outer
@@ -68,7 +68,7 @@ class ListOfOuterMidInnerStringModelTest extends ModelTestTemplate<ListOfOuterMi
         final CollectionNode outerList = assertNode(getOnlyElement(rootListElement.getChildren()))
                 .hasParent(rootListElement)
                 .hasFieldName("outerList")
-                .hasEffectiveClass(List.class)
+                .hasKlass(List.class)
                 .getAs(CollectionNode.class);
 
         assertNode(outerList.getElementNode())

@@ -22,7 +22,7 @@ class PairLongPairIntegerStringModelTest extends ModelTestTemplate<PairLongPairI
         final Node outerPair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
-                .hasEffectiveClass(Pair.class)
+                .hasKlass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", Long.class)
                 .hasTypeMappedTo(Pair.class, "R", Types.PAIR_INTEGER_STRING.get())
                 .hasTypeMapWithSize(2)
@@ -33,14 +33,12 @@ class PairLongPairIntegerStringModelTest extends ModelTestTemplate<PairLongPairI
                 .hasFieldName("left")
                 .hasParent(outerPair)
                 .hasKlass(Long.class)
-                .hasEffectiveClass(Long.class)
                 .hasNoChildren();
 
         final Node innerPair = assertNode(NodeUtils.getChildNode(outerPair, "right"))
                 .hasFieldName("right")
                 .hasParent(outerPair)
                 .hasKlass(Pair.class)
-                .hasEffectiveClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", Integer.class)
                 .hasTypeMappedTo(Pair.class, "R", String.class)
                 .hasTypeMapWithSize(2)
@@ -55,14 +53,12 @@ class PairLongPairIntegerStringModelTest extends ModelTestTemplate<PairLongPairI
                 .hasFieldName("left")
                 .hasParent(innerPair)
                 .hasKlass(Integer.class)
-                .hasEffectiveClass(Integer.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(innerPair, "right"))
                 .hasFieldName("right")
                 .hasParent(innerPair)
                 .hasKlass(String.class)
-                .hasEffectiveClass(String.class)
                 .hasNoChildren();
     }
 }

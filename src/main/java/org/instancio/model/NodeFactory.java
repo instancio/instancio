@@ -58,7 +58,8 @@ public class NodeFactory {
         } else if (Map.class.isAssignableFrom(klass)) {
             result = createMapNode(nodeContext, klass, genericType, field, parent);
         } else {
-            result = new ClassNode(nodeContext, klass, field, genericType, parent);
+            //result = new ClassNode(nodeContext, klass, field, genericType, parent);
+            result = createClassNode(nodeContext, klass, genericType, field, parent);
         }
 
 
@@ -302,56 +303,57 @@ public class NodeFactory {
         return Verify.notNull(result);
     }
 
-    // TODO delete
-//    private Node createClassNode(final NodeContext nodeContext,
-//                                 final Class<?> klass,
-//                                 final @Nullable Type genericType,
-//                                 final @Nullable Field field,
-//                                 final @Nullable Node parent) {
-//
-//        Node result = null;
-//
-//        if (genericType == null || genericType instanceof Class) {
-//            return new ClassNode(nodeContext, field, klass, null, parent);
-//        }
-//
-//        if (genericType instanceof ParameterizedType) {
-//            ParameterizedType pType = (ParameterizedType) genericType;
-//
-//            final Type[] actualTypeArgs = pType.getActualTypeArguments();
-//            final TypeVariable<?>[] typeVars = klass.getTypeParameters();
-//
-//            for (int i = 0; i < actualTypeArgs.length; i++) {
-//                final Type actualTypeArg = actualTypeArgs[i];
-//                final TypeVariable<?> typeVar = typeVars[i];
-//                LOG.debug("actualTypeArg {}: {}, typeVar: {}", actualTypeArg.getClass().getSimpleName(), actualTypeArg, typeVar);
-//
-//                if (actualTypeArg instanceof Class) {
-//                    // key/value have no field
-//                    result = this.createNode(nodeContext, (Class<?>) actualTypeArg, null, null, parent);
-//
-//                } else if (actualTypeArg instanceof ParameterizedType) {
-//                    ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
-//                    Class<?> actualRawType = (Class<?>) actualPType.getRawType();
-//
-//                    result = this.createNode(nodeContext, actualRawType, actualPType, null, parent);
-//
-//                } else if (actualTypeArg instanceof TypeVariable) {
-//                    Type mappedType = parent.getTypeMap().get(actualTypeArg);
-//                    LOG.debug("actualTypeArg '{}' mpapped to '{}'", ((TypeVariable<?>) actualTypeArg).getName(), mappedType);
-//                    if (mappedType instanceof Class) {
-//                        result = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
-//                    }
-//                }
-//
-//
-//            }
-//        }
-//
-//        if (result == null)
-//            return new ClassNode(nodeContext, field, klass, null, parent);
-//
-//        return result;
-//    }
+    private Node createClassNode(final NodeContext nodeContext,
+                                 final Class<?> klass,
+                                 final @Nullable Type genericType,
+                                 final @Nullable Field field,
+                                 final @Nullable Node parent) {
+
+        if (genericType == null || (field != null && field.getGenericType() instanceof Class))
+            return new ClassNode(nodeContext, klass, field, null, parent);
+
+        if (klass != Object.class)
+            return new ClassNode(nodeContext, klass, field, genericType, parent);
+
+        if (genericType instanceof TypeVariable) {
+            Type mappedType = parent.getTypeMap().getOrDefault(genericType, genericType);
+
+            Node ancestor = parent;
+            while ((mappedType == null || !nodeContext.getRootTypeMap().containsKey(mappedType)) && ancestor != null) {
+                mappedType = ancestor.getTypeMap().getOrDefault(mappedType, mappedType);
+
+                if (mappedType instanceof Class || mappedType instanceof ParameterizedType)
+                    break;
+
+                ancestor = ancestor.getParent();
+            }
+
+            if (mappedType instanceof Class) {
+                return new ClassNode(nodeContext, (Class<?>) mappedType, field, mappedType, parent);
+            }
+            if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
+                Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
+                return new ClassNode(nodeContext, rawType, field, mappedType, parent);
+            }
+        } else if (genericType instanceof ParameterizedType) {
+
+            if (field != null) {
+                final Type fieldGenericType = field.getGenericType();
+                final Type mappedType = parent.getTypeMap().getOrDefault(fieldGenericType, fieldGenericType);
+                if (mappedType instanceof Class) {
+                    return new ClassNode(nodeContext, (Class<?>) mappedType, field, null, parent);
+                }
+                if (parent.getRootTypeMap().containsKey(mappedType)) {
+
+                    final Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
+                    return new ClassNode(nodeContext, rawType, field, null, parent);
+                }
+            }
+        } else if (genericType instanceof Class) {
+            return new ClassNode(nodeContext, (Class<?>) genericType, field, null, parent);
+        }
+
+        throw new IllegalStateException("Unknown effective class for node: " + this);
+    }
 
 }

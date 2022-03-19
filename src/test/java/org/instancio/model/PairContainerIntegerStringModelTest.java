@@ -20,7 +20,6 @@ class PairContainerIntegerStringModelTest extends ModelTestTemplate<PairContaine
         final Node pairValue = assertNode(NodeUtils.getChildNode(rootNode, pairValueFieldName))
                 .hasFieldName(pairValueFieldName)
                 .hasKlass(Pair.class)
-                .hasEffectiveClass(Pair.class)
                 .hasGenericTypeName("org.instancio.pojo.generics.basic.Pair<X, Y>")
                 .hasTypeMappedTo(Pair.class, "L", "X")
                 .hasTypeMappedTo(Pair.class, "R", "Y")
@@ -29,11 +28,11 @@ class PairContainerIntegerStringModelTest extends ModelTestTemplate<PairContaine
                 .getAs(ClassNode.class);
 
         assertNode(NodeUtils.getChildNode(pairValue, "left"))
-                .hasEffectiveClass(Integer.class)
+                .hasKlass(Integer.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(pairValue, "right"))
-                .hasEffectiveClass(String.class)
+                .hasKlass(String.class)
                 .hasNoChildren();
     }
 }

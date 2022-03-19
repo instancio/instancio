@@ -30,17 +30,13 @@ public class ClassNode extends Node {
 
     @Override
     protected List<Node> collectChildren() {
-        final GenericType effectiveType = getEffectiveType();
-        final Class<?> effectiveClass = effectiveType.getRawType();
-        final Type effectiveGenericType = effectiveType.getType();
-
-        if (effectiveClass.getPackage() == null || effectiveClass.getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
+        if (getKlass().getPackage() == null || getKlass().getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList();
         }
-        return makeChildren(getNodeContext(), effectiveClass, effectiveGenericType);
+        return makeChildren(getNodeContext(), getKlass());
     }
 
-    private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass, @Nullable final Type genericType) {
+    private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass) {
         final NodeFactory nodeFactory = new NodeFactory();
         final List<Field> fields = nodeContext.getFieldCollector().getFields(klass);
 
