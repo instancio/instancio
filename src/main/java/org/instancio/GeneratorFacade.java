@@ -21,8 +21,8 @@ import java.util.Optional;
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
-    private final Hierarchy hierarchy = new Hierarchy();
     private final GeneratorMap generatorMap = new GeneratorMap();
+    private final AncestorTree ancestorTree = new AncestorTree();
     private final ImplementationResolver implementationResolver = new InterfaceImplementationResolver();
     private final ModelContext context;
 
@@ -30,27 +30,24 @@ class GeneratorFacade {
         this.context = context;
     }
 
-    <C> GeneratorResult<C> generateNodeValue(Node node, @Nullable Object owner) {
-        final Field field = node.getField();
-
-        final Optional<GeneratorResult<C>> optionalResult = attemptGenerateViaContext(field);
-        if (optionalResult.isPresent()) {
-            return optionalResult.get();
-        }
-
+    GeneratorResult<?> generateNodeValue(Node node, @Nullable Object owner) {
         final Class<?> effectiveType = node.getEffectiveType().getRawType();
-
-        if (effectiveType.isPrimitive()) {
-            final C result = (C) generatorMap.get(effectiveType).generate();
-            return new GeneratorResult<>(result, true);
-        }
-
-        final Object ancestor = hierarchy.getAncestorWithClass(owner, effectiveType);
+        final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
 
         if (ancestor != null) {
             LOG.debug("{} has a circular dependency to {}. Not setting field value.",
                     owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
+
             return new GeneratorResult<>(null, true);
+        }
+
+        final Optional<GeneratorResult<?>> optionalResult = attemptGenerateViaContext(node.getField());
+        if (optionalResult.isPresent()) {
+            return optionalResult.get();
+        }
+
+        if (effectiveType.isPrimitive()) {
+            return new GeneratorResult<>(generatorMap.get(effectiveType).generate(), true);
         }
 
         if (node instanceof ArrayNode) {
@@ -77,22 +74,23 @@ class GeneratorFacade {
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
         }
 
-        hierarchy.setAncestorOf(result, owner);
-        return new GeneratorResult<>((C) result);
+
+        ancestorTree.setObjectAncestor(result, new AncestorTree.InstanceNode(owner, node.getParent()));
+        return new GeneratorResult<>(result);
     }
 
-    private <C> GeneratorResult<C> generateArray(Node node) {
+    private GeneratorResult<?> generateArray(Node node) {
         final Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
         final Generator<?> generator = generatorMap.getArrayGenerator(arrayType);
         final Object arrayObject = generator.generate();
-        return new GeneratorResult<>((C) arrayObject);
+        return new GeneratorResult<>(arrayObject);
     }
 
     /**
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private <C> GeneratorResult<C> resolveImplementationAndGenerate(
+    private GeneratorResult<?> resolveImplementationAndGenerate(
             final Node parentNode,
             @Nullable final Object owner,
             final Class<?> interfaceClass) {
@@ -116,7 +114,7 @@ class GeneratorFacade {
      * TODO: hierarchy.setAncestorOf(value, owner) must be done for all generated objects
      *  unless they are from JDK classes
      */
-    private <C> Optional<GeneratorResult<C>> attemptGenerateViaContext(@Nullable final Field field) {
+    private Optional<GeneratorResult<?>> attemptGenerateViaContext(@Nullable final Field field) {
         if (field == null) return Optional.empty();
 
         if (context.getNullableFields().contains(field) && Random.trueOrFalse()) {
@@ -127,13 +125,13 @@ class GeneratorFacade {
             return Optional.of(new GeneratorResult<>(null));
         }
 
-        GeneratorResult<C> result = null;
+        GeneratorResult<?> result = null;
         if (context.getUserSuppliedFieldGenerators().containsKey(field)) {
             Generator<?> generator = context.getUserSuppliedFieldGenerators().get(field);
-            result = new GeneratorResult<C>((C) generator.generate(), true);
+            result = new GeneratorResult<>(generator.generate(), true);
         } else if (context.getUserSuppliedClassGenerators().containsKey(field.getType())) {
             Generator<?> generator = context.getUserSuppliedClassGenerators().get(field.getType());
-            result = new GeneratorResult<C>((C) generator.generate(), true);
+            result = new GeneratorResult<>(generator.generate(), true);
         }
         return Optional.ofNullable(result);
     }

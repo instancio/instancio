@@ -9,7 +9,7 @@ import org.instancio.testsupport.templates.CreationTestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @GenericsTag
-public class MapStringPersonCreationTest extends CreationTestTemplate<MapStringPerson> {
+public class MapStringPerson2CreationTest extends CreationTestTemplate<MapStringPerson> {
 
     @Override
     protected void verify(MapStringPerson result) {

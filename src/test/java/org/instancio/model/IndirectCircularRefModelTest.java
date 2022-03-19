@@ -1,13 +1,13 @@
 package org.instancio.model;
 
 import org.instancio.pojo.circular.IndirectCircularRef;
-import org.instancio.testsupport.tags.CircularRefsTag;
+import org.instancio.testsupport.tags.CyclicTag;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 import org.instancio.testsupport.utils.CollectionUtils;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
-@CircularRefsTag
+@CyclicTag
 class IndirectCircularRefModelTest extends ModelTestTemplate<IndirectCircularRef> {
 
     // TODO

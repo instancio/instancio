@@ -20,10 +20,10 @@ public abstract class Node {
     private final Field field;
     private final Class<?> klass;
     private final Type genericType;
-    private final Node parent;
+    private Node parent;
     private List<Node> children;
     private final Map<Type, Type> typeMap;
-    private final GenericType effectiveType;
+    private final GenericType<?> effectiveType;
 
     Node(final NodeContext nodeContext,
          final Class<?> klass,
@@ -45,6 +45,14 @@ public abstract class Node {
     }
 
     protected abstract List<Node> collectChildren();
+
+    // FIXME exposed setter to allow overwriting parent field of ElementNode and Key/Value nodes
+    //  in this class's constructor. Reason: CollectionNode constructor takes ElementNode
+    //  as an argument. Therefore, can't set ElementNode's parent to CollectionNode because
+    //  the latter needs to be instantiated first, but it takes the former as an constructor argument...
+    void setParent(final Node parent) {
+        this.parent = parent;
+    }
 
     public NodeContext getNodeContext() {
         return nodeContext;

@@ -15,6 +15,7 @@ import java.lang.reflect.WildcardType;
 import java.util.Collection;
 import java.util.Map;
 
+// TODO this class needs refactoring
 public class NodeFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
@@ -285,6 +286,17 @@ public class NodeFactory {
             } else {
                 LOG.debug("Could not resolve Map key/value types.\nKey: {}\nValue:{}", keyNode, valueNode);
             }
+        } else if (genericType instanceof Class) { // collection without type specified... 'Map map'
+            // TODO refactor
+            final TypeVariable<?> keyTypeVariable = Map.class.getTypeParameters()[0];
+            final TypeVariable<?> valueTypeVariable = Map.class.getTypeParameters()[1];
+
+            final Class<?> keyClass = nodeContext.getRootTypeMap().getOrDefault(keyTypeVariable, Object.class);
+            final Class<?> valueClass = nodeContext.getRootTypeMap().getOrDefault(valueTypeVariable, Object.class);
+
+            Node keyNode = new ClassNode(nodeContext, keyClass, null, null, parent);
+            Node valueNode = new ClassNode(nodeContext, valueClass, null, null, parent);
+            result = new MapNode(nodeContext, rawClass, keyNode, valueNode, field, rawClass, parent);
         }
 
         return Verify.notNull(result);

@@ -3,6 +3,7 @@ package org.instancio.testsupport.templates;
 import org.instancio.Instancio;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.testsupport.tags.CreateTag;
+import org.instancio.testsupport.utils.TypeUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.TestInstance;
@@ -25,10 +26,16 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
  * <p>
  * Supports manual verification via the {@link  #verify(Object)} method.
  * <p>
- * <li>Will also auto-verify via reflections that the entire object graph is populated:
+ * Will also auto-verify via reflections that the entire object graph is populated:
  * that is, it does not contain {@code null} values, empty collections, maps, or arrays.
- * If auto-verification is not desired (e.g. with nullable fields) then the
- * {@link #verify(Object)} method can be annotated with {@link AutoVerificationDisabled}.
+ * <p>
+ * If auto-verification is not desired, for example in case of
+ * <ul>
+ *   <li>nullable fields</li>
+ *   <li>cyclic graphs where {@code null} is used to end the cycle</li>
+ * </ul>
+ * <p>
+ * then the {@link #verify(Object)} method can be annotated with {@link AutoVerificationDisabled}.
  *
  * @param <T> type being verified
  */
@@ -49,6 +56,7 @@ public abstract class CreationTestTemplate<T> {
     /**
      * Kicks off the test method.
      */
+    @SuppressWarnings("unchecked")
     @MethodSource("instancioCreatedObjects")
     @ParameterizedTest(name = "{index}: {0}")
     protected final void verifyingGenerated(Object result) {
@@ -72,7 +80,7 @@ public abstract class CreationTestTemplate<T> {
     protected abstract void verify(T result);
 
     private Stream<Arguments> instancioCreatedObjects() {
-        final String displayName = "of type " + genericType.getTypeName();
+        final String displayName = "of type " + TypeUtils.shortenPackageNames(genericType.getTypeName());
         final Arguments[] arguments = new Arguments[numberOfExecutions()];
 
         for (int i = 0; i < arguments.length; i++) {

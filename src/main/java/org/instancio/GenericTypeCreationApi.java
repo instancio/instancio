@@ -57,8 +57,8 @@ public class GenericTypeCreationApi<T> implements CreationApi<T> {
     }
 
     @Override
-    public GenericTypeCreationApi<T> map(Class<?> from, Class<?> to) {
-        modelContextBuilder.withSubtypeMapping(from, to);
+    public GenericTypeCreationApi<T> map(Class<?> baseClass, Class<?> subClass) {
+        modelContextBuilder.withSubtypeMapping(baseClass, subClass);
         return this;
     }
 

@@ -22,7 +22,7 @@ import java.util.Set;
 public class ModelContext {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
-    private final Type rootGenericType;
+    private final Type rootType;
     private final Class<?> rootClass;
     private final List<Class<?>> rootTypeParameters;
     private final Set<Field> ignoredFields;
@@ -35,7 +35,7 @@ public class ModelContext {
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
 
     private ModelContext(Builder builder) {
-        this.rootGenericType = builder.rootGenericType;
+        this.rootType = builder.rootType;
         this.rootClass = builder.rootClass;
         this.rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
         this.ignoredFields = Collections.unmodifiableSet(builder.ignoredFields);
@@ -45,13 +45,13 @@ public class ModelContext {
         this.userSuppliedFieldGenerators = Collections.unmodifiableMap(builder.userSuppliedFieldGenerators);
         this.userSuppliedClassGenerators = Collections.unmodifiableMap(builder.userSuppliedClassGenerators);
         this.subtypeMap = Collections.unmodifiableMap(builder.subtypeMap);
-        this.rootTypeMap = rootGenericType instanceof ParameterizedType
+        this.rootTypeMap = rootType instanceof ParameterizedType
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
     }
 
     public Builder toBuilder() {
-        final Builder builder = new Builder(rootClass, rootGenericType);
+        final Builder builder = new Builder(rootClass, rootType);
         builder.rootTypeParameters.addAll(this.rootTypeParameters);
         builder.ignoredFields.addAll(this.ignoredFields);
         builder.nullableFields.addAll(this.nullableFields);
@@ -63,8 +63,8 @@ public class ModelContext {
         return builder;
     }
 
-    public Type getRootGenericType() {
-        return rootGenericType;
+    public Type getRootType() {
+        return rootType;
     }
 
     public Class<?> getRootClass() {
@@ -121,13 +121,13 @@ public class ModelContext {
         return typeMap;
     }
 
-    public static Builder builder(final Type rootGenericType) {
-        return new Builder(rootGenericType);
+    public static Builder builder(final Type rootType) {
+        return new Builder(rootType);
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public static final class Builder {
-        private Type rootGenericType;
+        private final Type rootType;
         private final Class<?> rootClass;
         private final List<Class<?>> rootTypeParameters = new ArrayList<>();
         private final Set<Field> ignoredFields = new HashSet<>();
@@ -140,12 +140,12 @@ public class ModelContext {
 
         private Builder(final Class<?> rootClass, final Type rootType) {
             this.rootClass = rootClass;
-            this.rootGenericType = rootType;
+            this.rootType = rootType;
         }
 
         private Builder(final Type rootType) {
-            this.rootGenericType = Verify.notNull(rootType, "Root type is null");
-            this.rootClass = TypeUtils.getRawType(rootGenericType);
+            this.rootType = Verify.notNull(rootType, "Root type is null");
+            this.rootClass = TypeUtils.getRawType(this.rootType);
         }
 
         public Builder withRootTypeParameters(final List<Class<?>> rootTypeParameters) {

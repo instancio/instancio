@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -36,16 +35,16 @@ class InstancioDriver {
     private final ModelContext context;
     private final Node rootNode;
 
-    public InstancioDriver(InternalModel model) {
+    public InstancioDriver(InternalModel<?> model) {
         this.context = model.getModelContext();
         this.rootNode = model.getRootNode();
         this.generatorFacade = new GeneratorFacade(context);
     }
 
-    <C> C createEntryPoint() {
-        final GeneratorResult<C> rootResult = generatorFacade.generateNodeValue(rootNode, null);
+    <T> T createEntryPoint() {
+        final GeneratorResult<?> rootResult = generatorFacade.generateNodeValue(rootNode, null);
+        final Object value = rootResult.getValue();
 
-        final C value = rootResult.getValue();
         enqueueChildrenOf(rootNode, rootResult, queue);
         populateDataStructures(null, rootNode, value);
 
@@ -53,7 +52,8 @@ class InstancioDriver {
             processNestItem(queue.poll());
         }
 
-        return value;
+        //noinspection unchecked
+        return (T) value;
     }
 
     private void processNestItem(final CreateItem createItem) {
@@ -88,7 +88,7 @@ class InstancioDriver {
 
         enqueueChildrenOf(node, generatorResult, queue);
 
-        populateDataStructures(null, node, createdValue);
+        populateDataStructures(createItem.getOwner(), node, createdValue);
     }
 
     private void populateDataStructures(@Nullable Object owner, Node node, Object createdValue) {
@@ -111,7 +111,7 @@ class InstancioDriver {
         }
 
         for (int i = 0; i < ARRAY_SIZE; i++) {
-            final GeneratorResult<Object> generatorResult = generatorFacade.generateNodeValue(elementNode, createdValue);
+            final GeneratorResult<?> generatorResult = generatorFacade.generateNodeValue(elementNode, createdValue);
             final Object elementValue = generatorResult.getValue();
             Array.set(createdValue, i, elementValue);
 
@@ -127,7 +127,7 @@ class InstancioDriver {
             ReflectionUtils.setField(collectionOwner, collectionNode.getField(), collectionInstance);
 
         for (int i = 0; i < COLLECTION_SIZE; i++) {
-            final GeneratorResult<Object> generatorResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
+            final GeneratorResult<?> generatorResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
             final Object elementValue = generatorResult.getValue();
             if (elementValue != null) {
                 collectionInstance.add(elementValue);
@@ -162,8 +162,8 @@ class InstancioDriver {
 
 
         for (int i = 0; i < MAP_SIZE; i++) {
-            final GeneratorResult<Object> generatorKeyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
-            final GeneratorResult<Object> generatorValueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
+            final GeneratorResult<?> generatorKeyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
+            final GeneratorResult<?> generatorValueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
 
             final Object mapKey = generatorKeyResult.getValue();
             final Object mapValue = generatorValueResult.getValue();
@@ -193,9 +193,5 @@ class InstancioDriver {
                     .collect(toList()));
         }
 
-    }
-
-    <C> List<C> createList(Class<C> klass) {
-        return null;
     }
 }

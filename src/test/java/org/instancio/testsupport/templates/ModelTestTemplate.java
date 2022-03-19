@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 /**
@@ -51,12 +52,9 @@ public abstract class ModelTestTemplate<T> {
     protected abstract void verify(Node rootNode);
 
     private Stream<Arguments> createdModel() {
-        // display type name with shortened package for better readability
-        final String displayName = "of type " + genericType.getTypeName()
-                .replace("org.instancio.pojo", "...");
-
-        ModelContext modelContext = ModelContext.builder(genericType).build();
-        InternalModel model = new InternalModel(modelContext);
+        final String displayName = "of type " + shortenPackageNames(genericType.getTypeName());
+        final ModelContext modelContext = ModelContext.builder(genericType).build();
+        final InternalModel<?> model = new InternalModel<>(modelContext);
         final Node result = model.getRootNode();
 
         return Stream.of(Arguments.of(Named.of(displayName, result)));

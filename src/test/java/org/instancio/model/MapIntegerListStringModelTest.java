@@ -29,12 +29,12 @@ class MapIntegerListStringModelTest extends ModelTestTemplate<MapIntegerListStri
                 .getAs(MapNode.class);
 
         assertNode(map.getKeyNode())
-                .hasParent(rootNode)
+                .hasParent(map)
                 .hasKlass(Integer.class)
                 .hasNoChildren();
 
         final CollectionNode list = assertNode(map.getValueNode())
-                .hasParent(rootNode)
+                .hasParent(map)
                 .hasNullField()
                 .hasKlass(List.class)
                 .hasTypeMappedTo(List.class, "E", String.class)
@@ -43,7 +43,7 @@ class MapIntegerListStringModelTest extends ModelTestTemplate<MapIntegerListStri
 
         assertNode(list.getElementNode())
                 .hasNoChildren()
-                .hasParent(rootNode)
+                .hasParent(list)
                 .hasKlass(String.class)
                 .hasNoChildren();
     }

@@ -26,7 +26,7 @@ public class GenericTypeAssert extends AbstractAssert<GenericTypeAssert, Generic
 
     public GenericTypeAssert hasGenericType(Type expected) {
         isNotNull();
-        assertThat(actual.getGenericType()).isEqualTo(expected);
+        assertThat(actual.getType()).isEqualTo(expected);
         return this;
     }
 

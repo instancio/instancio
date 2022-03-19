@@ -25,6 +25,8 @@ public class CollectionNode extends Node {
 
         Verify.isTrue(Collection.class.isAssignableFrom(klass), "Not a collection type: %s", klass.getName());
 
+        elementNode.setParent(this);
+
         this.elementNode = elementNode;
     }
 

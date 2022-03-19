@@ -1,13 +1,13 @@
 package org.instancio.model;
 
 import org.instancio.pojo.circular.BidirectionalOneToOne;
-import org.instancio.testsupport.tags.CircularRefsTag;
+import org.instancio.testsupport.tags.CyclicTag;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
-@CircularRefsTag
+@CyclicTag
 class BidirectionalOneToOneModelTest extends ModelTestTemplate<BidirectionalOneToOne.Parent> {
 
     // TODO

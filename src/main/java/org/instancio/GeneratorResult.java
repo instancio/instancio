@@ -12,7 +12,7 @@ class GeneratorResult<T> {
         this.ignoreChildren = ignoreChildren;
     }
 
-    public GeneratorResult(T value) {
+    public GeneratorResult(@Nullable final T value) {
         this(value, false);
     }
 

@@ -49,7 +49,7 @@ class ListOfOuterMidInnerStringModelTest extends ModelTestTemplate<ListOfOuterMi
 
         // Outer
         assertNode(rootList.getElementNode())
-                .hasParent(rootNode)
+                .hasParent(rootList)
                 .hasNullField()
                 .hasKlass(Outer.class)
                 .hasTypeMappedTo(Outer.class, "T", "org.instancio.pojo.generics.outermidinner." +
@@ -72,7 +72,7 @@ class ListOfOuterMidInnerStringModelTest extends ModelTestTemplate<ListOfOuterMi
                 .getAs(CollectionNode.class);
 
         assertNode(outerList.getElementNode())
-                .hasParent(rootListElement)
+                .hasParent(outerList)
                 .hasNullField()
                 .hasKlass(Mid.class)
                 .hasGenericTypeName("org.instancio.pojo.generics.outermidinner." +
@@ -94,7 +94,7 @@ class ListOfOuterMidInnerStringModelTest extends ModelTestTemplate<ListOfOuterMi
                 .getAs(CollectionNode.class);
 
         assertNode(midList.getElementNode())
-                .hasParent(outerElement)
+                .hasParent(midList)
                 .hasNullField()
                 .hasKlass(Inner.class)
                 .hasTypeMappedTo(Inner.class, "T", String.class)
@@ -113,7 +113,7 @@ class ListOfOuterMidInnerStringModelTest extends ModelTestTemplate<ListOfOuterMi
                 .getAs(CollectionNode.class);
 
         assertNode(innerList.getElementNode())
-                .hasParent(midListElement)
+                .hasParent(innerList)
                 .hasNullField()
                 .hasKlass(String.class)
                 .hasEmptyTypeMap()

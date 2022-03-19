@@ -9,8 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Tag for tests verifying behaviour in the presence of circular references.
  */
-@Tag("circular-refs")
+@Tag("cyclic")
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CircularRefsTag {
+public @interface CyclicTag {
 }
