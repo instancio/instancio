@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.pojo.circular.BidirectionalOneToOne;
+import org.instancio.pojo.cyclic.BidirectionalOneToOne;
 import org.instancio.testsupport.tags.CyclicTag;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
@@ -10,7 +10,6 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 @CyclicTag
 class BidirectionalOneToOneModelTest extends ModelTestTemplate<BidirectionalOneToOne.Parent> {
 
-    // TODO
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
@@ -38,12 +37,13 @@ class BidirectionalOneToOneModelTest extends ModelTestTemplate<BidirectionalOneT
                 .hasChildrenOfSize(2)
                 .getAs(Node.class);
 
-        final Node parentAgain = assertNode(NodeUtils.getChildNode(childAgain, "parent"))
+        assertNode(NodeUtils.getChildNode(childAgain, "parent"))
                 .hasParent(childAgain)
                 .hasFieldName("parent")
                 .hasKlass(BidirectionalOneToOne.Parent.class)
                 .hasChildrenOfSize(2)
                 .getAs(Node.class);
 
+        // TBC...
     }
 }

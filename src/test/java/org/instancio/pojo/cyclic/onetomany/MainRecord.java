@@ -1,4 +1,4 @@
-package org.instancio.pojo.circular.onetomany;
+package org.instancio.pojo.cyclic.onetomany;
 
 import lombok.Getter;
 import lombok.ToString;

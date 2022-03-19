@@ -93,7 +93,7 @@ public abstract class CreationTestTemplate<T> {
     }
 
     private boolean isAutoVerificationEnabled() {
-        return !getVerifyMethodAnnotation(typeClass, AutoVerificationDisabled.class).isPresent();
+        return getClass().getAnnotation(AutoVerificationDisabled.class) == null;
     }
 
     private int numberOfExecutions() {

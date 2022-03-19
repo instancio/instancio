@@ -1,4 +1,4 @@
-package org.instancio.pojo.circular;
+package org.instancio.pojo.cyclic;
 
 import lombok.Getter;
 

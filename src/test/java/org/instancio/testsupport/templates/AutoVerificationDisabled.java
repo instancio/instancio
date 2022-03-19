@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * <p>
  * Specifies that auto-verification of created objects via reflection should be disabled.
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AutoVerificationDisabled {
 }
