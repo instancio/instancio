@@ -1,9 +1,9 @@
 package org.instancio.testsupport.templates;
 
 import org.instancio.Instancio;
+import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.testsupport.tags.CreateTag;
-import org.instancio.testsupport.utils.TypeUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.TestInstance;
@@ -14,11 +14,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
+import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 /**
@@ -43,15 +46,22 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @TestInstance(PER_CLASS)
 public abstract class CreationTestTemplate<T> {
 
+    private final TypeContext typeContext = new TypeContext(this.getClass());
     private Type genericType;
     private Class<?> typeClass;
 
     @BeforeAll
     protected final void templateSetup() {
-        TypeContext typeContext = new TypeContext(this.getClass());
         genericType = typeContext.getGenericType();
         typeClass = typeContext.getTypeClass();
     }
+
+    /**
+     * A method for verifying a created instance of type {@link T}.
+     *
+     * @param result created object to verify
+     */
+    protected abstract void verify(T result);
 
     /**
      * Kicks off the test method.
@@ -72,28 +82,33 @@ public abstract class CreationTestTemplate<T> {
         }
     }
 
-    /**
-     * A method for verifying a created instance of type {@link T}.
-     *
-     * @param result created object to verify
-     */
-    protected abstract void verify(T result);
-
     private Stream<Arguments> instancioCreatedObjects() {
-        final String displayName = "of type " + TypeUtils.shortenPackageNames(genericType.getTypeName());
-        final Arguments[] arguments = new Arguments[numberOfExecutions()];
+        final int numExecutions = numberOfExecutions();
+        final List<Arguments> arguments = new ArrayList<>();
 
-        for (int i = 0; i < arguments.length; i++) {
-            TypeTokenSupplier<Type> typeSupplier = () -> genericType;
-            Object result = Instancio.of(typeSupplier).create();
-            arguments[i] = Arguments.of(Named.of(displayName, result));
+        for (int i = 0; i < numExecutions; i++) {
+            arguments.add(Arguments.of(Named.of(getDisplayName("type token"), createUsingTypeToken())));
+            arguments.add(Arguments.of(Named.of(getDisplayName("model"), createUsingModel())));
         }
 
-        return Stream.of(arguments);
+        return Stream.of(arguments.toArray(new Arguments[0]));
+    }
+
+    private Object createUsingModel() {
+        final Model<?> model = Instancio.of((TypeTokenSupplier<Type>) () -> genericType).toModel();
+        return Instancio.of(model).create();
+    }
+
+    private Object createUsingTypeToken() {
+        return Instancio.of((TypeTokenSupplier<Type>) () -> genericType).create();
+    }
+
+    private String getDisplayName(final String apiMethod) {
+        return String.format("of type '%s' using %s", shortenPackageNames(genericType), apiMethod);
     }
 
     private boolean isAutoVerificationEnabled() {
-        return !getVerifyMethodAnnotation(typeClass, AutoVerificationDisabled.class).isPresent();
+        return getClass().getAnnotation(AutoVerificationDisabled.class) == null;
     }
 
     private int numberOfExecutions() {

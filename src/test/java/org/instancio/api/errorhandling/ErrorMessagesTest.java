@@ -17,12 +17,12 @@ class ErrorMessagesTest {
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll(
                         "Class 'org.instancio.pojo.generics.container.ItemContainer' has 2 type parameters: [X, Y].",
-                        "Please specify the required type parameters using 'withType(Class... types)`");
+                        "Please specify the required type parameters using 'withTypeParameters(Class... types)`");
 
         assertThatThrownBy(() -> Instancio.of(List.class).create())
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll(
                         "Class 'java.util.List' has 1 type parameters: [E].",
-                        "Please specify the required type parameters using 'withType(Class... types)`");
+                        "Please specify the required type parameters using 'withTypeParameters(Class... types)`");
     }
 }

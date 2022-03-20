@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.pojo.circular.IndirectCircularRef;
+import org.instancio.pojo.cyclic.IndirectCircularRef;
 import org.instancio.testsupport.tags.CyclicTag;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 import org.instancio.testsupport.utils.CollectionUtils;
@@ -10,7 +10,6 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 @CyclicTag
 class IndirectCircularRefModelTest extends ModelTestTemplate<IndirectCircularRef> {
 
-    // TODO
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
@@ -53,11 +52,12 @@ class IndirectCircularRefModelTest extends ModelTestTemplate<IndirectCircularRef
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
 
-        final Node aAgain = assertNode(CollectionUtils.getOnlyElement(cAgain.getChildren()))
+        assertNode(CollectionUtils.getOnlyElement(cAgain.getChildren()))
                 .hasKlass(IndirectCircularRef.A.class)
                 .hasFieldName("endA")
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
 
+        // TBC...
     }
 }

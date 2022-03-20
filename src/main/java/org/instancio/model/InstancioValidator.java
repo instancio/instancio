@@ -22,14 +22,14 @@ public class InstancioValidator {
 
             throw new InstancioApiException(String.format(
                     "\nClass '%s' is not generic." +
-                            "\nSpecifying type parameters 'withType(%s)` is not valid for this class.",
+                            "\nSpecifying type parameters 'withTypeParameters(%s)` is not valid for this class.",
                     rootClass.getName(), suppliedParams));
         }
 
         if (typeVarsLength != rootTypeParameters.size()) {
             throw new InstancioApiException(String.format(
                     "\nClass '%s' has %s type parameters: %s." +
-                            "\nPlease specify the required type parameters using 'withType(Class... types)`",
+                            "\nPlease specify the required type parameters using 'withTypeParameters(Class... types)`",
                     rootClass.getName(),
                     rootClass.getTypeParameters().length,
                     Arrays.toString(rootClass.getTypeParameters())));

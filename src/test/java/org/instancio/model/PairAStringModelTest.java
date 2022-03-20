@@ -23,7 +23,7 @@ class PairAStringModelTest extends ModelTestTemplate<PairAString<UUID>> {
         final Node pair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
-                .hasEffectiveClass(Pair.class)
+                .hasKlass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", "A")
                 .hasTypeMappedTo(Pair.class, "R", String.class)
                 .hasTypeMapWithSize(2)
@@ -33,15 +33,13 @@ class PairAStringModelTest extends ModelTestTemplate<PairAString<UUID>> {
         assertNode(NodeUtils.getChildNode(pair, "left"))
                 .hasFieldName("left")
                 .hasParent(pair)
-                .hasKlass(Object.class)             // TODO why is this Object?
-                .hasEffectiveClass(UUID.class)
+                .hasKlass(UUID.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(pair, "right"))
                 .hasFieldName("right")
                 .hasParent(pair)
-                .hasKlass(String.class)             // TODO why is this not Object? inconsistent with above
-                .hasEffectiveClass(String.class)
+                .hasKlass(String.class)
                 .hasNoChildren();
     }
 }

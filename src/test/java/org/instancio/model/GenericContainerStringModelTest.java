@@ -21,7 +21,6 @@ class GenericContainerStringModelTest extends ModelTestTemplate<GenericContainer
                 .hasParent(rootNode)
                 .hasFieldName("value")
                 .hasKlass(String.class)
-                .hasEffectiveClass(String.class)
                 .hasEmptyTypeMap() // TODO verify why
                 //.hasTypeMappedTo(GenericContainer.class, "T", String.class)
                 //.hasTypeMapWithSize(1)
@@ -32,7 +31,6 @@ class GenericContainerStringModelTest extends ModelTestTemplate<GenericContainer
                 .hasParent(rootNode)
                 .hasFieldName("array")
                 .hasKlass(Object[].class)
-                .hasEffectiveClass(Object[].class) // TODO
                 .hasEmptyTypeMap()  // TODO
                 .hasNoChildren()
                 .getAs(ArrayNode.class);
@@ -41,7 +39,6 @@ class GenericContainerStringModelTest extends ModelTestTemplate<GenericContainer
                 .hasParent(array)
                 .hasNullField()
                 .hasKlass(String.class)
-                .hasEffectiveClass(String.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren();
 
@@ -50,7 +47,6 @@ class GenericContainerStringModelTest extends ModelTestTemplate<GenericContainer
                 .hasParent(rootNode)
                 .hasFieldName("list")
                 .hasKlass(List.class)
-                .hasEffectiveClass(List.class)
                 .hasTypeMappedTo(List.class, "E", "T")
                 .hasTypeMapWithSize(1)
                 .hasNoChildren()
@@ -60,7 +56,6 @@ class GenericContainerStringModelTest extends ModelTestTemplate<GenericContainer
                 .hasParent(list)
                 .hasNullField()
                 .hasKlass(String.class)
-                .hasEffectiveClass(String.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren();
     }

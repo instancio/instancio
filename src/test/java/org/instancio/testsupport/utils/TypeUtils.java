@@ -1,5 +1,6 @@
 package org.instancio.testsupport.utils;
 
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 public class TypeUtils {
@@ -13,8 +14,8 @@ public class TypeUtils {
         throw new IllegalArgumentException(String.format("Invalid type parameter '%s' for %s", typeParameter, klass));
     }
 
-    public static String shortenPackageNames(String typeName) {
-        return typeName
+    public static String shortenPackageNames(Type type) {
+        return type.getTypeName()
                 .replaceAll("org\\.[a-z\\.]*", "")
                 .replaceAll("java\\.[a-z\\.]*", "");
     }

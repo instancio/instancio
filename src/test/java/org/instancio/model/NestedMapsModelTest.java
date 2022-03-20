@@ -24,7 +24,7 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
         final MapNode outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
-                .hasEffectiveClass(Map.class)
+                .hasKlass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Long.class)
                 .hasTypeMappedTo(Map.class, "V", Types.MAP_STRING_BOOLEAN.get())
                 .hasTypeMapWithSize(2)
@@ -41,7 +41,7 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
         final MapNode outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
-                .hasEffectiveClass(Map.class)
+                .hasKlass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", "OKEY")
                 .hasTypeMappedTo(Map.class, "V", "java.util.Map<IKEY, java.lang.Boolean>")
                 .hasTypeMapWithSize(2)
@@ -56,14 +56,12 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
                 .hasParent(outerMap)
                 .hasNullField()
                 .hasKlass(Long.class)
-                .hasEffectiveClass(Long.class)
                 .hasNoChildren();
 
         final MapNode innerMapNode = assertNode(outerMap.getValueNode())
                 .hasParent(outerMap)
                 .hasNullField()
                 .hasKlass(Map.class)
-                .hasEffectiveClass(Map.class)
                 .hasNoChildren()
                 .getAs(MapNode.class);
 
@@ -71,14 +69,12 @@ class NestedMapsModelTest extends ModelTestTemplate<NestedMaps<Long, String>> {
                 .hasParent(innerMapNode)
                 .hasNullField()
                 .hasKlass(String.class)
-                .hasEffectiveClass(String.class)
                 .hasNoChildren();
 
         assertNode(innerMapNode.getValueNode())
                 .hasParent(innerMapNode)
                 .hasNullField()
                 .hasKlass(Boolean.class)
-                .hasEffectiveClass(Boolean.class)
                 .hasNoChildren();
     }
 

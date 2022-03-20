@@ -64,7 +64,7 @@ class InstancioDriver {
 
         if (field == null
                 || context.getIgnoredFields().contains(field)
-                || context.getIgnoredClasses().contains(node.getEffectiveType().getRawType())
+                || context.getIgnoredClasses().contains(node.getKlass())
                 || Modifier.isStatic(field.getModifiers())) {
             return;
         }

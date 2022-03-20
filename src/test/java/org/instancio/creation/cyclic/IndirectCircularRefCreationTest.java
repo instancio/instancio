@@ -1,6 +1,6 @@
-package org.instancio.creation.circular;
+package org.instancio.creation.cyclic;
 
-import org.instancio.pojo.circular.IndirectCircularRef;
+import org.instancio.pojo.cyclic.IndirectCircularRef;
 import org.instancio.testsupport.tags.CyclicTag;
 import org.instancio.testsupport.templates.AutoVerificationDisabled;
 import org.instancio.testsupport.templates.CreationTestTemplate;
@@ -8,10 +8,10 @@ import org.instancio.testsupport.templates.CreationTestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @CyclicTag
+@AutoVerificationDisabled
 public class IndirectCircularRefCreationTest extends CreationTestTemplate<IndirectCircularRef> {
 
     @Override
-    @AutoVerificationDisabled
     protected void verify(IndirectCircularRef result) {
         assertThat(result.getStartA()).isNotNull()
                 // A -> B

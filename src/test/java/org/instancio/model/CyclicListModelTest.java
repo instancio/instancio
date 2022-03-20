@@ -1,16 +1,16 @@
 package org.instancio.model;
 
-import org.instancio.pojo.circular.CircularList;
+import org.instancio.pojo.cyclic.CyclicList;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
-class CircularListModelTest extends ModelTestTemplate<CircularList> {
+class CyclicListModelTest extends ModelTestTemplate<CyclicList> {
 
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(CircularList.class)
+                .hasKlass(CyclicList.class)
                 .hasChildrenOfSize(1);
     }
 }
