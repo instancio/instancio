@@ -1,6 +1,7 @@
 package org.instancio;
 
 import org.instancio.generator.Generator;
+import org.instancio.generator.StringGenerator;
 import org.instancio.util.Random;
 
 /**
@@ -22,8 +23,8 @@ public final class Generators {
         // non-instantiable
     }
 
-    public static Generator<String> withPrefix(String prefix) {
-        return () -> prefix + Random.positiveInt();
+    public static StringGenerator string() {
+        return new StringGenerator();
     }
 
     @SuppressWarnings("unchecked")

@@ -14,6 +14,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Bindings.field;
 
 @NonDeterministicTag
 class WithNullableFieldTest {
@@ -27,7 +28,7 @@ class WithNullableFieldTest {
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final IntegerHolder holder = Instancio.of(IntegerHolder.class)
-                    .withNullable("value")
+                    .withNullable(field("value"))
                     .create();
 
             results.add(holder.getValue());
@@ -43,7 +44,7 @@ class WithNullableFieldTest {
     void nullableWithPrimitiveFieldThrowsException() {
         assertThatThrownBy(
                 () -> Instancio.of(IntHolder.class)
-                        .withNullable("value")
+                        .withNullable(field("value"))
                         .create())
                 .isInstanceOf(InstancioException.class)
                 .hasMessage("Primitive field 'private int org.instancio.pojo.basic.IntHolder.value' cannot be set to null");
@@ -56,7 +57,7 @@ class WithNullableFieldTest {
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
-                    .withNullable("value")
+                    .withNullable(field("value"))
                     .create();
 
             results.add(holder.getValue());

@@ -16,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.instancio.Bindings.field;
 import static org.instancio.Generators.oneOf;
 
 class UserSuppliedFieldGeneratorsTest {
@@ -27,11 +28,11 @@ class UserSuppliedFieldGeneratorsTest {
         final Address customAddress = new Address();
 
         Person person = Instancio.of(Person.class)
-                .with("name", () -> "first-name-" + Random.intBetween(100, 999))
-                .with("gender", () -> Gender.FEMALE)
-                .with("age", oneOf(ageOptions))
-                .with("lastModified", () -> LocalDateTime.now(ZoneOffset.UTC))
-                .with("address", () -> customAddress)
+                .with(field("name"), () -> "first-name-" + Random.intBetween(100, 999))
+                .with(field("gender"), () -> Gender.FEMALE)
+                .with(field("age"), oneOf(ageOptions))
+                .with(field("lastModified"), () -> LocalDateTime.now(ZoneOffset.UTC))
+                .with(field("address"), () -> customAddress)
                 .create();
 
         //noinspection ConfusingArgumentToVarargsMethod
@@ -46,7 +47,7 @@ class UserSuppliedFieldGeneratorsTest {
     void fooContainerWithUserSuppliedInstance() {
         final String expectedFooString = "expected-foo";
         final FooContainer result = Instancio.of(FooContainer.class)
-                .with("stringFoo", () -> {
+                .with(field("stringFoo"), () -> {
                     Foo<String> foo = new Foo<>();
                     foo.setFooValue(expectedFooString);
                     return foo;

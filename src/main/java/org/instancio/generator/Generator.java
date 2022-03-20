@@ -19,10 +19,9 @@ public interface Generator<T> {
      *
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *         .with("name", withPrefix("name-"))
-     *         .with("age", oneOf(20, 30, 40, 50))
-     *         .with("lastModified", () -> LocalDateTime.now())
-     *         .with("location", () -> "Canada")
+     *         .with(field("age"), oneOf(20, 30, 40, 50))
+     *         .with(field("location"), () -> "Canada")
+     *         .with(all(LocalDateTime.class), () -> LocalDateTime.now())
      *         .create();
      * }</pre>
      *

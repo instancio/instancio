@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Bindings.field;
 import static org.instancio.Generators.nullValue;
 
 class WithNullValueFieldTest {
@@ -15,7 +16,7 @@ class WithNullValueFieldTest {
     @DisplayName("A null field should remain null")
     void generatesNullValue() {
         final StringHolder holder = Instancio.of(StringHolder.class)
-                .with("value", nullValue())
+                .with(field("value"), nullValue())
                 .create();
 
         assertThat(holder.getValue()).isNull();
@@ -25,7 +26,7 @@ class WithNullValueFieldTest {
     @DisplayName("Initialized field should be set to null")
     void overwritesInitializedFieldValue() {
         final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
-                .with("value", nullValue())
+                .with(field("value"), nullValue())
                 .create();
 
         assertThat(holder.getValue()).isNull();

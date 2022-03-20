@@ -17,6 +17,8 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.instancio.Bindings.all;
+import static org.instancio.Bindings.field;
 
 /**
  * Smoke test invoking various API methods.
@@ -35,12 +37,12 @@ class InstancioApiTest {
     @Test
     void createFromClass() {
         final Person homer = Instancio.of(Person.class)
-                .with("name", () -> HOMER)
-                .with(Person.class, "age", () -> HOMER_AGE)
-                .with(LocalDateTime.class, LocalDateTime::now)
-                .withNullable("date")
-                .withNullable(Person.class, "pets")
-                .withNullable(Gender.class)
+                .with(field("name"), () -> HOMER)
+                .with(field(Person.class, "age"), () -> HOMER_AGE)
+                .with(all(LocalDateTime.class), LocalDateTime::now)
+                .withNullable(field("date"))
+                .withNullable(field(Person.class, "pets"))
+                .withNullable(all(Gender.class))
                 .map(Address.class, AddressExtension.class)
                 .create();
 
@@ -82,12 +84,12 @@ class InstancioApiTest {
     @Test
     void createFromModel() {
         final Model<Person> homerModel = Instancio.of(Person.class)
-                .with("name", () -> HOMER)
-                .with(Person.class, "age", () -> HOMER_AGE)
-                .with(LocalDateTime.class, LocalDateTime::now)
-                .with(Address.class, "city", () -> SPRINGFIELD)
-                .ignore(Person.class, "date")
-                .ignore(Gender.class)
+                .with(field("name"), () -> HOMER)
+                .with(field(Person.class, "age"), () -> HOMER_AGE)
+                .with(all(LocalDateTime.class), LocalDateTime::now)
+                .with(field(Address.class, "city"), () -> SPRINGFIELD)
+                .ignore(field(Person.class, "date"))
+                .ignore(all(Gender.class))
                 .toModel();
 
         final Person homer = Instancio.of(homerModel).create();
