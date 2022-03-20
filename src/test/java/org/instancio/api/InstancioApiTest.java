@@ -25,8 +25,8 @@ import static org.instancio.Bindings.field;
  */
 class InstancioApiTest {
 
-    private static final String HOMER = "Homer";
     private static final int HOMER_AGE = 40;
+    private static final String HOMER = "Homer";
     private static final String SPRINGFIELD = "Springfield";
 
     @Getter
