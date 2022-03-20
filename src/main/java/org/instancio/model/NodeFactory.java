@@ -204,7 +204,10 @@ public class NodeFactory {
                 LOG.warn("Could not resolve Collection element type.");
             }
         } else if (genericType instanceof Class) { // collection without type specified... 'List list'
-            Node elementNode = new ClassNode(nodeContext, Object.class, null, null, parent);
+            final TypeVariable<?> typeVariable = rawClass.getTypeParameters()[0];
+            final Class<?> mappedType = nodeContext.getRootTypeMap().getOrDefault(typeVariable, Object.class);
+
+            Node elementNode = new ClassNode(nodeContext, mappedType, null, null, parent);
             result = new CollectionNode(nodeContext, rawClass, elementNode, field, rawClass, parent);
         }
 
@@ -353,7 +356,7 @@ public class NodeFactory {
             return new ClassNode(nodeContext, (Class<?>) genericType, field, null, parent);
         }
 
-        throw new IllegalStateException("Unknown effective class for node: " + this);
+        throw new IllegalStateException("Error creating a class node for klass: " + klass.getName() + ", type: " + genericType);
     }
 
 }

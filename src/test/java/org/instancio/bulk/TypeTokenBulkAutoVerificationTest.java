@@ -97,7 +97,7 @@ class TypeTokenBulkAutoVerificationTest {
         if (!failed.isEmpty()) {
             LOG.error("Failures:");
             failed.forEach((type, obj) -> {
-                LOG.error("\n\n-> '{}': {}", shortenPackageNames(type.getTypeName()), obj);
+                LOG.error("\n\n-> '{}': {}", shortenPackageNames(type), obj);
             });
 
             fail("Number of failures: %s", failed.size());

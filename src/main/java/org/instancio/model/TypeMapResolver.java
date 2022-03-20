@@ -57,6 +57,12 @@ public class TypeMapResolver {
      */
     private void initTypeMap() {
         if (genericType instanceof Class) {
+//            final TypeVariable<?>[] typeVariables = ((Class<?>) genericType).getTypeParameters();
+//            for (TypeVariable<?> typeVar : typeVariables) {
+//                if (!typeMap.containsKey(typeVar))
+//                    typeMap.put(typeVar, rootTypeMap.get(typeVar));
+//            }
+
             return; // non-generic class; nothing to resolve
         }
 
