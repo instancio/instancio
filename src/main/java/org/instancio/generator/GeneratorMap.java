@@ -19,9 +19,7 @@ import java.util.concurrent.ConcurrentNavigableMap;
 
 public class GeneratorMap {
 
-    private static final int DEFAULT_ARRAY_LENGTH = 2;
     private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
-    private final Map<Class<?>, Generator<?>> arrayGeneratorMap = new HashMap<>();
 
     public GeneratorMap() {
         // Core types
@@ -79,14 +77,7 @@ public class GeneratorMap {
         return generator;
     }
 
-    public Generator<?> getArrayGenerator(Class<?> klass) {
-        Generator<?> generator = arrayGeneratorMap.get(klass);
-
-        if (generator == null) {
-            generator = new ArrayGenerator(klass, DEFAULT_ARRAY_LENGTH);
-            arrayGeneratorMap.put(klass, generator);
-        }
-
-        return generator;
+    public Generator<?> getArrayGenerator(Class<?> componentType) {
+        return new ArrayGenerator(componentType);
     }
 }

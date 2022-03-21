@@ -87,8 +87,8 @@ class GeneratorFacade {
     }
 
     private GeneratorResult<?> generateArray(Node node) {
-        final Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
-        final Generator<?> generator = generatorMap.getArrayGenerator(arrayType);
+        final Class<?> componentType = ((ArrayNode) node).getElementNode().getKlass();
+        final Generator<?> generator = generatorMap.getArrayGenerator(componentType);
         final Object arrayObject = generator.generate();
         return GeneratorResult.build(arrayObject);
     }

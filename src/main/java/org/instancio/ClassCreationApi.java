@@ -1,10 +1,12 @@
 package org.instancio;
 
+import org.instancio.generator.ArrayGenerator;
 import org.instancio.generator.Generator;
 import org.instancio.model.InternalModel;
 import org.instancio.model.ModelContext;
 import org.instancio.util.ObjectUtils;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 import static org.instancio.util.ReflectionUtils.getField;
@@ -40,8 +42,17 @@ public class ClassCreationApi<T> implements CreationApi<T> {
     public <V> ClassCreationApi<T> with(Binding binding, Generator<V> generator) {
         if (binding.isFieldBinding()) {
             final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
-            modelContextBuilder.withFieldGenerator(getField(targetType, binding.getFieldName()), generator);
+            final Field field = getField(targetType, binding.getFieldName());
+            // XXX hacky work-around to set array type
+            // FIXME this needs to be done in other API classes
+            if (field.getType().isArray() && generator instanceof ArrayGenerator) {
+                ((ArrayGenerator) generator).type(field.getType().getComponentType());
+            }
+            modelContextBuilder.withFieldGenerator(field, generator);
         } else {
+            if (binding.getTargetType().isArray() && generator instanceof ArrayGenerator) {
+                ((ArrayGenerator) generator).type(binding.getTargetType().getComponentType());
+            }
             modelContextBuilder.withClassGenerator(binding.getTargetType(), generator);
         }
         return this;

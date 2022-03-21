@@ -34,6 +34,12 @@ public final class Verify {
         }
     }
 
+    public static void state(final boolean condition, final String message, final Object... values) {
+        if (!condition) {
+            throw new IllegalStateException(String.format(message, values));
+        }
+    }
+
     public static void isNotArrayCollectionOrMap(final Class<?> klass) {
         if (klass.isArray()
                 || Collection.class.isAssignableFrom(klass)
