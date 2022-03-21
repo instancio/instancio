@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.pojo.collections.lists.TwoListsWithItemString;
+import org.instancio.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.templates.ModelTestTemplate;
@@ -12,12 +12,12 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 /**
  * Verifies 'visited' node logic doesn't preclude the second list from being processed.
  */
-class TwoListsWithItemStringModelTest extends ModelTestTemplate<TwoListsWithItemString> {
+class TwoListsOfItemStringModelTest extends ModelTestTemplate<TwoListsOfItemString> {
 
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(TwoListsWithItemString.class)
+                .hasKlass(TwoListsOfItemString.class)
                 .hasChildrenOfSize(2);
 
         assertListNode(rootNode, "list1");

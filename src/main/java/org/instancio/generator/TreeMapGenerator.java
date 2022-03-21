@@ -2,11 +2,9 @@ package org.instancio.generator;
 
 import java.util.TreeMap;
 
-public class TreeMapGenerator<K, V> implements Generator<TreeMap<K, V>> {
+public class TreeMapGenerator extends MapGenerator {
 
-    @Override
-    @SuppressWarnings("SortedCollectionWithNonComparableKeys")
-    public TreeMap<K, V> generate() {
-        return new TreeMap<>();
+    public TreeMapGenerator() {
+        super.type(TreeMap.class);
     }
 }

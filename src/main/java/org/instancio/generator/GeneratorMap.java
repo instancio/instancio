@@ -51,16 +51,16 @@ public class GeneratorMap {
         generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator());
 
         // Collections
-        generatorMap.put(Collection.class, new ArrayListGenerator<>());
-        generatorMap.put(List.class, new ArrayListGenerator<>());
-        generatorMap.put(Map.class, new HashMapGenerator<>());
-        generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>());
-        generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>());
-        generatorMap.put(SortedMap.class, new TreeMapGenerator<>());
-        generatorMap.put(NavigableMap.class, new TreeMapGenerator<>());
-        generatorMap.put(Set.class, new HashSetGenerator<>());
-        generatorMap.put(SortedSet.class, new TreeSetGenerator<>());
-        generatorMap.put(NavigableSet.class, new TreeSetGenerator<>());
+        generatorMap.put(Collection.class, new CollectionGenerator());
+        generatorMap.put(List.class, new CollectionGenerator());
+        generatorMap.put(Map.class, new MapGenerator());
+        generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator());
+        generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator());
+        generatorMap.put(SortedMap.class, new TreeMapGenerator());
+        generatorMap.put(NavigableMap.class, new TreeMapGenerator());
+        generatorMap.put(Set.class, new HashSetGenerator());
+        generatorMap.put(SortedSet.class, new TreeSetGenerator());
+        generatorMap.put(NavigableSet.class, new TreeSetGenerator());
 
     }
 

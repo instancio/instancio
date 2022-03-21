@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Bindings.field;
 
 @NonDeterministicTag
 class IgnoredFieldTest {
@@ -15,7 +16,7 @@ class IgnoredFieldTest {
     @DisplayName("Ignored field should retain the original value")
     void fieldIsIgnored() {
         final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
-                .ignore("value")
+                .ignore(field("value"))
                 .create();
 
         assertThat(holder.getValue()).isEqualTo(ClassWithInitializedField.DEFAULT_FIELD_VALUE);

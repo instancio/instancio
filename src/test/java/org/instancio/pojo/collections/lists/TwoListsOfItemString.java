@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @ToString
-public class TwoListsWithItemString {
+public class TwoListsOfItemString {
 
     private List<Item<String>> list1;
 

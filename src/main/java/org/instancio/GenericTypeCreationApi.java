@@ -3,6 +3,7 @@ package org.instancio;
 import org.instancio.generator.Generator;
 import org.instancio.model.InternalModel;
 import org.instancio.model.ModelContext;
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.TypeUtils;
 
 import java.lang.reflect.Type;
@@ -14,69 +15,50 @@ public class GenericTypeCreationApi<T> implements CreationApi<T> {
     private final Class<T> rootClass;
     private final ModelContext.Builder modelContextBuilder;
 
-    public GenericTypeCreationApi(TypeTokenSupplier<T> tTypeToken) {
-        final Type rootType = tTypeToken.get();
+    public GenericTypeCreationApi(TypeTokenSupplier<T> typeToken) {
+        final Type rootType = typeToken.get();
         this.rootClass = TypeUtils.getRawType(rootType);
         this.modelContextBuilder = ModelContext.builder(rootType);
     }
 
+
     @Override
-    public GenericTypeCreationApi<T> ignore(Class<?> klass) {
-        modelContextBuilder.withIgnoredClass(klass);
+    public GenericTypeCreationApi<T> ignore(Binding binding) {
+        if (binding.isFieldBinding()) {
+            final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
+            modelContextBuilder.withIgnoredField(getField(targetType, binding.getFieldName()));
+        } else {
+            modelContextBuilder.withIgnoredClass(binding.getTargetType());
+        }
+
         return this;
     }
 
     @Override
-    public GenericTypeCreationApi<T> ignore(String field) {
-        modelContextBuilder.withIgnoredField(getField(this.rootClass, field));
+    public GenericTypeCreationApi<T> withNullable(Binding target) {
+        if (target.isFieldBinding()) {
+            final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
+            modelContextBuilder.withNullableField(getField(targetType, target.getFieldName()));
+        } else {
+            modelContextBuilder.withNullableClass(target.getTargetType());
+        }
         return this;
     }
 
     @Override
-    public GenericTypeCreationApi<T> ignore(Class<?> klass, String field) {
-        modelContextBuilder.withIgnoredField(getField(klass, field));
-        return this;
-    }
-
-    @Override
-    public GenericTypeCreationApi<T> withNullable(Class<?> klass) {
-        modelContextBuilder.withNullableClass(klass);
-        return this;
-    }
-
-    @Override
-    public GenericTypeCreationApi<T> withNullable(String field) {
-        modelContextBuilder.withNullableField(getField(this.rootClass, field));
-        return this;
-    }
-
-    @Override
-    public GenericTypeCreationApi<T> withNullable(Class<?> klass, String field) {
-        modelContextBuilder.withNullableField(getField(klass, field));
+    public <V> GenericTypeCreationApi<T> with(Binding binding, Generator<V> generator) {
+        if (binding.isFieldBinding()) {
+            final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
+            modelContextBuilder.withFieldGenerator(getField(targetType, binding.getFieldName()), generator);
+        } else {
+            modelContextBuilder.withClassGenerator(binding.getTargetType(), generator);
+        }
         return this;
     }
 
     @Override
     public GenericTypeCreationApi<T> map(Class<?> baseClass, Class<?> subClass) {
         modelContextBuilder.withSubtypeMapping(baseClass, subClass);
-        return this;
-    }
-
-    @Override
-    public <V> GenericTypeCreationApi<T> with(String field, Generator<V> generator) {
-        modelContextBuilder.withFieldGenerator(getField(this.rootClass, field), generator);
-        return this;
-    }
-
-    @Override
-    public <V> GenericTypeCreationApi<T> with(Class<?> klass, String field, Generator<V> generator) {
-        modelContextBuilder.withFieldGenerator(getField(klass, field), generator);
-        return this;
-    }
-
-    @Override
-    public <V> GenericTypeCreationApi<T> with(Class<V> klass, Generator<V> generator) {
-        modelContextBuilder.withClassGenerator(klass, generator);
         return this;
     }
 

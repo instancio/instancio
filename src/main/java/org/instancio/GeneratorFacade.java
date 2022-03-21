@@ -2,6 +2,7 @@ package org.instancio;
 
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorMap;
+import org.instancio.generator.GeneratorSettings;
 import org.instancio.model.ArrayNode;
 import org.instancio.model.ClassNode;
 import org.instancio.model.ModelContext;
@@ -16,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 class GeneratorFacade {
@@ -38,7 +41,7 @@ class GeneratorFacade {
             LOG.debug("{} has a circular dependency to {}. Not setting field value.",
                     owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
 
-            return new GeneratorResult<>(null, true);
+            return GeneratorResult.nullResult();
         }
 
         final Optional<GeneratorResult<?>> optionalResult = attemptGenerateViaContext(node.getField());
@@ -47,7 +50,7 @@ class GeneratorFacade {
         }
 
         if (effectiveType.isPrimitive()) {
-            return new GeneratorResult<>(generatorMap.get(effectiveType).generate(), true);
+            return GeneratorResult.build(generatorMap.get(effectiveType).generate());
         }
 
         if (node instanceof ArrayNode) {
@@ -56,7 +59,7 @@ class GeneratorFacade {
 
         final Generator<?> generator = generatorMap.get(effectiveType);
 
-        final Object result;
+        final GeneratorResult<?> result;
 
         if (generator == null) {
 
@@ -64,26 +67,30 @@ class GeneratorFacade {
                 return resolveImplementationAndGenerate(node, owner, effectiveType);
             }
 
-            result = ReflectionUtils.instantiate(effectiveType);
+            GeneratorSettings settings = null;
+            if (Collection.class.isAssignableFrom(effectiveType) || Map.class.isAssignableFrom(effectiveType)) {
+                settings = GeneratorSettings.builder().dataStructureSize(2).build();
+            }
+            result = GeneratorResult.builder(ReflectionUtils.instantiate(effectiveType)).withSettings(settings).build();
 
         } else {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
 
             // If we already know how to generate this object, we don't need to collect its fields
-            result = generator.generate();
+            result = GeneratorResult.builder(generator.generate()).withSettings(generator.getSettings()).build();
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
         }
 
 
-        ancestorTree.setObjectAncestor(result, new AncestorTree.InstanceNode(owner, node.getParent()));
-        return new GeneratorResult<>(result);
+        ancestorTree.setObjectAncestor(result.getValue(), new AncestorTree.InstanceNode(owner, node.getParent()));
+        return result;
     }
 
     private GeneratorResult<?> generateArray(Node node) {
         final Class<?> arrayType = ((ArrayNode) node).getElementNode().getKlass(); // XXX use getEffectiveClass() ?
         final Generator<?> generator = generatorMap.getArrayGenerator(arrayType);
         final Object arrayObject = generator.generate();
-        return new GeneratorResult<>(arrayObject);
+        return GeneratorResult.build(arrayObject);
     }
 
     /**
@@ -122,16 +129,22 @@ class GeneratorFacade {
             // Returning a null 'GeneratorResult.value' will ensure that a field value
             // will be overwritten with null. Otherwise, field value would retain its
             // old value (if one was assigned).
-            return Optional.of(new GeneratorResult<>(null));
+            return Optional.of(GeneratorResult.nullResult());
         }
 
         GeneratorResult<?> result = null;
         if (context.getUserSuppliedFieldGenerators().containsKey(field)) {
             Generator<?> generator = context.getUserSuppliedFieldGenerators().get(field);
-            result = new GeneratorResult<>(generator.generate(), true);
+
+            result = GeneratorResult.builder(generator.generate())
+                    .withSettings(generator.getSettings())
+                    .build();
+
         } else if (context.getUserSuppliedClassGenerators().containsKey(field.getType())) {
-            Generator<?> generator = context.getUserSuppliedClassGenerators().get(field.getType());
-            result = new GeneratorResult<>(generator.generate(), true);
+            Generator<?> generator = context.getUserSuppliedClassGenerators().get(field.getType()); // XXX what if field.getType returns Object?
+            result = GeneratorResult.builder(generator.generate())
+                    .withSettings(generator.getSettings())
+                    .build();
         }
         return Optional.ofNullable(result);
     }

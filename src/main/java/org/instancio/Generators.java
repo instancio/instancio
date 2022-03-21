@@ -1,6 +1,10 @@
 package org.instancio;
 
+import org.instancio.generator.CollectionGenerator;
 import org.instancio.generator.Generator;
+import org.instancio.generator.IntegerGenerator;
+import org.instancio.generator.MapGenerator;
+import org.instancio.generator.StringGenerator;
 import org.instancio.util.Random;
 
 /**
@@ -22,8 +26,20 @@ public final class Generators {
         // non-instantiable
     }
 
-    public static Generator<String> withPrefix(String prefix) {
-        return () -> prefix + Random.positiveInt();
+    public static StringGenerator string() {
+        return new StringGenerator();
+    }
+
+    public static IntegerGenerator ints() {
+        return new IntegerGenerator();
+    }
+
+    public static CollectionGenerator collection() {
+        return new CollectionGenerator();
+    }
+
+    public static MapGenerator map() {
+        return new MapGenerator();
     }
 
     @SuppressWarnings("unchecked")

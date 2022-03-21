@@ -25,11 +25,6 @@ import static java.util.stream.Collectors.toList;
 class InstancioDriver {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioDriver.class);
 
-    // TODO
-    private static final int ARRAY_SIZE = 2;
-    private static final int MAP_SIZE = 2;
-    private static final int COLLECTION_SIZE = 2;
-
     private final GeneratorFacade generatorFacade;
     private final Queue<CreateItem> queue = new ArrayDeque<>();
     private final ModelContext context;
@@ -46,7 +41,7 @@ class InstancioDriver {
         final Object value = rootResult.getValue();
 
         enqueueChildrenOf(rootNode, rootResult, queue);
-        populateDataStructures(null, rootNode, value);
+        populateDataStructures(null, rootNode, rootResult);
 
         while (!queue.isEmpty()) {
             processNestItem(queue.poll());
@@ -88,21 +83,21 @@ class InstancioDriver {
 
         enqueueChildrenOf(node, generatorResult, queue);
 
-        populateDataStructures(createItem.getOwner(), node, createdValue);
+        populateDataStructures(createItem.getOwner(), node, generatorResult);
     }
 
-    private void populateDataStructures(@Nullable Object owner, Node node, Object createdValue) {
+    private void populateDataStructures(@Nullable Object owner, Node node, GeneratorResult<?> generatorResult) {
         if (node instanceof CollectionNode) {
-            populateCollection((CollectionNode) node, (Collection<Object>) createdValue, owner);
+            populateCollection((CollectionNode) node, generatorResult, owner);
         } else if (node instanceof MapNode) {
-            final Map<Object, Object> mapInstance = (Map<Object, Object>) createdValue;
-            populateMap((MapNode) node, mapInstance, owner);
+            populateMap((MapNode) node, generatorResult, owner);
         } else if (node instanceof ArrayNode) {
-            populateArray((ArrayNode) node, createdValue, owner);
+            populateArray((ArrayNode) node, generatorResult, owner);
         }
     }
 
-    private void populateArray(ArrayNode arrayNode, Object createdValue, Object arrayOwner) {
+    private void populateArray(ArrayNode arrayNode, GeneratorResult<?> generatorResult, Object arrayOwner) {
+        final Object createdValue = generatorResult.getValue();
         final Node elementNode = arrayNode.getElementNode();
 
         // Field can be null when array is an element of a collection
@@ -110,42 +105,43 @@ class InstancioDriver {
             ReflectionUtils.setField(arrayOwner, arrayNode.getField(), createdValue);
         }
 
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            final GeneratorResult<?> generatorResult = generatorFacade.generateNodeValue(elementNode, createdValue);
-            final Object elementValue = generatorResult.getValue();
+        for (int i = 0, len = Array.getLength(createdValue); i < len; i++) {
+            final GeneratorResult<?> elementResult = generatorFacade.generateNodeValue(elementNode, createdValue);
+            final Object elementValue = elementResult.getValue();
             Array.set(createdValue, i, elementValue);
 
-            enqueueChildrenOf(elementNode, generatorResult, queue);
+            enqueueChildrenOf(elementNode, elementResult, queue);
         }
     }
 
-    private void populateCollection(CollectionNode collectionNode, Collection<Object> collectionInstance, Object collectionOwner) {
-
+    private void populateCollection(CollectionNode collectionNode, GeneratorResult<?> generatorResult, Object collectionOwner) {
+        final Collection<Object> collectionInstance = (Collection<Object>) generatorResult.getValue();
         final Node elementNode = collectionNode.getElementNode();
 
         if (collectionNode.getField() != null)
             ReflectionUtils.setField(collectionOwner, collectionNode.getField(), collectionInstance);
 
-        for (int i = 0; i < COLLECTION_SIZE; i++) {
-            final GeneratorResult<?> generatorResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
-            final Object elementValue = generatorResult.getValue();
+        for (int i = 0; i < generatorResult.getSettings().getDataStructureSize(); i++) {
+            final GeneratorResult<?> elementResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
+            final Object elementValue = elementResult.getValue();
             if (elementValue != null) {
                 collectionInstance.add(elementValue);
             }
 
             // nested list
             if (elementNode instanceof CollectionNode) {
-                populateCollection((CollectionNode) elementNode, (Collection<Object>) elementValue, collectionInstance);
+                populateCollection((CollectionNode) elementNode, elementResult, collectionInstance);
             }
 
-            enqueueChildrenOf(elementNode, generatorResult, queue);
+            enqueueChildrenOf(elementNode, elementResult, queue);
 
         }
     }
 
     // TODO refactor populate* methods to remove instanceof conditionals
 
-    private void populateMap(MapNode mapNode, Map<Object, Object> mapInstance, Object mapOwner) {
+    private void populateMap(MapNode mapNode, GeneratorResult<?> generatorResult, Object mapOwner) {
+        final Map<Object, Object> mapInstance = (Map<Object, Object>) generatorResult.getValue();
         final Node keyNode = mapNode.getKeyNode();
         final Node valueNode = mapNode.getValueNode();
 
@@ -161,25 +157,25 @@ class InstancioDriver {
         // option2: check if value node is a Map/Collection/Array node... then get element/key/value nodes children (UGLY)
 
 
-        for (int i = 0; i < MAP_SIZE; i++) {
-            final GeneratorResult<?> generatorKeyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
-            final GeneratorResult<?> generatorValueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
+        for (int i = 0; i < generatorResult.getSettings().getDataStructureSize(); i++) {
+            final GeneratorResult<?> keyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
+            final GeneratorResult<?> valueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
 
-            final Object mapKey = generatorKeyResult.getValue();
-            final Object mapValue = generatorValueResult.getValue();
+            final Object mapKey = keyResult.getValue();
+            final Object mapValue = valueResult.getValue();
 
             if (mapKey != null) {
                 mapInstance.put(mapKey, mapValue);
 
-                enqueueChildrenOf(keyNode, generatorKeyResult, queue);
-                enqueueChildrenOf(valueNode, generatorValueResult, queue);
+                enqueueChildrenOf(keyNode, keyResult, queue);
+                enqueueChildrenOf(valueNode, valueResult, queue);
 
                 if (valueNode instanceof MapNode) {
-                    populateMap((MapNode) valueNode, (Map<Object, Object>) mapValue, mapInstance);
+                    populateMap((MapNode) valueNode, valueResult, mapInstance);
                 } else if (valueNode instanceof CollectionNode) {
-                    populateCollection((CollectionNode) valueNode, (Collection<Object>) mapValue, mapInstance);
+                    populateCollection((CollectionNode) valueNode, valueResult, mapInstance);
                 } else if (valueNode instanceof ArrayNode) {
-                    populateArray((ArrayNode) valueNode, mapValue, mapInstance);
+                    populateArray((ArrayNode) valueNode, valueResult, mapInstance);
                 }
             }
         }

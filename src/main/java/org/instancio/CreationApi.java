@@ -33,7 +33,7 @@ public interface CreationApi<T> {
      * Example:
      * <pre>{@code
      *     Model<Person> personModel = Instancio.of(Person.class)
-     *             .with("fullName", () -> "Jane Doe")
+     *             .with(field("fullName"), () -> "Jane Doe")
      *             .toModel();
      *
      *     // Re-use the model to create instances of Person class
@@ -49,123 +49,68 @@ public interface CreationApi<T> {
     Model<T> toModel();
 
     /**
-     * Specifies that a class should be ignored.
-     * Instancio will not assign or create values of the given type.
+     * Specifies that a class or field should be ignored.
      * <p>
      * Example:
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *             .ignore(String.class)
+     *             .ignore(field("pets"))  // Person.pets field
+     *             .ignore(field(Address.class, "phoneNumbers")) // Address.phoneNumbers field
+     *             .ignore(allStrings())
      *             .create();
      * }</pre>
      * <p>
-     * will create a fully populated person, but will ignore all string fields.
-     * The value of all string fields will be either {@code null} or have a default
-     * value (if they have one).
+     * will create a fully populated person, but will ignore the {@code address} field
+     * and all string fields.
      *
-     * @param klass to ignore
+     * @param target to ignore
      * @return API builder reference
      */
-    CreationApi<T> ignore(Class<?> klass);
+    CreationApi<T> ignore(Binding target);
 
     /**
-     * Specifies that a field should be ignored.
-     * Instancio will not assign or create values to the specified field.
+     * Specifies that a field or class is nullable. By default, Instancio assigns
+     * non-null values. If marked as nullable, Instancio will randomly assign either
+     * a null or non-null value to fields of this type.
      * <p>
      * Example:
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *             .ignore("isActive")
-     *             .create();
-     * }</pre>
-     * <p>
-     * will create a fully populated person with the {@code isActive} field left as is.
-     * Therefore, if {@code isActive} was initialised to a default value, the returned
-     * person instance will have {@code isActive} field with the default value.
-     *
-     * @param field to ignore
-     * @return API builder reference
-     */
-    CreationApi<T> ignore(String field);
-
-    /**
-     * Specifies that a field of the given class should be ignored.
-     * Instancio will not assign or create values to the specified field.
-     * <p>
-     * Example:
-     * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .ignore(Address.class, "unit")
-     *             .ignore(Address.class, "street")
-     *             .create();
-     * }</pre>
-     * <p>
-     * will create a fully populated person but {@code unit} and {@code street}
-     * of all Address instances will be ignored.
-     *
-     * @param klass declaring the field
-     * @param field to ignore
-     * @return API builder reference
-     */
-    CreationApi<T> ignore(Class<?> klass, String field);
-
-    /**
-     * Specifies that fields of the given type can be assigned a {@code null} value.
-     * By default, Instancio assigns non-null values. If marked as nullable,
-     * Instancio will randomly assign either a null or non-null value to fields of this type.
-     * <p>
-     * Example:
-     * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .withNullable(String.class)
+     *             .withNullable(allStrings())
+     *             .withNullable(field(Address.class))
      *             .create();
      * }</pre>
      *
-     * @param klass that is nullable
+     * @param target that is nullable
      * @return API builder reference
-     * @see #withNullable(String)
-     * @see #withNullable(Class, String)
      */
-    CreationApi<T> withNullable(Class<?> klass);
+    CreationApi<T> withNullable(Binding target);
 
     /**
-     * Specifies that the field can be assigned a {@code null} value.
-     * By default, Instancio assigns non-null values. If marked as nullable,
-     * Instancio will randomly assign either a null or non-null value to the field.
+     * Specifies a custom generator for a field or class.
      * <p>
-     * Example:
+     * Examples.
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *         .withNullable("gender")
-     *         .create();
-     * }</pre>
-     *
-     * @param field that is nullable
-     * @return API builder reference
-     * @see #withNullable(Class)
-     * @see #withNullable(Class, String)
-     */
-    CreationApi<T> withNullable(String field);
-
-    /**
-     * Specifies that a field of the given class can be assigned a {@code null} value.
-     * By default, Instancio assigns non-null values. If marked as nullable,
-     * Instancio will randomly assign either a null or non-null value to the field.
-     * <p>
-     * Example:
-     * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .withNullable(Address.class, "postalCode")
+     *             .with(all(LocalDateTime.class), () -> LocalDateTime.now()) // set all dates to current time
+     *             .with(field("fullName"), () -> "Homer Simpson") // set Person.fullName
+     *             .with(field(Address.class, "phoneNumbers"), () -> List.of( // set Address.phoneNumbers
+     *                 new PhoneNumber("+1", "123-45-67"),
+     *                 new PhoneNumber("+1", "345-67-89")))
      *             .create();
      * }</pre>
+     * <p>
+     * Note: when a custom generator is supplied for a complex type like {@code PhoneNumber} in the above
+     * example, Instancio will not modify the created instance in any way. If the {@code PhoneNumber} class
+     * has other fields, they will be ignored.
      *
-     * @param klass declaring the field
-     * @param field that is nullable
+     * @param target    class or field
+     * @param generator for supplying the target's value
+     * @param <V>       type of the value to create
      * @return API builder reference
-     * @see #withNullable(String)
-     * @see #withNullable(Class)
      */
-    CreationApi<T> withNullable(Class<?> klass, String field);
+    <V> CreationApi<T> with(Binding target, Generator<V> generator);
+
 
     /**
      * Maps an interface or base class to the given subclass.
@@ -187,83 +132,7 @@ public interface CreationApi<T> {
      * @param subClass  subtype of the {@code baseClass}
      * @return API builder reference
      */
-    CreationApi<T> map(Class<?> baseClass, Class<?> subClass);
+    CreationApi<T> map(Class<?> baseClass, Class<?> subClass); // XXX can this be accomplished using 'with(target, generator)'?
 
-    /**
-     * Specifies a custom generator for the given field.
-     * <p>
-     * Example:
-     * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .with("address", () -> new Address("123 Main St", "Springfield", "US"))
-     *             .create();
-     * }</pre>
-     * <p>
-     * will create a new instance of the address and assign it to the address field.
-     * <p>
-     * When a custom generated is supplied, Instancio will not modify the created instance
-     * any in way (if the {@code Address} class has other fields, they will not be populated).
-     *
-     * @param field     to bind the generator to
-     * @param generator supplying a value for the field
-     * @param <V>       type of the value to create
-     * @return API builder reference
-     * @see #with(Class, String, Generator)
-     * @see #with(Class, Generator)
-     */
-    <V> CreationApi<T> with(String field, Generator<V> generator);
-
-    /**
-     * Specifies a custom generator for the field of the given class.
-     * <p>
-     * Example:
-     * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .with(Address.class, "phoneNumbers", () -> List.of(
-     *                 new PhoneNumber("+1", "123-45-67"),
-     *                 new PhoneNumber("+1", "345-67-89")))
-     *             .create();
-     * }</pre>
-     * <p>
-     * will create a new instance of a list containing the phone numbers and assign it to the
-     * {@code phoneNumbers} field of the {@code Address} class.
-     * <p>
-     * When a custom generated is supplied, Instancio will not modify the created instance
-     * any in way (if the {@code PhoneNumber} class has other fields, they will not be populated).
-     *
-     * @param klass     declaring the field
-     * @param field     to bind the generator to
-     * @param generator supplying a value for the field
-     * @param <V>       type of the value to create
-     * @return API builder reference
-     * @see #with(String, Generator)
-     * @see #with(Class, Generator)
-     */
-    <V> CreationApi<T> with(Class<?> klass, String field, Generator<V> generator);
-
-    /**
-     * Specifies a custom generator for the given type.
-     * <p>
-     * Example:
-     * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .with(PhoneNumber.class, () -> new PhoneNumber("+1", "123-45-67"))
-     *             .create();
-     * }</pre>
-     * <p>
-     * will create a new instance of {@code LocalDateTime} for each
-     * {@code LocalDateTime} field.
-     * <p>
-     * When a custom generated is supplied, Instancio will not modify the created instance
-     * any in way (if the {@code PhoneNumber} class has other fields, they will not be populated).
-     *
-     * @param klass     to bind the generator to
-     * @param generator supplying the value
-     * @param <V>       type of the value to create
-     * @return API builder reference
-     * @see #with(String, Generator)
-     * @see #with(Class, String, Generator)
-     */
-    <V> CreationApi<T> with(Class<V> klass, Generator<V> generator);
 
 }
