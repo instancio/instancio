@@ -15,11 +15,13 @@ import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.field;
 import static org.instancio.Generators.array;
 
+// TODO test using Model
 class SpecifyArraySizeUsingGeneratorTest {
     private static final int EXPECTED_LENGTH = Random.intBetween(0, 10);
 
     @Nested
     class UsingOfClassAPITest {
+
         @Test
         @DisplayName("Array of the target field should have expected size and be fully populated")
         void arrayShouldHaveExpectedSize() {
@@ -45,6 +47,7 @@ class SpecifyArraySizeUsingGeneratorTest {
 
     @Nested
     class UsingOfTypeTokenAPITest {
+
         @Test
         @DisplayName("Array of the target field should have expected size and be fully populated")
         void arrayShouldHaveExpectedSize() {

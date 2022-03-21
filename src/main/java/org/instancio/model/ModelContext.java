@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ModelContext {
+public class ModelContext<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
     private final Type rootType;
-    private final Class<?> rootClass;
+    private final Class<T> rootClass;
     private final List<Class<?>> rootTypeParameters;
     private final Set<Field> ignoredFields;
     private final Set<Field> nullableFields;
@@ -34,7 +34,7 @@ public class ModelContext {
     private final Map<Class<?>, Class<?>> subtypeMap;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
 
-    private ModelContext(Builder builder) {
+    private ModelContext(final Builder<T> builder) {
         this.rootType = builder.rootType;
         this.rootClass = builder.rootClass;
         this.rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
@@ -50,8 +50,8 @@ public class ModelContext {
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
     }
 
-    public Builder toBuilder() {
-        final Builder builder = new Builder(rootClass, rootType);
+    public Builder<T> toBuilder() {
+        final Builder<T> builder = new Builder<>(rootClass, rootType);
         builder.rootTypeParameters.addAll(this.rootTypeParameters);
         builder.ignoredFields.addAll(this.ignoredFields);
         builder.nullableFields.addAll(this.nullableFields);
@@ -67,7 +67,7 @@ public class ModelContext {
         return rootType;
     }
 
-    public Class<?> getRootClass() {
+    public Class<T> getRootClass() {
         return rootClass;
     }
 
@@ -121,14 +121,14 @@ public class ModelContext {
         return typeMap;
     }
 
-    public static Builder builder(final Type rootType) {
-        return new Builder(rootType);
+    public static <T> Builder<T> builder(final Type rootType) {
+        return new Builder<>(rootType);
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public static final class Builder {
+    public static final class Builder<T> {
         private final Type rootType;
-        private final Class<?> rootClass;
+        private final Class<T> rootClass;
         private final List<Class<?>> rootTypeParameters = new ArrayList<>();
         private final Set<Field> ignoredFields = new HashSet<>();
         private final Set<Field> nullableFields = new HashSet<>();
@@ -138,7 +138,7 @@ public class ModelContext {
         private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
 
-        private Builder(final Class<?> rootClass, final Type rootType) {
+        private Builder(final Class<T> rootClass, final Type rootType) {
             this.rootClass = rootClass;
             this.rootType = rootType;
         }
@@ -148,18 +148,18 @@ public class ModelContext {
             this.rootClass = TypeUtils.getRawType(this.rootType);
         }
 
-        public Builder withRootTypeParameters(final List<Class<?>> rootTypeParameters) {
+        public Builder<T> withRootTypeParameters(final List<Class<?>> rootTypeParameters) {
             InstancioValidator.validateTypeParameters(rootClass, rootTypeParameters);
             this.rootTypeParameters.addAll(rootTypeParameters);
             return this;
         }
 
-        public Builder withIgnoredField(final Field field) {
+        public Builder<T> withIgnoredField(final Field field) {
             this.ignoredFields.add(field);
             return this;
         }
 
-        public Builder withNullableField(final Field field) {
+        public Builder<T> withNullableField(final Field field) {
             if (field.getType().isPrimitive()) {
                 throw new InstancioException(String.format("Primitive field '%s' cannot be set to null", field));
             }
@@ -167,33 +167,33 @@ public class ModelContext {
             return this;
         }
 
-        public Builder withIgnoredClass(final Class<?> klass) {
+        public Builder<T> withIgnoredClass(final Class<?> klass) {
             this.ignoredClasses.add(klass);
             return this;
         }
 
-        public Builder withNullableClass(final Class<?> klass) {
+        public Builder<T> withNullableClass(final Class<?> klass) {
             this.nullableClasses.add(klass);
             return this;
         }
 
-        public Builder withFieldGenerator(final Field field, final Generator<?> generator) {
+        public Builder<T> withFieldGenerator(final Field field, final Generator<?> generator) {
             this.userSuppliedFieldGenerators.put(field, generator);
             return this;
         }
 
-        public Builder withClassGenerator(final Class<?> klass, final Generator<?> generator) {
+        public Builder<T> withClassGenerator(final Class<?> klass, final Generator<?> generator) {
             this.userSuppliedClassGenerators.put(klass, generator);
             return this;
         }
 
-        public Builder withSubtypeMapping(final Class<?> from, final Class<?> to) {
+        public Builder<T> withSubtypeMapping(final Class<?> from, final Class<?> to) {
             this.subtypeMap.put(from, to);
             return this;
         }
 
-        public ModelContext build() {
-            return new ModelContext(this);
+        public ModelContext<T> build() {
+            return new ModelContext<>(this);
         }
     }
 }

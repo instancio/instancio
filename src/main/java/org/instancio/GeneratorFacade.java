@@ -27,9 +27,9 @@ class GeneratorFacade {
     private final GeneratorMap generatorMap = new GeneratorMap();
     private final AncestorTree ancestorTree = new AncestorTree();
     private final ImplementationResolver implementationResolver = new InterfaceImplementationResolver();
-    private final ModelContext context;
+    private final ModelContext<?> context;
 
-    public GeneratorFacade(final ModelContext context) {
+    public GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
     }
 

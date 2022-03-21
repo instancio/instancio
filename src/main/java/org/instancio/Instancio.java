@@ -3,7 +3,7 @@ package org.instancio;
 /**
  * Instancio API for creating instances of a class.
  *
- * <h2>Usage</h3>
+ * <h2>Usage</h2>
  *
  * <h3>Create and populate an instance of a class</h3>
  * Returns an object fully populated with random data with no {@code null} values.
@@ -17,8 +17,8 @@ package org.instancio;
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .with("fullName", () -> "Homer Simpson") // Person.name
- *             .with(Address.class, "phoneNumber", () -> new PhoneNumber("+1", "123-45-67"))
+ *             .with(field("fullName"), () -> "Homer Simpson") // Person.name
+ *             .with(field(Address.class, "phoneNumber"), () -> new PhoneNumber("+1", "123-45-67"))
  *             .create();
  * }</pre>
  *
@@ -28,9 +28,9 @@ package org.instancio;
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .withNullable("gender") // Person.gender is nullable
- *             .withNullable(Address.class, "street") // Address.street is nullable
- *             .withNullable(Date.class) // all dates are nullable
+ *             .withNullable(field("gender")) // Person.gender is nullable
+ *             .withNullable(field(Address.class, "street")) // Address.street is nullable
+ *             .withNullable(all(Date.class)) // all dates are nullable
  *             .create();
  * }</pre>
  *
@@ -40,9 +40,9 @@ package org.instancio;
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .ignore("age") // Person.age will be ignored
- *             .ignore(Address.class, "city") // Address.city will be ignored
- *             .ignore(Date.class) // all dates will be ignored
+ *             .ignore(field("age")) // Person.age will be ignored
+ *             .ignore(field(Address.class, "city")) // Address.city will be ignored
+ *             .ignore(all(Date.class)) // all dates will be ignored
  *             .create();
  * }</pre>
  *
@@ -59,8 +59,8 @@ package org.instancio;
  * <pre>{@code
  *     // Create a model
  *     Model<Person> simpsons = Instancio.of(Person.class)
- *             .with(Address.class, () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
- *             .with("pets", () -> List.of(
+ *             .with(all(Address.class), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
+ *             .with(field("pets"), () -> List.of(
  *                          new Pet(PetType.CAT, "Snowball"),
  *                          new Pet(PetType.DOG, "Santa's Little Helper"))
  *             //... other specs
@@ -70,13 +70,13 @@ package org.instancio;
  *     Person person = Instancio.of(simpsons).create();
  *
  *     // Use the model but override the name field generator
- *     Person homer = Instancio.of(simpsons).with("name", () -> "Homer").create();
- *     Person marge = Instancio.of(simpsons).with("name", () -> "Marge").create();
+ *     Person homer = Instancio.of(simpsons).with(field("name"), () -> "Homer").create();
+ *     Person marge = Instancio.of(simpsons).with(field("name"), () -> "Marge").create();
  *
  *     // A model can also used to create another model.
  *     // This snippet overrides the original model to include a new pet.
  *     Model<Person> withNewPet = Instancio.of(simpsons)
- *             .with("pets", () -> List.of(
+ *             .with(field("pets"), () -> List.of(
  *                          new Pet(PetType.PIG, "Plopper"),
  *                          new Pet(PetType.CAT, "Snowball"),
  *                          new Pet(PetType.DOG, "Santa's Little Helper"))
@@ -84,11 +84,8 @@ package org.instancio;
  *
  * }</pre>
  *
- * <b>Note:</b> models are immutable. Once created they cannot be modified.
- *
  * <h3>Creating generic classes</h3>
  * There are two ways to create generic class instances.
- * <p>
  *
  * <h4>Option 1: using {@code withTypeParameters} to specify generic type arguments</h4>
  * <pre>{@code
@@ -110,15 +107,15 @@ public class Instancio {
         // non-instantiable
     }
 
-    public static <T> ClassCreationApi<T> of(Class<T> klass) {
-        return new ClassCreationApi<>(klass);
+    public static <T> InstancioOfClassApi<T> of(Class<T> klass) {
+        return new ClassInstancioApiImpl<>(klass);
     }
 
-    public static <T> GenericTypeCreationApi<T> of(TypeTokenSupplier<T> typeToken) {
-        return new GenericTypeCreationApi<>(typeToken);
+    public static <T> InstancioApi<T> of(TypeTokenSupplier<T> typeToken) {
+        return new InstancioApiImpl<>(typeToken);
     }
 
-    public static <T> CreationApi<T> of(Model<T> model) {
-        return new ModelCreationApi<>(model);
+    public static <T> InstancioApi<T> of(Model<T> model) {
+        return new InstancioApiImpl<>(model);
     }
 }

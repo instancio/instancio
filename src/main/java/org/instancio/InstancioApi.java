@@ -7,7 +7,7 @@ import org.instancio.generator.Generator;
  *
  * @param <T> type being created
  */
-public interface CreationApi<T> {
+public interface InstancioApi<T> {
 
     /**
      * Creates a new instance of a class and populates it with data.
@@ -66,7 +66,7 @@ public interface CreationApi<T> {
      * @param target to ignore
      * @return API builder reference
      */
-    CreationApi<T> ignore(Binding target);
+    InstancioApi<T> ignore(Binding target);
 
     /**
      * Specifies that a field or class is nullable. By default, Instancio assigns
@@ -84,7 +84,7 @@ public interface CreationApi<T> {
      * @param target that is nullable
      * @return API builder reference
      */
-    CreationApi<T> withNullable(Binding target);
+    InstancioApi<T> withNullable(Binding target);
 
     /**
      * Specifies a custom generator for a field or class.
@@ -109,7 +109,7 @@ public interface CreationApi<T> {
      * @param <V>       type of the value to create
      * @return API builder reference
      */
-    <V> CreationApi<T> with(Binding target, Generator<V> generator);
+    <V> InstancioApi<T> with(Binding target, Generator<V> generator);
 
 
     /**
@@ -119,7 +119,7 @@ public interface CreationApi<T> {
      * For example, by default Instancio will assign an {@link java.util.ArrayList}
      * to a {@link java.util.List} field. If an alternative implementation is
      * required, this method allows to specify it:
-     * <p>
+     *
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
      *             .map(List.class, Vector.class)
@@ -132,7 +132,7 @@ public interface CreationApi<T> {
      * @param subClass  subtype of the {@code baseClass}
      * @return API builder reference
      */
-    CreationApi<T> map(Class<?> baseClass, Class<?> subClass); // XXX can this be accomplished using 'with(target, generator)'?
+    InstancioApi<T> map(Class<?> baseClass, Class<?> subClass); // XXX can this be accomplished using 'with(target, generator)'?
 
 
 }

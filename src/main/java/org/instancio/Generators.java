@@ -27,24 +27,24 @@ public final class Generators {
         // non-instantiable
     }
 
-    public static StringGenerator string() {
-        return new StringGenerator();
-    }
-
-    public static IntegerGenerator ints() {
-        return new IntegerGenerator();
+    public static ArrayGenerator array() {
+        return new ArrayGenerator();
     }
 
     public static CollectionGenerator collection() {
         return new CollectionGenerator();
     }
 
-    public static ArrayGenerator array() {
-        return new ArrayGenerator();
-    }
-
     public static MapGenerator map() {
         return new MapGenerator();
+    }
+
+    public static StringGenerator string() {
+        return new StringGenerator();
+    }
+
+    public static IntegerGenerator ints() {
+        return new IntegerGenerator();
     }
 
     @SuppressWarnings("unchecked")

@@ -9,23 +9,40 @@ import org.instancio.util.TypeUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 import static org.instancio.util.ReflectionUtils.getField;
 
-public class GenericTypeCreationApi<T> implements CreationApi<T> {
+class InstancioApiImpl<T> implements InstancioApi<T> {
 
     private final Class<T> rootClass;
-    private final ModelContext.Builder modelContextBuilder;
+    private final ModelContext.Builder<T> modelContextBuilder;
 
-    public GenericTypeCreationApi(TypeTokenSupplier<T> typeToken) {
+    InstancioApiImpl(Class<T> klass) {
+        this.rootClass = klass;
+        this.modelContextBuilder = ModelContext.builder(klass);
+    }
+
+    InstancioApiImpl(TypeTokenSupplier<T> typeToken) {
         final Type rootType = typeToken.get();
         this.rootClass = TypeUtils.getRawType(rootType);
         this.modelContextBuilder = ModelContext.builder(rootType);
     }
 
+    InstancioApiImpl(Model<T> model) {
+        final InternalModel<T> suppliedModel = (InternalModel<T>) model;
+        final ModelContext<T> suppliedContext = suppliedModel.getModelContext();
+        // copy context data to allow overriding
+        this.modelContextBuilder = suppliedContext.toBuilder();
+        this.rootClass =  suppliedContext.getRootClass();
+    }
+
+    protected void addTypeParameters(Class<?>... type) {
+        modelContextBuilder.withRootTypeParameters(Arrays.asList(type));
+    }
 
     @Override
-    public GenericTypeCreationApi<T> ignore(Binding binding) {
+    public InstancioApi<T> ignore(Binding binding) {
         if (binding.isFieldBinding()) {
             final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
             modelContextBuilder.withIgnoredField(getField(targetType, binding.getFieldName()));
@@ -37,7 +54,7 @@ public class GenericTypeCreationApi<T> implements CreationApi<T> {
     }
 
     @Override
-    public GenericTypeCreationApi<T> withNullable(Binding target) {
+    public InstancioApi<T> withNullable(Binding target) {
         if (target.isFieldBinding()) {
             final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
             modelContextBuilder.withNullableField(getField(targetType, target.getFieldName()));
@@ -48,10 +65,12 @@ public class GenericTypeCreationApi<T> implements CreationApi<T> {
     }
 
     @Override
-    public <V> GenericTypeCreationApi<T> with(Binding binding, Generator<V> generator) {
+    public <V> InstancioApi<T> with(Binding binding, Generator<V> generator) {
         if (binding.isFieldBinding()) {
             final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
             final Field field = getField(targetType, binding.getFieldName());
+            // XXX hacky work-around to set array type
+            // FIXME this needs to be done in other API classes
             if (field.getType().isArray() && generator instanceof ArrayGenerator) {
                 ((ArrayGenerator) generator).type(field.getType().getComponentType());
             }
@@ -66,7 +85,7 @@ public class GenericTypeCreationApi<T> implements CreationApi<T> {
     }
 
     @Override
-    public GenericTypeCreationApi<T> map(Class<?> baseClass, Class<?> subClass) {
+    public InstancioApi<T> map(Class<?> baseClass, Class<?> subClass) {
         modelContextBuilder.withSubtypeMapping(baseClass, subClass);
         return this;
     }

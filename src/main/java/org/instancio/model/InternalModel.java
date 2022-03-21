@@ -4,15 +4,15 @@ import org.instancio.Model;
 
 public class InternalModel<T> implements Model<T> {
 
-    private final ModelContext modelContext;
+    private final ModelContext<T> modelContext;
     private final Node rootNode;
 
-    public InternalModel(ModelContext modelContext) {
+    public InternalModel(ModelContext<T> modelContext) {
         this.modelContext = modelContext;
         this.rootNode = createRootNode();
     }
 
-    public ModelContext getModelContext() {
+    public ModelContext<T> getModelContext() {
         return modelContext;
     }
 
