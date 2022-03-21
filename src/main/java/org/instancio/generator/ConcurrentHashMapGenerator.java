@@ -2,10 +2,10 @@ package org.instancio.generator;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ConcurrentHashMapGenerator<K, V> implements Generator<ConcurrentHashMap<K, V>> {
+public class ConcurrentHashMapGenerator extends MapGenerator {
 
-    @Override
-    public ConcurrentHashMap<K, V> generate() {
-        return new ConcurrentHashMap<>();
+    public ConcurrentHashMapGenerator() {
+        super.type(ConcurrentHashMap.class);
     }
+
 }

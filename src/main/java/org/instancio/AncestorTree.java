@@ -1,6 +1,7 @@
 package org.instancio;
 
 import org.instancio.model.Node;
+import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;
 import java.util.IdentityHashMap;
@@ -36,6 +37,7 @@ class AncestorTree {
     private final Map<Object, InstanceNode> idMap = new IdentityHashMap<>();
 
     void setObjectAncestor(final Object obj, final InstanceNode ancestor) {
+        Verify.isFalse(obj instanceof GeneratorResult, "Passed GeneratorResult to ancestor tree!"); // sanity check
         idMap.put(obj, ancestor);
     }
 

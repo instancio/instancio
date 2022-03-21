@@ -28,4 +28,10 @@ public interface Generator<T> {
      * @return generated value
      */
     T generate();
+
+    default GeneratorSettings getSettings() {
+        // ignore children by default to ensure values created
+        // from user-supplied generators are not modified
+        return GeneratorSettings.builder().ignoreChildren(true).build();
+    }
 }

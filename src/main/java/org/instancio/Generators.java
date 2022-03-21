@@ -3,6 +3,7 @@ package org.instancio;
 import org.instancio.generator.CollectionGenerator;
 import org.instancio.generator.Generator;
 import org.instancio.generator.IntegerGenerator;
+import org.instancio.generator.MapGenerator;
 import org.instancio.generator.StringGenerator;
 import org.instancio.util.Random;
 
@@ -35,6 +36,10 @@ public final class Generators {
 
     public static CollectionGenerator collection() {
         return new CollectionGenerator();
+    }
+
+    public static MapGenerator map() {
+        return new MapGenerator();
     }
 
     @SuppressWarnings("unchecked")

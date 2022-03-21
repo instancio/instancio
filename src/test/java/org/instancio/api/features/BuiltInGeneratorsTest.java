@@ -1,7 +1,7 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.collections.lists.TwoListsWithItemString;
+import org.instancio.pojo.collections.lists.TwoListsOfItemString;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ class BuiltInGeneratorsTest {
 
     @Test
     void collectionGenerator() {
-        final TwoListsWithItemString result = Instancio.of(TwoListsWithItemString.class)
+        final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
                 .with(field("list1"), collection().type(Vector.class))
                 .create();
 
