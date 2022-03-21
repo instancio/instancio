@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
@@ -34,11 +33,8 @@ class SpecifyCollectionSizeUsingGeneratorTest {
                     .with(field("list1"), collection().size(EXPECTED_SIZE))
                     .create();
 
-            assertThat(result.getList1()).hasSize(EXPECTED_SIZE)
-                    .allSatisfy(item -> assertThat(item.getValue()).isInstanceOf(String.class));
-
-            assertThat(result.getList2()).hasSize(Constants.COLLECTION_SIZE)
-                    .allSatisfy(item -> assertThat(item.getValue()).isInstanceOf(String.class));
+            assertList(result.getList1(), EXPECTED_SIZE);
+            assertList(result.getList2(), Constants.COLLECTION_SIZE);
         }
 
         @Test
@@ -48,10 +44,12 @@ class SpecifyCollectionSizeUsingGeneratorTest {
                     .with(all(List.class), collection().size(EXPECTED_SIZE))
                     .create();
 
-            assertThat(result.getList1()).hasSize(EXPECTED_SIZE)
-                    .allSatisfy(item -> assertThat(item.getValue()).isInstanceOf(String.class));
+            assertList(result.getList1(), EXPECTED_SIZE);
+            assertList(result.getList2(), EXPECTED_SIZE);
+        }
 
-            assertThat(result.getList2()).hasSize(EXPECTED_SIZE)
+        private void assertList(final List<Item<String>> list2, final int expectedSize) {
+            assertThat(list2).hasSize(expectedSize)
                     .allSatisfy(item -> assertThat(item.getValue()).isInstanceOf(String.class));
         }
     }
@@ -66,11 +64,8 @@ class SpecifyCollectionSizeUsingGeneratorTest {
                     .with(field("map1"), map().size(EXPECTED_SIZE))
                     .create();
 
-            assertThat(result.getMap1()).hasSize(EXPECTED_SIZE);
-            assertThat(result.getMap2()).hasSize(Constants.COLLECTION_SIZE);
-
-            assertEntries(result.getMap1().entrySet());
-            assertEntries(result.getMap2().entrySet());
+            assertEntries(result.getMap1(), EXPECTED_SIZE);
+            assertEntries(result.getMap2(), Constants.MAP_SIZE);
         }
 
         @Test
@@ -80,16 +75,13 @@ class SpecifyCollectionSizeUsingGeneratorTest {
                     .with(all(Map.class), map().size(EXPECTED_SIZE))
                     .create();
 
-            assertThat(result.getMap1()).hasSize(EXPECTED_SIZE);
-            assertThat(result.getMap2()).hasSize(EXPECTED_SIZE);
-
-            assertEntries(result.getMap1().entrySet());
-            assertEntries(result.getMap2().entrySet());
-
+            assertEntries(result.getMap1(), EXPECTED_SIZE);
+            assertEntries(result.getMap2(), EXPECTED_SIZE);
         }
 
-        private void assertEntries(final Set<Map.Entry<Integer, Item<String>>> actual) {
-            assertThat(actual).isNotEmpty().allSatisfy(entry -> {
+        private void assertEntries(final Map<Integer, Item<String>> map, final int expectedSize) {
+            assertThat(map).hasSize(expectedSize);
+            assertThat(map.entrySet()).allSatisfy(entry -> {
                 assertThat(entry.getKey()).isInstanceOf(Integer.class);
                 assertThat(entry.getValue().getValue()).isInstanceOf(String.class); // item.value
             });

@@ -1,5 +1,6 @@
 package org.instancio;
 
+import org.instancio.generator.ArrayGenerator;
 import org.instancio.generator.CollectionGenerator;
 import org.instancio.generator.Generator;
 import org.instancio.generator.IntegerGenerator;
@@ -36,6 +37,10 @@ public final class Generators {
 
     public static CollectionGenerator collection() {
         return new CollectionGenerator();
+    }
+
+    public static ArrayGenerator array() {
+        return new ArrayGenerator();
     }
 
     public static MapGenerator map() {
