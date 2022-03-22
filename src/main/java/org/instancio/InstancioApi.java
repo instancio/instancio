@@ -113,15 +113,17 @@ public interface InstancioApi<T> {
 
     /**
      * Supplies a value for a field or class using a built-in generator.
-     *
+     * <p>
      * TODO docs
      *
-     * @param target    class or field
+     * @param target class or field
      * @param gen
      * @param <V>
      * @return
      */
-     InstancioApi<T> generate(Binding target, Function<Generators, Generator<?>> gen); // TODO <V>
+    InstancioApi<T> generate(Binding target, Function<Generators, Generator<?>> gen); // TODO <V>
+
+    InstancioApi<T> generate2(Binding target, Function<Generators, GeneratorSpec> gen);
 
     /**
      * Maps an interface or base class to the given subclass.

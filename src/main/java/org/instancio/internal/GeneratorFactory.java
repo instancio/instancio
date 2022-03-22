@@ -1,6 +1,7 @@
 package org.instancio.internal;
 
 import org.instancio.Generator;
+import org.instancio.GeneratorSpec;
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.generators.BigDecimalGenerator;
 import org.instancio.generators.BooleanGenerator;
@@ -43,13 +44,20 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 
-class GeneratorMap {
+/**
+ * Factory for built-in generators.
+ */
+public class GeneratorFactory {
+
+    private final Map<Class<?>, Class<?>> specToGeneratorMap = new HashMap<>();
 
     private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
     private final RandomProvider random;
 
-    GeneratorMap(final RandomProvider random) {
+    public GeneratorFactory(final RandomProvider random) {
         this.random = random;
+
+        specToGeneratorMap.put(StringGenerator.StringGeneratorSpec.class, StringGenerator.class); // XXX
 
         // Core types
         generatorMap.put(byte.class, new ByteGenerator(random));
@@ -88,6 +96,22 @@ class GeneratorMap {
         generatorMap.put(Set.class, new HashSetGenerator());
         generatorMap.put(SortedSet.class, new TreeSetGenerator());
         generatorMap.put(NavigableSet.class, new TreeSetGenerator());
+    }
+
+
+    public Generator<?> build(GeneratorSpec spec) {
+        final Class<?> generatorClass = specToGeneratorMap.get(spec.getClass());
+
+        if (generatorClass == StringGenerator.class) {
+            final StringGenerator.StringGeneratorSpec stringSpec = (StringGenerator.StringGeneratorSpec) spec;
+
+            return new StringGenerator(random, stringSpec);
+        }
+        throw new IllegalArgumentException("Unhandled generator: " + generatorClass);
+    }
+
+    Generator<?> build(Class<?> klass, GeneratorSpec specs) {
+        throw new UnsupportedOperationException("TODO");
     }
 
     Generator<?> get(Class<?> klass) {

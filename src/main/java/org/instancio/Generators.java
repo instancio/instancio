@@ -21,6 +21,10 @@ public final class Generators {
         this.random = random;
     }
 
+    public StringGenerator.StringGeneratorSpec string_() {
+        return new StringGenerator.StringGeneratorSpec();
+    }
+
     public ArrayGenerator array() {
         return new ArrayGenerator();
     }
