@@ -63,9 +63,11 @@ public class ModelContext<T> {
         this.seed = builder.seed;
     }
 
-    private void putAllBuiltInGenerators(final Builder<T> builder) {
-        final RandomProvider random = new RandomProvider(defaultIfNull(seed, ThreadLocalRandom.current().nextInt()));
+    private static <T> void putAllBuiltInGenerators(final Builder<T> builder) {
+        final int seed = defaultIfNull(builder.seed, ThreadLocalRandom.current().nextInt());
+        final RandomProvider random = new RandomProvider(seed);
         final Generators generators = new Generators(random);
+
         builder.builtInGenerators.forEach((binding, genFn) -> {
             final Generator<?> generator = genFn.apply(generators);
             builder.withGenerator(binding, generator);

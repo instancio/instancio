@@ -1,8 +1,8 @@
 package org.instancio.generators;
 
 import org.instancio.Generator;
-import org.instancio.internal.GeneratorSettings;
 import org.instancio.exception.InstancioException;
+import org.instancio.internal.GeneratorSettings;
 import org.instancio.util.Verify;
 
 import java.util.ArrayList;
