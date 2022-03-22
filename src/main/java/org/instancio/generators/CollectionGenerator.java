@@ -27,7 +27,7 @@ public class CollectionGenerator implements Generator<Collection<?>> {
     @Override
     public Collection<?> generate() {
         try {
-            return (Collection<?>) type.newInstance();
+            return (Collection<?>) type.newInstance(); // TODO
         } catch (Exception ex) {
             throw new InstancioException(String.format("Error creating instance of: %s", type), ex);
         }
