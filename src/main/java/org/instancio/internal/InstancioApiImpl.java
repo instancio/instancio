@@ -75,13 +75,7 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> generate(Binding target, Function<Generators, Generator<?>> g) {
-        modelContextBuilder.withBuiltInGenerator(target, g);
-        return this;
-    }
-
-    @Override
-    public InstancioApi<T> generate2(Binding target,  Function<Generators, GeneratorSpec> gen) {
+    public InstancioApi<T> generate(Binding target, Function<Generators, GeneratorSpec> gen) {
         modelContextBuilder.withGeneratorSpec(target, gen);
         return this;
     }

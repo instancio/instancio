@@ -121,9 +121,7 @@ public interface InstancioApi<T> {
      * @param <V>
      * @return
      */
-    InstancioApi<T> generate(Binding target, Function<Generators, Generator<?>> gen); // TODO <V>
-
-    InstancioApi<T> generate2(Binding target, Function<Generators, GeneratorSpec> gen);
+    <V> InstancioApi<T> generate(Binding target, Function<Generators, GeneratorSpec<V>> gen);
 
     /**
      * Maps an interface or base class to the given subclass.
@@ -146,7 +144,6 @@ public interface InstancioApi<T> {
      * @return API builder reference
      */
     InstancioApi<T> map(Class<?> baseClass, Class<?> subClass); // XXX can this be accomplished using 'with(target, generator)'?
-
 
     /**
      * Set the seed value for the random number generator. If seed is not specified,

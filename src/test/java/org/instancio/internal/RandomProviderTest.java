@@ -72,13 +72,17 @@ class RandomProviderTest {
 
         @Test
         void fromArray() {
-            final Integer[] array = {0, 1};
+            final Integer[] array = {0, 1, 2};
             final int[] counts = new int[array.length];
 
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                counts[random.from(array)]++;
+                final Integer value = random.from(array);
+                counts[value]++;
+                results.add(value);
             }
-            assertThat(counts[0]).isCloseTo(SAMPLE_SIZE / 2, withPercentage(PERCENTAGE_THRESHOLD));
+
+            assertThat(results).hasSameSizeAs(array);
+            assertThat(counts[0]).isCloseTo(SAMPLE_SIZE / array.length, withPercentage(PERCENTAGE_THRESHOLD));
         }
 
         @Test

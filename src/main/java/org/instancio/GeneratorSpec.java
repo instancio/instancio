@@ -1,5 +1,5 @@
 package org.instancio;
 
-public interface GeneratorSpec {
+public interface GeneratorSpec<T> {
 
 }

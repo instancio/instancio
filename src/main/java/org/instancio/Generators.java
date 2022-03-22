@@ -4,7 +4,10 @@ import org.instancio.generators.ArrayGenerator;
 import org.instancio.generators.CollectionGenerator;
 import org.instancio.generators.IntegerGenerator;
 import org.instancio.generators.MapGenerator;
+import org.instancio.generators.OneOfGenerator;
+import org.instancio.generators.OneOfGeneratorSpec;
 import org.instancio.generators.StringGenerator;
+import org.instancio.generators.StringGeneratorSpec;
 import org.instancio.internal.random.RandomProvider;
 
 /**
@@ -21,10 +24,6 @@ public final class Generators {
         this.random = random;
     }
 
-    public StringGenerator.StringGeneratorSpec string_() {
-        return new StringGenerator.StringGeneratorSpec();
-    }
-
     public ArrayGenerator array() {
         return new ArrayGenerator();
     }
@@ -37,7 +36,7 @@ public final class Generators {
         return new MapGenerator();
     }
 
-    public StringGenerator string() {
+    public StringGeneratorSpec string() {
         return new StringGenerator(random);
     }
 
@@ -46,8 +45,8 @@ public final class Generators {
     }
 
     @SafeVarargs
-    public final <T> Generator<T> oneOf(T... values) {
-        return () -> random.from(values);
+    public final <T> OneOfGeneratorSpec<T> oneOf(T... values) {
+        return new OneOfGenerator<T>(random).oneOf(values);
     }
 
 }

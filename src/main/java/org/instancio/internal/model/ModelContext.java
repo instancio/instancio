@@ -6,7 +6,6 @@ import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.exception.InstancioException;
 import org.instancio.generators.ArrayGenerator;
-import org.instancio.internal.GeneratorFactory;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
@@ -70,16 +69,8 @@ public class ModelContext<T> {
         final RandomProvider random = new RandomProvider(seed);
         final Generators generators = new Generators(random);
 
-        builder.builtInGenerators.forEach((binding, genFn) -> {
-            final Generator<?> generator = genFn.apply(generators);
-            builder.withGenerator(binding, generator);
-        });
-
-
-        final GeneratorFactory generatorFactory = new GeneratorFactory(random);
         builder.generatorSpecMap.forEach((target, genSpecFn) -> {
-            final GeneratorSpec spec = genSpecFn.apply(generators);
-            final Generator<?> generator = generatorFactory.build(spec);
+            final Generator<?> generator = (Generator<?>) genSpecFn.apply(generators);
             builder.withGenerator(target, generator);
         });
     }
@@ -175,7 +166,6 @@ public class ModelContext<T> {
         private final Map<Field, Generator<?>> userSuppliedFieldGenerators = new HashMap<>();
         private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
-        private final Map<Binding, Function<Generators, Generator<?>>> builtInGenerators = new HashMap<>();
         private final Map<Binding, Function<Generators, GeneratorSpec>> generatorSpecMap = new HashMap<>();
         private Integer seed;
 
@@ -236,14 +226,8 @@ public class ModelContext<T> {
             return this;
         }
 
-
         public Builder<T> withGeneratorSpec(final Binding target, final Function<Generators, GeneratorSpec> spec) {
             this.generatorSpecMap.put(target, spec);
-            return this;
-        }
-
-        public Builder<T> withBuiltInGenerator(Binding target, Function<Generators, Generator<?>> generatorFn) {
-            this.builtInGenerators.put(target, generatorFn);
             return this;
         }
 
