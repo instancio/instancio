@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.field;
-import static org.instancio.Generators.array;
 
 class SpecifyArraySizeUsingGeneratorTest {
     private static final int EXPECTED_LENGTH = RandomUtils.nextInt(0, 10);
@@ -26,7 +25,7 @@ class SpecifyArraySizeUsingGeneratorTest {
         @DisplayName("Array of the target field should have expected size and be fully populated")
         void arrayShouldHaveExpectedSize() {
             final TwoArraysOfItemString result = Instancio.of(TwoArraysOfItemString.class)
-                    .with(field("array1"), array().length(EXPECTED_LENGTH))
+                    .generate(field("array1"), gen -> gen.array().length(EXPECTED_LENGTH))
                     .create();
 
             assertArray(result.getArray1(), EXPECTED_LENGTH);
@@ -37,7 +36,7 @@ class SpecifyArraySizeUsingGeneratorTest {
         @DisplayName("All arrays should have expected size and be fully populated")
         void allArraysShouldHaveExpectedSize() {
             final TwoArraysOfItemString result = Instancio.of(TwoArraysOfItemString.class)
-                    .with(all(Item[].class), array().length(EXPECTED_LENGTH))
+                    .generate(all(Item[].class), gen -> gen.array().length(EXPECTED_LENGTH))
                     .create();
 
             assertArray(result.getArray1(), EXPECTED_LENGTH);
@@ -52,7 +51,7 @@ class SpecifyArraySizeUsingGeneratorTest {
         @DisplayName("Array of the target field should have expected size and be fully populated")
         void arrayShouldHaveExpectedSize() {
             final TwoArraysOfItemString result = Instancio.of(new TypeToken<TwoArraysOfItemString>() {})
-                    .with(field("array1"), array().length(EXPECTED_LENGTH))
+                    .generate(field("array1"), gen -> gen.array().length(EXPECTED_LENGTH))
                     .create();
 
             assertArray(result.getArray1(), EXPECTED_LENGTH);
@@ -63,7 +62,7 @@ class SpecifyArraySizeUsingGeneratorTest {
         @DisplayName("All arrays should have expected size and be fully populated")
         void allArraysShouldHaveExpectedSize() {
             final TwoArraysOfItemString result = Instancio.of(new TypeToken<TwoArraysOfItemString>() {})
-                    .with(all(Item[].class), array().length(EXPECTED_LENGTH))
+                    .generate(all(Item[].class), gen -> gen.array().length(EXPECTED_LENGTH))
                     .create();
 
             assertArray(result.getArray1(), EXPECTED_LENGTH);
@@ -78,7 +77,7 @@ class SpecifyArraySizeUsingGeneratorTest {
         @DisplayName("Array of the target field should have expected size and be fully populated")
         void arrayShouldHaveExpectedSize() {
             final Model<TwoArraysOfItemString> model = Instancio.of(TwoArraysOfItemString.class)
-                    .with(field("array1"), array().length(EXPECTED_LENGTH))
+                    .generate(field("array1"), gen -> gen.array().length(EXPECTED_LENGTH))
                     .toModel();
 
             final TwoArraysOfItemString result = Instancio.of(model).create();
@@ -91,7 +90,7 @@ class SpecifyArraySizeUsingGeneratorTest {
         @DisplayName("All arrays should have expected size and be fully populated")
         void allArraysShouldHaveExpectedSize() {
             final Model<TwoArraysOfItemString> model = Instancio.of(TwoArraysOfItemString.class)
-                    .with(all(Item[].class), array().length(EXPECTED_LENGTH))
+                    .generate(all(Item[].class), gen -> gen.array().length(EXPECTED_LENGTH))
                     .toModel();
 
             final TwoArraysOfItemString result = Instancio.of(model).create();

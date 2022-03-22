@@ -16,8 +16,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.field;
-import static org.instancio.Generators.collection;
-import static org.instancio.Generators.map;
 
 // TODO test nested lists/maps
 class SpecifyCollectionSizeUsingGeneratorTest {
@@ -30,7 +28,7 @@ class SpecifyCollectionSizeUsingGeneratorTest {
         @DisplayName("List of the target field should have expected size and be fully populated")
         void listShouldHaveExpectedSize() {
             final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                    .with(field("list1"), collection().size(EXPECTED_SIZE))
+                    .generate(field("list1"), gen -> gen.collection().size(EXPECTED_SIZE))
                     .create();
 
             assertList(result.getList1(), EXPECTED_SIZE);
@@ -41,7 +39,7 @@ class SpecifyCollectionSizeUsingGeneratorTest {
         @DisplayName("All lists should have expected size and be fully populated")
         void allListsShouldHaveExpectedSize() {
             final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                    .with(all(List.class), collection().size(EXPECTED_SIZE))
+                    .generate(all(List.class), gen -> gen.collection().size(EXPECTED_SIZE))
                     .create();
 
             assertList(result.getList1(), EXPECTED_SIZE);
@@ -61,7 +59,7 @@ class SpecifyCollectionSizeUsingGeneratorTest {
         @DisplayName("Map of the target field should have expected size and be fully populated")
         void mapShouldHaveExpectedSize() {
             final TwoMapsOfIntegerItemString result = Instancio.of(TwoMapsOfIntegerItemString.class)
-                    .with(field("map1"), map().size(EXPECTED_SIZE))
+                    .generate(field("map1"), gen -> gen.map().size(EXPECTED_SIZE))
                     .create();
 
             assertEntries(result.getMap1(), EXPECTED_SIZE);
@@ -72,7 +70,7 @@ class SpecifyCollectionSizeUsingGeneratorTest {
         @DisplayName("All maps should have expected size and be fully populated")
         void allMapsShouldHaveExpectedSize() {
             final TwoMapsOfIntegerItemString result = Instancio.of(TwoMapsOfIntegerItemString.class)
-                    .with(all(Map.class), map().size(EXPECTED_SIZE))
+                    .generate(all(Map.class), gen -> gen.map().size(EXPECTED_SIZE))
                     .create();
 
             assertEntries(result.getMap1(), EXPECTED_SIZE);

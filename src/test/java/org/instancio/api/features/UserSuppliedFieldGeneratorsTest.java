@@ -1,6 +1,5 @@
 package org.instancio.api.features;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.instancio.Instancio;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.generics.foobarbaz.FooContainer;
@@ -17,7 +16,6 @@ import java.time.temporal.ChronoUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.instancio.Bindings.field;
-import static org.instancio.Generators.oneOf;
 
 class UserSuppliedFieldGeneratorsTest {
 
@@ -28,16 +26,16 @@ class UserSuppliedFieldGeneratorsTest {
         final Address customAddress = new Address();
 
         Person person = Instancio.of(Person.class)
-                .with(field("name"), () -> "first-name-" + RandomStringUtils.randomAlphabetic(5))
-                .with(field("gender"), () -> Gender.FEMALE)
-                .with(field("age"), oneOf(ageOptions))
-                .with(field("lastModified"), () -> LocalDateTime.now(ZoneOffset.UTC))
-                .with(field("address"), () -> customAddress)
+                .generate(field("name"), gen -> gen.string().prefix("first-name-").min(10))
+                .supply(field("gender"), () -> Gender.FEMALE)
+                .supply(field("lastModified"), () -> LocalDateTime.now(ZoneOffset.UTC))
+                .supply(field("address"), () -> customAddress)
+                .generate(field("age"), gen -> gen.oneOf(ageOptions))
                 .create();
 
         //noinspection ConfusingArgumentToVarargsMethod
         assertThat(person.getAge()).isIn(ageOptions);
-        assertThat(person.getName()).matches("first-name-\\d{3}");
+        assertThat(person.getName()).matches("first-name-\\w{10}");
         assertThat(person.getGender()).isEqualTo(Gender.FEMALE);
         assertThat(person.getLastModified()).isCloseToUtcNow(within(3, ChronoUnit.SECONDS));
         assertThat(person.getAddress()).isSameAs(customAddress);
@@ -47,7 +45,7 @@ class UserSuppliedFieldGeneratorsTest {
     void fooContainerWithUserSuppliedInstance() {
         final String expectedFooString = "expected-foo";
         final FooContainer result = Instancio.of(FooContainer.class)
-                .with(field("stringFoo"), () -> {
+                .supply(field("stringFoo"), () -> {
                     Foo<String> foo = new Foo<>();
                     foo.setFooValue(expectedFooString);
                     return foo;

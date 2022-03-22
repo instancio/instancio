@@ -1,7 +1,11 @@
 package org.instancio.internal.model;
 
+import org.instancio.Binding;
 import org.instancio.Generator;
+import org.instancio.Generators;
 import org.instancio.exception.InstancioException;
+import org.instancio.generators.ArrayGenerator;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -18,6 +22,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
+
+import static org.instancio.util.ObjectUtils.defaultIfNull;
+import static org.instancio.util.ReflectionUtils.getField;
 
 public class ModelContext<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
@@ -36,6 +45,8 @@ public class ModelContext<T> {
     private final Integer seed;
 
     private ModelContext(final Builder<T> builder) {
+        putAllBuiltInGenerators(builder);
+
         this.rootType = builder.rootType;
         this.rootClass = builder.rootClass;
         this.rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
@@ -50,6 +61,15 @@ public class ModelContext<T> {
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
         this.seed = builder.seed;
+    }
+
+    private void putAllBuiltInGenerators(final Builder<T> builder) {
+        final RandomProvider random = new RandomProvider(defaultIfNull(seed, ThreadLocalRandom.current().nextInt()));
+        final Generators generators = new Generators(random);
+        builder.builtInGenerators.forEach((binding, genFn) -> {
+            final Generator<?> generator = genFn.apply(generators);
+            builder.withGenerator(binding, generator);
+        });
     }
 
     public Builder<T> toBuilder() {
@@ -143,6 +163,7 @@ public class ModelContext<T> {
         private final Map<Field, Generator<?>> userSuppliedFieldGenerators = new HashMap<>();
         private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
+        private final Map<Binding, Function<Generators, Generator<?>>> builtInGenerators = new HashMap<>();
         private Integer seed;
 
         private Builder(final Class<T> rootClass, final Type rootType) {
@@ -184,13 +205,26 @@ public class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withFieldGenerator(final Field field, final Generator<?> generator) {
-            this.userSuppliedFieldGenerators.put(field, generator);
+        public Builder<T> withGenerator(final Binding target, final Generator<?> generator) {
+            if (target.isFieldBinding()) {
+                final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
+                final Field field = getField(targetType, target.getFieldName());
+
+                if (field.getType().isArray() && generator instanceof ArrayGenerator) {
+                    ((ArrayGenerator) generator).type(field.getType().getComponentType());
+                }
+                this.userSuppliedFieldGenerators.put(field, generator);
+            } else {
+                if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
+                    ((ArrayGenerator) generator).type(target.getTargetType().getComponentType());
+                }
+                this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
+            }
             return this;
         }
 
-        public Builder<T> withClassGenerator(final Class<?> klass, final Generator<?> generator) {
-            this.userSuppliedClassGenerators.put(klass, generator);
+        public Builder<T> withBuiltInGenerator(Binding target, Function<Generators, Generator<?>> generatorFn) {
+            this.builtInGenerators.put(target, generatorFn);
             return this;
         }
 

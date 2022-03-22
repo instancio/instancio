@@ -9,14 +9,13 @@ import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.field;
-import static org.instancio.Generators.collection;
 
 class BuiltInGeneratorsTest {
 
     @Test
     void collectionGenerator() {
         final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                .with(field("list1"), collection().type(Vector.class))
+                .generate(field("list1"), (gen) -> gen.collection().type(Vector.class))
                 .create();
 
         assertThat(result.getList1()).isNotEmpty().isInstanceOf(Vector.class)

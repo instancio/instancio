@@ -34,7 +34,7 @@ class ErrorMessagesTest {
     void invalidTypeCreatedByGenerator() {
         assertThatThrownBy(() ->
                 Instancio.of(Person.class)
-                        .with(field("name"), () -> 123)
+                        .supply(field("name"), () -> 123)
                         .create())
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Can not set java.lang.String field org.instancio.pojo.person.Person.name to java.lang.Integer");
@@ -45,7 +45,7 @@ class ErrorMessagesTest {
         final String invalidField = "does-not-exist";
         assertThatThrownBy(() ->
                 Instancio.of(Person.class)
-                        .with(field(invalidField), () -> null)
+                        .supply(field(invalidField), () -> null)
                         .create())
                 .isInstanceOf(API_EXCEPTION)
                 .hasMessage("Invalid field '%s' for class %s", invalidField, Person.class.getName());
