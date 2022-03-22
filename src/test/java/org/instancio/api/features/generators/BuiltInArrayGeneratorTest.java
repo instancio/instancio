@@ -1,4 +1,4 @@
-package org.instancio.api.features;
+package org.instancio.api.features.generators;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.field;
 
-class SpecifyArraySizeUsingGeneratorTest {
+class BuiltInArrayGeneratorTest {
     private static final int EXPECTED_LENGTH = RandomUtils.nextInt(0, 10);
 
     @Nested

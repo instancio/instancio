@@ -4,7 +4,7 @@ import org.instancio.internal.random.RandomProvider;
 
 import java.math.BigDecimal;
 
-public class BigDecimalGenerator extends AbstractGenerator<BigDecimal> {
+public class BigDecimalGenerator extends AbstractRandomGenerator<BigDecimal> {
 
     public BigDecimalGenerator(final RandomProvider random) {
         super(random);

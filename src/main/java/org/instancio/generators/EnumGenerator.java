@@ -6,7 +6,7 @@ import org.instancio.util.Verify;
 
 import java.lang.reflect.Method;
 
-public class EnumGenerator extends AbstractGenerator<Enum<?>> {
+public class EnumGenerator extends AbstractRandomGenerator<Enum<?>> {
     private final Class<?> enumClass;
 
     public EnumGenerator(final RandomProvider random, final Class<?> enumClass) {

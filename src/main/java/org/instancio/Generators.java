@@ -1,22 +1,19 @@
 package org.instancio;
 
 import org.instancio.generators.ArrayGenerator;
-import org.instancio.generators.CollectionGenerator;
-import org.instancio.generators.IntegerGenerator;
-import org.instancio.generators.MapGenerator;
 import org.instancio.generators.OneOfGenerator;
 import org.instancio.generators.OneOfGeneratorSpec;
-import org.instancio.generators.StringGenerator;
-import org.instancio.generators.StringGeneratorSpec;
+import org.instancio.generators.collections.CollectionGenerator;
+import org.instancio.generators.collections.MapGenerator;
+import org.instancio.generators.coretypes.IntegerGenerator;
+import org.instancio.generators.coretypes.StringGenerator;
+import org.instancio.generators.coretypes.StringGeneratorSpec;
 import org.instancio.internal.random.RandomProvider;
 
 /**
- * Defines a number of generators for various use-cases. These can be used to override default
- * value generators. If custom behaviour is required, a generator can be supplied using a lambda function.
- *
- * @see Generator
+ * Provides built-int generators for fine-tuning data generation.
  */
-public final class Generators {
+public class Generators {
 
     private final RandomProvider random;
 
@@ -48,5 +45,4 @@ public final class Generators {
     public final <T> OneOfGeneratorSpec<T> oneOf(T... values) {
         return new OneOfGenerator<T>(random).oneOf(values);
     }
-
 }

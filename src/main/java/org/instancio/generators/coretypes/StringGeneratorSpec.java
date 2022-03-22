@@ -1,4 +1,4 @@
-package org.instancio.generators;
+package org.instancio.generators.coretypes;
 
 import org.instancio.GeneratorSpec;
 
@@ -6,7 +6,7 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
 
     StringGeneratorSpec prefix(String prefix);
 
-    StringGeneratorSpec allowEmpty(); // XXX
+    StringGeneratorSpec allowEmpty();
 
     StringGeneratorSpec min(int length);
 

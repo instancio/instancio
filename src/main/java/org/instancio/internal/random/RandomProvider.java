@@ -14,7 +14,7 @@ public class RandomProvider {
      *
      * @param seed for the random generator
      */
-    public RandomProvider(int seed) {
+    public RandomProvider(final int seed) {
         random = new Random(seed);
     }
 

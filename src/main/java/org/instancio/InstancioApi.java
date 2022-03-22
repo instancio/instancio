@@ -116,12 +116,13 @@ public interface InstancioApi<T> {
      * <p>
      * TODO docs
      *
-     * @param target class or field
+     * @param target
      * @param gen
      * @param <V>
+     * @param <S>
      * @return
      */
-    <V> InstancioApi<T> generate(Binding target, Function<Generators, GeneratorSpec<V>> gen);
+    <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(Binding target, Function<Generators, S> gen);
 
     /**
      * Maps an interface or base class to the given subclass.

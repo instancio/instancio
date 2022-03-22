@@ -1,8 +1,9 @@
-package org.instancio.generators;
+package org.instancio.generators.coretypes;
 
+import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 
-public class IntegerGenerator extends AbstractGenerator<Integer> {
+public class IntegerGenerator extends AbstractRandomGenerator<Integer> {
 
     private int min = Integer.MIN_VALUE;
     private int max = Integer.MAX_VALUE;

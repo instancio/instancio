@@ -1,8 +1,9 @@
-package org.instancio.generators;
+package org.instancio.generators.coretypes;
 
+import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 
-public class DoubleGenerator extends AbstractGenerator<Double> {
+public class DoubleGenerator extends AbstractRandomGenerator<Double> {
 
     public DoubleGenerator(final RandomProvider random) {
         super(random);

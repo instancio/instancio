@@ -1,33 +1,33 @@
-package org.instancio.generators;
+package org.instancio.generators.collections;
 
 import org.instancio.Generator;
-import org.instancio.internal.GeneratorSettings;
 import org.instancio.exception.InstancioException;
+import org.instancio.internal.GeneratorSettings;
 import org.instancio.util.Verify;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public class MapGenerator implements Generator<Map<?, ?>> {
+public class CollectionGenerator implements Generator<Collection<?>> {
 
     private int size = 2;
-    private Class<?> type = HashMap.class;
+    private Class<?> type = ArrayList.class;
 
-    public MapGenerator size(final int size) {
+    public CollectionGenerator size(final int size) {
         Verify.isTrue(size >= 0, "Size cannot be negative: " + size);
         this.size = size;
         return this;
     }
 
-    public MapGenerator type(final Class<?> type) {
+    public CollectionGenerator type(final Class<?> type) {
         this.type = Verify.notNull(type, "Type must not be null");
         return this;
     }
 
     @Override
-    public Map<?, ?> generate() {
+    public Collection<?> generate() {
         try {
-            return (Map<?, ?>) type.newInstance();
+            return (Collection<?>) type.newInstance(); // TODO
         } catch (Exception ex) {
             throw new InstancioException(String.format("Error creating instance of: %s", type), ex);
         }

@@ -4,7 +4,7 @@ import org.instancio.internal.random.RandomProvider;
 
 import java.util.UUID;
 
-public class UUIDGenerator extends AbstractGenerator<UUID> {
+public class UUIDGenerator extends AbstractRandomGenerator<UUID> {
 
     public UUIDGenerator(final RandomProvider random) {
         super(random);

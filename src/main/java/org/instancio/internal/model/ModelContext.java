@@ -166,7 +166,7 @@ public class ModelContext<T> {
         private final Map<Field, Generator<?>> userSuppliedFieldGenerators = new HashMap<>();
         private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
-        private final Map<Binding, Function<Generators, GeneratorSpec>> generatorSpecMap = new HashMap<>();
+        private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecMap = new HashMap<>();
         private Integer seed;
 
         private Builder(final Class<T> rootClass, final Type rootType) {
@@ -226,7 +226,7 @@ public class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withGeneratorSpec(final Binding target, final Function<Generators, GeneratorSpec> spec) {
+        public Builder<T> withGeneratorSpec(final Binding target, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
             this.generatorSpecMap.put(target, spec);
             return this;
         }

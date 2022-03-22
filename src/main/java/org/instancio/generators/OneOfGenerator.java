@@ -2,7 +2,7 @@ package org.instancio.generators;
 
 import org.instancio.internal.random.RandomProvider;
 
-public class OneOfGenerator<T> extends AbstractGenerator<T> implements OneOfGeneratorSpec<T> {
+public class OneOfGenerator<T> extends AbstractRandomGenerator<T> implements OneOfGeneratorSpec<T> {
 
     private T[] values;
 

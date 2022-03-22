@@ -1,4 +1,4 @@
-package org.instancio.generators;
+package org.instancio.generators.collections;
 
 import java.util.TreeSet;
 
