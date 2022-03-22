@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.cyclic.CyclicList;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 

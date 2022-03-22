@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.inheritance.BaseClasSubClassInheritance;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;

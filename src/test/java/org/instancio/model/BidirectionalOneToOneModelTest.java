@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.cyclic.BidirectionalOneToOne;
 import org.instancio.testsupport.tags.CyclicTag;
 import org.instancio.testsupport.templates.ModelTestTemplate;

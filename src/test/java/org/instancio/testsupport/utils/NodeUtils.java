@@ -1,6 +1,6 @@
 package org.instancio.testsupport.utils;
 
-import org.instancio.model.Node;
+import org.instancio.internal.model.Node;
 
 import static org.assertj.core.api.Fail.fail;
 

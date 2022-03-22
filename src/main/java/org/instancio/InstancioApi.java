@@ -1,7 +1,5 @@
 package org.instancio;
 
-import org.instancio.generator.Generator;
-
 /**
  * Instancio API for defining model specs and generating instances of a class.
  *

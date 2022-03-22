@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.TypeMapResolver;
 import org.instancio.pojo.generics.PairAPairIntegerString;
 import org.instancio.pojo.generics.PairLongPairIntegerString;
 import org.instancio.pojo.generics.TripletAFooBarBazStringListOfB;

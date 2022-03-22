@@ -1,11 +1,10 @@
 package org.instancio;
 
-import org.instancio.generator.ArrayGenerator;
-import org.instancio.generator.CollectionGenerator;
-import org.instancio.generator.Generator;
-import org.instancio.generator.IntegerGenerator;
-import org.instancio.generator.MapGenerator;
-import org.instancio.generator.StringGenerator;
+import org.instancio.generators.ArrayGenerator;
+import org.instancio.generators.CollectionGenerator;
+import org.instancio.generators.IntegerGenerator;
+import org.instancio.generators.MapGenerator;
+import org.instancio.generators.StringGenerator;
 import org.instancio.util.Random;
 
 /**

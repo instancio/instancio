@@ -1,5 +1,8 @@
 package org.instancio;
 
+import org.instancio.internal.ClassInstancioApiImpl;
+import org.instancio.internal.InstancioApiImpl;
+
 /**
  * Instancio API for creating instances of a class.
  *

@@ -1,5 +1,7 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.CollectionNode;
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.testsupport.fixtures.Types;

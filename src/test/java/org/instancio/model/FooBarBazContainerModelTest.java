@@ -1,5 +1,6 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.generics.foobarbaz.Bar;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
