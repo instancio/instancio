@@ -93,6 +93,12 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
+    public InstancioApi<T> withSeed(final int seed) {
+        modelContextBuilder.withSeed(seed);
+        return this;
+    }
+
+    @Override
     public Model<T> toModel() {
         return createModel();
     }

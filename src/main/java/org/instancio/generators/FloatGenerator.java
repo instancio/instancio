@@ -1,12 +1,15 @@
 package org.instancio.generators;
 
-import org.instancio.Generator;
-import org.instancio.util.Random;
+import org.instancio.internal.random.RandomProvider;
 
-public class FloatGenerator implements Generator<Float> {
+public class FloatGenerator extends AbstractGenerator<Float> {
+
+    public FloatGenerator(final RandomProvider random) {
+        super(random);
+    }
 
     @Override
     public Float generate() {
-        return Random.floatBetween(Float.MIN_VALUE, Float.MAX_VALUE);
+        return random().floatBetween(Float.MIN_VALUE, Float.MAX_VALUE);
     }
 }

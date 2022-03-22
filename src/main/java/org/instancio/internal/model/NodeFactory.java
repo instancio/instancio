@@ -47,7 +47,7 @@ public class NodeFactory {
         }
 
 
-        LOG.debug("Created node: {}", result);
+        LOG.trace("Created node: {}", result);
         if (nodeContext.isUnvisited(result)) {
             // mark is visited before invoking getChildren() to avoid stack overflow
             nodeContext.visited(result);

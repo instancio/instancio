@@ -5,9 +5,10 @@ import org.instancio.internal.model.ArrayNode;
 import org.instancio.internal.model.ClassNode;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.internal.model.Node;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.ImplementationResolver;
 import org.instancio.internal.reflection.InterfaceImplementationResolver;
-import org.instancio.util.Random;
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -18,17 +19,23 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
-    private final GeneratorMap generatorMap = new GeneratorMap();
     private final AncestorTree ancestorTree = new AncestorTree();
     private final ImplementationResolver implementationResolver = new InterfaceImplementationResolver();
     private final ModelContext<?> context;
+    private final RandomProvider random;
+    private final GeneratorMap generatorMap;
 
     public GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
+        final Integer seed = ObjectUtils.defaultIfNull(context.getSeed(), new Random().nextInt());
+        LOG.debug("Seed: {}", seed);
+        this.random = new RandomProvider(seed);
+        generatorMap = new GeneratorMap(random);
     }
 
     GeneratorResult<?> generateNodeValue(Node node, @Nullable Object owner) {
@@ -122,7 +129,7 @@ class GeneratorFacade {
     private Optional<GeneratorResult<?>> attemptGenerateViaContext(@Nullable final Field field) {
         if (field == null) return Optional.empty();
 
-        if (context.getNullableFields().contains(field) && Random.trueOrFalse()) {
+        if (context.getNullableFields().contains(field) && random.trueOrFalse()) {
             // We can return a null 'GeneratorResult' or a null 'GeneratorResult.value'
             // Returning a null 'GeneratorResult.value' will ensure that a field value
             // will be overwritten with null. Otherwise, field value would retain its

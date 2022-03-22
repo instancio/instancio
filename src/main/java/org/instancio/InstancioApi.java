@@ -133,4 +133,26 @@ public interface InstancioApi<T> {
     InstancioApi<T> map(Class<?> baseClass, Class<?> subClass); // XXX can this be accomplished using 'with(target, generator)'?
 
 
+    /**
+     * Set the seed value for the random number generator. If seed is not specified,
+     * a random seed will be used. Specifying a seed is useful for reproducing test results.
+     * By specifying the seed value, the same random data will be generated again.
+     *
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     // Generates a different UUID each time
+     *     UUID result = Instancio.of(UUID.class).create();
+     *
+     *     // Generates the same UUID
+     *     UUID result = Instancio.of(UUID.class)
+     *             .withSeed(1234)
+     *             .create();
+     * }</pre>
+     *
+     * @param seed for the random number generator
+     * @return API builder reference
+     */
+    InstancioApi<T> withSeed(int seed);
+
 }

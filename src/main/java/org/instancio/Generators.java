@@ -5,7 +5,7 @@ import org.instancio.generators.CollectionGenerator;
 import org.instancio.generators.IntegerGenerator;
 import org.instancio.generators.MapGenerator;
 import org.instancio.generators.StringGenerator;
-import org.instancio.util.Random;
+import org.instancio.internal.random.RandomProvider;
 
 /**
  * Defines a number of generators for various use-cases. These can be used to override default
@@ -21,6 +21,8 @@ import org.instancio.util.Random;
  * @see Generator
  */
 public final class Generators {
+
+    private static RandomProvider random; // FIXME set value
 
     private Generators() {
         // non-instantiable
@@ -39,16 +41,16 @@ public final class Generators {
     }
 
     public static StringGenerator string() {
-        return new StringGenerator();
+        return new StringGenerator(random);
     }
 
     public static IntegerGenerator ints() {
-        return new IntegerGenerator();
+        return new IntegerGenerator(random);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> Generator<T> oneOf(T... values) {
-        return () -> Random.from(values);
+        return () -> random.from(values);
     }
 
     public static <T> Generator<T> nullValue() {

@@ -1,12 +1,15 @@
 package org.instancio.generators;
 
-import org.instancio.Generator;
-import org.instancio.util.Random;
+import org.instancio.internal.random.RandomProvider;
 
-public class IntegerGenerator implements Generator<Integer> {
+public class IntegerGenerator extends AbstractGenerator<Integer> {
 
     private int min = Integer.MIN_VALUE;
     private int max = Integer.MAX_VALUE;
+
+    public IntegerGenerator(final RandomProvider random) {
+        super(random);
+    }
 
     public IntegerGenerator min(int min) {
         this.min = min;
@@ -20,6 +23,6 @@ public class IntegerGenerator implements Generator<Integer> {
 
     @Override
     public Integer generate() {
-        return Random.intBetween(min, max);
+        return random().intBetween(min, max);
     }
 }

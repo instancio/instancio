@@ -1,12 +1,12 @@
 package org.instancio.api.features;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.instancio.Instancio;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.pojo.person.Address;
 import org.instancio.pojo.person.Gender;
 import org.instancio.pojo.person.Person;
-import org.instancio.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ class UserSuppliedFieldGeneratorsTest {
         final Address customAddress = new Address();
 
         Person person = Instancio.of(Person.class)
-                .with(field("name"), () -> "first-name-" + Random.intBetween(100, 999))
+                .with(field("name"), () -> "first-name-" + RandomStringUtils.randomAlphabetic(5))
                 .with(field("gender"), () -> Gender.FEMALE)
                 .with(field("age"), oneOf(ageOptions))
                 .with(field("lastModified"), () -> LocalDateTime.now(ZoneOffset.UTC))

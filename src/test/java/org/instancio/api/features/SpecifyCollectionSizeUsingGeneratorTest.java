@@ -1,11 +1,11 @@
 package org.instancio.api.features;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
 import org.instancio.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.pojo.collections.maps.TwoMapsOfIntegerItemString;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.testsupport.Constants;
-import org.instancio.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.instancio.Generators.map;
 
 // TODO test nested lists/maps
 class SpecifyCollectionSizeUsingGeneratorTest {
-    private static final int EXPECTED_SIZE = Random.intBetween(0, 10);
+    private static final int EXPECTED_SIZE = RandomUtils.nextInt(0, 10);
 
     @Nested
     class ListTest {

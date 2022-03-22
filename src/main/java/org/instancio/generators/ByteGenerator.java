@@ -1,12 +1,15 @@
 package org.instancio.generators;
 
-import org.instancio.Generator;
-import org.instancio.util.Random;
+import org.instancio.internal.random.RandomProvider;
 
-public class ByteGenerator implements Generator<Byte> {
+public class ByteGenerator extends AbstractGenerator<Byte> {
+
+    public ByteGenerator(final RandomProvider random) {
+        super(random);
+    }
 
     @Override
     public Byte generate() {
-        return Random.byteBetween(Byte.MIN_VALUE, Byte.MAX_VALUE);
+        return random().byteBetween(Byte.MIN_VALUE, Byte.MAX_VALUE);
     }
 }

@@ -1,7 +1,7 @@
 package org.instancio.internal.model;
 
-import org.instancio.exception.InstancioException;
 import org.instancio.Generator;
+import org.instancio.exception.InstancioException;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -33,6 +33,7 @@ public class ModelContext<T> {
     private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators;
     private final Map<Class<?>, Class<?>> subtypeMap;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final Integer seed;
 
     private ModelContext(final Builder<T> builder) {
         this.rootType = builder.rootType;
@@ -48,6 +49,7 @@ public class ModelContext<T> {
         this.rootTypeMap = rootType instanceof ParameterizedType
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
+        this.seed = builder.seed;
     }
 
     public Builder<T> toBuilder() {
@@ -83,7 +85,7 @@ public class ModelContext<T> {
         return ignoredClasses;
     }
 
-    public Set<Class<?>> getNullableClasses() {
+    public Set<Class<?>> getNullableClasses() { // XXX unused?
         return nullableClasses;
     }
 
@@ -101,6 +103,10 @@ public class ModelContext<T> {
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
         return rootTypeMap;
+    }
+
+    public Integer getSeed() {
+        return seed;
     }
 
     private static Map<TypeVariable<?>, Class<?>> buildRootTypeMap(
@@ -137,6 +143,7 @@ public class ModelContext<T> {
         private final Map<Field, Generator<?>> userSuppliedFieldGenerators = new HashMap<>();
         private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
+        private Integer seed;
 
         private Builder(final Class<T> rootClass, final Type rootType) {
             this.rootClass = rootClass;
@@ -189,6 +196,11 @@ public class ModelContext<T> {
 
         public Builder<T> withSubtypeMapping(final Class<?> from, final Class<?> to) {
             this.subtypeMap.put(from, to);
+            return this;
+        }
+
+        public Builder<T> withSeed(final int seed) {
+            this.seed = seed;
             return this;
         }
 

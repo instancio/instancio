@@ -1,12 +1,15 @@
 package org.instancio.generators;
 
-import org.instancio.Generator;
-import org.instancio.util.Random;
+import org.instancio.internal.random.RandomProvider;
 
-public class CharacterGenerator implements Generator<Character> {
+public class CharacterGenerator extends AbstractGenerator<Character> {
+
+    public CharacterGenerator(final RandomProvider random) {
+        super(random);
+    }
 
     @Override
     public Character generate() {
-        return Random.character();
+        return random().character();
     }
 }
