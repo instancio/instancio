@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.allStrings;
 import static org.instancio.Bindings.field;
-import static org.instancio.Generators.string;
 
 class UserSuppliedClassGeneratorsTest {
 
@@ -26,8 +25,8 @@ class UserSuppliedClassGeneratorsTest {
         final String expectedName = "Jane Doe";
 
         Person person = Instancio.of(Person.class)
-                .with(field("name"), () -> expectedName)
-                .with(allStrings(), string().prefix(prefix))
+                .supply(field("name"), () -> expectedName)
+                .generate(allStrings(), gen -> gen.string().prefix(prefix))
                 .create();
 
         assertThat(person.getName()).isEqualTo(expectedName);
@@ -49,7 +48,7 @@ class UserSuppliedClassGeneratorsTest {
     @DisplayName("All Collection declarations should be assigned a HashSet with a new instance each time")
     void userSuppliedCollectionClassGeneratorWithGeneratorReturningANewInstanceEachTime() {
         final TwoStringCollections result = Instancio.of(TwoStringCollections.class)
-                .with(all(Collection.class), HashSet::new) // new instance
+                .supply(all(Collection.class), HashSet::new) // new instance
                 .create();
 
         assertThat(result.getOne()).isInstanceOf(Set.class).isEmpty();
@@ -64,7 +63,7 @@ class UserSuppliedClassGeneratorsTest {
     void userSuppliedCollectionClassGeneratorWithGeneratorReturningSameInstanceEachTime() {
         final Set<String> expectedValue = new HashSet<>();
         final TwoStringCollections result = Instancio.of(TwoStringCollections.class)
-                .with(all(Collection.class), () -> expectedValue) // same instance
+                .supply(all(Collection.class), () -> expectedValue) // same instance
                 .create();
 
         assertThat(result.getOne()).isSameAs(result.getTwo())

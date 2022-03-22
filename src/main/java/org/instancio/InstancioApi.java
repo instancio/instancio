@@ -1,5 +1,7 @@
 package org.instancio;
 
+import java.util.function.Function;
+
 /**
  * Instancio API for defining model specs and generating instances of a class.
  *
@@ -31,7 +33,7 @@ public interface InstancioApi<T> {
      * Example:
      * <pre>{@code
      *     Model<Person> personModel = Instancio.of(Person.class)
-     *             .with(field("fullName"), () -> "Jane Doe")
+     *             .supply(field("fullName"), () -> "Jane Doe")
      *             .toModel();
      *
      *     // Re-use the model to create instances of Person class
@@ -85,14 +87,14 @@ public interface InstancioApi<T> {
     InstancioApi<T> withNullable(Binding target);
 
     /**
-     * Specifies a custom generator for a field or class.
+     * Supplies a value for a field or class using a custom generator.
      * <p>
      * Examples.
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *             .with(all(LocalDateTime.class), () -> LocalDateTime.now()) // set all dates to current time
-     *             .with(field("fullName"), () -> "Homer Simpson") // set Person.fullName
-     *             .with(field(Address.class, "phoneNumbers"), () -> List.of( // set Address.phoneNumbers
+     *             .supply(all(LocalDateTime.class), () -> LocalDateTime.now()) // set all dates to current time
+     *             .supply(field("fullName"), () -> "Homer Simpson") // set Person.fullName
+     *             .supply(field(Address.class, "phoneNumbers"), () -> List.of( // set Address.phoneNumbers
      *                 new PhoneNumber("+1", "123-45-67"),
      *                 new PhoneNumber("+1", "345-67-89")))
      *             .create();
@@ -107,8 +109,19 @@ public interface InstancioApi<T> {
      * @param <V>       type of the value to create
      * @return API builder reference
      */
-    <V> InstancioApi<T> with(Binding target, Generator<V> generator);
+    <V> InstancioApi<T> supply(Binding target, Generator<V> generator);
 
+    /**
+     * Supplies a value for a field or class using a built-in generator.
+     *
+     * TODO docs
+     *
+     * @param target    class or field
+     * @param gen
+     * @param <V>
+     * @return
+     */
+     InstancioApi<T> generate(Binding target, Function<Generators, Generator<?>> gen); // TODO <V>
 
     /**
      * Maps an interface or base class to the given subclass.
@@ -133,4 +146,25 @@ public interface InstancioApi<T> {
     InstancioApi<T> map(Class<?> baseClass, Class<?> subClass); // XXX can this be accomplished using 'with(target, generator)'?
 
 
+    /**
+     * Set the seed value for the random number generator. If seed is not specified,
+     * a random seed will be used. Specifying a seed is useful for reproducing test results.
+     * By specifying the seed value, the same random data will be generated again.
+     *
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     // Generates a different UUID each time
+     *     UUID result = Instancio.of(UUID.class).create();
+     *
+     *     // Generates the same UUID
+     *     UUID result = Instancio.of(UUID.class)
+     *             .withSeed(1234)
+     *             .create();
+     * }</pre>
+     *
+     * @param seed for the random number generator
+     * @return API builder reference
+     */
+    InstancioApi<T> withSeed(int seed);
 }

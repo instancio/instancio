@@ -1,15 +1,18 @@
 package org.instancio.generators;
 
-import org.instancio.Generator;
-import org.instancio.util.Random;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
-public class StringGenerator implements Generator<String> {
+public class StringGenerator extends AbstractGenerator<String> {
 
     private int minLength = 4;
     private int maxLength = 10;
     private boolean allowEmpty = false;
     private String prefix = "";
+
+    public StringGenerator(final RandomProvider random) {
+        super(random);
+    }
 
     public StringGenerator prefix(final String prefix) {
         this.prefix = prefix;
@@ -37,9 +40,9 @@ public class StringGenerator implements Generator<String> {
 
     @Override
     public String generate() {
-        if (allowEmpty && Random.trueOrFalse()) {
+        if (allowEmpty && random().trueOrFalse()) {
             return "";
         }
-        return prefix + Random.alphabetic(Random.intBetween(minLength, maxLength + 1));
+        return prefix + random().alphabetic(random().intBetween(minLength, maxLength + 1));
     }
 }

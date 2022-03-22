@@ -37,9 +37,9 @@ class InstancioApiTest {
     @Test
     void createFromClass() {
         final Person homer = Instancio.of(Person.class)
-                .with(field("name"), () -> HOMER)
-                .with(field(Person.class, "age"), () -> HOMER_AGE)
-                .with(all(LocalDateTime.class), LocalDateTime::now)
+                .supply(field("name"), () -> HOMER)
+                .supply(field(Person.class, "age"), () -> HOMER_AGE)
+                .supply(all(LocalDateTime.class), LocalDateTime::now)
                 .withNullable(field("date"))
                 .withNullable(field(Person.class, "pets"))
                 .withNullable(all(Gender.class))
@@ -84,10 +84,10 @@ class InstancioApiTest {
     @Test
     void createFromModel() {
         final Model<Person> homerModel = Instancio.of(Person.class)
-                .with(field("name"), () -> HOMER)
-                .with(field(Person.class, "age"), () -> HOMER_AGE)
-                .with(all(LocalDateTime.class), LocalDateTime::now)
-                .with(field(Address.class, "city"), () -> SPRINGFIELD)
+                .supply(field("name"), () -> HOMER)
+                .supply(field(Person.class, "age"), () -> HOMER_AGE)
+                .supply(all(LocalDateTime.class), LocalDateTime::now)
+                .supply(field(Address.class, "city"), () -> SPRINGFIELD)
                 .ignore(field(Person.class, "date"))
                 .ignore(all(Gender.class))
                 .toModel();

@@ -1,12 +1,15 @@
 package org.instancio.generators;
 
-import org.instancio.Generator;
-import org.instancio.util.Random;
+import org.instancio.internal.random.RandomProvider;
 
-public class ShortGenerator implements Generator<Short> {
+public class ShortGenerator extends AbstractGenerator<Short> {
+
+    public ShortGenerator(final RandomProvider random) {
+        super(random);
+    }
 
     @Override
     public Short generate() {
-        return Random.shortBetween(Short.MIN_VALUE, Short.MAX_VALUE);
+        return random().shortBetween(Short.MIN_VALUE, Short.MAX_VALUE);
     }
 }

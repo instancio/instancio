@@ -2,18 +2,18 @@ package org.instancio.internal;
 
 import org.instancio.Binding;
 import org.instancio.Generator;
+import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
-import org.instancio.generators.ArrayGenerator;
 import org.instancio.internal.model.InternalModel;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.util.ObjectUtils;
 import org.instancio.util.TypeUtils;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.function.Function;
 
 import static org.instancio.util.ReflectionUtils.getField;
 
@@ -68,27 +68,26 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public <V> InstancioApi<T> with(Binding binding, Generator<V> generator) {
-        if (binding.isFieldBinding()) {
-            final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
-            final Field field = getField(targetType, binding.getFieldName());
+    public <V> InstancioApi<T> supply(Binding binding, Generator<V> generator) {
+        modelContextBuilder.withGenerator(binding, generator);
+        return this;
+    }
 
-            if (field.getType().isArray() && generator instanceof ArrayGenerator) {
-                ((ArrayGenerator) generator).type(field.getType().getComponentType());
-            }
-            modelContextBuilder.withFieldGenerator(field, generator);
-        } else {
-            if (binding.getTargetType().isArray() && generator instanceof ArrayGenerator) {
-                ((ArrayGenerator) generator).type(binding.getTargetType().getComponentType());
-            }
-            modelContextBuilder.withClassGenerator(binding.getTargetType(), generator);
-        }
+    @Override
+    public InstancioApi<T> generate(Binding target, Function<Generators, Generator<?>> g) {
+        modelContextBuilder.withBuiltInGenerator(target, g);
         return this;
     }
 
     @Override
     public InstancioApi<T> map(Class<?> baseClass, Class<?> subClass) {
         modelContextBuilder.withSubtypeMapping(baseClass, subClass);
+        return this;
+    }
+
+    @Override
+    public InstancioApi<T> withSeed(final int seed) {
+        modelContextBuilder.withSeed(seed);
         return this;
     }
 

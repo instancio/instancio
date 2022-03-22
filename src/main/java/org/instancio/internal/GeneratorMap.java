@@ -24,6 +24,7 @@ import org.instancio.generators.TreeMapGenerator;
 import org.instancio.generators.TreeSetGenerator;
 import org.instancio.generators.UUIDGenerator;
 import org.instancio.generators.XMLGregorianCalendarGenerator;
+import org.instancio.internal.random.RandomProvider;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
@@ -45,32 +46,35 @@ import java.util.concurrent.ConcurrentNavigableMap;
 class GeneratorMap {
 
     private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
+    private final RandomProvider random;
 
-    GeneratorMap() {
+    GeneratorMap(final RandomProvider random) {
+        this.random = random;
+
         // Core types
-        generatorMap.put(byte.class, new ByteGenerator());
-        generatorMap.put(short.class, new ShortGenerator());
-        generatorMap.put(int.class, new IntegerGenerator());
-        generatorMap.put(long.class, new LongGenerator());
-        generatorMap.put(float.class, new FloatGenerator());
-        generatorMap.put(double.class, new DoubleGenerator());
-        generatorMap.put(boolean.class, new BooleanGenerator());
-        generatorMap.put(char.class, new CharacterGenerator());
-        generatorMap.put(Byte.class, new ByteGenerator());
-        generatorMap.put(Short.class, new ShortGenerator());
-        generatorMap.put(Integer.class, new IntegerGenerator());
-        generatorMap.put(Long.class, new LongGenerator());
-        generatorMap.put(Float.class, new FloatGenerator());
-        generatorMap.put(Double.class, new DoubleGenerator());
-        generatorMap.put(Boolean.class, new BooleanGenerator());
-        generatorMap.put(Character.class, new CharacterGenerator());
-        generatorMap.put(String.class, new StringGenerator());
+        generatorMap.put(byte.class, new ByteGenerator(random));
+        generatorMap.put(short.class, new ShortGenerator(random));
+        generatorMap.put(int.class, new IntegerGenerator(random));
+        generatorMap.put(long.class, new LongGenerator(random));
+        generatorMap.put(float.class, new FloatGenerator(random));
+        generatorMap.put(double.class, new DoubleGenerator(random));
+        generatorMap.put(boolean.class, new BooleanGenerator(random));
+        generatorMap.put(char.class, new CharacterGenerator(random));
+        generatorMap.put(Byte.class, new ByteGenerator(random));
+        generatorMap.put(Short.class, new ShortGenerator(random));
+        generatorMap.put(Integer.class, new IntegerGenerator(random));
+        generatorMap.put(Long.class, new LongGenerator(random));
+        generatorMap.put(Float.class, new FloatGenerator(random));
+        generatorMap.put(Double.class, new DoubleGenerator(random));
+        generatorMap.put(Boolean.class, new BooleanGenerator(random));
+        generatorMap.put(Character.class, new CharacterGenerator(random));
+        generatorMap.put(String.class, new StringGenerator(random));
 
-        generatorMap.put(Number.class, new IntegerGenerator());
-        generatorMap.put(BigDecimal.class, new BigDecimalGenerator());
-        generatorMap.put(LocalDate.class, new LocalDateGenerator());
-        generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator());
-        generatorMap.put(UUID.class, new UUIDGenerator());
+        generatorMap.put(Number.class, new IntegerGenerator(random));
+        generatorMap.put(BigDecimal.class, new BigDecimalGenerator(random));
+        generatorMap.put(LocalDate.class, new LocalDateGenerator(random));
+        generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator(random));
+        generatorMap.put(UUID.class, new UUIDGenerator(random));
         generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator());
 
         // Collections
@@ -92,7 +96,7 @@ class GeneratorMap {
 
         if (generator == null) {
             if (klass.isEnum()) {
-                generator = new EnumGenerator(klass);
+                generator = new EnumGenerator(random, klass);
                 generatorMap.put(klass, generator);
             } else if (klass.isArray()) {
                 throw new IllegalArgumentException("Should be calling getArrayGenerator(Class)!");
