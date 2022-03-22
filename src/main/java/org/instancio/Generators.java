@@ -1,11 +1,10 @@
 package org.instancio;
 
-import org.instancio.generator.ArrayGenerator;
-import org.instancio.generator.CollectionGenerator;
-import org.instancio.generator.Generator;
-import org.instancio.generator.IntegerGenerator;
-import org.instancio.generator.MapGenerator;
-import org.instancio.generator.StringGenerator;
+import org.instancio.generators.ArrayGenerator;
+import org.instancio.generators.CollectionGenerator;
+import org.instancio.generators.IntegerGenerator;
+import org.instancio.generators.MapGenerator;
+import org.instancio.generators.StringGenerator;
 import org.instancio.util.Random;
 
 /**
@@ -27,24 +26,24 @@ public final class Generators {
         // non-instantiable
     }
 
-    public static StringGenerator string() {
-        return new StringGenerator();
-    }
-
-    public static IntegerGenerator ints() {
-        return new IntegerGenerator();
+    public static ArrayGenerator array() {
+        return new ArrayGenerator();
     }
 
     public static CollectionGenerator collection() {
         return new CollectionGenerator();
     }
 
-    public static ArrayGenerator array() {
-        return new ArrayGenerator();
-    }
-
     public static MapGenerator map() {
         return new MapGenerator();
+    }
+
+    public static StringGenerator string() {
+        return new StringGenerator();
+    }
+
+    public static IntegerGenerator ints() {
+        return new IntegerGenerator();
     }
 
     @SuppressWarnings("unchecked")

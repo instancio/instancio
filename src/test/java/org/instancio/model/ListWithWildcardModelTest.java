@@ -1,7 +1,8 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.CollectionNode;
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.generics.ListWithWildcard;
-import org.instancio.pojo.generics.ListWithoutType;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 import org.instancio.testsupport.utils.CollectionUtils;
 

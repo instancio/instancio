@@ -10,9 +10,35 @@
     <packaging>jar</packaging>
 
     <name>Instancio</name>
-    <description>Instancio is a library for generating test data. It instantiates and populates
-        objects using reflection.
+    <description>Instancio is a library for generating test data. It instantiates and populates objects using
+        reflection.
     </description>
+    <url>https://github.com/instancio/instancio</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/instancio/instancio</url>
+        <connection>scm:git:https://github.com/instancio/instancio.git</connection>
+        <developerConnection>scm:git:https://github.com/instancio/instancio.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,13 +58,6 @@
         <mockito.junit.jupiter.version>4.3.1</mockito.junit.jupiter.version>
         <equalsverifier.version>3.9</equalsverifier.version>
     </properties>
-
-    <scm>
-        <url>https://github.com/instancio/instancio</url>
-        <connection>scm:git:https://github.com/instancio/instancio.git</connection>
-        <developerConnection>scm:git:https://github.com/instancio/instancio.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
 
     <issueManagement>
         <system>Github</system>
@@ -82,6 +101,20 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

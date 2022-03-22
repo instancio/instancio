@@ -1,7 +1,7 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.model.TypeMapResolver;
+import org.instancio.internal.model.TypeMapResolver;
 
 import java.lang.reflect.Type;
 

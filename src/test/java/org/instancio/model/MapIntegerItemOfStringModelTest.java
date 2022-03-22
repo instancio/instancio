@@ -1,5 +1,7 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.MapNode;
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.collections.maps.MapIntegerItemOfString;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.testsupport.fixtures.Types;

@@ -1,5 +1,8 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.ArrayNode;
+import org.instancio.internal.model.CollectionNode;
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.generics.container.GenericContainer;
 import org.instancio.testsupport.templates.ModelTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;

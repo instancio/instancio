@@ -1,5 +1,6 @@
 package org.instancio.util;
 
+import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 
 import java.lang.reflect.Constructor;
@@ -38,7 +39,7 @@ public class ReflectionUtils {
 
             return result;
         } catch (Exception ex) {
-            throw new InstancioException("Invalid field '" + fieldPath + "' for " + klass, ex);
+            throw new InstancioApiException("Invalid field '" + fieldPath + "' for " + klass, ex);
         }
     }
 

@@ -1,5 +1,7 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.CollectionNode;
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.generics.outermidinner.Inner;
 import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
 import org.instancio.pojo.generics.outermidinner.Mid;

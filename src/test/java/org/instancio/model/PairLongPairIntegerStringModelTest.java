@@ -1,5 +1,7 @@
 package org.instancio.model;
 
+import org.instancio.internal.model.ClassNode;
+import org.instancio.internal.model.Node;
 import org.instancio.pojo.generics.PairLongPairIntegerString;
 import org.instancio.pojo.generics.basic.Pair;
 import org.instancio.testsupport.fixtures.Types;
