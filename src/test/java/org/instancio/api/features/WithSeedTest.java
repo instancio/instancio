@@ -26,7 +26,7 @@ class WithSeedTest {
                     .withSeed(SEED)
                     .create();
 
-            assertThat(uuids).hasSize(Constants.COLLECTION_SIZE);
+            assertThat(uuids).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
             allResults.addAll(uuids);
         }
         assertThat(allResults).isEqualTo(uuids);
@@ -38,10 +38,12 @@ class WithSeedTest {
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             Set<UUID> uuids = Instancio.of(new TypeToken<Set<UUID>>() {}).create();
-            assertThat(uuids).hasSize(Constants.COLLECTION_SIZE);
+            assertThat(uuids).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
             allResults.addAll(uuids);
         }
 
-        assertThat(allResults).hasSize(SAMPLE_SIZE * Constants.COLLECTION_SIZE);
+        assertThat(allResults).hasSizeBetween(
+                SAMPLE_SIZE * Constants.MIN_SIZE,
+                SAMPLE_SIZE * Constants.MAX_SIZE);
     }
 }

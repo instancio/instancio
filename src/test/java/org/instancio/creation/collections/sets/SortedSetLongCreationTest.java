@@ -11,7 +11,7 @@ public class SortedSetLongCreationTest extends CreationTestTemplate<SortedSetLon
     @Override
     protected void verify(SortedSetLong result) {
         assertThat(result.getSet())
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Long.class);
     }
 

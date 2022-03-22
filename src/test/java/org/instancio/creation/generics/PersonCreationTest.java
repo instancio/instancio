@@ -19,7 +19,7 @@ public class PersonCreationTest extends CreationTestTemplate<Person> {
         assertThat(result.getGender()).isNotNull();
         assertThat(result.getLastModified()).isNotNull();
         assertThat(result.getName()).isNotBlank();
-        assertThat(result.getPets()).hasSize(Constants.ARRAY_SIZE);
+        assertThat(result.getPets()).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
         assertThat(result.getUuid()).isNotNull();
 
         assertThat(result.getAddress()).isNotNull()
@@ -28,7 +28,7 @@ public class PersonCreationTest extends CreationTestTemplate<Person> {
                     assertThat(address.getCity()).isNotBlank();
                     assertThat(address.getCountry()).isNotBlank();
                     assertThat(address.getPhoneNumbers())
-                            .hasSize(Constants.COLLECTION_SIZE)
+                            .isNotEmpty()
                             .allSatisfy(phone -> {
                                 assertThat(phone.getCountryCode()).isNotBlank();
                                 assertThat(phone.getNumber()).isNotBlank();

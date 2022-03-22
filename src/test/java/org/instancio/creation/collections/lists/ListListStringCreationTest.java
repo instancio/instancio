@@ -13,10 +13,10 @@ public class ListListStringCreationTest extends CreationTestTemplate<ListListStr
     @Override
     protected void verify(ListListString result) {
         assertThat(result.getNested())
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .allSatisfy(nestedListElement -> {
                     assertThat(nestedListElement)
-                            .hasSize(Constants.COLLECTION_SIZE)
+                            .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                             .hasOnlyElementsOfType(String.class);
                 });
     }

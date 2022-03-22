@@ -3,27 +3,27 @@ package org.instancio.internal;
 import org.instancio.Generator;
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.generators.BigDecimalGenerator;
-import org.instancio.generators.coretypes.BooleanGenerator;
-import org.instancio.generators.coretypes.ByteGenerator;
-import org.instancio.generators.coretypes.CharacterGenerator;
+import org.instancio.generators.EnumGenerator;
+import org.instancio.generators.LocalDateGenerator;
+import org.instancio.generators.LocalDateTimeGenerator;
+import org.instancio.generators.UUIDGenerator;
+import org.instancio.generators.XMLGregorianCalendarGenerator;
 import org.instancio.generators.collections.CollectionGenerator;
 import org.instancio.generators.collections.ConcurrentHashMapGenerator;
 import org.instancio.generators.collections.ConcurrentSkipListMapGenerator;
-import org.instancio.generators.coretypes.DoubleGenerator;
-import org.instancio.generators.EnumGenerator;
-import org.instancio.generators.coretypes.FloatGenerator;
 import org.instancio.generators.collections.HashSetGenerator;
-import org.instancio.generators.coretypes.IntegerGenerator;
-import org.instancio.generators.LocalDateGenerator;
-import org.instancio.generators.LocalDateTimeGenerator;
-import org.instancio.generators.coretypes.LongGenerator;
 import org.instancio.generators.collections.MapGenerator;
-import org.instancio.generators.coretypes.ShortGenerator;
-import org.instancio.generators.coretypes.StringGenerator;
 import org.instancio.generators.collections.TreeMapGenerator;
 import org.instancio.generators.collections.TreeSetGenerator;
-import org.instancio.generators.UUIDGenerator;
-import org.instancio.generators.XMLGregorianCalendarGenerator;
+import org.instancio.generators.coretypes.BooleanGenerator;
+import org.instancio.generators.coretypes.ByteGenerator;
+import org.instancio.generators.coretypes.CharacterGenerator;
+import org.instancio.generators.coretypes.DoubleGenerator;
+import org.instancio.generators.coretypes.FloatGenerator;
+import org.instancio.generators.coretypes.IntegerGenerator;
+import org.instancio.generators.coretypes.LongGenerator;
+import org.instancio.generators.coretypes.ShortGenerator;
+import org.instancio.generators.coretypes.StringGenerator;
 import org.instancio.internal.random.RandomProvider;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -78,16 +78,16 @@ class GeneratorMap {
         generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator());
 
         // Collections
-        generatorMap.put(Collection.class, new CollectionGenerator());
-        generatorMap.put(List.class, new CollectionGenerator());
+        generatorMap.put(Collection.class, new CollectionGenerator<>(random));
+        generatorMap.put(List.class, new CollectionGenerator<>(random));
         generatorMap.put(Map.class, new MapGenerator());
         generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator());
         generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator());
         generatorMap.put(SortedMap.class, new TreeMapGenerator());
         generatorMap.put(NavigableMap.class, new TreeMapGenerator());
-        generatorMap.put(Set.class, new HashSetGenerator());
-        generatorMap.put(SortedSet.class, new TreeSetGenerator());
-        generatorMap.put(NavigableSet.class, new TreeSetGenerator());
+        generatorMap.put(Set.class, new HashSetGenerator<>(random));
+        generatorMap.put(SortedSet.class, new TreeSetGenerator<>(random));
+        generatorMap.put(NavigableSet.class, new TreeSetGenerator<>(random));
     }
 
     Generator<?> get(Class<?> klass) {

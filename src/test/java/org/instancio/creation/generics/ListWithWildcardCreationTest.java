@@ -17,7 +17,7 @@ public class ListWithWildcardCreationTest extends CreationTestTemplate<ListWithW
         final List<?> list = result.getList();
 
         assertThat(list)
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Object.class);
     }
 

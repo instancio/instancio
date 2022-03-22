@@ -1,10 +1,13 @@
 package org.instancio.generators.collections;
 
+import org.instancio.internal.random.RandomProvider;
+
 import java.util.TreeSet;
 
-public class TreeSetGenerator extends CollectionGenerator {
+public class TreeSetGenerator<T> extends CollectionGenerator<T> {
 
-    public TreeSetGenerator() {
-        super.type(TreeSet.class);
+    public TreeSetGenerator(final RandomProvider random) {
+        super(random);
+        type(TreeSet.class);
     }
 }

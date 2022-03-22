@@ -43,26 +43,31 @@ class BuiltInCollectionGeneratorTest {
         @DisplayName("List of the target field should have expected size and be fully populated")
         void listShouldHaveExpectedSize() {
             final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                    .generate(field("list1"), gen -> gen.collection().size(EXPECTED_SIZE))
+                    .generate(field("list1"), gen -> gen.collection()
+                            .minSize(EXPECTED_SIZE)
+                            .maxSize(EXPECTED_SIZE))
                     .create();
 
-            assertList(result.getList1(), EXPECTED_SIZE);
-            assertList(result.getList2(), Constants.COLLECTION_SIZE);
+            assertList(result.getList1(), EXPECTED_SIZE, EXPECTED_SIZE);
+            assertList(result.getList2(), Constants.MIN_SIZE, Constants.MAX_SIZE);
         }
 
         @Test
         @DisplayName("All lists should have expected size and be fully populated")
         void allListsShouldHaveExpectedSize() {
             final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                    .generate(all(List.class), gen -> gen.collection().size(EXPECTED_SIZE))
+                    .generate(all(List.class), gen -> gen.collection()
+                            .minSize(EXPECTED_SIZE)
+                            .maxSize(EXPECTED_SIZE))
                     .create();
 
-            assertList(result.getList1(), EXPECTED_SIZE);
-            assertList(result.getList2(), EXPECTED_SIZE);
+            assertList(result.getList1(), EXPECTED_SIZE, EXPECTED_SIZE);
+            assertList(result.getList2(), EXPECTED_SIZE, EXPECTED_SIZE);
         }
 
-        private void assertList(final List<Item<String>> list2, final int expectedSize) {
-            assertThat(list2).hasSize(expectedSize)
+        private void assertList(final List<Item<String>> list, final int minSize, final int maxSize) {
+            assertThat(list)
+                    .hasSizeBetween(minSize, maxSize)
                     .allSatisfy(item -> assertThat(item.getValue()).isInstanceOf(String.class));
         }
     }

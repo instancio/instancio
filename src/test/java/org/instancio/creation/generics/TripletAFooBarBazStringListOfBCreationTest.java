@@ -35,9 +35,7 @@ public class TripletAFooBarBazStringListOfBCreationTest extends CreationTestTemp
         });
 
         assertThat(triplet.getRight()).isInstanceOf(List.class)
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Long.class);
     }
-
-
 }

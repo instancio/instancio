@@ -4,11 +4,14 @@ import org.instancio.generators.ArrayGenerator;
 import org.instancio.generators.OneOfGenerator;
 import org.instancio.generators.OneOfGeneratorSpec;
 import org.instancio.generators.collections.CollectionGenerator;
+import org.instancio.generators.collections.CollectionGeneratorSpec;
 import org.instancio.generators.collections.MapGenerator;
 import org.instancio.generators.coretypes.IntegerGenerator;
 import org.instancio.generators.coretypes.StringGenerator;
 import org.instancio.generators.coretypes.StringGeneratorSpec;
 import org.instancio.internal.random.RandomProvider;
+
+import java.util.Collection;
 
 /**
  * Provides built-int generators for fine-tuning data generation.
@@ -25,8 +28,8 @@ public class Generators {
         return new ArrayGenerator();
     }
 
-    public CollectionGenerator collection() {
-        return new CollectionGenerator();
+    public <T> CollectionGeneratorSpec<Collection<T>> collection() {
+        return new CollectionGenerator<>(random);
     }
 
     public MapGenerator map() {

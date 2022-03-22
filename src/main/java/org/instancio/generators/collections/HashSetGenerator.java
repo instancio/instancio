@@ -1,11 +1,13 @@
 package org.instancio.generators.collections;
 
+import org.instancio.internal.random.RandomProvider;
+
 import java.util.HashSet;
 
+public class HashSetGenerator<T> extends CollectionGenerator<T> {
 
-public class HashSetGenerator extends CollectionGenerator {
-
-    public HashSetGenerator() {
-        super.type(HashSet.class);
+    public HashSetGenerator(final RandomProvider random) {
+        super(random);
+        type(HashSet.class);
     }
 }

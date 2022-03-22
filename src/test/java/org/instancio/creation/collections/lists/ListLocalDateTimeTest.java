@@ -1,6 +1,5 @@
 package org.instancio.creation.collections.lists;
 
-import org.instancio.testsupport.Constants;
 import org.instancio.testsupport.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
@@ -15,7 +14,7 @@ public class ListLocalDateTimeTest extends CreationTestTemplate<List<LocalDateTi
     @Override
     protected void verify(List<LocalDateTime> result) {
         assertThat(result)
-                .hasSize(Constants.COLLECTION_SIZE)
+                .isNotEmpty()
                 .hasOnlyElementsOfType(LocalDateTime.class);
     }
 }
