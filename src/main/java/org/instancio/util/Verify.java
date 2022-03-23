@@ -22,6 +22,11 @@ public final class Verify {
         return array;
     }
 
+    public static <T> Collection<T> notEmpty(final Collection<T> collection, final String message, final Object... values) {
+        isTrue(collection != null && !collection.isEmpty(), message, values);
+        return collection;
+    }
+
     public static void isTrue(final boolean condition, final String message, final Object... values) {
         if (!condition) {
             throw new IllegalArgumentException(String.format(message, values));

@@ -3,7 +3,7 @@ package org.instancio;
 import java.util.function.Function;
 
 /**
- * Instancio API for defining model specs and generating instances of a class.
+ * Instancio API for generating instances of a class populated with random data.
  *
  * @param <T> type being created
  */
@@ -88,6 +88,7 @@ public interface InstancioApi<T> {
 
     /**
      * Supplies a value for a field or class using a custom generator.
+     *
      * <p>
      * Examples.
      * <pre>{@code
@@ -106,21 +107,29 @@ public interface InstancioApi<T> {
      *
      * @param target    class or field
      * @param generator for supplying the target's value
-     * @param <V>       type of the value to create
+     * @param <V>       type of the value to generate
      * @return API builder reference
      */
     <V> InstancioApi<T> supply(Binding target, Generator<V> generator);
 
     /**
-     * Supplies a value for a field or class using a built-in generator.
+     * Supplies a random value for a field or class using a built-in generator.
      * <p>
-     * TODO docs
+     * Example:
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *         .generate(field("age"), gen -> gen.ints().min(18).max(100))
+     *         .generate(field("name"), gen -> gen.string().min(5).allowEmpty())
+     *         .generate(field(Address.class, "phoneNumbers"), gen -> gen.collection().minSize(5))
+     *         .generate(field(Address.class, "city"), gen -> gen.oneOf("Burnaby", "Vancouver", "Richmond"))
+     *         .create();
+     * }</pre>
      *
-     * @param target
-     * @param gen
-     * @param <V>
-     * @param <S>
-     * @return
+     * @param target class or field
+     * @param gen    provider of built-in generators
+     * @param <V>    type of the value to generate
+     * @param <S>    generator spec type
+     * @return API builder reference
      */
     <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(Binding target, Function<Generators, S> gen);
 

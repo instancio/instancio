@@ -1,8 +1,10 @@
 package org.instancio;
 
 import org.instancio.generators.ArrayGenerator;
-import org.instancio.generators.OneOfGenerator;
-import org.instancio.generators.OneOfGeneratorSpec;
+import org.instancio.generators.OneOfArrayGenerator;
+import org.instancio.generators.OneOfArrayGeneratorSpec;
+import org.instancio.generators.OneOfCollectionGenerator;
+import org.instancio.generators.OneOfCollectionGeneratorSpec;
 import org.instancio.generators.collections.CollectionGenerator;
 import org.instancio.generators.collections.CollectionGeneratorSpec;
 import org.instancio.generators.collections.MapGenerator;
@@ -71,7 +73,11 @@ public class Generators {
     }
 
     @SafeVarargs
-    public final <T> OneOfGeneratorSpec<T> oneOf(T... values) {
-        return new OneOfGenerator<T>(random).oneOf(values);
+    public final <T> OneOfArrayGeneratorSpec<T> oneOf(T... values) {
+        return new OneOfArrayGenerator<T>(random).oneOf(values);
+    }
+
+    public final <T> OneOfCollectionGeneratorSpec<T> oneOf(Collection<T> values) {
+        return new OneOfCollectionGenerator<T>(random).oneOf(values);
     }
 }

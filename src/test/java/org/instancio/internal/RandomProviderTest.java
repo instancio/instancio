@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -89,6 +91,31 @@ class RandomProviderTest {
         void fromSingleElementArray() {
             final String[] array = {"foo"};
             assertThat(random.from(array)).isEqualTo(array[0]);
+        }
+    }
+
+    @Nested
+    class FromCollectionTest {
+
+        @Test
+        void fromCollection() {
+            final List<Integer> list = Arrays.asList(0, 1, 2);
+            final int[] counts = new int[list.size()];
+
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                final Integer value = random.from(list);
+                counts[value]++;
+                results.add(value);
+            }
+
+            assertThat(results).hasSameSizeAs(list);
+            assertThat(counts[0]).isCloseTo(SAMPLE_SIZE / list.size(), withPercentage(PERCENTAGE_THRESHOLD));
+        }
+
+        @Test
+        void fromSingleElementCollection() {
+            final Set<String> set = Collections.singleton("foo");
+            assertThat(random.from(set)).isEqualTo(set.iterator().next());
         }
     }
 
