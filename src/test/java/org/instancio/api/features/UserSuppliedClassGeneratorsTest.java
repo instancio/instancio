@@ -1,6 +1,7 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
+import org.instancio.pojo.basic.IntegerHolder;
 import org.instancio.pojo.collections.TwoStringCollections;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
@@ -13,10 +14,23 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
+import static org.instancio.Bindings.allInts;
 import static org.instancio.Bindings.allStrings;
 import static org.instancio.Bindings.field;
 
 class UserSuppliedClassGeneratorsTest {
+
+    @Test
+    @DisplayName("Binding core type should bind both, primitive and wrapper class")
+    void userSuppliedIntegerClassGenerator() {
+        final int expectedValue = 123;
+        final IntegerHolder result = Instancio.of(IntegerHolder.class)
+                .supply(allInts(), () -> expectedValue)
+                .create();
+
+        assertThat(result.getWrapper()).isEqualTo(expectedValue);
+        assertThat(result.getPrimitive()).isEqualTo(expectedValue);
+    }
 
     @Test
     @DisplayName("All String fields should use custom prefix except person.name")

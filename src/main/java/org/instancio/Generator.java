@@ -9,7 +9,7 @@ import org.instancio.internal.GeneratorSettings;
  * @see org.instancio.Generators
  */
 @FunctionalInterface
-public interface Generator<T> {
+public interface Generator<T> extends GeneratorSpec<T> {
 
     /**
      * Depending on implementation, repeated invocations may return different values.

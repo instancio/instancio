@@ -2,7 +2,6 @@ package org.instancio.creation.collections.maps;
 
 import org.instancio.pojo.collections.maps.MapStringPerson;
 import org.instancio.pojo.person.Person;
-import org.instancio.testsupport.Constants;
 import org.instancio.testsupport.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
@@ -13,8 +12,7 @@ public class MapStringPerson2CreationTest extends CreationTestTemplate<MapString
 
     @Override
     protected void verify(MapStringPerson result) {
-        assertThat(result.getMap())
-                .hasSize(Constants.COLLECTION_SIZE);
+        assertThat(result.getMap()).isNotEmpty();
 
         assertThat(result.getMap().entrySet())
                 .allSatisfy(entry -> {

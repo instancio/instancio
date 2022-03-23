@@ -10,7 +10,7 @@ package org.instancio;
  * Example:
  * <pre>{@code
  *     Model personModel = Instancio.of(Person.class)
- *         .with("fullName", () -> "Jane Doe")
+ *         .supply(field("fullName"), () -> "Jane Doe")
  *         .toModel();
  *
  *     // Re-use the model to create instances of Person class

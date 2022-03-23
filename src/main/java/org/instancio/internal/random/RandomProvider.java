@@ -2,6 +2,7 @@ package org.instancio.internal.random;
 
 import org.instancio.util.Verify;
 
+import java.util.Collection;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,7 +15,7 @@ public class RandomProvider {
      *
      * @param seed for the random generator
      */
-    public RandomProvider(int seed) {
+    public RandomProvider(final int seed) {
         random = new Random(seed);
     }
 
@@ -118,8 +119,16 @@ public class RandomProvider {
     }
 
     public <T> T from(final T[] array) {
-        Verify.isTrue(array.length > 0, "Array is empty");
+        Verify.notEmpty(array, "Array must have at least one element");
         return array[intBetween(0, array.length)];
+    }
+
+    public <T> T from(final Collection<T> collection) {
+        Verify.notEmpty(collection, "Collection must have at least one element");
+        return collection.stream()
+                .skip(intBetween(0, collection.size()))
+                .findFirst()
+                .orElse(null);
     }
 
 }

@@ -55,14 +55,14 @@ public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID
 
     private void assertArrayOfCs(MiscFields<?, ?, ?> result) {
         assertThat(result.getArrayOfCs()).isInstanceOf(Long[].class)
-                .hasSize(Constants.ARRAY_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Long.class)
                 .doesNotContainNull();
     }
 
     private void assertListOfBazStrings(MiscFields<?, ?, ?> result) {
         assertThat(result.getListOfBazStrings()).isInstanceOf(List.class)
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Baz.class)
                 .allSatisfy(baz ->
                         assertThat(baz.getBazValue()).isInstanceOf(String.class));
@@ -70,7 +70,7 @@ public class MiscFieldsCreationTest extends CreationTestTemplate<MiscFields<UUID
 
     private void assertListOfCs(MiscFields<?, ?, ?> result) {
         assertThat(result.getListOfCs()).isInstanceOf(List.class)
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Long.class);
     }
 

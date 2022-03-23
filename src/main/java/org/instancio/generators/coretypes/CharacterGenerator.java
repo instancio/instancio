@@ -1,8 +1,9 @@
-package org.instancio.generators;
+package org.instancio.generators.coretypes;
 
+import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 
-public class CharacterGenerator extends AbstractGenerator<Character> {
+public class CharacterGenerator extends AbstractRandomGenerator<Character> {
 
     public CharacterGenerator(final RandomProvider random) {
         super(random);

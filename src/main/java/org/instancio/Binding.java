@@ -9,7 +9,10 @@ public class Binding {
     private final Class<?> targetType;
     private final String fieldName;
 
-    private Binding(final BindingType bindingType, @Nullable final Class<?> targetType, @Nullable final String fieldName) {
+    private Binding(final BindingType bindingType,
+                    @Nullable final Class<?> targetType,
+                    @Nullable final String fieldName) {
+
         this.bindingType = bindingType;
         this.targetType = targetType;
         this.fieldName = fieldName;

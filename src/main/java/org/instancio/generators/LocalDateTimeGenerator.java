@@ -4,7 +4,7 @@ import org.instancio.internal.random.RandomProvider;
 
 import java.time.LocalDateTime;
 
-public class LocalDateTimeGenerator extends AbstractGenerator<LocalDateTime> {
+public class LocalDateTimeGenerator extends AbstractRandomGenerator<LocalDateTime> {
 
     public LocalDateTimeGenerator(final RandomProvider random) {
         super(random);

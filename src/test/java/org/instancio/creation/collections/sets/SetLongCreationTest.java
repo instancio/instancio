@@ -11,7 +11,7 @@ public class SetLongCreationTest extends CreationTestTemplate<SetLong> {
     @Override
     protected void verify(SetLong result) {
         assertThat(result.getSet())
-                .hasSize(Constants.COLLECTION_SIZE)
+                .isNotEmpty()
                 .hasOnlyElementsOfType(Long.class);
     }
 

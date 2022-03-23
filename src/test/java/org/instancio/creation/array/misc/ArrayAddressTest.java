@@ -13,9 +13,7 @@ public class ArrayAddressTest extends CreationTestTemplate<Address[]> {
     @Override
     protected void verify(Address[] result) {
         assertThat(result)
-                .hasSize(Constants.ARRAY_SIZE)
-                .allSatisfy(element -> {
-                    assertThat(element).isInstanceOf(Address.class);
-                });
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
+                .allSatisfy(element -> assertThat(element).isInstanceOf(Address.class));
     }
 }

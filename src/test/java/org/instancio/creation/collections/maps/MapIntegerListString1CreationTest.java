@@ -16,12 +16,12 @@ public class MapIntegerListString1CreationTest extends CreationTestTemplate<MapI
     @Override
     protected void verify(MapIntegerListString result) {
         final Map<Integer, List<String>> map = result.getMap();
-        assertThat(map).hasSize(Constants.MAP_SIZE);
+        assertThat(map).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
         assertThat(map.entrySet()).allSatisfy(entry -> {
             assertThat(entry.getKey()).isInstanceOf(Integer.class);
             assertThat(entry.getValue())
-                    .hasSize(Constants.COLLECTION_SIZE)
+                    .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                     .hasOnlyElementsOfType(String.class);
         });
     }

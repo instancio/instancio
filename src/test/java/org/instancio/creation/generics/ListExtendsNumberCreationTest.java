@@ -17,7 +17,7 @@ public class ListExtendsNumberCreationTest extends CreationTestTemplate<ListExte
         final List<? extends Number> list = result.getList();
 
         assertThat(list)
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Number.class);
     }
 

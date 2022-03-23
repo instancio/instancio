@@ -2,7 +2,6 @@ package org.instancio.creation.collections.maps;
 
 import org.instancio.pojo.generics.basic.Pair;
 import org.instancio.pojo.person.Address;
-import org.instancio.testsupport.Constants;
 import org.instancio.testsupport.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
@@ -16,7 +15,7 @@ public class MapPairIntegerStringAddressCreationTest extends CreationTestTemplat
 
     @Override
     protected void verify(Map<Pair<Integer, String>, Address> result) {
-        assertThat(result).hasSize(Constants.MAP_SIZE);
+        assertThat(result).isNotEmpty();
         final Set<Map.Entry<Pair<Integer, String>, Address>> entries = result.entrySet();
 
         assertThat(entries)

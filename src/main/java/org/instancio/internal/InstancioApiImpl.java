@@ -2,6 +2,7 @@ package org.instancio.internal;
 
 import org.instancio.Binding;
 import org.instancio.Generator;
+import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
@@ -74,8 +75,8 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> generate(Binding target, Function<Generators, Generator<?>> g) {
-        modelContextBuilder.withBuiltInGenerator(target, g);
+    public <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(final Binding target, final Function<Generators, S> gen) {
+        modelContextBuilder.withGeneratorSpec(target, gen);
         return this;
     }
 

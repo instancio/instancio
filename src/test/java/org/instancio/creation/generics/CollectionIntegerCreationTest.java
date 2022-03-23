@@ -19,7 +19,7 @@ public class CollectionIntegerCreationTest extends CreationTestTemplate<Collecti
 
         assertThat(collection)
                 .isInstanceOf(List.class)
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Integer.class);
     }
 

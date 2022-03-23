@@ -1,9 +1,10 @@
-package org.instancio.generators;
+package org.instancio.generators.coretypes;
 
+import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
-public class StringGenerator extends AbstractGenerator<String> {
+public class StringGenerator extends AbstractRandomGenerator<String> implements StringGeneratorSpec {
 
     private int minLength = 4;
     private int maxLength = 10;
@@ -14,25 +15,29 @@ public class StringGenerator extends AbstractGenerator<String> {
         super(random);
     }
 
-    public StringGenerator prefix(final String prefix) {
+    @Override
+    public StringGeneratorSpec prefix(final String prefix) {
         this.prefix = prefix;
         return this;
     }
 
-    public StringGenerator allowEmpty() {
+    @Override
+    public StringGeneratorSpec allowEmpty() {
         this.allowEmpty = true;
         return this;
     }
 
-    public StringGenerator min(final int length) {
-        Verify.isTrue(length >= 0, "Length cannot be negative: " + length);
+    @Override
+    public StringGeneratorSpec minLength(final int length) {
+        Verify.isTrue(length >= 0, "Length cannot be negative: %s", length);
         this.minLength = length;
         this.maxLength = Math.max(length, maxLength);
         return this;
     }
 
-    public StringGenerator max(final int length) {
-        Verify.isTrue(length >= 0, "Length cannot be negative: " + length);
+    @Override
+    public StringGeneratorSpec maxLength(final int length) {
+        Verify.isTrue(length >= 0, "Length cannot be negative: %s", length);
         this.maxLength = length;
         this.minLength = Math.min(minLength, length);
         return this;

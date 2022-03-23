@@ -84,7 +84,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
     private void assertMap(Method method, Map<?, ?> map) {
         softly.assertThat(map)
                 .as("Method '%s' return unexpected result", method)
-                .hasSize(Constants.MAP_SIZE);
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             assertThatObject(entry.getKey()).isFullyPopulated();
@@ -95,7 +95,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
     private void assertCollection(Method method, Collection<?> collection) {
         softly.assertThat(collection)
                 .as("Method '%s' return unexpected result", method)
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .allSatisfy(it -> assertThatObject(it).isFullyPopulated());
     }
 
@@ -104,7 +104,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
 
         softly.assertThat(size)
                 .as("Method '%s' return unexpected result", method)
-                .isEqualTo(Constants.ARRAY_SIZE);
+                .isBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
         for (int i = 0; i < size; i++) {
             Object element = Array.get(array, i);

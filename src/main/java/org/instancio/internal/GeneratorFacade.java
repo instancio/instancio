@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -49,7 +48,7 @@ class GeneratorFacade {
             return GeneratorResult.nullResult();
         }
 
-        final Optional<GeneratorResult<?>> optionalResult = attemptGenerateViaContext(node.getField());
+        final Optional<GeneratorResult<?>> optionalResult = attemptGenerateViaContext(node);
         if (optionalResult.isPresent()) {
             return optionalResult.get();
         }
@@ -126,10 +125,9 @@ class GeneratorFacade {
      * TODO: hierarchy.setAncestorOf(value, owner) must be done for all generated objects
      *  unless they are from JDK classes
      */
-    private Optional<GeneratorResult<?>> attemptGenerateViaContext(@Nullable final Field field) {
-        if (field == null) return Optional.empty();
+    private Optional<GeneratorResult<?>> attemptGenerateViaContext(final Node node) {
 
-        if (context.getNullableFields().contains(field) && random.trueOrFalse()) {
+        if (node.getField() != null && context.getNullableFields().contains(node.getField()) && random.trueOrFalse()) {
             // We can return a null 'GeneratorResult' or a null 'GeneratorResult.value'
             // Returning a null 'GeneratorResult.value' will ensure that a field value
             // will be overwritten with null. Otherwise, field value would retain its
@@ -138,15 +136,15 @@ class GeneratorFacade {
         }
 
         GeneratorResult<?> result = null;
-        if (context.getUserSuppliedFieldGenerators().containsKey(field)) {
-            Generator<?> generator = context.getUserSuppliedFieldGenerators().get(field);
+        if (node.getField() != null && context.getUserSuppliedFieldGenerators().containsKey(node.getField())) {
+            Generator<?> generator = context.getUserSuppliedFieldGenerators().get(node.getField());
 
             result = GeneratorResult.builder(generator.generate())
                     .withSettings(generator.getSettings())
                     .build();
 
-        } else if (context.getUserSuppliedClassGenerators().containsKey(field.getType())) {
-            Generator<?> generator = context.getUserSuppliedClassGenerators().get(field.getType()); // XXX what if field.getType returns Object?
+        } else if (context.getUserSuppliedClassGenerators().containsKey(node.getKlass())) {
+            Generator<?> generator = context.getUserSuppliedClassGenerators().get(node.getKlass());
             result = GeneratorResult.builder(generator.generate())
                     .withSettings(generator.getSettings())
                     .build();

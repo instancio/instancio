@@ -21,7 +21,7 @@ public class ListFooListBarListBazListStringCreationTest extends CreationTestTem
 
         assertThat(list)
                 // List<Foo>
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Foo.class);
 
         assertThat(list)
@@ -32,17 +32,17 @@ public class ListFooListBarListBazListStringCreationTest extends CreationTestTem
                 // Foo
                 .allSatisfy(foo -> assertThat(foo.getFooValue())
                         .isInstanceOf(List.class)
-                        .hasSize(Constants.COLLECTION_SIZE)
+                        .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                         .hasOnlyElementsOfType(Bar.class)
                         // Bar
                         .allSatisfy(bar -> assertThat(bar.getBarValue())
                                 .isInstanceOf(List.class)
-                                .hasSize(Constants.COLLECTION_SIZE)
+                                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                                 .hasOnlyElementsOfType(Baz.class)
                                 // Baz
                                 .allSatisfy(baz -> assertThat(baz.getBazValue())
                                         .isInstanceOf(List.class)
-                                        .hasSize(Constants.COLLECTION_SIZE)
+                                        .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                                         .hasOnlyElementsOfType(String.class))));
 
     }
