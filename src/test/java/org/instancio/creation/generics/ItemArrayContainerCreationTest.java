@@ -14,13 +14,13 @@ public class ItemArrayContainerCreationTest extends CreationTestTemplate<ItemArr
     @Override
     protected void verify(ItemArrayContainer<Integer, String> result) {
         assertThat(result.getItemArrayX())
-                .hasSize(Constants.ARRAY_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .isInstanceOf(Item[].class)
                 .hasOnlyElementsOfType(Item.class)
                 .allSatisfy(it -> assertThat(it.getValue()).isInstanceOf(Integer.class));
 
         assertThat(result.getItemArrayY())
-                .hasSize(Constants.ARRAY_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .isInstanceOf(Item[].class)
                 .hasOnlyElementsOfType(Item.class)
                 .allSatisfy(it -> assertThat(it.getValue()).isInstanceOf(String.class));

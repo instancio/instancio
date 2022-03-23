@@ -1,6 +1,7 @@
 package org.instancio;
 
 import org.instancio.generators.ArrayGenerator;
+import org.instancio.generators.ArrayGeneratorSpec;
 import org.instancio.generators.OneOfArrayGenerator;
 import org.instancio.generators.OneOfArrayGeneratorSpec;
 import org.instancio.generators.OneOfCollectionGenerator;
@@ -70,8 +71,8 @@ public class Generators {
         return new OneOfCollectionGenerator<T>(random).oneOf(values);
     }
 
-    public ArrayGenerator array() {
-        return new ArrayGenerator();
+    public ArrayGeneratorSpec<Object> array() {
+        return new ArrayGenerator(random);
     }
 
     public <T> CollectionGeneratorSpec<Collection<T>> collection() {

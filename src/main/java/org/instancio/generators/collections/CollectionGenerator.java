@@ -21,7 +21,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
 
     @Override
     public CollectionGeneratorSpec<T> minSize(final int size) {
-        Verify.isTrue(size >= 0, "Size cannot be negative: " + size);
+        Verify.isTrue(size >= 0, "Size cannot be negative: %s", size);
         this.minSize = size;
         this.maxSize = Math.max(minSize, maxSize);
         return this;
@@ -29,7 +29,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
 
     @Override
     public CollectionGeneratorSpec<T> maxSize(final int size) {
-        Verify.isTrue(size >= 0, "Size cannot be negative: " + size);
+        Verify.isTrue(size >= 0, "Size cannot be negative: %s", size);
         this.maxSize = size;
         this.minSize = Math.min(minSize, maxSize);
         return this;

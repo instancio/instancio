@@ -106,6 +106,6 @@ class GeneratorMap {
     }
 
     Generator<?> getArrayGenerator(Class<?> componentType) {
-        return new ArrayGenerator(componentType);
+        return new ArrayGenerator(random, componentType);
     }
 }
