@@ -2,9 +2,9 @@ package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
 import org.instancio.internal.model.Node;
+import org.instancio.internal.model.TypeMap;
 
 import java.lang.reflect.Type;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
@@ -63,16 +63,16 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public NodeAssert hasTypeMapWithSize(int expected) {
         isNotNull();
-        assertThat(actual.getTypeMap())
+        assertThat(actual.getTypeMap().size())
                 .as("Actual type map: %s", actual.getTypeMap())
-                .hasSize(expected);
+                .isEqualTo(expected);
         return this;
     }
 
     public NodeAssert hasTypeMappedTo(Class<?> klass, String typeVariable, Type expectedMapping) {
         isNotNull();
         final Type typeVar = getTypeVar(klass, typeVariable);
-        final Map<Type, Type> typeMap = actual.getTypeMap();
+        final TypeMap typeMap = actual.getTypeMap();
         final Type actualMapping = typeMap.get(typeVar);
 
         assertThat(actualMapping)
@@ -84,7 +84,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
     public NodeAssert hasTypeMappedTo(Class<?> klass, String typeVariable, String expectedTypeName) {
         isNotNull();
         final Type typeVar = getTypeVar(klass, typeVariable);
-        final Map<Type, Type> typeMap = actual.getTypeMap();
+        final TypeMap typeMap = actual.getTypeMap();
         final Type actualMapping = typeMap.get(typeVar);
 
         assertThat(actualMapping)
@@ -97,9 +97,9 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public NodeAssert hasEmptyTypeMap() {
         isNotNull();
-        assertThat(actual.getTypeMap())
+        assertThat(actual.getTypeMap().size())
                 .as("Actual type map: %s", actual.getTypeMap())
-                .isEmpty();
+                .isZero();
         return this;
     }
 

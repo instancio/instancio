@@ -1,6 +1,6 @@
 package org.instancio.model;
 
-import org.instancio.internal.model.TypeMapResolver;
+import org.instancio.internal.model.TypeMap;
 import org.instancio.pojo.generics.PairAPairIntegerString;
 import org.instancio.pojo.generics.PairLongPairIntegerString;
 import org.instancio.pojo.generics.TripletAFooBarBazStringListOfB;
@@ -20,7 +20,7 @@ import java.util.Map;
 import static org.instancio.testsupport.asserts.TypeMapResolverAssert.assertThatResolver;
 
 @GenericsTag
-class TypeMapResolverTest {
+class TypeMapTest {
 
     public static final Map<TypeVariable<?>, Class<?>> EMPTY_ROOT_TYPE_MAP = Collections.emptyMap();
 
@@ -28,7 +28,7 @@ class TypeMapResolverTest {
     void personAge() {
         final Class<?> klass = Person.class;
         final String field = "age";
-        final TypeMapResolver resolver = new TypeMapResolver(EMPTY_ROOT_TYPE_MAP, getGenericType(klass, field));
+        final TypeMap resolver = new TypeMap(getGenericType(klass, field), EMPTY_ROOT_TYPE_MAP);
 
         assertThatResolver(resolver).hasEmptyTypeMap();
     }
@@ -38,11 +38,11 @@ class TypeMapResolverTest {
         final Class<?> klass = PairAPairIntegerString.class;
         final String field = "pairAPairIntegerString";
 
-        final TypeMapResolver resolver = new TypeMapResolver(
+        final TypeMap resolver = new TypeMap(
+                getGenericType(klass, field),
                 TypeMapBuilder.forClass(klass)
                         .with("A", Boolean.class)
-                        .get(),
-                getGenericType(klass, field));
+                        .get());
 
         assertThatResolver(resolver)
                 .hasTypeMapping(Pair.class, "L", Boolean.class)
@@ -56,7 +56,7 @@ class TypeMapResolverTest {
         final Class<?> klass = PairLongPairIntegerString.class;
         final String field = "pairLongPairIntegerString";
 
-        final TypeMapResolver resolver = new TypeMapResolver(EMPTY_ROOT_TYPE_MAP, getGenericType(klass, field));
+        final TypeMap resolver = new TypeMap(getGenericType(klass, field), EMPTY_ROOT_TYPE_MAP);
 
         assertThatResolver(resolver)
                 .hasTypeMapping(Pair.class, "L", Long.class)
@@ -70,11 +70,11 @@ class TypeMapResolverTest {
         final Class<?> klass = TripletAFooBarBazStringListOfB.class;
         final String field = "tripletA_FooBarBazString_ListOfB";
 
-        final TypeMapResolver resolver = new TypeMapResolver(
+        final TypeMap resolver = new TypeMap(
+                getGenericType(klass, field),
                 TypeMapBuilder.forClass(klass)
                         .with("A", Long.class)
-                        .get(),
-                getGenericType(klass, field));
+                        .get());
 
         assertThatResolver(resolver)
                 .hasTypeMapping(Triplet.class, "M", Long.class)

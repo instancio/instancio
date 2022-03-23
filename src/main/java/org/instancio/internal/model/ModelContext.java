@@ -4,7 +4,7 @@ import org.instancio.Binding;
 import org.instancio.Generator;
 import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
-import org.instancio.exception.InstancioException;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.random.RandomProvider;
@@ -193,7 +193,7 @@ public class ModelContext<T> {
 
         public Builder<T> withNullableField(final Field field) {
             if (field.getType().isPrimitive()) {
-                throw new InstancioException(String.format("Primitive field '%s' cannot be set to null", field));
+                throw new InstancioApiException(String.format("Primitive field '%s' cannot be set to null", field));
             }
             this.nullableFields.add(field);
             return this;
@@ -205,6 +205,9 @@ public class ModelContext<T> {
         }
 
         public Builder<T> withNullableClass(final Class<?> klass) {
+            if (klass.isPrimitive()) {
+                throw new InstancioApiException(String.format("Primitive class '%s' cannot be set to null", klass.getName()));
+            }
             this.nullableClasses.add(klass);
             return this;
         }

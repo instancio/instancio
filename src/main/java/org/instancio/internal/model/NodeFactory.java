@@ -19,6 +19,7 @@ import java.util.Map;
 public class NodeFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
+    private static final String MAP_KEY_TYPE_VARIABLE = "K";
 
     public Node createRootNode(final NodeContext nodeContext,
                                final Class<?> klass,
@@ -42,10 +43,8 @@ public class NodeFactory {
         } else if (Map.class.isAssignableFrom(klass)) {
             result = createMapNode(nodeContext, klass, genericType, field, parent);
         } else {
-            //result = new ClassNode(nodeContext, klass, field, genericType, parent);
             result = createClassNode(nodeContext, klass, genericType, field, parent);
         }
-
 
         LOG.trace("Created node: {}", result);
         if (nodeContext.isUnvisited(result)) {
@@ -246,15 +245,7 @@ public class NodeFactory {
                     }
                 }
 
-                Verify.notNull(node, "Failed creating node. Args:"
-                                + "\n -> rawType: %s"
-                                + "\n -> genericType: %s"
-                                + "\n -> field: %s"
-                                + "\n -> actualTypeArg: %s"
-                                + "\n -> typeVar: %s",
-                        rawClass, genericType, field, actualTypeArg, typeVar);
-
-                if (typeVar.getName().equals("K")) { // TODO hardcoded
+                if (typeVar.getName().equals(MAP_KEY_TYPE_VARIABLE)) {
                     keyNode = node;
                 } else {
                     valueNode = node;
@@ -323,7 +314,7 @@ public class NodeFactory {
                 if (mappedType instanceof Class) {
                     return new ClassNode(nodeContext, (Class<?>) mappedType, field, null, parent);
                 }
-                if (parent.getRootTypeMap().containsKey(mappedType)) {
+                if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
 
                     final Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
                     return new ClassNode(nodeContext, rawType, field, null, parent);

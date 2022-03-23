@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
@@ -31,7 +31,7 @@ class GeneratorFacade {
 
     public GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
-        final Integer seed = ObjectUtils.defaultIfNull(context.getSeed(), new Random().nextInt());
+        final Integer seed = ObjectUtils.defaultIfNull(context.getSeed(), ThreadLocalRandom.current().nextInt());
         LOG.debug("Seed: {}", seed);
         this.random = new RandomProvider(seed);
         generatorMap = new GeneratorMap(random);

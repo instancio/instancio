@@ -22,7 +22,7 @@ public abstract class Node {
     private final Type genericType;
     private Node parent;
     private List<Node> children;
-    private final Map<Type, Type> typeMap;
+    private final TypeMap typeMap;
 
     Node(final NodeContext nodeContext,
          final Class<?> klass,
@@ -35,11 +35,7 @@ public abstract class Node {
         this.field = field;
         this.genericType = genericType;
         this.parent = parent;
-
-        final TypeMapResolver typeMapResolver = new TypeMapResolver(
-                nodeContext.getRootTypeMap(), ObjectUtils.defaultIfNull(genericType, klass));
-
-        this.typeMap = Collections.unmodifiableMap(typeMapResolver.getTypeMap());
+        this.typeMap = new TypeMap(ObjectUtils.defaultIfNull(genericType, klass), nodeContext.getRootTypeMap());
     }
 
     protected abstract List<Node> collectChildren();
@@ -88,12 +84,11 @@ public abstract class Node {
         throw new IllegalStateException("Failed resolving type variable: " + typeVariable);
     }
 
-
     public Node getParent() {
         return parent;
     }
 
-    public Map<Type, Type> getTypeMap() {
+    public TypeMap getTypeMap() {
         return typeMap;
     }
 
