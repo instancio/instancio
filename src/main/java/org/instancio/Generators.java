@@ -6,7 +6,13 @@ import org.instancio.generators.OneOfGeneratorSpec;
 import org.instancio.generators.collections.CollectionGenerator;
 import org.instancio.generators.collections.CollectionGeneratorSpec;
 import org.instancio.generators.collections.MapGenerator;
+import org.instancio.generators.coretypes.ByteGenerator;
+import org.instancio.generators.coretypes.DoubleGenerator;
+import org.instancio.generators.coretypes.FloatGenerator;
 import org.instancio.generators.coretypes.IntegerGenerator;
+import org.instancio.generators.coretypes.LongGenerator;
+import org.instancio.generators.coretypes.NumberGeneratorSpec;
+import org.instancio.generators.coretypes.ShortGenerator;
 import org.instancio.generators.coretypes.StringGenerator;
 import org.instancio.generators.coretypes.StringGeneratorSpec;
 import org.instancio.internal.random.RandomProvider;
@@ -40,8 +46,28 @@ public class Generators {
         return new StringGenerator(random);
     }
 
-    public IntegerGenerator ints() {
+    public NumberGeneratorSpec<Byte> bytes() {
+        return new ByteGenerator(random);
+    }
+
+    public NumberGeneratorSpec<Short> shorts() {
+        return new ShortGenerator(random);
+    }
+
+    public NumberGeneratorSpec<Integer> ints() {
         return new IntegerGenerator(random);
+    }
+
+    public NumberGeneratorSpec<Long> longs() {
+        return new LongGenerator(random);
+    }
+
+    public NumberGeneratorSpec<Float> floats() {
+        return new FloatGenerator(random);
+    }
+
+    public NumberGeneratorSpec<Double> doubles() {
+        return new DoubleGenerator(random);
     }
 
     @SafeVarargs
