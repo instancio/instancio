@@ -71,8 +71,8 @@ public class Generators {
         return new OneOfCollectionGenerator<T>(random).oneOf(values);
     }
 
-    public ArrayGeneratorSpec<Object> array() {
-        return new ArrayGenerator(random);
+    public <T> ArrayGeneratorSpec<T> array() {
+        return new ArrayGenerator<>(random);
     }
 
     public <T> CollectionGeneratorSpec<Collection<T>> collection() {

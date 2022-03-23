@@ -20,8 +20,8 @@ import org.instancio.internal.InstancioApiImpl;
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .with(field("fullName"), () -> "Homer Simpson") // Person.name
- *             .with(field(Address.class, "phoneNumber"), () -> new PhoneNumber("+1", "123-45-67"))
+ *             .supply(field("fullName"), () -> "Homer Simpson") // Person.name
+ *             .supply(field(Address.class, "phoneNumber"), () -> new PhoneNumber("+1", "123-45-67"))
  *             .create();
  * }</pre>
  *
@@ -62,8 +62,8 @@ import org.instancio.internal.InstancioApiImpl;
  * <pre>{@code
  *     // Create a model
  *     Model<Person> simpsons = Instancio.of(Person.class)
- *             .with(all(Address.class), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
- *             .with(field("pets"), () -> List.of(
+ *             .supply(all(Address.class), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
+ *             .supply(field("pets"), () -> List.of(
  *                          new Pet(PetType.CAT, "Snowball"),
  *                          new Pet(PetType.DOG, "Santa's Little Helper"))
  *             //... other specs
@@ -73,13 +73,13 @@ import org.instancio.internal.InstancioApiImpl;
  *     Person person = Instancio.of(simpsons).create();
  *
  *     // Use the model but override the name field generator
- *     Person homer = Instancio.of(simpsons).with(field("name"), () -> "Homer").create();
- *     Person marge = Instancio.of(simpsons).with(field("name"), () -> "Marge").create();
+ *     Person homer = Instancio.of(simpsons).supply(field("name"), () -> "Homer").create();
+ *     Person marge = Instancio.of(simpsons).supply(field("name"), () -> "Marge").create();
  *
  *     // A model can also used to create another model.
  *     // This snippet overrides the original model to include a new pet.
  *     Model<Person> withNewPet = Instancio.of(simpsons)
- *             .with(field("pets"), () -> List.of(
+ *             .supply(field("pets"), () -> List.of(
  *                          new Pet(PetType.PIG, "Plopper"),
  *                          new Pet(PetType.CAT, "Snowball"),
  *                          new Pet(PetType.DOG, "Santa's Little Helper"))
