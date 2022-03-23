@@ -59,12 +59,39 @@ public class Bindings {
     }
 
     /**
-     * Shorthand for {@code all(Integer.class)}.
+     * Binding for all bytes, primitive and wrapper.
+     *
+     * @return binding for all bytes
+     */
+    public static Binding allBytes() {
+        return all(byte.class);
+    }
+
+    /**
+     * Binding for all integers, primitive and wrapper.
      *
      * @return binding for all integers
      */
     public static Binding allInts() {
-        return all(Integer.class);
+        return all(int.class);
+    }
+
+    /**
+     * Binding for all longs, primitive and wrapper.
+     *
+     * @return binding for all longs
+     */
+    public static Binding allLongs() {
+        return all(long.class);
+    }
+
+    /**
+     * Binding for all doubles, primitive and wrapper.
+     *
+     * @return binding for all doubles
+     */
+    public static Binding allDoubles() {
+        return all(double.class);
     }
 
 }

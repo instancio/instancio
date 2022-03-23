@@ -6,6 +6,7 @@ import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.exception.InstancioException;
 import org.instancio.generators.ArrayGenerator;
+import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
@@ -214,16 +215,24 @@ public class ModelContext<T> {
                 final Field field = getField(targetType, target.getFieldName());
 
                 if (field.getType().isArray() && generator instanceof ArrayGenerator) {
-                    ((ArrayGenerator) generator).type(field.getType().getComponentType());
+                    ((ArrayGenerator<?>) generator).type(field.getType().getComponentType());
                 }
                 this.userSuppliedFieldGenerators.put(field, generator);
             } else {
                 if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
-                    ((ArrayGenerator) generator).type(target.getTargetType().getComponentType());
+                    ((ArrayGenerator<?>) generator).type(target.getTargetType().getComponentType());
                 }
                 this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
+
+                // e.g. if int.class, map Integer.class to the same generator (and vice versa)
+                PrimitiveWrapperBiLookup.getEquivalent(target.getTargetType())
+                        .ifPresent(equivalent -> this.userSuppliedClassGenerators.put(equivalent, generator));
             }
             return this;
+        }
+
+        private static boolean isCoreType(Class<?> type) {
+            return false;
         }
 
         public Builder<T> withGeneratorSpec(final Binding target, final Function<Generators, ? extends GeneratorSpec<?>> spec) {

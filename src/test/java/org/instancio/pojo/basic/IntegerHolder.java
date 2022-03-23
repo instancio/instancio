@@ -7,5 +7,7 @@ import lombok.ToString;
 @ToString
 public class IntegerHolder {
 
-    private Integer value;
+    private int primitive;
+
+    private Integer wrapper;
 }

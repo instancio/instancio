@@ -3,7 +3,6 @@ package org.instancio.api.features;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioException;
 import org.instancio.pojo.basic.ClassWithInitializedField;
-import org.instancio.pojo.basic.IntHolder;
 import org.instancio.pojo.basic.IntegerHolder;
 import org.instancio.testsupport.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
@@ -28,10 +27,10 @@ class WithNullableFieldTest {
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final IntegerHolder holder = Instancio.of(IntegerHolder.class)
-                    .withNullable(field("value"))
+                    .withNullable(field("wrapper"))
                     .create();
 
-            results.add(holder.getValue());
+            results.add(holder.getWrapper());
         }
 
         assertThat(results)
@@ -43,11 +42,11 @@ class WithNullableFieldTest {
     @DisplayName("Specifying nullable for a primitive field throws an exception")
     void nullableWithPrimitiveFieldThrowsException() {
         assertThatThrownBy(
-                () -> Instancio.of(IntHolder.class)
-                        .withNullable(field("value"))
+                () -> Instancio.of(IntegerHolder.class)
+                        .withNullable(field("primitive"))
                         .create())
                 .isInstanceOf(InstancioException.class)
-                .hasMessage("Primitive field 'private int org.instancio.pojo.basic.IntHolder.value' cannot be set to null");
+                .hasMessage("Primitive field 'private int org.instancio.pojo.basic.IntegerHolder.primitive' cannot be set to null");
     }
 
     @Test
