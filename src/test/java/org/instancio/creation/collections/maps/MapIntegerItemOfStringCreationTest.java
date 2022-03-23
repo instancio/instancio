@@ -14,7 +14,7 @@ public class MapIntegerItemOfStringCreationTest extends CreationTestTemplate<Map
     @Override
     protected void verify(MapIntegerItemOfString result) {
         assertThat(result.getMap())
-                .hasSize(Constants.COLLECTION_SIZE);
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
         assertThat(result.getMap().entrySet())
                 .allSatisfy(entry -> {

@@ -11,7 +11,7 @@ public class ConcurrentNavigableMapIntegerStringCreationTest
 
     @Override
     protected void verify(ConcurrentNavigableMapIntegerString result) {
-        assertThat(result.getMap()).hasSize(Constants.COLLECTION_SIZE);
+        assertThat(result.getMap()).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
     }
 
 }

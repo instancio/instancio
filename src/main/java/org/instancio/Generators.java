@@ -8,6 +8,7 @@ import org.instancio.generators.OneOfCollectionGeneratorSpec;
 import org.instancio.generators.collections.CollectionGenerator;
 import org.instancio.generators.collections.CollectionGeneratorSpec;
 import org.instancio.generators.collections.MapGenerator;
+import org.instancio.generators.collections.MapGeneratorSpec;
 import org.instancio.generators.coretypes.ByteGenerator;
 import org.instancio.generators.coretypes.DoubleGenerator;
 import org.instancio.generators.coretypes.FloatGenerator;
@@ -30,18 +31,6 @@ public class Generators {
 
     public Generators(final RandomProvider random) {
         this.random = random;
-    }
-
-    public ArrayGenerator array() {
-        return new ArrayGenerator();
-    }
-
-    public <T> CollectionGeneratorSpec<Collection<T>> collection() {
-        return new CollectionGenerator<>(random);
-    }
-
-    public MapGenerator map() {
-        return new MapGenerator();
     }
 
     public StringGeneratorSpec string() {
@@ -79,5 +68,17 @@ public class Generators {
 
     public final <T> OneOfCollectionGeneratorSpec<T> oneOf(Collection<T> values) {
         return new OneOfCollectionGenerator<T>(random).oneOf(values);
+    }
+
+    public ArrayGenerator array() {
+        return new ArrayGenerator();
+    }
+
+    public <T> CollectionGeneratorSpec<Collection<T>> collection() {
+        return new CollectionGenerator<>(random);
+    }
+
+    public <K, V> MapGeneratorSpec<K, V> map() {
+        return new MapGenerator<>(random);
     }
 }

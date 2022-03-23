@@ -9,7 +9,7 @@ import org.instancio.util.Verify;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T>> implements CollectionGeneratorSpec<Collection<T>> {
+public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
 
     private int minSize = 2;
     private int maxSize = 6;
@@ -20,7 +20,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
     }
 
     @Override
-    public CollectionGeneratorSpec<Collection<T>> minSize(final int size) {
+    public CollectionGeneratorSpec<T> minSize(final int size) {
         Verify.isTrue(size >= 0, "Size cannot be negative: " + size);
         this.minSize = size;
         this.maxSize = Math.max(minSize, maxSize);
@@ -28,7 +28,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
     }
 
     @Override
-    public CollectionGeneratorSpec<Collection<T>> maxSize(final int size) {
+    public CollectionGeneratorSpec<T> maxSize(final int size) {
         Verify.isTrue(size >= 0, "Size cannot be negative: " + size);
         this.maxSize = size;
         this.minSize = Math.min(minSize, maxSize);
@@ -36,9 +36,10 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
     }
 
     @Override
-    public CollectionGeneratorSpec<Collection<T>> type(final Class<?> type) {
+    public CollectionGeneratorSpec<T> type(final Class<?> type) {
         this.type = Verify.notNull(type, "Type must not be null");
         return this;
+
     }
 
     @Override

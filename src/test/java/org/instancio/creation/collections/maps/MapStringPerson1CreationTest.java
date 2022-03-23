@@ -14,7 +14,7 @@ public class MapStringPerson1CreationTest extends CreationTestTemplate<Map<Strin
 
     @Override
     protected void verify(Map<String, Person> result) {
-        assertThat(result).hasSize(Constants.COLLECTION_SIZE);
+        assertThat(result).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
         assertThat(result.entrySet())
                 .allSatisfy(entry -> {

@@ -13,7 +13,7 @@ public class MapIntegerStringCreationTest extends CreationTestTemplate<MapIntege
     @Override
     protected void verify(MapIntegerString result) {
         assertThat(result.getMap())
-                .hasSize(Constants.COLLECTION_SIZE);
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
         assertThat(result.getMap().entrySet())
                 .allSatisfy(entry -> {

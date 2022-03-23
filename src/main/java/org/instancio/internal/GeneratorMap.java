@@ -80,11 +80,11 @@ class GeneratorMap {
         // Collections
         generatorMap.put(Collection.class, new CollectionGenerator<>(random));
         generatorMap.put(List.class, new CollectionGenerator<>(random));
-        generatorMap.put(Map.class, new MapGenerator());
-        generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator());
-        generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator());
-        generatorMap.put(SortedMap.class, new TreeMapGenerator());
-        generatorMap.put(NavigableMap.class, new TreeMapGenerator());
+        generatorMap.put(Map.class, new MapGenerator<>(random));
+        generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>(random));
+        generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>(random));
+        generatorMap.put(SortedMap.class, new TreeMapGenerator<>(random));
+        generatorMap.put(NavigableMap.class, new TreeMapGenerator<>(random));
         generatorMap.put(Set.class, new HashSetGenerator<>(random));
         generatorMap.put(SortedSet.class, new TreeSetGenerator<>(random));
         generatorMap.put(NavigableSet.class, new TreeSetGenerator<>(random));

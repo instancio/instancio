@@ -8,7 +8,7 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
 
     StringGeneratorSpec allowEmpty();
 
-    StringGeneratorSpec min(int length);
+    StringGeneratorSpec minLength(int length);
 
-    StringGeneratorSpec max(int length);
+    StringGeneratorSpec maxLength(int length);
 }

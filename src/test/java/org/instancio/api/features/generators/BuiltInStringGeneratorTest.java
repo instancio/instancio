@@ -20,7 +20,7 @@ class BuiltInStringGeneratorTest {
     @DisplayName("All strings should start with prefix: when strings are collection elements")
     void stringPrefixForAllStringsInsideCollection() {
         final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                .generate(allStrings(), gen -> gen.string().min(MIN_LENGTH).prefix(PREFIX))
+                .generate(allStrings(), gen -> gen.string().minLength(MIN_LENGTH).prefix(PREFIX))
                 .create();
 
         assertThat(result.getList1()).isNotEmpty()

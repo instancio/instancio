@@ -19,7 +19,7 @@ public class NestedMapsCreationTest extends CreationTestTemplate<NestedMaps<Stri
     }
 
     private void assertMap1(Map<Long, Map<String, Boolean>> map1) {
-        assertThat(map1).hasSize(Constants.MAP_SIZE);
+        assertThat(map1).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
         assertThat(map1.keySet())
                 .hasOnlyElementsOfType(Long.class)
                 .doesNotContainNull();
@@ -29,7 +29,7 @@ public class NestedMapsCreationTest extends CreationTestTemplate<NestedMaps<Stri
                 .doesNotContainNull()
                 .allSatisfy(nestedMap -> {
 
-                    assertThat(nestedMap).hasSize(Constants.MAP_SIZE);
+                    assertThat(nestedMap).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
                     assertThat(nestedMap.keySet())
                             .hasOnlyElementsOfType(String.class)
@@ -44,7 +44,7 @@ public class NestedMapsCreationTest extends CreationTestTemplate<NestedMaps<Stri
     private void assertMap2(Map<?, ? extends Map<?, Boolean>> map1) {
         // Map<OKEY, Map<IKEY, Boolean>> map2
 
-        assertThat(map1).hasSize(Constants.MAP_SIZE);
+        assertThat(map1).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
         assertThat(map1.keySet())
                 .hasOnlyElementsOfType(String.class)
                 .doesNotContainNull();
@@ -54,7 +54,7 @@ public class NestedMapsCreationTest extends CreationTestTemplate<NestedMaps<Stri
                 .doesNotContainNull()
                 .allSatisfy(nestedMap -> {
 
-                    assertThat(nestedMap).hasSize(Constants.MAP_SIZE);
+                    assertThat(nestedMap).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
                     assertThat(nestedMap.keySet())
                             .hasOnlyElementsOfType(Integer.class)

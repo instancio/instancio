@@ -1,11 +1,14 @@
 package org.instancio.generators.collections;
 
+import org.instancio.internal.random.RandomProvider;
+
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ConcurrentHashMapGenerator extends MapGenerator {
+public class ConcurrentHashMapGenerator<K, V> extends MapGenerator<K, V> {
 
-    public ConcurrentHashMapGenerator() {
-        super.type(ConcurrentHashMap.class);
+    public ConcurrentHashMapGenerator(final RandomProvider random) {
+        super(random);
+        type(ConcurrentHashMap.class);
     }
 
 }

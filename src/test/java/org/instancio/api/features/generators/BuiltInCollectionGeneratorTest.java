@@ -79,26 +79,30 @@ class BuiltInCollectionGeneratorTest {
         @DisplayName("Map of the target field should have expected size and be fully populated")
         void mapShouldHaveExpectedSize() {
             final TwoMapsOfIntegerItemString result = Instancio.of(TwoMapsOfIntegerItemString.class)
-                    .generate(field("map1"), gen -> gen.map().size(EXPECTED_SIZE))
+                    .generate(field("map1"), gen -> gen.map()
+                            .minSize(EXPECTED_SIZE)
+                            .maxSize(EXPECTED_SIZE))
                     .create();
 
-            assertEntries(result.getMap1(), EXPECTED_SIZE);
-            assertEntries(result.getMap2(), Constants.MAP_SIZE);
+            assertEntries(result.getMap1(), EXPECTED_SIZE, EXPECTED_SIZE);
+            assertEntries(result.getMap2(), Constants.MIN_SIZE, Constants.MAX_SIZE);
         }
 
         @Test
         @DisplayName("All maps should have expected size and be fully populated")
         void allMapsShouldHaveExpectedSize() {
             final TwoMapsOfIntegerItemString result = Instancio.of(TwoMapsOfIntegerItemString.class)
-                    .generate(all(Map.class), gen -> gen.map().size(EXPECTED_SIZE))
+                    .generate(all(Map.class), gen -> gen.map()
+                            .minSize(EXPECTED_SIZE)
+                            .maxSize(EXPECTED_SIZE))
                     .create();
 
-            assertEntries(result.getMap1(), EXPECTED_SIZE);
-            assertEntries(result.getMap2(), EXPECTED_SIZE);
+            assertEntries(result.getMap1(), EXPECTED_SIZE, EXPECTED_SIZE);
+            assertEntries(result.getMap2(), EXPECTED_SIZE, EXPECTED_SIZE);
         }
 
-        private void assertEntries(final Map<Integer, Item<String>> map, final int expectedSize) {
-            assertThat(map).hasSize(expectedSize);
+        private void assertEntries(final Map<Integer, Item<String>> map, final int minSize, final int maxSize) {
+            assertThat(map).hasSizeBetween(minSize, maxSize);
             assertThat(map.entrySet()).allSatisfy(entry -> {
                 assertThat(entry.getKey()).isInstanceOf(Integer.class);
                 assertThat(entry.getValue().getValue()).isInstanceOf(String.class); // item.value

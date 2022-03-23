@@ -28,7 +28,7 @@ public class StringGenerator extends AbstractRandomGenerator<String> implements 
     }
 
     @Override
-    public StringGeneratorSpec min(final int length) {
+    public StringGeneratorSpec minLength(final int length) {
         Verify.isTrue(length >= 0, "Length cannot be negative: %s", length);
         this.minLength = length;
         this.maxLength = Math.max(length, maxLength);
@@ -36,7 +36,7 @@ public class StringGenerator extends AbstractRandomGenerator<String> implements 
     }
 
     @Override
-    public StringGeneratorSpec max(final int length) {
+    public StringGeneratorSpec maxLength(final int length) {
         Verify.isTrue(length >= 0, "Length cannot be negative: %s", length);
         this.maxLength = length;
         this.minLength = Math.min(minLength, length);

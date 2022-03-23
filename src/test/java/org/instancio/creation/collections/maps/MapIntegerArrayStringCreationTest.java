@@ -15,12 +15,12 @@ public class MapIntegerArrayStringCreationTest extends CreationTestTemplate<MapI
     @Override
     protected void verify(MapIntegerArrayString result) {
         final Map<Integer, String[]> map = result.getMap();
-        assertThat(map).hasSize(Constants.MAP_SIZE);
+        assertThat(map).isNotEmpty();
 
         assertThat(map.entrySet()).allSatisfy(entry -> {
             assertThat(entry.getKey()).isInstanceOf(Integer.class);
             assertThat(entry.getValue())
-                    .hasSize(Constants.ARRAY_SIZE)
+                    .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                     .hasOnlyElementsOfType(String.class);
         });
     }
