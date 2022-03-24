@@ -40,13 +40,14 @@ class GeneratorFacade {
     }
 
     GeneratorResult<?> generateNodeValue(Node node, @Nullable Object owner) {
-        final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
+        if (owner != null) {
+            final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
+            if (ancestor != null) {
+                LOG.debug("{} has a circular dependency to {}. Not setting field value.",
+                        owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
 
-        if (ancestor != null) {
-            LOG.debug("{} has a circular dependency to {}. Not setting field value.",
-                    owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
-
-            return GeneratorResult.nullResult();
+                return GeneratorResult.nullResult();
+            }
         }
 
         final Optional<GeneratorResult<?>> optionalResult = attemptGenerateViaContext(node);
@@ -124,17 +125,10 @@ class GeneratorFacade {
     /**
      * If the context has enough information to generate a value for the field, then do so.
      * If not, return an empty {@link Optional} and proceed with the main generation flow.
-     * <p>
-     * TODO: hierarchy.setAncestorOf(value, owner) must be done for all generated objects
-     *  unless they are from JDK classes
      */
     private Optional<GeneratorResult<?>> attemptGenerateViaContext(final Node node) {
 
         if (node.getField() != null && context.getNullableFields().contains(node.getField()) && random.trueOrFalse()) {
-            // We can return a null 'GeneratorResult' or a null 'GeneratorResult.value'
-            // Returning a null 'GeneratorResult.value' will ensure that a field value
-            // will be overwritten with null. Otherwise, field value would retain its
-            // old value (if one was assigned).
             return Optional.of(GeneratorResult.nullResult());
         }
 
