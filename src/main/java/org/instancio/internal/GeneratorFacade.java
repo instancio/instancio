@@ -36,11 +36,10 @@ class GeneratorFacade {
         this.random = new RandomProvider(seed);
         this.generatorMap = new GeneratorMap(random);
         this.instantiator = new Instantiator();
-        LOG.debug("Seed: {}", seed);
+        LOG.trace("Seed: {}", seed);
     }
 
     GeneratorResult<?> generateNodeValue(Node node, @Nullable Object owner) {
-        final Class<?> effectiveType = node.getKlass();
         final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
 
         if (ancestor != null) {
@@ -55,13 +54,15 @@ class GeneratorFacade {
             return optionalResult.get();
         }
 
-        if (effectiveType.isPrimitive()) {
-            return GeneratorResult.build(generatorMap.get(effectiveType).generate());
+        if (node.getKlass().isPrimitive()) {
+            return GeneratorResult.build(generatorMap.get(node.getKlass()).generate());
         }
 
         if (node instanceof ArrayNode) {
             return generateArray(node);
         }
+
+        final Class<?> effectiveType = context.getSubtypeMap().getOrDefault(node.getKlass(), node.getKlass());
 
         final Generator<?> generator = generatorMap.get(effectiveType);
 

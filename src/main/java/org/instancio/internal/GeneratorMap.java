@@ -75,7 +75,7 @@ class GeneratorMap {
         generatorMap.put(LocalDate.class, new LocalDateGenerator(random));
         generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator(random));
         generatorMap.put(UUID.class, new UUIDGenerator(random));
-        generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator());
+        generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(random));
 
         // Collections
         generatorMap.put(Collection.class, new CollectionGenerator<>(random));

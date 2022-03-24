@@ -244,6 +244,7 @@ public class ModelContext<T> {
         }
 
         public Builder<T> withSubtypeMapping(final Class<?> from, final Class<?> to) {
+            InstancioValidator.validateSubtypeMapping(from, to);
             this.subtypeMap.put(from, to);
             return this;
         }

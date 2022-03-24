@@ -4,8 +4,10 @@ import org.instancio.internal.random.RandomProvider;
 
 import java.math.BigDecimal;
 
-// TODO
 public class BigDecimalGenerator extends AbstractRandomGenerator<BigDecimal> {
+
+    private static final long MIN = 1;
+    private static final long MAX = 10_000;
 
     public BigDecimalGenerator(final RandomProvider random) {
         super(random);
@@ -13,6 +15,6 @@ public class BigDecimalGenerator extends AbstractRandomGenerator<BigDecimal> {
 
     @Override
     public BigDecimal generate() {
-        return BigDecimal.valueOf(random().longBetween(Long.MIN_VALUE, Long.MAX_VALUE));
+        return BigDecimal.valueOf(random().longBetween(MIN, MAX));
     }
 }

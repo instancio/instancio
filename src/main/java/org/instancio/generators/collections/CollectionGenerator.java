@@ -39,7 +39,6 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
     public CollectionGeneratorSpec<T> type(final Class<?> type) {
         this.type = Verify.notNull(type, "Type must not be null");
         return this;
-
     }
 
     @Override

@@ -34,6 +34,10 @@ public class Generators {
         this.random = random;
     }
 
+    public RandomProvider random() {
+        return random;
+    }
+
     public StringGeneratorSpec string() {
         return new StringGenerator(random);
     }
