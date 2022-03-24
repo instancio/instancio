@@ -118,11 +118,11 @@ public interface InstancioApi<T> {
      * Example:
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *         .generate(field("age"), gen -> gen.ints().min(18).max(100))
-     *         .generate(field("name"), gen -> gen.string().min(5).allowEmpty())
-     *         .generate(field(Address.class, "phoneNumbers"), gen -> gen.collection().minSize(5))
-     *         .generate(field(Address.class, "city"), gen -> gen.oneOf("Burnaby", "Vancouver", "Richmond"))
-     *         .create();
+     *             .generate(field("age"), gen -> gen.ints().min(18).max(100))
+     *             .generate(field("name"), gen -> gen.string().min(5).allowEmpty())
+     *             .generate(field(Address.class, "phoneNumbers"), gen -> gen.collection().minSize(5))
+     *             .generate(field(Address.class, "city"), gen -> gen.oneOf("Burnaby", "Vancouver", "Richmond"))
+     *             .create();
      * }</pre>
      *
      * @param target class or field
@@ -147,13 +147,13 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      * <p>
-     * will assign all {@code List} fields instances of {@code Vector}.
+     * will assign all {@code List}s to {@code Vector}s.
      *
      * @param baseClass interface or base class
      * @param subClass  subtype of the {@code baseClass}
      * @return API builder reference
      */
-    InstancioApi<T> map(Class<?> baseClass, Class<?> subClass); // XXX can this be accomplished using 'with(target, generator)'?
+    InstancioApi<T> map(Class<?> baseClass, Class<?> subClass);
 
     /**
      * Set the seed value for the random number generator. If seed is not specified,
