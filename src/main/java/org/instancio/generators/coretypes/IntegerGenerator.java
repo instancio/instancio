@@ -2,12 +2,12 @@ package org.instancio.generators.coretypes;
 
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.util.ObjectUtils;
+import org.instancio.util.Verify;
 
 public class IntegerGenerator extends AbstractRandomGenerator<Integer> implements NumberGeneratorSpec<Integer> {
 
-    private int min = Integer.MIN_VALUE;
-    private int max = Integer.MAX_VALUE;
+    private int min = DEFAULT_INT_MIN;
+    private int max = DEFAULT_INT_MAX;
 
     public IntegerGenerator(final RandomProvider random) {
         super(random);
@@ -15,13 +15,13 @@ public class IntegerGenerator extends AbstractRandomGenerator<Integer> implement
 
     @Override
     public NumberGeneratorSpec<Integer> min(final Integer min) {
-        this.min = ObjectUtils.defaultIfNull(min, Integer.MIN_VALUE);
+        this.min = Verify.notNull(min);
         return this;
     }
 
     @Override
     public NumberGeneratorSpec<Integer> max(final Integer max) {
-        this.max = ObjectUtils.defaultIfNull(max, Integer.MAX_VALUE);
+        this.max = Verify.notNull(max);
         return this;
     }
 

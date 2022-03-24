@@ -13,6 +13,6 @@ public class LocalDateGenerator extends AbstractRandomGenerator<LocalDate> {
     @Override
     public LocalDate generate() {
         return LocalDate.now()
-                .minusDays(random().intBetween(0, 3650));
+                .plusMonths(random().intBetween(-3650, 3650));
     }
 }

@@ -13,7 +13,7 @@ public class LocalDateTimeGenerator extends AbstractRandomGenerator<LocalDateTim
     @Override
     public LocalDateTime generate() {
         return LocalDateTime.now()
-                .minusDays(random().intBetween(0, 3650))
+                .plusDays(random().intBetween(-3650, 3650))
                 .minusSeconds(random().intBetween(0, 60));
     }
 }

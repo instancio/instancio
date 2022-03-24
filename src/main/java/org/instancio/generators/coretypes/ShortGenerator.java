@@ -3,11 +3,12 @@ package org.instancio.generators.coretypes;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.ObjectUtils;
+import org.instancio.util.Verify;
 
 public class ShortGenerator extends AbstractRandomGenerator<Short> implements NumberGeneratorSpec<Short> {
 
-    private short min = Short.MIN_VALUE;
-    private short max = Short.MAX_VALUE;
+    private short min = DEFAULT_SHORT_MIN;
+    private short max = DEFAULT_SHORT_MAX;
 
     public ShortGenerator(final RandomProvider random) {
         super(random);
@@ -15,13 +16,13 @@ public class ShortGenerator extends AbstractRandomGenerator<Short> implements Nu
 
     @Override
     public NumberGeneratorSpec<Short> min(final Short min) {
-        this.min = ObjectUtils.defaultIfNull(min, Short.MIN_VALUE);
+        this.min = Verify.notNull(min);
         return this;
     }
 
     @Override
     public NumberGeneratorSpec<Short> max(final Short max) {
-        this.max = ObjectUtils.defaultIfNull(max, Short.MAX_VALUE);
+        this.max = Verify.notNull(max);
         return this;
     }
 
