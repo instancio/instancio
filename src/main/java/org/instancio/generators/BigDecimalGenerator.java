@@ -4,6 +4,7 @@ import org.instancio.internal.random.RandomProvider;
 
 import java.math.BigDecimal;
 
+// TODO
 public class BigDecimalGenerator extends AbstractRandomGenerator<BigDecimal> {
 
     public BigDecimalGenerator(final RandomProvider random) {

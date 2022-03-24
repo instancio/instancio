@@ -1,7 +1,7 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.internal.model.TypeMapResolver;
+import org.instancio.internal.model.TypeMap;
 
 import java.lang.reflect.Type;
 
@@ -9,13 +9,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 @SuppressWarnings("UnusedReturnValue")
-public class TypeMapResolverAssert extends AbstractAssert<TypeMapResolverAssert, TypeMapResolver> {
+public class TypeMapResolverAssert extends AbstractAssert<TypeMapResolverAssert, TypeMap> {
 
-    private TypeMapResolverAssert(TypeMapResolver actual) {
+    private TypeMapResolverAssert(TypeMap actual) {
         super(actual, TypeMapResolverAssert.class);
     }
 
-    public static TypeMapResolverAssert assertThatResolver(TypeMapResolver actual) {
+    public static TypeMapResolverAssert assertThatResolver(TypeMap actual) {
         return new TypeMapResolverAssert(actual);
     }
 

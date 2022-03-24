@@ -6,6 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -13,27 +14,26 @@ import java.util.StringJoiner;
 /**
  * Helper class for mapping type variables to actual type arguments.
  */
-public class TypeMapResolver {
+public class TypeMap {
 
-    private final Map<Type, Type> typeMap = new HashMap<>();
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
-    private final Type genericType;
+    private final Map<Type, Type> typeMap;
 
-    public TypeMapResolver(final Map<TypeVariable<?>, Class<?>> rootTypeMap,
-                           final Type genericType) {
-
-        this.rootTypeMap = rootTypeMap;
-        this.genericType = genericType;
-        initTypeMap();
+    public TypeMap(final Type genericType, final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
+        this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
+        this.typeMap = Collections.unmodifiableMap(buildTypeMap(genericType));
     }
 
-    // TODO hide
-    public Map<Type, Type> getTypeMap() {
-        return typeMap;
+    public Type get(final Type type) {
+        return typeMap.get(type);
     }
 
-    public Type getActualType(Type t) {
-        return typeMap.get(t);
+    public Type getOrDefault(final Type type, final Type defaultValue) {
+        return typeMap.getOrDefault(type, defaultValue);
+    }
+
+    public Type getActualType(final Type type) {
+        return typeMap.get(type);
     }
 
     public int size() {
@@ -54,22 +54,21 @@ public class TypeMapResolver {
      *   Item<?>             | WildcardType
      *   Item<? extends Foo> | WildcardType
      * }</pre>
+     *
+     * @param genericType to build the type map for
+     * @return type map
      */
-    private void initTypeMap() {
-        if (genericType instanceof Class) {
-//            final TypeVariable<?>[] typeVariables = ((Class<?>) genericType).getTypeParameters();
-//            for (TypeVariable<?> typeVar : typeVariables) {
-//                if (!typeMap.containsKey(typeVar))
-//                    typeMap.put(typeVar, rootTypeMap.get(typeVar));
-//            }
+    private Map<Type, Type> buildTypeMap(final Type genericType) {
+        final Map<Type, Type> map = new HashMap<>();
 
-            return; // non-generic class; nothing to resolve
+        if (genericType instanceof Class) {
+            return map;
         }
 
         if (genericType instanceof TypeVariable && rootTypeMap.containsKey(genericType)) {
             final Class<?> mappedType = rootTypeMap.get(genericType);
-            typeMap.put(genericType, mappedType);
-            return;
+            map.put(genericType, mappedType);
+            return map;
         }
 
         if (genericType instanceof ParameterizedType) {
@@ -82,9 +81,10 @@ public class TypeMapResolver {
                 final Type mappedType = resolveTypeMapping(typeArgs[i]);
                 // Mapped type can be null when a type variable isn't in the root type map.
                 // In this case with map type variable to type variable
-                typeMap.put(typeVars[i], ObjectUtils.defaultIfNull(mappedType, typeArgs[i]));
+                map.put(typeVars[i], ObjectUtils.defaultIfNull(mappedType, typeArgs[i]));
             }
         }
+        return map;
     }
 
     private Type resolveTypeMapping(final Type typeArg) {
@@ -103,10 +103,9 @@ public class TypeMapResolver {
 
     @Override
     public String toString() {
-        return new StringJoiner("\n - ", TypeMapResolver.class.getSimpleName() + "[", "]")
+        return new StringJoiner("\n - ", TypeMap.class.getSimpleName() + "[", "]")
                 .add("typeMap=" + typeMap)
                 .add("rootTypeMap=" + rootTypeMap)
-                .add("genericType=" + genericType)
                 .toString();
     }
 }

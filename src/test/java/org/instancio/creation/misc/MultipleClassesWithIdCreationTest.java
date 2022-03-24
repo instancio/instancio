@@ -5,7 +5,7 @@ import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MultipleClassesWithIdTest extends CreationTestTemplate<MultipleClassesWithId> {
+public class MultipleClassesWithIdCreationTest extends CreationTestTemplate<MultipleClassesWithId> {
 
     @Override
     protected void verify(final MultipleClassesWithId result) {
