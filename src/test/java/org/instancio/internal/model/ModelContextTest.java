@@ -16,6 +16,12 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -132,4 +138,32 @@ class ModelContextTest {
         assertThat(ctx.getUserSuppliedClassGenerators().get(String.class)).isSameAs(stringSpec);
     }
 
+    @Test
+    void withSubtypeMapping() {
+        ModelContext<?> ctx = ModelContext.builder(Person.class)
+                .withSubtypeMapping(Collection.class, HashSet.class)
+                .withSubtypeMapping(List.class, LinkedList.class)
+                .build();
+
+        assertThat(ctx.getSubtypeMap()).containsEntry(Collection.class, HashSet.class);
+        assertThat(ctx.getSubtypeMap()).containsEntry(List.class, LinkedList.class);
+    }
+
+    @Test
+    void withSubtypeMappingRejectsInvalidMapping() {
+        final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
+
+        assertThatThrownBy(() -> builder.withSubtypeMapping(ArrayList.class, List.class))
+                .isInstanceOf(InstancioApiException.class)
+                .hasMessage("Class '%s' is not a subtype of '%s'", List.class.getName(), ArrayList.class.getName());
+
+        assertThatThrownBy(() ->
+                builder.withSubtypeMapping(ArrayList.class, ArrayList.class))
+                .isInstanceOf(InstancioApiException.class)
+                .hasMessage("Cannot map the class to itself: '%s'", ArrayList.class.getName());
+
+        assertThatThrownBy(() -> builder.withSubtypeMapping(List.class, AbstractList.class))
+                .isInstanceOf(InstancioApiException.class)
+                .hasMessage("'to' class must not be an interface or abstract class: '%s'", AbstractList.class.getName());
+    }
 }

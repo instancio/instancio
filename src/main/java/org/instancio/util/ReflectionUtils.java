@@ -4,6 +4,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class ReflectionUtils {
 
@@ -42,5 +43,8 @@ public class ReflectionUtils {
         }
     }
 
+    public static boolean isConcrete(Class<?> klass) {
+        return !klass.isInterface() && !Modifier.isAbstract(klass.getModifiers());
+    }
 }
 

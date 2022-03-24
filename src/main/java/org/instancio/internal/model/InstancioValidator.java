@@ -1,6 +1,8 @@
 package org.instancio.internal.model;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.util.ReflectionUtils;
+import org.instancio.util.Verify;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +35,22 @@ public class InstancioValidator {
                     rootClass.getName(),
                     rootClass.getTypeParameters().length,
                     Arrays.toString(rootClass.getTypeParameters())));
+        }
+    }
+
+    static void validateSubtypeMapping(final Class<?> from, final Class<?> to) {
+        Verify.notNull(from, "'from' class must not be null");
+        Verify.notNull(to, "'to' class must not be null");
+        if (from == to) {
+            throw new InstancioApiException(String.format("Cannot map the class to itself: '%s'", to.getName()));
+        }
+        if (!from.isAssignableFrom(to)) {
+            throw new InstancioApiException(String.format(
+                    "Class '%s' is not a subtype of '%s'", to.getName(), from.getName()));
+        }
+        if (!ReflectionUtils.isConcrete(to)) {
+            throw new InstancioApiException(String.format(
+                    "'to' class must not be an interface or abstract class: '%s'", to.getName()));
         }
     }
 }
