@@ -3,7 +3,6 @@ package org.instancio.util;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 public class ReflectionUtils {
@@ -41,24 +40,6 @@ public class ReflectionUtils {
         } catch (Exception ex) {
             throw new InstancioApiException("Invalid field '" + fieldPath + "' for " + klass, ex);
         }
-    }
-
-    @SuppressWarnings("java:S3011")
-    public static <T> T instantiate(Class<T> klass) {
-        try {
-            final Constructor<?>[] constructors = klass.getConstructors();
-
-            for (Constructor<?> c : constructors) {
-                if (c.getParameterCount() == 0) {
-                    c.setAccessible(true);
-                    return (T) c.newInstance();
-                }
-            }
-
-        } catch (Exception ex) {
-            throw new InstancioException(String.format("Failed instantiating class '%s'", klass.getName()), ex);
-        }
-        throw new InstancioException(String.format("'%s' has no default constructor", klass.getName()));
     }
 
 }

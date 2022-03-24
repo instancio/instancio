@@ -8,8 +8,8 @@ import org.instancio.internal.model.Node;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.ImplementationResolver;
 import org.instancio.internal.reflection.InterfaceImplementationResolver;
+import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.util.ObjectUtils;
-import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +28,15 @@ class GeneratorFacade {
     private final ModelContext<?> context;
     private final RandomProvider random;
     private final GeneratorMap generatorMap;
+    private final Instantiator instantiator;
 
     public GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
         final Integer seed = ObjectUtils.defaultIfNull(context.getSeed(), ThreadLocalRandom.current().nextInt());
-        LOG.debug("Seed: {}", seed);
         this.random = new RandomProvider(seed);
-        generatorMap = new GeneratorMap(random);
+        this.generatorMap = new GeneratorMap(random);
+        this.instantiator = new Instantiator();
+        LOG.debug("Seed: {}", seed);
     }
 
     GeneratorResult<?> generateNodeValue(Node node, @Nullable Object owner) {
@@ -75,7 +77,7 @@ class GeneratorFacade {
             if (Collection.class.isAssignableFrom(effectiveType) || Map.class.isAssignableFrom(effectiveType)) {
                 settings = GeneratorSettings.builder().dataStructureSize(2).build();
             }
-            result = GeneratorResult.builder(ReflectionUtils.instantiate(effectiveType)).withSettings(settings).build();
+            result = GeneratorResult.builder(instantiator.instantiate(effectiveType)).withSettings(settings).build();
 
         } else {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());

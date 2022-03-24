@@ -50,6 +50,7 @@
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.2.11</logback.version>
         <lombok.version>1.18.22</lombok.version>
+        <objenesis.version>3.2</objenesis.version>
         <reflections.version>0.10.2</reflections.version>
         <apache.commons.version>3.12.0</apache.commons.version>
         <junit.version>5.8.2</junit.version>
@@ -140,6 +141,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>${objenesis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
