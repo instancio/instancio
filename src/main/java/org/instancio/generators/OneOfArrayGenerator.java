@@ -1,14 +1,14 @@
 package org.instancio.generators;
 
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.model.ModelContext;
 import org.instancio.util.Verify;
 
 public class OneOfArrayGenerator<T> extends AbstractRandomGenerator<T> implements OneOfArrayGeneratorSpec<T> {
 
     private T[] values;
 
-    public OneOfArrayGenerator(final RandomProvider random) {
-        super(random);
+    public OneOfArrayGenerator(final ModelContext<?> context) {
+        super(context);
     }
 
     @Override

@@ -24,6 +24,7 @@ import org.instancio.generators.coretypes.IntegerGenerator;
 import org.instancio.generators.coretypes.LongGenerator;
 import org.instancio.generators.coretypes.ShortGenerator;
 import org.instancio.generators.coretypes.StringGenerator;
+import org.instancio.internal.model.ModelContext;
 import org.instancio.internal.random.RandomProvider;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -46,48 +47,50 @@ import java.util.concurrent.ConcurrentNavigableMap;
 class GeneratorMap {
 
     private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
+    private final ModelContext<?> context;
     private final RandomProvider random;
 
-    GeneratorMap(final RandomProvider random) {
-        this.random = random;
+    GeneratorMap(final ModelContext<?> context) {
+        this.context = context;
+        this.random = context.getRandomProvider();
 
         // Core types
-        generatorMap.put(byte.class, new ByteGenerator(random));
-        generatorMap.put(short.class, new ShortGenerator(random));
-        generatorMap.put(int.class, new IntegerGenerator(random));
-        generatorMap.put(long.class, new LongGenerator(random));
-        generatorMap.put(float.class, new FloatGenerator(random));
-        generatorMap.put(double.class, new DoubleGenerator(random));
-        generatorMap.put(boolean.class, new BooleanGenerator(random));
-        generatorMap.put(char.class, new CharacterGenerator(random));
-        generatorMap.put(Byte.class, new ByteGenerator(random));
-        generatorMap.put(Short.class, new ShortGenerator(random));
-        generatorMap.put(Integer.class, new IntegerGenerator(random));
-        generatorMap.put(Long.class, new LongGenerator(random));
-        generatorMap.put(Float.class, new FloatGenerator(random));
-        generatorMap.put(Double.class, new DoubleGenerator(random));
-        generatorMap.put(Boolean.class, new BooleanGenerator(random));
-        generatorMap.put(Character.class, new CharacterGenerator(random));
-        generatorMap.put(String.class, new StringGenerator(random));
+        generatorMap.put(byte.class, new ByteGenerator(context));
+        generatorMap.put(short.class, new ShortGenerator(context));
+        generatorMap.put(int.class, new IntegerGenerator(context));
+        generatorMap.put(long.class, new LongGenerator(context));
+        generatorMap.put(float.class, new FloatGenerator(context));
+        generatorMap.put(double.class, new DoubleGenerator(context));
+        generatorMap.put(boolean.class, new BooleanGenerator(context));
+        generatorMap.put(char.class, new CharacterGenerator(context));
+        generatorMap.put(Byte.class, new ByteGenerator(context));
+        generatorMap.put(Short.class, new ShortGenerator(context));
+        generatorMap.put(Integer.class, new IntegerGenerator(context));
+        generatorMap.put(Long.class, new LongGenerator(context));
+        generatorMap.put(Float.class, new FloatGenerator(context));
+        generatorMap.put(Double.class, new DoubleGenerator(context));
+        generatorMap.put(Boolean.class, new BooleanGenerator(context));
+        generatorMap.put(Character.class, new CharacterGenerator(context));
+        generatorMap.put(String.class, new StringGenerator(context));
 
-        generatorMap.put(Number.class, new IntegerGenerator(random));
-        generatorMap.put(BigDecimal.class, new BigDecimalGenerator(random));
-        generatorMap.put(LocalDate.class, new LocalDateGenerator(random));
-        generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator(random));
-        generatorMap.put(UUID.class, new UUIDGenerator(random));
-        generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(random));
+        generatorMap.put(Number.class, new IntegerGenerator(context));
+        generatorMap.put(BigDecimal.class, new BigDecimalGenerator(context));
+        generatorMap.put(LocalDate.class, new LocalDateGenerator(context));
+        generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator(context));
+        generatorMap.put(UUID.class, new UUIDGenerator(context));
+        generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(context));
 
         // Collections
-        generatorMap.put(Collection.class, new CollectionGenerator<>(random));
-        generatorMap.put(List.class, new CollectionGenerator<>(random));
-        generatorMap.put(Map.class, new MapGenerator<>(random));
-        generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>(random));
-        generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>(random));
-        generatorMap.put(SortedMap.class, new TreeMapGenerator<>(random));
-        generatorMap.put(NavigableMap.class, new TreeMapGenerator<>(random));
-        generatorMap.put(Set.class, new HashSetGenerator<>(random));
-        generatorMap.put(SortedSet.class, new TreeSetGenerator<>(random));
-        generatorMap.put(NavigableSet.class, new TreeSetGenerator<>(random));
+        generatorMap.put(Collection.class, new CollectionGenerator<>(context));
+        generatorMap.put(List.class, new CollectionGenerator<>(context));
+        generatorMap.put(Map.class, new MapGenerator<>(context));
+        generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>(context));
+        generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>(context));
+        generatorMap.put(SortedMap.class, new TreeMapGenerator<>(context));
+        generatorMap.put(NavigableMap.class, new TreeMapGenerator<>(context));
+        generatorMap.put(Set.class, new HashSetGenerator<>(context));
+        generatorMap.put(SortedSet.class, new TreeSetGenerator<>(context));
+        generatorMap.put(NavigableSet.class, new TreeSetGenerator<>(context));
     }
 
     Generator<?> get(Class<?> klass) {
@@ -95,7 +98,7 @@ class GeneratorMap {
 
         if (generator == null) {
             if (klass.isEnum()) {
-                generator = new EnumGenerator(random, klass);
+                generator = new EnumGenerator(context, klass);
                 generatorMap.put(klass, generator);
             } else if (klass.isArray()) {
                 throw new IllegalArgumentException("Should be calling getArrayGenerator(Class)!");
@@ -106,6 +109,6 @@ class GeneratorMap {
     }
 
     Generator<?> getArrayGenerator(Class<?> componentType) {
-        return new ArrayGenerator(random, componentType);
+        return new ArrayGenerator<>(context, componentType);
     }
 }

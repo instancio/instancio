@@ -1,8 +1,6 @@
 package org.instancio.internal;
 
 import org.instancio.Generator;
-import org.instancio.settings.Setting;
-import org.instancio.settings.Settings;
 import org.instancio.internal.model.ArrayNode;
 import org.instancio.internal.model.ClassNode;
 import org.instancio.internal.model.ModelContext;
@@ -11,7 +9,8 @@ import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.ImplementationResolver;
 import org.instancio.internal.reflection.InterfaceImplementationResolver;
 import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.util.ObjectUtils;
+import org.instancio.settings.Setting;
+import org.instancio.settings.Settings;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,6 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
@@ -34,19 +32,17 @@ class GeneratorFacade {
 
     public GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
-        final Integer seed = ObjectUtils.defaultIfNull(context.getSeed(), ThreadLocalRandom.current().nextInt());
-        this.random = new RandomProvider(seed);
-        this.generatorMap = new GeneratorMap(random);
+        this.random = context.getRandomProvider();
+        this.generatorMap = new GeneratorMap(context);
         this.instantiator = new Instantiator();
-        LOG.trace("Seed: {}", seed);
     }
 
-    GeneratorResult<?> generateNodeValue(Node node, @Nullable Object owner) {
+    GeneratorResult<?> generateNodeValue(final Node node, @Nullable final Object owner) {
         if (owner != null) {
             final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
             if (ancestor != null) {
                 LOG.debug("{} has a circular dependency to {}. Not setting field value.",
-                        owner.getClass().getSimpleName(), ancestor.getClass().getSimpleName());
+                        owner.getClass().getSimpleName(), ancestor);
 
                 return GeneratorResult.nullResult();
             }
@@ -66,35 +62,33 @@ class GeneratorFacade {
         }
 
         final Class<?> effectiveType = context.getSubtypeMap().getOrDefault(node.getKlass(), node.getKlass());
-
         final Generator<?> generator = generatorMap.get(effectiveType);
-
         final GeneratorResult<?> result;
 
         if (generator == null) {
-
             if (effectiveType.isInterface()) {
-                return resolveImplementationAndGenerate(node, owner, effectiveType);
+                result = resolveImplementationAndGenerate(node, owner, effectiveType);
+            } else {
+                GeneratedHints hints = null;
+                if (Collection.class.isAssignableFrom(effectiveType) || Map.class.isAssignableFrom(effectiveType)) {
+                    hints = GeneratedHints.builder()
+                            .dataStructureSize(getRandomSizeForCollectionOrMap(effectiveType))
+                            .build();
+                }
+                result = GeneratorResult.builder(instantiator.instantiate(effectiveType)).withHints(hints).build();
             }
-
-            GeneratorSettings settings = null;
-            if (Collection.class.isAssignableFrom(effectiveType) || Map.class.isAssignableFrom(effectiveType)) {
-                settings = GeneratorSettings.builder()
-                        .dataStructureSize(getRandomSizeForCollectionOrMap(effectiveType))
-                        .build();
-            }
-            result = GeneratorResult.builder(instantiator.instantiate(effectiveType)).withSettings(settings).build();
-
         } else {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
 
             // If we already know how to generate this object, we don't need to collect its fields
-            result = GeneratorResult.builder(generator.generate()).withSettings(generator.getSettings()).build();
+            result = GeneratorResult.builder(generator.generate()).withHints(generator.getHints()).build();
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
         }
 
 
-        ancestorTree.setObjectAncestor(result.getValue(), new AncestorTree.InstanceNode(owner, node.getParent()));
+        if (result != null && result.getValue() != null) {
+            ancestorTree.setObjectAncestor(result.getValue(), new AncestorTree.AncestorTreeNode(owner, node.getParent()));
+        }
         return result;
     }
 
@@ -115,7 +109,7 @@ class GeneratorFacade {
         final Class<?> componentType = ((ArrayNode) node).getElementNode().getKlass();
         final Generator<?> generator = generatorMap.getArrayGenerator(componentType);
         final Object arrayObject = generator.generate();
-        return GeneratorResult.build(arrayObject);
+        return GeneratorResult.builder(arrayObject).withHints(generator.getHints()).build();
     }
 
     /**
@@ -154,13 +148,13 @@ class GeneratorFacade {
             Generator<?> generator = context.getUserSuppliedFieldGenerators().get(node.getField());
 
             result = GeneratorResult.builder(generator.generate())
-                    .withSettings(generator.getSettings())
+                    .withHints(generator.getHints())
                     .build();
 
         } else if (context.getUserSuppliedClassGenerators().containsKey(node.getKlass())) {
             Generator<?> generator = context.getUserSuppliedClassGenerators().get(node.getKlass());
             result = GeneratorResult.builder(generator.generate())
-                    .withSettings(generator.getSettings())
+                    .withHints(generator.getHints())
                     .build();
         }
         return Optional.ofNullable(result);

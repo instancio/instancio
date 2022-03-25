@@ -7,12 +7,13 @@ import javax.annotation.Nullable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * A class for detecting cyclic relationships among objects.
  * <p>
  * The idea is to use an {@link IdentityHashMap} to map a created object
- * to an {@link InstanceNode} containing the "parent" object and its node.
+ * to an {@link AncestorTreeNode} containing the "parent" object and its node.
  * <p>
  * This allows to "walk up" the ancestors to check whether:
  * <ol>
@@ -34,15 +35,15 @@ class AncestorTree {
     /**
      * Maps object instance to its parent instance.
      */
-    private final Map<Object, InstanceNode> idMap = new IdentityHashMap<>();
+    private final Map<Object, AncestorTreeNode> idMap = new IdentityHashMap<>();
 
-    void setObjectAncestor(final Object obj, final InstanceNode ancestor) {
+    void setObjectAncestor(final Object obj, final AncestorTreeNode ancestor) {
         Verify.isFalse(obj instanceof GeneratorResult, "Passed GeneratorResult to ancestor tree!"); // sanity check
         idMap.put(obj, ancestor);
     }
 
     Object getObjectAncestor(@Nullable final Object obj, final Node nodeToCreate) {
-        InstanceNode ancestor = idMap.get(obj);
+        AncestorTreeNode ancestor = idMap.get(obj);
 
         while (ancestor != null) {
             if (ancestor.instance != null
@@ -70,13 +71,21 @@ class AncestorTree {
     }
 
 
-    static class InstanceNode {
+    static class AncestorTreeNode {
         private final Object instance;
         private final Node node;
 
-        InstanceNode(@Nullable final Object instance, final Node node) {
+        AncestorTreeNode(@Nullable final Object instance, final Node node) {
             this.instance = instance;
             this.node = node;
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", AncestorTreeNode.class.getSimpleName() + "[", "]")
+                    .add("instance=" + instance)
+                    .add("node=" + node)
+                    .toString();
         }
     }
 }

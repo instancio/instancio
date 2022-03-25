@@ -5,11 +5,12 @@ import org.instancio.Generator;
 import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.settings.Settings;
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.PropertiesLoader;
+import org.instancio.settings.Settings;
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -48,10 +49,9 @@ public class ModelContext<T> {
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final Settings settings;
     private final Integer seed;
+    private final RandomProvider randomProvider;
 
     private ModelContext(final Builder<T> builder) {
-        putAllBuiltInGenerators(builder);
-
         this.rootType = builder.rootType;
         this.rootClass = builder.rootClass;
         this.rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
@@ -65,22 +65,19 @@ public class ModelContext<T> {
         this.rootTypeMap = rootType instanceof ParameterizedType
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
-        this.settings = mergeDefaultSettingsWith(builder.userSuppliedSettings);
-        this.seed = builder.seed;
-    }
 
-    private Settings mergeDefaultSettingsWith(final Settings userSuppliedSettings) {
-        return Settings.defaults()
+        this.settings = Settings.defaults()
                 .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
-                .merge(userSuppliedSettings)
+                .merge(builder.userSuppliedSettings)
                 .lock();
+
+        this.seed = builder.seed;
+        this.randomProvider = new RandomProvider(ObjectUtils.defaultIfNull(seed, ThreadLocalRandom.current().nextInt()));
+        putAllBuiltInGenerators(builder);
     }
 
-    private static <T> void putAllBuiltInGenerators(final Builder<T> builder) {
-        final int seed = defaultIfNull(builder.seed, ThreadLocalRandom.current().nextInt());
-        final RandomProvider random = new RandomProvider(seed);
-        final Generators generators = new Generators(random);
-
+    private void putAllBuiltInGenerators(final Builder<T> builder) {
+        final Generators generators = new Generators(this);
         builder.generatorSpecMap.forEach((target, genSpecFn) -> {
             final Generator<?> generator = (Generator<?>) genSpecFn.apply(generators);
             builder.withGenerator(target, generator);
@@ -97,6 +94,7 @@ public class ModelContext<T> {
         builder.userSuppliedFieldGenerators.putAll(this.userSuppliedFieldGenerators);
         builder.userSuppliedClassGenerators.putAll(this.userSuppliedClassGenerators);
         builder.subtypeMap.putAll(this.getSubtypeMap());
+        builder.seed = this.seed;
         return builder;
     }
 
@@ -146,6 +144,10 @@ public class ModelContext<T> {
 
     public Integer getSeed() {
         return seed;
+    }
+
+    public RandomProvider getRandomProvider() {
+        return randomProvider;
     }
 
     private static Map<TypeVariable<?>, Class<?>> buildRootTypeMap(

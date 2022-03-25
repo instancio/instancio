@@ -28,7 +28,7 @@ public enum Setting implements SettingKey {
     LONG_NULLABLE("long.nullable", Boolean.class, false),
     FLOAT_MIN("float.min", Float.class, 1f),
     FLOAT_MAX("float.max", Float.class, (float) Constants.NUMERIC_MAX),
-    FLOAT_NULLABLE("float.nullable", Boolean.class, true),
+    FLOAT_NULLABLE("float.nullable", Boolean.class, false),
     DOUBLE_MIN("double.min", Double.class, 1d),
     DOUBLE_MAX("double.max", Double.class, (double) Constants.NUMERIC_MAX),
     DOUBLE_NULLABLE("double.nullable", Boolean.class, false),

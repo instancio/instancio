@@ -46,14 +46,16 @@ class SettingsTest {
 
     @Test
     void merge() {
+        final Settings defaults = Settings.defaults();
         final Settings overrides = Settings.create()
                 .set(Setting.BYTE_MIN, (byte) 99)
                 .set(Setting.ARRAY_NULLABLE, true);
 
-        final Settings actual = Settings.defaults().merge(overrides);
+        final Settings result = defaults.merge(overrides);
 
-        assertThat((Byte) actual.get(Setting.BYTE_MIN)).isEqualTo((byte) 99);
-        assertThat((Boolean) actual.get(Setting.ARRAY_NULLABLE)).isTrue();
+        assertThat((Byte) result.get(Setting.BYTE_MIN)).isEqualTo((byte) 99);
+        assertThat((Boolean) result.get(Setting.ARRAY_NULLABLE)).isTrue();
+        assertThat(result).as("Expecting a new instance of settings to be created").isNotSameAs(defaults);
     }
 
     @Test

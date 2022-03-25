@@ -77,18 +77,21 @@ public class Settings {
     }
 
     /**
-     * Merge given settings into these settings.
+     * Creates a new instance of settings by merging given settings with these settings.
      *
-     * @param overrides settings containing overrides
-     * @return updated settings
+     * @param other settings to merge
+     * @return new instance of merged settings
      */
-    public Settings merge(@Nullable final Settings overrides) {
-        checkLockedForModifications();
-        if (overrides != null) {
-            settingsMap.putAll(overrides.settingsMap);
-            subtypeMap.putAll(overrides.subtypeMap);
+    public Settings merge(@Nullable final Settings other) {
+        final Settings merged = Settings.create();
+        merged.settingsMap.putAll(settingsMap);
+        merged.subtypeMap.putAll(subtypeMap);
+
+        if (other != null) {
+            merged.settingsMap.putAll(other.settingsMap);
+            merged.subtypeMap.putAll(other.subtypeMap);
         }
-        return this;
+        return merged;
     }
 
     /**

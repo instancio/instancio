@@ -1,7 +1,7 @@
 package org.instancio.generators;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.model.ModelContext;
 import org.instancio.util.Verify;
 
 import java.lang.reflect.Method;
@@ -9,8 +9,8 @@ import java.lang.reflect.Method;
 public class EnumGenerator extends AbstractRandomGenerator<Enum<?>> {
     private final Class<?> enumClass;
 
-    public EnumGenerator(final RandomProvider random, final Class<?> enumClass) {
-        super(random);
+    public EnumGenerator(final ModelContext<?> context, final Class<?> enumClass) {
+        super(context);
         this.enumClass = Verify.notNull(enumClass, "Enum class must not be null");
     }
 

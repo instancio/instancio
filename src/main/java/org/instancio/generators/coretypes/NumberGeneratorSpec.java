@@ -19,4 +19,12 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
      * @return spec builder
      */
     NumberGeneratorSpec<T> max(T max);
+
+    /**
+     * Specifies the value should be nullable.
+     *
+     * @return spec builder
+     */
+    NumberGeneratorSpec<T> nullable();
+
 }

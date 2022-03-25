@@ -1,7 +1,7 @@
 package org.instancio.generators;
 
 import org.instancio.Generator;
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.model.ModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +14,11 @@ import java.time.format.DateTimeFormatter;
 public class XMLGregorianCalendarGenerator extends AbstractRandomGenerator<XMLGregorianCalendar> {
     private static final Logger LOG = LoggerFactory.getLogger(XMLGregorianCalendarGenerator.class);
 
-    private final Generator<LocalDateTime> localDateTimeGenerator = new LocalDateTimeGenerator(random());
+    private final Generator<LocalDateTime> localDateTimeGenerator;
 
-    public XMLGregorianCalendarGenerator(final RandomProvider random) {
-        super(random);
+    public XMLGregorianCalendarGenerator(final ModelContext<?> context) {
+        super(context);
+        this.localDateTimeGenerator = new LocalDateTimeGenerator(context);
     }
 
     @Override

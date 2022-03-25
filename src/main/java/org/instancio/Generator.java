@@ -1,6 +1,6 @@
 package org.instancio;
 
-import org.instancio.internal.GeneratorSettings;
+import org.instancio.internal.GeneratedHints;
 
 /**
  * Generic interface for generating values.
@@ -21,9 +21,9 @@ public interface Generator<T> extends GeneratorSpec<T> {
      *
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *         .with(field("age"), oneOf(20, 30, 40, 50))
-     *         .with(field("location"), () -> "Canada")
-     *         .with(all(LocalDateTime.class), () -> LocalDateTime.now())
+     *         .supply(field("age"), oneOf(20, 30, 40, 50))
+     *         .supply(field("location"), () -> "Canada")
+     *         .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
      *         .create();
      * }</pre>
      *
@@ -31,9 +31,9 @@ public interface Generator<T> extends GeneratorSpec<T> {
      */
     T generate();
 
-    default GeneratorSettings getSettings() {
+    default GeneratedHints getHints() {
         // ignore children by default to ensure values created
         // from user-supplied generators are not modified
-        return GeneratorSettings.builder().ignoreChildren(true).build();
+        return GeneratedHints.builder().ignoreChildren(true).build();
     }
 }

@@ -8,5 +8,9 @@ public interface ArrayGeneratorSpec<T> extends GeneratorSpec<T> {
 
     ArrayGeneratorSpec<T> maxLength(int length);
 
+    ArrayGeneratorSpec<T> nullable();
+
+    ArrayGeneratorSpec<T> nullableElements();
+
     ArrayGeneratorSpec<T> type(Class<?> type);
 }

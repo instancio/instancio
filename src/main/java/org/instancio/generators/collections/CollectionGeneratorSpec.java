@@ -10,6 +10,10 @@ public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>>
 
     CollectionGeneratorSpec<T> maxSize(int size);
 
+    CollectionGeneratorSpec<T> nullable();
+
+    CollectionGeneratorSpec<T> nullableElements();
+
     CollectionGeneratorSpec<T> type(Class<?> type);
 
 }

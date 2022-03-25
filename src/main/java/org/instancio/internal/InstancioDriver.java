@@ -44,14 +44,14 @@ class InstancioDriver {
         populateDataStructures(null, rootNode, rootResult);
 
         while (!queue.isEmpty()) {
-            processNestItem(queue.poll());
+            processNextItem(queue.poll());
         }
 
         //noinspection unchecked
         return (T) value;
     }
 
-    private void processNestItem(final CreateItem createItem) {
+    private void processNextItem(final CreateItem createItem) {
         LOG.trace("Creating: {}", createItem);
 
         final Node node = createItem.getNode();
@@ -106,6 +106,11 @@ class InstancioDriver {
         }
 
         for (int i = 0, len = Array.getLength(createdValue); i < len; i++) {
+            // nullable element
+            if (generatorResult.getHints().nullableResult() && context.getRandomProvider().oneInTenTrue()) {
+                continue;
+            }
+
             final GeneratorResult<?> elementResult = generatorFacade.generateNodeValue(elementNode, createdValue);
             final Object elementValue = elementResult.getValue();
             Array.set(createdValue, i, elementValue);
@@ -121,10 +126,17 @@ class InstancioDriver {
         if (collectionNode.getField() != null)
             ReflectionUtils.setField(collectionOwner, collectionNode.getField(), collectionInstance);
 
-        for (int i = 0; i < generatorResult.getSettings().getDataStructureSize(); i++) {
+        for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
+            // nullable element
+            if (generatorResult.getHints().nullableResult() && context.getRandomProvider().oneInTenTrue()) {
+                collectionInstance.add(null);
+                continue;
+            }
+
             final GeneratorResult<?> elementResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
             final Object elementValue = elementResult.getValue();
-            if (elementValue != null) {
+
+            if (elementValue != null || elementResult.getHints().nullableResult()) {
                 collectionInstance.add(elementValue);
             }
 
@@ -157,26 +169,26 @@ class InstancioDriver {
         // option2: check if value node is a Map/Collection/Array node... then get element/key/value nodes children (UGLY)
 
 
-        for (int i = 0; i < generatorResult.getSettings().getDataStructureSize(); i++) {
+        for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
             final GeneratorResult<?> keyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
             final GeneratorResult<?> valueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
 
             final Object mapKey = keyResult.getValue();
             final Object mapValue = valueResult.getValue();
 
-            if (mapKey != null) {
+            if (mapKey != null || keyResult.getHints().nullableResult()) {
                 mapInstance.put(mapKey, mapValue);
+            }
 
-                enqueueChildrenOf(keyNode, keyResult, queue);
-                enqueueChildrenOf(valueNode, valueResult, queue);
+            enqueueChildrenOf(keyNode, keyResult, queue);
+            enqueueChildrenOf(valueNode, valueResult, queue);
 
-                if (valueNode instanceof MapNode) {
-                    populateMap((MapNode) valueNode, valueResult, mapInstance);
-                } else if (valueNode instanceof CollectionNode) {
-                    populateCollection((CollectionNode) valueNode, valueResult, mapInstance);
-                } else if (valueNode instanceof ArrayNode) {
-                    populateArray((ArrayNode) valueNode, valueResult, mapInstance);
-                }
+            if (valueNode instanceof MapNode) {
+                populateMap((MapNode) valueNode, valueResult, mapInstance);
+            } else if (valueNode instanceof CollectionNode) {
+                populateCollection((CollectionNode) valueNode, valueResult, mapInstance);
+            } else if (valueNode instanceof ArrayNode) {
+                populateArray((ArrayNode) valueNode, valueResult, mapInstance);
             }
         }
     }

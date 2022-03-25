@@ -15,13 +15,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
 import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -98,11 +96,11 @@ public abstract class CreationTestTemplate<T> {
 
     private Object createUsingModel() {
         final Model<?> model = Instancio.of((TypeTokenSupplier<Type>) () -> genericType).toModel();
-        return Instancio.of(model).create();
+        return Instancio.create(model);
     }
 
     private Object createUsingTypeToken() {
-        return Instancio.of((TypeTokenSupplier<Type>) () -> genericType).create();
+        return Instancio.create((TypeTokenSupplier<Type>) () -> genericType);
     }
 
     private String getDisplayName(final String apiMethod) {

@@ -49,10 +49,16 @@ public class InstancioValidator {
             throw new InstancioApiException(String.format(
                     "Class '%s' is not a subtype of '%s'", to.getName(), from.getName()));
         }
-        if (!ReflectionUtils.isConcrete(to)) {
+
+        validateConcreteClass(to);
+    }
+
+    public static Class<?> validateConcreteClass(final Class<?> klass) {
+        if (!ReflectionUtils.isConcrete(klass)) {
             throw new InstancioApiException(String.format(
-                    "'to' class must not be an interface or abstract class: '%s'", to.getName()));
+                    "Class must not be an interface or abstract class: '%s'", klass.getName()));
         }
+        return klass;
     }
 
     public static void validateSettingKey(final SettingKey key, final Object value) {

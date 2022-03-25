@@ -110,15 +110,27 @@ public class Instancio {
         // non-instantiable
     }
 
-    public static <T> InstancioOfClassApi<T> of(Class<T> klass) {
+    public static <T> T create(final Class<T> klass) {
+        return of(klass).create();
+    }
+
+    public static <T> T create(final TypeTokenSupplier<T> typeToken) {
+        return of(typeToken).create();
+    }
+
+    public static <T> T create(final Model<T> model) {
+        return of(model).create();
+    }
+
+    public static <T> InstancioOfClassApi<T> of(final Class<T> klass) {
         return new ClassInstancioApiImpl<>(klass);
     }
 
-    public static <T> InstancioApi<T> of(TypeTokenSupplier<T> typeToken) {
+    public static <T> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
         return new InstancioApiImpl<>(typeToken);
     }
 
-    public static <T> InstancioApi<T> of(Model<T> model) {
+    public static <T> InstancioApi<T> of(final Model<T> model) {
         return new InstancioApiImpl<>(model);
     }
 }

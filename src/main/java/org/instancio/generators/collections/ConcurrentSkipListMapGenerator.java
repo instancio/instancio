@@ -1,13 +1,13 @@
 package org.instancio.generators.collections;
 
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.model.ModelContext;
 
 import java.util.concurrent.ConcurrentSkipListMap;
 
 public class ConcurrentSkipListMapGenerator<K, V> extends MapGenerator<K, V> {
 
-    public ConcurrentSkipListMapGenerator(final RandomProvider random) {
-        super(random);
+    public ConcurrentSkipListMapGenerator(final ModelContext<?> context) {
+        super(context);
         type(ConcurrentSkipListMap.class);
     }
 }

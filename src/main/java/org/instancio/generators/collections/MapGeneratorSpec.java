@@ -10,6 +10,8 @@ public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
 
     MapGeneratorSpec<K, V> maxSize(int size);
 
+    MapGeneratorSpec<K, V> nullable();
+
     MapGeneratorSpec<K, V> type(Class<?> type);
 
 }

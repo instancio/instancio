@@ -2,8 +2,9 @@ package org.instancio.generators.collections;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.generators.AbstractRandomGenerator;
-import org.instancio.internal.GeneratorSettings;
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.GeneratedHints;
+import org.instancio.internal.model.ModelContext;
+import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
 
 import java.util.HashMap;
@@ -11,12 +12,16 @@ import java.util.Map;
 
 public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
 
-    private int minSize = 2;
-    private int maxSize = 6;
+    private int minSize;
+    private int maxSize;
+    private boolean nullable;
     private Class<?> type = HashMap.class;
 
-    public MapGenerator(final RandomProvider random) {
-        super(random);
+    public MapGenerator(final ModelContext<?> context) {
+        super(context);
+        this.minSize = context.getSettings().get(Setting.MAP_MIN_SIZE);
+        this.maxSize = context.getSettings().get(Setting.MAP_MAX_SIZE);
+        this.nullable = context.getSettings().get(Setting.MAP_NULLABLE);
     }
 
     public MapGeneratorSpec<K, V> type(final Class<?> type) {
@@ -41,19 +46,26 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
     }
 
     @Override
+    public MapGeneratorSpec<K, V> nullable() {
+        this.nullable = true;
+        return this;
+    }
+
+    @Override
     public Map<K, V> generate() {
         try {
-            return (Map<K, V>) type.newInstance();
+            return nullable && random().oneInTenTrue() ? null : (Map<K, V>) type.newInstance();
         } catch (Exception ex) {
             throw new InstancioException(String.format("Error creating instance of: %s", type), ex);
         }
     }
 
     @Override
-    public GeneratorSettings getSettings() {
-        return GeneratorSettings.builder()
+    public GeneratedHints getHints() {
+        return GeneratedHints.builder()
                 .dataStructureSize(random().intBetween(minSize, maxSize + 1))
                 .ignoreChildren(false)
+                .nullableResult(nullable)
                 .build();
     }
 }

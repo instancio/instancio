@@ -2,17 +2,23 @@ package org.instancio.internal;
 
 import java.util.StringJoiner;
 
-public class GeneratorSettings {
+public class GeneratedHints {
     private final int dataStructureSize;
     private final boolean ignoreChildren;
+    private final boolean nullableResult;
 
-    private GeneratorSettings(final Builder builder) {
+    private GeneratedHints(final Builder builder) {
         dataStructureSize = builder.dataStructureSize;
         ignoreChildren = builder.ignoreChildren;
+        nullableResult = builder.nullableResult;
     }
 
     public boolean ignoreChildren() {
         return ignoreChildren;
+    }
+
+    public boolean nullableResult() {
+        return nullableResult;
     }
 
     public int getDataStructureSize() {
@@ -26,6 +32,7 @@ public class GeneratorSettings {
     public static final class Builder {
         private int dataStructureSize;
         private boolean ignoreChildren;
+        private boolean nullableResult;
 
         private Builder() {
         }
@@ -40,16 +47,22 @@ public class GeneratorSettings {
             return this;
         }
 
-        public GeneratorSettings build() {
-            return new GeneratorSettings(this);
+        public Builder nullableResult(final boolean nullableResult) {
+            this.nullableResult = nullableResult;
+            return this;
+        }
+
+        public GeneratedHints build() {
+            return new GeneratedHints(this);
         }
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", GeneratorSettings.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", GeneratedHints.class.getSimpleName() + "[", "]")
                 .add("dataStructureSize=" + dataStructureSize)
                 .add("ignoreChildren=" + ignoreChildren)
+                .add("nullableResult=" + nullableResult)
                 .toString();
     }
 }

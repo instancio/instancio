@@ -1,6 +1,6 @@
 package org.instancio.internal;
 
-import org.instancio.internal.AncestorTree.InstanceNode;
+import org.instancio.internal.AncestorTree.AncestorTreeNode;
 import org.instancio.internal.model.Node;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,9 +29,9 @@ class AncestorTreeTest {
         when(nodeA.getParent()).thenReturn(nodeR);
         when(nodeB.getParent()).thenReturn(nodeR);
 
-        final InstanceNode inodeR = new InstanceNode("R", nodeR);
-        final InstanceNode inodeA = new InstanceNode("A", nodeA);
-        final InstanceNode inodeB = new InstanceNode("B", nodeB);
+        final AncestorTreeNode inodeR = new AncestorTreeNode("R", nodeR);
+        final AncestorTreeNode inodeA = new AncestorTreeNode("A", nodeA);
+        final AncestorTreeNode inodeB = new AncestorTreeNode("B", nodeB);
 
         detector.setObjectAncestor("A", inodeR);
         detector.setObjectAncestor("B", inodeR);

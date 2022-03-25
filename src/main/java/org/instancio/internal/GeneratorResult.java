@@ -4,22 +4,27 @@ import javax.annotation.Nullable;
 import java.util.StringJoiner;
 
 class GeneratorResult<T> {
+    private static final GeneratorResult<Void> NULL_RESULT = new GeneratorResult<>(null, true,
+            GeneratedHints.builder().ignoreChildren(true).build());
+
+    // FIXME ignore children is in GeneratorResult and GeneratedHints
+    //  this needs cleanup
     private final T value;
     private final boolean ignoreChildren;
-    private final GeneratorSettings generatorSettings;
+    private final GeneratedHints generatedHints;
 
     private GeneratorResult(@Nullable final T value,
                             final boolean ignoreChildren,
-                            @Nullable final GeneratorSettings generatorSettings) {
+                            @Nullable final GeneratedHints generatedHints) {
         this.value = value;
         this.ignoreChildren = ignoreChildren;
-        this.generatorSettings = generatorSettings;
+        this.generatedHints = generatedHints;
     }
 
     private GeneratorResult(final Builder<T> builder) {
         value = builder.value;
         ignoreChildren = builder.ignoreChildren;
-        generatorSettings = builder.generatorSettings;
+        generatedHints = builder.generatedHints;
     }
 
     /**
@@ -30,11 +35,10 @@ class GeneratorResult<T> {
      * An actual {@code null} {@code GeneratorResult} means that the target field will be ignored
      * (it would retain its default value, if any).
      *
-     * @param <T> type of the result
      * @return null result
      */
-    static <T> GeneratorResult<T> nullResult() {
-        return new GeneratorResult<>(null, true, null);
+    static GeneratorResult<Void> nullResult() {
+        return NULL_RESULT;
     }
 
     static <T> Builder<T> builder(T value) {
@@ -53,23 +57,23 @@ class GeneratorResult<T> {
         return ignoreChildren;
     }
 
-    GeneratorSettings getSettings() {
-        return generatorSettings;
+    GeneratedHints getHints() {
+        return generatedHints;
     }
 
     static final class Builder<T> {
         private final T value;
         private boolean ignoreChildren;
-        private GeneratorSettings generatorSettings;
+        private GeneratedHints generatedHints;
 
         private Builder(@Nullable final T value) {
             this.value = value;
         }
 
-        public Builder<T> withSettings(@Nullable final GeneratorSettings generatorSettings) {
-            this.generatorSettings = generatorSettings;
-            if (generatorSettings != null) {
-                this.ignoreChildren = generatorSettings.ignoreChildren();
+        public Builder<T> withHints(@Nullable final GeneratedHints generatedHints) {
+            this.generatedHints = generatedHints;
+            if (generatedHints != null) {
+                this.ignoreChildren = generatedHints.ignoreChildren();
             }
             return this;
         }
@@ -84,7 +88,7 @@ class GeneratorResult<T> {
         return new StringJoiner(", ", GeneratorResult.class.getSimpleName() + "[", "]")
                 .add("value=" + value)
                 .add("ignoreChildren=" + ignoreChildren)
-                .add("settings=" + generatorSettings)
+                .add("hints=" + generatedHints)
                 .toString();
     }
 }

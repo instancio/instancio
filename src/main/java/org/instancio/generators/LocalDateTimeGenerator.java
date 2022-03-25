@@ -1,13 +1,13 @@
 package org.instancio.generators;
 
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.model.ModelContext;
 
 import java.time.LocalDateTime;
 
 public class LocalDateTimeGenerator extends AbstractRandomGenerator<LocalDateTime> {
 
-    public LocalDateTimeGenerator(final RandomProvider random) {
-        super(random);
+    public LocalDateTimeGenerator(final ModelContext<?> context) {
+        super(context);
     }
 
     @Override

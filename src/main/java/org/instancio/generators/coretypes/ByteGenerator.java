@@ -1,33 +1,19 @@
 package org.instancio.generators.coretypes;
 
+import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Setting;
-import org.instancio.generators.AbstractRandomGenerator;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.util.Verify;
 
-public class ByteGenerator extends AbstractRandomGenerator<Byte> implements NumberGeneratorSpec<Byte> {
+public class ByteGenerator extends AbstractRandomNumberGeneratorSpec<Byte> {
 
-    private byte min = Setting.BYTE_MIN.defaultValue();
-    private byte max = Setting.BYTE_MAX.defaultValue();
-
-    public ByteGenerator(final RandomProvider random) {
-        super(random);
+    public ByteGenerator(final ModelContext<?> context) {
+        super(context,
+                context.getSettings().get(Setting.BYTE_MIN),
+                context.getSettings().get(Setting.BYTE_MAX),
+                context.getSettings().get(Setting.BYTE_NULLABLE));
     }
 
     @Override
-    public NumberGeneratorSpec<Byte> min(final Byte min) {
-        this.min = Verify.notNull(min);
-        return this;
-    }
-
-    @Override
-    public NumberGeneratorSpec<Byte> max(final Byte max) {
-        this.max = Verify.notNull(max);
-        return this;
-    }
-
-    @Override
-    public Byte generate() {
+    Byte generateRandomValue() {
         return random().byteBetween(min, max);
     }
 }

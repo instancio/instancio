@@ -1,6 +1,6 @@
 package org.instancio.generators;
 
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.model.ModelContext;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
@@ -9,8 +9,8 @@ public class OneOfCollectionGenerator<T> extends AbstractRandomGenerator<T> impl
 
     private Collection<T> values;
 
-    public OneOfCollectionGenerator(final RandomProvider random) {
-        super(random);
+    public OneOfCollectionGenerator(final ModelContext<?> context) {
+        super(context);
     }
 
     @Override

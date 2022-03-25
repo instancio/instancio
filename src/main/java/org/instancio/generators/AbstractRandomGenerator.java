@@ -1,6 +1,7 @@
 package org.instancio.generators;
 
 import org.instancio.Generator;
+import org.instancio.internal.model.ModelContext;
 import org.instancio.internal.random.RandomProvider;
 
 /**
@@ -10,10 +11,14 @@ import org.instancio.internal.random.RandomProvider;
  */
 public abstract class AbstractRandomGenerator<T> implements Generator<T> {
 
-    private final RandomProvider random;
+    private final ModelContext<?> context;
 
-    protected AbstractRandomGenerator(final RandomProvider random) {
-        this.random = random;
+    protected AbstractRandomGenerator(final ModelContext<?> context) {
+        this.context = context;
+    }
+
+    public ModelContext<?> getContext() {
+        return context;
     }
 
     /**
@@ -22,6 +27,6 @@ public abstract class AbstractRandomGenerator<T> implements Generator<T> {
      * to be repeatable.
      */
     protected RandomProvider random() {
-        return random;
+        return context.getRandomProvider();
     }
 }
