@@ -46,5 +46,13 @@ public class ReflectionUtils {
     public static boolean isConcrete(Class<?> klass) {
         return !klass.isInterface() && !Modifier.isAbstract(klass.getModifiers());
     }
+
+    public static Class<?> getClass(final String name) {
+        try {
+            return Class.forName(name);
+        } catch (ClassNotFoundException ex) {
+            throw new InstancioApiException(String.format("Class not found: '%s'", name), ex);
+        }
+    }
 }
 

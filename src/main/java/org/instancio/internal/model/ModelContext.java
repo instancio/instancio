@@ -5,9 +5,11 @@ import org.instancio.Generator;
 import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.settings.Settings;
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.settings.PropertiesLoader;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -44,6 +46,7 @@ public class ModelContext<T> {
     private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators;
     private final Map<Class<?>, Class<?>> subtypeMap;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final Settings settings;
     private final Integer seed;
 
     private ModelContext(final Builder<T> builder) {
@@ -62,7 +65,15 @@ public class ModelContext<T> {
         this.rootTypeMap = rootType instanceof ParameterizedType
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
+        this.settings = mergeDefaultSettingsWith(builder.userSuppliedSettings);
         this.seed = builder.seed;
+    }
+
+    private Settings mergeDefaultSettingsWith(final Settings userSuppliedSettings) {
+        return Settings.defaults()
+                .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
+                .merge(userSuppliedSettings)
+                .lock();
     }
 
     private static <T> void putAllBuiltInGenerators(final Builder<T> builder) {
@@ -109,7 +120,7 @@ public class ModelContext<T> {
         return ignoredClasses;
     }
 
-    public Set<Class<?>> getNullableClasses() { // XXX unused?
+    public Set<Class<?>> getNullableClasses() { // XXX unused except in test... ?
         return nullableClasses;
     }
 
@@ -127,6 +138,10 @@ public class ModelContext<T> {
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
         return rootTypeMap;
+    }
+
+    public Settings getSettings() {
+        return settings;
     }
 
     public Integer getSeed() {
@@ -168,6 +183,7 @@ public class ModelContext<T> {
         private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
         private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecMap = new HashMap<>();
+        private Settings userSuppliedSettings;
         private Integer seed;
 
         private Builder(final Class<T> rootClass, final Type rootType) {
@@ -234,10 +250,6 @@ public class ModelContext<T> {
             return this;
         }
 
-        private static boolean isCoreType(Class<?> type) {
-            return false;
-        }
-
         public Builder<T> withGeneratorSpec(final Binding target, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
             this.generatorSpecMap.put(target, spec);
             return this;
@@ -246,6 +258,11 @@ public class ModelContext<T> {
         public Builder<T> withSubtypeMapping(final Class<?> from, final Class<?> to) {
             InstancioValidator.validateSubtypeMapping(from, to);
             this.subtypeMap.put(from, to);
+            return this;
+        }
+
+        public Builder<T> withSettings(final Settings settings) {
+            this.userSuppliedSettings = settings;
             return this;
         }
 

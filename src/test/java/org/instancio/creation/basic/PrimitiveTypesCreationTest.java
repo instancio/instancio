@@ -31,32 +31,32 @@ class PrimitiveTypesCreationTest {
 
     @Test
     void createByte() {
-        assertGeneratedValues(byte.class, 100, 60);
+        assertGeneratedValues(byte.class, 2000, 60);
     }
 
     @Test
     void createShort() {
-        assertGeneratedValues(short.class, 100, 90);
+        assertGeneratedValues(short.class, 1000, 90);
     }
 
     @Test
     void createInt() {
-        assertGeneratedValues(int.class, 100, 97);
+        assertGeneratedValues(int.class, 1000, 97);
     }
 
     @Test
     void createLong() {
-        assertGeneratedValues(long.class, 100, 99);
+        assertGeneratedValues(long.class, 1000, 99);
     }
 
     @Test
     void createFloat() {
-        assertGeneratedValues(float.class, 100, 97);
+        assertGeneratedValues(float.class, 1000, 97);
     }
 
     @Test
     void createDouble() {
-        assertGeneratedValues(double.class, 100, 99);
+        assertGeneratedValues(double.class, 1000, 99);
     }
 
     private void assertGeneratedValues(final Class<?> klass, final int sampleSize, final int minExpectedResults) {

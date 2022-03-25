@@ -11,7 +11,7 @@ public class ConcurrentSkipListSetLongCreationTest extends CreationTestTemplate<
     @Override
     protected void verify(ConcurrentSkipListSetLong result) {
         assertThat(result.getSet())
-                .hasSize(Constants.COLLECTION_SIZE)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .hasOnlyElementsOfType(Long.class);
     }
 

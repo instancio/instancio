@@ -1,6 +1,8 @@
 package org.instancio.internal;
 
 import org.instancio.Generator;
+import org.instancio.settings.Setting;
+import org.instancio.settings.Settings;
 import org.instancio.internal.model.ArrayNode;
 import org.instancio.internal.model.ClassNode;
 import org.instancio.internal.model.ModelContext;
@@ -77,7 +79,9 @@ class GeneratorFacade {
 
             GeneratorSettings settings = null;
             if (Collection.class.isAssignableFrom(effectiveType) || Map.class.isAssignableFrom(effectiveType)) {
-                settings = GeneratorSettings.builder().dataStructureSize(2).build();
+                settings = GeneratorSettings.builder()
+                        .dataStructureSize(getRandomSizeForCollectionOrMap(effectiveType))
+                        .build();
             }
             result = GeneratorResult.builder(instantiator.instantiate(effectiveType)).withSettings(settings).build();
 
@@ -92,6 +96,19 @@ class GeneratorFacade {
 
         ancestorTree.setObjectAncestor(result.getValue(), new AncestorTree.InstanceNode(owner, node.getParent()));
         return result;
+    }
+
+    private int getRandomSizeForCollectionOrMap(Class<?> klass) {
+        final Settings settings = context.getSettings();
+
+        if (Collection.class.isAssignableFrom(klass)) {
+            return random.intBetween(settings.get(Setting.COLLECTION_MIN_SIZE), settings.get(Setting.COLLECTION_MAX_SIZE));
+        }
+        if (Map.class.isAssignableFrom(klass)) {
+            return random.intBetween(settings.get(Setting.MAP_MIN_SIZE), settings.get(Setting.MAP_MAX_SIZE));
+        }
+
+        throw new IllegalStateException("Unhandled type: " + klass); // "shouldn't happen"
     }
 
     private GeneratorResult<?> generateArray(Node node) {

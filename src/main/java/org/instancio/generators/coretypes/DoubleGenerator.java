@@ -1,13 +1,14 @@
 package org.instancio.generators.coretypes;
 
+import org.instancio.settings.Setting;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 public class DoubleGenerator extends AbstractRandomGenerator<Double> implements NumberGeneratorSpec<Double> {
 
-    private double min = DEFAULT_DOUBLE_MIN;
-    private double max = DEFAULT_DOUBLE_MAX;
+    private double min = Setting.DOUBLE_MIN.defaultValue();
+    private double max = Setting.DOUBLE_MAX.defaultValue();
 
     public DoubleGenerator(final RandomProvider random) {
         super(random);

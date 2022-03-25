@@ -1,5 +1,7 @@
 package org.instancio;
 
+import org.instancio.settings.Settings;
+
 import java.util.function.Function;
 
 /**
@@ -154,6 +156,15 @@ public interface InstancioApi<T> {
      * @return API builder reference
      */
     InstancioApi<T> map(Class<?> baseClass, Class<?> subClass);
+
+    /**
+     * Override default settings for generated values.
+     * Settings include collection sizes, string lengths, numeric ranges, etc.
+     *
+     * @param settings to use
+     * @return API builder reference
+     */
+    InstancioApi<T> withSettings(Settings settings);
 
     /**
      * Set the seed value for the random number generator. If seed is not specified,

@@ -1,13 +1,14 @@
 package org.instancio.generators.coretypes;
 
+import org.instancio.settings.Setting;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 public class LongGenerator extends AbstractRandomGenerator<Long> implements NumberGeneratorSpec<Long> {
 
-    private long min = DEFAULT_LONG_MIN;
-    private long max = DEFAULT_LONG_MAX;
+    private long min = Setting.LONG_MIN.defaultValue();
+    private long max = Setting.LONG_MAX.defaultValue();
 
     public LongGenerator(final RandomProvider random) {
         super(random);
