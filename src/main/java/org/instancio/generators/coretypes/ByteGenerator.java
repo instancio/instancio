@@ -1,13 +1,14 @@
 package org.instancio.generators.coretypes;
 
+import org.instancio.settings.Setting;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 public class ByteGenerator extends AbstractRandomGenerator<Byte> implements NumberGeneratorSpec<Byte> {
 
-    private byte min = DEFAULT_BYTE_MIN;
-    private byte max = DEFAULT_BYTE_MAX;
+    private byte min = Setting.BYTE_MIN.defaultValue();
+    private byte max = Setting.BYTE_MAX.defaultValue();
 
     public ByteGenerator(final RandomProvider random) {
         super(random);

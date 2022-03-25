@@ -4,7 +4,7 @@ Instancio
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=instancio_instancio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=instancio_instancio)
 
 Instancio is a library for auto-generating test data.
-It uses reflection to create and populate objects with random data:
+It uses reflection to create and populate objects with random data.
 
 Note: this is a work in progress and the API is still unstable. 
 
@@ -27,7 +27,7 @@ Person person = Instancio.of(Person.class)
 
 ```
 Person person = Instancio.of(Person.class)
-    .withNullable(allStrings()) // all strings is nullable
+    .withNullable(allStrings()) // all strings are nullable
     .withNullable(all(Date.class)) // all dates are nullable
     .withNullable(field(Address.class, "street")) // Address.street is nullable
     .create();

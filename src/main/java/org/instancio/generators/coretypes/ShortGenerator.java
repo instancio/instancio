@@ -1,14 +1,14 @@
 package org.instancio.generators.coretypes;
 
+import org.instancio.settings.Setting;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.util.ObjectUtils;
 import org.instancio.util.Verify;
 
 public class ShortGenerator extends AbstractRandomGenerator<Short> implements NumberGeneratorSpec<Short> {
 
-    private short min = DEFAULT_SHORT_MIN;
-    private short max = DEFAULT_SHORT_MAX;
+    private short min = Setting.SHORT_MIN.defaultValue();
+    private short max = Setting.SHORT_MAX.defaultValue();
 
     public ShortGenerator(final RandomProvider random) {
         super(random);

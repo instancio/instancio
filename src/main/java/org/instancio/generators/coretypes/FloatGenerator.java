@@ -1,13 +1,14 @@
 package org.instancio.generators.coretypes;
 
+import org.instancio.settings.Setting;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 public class FloatGenerator extends AbstractRandomGenerator<Float> implements NumberGeneratorSpec<Float> {
 
-    private float min = DEFAULT_FLOAT_MIN;
-    private float max = DEFAULT_FLOAT_MAX;
+    private float min = Setting.FLOAT_MIN.defaultValue();
+    private float max = Setting.FLOAT_MAX.defaultValue();
 
     public FloatGenerator(final RandomProvider random) {
         super(random);

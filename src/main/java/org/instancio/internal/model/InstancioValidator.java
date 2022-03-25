@@ -1,6 +1,7 @@
 package org.instancio.internal.model;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.settings.SettingKey;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
@@ -14,7 +15,7 @@ public class InstancioValidator {
         // non-instantiable
     }
 
-    static void validateTypeParameters(Class<?> rootClass, List<Class<?>> rootTypeParameters) {
+    public static void validateTypeParameters(Class<?> rootClass, List<Class<?>> rootTypeParameters) {
         final int typeVarsLength = rootClass.getTypeParameters().length;
 
         if (typeVarsLength == 0 && !rootTypeParameters.isEmpty()) {
@@ -38,7 +39,7 @@ public class InstancioValidator {
         }
     }
 
-    static void validateSubtypeMapping(final Class<?> from, final Class<?> to) {
+    public static void validateSubtypeMapping(final Class<?> from, final Class<?> to) {
         Verify.notNull(from, "'from' class must not be null");
         Verify.notNull(to, "'to' class must not be null");
         if (from == to) {
@@ -52,5 +53,13 @@ public class InstancioValidator {
             throw new InstancioApiException(String.format(
                     "'to' class must not be an interface or abstract class: '%s'", to.getName()));
         }
+    }
+
+    public static void validateSettingKey(final SettingKey key, final Object value) {
+        Verify.notNull(key, "Setting key must not be null");
+        Verify.notNull(value, "Setting value must not be null");
+        Verify.isTrue(key.type() == value.getClass(),
+                "The value '%s' is of unexpected type (%s) for key '%s'",
+                value, value.getClass().getSimpleName(), key);
     }
 }

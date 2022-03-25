@@ -22,6 +22,17 @@ class GeneratorResult<T> {
         generatorSettings = builder.generatorSettings;
     }
 
+    /**
+     * This result indicates that a null was generated, therefore the target's value should
+     * be set to null. If the target is a field with a pre-initialised default value, it will be
+     * overwritten with a null value.
+     * <p>
+     * An actual {@code null} {@code GeneratorResult} means that the target field will be ignored
+     * (it would retain its default value, if any).
+     *
+     * @param <T> type of the result
+     * @return null result
+     */
     static <T> GeneratorResult<T> nullResult() {
         return new GeneratorResult<>(null, true, null);
     }

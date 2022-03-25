@@ -7,6 +7,7 @@ import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
+import org.instancio.settings.Settings;
 import org.instancio.internal.model.InternalModel;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.util.ObjectUtils;
@@ -83,6 +84,12 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     @Override
     public InstancioApi<T> map(Class<?> baseClass, Class<?> subClass) {
         modelContextBuilder.withSubtypeMapping(baseClass, subClass);
+        return this;
+    }
+
+    @Override
+    public InstancioApi<T> withSettings(final Settings settings) {
+        modelContextBuilder.withSettings(settings);
         return this;
     }
 
