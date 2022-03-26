@@ -6,19 +6,40 @@ public class GeneratedHints {
     private final int dataStructureSize;
     private final boolean ignoreChildren;
     private final boolean nullableResult;
+    private final boolean nullableElements;
+    private final boolean nullableKeys;
+    private final boolean nullableValues;
 
     private GeneratedHints(final Builder builder) {
         dataStructureSize = builder.dataStructureSize;
         ignoreChildren = builder.ignoreChildren;
         nullableResult = builder.nullableResult;
+        nullableElements = builder.nullableElements;
+        nullableKeys = builder.nullableKeys;
+        nullableValues = builder.nullableValues;
     }
 
     public boolean ignoreChildren() {
         return ignoreChildren;
     }
 
+    /**
+     * Indicates that the generated result had nullable setting enabled.
+     */
     public boolean nullableResult() {
         return nullableResult;
+    }
+
+    public boolean nullableElements() {
+        return nullableElements;
+    }
+
+    public boolean nullableKeys() {
+        return nullableKeys;
+    }
+
+    public boolean nullableValues() {
+        return nullableValues;
     }
 
     public int getDataStructureSize() {
@@ -33,6 +54,9 @@ public class GeneratedHints {
         private int dataStructureSize;
         private boolean ignoreChildren;
         private boolean nullableResult;
+        private boolean nullableElements;
+        private boolean nullableKeys;
+        private boolean nullableValues;
 
         private Builder() {
         }
@@ -49,6 +73,21 @@ public class GeneratedHints {
 
         public Builder nullableResult(final boolean nullableResult) {
             this.nullableResult = nullableResult;
+            return this;
+        }
+
+        public Builder nullableElements(final boolean nullableElements) {
+            this.nullableElements = nullableElements;
+            return this;
+        }
+
+        public Builder nullableKeys(final boolean nullableKeys) {
+            this.nullableKeys = nullableKeys;
+            return this;
+        }
+
+        public Builder nullableValues(final boolean nullableValues) {
+            this.nullableValues = nullableValues;
             return this;
         }
 

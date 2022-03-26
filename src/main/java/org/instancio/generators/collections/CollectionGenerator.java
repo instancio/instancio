@@ -82,7 +82,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
                 .dataStructureSize(random().intBetween(minSize, maxSize + 1))
                 .ignoreChildren(false)
                 .nullableResult(nullable)
-                .nullableResult(nullableElements) // XXX
+                .nullableElements(nullableElements)
                 .build();
     }
 }

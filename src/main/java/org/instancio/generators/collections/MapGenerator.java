@@ -15,6 +15,8 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
     private int minSize;
     private int maxSize;
     private boolean nullable;
+    private boolean nullableKeys;
+    private boolean nullableValues;
     private Class<?> type = HashMap.class;
 
     public MapGenerator(final ModelContext<?> context) {
@@ -22,6 +24,8 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
         this.minSize = context.getSettings().get(Setting.MAP_MIN_SIZE);
         this.maxSize = context.getSettings().get(Setting.MAP_MAX_SIZE);
         this.nullable = context.getSettings().get(Setting.MAP_NULLABLE);
+        this.nullableKeys = context.getSettings().get(Setting.MAP_KEYS_NULLABLE);
+        this.nullableValues = context.getSettings().get(Setting.MAP_VALUES_NULLABLE);
     }
 
     public MapGeneratorSpec<K, V> type(final Class<?> type) {
@@ -52,6 +56,18 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
     }
 
     @Override
+    public MapGeneratorSpec<K, V> nullableKeys() {
+        this.nullableKeys = true;
+        return this;
+    }
+
+    @Override
+    public MapGeneratorSpec<K, V> nullableValues() {
+        this.nullableValues = true;
+        return this;
+    }
+
+    @Override
     public Map<K, V> generate() {
         try {
             return nullable && random().oneInTenTrue() ? null : (Map<K, V>) type.newInstance();
@@ -66,6 +82,8 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
                 .dataStructureSize(random().intBetween(minSize, maxSize + 1))
                 .ignoreChildren(false)
                 .nullableResult(nullable)
+                .nullableKeys(nullableKeys)
+                .nullableValues(nullableValues)
                 .build();
     }
 }

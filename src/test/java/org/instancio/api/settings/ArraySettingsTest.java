@@ -26,9 +26,9 @@ class ArraySettingsTest {
             .lock();
 
     @Test
-    @DisplayName("Should override default array size range")
-    void size() {
-        final ArrayLong result = Instancio.of(ArrayLong.class).withSettings(settings).create();
+    @DisplayName("Override default array length range")
+    void length() {
+        final ArrayLong result = createArray(settings);
         assertThat(result.getPrimitive()).hasSizeBetween(MIN_SIZE_OVERRIDE, MAX_SIZE_OVERRIDE);
         assertThat(result.getWrapper()).hasSizeBetween(MIN_SIZE_OVERRIDE, MAX_SIZE_OVERRIDE);
     }
@@ -39,7 +39,7 @@ class ArraySettingsTest {
         final Settings overrides = settings.merge(Settings.create().set(Setting.ARRAY_NULLABLE, true));
         final Set<long[]> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final ArrayLong result = Instancio.of(ArrayLong.class).withSettings(overrides).create();
+            final ArrayLong result = createArray(overrides);
             results.add(result.getPrimitive());
         }
         assertThat(results).containsNull();
@@ -49,10 +49,14 @@ class ArraySettingsTest {
     @DisplayName("Allow null elements in arrays")
     void nullableElements() {
         final Settings overrides = Settings.create().set(Setting.ARRAY_ELEMENTS_NULLABLE, true);
-        final ArrayLong result = Instancio.of(ArrayLong.class)
-                .withSettings(settings.merge(overrides))
-                .create();
+        final ArrayLong result = createArray(settings.merge(overrides));
         assertThat(result.getWrapper()).containsNull();
+    }
+
+    private ArrayLong createArray(final Settings settings) {
+        return Instancio.of(ArrayLong.class)
+                .withSettings(settings)
+                .create();
     }
 
 }

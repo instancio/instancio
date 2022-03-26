@@ -12,6 +12,10 @@ public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
 
     MapGeneratorSpec<K, V> nullable();
 
+    MapGeneratorSpec<K, V> nullableKeys();
+
+    MapGeneratorSpec<K, V> nullableValues();
+
     MapGeneratorSpec<K, V> type(Class<?> type);
 
 }

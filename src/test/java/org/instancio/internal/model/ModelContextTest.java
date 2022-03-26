@@ -52,7 +52,8 @@ class ModelContextTest {
                 .withNullableField(ADDRESS_FIELD)
                 .build();
 
-        assertThat(ctx.getNullableFields()).containsExactlyInAnyOrder(NAME_FIELD, ADDRESS_FIELD);
+        assertThat(ctx.isNullable(NAME_FIELD)).isTrue();
+        assertThat(ctx.isNullable(ADDRESS_FIELD)).isTrue();
     }
 
     @Test
@@ -73,7 +74,8 @@ class ModelContextTest {
                 .withNullableClass(UUID.class)
                 .build();
 
-        assertThat(ctx.getNullableClasses()).containsExactlyInAnyOrder(Address.class, UUID.class);
+        assertThat(ctx.isNullable(Address.class)).isTrue();
+        assertThat(ctx.isNullable(UUID.class)).isTrue();
     }
 
     @Test
@@ -98,7 +100,8 @@ class ModelContextTest {
                 .withIgnoredField(ADDRESS_FIELD)
                 .build();
 
-        assertThat(ctx.getIgnoredFields()).containsExactlyInAnyOrder(NAME_FIELD, ADDRESS_FIELD);
+        assertThat(ctx.isIgnored(NAME_FIELD)).isTrue();
+        assertThat(ctx.isIgnored(ADDRESS_FIELD)).isTrue();
     }
 
     @Test
@@ -108,7 +111,8 @@ class ModelContextTest {
                 .withIgnoredClass(Pet.class)
                 .build();
 
-        assertThat(ctx.getIgnoredClasses()).containsExactlyInAnyOrder(Address.class, Pet.class);
+        assertThat(ctx.isIgnored(Address.class)).isTrue();
+        assertThat(ctx.isIgnored(Pet.class)).isTrue();
     }
 
     @Test

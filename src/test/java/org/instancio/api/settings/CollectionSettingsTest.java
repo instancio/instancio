@@ -26,9 +26,9 @@ class CollectionSettingsTest {
             .lock();
 
     @Test
-    @DisplayName("Should override default collection size range")
+    @DisplayName("Override default collection size range")
     void size() {
-        final SetLong result = Instancio.of(SetLong.class).withSettings(settings).create();
+        final SetLong result = createCollection(settings);
         assertThat(result.getSet()).hasSizeBetween(MIN_SIZE_OVERRIDE, MAX_SIZE_OVERRIDE);
     }
 
@@ -38,7 +38,7 @@ class CollectionSettingsTest {
         final Settings overrides = settings.merge(Settings.create().set(Setting.COLLECTION_NULLABLE, true));
         final Set<Set<?>> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final SetLong result = Instancio.of(SetLong.class).withSettings(overrides).create();
+            final SetLong result = createCollection(overrides);
             results.add(result.getSet());
         }
         assertThat(results).containsNull();
@@ -48,10 +48,12 @@ class CollectionSettingsTest {
     @DisplayName("Allow null elements in collections")
     void nullableElements() {
         final Settings overrides = Settings.create().set(Setting.COLLECTION_ELEMENTS_NULLABLE, true);
-        final SetLong result = Instancio.of(SetLong.class)
-                .withSettings(settings.merge(overrides))
-                .create();
+        final SetLong result = createCollection(settings.merge(overrides));
         assertThat(result.getSet()).containsNull();
+    }
+
+    private SetLong createCollection(final Settings settings) {
+        return Instancio.of(SetLong.class).withSettings(settings).create();
     }
 
 }

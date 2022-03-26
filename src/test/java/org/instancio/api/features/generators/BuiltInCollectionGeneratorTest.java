@@ -22,7 +22,6 @@ import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.allLongs;
 import static org.instancio.Bindings.field;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
 
@@ -31,9 +30,9 @@ class BuiltInCollectionGeneratorTest {
     private static final int EXPECTED_SIZE = RandomUtils.nextInt(90, 100);
 
     @Nested
-    @Disabled // FIXME
     class CollectionTypeTest {
 
+        @Disabled
         @Test
         @DisplayName("TODO need to decide how to handle this case")
         void TODO() {
@@ -50,7 +49,7 @@ class BuiltInCollectionGeneratorTest {
             assertThat(result.getSet()).hasSizeGreaterThan(minSize * 90 / 100);
         }
 
-
+        @Disabled
         @Test
         @DisplayName("Collection type should default to field type (concrete) if other type is not specified")
         void collectionTypeNotSpecifiedConcreteType() {
@@ -67,6 +66,7 @@ class BuiltInCollectionGeneratorTest {
             assertThat(result.getSet()).hasSizeGreaterThanOrEqualTo(minSize);
         }
 
+        @Disabled
         @Test
         @DisplayName("Collection type should default to field type (abstract) if other type is not specified")
         void collectionTypeNotSpecifiedAbstractType() {

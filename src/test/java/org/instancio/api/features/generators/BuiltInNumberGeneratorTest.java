@@ -22,36 +22,36 @@ class BuiltInNumberGeneratorTest {
     private static final int SAMPLE_SIZE = 500;
 
     @Test
-    @DisplayName("When nullable specified for a number, should generate an occasional null value in Collection")
+    @DisplayName("Nullable number should not be null when it is a collection element")
     void nullableNumberInCollection() {
         final SetLong result = Instancio.of(SetLong.class)
                 .generate(allLongs(), gen -> gen.longs().nullable())
                 .generate(all(Set.class), gen -> gen.collection().minSize(SAMPLE_SIZE).type(HashSet.class))
                 .create();
 
-        assertThat(result.getSet()).containsNull();
+        assertThat(result.getSet()).doesNotContainNull();
     }
 
     @Test
-    @DisplayName("When nullable specified for a number, should generate an occasional null value in Map keys")
+    @DisplayName("Nullable number should not be null when it is a map key")
     void nullableNumberAsMapKey() {
         final MapByteDouble result = Instancio.of(MapByteDouble.class)
                 .generate(allBytes(), gen -> gen.bytes().nullable())
                 .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE).type(HashMap.class))
                 .create();
 
-        assertThat(result.getMap().keySet()).containsNull();
+        assertThat(result.getMap().keySet()).doesNotContainNull();
     }
 
     @Test
-    @DisplayName("When nullable specified for a number, should generate an occasional null value in Map values")
+    @DisplayName("Nullable number should not be null when it is a map value")
     void nullableNumberAsMapValue() {
         final MapByteDouble result = Instancio.of(MapByteDouble.class)
                 .generate(allDoubles(), gen -> gen.doubles().nullable())
                 .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE).type(HashMap.class))
                 .create();
 
-        assertThat(result.getMap().values()).containsNull();
+        assertThat(result.getMap().values()).doesNotContainNull();
     }
 
 }

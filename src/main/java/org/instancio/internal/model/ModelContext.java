@@ -106,20 +106,20 @@ public class ModelContext<T> {
         return rootClass;
     }
 
-    public Set<Field> getIgnoredFields() {
-        return ignoredFields;
+    public boolean isIgnored(final Field field) {
+        return ignoredFields.contains(field);
     }
 
-    public Set<Field> getNullableFields() {
-        return nullableFields;
+    public boolean isIgnored(final Class<?> klass) {
+        return ignoredClasses.contains(klass);
     }
 
-    public Set<Class<?>> getIgnoredClasses() {
-        return ignoredClasses;
+    public boolean isNullable(final Field field) {
+        return nullableFields.contains(field);
     }
 
-    public Set<Class<?>> getNullableClasses() { // XXX unused except in test... ?
-        return nullableClasses;
+    public boolean isNullable(final Class<?> klass) {
+        return nullableClasses.contains(klass);
     }
 
     public Map<Field, Generator<?>> getUserSuppliedFieldGenerators() {
@@ -162,7 +162,7 @@ public class ModelContext<T> {
         for (int i = 0; i < typeVariables.length; i++) {
             final TypeVariable<?> typeVariable = typeVariables[i];
             final Class<?> actualType = rootTypeParameters.get(i);
-            LOG.trace("Mapping type variable '{}' to {}", typeVariable, actualType);
+            LOG.trace("Mapping type variable '{}' to '{}'", typeVariable, actualType);
             typeMap.put(typeVariable, actualType);
         }
         return typeMap;

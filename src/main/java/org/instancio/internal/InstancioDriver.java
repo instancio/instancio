@@ -51,29 +51,33 @@ class InstancioDriver {
         return (T) value;
     }
 
+    private boolean shouldIgnored(final Node node) {
+        return node.getField() == null
+                || context.isIgnored(node.getField())
+                || context.isIgnored(node.getKlass())
+                || Modifier.isStatic(node.getField().getModifiers());
+    }
+
     private void processNextItem(final CreateItem createItem) {
         LOG.trace("Creating: {}", createItem);
 
         final Node node = createItem.getNode();
+        if (shouldIgnored(node)) {
+            return;
+        }
+
         final Field field = node.getField();
-
-        if (field == null
-                || context.getIgnoredFields().contains(field)
-                || context.getIgnoredClasses().contains(node.getKlass())
-                || Modifier.isStatic(field.getModifiers())) {
-            return;
-        }
-
         final GeneratorResult<?> generatorResult = generatorFacade.generateNodeValue(node, createItem.getOwner());
-        final Object createdValue = generatorResult.getValue();
 
-        if (createdValue == null) {
-            Verify.notNull(createItem.getOwner());
-            ReflectionUtils.setField(createItem.getOwner(), field, null);
+        if (generatorResult.getValue() == null) {
+            if (!field.getType().isPrimitive()) {
+                Verify.notNull(createItem.getOwner());
+                ReflectionUtils.setField(createItem.getOwner(), field, null);
+            }
             return;
         }
 
-        ReflectionUtils.setField(createItem.getOwner(), field, createdValue);
+        ReflectionUtils.setField(createItem.getOwner(), field, generatorResult.getValue());
 
         if (generatorResult.ignoreChildren()) {
             // do not populate arrays/collections
@@ -126,27 +130,28 @@ class InstancioDriver {
         if (collectionNode.getField() != null)
             ReflectionUtils.setField(collectionOwner, collectionNode.getField(), collectionInstance);
 
+        final boolean nullableElement = generatorResult.getHints().nullableElements();
+
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
-            // nullable element
-            if (generatorResult.getHints().nullableResult() && context.getRandomProvider().oneInTenTrue()) {
-                collectionInstance.add(null);
-                continue;
+            final GeneratorResult<?> elementResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
+            final Object elementValue;
+
+            if (nullableElement && context.getRandomProvider().oneInTenTrue()) {
+                elementValue = null;
+            } else {
+                elementValue = elementResult.getValue();
             }
 
-            final GeneratorResult<?> elementResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
-            final Object elementValue = elementResult.getValue();
-
-            if (elementValue != null || elementResult.getHints().nullableResult()) {
+            if (elementValue != null || nullableElement) {
                 collectionInstance.add(elementValue);
             }
 
-            // nested list
+            // nested collection
             if (elementNode instanceof CollectionNode) {
                 populateCollection((CollectionNode) elementNode, elementResult, collectionInstance);
             }
 
             enqueueChildrenOf(elementNode, elementResult, queue);
-
         }
     }
 
@@ -160,35 +165,40 @@ class InstancioDriver {
         if (mapNode.getField() != null)
             ReflectionUtils.setField(mapOwner, mapNode.getField(), mapInstance);
 
-        // How to collect children when map's 'value' is another map?
-        // (NOTE this probably applies to nested Collection and Array nodes too)
-        //
-        // 'value' is a MapNode, therefore its 'getChildren()' would return an empty list
-        // option1: have MapNode.children return key/value nodes' children. don't add children of key/value node directly
-        //          Risk: processing duplicate children if they all end up the queue
-        // option2: check if value node is a Map/Collection/Array node... then get element/key/value nodes children (UGLY)
-
+        final boolean nullableKey = generatorResult.getHints().nullableKeys();
+        final boolean nullableValue = generatorResult.getHints().nullableValues();
 
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
-            final GeneratorResult<?> keyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
-            final GeneratorResult<?> valueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
+            final Object mapKey;
 
-            final Object mapKey = keyResult.getValue();
-            final Object mapValue = valueResult.getValue();
 
-            if (mapKey != null || keyResult.getHints().nullableResult()) {
-                mapInstance.put(mapKey, mapValue);
+            if (nullableKey && context.getRandomProvider().oneInTenTrue()) {
+                mapKey = null;
+            } else {
+                final GeneratorResult<?> keyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
+                enqueueChildrenOf(keyNode, keyResult, queue);
+                mapKey = keyResult.getValue();
             }
 
-            enqueueChildrenOf(keyNode, keyResult, queue);
-            enqueueChildrenOf(valueNode, valueResult, queue);
+            final Object mapValue;
+            if (nullableValue && context.getRandomProvider().oneInTenTrue()) {
+                mapValue = null;
+            } else {
+                final GeneratorResult<?> valueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
+                enqueueChildrenOf(valueNode, valueResult, queue);
+                mapValue = valueResult.getValue();
 
-            if (valueNode instanceof MapNode) {
-                populateMap((MapNode) valueNode, valueResult, mapInstance);
-            } else if (valueNode instanceof CollectionNode) {
-                populateCollection((CollectionNode) valueNode, valueResult, mapInstance);
-            } else if (valueNode instanceof ArrayNode) {
-                populateArray((ArrayNode) valueNode, valueResult, mapInstance);
+                if (valueNode instanceof MapNode) {
+                    populateMap((MapNode) valueNode, valueResult, mapInstance);
+                } else if (valueNode instanceof CollectionNode) {
+                    populateCollection((CollectionNode) valueNode, valueResult, mapInstance);
+                } else if (valueNode instanceof ArrayNode) {
+                    populateArray((ArrayNode) valueNode, valueResult, mapInstance);
+                }
+            }
+
+            if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
+                mapInstance.put(mapKey, mapValue);
             }
         }
     }

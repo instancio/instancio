@@ -11,6 +11,7 @@ import org.instancio.internal.reflection.InterfaceImplementationResolver;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
+import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ class GeneratorFacade {
         }
 
         if (node.getKlass().isPrimitive()) {
-            return GeneratorResult.build(generatorMap.get(node.getKlass()).generate());
+            return GeneratorResult.create(generatorMap.get(node.getKlass()).generate());
         }
 
         if (node instanceof ArrayNode) {
@@ -66,8 +67,8 @@ class GeneratorFacade {
         final GeneratorResult<?> result;
 
         if (generator == null) {
-            if (effectiveType.isInterface()) {
-                result = resolveImplementationAndGenerate(node, owner, effectiveType);
+            if (!ReflectionUtils.isConcrete(effectiveType)) {
+                result = resolveImplementationAndGenerate(effectiveType, node, owner);
             } else {
                 GeneratedHints hints = null;
                 if (Collection.class.isAssignableFrom(effectiveType) || Map.class.isAssignableFrom(effectiveType)) {
@@ -75,13 +76,13 @@ class GeneratorFacade {
                             .dataStructureSize(getRandomSizeForCollectionOrMap(effectiveType))
                             .build();
                 }
-                result = GeneratorResult.builder(instantiator.instantiate(effectiveType)).withHints(hints).build();
+                result = GeneratorResult.create(instantiator.instantiate(effectiveType), hints);
             }
         } else {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
 
             // If we already know how to generate this object, we don't need to collect its fields
-            result = GeneratorResult.builder(generator.generate()).withHints(generator.getHints()).build();
+            result = GeneratorResult.create(generator.generate(), generator.getHints());
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
         }
 
@@ -109,17 +110,16 @@ class GeneratorFacade {
         final Class<?> componentType = ((ArrayNode) node).getElementNode().getKlass();
         final Generator<?> generator = generatorMap.getArrayGenerator(componentType);
         final Object arrayObject = generator.generate();
-        return GeneratorResult.builder(arrayObject).withHints(generator.getHints()).build();
+        return GeneratorResult.create(arrayObject, generator.getHints());
     }
 
     /**
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private GeneratorResult<?> resolveImplementationAndGenerate(
-            final Node parentNode,
-            @Nullable final Object owner,
-            final Class<?> interfaceClass) {
+    private GeneratorResult<?> resolveImplementationAndGenerate(final Class<?> interfaceClass,
+                                                                final Node parentNode,
+                                                                @Nullable final Object owner) {
         Verify.isNotArrayCollectionOrMap(interfaceClass);
 
         LOG.debug("No generator for interface '{}'", interfaceClass.getName());
@@ -129,8 +129,8 @@ class GeneratorFacade {
             LOG.debug("Interface '{}' has no implementation", interfaceClass.getName());
             return null;
         }
-        ClassNode implementorClassNode = new ClassNode(parentNode.getNodeContext(), implementor, null, null, parentNode);
-        return generateNodeValue(implementorClassNode, owner);
+        Node implementorNode = new ClassNode(parentNode.getNodeContext(), implementor, null, null, parentNode);
+        return generateNodeValue(implementorNode, owner);
     }
 
     /**
@@ -138,26 +138,22 @@ class GeneratorFacade {
      * If not, return an empty {@link Optional} and proceed with the main generation flow.
      */
     private Optional<GeneratorResult<?>> attemptGenerateViaContext(final Node node) {
-
-        if (node.getField() != null && context.getNullableFields().contains(node.getField()) && random.trueOrFalse()) {
-            return Optional.of(GeneratorResult.nullResult());
-        }
-
-        GeneratorResult<?> result = null;
-        if (node.getField() != null && context.getUserSuppliedFieldGenerators().containsKey(node.getField())) {
-            Generator<?> generator = context.getUserSuppliedFieldGenerators().get(node.getField());
-
-            result = GeneratorResult.builder(generator.generate())
-                    .withHints(generator.getHints())
-                    .build();
-
-        } else if (context.getUserSuppliedClassGenerators().containsKey(node.getKlass())) {
-            Generator<?> generator = context.getUserSuppliedClassGenerators().get(node.getKlass());
-            result = GeneratorResult.builder(generator.generate())
-                    .withHints(generator.getHints())
-                    .build();
-        }
-        return Optional.ofNullable(result);
+        return shouldReturnNullForNullable(node)
+                ? Optional.of(GeneratorResult.nullResult())
+                : getUserSuppliedGenerator(node).map(g -> GeneratorResult.create(g.generate(), g.getHints()));
     }
 
+    private boolean shouldReturnNullForNullable(final Node node) {
+        return (context.isNullable(node.getField()) || context.isNullable(node.getKlass())) && random.trueOrFalse();
+    }
+
+    private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
+        Generator<?> generator = null;
+        if (node.getField() != null && context.getUserSuppliedFieldGenerators().containsKey(node.getField())) {
+            generator = context.getUserSuppliedFieldGenerators().get(node.getField());
+        } else if (context.getUserSuppliedClassGenerators().containsKey(node.getKlass())) {
+            generator = context.getUserSuppliedClassGenerators().get(node.getKlass());
+        }
+        return Optional.ofNullable(generator);
+    }
 }

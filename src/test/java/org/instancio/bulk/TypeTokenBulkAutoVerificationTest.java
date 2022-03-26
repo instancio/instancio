@@ -24,15 +24,16 @@ import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 
 /**
  * Various contrived generic types.
- * <p>
- * FIXME failing tests
  */
-@Disabled
 class TypeTokenBulkAutoVerificationTest {
     private static final Logger LOG = LoggerFactory.getLogger(TypeTokenBulkAutoVerificationTest.class);
 
     @Test
+    @Disabled
     void arrays() {
+        //
+        // FIXME
+        //
         bulkAssertFullyPopulated(
                 new TypeToken<Item<Integer>[]>() {},
                 new TypeToken<Pair<String, int[]>>() {},
