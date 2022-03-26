@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.instancio.internal.model;
 
 import org.instancio.Generator;
@@ -5,14 +20,15 @@ import org.instancio.Generators;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generators.ArrayGeneratorSpec;
 import org.instancio.generators.coretypes.StringGeneratorSpec;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.person.Address;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
+import org.instancio.settings.Settings;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -29,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.field;
+import static org.mockito.Mockito.when;
 
 class ModelContextTest {
     private static final Field NAME_FIELD = ReflectionUtils.getField(Person.class, "name");
@@ -50,7 +67,8 @@ class ModelContextTest {
                 .withNullableField(ADDRESS_FIELD)
                 .build();
 
-        assertThat(ctx.getNullableFields()).containsExactlyInAnyOrder(NAME_FIELD, ADDRESS_FIELD);
+        assertThat(ctx.isNullable(NAME_FIELD)).isTrue();
+        assertThat(ctx.isNullable(ADDRESS_FIELD)).isTrue();
     }
 
     @Test
@@ -71,7 +89,8 @@ class ModelContextTest {
                 .withNullableClass(UUID.class)
                 .build();
 
-        assertThat(ctx.getNullableClasses()).containsExactlyInAnyOrder(Address.class, UUID.class);
+        assertThat(ctx.isNullable(Address.class)).isTrue();
+        assertThat(ctx.isNullable(UUID.class)).isTrue();
     }
 
     @Test
@@ -96,7 +115,8 @@ class ModelContextTest {
                 .withIgnoredField(ADDRESS_FIELD)
                 .build();
 
-        assertThat(ctx.getIgnoredFields()).containsExactlyInAnyOrder(NAME_FIELD, ADDRESS_FIELD);
+        assertThat(ctx.isIgnored(NAME_FIELD)).isTrue();
+        assertThat(ctx.isIgnored(ADDRESS_FIELD)).isTrue();
     }
 
     @Test
@@ -106,7 +126,8 @@ class ModelContextTest {
                 .withIgnoredClass(Pet.class)
                 .build();
 
-        assertThat(ctx.getIgnoredClasses()).containsExactlyInAnyOrder(Address.class, Pet.class);
+        assertThat(ctx.isIgnored(Address.class)).isTrue();
+        assertThat(ctx.isIgnored(Pet.class)).isTrue();
     }
 
     @Test
@@ -125,7 +146,10 @@ class ModelContextTest {
 
     @Test
     void withGeneratorSpecs() {
-        final Generators generators = new Generators(new RandomProvider());
+        final ModelContext<?> mockCtx = Mockito.mock(ModelContext.class);
+        when(mockCtx.getSettings()).thenReturn(Settings.defaults());
+
+        final Generators generators = new Generators(mockCtx);
         final ArrayGeneratorSpec<Object> petsSpec = generators.array().type(Set.class);
         final StringGeneratorSpec stringSpec = generators.string().minLength(5).allowEmpty();
 
@@ -164,6 +188,6 @@ class ModelContextTest {
 
         assertThatThrownBy(() -> builder.withSubtypeMapping(List.class, AbstractList.class))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("'to' class must not be an interface or abstract class: '%s'", AbstractList.class.getName());
+                .hasMessage("Class must not be an interface or abstract class: '%s'", AbstractList.class.getName());
     }
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.instancio.settings;
 
 import org.instancio.exception.InstancioApiException;
@@ -46,14 +61,16 @@ class SettingsTest {
 
     @Test
     void merge() {
+        final Settings defaults = Settings.defaults();
         final Settings overrides = Settings.create()
                 .set(Setting.BYTE_MIN, (byte) 99)
                 .set(Setting.ARRAY_NULLABLE, true);
 
-        final Settings actual = Settings.defaults().merge(overrides);
+        final Settings result = defaults.merge(overrides);
 
-        assertThat((Byte) actual.get(Setting.BYTE_MIN)).isEqualTo((byte) 99);
-        assertThat((Boolean) actual.get(Setting.ARRAY_NULLABLE)).isTrue();
+        assertThat((Byte) result.get(Setting.BYTE_MIN)).isEqualTo((byte) 99);
+        assertThat((Boolean) result.get(Setting.ARRAY_NULLABLE)).isTrue();
+        assertThat(result).as("Expecting a new instance of settings to be created").isNotSameAs(defaults);
     }
 
     @Test

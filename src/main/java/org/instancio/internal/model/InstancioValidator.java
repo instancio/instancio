@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.instancio.internal.model;
 
 import org.instancio.exception.InstancioApiException;
@@ -49,10 +64,16 @@ public class InstancioValidator {
             throw new InstancioApiException(String.format(
                     "Class '%s' is not a subtype of '%s'", to.getName(), from.getName()));
         }
-        if (!ReflectionUtils.isConcrete(to)) {
+
+        validateConcreteClass(to);
+    }
+
+    public static Class<?> validateConcreteClass(final Class<?> klass) {
+        if (!ReflectionUtils.isConcrete(klass)) {
             throw new InstancioApiException(String.format(
-                    "'to' class must not be an interface or abstract class: '%s'", to.getName()));
+                    "Class must not be an interface or abstract class: '%s'", klass.getName()));
         }
+        return klass;
     }
 
     public static void validateSettingKey(final SettingKey key, final Object value) {

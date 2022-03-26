@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.instancio.settings;
 
 import org.instancio.util.ReflectionUtils;
@@ -77,18 +92,21 @@ public class Settings {
     }
 
     /**
-     * Merge given settings into these settings.
+     * Creates a new instance of settings by merging given settings with these settings.
      *
-     * @param overrides settings containing overrides
-     * @return updated settings
+     * @param other settings to merge
+     * @return new instance of merged settings
      */
-    public Settings merge(@Nullable final Settings overrides) {
-        checkLockedForModifications();
-        if (overrides != null) {
-            settingsMap.putAll(overrides.settingsMap);
-            subtypeMap.putAll(overrides.subtypeMap);
+    public Settings merge(@Nullable final Settings other) {
+        final Settings merged = Settings.create();
+        merged.settingsMap.putAll(settingsMap);
+        merged.subtypeMap.putAll(subtypeMap);
+
+        if (other != null) {
+            merged.settingsMap.putAll(other.settingsMap);
+            merged.subtypeMap.putAll(other.subtypeMap);
         }
-        return this;
+        return merged;
     }
 
     /**

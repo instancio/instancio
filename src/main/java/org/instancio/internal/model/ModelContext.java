@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.instancio.internal.model;
 
 import org.instancio.Binding;
@@ -5,11 +20,12 @@ import org.instancio.Generator;
 import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.settings.Settings;
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.PropertiesLoader;
+import org.instancio.settings.Settings;
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -48,10 +64,9 @@ public class ModelContext<T> {
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final Settings settings;
     private final Integer seed;
+    private final RandomProvider randomProvider;
 
     private ModelContext(final Builder<T> builder) {
-        putAllBuiltInGenerators(builder);
-
         this.rootType = builder.rootType;
         this.rootClass = builder.rootClass;
         this.rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
@@ -65,22 +80,19 @@ public class ModelContext<T> {
         this.rootTypeMap = rootType instanceof ParameterizedType
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
-        this.settings = mergeDefaultSettingsWith(builder.userSuppliedSettings);
-        this.seed = builder.seed;
-    }
 
-    private Settings mergeDefaultSettingsWith(final Settings userSuppliedSettings) {
-        return Settings.defaults()
+        this.settings = Settings.defaults()
                 .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
-                .merge(userSuppliedSettings)
+                .merge(builder.userSuppliedSettings)
                 .lock();
+
+        this.seed = builder.seed;
+        this.randomProvider = new RandomProvider(ObjectUtils.defaultIfNull(seed, ThreadLocalRandom.current().nextInt()));
+        putAllBuiltInGenerators(builder);
     }
 
-    private static <T> void putAllBuiltInGenerators(final Builder<T> builder) {
-        final int seed = defaultIfNull(builder.seed, ThreadLocalRandom.current().nextInt());
-        final RandomProvider random = new RandomProvider(seed);
-        final Generators generators = new Generators(random);
-
+    private void putAllBuiltInGenerators(final Builder<T> builder) {
+        final Generators generators = new Generators(this);
         builder.generatorSpecMap.forEach((target, genSpecFn) -> {
             final Generator<?> generator = (Generator<?>) genSpecFn.apply(generators);
             builder.withGenerator(target, generator);
@@ -97,6 +109,7 @@ public class ModelContext<T> {
         builder.userSuppliedFieldGenerators.putAll(this.userSuppliedFieldGenerators);
         builder.userSuppliedClassGenerators.putAll(this.userSuppliedClassGenerators);
         builder.subtypeMap.putAll(this.getSubtypeMap());
+        builder.seed = this.seed;
         return builder;
     }
 
@@ -108,20 +121,20 @@ public class ModelContext<T> {
         return rootClass;
     }
 
-    public Set<Field> getIgnoredFields() {
-        return ignoredFields;
+    public boolean isIgnored(final Field field) {
+        return ignoredFields.contains(field);
     }
 
-    public Set<Field> getNullableFields() {
-        return nullableFields;
+    public boolean isIgnored(final Class<?> klass) {
+        return ignoredClasses.contains(klass);
     }
 
-    public Set<Class<?>> getIgnoredClasses() {
-        return ignoredClasses;
+    public boolean isNullable(final Field field) {
+        return nullableFields.contains(field);
     }
 
-    public Set<Class<?>> getNullableClasses() { // XXX unused except in test... ?
-        return nullableClasses;
+    public boolean isNullable(final Class<?> klass) {
+        return nullableClasses.contains(klass);
     }
 
     public Map<Field, Generator<?>> getUserSuppliedFieldGenerators() {
@@ -148,6 +161,10 @@ public class ModelContext<T> {
         return seed;
     }
 
+    public RandomProvider getRandomProvider() {
+        return randomProvider;
+    }
+
     private static Map<TypeVariable<?>, Class<?>> buildRootTypeMap(
             final Class<?> rootClass,
             final List<Class<?>> rootTypeParameters) {
@@ -160,7 +177,7 @@ public class ModelContext<T> {
         for (int i = 0; i < typeVariables.length; i++) {
             final TypeVariable<?> typeVariable = typeVariables[i];
             final Class<?> actualType = rootTypeParameters.get(i);
-            LOG.trace("Mapping type variable '{}' to {}", typeVariable, actualType);
+            LOG.trace("Mapping type variable '{}' to '{}'", typeVariable, actualType);
             typeMap.put(typeVariable, actualType);
         }
         return typeMap;

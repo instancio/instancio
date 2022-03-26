@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.instancio.settings;
 
 import org.instancio.util.Verify;
@@ -28,7 +43,7 @@ public enum Setting implements SettingKey {
     LONG_NULLABLE("long.nullable", Boolean.class, false),
     FLOAT_MIN("float.min", Float.class, 1f),
     FLOAT_MAX("float.max", Float.class, (float) Constants.NUMERIC_MAX),
-    FLOAT_NULLABLE("float.nullable", Boolean.class, true),
+    FLOAT_NULLABLE("float.nullable", Boolean.class, false),
     DOUBLE_MIN("double.min", Double.class, 1d),
     DOUBLE_MAX("double.max", Double.class, (double) Constants.NUMERIC_MAX),
     DOUBLE_NULLABLE("double.nullable", Boolean.class, false),

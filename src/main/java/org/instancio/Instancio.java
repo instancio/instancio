@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.instancio;
 
 import org.instancio.internal.ClassInstancioApiImpl;
@@ -110,15 +125,27 @@ public class Instancio {
         // non-instantiable
     }
 
-    public static <T> InstancioOfClassApi<T> of(Class<T> klass) {
+    public static <T> T create(final Class<T> klass) {
+        return of(klass).create();
+    }
+
+    public static <T> T create(final TypeTokenSupplier<T> typeToken) {
+        return of(typeToken).create();
+    }
+
+    public static <T> T create(final Model<T> model) {
+        return of(model).create();
+    }
+
+    public static <T> InstancioOfClassApi<T> of(final Class<T> klass) {
         return new ClassInstancioApiImpl<>(klass);
     }
 
-    public static <T> InstancioApi<T> of(TypeTokenSupplier<T> typeToken) {
+    public static <T> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
         return new InstancioApiImpl<>(typeToken);
     }
 
-    public static <T> InstancioApi<T> of(Model<T> model) {
+    public static <T> InstancioApi<T> of(final Model<T> model) {
         return new InstancioApiImpl<>(model);
     }
 }

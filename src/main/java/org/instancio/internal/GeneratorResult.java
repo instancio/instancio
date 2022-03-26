@@ -1,25 +1,33 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.instancio.internal;
 
 import javax.annotation.Nullable;
 import java.util.StringJoiner;
 
 class GeneratorResult<T> {
+    private static final GeneratorResult<Void> NULL_RESULT = new GeneratorResult<>(
+            null, GeneratedHints.builder().ignoreChildren(true).build());
+
     private final T value;
-    private final boolean ignoreChildren;
-    private final GeneratorSettings generatorSettings;
+    private final GeneratedHints generatedHints;
 
-    private GeneratorResult(@Nullable final T value,
-                            final boolean ignoreChildren,
-                            @Nullable final GeneratorSettings generatorSettings) {
+    private GeneratorResult(@Nullable final T value, @Nullable final GeneratedHints generatedHints) {
         this.value = value;
-        this.ignoreChildren = ignoreChildren;
-        this.generatorSettings = generatorSettings;
-    }
-
-    private GeneratorResult(final Builder<T> builder) {
-        value = builder.value;
-        ignoreChildren = builder.ignoreChildren;
-        generatorSettings = builder.generatorSettings;
+        this.generatedHints = generatedHints;
     }
 
     /**
@@ -30,19 +38,18 @@ class GeneratorResult<T> {
      * An actual {@code null} {@code GeneratorResult} means that the target field will be ignored
      * (it would retain its default value, if any).
      *
-     * @param <T> type of the result
      * @return null result
      */
-    static <T> GeneratorResult<T> nullResult() {
-        return new GeneratorResult<>(null, true, null);
+    static GeneratorResult<Void> nullResult() {
+        return NULL_RESULT;
     }
 
-    static <T> Builder<T> builder(T value) {
-        return new Builder<>(value);
+    static <T> GeneratorResult<T> create(@Nullable final T value) {
+        return new GeneratorResult<>(value, null);
     }
 
-    static <T> GeneratorResult<T> build(T value) {
-        return new Builder<>(value).build();
+    static <T> GeneratorResult<T> create(@Nullable final T value, @Nullable final GeneratedHints hints) {
+        return new GeneratorResult<>(value, hints);
     }
 
     T getValue() {
@@ -50,41 +57,18 @@ class GeneratorResult<T> {
     }
 
     boolean ignoreChildren() {
-        return ignoreChildren;
+        return generatedHints != null && generatedHints.ignoreChildren();
     }
 
-    GeneratorSettings getSettings() {
-        return generatorSettings;
-    }
-
-    static final class Builder<T> {
-        private final T value;
-        private boolean ignoreChildren;
-        private GeneratorSettings generatorSettings;
-
-        private Builder(@Nullable final T value) {
-            this.value = value;
-        }
-
-        public Builder<T> withSettings(@Nullable final GeneratorSettings generatorSettings) {
-            this.generatorSettings = generatorSettings;
-            if (generatorSettings != null) {
-                this.ignoreChildren = generatorSettings.ignoreChildren();
-            }
-            return this;
-        }
-
-        public GeneratorResult<T> build() {
-            return new GeneratorResult<>(this);
-        }
+    GeneratedHints getHints() {
+        return generatedHints;
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", GeneratorResult.class.getSimpleName() + "[", "]")
                 .add("value=" + value)
-                .add("ignoreChildren=" + ignoreChildren)
-                .add("settings=" + generatorSettings)
+                .add("hints=" + generatedHints)
                 .toString();
     }
 }
