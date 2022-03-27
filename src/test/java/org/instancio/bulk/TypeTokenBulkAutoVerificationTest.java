@@ -45,17 +45,16 @@ class TypeTokenBulkAutoVerificationTest {
     @Test
     void arrays() {
         bulkAssertFullyPopulated(
-                new TypeToken<Map<String, Item<Integer>[]>>() {},
                 new TypeToken<Item<Integer>[]>() {},
                 new TypeToken<Pair<String, int[]>>() {},
                 new TypeToken<Person>() {},
-                //new TypeToken<List<Item<Pair<Integer, String>>[]>>() {}, // FIXME
                 new TypeToken<List<int[]>>() {});
     }
 
     @Test
     void lists() {
         bulkAssertFullyPopulated(
+                new TypeToken<List<Item<Pair<Integer, String>>[]>>() {},
                 new TypeToken<List<List<List<List<String>>>>>() {},
                 new TypeToken<List<Map<Short, List<String>>>>() {},
                 new TypeToken<List<Item<Item<List<String>>>>>() {});
@@ -64,6 +63,7 @@ class TypeTokenBulkAutoVerificationTest {
     @Test
     void maps() {
         bulkAssertFullyPopulated(
+                new TypeToken<Map<String, Item<Integer>[]>>() {},
                 new TypeToken<Map<Integer, Person>>() {},
                 new TypeToken<Map<String, Map<Integer, String>>>() {},
                 new TypeToken<Map<String, Map<Integer, List<String>>>>() {},
