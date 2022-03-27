@@ -34,7 +34,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         this.nullable = nullable;
     }
 
-    abstract T generateRandomValue();
+    abstract T generateNonNullValue();
 
     @Override
     public NumberGeneratorSpec<T> min(final T min) {
@@ -56,7 +56,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
 
     @Override
     public T generate() {
-        return nullable && random().oneInTenTrue() ? null : generateRandomValue();
+        return random().diceRoll(nullable) ? null : generateNonNullValue();
     }
 
     @Override

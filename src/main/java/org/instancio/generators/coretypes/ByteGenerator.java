@@ -28,7 +28,7 @@ public class ByteGenerator extends AbstractRandomNumberGeneratorSpec<Byte> {
     }
 
     @Override
-    Byte generateRandomValue() {
+    Byte generateNonNullValue() {
         return random().byteBetween(min, max);
     }
 }

@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.pojo.collections.sets.SetLong;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
+import org.instancio.testsupport.tags.NonDeterministicTag;
 import org.instancio.testsupport.tags.SettingsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SettingsTag
+@NonDeterministicTag
 class CollectionSettingsTest {
 
     private static final int SAMPLE_SIZE = 100;

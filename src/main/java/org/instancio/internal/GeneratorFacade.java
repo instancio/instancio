@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.Generator;
+import org.instancio.generators.InstantiatingGenerator;
 import org.instancio.internal.model.ArrayNode;
 import org.instancio.internal.model.ClassNode;
 import org.instancio.internal.model.ModelContext;
@@ -26,6 +27,7 @@ import org.instancio.internal.reflection.InterfaceImplementationResolver;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
+import org.instancio.util.ObjectUtils;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -169,6 +171,18 @@ class GeneratorFacade {
         } else if (context.getUserSuppliedClassGenerators().containsKey(node.getKlass())) {
             generator = context.getUserSuppliedClassGenerators().get(node.getKlass());
         }
+
+        if (generator != null && generator.isDelegating()) {
+            final Class<?> targetType = ObjectUtils.defaultIfNull(generator.targetType(), node.getKlass());
+            final Class<?> effectiveType = context.getSubtypeMap().getOrDefault(targetType, targetType);
+            Generator<?> delegate = generatorMap.get(effectiveType);
+            if (delegate == null) {
+                delegate = new InstantiatingGenerator(context, effectiveType);
+            }
+
+            generator.setDelegate(delegate);
+        }
+
         return Optional.ofNullable(generator);
     }
 }

@@ -21,8 +21,8 @@ import org.instancio.generators.OneOfArrayGenerator;
 import org.instancio.generators.OneOfArrayGeneratorSpec;
 import org.instancio.generators.OneOfCollectionGenerator;
 import org.instancio.generators.OneOfCollectionGeneratorSpec;
-import org.instancio.generators.collections.CollectionGenerator;
 import org.instancio.generators.collections.CollectionGeneratorSpec;
+import org.instancio.generators.collections.CollectionGeneratorSpecImpl;
 import org.instancio.generators.collections.MapGenerator;
 import org.instancio.generators.collections.MapGeneratorSpec;
 import org.instancio.generators.coretypes.ByteGenerator;
@@ -97,7 +97,7 @@ public class Generators {
     }
 
     public <T> CollectionGeneratorSpec<Collection<T>> collection() {
-        return new CollectionGenerator<>(context);
+        return new CollectionGeneratorSpecImpl<>(context);
     }
 
     public <K, V> MapGeneratorSpec<K, V> map() {

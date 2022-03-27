@@ -80,7 +80,7 @@ public class ArrayGenerator<T> extends AbstractRandomGenerator<T> implements Arr
     @SuppressWarnings("unchecked")
     public T generate() {
         Verify.notNull(componentType, "Array component type is null");
-        if (nullable && random().oneInTenTrue()) {
+        if (random().diceRoll(nullable)) {
             return null;
         }
         return (T) Array.newInstance(componentType, random().intBetween(minLength, maxLength + 1));

@@ -40,7 +40,6 @@ import org.instancio.generators.coretypes.LongGenerator;
 import org.instancio.generators.coretypes.ShortGenerator;
 import org.instancio.generators.coretypes.StringGenerator;
 import org.instancio.internal.model.ModelContext;
-import org.instancio.internal.random.RandomProvider;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
@@ -63,11 +62,9 @@ class GeneratorMap {
 
     private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
     private final ModelContext<?> context;
-    private final RandomProvider random;
 
     GeneratorMap(final ModelContext<?> context) {
         this.context = context;
-        this.random = context.getRandomProvider();
 
         // Core types
         generatorMap.put(byte.class, new ByteGenerator(context));

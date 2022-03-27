@@ -17,6 +17,7 @@ package org.instancio.api.features.generators;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
+import org.instancio.pojo.collections.TwoStringCollections;
 import org.instancio.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.pojo.collections.maps.TwoMapsOfIntegerItemString;
 import org.instancio.pojo.collections.sets.HashSetLong;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -64,37 +66,41 @@ class BuiltInCollectionGeneratorTest {
             assertThat(result.getSet()).hasSizeGreaterThan(minSize * 90 / 100);
         }
 
-        @Disabled
         @Test
-        @DisplayName("Collection type should default to field type (concrete) if other type is not specified")
-        void collectionTypeNotSpecifiedConcreteType() {
-
-            // FIXME not supplying type throws error
-
+        @DisplayName("When collection type not specified: field type HashSet")
+        void collectionTypeNotSpecifiedWithHashSetField() {
             final int minSize = 100;
+
             final HashSetLong result = Instancio.of(HashSetLong.class)
-                    // The declared field is HashSet, therefore targeting all HashSet classes
-                    .generate(all(HashSet.class), gen -> gen.collection().minSize(minSize))
+                    .generate(all(HashSet.class), gen -> gen.collection().minSize(minSize)) //.type() not specified
                     .create();
 
-            assertThatObject(result).isFullyPopulated();
             assertThat(result.getSet()).hasSizeGreaterThanOrEqualTo(minSize);
         }
 
-        @Disabled
         @Test
-        @DisplayName("Collection type should default to field type (abstract) if other type is not specified")
-        void collectionTypeNotSpecifiedAbstractType() {
-            //
-            // FIXME not supplying type throws error
-            //
+        @DisplayName("When collection type not specified: field type Set")
+        void collectionTypeNotSpecifiedWithSetField() {
             final int minSize = 100;
+
             final SetLong result = Instancio.of(SetLong.class)
-                    .generate(all(Set.class), gen -> gen.collection().minSize(minSize))
+                    .generate(all(Set.class), gen -> gen.collection().minSize(minSize)) //.type() not specified
                     .create();
 
-            assertThatObject(result).isFullyPopulated();
             assertThat(result.getSet()).hasSizeGreaterThanOrEqualTo(minSize);
+        }
+
+        @Test
+        @DisplayName("When collection type not specified: field type Collection")
+        void collectionTypeNotSpecifiedWithCollectionField() {
+            final int minSize = 100;
+
+            final TwoStringCollections result = Instancio.of(TwoStringCollections.class)
+                    .generate(all(Collection.class), gen -> gen.collection().minSize(minSize)) //.type() not specified
+                    .create();
+
+            assertThat(result.getOne()).hasSizeGreaterThanOrEqualTo(minSize);
+            assertThat(result.getTwo()).hasSizeGreaterThanOrEqualTo(minSize);
         }
     }
 

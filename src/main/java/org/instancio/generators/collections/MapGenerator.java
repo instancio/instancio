@@ -27,12 +27,12 @@ import java.util.Map;
 
 public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
 
-    private int minSize;
-    private int maxSize;
-    private boolean nullable;
-    private boolean nullableKeys;
-    private boolean nullableValues;
-    private Class<?> type = HashMap.class;
+    protected int minSize;
+    protected int maxSize;
+    protected boolean nullable;
+    protected boolean nullableKeys;
+    protected boolean nullableValues;
+    protected Class<?> type = HashMap.class;
 
     public MapGenerator(final ModelContext<?> context) {
         super(context);

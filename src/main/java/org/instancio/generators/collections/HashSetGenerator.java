@@ -17,6 +17,7 @@ package org.instancio.generators.collections;
 
 import org.instancio.internal.model.ModelContext;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 public class HashSetGenerator<T> extends CollectionGenerator<T> {
@@ -24,5 +25,10 @@ public class HashSetGenerator<T> extends CollectionGenerator<T> {
     public HashSetGenerator(final ModelContext<?> context) {
         super(context);
         type(HashSet.class);
+    }
+
+    @Override
+    public Collection<T> generate() {
+        return random().diceRoll(nullable) ? null : new HashSet<>();
     }
 }

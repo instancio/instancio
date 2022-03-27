@@ -31,7 +31,7 @@ public class BooleanGenerator extends AbstractRandomGenerator<Boolean> {
 
     @Override
     public Boolean generate() {
-        return nullable && random().oneInTenTrue() ? null : random().trueOrFalse();
+        return random().diceRoll(nullable) ? null : random().trueOrFalse();
     }
 
     @Override
