@@ -23,8 +23,8 @@ import org.instancio.generators.OneOfCollectionGenerator;
 import org.instancio.generators.OneOfCollectionGeneratorSpec;
 import org.instancio.generators.collections.CollectionGeneratorSpec;
 import org.instancio.generators.collections.CollectionGeneratorSpecImpl;
-import org.instancio.generators.collections.MapGenerator;
 import org.instancio.generators.collections.MapGeneratorSpec;
+import org.instancio.generators.collections.MapGeneratorSpecImpl;
 import org.instancio.generators.coretypes.ByteGenerator;
 import org.instancio.generators.coretypes.DoubleGenerator;
 import org.instancio.generators.coretypes.FloatGenerator;
@@ -101,6 +101,6 @@ public class Generators {
     }
 
     public <K, V> MapGeneratorSpec<K, V> map() {
-        return new MapGenerator<>(context);
+        return new MapGeneratorSpecImpl<>(context);
     }
 }

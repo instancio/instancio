@@ -19,6 +19,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
 import org.instancio.pojo.collections.TwoStringCollections;
 import org.instancio.pojo.collections.lists.TwoListsOfItemString;
+import org.instancio.pojo.collections.maps.SortedMapIntegerString;
 import org.instancio.pojo.collections.maps.TwoMapsOfIntegerItemString;
 import org.instancio.pojo.collections.sets.HashSetLong;
 import org.instancio.pojo.collections.sets.SetLong;
@@ -35,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,7 +53,7 @@ class BuiltInCollectionGeneratorTest {
 
         @Disabled
         @Test
-        @DisplayName("TODO need to decide how to handle this case")
+        @DisplayName("TODO need to decide how to handle this case: should all(Foo.class) target Foo base types?")
         void TODO() {
 
             // NOTE the binding is targetting 'Set' but HashSetLong declares a 'HashSet'.
@@ -102,6 +104,19 @@ class BuiltInCollectionGeneratorTest {
             assertThat(result.getOne()).hasSizeGreaterThanOrEqualTo(minSize);
             assertThat(result.getTwo()).hasSizeGreaterThanOrEqualTo(minSize);
         }
+
+
+        @Test
+        @DisplayName("When map type not specified: field type SortedMap")
+        void sortedMap() {
+            final SortedMapIntegerString result = Instancio.of(SortedMapIntegerString.class)
+                    .generate(all(SortedMap.class), gen -> gen.map()
+                            .minSize(EXPECTED_SIZE)) // .type() not specified
+                    .create();
+
+            assertThat(result.getMap()).hasSizeBetween(EXPECTED_SIZE, EXPECTED_SIZE);
+        }
+
     }
 
     @Nested

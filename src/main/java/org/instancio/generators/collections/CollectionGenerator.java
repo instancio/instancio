@@ -31,7 +31,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
     protected int maxSize;
     protected boolean nullable;
     protected boolean nullableElements;
-    protected Class<?> type = ArrayList.class; // default collection type
+    protected Class<?> type;
 
     public CollectionGenerator(final ModelContext<?> context) {
         super(context);
@@ -39,6 +39,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
         this.maxSize = context.getSettings().get(Setting.COLLECTION_MAX_SIZE);
         this.nullable = context.getSettings().get(Setting.COLLECTION_NULLABLE);
         this.nullableElements = context.getSettings().get(Setting.COLLECTION_ELEMENTS_NULLABLE);
+        this.type = ArrayList.class; // default collection type
     }
 
     @Override
