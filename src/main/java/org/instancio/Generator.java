@@ -66,6 +66,6 @@ public interface Generator<T> extends GeneratorSpec<T> {
     default GeneratedHints getHints() {
         // ignore children by default to ensure values created
         // from user-supplied generators are not modified
-        return GeneratedHints.builder().ignoreChildren(true).build();
+        return GeneratedHints.createIgnoreChildrenHint();
     }
 }

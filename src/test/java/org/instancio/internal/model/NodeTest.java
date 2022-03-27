@@ -170,6 +170,11 @@ class NodeTest {
         }
 
         @Override
+        public void accept(final NodeVisitor visitor) {
+            // no-op
+        }
+
+        @Override
         protected List<Node> collectChildren() {
             return Collections.emptyList();
         }

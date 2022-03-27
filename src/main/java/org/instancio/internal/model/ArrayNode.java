@@ -44,6 +44,11 @@ public class ArrayNode extends Node {
         this.elementNode = elementNode;
     }
 
+    @Override
+    public void accept(final NodeVisitor visitor) {
+        visitor.visitArrayNode(this);
+    }
+
     /**
      * Returns an empty list; children come from the {@link #getElementNode()}.
      */

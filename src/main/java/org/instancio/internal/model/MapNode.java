@@ -49,6 +49,11 @@ public class MapNode extends Node {
         this.valueNode = Verify.notNull(valueNode, "valueNode is null");
     }
 
+    @Override
+    public void accept(final NodeVisitor visitor) {
+        visitor.visitMapNode(this);
+    }
+
     /**
      * Children come from the {@link #getKeyNode()} and {@link #getValueNode()}.
      */
