@@ -37,6 +37,11 @@ public class GeneratedHints {
         nullableMapValues = builder.nullableValues;
     }
 
+    /**
+     * Contains a single hint to ignore children.
+     *
+     * @return ignore children hint
+     */
     public static GeneratedHints createIgnoreChildrenHint() {
         return IGNORE_CHILDREN_HINT;
     }

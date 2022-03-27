@@ -50,14 +50,28 @@ public interface Generator<T> extends GeneratorSpec<T> {
      */
     T generate();
 
+    /**
+     * If {@code true}, then this generator delegate object instantiation
+     * to another generator supplied via {@link #setDelegate(Generator)}.
+     *
+     * @return {@code true} if this is a delegating generator
+     */
     default boolean isDelegating() {
         return false;
     }
 
+    /**
+     * Set a delegate that will be responsible for instantiating an object
+     * on behalf of this generator.
+     *
+     * @param delegate that will create the target object
+     */
     default void setDelegate(Generator<?> delegate) {
+        // no-op by default
     }
 
     default Class<?> targetType() {
+        // TODO review this logic. can also return null so this might be redundant
         final ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
         Type genericType = genericSuperclass.getActualTypeArguments()[0];
         return TypeUtils.getRawType(genericType);

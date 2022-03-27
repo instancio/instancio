@@ -198,6 +198,9 @@ public class NodeFactory {
                         throw new UnsupportedOperationException("Unsupported upper bound type: " + upperBound.getClass());
                     }
 
+                } else if (actualTypeArg instanceof GenericArrayType) {
+                    Class<?> rawType = TypeUtils.getRawType(actualTypeArg);
+                    elementNode = this.createNode(nodeContext, rawType, actualTypeArg, field, parent);
                 }
             }
 

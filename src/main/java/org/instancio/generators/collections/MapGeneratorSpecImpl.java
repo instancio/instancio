@@ -19,21 +19,21 @@ import org.instancio.Generator;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.util.Verify;
 
-import java.util.Collection;
+import java.util.Map;
 
-public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
+public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
 
     private Generator<?> delegate;
 
-    public CollectionGeneratorSpecImpl(final ModelContext<?> context) {
+    public MapGeneratorSpecImpl(final ModelContext<?> context) {
         super(context);
         this.type = null; // must be either supplied by user, or obtained from the field declaration
     }
 
     @Override
-    public Collection<T> generate() {
+    public Map<K, V> generate() {
         Verify.notNull(delegate, "null delegate");
-        return random().diceRoll(nullable) ? null : (Collection<T>) delegate.generate();
+        return random().diceRoll(nullable) ? null : (Map<K, V>) delegate.generate();
     }
 
     @Override

@@ -85,7 +85,7 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
     @Override
     public Map<K, V> generate() {
         try {
-            return nullable && random().oneInTenTrue() ? null : (Map<K, V>) type.newInstance();
+            return random().diceRoll(nullable) ? null : (Map<K, V>) type.newInstance();
         } catch (Exception ex) {
             throw new InstancioException(String.format("Error creating instance of: %s", type), ex);
         }
