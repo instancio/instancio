@@ -25,22 +25,22 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-class InstancioDriver {
-    private static final Logger LOG = LoggerFactory.getLogger(InstancioDriver.class);
+class InstancioEngine {
+    private static final Logger LOG = LoggerFactory.getLogger(InstancioEngine.class);
 
     private final GeneratorFacade generatorFacade;
     private final Queue<CreateItem> queue = new ArrayDeque<>();
     private final ModelContext<?> context;
     private final Node rootNode;
 
-    InstancioDriver(InternalModel<?> model) {
+    InstancioEngine(InternalModel<?> model) {
         this.context = model.getModelContext();
         this.rootNode = model.getRootNode();
         this.generatorFacade = new GeneratorFacade(context);
     }
 
     @SuppressWarnings("unchecked")
-    <T> T createEntryPoint() {
+    <T> T createObject() {
         final GeneratorResult rootResult = generatorFacade.generateNodeValue(rootNode, null);
         rootNode.accept(new PopulatingNodeVisitor(null, rootResult, generatorFacade, context, queue));
 

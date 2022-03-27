@@ -103,8 +103,8 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public T create() {
-        final InstancioDriver instancioDriver = new InstancioDriver(createModel());
-        return instancioDriver.createEntryPoint();
+        final InstancioEngine engine = new InstancioEngine(createModel());
+        return engine.createObject();
     }
 
     private InternalModel<T> createModel() {
