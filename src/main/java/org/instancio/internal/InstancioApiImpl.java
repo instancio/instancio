@@ -25,28 +25,21 @@ import org.instancio.TypeTokenSupplier;
 import org.instancio.internal.model.InternalModel;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Settings;
-import org.instancio.util.ObjectUtils;
-import org.instancio.util.TypeUtils;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static org.instancio.util.ReflectionUtils.getField;
-
 public class InstancioApiImpl<T> implements InstancioApi<T> {
 
-    private final Class<T> rootClass;
     private final ModelContext.Builder<T> modelContextBuilder;
 
     public InstancioApiImpl(final Class<T> klass) {
-        this.rootClass = klass;
         this.modelContextBuilder = ModelContext.builder(klass);
     }
 
     public InstancioApiImpl(final TypeTokenSupplier<T> typeToken) {
         final Type rootType = typeToken.get();
-        this.rootClass = TypeUtils.getRawType(rootType);
         this.modelContextBuilder = ModelContext.builder(rootType);
     }
 
@@ -55,7 +48,6 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
         final ModelContext<T> suppliedContext = suppliedModel.getModelContext();
         // copy context data to allow overriding
         this.modelContextBuilder = suppliedContext.toBuilder();
-        this.rootClass = suppliedContext.getRootClass();
     }
 
     protected void addTypeParameters(Class<?>... type) {
@@ -64,23 +56,13 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public InstancioApi<T> ignore(Binding binding) {
-        if (binding.isFieldBinding()) {
-            final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
-            modelContextBuilder.withIgnoredField(getField(targetType, binding.getFieldName()));
-        } else {
-            modelContextBuilder.withIgnoredClass(binding.getTargetType());
-        }
+        modelContextBuilder.withIgnored(binding);
         return this;
     }
 
     @Override
     public InstancioApi<T> withNullable(Binding target) {
-        if (target.isFieldBinding()) {
-            final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
-            modelContextBuilder.withNullableField(getField(targetType, target.getFieldName()));
-        } else {
-            modelContextBuilder.withNullableClass(target.getTargetType());
-        }
+        modelContextBuilder.withNullable(target);
         return this;
     }
 

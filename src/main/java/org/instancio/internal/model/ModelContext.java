@@ -83,7 +83,7 @@ public class ModelContext<T> {
 
         this.settings = Settings.defaults()
                 .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
-                .merge(builder.userSuppliedSettings)
+                .merge(builder.settings)
                 .lock();
 
         this.seed = builder.seed;
@@ -109,6 +109,7 @@ public class ModelContext<T> {
         builder.userSuppliedFieldGenerators.putAll(this.userSuppliedFieldGenerators);
         builder.userSuppliedClassGenerators.putAll(this.userSuppliedClassGenerators);
         builder.subtypeMap.putAll(this.subtypeMap);
+        builder.settings = this.settings;
         builder.seed = this.seed;
         return builder;
     }
@@ -200,7 +201,7 @@ public class ModelContext<T> {
         private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
         private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecMap = new HashMap<>();
-        private Settings userSuppliedSettings;
+        private Settings settings;
         private Integer seed;
 
         private Builder(final Class<T> rootClass, final Type rootType) {
@@ -219,16 +220,13 @@ public class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withIgnoredField(final Field field) {
-            this.ignoredFields.add(field);
-            return this;
-        }
-
-        public Builder<T> withNullableField(final Field field) {
-            if (field.getType().isPrimitive()) {
-                throw new InstancioApiException(String.format("Primitive field '%s' cannot be set to null", field));
+        public Builder<T> withIgnored(final Binding binding) {
+            if (binding.isFieldBinding()) {
+                final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
+                this.ignoredFields.add(getField(targetType, binding.getFieldName()));
+            } else {
+                this.ignoredClasses.add(binding.getTargetType());
             }
-            this.nullableFields.add(field);
             return this;
         }
 
@@ -237,11 +235,22 @@ public class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withNullableClass(final Class<?> klass) {
-            if (klass.isPrimitive()) {
-                throw new InstancioApiException(String.format("Primitive class '%s' cannot be set to null", klass.getName()));
+        public Builder<T> withNullable(final Binding binding) {
+            final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
+
+            if (binding.isFieldBinding()) {
+                final Field field = getField(targetType, binding.getFieldName());
+                if (field.getType().isPrimitive()) {
+                    throw new InstancioApiException(String.format("Primitive field '%s' cannot be set to null", field));
+                }
+                this.nullableFields.add(field);
+            } else {
+                if (targetType.isPrimitive()) {
+                    throw new InstancioApiException(String.format("Primitive class '%s' cannot be set to null", targetType.getName()));
+                }
+                this.nullableClasses.add(targetType);
             }
-            this.nullableClasses.add(klass);
+
             return this;
         }
 
@@ -279,7 +288,7 @@ public class ModelContext<T> {
         }
 
         public Builder<T> withSettings(final Settings settings) {
-            this.userSuppliedSettings = settings;
+            this.settings = settings;
             return this;
         }
 
