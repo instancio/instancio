@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -58,69 +59,69 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 
-public class GeneratorMap {
+public class GeneratorResolver {
 
-    private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
+    private final Map<Class<?>, Generator<?>> generators = new HashMap<>();
     private final ModelContext<?> context;
 
-    GeneratorMap(final ModelContext<?> context) {
+    GeneratorResolver(final ModelContext<?> context) {
         this.context = context;
 
         // Core types
-        generatorMap.put(byte.class, new ByteGenerator(context));
-        generatorMap.put(short.class, new ShortGenerator(context));
-        generatorMap.put(int.class, new IntegerGenerator(context));
-        generatorMap.put(long.class, new LongGenerator(context));
-        generatorMap.put(float.class, new FloatGenerator(context));
-        generatorMap.put(double.class, new DoubleGenerator(context));
-        generatorMap.put(boolean.class, new BooleanGenerator(context));
-        generatorMap.put(char.class, new CharacterGenerator(context));
-        generatorMap.put(Byte.class, new ByteGenerator(context));
-        generatorMap.put(Short.class, new ShortGenerator(context));
-        generatorMap.put(Integer.class, new IntegerGenerator(context));
-        generatorMap.put(Long.class, new LongGenerator(context));
-        generatorMap.put(Float.class, new FloatGenerator(context));
-        generatorMap.put(Double.class, new DoubleGenerator(context));
-        generatorMap.put(Boolean.class, new BooleanGenerator(context));
-        generatorMap.put(Character.class, new CharacterGenerator(context));
-        generatorMap.put(String.class, new StringGenerator(context));
+        generators.put(byte.class, new ByteGenerator(context));
+        generators.put(short.class, new ShortGenerator(context));
+        generators.put(int.class, new IntegerGenerator(context));
+        generators.put(long.class, new LongGenerator(context));
+        generators.put(float.class, new FloatGenerator(context));
+        generators.put(double.class, new DoubleGenerator(context));
+        generators.put(boolean.class, new BooleanGenerator(context));
+        generators.put(char.class, new CharacterGenerator(context));
+        generators.put(Byte.class, new ByteGenerator(context));
+        generators.put(Short.class, new ShortGenerator(context));
+        generators.put(Integer.class, new IntegerGenerator(context));
+        generators.put(Long.class, new LongGenerator(context));
+        generators.put(Float.class, new FloatGenerator(context));
+        generators.put(Double.class, new DoubleGenerator(context));
+        generators.put(Boolean.class, new BooleanGenerator(context));
+        generators.put(Character.class, new CharacterGenerator(context));
+        generators.put(String.class, new StringGenerator(context));
 
-        generatorMap.put(Number.class, new IntegerGenerator(context));
-        generatorMap.put(BigDecimal.class, new BigDecimalGenerator(context));
-        generatorMap.put(LocalDate.class, new LocalDateGenerator(context));
-        generatorMap.put(LocalDateTime.class, new LocalDateTimeGenerator(context));
-        generatorMap.put(UUID.class, new UUIDGenerator(context));
-        generatorMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(context));
+        generators.put(Number.class, new IntegerGenerator(context));
+        generators.put(BigDecimal.class, new BigDecimalGenerator(context));
+        generators.put(LocalDate.class, new LocalDateGenerator(context));
+        generators.put(LocalDateTime.class, new LocalDateTimeGenerator(context));
+        generators.put(UUID.class, new UUIDGenerator(context));
+        generators.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(context));
 
         // Collections
-        generatorMap.put(Collection.class, new CollectionGenerator<>(context));
-        generatorMap.put(List.class, new CollectionGenerator<>(context));
-        generatorMap.put(Map.class, new MapGenerator<>(context));
-        generatorMap.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>(context));
-        generatorMap.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>(context));
-        generatorMap.put(SortedMap.class, new TreeMapGenerator<>(context));
-        generatorMap.put(NavigableMap.class, new TreeMapGenerator<>(context));
-        generatorMap.put(Set.class, new HashSetGenerator<>(context));
-        generatorMap.put(SortedSet.class, new TreeSetGenerator<>(context));
-        generatorMap.put(NavigableSet.class, new TreeSetGenerator<>(context));
+        generators.put(Collection.class, new CollectionGenerator<>(context));
+        generators.put(List.class, new CollectionGenerator<>(context));
+        generators.put(Map.class, new MapGenerator<>(context));
+        generators.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>(context));
+        generators.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>(context));
+        generators.put(SortedMap.class, new TreeMapGenerator<>(context));
+        generators.put(NavigableMap.class, new TreeMapGenerator<>(context));
+        generators.put(Set.class, new HashSetGenerator<>(context));
+        generators.put(SortedSet.class, new TreeSetGenerator<>(context));
+        generators.put(NavigableSet.class, new TreeSetGenerator<>(context));
     }
 
-    public Generator<?> get(Class<?> klass) {
-        Generator<?> generator = generatorMap.get(klass);
+    public Optional<Generator<?>> get(final Class<?> klass) {
+        Generator<?> generator = generators.get(klass);
 
         if (generator == null) {
             if (klass.isEnum()) {
                 generator = new EnumGenerator(context, klass);
-                generatorMap.put(klass, generator);
+                generators.put(klass, generator);
             } else if (klass.isArray()) {
                 throw new IllegalArgumentException("Should be calling getArrayGenerator(Class)!");
             }
         }
 
-        return generator;
+        return Optional.ofNullable(generator);
     }
 
-    public Generator<?> getArrayGenerator(Class<?> componentType) {
+    public Generator<?> getArrayGenerator(final Class<?> componentType) {
         return new ArrayGenerator<>(context, componentType);
     }
 }

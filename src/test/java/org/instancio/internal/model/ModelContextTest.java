@@ -148,8 +148,8 @@ class ModelContextTest {
                 .withGenerator(all(String.class), stringGenerator)
                 .build();
 
-        assertThat(ctx.getUserSuppliedFieldGenerators().get(ADDRESS_FIELD)).isSameAs(addressGenerator);
-        assertThat(ctx.getUserSuppliedClassGenerators().get(String.class)).isSameAs(stringGenerator);
+        assertThat(ctx.getUserSuppliedGenerator(ADDRESS_FIELD)).containsSame(addressGenerator);
+        assertThat(ctx.getUserSuppliedGenerator(String.class)).containsSame(stringGenerator);
     }
 
     @Test
@@ -166,8 +166,8 @@ class ModelContextTest {
                 .withGeneratorSpec(all(String.class), gen -> stringSpec)
                 .build();
 
-        assertThat(ctx.getUserSuppliedFieldGenerators().get(PETS_FIELD)).isSameAs(petsSpec);
-        assertThat(ctx.getUserSuppliedClassGenerators().get(String.class)).isSameAs(stringSpec);
+        assertThat(ctx.getUserSuppliedGenerator(PETS_FIELD)).isPresent().get().isSameAs(petsSpec);
+        assertThat(ctx.getUserSuppliedGenerator(String.class)).isPresent().get().isSameAs(stringSpec);
     }
 
     @Test
@@ -225,9 +225,9 @@ class ModelContextTest {
 
         final ModelContext<?> builder = ctx.toBuilder().build();
 
-        assertThat(builder.getUserSuppliedClassGenerators()).containsEntry(String.class, allStringsGenerator);
-        assertThat(builder.getUserSuppliedFieldGenerators()).containsEntry(ADDRESS_CITY_FIELD, addressCityGenerator);
-        assertThat(builder.getUserSuppliedFieldGenerators()).containsEntry(PETS_FIELD, petsGenerator);
+        assertThat(builder.getUserSuppliedGenerator(String.class)).containsSame(allStringsGenerator);
+        assertThat(builder.getUserSuppliedGenerator(ADDRESS_CITY_FIELD)).containsSame(addressCityGenerator);
+        assertThat(builder.getUserSuppliedGenerator(PETS_FIELD)).containsSame(petsGenerator);
         assertThat(builder.isIgnored(NAME_FIELD)).isTrue();
         assertThat(builder.isIgnored(ignoredClass)).isTrue();
         assertThat(builder.isNullable(nullableClass)).isTrue();

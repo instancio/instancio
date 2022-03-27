@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
@@ -139,12 +140,12 @@ public class ModelContext<T> {
         return nullableClasses.contains(klass);
     }
 
-    public Map<Field, Generator<?>> getUserSuppliedFieldGenerators() {
-        return userSuppliedFieldGenerators;
+    public Optional<Generator<?>> getUserSuppliedGenerator(final Field field) {
+        return Optional.ofNullable(userSuppliedFieldGenerators.get(field));
     }
 
-    public Map<Class<?>, Generator<?>> getUserSuppliedClassGenerators() {
-        return userSuppliedClassGenerators;
+    public Optional<Generator<?>> getUserSuppliedGenerator(final Class<?> klass) {
+        return Optional.ofNullable(userSuppliedClassGenerators.get(klass));
     }
 
     public Class<?> getSubtypeMapping(Class<?> superType) {

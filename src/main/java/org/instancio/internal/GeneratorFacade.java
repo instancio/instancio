@@ -17,7 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.internal.handlers.ArrayNodeHandler;
 import org.instancio.internal.handlers.CollectionNodeHandler;
-import org.instancio.internal.handlers.GeneratorMapHandler;
+import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.handlers.InstantiatingHandler;
 import org.instancio.internal.handlers.MapNodeHandler;
 import org.instancio.internal.handlers.NodeHandler;
@@ -50,13 +50,13 @@ class GeneratorFacade {
         this.context = context;
         this.random = context.getRandomProvider();
 
-        final GeneratorMap generatorMap = new GeneratorMap(context);
+        final GeneratorResolver generatorResolver = new GeneratorResolver(context);
         final Instantiator instantiator = new Instantiator();
 
         this.nodeHandlers = new NodeHandler[]{
-                new UserSuppliedGeneratorHandler(context, generatorMap, instantiator),
-                new ArrayNodeHandler(generatorMap),
-                new GeneratorMapHandler(context, generatorMap),
+                new UserSuppliedGeneratorHandler(context, generatorResolver, instantiator),
+                new ArrayNodeHandler(generatorResolver),
+                new UsingGeneratorResolverHandler(context, generatorResolver),
                 new CollectionNodeHandler(context, instantiator),
                 new MapNodeHandler(context, instantiator),
                 new InstantiatingHandler(context, instantiator)

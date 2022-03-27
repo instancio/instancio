@@ -16,7 +16,7 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Generator;
-import org.instancio.internal.GeneratorMap;
+import org.instancio.internal.GeneratorResolver;
 import org.instancio.internal.GeneratorResult;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.internal.model.Node;
@@ -25,32 +25,27 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public class GeneratorMapHandler implements NodeHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(GeneratorMapHandler.class);
+public class UsingGeneratorResolverHandler implements NodeHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(UsingGeneratorResolverHandler.class);
 
     private final ModelContext<?> context;
-    private final GeneratorMap generatorMap;
+    private final GeneratorResolver generatorResolver;
 
-    public GeneratorMapHandler(final ModelContext<?> context, final GeneratorMap generatorMap) {
+    public UsingGeneratorResolverHandler(final ModelContext<?> context, final GeneratorResolver generatorResolver) {
         this.context = context;
-        this.generatorMap = generatorMap;
+        this.generatorResolver = generatorResolver;
     }
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         final Class<?> effectiveType = context.getSubtypeMapping(node.getKlass());
-        final Generator<?> generator = generatorMap.get(effectiveType);
+        final Optional<Generator<?>> generatorOpt = generatorResolver.get(effectiveType);
 
-        // If we already know how to generate this object, we don't need to collect its fields
-        if (generator != null) {
+        return generatorOpt.map(generator -> {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
             final GeneratorResult result = GeneratorResult.create(generator.generate(), generator.getHints());
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
-            return Optional.of(result);
-        }
-
-        return Optional.empty();
+            return result;
+        });
     }
-
-
 }
