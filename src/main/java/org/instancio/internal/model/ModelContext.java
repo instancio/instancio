@@ -108,7 +108,7 @@ public class ModelContext<T> {
         builder.nullableClasses.addAll(this.nullableClasses);
         builder.userSuppliedFieldGenerators.putAll(this.userSuppliedFieldGenerators);
         builder.userSuppliedClassGenerators.putAll(this.userSuppliedClassGenerators);
-        builder.subtypeMap.putAll(this.getSubtypeMap());
+        builder.subtypeMap.putAll(this.subtypeMap);
         builder.seed = this.seed;
         return builder;
     }
@@ -145,8 +145,8 @@ public class ModelContext<T> {
         return userSuppliedClassGenerators;
     }
 
-    public Map<Class<?>, Class<?>> getSubtypeMap() {
-        return subtypeMap;
+    public Class<?> getSubtypeMapping(Class<?> superType) {
+        return subtypeMap.getOrDefault(superType, superType);
     }
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {

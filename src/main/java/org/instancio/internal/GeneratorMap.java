@@ -58,7 +58,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 
-class GeneratorMap {
+public class GeneratorMap {
 
     private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
     private final ModelContext<?> context;
@@ -105,7 +105,7 @@ class GeneratorMap {
         generatorMap.put(NavigableSet.class, new TreeSetGenerator<>(context));
     }
 
-    Generator<?> get(Class<?> klass) {
+    public Generator<?> get(Class<?> klass) {
         Generator<?> generator = generatorMap.get(klass);
 
         if (generator == null) {
@@ -120,7 +120,7 @@ class GeneratorMap {
         return generator;
     }
 
-    Generator<?> getArrayGenerator(Class<?> componentType) {
+    public Generator<?> getArrayGenerator(Class<?> componentType) {
         return new ArrayGenerator<>(context, componentType);
     }
 }

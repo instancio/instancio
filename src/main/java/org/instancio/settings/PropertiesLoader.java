@@ -15,6 +15,8 @@
  */
 package org.instancio.settings;
 
+import org.instancio.exception.InstancioException;
+import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +28,13 @@ public class PropertiesLoader {
     private static final Logger LOG = LoggerFactory.getLogger(PropertiesLoader.class);
 
     public Properties load(final String file) {
-        final Properties properties = new Properties();
+        Verify.notNull(file, "Properties file must not be null");
 
+        final Properties properties = new Properties();
         try (InputStream inStream = getClass().getClassLoader().getResourceAsStream(file)) {
+            if (inStream == null) {
+                throw new InstancioException(String.format("Unable to load properties from '%s'", file));
+            }
             properties.load(inStream);
             return properties;
         } catch (IOException ex) {

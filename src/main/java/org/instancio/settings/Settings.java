@@ -22,8 +22,6 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringJoiner;
-import java.util.TreeMap;
 import java.util.function.Function;
 
 import static org.instancio.internal.model.InstancioValidator.validateSettingKey;
@@ -175,14 +173,5 @@ public class Settings {
         if (isLockedForModifications) {
             throw new UnsupportedOperationException("Settings are read-only");
         }
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(";", Settings.class.getSimpleName() + "[", "]")
-                .add("\n  isLockedForModifications=" + isLockedForModifications)
-                .add("\n  settingsMap=" + new TreeMap<>(settingsMap))
-                .add("\n  subtypeMap=" + subtypeMap)
-                .toString();
     }
 }

@@ -52,7 +52,7 @@ class InstancioDriver {
     }
 
     <T> T createEntryPoint() {
-        final GeneratorResult<?> rootResult = generatorFacade.generateNodeValue(rootNode, null);
+        final GeneratorResult rootResult = generatorFacade.generateNodeValue(rootNode, null);
         final Object value = rootResult.getValue();
 
         enqueueChildrenOf(rootNode, rootResult, queue);
@@ -82,7 +82,7 @@ class InstancioDriver {
         }
 
         final Field field = node.getField();
-        final GeneratorResult<?> generatorResult = generatorFacade.generateNodeValue(node, createItem.getOwner());
+        final GeneratorResult generatorResult = generatorFacade.generateNodeValue(node, createItem.getOwner());
 
         if (generatorResult.getValue() == null) {
             if (!field.getType().isPrimitive()) {
@@ -105,7 +105,7 @@ class InstancioDriver {
         populateDataStructures(createItem.getOwner(), node, generatorResult);
     }
 
-    private void populateDataStructures(@Nullable Object owner, Node node, GeneratorResult<?> generatorResult) {
+    private void populateDataStructures(@Nullable Object owner, Node node, GeneratorResult generatorResult) {
         if (node instanceof CollectionNode) {
             populateCollection((CollectionNode) node, generatorResult, owner);
         } else if (node instanceof MapNode) {
@@ -115,7 +115,7 @@ class InstancioDriver {
         }
     }
 
-    private void populateArray(ArrayNode arrayNode, GeneratorResult<?> generatorResult, Object arrayOwner) {
+    private void populateArray(ArrayNode arrayNode, GeneratorResult generatorResult, Object arrayOwner) {
         final Object createdValue = generatorResult.getValue();
         final Node elementNode = arrayNode.getElementNode();
 
@@ -130,7 +130,7 @@ class InstancioDriver {
                 continue;
             }
 
-            final GeneratorResult<?> elementResult = generatorFacade.generateNodeValue(elementNode, createdValue);
+            final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, createdValue);
             final Object elementValue = elementResult.getValue();
             Array.set(createdValue, i, elementValue);
 
@@ -138,7 +138,7 @@ class InstancioDriver {
         }
     }
 
-    private void populateCollection(CollectionNode collectionNode, GeneratorResult<?> generatorResult, Object collectionOwner) {
+    private void populateCollection(CollectionNode collectionNode, GeneratorResult generatorResult, Object collectionOwner) {
         final Collection<Object> collectionInstance = (Collection<Object>) generatorResult.getValue();
         final Node elementNode = collectionNode.getElementNode();
 
@@ -148,7 +148,7 @@ class InstancioDriver {
         final boolean nullableElement = generatorResult.getHints().nullableElements();
 
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
-            final GeneratorResult<?> elementResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
+            final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
             final Object elementValue;
 
             if (nullableElement && context.getRandomProvider().oneInTenTrue()) {
@@ -172,7 +172,7 @@ class InstancioDriver {
 
     // TODO refactor populate* methods to remove instanceof conditionals
 
-    private void populateMap(MapNode mapNode, GeneratorResult<?> generatorResult, Object mapOwner) {
+    private void populateMap(MapNode mapNode, GeneratorResult generatorResult, Object mapOwner) {
         final Map<Object, Object> mapInstance = (Map<Object, Object>) generatorResult.getValue();
         final Node keyNode = mapNode.getKeyNode();
         final Node valueNode = mapNode.getValueNode();
@@ -190,7 +190,7 @@ class InstancioDriver {
             if (nullableKey && context.getRandomProvider().oneInTenTrue()) {
                 mapKey = null;
             } else {
-                final GeneratorResult<?> keyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
+                final GeneratorResult keyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
                 enqueueChildrenOf(keyNode, keyResult, queue);
                 mapKey = keyResult.getValue();
             }
@@ -199,7 +199,7 @@ class InstancioDriver {
             if (nullableValue && context.getRandomProvider().oneInTenTrue()) {
                 mapValue = null;
             } else {
-                final GeneratorResult<?> valueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
+                final GeneratorResult valueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
                 enqueueChildrenOf(valueNode, valueResult, queue);
                 mapValue = valueResult.getValue();
 
@@ -218,7 +218,7 @@ class InstancioDriver {
         }
     }
 
-    private static void enqueueChildrenOf(Node node, GeneratorResult<?> result, Queue<CreateItem> queue) {
+    private static void enqueueChildrenOf(Node node, GeneratorResult result, Queue<CreateItem> queue) {
         if (!result.ignoreChildren()) {
             final Object owner = result.getValue();
             queue.addAll(node.getChildren().stream()

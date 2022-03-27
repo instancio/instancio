@@ -169,8 +169,8 @@ class ModelContextTest {
                 .withSubtypeMapping(List.class, LinkedList.class)
                 .build();
 
-        assertThat(ctx.getSubtypeMap()).containsEntry(Collection.class, HashSet.class);
-        assertThat(ctx.getSubtypeMap()).containsEntry(List.class, LinkedList.class);
+        assertThat(ctx.getSubtypeMapping(Collection.class)).isEqualTo(HashSet.class);
+        assertThat(ctx.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
     }
 
     @Test

@@ -15,11 +15,13 @@
  */
 package org.instancio.settings;
 
+import org.instancio.exception.InstancioException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PropertiesLoaderTest {
 
@@ -28,5 +30,13 @@ class PropertiesLoaderTest {
         final Properties props = new PropertiesLoader().load("instancio-test.properties");
         assertThat(props).isNotNull();
         assertThat(props.get(Setting.LONG_MAX.key())).isNotNull();
+    }
+
+    @Test
+    void loadFileNotFound() {
+        final String file = "non-existent.properties";
+        assertThatThrownBy(() -> new PropertiesLoader().load(file))
+                .isInstanceOf(InstancioException.class)
+                .hasMessage("Unable to load properties from '%s'", file);
     }
 }

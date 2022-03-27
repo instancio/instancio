@@ -52,9 +52,11 @@ class AncestorTree {
      */
     private final Map<Object, AncestorTreeNode> idMap = new IdentityHashMap<>();
 
-    void setObjectAncestor(final Object obj, final AncestorTreeNode ancestor) {
+    void setObjectAncestor(@Nullable final Object obj, final AncestorTreeNode ancestor) {
         Verify.isFalse(obj instanceof GeneratorResult, "Passed GeneratorResult to ancestor tree!"); // sanity check
-        idMap.put(obj, ancestor);
+        if (obj != null) {
+            idMap.put(obj, ancestor);
+        }
     }
 
     Object getObjectAncestor(@Nullable final Object obj, final Node nodeToCreate) {

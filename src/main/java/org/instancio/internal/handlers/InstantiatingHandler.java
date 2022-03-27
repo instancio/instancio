@@ -13,25 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.generators;
+package org.instancio.internal.handlers;
 
+import org.instancio.internal.GeneratorResult;
 import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.model.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
+import org.instancio.util.ReflectionUtils;
 
-public class InstantiatingGenerator extends AbstractRandomGenerator<Object> {
+import java.util.Optional;
 
+public class InstantiatingHandler implements NodeHandler {
+
+    private final ModelContext<?> context;
     private final Instantiator instantiator;
-    private final Class<?> targetType;
 
-    public InstantiatingGenerator(final ModelContext<?> context, final Instantiator instantiator, final Class<?> targetType) {
-        super(context);
-        this.targetType = targetType;
+    public InstantiatingHandler(final ModelContext<?> context, final Instantiator instantiator) {
+        this.context = context;
         this.instantiator = instantiator;
     }
 
-
     @Override
-    public Object generate() {
-        return instantiator.instantiate(targetType);
+    public Optional<GeneratorResult> getResult(final Node node) {
+        final Class<?> effectiveType = context.getSubtypeMapping(node.getKlass());
+        if (ReflectionUtils.isConcrete(effectiveType)) {
+            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(effectiveType));
+            return Optional.of(result);
+        }
+        return Optional.empty();
     }
+
+
 }

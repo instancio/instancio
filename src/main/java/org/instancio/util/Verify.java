@@ -68,5 +68,4 @@ public final class Verify {
             throw new IllegalArgumentException("Unexpected: " + klass);
         }
     }
-
 }
