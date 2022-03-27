@@ -15,7 +15,9 @@
  */
 package org.instancio.internal.model;
 
+import org.instancio.Binding;
 import org.instancio.Generator;
+import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generators.ArrayGeneratorSpec;
@@ -24,6 +26,7 @@ import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.person.Address;
 import org.instancio.pojo.person.Person;
 import org.instancio.pojo.person.Pet;
+import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.util.ReflectionUtils;
@@ -35,11 +38,13 @@ import java.lang.reflect.Type;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,6 +55,7 @@ import static org.mockito.Mockito.when;
 class ModelContextTest {
     private static final Field NAME_FIELD = ReflectionUtils.getField(Person.class, "name");
     private static final Field ADDRESS_FIELD = ReflectionUtils.getField(Person.class, "address");
+    private static final Field ADDRESS_CITY_FIELD = ReflectionUtils.getField(Address.class, "city");
     private static final Field PETS_FIELD = ReflectionUtils.getField(Person.class, "pets");
 
     @Test
@@ -60,23 +66,25 @@ class ModelContextTest {
         assertThat(ctx.getRootClass()).isEqualTo(Foo.class);
     }
 
+
     @Test
     void withNullableField() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withNullableField(NAME_FIELD)
-                .withNullableField(ADDRESS_FIELD)
+                .withNullable(toFieldBinding(NAME_FIELD))
+                .withNullable(toFieldBinding(ADDRESS_FIELD))
                 .build();
 
         assertThat(ctx.isNullable(NAME_FIELD)).isTrue();
         assertThat(ctx.isNullable(ADDRESS_FIELD)).isTrue();
     }
 
+
     @Test
     void withNullableFieldThrowsExceptionWhenGivenPrimitiveField() {
         final Field ageField = ReflectionUtils.getField(Person.class, "age");
         assertThatThrownBy(() ->
                 ModelContext.builder(Person.class)
-                        .withNullableField(ageField)
+                        .withNullable(toFieldBinding(ageField))
                         .build())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Primitive field '%s' cannot be set to null", ageField);
@@ -85,8 +93,8 @@ class ModelContextTest {
     @Test
     void withNullableClass() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withNullableClass(Address.class)
-                .withNullableClass(UUID.class)
+                .withNullable(all(Address.class))
+                .withNullable(all(UUID.class))
                 .build();
 
         assertThat(ctx.isNullable(Address.class)).isTrue();
@@ -96,7 +104,7 @@ class ModelContextTest {
     @Test
     void withNullableClassThrowsExceptionWhenGivenPrimitiveClass() {
         final Class<Integer> primitiveClass = int.class;
-        assertThatThrownBy(() -> ModelContext.builder(Person.class).withNullableClass(primitiveClass).build())
+        assertThatThrownBy(() -> ModelContext.builder(Person.class).withNullable(all(primitiveClass)).build())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Primitive class '%s' cannot be set to null", primitiveClass);
     }
@@ -111,8 +119,8 @@ class ModelContextTest {
     @Test
     void withIgnoredField() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withIgnoredField(NAME_FIELD)
-                .withIgnoredField(ADDRESS_FIELD)
+                .withIgnored(toFieldBinding(NAME_FIELD))
+                .withIgnored(toFieldBinding(ADDRESS_FIELD))
                 .build();
 
         assertThat(ctx.isIgnored(NAME_FIELD)).isTrue();
@@ -169,8 +177,8 @@ class ModelContextTest {
                 .withSubtypeMapping(List.class, LinkedList.class)
                 .build();
 
-        assertThat(ctx.getSubtypeMap()).containsEntry(Collection.class, HashSet.class);
-        assertThat(ctx.getSubtypeMap()).containsEntry(List.class, LinkedList.class);
+        assertThat(ctx.getSubtypeMapping(Collection.class)).isEqualTo(HashSet.class);
+        assertThat(ctx.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
     }
 
     @Test
@@ -190,4 +198,47 @@ class ModelContextTest {
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Class must not be an interface or abstract class: '%s'", AbstractList.class.getName());
     }
+
+    @Test
+    void toBuilder() {
+        final Generator<?> allStringsGenerator = () -> "foo";
+        final Generator<?> addressCityGenerator = () -> "bar";
+        final Generator<?> petsGenerator = () -> new Pet[0];
+        final Function<Generators, ? extends GeneratorSpec<?>> petsGeneratorFn = (gen) -> petsGenerator;
+        final Class<UUID> ignoredClass = UUID.class;
+        final Class<Date> nullableClass = Date.class;
+        final int seed = 37635;
+        final int integerMinValue = 26546;
+
+        final ModelContext<?> ctx = ModelContext.builder(Person.class)
+                .withGenerator(all(String.class), allStringsGenerator)
+                .withGenerator(toFieldBinding(ADDRESS_CITY_FIELD), addressCityGenerator)
+                .withGeneratorSpec(toFieldBinding(PETS_FIELD), petsGeneratorFn)
+                .withIgnoredClass(ignoredClass)
+                .withIgnored(toFieldBinding(NAME_FIELD))
+                .withNullable(all(nullableClass))
+                .withNullable(toFieldBinding(ADDRESS_FIELD))
+                .withSeed(seed)
+                .withSettings(Settings.create().set(Setting.INTEGER_MIN, integerMinValue))
+                .withSubtypeMapping(List.class, LinkedList.class)
+                .build();
+
+        final ModelContext<?> builder = ctx.toBuilder().build();
+
+        assertThat(builder.getUserSuppliedClassGenerators()).containsEntry(String.class, allStringsGenerator);
+        assertThat(builder.getUserSuppliedFieldGenerators()).containsEntry(ADDRESS_CITY_FIELD, addressCityGenerator);
+        assertThat(builder.getUserSuppliedFieldGenerators()).containsEntry(PETS_FIELD, petsGenerator);
+        assertThat(builder.isIgnored(NAME_FIELD)).isTrue();
+        assertThat(builder.isIgnored(ignoredClass)).isTrue();
+        assertThat(builder.isNullable(nullableClass)).isTrue();
+        assertThat(builder.isNullable(ADDRESS_FIELD)).isTrue();
+        assertThat(builder.getSeed()).isEqualTo(seed);
+        assertThat((int) builder.getSettings().get(Setting.INTEGER_MIN)).isEqualTo(integerMinValue);
+        assertThat(builder.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
+    }
+
+    private static Binding toFieldBinding(final Field field) {
+        return Binding.fieldBinding(field.getDeclaringClass(), field.getName());
+    }
+
 }

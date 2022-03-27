@@ -17,6 +17,7 @@ package org.instancio.generators.collections;
 
 import org.instancio.internal.model.ModelContext;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConcurrentHashMapGenerator<K, V> extends MapGenerator<K, V> {
@@ -26,4 +27,8 @@ public class ConcurrentHashMapGenerator<K, V> extends MapGenerator<K, V> {
         type(ConcurrentHashMap.class);
     }
 
+    @Override
+    public Map<K, V> generate() {
+        return random().diceRoll(nullable) ? null : new ConcurrentHashMap<>();
+    }
 }

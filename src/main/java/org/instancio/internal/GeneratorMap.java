@@ -40,7 +40,6 @@ import org.instancio.generators.coretypes.LongGenerator;
 import org.instancio.generators.coretypes.ShortGenerator;
 import org.instancio.generators.coretypes.StringGenerator;
 import org.instancio.internal.model.ModelContext;
-import org.instancio.internal.random.RandomProvider;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
@@ -59,15 +58,13 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 
-class GeneratorMap {
+public class GeneratorMap {
 
     private final Map<Class<?>, Generator<?>> generatorMap = new HashMap<>();
     private final ModelContext<?> context;
-    private final RandomProvider random;
 
     GeneratorMap(final ModelContext<?> context) {
         this.context = context;
-        this.random = context.getRandomProvider();
 
         // Core types
         generatorMap.put(byte.class, new ByteGenerator(context));
@@ -108,7 +105,7 @@ class GeneratorMap {
         generatorMap.put(NavigableSet.class, new TreeSetGenerator<>(context));
     }
 
-    Generator<?> get(Class<?> klass) {
+    public Generator<?> get(Class<?> klass) {
         Generator<?> generator = generatorMap.get(klass);
 
         if (generator == null) {
@@ -123,7 +120,7 @@ class GeneratorMap {
         return generator;
     }
 
-    Generator<?> getArrayGenerator(Class<?> componentType) {
+    public Generator<?> getArrayGenerator(Class<?> componentType) {
         return new ArrayGenerator<>(context, componentType);
     }
 }

@@ -55,6 +55,8 @@ public abstract class Node {
 
     protected abstract List<Node> collectChildren();
 
+    public abstract void accept(NodeVisitor visitor);
+
     // FIXME exposed setter to allow overwriting parent field of ElementNode and Key/Value nodes
     //  in this class's constructor. Reason: CollectionNode constructor takes ElementNode
     //  as an argument. Therefore, can't set ElementNode's parent to CollectionNode because

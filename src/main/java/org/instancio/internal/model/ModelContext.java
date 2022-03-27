@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -77,13 +78,13 @@ public class ModelContext<T> {
         this.userSuppliedFieldGenerators = Collections.unmodifiableMap(builder.userSuppliedFieldGenerators);
         this.userSuppliedClassGenerators = Collections.unmodifiableMap(builder.userSuppliedClassGenerators);
         this.subtypeMap = Collections.unmodifiableMap(builder.subtypeMap);
-        this.rootTypeMap = rootType instanceof ParameterizedType
+        this.rootTypeMap = rootType instanceof ParameterizedType || rootType instanceof GenericArrayType
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
 
         this.settings = Settings.defaults()
                 .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
-                .merge(builder.userSuppliedSettings)
+                .merge(builder.settings)
                 .lock();
 
         this.seed = builder.seed;
@@ -108,7 +109,8 @@ public class ModelContext<T> {
         builder.nullableClasses.addAll(this.nullableClasses);
         builder.userSuppliedFieldGenerators.putAll(this.userSuppliedFieldGenerators);
         builder.userSuppliedClassGenerators.putAll(this.userSuppliedClassGenerators);
-        builder.subtypeMap.putAll(this.getSubtypeMap());
+        builder.subtypeMap.putAll(this.subtypeMap);
+        builder.settings = this.settings;
         builder.seed = this.seed;
         return builder;
     }
@@ -145,8 +147,8 @@ public class ModelContext<T> {
         return userSuppliedClassGenerators;
     }
 
-    public Map<Class<?>, Class<?>> getSubtypeMap() {
-        return subtypeMap;
+    public Class<?> getSubtypeMapping(Class<?> superType) {
+        return subtypeMap.getOrDefault(superType, superType);
     }
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
@@ -200,7 +202,7 @@ public class ModelContext<T> {
         private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
         private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecMap = new HashMap<>();
-        private Settings userSuppliedSettings;
+        private Settings settings;
         private Integer seed;
 
         private Builder(final Class<T> rootClass, final Type rootType) {
@@ -219,16 +221,13 @@ public class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withIgnoredField(final Field field) {
-            this.ignoredFields.add(field);
-            return this;
-        }
-
-        public Builder<T> withNullableField(final Field field) {
-            if (field.getType().isPrimitive()) {
-                throw new InstancioApiException(String.format("Primitive field '%s' cannot be set to null", field));
+        public Builder<T> withIgnored(final Binding binding) {
+            if (binding.isFieldBinding()) {
+                final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
+                this.ignoredFields.add(getField(targetType, binding.getFieldName()));
+            } else {
+                this.ignoredClasses.add(binding.getTargetType());
             }
-            this.nullableFields.add(field);
             return this;
         }
 
@@ -237,11 +236,22 @@ public class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withNullableClass(final Class<?> klass) {
-            if (klass.isPrimitive()) {
-                throw new InstancioApiException(String.format("Primitive class '%s' cannot be set to null", klass.getName()));
+        public Builder<T> withNullable(final Binding binding) {
+            final Class<?> targetType = ObjectUtils.defaultIfNull(binding.getTargetType(), this.rootClass);
+
+            if (binding.isFieldBinding()) {
+                final Field field = getField(targetType, binding.getFieldName());
+                if (field.getType().isPrimitive()) {
+                    throw new InstancioApiException(String.format("Primitive field '%s' cannot be set to null", field));
+                }
+                this.nullableFields.add(field);
+            } else {
+                if (targetType.isPrimitive()) {
+                    throw new InstancioApiException(String.format("Primitive class '%s' cannot be set to null", targetType.getName()));
+                }
+                this.nullableClasses.add(targetType);
             }
-            this.nullableClasses.add(klass);
+
             return this;
         }
 
@@ -279,7 +289,7 @@ public class ModelContext<T> {
         }
 
         public Builder<T> withSettings(final Settings settings) {
-            this.userSuppliedSettings = settings;
+            this.settings = settings;
             return this;
         }
 

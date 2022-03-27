@@ -64,10 +64,10 @@ class InstancioApiTest {
         assertThat(homer.getName()).isEqualTo(HOMER);
         assertThat(homer.getAge()).isEqualTo(HOMER_AGE);
         assertThat(homer.getLastModified()).isCloseTo(LocalDateTime.now(), within(3, ChronoUnit.SECONDS));
-        // TODO to implement...
-//        assertThat(homer.getAddress())
-//                .isExactlyInstanceOf(AddressExtension.class)
-//                .satisfies(it -> assertThat(((AddressExtension) it).getAdditionalInfo()).isNotBlank());
+        assertThat(homer.getAddress())
+                .isExactlyInstanceOf(AddressExtension.class);
+                //.satisfies(it -> assertThat(((AddressExtension) it).getAdditionalInfo()).isNotBlank()) // FIXME
+        ;
     }
 
     @Test

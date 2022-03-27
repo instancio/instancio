@@ -44,6 +44,11 @@ public class ClassNode extends Node {
     }
 
     @Override
+    public void accept(final NodeVisitor visitor) {
+        visitor.visitClassNode(this);
+    }
+
+    @Override
     protected List<Node> collectChildren() {
         if (getKlass().getPackage() == null || getKlass().getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList();

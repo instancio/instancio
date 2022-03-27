@@ -15,8 +15,13 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Generator;
-import org.instancio.internal.model.ArrayNode;
+import org.instancio.internal.handlers.ArrayNodeHandler;
+import org.instancio.internal.handlers.CollectionNodeHandler;
+import org.instancio.internal.handlers.GeneratorMapHandler;
+import org.instancio.internal.handlers.InstantiatingHandler;
+import org.instancio.internal.handlers.MapNodeHandler;
+import org.instancio.internal.handlers.NodeHandler;
+import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.model.ClassNode;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.internal.model.Node;
@@ -24,16 +29,12 @@ import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.ImplementationResolver;
 import org.instancio.internal.reflection.InterfaceImplementationResolver;
 import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.settings.Setting;
-import org.instancio.settings.Settings;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 class GeneratorFacade {
@@ -43,17 +44,26 @@ class GeneratorFacade {
     private final ImplementationResolver implementationResolver = new InterfaceImplementationResolver();
     private final ModelContext<?> context;
     private final RandomProvider random;
-    private final GeneratorMap generatorMap;
-    private final Instantiator instantiator;
+    private final NodeHandler[] nodeHandlers;
 
     public GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
         this.random = context.getRandomProvider();
-        this.generatorMap = new GeneratorMap(context);
-        this.instantiator = new Instantiator();
+
+        final GeneratorMap generatorMap = new GeneratorMap(context);
+        final Instantiator instantiator = new Instantiator();
+
+        this.nodeHandlers = new NodeHandler[]{
+                new UserSuppliedGeneratorHandler(context, generatorMap, instantiator),
+                new ArrayNodeHandler(generatorMap),
+                new GeneratorMapHandler(context, generatorMap),
+                new CollectionNodeHandler(context, instantiator),
+                new MapNodeHandler(context, instantiator),
+                new InstantiatingHandler(context, instantiator)
+        };
     }
 
-    GeneratorResult<?> generateNodeValue(final Node node, @Nullable final Object owner) {
+    GeneratorResult generateNodeValue(final Node node, @Nullable final Object owner) {
         if (owner != null) {
             final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
             if (ancestor != null) {
@@ -64,111 +74,50 @@ class GeneratorFacade {
             }
         }
 
-        final Optional<GeneratorResult<?>> optionalResult = attemptGenerateViaContext(node);
-        if (optionalResult.isPresent()) {
-            return optionalResult.get();
+        if (shouldReturnNullForNullable(node)) {
+            return GeneratorResult.nullResult();
         }
 
-        if (node.getKlass().isPrimitive()) {
-            return GeneratorResult.create(generatorMap.get(node.getKlass()).generate());
-        }
-
-        if (node instanceof ArrayNode) {
-            return generateArray(node);
-        }
-
-        final Class<?> effectiveType = context.getSubtypeMap().getOrDefault(node.getKlass(), node.getKlass());
-        final Generator<?> generator = generatorMap.get(effectiveType);
-        final GeneratorResult<?> result;
-
-        if (generator == null) {
-            if (!ReflectionUtils.isConcrete(effectiveType)) {
-                result = resolveImplementationAndGenerate(effectiveType, node, owner);
-            } else {
-                GeneratedHints hints = null;
-                if (Collection.class.isAssignableFrom(effectiveType) || Map.class.isAssignableFrom(effectiveType)) {
-                    hints = GeneratedHints.builder()
-                            .dataStructureSize(getRandomSizeForCollectionOrMap(effectiveType))
-                            .build();
-                }
-                result = GeneratorResult.create(instantiator.instantiate(effectiveType), hints);
+        Optional<GeneratorResult> generatorResult = Optional.empty();
+        for (NodeHandler handler : nodeHandlers) {
+            generatorResult = handler.getResult(node);
+            if (generatorResult.isPresent()) {
+                ancestorTree.setObjectAncestor(generatorResult.get().getValue(), new AncestorTree.AncestorTreeNode(owner, node.getParent()));
+                break;
             }
-        } else {
-            LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
-
-            // If we already know how to generate this object, we don't need to collect its fields
-            result = GeneratorResult.create(generator.generate(), generator.getHints());
-            LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
         }
 
-
-        if (result != null && result.getValue() != null) {
-            ancestorTree.setObjectAncestor(result.getValue(), new AncestorTree.AncestorTreeNode(owner, node.getParent()));
-        }
-        return result;
-    }
-
-    private int getRandomSizeForCollectionOrMap(Class<?> klass) {
-        final Settings settings = context.getSettings();
-
-        if (Collection.class.isAssignableFrom(klass)) {
-            return random.intBetween(settings.get(Setting.COLLECTION_MIN_SIZE), settings.get(Setting.COLLECTION_MAX_SIZE));
-        }
-        if (Map.class.isAssignableFrom(klass)) {
-            return random.intBetween(settings.get(Setting.MAP_MIN_SIZE), settings.get(Setting.MAP_MAX_SIZE));
+        if (!generatorResult.isPresent()) {
+            final Class<?> effectiveType = context.getSubtypeMapping(node.getKlass());
+            generatorResult = resolveImplementationAndGenerate(effectiveType, node, owner);
         }
 
-        throw new IllegalStateException("Unhandled type: " + klass); // "shouldn't happen"
-    }
-
-    private GeneratorResult<?> generateArray(Node node) {
-        final Class<?> componentType = ((ArrayNode) node).getElementNode().getKlass();
-        final Generator<?> generator = generatorMap.getArrayGenerator(componentType);
-        final Object arrayObject = generator.generate();
-        return GeneratorResult.create(arrayObject, generator.getHints());
+        return generatorResult.orElse(GeneratorResult.nullResult());
     }
 
     /**
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private GeneratorResult<?> resolveImplementationAndGenerate(final Class<?> interfaceClass,
-                                                                final Node parentNode,
-                                                                @Nullable final Object owner) {
-        Verify.isNotArrayCollectionOrMap(interfaceClass);
+    private Optional<GeneratorResult> resolveImplementationAndGenerate(final Class<?> abstractType,
+                                                                       final Node parentNode,
+                                                                       @Nullable final Object owner) {
+        Verify.isFalse(ReflectionUtils.isConcrete(abstractType),
+                "Expecting an interface or abstract class: %s", abstractType.getName());
+        Verify.isNotArrayCollectionOrMap(abstractType);
 
-        LOG.debug("No generator for interface '{}'", interfaceClass.getName());
+        LOG.debug("No generator for interface '{}'", abstractType.getName());
 
-        Class<?> implementor = implementationResolver.resolve(interfaceClass).orElse(null);
+        Class<?> implementor = implementationResolver.resolve(abstractType).orElse(null);
         if (implementor == null) {
-            LOG.debug("Interface '{}' has no implementation", interfaceClass.getName());
-            return null;
+            LOG.debug("Interface '{}' has no implementation", abstractType.getName());
+            return Optional.empty();
         }
         Node implementorNode = new ClassNode(parentNode.getNodeContext(), implementor, null, null, parentNode);
-        return generateNodeValue(implementorNode, owner);
-    }
-
-    /**
-     * If the context has enough information to generate a value for the field, then do so.
-     * If not, return an empty {@link Optional} and proceed with the main generation flow.
-     */
-    private Optional<GeneratorResult<?>> attemptGenerateViaContext(final Node node) {
-        return shouldReturnNullForNullable(node)
-                ? Optional.of(GeneratorResult.nullResult())
-                : getUserSuppliedGenerator(node).map(g -> GeneratorResult.create(g.generate(), g.getHints()));
+        return Optional.of(generateNodeValue(implementorNode, owner));
     }
 
     private boolean shouldReturnNullForNullable(final Node node) {
         return (context.isNullable(node.getField()) || context.isNullable(node.getKlass())) && random.trueOrFalse();
-    }
-
-    private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
-        Generator<?> generator = null;
-        if (node.getField() != null && context.getUserSuppliedFieldGenerators().containsKey(node.getField())) {
-            generator = context.getUserSuppliedFieldGenerators().get(node.getField());
-        } else if (context.getUserSuppliedClassGenerators().containsKey(node.getKlass())) {
-            generator = context.getUserSuppliedClassGenerators().get(node.getKlass());
-        }
-        return Optional.ofNullable(generator);
     }
 }

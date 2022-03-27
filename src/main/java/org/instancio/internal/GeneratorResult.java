@@ -18,14 +18,14 @@ package org.instancio.internal;
 import javax.annotation.Nullable;
 import java.util.StringJoiner;
 
-class GeneratorResult<T> {
-    private static final GeneratorResult<Void> NULL_RESULT = new GeneratorResult<>(
+public class GeneratorResult {
+    private static final GeneratorResult NULL_RESULT = new GeneratorResult(
             null, GeneratedHints.builder().ignoreChildren(true).build());
 
-    private final T value;
+    private final Object value;
     private final GeneratedHints generatedHints;
 
-    private GeneratorResult(@Nullable final T value, @Nullable final GeneratedHints generatedHints) {
+    private GeneratorResult(@Nullable final Object value, @Nullable final GeneratedHints generatedHints) {
         this.value = value;
         this.generatedHints = generatedHints;
     }
@@ -40,27 +40,27 @@ class GeneratorResult<T> {
      *
      * @return null result
      */
-    static GeneratorResult<Void> nullResult() {
+    public static GeneratorResult nullResult() {
         return NULL_RESULT;
     }
 
-    static <T> GeneratorResult<T> create(@Nullable final T value) {
-        return new GeneratorResult<>(value, null);
+    public static GeneratorResult create(@Nullable final Object value) {
+        return new GeneratorResult(value, null);
     }
 
-    static <T> GeneratorResult<T> create(@Nullable final T value, @Nullable final GeneratedHints hints) {
-        return new GeneratorResult<>(value, hints);
+    public static GeneratorResult create(@Nullable final Object value, @Nullable final GeneratedHints hints) {
+        return new GeneratorResult(value, hints);
     }
 
-    T getValue() {
+    public Object getValue() {
         return value;
     }
 
-    boolean ignoreChildren() {
+    public boolean ignoreChildren() {
         return generatedHints != null && generatedHints.ignoreChildren();
     }
 
-    GeneratedHints getHints() {
+    public GeneratedHints getHints() {
         return generatedHints;
     }
 

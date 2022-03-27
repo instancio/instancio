@@ -28,7 +28,7 @@ public class IntegerGenerator extends AbstractRandomNumberGeneratorSpec<Integer>
     }
 
     @Override
-    Integer generateRandomValue() {
+    Integer generateNonNullValue() {
         return random().intBetween(min, max);
     }
 

@@ -16,6 +16,10 @@
 package org.instancio;
 
 import org.instancio.internal.GeneratedHints;
+import org.instancio.util.TypeUtils;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
  * Generic interface for generating values.
@@ -46,9 +50,22 @@ public interface Generator<T> extends GeneratorSpec<T> {
      */
     T generate();
 
+    default boolean isDelegating() {
+        return false;
+    }
+
+    default void setDelegate(Generator<?> delegate) {
+    }
+
+    default Class<?> targetType() {
+        final ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
+        Type genericType = genericSuperclass.getActualTypeArguments()[0];
+        return TypeUtils.getRawType(genericType);
+    }
+
     default GeneratedHints getHints() {
         // ignore children by default to ensure values created
         // from user-supplied generators are not modified
-        return GeneratedHints.builder().ignoreChildren(true).build();
+        return GeneratedHints.createIgnoreChildrenHint();
     }
 }

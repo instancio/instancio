@@ -15,23 +15,30 @@
  */
 package org.instancio.internal;
 
-import java.util.StringJoiner;
+import javax.annotation.concurrent.Immutable;
 
+@Immutable
 public class GeneratedHints {
+    private static final GeneratedHints IGNORE_CHILDREN_HINT = GeneratedHints.builder().ignoreChildren(true).build();
+
     private final int dataStructureSize;
     private final boolean ignoreChildren;
     private final boolean nullableResult;
     private final boolean nullableElements;
-    private final boolean nullableKeys;
-    private final boolean nullableValues;
+    private final boolean nullableMapKeys;
+    private final boolean nullableMapValues;
 
     private GeneratedHints(final Builder builder) {
         dataStructureSize = builder.dataStructureSize;
         ignoreChildren = builder.ignoreChildren;
         nullableResult = builder.nullableResult;
         nullableElements = builder.nullableElements;
-        nullableKeys = builder.nullableKeys;
-        nullableValues = builder.nullableValues;
+        nullableMapKeys = builder.nullableKeys;
+        nullableMapValues = builder.nullableValues;
+    }
+
+    public static GeneratedHints createIgnoreChildrenHint() {
+        return IGNORE_CHILDREN_HINT;
     }
 
     public boolean ignoreChildren() {
@@ -49,12 +56,12 @@ public class GeneratedHints {
         return nullableElements;
     }
 
-    public boolean nullableKeys() {
-        return nullableKeys;
+    public boolean nullableMapKeys() {
+        return nullableMapKeys;
     }
 
-    public boolean nullableValues() {
-        return nullableValues;
+    public boolean nullableMapValues() {
+        return nullableMapValues;
     }
 
     public int getDataStructureSize() {
@@ -109,14 +116,5 @@ public class GeneratedHints {
         public GeneratedHints build() {
             return new GeneratedHints(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", GeneratedHints.class.getSimpleName() + "[", "]")
-                .add("dataStructureSize=" + dataStructureSize)
-                .add("ignoreChildren=" + ignoreChildren)
-                .add("nullableResult=" + nullableResult)
-                .toString();
     }
 }

@@ -61,10 +61,19 @@ class SettingsTest {
 
     @Test
     void merge() {
-        final Settings defaults = Settings.defaults();
+        verifyMergeSuccessful(Settings.defaults());
+    }
+
+    @Test
+    void mergeWithLockedSettings() {
+        verifyMergeSuccessful(Settings.defaults().lock());
+    }
+
+    private void verifyMergeSuccessful(final Settings defaults) {
         final Settings overrides = Settings.create()
                 .set(Setting.BYTE_MIN, (byte) 99)
-                .set(Setting.ARRAY_NULLABLE, true);
+                .set(Setting.ARRAY_NULLABLE, true)
+                .lock();
 
         final Settings result = defaults.merge(overrides);
 

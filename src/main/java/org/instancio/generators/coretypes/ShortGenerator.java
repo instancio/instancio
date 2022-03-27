@@ -28,7 +28,7 @@ public class ShortGenerator extends AbstractRandomNumberGeneratorSpec<Short> {
     }
 
     @Override
-    Short generateRandomValue() {
+    Short generateNonNullValue() {
         return random().shortBetween(min, max);
     }
 }

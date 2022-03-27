@@ -31,7 +31,7 @@ public class CharacterGenerator extends AbstractRandomGenerator<Character> {
 
     @Override
     public Character generate() {
-        return nullable && random().oneInTenTrue() ? null : random().character();
+        return random().diceRoll(nullable) ? null : random().character();
     }
 
     @Override

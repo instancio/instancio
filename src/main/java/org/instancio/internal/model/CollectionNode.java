@@ -45,6 +45,11 @@ public class CollectionNode extends Node {
         this.elementNode = elementNode;
     }
 
+    @Override
+    public void accept(final NodeVisitor visitor) {
+        visitor.visitCollectionNode(this);
+    }
+
     /**
      * Returns an empty list; children come from the {@link #getElementNode()}.
      */

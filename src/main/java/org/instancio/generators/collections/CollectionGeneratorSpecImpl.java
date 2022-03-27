@@ -15,6 +15,7 @@
  */
 package org.instancio.generators.collections;
 
+import org.instancio.Generator;
 import org.instancio.exception.InstancioException;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
@@ -22,18 +23,18 @@ import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
-public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
+public class CollectionGeneratorSpecImpl<T> extends AbstractRandomGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
 
-    protected int minSize;
-    protected int maxSize;
-    protected boolean nullable;
-    protected boolean nullableElements;
-    protected Class<?> type = ArrayList.class; // default collection type
+    private int minSize;
+    private int maxSize;
+    private boolean nullable;
+    private boolean nullableElements;
+    private Class<?> type;
+    private Generator<?> delegate;
 
-    public CollectionGenerator(final ModelContext<?> context) {
+    public CollectionGeneratorSpecImpl(final ModelContext<?> context) {
         super(context);
         this.minSize = context.getSettings().get(Setting.COLLECTION_MIN_SIZE);
         this.maxSize = context.getSettings().get(Setting.COLLECTION_MAX_SIZE);
@@ -78,10 +79,26 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
     @Override
     public Collection<T> generate() {
         try {
-            return random().diceRoll(nullable) ? null : (Collection<T>) type.newInstance();
+            Verify.notNull(delegate, "null delegate");
+            return nullable && random().oneInTenTrue() ? null : (Collection<T>) delegate.generate();
         } catch (Exception ex) {
             throw new InstancioException(String.format("Error creating instance of: %s", type), ex);
         }
+    }
+
+    @Override
+    public boolean isDelegating() {
+        return true;
+    }
+
+    @Override
+    public void setDelegate(final Generator<?> delegate) { // TODO generics
+        this.delegate = delegate;
+    }
+
+    @Override
+    public Class<?> targetType() {
+        return type; // TODO generics
     }
 
     @Override
