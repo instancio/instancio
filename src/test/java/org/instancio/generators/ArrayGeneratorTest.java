@@ -13,19 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.generators.collections;
+package org.instancio.generators;
 
 import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.fixtures.Types;
-import org.instancio.testsupport.tags.SettingsTag;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints;
 
-@SettingsTag
-class CollectionGeneratorTest {
+class ArrayGeneratorTest {
 
     private static final int MIN_SIZE = 101;
     private static final int MAX_SIZE = 102;
@@ -33,24 +32,25 @@ class CollectionGeneratorTest {
     @Test
     void hints() {
         final Settings set = Settings.defaults()
-                .set(Setting.COLLECTION_MIN_SIZE, MIN_SIZE)
-                .set(Setting.COLLECTION_MAX_SIZE, MAX_SIZE)
-                .set(Setting.COLLECTION_NULLABLE, true)
-                .set(Setting.COLLECTION_ELEMENTS_NULLABLE, true);
+                .set(Setting.ARRAY_MIN_LENGTH, MIN_SIZE)
+                .set(Setting.ARRAY_MAX_LENGTH, MAX_SIZE)
+                .set(Setting.ARRAY_NULLABLE, true)
+                .set(Setting.ARRAY_ELEMENTS_NULLABLE, true);
 
         final ModelContext<?> context = ModelContext.builder(Types.STRING.get())
                 .withSettings(set)
                 .build();
 
-        final CollectionGenerator<?> generator = new CollectionGenerator<>(context);
+        final ArrayGenerator<?> generator = new ArrayGenerator<>(context, String.class);
+        final String[] result = (String[]) generator.generate();
+        assertThat(result).hasSizeBetween(MIN_SIZE, MAX_SIZE);
 
         assertHints(generator.getHints())
-                .dataStructureSizeBetween(MIN_SIZE, MAX_SIZE)
+                .dataStructureSize(0) // does not set this hint
                 .nullableResult(true)
                 .nullableElements(true)
                 .ignoreChildren(false)
                 .nullableMapKeys(false)
                 .nullableMapValues(false);
     }
-
 }

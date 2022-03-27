@@ -166,7 +166,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         }
 
         for (int i = 0, len = Array.getLength(arrayObj); i < len; i++) {
-            final boolean isNullableElement = generatorResult.getHints().nullableResult();
+            final boolean isNullableElement = generatorResult.getHints().nullableElements();
             if (context.getRandomProvider().diceRoll(isNullableElement)) {
                 continue;
             }

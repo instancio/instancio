@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints;
 
 @SettingsTag
-class CollectionGeneratorTest {
+class MapGeneratorTest {
 
     private static final int MIN_SIZE = 101;
     private static final int MAX_SIZE = 102;
@@ -33,24 +33,25 @@ class CollectionGeneratorTest {
     @Test
     void hints() {
         final Settings set = Settings.defaults()
-                .set(Setting.COLLECTION_MIN_SIZE, MIN_SIZE)
-                .set(Setting.COLLECTION_MAX_SIZE, MAX_SIZE)
-                .set(Setting.COLLECTION_NULLABLE, true)
-                .set(Setting.COLLECTION_ELEMENTS_NULLABLE, true);
+                .set(Setting.MAP_MIN_SIZE, MIN_SIZE)
+                .set(Setting.MAP_MAX_SIZE, MAX_SIZE)
+                .set(Setting.MAP_NULLABLE, true)
+                .set(Setting.MAP_KEYS_NULLABLE, true)
+                .set(Setting.MAP_VALUES_NULLABLE, true);
 
         final ModelContext<?> context = ModelContext.builder(Types.STRING.get())
                 .withSettings(set)
                 .build();
 
-        final CollectionGenerator<?> generator = new CollectionGenerator<>(context);
+        final MapGenerator<?, ?> generator = new MapGenerator<>(context);
 
         assertHints(generator.getHints())
                 .dataStructureSizeBetween(MIN_SIZE, MAX_SIZE)
                 .nullableResult(true)
-                .nullableElements(true)
+                .nullableMapKeys(true)
+                .nullableMapValues(true)
                 .ignoreChildren(false)
-                .nullableMapKeys(false)
-                .nullableMapValues(false);
+                .nullableElements(false);
     }
 
 }
