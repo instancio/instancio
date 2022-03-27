@@ -16,6 +16,7 @@
 package org.instancio.internal.model;
 
 import org.instancio.util.ObjectUtils;
+import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class NodeFactory {
 
         Node result;
 
-        if (klass.isArray()) {
+        if (klass.isArray() || genericType instanceof GenericArrayType) {
             result = createArrayNode(nodeContext, klass, genericType, field, parent);
         } else if (Collection.class.isAssignableFrom(klass)) {
             result = createCollectionNode(nodeContext, klass, genericType, field, parent);
@@ -81,7 +82,37 @@ public class NodeFactory {
 
         Node elementNode = null;
 
-        if (field != null) {
+        if (field == null) {
+            // FIXME: copy pasta of below
+            if (genericType instanceof GenericArrayType) {
+                final GenericArrayType arrayType = (GenericArrayType) genericType;
+                final Type compType = arrayType.getGenericComponentType();
+
+                if (compType instanceof TypeVariable) {
+                    final Class<?> rawType = (Class<?>) ObjectUtils.defaultIfNull(
+                            nodeContext.getRootTypeMap().get(compType),
+                            parent == null ? null : parent.getTypeMap().get(compType)
+                    );
+
+                    Verify.notNull(rawType, "Failed resolving array component type from type variable: '%s'", compType);
+                    elementNode = this.createNode(nodeContext, rawType, null, null, parent);
+
+                } else if (compType instanceof ParameterizedType) {
+                    ParameterizedType pType = (ParameterizedType) compType;
+
+                    elementNode = this.createNode(nodeContext, (Class<?>) pType.getRawType(), pType, null, parent);
+                }
+            } else if (genericType instanceof Class) {
+
+                elementNode = this.createNode(nodeContext, ((Class<?>) genericType).getComponentType(), null, null, parent);
+            } else {
+
+                elementNode = this.createNode(nodeContext, klass.getComponentType(), null, null, parent);
+            }
+
+
+        } else {
+            // FIXME copy pasta of above
             if (field.getGenericType() instanceof GenericArrayType) {
                 final GenericArrayType arrayType = (GenericArrayType) field.getGenericType();
                 final Type compType = arrayType.getGenericComponentType();
@@ -101,10 +132,9 @@ public class NodeFactory {
                     elementNode = this.createNode(nodeContext, (Class<?>) pType.getRawType(), pType, null, parent);
                 }
             } else {
-                elementNode = this.createNode(nodeContext, field.getType().getComponentType(), null, null, parent);
+                final Class<?> componentType = ObjectUtils.defaultIfNull(field.getType().getComponentType(), klass.getComponentType());
+                elementNode = this.createNode(nodeContext, componentType, null, null, parent);
             }
-        } else {
-            elementNode = this.createNode(nodeContext, klass.getComponentType(), null, null, parent);
         }
 
         return new ArrayNode(nodeContext, klass, Verify.notNull(elementNode), field, genericType, parent);
@@ -258,6 +288,9 @@ public class NodeFactory {
                     if (mappedType instanceof Class) {
                         node = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
                     }
+                } else if (actualTypeArg instanceof GenericArrayType) {
+                    Class<?> rawType = TypeUtils.getRawType(actualTypeArg);
+                    node = this.createNode(nodeContext, rawType, actualTypeArg, field, parent);
                 }
 
                 if (typeVar.getName().equals(MAP_KEY_TYPE_VARIABLE)) {
@@ -286,7 +319,8 @@ public class NodeFactory {
             result = new MapNode(nodeContext, rawClass, keyNode, valueNode, field, rawClass, parent);
         }
 
-        return Verify.notNull(result);
+        return Verify.notNull(result, "Failed creating MapNode for rawType '%s', genericType '%s'",
+                rawClass.getName(), genericType);
     }
 
     private Node createClassNode(final NodeContext nodeContext,

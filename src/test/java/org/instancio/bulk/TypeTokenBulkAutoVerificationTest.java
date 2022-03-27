@@ -23,7 +23,6 @@ import org.instancio.pojo.generics.foobarbaz.Bar;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.person.Person;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,14 +43,13 @@ class TypeTokenBulkAutoVerificationTest {
     private static final Logger LOG = LoggerFactory.getLogger(TypeTokenBulkAutoVerificationTest.class);
 
     @Test
-    @Disabled
     void arrays() {
-        //
-        // FIXME
-        //
         bulkAssertFullyPopulated(
+                new TypeToken<Map<String, Item<Integer>[]>>() {},
                 new TypeToken<Item<Integer>[]>() {},
                 new TypeToken<Pair<String, int[]>>() {},
+                new TypeToken<Person>() {},
+                //new TypeToken<List<Item<Pair<Integer, String>>[]>>() {}, // FIXME
                 new TypeToken<List<int[]>>() {});
     }
 
@@ -99,7 +97,7 @@ class TypeTokenBulkAutoVerificationTest {
     private static void bulkAssertFullyPopulated(TypeToken<?>... typeTokens) {
         Map<Type, Object> failed = new HashMap<>();
         for (TypeToken<?> typeToken : typeTokens) {
-            final Object result = Instancio.of(typeToken).create();
+            final Object result = Instancio.create(typeToken);
 
             try {
                 assertThatObject(result)

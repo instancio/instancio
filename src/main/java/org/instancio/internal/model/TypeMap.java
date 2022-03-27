@@ -17,6 +17,7 @@ package org.instancio.internal.model;
 
 import org.instancio.util.ObjectUtils;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -112,6 +113,8 @@ public class TypeMap {
         } else if (typeArg instanceof WildcardType) {
             WildcardType wType = (WildcardType) typeArg;
             return resolveTypeMapping(wType.getUpperBounds()[0]); // TODO multiple bounds
+        } else if (typeArg instanceof GenericArrayType) {
+            return typeArg;
         }
         throw new UnsupportedOperationException("Unsupported type: " + typeArg.getClass());
     }

@@ -19,6 +19,7 @@ import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,8 @@ public class ArrayNode extends Node {
 
         super(nodeContext, klass, field, genericType, parent);
 
-        Verify.isTrue(klass.isArray(), "Not an array type: %s", klass.getName());
+        Verify.isTrue(klass.isArray() || genericType instanceof GenericArrayType,
+                "Either raw type(%s) or generic type (%s) must be an array", klass.getName(), genericType);
 
         elementNode.setParent(this);
 
