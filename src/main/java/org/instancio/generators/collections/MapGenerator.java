@@ -15,17 +15,19 @@
  */
 package org.instancio.generators.collections;
 
-import org.instancio.exception.InstancioException;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
+    private static final Logger LOG = LoggerFactory.getLogger(MapGenerator.class);
 
     protected int minSize;
     protected int maxSize;
@@ -83,11 +85,13 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
     }
 
     @Override
+    @SuppressWarnings({"unchecked", "java:S1168"})
     public Map<K, V> generate() {
         try {
-            return random().diceRoll(nullable) ? null : (Map<K, V>) type.newInstance();
+            return random().diceRoll(nullable) ? null : (Map<K, V>) type.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            throw new InstancioException(String.format("Error creating instance of: %s", type), ex);
+            LOG.debug("Error creating instance of: {}", type, ex);
+            return null;
         }
     }
 
