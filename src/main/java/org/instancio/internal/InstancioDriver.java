@@ -25,8 +25,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import static java.util.stream.Collectors.toList;
-
 class InstancioDriver {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioDriver.class);
 
@@ -41,20 +39,16 @@ class InstancioDriver {
         this.generatorFacade = new GeneratorFacade(context);
     }
 
+    @SuppressWarnings("unchecked")
     <T> T createEntryPoint() {
         final GeneratorResult rootResult = generatorFacade.generateNodeValue(rootNode, null);
-        final Object value = rootResult.getValue();
-
-        enqueueChildrenOf(rootNode, rootResult, queue);
-
         rootNode.accept(new PopulatingNodeVisitor(null, rootResult, generatorFacade, context, queue));
 
         while (!queue.isEmpty()) {
             processNextItem(queue.poll());
         }
 
-        //noinspection unchecked
-        return (T) value;
+        return (T) rootResult.getValue();
     }
 
     private void processNextItem(final CreateItem createItem) {
@@ -72,14 +66,5 @@ class InstancioDriver {
                 || context.isIgnored(node.getField())
                 || context.isIgnored(node.getKlass())
                 || Modifier.isStatic(node.getField().getModifiers());
-    }
-
-    private static void enqueueChildrenOf(Node node, GeneratorResult result, Queue<CreateItem> queue) {
-        if (!result.ignoreChildren()) {
-            final Object owner = result.getValue();
-            queue.addAll(node.getChildren().stream()
-                    .map(it -> new CreateItem(it, owner))
-                    .collect(toList()));
-        }
     }
 }

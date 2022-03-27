@@ -57,7 +57,13 @@ public class PopulatingNodeVisitor implements NodeVisitor {
     @Override
     public void visitClassNode(final ClassNode node) {
         final Field field = node.getField();
-        if (field == null) return;
+        if (field == null) {
+            if (owner == null) { // i.e. root node
+                enqueueChildrenOf(node, generatorResult, queue);
+            }
+            return;
+        }
+
         Verify.notNull(owner, "null owner for node: %s", node);
 
         if (generatorResult.getValue() != null) {
@@ -74,30 +80,30 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             return;
         }
 
-        final Collection<Object> collectionInstance = (Collection<Object>) generatorResult.getValue();
+        final Collection<Object> collectionObj = (Collection<Object>) generatorResult.getValue();
         final Node elementNode = collectionNode.getElementNode();
 
-        if (collectionNode.getField() != null)
-            ReflectionUtils.setField(owner, collectionNode.getField(), collectionInstance);
+        if (collectionNode.getField() != null) {
+            ReflectionUtils.setField(owner, collectionNode.getField(), collectionObj);
+        }
 
         final boolean nullableElement = generatorResult.getHints().nullableElements();
 
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
-            final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, collectionInstance);
+            final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, collectionObj);
             final Object elementValue;
 
             if (context.getRandomProvider().diceRoll(nullableElement)) {
                 elementValue = null;
             } else {
                 elementValue = elementResult.getValue();
+                elementNode.accept(new PopulatingNodeVisitor(collectionObj, elementResult, generatorFacade, context, queue));
+                enqueueChildrenOf(elementNode, elementResult, queue);
             }
 
             if (elementValue != null || nullableElement) {
-                collectionInstance.add(elementValue);
+                collectionObj.add(elementValue);
             }
-
-            elementNode.accept(new PopulatingNodeVisitor(collectionInstance, elementResult, generatorFacade, context, queue));
-            enqueueChildrenOf(elementNode, elementResult, queue);
         }
     }
 
@@ -107,12 +113,13 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             return;
         }
 
-        final Map<Object, Object> mapInstance = (Map<Object, Object>) generatorResult.getValue();
+        final Map<Object, Object> mapObj = (Map<Object, Object>) generatorResult.getValue();
         final Node keyNode = mapNode.getKeyNode();
         final Node valueNode = mapNode.getValueNode();
 
-        if (mapNode.getField() != null)
-            ReflectionUtils.setField(owner, mapNode.getField(), mapInstance);
+        if (mapNode.getField() != null) {
+            ReflectionUtils.setField(owner, mapNode.getField(), mapObj);
+        }
 
         final boolean nullableKey = generatorResult.getHints().nullableMapKeys();
         final boolean nullableValue = generatorResult.getHints().nullableMapValues();
@@ -123,7 +130,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             if (context.getRandomProvider().diceRoll(nullableKey)) {
                 mapKey = null;
             } else {
-                final GeneratorResult keyResult = generatorFacade.generateNodeValue(keyNode, mapInstance);
+                final GeneratorResult keyResult = generatorFacade.generateNodeValue(keyNode, mapObj);
                 enqueueChildrenOf(keyNode, keyResult, queue);
                 mapKey = keyResult.getValue();
             }
@@ -132,14 +139,14 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             if (context.getRandomProvider().diceRoll(nullableValue)) {
                 mapValue = null;
             } else {
-                final GeneratorResult valueResult = generatorFacade.generateNodeValue(valueNode, mapInstance);
+                final GeneratorResult valueResult = generatorFacade.generateNodeValue(valueNode, mapObj);
                 enqueueChildrenOf(valueNode, valueResult, queue);
                 mapValue = valueResult.getValue();
-                valueNode.accept(new PopulatingNodeVisitor(mapInstance, valueResult, generatorFacade, context, queue));
+                valueNode.accept(new PopulatingNodeVisitor(mapObj, valueResult, generatorFacade, context, queue));
             }
 
             if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
-                mapInstance.put(mapKey, mapValue);
+                mapObj.put(mapKey, mapValue);
             }
         }
     }
@@ -150,23 +157,23 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             return;
         }
 
-        final Object createdValue = generatorResult.getValue();
+        final Object arrayObj = generatorResult.getValue();
         final Node elementNode = arrayNode.getElementNode();
 
         // Field can be null when array is an element of a collection
         if (arrayNode.getField() != null) {
-            ReflectionUtils.setField(owner, arrayNode.getField(), createdValue);
+            ReflectionUtils.setField(owner, arrayNode.getField(), arrayObj);
         }
 
-        for (int i = 0, len = Array.getLength(createdValue); i < len; i++) {
+        for (int i = 0, len = Array.getLength(arrayObj); i < len; i++) {
             final boolean isNullableElement = generatorResult.getHints().nullableResult();
             if (context.getRandomProvider().diceRoll(isNullableElement)) {
                 continue;
             }
 
-            final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, createdValue);
+            final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, arrayObj);
             final Object elementValue = elementResult.getValue();
-            Array.set(createdValue, i, elementValue);
+            Array.set(arrayObj, i, elementValue);
 
             enqueueChildrenOf(elementNode, elementResult, queue);
         }
