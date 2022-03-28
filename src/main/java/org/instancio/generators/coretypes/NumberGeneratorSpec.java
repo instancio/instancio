@@ -17,6 +17,11 @@ package org.instancio.generators.coretypes;
 
 import org.instancio.GeneratorSpec;
 
+/**
+ * Generator spec for core numeric types.
+ *
+ * @param <T> type of number
+ */
 public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> {
 
     /**
@@ -36,7 +41,7 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
     NumberGeneratorSpec<T> max(T max);
 
     /**
-     * Specifies the value should be nullable.
+     * Specifies the generated value can be {@code null}.
      *
      * @return spec builder
      */

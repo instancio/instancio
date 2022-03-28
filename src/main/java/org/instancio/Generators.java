@@ -92,14 +92,33 @@ public class Generators {
         return new OneOfCollectionGenerator<T>(context).oneOf(values);
     }
 
+    /**
+     * Creates a spec builder for arrays.
+     *
+     * @param <T> array component type
+     * @return spec builder
+     */
     public <T> ArrayGeneratorSpec<T> array() {
         return new ArrayGenerator<>(context);
     }
 
+    /**
+     * Creates a spec builder for {@link java.util.Collection} and its subtypes.
+     *
+     * @param <T> element type
+     * @return spec builder
+     */
     public <T> CollectionGeneratorSpec<Collection<T>> collection() {
         return new CollectionGeneratorSpecImpl<>(context);
     }
 
+    /**
+     * Creates a spec builder for {@link java.util.Map} and its subtypes.
+     *
+     * @param <K> key type
+     * @param <V> value type
+     * @return spec builder
+     */
     public <K, V> MapGeneratorSpec<K, V> map() {
         return new MapGeneratorSpecImpl<>(context);
     }

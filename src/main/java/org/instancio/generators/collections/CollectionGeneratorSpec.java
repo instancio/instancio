@@ -19,16 +19,49 @@ import org.instancio.GeneratorSpec;
 
 import java.util.Collection;
 
+/**
+ * Generator spec for collections.
+ *
+ * @param <T> element type
+ */
 public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>> {
 
+    /**
+     * Minimum size of collection to generate.
+     *
+     * @param size minimum size (inclusive)
+     * @return spec builder
+     */
     CollectionGeneratorSpec<T> minSize(int size);
 
+    /**
+     * Maximum size of collection to generate.
+     *
+     * @param size maximum size (inclusive)
+     * @return spec builder
+     */
     CollectionGeneratorSpec<T> maxSize(int size);
 
+    /**
+     * Indicates that {@code null} value can be generated for the collection.
+     *
+     * @return spec builder
+     */
     CollectionGeneratorSpec<T> nullable();
 
+    /**
+     * Indicates that {@code null} values can be generated for collection elements.
+     *
+     * @return spec builder
+     */
     CollectionGeneratorSpec<T> nullableElements();
 
+    /**
+     * Specifies the type of collection that should be generated.
+     *
+     * @param type of collection to generate
+     * @return spec builder
+     */
     CollectionGeneratorSpec<T> type(Class<?> type);
 
 }

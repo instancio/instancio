@@ -17,15 +17,46 @@ package org.instancio.generators.coretypes;
 
 import org.instancio.GeneratorSpec;
 
+/**
+ * Generator spec for Strings.
+ */
 public interface StringGeneratorSpec extends GeneratorSpec<String> {
 
+    /**
+     * Specifies a String prefix.
+     *
+     * @param prefix for generated strings
+     * @return spec builder
+     */
     StringGeneratorSpec prefix(String prefix);
 
+    /**
+     * Indicates that {@code null} value can be generated.
+     *
+     * @return spec builder
+     */
     StringGeneratorSpec nullable();
 
+    /**
+     * Indicates that an empty string can be generated.
+     *
+     * @return spec builder
+     */
     StringGeneratorSpec allowEmpty();
 
+    /**
+     * Minimum length of string to generate.
+     *
+     * @param length minimum length (inclusive)
+     * @return spec builder
+     */
     StringGeneratorSpec minLength(int length);
 
+    /**
+     * Maximum length of string to generate.
+     *
+     * @param length maximum length (inclusive)
+     * @return spec builder
+     */
     StringGeneratorSpec maxLength(int length);
 }

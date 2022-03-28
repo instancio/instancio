@@ -19,18 +19,57 @@ import org.instancio.GeneratorSpec;
 
 import java.util.Map;
 
+/**
+ * Generator spec for maps.
+ *
+ * @param <K> key type
+ * @param <V> value type
+ */
 public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
 
+    /**
+     * Minimum size of map to generate.
+     *
+     * @param size minimum size (inclusive)
+     * @return spec builder
+     */
     MapGeneratorSpec<K, V> minSize(int size);
 
+    /**
+     * Maximum size of map to generate.
+     *
+     * @param size maximum size (inclusive)
+     * @return spec builder
+     */
     MapGeneratorSpec<K, V> maxSize(int size);
 
+    /**
+     * Indicates that {@code null} value can be generated for the map.
+     *
+     * @return spec builder
+     */
     MapGeneratorSpec<K, V> nullable();
 
+    /**
+     * Indicates that {@code null} values can be generated for map keys.
+     *
+     * @return spec builder
+     */
     MapGeneratorSpec<K, V> nullableKeys();
 
+    /**
+     * Indicates that {@code null} values can be generated for map values.
+     *
+     * @return spec builder
+     */
     MapGeneratorSpec<K, V> nullableValues();
 
+    /**
+     * Specifies the type of map that should be generated.
+     *
+     * @param type of collection to generate
+     * @return spec builder
+     */
     MapGeneratorSpec<K, V> type(Class<?> type);
 
 }

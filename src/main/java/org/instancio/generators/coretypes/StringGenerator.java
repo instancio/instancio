@@ -76,11 +76,11 @@ public class StringGenerator extends AbstractRandomGenerator<String> implements 
 
     @Override
     public String generate() {
-        if (random().diceRoll(allowEmpty)) {
-            return "";
-        }
         if (random().diceRoll(nullable)) {
             return null;
+        }
+        if (random().diceRoll(allowEmpty)) {
+            return "";
         }
         return prefix + random().alphabetic(random().intBetween(minLength, maxLength + 1));
     }
