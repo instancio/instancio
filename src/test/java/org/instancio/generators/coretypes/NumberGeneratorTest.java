@@ -15,6 +15,8 @@
  */
 package org.instancio.generators.coretypes;
 
+import org.instancio.generators.BigDecimalGenerator;
+import org.instancio.generators.BigIntegerGenerator;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
@@ -22,6 +24,8 @@ import org.instancio.testsupport.tags.NonDeterministicTag;
 import org.instancio.testsupport.tags.SettingsTag;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -122,6 +126,13 @@ class NumberGeneratorTest {
     }
 
     @Test
+    void bigIntegerGenerator() {
+        final BigIntegerGenerator generator = new BigIntegerGenerator(context,
+                BigInteger.valueOf(MIN), BigInteger.valueOf(MAX), true);
+        new WholeNumberGeneratorTestTemplate<BigIntegerGenerator>().verifyGenerate(generator);
+    }
+
+    @Test
     void floatGenerator() {
         new FractionalNumberGeneratorTestTemplate<FloatGenerator>().verifyGenerate(new FloatGenerator(context));
     }
@@ -129,6 +140,13 @@ class NumberGeneratorTest {
     @Test
     void doubleGenerator() {
         new FractionalNumberGeneratorTestTemplate<DoubleGenerator>().verifyGenerate(new DoubleGenerator(context));
+    }
+
+    @Test
+    void bigDecimalGenerator() {
+        final BigDecimalGenerator generator = new BigDecimalGenerator(context,
+                BigDecimal.valueOf(MIN), BigDecimal.valueOf(MAX), true);
+        new FractionalNumberGeneratorTestTemplate<BigDecimalGenerator>().verifyGenerate(generator);
     }
 
 }

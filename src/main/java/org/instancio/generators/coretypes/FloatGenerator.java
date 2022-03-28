@@ -28,7 +28,7 @@ public class FloatGenerator extends AbstractRandomNumberGeneratorSpec<Float> {
     }
 
     @Override
-    Float generateNonNullValue() {
+    protected Float generateNonNullValue() {
         return random().floatBetween(min, max);
     }
 }

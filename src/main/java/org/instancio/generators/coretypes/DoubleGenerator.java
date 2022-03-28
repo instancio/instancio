@@ -28,7 +28,7 @@ public class DoubleGenerator extends AbstractRandomNumberGeneratorSpec<Double> {
     }
 
     @Override
-    Double generateNonNullValue() {
+    protected Double generateNonNullValue() {
         return random().doubleBetween(min, max);
     }
 }
