@@ -16,7 +16,7 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Generator;
-import org.instancio.internal.GeneratorMap;
+import org.instancio.internal.GeneratorResolver;
 import org.instancio.internal.GeneratorResult;
 import org.instancio.internal.model.ArrayNode;
 import org.instancio.internal.model.Node;
@@ -25,17 +25,17 @@ import java.util.Optional;
 
 public class ArrayNodeHandler implements NodeHandler {
 
-    private final GeneratorMap generatorMap;
+    private final GeneratorResolver generatorResolver;
 
-    public ArrayNodeHandler(final GeneratorMap generatorMap) {
-        this.generatorMap = generatorMap;
+    public ArrayNodeHandler(final GeneratorResolver generatorResolver) {
+        this.generatorResolver = generatorResolver;
     }
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         if (node instanceof ArrayNode) {
             final Class<?> componentType = ((ArrayNode) node).getElementNode().getKlass();
-            final Generator<?> generator = generatorMap.getArrayGenerator(componentType);
+            final Generator<?> generator = generatorResolver.getArrayGenerator(componentType);
             final Object arrayObject = generator.generate();
             final GeneratorResult result = GeneratorResult.create(arrayObject, generator.getHints());
             return Optional.of(result);

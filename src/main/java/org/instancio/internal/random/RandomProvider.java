@@ -48,14 +48,6 @@ public class RandomProvider {
         return intBetween(0, 2) == 1;
     }
 
-    /**
-     * @return a random {@code true} or {@code false} value with a {@code 0.1} probability of {@code true}.
-     */
-    @Deprecated
-    public boolean oneInTenTrue() {
-        return intBetween(0, 10) == 1;
-    }
-
     public boolean diceRoll(final boolean precondition) {
         return precondition && intBetween(0, 6) == 1;
     }

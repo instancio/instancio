@@ -28,7 +28,7 @@ public class LongGenerator extends AbstractRandomNumberGeneratorSpec<Long> {
     }
 
     @Override
-    Long generateNonNullValue() {
+    protected Long generateNonNullValue() {
         return random().longBetween(min, max);
     }
 }

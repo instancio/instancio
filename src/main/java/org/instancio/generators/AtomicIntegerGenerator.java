@@ -19,26 +19,26 @@ import org.instancio.generators.coretypes.AbstractRandomNumberGeneratorSpec;
 import org.instancio.generators.coretypes.NumberGeneratorSpec;
 import org.instancio.internal.model.ModelContext;
 
-import java.math.BigDecimal;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class BigDecimalGenerator extends AbstractRandomNumberGeneratorSpec<BigDecimal> implements NumberGeneratorSpec<BigDecimal> {
+public class AtomicIntegerGenerator extends AbstractRandomNumberGeneratorSpec<AtomicInteger> implements NumberGeneratorSpec<AtomicInteger> {
 
-    private static final long DEFAULT_MIN = 1;
-    private static final long DEFAULT_MAX = 10_000;
+    private static final int DEFAULT_MIN = 1;
+    private static final int DEFAULT_MAX = 10_000;
 
-    public BigDecimalGenerator(final ModelContext<?> context) {
+    public AtomicIntegerGenerator(final ModelContext<?> context) {
         super(context,
-                BigDecimal.valueOf(DEFAULT_MIN),
-                BigDecimal.valueOf(DEFAULT_MAX),
+                new AtomicInteger(DEFAULT_MIN),
+                new AtomicInteger(DEFAULT_MAX),
                 false);
     }
 
-    public BigDecimalGenerator(final ModelContext<?> context, final BigDecimal min, final BigDecimal max, final boolean nullable) {
-        super(context, min, max, nullable);
+    public AtomicIntegerGenerator(final ModelContext<?> context, final int min, final int max, final boolean nullable) {
+        super(context, new AtomicInteger(min), new AtomicInteger(max), nullable);
     }
 
     @Override
-    protected BigDecimal generateNonNullValue() {
-        return BigDecimal.valueOf(random().doubleBetween(min.doubleValue(), max.doubleValue()));
+    protected AtomicInteger generateNonNullValue() {
+        return new AtomicInteger(random().intBetween(min.intValue(), max.intValue()));
     }
 }

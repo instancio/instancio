@@ -19,26 +19,26 @@ import org.instancio.generators.coretypes.AbstractRandomNumberGeneratorSpec;
 import org.instancio.generators.coretypes.NumberGeneratorSpec;
 import org.instancio.internal.model.ModelContext;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
-public class BigDecimalGenerator extends AbstractRandomNumberGeneratorSpec<BigDecimal> implements NumberGeneratorSpec<BigDecimal> {
+public class BigIntegerGenerator extends AbstractRandomNumberGeneratorSpec<BigInteger> implements NumberGeneratorSpec<BigInteger> {
 
     private static final long DEFAULT_MIN = 1;
     private static final long DEFAULT_MAX = 10_000;
 
-    public BigDecimalGenerator(final ModelContext<?> context) {
+    public BigIntegerGenerator(final ModelContext<?> context) {
         super(context,
-                BigDecimal.valueOf(DEFAULT_MIN),
-                BigDecimal.valueOf(DEFAULT_MAX),
+                BigInteger.valueOf(DEFAULT_MIN),
+                BigInteger.valueOf(DEFAULT_MAX),
                 false);
     }
 
-    public BigDecimalGenerator(final ModelContext<?> context, final BigDecimal min, final BigDecimal max, final boolean nullable) {
+    public BigIntegerGenerator(final ModelContext<?> context, final BigInteger min, final BigInteger max, final boolean nullable) {
         super(context, min, max, nullable);
     }
 
     @Override
-    protected BigDecimal generateNonNullValue() {
-        return BigDecimal.valueOf(random().doubleBetween(min.doubleValue(), max.doubleValue()));
+    protected BigInteger generateNonNullValue() {
+        return BigInteger.valueOf(random().longBetween(min.longValue(), max.longValue()));
     }
 }

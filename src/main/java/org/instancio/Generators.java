@@ -17,6 +17,8 @@ package org.instancio;
 
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.generators.ArrayGeneratorSpec;
+import org.instancio.generators.BigDecimalGenerator;
+import org.instancio.generators.BigIntegerGenerator;
 import org.instancio.generators.OneOfArrayGenerator;
 import org.instancio.generators.OneOfArrayGeneratorSpec;
 import org.instancio.generators.OneOfCollectionGenerator;
@@ -37,6 +39,8 @@ import org.instancio.generators.coretypes.StringGeneratorSpec;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.internal.random.RandomProvider;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 
 /**
@@ -83,6 +87,14 @@ public class Generators {
         return new DoubleGenerator(context);
     }
 
+    public NumberGeneratorSpec<BigInteger> bigInteger() {
+        return new BigIntegerGenerator(context);
+    }
+
+    public NumberGeneratorSpec<BigDecimal> bigDecimal() {
+        return new BigDecimalGenerator(context);
+    }
+
     @SafeVarargs
     public final <T> OneOfArrayGeneratorSpec<T> oneOf(T... values) {
         return new OneOfArrayGenerator<T>(context).oneOf(values);
@@ -92,14 +104,33 @@ public class Generators {
         return new OneOfCollectionGenerator<T>(context).oneOf(values);
     }
 
+    /**
+     * Creates a spec builder for arrays.
+     *
+     * @param <T> array component type
+     * @return spec builder
+     */
     public <T> ArrayGeneratorSpec<T> array() {
         return new ArrayGenerator<>(context);
     }
 
+    /**
+     * Creates a spec builder for {@link java.util.Collection} and its subtypes.
+     *
+     * @param <T> element type
+     * @return spec builder
+     */
     public <T> CollectionGeneratorSpec<Collection<T>> collection() {
         return new CollectionGeneratorSpecImpl<>(context);
     }
 
+    /**
+     * Creates a spec builder for {@link java.util.Map} and its subtypes.
+     *
+     * @param <K> key type
+     * @param <V> value type
+     * @return spec builder
+     */
     public <K, V> MapGeneratorSpec<K, V> map() {
         return new MapGeneratorSpecImpl<>(context);
     }

@@ -90,7 +90,8 @@ public class ArrayGenerator<T> extends AbstractRandomGenerator<T> implements Arr
     public GeneratedHints getHints() {
         return GeneratedHints.builder()
                 .ignoreChildren(false)
-                .nullableResult(nullableElements)
+                .nullableResult(nullable)
+                .nullableElements(nullableElements)
                 .build();
     }
 }

@@ -66,11 +66,28 @@ class RandomProviderTest {
         int[] counts = new int[2];
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final boolean value = random.trueOrFalse();
-            counts[value ? 0 : 1]++;
+            counts[value ? 1 : 0]++;
             results.add(value);
         }
         assertThat(results).hasSize(2);
-        assertThat(counts[0]).isCloseTo(SAMPLE_SIZE / 2, withPercentage(PERCENTAGE_THRESHOLD));
+        assertThat(counts[1])
+                .as("Expecting 'true' with 1/2 probability")
+                .isCloseTo(SAMPLE_SIZE / 2, withPercentage(PERCENTAGE_THRESHOLD));
+    }
+
+    @Test
+    void diceRoll() {
+        final boolean preCondition = true;
+        int[] counts = new int[2];
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final boolean value = random.diceRoll(preCondition);
+            counts[value ? 1 : 0]++;
+            results.add(value);
+        }
+        assertThat(results).hasSize(2);
+        assertThat(counts[1])
+                .as("Expecting 'true' with 1/6 probability")
+                .isCloseTo(SAMPLE_SIZE / 6, withPercentage(PERCENTAGE_THRESHOLD));
     }
 
     @Test

@@ -27,14 +27,14 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     protected T max;
     protected boolean nullable;
 
-    AbstractRandomNumberGeneratorSpec(final ModelContext<?> context, final T min, final T max, final boolean nullable) {
+    protected AbstractRandomNumberGeneratorSpec(final ModelContext<?> context, final T min, final T max, final boolean nullable) {
         super(context);
         this.min = min;
         this.max = max;
         this.nullable = nullable;
     }
 
-    abstract T generateNonNullValue();
+    protected abstract T generateNonNullValue();
 
     @Override
     public NumberGeneratorSpec<T> min(final T min) {
@@ -55,7 +55,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public T generate() {
+    public final T generate() {
         return random().diceRoll(nullable) ? null : generateNonNullValue();
     }
 
