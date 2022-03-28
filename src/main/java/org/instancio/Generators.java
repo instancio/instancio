@@ -17,6 +17,8 @@ package org.instancio;
 
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.generators.ArrayGeneratorSpec;
+import org.instancio.generators.BigDecimalGenerator;
+import org.instancio.generators.BigIntegerGenerator;
 import org.instancio.generators.OneOfArrayGenerator;
 import org.instancio.generators.OneOfArrayGeneratorSpec;
 import org.instancio.generators.OneOfCollectionGenerator;
@@ -37,6 +39,8 @@ import org.instancio.generators.coretypes.StringGeneratorSpec;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.internal.random.RandomProvider;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 
 /**
@@ -81,6 +85,14 @@ public class Generators {
 
     public NumberGeneratorSpec<Double> doubles() {
         return new DoubleGenerator(context);
+    }
+
+    public NumberGeneratorSpec<BigInteger> bigInteger() {
+        return new BigIntegerGenerator(context);
+    }
+
+    public NumberGeneratorSpec<BigDecimal> bigDecimal() {
+        return new BigDecimalGenerator(context);
     }
 
     @SafeVarargs

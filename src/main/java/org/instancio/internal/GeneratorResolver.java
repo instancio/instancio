@@ -17,7 +17,10 @@ package org.instancio.internal;
 
 import org.instancio.Generator;
 import org.instancio.generators.ArrayGenerator;
+import org.instancio.generators.AtomicIntegerGenerator;
+import org.instancio.generators.AtomicLongGenerator;
 import org.instancio.generators.BigDecimalGenerator;
+import org.instancio.generators.BigIntegerGenerator;
 import org.instancio.generators.EnumGenerator;
 import org.instancio.generators.LocalDateGenerator;
 import org.instancio.generators.LocalDateTimeGenerator;
@@ -43,6 +46,7 @@ import org.instancio.internal.model.ModelContext;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -58,6 +62,8 @@ import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class GeneratorResolver {
 
@@ -87,7 +93,10 @@ public class GeneratorResolver {
         generators.put(String.class, new StringGenerator(context));
 
         generators.put(Number.class, new IntegerGenerator(context));
+        generators.put(BigInteger.class, new BigIntegerGenerator(context));
         generators.put(BigDecimal.class, new BigDecimalGenerator(context));
+        generators.put(AtomicInteger.class, new AtomicIntegerGenerator(context));
+        generators.put(AtomicLong.class, new AtomicLongGenerator(context));
         generators.put(LocalDate.class, new LocalDateGenerator(context));
         generators.put(LocalDateTime.class, new LocalDateTimeGenerator(context));
         generators.put(UUID.class, new UUIDGenerator(context));

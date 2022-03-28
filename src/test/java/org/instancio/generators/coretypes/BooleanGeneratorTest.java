@@ -35,7 +35,7 @@ class BooleanGeneratorTest {
     private static final int SAMPLE_SIZE = 50;
     private static final Class<Object> ANY_CLASS = Object.class;
     private static final ModelContext<?> context = ModelContext.builder(ANY_CLASS)
-            .withSettings(Settings.defaults().set(Setting.CHARACTER_NULLABLE, true)).build();
+            .withSettings(Settings.defaults().set(Setting.BOOLEAN_NULLABLE, true)).build();
 
     @Test
     void generate() {
