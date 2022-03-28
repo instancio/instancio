@@ -223,18 +223,22 @@ class ModelContextTest {
                 .withSubtypeMapping(List.class, LinkedList.class)
                 .build();
 
-        final ModelContext<?> builder = ctx.toBuilder().build();
+        final ModelContext<?> context = ctx.toBuilder().build();
 
-        assertThat(builder.getUserSuppliedGenerator(String.class)).containsSame(allStringsGenerator);
-        assertThat(builder.getUserSuppliedGenerator(ADDRESS_CITY_FIELD)).containsSame(addressCityGenerator);
-        assertThat(builder.getUserSuppliedGenerator(PETS_FIELD)).containsSame(petsGenerator);
-        assertThat(builder.isIgnored(NAME_FIELD)).isTrue();
-        assertThat(builder.isIgnored(ignoredClass)).isTrue();
-        assertThat(builder.isNullable(nullableClass)).isTrue();
-        assertThat(builder.isNullable(ADDRESS_FIELD)).isTrue();
-        assertThat(builder.getSeed()).isEqualTo(seed);
-        assertThat((int) builder.getSettings().get(Setting.INTEGER_MIN)).isEqualTo(integerMinValue);
-        assertThat(builder.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
+        assertThat(context.getUserSuppliedGenerator(String.class)).containsSame(allStringsGenerator);
+        assertThat(context.getUserSuppliedGenerator(ADDRESS_CITY_FIELD)).containsSame(addressCityGenerator);
+        assertThat(context.getUserSuppliedGenerator(PETS_FIELD)).containsSame(petsGenerator);
+        assertThat(context.isIgnored(NAME_FIELD)).isTrue();
+        assertThat(context.isIgnored(ignoredClass)).isTrue();
+        assertThat(context.isNullable(nullableClass)).isTrue();
+        assertThat(context.isNullable(ADDRESS_FIELD)).isTrue();
+        assertThat(context.getSeed()).isEqualTo(seed);
+        assertThat((int) context.getSettings().get(Setting.INTEGER_MIN)).isEqualTo(integerMinValue);
+        assertThat(context.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
+
+        assertThatThrownBy(() -> context.getSettings().set(Setting.STRING_MIN_LENGTH, 5))
+                .as("Settings should be locked")
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     private static Binding toFieldBinding(final Field field) {

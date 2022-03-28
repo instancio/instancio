@@ -15,7 +15,6 @@
  */
 package org.instancio.generators.coretypes;
 
-import org.instancio.Generator;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
@@ -31,26 +30,62 @@ import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints
 
 @SettingsTag
 @NonDeterministicTag
-class CharacterGeneratorTest {
+class StringGeneratorTest {
     private static final int SAMPLE_SIZE = 1000;
     private static final Class<Object> ANY_CLASS = Object.class;
     private static final ModelContext<?> context = ModelContext.builder(ANY_CLASS)
-            .withSettings(Settings.defaults().set(Setting.CHARACTER_NULLABLE, true)).build();
+            .withSettings(Settings.defaults()
+                    .set(Setting.STRING_MIN_LENGTH, 1)
+                    .set(Setting.STRING_MAX_LENGTH, 1)
+                    .set(Setting.STRING_ALLOW_EMPTY, true)
+                    .set(Setting.STRING_NULLABLE, true))
+            .build();
+
 
     @Test
     void generate() {
-        final Generator<Character> generator = new CharacterGenerator(context);
+        final StringGenerator generator = new StringGenerator(context);
         final Set<Object> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             results.add(generator.generate());
         }
 
-        assertThat(results).containsNull()
-                .as("26 letters + null")
-                .hasSize(27);
+        assertThat(results)
+                .as("26 letters + null + empty string")
+                .hasSize(28)
+                .containsNull()
+                .containsOnlyOnce("")
+                .contains(upperCaseLettersAtoZ());
 
         assertHints(generator.getHints())
                 .nullableResult(true)
                 .ignoreChildren(true);
     }
+
+    @Test
+    void generateOverrideSettings() {
+        final int length = 10;
+        final StringGenerator generator = new StringGenerator(context.toBuilder()
+                .withSettings(Settings.create()
+                        .set(Setting.STRING_NULLABLE, false)
+                        .set(Setting.STRING_ALLOW_EMPTY, false))
+                .build());
+
+        // Override generator length
+        generator.minLength(length).maxLength(length);
+
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final String result = generator.generate();
+            assertThat(result).hasSize(length);
+        }
+    }
+
+    private static String[] upperCaseLettersAtoZ() {
+        String[] expected = new String[26];
+        for (int i = 0; i < expected.length; i++) {
+            expected[i] = String.valueOf((char) ('A' + i));
+        }
+        return expected;
+    }
+
 }
