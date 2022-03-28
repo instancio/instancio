@@ -18,32 +18,56 @@ package org.instancio.generators.collections;
 import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
-import org.instancio.testsupport.fixtures.Types;
+import org.instancio.testsupport.tags.NonDeterministicTag;
 import org.instancio.testsupport.tags.SettingsTag;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Percentage.withPercentage;
 import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints;
 
 @SettingsTag
+@NonDeterministicTag
 class MapGeneratorTest {
 
     private static final int MIN_SIZE = 101;
     private static final int MAX_SIZE = 102;
+    private static final int SAMPLE_SIZE = 10_000;
+    private static final int PERCENTAGE_THRESHOLD = 10;
+    private static final Class<?> ANY_CLASS = Object.class;
+    private static final ModelContext<?> context = ModelContext.builder(ANY_CLASS)
+            .withSettings(Settings.defaults()
+                    .set(Setting.MAP_MIN_SIZE, MIN_SIZE)
+                    .set(Setting.MAP_MAX_SIZE, MAX_SIZE)
+                    .set(Setting.MAP_NULLABLE, true)
+                    .set(Setting.MAP_KEYS_NULLABLE, true)
+                    .set(Setting.MAP_VALUES_NULLABLE, true))
+            .build();
 
     @Test
-    void hints() {
-        final Settings set = Settings.defaults()
-                .set(Setting.MAP_MIN_SIZE, MIN_SIZE)
-                .set(Setting.MAP_MAX_SIZE, MAX_SIZE)
-                .set(Setting.MAP_NULLABLE, true)
-                .set(Setting.MAP_KEYS_NULLABLE, true)
-                .set(Setting.MAP_VALUES_NULLABLE, true);
-
-        final ModelContext<?> context = ModelContext.builder(Types.STRING.get())
-                .withSettings(set)
-                .build();
-
+    void generate() {
         final MapGenerator<?, ?> generator = new MapGenerator<>(context);
+        final Set<Object> results = new HashSet<>();
+        final int[] counts = new int[2];
+
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final Map<?, ?> result = generator.generate();
+            results.add(result);
+            counts[result == null ? 0 : 1]++;
+        }
+
+        assertThat(results).containsNull()
+                .hasAtLeastOneElementOfType(HashMap.class)
+                .hasSize(2); // null and empty map
+
+        assertThat(counts[1])
+                .as("Expecting 5/6 of results to be non-null")
+                .isCloseTo((5 * SAMPLE_SIZE) / 6, withPercentage(PERCENTAGE_THRESHOLD));
 
         assertHints(generator.getHints())
                 .dataStructureSizeBetween(MIN_SIZE, MAX_SIZE)
