@@ -15,7 +15,7 @@
  */
 package org.instancio.internal;
 
-import org.instancio.internal.model.Node;
+import org.instancio.internal.nodes.Node;
 import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;

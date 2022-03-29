@@ -19,8 +19,8 @@ import org.instancio.Generator;
 import org.instancio.generators.InstantiatingGenerator;
 import org.instancio.internal.GeneratorResolver;
 import org.instancio.internal.GeneratorResult;
-import org.instancio.internal.model.ModelContext;
-import org.instancio.internal.model.Node;
+import org.instancio.internal.ModelContext;
+import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.util.ObjectUtils;
 

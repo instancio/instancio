@@ -15,7 +15,7 @@
  */
 package org.instancio.generators.collections;
 
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 
 import java.util.Collection;
 import java.util.TreeSet;

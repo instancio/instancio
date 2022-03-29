@@ -17,9 +17,9 @@ package org.instancio.internal.handlers;
 
 import org.instancio.internal.GeneratedHints;
 import org.instancio.internal.GeneratorResult;
-import org.instancio.internal.model.CollectionNode;
-import org.instancio.internal.model.ModelContext;
-import org.instancio.internal.model.Node;
+import org.instancio.internal.nodes.CollectionNode;
+import org.instancio.internal.ModelContext;
+import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Setting;

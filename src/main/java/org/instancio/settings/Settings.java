@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.instancio.internal.model.InstancioValidator.validateSettingKey;
-import static org.instancio.internal.model.InstancioValidator.validateSubtypeMapping;
+import static org.instancio.internal.InstancioValidator.validateSettingKey;
+import static org.instancio.internal.InstancioValidator.validateSubtypeMapping;
 
 /**
  * Instancio settings API.

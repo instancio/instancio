@@ -17,7 +17,7 @@ package org.instancio.generators.collections;
 
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;

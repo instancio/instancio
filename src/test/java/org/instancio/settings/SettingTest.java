@@ -32,6 +32,6 @@ class SettingTest {
     void getByInvalidKey() {
         assertThatThrownBy(() -> Setting.getByKey("foo"))
                 .isInstanceOf(NullPointerException.class)
-                .hasMessage("Invalid key: 'foo'");
+                .hasMessage("Invalid instancio property key: 'foo'");
     }
 }

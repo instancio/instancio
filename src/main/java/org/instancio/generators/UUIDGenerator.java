@@ -15,7 +15,7 @@
  */
 package org.instancio.generators;
 
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 
 import java.util.UUID;
 

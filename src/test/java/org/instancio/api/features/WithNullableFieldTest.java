@@ -16,7 +16,6 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.exception.InstancioException;
 import org.instancio.pojo.basic.ClassWithInitializedField;
 import org.instancio.pojo.basic.IntegerHolder;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -27,13 +26,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Bindings.allInts;
 import static org.instancio.Bindings.field;
 
 @NonDeterministicTag
 class WithNullableFieldTest {
 
-    private static final int SAMPLE_SIZE = 30;
+    private static final int SAMPLE_SIZE = 50;
 
     @Test
     @DisplayName("A nullable field will be randomly set to null")
@@ -54,14 +53,27 @@ class WithNullableFieldTest {
     }
 
     @Test
-    @DisplayName("Specifying nullable for a primitive field throws an exception")
+    @DisplayName("Specifying nullable for a primitive field does not throw an exception")
     void nullableWithPrimitiveFieldThrowsException() {
-        assertThatThrownBy(
-                () -> Instancio.of(IntegerHolder.class)
-                        .withNullable(field("primitive"))
-                        .create())
-                .isInstanceOf(InstancioException.class)
-                .hasMessage("Primitive field 'private int org.instancio.pojo.basic.IntegerHolder.primitive' cannot be set to null");
+        final IntegerHolder result = Instancio.of(IntegerHolder.class)
+                .withNullable(field("primitive"))
+                .create();
+
+        assertThat(result.getPrimitive()).isNotZero();
+    }
+
+    @Test
+    @DisplayName("Nullable with 'allInts()' should randomly set Integer to null")
+    void nullableWithAllInts() {
+        Set<Object> results = new HashSet<>();
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final IntegerHolder result = Instancio.of(IntegerHolder.class)
+                    .withNullable(allInts())
+                    .create();
+
+            results.add(result.getWrapper());
+        }
+        assertThat(results).containsNull();
     }
 
     @Test
@@ -71,10 +83,10 @@ class WithNullableFieldTest {
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
-                    .withNullable(field("value"))
+                    .withNullable(field("stringValue"))
                     .create();
 
-            results.add(holder.getValue());
+            results.add(holder.getStringValue());
         }
 
         assertThat(results)

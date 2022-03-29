@@ -40,9 +40,9 @@ class WithNullValueFieldTest {
     @DisplayName("Initialized field should be set to null")
     void overwritesInitializedFieldValue() {
         final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
-                .supply(field("value"), () -> null)
+                .supply(field("stringValue"), () -> null)
                 .create();
 
-        assertThat(holder.getValue()).isNull();
+        assertThat(holder.getStringValue()).isNull();
     }
 }

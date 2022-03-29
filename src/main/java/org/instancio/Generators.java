@@ -36,7 +36,7 @@ import org.instancio.generators.coretypes.NumberGeneratorSpec;
 import org.instancio.generators.coretypes.ShortGenerator;
 import org.instancio.generators.coretypes.StringGenerator;
 import org.instancio.generators.coretypes.StringGeneratorSpec;
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 import org.instancio.internal.random.RandomProvider;
 
 import java.math.BigDecimal;

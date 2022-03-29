@@ -15,9 +15,7 @@
  */
 package org.instancio.internal;
 
-import org.instancio.internal.model.InternalModel;
-import org.instancio.internal.model.ModelContext;
-import org.instancio.internal.model.Node;
+import org.instancio.internal.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

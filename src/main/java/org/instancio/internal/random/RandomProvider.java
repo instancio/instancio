@@ -19,10 +19,10 @@ import org.instancio.util.Verify;
 
 import java.util.Collection;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomProvider {
 
+    private final int seed;
     private final Random random;
 
     /**
@@ -31,14 +31,12 @@ public class RandomProvider {
      * @param seed for the random generator
      */
     public RandomProvider(final int seed) {
-        random = new Random(seed);
+        this.seed = seed;
+        this.random = new Random(seed);
     }
 
-    /**
-     * Create an instance with a random seed value.
-     */
-    public RandomProvider() {
-        this(ThreadLocalRandom.current().nextInt());
+    public int getSeed() {
+        return seed;
     }
 
     /**
@@ -48,6 +46,10 @@ public class RandomProvider {
         return intBetween(0, 2) == 1;
     }
 
+    /**
+     * @param precondition required for returning {@code true} value
+     * @return a random {@code true} with {@code 1/6} probability.
+     */
     public boolean diceRoll(final boolean precondition) {
         return precondition && intBetween(0, 6) == 1;
     }
@@ -107,14 +109,6 @@ public class RandomProvider {
      */
     public double doubleBetween(final double min, final double max) {
         return RandomDataGenerator.nextDouble(random, min, max);
-    }
-
-    public int positiveInt() {
-        return intBetween(0, Integer.MAX_VALUE);
-    }
-
-    public long positiveLong() {
-        return longBetween(0, Long.MAX_VALUE);
     }
 
     /**
