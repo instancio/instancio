@@ -248,7 +248,6 @@ public class NodeFactory {
                 LOG.debug("Could not resolve Map key/value types.\nKey: {}\nValue:{}", keyNode, valueNode);
             }
         } else if (genericType instanceof Class) { // collection without type specified... 'Map map'
-            // TODO refactor
             final TypeVariable<?> keyTypeVariable = Map.class.getTypeParameters()[0];
             final TypeVariable<?> valueTypeVariable = Map.class.getTypeParameters()[1];
 
