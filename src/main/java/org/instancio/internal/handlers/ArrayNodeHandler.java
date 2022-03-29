@@ -18,8 +18,8 @@ package org.instancio.internal.handlers;
 import org.instancio.Generator;
 import org.instancio.internal.GeneratorResolver;
 import org.instancio.internal.GeneratorResult;
-import org.instancio.internal.model.ArrayNode;
-import org.instancio.internal.model.Node;
+import org.instancio.internal.nodes.ArrayNode;
+import org.instancio.internal.nodes.Node;
 
 import java.util.Optional;
 

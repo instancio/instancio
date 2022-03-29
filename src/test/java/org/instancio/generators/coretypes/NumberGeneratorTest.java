@@ -17,7 +17,7 @@ package org.instancio.generators.coretypes;
 
 import org.instancio.generators.BigDecimalGenerator;
 import org.instancio.generators.BigIntegerGenerator;
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;

@@ -17,7 +17,7 @@ package org.instancio.generators;
 
 import org.instancio.generators.coretypes.AbstractRandomNumberGeneratorSpec;
 import org.instancio.generators.coretypes.NumberGeneratorSpec;
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 
 import java.util.concurrent.atomic.AtomicLong;
 

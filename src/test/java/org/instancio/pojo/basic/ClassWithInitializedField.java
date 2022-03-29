@@ -18,9 +18,12 @@ package org.instancio.pojo.basic;
 import lombok.Getter;
 
 @Getter
+@SuppressWarnings("FieldMayBeFinal")
 public class ClassWithInitializedField {
-    public static final String DEFAULT_FIELD_VALUE = "some value";
+    public static final String DEFAULT_STRING_FIELD_VALUE = "some value";
+    public static final int DEFAULT_INT_FIELD_VALUE = 3;
 
-    @SuppressWarnings("FieldMayBeFinal")
-    private String value = DEFAULT_FIELD_VALUE;
+    private String stringValue = DEFAULT_STRING_FIELD_VALUE;
+
+    private int intValue = DEFAULT_INT_FIELD_VALUE;
 }

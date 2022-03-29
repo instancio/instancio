@@ -15,13 +15,12 @@
  */
 package org.instancio.internal;
 
-import org.instancio.internal.model.ArrayNode;
-import org.instancio.internal.model.ClassNode;
-import org.instancio.internal.model.CollectionNode;
-import org.instancio.internal.model.MapNode;
-import org.instancio.internal.model.ModelContext;
-import org.instancio.internal.model.Node;
-import org.instancio.internal.model.NodeVisitor;
+import org.instancio.internal.nodes.ArrayNode;
+import org.instancio.internal.nodes.ClassNode;
+import org.instancio.internal.nodes.CollectionNode;
+import org.instancio.internal.nodes.MapNode;
+import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeVisitor;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 

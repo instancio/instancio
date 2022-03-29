@@ -16,7 +16,7 @@
 package org.instancio.generators;
 
 import org.instancio.Generator;
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

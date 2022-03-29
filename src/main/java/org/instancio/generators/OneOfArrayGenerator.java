@@ -15,7 +15,7 @@
  */
 package org.instancio.generators;
 
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 import org.instancio.util.Verify;
 
 public class OneOfArrayGenerator<T> extends AbstractRandomGenerator<T> implements OneOfArrayGeneratorSpec<T> {

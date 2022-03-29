@@ -16,44 +16,76 @@
 package org.instancio;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Binding {
     private enum BindingType {TYPE, FIELD}
 
-    private final BindingType bindingType;
-    private final Class<?> targetType;
-    private final String fieldName;
+    private final List<BindingTarget> targets;
 
-    private Binding(final BindingType bindingType,
-                    @Nullable final Class<?> targetType,
-                    @Nullable final String fieldName) {
+    private Binding(final List<BindingTarget> targets) {
+        this.targets = Collections.unmodifiableList(targets);
+    }
 
-        this.bindingType = bindingType;
-        this.targetType = targetType;
-        this.fieldName = fieldName;
+    private Binding(final BindingTarget... targets) {
+        this(Arrays.asList(targets));
+    }
+
+    public static Binding of(final Binding... bindings) {
+        final List<BindingTarget> targets = new ArrayList<>();
+        for (Binding b : bindings) {
+            targets.addAll(b.targets);
+        }
+        return new Binding(targets);
+    }
+
+    public static Binding of(final BindingTarget... targets) {
+        return new Binding(targets);
     }
 
     public static Binding fieldBinding(@Nullable final Class<?> targetType, final String fieldName) {
-        return new Binding(BindingType.FIELD, targetType, fieldName);
+        return of(new BindingTarget(BindingType.FIELD, targetType, fieldName));
     }
 
     public static Binding fieldBinding(final String fieldName) {
-        return new Binding(BindingType.FIELD, null, fieldName);
+        return of(new BindingTarget(BindingType.FIELD, null, fieldName));
     }
 
     public static Binding typeBinding(final Class<?> targetType) {
-        return new Binding(BindingType.TYPE, targetType, null);
+        return of(new BindingTarget(BindingType.TYPE, targetType, null));
     }
 
-    public boolean isFieldBinding() {
-        return bindingType == BindingType.FIELD;
+    public List<BindingTarget> getTargets() {
+        return targets;
     }
 
-    public Class<?> getTargetType() {
-        return targetType;
-    }
+    public static class BindingTarget {
+        private final BindingType bindingType;
+        private final Class<?> targetType;
+        private final String fieldName;
 
-    public String getFieldName() {
-        return fieldName;
+        private BindingTarget(final BindingType bindingType,
+                              @Nullable final Class<?> targetType,
+                              @Nullable final String fieldName) {
+
+            this.bindingType = bindingType;
+            this.targetType = targetType;
+            this.fieldName = fieldName;
+        }
+
+        public boolean isFieldBinding() {
+            return bindingType == BindingType.FIELD;
+        }
+
+        public Class<?> getTargetType() {
+            return targetType;
+        }
+
+        public String getFieldName() {
+            return fieldName;
+        }
     }
 }

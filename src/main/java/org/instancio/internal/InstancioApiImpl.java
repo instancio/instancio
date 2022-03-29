@@ -22,8 +22,6 @@ import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
-import org.instancio.internal.model.InternalModel;
-import org.instancio.internal.model.ModelContext;
 import org.instancio.settings.Settings;
 
 import java.lang.reflect.Type;

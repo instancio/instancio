@@ -84,7 +84,8 @@ public enum Setting implements SettingKey {
     }
 
     public static Setting getByKey(final String key) {
-        return Verify.notNull(Constants.SETTING_KEY_MAP.get(key), "Invalid key: '%s'", key);
+        return Verify.notNull(Constants.SETTING_KEY_MAP.get(key),
+                "Invalid instancio property key: '%s'", key);
     }
 
     private static class Constants {

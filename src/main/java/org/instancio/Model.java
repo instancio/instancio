@@ -17,27 +17,28 @@ package org.instancio;
 
 /**
  * A model containing all the information for populating a class that
- * can be obtained using {@code Instancio.of(Example.class).toModel()}.
+ * can be obtained using the {@code 'toModel()'} method:
  * <p>
- * The model can be useful when class population needs to be customised
- * and the customisations need to be re-used in different parts of the code.
+ * Models can be useful when class population needs to be customised
+ * and the customisations re-used in different parts of the code.
  * <p>
  * Example:
  * <pre>{@code
- *     Model personModel = Instancio.of(Person.class)
+ *     Model<Person> personModel = Instancio.of(Person.class)
  *         .supply(field("fullName"), () -> "Jane Doe")
+ *         .generate(field("age"), gen -> gen.ints().min(18).max(65))
  *         .toModel();
  *
  *     // Re-use the model to create instances of Person class
  *     // without duplicating model's details
- *     Person person = Instancio.of(personModel).create();
+ *     Person person = Instancio.create(personModel);
  * }</pre>
- *
  * <p>
  * Since the internal data of the model is not part of the public API,
  * this interface does not contain any methods.
  *
  * @param <T> type to be created by this model
  */
+@SuppressWarnings("unused")
 public interface Model<T> {
 }

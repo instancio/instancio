@@ -15,7 +15,7 @@
  */
 package org.instancio.generators;
 
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 
 import java.time.LocalDateTime;
 
@@ -27,8 +27,15 @@ public class LocalDateTimeGenerator extends AbstractRandomGenerator<LocalDateTim
 
     @Override
     public LocalDateTime generate() {
-        return LocalDateTime.now()
-                .plusDays(random().intBetween(-3650, 3650))
-                .minusSeconds(random().intBetween(0, 60));
+        // year, month, dayOfMonth, hour, minute, second, nanoOfSecond
+        return LocalDateTime.of(
+                random().intBetween(1900, 2101),
+                random().intBetween(1, 13),
+                random().intBetween(1, 32),
+                random().intBetween(0, 24),
+                random().intBetween(0, 60),
+                random().intBetween(0, 60),
+                random().intBetween(0, 1_000_000_000)
+        );
     }
 }

@@ -17,7 +17,7 @@ package org.instancio.generators.coretypes;
 
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 import org.instancio.util.Verify;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>

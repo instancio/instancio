@@ -125,26 +125,110 @@ public class Instancio {
         // non-instantiable
     }
 
+    /**
+     * Creates a fully-populated instance of given class.
+     *
+     * @param klass to create
+     * @param <T>   type
+     * @return a fully-populated instance
+     */
     public static <T> T create(final Class<T> klass) {
         return of(klass).create();
     }
 
+    /**
+     * Creates a fully-populated instance of type specified in the type token.
+     * This method can be used to create generic classes.
+     * <p>
+     * Example: {@code List<Person> persons = Instancio.of(new TypeToken<List<Person>>(){}).create()}
+     *
+     * @param typeToken containing type to create
+     * @param <T>       type
+     * @return a fully-populated instance
+     */
     public static <T> T create(final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).create();
     }
 
+    /**
+     * Creates a populated instance of a class represented by the given model.
+     * <p>
+     * See the {@link Model} class on how to create models.
+     *
+     * @param model specifying generation parameters of the object to create
+     * @param <T>   type
+     * @return a populated instance
+     * @see Model
+     */
     public static <T> T create(final Model<T> model) {
         return of(model).create();
     }
 
+    /**
+     * Builder version of {@link #create(Class)} that allows customisation of generated values.
+     *
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *         .generate(allInts(), gen -> gen.ints().min(1).max(99))
+     *         .supply(all(Address.class), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
+     *         .supply(field("pets"), () -> List.of(
+     *                             new Pet(PetType.CAT, "Snowball"),
+     *                             new Pet(PetType.DOG, "Santa's Little Helper")))
+     *         .create();
+     * }</pre>
+     *
+     * @param klass to create
+     * @param <T>   type
+     * @return API builder reference
+     */
     public static <T> InstancioOfClassApi<T> of(final Class<T> klass) {
         return new ClassInstancioApiImpl<>(klass);
     }
 
+    /**
+     * Builder version of {@link #create(TypeTokenSupplier)} that allows customisation of generated values.
+     *
+     * <pre>{@code
+     *     List<Person> persons = Instancio.of(new TypeToken<List<Person>>(){})
+     *         .generate(allInts(), gen -> gen.ints().min(1).max(99))
+     *         .supply(all(Address.class), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
+     *         .supply(field("pets"), () -> List.of(
+     *                             new Pet(PetType.CAT, "Snowball"),
+     *                             new Pet(PetType.DOG, "Santa's Little Helper")))
+     *         .create();
+     * }</pre>
+     *
+     * @param typeToken specifying details of type being created
+     * @param <T>       type
+     * @return API builder reference
+     */
     public static <T> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
         return new InstancioApiImpl<>(typeToken);
     }
 
+    /**
+     * Builder version of {@link #create(Model)} that allows overriding of generation
+     * parameters of an existing model.
+     *
+     * <pre>{@code
+     *     Model<Person> personModel = Instancio.of(Person.class)
+     *         .generate(allInts(), gen -> gen.ints().min(1).max(99))
+     *         .supply(all(Address.class), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
+     *         .supply(field("pets"), () -> List.of(
+     *                             new Pet(PetType.CAT, "Snowball"),
+     *                             new Pet(PetType.DOG, "Santa's Little Helper")))
+     *         .toModel();
+     *
+     *     // Use the existing model and add/override generation parameters
+     *     Person simpsonKid = Instancio.of(personModel)
+     *         .generate(field("fullName"), gen -> gen.oneOf("Lisa Simpson", "Bart Simpson"))
+     *         .create();
+     * }</pre>
+     *
+     * @param model specifying generation parameters of the object to create
+     * @param <T>   type
+     * @return API builder reference
+     */
     public static <T> InstancioApi<T> of(final Model<T> model) {
         return new InstancioApiImpl<>(model);
     }

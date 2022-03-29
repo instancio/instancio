@@ -18,8 +18,8 @@ package org.instancio.internal.handlers;
 import org.instancio.Generator;
 import org.instancio.internal.GeneratorResolver;
 import org.instancio.internal.GeneratorResult;
-import org.instancio.internal.model.ModelContext;
-import org.instancio.internal.model.Node;
+import org.instancio.internal.ModelContext;
+import org.instancio.internal.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

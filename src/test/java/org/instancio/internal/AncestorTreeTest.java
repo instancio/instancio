@@ -16,7 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.internal.AncestorTree.AncestorTreeNode;
-import org.instancio.internal.model.Node;
+import org.instancio.internal.nodes.Node;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

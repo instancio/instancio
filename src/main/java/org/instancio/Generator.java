@@ -40,7 +40,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      *
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *         .supply(field("age"), oneOf(20, 30, 40, 50))
+     *         .generate(field("age"), gen -> gen.oneOf(20, 30, 40, 50))
      *         .supply(field("location"), () -> "Canada")
      *         .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
      *         .create();

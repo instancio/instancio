@@ -16,7 +16,7 @@
 package org.instancio.generators.collections;
 
 import org.instancio.Generator;
-import org.instancio.internal.model.ModelContext;
+import org.instancio.internal.ModelContext;
 import org.instancio.util.Verify;
 
 import java.util.Map;
