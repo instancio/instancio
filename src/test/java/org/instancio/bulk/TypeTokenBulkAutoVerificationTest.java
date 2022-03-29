@@ -17,8 +17,10 @@ package org.instancio.bulk;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.pojo.generics.MiscFields;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.pojo.generics.basic.Pair;
+import org.instancio.pojo.generics.basic.Triplet;
 import org.instancio.pojo.generics.foobarbaz.Bar;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
@@ -32,6 +34,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
@@ -59,7 +62,11 @@ class TypeTokenBulkAutoVerificationTest {
                 new TypeToken<List<Item<Pair<Integer, String>>[]>>() {},
                 new TypeToken<List<List<List<List<String>>>>>() {},
                 new TypeToken<List<Map<Short, List<String>>>>() {},
-                new TypeToken<List<Item<Item<List<String>>>>>() {});
+                new TypeToken<List<Item<Item<List<String>>>>>() {},
+                new TypeToken<List<Pair<Integer, String>>>() {},
+                new TypeToken<List<Triplet<Item<Long>, Pair<Integer, String>, Item<UUID>>>>() {},
+                new TypeToken<List<MiscFields<String, Item<UUID>, Integer>>>() {},
+                new TypeToken<List<MiscFields<Pair<Integer, String>, Item<UUID>, Triplet<Long, Byte, Boolean>>>>() {});
     }
 
     @Test
@@ -70,7 +77,8 @@ class TypeTokenBulkAutoVerificationTest {
                 new TypeToken<Map<String, Map<Integer, String>>>() {},
                 new TypeToken<Map<String, Map<Integer, List<String>>>>() {},
                 new TypeToken<Map<Item<Map<Integer, String>>, String>>() {},
-                new TypeToken<Map<Pair<Integer, String>, Pair<Map<String, Short>, Long>>>() {});
+                new TypeToken<Map<Pair<Integer, String>, Pair<Map<String, Short>, Long>>>() {},
+                new TypeToken<Map<Item<String>, MiscFields<Pair<Integer, String>, Item<UUID>, Triplet<Long, Byte, Boolean>>>>() {});
     }
 
     @Test

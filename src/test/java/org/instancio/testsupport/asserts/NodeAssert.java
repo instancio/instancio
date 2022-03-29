@@ -71,7 +71,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
 
     public NodeAssert hasFieldName(String expected) {
         isNotNull();
-        assertThat(actual.getField()).isNotNull();
+        assertThat(actual.getField()).as("Field is null").isNotNull();
         assertThat(actual.getField().getName()).isEqualTo(expected);
         return this;
     }

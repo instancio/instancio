@@ -270,11 +270,9 @@ public class NodeFactory {
                                  final @Nullable Field field,
                                  final @Nullable Node parent) {
 
-        if (genericType == null || (field != null && field.getGenericType() instanceof Class))
-            return new ClassNode(nodeContext, klass, field, null, parent);
-
-        if (klass != Object.class)
+        if (genericType == null || klass != Object.class || (field != null && field.getGenericType() instanceof Class))
             return new ClassNode(nodeContext, klass, field, genericType, parent);
+
 
         if (genericType instanceof TypeVariable) {
             Type mappedType = parent.getTypeMap().getOrDefault(genericType, genericType);
@@ -283,8 +281,9 @@ public class NodeFactory {
             while ((mappedType == null || !nodeContext.getRootTypeMap().containsKey(mappedType)) && ancestor != null) {
                 mappedType = ancestor.getTypeMap().getOrDefault(mappedType, mappedType);
 
-                if (mappedType instanceof Class || mappedType instanceof ParameterizedType)
+                if (mappedType instanceof Class || mappedType instanceof ParameterizedType) {
                     break;
+                }
 
                 ancestor = ancestor.getParent();
             }
@@ -292,26 +291,31 @@ public class NodeFactory {
             if (mappedType instanceof Class) {
                 return new ClassNode(nodeContext, (Class<?>) mappedType, field, mappedType, parent);
             }
+            if (mappedType instanceof ParameterizedType) {
+                Class<?> rawType = (Class<?>) ((ParameterizedType) mappedType).getRawType();
+                return this.createNode(nodeContext, rawType, mappedType, field, parent);
+            }
             if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
                 Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
                 return new ClassNode(nodeContext, rawType, field, mappedType, parent);
             }
         } else if (genericType instanceof ParameterizedType) {
-
-            if (field != null) {
-                final Type fieldGenericType = field.getGenericType();
-                final Type mappedType = parent.getTypeMap().getOrDefault(fieldGenericType, fieldGenericType);
-                if (mappedType instanceof Class) {
-                    return new ClassNode(nodeContext, (Class<?>) mappedType, field, null, parent);
-                }
-                if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
-
-                    final Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
-                    return new ClassNode(nodeContext, rawType, field, null, parent);
-                }
-            }
+            throw new RuntimeException("Unused branch"); // TODO cleanup
+//            if (field != null) {
+//                final Type fieldGenericType = field.getGenericType();
+//                final Type mappedType = parent.getTypeMap().getOrDefault(fieldGenericType, fieldGenericType);
+//                if (mappedType instanceof Class) {
+//                    return new ClassNode(nodeContext, (Class<?>) mappedType, field, null, parent);
+//                }
+//                if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
+//
+//                    final Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
+//                    return new ClassNode(nodeContext, rawType, field, null, parent);
+//                }
+//            }
         } else if (genericType instanceof Class) {
-            return new ClassNode(nodeContext, (Class<?>) genericType, field, null, parent);
+            throw new RuntimeException("Unused branch"); // TODO cleanup
+            //return new ClassNode(nodeContext, (Class<?>) genericType, field, null, parent);
         }
 
         throw new IllegalStateException("Error creating a class node for klass: " + klass.getName() + ", type: " + genericType);
