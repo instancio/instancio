@@ -23,6 +23,7 @@ import org.instancio.pojo.generics.foobarbaz.Bar;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.person.Person;
+import org.instancio.testsupport.tags.CreateTag;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 /**
  * Various contrived generic types.
  */
+@CreateTag
 class TypeTokenBulkAutoVerificationTest {
     private static final Logger LOG = LoggerFactory.getLogger(TypeTokenBulkAutoVerificationTest.class);
 

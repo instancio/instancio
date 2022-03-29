@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.nodes;
 
-import org.instancio.util.ObjectUtils;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -50,7 +49,7 @@ public class NodeFactory {
                            @Nullable final Field field,
                            @Nullable final Node parent) {
 
-        Node result;
+        final Node result;
 
         if (klass.isArray() || genericType instanceof GenericArrayType) {
             result = createArrayNode(nodeContext, klass, genericType, field, parent);
@@ -80,61 +79,21 @@ public class NodeFactory {
             @Nullable final Field field,
             @Nullable final Node parent) {
 
-        Node elementNode = null;
+        Node elementNode;
+        final Class<?> componentType = field != null && field.getType().getComponentType() != null
+                ? field.getType().getComponentType()
+                : klass.getComponentType();
 
-        if (field == null) {
-            // FIXME: copy pasta of below
-            if (genericType instanceof GenericArrayType) {
-                final GenericArrayType arrayType = (GenericArrayType) genericType;
-                final Type compType = arrayType.getGenericComponentType();
+        final Type type = field != null ? field.getGenericType() : genericType;
 
-                if (compType instanceof TypeVariable) {
-                    final Class<?> rawType = (Class<?>) ObjectUtils.defaultIfNull(
-                            nodeContext.getRootTypeMap().get(compType),
-                            parent == null ? null : parent.getTypeMap().get(compType)
-                    );
-
-                    Verify.notNull(rawType, "Failed resolving array component type from type variable: '%s'", compType);
-                    elementNode = this.createNode(nodeContext, rawType, null, null, parent);
-
-                } else if (compType instanceof ParameterizedType) {
-                    ParameterizedType pType = (ParameterizedType) compType;
-
-                    elementNode = this.createNode(nodeContext, (Class<?>) pType.getRawType(), pType, null, parent);
-                }
-            } else if (genericType instanceof Class) {
-
-                elementNode = this.createNode(nodeContext, ((Class<?>) genericType).getComponentType(), null, null, parent);
-            } else {
-
-                elementNode = this.createNode(nodeContext, klass.getComponentType(), null, null, parent);
-            }
-
-
+        if (type instanceof GenericArrayType) {
+            final GenericArrayType arrayType = (GenericArrayType) type;
+            final Type compType = arrayType.getGenericComponentType();
+            elementNode = _createNode(nodeContext, field, parent, compType);
+        } else if (genericType instanceof Class) {
+            elementNode = this.createNode(nodeContext, ((Class<?>) type).getComponentType(), null, null, parent);
         } else {
-            // FIXME copy pasta of above
-            if (field.getGenericType() instanceof GenericArrayType) {
-                final GenericArrayType arrayType = (GenericArrayType) field.getGenericType();
-                final Type compType = arrayType.getGenericComponentType();
-
-                if (compType instanceof TypeVariable) {
-                    final Class<?> rawType = (Class<?>) ObjectUtils.defaultIfNull(
-                            nodeContext.getRootTypeMap().get(compType),
-                            parent == null ? null : parent.getTypeMap().get(compType)
-                    );
-
-                    Verify.notNull(rawType, "Failed resolving array component type from type variable: '%s'", compType);
-                    elementNode = this.createNode(nodeContext, rawType, null, null, parent);
-
-                } else if (compType instanceof ParameterizedType) {
-                    ParameterizedType pType = (ParameterizedType) compType;
-
-                    elementNode = this.createNode(nodeContext, (Class<?>) pType.getRawType(), pType, null, parent);
-                }
-            } else {
-                final Class<?> componentType = ObjectUtils.defaultIfNull(field.getType().getComponentType(), klass.getComponentType());
-                elementNode = this.createNode(nodeContext, componentType, null, null, parent);
-            }
+            elementNode = this.createNode(nodeContext, componentType, null, null, parent);
         }
 
         return new ArrayNode(nodeContext, klass, Verify.notNull(elementNode), field, genericType, parent);
@@ -154,55 +113,12 @@ public class NodeFactory {
 
             final Type[] actualTypeArgs = pType.getActualTypeArguments();
 
-            Node elementNode = null;
-
             // no field value added to element nodes since elements are added via Collection.add(obj) method
             // will only loop once since Collection<E> has only one type variable
 
             Verify.isTrue(actualTypeArgs.length == 1, "Expected only 1 type arg");
 
-            for (int i = 0; i < actualTypeArgs.length; i++) {
-                final Type actualTypeArg = actualTypeArgs[i];
-
-                if (actualTypeArg instanceof Class) {
-
-                    elementNode = this.createNode(nodeContext, (Class<?>) actualTypeArg, null, null, parent);
-
-                } else if (actualTypeArg instanceof ParameterizedType) {
-                    ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
-                    Class<?> actualRawType = (Class<?>) actualPType.getRawType();
-                    elementNode = this.createNode(nodeContext, actualRawType, actualPType, null, parent);
-                } else if (actualTypeArg instanceof TypeVariable) {
-                    Type mappedType = parent == null ? null : parent.resolveTypeVariable((TypeVariable<?>) actualTypeArg);
-
-                    if (mappedType == null) {
-                        mappedType = nodeContext.getRootTypeMap().get(actualTypeArg);
-                    }
-
-                    if (mappedType instanceof Class) {
-                        elementNode = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
-                    } else if (mappedType instanceof ParameterizedType) {
-                        Class<?> rawType = (Class<?>) ((ParameterizedType) mappedType).getRawType();
-                        elementNode = this.createNode(nodeContext, rawType, mappedType, null, parent);
-                    }
-                } else if (actualTypeArg instanceof WildcardType) {
-                    final WildcardType wildcardType = (WildcardType) actualTypeArg;
-                    final Type[] upperBounds = wildcardType.getUpperBounds();
-                    final Type upperBound = upperBounds[0];
-                    if (upperBound instanceof Class) {
-                        elementNode = this.createNode(nodeContext, (Class<?>) upperBound, null, null, parent);
-                    } else if (upperBound instanceof ParameterizedType) {
-                        final ParameterizedType upperPType = (ParameterizedType) upperBound;
-                        elementNode = this.createNode(nodeContext, (Class<?>) upperPType.getRawType(), upperPType, null, parent);
-                    } else {
-                        throw new UnsupportedOperationException("Unsupported upper bound type: " + upperBound.getClass());
-                    }
-
-                } else if (actualTypeArg instanceof GenericArrayType) {
-                    Class<?> rawType = TypeUtils.getRawType(actualTypeArg);
-                    elementNode = this.createNode(nodeContext, rawType, actualTypeArg, field, parent);
-                }
-            }
+            Node elementNode = _createNode(nodeContext, field, parent, actualTypeArgs[0]);
 
             if (elementNode != null) {
 
@@ -235,6 +151,7 @@ public class NodeFactory {
                 LOG.warn("Could not resolve Collection element type.");
             }
         } else if (genericType instanceof Class) { // collection without type specified... 'List list'
+
             final TypeVariable<?> typeVariable = rawClass.getTypeParameters()[0];
             final Class<?> mappedType = nodeContext.getRootTypeMap().getOrDefault(typeVariable, Object.class);
 
@@ -244,6 +161,49 @@ public class NodeFactory {
 
         return Verify.notNull(result, "Unable to create a CollectionNode for class: " + rawClass.getName()
                 + ", generic type: " + genericType);
+    }
+
+    private Node _createNode(final NodeContext nodeContext, final Field field, final Node parent, final Type actualTypeArg) {
+        Node elementNode = null;
+        if (actualTypeArg instanceof Class) {
+
+            elementNode = this.createNode(nodeContext, (Class<?>) actualTypeArg, null, null, parent);
+
+        } else if (actualTypeArg instanceof ParameterizedType) {
+            ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
+            Class<?> actualRawType = (Class<?>) actualPType.getRawType();
+            elementNode = this.createNode(nodeContext, actualRawType, actualPType, null, parent);
+        } else if (actualTypeArg instanceof TypeVariable) {
+            Type mappedType = parent == null ? null : parent.resolveTypeVariable((TypeVariable<?>) actualTypeArg);
+
+            if (mappedType == null) {
+                mappedType = nodeContext.getRootTypeMap().get(actualTypeArg);
+            }
+
+            if (mappedType instanceof Class) {
+                elementNode = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
+            } else if (mappedType instanceof ParameterizedType) {
+                Class<?> rawType = (Class<?>) ((ParameterizedType) mappedType).getRawType();
+                elementNode = this.createNode(nodeContext, rawType, mappedType, null, parent);
+            }
+        } else if (actualTypeArg instanceof WildcardType) {
+            final WildcardType wildcardType = (WildcardType) actualTypeArg;
+            final Type[] upperBounds = wildcardType.getUpperBounds();
+            final Type upperBound = upperBounds[0];
+            if (upperBound instanceof Class) {
+                elementNode = this.createNode(nodeContext, (Class<?>) upperBound, null, null, parent);
+            } else if (upperBound instanceof ParameterizedType) {
+                final ParameterizedType upperPType = (ParameterizedType) upperBound;
+                elementNode = this.createNode(nodeContext, (Class<?>) upperPType.getRawType(), upperPType, null, parent);
+            } else {
+                throw new UnsupportedOperationException("Unsupported upper bound type: " + upperBound.getClass());
+            }
+
+        } else if (actualTypeArg instanceof GenericArrayType) {
+            Class<?> rawType = TypeUtils.getRawType(actualTypeArg);
+            elementNode = this.createNode(nodeContext, rawType, actualTypeArg, field, parent);
+        }
+        return elementNode;
     }
 
 
@@ -272,29 +232,7 @@ public class NodeFactory {
                 final Type actualTypeArg = actualTypeArgs[i];
                 final TypeVariable<?> typeVar = typeVars[i];
 
-                Node node = null;
-
-                if (actualTypeArg instanceof Class) {
-                    node = this.createNode(nodeContext, (Class<?>) actualTypeArg, null, null, parent);
-
-                } else if (actualTypeArg instanceof ParameterizedType) {
-                    ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
-                    Class<?> actualRawType = (Class<?>) actualPType.getRawType();
-
-                    node = this.createNode(nodeContext, actualRawType, actualPType, null, parent);
-                } else if (actualTypeArg instanceof TypeVariable) {
-                    Type mappedType = parent.getTypeMap().get(actualTypeArg);
-                    if (mappedType == null) {
-                        mappedType = nodeContext.getRootTypeMap().get(actualTypeArg);
-                    }
-
-                    if (mappedType instanceof Class) {
-                        node = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
-                    }
-                } else if (actualTypeArg instanceof GenericArrayType) {
-                    Class<?> rawType = TypeUtils.getRawType(actualTypeArg);
-                    node = this.createNode(nodeContext, rawType, actualTypeArg, field, parent);
-                }
+                Node node = _createNode(nodeContext, field, parent, actualTypeArg);
 
                 if (typeVar.getName().equals(MAP_KEY_TYPE_VARIABLE)) {
                     keyNode = node;
