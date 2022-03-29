@@ -131,8 +131,7 @@ class ModelContextTest {
     @Test
     void withIgnoredClass() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withIgnoredClass(Address.class)
-                .withIgnoredClass(Pet.class)
+                .withIgnored(Binding.of(all(Address.class), all(Pet.class)))
                 .build();
 
         assertThat(ctx.isIgnored(Address.class)).isTrue();
@@ -215,7 +214,7 @@ class ModelContextTest {
                 .withGenerator(all(String.class), allStringsGenerator)
                 .withGenerator(toFieldBinding(ADDRESS_CITY_FIELD), addressCityGenerator)
                 .withGeneratorSpec(toFieldBinding(PETS_FIELD), petsGeneratorFn)
-                .withIgnoredClass(ignoredClass)
+                .withIgnored(all(ignoredClass))
                 .withIgnored(toFieldBinding(NAME_FIELD))
                 .withNullable(all(nullableClass))
                 .withNullable(toFieldBinding(ADDRESS_FIELD))

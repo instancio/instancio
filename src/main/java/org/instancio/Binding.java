@@ -16,11 +16,14 @@
 package org.instancio;
 
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+@Immutable
 public class Binding {
     private enum BindingType {TYPE, FIELD}
 
@@ -62,6 +65,20 @@ public class Binding {
         return targets;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Binding)) return false;
+        final Binding binding = (Binding) o;
+        return Objects.equals(targets, binding.targets);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(targets);
+    }
+
+    @Immutable
     public static class BindingTarget {
         private final BindingType bindingType;
         private final Class<?> targetType;
@@ -86,6 +103,21 @@ public class Binding {
 
         public String getFieldName() {
             return fieldName;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) return true;
+            if (!(o instanceof BindingTarget)) return false;
+            final BindingTarget that = (BindingTarget) o;
+            return bindingType == that.bindingType
+                    && Objects.equals(targetType, that.targetType)
+                    && Objects.equals(fieldName, that.fieldName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(bindingType, targetType, fieldName);
         }
     }
 }
