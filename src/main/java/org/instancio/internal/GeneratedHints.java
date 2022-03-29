@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.StringJoiner;
 
 @Immutable
 public class GeneratedHints {
@@ -121,5 +122,17 @@ public class GeneratedHints {
         public GeneratedHints build() {
             return new GeneratedHints(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", "Hints[", "]")
+                .add("dataStructureSize=" + dataStructureSize)
+                .add("ignoreChildren=" + ignoreChildren)
+                .add("nullableResult=" + nullableResult)
+                .add("nullableElements=" + nullableElements)
+                .add("nullableMapKeys=" + nullableMapKeys)
+                .add("nullableMapValues=" + nullableMapValues)
+                .toString();
     }
 }

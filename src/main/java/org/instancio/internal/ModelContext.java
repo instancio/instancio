@@ -65,18 +65,27 @@ public class ModelContext<T> {
     private final Settings settings;
     private final Integer seed;
     private final RandomProvider randomProvider;
+    private final Set<Binding> ignoredBindings;
+    private final Set<Binding> nullableBindings;
+    private final Map<Binding, Generator<?>> generatorBindings;
+    private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings;
 
     private ModelContext(final Builder<T> builder) {
         this.rootType = builder.rootType;
         this.rootClass = builder.rootClass;
         this.rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
-        this.ignoredFields = Collections.unmodifiableSet(builder.ignoredFields);
-        this.nullableFields = Collections.unmodifiableSet(builder.nullableFields);
-        this.ignoredClasses = Collections.unmodifiableSet(builder.ignoredClasses);
-        this.nullableClasses = Collections.unmodifiableSet(builder.nullableClasses);
-        this.userSuppliedFieldGenerators = Collections.unmodifiableMap(builder.userSuppliedFieldGenerators);
-        this.userSuppliedClassGenerators = Collections.unmodifiableMap(builder.userSuppliedClassGenerators);
+        this.ignoredFields = new HashSet<>();
+        this.nullableFields = new HashSet<>();
+        this.ignoredClasses = new HashSet<>();
+        this.nullableClasses = new HashSet<>();
+        this.userSuppliedFieldGenerators = new HashMap<>();
+        this.userSuppliedClassGenerators = new HashMap<>();
+        this.ignoredBindings = Collections.unmodifiableSet(builder.ignoredBindings);
+        this.nullableBindings = Collections.unmodifiableSet(builder.nullableBindings);
+        this.generatorBindings = Collections.unmodifiableMap(builder.generatorBindings);
+        this.generatorSpecBindings = Collections.unmodifiableMap(builder.generatorSpecBindings);
         this.subtypeMap = Collections.unmodifiableMap(builder.subtypeMap);
+
         this.rootTypeMap = rootType instanceof ParameterizedType || rootType instanceof GenericArrayType
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
@@ -86,33 +95,74 @@ public class ModelContext<T> {
                 .merge(builder.settings)
                 .lock();
 
-        putAllBuiltInGenerators(builder);
-
         this.seed = builder.seed;
         this.randomProvider = new RandomProvider(ObjectUtils.defaultIfNull(seed, ThreadLocalRandom.current().nextInt()));
+
+        putAllBuiltInGenerators(builder.generatorSpecBindings);
+        putAllUserSuppliedGenerators(builder.generatorBindings);
+        putIgnored(builder.ignoredBindings);
+        putNullable(builder.nullableBindings);
     }
 
-    private void putAllBuiltInGenerators(final Builder<T> builder) {
+    private void putAllBuiltInGenerators(final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings) {
         final Generators generators = new Generators(this);
-        builder.generatorSpecMap.forEach((target, genSpecFn) -> {
+        generatorSpecBindings.forEach((target, genSpecFn) -> {
             final Generator<?> generator = (Generator<?>) genSpecFn.apply(generators);
-            builder.withGenerator(target, generator);
+            putBinding(target, generator);
         });
     }
 
-    public Builder<T> toBuilder() {
-        final Builder<T> builder = new Builder<>(rootClass, rootType);
-        builder.rootTypeParameters.addAll(this.rootTypeParameters);
-        builder.ignoredFields.addAll(this.ignoredFields);
-        builder.nullableFields.addAll(this.nullableFields);
-        builder.ignoredClasses.addAll(this.ignoredClasses);
-        builder.nullableClasses.addAll(this.nullableClasses);
-        builder.userSuppliedFieldGenerators.putAll(this.userSuppliedFieldGenerators);
-        builder.userSuppliedClassGenerators.putAll(this.userSuppliedClassGenerators);
-        builder.subtypeMap.putAll(this.subtypeMap);
-        builder.settings = this.settings;
-        builder.seed = this.seed;
-        return builder;
+    private void putAllUserSuppliedGenerators(final Map<Binding, Generator<?>> generatorBindings) {
+        generatorBindings.forEach(this::putBinding);
+    }
+
+    private void putBinding(final Binding binding, final Generator<?> generator) {
+        for (Binding.BindingTarget target : binding.getTargets()) {
+            if (target.isFieldBinding()) {
+                final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
+                final Field field = getField(targetType, target.getFieldName());
+
+                if (field.getType().isArray() && generator instanceof ArrayGenerator) {
+                    ((ArrayGenerator<?>) generator).type(field.getType().getComponentType());
+                }
+                this.userSuppliedFieldGenerators.put(field, generator);
+            } else {
+                if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
+                    ((ArrayGenerator<?>) generator).type(target.getTargetType().getComponentType());
+                }
+                this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
+            }
+        }
+    }
+
+    private void putIgnored(Set<Binding> ignoredBindings) {
+        for (Binding binding : ignoredBindings) {
+            for (Binding.BindingTarget target : binding.getTargets()) {
+                if (target.isFieldBinding()) {
+                    final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
+                    this.ignoredFields.add(getField(targetType, target.getFieldName()));
+                } else {
+                    this.ignoredClasses.add(target.getTargetType());
+                }
+            }
+        }
+    }
+
+    private void putNullable(final Set<Binding> nullableBindings) {
+        for (Binding binding : nullableBindings) {
+            for (Binding.BindingTarget target : binding.getTargets()) {
+                final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
+
+                if (target.isFieldBinding()) {
+                    final Field field = getField(targetType, target.getFieldName());
+                    if (!field.getType().isPrimitive()) {
+                        this.nullableFields.add(field);
+                    }
+                } else if (!targetType.isPrimitive()) {
+                    this.nullableClasses.add(targetType);
+                }
+            }
+        }
     }
 
     public Type getRootType() {
@@ -185,6 +235,19 @@ public class ModelContext<T> {
         return typeMap;
     }
 
+    public Builder<T> toBuilder() {
+        final Builder<T> builder = new Builder<>(rootClass, rootType);
+        builder.rootTypeParameters.addAll(this.rootTypeParameters);
+        builder.seed = this.seed;
+        builder.settings = this.settings;
+        builder.nullableBindings.addAll(this.nullableBindings);
+        builder.ignoredBindings.addAll(this.ignoredBindings);
+        builder.generatorBindings.putAll(this.generatorBindings);
+        builder.generatorSpecBindings.putAll(this.generatorSpecBindings);
+        builder.subtypeMap.putAll(this.subtypeMap);
+        return builder;
+    }
+
     public static <T> Builder<T> builder(final Type rootType) {
         return new Builder<>(rootType);
     }
@@ -194,14 +257,11 @@ public class ModelContext<T> {
         private final Type rootType;
         private final Class<T> rootClass;
         private final List<Class<?>> rootTypeParameters = new ArrayList<>();
-        private final Set<Field> ignoredFields = new HashSet<>();
-        private final Set<Field> nullableFields = new HashSet<>();
-        private final Set<Class<?>> ignoredClasses = new HashSet<>();
-        private final Set<Class<?>> nullableClasses = new HashSet<>();
-        private final Map<Field, Generator<?>> userSuppliedFieldGenerators = new HashMap<>();
-        private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators = new HashMap<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
-        private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecMap = new HashMap<>();
+        private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings = new HashMap<>();
+        private final Set<Binding> ignoredBindings = new HashSet<>();
+        private final Set<Binding> nullableBindings = new HashSet<>();
+        private final Map<Binding, Generator<?>> generatorBindings = new HashMap<>();
         private Settings settings;
         private Integer seed;
 
@@ -222,62 +282,22 @@ public class ModelContext<T> {
         }
 
         public Builder<T> withIgnored(final Binding binding) {
-            for (Binding.BindingTarget target : binding.getTargets()) {
-                if (target.isFieldBinding()) {
-                    final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
-                    this.ignoredFields.add(getField(targetType, target.getFieldName()));
-                } else {
-                    this.ignoredClasses.add(target.getTargetType());
-                }
-            }
-            return this;
-        }
-
-        public Builder<T> withIgnoredClass(final Class<?> klass) {
-            this.ignoredClasses.add(klass);
+            this.ignoredBindings.add(binding);
             return this;
         }
 
         public Builder<T> withNullable(final Binding binding) {
-            for (Binding.BindingTarget target : binding.getTargets()) {
-                final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
-
-                if (target.isFieldBinding()) {
-                    final Field field = getField(targetType, target.getFieldName());
-                    if (!field.getType().isPrimitive()) {
-                        this.nullableFields.add(field);
-                    }
-                } else {
-                    if (!targetType.isPrimitive()) {
-                        this.nullableClasses.add(targetType);
-                    }
-                }
-            }
+            this.nullableBindings.add(binding);
             return this;
         }
 
         public Builder<T> withGenerator(final Binding binding, final Generator<?> generator) {
-            for (Binding.BindingTarget target : binding.getTargets()) {
-                if (target.isFieldBinding()) {
-                    final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
-                    final Field field = getField(targetType, target.getFieldName());
-
-                    if (field.getType().isArray() && generator instanceof ArrayGenerator) {
-                        ((ArrayGenerator<?>) generator).type(field.getType().getComponentType());
-                    }
-                    this.userSuppliedFieldGenerators.put(field, generator);
-                } else {
-                    if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
-                        ((ArrayGenerator<?>) generator).type(target.getTargetType().getComponentType());
-                    }
-                    this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
-                }
-            }
+            this.generatorBindings.put(binding, generator);
             return this;
         }
 
         public Builder<T> withGeneratorSpec(final Binding target, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
-            this.generatorSpecMap.put(target, spec);
+            this.generatorSpecBindings.put(target, spec);
             return this;
         }
 
