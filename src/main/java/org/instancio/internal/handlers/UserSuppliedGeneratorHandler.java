@@ -16,6 +16,7 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Generator;
+import org.instancio.GeneratorContext;
 import org.instancio.generators.InstantiatingGenerator;
 import org.instancio.internal.GeneratorResolver;
 import org.instancio.internal.GeneratorResult;
@@ -28,14 +29,17 @@ import java.util.Optional;
 
 public class UserSuppliedGeneratorHandler implements NodeHandler {
 
-    private final ModelContext<?> context;
+    private final ModelContext<?> modelContext;
+    private final GeneratorContext generatorContext;
     private final GeneratorResolver generatorResolver;
     private final Instantiator instantiator;
 
-    public UserSuppliedGeneratorHandler(final ModelContext<?> context,
+    public UserSuppliedGeneratorHandler(final ModelContext<?> modelContext,
+                                        final GeneratorContext generatorContext,
                                         final GeneratorResolver generatorResolver,
                                         final Instantiator instantiator) {
-        this.context = context;
+        this.modelContext = modelContext;
+        this.generatorContext = generatorContext;
         this.generatorResolver = generatorResolver;
         this.instantiator = instantiator;
     }
@@ -50,23 +54,22 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     }
 
     private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
-        Optional<Generator<?>> generatorOpt = context.getUserSuppliedGenerator(node.getField());
+        Optional<Generator<?>> generatorOpt = modelContext.getUserSuppliedGenerator(node.getField());
         if (!generatorOpt.isPresent()) {
-            generatorOpt = context.getUserSuppliedGenerator(node.getKlass());
+            generatorOpt = modelContext.getUserSuppliedGenerator(node.getKlass());
         }
 
         if (generatorOpt.isPresent()) {
             final Generator<?> generator = generatorOpt.get();
             if (generator.isDelegating()) {
                 final Class<?> targetType = ObjectUtils.defaultIfNull(generator.targetType(), node.getKlass());
-                final Class<?> effectiveType = context.getSubtypeMapping(targetType);
+                final Class<?> effectiveType = modelContext.getSubtypeMapping(targetType);
                 final Generator<?> delegate = generatorResolver.get(effectiveType).orElseGet(
-                        () -> new InstantiatingGenerator(context, instantiator, effectiveType));
+                        () -> new InstantiatingGenerator(generatorContext, instantiator, effectiveType));
 
                 generator.setDelegate(delegate);
             }
         }
-
         return generatorOpt;
     }
 

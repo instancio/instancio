@@ -16,7 +16,7 @@
 package org.instancio.generators;
 
 import org.instancio.Generator;
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,7 +26,7 @@ public class DateGenerator extends AbstractRandomGenerator<Date> {
 
     private final Generator<LocalDateTime> localDateTimeGenerator;
 
-    public DateGenerator(final ModelContext<?> context) {
+    public DateGenerator(final GeneratorContext context) {
         super(context);
         this.localDateTimeGenerator = new LocalDateTimeGenerator(context);
     }

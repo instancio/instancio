@@ -15,7 +15,8 @@
  */
 package org.instancio.generators.collections;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -39,15 +40,14 @@ class MapGeneratorTest {
     private static final int MAX_SIZE = 102;
     private static final int SAMPLE_SIZE = 10_000;
     private static final int PERCENTAGE_THRESHOLD = 10;
-    private static final Class<?> ANY_CLASS = Object.class;
-    private static final ModelContext<?> context = ModelContext.builder(ANY_CLASS)
-            .withSettings(Settings.defaults()
-                    .set(Setting.MAP_MIN_SIZE, MIN_SIZE)
-                    .set(Setting.MAP_MAX_SIZE, MAX_SIZE)
-                    .set(Setting.MAP_NULLABLE, true)
-                    .set(Setting.MAP_KEYS_NULLABLE, true)
-                    .set(Setting.MAP_VALUES_NULLABLE, true))
-            .build();
+    private static final Settings settings = Settings.defaults()
+            .set(Setting.MAP_MIN_SIZE, MIN_SIZE)
+            .set(Setting.MAP_MAX_SIZE, MAX_SIZE)
+            .set(Setting.MAP_NULLABLE, true)
+            .set(Setting.MAP_KEYS_NULLABLE, true)
+            .set(Setting.MAP_VALUES_NULLABLE, true);
+
+    private static final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
 
     @Test
     void generate() {

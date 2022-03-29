@@ -15,7 +15,7 @@
  */
 package org.instancio.generators;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
@@ -24,7 +24,7 @@ public class OneOfCollectionGenerator<T> extends AbstractRandomGenerator<T> impl
 
     private Collection<T> values;
 
-    public OneOfCollectionGenerator(final ModelContext<?> context) {
+    public OneOfCollectionGenerator(final GeneratorContext context) {
         super(context);
     }
 

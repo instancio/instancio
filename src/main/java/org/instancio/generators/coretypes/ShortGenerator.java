@@ -15,12 +15,12 @@
  */
 package org.instancio.generators.coretypes;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 import org.instancio.settings.Setting;
 
 public class ShortGenerator extends AbstractRandomNumberGeneratorSpec<Short> {
 
-    public ShortGenerator(final ModelContext<?> context) {
+    public ShortGenerator(final GeneratorContext context) {
         super(context,
                 context.getSettings().get(Setting.SHORT_MIN),
                 context.getSettings().get(Setting.SHORT_MAX),

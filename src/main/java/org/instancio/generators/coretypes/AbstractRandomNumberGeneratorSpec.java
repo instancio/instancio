@@ -15,9 +15,9 @@
  */
 package org.instancio.generators.coretypes;
 
+import org.instancio.GeneratorContext;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.ModelContext;
 import org.instancio.util.Verify;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
@@ -27,7 +27,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     protected T max;
     protected boolean nullable;
 
-    protected AbstractRandomNumberGeneratorSpec(final ModelContext<?> context, final T min, final T max, final boolean nullable) {
+    protected AbstractRandomNumberGeneratorSpec(final GeneratorContext context, final T min, final T max, final boolean nullable) {
         super(context);
         this.min = min;
         this.max = max;

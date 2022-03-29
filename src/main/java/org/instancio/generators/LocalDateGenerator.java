@@ -15,13 +15,13 @@
  */
 package org.instancio.generators;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 
 import java.time.LocalDate;
 
 public class LocalDateGenerator extends AbstractRandomGenerator<LocalDate> {
 
-    public LocalDateGenerator(final ModelContext<?> context) {
+    public LocalDateGenerator(final GeneratorContext context) {
         super(context);
     }
 

@@ -15,9 +15,9 @@
  */
 package org.instancio.generators.coretypes;
 
+import org.instancio.GeneratorContext;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.util.Verify;
@@ -30,7 +30,7 @@ public class StringGenerator extends AbstractRandomGenerator<String> implements 
     private boolean allowEmpty;
     private String prefix = "";
 
-    public StringGenerator(final ModelContext<?> context) {
+    public StringGenerator(final GeneratorContext context) {
         super(context);
 
         final Settings settings = context.getSettings();

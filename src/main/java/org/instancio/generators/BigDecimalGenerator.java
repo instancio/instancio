@@ -15,9 +15,9 @@
  */
 package org.instancio.generators;
 
+import org.instancio.GeneratorContext;
 import org.instancio.generators.coretypes.AbstractRandomNumberGeneratorSpec;
 import org.instancio.generators.coretypes.NumberGeneratorSpec;
-import org.instancio.internal.ModelContext;
 
 import java.math.BigDecimal;
 
@@ -26,14 +26,14 @@ public class BigDecimalGenerator extends AbstractRandomNumberGeneratorSpec<BigDe
     private static final long DEFAULT_MIN = 1;
     private static final long DEFAULT_MAX = 10_000;
 
-    public BigDecimalGenerator(final ModelContext<?> context) {
+    public BigDecimalGenerator(final GeneratorContext context) {
         super(context,
                 BigDecimal.valueOf(DEFAULT_MIN),
                 BigDecimal.valueOf(DEFAULT_MAX),
                 false);
     }
 
-    public BigDecimalGenerator(final ModelContext<?> context, final BigDecimal min, final BigDecimal max, final boolean nullable) {
+    public BigDecimalGenerator(final GeneratorContext context, final BigDecimal min, final BigDecimal max, final boolean nullable) {
         super(context, min, max, nullable);
     }
 

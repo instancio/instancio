@@ -17,11 +17,13 @@ package org.instancio.internal;
 
 import org.instancio.Binding;
 import org.instancio.Generator;
+import org.instancio.GeneratorContext;
 import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generators.ArrayGeneratorSpec;
 import org.instancio.generators.coretypes.StringGeneratorSpec;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.person.Address;
 import org.instancio.pojo.person.Person;
@@ -31,7 +33,6 @@ import org.instancio.settings.Settings;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -50,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.field;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 class ModelContextTest {
     private static final Field NAME_FIELD = ReflectionUtils.getField(Person.class, "name");
@@ -154,10 +155,8 @@ class ModelContextTest {
 
     @Test
     void withGeneratorSpecs() {
-        final ModelContext<?> mockCtx = Mockito.mock(ModelContext.class);
-        when(mockCtx.getSettings()).thenReturn(Settings.defaults());
-
-        final Generators generators = new Generators(mockCtx);
+        final GeneratorContext genContext = new GeneratorContext(Settings.defaults(), mock(RandomProvider.class));
+        final Generators generators = new Generators(genContext);
         final ArrayGeneratorSpec<Object> petsSpec = generators.array().type(Set.class);
         final StringGeneratorSpec stringSpec = generators.string().minLength(5).allowEmpty();
 

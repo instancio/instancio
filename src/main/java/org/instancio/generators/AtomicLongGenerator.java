@@ -15,9 +15,9 @@
  */
 package org.instancio.generators;
 
+import org.instancio.GeneratorContext;
 import org.instancio.generators.coretypes.AbstractRandomNumberGeneratorSpec;
 import org.instancio.generators.coretypes.NumberGeneratorSpec;
-import org.instancio.internal.ModelContext;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -26,14 +26,14 @@ public class AtomicLongGenerator extends AbstractRandomNumberGeneratorSpec<Atomi
     private static final int DEFAULT_MIN = 1;
     private static final int DEFAULT_MAX = 10_000;
 
-    public AtomicLongGenerator(final ModelContext<?> context) {
+    public AtomicLongGenerator(final GeneratorContext context) {
         super(context,
                 new AtomicLong(DEFAULT_MIN),
                 new AtomicLong(DEFAULT_MAX),
                 false);
     }
 
-    public AtomicLongGenerator(final ModelContext<?> context, final int min, final int max, final boolean nullable) {
+    public AtomicLongGenerator(final GeneratorContext context, final int min, final int max, final boolean nullable) {
         super(context, new AtomicLong(min), new AtomicLong(max), nullable);
     }
 

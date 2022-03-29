@@ -15,9 +15,9 @@
  */
 package org.instancio.generators.collections;
 
+import org.instancio.GeneratorContext;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
     protected boolean nullableElements;
     protected Class<?> type;
 
-    public CollectionGenerator(final ModelContext<?> context) {
+    public CollectionGenerator(final GeneratorContext context) {
         super(context);
         this.minSize = context.getSettings().get(Setting.COLLECTION_MIN_SIZE);
         this.maxSize = context.getSettings().get(Setting.COLLECTION_MAX_SIZE);

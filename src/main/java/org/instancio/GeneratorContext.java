@@ -13,25 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.generators;
+package org.instancio;
 
-import org.instancio.GeneratorContext;
-import org.instancio.internal.reflection.instantiation.Instantiator;
+import org.instancio.internal.random.RandomProvider;
+import org.instancio.settings.Settings;
 
-public class InstantiatingGenerator extends AbstractRandomGenerator<Object> {
+public class GeneratorContext {
 
-    private final Instantiator instantiator;
-    private final Class<?> targetType;
+    private final Settings settings;
+    private final RandomProvider randomProvider;
 
-    public InstantiatingGenerator(final GeneratorContext context, final Instantiator instantiator, final Class<?> targetType) {
-        super(context);
-        this.targetType = targetType;
-        this.instantiator = instantiator;
+    public GeneratorContext(final Settings settings, final RandomProvider randomProvider) {
+        this.settings = settings;
+        this.randomProvider = randomProvider;
     }
 
+    public Settings getSettings() {
+        return settings;
+    }
 
-    @Override
-    public Object generate() {
-        return instantiator.instantiate(targetType);
+    public RandomProvider random() {
+        return randomProvider;
     }
 }

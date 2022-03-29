@@ -15,8 +15,8 @@
  */
 package org.instancio.generators;
 
+import org.instancio.GeneratorContext;
 import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.ModelContext;
 import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
 
@@ -30,11 +30,11 @@ public class ArrayGenerator<T> extends AbstractRandomGenerator<T> implements Arr
     private boolean nullableElements;
     private Class<?> componentType;
 
-    public ArrayGenerator(final ModelContext<?> context) {
+    public ArrayGenerator(final GeneratorContext context) {
         super(context);
     }
 
-    public ArrayGenerator(final ModelContext<?> context, final Class<?> componentType) {
+    public ArrayGenerator(final GeneratorContext context, final Class<?> componentType) {
         super(context);
         this.componentType = Verify.notNull(componentType, "Type must not be null");
         this.minLength = context.getSettings().get(Setting.ARRAY_MIN_LENGTH);

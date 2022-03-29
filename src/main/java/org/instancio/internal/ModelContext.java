@@ -17,6 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.Binding;
 import org.instancio.Generator;
+import org.instancio.GeneratorContext;
 import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.generators.ArrayGenerator;
@@ -105,7 +106,8 @@ public class ModelContext<T> {
     }
 
     private void putAllBuiltInGenerators(final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings) {
-        final Generators generators = new Generators(this);
+        final GeneratorContext generatorContext = new GeneratorContext(settings, randomProvider);
+        final Generators generators = new Generators(generatorContext);
         generatorSpecBindings.forEach((target, genSpecFn) -> {
             final Generator<?> generator = (Generator<?>) genSpecFn.apply(generators);
             putBinding(target, generator);

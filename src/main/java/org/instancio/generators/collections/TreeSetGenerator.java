@@ -15,14 +15,14 @@
  */
 package org.instancio.generators.collections;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 
 import java.util.Collection;
 import java.util.TreeSet;
 
 public class TreeSetGenerator<T> extends CollectionGenerator<T> {
 
-    public TreeSetGenerator(final ModelContext<?> context) {
+    public TreeSetGenerator(final GeneratorContext context) {
         super(context);
         type(TreeSet.class);
     }

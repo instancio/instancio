@@ -15,14 +15,14 @@
  */
 package org.instancio.generators.collections;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 
 import java.util.Collection;
 import java.util.HashSet;
 
 public class HashSetGenerator<T> extends CollectionGenerator<T> {
 
-    public HashSetGenerator(final ModelContext<?> context) {
+    public HashSetGenerator(final GeneratorContext context) {
         super(context);
         type(HashSet.class);
     }

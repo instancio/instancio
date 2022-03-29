@@ -15,7 +15,8 @@
  */
 package org.instancio.generators.coretypes;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -32,15 +33,14 @@ import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints
 @NonDeterministicTag
 class StringGeneratorTest {
     private static final int SAMPLE_SIZE = 1000;
-    private static final Class<Object> ANY_CLASS = Object.class;
-    private static final ModelContext<?> context = ModelContext.builder(ANY_CLASS)
-            .withSettings(Settings.defaults()
-                    .set(Setting.STRING_MIN_LENGTH, 1)
-                    .set(Setting.STRING_MAX_LENGTH, 1)
-                    .set(Setting.STRING_ALLOW_EMPTY, true)
-                    .set(Setting.STRING_NULLABLE, true))
-            .build();
+    private static final Settings settings = Settings.defaults()
+            .set(Setting.STRING_MIN_LENGTH, 1)
+            .set(Setting.STRING_MAX_LENGTH, 1)
+            .set(Setting.STRING_ALLOW_EMPTY, true)
+            .set(Setting.STRING_NULLABLE, true);
 
+    private static final RandomProvider random = new RandomProvider();
+    private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     @Test
     void generate() {
@@ -65,11 +65,12 @@ class StringGeneratorTest {
     @Test
     void generateOverrideSettings() {
         final int length = 10;
-        final StringGenerator generator = new StringGenerator(context.toBuilder()
-                .withSettings(Settings.create()
+        final GeneratorContext ctxWithUpdatedSettings = new GeneratorContext(
+                Settings.from(settings)
                         .set(Setting.STRING_NULLABLE, false)
-                        .set(Setting.STRING_ALLOW_EMPTY, false))
-                .build());
+                        .set(Setting.STRING_ALLOW_EMPTY, false),
+                random);
+        final StringGenerator generator = new StringGenerator(ctxWithUpdatedSettings);
 
         // Override generator length
         generator.minLength(length).maxLength(length);
