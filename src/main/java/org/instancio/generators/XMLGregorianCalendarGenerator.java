@@ -16,7 +16,7 @@
 package org.instancio.generators;
 
 import org.instancio.Generator;
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class XMLGregorianCalendarGenerator extends AbstractRandomGenerator<XMLGr
 
     private final Generator<LocalDateTime> localDateTimeGenerator;
 
-    public XMLGregorianCalendarGenerator(final ModelContext<?> context) {
+    public XMLGregorianCalendarGenerator(final GeneratorContext context) {
         super(context);
         this.localDateTimeGenerator = new LocalDateTimeGenerator(context);
     }

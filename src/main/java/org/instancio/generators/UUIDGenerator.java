@@ -15,13 +15,13 @@
  */
 package org.instancio.generators;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 
 import java.util.UUID;
 
 public class UUIDGenerator extends AbstractRandomGenerator<UUID> {
 
-    public UUIDGenerator(final ModelContext<?> context) {
+    public UUIDGenerator(final GeneratorContext context) {
         super(context);
     }
 

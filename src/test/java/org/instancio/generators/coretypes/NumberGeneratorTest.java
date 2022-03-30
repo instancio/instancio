@@ -15,9 +15,10 @@
  */
 package org.instancio.generators.coretypes;
 
+import org.instancio.GeneratorContext;
 import org.instancio.generators.BigDecimalGenerator;
 import org.instancio.generators.BigIntegerGenerator;
-import org.instancio.internal.ModelContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -39,28 +40,27 @@ class NumberGeneratorTest {
     private static final int MIN = -10;
     private static final int MAX = 10;
     private static final int SAMPLE_SIZE = 10_000;
-    private static final Class<Object> ANY_CLASS = Object.class;
-    private static final ModelContext<?> context = ModelContext.builder(ANY_CLASS)
-            .withSettings(Settings.defaults()
-                    .set(Setting.BYTE_MIN, (byte) MIN)
-                    .set(Setting.BYTE_MAX, (byte) MAX)
-                    .set(Setting.BYTE_NULLABLE, true)
-                    .set(Setting.SHORT_MIN, (short) MIN)
-                    .set(Setting.SHORT_MAX, (short) MAX)
-                    .set(Setting.SHORT_NULLABLE, true)
-                    .set(Setting.INTEGER_MIN, MIN)
-                    .set(Setting.INTEGER_MAX, MAX)
-                    .set(Setting.INTEGER_NULLABLE, true)
-                    .set(Setting.LONG_MIN, (long) MIN)
-                    .set(Setting.LONG_MAX, (long) MAX)
-                    .set(Setting.LONG_NULLABLE, true)
-                    .set(Setting.FLOAT_MIN, (float) MIN)
-                    .set(Setting.FLOAT_MAX, (float) MAX)
-                    .set(Setting.FLOAT_NULLABLE, true)
-                    .set(Setting.DOUBLE_MIN, (double) MIN)
-                    .set(Setting.DOUBLE_MAX, (double) MAX)
-                    .set(Setting.DOUBLE_NULLABLE, true))
-            .build();
+    private static final Settings settings = Settings.defaults()
+            .set(Setting.BYTE_MIN, (byte) MIN)
+            .set(Setting.BYTE_MAX, (byte) MAX)
+            .set(Setting.BYTE_NULLABLE, true)
+            .set(Setting.SHORT_MIN, (short) MIN)
+            .set(Setting.SHORT_MAX, (short) MAX)
+            .set(Setting.SHORT_NULLABLE, true)
+            .set(Setting.INTEGER_MIN, MIN)
+            .set(Setting.INTEGER_MAX, MAX)
+            .set(Setting.INTEGER_NULLABLE, true)
+            .set(Setting.LONG_MIN, (long) MIN)
+            .set(Setting.LONG_MAX, (long) MAX)
+            .set(Setting.LONG_NULLABLE, true)
+            .set(Setting.FLOAT_MIN, (float) MIN)
+            .set(Setting.FLOAT_MAX, (float) MAX)
+            .set(Setting.FLOAT_NULLABLE, true)
+            .set(Setting.DOUBLE_MIN, (double) MIN)
+            .set(Setting.DOUBLE_MAX, (double) MAX)
+            .set(Setting.DOUBLE_NULLABLE, true);
+
+    private static final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
 
     static class WholeNumberGeneratorTestTemplate<GEN extends AbstractRandomNumberGeneratorSpec<?>> {
 

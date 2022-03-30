@@ -15,14 +15,14 @@
  */
 package org.instancio.generators.collections;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConcurrentHashMapGenerator<K, V> extends MapGenerator<K, V> {
 
-    public ConcurrentHashMapGenerator(final ModelContext<?> context) {
+    public ConcurrentHashMapGenerator(final GeneratorContext context) {
         super(context);
         type(ConcurrentHashMap.class);
     }

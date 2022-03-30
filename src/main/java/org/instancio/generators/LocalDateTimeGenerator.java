@@ -15,7 +15,7 @@
  */
 package org.instancio.generators;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ import java.time.LocalTime;
 
 public class LocalDateTimeGenerator extends AbstractRandomGenerator<LocalDateTime> {
 
-    public LocalDateTimeGenerator(final ModelContext<?> context) {
+    public LocalDateTimeGenerator(final GeneratorContext context) {
         super(context);
     }
 

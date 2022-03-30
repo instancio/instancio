@@ -15,14 +15,14 @@
  */
 package org.instancio.generators.collections;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 public class TreeMapGenerator<K, V> extends MapGenerator<K, V> {
 
-    public TreeMapGenerator(final ModelContext<?> context) {
+    public TreeMapGenerator(final GeneratorContext context) {
         super(context);
         type(TreeMap.class);
     }

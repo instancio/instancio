@@ -16,7 +16,8 @@
 package org.instancio.generators.coretypes;
 
 import org.instancio.Generator;
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -33,9 +34,8 @@ import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints
 @NonDeterministicTag
 class CharacterGeneratorTest {
     private static final int SAMPLE_SIZE = 1000;
-    private static final Class<Object> ANY_CLASS = Object.class;
-    private static final ModelContext<?> context = ModelContext.builder(ANY_CLASS)
-            .withSettings(Settings.defaults().set(Setting.CHARACTER_NULLABLE, true)).build();
+    private static final Settings settings = Settings.defaults().set(Setting.CHARACTER_NULLABLE, true);
+    private static final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
 
     @Test
     void generate() {

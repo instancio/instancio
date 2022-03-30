@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.Generator;
+import org.instancio.GeneratorContext;
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.generators.AtomicIntegerGenerator;
 import org.instancio.generators.AtomicLongGenerator;
@@ -69,9 +70,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class GeneratorResolver {
 
     private final Map<Class<?>, Generator<?>> generators = new HashMap<>();
-    private final ModelContext<?> context;
+    private final GeneratorContext context;
 
-    GeneratorResolver(final ModelContext<?> context) {
+    GeneratorResolver(final GeneratorContext context) {
         this.context = context;
 
         // Core types

@@ -19,6 +19,7 @@ import org.instancio.util.Verify;
 
 import java.util.Collection;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomProvider {
 
@@ -33,6 +34,13 @@ public class RandomProvider {
     public RandomProvider(final int seed) {
         this.seed = seed;
         this.random = new Random(seed);
+    }
+
+    /**
+     * Create an instance with a random seed value.
+     */
+    public RandomProvider() {
+        this(ThreadLocalRandom.current().nextInt());
     }
 
     public int getSeed() {

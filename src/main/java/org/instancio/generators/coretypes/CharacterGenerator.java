@@ -15,16 +15,16 @@
  */
 package org.instancio.generators.coretypes;
 
+import org.instancio.GeneratorContext;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.ModelContext;
 import org.instancio.settings.Setting;
 
 public class CharacterGenerator extends AbstractRandomGenerator<Character> {
 
     private boolean nullable;
 
-    public CharacterGenerator(final ModelContext<?> context) {
+    public CharacterGenerator(final GeneratorContext context) {
         super(context);
         this.nullable = context.getSettings().get(Setting.CHARACTER_NULLABLE);
     }

@@ -36,8 +36,6 @@ import org.instancio.generators.coretypes.NumberGeneratorSpec;
 import org.instancio.generators.coretypes.ShortGenerator;
 import org.instancio.generators.coretypes.StringGenerator;
 import org.instancio.generators.coretypes.StringGeneratorSpec;
-import org.instancio.internal.ModelContext;
-import org.instancio.internal.random.RandomProvider;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -49,14 +47,10 @@ import java.util.Collection;
  */
 public class Generators {
 
-    private final ModelContext<?> context;
+    private final GeneratorContext context;
 
-    public Generators(final ModelContext<?> context) {
+    public Generators(final GeneratorContext context) {
         this.context = context;
-    }
-
-    public RandomProvider random() {
-        return context.getRandomProvider();
     }
 
     public StringGeneratorSpec string() {

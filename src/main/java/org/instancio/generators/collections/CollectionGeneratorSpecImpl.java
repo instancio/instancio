@@ -16,7 +16,7 @@
 package org.instancio.generators.collections;
 
 import org.instancio.Generator;
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
@@ -25,7 +25,7 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
 
     private Generator<?> delegate;
 
-    public CollectionGeneratorSpecImpl(final ModelContext<?> context) {
+    public CollectionGeneratorSpecImpl(final GeneratorContext context) {
         super(context);
         this.type = null; // must be either supplied by user, or obtained from the field declaration
     }

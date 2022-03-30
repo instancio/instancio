@@ -15,12 +15,12 @@
  */
 package org.instancio.generators.coretypes;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 import org.instancio.settings.Setting;
 
 public class IntegerGenerator extends AbstractRandomNumberGeneratorSpec<Integer> {
 
-    public IntegerGenerator(final ModelContext<?> context) {
+    public IntegerGenerator(final GeneratorContext context) {
         super(context,
                 context.getSettings().get(Setting.INTEGER_MIN),
                 context.getSettings().get(Setting.INTEGER_MAX),

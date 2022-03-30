@@ -15,16 +15,16 @@
  */
 package org.instancio.generators.coretypes;
 
+import org.instancio.GeneratorContext;
 import org.instancio.generators.AbstractRandomGenerator;
 import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.ModelContext;
 import org.instancio.settings.Setting;
 
 public class BooleanGenerator extends AbstractRandomGenerator<Boolean> {
 
     private boolean nullable;
 
-    public BooleanGenerator(final ModelContext<?> context) {
+    public BooleanGenerator(final GeneratorContext context) {
         super(context);
         this.nullable = context.getSettings().get(Setting.BOOLEAN_NULLABLE);
     }

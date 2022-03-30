@@ -15,12 +15,12 @@
  */
 package org.instancio.generators.coretypes;
 
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 import org.instancio.settings.Setting;
 
 public class ByteGenerator extends AbstractRandomNumberGeneratorSpec<Byte> {
 
-    public ByteGenerator(final ModelContext<?> context) {
+    public ByteGenerator(final GeneratorContext context) {
         super(context,
                 context.getSettings().get(Setting.BYTE_MIN),
                 context.getSettings().get(Setting.BYTE_MAX),

@@ -16,7 +16,7 @@
 package org.instancio.generators;
 
 import org.instancio.Generator;
-import org.instancio.internal.ModelContext;
+import org.instancio.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
 
 /**
@@ -26,22 +26,17 @@ import org.instancio.internal.random.RandomProvider;
  */
 public abstract class AbstractRandomGenerator<T> implements Generator<T> {
 
-    private final ModelContext<?> context;
+    private final GeneratorContext context;
 
-    protected AbstractRandomGenerator(final ModelContext<?> context) {
+    protected AbstractRandomGenerator(final GeneratorContext context) {
         this.context = context;
     }
 
-    public ModelContext<?> getContext() {
+    public GeneratorContext getContext() {
         return context;
     }
 
-    /**
-     * The {@link RandomProvider} needs to be used to ensure values
-     * are generated with a consistent seed. This allows generation
-     * to be repeatable.
-     */
     protected RandomProvider random() {
-        return context.getRandomProvider();
+        return context.random();
     }
 }

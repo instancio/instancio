@@ -90,6 +90,19 @@ public class Settings {
     }
 
     /**
+     * Create settings from the given settings.
+     *
+     * @param other settings to create settings from
+     * @return a new instance of settings
+     */
+    public static Settings from(final Settings other) {
+        final Settings settings = new Settings();
+        settings.settingsMap.putAll(other.settingsMap);
+        settings.subtypeMap.putAll(other.subtypeMap);
+        return settings;
+    }
+
+    /**
      * Creates a new instance of settings by merging given settings with these settings.
      *
      * @param other settings to merge
