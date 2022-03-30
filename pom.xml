@@ -4,7 +4,7 @@
 
     <groupId>org.instancio</groupId>
     <artifactId>instancio</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
 
     <name>Instancio</name>
@@ -31,7 +31,7 @@
         <url>https://github.com/instancio/instancio</url>
         <connection>scm:git:https://github.com/instancio/instancio.git</connection>
         <developerConnection>scm:git:https://github.com/instancio/instancio.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>instancio-1.0.3</tag>
     </scm>
 
     <distributionManagement>
