@@ -287,6 +287,7 @@ public class NodeFactory {
         } else if (actualTypeArg instanceof TypeVariable) {
             Type mappedType = resolveTypeVariable(nodeContext, (TypeVariable<?>) actualTypeArg, parent);
 
+
             if (mappedType instanceof Class) {
                 elementNode = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
             } else if (mappedType instanceof ParameterizedType) {
@@ -318,7 +319,12 @@ public class NodeFactory {
         Type mappedType = parent.getTypeMap().getOrDefault(typeVariable, typeVariable);
 
         Node ancestor = parent;
-        while ((mappedType == null || !nodeContext.getRootTypeMap().containsKey(mappedType)) && ancestor != null) {
+        while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
+            Type rootTypeMapping = nodeContext.getRootTypeMap().get(mappedType);
+            if (rootTypeMapping != null) {
+                return rootTypeMapping;
+            }
+
             mappedType = ancestor.getTypeMap().getOrDefault(mappedType, mappedType);
 
             if (mappedType instanceof Class || mappedType instanceof ParameterizedType) {
