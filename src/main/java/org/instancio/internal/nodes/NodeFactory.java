@@ -36,29 +36,33 @@ public class NodeFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
-    public Node createRootNode(final NodeContext nodeContext,
-                               final Class<?> klass,
-                               @Nullable final Type genericType) {
+    private final NodeContext nodeContext;
 
-        return createNode(nodeContext, klass, genericType, null, null);
+    public NodeFactory(final NodeContext nodeContext) {
+        this.nodeContext = nodeContext;
     }
 
-    public Node createNode(final NodeContext nodeContext,
-                           final Class<?> klass,
+    public Node createRootNode(final Class<?> klass,
+                               @Nullable final Type genericType) {
+
+        return createNode(klass, genericType, null, null);
+    }
+
+    public Node createNode(final Class<?> klass,
                            @Nullable final Type genericType,
                            @Nullable final Field field,
-                           @Nullable final Node parent) {
+                           final Node parent) {
 
         final Node result;
 
         if (klass.isArray() || genericType instanceof GenericArrayType) {
-            result = createArrayNode(nodeContext, klass, genericType, field, parent);
+            result = createArrayNode(klass, genericType, field, parent);
         } else if (Collection.class.isAssignableFrom(klass)) {
-            result = createCollectionNode(nodeContext, klass, genericType, field, parent);
+            result = createCollectionNode(klass, genericType, field, parent);
         } else if (Map.class.isAssignableFrom(klass)) {
-            result = createMapNode(nodeContext, klass, genericType, field, parent);
+            result = createMapNode(klass, genericType, field, parent);
         } else {
-            result = createClassNode(nodeContext, klass, genericType, field, parent);
+            result = createClassNode(klass, genericType, field, parent);
         }
 
         LOG.trace("Created node: {}", result);
@@ -73,11 +77,10 @@ public class NodeFactory {
     }
 
     private Node createArrayNode(
-            final NodeContext nodeContext,
             final Class<?> arrayClass,
             @Nullable final Type arrayGenericType,
             @Nullable final Field field,
-            @Nullable final Node parent) {
+            final Node parent) {
 
         Node elementNode;
         Class<?> compRawType = field != null && field.getType().getComponentType() != null
@@ -99,35 +102,33 @@ public class NodeFactory {
         if (compGenericType instanceof GenericArrayType) {
             final GenericArrayType arrayType = (GenericArrayType) compGenericType;
             final Type compType = arrayType.getGenericComponentType();
-            elementNode = _createNode(nodeContext, field, parent, compType);
+            elementNode = createElementNode(parent, compType);
         } else if (compGenericType instanceof Class) {
-            elementNode = this.createNode(nodeContext, compRawType, compRawType, null, parent);
+            elementNode = this.createNode(compRawType, compRawType, null, parent);
         } else {
-            elementNode = this.createNode(nodeContext, compRawType, compGenericType, null, parent);
+            elementNode = this.createNode(compRawType, compGenericType, null, parent);
         }
 
         return new ArrayNode(nodeContext, arrayClass, Verify.notNull(elementNode), field, arrayGenericType, parent);
     }
 
     private Node createCollectionNode(
-            final NodeContext nodeContext,
             final Class<?> rawClass,
             @Nullable final Type genericType,
             @Nullable final Field field,
-            @Nullable final Node parent) {
+            final Node parent) {
 
         Node result = null;
 
         if (genericType instanceof ParameterizedType) {
             ParameterizedType pType = (ParameterizedType) genericType;
-
             final Type[] actualTypeArgs = pType.getActualTypeArguments();
 
             Verify.state(actualTypeArgs.length == 1,
-                    "List should have one type argument: %s", actualTypeArgs.length);
+                    "Collection should have one type argument: %s", actualTypeArgs.length);
 
             // no field value added to element nodes since elements are added via Collection.add(obj) method
-            Node elementNode = _createNode(nodeContext, null, parent, actualTypeArgs[0]);
+            Node elementNode = createElementNode(parent, actualTypeArgs[0]);
 
             if (elementNode != null) {
 
@@ -137,7 +138,7 @@ public class NodeFactory {
                     final Type passedOnType;
 
                     if (fieldGenericType instanceof TypeVariable) {
-                        final Type mappedType = resolveTypeVariable(nodeContext, (TypeVariable<?>) fieldGenericType, parent);
+                        final Type mappedType = resolveTypeVariable(fieldGenericType, parent);
 
                         passedOnType = mappedType instanceof ParameterizedType
                                 ? ((ParameterizedType) mappedType).getRawType()
@@ -157,7 +158,7 @@ public class NodeFactory {
             } else {
                 LOG.warn("Could not resolve Collection element type.");
             }
-        } else if (genericType instanceof Class) { // collection without type specified... 'List list'
+        } else if (genericType instanceof Class) { // collection without type: 'List list'
 
             final TypeVariable<?> typeVariable = rawClass.getTypeParameters()[0];
             final Class<?> mappedType = nodeContext.getRootTypeMap().getOrDefault(typeVariable, Object.class);
@@ -166,19 +167,15 @@ public class NodeFactory {
             result = new CollectionNode(nodeContext, rawClass, elementNode, field, rawClass, parent);
         }
 
-        return Verify.notNull(result, "Unable to create a CollectionNode for class: " + rawClass.getName()
-                + ", generic type: " + genericType);
+        return Verify.notNull(result, "Unable to create a CollectionNode for class: %s, generic type: %s",
+                rawClass.getName(), genericType);
     }
 
-
-    // field referencing the map such as {@code Map<K,V> someField},
-    // or {@code null} if it's a root node or the map is nested inside another collection or map
     private Node createMapNode(
-            final NodeContext nodeContext,
             final Class<?> rawClass,
             @Nullable final Type genericType,
             @Nullable final Field field,
-            @Nullable final Node parent) {
+            final Node parent) {
 
         Node result = null;
 
@@ -187,12 +184,12 @@ public class NodeFactory {
             final Type[] actualTypeArgs = pType.getActualTypeArguments();
 
             // field is null for key and value nodes since values are added via Map.put(key,val)
-            final Node keyNode = _createNode(nodeContext, null, parent, actualTypeArgs[0]);
-            final Node valueNode = _createNode(nodeContext, null, parent, actualTypeArgs[1]);
+            final Node keyNode = createElementNode(parent, actualTypeArgs[0]);
+            final Node valueNode = createElementNode(parent, actualTypeArgs[1]);
             final Class<?> mapClass = (Class<?>) pType.getRawType();
 
             result = new MapNode(nodeContext, mapClass, keyNode, valueNode, field, pType, parent);
-        } else if (genericType instanceof Class) { // collection without type specified... 'Map map'
+        } else if (genericType instanceof Class) { // map without type: 'Map map'
             final TypeVariable<?> keyTypeVariable = Map.class.getTypeParameters()[0];
             final TypeVariable<?> valueTypeVariable = Map.class.getTypeParameters()[1];
 
@@ -208,32 +205,32 @@ public class NodeFactory {
                 rawClass.getName(), genericType);
     }
 
-    private Node createClassNode(final NodeContext nodeContext,
-                                 final Class<?> klass,
-                                 final @Nullable Type genericType,
-                                 final @Nullable Field field,
-                                 final @Nullable Node parent) {
+    private Node createClassNode(
+            final Class<?> klass,
+            final @Nullable Type genericType,
+            final @Nullable Field field,
+            final @Nullable Node parent) {
 
-        if (genericType == null || klass != Object.class || (field != null && field.getGenericType() instanceof Class))
+        if (genericType == null || klass != Object.class || (field != null && field.getGenericType() instanceof Class)) {
             return new ClassNode(nodeContext, klass, field, genericType, parent);
-
+        }
 
         if (genericType instanceof TypeVariable) {
-            Type mappedType = resolveTypeVariable(nodeContext, (TypeVariable<?>) genericType, parent);
+            Type mappedType = resolveTypeVariable(genericType, parent);
 
             if (mappedType instanceof Class) {
                 return new ClassNode(nodeContext, (Class<?>) mappedType, field, mappedType, parent);
             }
             if (mappedType instanceof ParameterizedType) {
                 Class<?> rawType = (Class<?>) ((ParameterizedType) mappedType).getRawType();
-                return this.createNode(nodeContext, rawType, mappedType, field, parent);
+                return this.createNode(rawType, mappedType, field, parent);
             }
             if (mappedType instanceof GenericArrayType) {
                 final GenericArrayType arrayType = (GenericArrayType) mappedType;
                 final Type compType = arrayType.getGenericComponentType();
                 final Class<?> rawType = TypeUtils.getRawType(compType);
                 final Class<?> arrayClass = Array.newInstance(rawType, 0).getClass();
-                return this.createArrayNode(nodeContext, arrayClass, arrayType, field, parent);
+                return this.createArrayNode(arrayClass, arrayType, field, parent);
             }
             if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
                 Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
@@ -244,55 +241,41 @@ public class NodeFactory {
         throw new IllegalStateException("Error creating a class node for klass: " + klass.getName() + ", type: " + genericType);
     }
 
-    private Node _createNode(final NodeContext nodeContext,
-                             @Nullable final Field field,
-                             @Nullable final Node parent,
-                             final Type actualTypeArg) {
+    private Node createElementNode(final Node parent, final Type elementType) {
+        final Type type = elementType instanceof TypeVariable
+                ? resolveTypeVariable(elementType, parent)
+                : elementType;
 
         Node elementNode = null;
-        if (actualTypeArg instanceof Class) {
 
-            elementNode = this.createNode(nodeContext, (Class<?>) actualTypeArg, null, null, parent);
-
-        } else if (actualTypeArg instanceof ParameterizedType) {
-            ParameterizedType actualPType = (ParameterizedType) actualTypeArg;
-            Class<?> actualRawType = (Class<?>) actualPType.getRawType();
-            elementNode = this.createNode(nodeContext, actualRawType, actualPType, null, parent);
-        } else if (actualTypeArg instanceof TypeVariable) {
-            Type mappedType = resolveTypeVariable(nodeContext, (TypeVariable<?>) actualTypeArg, parent);
-
-
-            if (mappedType instanceof Class) {
-                elementNode = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
-            } else if (mappedType instanceof ParameterizedType) {
-                Class<?> rawType = (Class<?>) ((ParameterizedType) mappedType).getRawType();
-                elementNode = this.createNode(nodeContext, rawType, mappedType, null, parent);
-            }
-        } else if (actualTypeArg instanceof WildcardType) {
-            final WildcardType wildcardType = (WildcardType) actualTypeArg;
+        if (type instanceof Class) {
+            elementNode = this.createNode((Class<?>) type, null, null, parent);
+        } else if (type instanceof ParameterizedType || type instanceof GenericArrayType) {
+            elementNode = this.createNode(TypeUtils.getRawType(type), type, null, parent);
+        } else if (type instanceof WildcardType) {
+            final WildcardType wildcardType = (WildcardType) type;
             final Type[] upperBounds = wildcardType.getUpperBounds();
             final Type upperBound = upperBounds[0];
             if (upperBound instanceof Class) {
-                elementNode = this.createNode(nodeContext, (Class<?>) upperBound, null, null, parent);
+                elementNode = this.createNode((Class<?>) upperBound, null, null, parent);
             } else if (upperBound instanceof ParameterizedType) {
                 final ParameterizedType upperPType = (ParameterizedType) upperBound;
-                elementNode = this.createNode(nodeContext, (Class<?>) upperPType.getRawType(), upperPType, null, parent);
+                elementNode = this.createNode((Class<?>) upperPType.getRawType(), upperPType, null, parent);
             } else {
                 throw new UnsupportedOperationException("Unsupported upper bound type: " + upperBound.getClass());
             }
-
-        } else if (actualTypeArg instanceof GenericArrayType) {
-            Class<?> rawType = TypeUtils.getRawType(actualTypeArg);
-            elementNode = this.createNode(nodeContext, rawType, actualTypeArg, field, parent);
         }
-        return elementNode;
+
+        return Verify.notNull(elementNode, "Null element node");
     }
 
 
-    private Type resolveTypeVariable(final NodeContext nodeContext, final TypeVariable<?> typeVariable, final Node parent) {
-        Type mappedType = parent.getTypeMap().getOrDefault(typeVariable, typeVariable);
+    private Type resolveTypeVariable(final Type typeVariable, final Node parent) {
+        Verify.isTrue(typeVariable instanceof TypeVariable, "Expected a type variable: %s", typeVariable.getClass());
 
+        Type mappedType = parent.getTypeMap().getOrDefault(typeVariable, typeVariable);
         Node ancestor = parent;
+
         while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
             Type rootTypeMapping = nodeContext.getRootTypeMap().get(mappedType);
             if (rootTypeMapping != null) {

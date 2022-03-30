@@ -57,7 +57,7 @@ public class ClassNode extends Node {
     }
 
     private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass) {
-        final NodeFactory nodeFactory = new NodeFactory();
+        final NodeFactory nodeFactory = new NodeFactory(nodeContext);
         final List<Field> fields = nodeContext.getFieldCollector().getFields(klass);
 
         return fields.stream()
@@ -79,7 +79,7 @@ public class ClassNode extends Node {
                     }
 
                     LOG.trace("Passing generic type to child field node: {}", passedOnGenericType);
-                    return nodeFactory.createNode(nodeContext, t, passedOnGenericType, field, this);
+                    return nodeFactory.createNode(t, passedOnGenericType, field, this);
                 })
                 .collect(toList());
     }
