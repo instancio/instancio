@@ -27,7 +27,7 @@ class BaseClasSubClassInheritanceNodeTest extends NodeTestTemplate<BaseClasSubCl
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(BaseClasSubClassInheritance.class)
+                .hasTargetClass(BaseClasSubClassInheritance.class)
                 .hasChildrenOfSize(1);
 
         final Node subClass = assertNode(NodeUtils.getChildNode(rootNode, "subClass"))

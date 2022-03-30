@@ -35,7 +35,7 @@ public class InstantiatingHandler implements NodeHandler {
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-        final Class<?> effectiveType = context.getSubtypeMapping(node.getKlass());
+        final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
         if (ReflectionUtils.isConcrete(effectiveType)) {
             final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(effectiveType));
             return Optional.of(result);

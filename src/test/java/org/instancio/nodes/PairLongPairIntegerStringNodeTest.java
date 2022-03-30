@@ -30,7 +30,7 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(PairLongPairIntegerString.class)
+                .hasTargetClass(PairLongPairIntegerString.class)
                 .hasChildrenOfSize(1);
 
         // Pair<Long, Pair<Integer, String>>
@@ -39,7 +39,7 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
         final Node outerPair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
-                .hasKlass(Pair.class)
+                .hasTargetClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", Long.class)
                 .hasTypeMappedTo(Pair.class, "R", Types.PAIR_INTEGER_STRING.get())
                 .hasTypeMapWithSize(2)
@@ -49,13 +49,13 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
         assertNode(NodeUtils.getChildNode(outerPair, "left"))
                 .hasFieldName("left")
                 .hasParent(outerPair)
-                .hasKlass(Long.class)
+                .hasTargetClass(Long.class)
                 .hasNoChildren();
 
         final Node innerPair = assertNode(NodeUtils.getChildNode(outerPair, "right"))
                 .hasFieldName("right")
                 .hasParent(outerPair)
-                .hasKlass(Pair.class)
+                .hasTargetClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", Integer.class)
                 .hasTypeMappedTo(Pair.class, "R", String.class)
                 .hasTypeMapWithSize(2)
@@ -69,13 +69,13 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
         assertNode(NodeUtils.getChildNode(innerPair, "left"))
                 .hasFieldName("left")
                 .hasParent(innerPair)
-                .hasKlass(Integer.class)
+                .hasTargetClass(Integer.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(innerPair, "right"))
                 .hasFieldName("right")
                 .hasParent(innerPair)
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasNoChildren();
     }
 }

@@ -30,16 +30,16 @@ class ListWithWildcardNodeTest extends NodeTestTemplate<ListWithWildcard> {
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(ListWithWildcard.class)
+                .hasTargetClass(ListWithWildcard.class)
                 .hasChildrenOfSize(1);
 
         final CollectionNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("list")
                 .hasNoChildren()
-                .hasKlass(List.class)
+                .hasTargetClass(List.class)
                 .getAs(CollectionNode.class);
 
         assertNode(list.getElementNode())
-                .hasKlass(Object.class);
+                .hasTargetClass(Object.class);
     }
 }

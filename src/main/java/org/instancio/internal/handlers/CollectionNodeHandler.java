@@ -42,8 +42,8 @@ public class CollectionNodeHandler implements NodeHandler {
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         if (node instanceof CollectionNode) {
-            Verify.isTrue(Collection.class.isAssignableFrom(node.getKlass()), "Expected a collection type: %s", node.getKlass());
-            final Class<?> effectiveType = context.getSubtypeMapping(node.getKlass());
+            Verify.isTrue(Collection.class.isAssignableFrom(node.getTargetClass()), "Expected a collection type: %s", node.getTargetClass());
+            final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
             final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(randomSize()).build();
             final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(effectiveType), hints);
             return Optional.of(result);

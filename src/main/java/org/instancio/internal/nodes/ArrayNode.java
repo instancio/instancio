@@ -69,12 +69,12 @@ public class ArrayNode extends Node {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
         ArrayNode other = (ArrayNode) o;
-        return Objects.equals(this.getKlass(), other.getKlass())
+        return Objects.equals(this.getTargetClass(), other.getTargetClass())
                 && Objects.equals(this.getElementNode(), other.getElementNode());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKlass(), getElementNode());
+        return Objects.hash(getTargetClass(), getElementNode());
     }
 }

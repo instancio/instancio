@@ -32,13 +32,13 @@ class MapIntegerItemOfStringNodeTest extends NodeTestTemplate<MapIntegerItemOfSt
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(MapIntegerItemOfString.class)
+                .hasTargetClass(MapIntegerItemOfString.class)
                 .hasChildrenOfSize(1);
 
         final MapNode outerMap = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
                 .hasFieldName("map")
-                .hasKlass(Map.class)
+                .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", Types.ITEM_STRING.get())
                 .hasTypeMapWithSize(2)
@@ -47,16 +47,16 @@ class MapIntegerItemOfStringNodeTest extends NodeTestTemplate<MapIntegerItemOfSt
 
         assertNode(outerMap.getKeyNode())
                 .hasParent(outerMap)
-                .hasKlass(Integer.class);
+                .hasTargetClass(Integer.class);
 
         assertNode(outerMap.getValueNode())
                 .hasParent(outerMap)
-                .hasKlass(Item.class)
+                .hasTargetClass(Item.class)
                 .hasChildrenOfSize(1);
 
         assertNode(getOnlyElement(outerMap.getValueNode().getChildren()))
                 .hasParent(outerMap.getValueNode())
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasNoChildren();
     }
 }

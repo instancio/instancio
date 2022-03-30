@@ -29,47 +29,47 @@ class IndirectCircularRefNodeTest extends NodeTestTemplate<IndirectCircularRef> 
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(IndirectCircularRef.class)
+                .hasTargetClass(IndirectCircularRef.class)
                 .hasChildrenOfSize(1);
 
         final Node startA = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
-                .hasKlass(IndirectCircularRef.A.class)
+                .hasTargetClass(IndirectCircularRef.A.class)
                 .hasFieldName("startA")
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
 
         final Node b = assertNode(CollectionUtils.getOnlyElement(startA.getChildren()))
-                .hasKlass(IndirectCircularRef.B.class)
+                .hasTargetClass(IndirectCircularRef.B.class)
                 .hasFieldName("b")
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
 
         final Node c = assertNode(CollectionUtils.getOnlyElement(b.getChildren()))
-                .hasKlass(IndirectCircularRef.C.class)
+                .hasTargetClass(IndirectCircularRef.C.class)
                 .hasFieldName("c")
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
 
         final Node endA = assertNode(CollectionUtils.getOnlyElement(c.getChildren()))
-                .hasKlass(IndirectCircularRef.A.class)
+                .hasTargetClass(IndirectCircularRef.A.class)
                 .hasFieldName("endA")
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
 
         final Node bAgain = assertNode(CollectionUtils.getOnlyElement(endA.getChildren()))
-                .hasKlass(IndirectCircularRef.B.class)
+                .hasTargetClass(IndirectCircularRef.B.class)
                 .hasFieldName("b")
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
 
         final Node cAgain = assertNode(CollectionUtils.getOnlyElement(bAgain.getChildren()))
-                .hasKlass(IndirectCircularRef.C.class)
+                .hasTargetClass(IndirectCircularRef.C.class)
                 .hasFieldName("c")
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);
 
         assertNode(CollectionUtils.getOnlyElement(cAgain.getChildren()))
-                .hasKlass(IndirectCircularRef.A.class)
+                .hasTargetClass(IndirectCircularRef.A.class)
                 .hasFieldName("endA")
                 .hasChildrenOfSize(1)
                 .getAs(Node.class);

@@ -30,13 +30,13 @@ class MapIntegerStringNodeTest extends NodeTestTemplate<MapIntegerString> {
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(MapIntegerString.class)
+                .hasTargetClass(MapIntegerString.class)
                 .hasChildrenOfSize(1);
 
         final MapNode map = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
                 .hasFieldName("map")
-                .hasKlass(Map.class)
+                .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", String.class)
                 .hasTypeMapWithSize(2)
@@ -45,12 +45,12 @@ class MapIntegerStringNodeTest extends NodeTestTemplate<MapIntegerString> {
 
         assertNode(map.getKeyNode())
                 .hasParent(map)
-                .hasKlass(Integer.class)
+                .hasTargetClass(Integer.class)
                 .hasNoChildren();
 
         assertNode(map.getValueNode())
                 .hasParent(map)
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasNoChildren();
     }
 }

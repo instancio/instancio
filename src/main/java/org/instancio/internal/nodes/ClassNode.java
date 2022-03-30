@@ -50,10 +50,10 @@ public class ClassNode extends Node {
 
     @Override
     protected List<Node> collectChildren() {
-        if (getKlass().getPackage() == null || getKlass().getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
+        if (getTargetClass().getPackage() == null || getTargetClass().getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
             return Collections.emptyList();
         }
-        return makeChildren(getNodeContext(), getKlass());
+        return makeChildren(getNodeContext(), getTargetClass());
     }
 
     private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass) {

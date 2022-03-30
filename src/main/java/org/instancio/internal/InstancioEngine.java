@@ -62,7 +62,7 @@ class InstancioEngine {
     private boolean isIgnored(final Node node) {
         return node.getField() == null
                 || context.isIgnored(node.getField())
-                || context.isIgnored(node.getKlass())
+                || context.isIgnored(node.getTargetClass())
                 || Modifier.isStatic(node.getField().getModifiers());
     }
 }

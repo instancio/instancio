@@ -89,7 +89,7 @@ class GeneratorFacade {
         }
 
         if (!generatorResult.isPresent()) {
-            final Class<?> effectiveType = context.getSubtypeMapping(node.getKlass());
+            final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
             generatorResult = resolveImplementationAndGenerate(effectiveType, node, owner);
         }
 
@@ -119,7 +119,7 @@ class GeneratorFacade {
     }
 
     private boolean shouldReturnNullForNullable(final Node node) {
-        final boolean precondition = context.isNullable(node.getField()) || context.isNullable(node.getKlass());
+        final boolean precondition = context.isNullable(node.getField()) || context.isNullable(node.getTargetClass());
         return random.diceRoll(precondition);
     }
 }

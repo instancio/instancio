@@ -30,24 +30,24 @@ public abstract class Node {
 
     private final NodeContext nodeContext;
     private final Field field;
-    private final Class<?> klass;
+    private final Class<?> targetClass;
     private final Type genericType;
     private Node parent;
     private List<Node> children;
     private final TypeMap typeMap;
 
     Node(final NodeContext nodeContext,
-         final Class<?> klass,
+         final Class<?> targetClass,
          @Nullable final Field field,
          @Nullable final Type genericType,
          @Nullable final Node parent) {
 
         this.nodeContext = Verify.notNull(nodeContext, "nodeContext is null");
-        this.klass = Verify.notNull(klass, "klass is null");
+        this.targetClass = Verify.notNull(targetClass, "targetClass is null");
         this.field = field;
         this.genericType = genericType;
         this.parent = parent;
-        this.typeMap = new TypeMap(ObjectUtils.defaultIfNull(genericType, klass), nodeContext.getRootTypeMap());
+        this.typeMap = new TypeMap(ObjectUtils.defaultIfNull(genericType, targetClass), nodeContext.getRootTypeMap());
     }
 
     protected abstract List<Node> collectChildren();
@@ -70,9 +70,8 @@ public abstract class Node {
         return field;
     }
 
-    // TODO rename to avoid confusion with getClass()
-    public Class<?> getKlass() {
-        return klass;
+    public Class<?> getTargetClass() {
+        return targetClass;
     }
 
     public Type getGenericType() {
@@ -100,14 +99,14 @@ public abstract class Node {
         if (o == null || getClass() != o.getClass()) return false;
         Node other = (Node) o;
 
-        return this.getKlass().equals(other.getKlass())
+        return this.getTargetClass().equals(other.getTargetClass())
                 && Objects.equals(this.getGenericType(), other.getGenericType())
                 && Objects.equals(this.getField(), other.getField());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKlass(), getGenericType(), getField());
+        return Objects.hash(getTargetClass(), getGenericType(), getField());
     }
 
     @Override
@@ -115,6 +114,6 @@ public abstract class Node {
         String fieldName = field == null ? "null" : field.getName();
         String numChildren = String.format("[%s]", (children == null ? 0 : children.size()));
         return this.getClass().getSimpleName() + numChildren + "["
-                + klass.getSimpleName() + ", " + genericType + ", field: " + fieldName + "]";
+                + targetClass.getSimpleName() + ", " + genericType + ", field: " + fieldName + "]";
     }
 }

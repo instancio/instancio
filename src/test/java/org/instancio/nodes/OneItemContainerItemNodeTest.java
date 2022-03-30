@@ -29,7 +29,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(OneItemContainer.class)
+                .hasTargetClass(OneItemContainer.class)
                 .hasTypeMappedTo(OneItemContainer.class, "T", "org.instancio.pojo.generics.basic.Item<java.lang.String>")
                 .hasChildrenOfSize(1);
 
@@ -37,7 +37,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
         final Node item = assertNode(NodeUtils.getChildNode(rootNode, itemField))
                 .hasParent(rootNode)
                 .hasFieldName(itemField)
-                .hasKlass(Item.class)
+                .hasTargetClass(Item.class)
                 .hasTypeMappedTo(Item.class, "K", "T")
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
@@ -46,7 +46,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
         final Node nestedItem = assertNode(getOnlyElement(item.getChildren()))
                 .hasParent(item)
                 .hasFieldName("value")
-                .hasKlass(Item.class)
+                .hasTargetClass(Item.class)
                 .hasTypeMappedTo(Item.class, "K", String.class)
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
@@ -55,7 +55,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
         assertNode(getOnlyElement(nestedItem.getChildren()))
                 .hasParent(nestedItem)
                 .hasFieldName("value")
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren();
     }

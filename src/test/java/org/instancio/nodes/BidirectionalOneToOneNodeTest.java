@@ -29,34 +29,34 @@ class BidirectionalOneToOneNodeTest extends NodeTestTemplate<BidirectionalOneToO
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(BidirectionalOneToOne.Parent.class)
+                .hasTargetClass(BidirectionalOneToOne.Parent.class)
                 .hasChildrenOfSize(2);
 
         final Node child = assertNode(NodeUtils.getChildNode(rootNode, "child"))
                 .hasParent(rootNode)
                 .hasFieldName("child")
-                .hasKlass(BidirectionalOneToOne.Child.class)
+                .hasTargetClass(BidirectionalOneToOne.Child.class)
                 .hasChildrenOfSize(2)
                 .getAs(Node.class);
 
         final Node parent = assertNode(NodeUtils.getChildNode(child, "parent"))
                 .hasParent(child)
                 .hasFieldName("parent")
-                .hasKlass(BidirectionalOneToOne.Parent.class)
+                .hasTargetClass(BidirectionalOneToOne.Parent.class)
                 .hasChildrenOfSize(2)
                 .getAs(Node.class);
 
         final Node childAgain = assertNode(NodeUtils.getChildNode(parent, "child"))
                 .hasParent(parent)
                 .hasFieldName("child")
-                .hasKlass(BidirectionalOneToOne.Child.class)
+                .hasTargetClass(BidirectionalOneToOne.Child.class)
                 .hasChildrenOfSize(2)
                 .getAs(Node.class);
 
         assertNode(NodeUtils.getChildNode(childAgain, "parent"))
                 .hasParent(childAgain)
                 .hasFieldName("parent")
-                .hasKlass(BidirectionalOneToOne.Parent.class)
+                .hasTargetClass(BidirectionalOneToOne.Parent.class)
                 .hasChildrenOfSize(2)
                 .getAs(Node.class);
 
