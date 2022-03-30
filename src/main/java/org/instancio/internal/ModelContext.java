@@ -225,7 +225,11 @@ public class ModelContext<T> {
 
         InstancioValidator.validateTypeParameters(rootClass, rootTypeParameters);
 
-        final TypeVariable<?>[] typeVariables = rootClass.getTypeParameters();
+        final Class<?> targetClass = rootClass.isArray()
+                ? rootClass.getComponentType()
+                : rootClass;
+
+        final TypeVariable<?>[] typeVariables = targetClass.getTypeParameters();
         final Map<TypeVariable<?>, Class<?>> typeMap = new HashMap<>();
 
         for (int i = 0; i < typeVariables.length; i++) {

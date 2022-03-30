@@ -17,12 +17,17 @@ package org.instancio.bulk;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.pojo.generics.ListWithTypeVariable;
+import org.instancio.pojo.generics.MapWithTypeVariables;
+import org.instancio.pojo.generics.MiscFields;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.pojo.generics.basic.Pair;
+import org.instancio.pojo.generics.basic.Triplet;
 import org.instancio.pojo.generics.foobarbaz.Bar;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
 import org.instancio.pojo.person.Person;
+import org.instancio.testsupport.tags.CreateTag;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +36,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
@@ -39,6 +45,7 @@ import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 /**
  * Various contrived generic types.
  */
+@CreateTag
 class TypeTokenBulkAutoVerificationTest {
     private static final Logger LOG = LoggerFactory.getLogger(TypeTokenBulkAutoVerificationTest.class);
 
@@ -57,7 +64,14 @@ class TypeTokenBulkAutoVerificationTest {
                 new TypeToken<List<Item<Pair<Integer, String>>[]>>() {},
                 new TypeToken<List<List<List<List<String>>>>>() {},
                 new TypeToken<List<Map<Short, List<String>>>>() {},
-                new TypeToken<List<Item<Item<List<String>>>>>() {});
+                new TypeToken<List<Item<Item<List<String>>>>>() {},
+                new TypeToken<List<Pair<Integer, String>>>() {},
+                new TypeToken<List<Triplet<Item<Long>, Pair<Integer, String>, Item<UUID>>>>() {},
+                new TypeToken<List<int[]>>() {},
+                new TypeToken<List<Item<Pair<Integer, String>[]>>>() {},
+                new TypeToken<List<MiscFields<String, Item<UUID>, Integer>>>() {},
+                new TypeToken<List<MiscFields<Pair<Integer, String>, Item<UUID>, Triplet<Long, Byte, Boolean>>>>() {},
+                new TypeToken<ListWithTypeVariable<MiscFields<Pair<Integer, String>, Item<UUID>, Triplet<Long, Byte, Boolean>>>>() {});
     }
 
     @Test
@@ -68,7 +82,10 @@ class TypeTokenBulkAutoVerificationTest {
                 new TypeToken<Map<String, Map<Integer, String>>>() {},
                 new TypeToken<Map<String, Map<Integer, List<String>>>>() {},
                 new TypeToken<Map<Item<Map<Integer, String>>, String>>() {},
-                new TypeToken<Map<Pair<Integer, String>, Pair<Map<String, Short>, Long>>>() {});
+                new TypeToken<Map<Item<Map<Integer, Pair<Integer, String>[]>>, String>>() {},
+                new TypeToken<Map<Pair<Integer, String>, Pair<Map<String, Short>, Long>>>() {},
+                new TypeToken<Map<Item<String>, MiscFields<Pair<Integer, String>, Item<UUID>, Triplet<Long, Byte, Boolean>>>>() {},
+                new TypeToken<MapWithTypeVariables<Item<String>, MiscFields<Pair<Integer, String>, Item<UUID>, Triplet<Long, Byte, Boolean>>>>() {});
     }
 
     @Test
@@ -76,7 +93,9 @@ class TypeTokenBulkAutoVerificationTest {
         bulkAssertFullyPopulated(
                 new TypeToken<Item<Item<Integer>>>() {},
                 new TypeToken<Item<Item<Item<Item<String>>>>>() {},
-                new TypeToken<List<Item<List<Item<List<Item<String>>>>>>>() {});
+                new TypeToken<List<Item<List<Item<List<Item<String>>>>>>>() {},
+                new TypeToken<Item<List<Pair<String, Integer>>>>() {},
+                new TypeToken<Item<Map<String, Integer>>>() {});
     }
 
     @Test
