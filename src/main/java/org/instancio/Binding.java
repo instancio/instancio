@@ -66,7 +66,7 @@ public class Binding {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public final boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof Binding)) return false;
         final Binding binding = (Binding) o;
@@ -74,7 +74,7 @@ public class Binding {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(targets);
     }
 
@@ -106,7 +106,7 @@ public class Binding {
         }
 
         @Override
-        public boolean equals(final Object o) {
+        public final boolean equals(final Object o) {
             if (this == o) return true;
             if (!(o instanceof BindingTarget)) return false;
             final BindingTarget that = (BindingTarget) o;
@@ -116,7 +116,7 @@ public class Binding {
         }
 
         @Override
-        public int hashCode() {
+        public final int hashCode() {
             return Objects.hash(bindingType, targetType, fieldName);
         }
     }

@@ -31,7 +31,9 @@ public class InstancioValidator {
     }
 
     public static void validateTypeParameters(Class<?> rootClass, List<Class<?>> rootTypeParameters) {
-        final int typeVarsLength = rootClass.getTypeParameters().length;
+        final int typeVarsLength = rootClass.isArray()
+                ? rootClass.getComponentType().getTypeParameters().length
+                : rootClass.getTypeParameters().length;
 
         if (typeVarsLength == 0 && !rootTypeParameters.isEmpty()) {
             final String suppliedParams = rootTypeParameters.stream()
@@ -47,7 +49,7 @@ public class InstancioValidator {
         if (typeVarsLength != rootTypeParameters.size()) {
             throw new InstancioApiException(String.format(
                     "\nClass '%s' has %s type parameters: %s." +
-                            "\nPlease specify the required type parameters using 'withTypeParameters(Class... types)`",
+                            "\nSpecify the required type parameters using 'withTypeParameters(Class... types)`",
                     rootClass.getName(),
                     rootClass.getTypeParameters().length,
                     Arrays.toString(rootClass.getTypeParameters())));
