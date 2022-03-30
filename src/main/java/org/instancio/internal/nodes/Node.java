@@ -20,12 +20,9 @@ import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public abstract class Node {
@@ -82,25 +79,6 @@ public abstract class Node {
         return genericType;
     }
 
-    final Type resolveTypeVariable(TypeVariable<?> typeVariable) {
-        Type mappedType = typeMap.get(typeVariable);
-
-        Node ancestor = parent;
-        if ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
-            mappedType = ancestor.getTypeMap().get(typeVariable);
-        }
-
-        if (mappedType instanceof Class || mappedType instanceof ParameterizedType) {
-            return mappedType;
-        }
-
-        if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
-            return nodeContext.getRootTypeMap().get(mappedType);
-        }
-
-        throw new IllegalStateException("Failed resolving type variable: " + typeVariable);
-    }
-
     public Node getParent() {
         return parent;
     }
@@ -114,10 +92,6 @@ public abstract class Node {
             children = Collections.unmodifiableList(collectChildren());
         }
         return children;
-    }
-
-    protected final Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
-        return nodeContext.getRootTypeMap();
     }
 
     @Override
