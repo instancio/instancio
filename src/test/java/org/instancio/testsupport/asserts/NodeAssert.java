@@ -42,9 +42,9 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
     }
 
 
-    public NodeAssert hasKlass(Class<?> expected) {
+    public NodeAssert hasTargetClass(Class<?> expected) {
         isNotNull();
-        assertThat(actual.getKlass()).isEqualTo(expected);
+        assertThat(actual.getTargetClass()).isEqualTo(expected);
         return this;
     }
 

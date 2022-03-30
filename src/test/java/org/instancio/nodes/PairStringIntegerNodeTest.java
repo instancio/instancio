@@ -27,7 +27,7 @@ class PairStringIntegerNodeTest extends NodeTestTemplate<Pair<String, Integer>> 
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(Pair.class)
+                .hasTargetClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", String.class)
                 .hasTypeMappedTo(Pair.class, "R", Integer.class)
                 .hasTypeMapWithSize(2)
@@ -37,7 +37,7 @@ class PairStringIntegerNodeTest extends NodeTestTemplate<Pair<String, Integer>> 
         assertNode(NodeUtils.getChildNode(rootNode, "left"))
                 .hasFieldName("left")
                 .hasParent(rootNode)
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren();
 
@@ -45,7 +45,7 @@ class PairStringIntegerNodeTest extends NodeTestTemplate<Pair<String, Integer>> 
         assertNode(NodeUtils.getChildNode(rootNode, "right"))
                 .hasFieldName("right")
                 .hasParent(rootNode)
-                .hasKlass(Integer.class)
+                .hasTargetClass(Integer.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren();
     }

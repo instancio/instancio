@@ -34,7 +34,7 @@ public class ArrayNodeHandler implements NodeHandler {
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         if (node instanceof ArrayNode) {
-            final Class<?> componentType = ((ArrayNode) node).getElementNode().getKlass();
+            final Class<?> componentType = ((ArrayNode) node).getElementNode().getTargetClass();
             final Generator<?> generator = generatorResolver.getArrayGenerator(componentType);
             final Object arrayObject = generator.generate();
             final GeneratorResult result = GeneratorResult.create(arrayObject, generator.getHints());

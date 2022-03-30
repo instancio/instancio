@@ -42,8 +42,8 @@ public class MapNodeHandler implements NodeHandler {
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         if (node instanceof MapNode) {
-            Verify.isTrue(Map.class.isAssignableFrom(node.getKlass()), "Expected a map type: %s", node.getKlass());
-            final Class<?> effectiveType = context.getSubtypeMapping(node.getKlass());
+            Verify.isTrue(Map.class.isAssignableFrom(node.getTargetClass()), "Expected a map type: %s", node.getTargetClass());
+            final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
             final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(randomSize()).build();
             final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(effectiveType), hints);
             return Optional.of(result);

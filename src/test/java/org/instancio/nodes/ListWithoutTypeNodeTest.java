@@ -30,16 +30,16 @@ class ListWithoutTypeNodeTest extends NodeTestTemplate<ListWithoutType> {
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(ListWithoutType.class)
+                .hasTargetClass(ListWithoutType.class)
                 .hasChildrenOfSize(1);
 
         final CollectionNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("list")
                 .hasNoChildren()
-                .hasKlass(List.class)
+                .hasTargetClass(List.class)
                 .getAs(CollectionNode.class);
 
         assertNode(list.getElementNode())
-                .hasKlass(Object.class);
+                .hasTargetClass(Object.class);
     }
 }

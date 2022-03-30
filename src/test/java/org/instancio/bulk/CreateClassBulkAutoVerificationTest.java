@@ -16,8 +16,12 @@
 package org.instancio.bulk;
 
 import org.instancio.Instancio;
+import org.instancio.pojo.generics.MiscFields;
+import org.instancio.pojo.generics.TripletAFooBarBazStringListOfB;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.pojo.generics.basic.Pair;
+import org.instancio.pojo.generics.basic.Triplet;
+import org.instancio.pojo.generics.container.OneItemContainer;
 import org.instancio.pojo.generics.foobarbaz.Bar;
 import org.instancio.pojo.generics.foobarbaz.Baz;
 import org.instancio.pojo.generics.foobarbaz.Foo;
@@ -28,15 +32,14 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
-import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 
 /**
  * Various contrived generic types.
@@ -50,8 +53,15 @@ class CreateClassBulkAutoVerificationTest {
         bulkAssertFullyPopulated(
                 TypeToCreate.of(Item[].class, Integer.class),
                 TypeToCreate.of(Pair[].class, String.class, int.class),
+                TypeToCreate.of(Triplet[].class, String.class, Address.class, Person.class),
+                TypeToCreate.of(OneItemContainer[].class, Integer.class),
+                TypeToCreate.of(MiscFields[].class, Integer.class, String.class, Boolean.class),
+                TypeToCreate.of(MiscFields[].class, Person.class, Address.class, Boolean.class),
+                TypeToCreate.of(TripletAFooBarBazStringListOfB[].class, Integer.class, String.class),
                 TypeToCreate.of(List[].class, int.class),
-                TypeToCreate.of(List[].class, Person.class));
+                TypeToCreate.of(List[].class, Person.class),
+                TypeToCreate.of(Map[].class, Integer.class, String.class),
+                TypeToCreate.of(Map[].class, Person.class, Address.class));
     }
 
     @Test
@@ -98,27 +108,32 @@ class CreateClassBulkAutoVerificationTest {
                 TypeToCreate.of(Baz.class, Person.class));
     }
 
-    private static void bulkAssertFullyPopulated(TypeToCreate... typesToCreate) {
-        Map<Type, Object> failed = new HashMap<>();
-        for (TypeToCreate typeToCreate : typesToCreate) {
-            final Object result = Instancio.of(typeToCreate.targetClass)
-                    .withTypeParameters(typeToCreate.typeArgs)
-                    .create();
+    @Test
+    void miscFields() {
+        bulkAssertFullyPopulated(
+                TypeToCreate.of(MiscFields.class, Integer.class, String.class, Boolean.class));
+    }
 
+    private static void bulkAssertFullyPopulated(TypeToCreate... typesToCreate) {
+        List<TypeToCreate> failed = new ArrayList<>();
+        for (TypeToCreate typeToCreate : typesToCreate) {
             try {
+                final Object result = Instancio.of(typeToCreate.targetClass)
+                        .withTypeParameters(typeToCreate.typeArgs)
+                        .create();
+
                 assertThatObject(result)
                         .as("Type '%s' failed: %s", typeToCreate.targetClass.getTypeName(), result)
                         .isFullyPopulated();
-            } catch (AssertionError e) {
-                failed.put(typeToCreate.targetClass, result);
+            } catch (Exception e) {
+                failed.add(typeToCreate);
             }
         }
 
         if (!failed.isEmpty()) {
             LOG.error("Failures:");
-            failed.forEach((type, obj) -> {
-                LOG.error("\n\n-> '{}': {}", shortenPackageNames(type), obj);
-            });
+            failed.forEach((typeToCreate) -> LOG.error("\n\n-> '{}', type params: {}",
+                    typeToCreate.targetClass, Arrays.toString(typeToCreate.typeArgs)));
 
             fail("Number of failures: %s", failed.size());
         }

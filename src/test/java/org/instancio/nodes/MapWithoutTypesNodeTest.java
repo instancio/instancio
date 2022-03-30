@@ -30,16 +30,16 @@ class MapWithoutTypesNodeTest extends NodeTestTemplate<MapWithoutTypes> {
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(MapWithoutTypes.class)
+                .hasTargetClass(MapWithoutTypes.class)
                 .hasChildrenOfSize(1);
 
         final MapNode map = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("map")
                 .hasNoChildren()
-                .hasKlass(Map.class)
+                .hasTargetClass(Map.class)
                 .getAs(MapNode.class);
 
-        assertNode(map.getKeyNode()).hasKlass(Object.class);
-        assertNode(map.getValueNode()).hasKlass(Object.class);
+        assertNode(map.getKeyNode()).hasTargetClass(Object.class);
+        assertNode(map.getValueNode()).hasTargetClass(Object.class);
     }
 }

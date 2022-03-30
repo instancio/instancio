@@ -26,7 +26,7 @@ class CyclicListNodeTest extends NodeTestTemplate<CyclicList> {
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(CyclicList.class)
+                .hasTargetClass(CyclicList.class)
                 .hasChildrenOfSize(1);
     }
 }

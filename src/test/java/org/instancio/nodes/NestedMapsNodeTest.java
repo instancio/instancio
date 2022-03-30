@@ -41,7 +41,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
         final MapNode outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
-                .hasKlass(Map.class)
+                .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Long.class)
                 .hasTypeMappedTo(Map.class, "V", Types.MAP_STRING_BOOLEAN.get())
                 .hasTypeMapWithSize(2)
@@ -58,7 +58,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
         final MapNode outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
-                .hasKlass(Map.class)
+                .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", "OKEY")
                 .hasTypeMappedTo(Map.class, "V", "java.util.Map<IKEY, java.lang.Boolean>")
                 .hasTypeMapWithSize(2)
@@ -72,26 +72,26 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
         assertNode(outerMap.getKeyNode())
                 .hasParent(outerMap)
                 .hasNullField()
-                .hasKlass(Long.class)
+                .hasTargetClass(Long.class)
                 .hasNoChildren();
 
         final MapNode innerMapNode = assertNode(outerMap.getValueNode())
                 .hasParent(outerMap)
                 .hasNullField()
-                .hasKlass(Map.class)
+                .hasTargetClass(Map.class)
                 .hasNoChildren()
                 .getAs(MapNode.class);
 
         assertNode(innerMapNode.getKeyNode())
                 .hasParent(innerMapNode)
                 .hasNullField()
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasNoChildren();
 
         assertNode(innerMapNode.getValueNode())
                 .hasParent(innerMapNode)
                 .hasNullField()
-                .hasKlass(Boolean.class)
+                .hasTargetClass(Boolean.class)
                 .hasNoChildren();
     }
 

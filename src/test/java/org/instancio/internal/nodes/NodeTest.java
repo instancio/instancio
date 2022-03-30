@@ -72,28 +72,28 @@ class NodeTest {
         @Test
         void listOfString() {
             assertNode(createNode(List.class, rootTypeMap, Types.LIST_STRING))
-                    .hasKlass(List.class)
+                    .hasTargetClass(List.class)
                     .hasGenericType(getTypeOf(Types.LIST_STRING));
         }
 
         @Test
         void mapOfIntegerString() {
             assertNode(createNode(Map.class, rootTypeMap, Types.MAP_INTEGER_STRING))
-                    .hasKlass(Map.class)
+                    .hasTargetClass(Map.class)
                     .hasGenericType(getTypeOf(Types.MAP_INTEGER_STRING));
         }
 
         @Test
         void pairOfIntegerString() {
             assertNode(createNode(Pair.class, rootTypeMap, Types.PAIR_INTEGER_STRING))
-                    .hasKlass(Pair.class)
+                    .hasTargetClass(Pair.class)
                     .hasGenericType(getTypeOf(Types.PAIR_INTEGER_STRING));
         }
 
         @Test
         void tripletOfBooleanStringInteger() {
             assertNode(createNode(Triplet.class, rootTypeMap, Types.TRIPLET_BOOLEAN_INTEGER_STRING))
-                    .hasKlass(Triplet.class)
+                    .hasTargetClass(Triplet.class)
                     .hasGenericType(getTypeOf(Types.TRIPLET_BOOLEAN_INTEGER_STRING));
         }
 
@@ -103,7 +103,7 @@ class NodeTest {
             };
 
             assertNode(createNode(Pair.class, rootTypeMap, type))
-                    .hasKlass(Pair.class)
+                    .hasTargetClass(Pair.class)
                     .hasGenericType(getTypeOf(type));
         }
     }

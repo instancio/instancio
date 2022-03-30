@@ -29,14 +29,14 @@ class PairContainerIntegerStringNodeTest extends NodeTestTemplate<PairContainer<
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(PairContainer.class)
+                .hasTargetClass(PairContainer.class)
                 .hasChildrenOfSize(1);
 
         // Pair<X, Y> pairValue;
         final String pairValueFieldName = "pairValue";
         final Node pairValue = assertNode(NodeUtils.getChildNode(rootNode, pairValueFieldName))
                 .hasFieldName(pairValueFieldName)
-                .hasKlass(Pair.class)
+                .hasTargetClass(Pair.class)
                 .hasGenericTypeName("org.instancio.pojo.generics.basic.Pair<X, Y>")
                 .hasTypeMappedTo(Pair.class, "L", "X")
                 .hasTypeMappedTo(Pair.class, "R", "Y")
@@ -45,11 +45,11 @@ class PairContainerIntegerStringNodeTest extends NodeTestTemplate<PairContainer<
                 .getAs(ClassNode.class);
 
         assertNode(NodeUtils.getChildNode(pairValue, "left"))
-                .hasKlass(Integer.class)
+                .hasTargetClass(Integer.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(pairValue, "right"))
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasNoChildren();
     }
 }

@@ -31,7 +31,7 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(ListListString.class)
+                .hasTargetClass(ListListString.class)
                 .hasChildrenOfSize(1);
 
         // List<List<String>>
@@ -45,7 +45,7 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
         final CollectionNode outerListElementNode = (CollectionNode) outerListNode.getElementNode();
 
         assertNode(outerListElementNode)
-                .hasKlass(List.class)
+                .hasTargetClass(List.class)
                 .hasNullField()
                 .hasGenericType(Types.LIST_STRING.get())
                 .hasNoChildren()
@@ -53,7 +53,7 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
 
         // String
         assertNode(outerListElementNode.getElementNode())
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasNullField()
                 .hasNoChildren();
     }

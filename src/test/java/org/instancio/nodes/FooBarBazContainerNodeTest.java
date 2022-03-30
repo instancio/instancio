@@ -32,12 +32,12 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(FooBarBazContainer.class)
+                .hasTargetClass(FooBarBazContainer.class)
                 .hasChildrenOfSize(1);
 
         final Node itemNode = CollectionUtils.getOnlyElement(rootNode.getChildren());
         assertNode(itemNode)
-                .hasKlass(Foo.class)
+                .hasTargetClass(Foo.class)
                 .hasTypeMappedTo(Foo.class, "X", "org.instancio.pojo.generics.foobarbaz." +
                         "Bar<org.instancio.pojo.generics.foobarbaz." +
                         "Baz<java.lang.String>>")
@@ -49,7 +49,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
 
         final Node fooValueNode = NodeUtils.getChildNode(itemNode, "fooValue");
         assertNode(fooValueNode)
-                .hasKlass(Bar.class)
+                .hasTargetClass(Bar.class)
                 .hasTypeMappedTo(Bar.class, "Y", "org.instancio.pojo.generics.foobarbaz." +
                         "Baz<java.lang.String>")
                 .hasGenericTypeName("org.instancio.pojo.generics.foobarbaz." +
@@ -58,22 +58,22 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                 .hasChildrenOfSize(2);
 
         assertNode(NodeUtils.getChildNode(itemNode, "otherFooValue"))
-                .hasKlass(Object.class)
+                .hasTargetClass(Object.class)
                 .hasNoChildren();
 
         final Node barValueNode = NodeUtils.getChildNode(fooValueNode, "barValue");
         assertNode(barValueNode)
-                .hasKlass(Baz.class)
+                .hasTargetClass(Baz.class)
                 .hasTypeMappedTo(Baz.class, "Z", String.class)
                 .hasGenericTypeName("org.instancio.pojo.generics.foobarbaz.Baz<java.lang.String>")
                 .hasChildrenOfSize(1);
 
         assertNode(NodeUtils.getChildNode(fooValueNode, "otherBarValue"))
-                .hasKlass(Object.class)
+                .hasTargetClass(Object.class)
                 .hasNoChildren();
 
         assertNode(getOnlyElement(barValueNode.getChildren()))
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasGenericTypeName("Z")
                 .hasNoChildren();
     }

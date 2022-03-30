@@ -38,7 +38,7 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-        final Class<?> effectiveType = context.getSubtypeMapping(node.getKlass());
+        final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
         final Optional<Generator<?>> generatorOpt = generatorResolver.get(effectiveType);
 
         return generatorOpt.map(generator -> {

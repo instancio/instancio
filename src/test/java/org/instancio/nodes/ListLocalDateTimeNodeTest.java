@@ -29,7 +29,7 @@ public class ListLocalDateTimeNodeTest extends NodeTestTemplate<List<LocalDateTi
     @Override
     protected void verify(final Node rootNode) {
         final CollectionNode listNode = assertNode(rootNode)
-                .hasKlass(List.class)
+                .hasTargetClass(List.class)
                 .hasTypeMappedTo(List.class, "E", LocalDateTime.class)
                 .hasNoChildren()
                 .getAs(CollectionNode.class);
@@ -37,7 +37,7 @@ public class ListLocalDateTimeNodeTest extends NodeTestTemplate<List<LocalDateTi
         assertNode(listNode.getElementNode())
                 .hasParent(listNode)
                 .hasNullField()
-                .hasKlass(LocalDateTime.class)
+                .hasTargetClass(LocalDateTime.class)
                 .hasGenericType(null)
                 .hasEmptyTypeMap();
     }

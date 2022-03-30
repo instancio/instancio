@@ -35,7 +35,6 @@ import java.util.Map;
 public class NodeFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
-    private static final String MAP_KEY_TYPE_VARIABLE = "K";
 
     public Node createRootNode(final NodeContext nodeContext,
                                final Class<?> klass,
@@ -138,8 +137,6 @@ public class NodeFactory {
                     final Type passedOnType;
 
                     if (fieldGenericType instanceof TypeVariable) {
-                        // NOTE: replaced by 'resolve' method
-                        // final Type mappedType = parent.getTypeMap().get(fieldGenericType);
                         final Type mappedType = resolveTypeVariable(nodeContext, (TypeVariable<?>) fieldGenericType, parent);
 
                         passedOnType = mappedType instanceof ParameterizedType
@@ -148,8 +145,6 @@ public class NodeFactory {
 
                     } else if (fieldGenericType instanceof ParameterizedType) {
                         passedOnType = ((ParameterizedType) fieldGenericType).getRawType();
-                    } else if (fieldGenericType instanceof Class) {
-                        passedOnType = fieldGenericType;
                     } else {
                         throw new IllegalStateException("Failed resolving collection type");
                     }
@@ -238,33 +233,12 @@ public class NodeFactory {
                 final Type compType = arrayType.getGenericComponentType();
                 final Class<?> rawType = TypeUtils.getRawType(compType);
                 final Class<?> arrayClass = Array.newInstance(rawType, 0).getClass();
-
-                //return this.createNode(nodeContext, arrayClass, compType, field, parent);
-
                 return this.createArrayNode(nodeContext, arrayClass, arrayType, field, parent);
-
             }
             if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
                 Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
                 return new ClassNode(nodeContext, rawType, field, mappedType, parent);
             }
-        } else if (genericType instanceof ParameterizedType) {
-            throw new RuntimeException("Unused branch"); // TODO cleanup
-//            if (field != null) {
-//                final Type fieldGenericType = field.getGenericType();
-//                final Type mappedType = parent.getTypeMap().getOrDefault(fieldGenericType, fieldGenericType);
-//                if (mappedType instanceof Class) {
-//                    return new ClassNode(nodeContext, (Class<?>) mappedType, field, null, parent);
-//                }
-//                if (nodeContext.getRootTypeMap().containsKey(mappedType)) {
-//
-//                    final Class<?> rawType = nodeContext.getRootTypeMap().get(mappedType);
-//                    return new ClassNode(nodeContext, rawType, field, null, parent);
-//                }
-//            }
-        } else if (genericType instanceof Class) {
-            throw new RuntimeException("Unused branch"); // TODO cleanup
-            //return new ClassNode(nodeContext, (Class<?>) genericType, field, null, parent);
         }
 
         throw new IllegalStateException("Error creating a class node for klass: " + klass.getName() + ", type: " + genericType);
@@ -286,6 +260,7 @@ public class NodeFactory {
             elementNode = this.createNode(nodeContext, actualRawType, actualPType, null, parent);
         } else if (actualTypeArg instanceof TypeVariable) {
             Type mappedType = resolveTypeVariable(nodeContext, (TypeVariable<?>) actualTypeArg, parent);
+
 
             if (mappedType instanceof Class) {
                 elementNode = this.createNode(nodeContext, (Class<?>) mappedType, null, null, parent);
@@ -318,7 +293,12 @@ public class NodeFactory {
         Type mappedType = parent.getTypeMap().getOrDefault(typeVariable, typeVariable);
 
         Node ancestor = parent;
-        while ((mappedType == null || !nodeContext.getRootTypeMap().containsKey(mappedType)) && ancestor != null) {
+        while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
+            Type rootTypeMapping = nodeContext.getRootTypeMap().get(mappedType);
+            if (rootTypeMapping != null) {
+                return rootTypeMapping;
+            }
+
             mappedType = ancestor.getTypeMap().getOrDefault(mappedType, mappedType);
 
             if (mappedType instanceof Class || mappedType instanceof ParameterizedType) {
@@ -329,15 +309,4 @@ public class NodeFactory {
         }
         return mappedType;
     }
-
-    // TODO delete
-//    private Type resolveTypeVariable2(final NodeContext nodeContext, @Nullable final TypeVariable<?> typeVariable, final Node parent) {
-//        Type mappedType = parent == null ? null : parent.resolveTypeVariable(typeVariable);
-//
-//        if (mappedType == null) {
-//            mappedType = nodeContext.getRootTypeMap().get(typeVariable);
-//        }
-//        return mappedType;
-//    }
-
 }

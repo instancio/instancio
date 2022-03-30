@@ -34,7 +34,7 @@ class TwoListsOfItemStringNodeTest extends NodeTestTemplate<TwoListsOfItemString
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(TwoListsOfItemString.class)
+                .hasTargetClass(TwoListsOfItemString.class)
                 .hasChildrenOfSize(2);
 
         assertListNode(rootNode, "list1");
@@ -49,12 +49,12 @@ class TwoListsOfItemStringNodeTest extends NodeTestTemplate<TwoListsOfItemString
 
         assertNode(list.getElementNode())
                 .hasNullField()
-                .hasKlass(Item.class)
+                .hasTargetClass(Item.class)
                 .hasChildrenOfSize(1);
 
         assertNode(CollectionUtils.getOnlyElement(list.getElementNode().getChildren()))
                 .hasFieldName("value")
-                .hasKlass(String.class)
+                .hasTargetClass(String.class)
                 .hasNoChildren();
     }
 }

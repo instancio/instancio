@@ -68,12 +68,12 @@ public class CollectionNode extends Node {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
         CollectionNode other = (CollectionNode) o;
-        return Objects.equals(this.getKlass(), other.getKlass())
+        return Objects.equals(this.getTargetClass(), other.getTargetClass())
                 && Objects.equals(this.getElementNode(), other.getElementNode());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKlass(), getElementNode());
+        return Objects.hash(getTargetClass(), getElementNode());
     }
 }

@@ -29,7 +29,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
-                .hasKlass(ItemArrayContainer.class)
+                .hasTargetClass(ItemArrayContainer.class)
                 .hasChildrenOfSize(2);
 
         // Item<X>[] itemArrayX
@@ -43,7 +43,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
         final String itemArrayField = "itemArrayX";
         final ArrayNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
                 .hasFieldName(itemArrayField)
-                .hasKlass(Item[].class)
+                .hasTargetClass(Item[].class)
                 .hasGenericTypeName("org.instancio.pojo.generics.basic.Item<X>[]")
                 .hasNoChildren()
                 .hasEmptyTypeMap()
@@ -56,7 +56,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
         final String itemArrayField = "itemArrayY";
         final ArrayNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
                 .hasFieldName(itemArrayField)
-                .hasKlass(Item[].class)
+                .hasTargetClass(Item[].class)
                 .hasGenericTypeName("org.instancio.pojo.generics.basic.Item<Y>[]")
                 .hasNoChildren()
                 .hasEmptyTypeMap()
@@ -68,7 +68,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
     private void assertElementNode(ArrayNode arrayNode, String expectedType) {
         final Node elementNode = arrayNode.getElementNode();
         assertNode(elementNode)
-                .hasKlass(Item.class)
+                .hasTargetClass(Item.class)
                 .hasNullField()
                 .hasParent(arrayNode)
                 .hasTypeMappedTo(Item.class, "K", expectedType)
