@@ -122,7 +122,7 @@ public interface InstancioApi<T> {
      * example, Instancio will not modify the created instance in any way. If the {@code PhoneNumber} class
      * has other fields, they will be ignored.
      *
-     * @param target    class or field
+     * @param target    binding
      * @param generator for supplying the target's value
      * @param <V>       type of the value to generate
      * @return API builder reference
@@ -142,13 +142,31 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      *
-     * @param target class or field
+     * @param target binding
      * @param gen    provider of built-in generators
      * @param <V>    type of the value to generate
      * @param <S>    generator spec type
      * @return API builder reference
      */
     <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(Binding target, Function<Generators, S> gen);
+
+    /**
+     * A callback that gets invoked after an object has been fully populated.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     // Sets countryCode field on all instances of Phone to the specified value
+     *     Person person = Instancio.of(Person.class)
+     *             .onComplete(all(Phone.class), (Phone phone) -> phone.setCountryCode("+1"))
+     *             .create();
+     * }</pre>
+     *
+     * @param target   binding
+     * @param callback to invoke after object has been populated
+     * @param <V>      type of object handled by the callback
+     * @return API builder reference
+     */
+    <V> InstancioApi<T> onComplete(Binding target, OnCompleteCallback<V> callback);
 
     /**
      * Maps an interface or base class to the given subclass.

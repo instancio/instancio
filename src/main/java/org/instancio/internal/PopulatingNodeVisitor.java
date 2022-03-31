@@ -40,17 +40,20 @@ public class PopulatingNodeVisitor implements NodeVisitor {
     private final GeneratorFacade generatorFacade;
     private final ModelContext<?> context;
     private final Queue<CreateItem> queue;
+    private final CallbackHandler callbackHandler;
 
     public PopulatingNodeVisitor(@Nullable final Object owner,
                                  final GeneratorResult generatorResult,
                                  final GeneratorFacade generatorFacade,
                                  final ModelContext<?> context,
-                                 final Queue<CreateItem> queue) {
+                                 final Queue<CreateItem> queue,
+                                 final CallbackHandler callbackHandler) {
         this.owner = owner;
         this.generatorResult = generatorResult;
         this.generatorFacade = generatorFacade;
         this.context = context;
         this.queue = queue;
+        this.callbackHandler = callbackHandler;
     }
 
     @Override
@@ -96,12 +99,13 @@ public class PopulatingNodeVisitor implements NodeVisitor {
                 elementValue = null;
             } else {
                 elementValue = elementResult.getValue();
-                elementNode.accept(new PopulatingNodeVisitor(collectionObj, elementResult, generatorFacade, context, queue));
+                elementNode.accept(new PopulatingNodeVisitor(collectionObj, elementResult, generatorFacade, context, queue, callbackHandler));
                 enqueueChildrenOf(elementNode, elementResult, queue);
             }
 
             if (elementValue != null || nullableElement) {
                 collectionObj.add(elementValue);
+                callbackHandler.addResult(elementNode, elementResult);
             }
         }
     }
@@ -126,10 +130,13 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
             final Object mapKey;
 
+            GeneratorResult keyResult = null;
+            GeneratorResult valueResult = null;
+
             if (context.getRandomProvider().diceRoll(nullableKey)) {
                 mapKey = null;
             } else {
-                final GeneratorResult keyResult = generatorFacade.generateNodeValue(keyNode, mapObj);
+                keyResult = generatorFacade.generateNodeValue(keyNode, mapObj);
                 enqueueChildrenOf(keyNode, keyResult, queue);
                 mapKey = keyResult.getValue();
             }
@@ -138,14 +145,20 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             if (context.getRandomProvider().diceRoll(nullableValue)) {
                 mapValue = null;
             } else {
-                final GeneratorResult valueResult = generatorFacade.generateNodeValue(valueNode, mapObj);
+                valueResult = generatorFacade.generateNodeValue(valueNode, mapObj);
                 enqueueChildrenOf(valueNode, valueResult, queue);
                 mapValue = valueResult.getValue();
-                valueNode.accept(new PopulatingNodeVisitor(mapObj, valueResult, generatorFacade, context, queue));
+                valueNode.accept(new PopulatingNodeVisitor(mapObj, valueResult, generatorFacade, context, queue, callbackHandler));
             }
 
             if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
                 mapObj.put(mapKey, mapValue);
+                if (mapKey != null) {
+                    callbackHandler.addResult(keyNode, keyResult);
+                }
+                if (mapValue != null) {
+                    callbackHandler.addResult(valueNode, valueResult);
+                }
             }
         }
     }
@@ -173,8 +186,8 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, arrayObj);
             final Object elementValue = elementResult.getValue();
             Array.set(arrayObj, i, elementValue);
-
             enqueueChildrenOf(elementNode, elementResult, queue);
+            callbackHandler.addResult(elementNode, elementResult);
         }
     }
 

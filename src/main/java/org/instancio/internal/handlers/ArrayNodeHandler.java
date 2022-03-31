@@ -16,6 +16,7 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Generator;
+import org.instancio.internal.CallbackHandler;
 import org.instancio.internal.GeneratorResolver;
 import org.instancio.internal.GeneratorResult;
 import org.instancio.internal.nodes.ArrayNode;
@@ -26,9 +27,11 @@ import java.util.Optional;
 public class ArrayNodeHandler implements NodeHandler {
 
     private final GeneratorResolver generatorResolver;
+    private final CallbackHandler callbackHandler;
 
-    public ArrayNodeHandler(final GeneratorResolver generatorResolver) {
+    public ArrayNodeHandler(final GeneratorResolver generatorResolver, final CallbackHandler callbackHandler) {
         this.generatorResolver = generatorResolver;
+        this.callbackHandler = callbackHandler;
     }
 
     @Override
@@ -38,6 +41,7 @@ public class ArrayNodeHandler implements NodeHandler {
             final Generator<?> generator = generatorResolver.getArrayGenerator(componentType);
             final Object arrayObject = generator.generate();
             final GeneratorResult result = GeneratorResult.create(arrayObject, generator.getHints());
+            callbackHandler.addResult(node, result);
             return Optional.of(result);
         }
         return Optional.empty();
