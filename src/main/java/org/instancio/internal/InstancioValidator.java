@@ -17,12 +17,12 @@ package org.instancio.internal;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.settings.SettingKey;
+import org.instancio.util.Format;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class InstancioValidator {
 
@@ -36,23 +36,37 @@ public class InstancioValidator {
                 : rootClass.getTypeParameters().length;
 
         if (typeVarsLength == 0 && !rootTypeParameters.isEmpty()) {
-            final String suppliedParams = rootTypeParameters.stream()
-                    .map(Class::getSimpleName)
-                    .collect(Collectors.joining(", "));
+            final String suppliedParams = Format.paramsToCsv(rootTypeParameters);
 
             throw new InstancioApiException(String.format(
-                    "\nClass '%s' is not generic." +
-                            "\nSpecifying type parameters 'withTypeParameters(%s)` is not valid for this class.",
+                    "%nClass '%s' is not generic." +
+                            "%nSpecifying type parameters 'withTypeParameters(%s)` is not valid for this class.",
                     rootClass.getName(), suppliedParams));
         }
 
         if (typeVarsLength != rootTypeParameters.size()) {
             throw new InstancioApiException(String.format(
-                    "\nClass '%s' has %s type parameters: %s." +
-                            "\nSpecify the required type parameters using 'withTypeParameters(Class... types)`",
+                    "%nClass '%s' has %s type parameters: %s." +
+                            "%nSpecify the required type parameters using 'withTypeParameters(Class... types)`",
                     rootClass.getName(),
                     rootClass.getTypeParameters().length,
                     Arrays.toString(rootClass.getTypeParameters())));
+        }
+
+        for (Class<?> param : rootTypeParameters) {
+            if (param.getTypeParameters().length > 0) {
+                final String suppliedParams = Format.paramsToCsv(rootTypeParameters);
+                final String classWithTypeParams = String.format("%s<%s>",
+                        param.getSimpleName(), Format.getTypeVariablesCsv(param));
+
+                throw new InstancioApiException(String.format(
+                        "%n%n'withTypeParameters(%s)` contains a generic class: %s'" +
+                                "%n%nFor nested generics use the type token API, for example:" +
+                                "%nMap<String, List<Integer>> map = Instancio.create(new TypeToken<Map<String, List<Integer>>>(){});" +
+                                "%n%nor the builder version:" +
+                                "%nMap<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();",
+                        suppliedParams, classWithTypeParams));
+            }
         }
     }
 
