@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.bulk;
+package org.instancio.creation.bulk;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
@@ -53,7 +53,10 @@ class TypeTokenBulkAutoVerificationTest {
     @Test
     void arrays() {
         bulkAssertFullyPopulated(
+                new TypeToken<int[]>() {},
+                new TypeToken<Integer[]>() {},
                 new TypeToken<Item<Integer>[]>() {},
+                new TypeToken<Item<Item<Integer>[]>[]>() {},
                 new TypeToken<Pair<String, int[]>>() {},
                 new TypeToken<Person>() {},
                 new TypeToken<List<int[]>>() {});
@@ -95,6 +98,8 @@ class TypeTokenBulkAutoVerificationTest {
     @Test
     void items() {
         bulkAssertFullyPopulated(
+                new TypeToken<Item<int[]>>() {},
+                new TypeToken<Item<Integer[]>>() {},
                 new TypeToken<Item<Item<Integer>>>() {},
                 new TypeToken<Item<Item<Item<Item<String>>>>>() {},
                 new TypeToken<List<Item<List<Item<List<Item<String>>>>>>>() {},
@@ -105,6 +110,8 @@ class TypeTokenBulkAutoVerificationTest {
     @Test
     void pairs() {
         bulkAssertFullyPopulated(
+                new TypeToken<Pair<int[], Integer[]>>() {},
+                new TypeToken<Pair<Item<int[]>, Item<Integer[]>>>() {},
                 new TypeToken<Pair<Boolean, Pair<Byte, String>>>() {},
                 new TypeToken<Pair<Boolean, Pair<Byte, Pair<Integer, String>>>>() {},
                 new TypeToken<Pair<Pair<Byte, String>, Pair<Integer, String>>>() {});
@@ -125,7 +132,8 @@ class TypeTokenBulkAutoVerificationTest {
                 assertThatObject(result)
                         .as("Type '%s' failed: %s", typeToken.get().getTypeName(), result)
                         .isFullyPopulated();
-            } catch (AssertionError e) {
+            } catch (Throwable ex) {
+                LOG.error("Error creating: {}", shortenPackageNames(typeToken.get()), ex);
                 failed.add(typeToken.get());
             }
         }

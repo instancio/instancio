@@ -15,9 +15,8 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -30,7 +29,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class ClassNode extends Node {
-    private static final Logger LOG = LoggerFactory.getLogger(ClassNode.class);
 
     public ClassNode(final NodeContext nodeContext,
                      final Class<?> klass,
@@ -57,29 +55,27 @@ public class ClassNode extends Node {
     }
 
     private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass) {
-        final NodeFactory nodeFactory = new NodeFactory();
+        final NodeFactory nodeFactory = new NodeFactory(nodeContext);
         final List<Field> fields = nodeContext.getFieldCollector().getFields(klass);
 
         return fields.stream()
                 .map(field -> {
-                    Type passedOnGenericType = field.getGenericType();
+                    Type genericType = field.getGenericType();
+                    Class<?> type = field.getType();
 
-                    Class<?> t = field.getType();
-                    if (field.getGenericType() instanceof Class) {
-                        t = (Class<?>) field.getGenericType();
-                    } else if (field.getGenericType() instanceof TypeVariable) {
-                        final Type mappedType = getTypeMap().get(field.getGenericType());
+                    if (genericType instanceof Class) {
+                        type = (Class<?>) field.getGenericType();
+                    } else if (genericType instanceof TypeVariable) {
+                        final Type mappedType = getTypeMap().get(genericType);
                         if (mappedType instanceof Class) {
-                            t = (Class<?>) mappedType;
+                            type = (Class<?>) mappedType;
                         } else if (mappedType instanceof ParameterizedType) {
-                            final ParameterizedType pType = (ParameterizedType) mappedType;
-                            passedOnGenericType = pType;
-                            t = (Class<?>) pType.getRawType();
+                            genericType = mappedType;
+                            type = TypeUtils.getRawType(mappedType);
                         }
                     }
 
-                    LOG.trace("Passing generic type to child field node: {}", passedOnGenericType);
-                    return nodeFactory.createNode(nodeContext, t, passedOnGenericType, field, this);
+                    return nodeFactory.createNode(type, genericType, field, this);
                 })
                 .collect(toList());
     }

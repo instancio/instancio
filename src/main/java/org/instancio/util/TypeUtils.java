@@ -15,6 +15,7 @@
  */
 package org.instancio.util;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -22,6 +23,25 @@ import java.lang.reflect.Type;
 public class TypeUtils {
     private TypeUtils() {
         // non-instantiable
+    }
+
+    public static Class<?> getArrayClass(final Type type) {
+        if (type instanceof Class) {
+            final Class<?> arrayClass = (Class<?>) type;
+            Verify.isTrue(arrayClass.isArray(), "Not an array: %s", type);
+            return arrayClass;
+        }
+        if (type instanceof GenericArrayType) {
+            final GenericArrayType arrayType = (GenericArrayType) type;
+            final Type genericComponent = arrayType.getGenericComponentType();
+            return Array.newInstance(TypeUtils.getRawType(genericComponent), 0).getClass();
+        }
+        throw new IllegalArgumentException("Not an array: " + type);
+    }
+
+    public static Type[] getTypeArguments(final Type parameterizedType) {
+        final ParameterizedType pType = (ParameterizedType) parameterizedType;
+        return pType.getActualTypeArguments();
     }
 
     @SuppressWarnings("unchecked")
