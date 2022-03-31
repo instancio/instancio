@@ -20,6 +20,7 @@ import org.instancio.Generator;
 import org.instancio.GeneratorContext;
 import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
+import org.instancio.OnCompleteCallback;
 import org.instancio.generators.ArrayGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.PropertiesLoader;
@@ -61,6 +62,9 @@ public class ModelContext<T> {
     private final Set<Class<?>> nullableClasses;
     private final Map<Field, Generator<?>> userSuppliedFieldGenerators;
     private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators;
+    private final Map<Field, OnCompleteCallback<?>> userSuppliedFieldCallbacks;
+    private final Map<Class<?>, OnCompleteCallback<?>> userSuppliedClassCallbacks;
+    private final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks;
     private final Map<Class<?>, Class<?>> subtypeMap;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final Settings settings;
@@ -81,10 +85,13 @@ public class ModelContext<T> {
         this.nullableClasses = new HashSet<>();
         this.userSuppliedFieldGenerators = new HashMap<>();
         this.userSuppliedClassGenerators = new HashMap<>();
+        this.userSuppliedFieldCallbacks = new HashMap<>();
+        this.userSuppliedClassCallbacks = new HashMap<>();
         this.ignoredBindings = Collections.unmodifiableSet(builder.ignoredBindings);
         this.nullableBindings = Collections.unmodifiableSet(builder.nullableBindings);
         this.generatorBindings = Collections.unmodifiableMap(builder.generatorBindings);
         this.generatorSpecBindings = Collections.unmodifiableMap(builder.generatorSpecBindings);
+        this.onCompleteCallbacks = Collections.unmodifiableMap(builder.onCompleteCallbacks);
         this.subtypeMap = Collections.unmodifiableMap(builder.subtypeMap);
 
         this.rootTypeMap = rootType instanceof ParameterizedType || rootType instanceof GenericArrayType
@@ -99,10 +106,15 @@ public class ModelContext<T> {
         this.seed = builder.seed;
         this.randomProvider = new RandomProvider(ObjectUtils.defaultIfNull(seed, ThreadLocalRandom.current().nextInt()));
 
+        putAllCallbacks(builder.onCompleteCallbacks);
         putAllBuiltInGenerators(builder.generatorSpecBindings);
         putAllUserSuppliedGenerators(builder.generatorBindings);
         putIgnored(builder.ignoredBindings);
         putNullable(builder.nullableBindings);
+    }
+
+    private void putAllCallbacks(final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks) {
+        onCompleteCallbacks.forEach(this::putCallbackBinding);
     }
 
     private void putAllBuiltInGenerators(final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings) {
@@ -110,15 +122,27 @@ public class ModelContext<T> {
         final Generators generators = new Generators(generatorContext);
         generatorSpecBindings.forEach((target, genSpecFn) -> {
             final Generator<?> generator = (Generator<?>) genSpecFn.apply(generators);
-            putBinding(target, generator);
+            putGeneratorBinding(target, generator);
         });
     }
 
     private void putAllUserSuppliedGenerators(final Map<Binding, Generator<?>> generatorBindings) {
-        generatorBindings.forEach(this::putBinding);
+        generatorBindings.forEach(this::putGeneratorBinding);
     }
 
-    private void putBinding(final Binding binding, final Generator<?> generator) {
+    private void putCallbackBinding(final Binding binding, final OnCompleteCallback<?> callback) {
+        for (Binding.BindingTarget target : binding.getTargets()) {
+            if (target.isFieldBinding()) {
+                final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
+                final Field field = getField(targetType, target.getFieldName());
+                this.userSuppliedFieldCallbacks.put(field, callback);
+            } else {
+                this.userSuppliedClassCallbacks.put(target.getTargetType(), callback);
+            }
+        }
+    }
+
+    private void putGeneratorBinding(final Binding binding, final Generator<?> generator) {
         for (Binding.BindingTarget target : binding.getTargets()) {
             if (target.isFieldBinding()) {
                 final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
@@ -199,6 +223,14 @@ public class ModelContext<T> {
         return Optional.ofNullable(userSuppliedClassGenerators.get(klass));
     }
 
+    public OnCompleteCallback<?> getUserSuppliedFieldCallback(final Field field) {
+        return userSuppliedFieldCallbacks.get(field);
+    }
+
+    public OnCompleteCallback<?> getUserSuppliedClassCallback(final Class<?> targetClass) {
+        return userSuppliedClassCallbacks.get(targetClass);
+    }
+
     public Class<?> getSubtypeMapping(Class<?> superType) {
         return subtypeMap.getOrDefault(superType, superType);
     }
@@ -250,6 +282,7 @@ public class ModelContext<T> {
         builder.ignoredBindings.addAll(this.ignoredBindings);
         builder.generatorBindings.putAll(this.generatorBindings);
         builder.generatorSpecBindings.putAll(this.generatorSpecBindings);
+        builder.onCompleteCallbacks.putAll(this.onCompleteCallbacks);
         builder.subtypeMap.putAll(this.subtypeMap);
         return builder;
     }
@@ -265,6 +298,7 @@ public class ModelContext<T> {
         private final List<Class<?>> rootTypeParameters = new ArrayList<>();
         private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
         private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings = new HashMap<>();
+        private final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks = new HashMap<>();
         private final Set<Binding> ignoredBindings = new HashSet<>();
         private final Set<Binding> nullableBindings = new HashSet<>();
         private final Map<Binding, Generator<?>> generatorBindings = new HashMap<>();
@@ -304,6 +338,11 @@ public class ModelContext<T> {
 
         public Builder<T> withGeneratorSpec(final Binding target, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
             this.generatorSpecBindings.put(target, spec);
+            return this;
+        }
+
+        public <V> Builder<T> withOnCompleteCallback(final Binding target, final OnCompleteCallback<V> callback) {
+            this.onCompleteCallbacks.put(target, callback);
             return this;
         }
 

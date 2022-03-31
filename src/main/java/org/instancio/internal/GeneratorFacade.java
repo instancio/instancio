@@ -45,10 +45,12 @@ class GeneratorFacade {
     private final ModelContext<?> context;
     private final RandomProvider random;
     private final NodeHandler[] nodeHandlers;
+    private final CallbackHandler callbackHandler;
 
-    public GeneratorFacade(final ModelContext<?> context) {
+    public GeneratorFacade(final ModelContext<?> context, final CallbackHandler callbackHandler) {
         this.context = context;
         this.random = context.getRandomProvider();
+        this.callbackHandler = callbackHandler;
 
         final GeneratorContext generatorContext = new GeneratorContext(context.getSettings(), random);
         final GeneratorResolver generatorResolver = new GeneratorResolver(generatorContext);
@@ -56,10 +58,10 @@ class GeneratorFacade {
 
         this.nodeHandlers = new NodeHandler[]{
                 new UserSuppliedGeneratorHandler(context, generatorContext, generatorResolver, instantiator),
-                new ArrayNodeHandler(generatorResolver),
+                new ArrayNodeHandler(generatorResolver, callbackHandler),
                 new UsingGeneratorResolverHandler(context, generatorResolver),
-                new CollectionNodeHandler(context, instantiator),
-                new MapNodeHandler(context, instantiator),
+                new CollectionNodeHandler(context, instantiator, callbackHandler),
+                new MapNodeHandler(context, instantiator, callbackHandler),
                 new InstantiatingHandler(context, instantiator)
         };
     }

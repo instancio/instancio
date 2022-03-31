@@ -15,7 +15,6 @@
  */
 package org.instancio.testsupport.templates;
 
-import org.instancio.testsupport.Constants;
 import org.junit.jupiter.api.AfterAll;
 
 import java.util.HashSet;
@@ -28,7 +27,7 @@ public abstract class ArrayCreationTestTemplate<T> extends CreationTestTemplate<
     protected final Set<Object> generatedValues = new HashSet<>();
 
     protected int minNumberOfGeneratedValues() {
-        return NumberOfExecutions.DEFAULT_VALUE * Constants.ARRAY_SIZE;
+        return NumberOfExecutions.DEFAULT_VALUE;
     }
 
     @AfterAll

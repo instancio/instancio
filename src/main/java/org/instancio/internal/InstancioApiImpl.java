@@ -21,6 +21,7 @@ import org.instancio.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
+import org.instancio.OnCompleteCallback;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.settings.Settings;
 
@@ -73,6 +74,12 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     @Override
     public <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(final Binding target, final Function<Generators, S> gen) {
         modelContextBuilder.withGeneratorSpec(target, gen);
+        return this;
+    }
+
+    @Override
+    public <V> InstancioApi<T> onComplete(final Binding target, final OnCompleteCallback<V> callback) {
+        modelContextBuilder.withOnCompleteCallback(target, callback);
         return this;
     }
 

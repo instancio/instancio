@@ -30,22 +30,26 @@ class InstancioEngine {
     private final Queue<CreateItem> queue = new ArrayDeque<>();
     private final ModelContext<?> context;
     private final Node rootNode;
+    private final CallbackHandler callbackHandler;
 
     InstancioEngine(InternalModel<?> model) {
         this.context = model.getModelContext();
         this.rootNode = model.getRootNode();
-        this.generatorFacade = new GeneratorFacade(context);
+        this.callbackHandler = new CallbackHandler(context);
+        this.generatorFacade = new GeneratorFacade(context, callbackHandler);
     }
 
     @SuppressWarnings("unchecked")
     <T> T createObject() {
         final GeneratorResult rootResult = generatorFacade.generateNodeValue(rootNode, null);
-        rootNode.accept(new PopulatingNodeVisitor(null, rootResult, generatorFacade, context, queue));
+        rootNode.accept(new PopulatingNodeVisitor(null, rootResult, generatorFacade, context, queue, callbackHandler));
+        callbackHandler.addResult(rootNode, rootResult);
 
         while (!queue.isEmpty()) {
             processNextItem(queue.poll());
         }
 
+        callbackHandler.invokeCallbacks();
         return (T) rootResult.getValue();
     }
 
@@ -55,7 +59,8 @@ class InstancioEngine {
         final Node node = createItem.getNode();
         if (!isIgnored(node)) {
             final GeneratorResult generatorResult = generatorFacade.generateNodeValue(node, createItem.getOwner());
-            node.accept(new PopulatingNodeVisitor(createItem.getOwner(), generatorResult, generatorFacade, context, queue));
+            node.accept(new PopulatingNodeVisitor(createItem.getOwner(), generatorResult, generatorFacade, context, queue, callbackHandler));
+            callbackHandler.addResult(node, generatorResult);
         }
     }
 
