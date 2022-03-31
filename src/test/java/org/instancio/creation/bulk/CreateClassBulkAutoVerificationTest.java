@@ -89,6 +89,8 @@ class CreateClassBulkAutoVerificationTest {
     @Test
     void items() {
         bulkAssertFullyPopulated(
+                TypeToCreate.of(Item.class, int[].class),
+                TypeToCreate.of(Item.class, Integer[].class),
                 TypeToCreate.of(Item.class, Integer.class),
                 TypeToCreate.of(Item.class, Person.class));
     }
@@ -96,6 +98,7 @@ class CreateClassBulkAutoVerificationTest {
     @Test
     void pairs() {
         bulkAssertFullyPopulated(
+                TypeToCreate.of(Pair.class, int[].class, Integer[].class),
                 TypeToCreate.of(Pair.class, Boolean.class, Byte.class),
                 TypeToCreate.of(Pair.class, Person.class, Address.class));
     }
@@ -125,15 +128,15 @@ class CreateClassBulkAutoVerificationTest {
                 assertThatObject(result)
                         .as("Type '%s' failed: %s", typeToCreate.targetClass.getTypeName(), result)
                         .isFullyPopulated();
-            } catch (Exception e) {
+            } catch (Throwable ex) {
+                LOG.error("Error creating: {}", typesToCreate, ex);
                 failed.add(typeToCreate);
             }
         }
 
         if (!failed.isEmpty()) {
             LOG.error("Failures:");
-            failed.forEach((typeToCreate) -> LOG.error("\n\n-> '{}', type params: {}",
-                    typeToCreate.targetClass, Arrays.toString(typeToCreate.typeArgs)));
+            failed.forEach((typeToCreate) -> LOG.error("\n\n-> {}", typeToCreate));
 
             fail("Number of failures: %s", failed.size());
         }
@@ -148,6 +151,11 @@ class CreateClassBulkAutoVerificationTest {
             type.targetClass = targetClass;
             type.typeArgs = typeArgs;
             return type;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("'%s', type params: %s", targetClass, Arrays.toString(typeArgs));
         }
     }
 }

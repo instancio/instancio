@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.util.ObjectUtils;
+import org.instancio.util.TypeUtils;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -88,10 +89,9 @@ public class TypeMap {
         }
 
         if (genericType instanceof ParameterizedType) {
-            final ParameterizedType pType = (ParameterizedType) genericType;
-            final Class<?> rawType = (Class<?>) pType.getRawType();
+            final Class<?> rawType = TypeUtils.getRawType(genericType);
+            final Type[] typeArgs = TypeUtils.getTypeArguments(genericType);
             final TypeVariable<?>[] typeVars = rawType.getTypeParameters();
-            final Type[] typeArgs = pType.getActualTypeArguments();
 
             for (int i = 0; i < typeArgs.length; i++) {
                 final Type mappedType = resolveTypeMapping(typeArgs[i]);
@@ -104,17 +104,13 @@ public class TypeMap {
     }
 
     private Type resolveTypeMapping(final Type typeArg) {
-        if (typeArg instanceof TypeVariable) {
+        if (typeArg instanceof Class || typeArg instanceof ParameterizedType || typeArg instanceof GenericArrayType) {
+            return typeArg;
+        } else if (typeArg instanceof TypeVariable) {
             return rootTypeMap.get(typeArg);
-        } else if (typeArg instanceof ParameterizedType) {
-            return typeArg;
-        } else if (typeArg instanceof Class) {
-            return typeArg;
         } else if (typeArg instanceof WildcardType) {
             WildcardType wType = (WildcardType) typeArg;
             return resolveTypeMapping(wType.getUpperBounds()[0]); // TODO multiple bounds
-        } else if (typeArg instanceof GenericArrayType) {
-            return typeArg;
         }
         throw new UnsupportedOperationException("Unsupported type: " + typeArg.getClass());
     }
