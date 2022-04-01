@@ -12,3 +12,4 @@ NOTES.md
 .idea/
 .run/
 target/
+src/test/java/experimental/

@@ -39,17 +39,15 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .hasParent(rootNode)
                 .hasFieldName("value")
                 .hasTargetClass(String.class)
-                .hasEmptyTypeMap() // TODO verify why
-                //.hasTypeMappedTo(GenericContainer.class, "T", String.class)
-                //.hasTypeMapWithSize(1)
+                .hasEmptyTypeMap()
                 .hasNoChildren();
 
         // T[] array
         final ArrayNode array = assertNode(NodeUtils.getChildNode(rootNode, "array"))
                 .hasParent(rootNode)
                 .hasFieldName("array")
-                .hasTargetClass(Object[].class)
-                .hasEmptyTypeMap()  // TODO
+                .hasTargetClass(String[].class)
+                .hasEmptyTypeMap()
                 .hasNoChildren()
                 .getAs(ArrayNode.class);
 

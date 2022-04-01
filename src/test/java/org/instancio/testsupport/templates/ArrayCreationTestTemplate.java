@@ -27,7 +27,7 @@ public abstract class ArrayCreationTestTemplate<T> extends CreationTestTemplate<
     protected final Set<Object> generatedValues = new HashSet<>();
 
     protected int minNumberOfGeneratedValues() {
-        return NumberOfExecutions.DEFAULT_VALUE;
+        return NumberOfExecutions.DEFAULT_VALUE * 2;
     }
 
     @AfterAll

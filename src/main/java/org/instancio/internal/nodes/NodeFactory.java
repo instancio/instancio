@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -84,6 +85,16 @@ public class NodeFactory {
         if (arrayGenericType instanceof GenericArrayType) {
             compGenericType = ((GenericArrayType) arrayGenericType).getGenericComponentType();
         }
+        Class<?> actualArrayClass = arrayClass;
+
+        if (compGenericType instanceof TypeVariable) {
+            compGenericType = resolveTypeVariable(compGenericType, parent);
+            compRawType = TypeUtils.getRawType(compGenericType);
+
+            if (arrayClass == Object[].class) {
+                actualArrayClass = Array.newInstance(compRawType, 0).getClass();
+            }
+        }
 
         if (compRawType == null && compGenericType != null) {
             compRawType = TypeUtils.getRawType(compGenericType);
@@ -95,7 +106,7 @@ public class NodeFactory {
                 ? createNode(compRawType, compRawType, null, parent)
                 : createNode(compRawType, compGenericType, null, parent);
 
-        return new ArrayNode(nodeContext, arrayClass, Verify.notNull(elementNode), field, arrayGenericType, parent);
+        return new ArrayNode(nodeContext, actualArrayClass, Verify.notNull(elementNode), field, arrayGenericType, parent);
     }
 
     private Node createCollectionNode(

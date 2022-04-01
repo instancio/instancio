@@ -45,12 +45,10 @@ class GeneratorFacade {
     private final ModelContext<?> context;
     private final RandomProvider random;
     private final NodeHandler[] nodeHandlers;
-    private final CallbackHandler callbackHandler;
 
     public GeneratorFacade(final ModelContext<?> context, final CallbackHandler callbackHandler) {
         this.context = context;
         this.random = context.getRandomProvider();
-        this.callbackHandler = callbackHandler;
 
         final GeneratorContext generatorContext = new GeneratorContext(context.getSettings(), random);
         final GeneratorResolver generatorResolver = new GeneratorResolver(generatorContext);
