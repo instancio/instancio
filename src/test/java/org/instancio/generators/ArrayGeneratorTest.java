@@ -47,7 +47,7 @@ class ArrayGeneratorTest {
 
     @Test
     void generate() {
-        final ArrayGenerator<?> generator = new ArrayGenerator<>(context, String.class);
+        final ArrayGenerator<?> generator = new ArrayGenerator<>(context, String[].class);
         final int[] counts = new int[2];
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
