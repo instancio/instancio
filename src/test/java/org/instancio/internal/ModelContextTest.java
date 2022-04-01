@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -157,7 +156,11 @@ class ModelContextTest {
     void withGeneratorSpecs() {
         final GeneratorContext genContext = new GeneratorContext(Settings.defaults(), mock(RandomProvider.class));
         final Generators generators = new Generators(genContext);
-        final ArrayGeneratorSpec<Object> petsSpec = generators.array().type(Set.class);
+
+        final ArrayGeneratorSpec<Object> petsSpec = generators.array().type(Pet[].class)
+                .minLength(3)
+                .maxLength(3);
+
         final StringGeneratorSpec stringSpec = generators.string().minLength(5).allowEmpty();
 
         ModelContext<?> ctx = ModelContext.builder(Person.class)

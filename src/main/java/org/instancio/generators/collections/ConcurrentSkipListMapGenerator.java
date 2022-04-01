@@ -24,7 +24,6 @@ public class ConcurrentSkipListMapGenerator<K, V> extends MapGenerator<K, V> {
 
     public ConcurrentSkipListMapGenerator(final GeneratorContext context) {
         super(context);
-        type(ConcurrentSkipListMap.class);
     }
 
     @Override

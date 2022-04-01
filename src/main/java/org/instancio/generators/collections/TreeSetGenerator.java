@@ -24,7 +24,6 @@ public class TreeSetGenerator<T> extends CollectionGenerator<T> {
 
     public TreeSetGenerator(final GeneratorContext context) {
         super(context);
-        type(TreeSet.class);
     }
 
     @Override

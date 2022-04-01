@@ -28,15 +28,15 @@ public class ArrayGenerator<T> extends AbstractRandomGenerator<T> implements Arr
     private int maxLength;
     private boolean nullable;
     private boolean nullableElements;
-    private Class<?> componentType;
+    private Class<?> arrayType;
 
     public ArrayGenerator(final GeneratorContext context) {
         super(context);
     }
 
-    public ArrayGenerator(final GeneratorContext context, final Class<?> componentType) {
+    public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {
         super(context);
-        this.componentType = Verify.notNull(componentType, "Type must not be null");
+        this.arrayType = Verify.notNull(arrayType, "Type must not be null");
         this.minLength = context.getSettings().get(Setting.ARRAY_MIN_LENGTH);
         this.maxLength = context.getSettings().get(Setting.ARRAY_MAX_LENGTH);
         this.nullable = context.getSettings().get(Setting.ARRAY_NULLABLE);
@@ -72,18 +72,20 @@ public class ArrayGenerator<T> extends AbstractRandomGenerator<T> implements Arr
     }
 
     public ArrayGenerator<T> type(final Class<?> type) {
-        this.componentType = Verify.notNull(type, "Type must not be null");
+        Verify.isTrue(type != null && type.isArray(), "Type must be an array: %s", type);
+        this.arrayType = type;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T generate() {
-        Verify.notNull(componentType, "Array component type is null");
+        Verify.state(arrayType.isArray(), "Expected an array type: %s", arrayType);
+
         if (random().diceRoll(nullable)) {
             return null;
         }
-        return (T) Array.newInstance(componentType, random().intBetween(minLength, maxLength + 1));
+        return (T) Array.newInstance(arrayType.getComponentType(), random().intBetween(minLength, maxLength + 1));
     }
 
     @Override

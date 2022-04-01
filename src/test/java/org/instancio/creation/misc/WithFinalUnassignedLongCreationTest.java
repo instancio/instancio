@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators.collections;
+package org.instancio.creation.misc;
 
-import org.instancio.GeneratorContext;
+import org.instancio.pojo.misc.WithFinalUnassignedLong;
+import org.instancio.testsupport.tags.NonDeterministicTag;
+import org.instancio.testsupport.templates.CreationTestTemplate;
 
-import java.util.Collection;
-import java.util.HashSet;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class HashSetGenerator<T> extends CollectionGenerator<T> {
-
-    public HashSetGenerator(final GeneratorContext context) {
-        super(context);
-    }
+@NonDeterministicTag
+public class WithFinalUnassignedLongCreationTest extends CreationTestTemplate<WithFinalUnassignedLong> {
 
     @Override
-    public Collection<T> generate() {
-        return random().diceRoll(nullable) ? null : new HashSet<>();
+    protected void verify(final WithFinalUnassignedLong result) {
+        assertThat(result.getPrimitive()).isNotZero();
+        assertThat(result.getWrapper()).isNotNull().isNotZero();
     }
 }

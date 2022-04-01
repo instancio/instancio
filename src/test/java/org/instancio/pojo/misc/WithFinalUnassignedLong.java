@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators.collections;
+package org.instancio.pojo.misc;
 
-import org.instancio.GeneratorContext;
+import lombok.Getter;
+import lombok.ToString;
 
-import java.util.Collection;
-import java.util.HashSet;
+@Getter
+@ToString
+public class WithFinalUnassignedLong {
 
-public class HashSetGenerator<T> extends CollectionGenerator<T> {
+    private final long primitive;
+    private final Long wrapper;
 
-    public HashSetGenerator(final GeneratorContext context) {
-        super(context);
-    }
-
-    @Override
-    public Collection<T> generate() {
-        return random().diceRoll(nullable) ? null : new HashSet<>();
+    public WithFinalUnassignedLong(final long primitive, final Long wrapper) {
+        this.primitive = primitive;
+        this.wrapper = wrapper;
     }
 }

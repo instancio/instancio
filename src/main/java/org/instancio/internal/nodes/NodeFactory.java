@@ -85,15 +85,10 @@ public class NodeFactory {
         if (arrayGenericType instanceof GenericArrayType) {
             compGenericType = ((GenericArrayType) arrayGenericType).getGenericComponentType();
         }
-        Class<?> actualArrayClass = arrayClass;
 
         if (compGenericType instanceof TypeVariable) {
             compGenericType = resolveTypeVariable(compGenericType, parent);
             compRawType = TypeUtils.getRawType(compGenericType);
-
-            if (arrayClass == Object[].class) {
-                actualArrayClass = Array.newInstance(compRawType, 0).getClass();
-            }
         }
 
         if (compRawType == null && compGenericType != null) {
@@ -105,6 +100,11 @@ public class NodeFactory {
         final Node elementNode = compGenericType instanceof Class
                 ? createNode(compRawType, compRawType, null, parent)
                 : createNode(compRawType, compGenericType, null, parent);
+
+        Class<?> actualArrayClass = arrayClass;
+        if (arrayClass == Object[].class || !arrayClass.isArray()) {
+            actualArrayClass = Array.newInstance(compRawType, 0).getClass();
+        }
 
         return new ArrayNode(nodeContext, actualArrayClass, Verify.notNull(elementNode), field, arrayGenericType, parent);
     }

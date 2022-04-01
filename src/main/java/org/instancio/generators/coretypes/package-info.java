@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.pojo.misc;
+@ParametersAreNonnullByDefault
+package org.instancio.generators.coretypes;
 
-import lombok.Getter;
-import lombok.ToString;
-
-@Getter
-@ToString
-public class WithFinalInt {
-
-    // TODO is it possible to instantiate the class without assigning the final field
-    private final int value;
-
-    public WithFinalInt(int value) {
-        this.value = value;
-    }
-
-}
+import javax.annotation.ParametersAreNonnullByDefault;

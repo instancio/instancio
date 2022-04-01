@@ -16,7 +16,6 @@
 package org.instancio.internal.reflection.instantiation;
 
 
-import org.instancio.exception.InstancioException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,8 @@ public class Instantiator {
             }
         }
 
-        throw new InstancioException(String.format("Failed instantiating class '%s'", klass.getName()));
+        LOG.debug("Could not instantiate class '{}'", klass.getName());
+        return null;
     }
 
     @SuppressWarnings("java:S1181")

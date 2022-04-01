@@ -20,6 +20,7 @@ import org.instancio.GeneratorContext;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
 
@@ -31,6 +32,7 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<T> generate() {
         Verify.notNull(delegate, "null delegate");
         return random().diceRoll(nullable) ? null : (Collection<T>) delegate.generate();
@@ -42,12 +44,12 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
     }
 
     @Override
-    public void setDelegate(final Generator<?> delegate) { // TODO generics
+    public void setDelegate(final Generator<?> delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public Class<?> targetType() {
-        return type; // TODO generics
+    public Optional<Class<?>> targetClass() {
+        return Optional.ofNullable(type);
     }
 }
