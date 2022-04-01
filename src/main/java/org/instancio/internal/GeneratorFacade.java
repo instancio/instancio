@@ -109,13 +109,13 @@ class GeneratorFacade {
 
         LOG.debug("No generator for interface '{}'", abstractType.getName());
 
-        Class<?> implementor = implementationResolver.resolve(abstractType).orElse(null);
-        if (implementor == null) {
-            LOG.debug("Interface '{}' has no implementation", abstractType.getName());
-            return Optional.empty();
-        }
-        Node implementorNode = new ClassNode(parentNode.getNodeContext(), implementor, null, null, parentNode);
-        return Optional.of(generateNodeValue(implementorNode, owner));
+        return implementationResolver.resolve(abstractType)
+                .map(implementor -> {
+                    final Node implementorNode = new ClassNode(parentNode.getNodeContext(),
+                            implementor, parentNode.getField(), null, parentNode);
+
+                    return generateNodeValue(implementorNode, owner);
+                });
     }
 
     private boolean shouldReturnNullForNullable(final Node node) {

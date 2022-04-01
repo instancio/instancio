@@ -120,20 +120,13 @@ public class GeneratorResolver {
 
     public Optional<Generator<?>> get(final Class<?> klass) {
         Generator<?> generator = generators.get(klass);
-
         if (generator == null) {
-            if (klass.isEnum()) {
+            if (klass.isArray()) {
+                generator = new ArrayGenerator<>(context, klass);
+            } else if (klass.isEnum()) {
                 generator = new EnumGenerator(context, klass);
-                generators.put(klass, generator);
-            } else if (klass.isArray()) {
-                throw new IllegalArgumentException("Should be calling getArrayGenerator(Class)!");
             }
         }
-
         return Optional.ofNullable(generator);
-    }
-
-    public Generator<?> getArrayGenerator(final Class<?> componentType) {
-        return new ArrayGenerator<>(context, componentType);
     }
 }

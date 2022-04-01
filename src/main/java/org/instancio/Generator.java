@@ -16,13 +16,11 @@
 package org.instancio;
 
 import org.instancio.internal.GeneratedHints;
-import org.instancio.util.TypeUtils;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.Optional;
 
 /**
- * Generic interface for generating values.
+ * A generator of values of a specific type.
  *
  * @param <T> type to generate
  * @see org.instancio.Generators
@@ -31,20 +29,10 @@ import java.lang.reflect.Type;
 public interface Generator<T> extends GeneratorSpec<T> {
 
     /**
-     * Depending on implementation, repeated invocations may return different values.
-     * Some implementations may return random values on each invocation, while others
-     * may return predefined values or random values from a given set.
+     * Returns a generated value. By default, generated values are random.
      * <p>
-     * Generators can be passed in as a lambda function. The following example
-     * shows how to override generation strategy for certain fields.
-     *
-     * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *         .generate(field("age"), gen -> gen.oneOf(20, 30, 40, 50))
-     *         .supply(field("location"), () -> "Canada")
-     *         .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
-     *         .create();
-     * }</pre>
+     * Generation parameters for common types such as strings, numbers, collections, etc.
+     * can be customised by passing in custom generators.
      *
      * @return generated value
      */
@@ -70,13 +58,26 @@ public interface Generator<T> extends GeneratorSpec<T> {
         // no-op by default
     }
 
-    default Class<?> targetType() {
-        // TODO review this logic. can also return null so this might be redundant
-        final ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
-        Type genericType = genericSuperclass.getActualTypeArguments()[0];
-        return TypeUtils.getRawType(genericType);
+    /**
+     * Target class to generate.
+     * <p>
+     * If {@link Optional#empty()} is returned, it will default to the field type
+     * for fields, and element type for collection and array elements.
+     * <p>
+     * If the type is an interface, such as {@link java.util.Set}, will generate a default
+     * implementation class such as {@link java.util.HashSet}.
+     *
+     * @return target class
+     */
+    default Optional<Class<?>> targetClass() {
+        return Optional.empty();
     }
 
+    /**
+     * Returns hints, including collection sizes and whether values are nullable.
+     *
+     * @return generated hints
+     */
     default GeneratedHints getHints() {
         // ignore children by default to ensure values created
         // from user-supplied generators are not modified

@@ -24,7 +24,6 @@ public class TreeMapGenerator<K, V> extends MapGenerator<K, V> {
 
     public TreeMapGenerator(final GeneratorContext context) {
         super(context);
-        type(TreeMap.class);
     }
 
     @Override

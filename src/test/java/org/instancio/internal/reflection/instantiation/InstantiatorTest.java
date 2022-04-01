@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.reflection.instantiation;
 
-import org.instancio.exception.InstancioException;
 import org.instancio.pojo.basic.IntegerHolder;
 import org.instancio.pojo.basic.IntegerHolderWithPrivateDefaultConstructor;
 import org.instancio.pojo.basic.IntegerHolderWithoutDefaultConstructor;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class InstantiatorTest {
 
@@ -47,10 +45,8 @@ class InstantiatorTest {
     }
 
     @Test
-    void instantiateError() {
+    void instantiateReturnNullIfTypeCannotBeInstantiated() {
         final Class<?> klass = List.class;
-        assertThatThrownBy(() -> instantiator.instantiate(klass))
-                .isInstanceOf(InstancioException.class)
-                .hasMessage("Failed instantiating class '%s'", klass.getName());
+        assertThat(instantiator.instantiate(klass)).isNull();
     }
 }

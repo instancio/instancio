@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators.collections;
+@ParametersAreNonnullByDefault
+package org.instancio.generators;
 
-import org.instancio.GeneratorContext;
-
-import java.util.Collection;
-import java.util.HashSet;
-
-public class HashSetGenerator<T> extends CollectionGenerator<T> {
-
-    public HashSetGenerator(final GeneratorContext context) {
-        super(context);
-    }
-
-    @Override
-    public Collection<T> generate() {
-        return random().diceRoll(nullable) ? null : new HashSet<>();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

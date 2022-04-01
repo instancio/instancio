@@ -29,7 +29,6 @@ public class InstantiatingGenerator extends AbstractRandomGenerator<Object> {
         this.instantiator = instantiator;
     }
 
-
     @Override
     public Object generate() {
         return instantiator.instantiate(targetType);

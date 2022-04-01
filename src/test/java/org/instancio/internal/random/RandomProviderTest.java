@@ -43,7 +43,7 @@ import static org.assertj.core.data.Percentage.withPercentage;
 class RandomProviderTest {
     private static final Logger LOG = LoggerFactory.getLogger(RandomProviderTest.class);
 
-    private static final int SAMPLE_SIZE = 10_000;
+    private static final int SAMPLE_SIZE = 20_000;
     private static final int PERCENTAGE_THRESHOLD = 20;
     private static final Pattern ALPHABETIC_PATTERN = Pattern.compile("^[A-Z]*$");
 

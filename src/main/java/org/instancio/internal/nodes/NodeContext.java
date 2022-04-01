@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-// TODO rename
 public class NodeContext {
 
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();

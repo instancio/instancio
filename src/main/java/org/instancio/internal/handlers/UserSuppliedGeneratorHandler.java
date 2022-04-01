@@ -23,7 +23,6 @@ import org.instancio.internal.GeneratorResult;
 import org.instancio.internal.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.util.ObjectUtils;
 
 import java.util.Optional;
 
@@ -62,7 +61,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
         if (generatorOpt.isPresent()) {
             final Generator<?> generator = generatorOpt.get();
             if (generator.isDelegating()) {
-                final Class<?> targetType = ObjectUtils.defaultIfNull(generator.targetType(), node.getTargetClass());
+                final Class<?> targetType = generator.targetClass().orElse(node.getTargetClass());
                 final Class<?> effectiveType = modelContext.getSubtypeMapping(targetType);
                 final Generator<?> delegate = generatorResolver.get(effectiveType).orElseGet(
                         () -> new InstantiatingGenerator(generatorContext, instantiator, effectiveType));

@@ -52,7 +52,7 @@ public class GeneratedHints {
     }
 
     /**
-     * Indicates that the generated result had nullable setting enabled.
+     * @return a result indicating that the generated result had 'nullable' flag set to {@code true}.
      */
     public boolean nullableResult() {
         return nullableResult;

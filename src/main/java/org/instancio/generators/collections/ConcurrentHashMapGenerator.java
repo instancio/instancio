@@ -24,7 +24,6 @@ public class ConcurrentHashMapGenerator<K, V> extends MapGenerator<K, V> {
 
     public ConcurrentHashMapGenerator(final GeneratorContext context) {
         super(context);
-        type(ConcurrentHashMap.class);
     }
 
     @Override

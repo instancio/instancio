@@ -20,6 +20,7 @@ import org.instancio.GeneratorContext;
 import org.instancio.util.Verify;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
 
@@ -31,6 +32,7 @@ public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<K, V> generate() {
         Verify.notNull(delegate, "null delegate");
         return random().diceRoll(nullable) ? null : (Map<K, V>) delegate.generate();
@@ -42,12 +44,12 @@ public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
     }
 
     @Override
-    public void setDelegate(final Generator<?> delegate) { // TODO generics
+    public void setDelegate(final Generator<?> delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public Class<?> targetType() {
-        return type; // TODO generics
+    public Optional<Class<?>> targetClass() {
+        return Optional.ofNullable(type);
     }
 }

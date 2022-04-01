@@ -148,13 +148,14 @@ public class ModelContext<T> {
                 final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
                 final Field field = getField(targetType, target.getFieldName());
 
+                // TODO refactor to remove the isArray conditional
                 if (field.getType().isArray() && generator instanceof ArrayGenerator) {
-                    ((ArrayGenerator<?>) generator).type(field.getType().getComponentType());
+                    ((ArrayGenerator<?>) generator).type(field.getType());
                 }
                 this.userSuppliedFieldGenerators.put(field, generator);
             } else {
                 if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
-                    ((ArrayGenerator<?>) generator).type(target.getTargetType().getComponentType());
+                    ((ArrayGenerator<?>) generator).type(target.getTargetType());
                 }
                 this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
             }
