@@ -15,6 +15,8 @@
  */
 package org.instancio.util;
 
+import java.util.function.Supplier;
+
 public class ObjectUtils {
     private ObjectUtils() {
         //non-instantiable
@@ -22,5 +24,9 @@ public class ObjectUtils {
 
     public static <T> T defaultIfNull(T value, T defaultValue) {
         return value == null ? defaultValue : value;
+    }
+
+    public static <T> T defaultIfNull(T value, Supplier<T> defaultValue) {
+        return value == null ? defaultValue.get() : value;
     }
 }

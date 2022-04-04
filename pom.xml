@@ -2,16 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.instancio</groupId>
     <artifactId>instancio-parent</artifactId>
     <version>1.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Instancio</name>
-    <description>Instancio is a library for generating test data. It instantiates and populates objects using
-        reflection.
-    </description>
+    <description>Instancio is a library for auto-populating objects with random data.</description>
     <url>https://github.com/instancio/instancio</url>
 
     <licenses>
@@ -23,8 +20,10 @@
 
     <developers>
         <developer>
+            <id>armandino</id>
             <name>Arman Sharif</name>
             <email>armandino@gmail.com</email>
+            <url>https://github.com/armandino</url>
         </developer>
     </developers>
 
@@ -53,17 +52,16 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <sonar.organization>instancio</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <slf4j.version>1.7.36</slf4j.version>
-        <logback.version>1.2.11</logback.version>
-        <lombok.version>1.18.22</lombok.version>
-        <objenesis.version>3.2</objenesis.version>
-        <reflections.version>0.10.2</reflections.version>
-        <apache.commons.version>3.12.0</apache.commons.version>
-        <junit.version>5.8.2</junit.version>
-        <assertj.version>3.22.0</assertj.version>
-        <mockito.version>1.10.19</mockito.version>
-        <mockito.junit.jupiter.version>4.3.1</mockito.junit.jupiter.version>
-        <equalsverifier.version>3.9</equalsverifier.version>
+        <version.apache.commons>3.12.0</version.apache.commons>
+        <version.assertj>3.22.0</version.assertj>
+        <version.equalsverifier>3.9</version.equalsverifier>
+        <version.junit>5.8.2</version.junit>
+        <version.logback>1.2.11</version.logback>
+        <version.lombok>1.18.22</version.lombok>
+        <version.mockito>4.4.0</version.mockito>
+        <version.objenesis>3.2</version.objenesis>
+        <version.reflections>0.10.2</version.reflections>
+        <version.slf4j>1.7.36</version.slf4j>
     </properties>
 
     <issueManagement>
@@ -73,6 +71,7 @@
 
     <modules>
         <module>instancio-core</module>
+        <module>instancio-junit</module>
     </modules>
 
     <profiles>
@@ -174,72 +173,72 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+                <version>${version.slf4j}</version>
             </dependency>
             <dependency>
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
-                <version>${objenesis.version}</version>
+                <version>${version.objenesis}</version>
             </dependency>
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
-                <version>${reflections.version}</version>
+                <version>${version.reflections}</version>
             </dependency>
 
             <!-- Test dependencies -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
+                <version>${version.logback}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
+                <version>${version.lombok}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>${apache.commons.version}</version>
+                <version>${version.apache.commons}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>nl.jqno.equalsverifier</groupId>
                 <artifactId>equalsverifier-nodep</artifactId>
-                <version>${equalsverifier.version}</version>
+                <version>${version.equalsverifier}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit.version}</version>
+                <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
-                <version>${junit.version}</version>
+                <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>${mockito.junit.jupiter.version}</version>
+                <version>${version.mockito}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>${assertj.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>${mockito.version}</version>
+                <version>${version.assertj}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
