@@ -16,7 +16,6 @@
 package org.instancio.internal.random;
 
 import org.instancio.testsupport.tags.NonDeterministicTag;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,14 +23,11 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -41,20 +37,12 @@ import static org.assertj.core.data.Percentage.withPercentage;
 
 @NonDeterministicTag
 class RandomProviderTest {
-    private static final Logger LOG = LoggerFactory.getLogger(RandomProviderTest.class);
-
-    private static final int SAMPLE_SIZE = 20_000;
+    private static final int SAMPLE_SIZE = 50_000;
     private static final int PERCENTAGE_THRESHOLD = 20;
     private static final Pattern ALPHABETIC_PATTERN = Pattern.compile("^[A-Z]*$");
 
-    private static final int SEED = new Random().nextInt();
-    private final RandomProvider random = new RandomProvider(SEED);
+    private final RandomProvider random = new RandomProvider();
     private Set<Object> results;
-
-    @BeforeAll
-    static void beforeAll() {
-        LOG.debug("Seed: {}", SEED);
-    }
 
     @BeforeEach
     void setUp() {
@@ -222,7 +210,7 @@ class RandomProviderTest {
                 results.add(value);
             }
 
-            assertThat(results).hasSize(SAMPLE_SIZE);
+            assertThat(results).hasSizeGreaterThan(SAMPLE_SIZE * 99 / 100);
         }
 
         private Stream<Arguments> intRanges() {

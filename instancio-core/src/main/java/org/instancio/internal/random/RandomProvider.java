@@ -15,11 +15,11 @@
  */
 package org.instancio.internal.random;
 
+import org.instancio.util.SeedUtil;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomProvider {
 
@@ -27,20 +27,20 @@ public class RandomProvider {
     private final Random random;
 
     /**
-     * Create an instance with a seed value.
+     * Create an instance with a random seed value.
+     */
+    public RandomProvider() {
+        this(SeedUtil.randomSeed());
+    }
+
+    /**
+     * Create an instance with the given seed value.
      *
      * @param seed for the random generator
      */
     public RandomProvider(final int seed) {
         this.seed = seed;
         this.random = new Random(seed);
-    }
-
-    /**
-     * Create an instance with a random seed value.
-     */
-    public RandomProvider() {
-        this(ThreadLocalRandom.current().nextInt());
     }
 
     public int getSeed() {
@@ -109,7 +109,6 @@ public class RandomProvider {
         return (float) doubleBetween(min, max);
     }
 
-
     /**
      * @param min lower bound
      * @param max upper bound (exclusive)
@@ -151,5 +150,4 @@ public class RandomProvider {
                 .findFirst()
                 .orElse(null);
     }
-
 }

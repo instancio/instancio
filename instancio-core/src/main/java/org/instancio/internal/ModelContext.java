@@ -26,11 +26,13 @@ import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.PropertiesLoader;
 import org.instancio.settings.Settings;
 import org.instancio.util.ObjectUtils;
+import org.instancio.util.SeedUtil;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -44,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 import static org.instancio.util.ObjectUtils.defaultIfNull;
@@ -104,13 +105,23 @@ public class ModelContext<T> {
                 .lock();
 
         this.seed = builder.seed;
-        this.randomProvider = new RandomProvider(ObjectUtils.defaultIfNull(seed, ThreadLocalRandom.current().nextInt()));
+        this.randomProvider = resolveRandomProvider(seed);
 
         putAllCallbacks(builder.onCompleteCallbacks);
         putAllBuiltInGenerators(builder.generatorSpecBindings);
         putAllUserSuppliedGenerators(builder.generatorBindings);
         putIgnored(builder.ignoredBindings);
         putNullable(builder.nullableBindings);
+    }
+
+    private static RandomProvider resolveRandomProvider(@Nullable final Integer userSuppliedSeed) {
+        if (userSuppliedSeed != null) {
+            return new RandomProvider(userSuppliedSeed);
+        }
+        // If running under JUnit extension, use the provider supplied by the extension
+        return ObjectUtils.defaultIfNull(
+                ThreadLocalRandomProvider.getInstance().get(),
+                () -> new RandomProvider(SeedUtil.randomSeed()));
     }
 
     private void putAllCallbacks(final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks) {
