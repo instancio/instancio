@@ -37,8 +37,15 @@ public class TypeMap {
     private final Map<Type, Type> typeMap;
 
     public TypeMap(final Type genericType, final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
+        this(genericType, rootTypeMap, Collections.emptyMap());
+    }
+
+    public TypeMap(final Type genericType,
+                   final Map<TypeVariable<?>, Class<?>> rootTypeMap,
+                   final Map<Type, Type> subtypeMappingTypeMap) {
+
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
-        this.typeMap = Collections.unmodifiableMap(buildTypeMap(genericType));
+        this.typeMap = Collections.unmodifiableMap(buildTypeMap(genericType, subtypeMappingTypeMap));
     }
 
     public Type get(final Type type) {
@@ -72,11 +79,12 @@ public class TypeMap {
      *   Item<? extends Foo> | WildcardType
      * }</pre>
      *
-     * @param genericType to build the type map for
+     * @param genericType           to build the type map for
+     * @param subtypeMappingTypeMap map type parameters of supertype to type parameters of subtype
      * @return type map
      */
-    private Map<Type, Type> buildTypeMap(final Type genericType) {
-        final Map<Type, Type> map = new HashMap<>();
+    private Map<Type, Type> buildTypeMap(final Type genericType, final Map<Type, Type> subtypeMappingTypeMap) {
+        final Map<Type, Type> map = new HashMap<>(subtypeMappingTypeMap);
 
         if (genericType instanceof Class) {
             return map;

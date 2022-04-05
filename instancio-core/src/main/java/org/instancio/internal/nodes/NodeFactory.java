@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class NodeFactory {
@@ -165,13 +166,27 @@ public class NodeFactory {
     }
 
     private Node createClassNode(
-            final Class<?> klass,
+            final Class<?> targetClass,
             final @Nullable Type genericType,
             final @Nullable Field field,
             Node parent) {
 
-        if (genericType == null || klass != Object.class || (field != null && field.getGenericType() instanceof Class)) {
-            return new ClassNode(nodeContext, klass, field, genericType, parent);
+        final Class<?> actualClass = nodeContext.getSubtypeMap().getOrDefault(targetClass, targetClass);
+
+        if (genericType == null || actualClass != Object.class || (field != null && field.getGenericType() instanceof Class)) {
+            final Map<Type, Type> typeMap = new HashMap<>();
+            if (actualClass != targetClass) {
+                final TypeVariable<?>[] actualClassTypeParams = actualClass.getTypeParameters();
+                final TypeVariable<?>[] targetClassTypeParams = targetClass.getTypeParameters();
+
+                if (actualClassTypeParams.length == targetClassTypeParams.length) {
+                    for (int i = 0; i < actualClassTypeParams.length; i++) {
+                        typeMap.put(actualClassTypeParams[i], targetClassTypeParams[i]);
+                    }
+                }
+            }
+
+            return new ClassNode(nodeContext, actualClass, field, genericType, parent, typeMap);
         }
 
         if (genericType instanceof TypeVariable) {
@@ -192,7 +207,7 @@ public class NodeFactory {
         }
 
         throw new IllegalStateException(String.format(
-                "Error creating a class node for klass: %s, type: %s", klass.getName(), genericType));
+                "Error creating a class node for klass: %s, type: %s", actualClass.getName(), genericType));
     }
 
     // Note: field is null for collection/map/array element nodes as they are set via add()/put()/array[i]

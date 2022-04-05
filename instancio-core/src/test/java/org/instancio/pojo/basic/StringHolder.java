@@ -18,11 +18,12 @@ package org.instancio.pojo.basic;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.instancio.pojo.interfaces.StringHolderInterface;
 
 @Getter
 @Setter
 @ToString
-public class StringHolder {
+public class StringHolder implements StringHolderInterface {
 
     private String value;
 }

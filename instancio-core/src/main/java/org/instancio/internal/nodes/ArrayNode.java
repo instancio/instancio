@@ -36,7 +36,7 @@ public class ArrayNode extends Node {
                      @Nullable final Type genericType,
                      @Nullable final Node parent) {
 
-        super(nodeContext, klass, field, genericType, parent);
+        super(nodeContext, klass, field, genericType, parent, Collections.emptyMap());
 
         Verify.isTrue(klass.isArray() || genericType instanceof GenericArrayType,
                 "Either raw type(%s) or generic type (%s) must be an array", klass.getName(), genericType);
