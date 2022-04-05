@@ -38,7 +38,7 @@ public class MapNode extends Node {
                    @Nullable final Type genericType,
                    @Nullable final Node parent) {
 
-        super(nodeContext, klass, field, genericType, parent);
+        super(nodeContext, klass, field, genericType, parent, Collections.emptyMap());
 
         Verify.isTrue(Map.class.isAssignableFrom(klass), "Not a map type: %s ", klass.getName());
 

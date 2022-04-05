@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -36,7 +37,19 @@ public class ClassNode extends Node {
                      @Nullable final Type genericType,
                      @Nullable final Node parent) {
 
-        super(nodeContext, klass, field, genericType, parent);
+        super(nodeContext, klass, field, genericType, parent, Collections.emptyMap());
+
+        Verify.isNotArrayCollectionOrMap(klass);
+    }
+
+    public ClassNode(final NodeContext nodeContext,
+                     final Class<?> klass,
+                     @Nullable final Field field,
+                     @Nullable final Type genericType,
+                     @Nullable final Node parent,
+                     final Map<Type, Type> additionalTypeMap) {
+
+        super(nodeContext, klass, field, genericType, parent, additionalTypeMap);
 
         Verify.isNotArrayCollectionOrMap(klass);
     }

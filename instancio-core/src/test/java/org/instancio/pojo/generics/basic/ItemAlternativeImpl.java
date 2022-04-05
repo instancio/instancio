@@ -21,7 +21,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.pojo.interfaces.ItemInterface;
 
 @Getter
-public class Item<K> implements ItemInterface<K> {
+public class ItemAlternativeImpl<K> implements ItemInterface<K> {
     private K value;
 
     @Override

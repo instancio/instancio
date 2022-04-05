@@ -65,9 +65,8 @@ class InstancioApiTest {
         assertThat(homer.getAge()).isEqualTo(HOMER_AGE);
         assertThat(homer.getLastModified()).isCloseTo(LocalDateTime.now(), within(3, ChronoUnit.SECONDS));
         assertThat(homer.getAddress())
-                .isExactlyInstanceOf(AddressExtension.class);
-                //.satisfies(it -> assertThat(((AddressExtension) it).getAdditionalInfo()).isNotBlank()) // FIXME
-        ;
+                .isExactlyInstanceOf(AddressExtension.class)
+                .satisfies(it -> assertThat(((AddressExtension) it).getAdditionalInfo()).isNotBlank());
     }
 
     @Test

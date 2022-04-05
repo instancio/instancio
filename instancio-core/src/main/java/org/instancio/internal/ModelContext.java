@@ -247,6 +247,10 @@ public class ModelContext<T> {
         return subtypeMap.getOrDefault(superType, superType);
     }
 
+    public Map<Class<?>, Class<?>> getSubtypeMap() {
+        return subtypeMap;
+    }
+
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
         return rootTypeMap;
     }

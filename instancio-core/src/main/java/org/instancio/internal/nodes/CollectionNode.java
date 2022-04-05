@@ -36,7 +36,7 @@ public class CollectionNode extends Node {
                           @Nullable final Type genericType,
                           @Nullable final Node parent) {
 
-        super(nodeContext, klass, field, genericType, parent);
+        super(nodeContext, klass, field, genericType, parent, Collections.emptyMap());
 
         Verify.isTrue(Collection.class.isAssignableFrom(klass), "Not a collection type: %s", klass.getName());
 

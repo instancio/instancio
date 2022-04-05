@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public abstract class Node {
@@ -40,14 +41,18 @@ public abstract class Node {
          final Class<?> targetClass,
          @Nullable final Field field,
          @Nullable final Type genericType,
-         @Nullable final Node parent) {
+         @Nullable final Node parent,
+         final Map<Type, Type> additionalTypeMap) {
 
         this.nodeContext = Verify.notNull(nodeContext, "nodeContext is null");
         this.targetClass = Verify.notNull(targetClass, "targetClass is null");
         this.field = field;
         this.genericType = genericType;
         this.parent = parent;
-        this.typeMap = new TypeMap(ObjectUtils.defaultIfNull(genericType, targetClass), nodeContext.getRootTypeMap());
+        this.typeMap = new TypeMap(
+                ObjectUtils.defaultIfNull(genericType, targetClass),
+                nodeContext.getRootTypeMap(),
+                additionalTypeMap);
     }
 
     protected abstract List<Node> collectChildren();

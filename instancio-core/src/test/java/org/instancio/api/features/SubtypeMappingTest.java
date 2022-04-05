@@ -16,9 +16,19 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
+import org.instancio.pojo.basic.StringHolderAlternativeImpl;
 import org.instancio.pojo.collections.lists.ListLong;
 import org.instancio.pojo.collections.lists.TwoListsOfItemString;
+import org.instancio.pojo.generics.basic.ItemAlternativeImpl;
+import org.instancio.pojo.interfaces.ArrayOfItemInterfaceString;
+import org.instancio.pojo.interfaces.ArrayOfStringHolderInterface;
+import org.instancio.pojo.interfaces.ItemInterface;
+import org.instancio.pojo.interfaces.ListOfItemInterfaceString;
+import org.instancio.pojo.interfaces.ListOfStringHolderInterface;
+import org.instancio.pojo.interfaces.MapOfItemInterfaceString;
+import org.instancio.pojo.interfaces.StringHolderInterface;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
@@ -50,5 +60,81 @@ class SubtypeMappingTest {
 
         assertThat(result.getList1()).isNotEmpty().isInstanceOf(LinkedList.class);
         assertThat(result.getList2()).isNotEmpty().isInstanceOf(Vector.class);
+    }
+
+    @Nested
+    class CollectionElementSubtypeMappingTest {
+
+        @Test
+        @DisplayName("Subtype mapping of a generic class (as collection element)")
+        void subtypeMappingOfGenericClass() {
+            final ListOfItemInterfaceString result = Instancio.of(ListOfItemInterfaceString.class)
+                    .map(ItemInterface.class, ItemAlternativeImpl.class)
+                    .create();
+
+            assertThat(result.getList()).isNotEmpty()
+                    .hasOnlyElementsOfType(ItemAlternativeImpl.class)
+                    .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
+        }
+
+        @Test
+        @DisplayName("Subtype mapping of non-generic class (as collection element)")
+        void subtypeMappingOfNonGenericClass() {
+            final ListOfStringHolderInterface result = Instancio.of(ListOfStringHolderInterface.class)
+                    .map(StringHolderInterface.class, StringHolderAlternativeImpl.class)
+                    .create();
+
+            assertThat(result.getList()).isNotEmpty()
+                    .hasOnlyElementsOfType(StringHolderAlternativeImpl.class)
+                    .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
+        }
+    }
+
+    @Nested
+    class ArrayElementSubtypeMappingTest {
+
+        @Test
+        @DisplayName("Subtype mapping of a generic class (as array element)")
+        void subtypeMappingOfGenericClass() {
+            final ArrayOfItemInterfaceString result = Instancio.of(ArrayOfItemInterfaceString.class)
+                    .map(ItemInterface.class, ItemAlternativeImpl.class)
+                    .create();
+
+            assertThat(result.getArray()).isNotEmpty()
+                    .hasOnlyElementsOfType(ItemAlternativeImpl.class)
+                    .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
+        }
+
+        @Test
+        @DisplayName("Subtype mapping of non-generic class (as array element)")
+        void subtypeMappingOfNonGenericClass() {
+            final ArrayOfStringHolderInterface result = Instancio.of(ArrayOfStringHolderInterface.class)
+                    .map(StringHolderInterface.class, StringHolderAlternativeImpl.class)
+                    .create();
+
+            assertThat(result.getArray()).isNotEmpty()
+                    .hasOnlyElementsOfType(StringHolderAlternativeImpl.class)
+                    .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
+        }
+    }
+
+    @Nested
+    class MapKeyValueSubtypeMappingTest {
+
+        @Test
+        @DisplayName("Subtype mapping of a generic class (as map key and map value)")
+        void subtypeMappingOfGenericClass() {
+            final MapOfItemInterfaceString result = Instancio.of(MapOfItemInterfaceString.class)
+                    .map(ItemInterface.class, ItemAlternativeImpl.class)
+                    .create();
+
+            assertThat(result.getMap().keySet()).isNotEmpty()
+                    .hasOnlyElementsOfType(ItemAlternativeImpl.class)
+                    .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
+
+            assertThat(result.getMap().values()).isNotEmpty()
+                    .hasOnlyElementsOfType(ItemAlternativeImpl.class)
+                    .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
+        }
     }
 }

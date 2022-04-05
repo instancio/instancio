@@ -29,13 +29,22 @@ public class NodeContext {
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
     private final Set<Node> visited = new HashSet<>();
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final Map<Class<?>, Class<?>> subtypeMap;
 
-    public NodeContext(final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
+    public NodeContext(
+            final Map<TypeVariable<?>, Class<?>> rootTypeMap,
+            final Map<Class<?>, Class<?>> subtypeMap) {
+
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
+        this.subtypeMap = Collections.unmodifiableMap(subtypeMap);
     }
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
         return rootTypeMap;
+    }
+
+    public Map<Class<?>, Class<?>> getSubtypeMap() {
+        return subtypeMap;
     }
 
     public void visited(final Node node) {

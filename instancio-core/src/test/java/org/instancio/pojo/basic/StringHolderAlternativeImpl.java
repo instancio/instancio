@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.pojo.generics.basic;
+package org.instancio.pojo.basic;
 
 import lombok.Getter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.instancio.pojo.interfaces.ItemInterface;
+import lombok.Setter;
+import lombok.ToString;
+import org.instancio.pojo.interfaces.StringHolderInterface;
 
 @Getter
-public class Item<K> implements ItemInterface<K> {
-    private K value;
+@Setter
+@ToString
+public class StringHolderAlternativeImpl implements StringHolderInterface {
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
+    private String value;
 }
