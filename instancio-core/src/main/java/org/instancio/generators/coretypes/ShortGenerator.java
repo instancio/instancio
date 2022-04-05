@@ -18,7 +18,7 @@ package org.instancio.generators.coretypes;
 import org.instancio.GeneratorContext;
 import org.instancio.settings.Setting;
 
-public class ShortGenerator extends AbstractRandomNumberGeneratorSpec<Short> {
+public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<Short> {
 
     public ShortGenerator(final GeneratorContext context) {
         super(context,

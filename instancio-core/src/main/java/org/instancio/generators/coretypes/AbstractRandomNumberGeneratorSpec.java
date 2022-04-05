@@ -27,7 +27,9 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     protected T max;
     protected boolean nullable;
 
-    protected AbstractRandomNumberGeneratorSpec(final GeneratorContext context, final T min, final T max, final boolean nullable) {
+    protected AbstractRandomNumberGeneratorSpec(
+            final GeneratorContext context, final T min, final T max, final boolean nullable) {
+
         super(context);
         this.min = min;
         this.max = max;
@@ -35,6 +37,14 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     protected abstract T generateNonNullValue();
+
+    protected T getMin() {
+        return min;
+    }
+
+    protected T getMax() {
+        return max;
+    }
 
     @Override
     public NumberGeneratorSpec<T> min(final T min) {

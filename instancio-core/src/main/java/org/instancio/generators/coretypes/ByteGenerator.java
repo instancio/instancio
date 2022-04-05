@@ -18,7 +18,7 @@ package org.instancio.generators.coretypes;
 import org.instancio.GeneratorContext;
 import org.instancio.settings.Setting;
 
-public class ByteGenerator extends AbstractRandomNumberGeneratorSpec<Byte> {
+public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<Byte> {
 
     public ByteGenerator(final GeneratorContext context) {
         super(context,

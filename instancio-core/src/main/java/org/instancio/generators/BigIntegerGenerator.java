@@ -16,25 +16,43 @@
 package org.instancio.generators;
 
 import org.instancio.GeneratorContext;
-import org.instancio.generators.coretypes.AbstractRandomNumberGeneratorSpec;
+import org.instancio.generators.coretypes.AbstractRandomComparableNumberGeneratorSpec;
 import org.instancio.generators.coretypes.NumberGeneratorSpec;
+import org.instancio.util.Verify;
 
 import java.math.BigInteger;
 
-public class BigIntegerGenerator extends AbstractRandomNumberGeneratorSpec<BigInteger> implements NumberGeneratorSpec<BigInteger> {
+public class BigIntegerGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigInteger>
+        implements NumberGeneratorSpec<BigInteger> {
 
-    private static final long DEFAULT_MIN = 1;
-    private static final long DEFAULT_MAX = 10_000;
+    private static final BigInteger DEFAULT_MIN = BigInteger.ONE;
+    private static final BigInteger DEFAULT_MAX = BigInteger.valueOf(Long.MAX_VALUE);
 
     public BigIntegerGenerator(final GeneratorContext context) {
-        super(context,
-                BigInteger.valueOf(DEFAULT_MIN),
-                BigInteger.valueOf(DEFAULT_MAX),
-                false);
+        super(context, DEFAULT_MIN, DEFAULT_MAX, false);
     }
 
-    public BigIntegerGenerator(final GeneratorContext context, final BigInteger min, final BigInteger max, final boolean nullable) {
+    public BigIntegerGenerator(
+            final GeneratorContext context, final BigInteger min, final BigInteger max, final boolean nullable) {
         super(context, min, max, nullable);
+    }
+
+    @Override
+    public NumberGeneratorSpec<BigInteger> min(final BigInteger min) {
+        this.min = Verify.notNull(min);
+        if (min.compareTo(max) >= 0) {
+            max = min.add(DEFAULT_MAX);
+        }
+        return this;
+    }
+
+    @Override
+    public NumberGeneratorSpec<BigInteger> max(final BigInteger max) {
+        this.max = Verify.notNull(max);
+        if (max.compareTo(min) <= 0) {
+            min = max.subtract(DEFAULT_MAX);
+        }
+        return this;
     }
 
     @Override

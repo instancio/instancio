@@ -57,4 +57,10 @@ public class TypeUtils {
         throw new UnsupportedOperationException("Unhandled type: " + type.getClass().getSimpleName());
     }
 
+    public static Class<?> getGenericSuperclassRawTypeArgument(final Class<?> klass) {
+        final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
+        final Type genericType = genericSuperclass.getActualTypeArguments()[0];
+        return getRawType(genericType);
+
+    }
 }
