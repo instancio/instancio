@@ -140,9 +140,7 @@ class BuiltInCollectionGeneratorTest {
         @DisplayName("List of the target field should have expected size and be fully populated")
         void listShouldHaveExpectedSize() {
             final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                    .generate(field("list1"), gen -> gen.collection()
-                            .minSize(EXPECTED_SIZE)
-                            .maxSize(EXPECTED_SIZE))
+                    .generate(field("list1"), gen -> gen.collection().size(EXPECTED_SIZE))
                     .create();
 
             assertList(result.getList1(), EXPECTED_SIZE, EXPECTED_SIZE);
@@ -153,9 +151,7 @@ class BuiltInCollectionGeneratorTest {
         @DisplayName("All lists should have expected size and be fully populated")
         void allListsShouldHaveExpectedSize() {
             final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                    .generate(all(List.class), gen -> gen.collection()
-                            .minSize(EXPECTED_SIZE)
-                            .maxSize(EXPECTED_SIZE))
+                    .generate(all(List.class), gen -> gen.collection().size(EXPECTED_SIZE))
                     .create();
 
             assertList(result.getList1(), EXPECTED_SIZE, EXPECTED_SIZE);
@@ -176,9 +172,7 @@ class BuiltInCollectionGeneratorTest {
         @DisplayName("Map of the target field should have expected size and be fully populated")
         void mapShouldHaveExpectedSize() {
             final TwoMapsOfIntegerItemString result = Instancio.of(TwoMapsOfIntegerItemString.class)
-                    .generate(field("map1"), gen -> gen.map()
-                            .minSize(EXPECTED_SIZE)
-                            .maxSize(EXPECTED_SIZE))
+                    .generate(field("map1"), gen -> gen.map().size(EXPECTED_SIZE))
                     .create();
 
             assertEntries(result.getMap1(), EXPECTED_SIZE, EXPECTED_SIZE);
@@ -189,9 +183,7 @@ class BuiltInCollectionGeneratorTest {
         @DisplayName("All maps should have expected size and be fully populated")
         void allMapsShouldHaveExpectedSize() {
             final TwoMapsOfIntegerItemString result = Instancio.of(TwoMapsOfIntegerItemString.class)
-                    .generate(all(Map.class), gen -> gen.map()
-                            .minSize(EXPECTED_SIZE)
-                            .maxSize(EXPECTED_SIZE))
+                    .generate(all(Map.class), gen -> gen.map().size(EXPECTED_SIZE))
                     .create();
 
             assertEntries(result.getMap1(), EXPECTED_SIZE, EXPECTED_SIZE);

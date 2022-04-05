@@ -27,6 +27,14 @@ import java.util.Collection;
 public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>> {
 
     /**
+     * Size of collection to generate.
+     *
+     * @param size of collection
+     * @return spec builder
+     */
+    CollectionGeneratorSpec<T> size(int size);
+
+    /**
      * Minimum size of collection to generate.
      *
      * @param size minimum size (inclusive)

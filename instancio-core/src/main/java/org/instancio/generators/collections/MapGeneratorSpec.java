@@ -28,6 +28,15 @@ import java.util.Map;
 public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
 
     /**
+     * Size of map to generate.
+     *
+     * @param size of map
+     * @return spec builder
+     */
+    MapGeneratorSpec<K, V> size(int size);
+
+
+    /**
      * Minimum size of map to generate.
      *
      * @param size minimum size (inclusive)
