@@ -15,25 +15,44 @@
  */
 package org.instancio;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A collection of static factory methods for creating {@link Binding}s.
  * <p>
  * A binding allows targeting a specific class or field.
+ * <p>
+ * Examples:
+ * <ul>
+ *   <li>{@code field(Example.class, "someField")} - target some field of Example class</li>
+ *   <li>{@code all(Example.class)} - target all instances of Example class</li>
+ *   <li>{@code of(Binding...)} - convenience method for targeting multiple bindings</li>
+ *   <li>{@code allStrings()} - target all Strings</li>
+ *   <li>{@code allInts()} - target all {@code Integer} objects and {@code int} primitives</li>
+ * </ul>
  */
-// TODO add examples
 public class Bindings {
-    private static final Binding ALL_BYTES = Binding.of(all(byte.class), all(Byte.class));
-    private static final Binding ALL_SHORTS = Binding.of(all(short.class), all(Short.class));
-    private static final Binding ALL_INTS = Binding.of(all(int.class), all(Integer.class));
-    private static final Binding ALL_LONGS = Binding.of(all(long.class), all(Long.class));
-    private static final Binding ALL_FLOATS = Binding.of(all(float.class), all(Float.class));
-    private static final Binding ALL_DOUBLES = Binding.of(all(double.class), all(Double.class));
-    private static final Binding ALL_BOOLEANS = Binding.of(all(boolean.class), all(Boolean.class));
-    private static final Binding ALL_CHARS = Binding.of(all(char.class), all(Character.class));
+    private static final Binding ALL_BYTES = of(all(byte.class), all(Byte.class));
+    private static final Binding ALL_SHORTS = of(all(short.class), all(Short.class));
+    private static final Binding ALL_INTS = of(all(int.class), all(Integer.class));
+    private static final Binding ALL_LONGS = of(all(long.class), all(Long.class));
+    private static final Binding ALL_FLOATS = of(all(float.class), all(Float.class));
+    private static final Binding ALL_DOUBLES = of(all(double.class), all(Double.class));
+    private static final Binding ALL_BOOLEANS = of(all(boolean.class), all(Boolean.class));
+    private static final Binding ALL_CHARS = of(all(char.class), all(Character.class));
     private static final Binding ALL_STRINGS = all(String.class);
 
     private Bindings() {
         // non-instantiable
+    }
+
+    public static Binding of(final Binding... bindings) {
+        final List<Binding.BindingTarget> targets = new ArrayList<>();
+        for (Binding b : bindings) {
+            targets.addAll(b.getTargets());
+        }
+        return new Binding(targets);
     }
 
     /**

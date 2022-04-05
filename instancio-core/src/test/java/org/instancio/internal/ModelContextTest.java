@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.Binding;
+import org.instancio.Bindings;
 import org.instancio.Generator;
 import org.instancio.GeneratorContext;
 import org.instancio.GeneratorSpec;
@@ -131,7 +132,7 @@ class ModelContextTest {
     @Test
     void withIgnoredClass() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withIgnored(Binding.of(all(Address.class), all(Pet.class)))
+                .withIgnored(Bindings.of(all(Address.class), all(Pet.class)))
                 .build();
 
         assertThat(ctx.isIgnored(Address.class)).isTrue();
