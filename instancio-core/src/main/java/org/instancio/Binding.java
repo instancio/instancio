@@ -17,7 +17,6 @@ package org.instancio;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,7 @@ public class Binding {
 
     private final List<BindingTarget> targets;
 
-    private Binding(final List<BindingTarget> targets) {
+    Binding(final List<BindingTarget> targets) {
         this.targets = Collections.unmodifiableList(targets);
     }
 
@@ -37,15 +36,7 @@ public class Binding {
         this(Arrays.asList(targets));
     }
 
-    public static Binding of(final Binding... bindings) {
-        final List<BindingTarget> targets = new ArrayList<>();
-        for (Binding b : bindings) {
-            targets.addAll(b.targets);
-        }
-        return new Binding(targets);
-    }
-
-    public static Binding of(final BindingTarget... targets) {
+    private static Binding of(final BindingTarget... targets) {
         return new Binding(targets);
     }
 
