@@ -19,8 +19,8 @@ import org.instancio.internal.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
+import java.util.Optional;
 import java.util.Queue;
 
 class InstancioEngine {
@@ -41,7 +41,12 @@ class InstancioEngine {
 
     @SuppressWarnings("unchecked")
     <T> T createObject() {
-        final GeneratorResult rootResult = generatorFacade.generateNodeValue(rootNode, null);
+        final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(rootNode, null);
+        if (!optResult.isPresent()) {
+            return null;
+        }
+
+        final GeneratorResult rootResult = optResult.get();
         rootNode.accept(new PopulatingNodeVisitor(null, rootResult, generatorFacade, context, queue, callbackHandler));
         callbackHandler.addResult(rootNode, rootResult);
 
@@ -57,17 +62,10 @@ class InstancioEngine {
         LOG.trace("Creating: {}", createItem);
 
         final Node node = createItem.getNode();
-        if (!isIgnored(node)) {
-            final GeneratorResult generatorResult = generatorFacade.generateNodeValue(node, createItem.getOwner());
-            node.accept(new PopulatingNodeVisitor(createItem.getOwner(), generatorResult, generatorFacade, context, queue, callbackHandler));
-            callbackHandler.addResult(node, generatorResult);
+        final Optional<GeneratorResult> result = generatorFacade.generateNodeValue(node, createItem.getOwner());
+        if (result.isPresent()) {
+            node.accept(new PopulatingNodeVisitor(createItem.getOwner(), result.get(), generatorFacade, context, queue, callbackHandler));
+            callbackHandler.addResult(node, result.get());
         }
-    }
-
-    private boolean isIgnored(final Node node) {
-        return node.getField() == null
-                || context.isIgnored(node.getField())
-                || context.isIgnored(node.getTargetClass())
-                || Modifier.isStatic(node.getField().getModifiers());
     }
 }
