@@ -19,6 +19,10 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.pojo.basic.ClassWithInitializedField;
 import org.instancio.pojo.basic.SupportedNumericTypes;
+import org.instancio.pojo.collections.maps.MapStringPerson;
+import org.instancio.pojo.person.Person;
+import org.instancio.pojo.person.Pet;
+import org.instancio.pojo.person.Phone;
 import org.instancio.testsupport.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,8 +34,8 @@ import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.allShorts;
 import static org.instancio.Bindings.field;
 
-@NonDeterministicTag
-class IgnoredFieldTest {
+@NonDeterministicTag("Asserts generated primitive is not zero")
+class IgnoredTest {
 
     @Test
     @DisplayName("Ignored field should retain the original value")
@@ -66,4 +70,43 @@ class IgnoredFieldTest {
         assertThat(result.getPrimitiveShort()).isZero();
         assertThat(result.getShortWrapper()).isNull();
     }
+
+    @Test
+    void ignoredClassNotAddedToCollection() {
+        final Person result = Instancio.of(Person.class)
+                .ignore(all(Phone.class))
+                .create();
+
+        assertThat(result.getAddress().getPhoneNumbers()).isEmpty();
+    }
+
+    @Test
+    void ignoredClassNotAddedToArray() {
+        final Person result = Instancio.of(Person.class)
+                .ignore(all(Pet.class))
+                .create();
+
+        final Pet[] pets = result.getPets();
+        assertThat(pets).containsOnlyNulls();
+    }
+
+
+    @Test
+    void ignoredClassNotAddedAsMapValue() {
+        final MapStringPerson result = Instancio.of(MapStringPerson.class)
+                .ignore(all(Person.class))
+                .create();
+
+        assertThat(result.getMap()).isEmpty();
+    }
+
+    @Test
+    void ignoredClassNotAddedAsMapKey() {
+        final MapStringPerson result = Instancio.of(MapStringPerson.class)
+                .ignore(all(String.class))
+                .create();
+
+        assertThat(result.getMap()).isEmpty();
+    }
+
 }

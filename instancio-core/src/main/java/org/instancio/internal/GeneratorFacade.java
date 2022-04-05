@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Modifier;
 import java.util.Optional;
 
 class GeneratorFacade {
@@ -64,19 +65,29 @@ class GeneratorFacade {
         };
     }
 
-    GeneratorResult generateNodeValue(final Node node, @Nullable final Object owner) {
+    private boolean isIgnored(final Node node) {
+        return context.isIgnored(node.getField())
+                || context.isIgnored(node.getTargetClass())
+                || (node.getField() != null && Modifier.isStatic(node.getField().getModifiers()));
+    }
+
+    Optional<GeneratorResult> generateNodeValue(final Node node, @Nullable final Object owner) {
+        if (isIgnored(node)) {
+            return Optional.empty();
+        }
+
         if (owner != null) {
             final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
             if (ancestor != null) {
                 LOG.debug("{} has a circular dependency to {}. Not setting field value.",
                         owner.getClass().getSimpleName(), ancestor);
 
-                return GeneratorResult.nullResult();
+                return Optional.of(GeneratorResult.nullResult());
             }
         }
 
         if (shouldReturnNullForNullable(node)) {
-            return GeneratorResult.nullResult();
+            return Optional.of(GeneratorResult.nullResult());
         }
 
         Optional<GeneratorResult> generatorResult = Optional.empty();
@@ -93,7 +104,8 @@ class GeneratorFacade {
             generatorResult = resolveImplementationAndGenerate(effectiveType, node, owner);
         }
 
-        return generatorResult.orElse(GeneratorResult.nullResult());
+        //return generatorResult.orElse(GeneratorResult.nullResult());
+        return generatorResult;
     }
 
     /**
@@ -109,13 +121,15 @@ class GeneratorFacade {
 
         LOG.debug("No generator for interface '{}'", abstractType.getName());
 
-        return implementationResolver.resolve(abstractType)
-                .map(implementor -> {
-                    final Node implementorNode = new ClassNode(parentNode.getNodeContext(),
-                            implementor, parentNode.getField(), null, parentNode);
+        final Optional<Class<?>> targetClass = implementationResolver.resolve(abstractType);
+        if (targetClass.isPresent()) {
+            final Node implementorNode = new ClassNode(parentNode.getNodeContext(),
+                    targetClass.get(), parentNode.getField(), null, parentNode);
 
-                    return generateNodeValue(implementorNode, owner);
-                });
+            return generateNodeValue(implementorNode, owner);
+        }
+
+        return Optional.empty();
     }
 
     private boolean shouldReturnNullForNullable(final Node node) {

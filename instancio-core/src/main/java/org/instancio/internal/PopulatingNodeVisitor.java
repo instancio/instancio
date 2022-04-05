@@ -29,6 +29,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 
 import static java.util.stream.Collectors.toList;
@@ -92,7 +93,12 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         final boolean nullableElement = generatorResult.getHints().nullableElements();
 
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
-            final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, collectionObj);
+            final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(elementNode, collectionObj);
+            if (!optResult.isPresent()) {
+                continue;
+            }
+
+            GeneratorResult elementResult = optResult.get();
             final Object elementValue;
 
             if (context.getRandomProvider().diceRoll(nullableElement)) {
@@ -136,19 +142,29 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             if (context.getRandomProvider().diceRoll(nullableKey)) {
                 mapKey = null;
             } else {
-                keyResult = generatorFacade.generateNodeValue(keyNode, mapObj);
-                enqueueChildrenOf(keyNode, keyResult, queue);
-                mapKey = keyResult.getValue();
+                final Optional<GeneratorResult> keyResultOpt = generatorFacade.generateNodeValue(keyNode, mapObj);
+                if (keyResultOpt.isPresent()) {
+                    keyResult = keyResultOpt.get();
+                    enqueueChildrenOf(keyNode, keyResult, queue);
+                    mapKey = keyResult.getValue();
+                } else {
+                    mapKey = null;
+                }
             }
 
             final Object mapValue;
             if (context.getRandomProvider().diceRoll(nullableValue)) {
                 mapValue = null;
             } else {
-                valueResult = generatorFacade.generateNodeValue(valueNode, mapObj);
-                enqueueChildrenOf(valueNode, valueResult, queue);
-                mapValue = valueResult.getValue();
-                valueNode.accept(new PopulatingNodeVisitor(mapObj, valueResult, generatorFacade, context, queue, callbackHandler));
+                final Optional<GeneratorResult> valueResultOpt = generatorFacade.generateNodeValue(valueNode, mapObj);
+                if (valueResultOpt.isPresent()) {
+                    valueResult = valueResultOpt.get();
+                    enqueueChildrenOf(valueNode, valueResult, queue);
+                    mapValue = valueResult.getValue();
+                    valueNode.accept(new PopulatingNodeVisitor(mapObj, valueResult, generatorFacade, context, queue, callbackHandler));
+                } else {
+                    mapValue = null;
+                }
             }
 
             if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
@@ -183,11 +199,14 @@ public class PopulatingNodeVisitor implements NodeVisitor {
                 continue;
             }
 
-            final GeneratorResult elementResult = generatorFacade.generateNodeValue(elementNode, arrayObj);
-            final Object elementValue = elementResult.getValue();
-            Array.set(arrayObj, i, elementValue);
-            enqueueChildrenOf(elementNode, elementResult, queue);
-            callbackHandler.addResult(elementNode, elementResult);
+            final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(elementNode, arrayObj);
+            if (optResult.isPresent()) {
+                final GeneratorResult elementResult = optResult.get();
+                final Object elementValue = elementResult.getValue();
+                Array.set(arrayObj, i, elementValue);
+                enqueueChildrenOf(elementNode, elementResult, queue);
+                callbackHandler.addResult(elementNode, elementResult);
+            }
         }
     }
 

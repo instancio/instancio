@@ -59,7 +59,7 @@ public interface InstancioApi<T> {
      * }</pre>
      * <p>
      * Since the internal data of the model is not part of the public API,
-     * this interface does not contain any methods.
+     * the {@link Model} interface does not contain any methods.
      *
      * @return a model containing all the details
      */
