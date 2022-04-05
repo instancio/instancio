@@ -369,7 +369,7 @@ Instancio offers a settings API for overriding default settings. For example,
 by default Instancio generates only positive numbers. One way to override
 this behaviour is by using settings:
 
-```
+```java
 Settings settings = Settings.create()
     .set(Setting.LONG_MIN, Long.MIN_VALUE)
     .set(Setting.INTEGER_MIN, Integer.MIN_VALUE);
