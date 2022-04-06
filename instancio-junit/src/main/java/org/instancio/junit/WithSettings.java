@@ -22,37 +22,25 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies the seed for the random number generator.
+ * An annotation for supplying custom settings to a unit test.
  * <p>
- * Example:
+ * This annotation must be placed on a {@link org.instancio.settings.Settings} fields.
+ * There can be at most one field annotated {@code @WithSettings} per test class.
+ *
  * <pre class="code"><code class="java">
  *
  * &#064;ExtendWith(InstancioExtension.class)
  * class ExampleTest {
  *
- *     &#064;Test
- *     <b>&#064;Seed(12345)</b>
- *     void someTestMethod() {
- *         Person person = Instancio.create(Person.class); // will use the specified seed
- *     }
+ *     <b>&#064;WithSettings</b>
+ *     private final Settings settings = Settings.create()
+ *         .set(Setting.COLLECTION_MIN_SIZE, 50)
+ *         .set(Setting.COLLECTION_MAX_SIZE, 100);
  * }
  * </code></pre>
- * <p>
- * If the {@link Seed} annotation is specified, the same data set will be generated each test run
- * based on the given seed value.
- * <p>
- * If the seed annotation is not specified, a random seed will be used, resulting
- * in random data generated on each test run.
  */
 @Documented
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Seed {
-
-    /**
-     * Specifies seed value for the Random Number Generator.
-     *
-     * @return seed value
-     */
-    int value();
+public @interface WithSettings {
 }

@@ -16,7 +16,9 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.internal.ThreadLocalSettingsProvider;
+import org.instancio.settings.Setting;
+import org.instancio.settings.Settings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,38 +27,38 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
-class InstancioExtensionWithSeedTest {
+class InstancioExtensionWithSettingsAnnotationTest {
 
-    static final int EXPECTED_SEED = 1234;
-    private static final String EXPECTED_RANDOM_STRING = "XTYQ";
+    private static final long MIN = 9;
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+            .set(Setting.LONG_MIN, MIN)
+            .set(Setting.LONG_MAX, MIN + 1);
 
     @AfterAll
     static void afterAll() {
-        assertThat(ThreadLocalRandomProvider.getInstance().get())
+        assertThat(ThreadLocalSettingsProvider.getInstance().get())
                 .as("Expected thread local value to be removed after test is done")
                 .isNull();
     }
 
     @Test
-    @Seed(InstancioExtensionWithSeedTest.EXPECTED_SEED)
-    @DisplayName("Verify string created from @Seed(...) value")
-    void assertStringCreatedFromSuppliedSeed() {
-        assertThat(Instancio.create(String.class)).isEqualTo(EXPECTED_RANDOM_STRING);
+    void assertValueCreatedUsingAnnotatedSettings() {
+        assertThat(Instancio.create(Long.class)).isEqualTo(MIN);
     }
 
     @Test
-    @Seed(InstancioExtensionWithSeedTest.EXPECTED_SEED)
-    @DisplayName("withSeed() should take precedence over the thread local value")
-    void modelSeedShouldTakePrecedenceOverThreadLocalSeed() {
-        final String result1 = Instancio.create(String.class);
+    @DisplayName("withSettings() should take precedence over the thread local settings")
+    void modelSettingsShouldTakePrecedenceOverThreadLocalSettings() {
+        final long minOverride = 100;
 
-        final int otherSeed = 4567;
-        final String result2 = Instancio.of(String.class)
-                .withSeed(otherSeed)
+        final Long result = Instancio.of(Long.class)
+                .withSettings(Settings.create()
+                        .set(Setting.LONG_MIN, minOverride)
+                        .set(Setting.LONG_MAX, minOverride + 1))
                 .create();
 
-        assertThat(result1)
-                .isEqualTo(EXPECTED_RANDOM_STRING)
-                .isNotEqualTo(result2);
+        assertThat(result).isEqualTo(minOverride);
     }
 }

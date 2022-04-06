@@ -18,8 +18,13 @@ package org.instancio.util;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 public class ReflectionUtils {
 
@@ -76,6 +81,12 @@ public class ReflectionUtils {
         } catch (ClassNotFoundException ex) {
             throw new InstancioApiException(String.format("Class not found: '%s'", name), ex);
         }
+    }
+
+    public static List<Field> getAnnotatedFields(Class<?> klass, Class<? extends Annotation> annotation) {
+        return Arrays.stream(klass.getDeclaredFields())
+                .filter(field -> field.getAnnotation(annotation) != null)
+                .collect(toList());
     }
 }
 

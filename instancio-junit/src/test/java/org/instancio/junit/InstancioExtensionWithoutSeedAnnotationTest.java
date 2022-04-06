@@ -24,7 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
-class InstancioExtensionWithoutSeedTest {
+class InstancioExtensionWithoutSeedAnnotationTest {
 
     @Test
     @DisplayName("Same seed should be used within the test method")
