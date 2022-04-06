@@ -15,7 +15,8 @@
  */
 package org.instancio;
 
-import org.instancio.internal.GeneratedHints;
+import org.instancio.generator.GeneratedHints;
+import org.instancio.generator.GeneratorSpec;
 
 import java.util.Optional;
 
@@ -23,7 +24,6 @@ import java.util.Optional;
  * A generator of values of a specific type.
  *
  * @param <T> type to generate
- * @see org.instancio.Generators
  */
 @FunctionalInterface
 public interface Generator<T> extends GeneratorSpec<T> {

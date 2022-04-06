@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Instancio public-facing APIs; for usage examples see {@link org.instancio.Instancio}.
+ *
+ * @see org.instancio.Instancio
+ * @see org.instancio.InstancioApi
+ */
 @ParametersAreNonnullByDefault
 package org.instancio;
 

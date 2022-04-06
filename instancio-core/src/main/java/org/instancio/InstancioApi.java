@@ -15,6 +15,7 @@
  */
 package org.instancio;
 
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.Settings;
 
 import java.util.function.Function;

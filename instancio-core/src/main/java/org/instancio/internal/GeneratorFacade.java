@@ -15,7 +15,9 @@
  */
 package org.instancio.internal;
 
-import org.instancio.GeneratorContext;
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.GeneratorResolver;
+import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.handlers.ArrayNodeHandler;
 import org.instancio.internal.handlers.CollectionNodeHandler;
 import org.instancio.internal.handlers.InstantiatingHandler;

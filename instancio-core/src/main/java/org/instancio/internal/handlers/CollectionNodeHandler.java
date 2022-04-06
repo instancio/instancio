@@ -15,9 +15,9 @@
  */
 package org.instancio.internal.handlers;
 
+import org.instancio.generator.GeneratedHints;
+import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.CallbackHandler;
-import org.instancio.internal.GeneratedHints;
-import org.instancio.internal.GeneratorResult;
 import org.instancio.internal.ModelContext;
 import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;

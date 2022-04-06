@@ -19,11 +19,14 @@ import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
 
+import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.InstancioValidator.validateSettingKey;
 import static org.instancio.internal.InstancioValidator.validateSubtypeMapping;
 
@@ -186,5 +189,20 @@ public class Settings {
         if (isLockedForModifications) {
             throw new UnsupportedOperationException("Settings are read-only");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Settings[" +
+                "\nisLockedForModifications: " + isLockedForModifications +
+                "\nsettingsMap:" + mapToString(new TreeMap<>(settingsMap)) +
+                "\nsubtypeMap:" + mapToString(subtypeMap);
+    }
+
+    private static String mapToString(Map<?, ?> map) {
+        if (map.isEmpty()) return " {}";
+        return "\n" + map.entrySet().stream()
+                .map(e -> MessageFormat.format("\t{0}: {1}", e.getKey(), e.getValue()))
+                .collect(joining("\n"));
     }
 }

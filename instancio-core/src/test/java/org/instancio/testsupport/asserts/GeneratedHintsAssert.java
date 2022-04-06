@@ -16,7 +16,7 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.internal.GeneratedHints;
+import org.instancio.generator.GeneratedHints;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

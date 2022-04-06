@@ -16,6 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.util.Sonar;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <p>
  * This test has a very small probability of failure if seeds happen to clash.
  */
-@SuppressWarnings("java:S2699")
+@SuppressWarnings(Sonar.ADD_ASSERTION)
 @ExtendWith(InstancioExtension.class)
 class EachMethodShouldGenerateItsOwnSeedTest {
 

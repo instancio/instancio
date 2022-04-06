@@ -21,9 +21,9 @@ import java.util.function.Supplier;
 /**
  * A supplier that provides {@link Type} information.
  *
- * @param <T> type being supplied.<p>
- *            Required to be present, though not used directly.
+ * @param <T> type being supplied
  */
+// <T> is required to be present, even though not used directly here.
 @SuppressWarnings("unused")
 @FunctionalInterface
 public interface TypeTokenSupplier<T> extends Supplier<Type> {

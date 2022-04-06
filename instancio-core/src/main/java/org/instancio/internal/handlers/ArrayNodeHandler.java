@@ -16,9 +16,9 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Generator;
+import org.instancio.generator.GeneratorResolver;
+import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.CallbackHandler;
-import org.instancio.internal.GeneratorResolver;
-import org.instancio.internal.GeneratorResult;
 import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.util.Verify;

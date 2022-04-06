@@ -17,7 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.Binding;
 import org.instancio.Generator;
-import org.instancio.GeneratorSpec;
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
