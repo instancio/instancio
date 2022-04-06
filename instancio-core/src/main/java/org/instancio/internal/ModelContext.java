@@ -17,10 +17,10 @@ package org.instancio.internal;
 
 import org.instancio.Binding;
 import org.instancio.Generator;
-import org.instancio.generator.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.OnCompleteCallback;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.PropertiesLoader;
@@ -101,6 +101,7 @@ public class ModelContext<T> {
 
         this.settings = Settings.defaults()
                 .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
+                .merge(ThreadLocalSettingsProvider.getInstance().get())
                 .merge(builder.settings)
                 .lock();
 

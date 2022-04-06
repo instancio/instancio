@@ -15,9 +15,14 @@
  */
 package org.instancio.junit;
 
+import org.instancio.exception.InstancioException;
 import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.internal.ThreadLocalSettingsProvider;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.settings.Settings;
+import org.instancio.util.ReflectionUtils;
 import org.instancio.util.SeedUtil;
+import org.instancio.util.Sonar;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -25,7 +30,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * Instancio JUnit extension.
@@ -68,6 +78,7 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
 
     private static final Logger LOG = LoggerFactory.getLogger(InstancioExtension.class);
     private final ThreadLocalRandomProvider threadLocalRandomProvider;
+    private final ThreadLocalSettingsProvider threadLocalSettingsProvider;
 
     /**
      * Default constructor; required for JUnit extensions.
@@ -75,40 +86,84 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
     @SuppressWarnings("unused")
     public InstancioExtension() {
         threadLocalRandomProvider = ThreadLocalRandomProvider.getInstance();
+        threadLocalSettingsProvider = ThreadLocalSettingsProvider.getInstance();
     }
 
     // used by unit test only
     @SuppressWarnings("unused")
-    InstancioExtension(final ThreadLocalRandomProvider threadLocal) {
-        threadLocalRandomProvider = threadLocal;
+    InstancioExtension(final ThreadLocalRandomProvider threadLocalRandomProvider,
+                       final ThreadLocalSettingsProvider threadLocalSettingsProvider) {
+        this.threadLocalRandomProvider = threadLocalRandomProvider;
+        this.threadLocalSettingsProvider = threadLocalSettingsProvider;
     }
 
     @Override
-    public void beforeEach(final ExtensionContext context) {
-        final Method method = context.getRequiredTestMethod();
-        final Seed seedAnnotation = method.getAnnotation(Seed.class);
-        final int seed = seedAnnotation == null
-                ? SeedUtil.randomSeed()
-                : seedAnnotation.value();
+    public void beforeEach(final ExtensionContext context) throws Exception {
+        processWithSettingsAnnotation(context);
+        processSeedAnnotation(context);
+    }
 
-        threadLocalRandomProvider.set(new RandomProvider(seed));
+    private void processSeedAnnotation(final ExtensionContext context) {
+        final Optional<Method> testMethod = context.getTestMethod();
+        if (testMethod.isPresent()) {
+            final Seed seedAnnotation = testMethod.get().getAnnotation(Seed.class);
+            final int seed = seedAnnotation == null
+                    ? SeedUtil.randomSeed()
+                    : seedAnnotation.value();
+
+            threadLocalRandomProvider.set(new RandomProvider(seed));
+        }
+    }
+
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    private void processWithSettingsAnnotation(final ExtensionContext context) throws IllegalAccessException {
+        final Optional<Class<?>> testClass = context.getTestClass();
+        final Optional<Object> testInstance = context.getTestInstance();
+        if (!testClass.isPresent() || !testInstance.isPresent()) {
+            return;
+        }
+
+        final List<Field> fields = ReflectionUtils.getAnnotatedFields(testClass.get(), WithSettings.class);
+
+        if (fields.size() > 1) {
+            throw new InstancioException("\nFound more than one field annotated '@WithSettings':\n\n"
+                    + fields.stream().map(Field::toString).collect(joining("\n")));
+        } else if (fields.size() == 1) {
+            final Field field = fields.get(0);
+            field.setAccessible(true);
+            final Object obj = field.get(testInstance.get());
+            if (!(obj instanceof Settings)) {
+                throw new InstancioException("\n@WithSettings must be annotated on a Settings field." +
+                        "\n\nFound annotation on: " + field);
+            }
+            final Settings settings = (Settings) obj;
+            threadLocalSettingsProvider.set(settings);
+        }
     }
 
     @Override
     public void afterEach(final ExtensionContext context) {
         threadLocalRandomProvider.remove();
+        threadLocalSettingsProvider.remove();
     }
 
     @Override
     public void afterTestExecution(final ExtensionContext context) {
         if (context.getExecutionException().isPresent()) {
-            final Method testMethod = context.getRequiredTestMethod();
+            final Optional<Method> testMethod = context.getTestMethod();
+            if (!testMethod.isPresent()) {
+                return;
+            }
+
             final int seed = threadLocalRandomProvider.get().getSeed();
-            final String msg = String.format("Test method '%s' failed with seed: %d%n", testMethod.getName(), seed);
+            final String msg = String.format("Test method '%s' failed with seed: %d%n",
+                    testMethod.get().getName(), seed);
+
             context.publishReportEntry("Instancio", msg);
             LOG.debug(msg);
         }
     }
+
 
 }
 
