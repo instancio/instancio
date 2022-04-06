@@ -17,7 +17,6 @@ package org.instancio.internal;
 
 import org.instancio.internal.random.RandomProvider;
 
-@SuppressWarnings("java:S5164")
 public class ThreadLocalRandomProvider {
 
     private static final ThreadLocalRandomProvider INSTANCE = new ThreadLocalRandomProvider();

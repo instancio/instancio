@@ -15,12 +15,14 @@
  */
 package org.instancio.internal.reflection.instantiation;
 
+import org.instancio.util.Sonar;
+
 import java.lang.reflect.Constructor;
 
 public class NoArgumentConstructorInstantiationStrategy implements InstantiationStrategy {
 
     @Override
-    @SuppressWarnings({"unchecked", "java:S3011"})
+    @SuppressWarnings({"unchecked", Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED})
     public <T> T createInstance(final Class<T> klass) {
         try {
             final Constructor<?> ctor = klass.getDeclaredConstructor();

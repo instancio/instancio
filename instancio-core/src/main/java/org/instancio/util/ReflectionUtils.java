@@ -27,7 +27,7 @@ public class ReflectionUtils {
         // non-instantiable
     }
 
-    @SuppressWarnings("java:S3011")
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public static void setField(Object target, Field field, Object value) {
         if (target == null) {
             return;

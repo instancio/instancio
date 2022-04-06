@@ -35,6 +35,7 @@ class VerifyTest {
     private static final String MESSAGE_ARG = "msg-val";
 
     @Test
+    @SuppressWarnings("ConstantConditions")
     void notNullThrowsExceptionWithExpectedMessage() {
         assertThatThrownBy(() -> Verify.notNull(null, MESSAGE_TEMPLATE, MESSAGE_ARG))
                 .isInstanceOf(NullPointerException.class)
@@ -69,7 +70,7 @@ class VerifyTest {
     }
 
     @Test
-    @SuppressWarnings("java:S2699")
+    @SuppressWarnings(Sonar.ADD_ASSERTION)
     void isTrueDoesNotThrowExceptionWhenConditionIsTrue() {
         Verify.isTrue(true, MESSAGE_TEMPLATE, MESSAGE_ARG); // no exception thrown
     }
@@ -83,7 +84,7 @@ class VerifyTest {
     }
 
     @Test
-    @SuppressWarnings("java:S2699")
+    @SuppressWarnings(Sonar.ADD_ASSERTION)
     void isFalseDoesNotThrowExceptionWhenConditionIsFalse() {
         Verify.isFalse(false, MESSAGE_TEMPLATE, MESSAGE_ARG); // no exception thrown
     }
@@ -98,7 +99,7 @@ class VerifyTest {
 
     @ParameterizedTest
     @ValueSource(classes = {Object.class, String.class, int.class, Array.class})
-    @SuppressWarnings("java:S2699")
+    @SuppressWarnings(Sonar.ADD_ASSERTION)
     void isNotArrayCollectionOrMapDoesNotThrowException(Class<?> klass) {
         Verify.isNotArrayCollectionOrMap(klass); // no exception thrown
     }

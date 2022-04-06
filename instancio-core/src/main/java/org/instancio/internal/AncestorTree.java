@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.util.Verify;
 

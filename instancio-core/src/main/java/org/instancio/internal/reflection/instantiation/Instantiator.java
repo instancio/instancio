@@ -16,6 +16,7 @@
 package org.instancio.internal.reflection.instantiation;
 
 
+import org.instancio.util.Sonar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class Instantiator {
         return null;
     }
 
-    @SuppressWarnings("java:S1181")
+    @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
     private <T> T createInstance(final Class<T> klass, final InstantiationStrategy strategy) {
         try {
             return strategy.createInstance(klass);

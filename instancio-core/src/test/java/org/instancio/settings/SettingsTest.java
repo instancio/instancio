@@ -113,4 +113,32 @@ class SettingsTest {
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("Settings are read-only");
     }
+
+    @Test
+    void verifyToStringEmptySettings() {
+        final String expected = "Settings[\n" +
+                "isLockedForModifications: false\n" +
+                "settingsMap: {}\n" +
+                "subtypeMap: {}";
+
+        assertThat(Settings.create()).hasToString(expected);
+    }
+
+    @Test
+    void verifyToString() {
+        final String expected = "Settings[\n" +
+                "isLockedForModifications: true\n" +
+                "settingsMap:\n" +
+                "\tDOUBLE_MIN: 345.9\n" +
+                "\tLONG_MIN: 123\n" +
+                "subtypeMap:\n" +
+                "\tinterface java.util.List: class java.util.ArrayList";
+
+        assertThat(Settings.create()
+                .set(Setting.LONG_MIN, 123L)
+                .set(Setting.DOUBLE_MIN, 345.9)
+                .mapType(List.class, ArrayList.class)
+                .lock()
+        ).hasToString(expected);
+    }
 }

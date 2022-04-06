@@ -16,10 +16,10 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Generator;
-import org.instancio.GeneratorContext;
-import org.instancio.generators.InstantiatingGenerator;
-import org.instancio.internal.GeneratorResolver;
-import org.instancio.internal.GeneratorResult;
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.GeneratorResolver;
+import org.instancio.generator.GeneratorResult;
+import org.instancio.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
