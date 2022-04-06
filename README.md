@@ -20,7 +20,8 @@
     - [Creating generic classes](#creating-generic-classes)
     - [Using Models](#using-models)
     - [`withSettings()`](#withsettings)
-- [JUnit 5 integration](#junit5-integration)
+- [JUnit 5 integration](#junit-5-integration)
+    - [Custom settings in unit tests](#custom-settings-in-unit-tests)
 -----
 
 # What is it?
@@ -426,3 +427,22 @@ With the `Seed` annotation in place, the data basically becomes static. Therefor
 determined what caused the test failure and resolved it, you can remove the `Seed` annotation
 so that new data will be generated on each subsequent test run.
 
+## Custom settings in unit tests
+
+The extension also allows specifying custom `Settings` using the `@WithSettings` annotation.
+Annotated settings will be automatically injected into Instancio models.
+For example:
+
+```java
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+  
+    @WithSettings
+    private final Settings settings = Settings.create()
+        .set(Setting.COLLECTION_MIN_SIZE, 50)
+        .set(Setting.COLLECTION_MAX_SIZE, 100);
+    
+}
+```
+
+At most one `Settings` field can be annotated per test class.
