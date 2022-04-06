@@ -16,12 +16,13 @@
 package org.instancio.generators;
 
 import org.instancio.GeneratorContext;
-import org.instancio.generators.coretypes.AbstractRandomNumberGeneratorSpec;
+import org.instancio.generators.coretypes.AbstractRandomComparableNumberGeneratorSpec;
 import org.instancio.generators.coretypes.NumberGeneratorSpec;
 
 import java.math.BigDecimal;
 
-public class BigDecimalGenerator extends AbstractRandomNumberGeneratorSpec<BigDecimal> implements NumberGeneratorSpec<BigDecimal> {
+public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal>
+        implements NumberGeneratorSpec<BigDecimal> {
 
     private static final long DEFAULT_MIN = 1;
     private static final long DEFAULT_MAX = 10_000;
@@ -33,7 +34,8 @@ public class BigDecimalGenerator extends AbstractRandomNumberGeneratorSpec<BigDe
                 false);
     }
 
-    public BigDecimalGenerator(final GeneratorContext context, final BigDecimal min, final BigDecimal max, final boolean nullable) {
+    public BigDecimalGenerator(
+            final GeneratorContext context, final BigDecimal min, final BigDecimal max, final boolean nullable) {
         super(context, min, max, nullable);
     }
 

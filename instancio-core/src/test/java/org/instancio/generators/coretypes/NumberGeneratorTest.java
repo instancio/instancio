@@ -62,7 +62,7 @@ class NumberGeneratorTest {
 
     private static final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
 
-    static class WholeNumberGeneratorTestTemplate<GEN extends AbstractRandomNumberGeneratorSpec<?>> {
+    static class WholeNumberGeneratorTestTemplate<GEN extends AbstractRandomComparableNumberGeneratorSpec<?>> {
 
         void verifyGenerate(final GEN generator) {
             final Set<Object> results = new HashSet<>();
@@ -82,7 +82,7 @@ class NumberGeneratorTest {
         }
     }
 
-    static class FractionalNumberGeneratorTestTemplate<GEN extends AbstractRandomNumberGeneratorSpec<?>> {
+    static class FractionalNumberGeneratorTestTemplate<GEN extends AbstractRandomComparableNumberGeneratorSpec<?>> {
 
         void verifyGenerate(final GEN generator) {
             final Set<Object> results = new HashSet<>();
