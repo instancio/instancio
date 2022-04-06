@@ -50,7 +50,7 @@ import java.lang.reflect.Method;
  * </code></pre>
  * <p>
  * The failed test will report the seed value that was used, for example:
- * <b>{@code "'verifyPerson' failed with seed: 12345"}</b>.
+ * <b>{@code "Test method 'verifyPerson' failed with seed: 12345"}</b>.
  * <p>
  * Subsequently, the failing test can be reproduced by annotating the test method
  * with the {@link Seed} annotation:
@@ -104,7 +104,7 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
         if (context.getExecutionException().isPresent()) {
             final Method testMethod = context.getRequiredTestMethod();
             final int seed = threadLocalRandomProvider.get().getSeed();
-            final String msg = String.format("'%s' failed with seed: %d%n", testMethod.getName(), seed);
+            final String msg = String.format("Test method '%s' failed with seed: %d%n", testMethod.getName(), seed);
             context.publishReportEntry("Instancio", msg);
             LOG.debug(msg);
         }
