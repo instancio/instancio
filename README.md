@@ -1,8 +1,10 @@
-Instancio [![Maven Central](https://img.shields.io/maven-central/v/org.instancio/instancio-core.svg)](https://search.maven.org/artifact/org.instancio/instancio-core/)
+![logo](https://i.imgur.com/DOe7Frb.png "instancio-logo")
+ [![Maven Central](https://img.shields.io/maven-central/v/org.instancio/instancio-core.svg)](https://search.maven.org/artifact/org.instancio/instancio-core/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=instancio_instancio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=instancio_instancio)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=instancio_instancio&metric=coverage)](https://sonarcloud.io/summary/new_code?id=instancio_instancio)
-=========
+
+---
 
 - [What is it?](#what-is-it)
 - [Try it out](#try-it-out)
@@ -406,7 +408,7 @@ class ExampleTest {
 
 The failed test will report the seed value that was used by the random number generator, for example:
 
-**`"'verifyPerson' failed with seed: 12345"`**
+**`"Test method 'verifyPerson' failed with seed: 12345"`**
 
 You can annotate the failed test method with `@Seed(12345)` and it will generate exactly
 the same data as in the previous test run:
@@ -423,3 +425,4 @@ void verifyPerson() {
 With the `Seed` annotation in place, the data basically becomes static. Therefore, once you've
 determined what caused the test failure and resolved it, you can remove the `Seed` annotation
 so that new data will be generated on each subsequent test run.
+
