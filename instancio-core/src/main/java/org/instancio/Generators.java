@@ -31,6 +31,8 @@ import org.instancio.generator.lang.StringGenerator;
 import org.instancio.generator.lang.StringGeneratorSpec;
 import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
+import org.instancio.generator.time.LocalDateGenerator;
+import org.instancio.generator.time.LocalDateGeneratorSpec;
 import org.instancio.generator.util.CollectionGeneratorSpec;
 import org.instancio.generator.util.CollectionGeneratorSpecImpl;
 import org.instancio.generator.util.MapGeneratorSpec;
@@ -40,6 +42,7 @@ import org.instancio.generator.util.OneOfCollectionGeneratorSpec;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.Collection;
 
 /**
@@ -135,6 +138,15 @@ public class Generators {
      */
     public NumberGeneratorSpec<BigDecimal> bigDecimal() {
         return new BigDecimalGenerator(context);
+    }
+
+    /**
+     * Customises generated {@link LocalDate} values.
+     *
+     * @return customised generator
+     */
+    public LocalDateGeneratorSpec localDate() {
+        return new LocalDateGenerator(context);
     }
 
     /**
