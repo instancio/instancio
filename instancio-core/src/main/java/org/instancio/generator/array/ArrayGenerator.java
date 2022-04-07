@@ -26,6 +26,7 @@ import java.lang.reflect.Array;
 
 public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGeneratorSpec<T> {
 
+    private static final String NEGATIVE_LENGTH = "Length must not be negative: %s";
     private int minLength;
     private int maxLength;
     private boolean nullable;
@@ -47,7 +48,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     @Override
     public ArrayGeneratorSpec<T> minLength(final int length) {
-        Verify.isTrue(length >= 0, "Length cannot be negative: %s", length);
+        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
         this.minLength = length;
         this.maxLength = Math.max(maxLength, minLength);
         return this;
@@ -55,9 +56,17 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     @Override
     public ArrayGeneratorSpec<T> maxLength(final int length) {
-        Verify.isTrue(length >= 0, "Length cannot be negative: %s", length);
+        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
         this.maxLength = length;
         this.minLength = Math.min(minLength, maxLength);
+        return this;
+    }
+
+    @Override
+    public ArrayGeneratorSpec<T> length(final int length) {
+        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
+        this.maxLength = length;
+        this.minLength = length;
         return this;
     }
 

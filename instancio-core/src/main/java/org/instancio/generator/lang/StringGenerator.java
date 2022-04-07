@@ -25,6 +25,7 @@ import org.instancio.util.Verify;
 
 public class StringGenerator extends AbstractGenerator<String> implements StringGeneratorSpec {
 
+    private static final String NEGATIVE_LENGTH = "Length must be negative: %s";
     private int minLength;
     private int maxLength;
     private boolean nullable;
@@ -60,8 +61,16 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
+    public StringGeneratorSpec length(final int length) {
+        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
+        this.minLength = length;
+        this.maxLength = length;
+        return this;
+    }
+
+    @Override
     public StringGeneratorSpec minLength(final int length) {
-        Verify.isTrue(length >= 0, "Length cannot be negative: %s", length);
+        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
         this.minLength = length;
         this.maxLength = Math.max(length, maxLength);
         return this;
@@ -69,7 +78,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
 
     @Override
     public StringGeneratorSpec maxLength(final int length) {
-        Verify.isTrue(length >= 0, "Length cannot be negative: %s", length);
+        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
         this.maxLength = length;
         this.minLength = Math.min(minLength, length);
         return this;

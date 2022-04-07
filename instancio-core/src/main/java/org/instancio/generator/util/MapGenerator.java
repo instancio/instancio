@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
     private static final Logger LOG = LoggerFactory.getLogger(MapGenerator.class);
-    private static final String SIZE_CANNOT_BE_NEGATIVE = "Size cannot be negative: %s";
+    private static final String NEGATIVE_SIZE = "Size must not be negative: %s";
 
     protected int minSize;
     protected int maxSize;
@@ -55,7 +55,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @Override
     public MapGeneratorSpec<K, V> size(final int size) {
-        Verify.isTrue(size >= 0, SIZE_CANNOT_BE_NEGATIVE, size);
+        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
         this.minSize = size;
         this.maxSize = size;
         return this;
@@ -63,7 +63,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @Override
     public MapGeneratorSpec<K, V> minSize(final int size) {
-        Verify.isTrue(size >= 0, SIZE_CANNOT_BE_NEGATIVE, size);
+        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
         this.minSize = size;
         this.maxSize = Math.max(maxSize, minSize);
         return this;
@@ -71,7 +71,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @Override
     public MapGeneratorSpec<K, V> maxSize(final int size) {
-        Verify.isTrue(size >= 0, SIZE_CANNOT_BE_NEGATIVE, size);
+        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
         this.maxSize = size;
         this.minSize = Math.min(minSize, maxSize);
         return this;
