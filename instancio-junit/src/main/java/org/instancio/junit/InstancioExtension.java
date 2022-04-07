@@ -132,6 +132,9 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
             final Field field = fields.get(0);
             field.setAccessible(true);
             final Object obj = field.get(testInstance.get());
+            if (obj == null) {
+                throw new InstancioException("\n@WithSettings must be annotated on a non-null field.");
+            }
             if (!(obj instanceof Settings)) {
                 throw new InstancioException("\n@WithSettings must be annotated on a Settings field." +
                         "\n\nFound annotation on: " + field);

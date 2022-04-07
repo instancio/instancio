@@ -125,6 +125,18 @@ class InstancioExtensionTest {
     }
 
     @Test
+    @DisplayName("Verify exception is thrown if @WithSettings is on a field with null value")
+    void withSettingsOnNullField() {
+        doReturn(Optional.of(DummyWithNullSettingsTest.class)).when(context).getTestClass();
+        doReturn(Optional.of(new DummyWithNullSettingsTest())).when(context).getTestInstance();
+
+        // Method under test
+        assertThatThrownBy(() -> extension.beforeEach(context))
+                .isInstanceOf(InstancioException.class)
+                .hasMessage("\n@WithSettings must be annotated on a non-null field.");
+    }
+
+    @Test
     @DisplayName("If @Seed annotation is absent, should use a random seed")
     void beforeEachWithoutSeedAnnotation() throws Exception {
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITHOUT_SEED_ANNOTATION);
@@ -192,6 +204,11 @@ class InstancioExtensionTest {
         private final Settings settings1 = SETTINGS;
         @WithSettings
         private final Settings settings2 = SETTINGS;
+    }
+
+    static class DummyWithNullSettingsTest {
+        @WithSettings
+        private Settings settings;
     }
 
     static class DummyWithSettingsOnWrongFieldTypeTest {
