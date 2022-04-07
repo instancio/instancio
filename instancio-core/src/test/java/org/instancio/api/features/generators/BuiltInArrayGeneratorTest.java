@@ -40,9 +40,7 @@ class BuiltInArrayGeneratorTest {
         @DisplayName("Array of the target field should have expected size and be fully populated")
         void arrayShouldHaveExpectedSize() {
             final TwoArraysOfItemString result = Instancio.of(TwoArraysOfItemString.class)
-                    .generate(field("array1"), gen -> gen.array()
-                            .minLength(EXPECTED_LENGTH)
-                            .maxLength(EXPECTED_LENGTH))
+                    .generate(field("array1"), gen -> gen.array().length(EXPECTED_LENGTH))
                     .create();
 
             assertArray(result.getArray1(), EXPECTED_LENGTH, EXPECTED_LENGTH);
@@ -53,9 +51,7 @@ class BuiltInArrayGeneratorTest {
         @DisplayName("All arrays should have expected size and be fully populated")
         void allArraysShouldHaveExpectedSize() {
             final TwoArraysOfItemString result = Instancio.of(TwoArraysOfItemString.class)
-                    .generate(all(Item[].class), gen -> gen.array()
-                            .minLength(EXPECTED_LENGTH)
-                            .maxLength(EXPECTED_LENGTH))
+                    .generate(all(Item[].class), gen -> gen.array().length(EXPECTED_LENGTH))
                     .create();
 
             assertArray(result.getArray1(), EXPECTED_LENGTH, EXPECTED_LENGTH);
@@ -70,9 +66,7 @@ class BuiltInArrayGeneratorTest {
         @DisplayName("Array of the target field should have expected size and be fully populated")
         void arrayShouldHaveExpectedSize() {
             final TwoArraysOfItemString result = Instancio.of(new TypeToken<TwoArraysOfItemString>() {})
-                    .generate(field("array1"), gen -> gen.array()
-                            .minLength(EXPECTED_LENGTH)
-                            .maxLength(EXPECTED_LENGTH))
+                    .generate(field("array1"), gen -> gen.array().length(EXPECTED_LENGTH))
                     .create();
 
             assertArray(result.getArray1(), EXPECTED_LENGTH, EXPECTED_LENGTH);
@@ -83,9 +77,7 @@ class BuiltInArrayGeneratorTest {
         @DisplayName("All arrays should have expected size and be fully populated")
         void allArraysShouldHaveExpectedSize() {
             final TwoArraysOfItemString result = Instancio.of(new TypeToken<TwoArraysOfItemString>() {})
-                    .generate(all(Item[].class), gen -> gen.array()
-                            .minLength(EXPECTED_LENGTH)
-                            .maxLength(EXPECTED_LENGTH))
+                    .generate(all(Item[].class), gen -> gen.array().length(EXPECTED_LENGTH))
                     .create();
 
             assertArray(result.getArray1(), EXPECTED_LENGTH, EXPECTED_LENGTH);
@@ -100,9 +92,7 @@ class BuiltInArrayGeneratorTest {
         @DisplayName("Array of the target field should have expected size and be fully populated")
         void arrayShouldHaveExpectedSize() {
             final Model<TwoArraysOfItemString> model = Instancio.of(TwoArraysOfItemString.class)
-                    .generate(field("array1"), gen -> gen.array()
-                            .minLength(EXPECTED_LENGTH)
-                            .maxLength(EXPECTED_LENGTH))
+                    .generate(field("array1"), gen -> gen.array().length(EXPECTED_LENGTH))
                     .toModel();
 
             final TwoArraysOfItemString result = Instancio.of(model).create();
@@ -115,9 +105,7 @@ class BuiltInArrayGeneratorTest {
         @DisplayName("All arrays should have expected size and be fully populated")
         void allArraysShouldHaveExpectedSize() {
             final Model<TwoArraysOfItemString> model = Instancio.of(TwoArraysOfItemString.class)
-                    .generate(all(Item[].class), gen -> gen.array()
-                            .minLength(EXPECTED_LENGTH)
-                            .maxLength(EXPECTED_LENGTH))
+                    .generate(all(Item[].class), gen -> gen.array().length(EXPECTED_LENGTH))
                     .toModel();
 
             final TwoArraysOfItemString result = Instancio.of(model).create();

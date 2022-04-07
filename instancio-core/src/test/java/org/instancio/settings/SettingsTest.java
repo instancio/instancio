@@ -70,6 +70,8 @@ class SettingsTest {
     }
 
     private void verifyMergeSuccessful(final Settings defaults) {
+        final Long originalLongMax = defaults.get(Setting.LONG_MAX);
+
         final Settings overrides = Settings.create()
                 .set(Setting.BYTE_MIN, (byte) 99)
                 .set(Setting.ARRAY_NULLABLE, true)
@@ -79,6 +81,10 @@ class SettingsTest {
 
         assertThat((Byte) result.get(Setting.BYTE_MIN)).isEqualTo((byte) 99);
         assertThat((Boolean) result.get(Setting.ARRAY_NULLABLE)).isTrue();
+        assertThat((Long) result.get(Setting.LONG_MAX))
+                .as("Properties that were not overridden should retain their value")
+                .isEqualTo(originalLongMax);
+
         assertThat(result).as("Expecting a new instance of settings to be created").isNotSameAs(defaults);
     }
 

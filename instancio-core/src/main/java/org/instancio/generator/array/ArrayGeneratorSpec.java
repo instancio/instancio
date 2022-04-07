@@ -19,13 +19,49 @@ import org.instancio.generator.GeneratorSpec;
 
 public interface ArrayGeneratorSpec<T> extends GeneratorSpec<T> {
 
+    /**
+     * length of array to generate.
+     *
+     * @param length of array
+     * @return spec builder
+     */
+    ArrayGeneratorSpec<T> length(int length);
+
+    /**
+     * Minimum length of array to generate.
+     *
+     * @param length minimum length (inclusive)
+     * @return spec builder
+     */
     ArrayGeneratorSpec<T> minLength(int length);
 
+    /**
+     * Maximum length of array to generate.
+     *
+     * @param length maximum length (inclusive)
+     * @return spec builder
+     */
     ArrayGeneratorSpec<T> maxLength(int length);
 
+    /**
+     * Indicates that {@code null} value can be generated for the array.
+     *
+     * @return spec builder
+     */
     ArrayGeneratorSpec<T> nullable();
 
+    /**
+     * Indicates that {@code null} values can be generated for array elements.
+     *
+     * @return spec builder
+     */
     ArrayGeneratorSpec<T> nullableElements();
 
+    /**
+     * Specifies the type of array that should be generated.
+     *
+     * @param type of array to generate
+     * @return spec builder
+     */
     ArrayGeneratorSpec<T> type(Class<?> type);
 }

@@ -30,7 +30,7 @@ import java.util.Collection;
 
 public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
     private static final Logger LOG = LoggerFactory.getLogger(CollectionGenerator.class);
-    private static final String SIZE_CANNOT_BE_NEGATIVE = "Size cannot be negative: %s";
+    private static final String NEGATIVE_SIZE = "Size must not be negative: %s";
 
     protected int minSize;
     protected int maxSize;
@@ -49,7 +49,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     public CollectionGeneratorSpec<T> size(final int size) {
-        Verify.isTrue(size >= 0, SIZE_CANNOT_BE_NEGATIVE, size);
+        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
         this.minSize = size;
         this.maxSize = size;
         return this;
@@ -57,7 +57,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     public CollectionGeneratorSpec<T> minSize(final int size) {
-        Verify.isTrue(size >= 0, SIZE_CANNOT_BE_NEGATIVE, size);
+        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
         this.minSize = size;
         this.maxSize = Math.max(minSize, maxSize);
         return this;
@@ -65,7 +65,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     public CollectionGeneratorSpec<T> maxSize(final int size) {
-        Verify.isTrue(size >= 0, SIZE_CANNOT_BE_NEGATIVE, size);
+        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
         this.maxSize = size;
         this.minSize = Math.min(minSize, maxSize);
         return this;

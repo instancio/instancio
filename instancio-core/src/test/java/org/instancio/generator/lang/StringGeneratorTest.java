@@ -74,7 +74,7 @@ class StringGeneratorTest {
         final StringGenerator generator = new StringGenerator(ctxWithUpdatedSettings);
 
         // Override generator length
-        generator.minLength(length).maxLength(length);
+        generator.length(length);
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final String result = generator.generate(random);
