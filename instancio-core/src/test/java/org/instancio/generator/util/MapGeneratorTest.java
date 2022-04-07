@@ -22,6 +22,7 @@ import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
 import org.instancio.testsupport.tags.SettingsTag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -52,7 +53,8 @@ class MapGeneratorTest {
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     @Test
-    void generate() {
+    @DisplayName("Should generate either an empty map or null")
+    void generateNullableMap() {
         final MapGenerator<?, ?> generator = new MapGenerator<>(context);
         final Set<Object> results = new HashSet<>();
         final int[] counts = new int[2];

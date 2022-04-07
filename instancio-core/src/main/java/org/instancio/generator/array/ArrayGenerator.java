@@ -23,6 +23,9 @@ import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGeneratorSpec<T> {
 
@@ -32,18 +35,19 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     private boolean nullable;
     private boolean nullableElements;
     private Class<?> arrayType;
+    private List<T> withElements;
 
     public ArrayGenerator(final GeneratorContext context) {
         super(context);
-    }
-
-    public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {
-        super(context);
-        this.arrayType = Verify.notNull(arrayType, "Type must not be null");
         this.minLength = context.getSettings().get(Setting.ARRAY_MIN_LENGTH);
         this.maxLength = context.getSettings().get(Setting.ARRAY_MAX_LENGTH);
         this.nullable = context.getSettings().get(Setting.ARRAY_NULLABLE);
         this.nullableElements = context.getSettings().get(Setting.ARRAY_ELEMENTS_NULLABLE);
+    }
+
+    public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {
+        this(context);
+        this.arrayType = Verify.notNull(arrayType, "Type must not be null");
     }
 
     @Override
@@ -89,6 +93,16 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     }
 
     @Override
+    public ArrayGeneratorSpec<T> with(final T... elements) {
+        Verify.notEmpty(elements, "'array().with(...)' must contain at least one element");
+        if (withElements == null) {
+            withElements = new ArrayList<>();
+        }
+        Collections.addAll(withElements, elements);
+        return this;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public T generate(final RandomProvider random) {
         Verify.state(arrayType.isArray(), "Expected an array type: %s", arrayType);
@@ -96,7 +110,11 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
         if (random.diceRoll(nullable)) {
             return null;
         }
-        return (T) Array.newInstance(arrayType.getComponentType(), random.intBetween(minLength, maxLength + 1));
+
+        final int length = random.intBetween(minLength, maxLength + 1)
+                + (withElements == null ? 0 : withElements.size());
+
+        return (T) Array.newInstance(arrayType.getComponentType(), length);
     }
 
     @Override
@@ -105,6 +123,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
                 .ignoreChildren(false)
                 .nullableResult(nullable)
                 .nullableElements(nullableElements)
+                .withElements(withElements)
                 .build();
     }
 }

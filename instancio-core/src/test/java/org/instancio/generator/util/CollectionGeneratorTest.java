@@ -22,6 +22,7 @@ import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
 import org.instancio.testsupport.tags.SettingsTag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ class CollectionGeneratorTest {
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     @Test
-    void generate() {
+    @DisplayName("Should generate either an empty collection or null")
+    void generateNullableCollection() {
         final CollectionGenerator<?> generator = new CollectionGenerator<>(context);
         final Set<Object> results = new HashSet<>();
         final int[] counts = new int[2];
@@ -77,5 +79,4 @@ class CollectionGeneratorTest {
                 .nullableMapKeys(false)
                 .nullableMapValues(false);
     }
-
 }

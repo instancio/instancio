@@ -15,7 +15,11 @@
  */
 package org.instancio.generator;
 
+import org.instancio.util.ObjectUtils;
+
 import javax.annotation.concurrent.Immutable;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringJoiner;
 
 @Immutable
@@ -28,6 +32,7 @@ public class GeneratedHints {
     private final boolean nullableElements;
     private final boolean nullableMapKeys;
     private final boolean nullableMapValues;
+    private final List<?> withElements;
 
     private GeneratedHints(final Builder builder) {
         dataStructureSize = builder.dataStructureSize;
@@ -36,6 +41,7 @@ public class GeneratedHints {
         nullableElements = builder.nullableElements;
         nullableMapKeys = builder.nullableKeys;
         nullableMapValues = builder.nullableValues;
+        withElements = ObjectUtils.defaultIfNull(builder.withElements, Collections.emptyList());
     }
 
     /**
@@ -74,6 +80,10 @@ public class GeneratedHints {
         return dataStructureSize;
     }
 
+    public List<?> getWithElements() {
+        return withElements;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -85,6 +95,7 @@ public class GeneratedHints {
         private boolean nullableElements;
         private boolean nullableKeys;
         private boolean nullableValues;
+        private List<?> withElements;
 
         private Builder() {
         }
@@ -119,6 +130,11 @@ public class GeneratedHints {
             return this;
         }
 
+        public Builder withElements(final List<?> withElements) {
+            this.withElements = withElements;
+            return this;
+        }
+
         public GeneratedHints build() {
             return new GeneratedHints(this);
         }
@@ -133,6 +149,7 @@ public class GeneratedHints {
                 .add("nullableElements=" + nullableElements)
                 .add("nullableMapKeys=" + nullableMapKeys)
                 .add("nullableMapValues=" + nullableMapValues)
+                .add("withElements=" + withElements)
                 .toString();
     }
 }
