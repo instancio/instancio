@@ -17,26 +17,26 @@ package org.instancio.generator.time;
 
 import org.instancio.generator.GeneratorSpec;
 
-import java.time.LocalDate;
+import java.time.temporal.Temporal;
 
 /**
- * Generator spec for {@link LocalDate}.
+ * Generator spec for {@link Temporal} types.
  */
-public interface LocalDateGeneratorSpec extends GeneratorSpec<LocalDate> {
+public interface TemporalGeneratorSpec<T extends Temporal> extends GeneratorSpec<T> {
 
     /**
      * Generate a date in the past.
      *
      * @return spec builder
      */
-    LocalDateGeneratorSpec past();
+    TemporalGeneratorSpec<T> past();
 
     /**
      * Generate a date in the future.
      *
      * @return spec builder
      */
-    LocalDateGeneratorSpec future();
+    TemporalGeneratorSpec<T> future();
 
     /**
      * Generate a date between the given range.
@@ -45,5 +45,5 @@ public interface LocalDateGeneratorSpec extends GeneratorSpec<LocalDate> {
      * @param endExclusive   end date (exclusive)
      * @return spec builder
      */
-    LocalDateGeneratorSpec range(LocalDate startInclusive, LocalDate endExclusive);
+    TemporalGeneratorSpec<T> range(T startInclusive, T endExclusive);
 }

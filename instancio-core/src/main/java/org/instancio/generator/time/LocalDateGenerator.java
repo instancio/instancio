@@ -21,9 +21,10 @@ import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoField;
 
-public class LocalDateGenerator extends AbstractGenerator<LocalDate> implements LocalDateGeneratorSpec {
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+
+public class LocalDateGenerator extends AbstractGenerator<LocalDate> implements TemporalGeneratorSpec<LocalDate> {
 
     private static final LocalDate PAST = LocalDate.of(1970, 1, 1);
     private static final LocalDate FUTURE = LocalDate.now().plusYears(50);
@@ -36,21 +37,21 @@ public class LocalDateGenerator extends AbstractGenerator<LocalDate> implements 
     }
 
     @Override
-    public LocalDateGeneratorSpec past() {
+    public TemporalGeneratorSpec<LocalDate> past() {
         min = PAST;
         max = LocalDate.now();
         return this;
     }
 
     @Override
-    public LocalDateGeneratorSpec future() {
+    public TemporalGeneratorSpec<LocalDate> future() {
         min = LocalDate.now().plusDays(1);
         max = FUTURE;
         return this;
     }
 
     @Override
-    public LocalDateGeneratorSpec range(final LocalDate startInclusive, final LocalDate endExclusive) {
+    public TemporalGeneratorSpec<LocalDate> range(final LocalDate startInclusive, final LocalDate endExclusive) {
         min = Verify.notNull(startInclusive, "Start date must not be null");
         max = Verify.notNull(endExclusive, "End date must not be null");
         Verify.isTrue(startInclusive.isBefore(endExclusive),
@@ -61,7 +62,7 @@ public class LocalDateGenerator extends AbstractGenerator<LocalDate> implements 
     @Override
     public LocalDate generate(final RandomProvider random) {
         return LocalDate.ofEpochDay(random.longBetween(
-                min.getLong(ChronoField.EPOCH_DAY),
-                max.getLong(ChronoField.EPOCH_DAY)));
+                min.getLong(EPOCH_DAY),
+                max.getLong(EPOCH_DAY)));
     }
 }
