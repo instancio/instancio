@@ -15,11 +15,12 @@
  */
 package org.instancio.generator.array;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
-public class OneOfArrayGenerator<T> extends AbstractRandomGenerator<T> implements OneOfArrayGeneratorSpec<T> {
+public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArrayGeneratorSpec<T> {
 
     private T[] values;
 
@@ -34,8 +35,8 @@ public class OneOfArrayGenerator<T> extends AbstractRandomGenerator<T> implement
     }
 
     @Override
-    public T generate() {
+    public T generate(final RandomProvider random) {
         Verify.notEmpty(values, "Array must have at least one element");
-        return random().from(values);
+        return random.from(values);
     }
 }

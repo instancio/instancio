@@ -17,6 +17,7 @@ package org.instancio.generator.util;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -45,7 +46,8 @@ class CollectionGeneratorTest {
             .set(Setting.COLLECTION_NULLABLE, true)
             .set(Setting.COLLECTION_ELEMENTS_NULLABLE, true);
 
-    private static final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
+    private static final RandomProvider random = new RandomProviderImpl();
+    private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     @Test
     void generate() {
@@ -54,7 +56,7 @@ class CollectionGeneratorTest {
         final int[] counts = new int[2];
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final Collection<?> result = generator.generate();
+            final Collection<?> result = generator.generate(random);
             results.add(result);
             counts[result == null ? 0 : 1]++;
         }

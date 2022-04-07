@@ -64,6 +64,15 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
         return this;
     }
 
+    @Override
+    public NumberGeneratorSpec<T> range(final T min, final T max) {
+        Verify.isTrue(min.compareTo(max) < 0,
+                "Invalid 'range(%s, %s)': lower bound must be less than upper bound", min, max);
+        this.min = min;
+        this.max = max;
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
     private Optional<T> getNumberClassConstant(final String fieldName) {
         final Class<?> numberClass = TypeUtils.getGenericSuperclassRawTypeArgument(getClass());

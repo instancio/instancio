@@ -17,8 +17,9 @@ package org.instancio.junit;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ThreadLocalRandomProvider;
-import org.instancio.internal.ThreadLocalSettingsProvider;
+import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,7 +56,7 @@ class InstancioExtensionTest {
     private ThreadLocalRandomProvider threadLocalRandomProvider;
 
     @Mock
-    private ThreadLocalSettingsProvider threadLocalSettingsProvider;
+    private ThreadLocalSettings threadLocalSettings;
 
     @Mock
     private ExtensionContext context;
@@ -91,7 +92,7 @@ class InstancioExtensionTest {
         // Method under test
         extension.beforeEach(context);
 
-        verify(threadLocalSettingsProvider).set(settingsCaptor.capture());
+        verify(threadLocalSettings).set(settingsCaptor.capture());
         assertThat(settingsCaptor.getValue()).isSameAs(SETTINGS);
     }
 
@@ -141,7 +142,7 @@ class InstancioExtensionTest {
     void afterEach() {
         extension.afterEach(context);
         verify(threadLocalRandomProvider).remove();
-        verify(threadLocalSettingsProvider).remove();
+        verify(threadLocalSettings).remove();
     }
 
     @Test
@@ -152,7 +153,7 @@ class InstancioExtensionTest {
 
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
         when(context.getTestMethod()).thenReturn(Optional.of(method));
-        when(threadLocalRandomProvider.get()).thenReturn(new RandomProvider(expectedSeed));
+        when(threadLocalRandomProvider.get()).thenReturn(new RandomProviderImpl(expectedSeed));
 
         // Method under test
         extension.afterTestExecution(context);
@@ -171,7 +172,7 @@ class InstancioExtensionTest {
 
         verifyNoMoreInteractions(context);
         verifyNoInteractions(threadLocalRandomProvider);
-        verifyNoInteractions(threadLocalSettingsProvider);
+        verifyNoInteractions(threadLocalSettings);
     }
 
     static class DummyTest {

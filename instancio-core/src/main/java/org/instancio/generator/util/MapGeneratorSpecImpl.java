@@ -17,6 +17,7 @@ package org.instancio.generator.util;
 
 import org.instancio.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 import java.util.Map;
@@ -33,9 +34,9 @@ public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Map<K, V> generate() {
+    public Map<K, V> generate(final RandomProvider random) {
         Verify.notNull(delegate, "null delegate");
-        return random().diceRoll(nullable) ? null : (Map<K, V>) delegate.generate();
+        return random.diceRoll(nullable) ? null : (Map<K, V>) delegate.generate(random);
     }
 
     @Override

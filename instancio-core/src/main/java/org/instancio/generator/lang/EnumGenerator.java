@@ -16,13 +16,14 @@
 package org.instancio.generator.lang;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 import java.lang.reflect.Method;
 
-public class EnumGenerator extends AbstractRandomGenerator<Enum<?>> {
+public class EnumGenerator extends AbstractGenerator<Enum<?>> {
     private final Class<?> enumClass;
 
     public EnumGenerator(final GeneratorContext context, final Class<?> enumClass) {
@@ -31,11 +32,11 @@ public class EnumGenerator extends AbstractRandomGenerator<Enum<?>> {
     }
 
     @Override
-    public Enum<?> generate() {
+    public Enum<?> generate(final RandomProvider random) {
         try {
             Method m = enumClass.getDeclaredMethod("values");
             Enum<?>[] res = (Enum<?>[]) m.invoke(null);
-            return random().from(res);
+            return random.from(res);
         } catch (Exception ex) {
             throw new InstancioException("Error generating enum value for: " + enumClass.getName(), ex);
         }

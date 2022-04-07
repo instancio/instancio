@@ -16,6 +16,7 @@
 package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 
 public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<Long> {
@@ -28,7 +29,7 @@ public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<L
     }
 
     @Override
-    protected Long generateNonNullValue() {
-        return random().longBetween(min, max);
+    protected Long generateNonNullValue(final RandomProvider random) {
+        return random.longBetween(min, max);
     }
 }

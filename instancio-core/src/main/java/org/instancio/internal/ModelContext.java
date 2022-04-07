@@ -23,6 +23,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGenerator;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.PropertiesLoader;
 import org.instancio.settings.Settings;
 import org.instancio.util.ObjectUtils;
@@ -47,6 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.instancio.util.ObjectUtils.defaultIfNull;
 import static org.instancio.util.ReflectionUtils.getField;
@@ -101,7 +103,7 @@ public class ModelContext<T> {
 
         this.settings = Settings.defaults()
                 .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
-                .merge(ThreadLocalSettingsProvider.getInstance().get())
+                .merge(ThreadLocalSettings.getInstance().get())
                 .merge(builder.settings)
                 .lock();
 
@@ -117,12 +119,12 @@ public class ModelContext<T> {
 
     private static RandomProvider resolveRandomProvider(@Nullable final Integer userSuppliedSeed) {
         if (userSuppliedSeed != null) {
-            return new RandomProvider(userSuppliedSeed);
+            return new RandomProviderImpl(userSuppliedSeed);
         }
         // If running under JUnit extension, use the provider supplied by the extension
         return ObjectUtils.defaultIfNull(
                 ThreadLocalRandomProvider.getInstance().get(),
-                () -> new RandomProvider(SeedUtil.randomSeed()));
+                () -> new RandomProviderImpl(SeedUtil.randomSeed()));
     }
 
     private void putAllCallbacks(final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks) {
@@ -350,6 +352,11 @@ public class ModelContext<T> {
 
         public Builder<T> withGenerator(final Binding binding, final Generator<?> generator) {
             this.generatorBindings.put(binding, generator);
+            return this;
+        }
+
+        public Builder<T> withSupplier(final Binding binding, final Supplier<?> supplier) {
+            this.generatorBindings.put(binding, random -> supplier.get());
             return this;
         }
 

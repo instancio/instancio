@@ -15,15 +15,16 @@
  */
 package org.instancio.generator.array;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
 
 import java.lang.reflect.Array;
 
-public class ArrayGenerator<T> extends AbstractRandomGenerator<T> implements ArrayGeneratorSpec<T> {
+public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGeneratorSpec<T> {
 
     private int minLength;
     private int maxLength;
@@ -80,13 +81,13 @@ public class ArrayGenerator<T> extends AbstractRandomGenerator<T> implements Arr
 
     @Override
     @SuppressWarnings("unchecked")
-    public T generate() {
+    public T generate(final RandomProvider random) {
         Verify.state(arrayType.isArray(), "Expected an array type: %s", arrayType);
 
-        if (random().diceRoll(nullable)) {
+        if (random.diceRoll(nullable)) {
             return null;
         }
-        return (T) Array.newInstance(arrayType.getComponentType(), random().intBetween(minLength, maxLength + 1));
+        return (T) Array.newInstance(arrayType.getComponentType(), random.intBetween(minLength, maxLength + 1));
     }
 
     @Override

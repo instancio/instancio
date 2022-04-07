@@ -19,6 +19,7 @@ import org.instancio.Generator;
 import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.CallbackHandler;
+import org.instancio.internal.ModelContext;
 import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.util.Verify;
@@ -29,8 +30,10 @@ public class ArrayNodeHandler implements NodeHandler {
 
     private final GeneratorResolver generatorResolver;
     private final CallbackHandler callbackHandler;
+    private final ModelContext<?> context;
 
-    public ArrayNodeHandler(final GeneratorResolver generatorResolver, final CallbackHandler callbackHandler) {
+    public ArrayNodeHandler(final ModelContext<?> context, final GeneratorResolver generatorResolver, final CallbackHandler callbackHandler) {
+        this.context = context;
         this.generatorResolver = generatorResolver;
         this.callbackHandler = callbackHandler;
     }
@@ -42,7 +45,7 @@ public class ArrayNodeHandler implements NodeHandler {
             final Generator<?> generator = generatorResolver.get(node.getTargetClass()).orElseThrow(
                     () -> new IllegalStateException("Unable to get array generator for node: " + node));
 
-            final Object arrayObject = generator.generate();
+            final Object arrayObject = generator.generate(context.getRandomProvider());
             final GeneratorResult result = GeneratorResult.create(arrayObject, generator.getHints());
             callbackHandler.addResult(node, result);
             return Optional.of(result);

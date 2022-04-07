@@ -18,6 +18,7 @@ package org.instancio.generator.util.concurrent.atomic;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.generator.lang.NumberGeneratorSpec;
+import org.instancio.internal.random.RandomProvider;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,7 +36,7 @@ public class AtomicIntegerGenerator extends AbstractRandomNumberGeneratorSpec<At
     }
 
     @Override
-    protected AtomicInteger generateNonNullValue() {
-        return new AtomicInteger(random().intBetween(min.intValue(), max.intValue()));
+    protected AtomicInteger generateNonNullValue(final RandomProvider random) {
+        return new AtomicInteger(random.intBetween(min.intValue(), max.intValue()));
     }
 }

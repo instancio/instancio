@@ -15,13 +15,14 @@
  */
 package org.instancio.generator.lang;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
-        extends AbstractRandomGenerator<T> implements NumberGeneratorSpec<T> {
+        extends AbstractGenerator<T> implements NumberGeneratorSpec<T> {
 
     protected T min;
     protected T max;
@@ -36,7 +37,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         this.nullable = nullable;
     }
 
-    protected abstract T generateNonNullValue();
+    protected abstract T generateNonNullValue(final RandomProvider random);
 
     protected T getMin() {
         return min;
@@ -59,14 +60,21 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
+    public NumberGeneratorSpec<T> range(final T min, final T max) {
+        this.min = min;
+        this.max = max;
+        return this;
+    }
+
+    @Override
     public NumberGeneratorSpec<T> nullable() {
         this.nullable = true;
         return this;
     }
 
     @Override
-    public final T generate() {
-        return random().diceRoll(nullable) ? null : generateNonNullValue();
+    public final T generate(final RandomProvider random) {
+        return random.diceRoll(nullable) ? null : generateNonNullValue(random);
     }
 
     @Override

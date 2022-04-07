@@ -15,30 +15,31 @@
  */
 package org.instancio.generator.time;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class LocalDateTimeGenerator extends AbstractRandomGenerator<LocalDateTime> {
+public class LocalDateTimeGenerator extends AbstractGenerator<LocalDateTime> {
 
     public LocalDateTimeGenerator(final GeneratorContext context) {
         super(context);
     }
 
     @Override
-    public LocalDateTime generate() {
+    public LocalDateTime generate(final RandomProvider random) {
         final LocalDate date = LocalDate.ofYearDay(
-                random().intBetween(1900, 2101),
-                random().intBetween(1, 366));
+                random.intBetween(1900, 2101),
+                random.intBetween(1, 366));
 
         final LocalTime time = LocalTime.of(
-                random().intBetween(0, 24),
-                random().intBetween(0, 60),
-                random().intBetween(0, 60),
-                random().intBetween(0, 1_000_000_000));
+                random.intBetween(0, 24),
+                random.intBetween(0, 60),
+                random.intBetween(0, 60),
+                random.intBetween(0, 1_000_000_000));
 
         return LocalDateTime.of(date, time);
     }

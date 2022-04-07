@@ -18,10 +18,10 @@ package org.instancio.internal;
 import org.instancio.Binding;
 import org.instancio.Bindings;
 import org.instancio.Generator;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGeneratorSpec;
 import org.instancio.generator.lang.StringGeneratorSpec;
 import org.instancio.internal.random.RandomProvider;
@@ -141,8 +141,8 @@ class ModelContextTest {
 
     @Test
     void withGenerators() {
-        final Generator<String> stringGenerator = () -> "some string";
-        final Generator<Address> addressGenerator = Address::new;
+        final Generator<String> stringGenerator = random -> "some string";
+        final Generator<Address> addressGenerator = random -> new Address();
 
         ModelContext<?> ctx = ModelContext.builder(Person.class)
                 .withGenerator(field(ADDRESS_FIELD.getName()), addressGenerator)
@@ -204,9 +204,9 @@ class ModelContextTest {
 
     @Test
     void toBuilder() {
-        final Generator<?> allStringsGenerator = () -> "foo";
-        final Generator<?> addressCityGenerator = () -> "bar";
-        final Generator<?> petsGenerator = () -> new Pet[0];
+        final Generator<?> allStringsGenerator = random -> "foo";
+        final Generator<?> addressCityGenerator = random -> "bar";
+        final Generator<?> petsGenerator = random -> new Pet[0];
         final Function<Generators, ? extends GeneratorSpec<?>> petsGeneratorFn = (gen) -> petsGenerator;
         final Class<UUID> ignoredClass = UUID.class;
         final Class<Date> nullableClass = Date.class;

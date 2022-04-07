@@ -51,6 +51,8 @@ class CreateClassBulkAutoVerificationTest {
     @Test
     void arrays() {
         bulkAssertFullyPopulated(
+                TypeToCreate.of(int[].class),
+                TypeToCreate.of(Integer[].class),
                 TypeToCreate.of(Item[].class, Integer.class),
                 TypeToCreate.of(Pair[].class, String.class, int.class),
                 TypeToCreate.of(Triplet[].class, String.class, Address.class, Person.class),

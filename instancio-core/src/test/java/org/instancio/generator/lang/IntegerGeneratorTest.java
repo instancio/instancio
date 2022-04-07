@@ -17,17 +17,20 @@ package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class IntegerGeneratorTest {
     private static final Settings settings = Settings.defaults();
     private static final int MIN = settings.get(Setting.INTEGER_MIN);
     private static final int MAX = settings.get(Setting.INTEGER_MAX);
-    private final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
+    private final RandomProvider random = new RandomProviderImpl();
+    private final GeneratorContext context = new GeneratorContext(settings, random);
     private final IntegerGenerator generator = new IntegerGenerator(context);
 
     @Test
@@ -52,5 +55,25 @@ class IntegerGeneratorTest {
     void maxShouldBeSetToMinValueIfMaxLessThanMin() {
         generator.max(MIN - 1);
         assertThat(generator.getMin()).isEqualTo(Integer.MIN_VALUE);
+    }
+
+    @Test
+    void range() {
+        final int min = 2;
+        final int max = 3;
+        generator.range(min, max);
+        assertThat(generator.getMin()).isEqualTo(min);
+        assertThat(generator.getMax()).isEqualTo(max);
+    }
+
+    @Test
+    void rangeThrowsErrorIfMinIsGreaterThanOrEqualToMax() {
+        assertThatThrownBy(() -> generator.range(3, 2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid 'range(3, 2)': lower bound must be less than upper bound");
+
+        assertThatThrownBy(() -> generator.range(3, 3))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid 'range(3, 3)': lower bound must be less than upper bound");
     }
 }

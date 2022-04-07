@@ -17,8 +17,8 @@ package org.instancio.junit;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ThreadLocalRandomProvider;
-import org.instancio.internal.ThreadLocalSettingsProvider;
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.ThreadLocalSettings;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Settings;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.SeedUtil;
@@ -78,7 +78,7 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
 
     private static final Logger LOG = LoggerFactory.getLogger(InstancioExtension.class);
     private final ThreadLocalRandomProvider threadLocalRandomProvider;
-    private final ThreadLocalSettingsProvider threadLocalSettingsProvider;
+    private final ThreadLocalSettings threadLocalSettings;
 
     /**
      * Default constructor; required for JUnit extensions.
@@ -86,15 +86,15 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
     @SuppressWarnings("unused")
     public InstancioExtension() {
         threadLocalRandomProvider = ThreadLocalRandomProvider.getInstance();
-        threadLocalSettingsProvider = ThreadLocalSettingsProvider.getInstance();
+        threadLocalSettings = ThreadLocalSettings.getInstance();
     }
 
     // used by unit test only
     @SuppressWarnings("unused")
     InstancioExtension(final ThreadLocalRandomProvider threadLocalRandomProvider,
-                       final ThreadLocalSettingsProvider threadLocalSettingsProvider) {
+                       final ThreadLocalSettings threadLocalSettings) {
         this.threadLocalRandomProvider = threadLocalRandomProvider;
-        this.threadLocalSettingsProvider = threadLocalSettingsProvider;
+        this.threadLocalSettings = threadLocalSettings;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
                     ? SeedUtil.randomSeed()
                     : seedAnnotation.value();
 
-            threadLocalRandomProvider.set(new RandomProvider(seed));
+            threadLocalRandomProvider.set(new RandomProviderImpl(seed));
         }
     }
 
@@ -137,14 +137,14 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
                         "\n\nFound annotation on: " + field);
             }
             final Settings settings = (Settings) obj;
-            threadLocalSettingsProvider.set(settings);
+            threadLocalSettings.set(settings);
         }
     }
 
     @Override
     public void afterEach(final ExtensionContext context) {
         threadLocalRandomProvider.remove();
-        threadLocalSettingsProvider.remove();
+        threadLocalSettings.remove();
     }
 
     @Override
@@ -163,7 +163,4 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
             LOG.debug(msg);
         }
     }
-
-
 }
-

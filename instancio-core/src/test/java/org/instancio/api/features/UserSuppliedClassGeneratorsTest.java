@@ -77,7 +77,7 @@ class UserSuppliedClassGeneratorsTest {
     @DisplayName("All Collection declarations should be assigned a HashSet with a new instance each time")
     void userSuppliedCollectionClassGeneratorWithGeneratorReturningANewInstanceEachTime() {
         final TwoStringCollections result = Instancio.of(TwoStringCollections.class)
-                .supply(all(Collection.class), HashSet::new) // new instance
+                .supply(all(Collection.class), () -> new HashSet<>()) // new instance
                 .create();
 
         assertThat(result.getOne()).isInstanceOf(Set.class).isEmpty();

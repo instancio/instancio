@@ -18,6 +18,7 @@ package org.instancio.generator.math;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
 import org.instancio.generator.lang.NumberGeneratorSpec;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 import java.math.BigInteger;
@@ -56,7 +57,7 @@ public class BigIntegerGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
-    protected BigInteger generateNonNullValue() {
-        return BigInteger.valueOf(random().longBetween(min.longValue(), max.longValue()));
+    protected BigInteger generateNonNullValue(final RandomProvider random) {
+        return BigInteger.valueOf(random.longBetween(min.longValue(), max.longValue()));
     }
 }

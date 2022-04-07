@@ -16,6 +16,7 @@
 package org.instancio.generator.util;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 
 import java.util.Collection;
 import java.util.TreeSet;
@@ -28,7 +29,7 @@ public class TreeSetGenerator<T> extends CollectionGenerator<T> {
 
     @Override
     @SuppressWarnings("SortedCollectionWithNonComparableKeys")
-    public Collection<T> generate() {
-        return random().diceRoll(nullable) ? null : new TreeSet<>();
+    public Collection<T> generate(final RandomProvider random) {
+        return random.diceRoll(nullable) ? null : new TreeSet<>();
     }
 }

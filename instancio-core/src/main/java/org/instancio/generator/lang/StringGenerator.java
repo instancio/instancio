@@ -15,14 +15,15 @@
  */
 package org.instancio.generator.lang;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.util.Verify;
 
-public class StringGenerator extends AbstractRandomGenerator<String> implements StringGeneratorSpec {
+public class StringGenerator extends AbstractGenerator<String> implements StringGeneratorSpec {
 
     private int minLength;
     private int maxLength;
@@ -75,14 +76,14 @@ public class StringGenerator extends AbstractRandomGenerator<String> implements 
     }
 
     @Override
-    public String generate() {
-        if (random().diceRoll(nullable)) {
+    public String generate(final RandomProvider random) {
+        if (random.diceRoll(nullable)) {
             return null;
         }
-        if (random().diceRoll(allowEmpty)) {
+        if (random.diceRoll(allowEmpty)) {
             return "";
         }
-        return prefix + random().alphabetic(random().intBetween(minLength, maxLength + 1));
+        return prefix + random.alphabetic(random.intBetween(minLength, maxLength + 1));
     }
 
     @Override

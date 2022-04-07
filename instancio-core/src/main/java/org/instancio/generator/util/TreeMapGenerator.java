@@ -16,6 +16,7 @@
 package org.instancio.generator.util;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,7 +29,7 @@ public class TreeMapGenerator<K, V> extends MapGenerator<K, V> {
 
     @Override
     @SuppressWarnings("SortedCollectionWithNonComparableKeys")
-    public Map<K, V> generate() {
-        return random().diceRoll(nullable) ? null : new TreeMap<>();
+    public Map<K, V> generate(final RandomProvider random) {
+        return random.diceRoll(nullable) ? null : new TreeMap<>();
     }
 }

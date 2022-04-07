@@ -18,6 +18,7 @@ package org.instancio.generator.lang;
 import org.instancio.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -35,14 +36,15 @@ import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints
 class BooleanGeneratorTest {
     private static final int SAMPLE_SIZE = 50;
     private static final Settings settings = Settings.defaults().set(Setting.BOOLEAN_NULLABLE, true);
-    private static final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
+    private static final RandomProvider random = new RandomProviderImpl();
+    private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     @Test
     void generate() {
         final Generator<Boolean> generator = new BooleanGenerator(context);
         final Set<Object> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            results.add(generator.generate());
+            results.add(generator.generate(random));
         }
 
         assertThat(results).containsNull()

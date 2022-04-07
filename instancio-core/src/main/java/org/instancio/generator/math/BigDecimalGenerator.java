@@ -18,20 +18,19 @@ package org.instancio.generator.math;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
 import org.instancio.generator.lang.NumberGeneratorSpec;
+import org.instancio.internal.random.RandomProvider;
+import org.instancio.util.Verify;
 
 import java.math.BigDecimal;
 
 public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal>
         implements NumberGeneratorSpec<BigDecimal> {
 
-    private static final long DEFAULT_MIN = 1;
-    private static final long DEFAULT_MAX = 10_000;
+    private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(0.000001d);
+    private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
 
     public BigDecimalGenerator(final GeneratorContext context) {
-        super(context,
-                BigDecimal.valueOf(DEFAULT_MIN),
-                BigDecimal.valueOf(DEFAULT_MAX),
-                false);
+        super(context, DEFAULT_MIN, DEFAULT_MAX, false);
     }
 
     public BigDecimalGenerator(
@@ -40,7 +39,25 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
-    protected BigDecimal generateNonNullValue() {
-        return BigDecimal.valueOf(random().doubleBetween(min.doubleValue(), max.doubleValue()));
+    public NumberGeneratorSpec<BigDecimal> min(final BigDecimal min) {
+        this.min = Verify.notNull(min);
+        if (min.compareTo(max) >= 0) {
+            max = min.add(DEFAULT_MAX);
+        }
+        return this;
+    }
+
+    @Override
+    public NumberGeneratorSpec<BigDecimal> max(final BigDecimal max) {
+        this.max = Verify.notNull(max);
+        if (max.compareTo(min) <= 0) {
+            min = max.subtract(DEFAULT_MAX);
+        }
+        return this;
+    }
+
+    @Override
+    protected BigDecimal generateNonNullValue(final RandomProvider random) {
+        return BigDecimal.valueOf(random.doubleBetween(min.doubleValue(), max.doubleValue()));
     }
 }

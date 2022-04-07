@@ -15,20 +15,20 @@
  */
 package org.instancio.generator.time;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 
 import java.time.LocalDate;
 
-public class LocalDateGenerator extends AbstractRandomGenerator<LocalDate> {
+public class LocalDateGenerator extends AbstractGenerator<LocalDate> {
 
     public LocalDateGenerator(final GeneratorContext context) {
         super(context);
     }
 
     @Override
-    public LocalDate generate() {
-        return LocalDate.now()
-                .plusMonths(random().intBetween(-3650, 3650));
+    public LocalDate generate(final RandomProvider random) {
+        return LocalDate.now().plusMonths(random.intBetween(-3650, 3650));
     }
 }
