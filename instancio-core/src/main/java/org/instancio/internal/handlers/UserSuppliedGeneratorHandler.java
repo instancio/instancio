@@ -49,7 +49,8 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
      */
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-        return getUserSuppliedGenerator(node).map(g -> GeneratorResult.create(g.generate(), g.getHints()));
+        return getUserSuppliedGenerator(node).map(g -> GeneratorResult.create(
+                g.generate(modelContext.getRandomProvider()), g.getHints()));
     }
 
     private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {

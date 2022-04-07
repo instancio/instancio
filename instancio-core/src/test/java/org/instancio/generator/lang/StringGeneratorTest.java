@@ -17,6 +17,7 @@ package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -39,7 +40,7 @@ class StringGeneratorTest {
             .set(Setting.STRING_ALLOW_EMPTY, true)
             .set(Setting.STRING_NULLABLE, true);
 
-    private static final RandomProvider random = new RandomProvider();
+    private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     @Test
@@ -47,7 +48,7 @@ class StringGeneratorTest {
         final StringGenerator generator = new StringGenerator(context);
         final Set<Object> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            results.add(generator.generate());
+            results.add(generator.generate(random));
         }
 
         assertThat(results)
@@ -76,7 +77,7 @@ class StringGeneratorTest {
         generator.minLength(length).maxLength(length);
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final String result = generator.generate();
+            final String result = generator.generate(random);
             assertThat(result).hasSize(length);
         }
     }

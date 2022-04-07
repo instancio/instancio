@@ -16,9 +16,10 @@
 package org.instancio.generator.xml;
 
 import org.instancio.Generator;
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.time.LocalDateTimeGenerator;
+import org.instancio.internal.random.RandomProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +29,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class XMLGregorianCalendarGenerator extends AbstractRandomGenerator<XMLGregorianCalendar> {
+public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregorianCalendar> {
     private static final Logger LOG = LoggerFactory.getLogger(XMLGregorianCalendarGenerator.class);
 
     private final Generator<LocalDateTime> localDateTimeGenerator;
@@ -39,8 +40,8 @@ public class XMLGregorianCalendarGenerator extends AbstractRandomGenerator<XMLGr
     }
 
     @Override
-    public XMLGregorianCalendar generate() {
-        LocalDateTime localDateTime = localDateTimeGenerator.generate();
+    public XMLGregorianCalendar generate(final RandomProvider random) {
+        LocalDateTime localDateTime = localDateTimeGenerator.generate(random);
         try {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(
                     localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));

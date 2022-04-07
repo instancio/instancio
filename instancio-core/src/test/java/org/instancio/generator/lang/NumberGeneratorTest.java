@@ -19,6 +19,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -60,14 +61,15 @@ class NumberGeneratorTest {
             .set(Setting.DOUBLE_MAX, (double) MAX)
             .set(Setting.DOUBLE_NULLABLE, true);
 
-    private static final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
+    private static final RandomProvider random = new RandomProviderImpl();
+    private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     static class WholeNumberGeneratorTestTemplate<GEN extends AbstractRandomComparableNumberGeneratorSpec<?>> {
 
         void verifyGenerate(final GEN generator) {
             final Set<Object> results = new HashSet<>();
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final Number result = generator.generate();
+                final Number result = generator.generate(random);
                 results.add(result);
 
                 if (result != null) {
@@ -87,7 +89,7 @@ class NumberGeneratorTest {
         void verifyGenerate(final GEN generator) {
             final Set<Object> results = new HashSet<>();
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final Number result = generator.generate();
+                final Number result = generator.generate(random);
                 results.add(result);
 
                 if (result != null) {

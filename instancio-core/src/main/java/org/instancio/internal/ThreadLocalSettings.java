@@ -17,29 +17,29 @@ package org.instancio.internal;
 
 import org.instancio.settings.Settings;
 
-public class ThreadLocalSettingsProvider {
+public class ThreadLocalSettings {
 
-    private static final ThreadLocalSettingsProvider INSTANCE = new ThreadLocalSettingsProvider();
+    private static final ThreadLocalSettings INSTANCE = new ThreadLocalSettings();
 
-    private static final ThreadLocal<Settings> randomProvider = new ThreadLocal<>();
+    private static final ThreadLocal<Settings> settings = new ThreadLocal<>();
 
-    private ThreadLocalSettingsProvider() {
+    private ThreadLocalSettings() {
         // non-instantiable
     }
 
     public Settings get() {
-        return randomProvider.get();
+        return settings.get();
     }
 
     public void remove() {
-        randomProvider.remove();
+        settings.remove();
     }
 
     public void set(final Settings provider) {
-        randomProvider.set(provider);
+        settings.set(provider);
     }
 
-    public static ThreadLocalSettingsProvider getInstance() {
+    public static ThreadLocalSettings getInstance() {
         return INSTANCE;
     }
 }

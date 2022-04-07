@@ -16,15 +16,16 @@
 package org.instancio.generator.util;
 
 import org.instancio.Generator;
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.time.LocalDateTimeGenerator;
+import org.instancio.internal.random.RandomProvider;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class DateGenerator extends AbstractRandomGenerator<Date> {
+public class DateGenerator extends AbstractGenerator<Date> {
 
     private final Generator<LocalDateTime> localDateTimeGenerator;
 
@@ -34,8 +35,8 @@ public class DateGenerator extends AbstractRandomGenerator<Date> {
     }
 
     @Override
-    public Date generate() {
-        final LocalDateTime ldt = localDateTimeGenerator.generate();
+    public Date generate(final RandomProvider random) {
+        final LocalDateTime ldt = localDateTimeGenerator.generate(random);
         return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

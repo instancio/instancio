@@ -16,6 +16,7 @@
 package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 
 public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<Float> {
@@ -28,7 +29,7 @@ public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     }
 
     @Override
-    protected Float generateNonNullValue() {
-        return random().floatBetween(min, max);
+    protected Float generateNonNullValue(final RandomProvider random) {
+        return random.floatBetween(min, max);
     }
 }

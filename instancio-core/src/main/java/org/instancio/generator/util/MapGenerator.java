@@ -15,9 +15,10 @@
  */
 package org.instancio.generator.util;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.util.Sonar;
 import org.instancio.util.Verify;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
+public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
     private static final Logger LOG = LoggerFactory.getLogger(MapGenerator.class);
     private static final String SIZE_CANNOT_BE_NEGATIVE = "Size cannot be negative: %s";
 
@@ -96,9 +97,9 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
 
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
-    public Map<K, V> generate() {
+    public Map<K, V> generate(final RandomProvider random) {
         try {
-            return random().diceRoll(nullable) ? null : (Map<K, V>) type.getDeclaredConstructor().newInstance();
+            return random.diceRoll(nullable) ? null : (Map<K, V>) type.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             LOG.debug("Error creating instance of: {}", type, ex);
             return null;
@@ -108,7 +109,7 @@ public class MapGenerator<K, V> extends AbstractRandomGenerator<Map<K, V>> imple
     @Override
     public GeneratedHints getHints() {
         return GeneratedHints.builder()
-                .dataStructureSize(random().intBetween(minSize, maxSize + 1))
+                .dataStructureSize(getContext().random().intBetween(minSize, maxSize + 1))
                 .ignoreChildren(false)
                 .nullableResult(nullable)
                 .nullableKeys(nullableKeys)

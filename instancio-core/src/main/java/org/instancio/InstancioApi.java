@@ -19,6 +19,7 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.Settings;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Instancio API for generating instances of a class populated with random data.
@@ -105,10 +106,9 @@ public interface InstancioApi<T> {
     InstancioApi<T> withNullable(Binding target);
 
     /**
-     * Supplies a value for a field or class using a custom generator.
-     *
+     * Supplies a <b>non-random</b> value for a field or class using a {@link Supplier}.
      * <p>
-     * Examples.
+     * Example:
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
      *             .supply(all(LocalDateTime.class), () -> LocalDateTime.now()) // set all dates to current time
@@ -119,8 +119,33 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      * <p>
-     * Note: when a custom generator is supplied for a complex type like {@code PhoneNumber} in the above
-     * example, Instancio will not modify the created instance in any way. If the {@code PhoneNumber} class
+     * Note: Instancio will not modify the supplied instance in any way. If the {@code PhoneNumber} class
+     * has other fields, they will be ignored.
+     * <p>
+     * For supplying random values, see {@link #supply(Binding, Generator)}.
+     *
+     * @param target   binding
+     * @param supplier for the target's value
+     * @param <V>      type of the value to generate
+     * @return API builder reference
+     * @see #supply(Binding, Generator)
+     */
+    <V> InstancioApi<T> supply(Binding target, Supplier<V> supplier);
+
+    /**
+     * Supplies a randomised value for a field or class using a custom {@link Generator}.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *             .supply(field(Address.class, "phoneNumbers"), random -> List.of(
+     *                     // Generate phone numbers with a random country code, either US or Mexico
+     *                     new PhoneNumber(random.from("+1", "+52"), "123-55-66"),
+     *                     new PhoneNumber(random.from("+1", "+52"), "123-77-88")))
+     *             .create();
+     * }</pre>
+     * <p>
+     * Note: Instancio will not modify the supplied instance in any way. If the {@code PhoneNumber} class
      * has other fields, they will be ignored.
      *
      * @param target    binding
@@ -131,7 +156,7 @@ public interface InstancioApi<T> {
     <V> InstancioApi<T> supply(Binding target, Generator<V> generator);
 
     /**
-     * Supplies a random value for a field or class using a built-in generator.
+     * Generates a random value for a field or class using a built-in generator.
      * <p>
      * Example:
      * <pre>{@code

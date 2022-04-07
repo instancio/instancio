@@ -17,6 +17,7 @@ package org.instancio;
 
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.internal.random.RandomProvider;
 
 import java.util.Optional;
 
@@ -29,14 +30,17 @@ import java.util.Optional;
 public interface Generator<T> extends GeneratorSpec<T> {
 
     /**
-     * Returns a generated value. By default, generated values are random.
+     * Returns a generated value.
      * <p>
-     * Generation parameters for common types such as strings, numbers, collections, etc.
-     * can be customised by passing in custom generators.
+     * If the generated value is random, it needs to be generated using the given
+     * {@link RandomProvider} instance. This ensures the data is generated with
+     * the same seed value and allows random data to be reproduced by specifying
+     * the seed value.
      *
+     * @param random provider for random values
      * @return generated value
      */
-    T generate();
+    T generate(RandomProvider random);
 
     /**
      * If {@code true}, then this generator delegate object instantiation

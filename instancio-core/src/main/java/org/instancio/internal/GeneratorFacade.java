@@ -59,7 +59,7 @@ class GeneratorFacade {
 
         this.nodeHandlers = new NodeHandler[]{
                 new UserSuppliedGeneratorHandler(context, generatorContext, generatorResolver, instantiator),
-                new ArrayNodeHandler(generatorResolver, callbackHandler),
+                new ArrayNodeHandler(context, generatorResolver, callbackHandler),
                 new UsingGeneratorResolverHandler(context, generatorResolver),
                 new CollectionNodeHandler(context, instantiator, callbackHandler),
                 new MapNodeHandler(context, instantiator, callbackHandler),

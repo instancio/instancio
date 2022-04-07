@@ -15,9 +15,10 @@
  */
 package org.instancio.generator.util;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.util.Sonar;
 import org.instancio.util.Verify;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
+public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
     private static final Logger LOG = LoggerFactory.getLogger(CollectionGenerator.class);
     private static final String SIZE_CANNOT_BE_NEGATIVE = "Size cannot be negative: %s";
 
@@ -90,9 +91,9 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
 
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
-    public Collection<T> generate() {
+    public Collection<T> generate(final RandomProvider random) {
         try {
-            return random().diceRoll(nullable) ? null : (Collection<T>) type.getDeclaredConstructor().newInstance();
+            return random.diceRoll(nullable) ? null : (Collection<T>) type.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             LOG.debug("Error creating instance of: {}", type, ex);
             return null;
@@ -102,7 +103,7 @@ public class CollectionGenerator<T> extends AbstractRandomGenerator<Collection<T
     @Override
     public GeneratedHints getHints() {
         return GeneratedHints.builder()
-                .dataStructureSize(random().intBetween(minSize, maxSize + 1))
+                .dataStructureSize(getContext().random().intBetween(minSize, maxSize + 1))
                 .ignoreChildren(false)
                 .nullableResult(nullable)
                 .nullableElements(nullableElements)

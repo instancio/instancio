@@ -15,12 +15,13 @@
  */
 package org.instancio.generator.lang;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 
-public class BooleanGenerator extends AbstractRandomGenerator<Boolean> {
+public class BooleanGenerator extends AbstractGenerator<Boolean> {
 
     private boolean nullable;
 
@@ -30,8 +31,8 @@ public class BooleanGenerator extends AbstractRandomGenerator<Boolean> {
     }
 
     @Override
-    public Boolean generate() {
-        return random().diceRoll(nullable) ? null : random().trueOrFalse();
+    public Boolean generate(final RandomProvider random) {
+        return random.diceRoll(nullable) ? null : random.trueOrFalse();
     }
 
     @Override

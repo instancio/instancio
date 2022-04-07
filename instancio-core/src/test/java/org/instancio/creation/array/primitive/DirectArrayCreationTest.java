@@ -13,22 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.generator.util;
+package org.instancio.creation.array.primitive;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.Instancio;
+import org.instancio.testsupport.utils.ArrayUtils;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.HashSet;
 
-public class HashSetGenerator<T> extends CollectionGenerator<T> {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    public HashSetGenerator(final GeneratorContext context) {
-        super(context);
+class DirectArrayCreationTest {
+
+    @Test
+    void intArray() {
+        int[] results = Instancio.create(int[].class);
+        assertThat(new HashSet<>(ArrayUtils.toList(results))).hasSizeGreaterThanOrEqualTo(1);
     }
 
-    @Override
-    public Collection<T> generate(final RandomProvider random) {
-        return random.diceRoll(nullable) ? null : new HashSet<>();
+    @Test
+    void integerArray() {
+        Integer[] results = Instancio.create(Integer[].class);
+        assertThat(new HashSet<>(ArrayUtils.toList(results))).hasSizeGreaterThanOrEqualTo(1);
     }
 }

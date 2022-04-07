@@ -17,6 +17,7 @@ package org.instancio.generator.array;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.instancio.testsupport.tags.NonDeterministicTag;
@@ -43,7 +44,8 @@ class ArrayGeneratorTest {
             .set(Setting.ARRAY_ELEMENTS_NULLABLE, true)
             .lock();
 
-    private static final GeneratorContext context = new GeneratorContext(settings, new RandomProvider());
+    private static final RandomProvider random = new RandomProviderImpl();
+    private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     @Test
     void generate() {
@@ -51,7 +53,7 @@ class ArrayGeneratorTest {
         final int[] counts = new int[2];
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final String[] result = (String[]) generator.generate();
+            final String[] result = (String[]) generator.generate(random);
             counts[result == null ? 0 : 1]++;
 
             if (result != null) {

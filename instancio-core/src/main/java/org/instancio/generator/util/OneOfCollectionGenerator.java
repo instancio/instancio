@@ -15,13 +15,14 @@
  */
 package org.instancio.generator.util;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
 
-public class OneOfCollectionGenerator<T> extends AbstractRandomGenerator<T> implements OneOfCollectionGeneratorSpec<T> {
+public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements OneOfCollectionGeneratorSpec<T> {
 
     private Collection<T> values;
 
@@ -36,8 +37,8 @@ public class OneOfCollectionGenerator<T> extends AbstractRandomGenerator<T> impl
     }
 
     @Override
-    public T generate() {
+    public T generate(final RandomProvider random) {
         Verify.notEmpty(values, "Array must have at least one element");
-        return random().from(values);
+        return random.from(values);
     }
 }

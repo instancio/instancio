@@ -17,17 +17,18 @@ package org.instancio.internal;
 
 import org.instancio.Binding;
 import org.instancio.Generator;
-import org.instancio.generator.GeneratorSpec;
 import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.TypeTokenSupplier;
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.Settings;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class InstancioApiImpl<T> implements InstancioApi<T> {
 
@@ -68,6 +69,12 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     @Override
     public <V> InstancioApi<T> supply(Binding binding, Generator<V> generator) {
         modelContextBuilder.withGenerator(binding, generator);
+        return this;
+    }
+
+    @Override
+    public <V> InstancioApi<T> supply(Binding binding, Supplier<V> supplier) {
+        modelContextBuilder.withSupplier(binding, supplier);
         return this;
     }
 

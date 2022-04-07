@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.internal.ThreadLocalSettingsProvider;
+import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.AfterAll;
@@ -38,7 +38,7 @@ class InstancioExtensionWithSettingsAnnotationTest {
 
     @AfterAll
     static void afterAll() {
-        assertThat(ThreadLocalSettingsProvider.getInstance().get())
+        assertThat(ThreadLocalSettings.getInstance().get())
                 .as("Expected thread local value to be removed after test is done")
                 .isNull();
     }

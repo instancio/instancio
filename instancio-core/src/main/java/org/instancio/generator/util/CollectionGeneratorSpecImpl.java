@@ -17,6 +17,7 @@ package org.instancio.generator.util;
 
 import org.instancio.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
@@ -33,9 +34,9 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<T> generate() {
+    public Collection<T> generate(final RandomProvider random) {
         Verify.notNull(delegate, "null delegate");
-        return random().diceRoll(nullable) ? null : (Collection<T>) delegate.generate();
+        return random.diceRoll(nullable) ? null : (Collection<T>) delegate.generate(random);
     }
 
     @Override

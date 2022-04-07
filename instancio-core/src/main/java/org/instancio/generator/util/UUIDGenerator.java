@@ -15,22 +15,23 @@
  */
 package org.instancio.generator.util;
 
-import org.instancio.generator.AbstractRandomGenerator;
+import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 
 import java.util.UUID;
 
-public class UUIDGenerator extends AbstractRandomGenerator<UUID> {
+public class UUIDGenerator extends AbstractGenerator<UUID> {
 
     public UUIDGenerator(final GeneratorContext context) {
         super(context);
     }
 
     @Override
-    public UUID generate() {
+    public UUID generate(final RandomProvider random) {
         final byte[] randomBytes = new byte[16];
         for (int i = 0; i < randomBytes.length; i++) {
-            randomBytes[i] = random().byteBetween(Byte.MIN_VALUE, Byte.MAX_VALUE);
+            randomBytes[i] = random.byteBetween(Byte.MIN_VALUE, Byte.MAX_VALUE);
         }
         return UUID.nameUUIDFromBytes(randomBytes);
     }

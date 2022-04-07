@@ -16,6 +16,7 @@
 package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 
 public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec<Double> {
@@ -28,7 +29,7 @@ public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec
     }
 
     @Override
-    protected Double generateNonNullValue() {
-        return random().doubleBetween(min, max);
+    protected Double generateNonNullValue(final RandomProvider random) {
+        return random.doubleBetween(min, max);
     }
 }
