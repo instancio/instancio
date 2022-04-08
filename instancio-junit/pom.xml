@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-core</artifactId>
-            <version>${project.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
