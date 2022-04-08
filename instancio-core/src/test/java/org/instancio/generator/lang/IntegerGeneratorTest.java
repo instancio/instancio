@@ -76,4 +76,11 @@ class IntegerGeneratorTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Invalid 'range(3, 3)': lower bound must be less than upper bound");
     }
+
+    @Test
+    void supports() {
+        assertThat(generator.supports(int.class)).isTrue();
+        assertThat(generator.supports(Integer.class)).isTrue();
+        assertThat(generator.supports(int[].class)).isFalse();
+    }
 }

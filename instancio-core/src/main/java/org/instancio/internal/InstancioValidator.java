@@ -15,7 +15,9 @@
  */
 package org.instancio.internal;
 
+import org.instancio.Generator;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.nodes.Node;
 import org.instancio.settings.SettingKey;
 import org.instancio.util.Format;
 import org.instancio.util.ReflectionUtils;
@@ -25,6 +27,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class InstancioValidator {
 
@@ -118,4 +121,12 @@ public class InstancioValidator {
         }
     }
 
+    public static void validateGeneratorUsage(Node node, Generator<?> generator) {
+        final Optional<String> name = generator.name();
+        if (name.isPresent() && !generator.supports(node.getTargetClass())) {
+            throw new InstancioApiException("\nGenerator type mismatch:\n"
+                    + "Method '" + name.get() + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
+                    + (node.getField() == null ? "" : "\nField: " + node.getField()));
+        }
+    }
 }

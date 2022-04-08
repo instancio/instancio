@@ -51,11 +51,12 @@ class MapGeneratorTest {
 
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private final MapGenerator<?, ?> generator = new MapGenerator<>(context);
 
     @Test
     @DisplayName("Should generate either an empty map or null")
     void generateNullableMap() {
-        final MapGenerator<?, ?> generator = new MapGenerator<>(context);
+
         final Set<Object> results = new HashSet<>();
         final int[] counts = new int[2];
 
@@ -82,4 +83,10 @@ class MapGeneratorTest {
                 .nullableElements(false);
     }
 
+    @Test
+    void supports() {
+        assertThat(generator.supports(Map.class)).isTrue();
+        assertThat(generator.supports(HashMap.class)).isTrue();
+        assertThat(generator.supports(Object.class)).isFalse();
+    }
 }

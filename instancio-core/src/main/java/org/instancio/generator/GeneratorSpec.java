@@ -17,6 +17,8 @@ package org.instancio.generator;
 
 import org.instancio.Generator;
 
+import java.util.Optional;
+
 /**
  * Marker interface for configurable {@link Generator}s.
  *
@@ -25,4 +27,12 @@ import org.instancio.Generator;
 @SuppressWarnings("unused")
 public interface GeneratorSpec<T> {
 
+    /**
+     * Returns name of the spec. Will return an empty result if this instance is a lambda.
+     *
+     * @return spec name, if defined
+     */
+    default Optional<String> name() {
+        return Optional.ofNullable(GeneratorSpecDescription.get(getClass()));
+    }
 }

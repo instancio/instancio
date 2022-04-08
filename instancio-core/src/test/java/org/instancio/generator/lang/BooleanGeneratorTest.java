@@ -38,10 +38,10 @@ class BooleanGeneratorTest {
     private static final Settings settings = Settings.defaults().set(Setting.BOOLEAN_NULLABLE, true);
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private final Generator<Boolean> generator = new BooleanGenerator(context);
 
     @Test
     void generate() {
-        final Generator<Boolean> generator = new BooleanGenerator(context);
         final Set<Object> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             results.add(generator.generate(random));
@@ -54,5 +54,11 @@ class BooleanGeneratorTest {
         assertHints(generator.getHints())
                 .nullableResult(true)
                 .ignoreChildren(true);
+    }
+
+    @Test
+    void supports() {
+        assertThat(generator.supports(boolean.class)).isTrue();
+        assertThat(generator.supports(Boolean.class)).isTrue();
     }
 }

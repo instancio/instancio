@@ -58,9 +58,11 @@ public class TypeUtils {
     }
 
     public static Class<?> getGenericSuperclassRawTypeArgument(final Class<?> klass) {
-        final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
-        final Type genericType = genericSuperclass.getActualTypeArguments()[0];
-        return getRawType(genericType);
-
+        if (klass.getGenericSuperclass() instanceof ParameterizedType) {
+            final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
+            final Type genericType = genericSuperclass.getActualTypeArguments()[0];
+            return getRawType(genericType);
+        }
+        return null;
     }
 }

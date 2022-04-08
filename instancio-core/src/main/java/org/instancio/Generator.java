@@ -17,8 +17,15 @@ package org.instancio;
 
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.array.ArrayGeneratorSpec;
+import org.instancio.generator.util.CollectionGeneratorSpec;
+import org.instancio.generator.util.MapGeneratorSpec;
+import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.util.TypeUtils;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -75,6 +82,30 @@ public interface Generator<T> extends GeneratorSpec<T> {
      */
     default Optional<Class<?>> targetClass() {
         return Optional.empty();
+    }
+
+    /**
+     * Checks whether this generator can generate given type.
+     *
+     * @param type to check
+     * @return {@code true} if generator can
+     */
+    default boolean supports(Class<?> type) {
+        if (type.isArray()) {
+            return this instanceof ArrayGeneratorSpec;
+        }
+        if (Collection.class.isAssignableFrom(type)) {
+            return this instanceof CollectionGeneratorSpec;
+        }
+        if (Map.class.isAssignableFrom(type)) {
+            return this instanceof MapGeneratorSpec;
+        }
+        final Class<?> typeArg = TypeUtils.getGenericSuperclassRawTypeArgument(getClass());
+        return typeArg == null // couldn't determine type arg ('this' is probably a lambda)
+                || typeArg.isAssignableFrom(type)
+                || PrimitiveWrapperBiLookup.getEquivalent(typeArg)
+                .filter(type::isAssignableFrom)
+                .isPresent();
     }
 
     /**
