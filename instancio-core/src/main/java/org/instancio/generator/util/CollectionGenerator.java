@@ -18,6 +18,7 @@ package org.instancio.generator.util;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.InstancioValidator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.util.Sonar;
@@ -94,7 +95,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     public CollectionGeneratorSpec<T> with(final T... elements) {
-        Verify.notEmpty(elements, "'collection().with(...)' must contain at least one element");
+        InstancioValidator.notEmpty(elements, "'collection().with(...)' must contain at least one element");
         if (withElements == null) {
             withElements = new ArrayList<>();
         }

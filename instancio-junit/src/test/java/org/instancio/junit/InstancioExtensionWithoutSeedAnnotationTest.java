@@ -15,8 +15,8 @@
  */
 package org.instancio.junit;
 
-import org.instancio.Instancio;
 import org.instancio.internal.ThreadLocalRandomProvider;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,18 +26,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class InstancioExtensionWithoutSeedAnnotationTest {
 
+    @AfterAll
+    static void afterAll() {
+        assertThat(ThreadLocalRandomProvider.getInstance().get())
+                .as("Expected thread local value to be removed after test is done")
+                .isNull();
+    }
+
     @Test
     @DisplayName("Same seed should be used within the test method")
     void sameSeedValuePerTestMethod() {
         assertThat(ThreadLocalRandomProvider.getInstance().get().getSeed())
                 .isEqualTo(ThreadLocalRandomProvider.getInstance().get().getSeed());
-    }
-
-    @Test
-    @DisplayName("Repeated calls to create() should produce distinct values")
-    void eachCreateInstanceGeneratesDistinctValue() {
-        final String result1 = Instancio.create(String.class);
-        final String result2 = Instancio.create(String.class);
-        assertThat(result1).isNotEqualTo(result2);
     }
 }
