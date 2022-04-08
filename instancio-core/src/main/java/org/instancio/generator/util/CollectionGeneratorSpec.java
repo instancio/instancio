@@ -72,4 +72,16 @@ public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>>
      */
     CollectionGeneratorSpec<T> type(Class<?> type);
 
+    /**
+     * Adds given elements to the generated collection.
+     * <p>
+     * If the collection is a List, elements will be added at random positions;
+     * otherwise elements will be added via {@link Collection#addAll(Collection)}
+     * after the collection has been generated.
+     *
+     * @param elements to add
+     * @return spec builder
+     */
+    CollectionGeneratorSpec<T> with(T... elements);
+
 }

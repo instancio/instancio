@@ -18,6 +18,7 @@ package org.instancio.generator.util;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.InstancioValidator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.util.Sonar;
@@ -27,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
     private static final Logger LOG = LoggerFactory.getLogger(CollectionGenerator.class);
@@ -37,6 +40,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     protected boolean nullable;
     protected boolean nullableElements;
     protected Class<?> type;
+    protected List<T> withElements;
 
     public CollectionGenerator(final GeneratorContext context) {
         super(context);
@@ -90,6 +94,16 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     }
 
     @Override
+    public CollectionGeneratorSpec<T> with(final T... elements) {
+        InstancioValidator.notEmpty(elements, "'collection().with(...)' must contain at least one element");
+        if (withElements == null) {
+            withElements = new ArrayList<>();
+        }
+        Collections.addAll(withElements, elements);
+        return this;
+    }
+
+    @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Collection<T> generate(final RandomProvider random) {
         try {
@@ -107,6 +121,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
                 .ignoreChildren(false)
                 .nullableResult(nullable)
                 .nullableElements(nullableElements)
+                .withElements(withElements)
                 .build();
     }
 }

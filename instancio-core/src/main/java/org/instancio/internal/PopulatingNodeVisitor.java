@@ -22,6 +22,7 @@ import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeVisitor;
+import org.instancio.util.ArrayUtils;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
@@ -29,6 +30,8 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
@@ -115,6 +118,13 @@ public class PopulatingNodeVisitor implements NodeVisitor {
                 callbackHandler.addResult(elementNode, elementResult);
             }
         }
+
+        if (!generatorResult.getHints().getWithElements().isEmpty()) {
+            collectionObj.addAll(generatorResult.getHints().getWithElements());
+            if (collectionObj instanceof List) {
+                Collections.shuffle((List<?>) collectionObj);
+            }
+        }
     }
 
     @Override
@@ -194,7 +204,10 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             ReflectionUtils.setField(owner, arrayNode.getField(), arrayObj);
         }
 
-        for (int i = 0, len = Array.getLength(arrayObj); i < len; i++) {
+        final List<?> withElements = generatorResult.getHints().getWithElements();
+
+        int index = 0;
+        for (int len = Array.getLength(arrayObj) - withElements.size(); index < len; index++) {
             final boolean isNullableElement = generatorResult.getHints().nullableElements();
             if (context.getRandomProvider().diceRoll(isNullableElement)) {
                 continue;
@@ -204,10 +217,17 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             if (optResult.isPresent()) {
                 final GeneratorResult elementResult = optResult.get();
                 final Object elementValue = elementResult.getValue();
-                Array.set(arrayObj, i, elementValue);
+                Array.set(arrayObj, index, elementValue);
                 enqueueChildrenOf(elementNode, elementResult, queue);
                 callbackHandler.addResult(elementNode, elementResult);
             }
+        }
+
+        if (!withElements.isEmpty()) {
+            for (int j = 0; j < withElements.size(); j++) {
+                Array.set(arrayObj, j + index, withElements.get(j));
+            }
+            ArrayUtils.shuffle(arrayObj, context.getRandomProvider());
         }
     }
 

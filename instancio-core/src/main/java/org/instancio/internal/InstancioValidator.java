@@ -21,7 +21,9 @@ import org.instancio.util.Format;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class InstancioValidator {
@@ -99,4 +101,21 @@ public class InstancioValidator {
                 "The value '%s' is of unexpected type (%s) for key '%s'",
                 value, value.getClass().getSimpleName(), key);
     }
+
+    public static <T> T[] notEmpty(@Nullable final T[] array, final String message, final Object... values) {
+        isTrue(array != null && array.length > 0, message, values);
+        return array;
+    }
+
+    public static <T> Collection<T> notEmpty(@Nullable final Collection<T> collection, final String message, final Object... values) {
+        isTrue(collection != null && !collection.isEmpty(), message, values);
+        return collection;
+    }
+
+    public static void isTrue(final boolean condition, final String message, final Object... values) {
+        if (!condition) {
+            throw new InstancioApiException(String.format(message, values));
+        }
+    }
+
 }

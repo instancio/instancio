@@ -22,6 +22,7 @@ import org.instancio.util.Verify;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static java.time.ZoneOffset.UTC;
 
@@ -52,12 +53,19 @@ public class LocalDateTimeGenerator extends AbstractGenerator<LocalDateTime> imp
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * There must be at least 1-millisecond (1,000,000 nanoseconds) difference
+     * between the start and end dates, or else an error will be thrown.
+     */
     @Override
     public TemporalGeneratorSpec<LocalDateTime> range(final LocalDateTime startInclusive, final LocalDateTime endExclusive) {
         min = Verify.notNull(startInclusive, "Start date must not be null");
         max = Verify.notNull(endExclusive, "End date must not be null");
-        Verify.isTrue(startInclusive.isBefore(endExclusive),
-                "Start date must be before end date: %s, %s", startInclusive, endExclusive);
+        Verify.isTrue(ChronoUnit.MILLIS.between(startInclusive, endExclusive) >= 1,
+                "Start date must be before end date by at least one millisecond: %s, %s",
+                startInclusive, endExclusive);
         return this;
     }
 

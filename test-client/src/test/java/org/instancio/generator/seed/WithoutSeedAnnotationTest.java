@@ -13,33 +13,45 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.junit;
+package org.instancio.generator.seed;
 
 import org.instancio.Instancio;
-import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.util.Sonar;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
-class InstancioExtensionWithSeedAnnotationTest {
+class WithoutSeedAnnotationTest {
+
+    private static final Set<Object> results = new HashSet<>();
+    private static final int NUM_INVOCATIONS = 5;
 
     @AfterAll
     static void afterAll() {
-        assertThat(ThreadLocalRandomProvider.getInstance().get())
-                .as("Expected thread local value to be removed after test is done")
-                .isNull();
+        assertThat(results).hasSize(NUM_INVOCATIONS);
+    }
+
+    @RepeatedTest(NUM_INVOCATIONS)
+    @SuppressWarnings(Sonar.ADD_ASSERTION)
+    @DisplayName("Results Set should contain distinct elements")
+    void withSeedAnnotation() {
+        results.add(Instancio.create(long.class));
     }
 
     @Test
-    @Seed(1234)
-    @SuppressWarnings(Sonar.ADD_ASSERTION)
-    @DisplayName("Dummy test method to verify thread local is cleared in afterAll()")
-    void dummy() {
-        Instancio.create(String.class);
+    @DisplayName("Separate calls to create() within the same test method should produce distinct values")
+    void eachCreateInstanceGeneratesDistinctValue() {
+        final String result1 = Instancio.create(String.class);
+        final String result2 = Instancio.create(String.class);
+        assertThat(result1).isNotEqualTo(result2);
     }
 }

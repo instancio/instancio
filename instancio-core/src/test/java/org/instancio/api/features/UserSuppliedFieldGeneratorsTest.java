@@ -30,6 +30,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.instancio.Bindings.allInts;
 import static org.instancio.Bindings.field;
 
 class UserSuppliedFieldGeneratorsTest {
@@ -74,4 +75,19 @@ class UserSuppliedFieldGeneratorsTest {
                 .isNull();
     }
 
+    @Test
+    @DisplayName("Values provided via supply() should take precedence over generate()")
+    void supplyShouldTakePrecedenceOverGenerate() {
+        final String expectedName = "test name";
+        final int expectedAge = 99;
+        final Person result = Instancio.of(Person.class)
+                .supply(field("name"), () -> expectedName)
+                .supply(allInts(), () -> expectedAge)
+                .generate(field("name"), gen -> gen.string().minLength(100))
+                .generate(allInts(), gen -> gen.ints().min(expectedAge + 1))
+                .create();
+
+        assertThat(result.getName()).isEqualTo(expectedName);
+        assertThat(result.getAge()).isEqualTo(expectedAge);
+    }
 }

@@ -18,6 +18,7 @@ package org.instancio.api.features.generators;
 import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
 import org.instancio.pojo.collections.TwoStringCollections;
+import org.instancio.pojo.collections.lists.ListString;
 import org.instancio.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.pojo.collections.maps.SortedMapIntegerString;
 import org.instancio.pojo.collections.maps.TwoMapsOfIntegerItemString;
@@ -134,6 +135,16 @@ class BuiltInCollectionGeneratorTest {
 
             assertThat(result.getList2()).isNotEmpty().isInstanceOf(ArrayList.class)
                     .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
+        }
+
+        @Test
+        void withElements() {
+            final String[] expectedElements = {"foo", "bar"};
+            final ListString result = Instancio.of(ListString.class)
+                    .generate(field("list"), gen -> gen.collection().with(expectedElements))
+                    .create();
+
+            assertThat(result.getList()).contains(expectedElements);
         }
 
         @Test

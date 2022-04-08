@@ -36,7 +36,7 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
     @SuppressWarnings("unchecked")
     public Collection<T> generate(final RandomProvider random) {
         Verify.notNull(delegate, "null delegate");
-        return random.diceRoll(nullable) ? null : (Collection<T>) delegate.generate(random);
+        return (Collection<T>) delegate.generate(random);
     }
 
     @Override

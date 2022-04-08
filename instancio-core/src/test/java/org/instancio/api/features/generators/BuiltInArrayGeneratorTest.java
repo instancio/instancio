@@ -20,6 +20,7 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeToken;
 import org.instancio.pojo.arrays.TwoArraysOfItemString;
+import org.instancio.pojo.arrays.primitive.WithIntArray;
 import org.instancio.pojo.generics.basic.Item;
 import org.instancio.testsupport.Constants;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +57,16 @@ class BuiltInArrayGeneratorTest {
 
             assertArray(result.getArray1(), EXPECTED_LENGTH, EXPECTED_LENGTH);
             assertArray(result.getArray2(), EXPECTED_LENGTH, EXPECTED_LENGTH);
+        }
+
+        @Test
+        void withElements() {
+            final Integer[] expectedElements = {44, 55};
+            final WithIntArray result = Instancio.of(WithIntArray.class)
+                    .generate(field("values"), gen -> gen.array().with(expectedElements))
+                    .create();
+
+            assertThat(result.getValues()).contains(expectedElements);
         }
     }
 

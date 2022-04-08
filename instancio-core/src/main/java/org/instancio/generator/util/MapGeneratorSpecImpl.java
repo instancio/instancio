@@ -36,7 +36,7 @@ public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
     @SuppressWarnings("unchecked")
     public Map<K, V> generate(final RandomProvider random) {
         Verify.notNull(delegate, "null delegate");
-        return random.diceRoll(nullable) ? null : (Map<K, V>) delegate.generate(random);
+        return (Map<K, V>) delegate.generate(random);
     }
 
     @Override
