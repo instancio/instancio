@@ -28,7 +28,8 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>test-common</artifactId>
+            <artifactId>instancio-test-support</artifactId>
+            <version>${version.instancio}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

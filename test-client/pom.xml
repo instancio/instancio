@@ -15,13 +15,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>true</skipTests>
@@ -66,12 +59,14 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-junit</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${version.instancio}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>test-common</artifactId>
+            <artifactId>instancio-test-support</artifactId>
+            <version>${version.instancio}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
