@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-test-support</artifactId>
-            <version>${version.instancio}</version>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
