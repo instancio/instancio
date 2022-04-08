@@ -106,7 +106,6 @@ class GeneratorFacade {
             generatorResult = resolveImplementationAndGenerate(effectiveType, node, owner);
         }
 
-        //return generatorResult.orElse(GeneratorResult.nullResult());
         return generatorResult;
     }
 

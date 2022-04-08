@@ -15,13 +15,13 @@
  */
 package org.instancio.api;
 
-import lombok.Getter;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.basic.Triplet;
 import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.AddressExtension;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
@@ -44,11 +44,6 @@ class InstancioApiTest {
     private static final String HOMER = "Homer";
     private static final String SPRINGFIELD = "Springfield";
 
-    @Getter
-    static class AddressExtension extends Address {
-        private String additionalInfo;
-    }
-
     @Test
     void createFromClass() {
         final Person homer = Instancio.of(Person.class)
@@ -58,7 +53,7 @@ class InstancioApiTest {
                 .withNullable(field("date"))
                 .withNullable(field(Person.class, "pets"))
                 .withNullable(all(Gender.class))
-                .map(Address.class, AddressExtension.class)
+                .map(all(Address.class), AddressExtension.class)
                 .create();
 
         assertThat(homer.getName()).isEqualTo(HOMER);

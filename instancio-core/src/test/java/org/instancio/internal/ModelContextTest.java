@@ -67,7 +67,6 @@ class ModelContextTest {
         assertThat(ctx.getRootClass()).isEqualTo(Foo.class);
     }
 
-
     @Test
     void withNullableField() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
@@ -174,28 +173,34 @@ class ModelContextTest {
     @Test
     void withSubtypeMapping() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withSubtypeMapping(Collection.class, HashSet.class)
-                .withSubtypeMapping(List.class, LinkedList.class)
+                .withSubtype(all(Collection.class), HashSet.class)
+                .withSubtype(all(List.class), LinkedList.class)
                 .build();
 
-        assertThat(ctx.getSubtypeMapping(Collection.class)).isEqualTo(HashSet.class);
-        assertThat(ctx.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
+        assertThat(ctx.getClassSubtypeMap()).containsEntry(Collection.class, HashSet.class);
+        assertThat(ctx.getClassSubtypeMap()).containsEntry(List.class, LinkedList.class);
     }
 
     @Test
-    void withSubtypeMappingRejectsInvalidMapping() {
+    void invalidSubtypeMappingArrayListToList() {
         final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
-
-        assertThatThrownBy(() -> builder.withSubtypeMapping(ArrayList.class, List.class))
+        assertThatThrownBy(() -> builder.withSubtype(all(ArrayList.class), List.class).build())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Class '%s' is not a subtype of '%s'", List.class.getName(), ArrayList.class.getName());
+    }
 
-        assertThatThrownBy(() ->
-                builder.withSubtypeMapping(ArrayList.class, ArrayList.class))
+    @Test
+    void invalidSubtypeMappingArrayListToArrayList() {
+        final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
+        assertThatThrownBy(() -> builder.withSubtype(all(ArrayList.class), ArrayList.class).build())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Cannot map the class to itself: '%s'", ArrayList.class.getName());
+    }
 
-        assertThatThrownBy(() -> builder.withSubtypeMapping(List.class, AbstractList.class))
+    @Test
+    void invalidSubtypeMappingArrayListToAbstractList() {
+        final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
+        assertThatThrownBy(() -> builder.withSubtype(all(List.class), AbstractList.class).build())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Class must not be an interface or abstract class: '%s'", AbstractList.class.getName());
     }
@@ -221,7 +226,7 @@ class ModelContextTest {
                 .withNullable(toFieldBinding(ADDRESS_FIELD))
                 .withSeed(seed)
                 .withSettings(Settings.create().set(Setting.INTEGER_MIN, integerMinValue))
-                .withSubtypeMapping(List.class, LinkedList.class)
+                .withSubtype(all(List.class), LinkedList.class)
                 .build();
 
         final ModelContext<?> context = ctx.toBuilder().build();
@@ -235,7 +240,7 @@ class ModelContextTest {
         assertThat(context.isNullable(ADDRESS_FIELD)).isTrue();
         assertThat(context.getSeed()).isEqualTo(seed);
         assertThat((int) context.getSettings().get(Setting.INTEGER_MIN)).isEqualTo(integerMinValue);
-        assertThat(context.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
+        assertThat(context.getClassSubtypeMap()).containsEntry(List.class, LinkedList.class);
 
         assertThatThrownBy(() -> context.getSettings().set(Setting.STRING_MIN_LENGTH, 5))
                 .as("Settings should be locked")

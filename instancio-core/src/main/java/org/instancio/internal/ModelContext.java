@@ -68,13 +68,15 @@ public class ModelContext<T> {
     private final Map<Field, OnCompleteCallback<?>> userSuppliedFieldCallbacks;
     private final Map<Class<?>, OnCompleteCallback<?>> userSuppliedClassCallbacks;
     private final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks;
-    private final Map<Class<?>, Class<?>> subtypeMap;
+    private final Map<Class<?>, Class<?>> classSubtypeMap;
+    private final Map<Field, Class<?>> fieldSubtypeMap;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final Settings settings;
     private final Integer seed;
     private final RandomProvider randomProvider;
     private final Set<Binding> ignoredBindings;
     private final Set<Binding> nullableBindings;
+    private final Map<Binding, Class<?>> subtypeBindings;
     private final Map<Binding, Generator<?>> generatorBindings;
     private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings;
     private final Generators generators;
@@ -91,12 +93,14 @@ public class ModelContext<T> {
         this.userSuppliedClassGenerators = new HashMap<>();
         this.userSuppliedFieldCallbacks = new HashMap<>();
         this.userSuppliedClassCallbacks = new HashMap<>();
+        this.fieldSubtypeMap = new HashMap<>();
+        this.classSubtypeMap = new HashMap<>();
         this.ignoredBindings = Collections.unmodifiableSet(builder.ignoredBindings);
         this.nullableBindings = Collections.unmodifiableSet(builder.nullableBindings);
+        this.subtypeBindings = Collections.unmodifiableMap(builder.subtypeBindings);
         this.generatorBindings = Collections.unmodifiableMap(builder.generatorBindings);
         this.generatorSpecBindings = Collections.unmodifiableMap(builder.generatorSpecBindings);
         this.onCompleteCallbacks = Collections.unmodifiableMap(builder.onCompleteCallbacks);
-        this.subtypeMap = Collections.unmodifiableMap(builder.subtypeMap);
 
         this.rootTypeMap = rootType instanceof ParameterizedType || rootType instanceof GenericArrayType
                 ? Collections.emptyMap()
@@ -114,9 +118,26 @@ public class ModelContext<T> {
 
         builder.onCompleteCallbacks.forEach(this::putCallbackBinding);
         builder.generatorSpecBindings.forEach(this::putGeneratorBinding);
+        putAllSubtypeBindings(builder.subtypeBindings);
         putAllUserSuppliedGenerators(builder.generatorBindings);
         putIgnored(builder.ignoredBindings);
         putNullable(builder.nullableBindings);
+    }
+
+    private void putAllSubtypeBindings(final Map<Binding, Class<?>> subtypeBindings) {
+        subtypeBindings.forEach((binding, subtype) -> {
+            for (Binding.BindingTarget target : binding.getTargets()) {
+                if (target.isFieldBinding()) {
+                    final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
+                    final Field field = getField(targetType, target.getFieldName());
+                    // TODO validate
+                    fieldSubtypeMap.put(field, subtype);
+                } else {
+                    InstancioValidator.validateSubtypeMapping(target.getTargetType(), subtype);
+                    classSubtypeMap.put(target.getTargetType(), subtype);
+                }
+            }
+        });
     }
 
     private static RandomProvider resolveRandomProvider(@Nullable final Integer userSuppliedSeed) {
@@ -170,8 +191,12 @@ public class ModelContext<T> {
             }
             this.userSuppliedFieldGenerators.put(field, generator);
         } else {
+            final Class<?> userSpecifiedClass = generator.targetClass().orElse(target.getTargetType());
             if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
-                ((ArrayGenerator<?>) generator).type(target.getTargetType());
+                ((ArrayGenerator<?>) generator).type(userSpecifiedClass);
+            }
+            if (userSpecifiedClass != target.getTargetType()) {
+                this.classSubtypeMap.put(target.getTargetType(), userSpecifiedClass);
             }
             this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
         }
@@ -248,11 +273,15 @@ public class ModelContext<T> {
     }
 
     public Class<?> getSubtypeMapping(Class<?> superType) {
-        return subtypeMap.getOrDefault(superType, superType);
+        return classSubtypeMap.getOrDefault(superType, superType);
     }
 
-    public Map<Class<?>, Class<?>> getSubtypeMap() {
-        return subtypeMap;
+    public Map<Class<?>, Class<?>> getClassSubtypeMap() {
+        return classSubtypeMap;
+    }
+
+    public Map<Field, Class<?>> getFieldSubtypeMap() {
+        return fieldSubtypeMap;
     }
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
@@ -302,8 +331,8 @@ public class ModelContext<T> {
         builder.ignoredBindings.addAll(this.ignoredBindings);
         builder.generatorBindings.putAll(this.generatorBindings);
         builder.generatorSpecBindings.putAll(this.generatorSpecBindings);
+        builder.subtypeBindings.putAll(this.subtypeBindings);
         builder.onCompleteCallbacks.putAll(this.onCompleteCallbacks);
-        builder.subtypeMap.putAll(this.subtypeMap);
         return builder;
     }
 
@@ -316,12 +345,12 @@ public class ModelContext<T> {
         private final Type rootType;
         private final Class<T> rootClass;
         private final List<Class<?>> rootTypeParameters = new ArrayList<>();
-        private final Map<Class<?>, Class<?>> subtypeMap = new HashMap<>();
         private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings = new HashMap<>();
+        private final Map<Binding, Generator<?>> generatorBindings = new HashMap<>();
         private final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks = new HashMap<>();
         private final Set<Binding> ignoredBindings = new HashSet<>();
         private final Set<Binding> nullableBindings = new HashSet<>();
-        private final Map<Binding, Generator<?>> generatorBindings = new HashMap<>();
+        private final Map<Binding, Class<?>> subtypeBindings = new HashMap<>();
         private Settings settings;
         private Integer seed;
 
@@ -351,6 +380,11 @@ public class ModelContext<T> {
             return this;
         }
 
+        public Builder<T> withSubtype(final Binding binding, final Class<?> subtype) {
+            this.subtypeBindings.put(binding, subtype);
+            return this;
+        }
+
         public Builder<T> withGenerator(final Binding binding, final Generator<?> generator) {
             this.generatorBindings.put(binding, generator);
             return this;
@@ -368,12 +402,6 @@ public class ModelContext<T> {
 
         public <V> Builder<T> withOnCompleteCallback(final Binding target, final OnCompleteCallback<V> callback) {
             this.onCompleteCallbacks.put(target, callback);
-            return this;
-        }
-
-        public Builder<T> withSubtypeMapping(final Class<?> from, final Class<?> to) {
-            InstancioValidator.validateSubtypeMapping(from, to);
-            this.subtypeMap.put(from, to);
             return this;
         }
 

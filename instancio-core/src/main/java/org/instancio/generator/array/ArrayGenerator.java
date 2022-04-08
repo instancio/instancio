@@ -27,6 +27,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGeneratorSpec<T> {
 
@@ -102,6 +103,11 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
         }
         Collections.addAll(withElements, elements);
         return this;
+    }
+
+    @Override
+    public Optional<Class<?>> targetClass() {
+        return Optional.ofNullable(arrayType);
     }
 
     @Override

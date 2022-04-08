@@ -18,6 +18,7 @@ package org.instancio.internal.nodes;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
 import org.instancio.internal.reflection.FieldCollector;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,22 +30,29 @@ public class NodeContext {
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
     private final Set<Node> visited = new HashSet<>();
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
-    private final Map<Class<?>, Class<?>> subtypeMap;
+    private final Map<Class<?>, Class<?>> classSubtypeMap;
+    private final Map<Field, Class<?>> fieldSubtypeMap;
 
     public NodeContext(
             final Map<TypeVariable<?>, Class<?>> rootTypeMap,
-            final Map<Class<?>, Class<?>> subtypeMap) {
+            final Map<Class<?>, Class<?>> classSubtypeMap,
+            final Map<Field, Class<?>> fieldSubtypeMap) {
 
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
-        this.subtypeMap = Collections.unmodifiableMap(subtypeMap);
+        this.classSubtypeMap = Collections.unmodifiableMap(classSubtypeMap);
+        this.fieldSubtypeMap = Collections.unmodifiableMap(fieldSubtypeMap);
     }
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
         return rootTypeMap;
     }
 
-    public Map<Class<?>, Class<?>> getSubtypeMap() {
-        return subtypeMap;
+    public Map<Class<?>, Class<?>> getClassSubtypeMap() {
+        return classSubtypeMap;
+    }
+
+    public Map<Field, Class<?>> getFieldSubtypeMap() {
+        return fieldSubtypeMap;
     }
 
     public void visited(final Node node) {

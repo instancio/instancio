@@ -195,8 +195,7 @@ public interface InstancioApi<T> {
     <V> InstancioApi<T> onComplete(Binding target, OnCompleteCallback<V> callback);
 
     /**
-     * Maps an interface or base class to the given subclass.
-     * The {@code subClass} must either extend or implement the {@code baseClass}.
+     * Maps target field or class to the given subclass.
      * <p>
      * For example, by default Instancio will assign an {@link java.util.ArrayList}
      * to a {@link java.util.List} field. If an alternative implementation is
@@ -204,17 +203,17 @@ public interface InstancioApi<T> {
      *
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *             .map(List.class, Vector.class)
+     *             .map(all(List.class), Vector.class)
      *             .create();
      * }</pre>
      * <p>
      * will assign all {@code List}s to {@code Vector}s.
      *
-     * @param baseClass interface or base class
-     * @param subClass  subtype of the {@code baseClass}
+     * @param target  binding
+     * @param subtype of the type {@code target} binding
      * @return API builder reference
      */
-    InstancioApi<T> map(Class<?> baseClass, Class<?> subClass);
+    InstancioApi<T> map(Binding target, Class<?> subtype);
 
     /**
      * Override default settings for generated values.

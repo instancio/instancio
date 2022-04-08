@@ -91,8 +91,8 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> map(Class<?> baseClass, Class<?> subClass) {
-        modelContextBuilder.withSubtypeMapping(baseClass, subClass);
+    public InstancioApi<T> map(Binding binding, Class<?> subtype) {
+        modelContextBuilder.withSubtype(binding, subtype);
         return this;
     }
 
