@@ -38,10 +38,10 @@ class CharacterGeneratorTest {
     private static final Settings settings = Settings.defaults().set(Setting.CHARACTER_NULLABLE, true);
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private final Generator<Character> generator = new CharacterGenerator(context);
 
     @Test
     void generate() {
-        final Generator<Character> generator = new CharacterGenerator(context);
         final Set<Object> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             results.add(generator.generate(random));
@@ -54,5 +54,11 @@ class CharacterGeneratorTest {
         assertHints(generator.getHints())
                 .nullableResult(true)
                 .ignoreChildren(true);
+    }
+
+    @Test
+    void supports() {
+        assertThat(generator.supports(char.class)).isTrue();
+        assertThat(generator.supports(Character.class)).isTrue();
     }
 }

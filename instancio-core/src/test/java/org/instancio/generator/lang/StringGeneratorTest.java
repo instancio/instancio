@@ -42,10 +42,10 @@ class StringGeneratorTest {
 
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private final StringGenerator generator = new StringGenerator(context);
 
     @Test
     void generate() {
-        final StringGenerator generator = new StringGenerator(context);
         final Set<Object> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             results.add(generator.generate(random));
@@ -90,4 +90,9 @@ class StringGeneratorTest {
         return expected;
     }
 
+    @Test
+    void supports() {
+        assertThat(generator.supports(String.class)).isTrue();
+        assertThat(generator.supports(CharSequence.class)).isFalse();
+    }
 }

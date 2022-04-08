@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.generator.misc.InstantiatingGenerator;
+import org.instancio.internal.InstancioValidator;
 import org.instancio.internal.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
@@ -49,8 +50,10 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
      */
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-        return getUserSuppliedGenerator(node).map(g -> GeneratorResult.create(
-                g.generate(modelContext.getRandomProvider()), g.getHints()));
+        return getUserSuppliedGenerator(node).map(g -> {
+            InstancioValidator.validateGeneratorUsage(node, g);
+            return GeneratorResult.create(g.generate(modelContext.getRandomProvider()), g.getHints());
+        });
     }
 
     private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {

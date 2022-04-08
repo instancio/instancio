@@ -16,6 +16,7 @@
 package org.instancio.generator.collection;
 
 import org.instancio.Instancio;
+import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.features.Feature;
 import org.instancio.features.FeatureTest;
@@ -41,6 +42,15 @@ class CollectionGeneratorWithElementTest {
                 .create();
 
         assertThat(result.getSet()).contains(EXPECTED_LONGS);
+    }
+
+    @Test
+    void createSetDirectly() {
+        final Set<Long> result = Instancio.of(new TypeToken<Set<Long>>() {})
+                .generate(all(Set.class), gen -> gen.collection().with(EXPECTED_LONGS))
+                .create();
+
+        assertThat(result).contains(EXPECTED_LONGS);
     }
 
     @Test

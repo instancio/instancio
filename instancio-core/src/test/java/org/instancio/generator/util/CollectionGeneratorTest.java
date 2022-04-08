@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,11 +50,11 @@ class CollectionGeneratorTest {
 
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private final CollectionGenerator<?> generator = new CollectionGenerator<>(context);
 
     @Test
     @DisplayName("Should generate either an empty collection or null")
     void generateNullableCollection() {
-        final CollectionGenerator<?> generator = new CollectionGenerator<>(context);
         final Set<Object> results = new HashSet<>();
         final int[] counts = new int[2];
 
@@ -78,5 +79,12 @@ class CollectionGeneratorTest {
                 .ignoreChildren(false)
                 .nullableMapKeys(false)
                 .nullableMapValues(false);
+    }
+
+    @Test
+    void supports() {
+        assertThat(generator.supports(List.class)).isTrue();
+        assertThat(generator.supports(ArrayList.class)).isTrue();
+        assertThat(generator.supports(Object.class)).isFalse();
     }
 }
