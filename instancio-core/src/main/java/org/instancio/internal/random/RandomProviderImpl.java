@@ -40,7 +40,7 @@ public class RandomProviderImpl implements RandomProvider {
      */
     public RandomProviderImpl(final int seed) {
         this.seed = seed;
-        this.random = new Random(seed);
+        this.random = new Random(seed); // NOSONAR
     }
 
     @Override
