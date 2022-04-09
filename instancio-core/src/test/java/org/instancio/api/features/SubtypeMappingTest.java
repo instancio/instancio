@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.field;
 
 class SubtypeMappingTest {
@@ -44,7 +45,7 @@ class SubtypeMappingTest {
     @DisplayName("Subtype mapping from List to Vector")
     void subtypeMappingWithSingleList() {
         final ListLong result = Instancio.of(ListLong.class)
-                .map(List.class, Vector.class)
+                .map(all(List.class), Vector.class)
                 .create();
 
         assertThat(result.getList()).isNotEmpty().isInstanceOf(Vector.class);
@@ -54,7 +55,7 @@ class SubtypeMappingTest {
     @DisplayName("Given subtype mapping from List to Vector and a generator, the generator takes precedence")
     void subtypeMappingWithMultipleLists() {
         final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                .map(List.class, Vector.class)
+                .map(all(List.class), Vector.class)
                 .generate(field("list1"), gen -> gen.collection().type(LinkedList.class))
                 .create();
 
@@ -69,7 +70,7 @@ class SubtypeMappingTest {
         @DisplayName("Subtype mapping of a generic class (as collection element)")
         void subtypeMappingOfGenericClass() {
             final ListOfItemInterfaceString result = Instancio.of(ListOfItemInterfaceString.class)
-                    .map(ItemInterface.class, ItemAlternativeImpl.class)
+                    .map(all(ItemInterface.class), ItemAlternativeImpl.class)
                     .create();
 
             assertThat(result.getList()).isNotEmpty()
@@ -81,7 +82,7 @@ class SubtypeMappingTest {
         @DisplayName("Subtype mapping of non-generic class (as collection element)")
         void subtypeMappingOfNonGenericClass() {
             final ListOfStringHolderInterface result = Instancio.of(ListOfStringHolderInterface.class)
-                    .map(StringHolderInterface.class, StringHolderAlternativeImpl.class)
+                    .map(all(StringHolderInterface.class), StringHolderAlternativeImpl.class)
                     .create();
 
             assertThat(result.getList()).isNotEmpty()
@@ -97,7 +98,7 @@ class SubtypeMappingTest {
         @DisplayName("Subtype mapping of a generic class (as array element)")
         void subtypeMappingOfGenericClass() {
             final ArrayOfItemInterfaceString result = Instancio.of(ArrayOfItemInterfaceString.class)
-                    .map(ItemInterface.class, ItemAlternativeImpl.class)
+                    .map(all(ItemInterface.class), ItemAlternativeImpl.class)
                     .create();
 
             assertThat(result.getArray()).isNotEmpty()
@@ -109,7 +110,7 @@ class SubtypeMappingTest {
         @DisplayName("Subtype mapping of non-generic class (as array element)")
         void subtypeMappingOfNonGenericClass() {
             final ArrayOfStringHolderInterface result = Instancio.of(ArrayOfStringHolderInterface.class)
-                    .map(StringHolderInterface.class, StringHolderAlternativeImpl.class)
+                    .map(all(StringHolderInterface.class), StringHolderAlternativeImpl.class)
                     .create();
 
             assertThat(result.getArray()).isNotEmpty()
@@ -125,7 +126,7 @@ class SubtypeMappingTest {
         @DisplayName("Subtype mapping of a generic class (as map key and map value)")
         void subtypeMappingOfGenericClass() {
             final MapOfItemInterfaceString result = Instancio.of(MapOfItemInterfaceString.class)
-                    .map(ItemInterface.class, ItemAlternativeImpl.class)
+                    .map(all(ItemInterface.class), ItemAlternativeImpl.class)
                     .create();
 
             assertThat(result.getMap().keySet()).isNotEmpty()

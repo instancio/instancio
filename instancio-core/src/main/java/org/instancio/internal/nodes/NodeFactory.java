@@ -29,8 +29,10 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
@@ -94,6 +96,11 @@ public class NodeFactory {
 
         if (compRawType == null && compGenericType != null) {
             compRawType = TypeUtils.getRawType(compGenericType);
+        }
+
+        final Optional<Class<?>> userSuppliedType = getUserSuppliedSubtype(arrayClass, field);
+        if (userSuppliedType.isPresent()) {
+            compRawType = userSuppliedType.get().getComponentType();
         }
 
         Verify.notNull(compRawType, "Component type is null: %s, %s", arrayClass, arrayGenericType);
@@ -165,26 +172,23 @@ public class NodeFactory {
                 "Unable to create a MapNode for class: %s, generic type: %s", klass.getName(), genericType));
     }
 
+    private Optional<Class<?>> getUserSuppliedSubtype(final Class<?> targetClass, @Nullable final Field field) {
+        final Class<?> fieldSubtype = nodeContext.getFieldSubtypeMap().get(field);
+        return fieldSubtype != null
+                ? Optional.of(fieldSubtype)
+                : Optional.ofNullable(nodeContext.getClassSubtypeMap().get(targetClass));
+    }
+
     private Node createClassNode(
             final Class<?> targetClass,
             final @Nullable Type genericType,
             final @Nullable Field field,
             Node parent) {
 
-        final Class<?> actualClass = nodeContext.getSubtypeMap().getOrDefault(targetClass, targetClass);
+        final Class<?> actualClass = getUserSuppliedSubtype(targetClass, field).orElse(targetClass);
 
         if (genericType == null || actualClass != Object.class || (field != null && field.getGenericType() instanceof Class)) {
-            final Map<Type, Type> typeMap = new HashMap<>();
-            if (actualClass != targetClass) {
-                final TypeVariable<?>[] actualClassTypeParams = actualClass.getTypeParameters();
-                final TypeVariable<?>[] targetClassTypeParams = targetClass.getTypeParameters();
-
-                if (actualClassTypeParams.length == targetClassTypeParams.length) {
-                    for (int i = 0; i < actualClassTypeParams.length; i++) {
-                        typeMap.put(actualClassTypeParams[i], targetClassTypeParams[i]);
-                    }
-                }
-            }
+            final Map<Type, Type> typeMap = createTypeMapForSubtype(targetClass, actualClass);
 
             return new ClassNode(nodeContext, actualClass, field, genericType, parent, typeMap);
         }
@@ -208,6 +212,24 @@ public class NodeFactory {
 
         throw new IllegalStateException(String.format(
                 "Error creating a class node for klass: %s, type: %s", actualClass.getName(), genericType));
+    }
+
+    private Map<Type, Type> createTypeMapForSubtype(final Class<?> type, final Class<?> subtype) {
+        if (type == subtype) {
+            return Collections.emptyMap();
+        }
+
+        final TypeVariable<?>[] actualClassTypeParams = subtype.getTypeParameters();
+        final TypeVariable<?>[] targetClassTypeParams = type.getTypeParameters();
+        final Map<Type, Type> typeMap = new HashMap<>();
+
+        if (actualClassTypeParams.length == targetClassTypeParams.length) {
+            for (int i = 0; i < actualClassTypeParams.length; i++) {
+                typeMap.put(actualClassTypeParams[i], targetClassTypeParams[i]);
+            }
+        }
+
+        return typeMap;
     }
 
     // Note: field is null for collection/map/array element nodes as they are set via add()/put()/array[i]
