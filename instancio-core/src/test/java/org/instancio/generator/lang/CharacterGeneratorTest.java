@@ -21,8 +21,8 @@ import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
-import org.instancio.testsupport.tags.NonDeterministicTag;
-import org.instancio.testsupport.tags.SettingsTag;
+import org.instancio.test.support.tags.NonDeterministicTag;
+import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;

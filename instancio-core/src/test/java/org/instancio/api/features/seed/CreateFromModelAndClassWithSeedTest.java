@@ -18,9 +18,9 @@ package org.instancio.api.features.seed;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
-import org.instancio.pojo.basic.IntegerHolder;
-import org.instancio.pojo.basic.SupportedNumericTypes;
-import org.instancio.pojo.person.Person;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
+import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

@@ -16,11 +16,11 @@
 package org.instancio.api.settings;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.basic.IntegerHolder;
-import org.instancio.pojo.collections.lists.ListInteger;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
-import org.instancio.testsupport.tags.SettingsTag;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.collections.lists.ListInteger;
+import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

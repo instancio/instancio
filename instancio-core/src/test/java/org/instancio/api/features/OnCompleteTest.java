@@ -17,12 +17,12 @@ package org.instancio.api.features;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
-import org.instancio.pojo.arrays.ArrayPerson;
-import org.instancio.pojo.collections.lists.ListPerson;
-import org.instancio.pojo.collections.maps.MapStringPerson;
-import org.instancio.pojo.person.Person;
-import org.instancio.pojo.person.Pet;
-import org.instancio.pojo.person.Phone;
+import org.instancio.test.support.pojo.arrays.ArrayPerson;
+import org.instancio.test.support.pojo.collections.lists.ListPerson;
+import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
+import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Pet;
+import org.instancio.test.support.pojo.person.Phone;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

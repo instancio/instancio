@@ -16,14 +16,14 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.TypeToken;
-import org.instancio.pojo.generics.basic.Item;
-import org.instancio.pojo.generics.basic.Pair;
-import org.instancio.pojo.generics.basic.Triplet;
-import org.instancio.pojo.generics.foobarbaz.Baz;
-import org.instancio.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.generics.basic.Pair;
+import org.instancio.test.support.pojo.generics.basic.Triplet;
+import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
+import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.tags.GenericsTag;
+import org.instancio.test.support.tags.NodeTag;
 import org.instancio.testsupport.fixtures.Types;
-import org.instancio.testsupport.tags.GenericsTag;
-import org.instancio.testsupport.tags.NodeTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

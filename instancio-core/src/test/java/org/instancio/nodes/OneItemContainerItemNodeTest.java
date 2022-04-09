@@ -16,8 +16,8 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.generics.basic.Item;
-import org.instancio.pojo.generics.container.OneItemContainer;
+import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.generics.container.OneItemContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 
@@ -30,7 +30,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
     protected void verify(Node rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(OneItemContainer.class)
-                .hasTypeMappedTo(OneItemContainer.class, "T", "org.instancio.pojo.generics.basic.Item<java.lang.String>")
+                .hasTypeMappedTo(OneItemContainer.class, "T", "org.instancio.test.support.pojo.generics.basic.Item<java.lang.String>")
                 .hasChildrenOfSize(1);
 
         final String itemField = "item";

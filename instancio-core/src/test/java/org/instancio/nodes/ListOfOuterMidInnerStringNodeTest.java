@@ -17,10 +17,10 @@ package org.instancio.nodes;
 
 import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.generics.outermidinner.Inner;
-import org.instancio.pojo.generics.outermidinner.ListOfOuterMidInnerString;
-import org.instancio.pojo.generics.outermidinner.Mid;
-import org.instancio.pojo.generics.outermidinner.Outer;
+import org.instancio.test.support.pojo.generics.outermidinner.Inner;
+import org.instancio.test.support.pojo.generics.outermidinner.ListOfOuterMidInnerString;
+import org.instancio.test.support.pojo.generics.outermidinner.Mid;
+import org.instancio.test.support.pojo.generics.outermidinner.Outer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import java.util.List;
@@ -57,9 +57,9 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasParent(rootNode)
                 .hasFieldName("rootList")
                 .hasTargetClass(List.class)
-                .hasTypeMappedTo(List.class, "E", "org.instancio.pojo.generics.outermidinner." +
-                        "Outer<org.instancio.pojo.generics.outermidinner." +
-                        "Mid<org.instancio.pojo.generics.outermidinner." +
+                .hasTypeMappedTo(List.class, "E", "org.instancio.test.support.pojo.generics.outermidinner." +
+                        "Outer<org.instancio.test.support.pojo.generics.outermidinner." +
+                        "Mid<org.instancio.test.support.pojo.generics.outermidinner." +
                         "Inner<java.lang.String>>>")
                 .hasTypeMapWithSize(1)
                 .getAs(CollectionNode.class);
@@ -69,12 +69,12 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasParent(rootList)
                 .hasNullField()
                 .hasTargetClass(Outer.class)
-                .hasTypeMappedTo(Outer.class, "T", "org.instancio.pojo.generics.outermidinner." +
-                        "Mid<org.instancio.pojo.generics.outermidinner." +
+                .hasTypeMappedTo(Outer.class, "T", "org.instancio.test.support.pojo.generics.outermidinner." +
+                        "Mid<org.instancio.test.support.pojo.generics.outermidinner." +
                         "Inner<java.lang.String>>")
-                .hasGenericTypeName("org.instancio.pojo.generics.outermidinner." +
-                        "Outer<org.instancio.pojo.generics.outermidinner." +
-                        "Mid<org.instancio.pojo.generics.outermidinner." +
+                .hasGenericTypeName("org.instancio.test.support.pojo.generics.outermidinner." +
+                        "Outer<org.instancio.test.support.pojo.generics.outermidinner." +
+                        "Mid<org.instancio.test.support.pojo.generics.outermidinner." +
                         "Inner<java.lang.String>>>")
                 .hasChildrenOfSize(1);
 
@@ -92,10 +92,10 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasParent(outerList)
                 .hasNullField()
                 .hasTargetClass(Mid.class)
-                .hasGenericTypeName("org.instancio.pojo.generics.outermidinner." +
-                        "Mid<org.instancio.pojo.generics.outermidinner." +
+                .hasGenericTypeName("org.instancio.test.support.pojo.generics.outermidinner." +
+                        "Mid<org.instancio.test.support.pojo.generics.outermidinner." +
                         "Inner<java.lang.String>>")
-                .hasTypeMappedTo(Mid.class, "T", "org.instancio.pojo.generics.outermidinner." +
+                .hasTypeMappedTo(Mid.class, "T", "org.instancio.test.support.pojo.generics.outermidinner." +
                         "Inner<java.lang.String>")
                 .hasChildrenOfSize(1);
 

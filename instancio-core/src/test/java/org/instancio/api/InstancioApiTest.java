@@ -19,12 +19,12 @@ import lombok.Getter;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeToken;
-import org.instancio.pojo.generics.basic.Pair;
-import org.instancio.pojo.generics.basic.Triplet;
-import org.instancio.pojo.person.Address;
-import org.instancio.pojo.person.Gender;
-import org.instancio.pojo.person.Person;
-import org.instancio.pojo.person.Pet;
+import org.instancio.test.support.pojo.generics.basic.Pair;
+import org.instancio.test.support.pojo.generics.basic.Triplet;
+import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.Gender;
+import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Pet;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

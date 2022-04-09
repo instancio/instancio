@@ -16,8 +16,8 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.cyclic.IndirectCircularRef;
-import org.instancio.testsupport.tags.CyclicTag;
+import org.instancio.test.support.pojo.cyclic.IndirectCircularRef;
+import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.CollectionUtils;
 

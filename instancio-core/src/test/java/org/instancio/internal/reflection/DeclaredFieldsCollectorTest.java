@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.reflection;
 
-import org.instancio.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;

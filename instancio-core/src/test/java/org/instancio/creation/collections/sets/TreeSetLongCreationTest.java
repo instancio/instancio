@@ -15,7 +15,7 @@
  */
 package org.instancio.creation.collections.sets;
 
-import org.instancio.pojo.collections.sets.TreeSetLong;
+import org.instancio.test.support.pojo.collections.sets.TreeSetLong;
 import org.instancio.testsupport.Constants;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 

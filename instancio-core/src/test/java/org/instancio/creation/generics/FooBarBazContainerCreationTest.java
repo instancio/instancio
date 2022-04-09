@@ -15,11 +15,11 @@
  */
 package org.instancio.creation.generics;
 
-import org.instancio.pojo.generics.foobarbaz.Bar;
-import org.instancio.pojo.generics.foobarbaz.Baz;
-import org.instancio.pojo.generics.foobarbaz.Foo;
-import org.instancio.pojo.generics.foobarbaz.FooBarBazContainer;
-import org.instancio.testsupport.tags.GenericsTag;
+import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
+import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
+import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.generics.foobarbaz.FooBarBazContainer;
+import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;

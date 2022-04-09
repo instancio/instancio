@@ -18,7 +18,7 @@ package org.instancio.nodes;
 import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.generics.container.GenericContainer;
+import org.instancio.test.support.pojo.generics.container.GenericContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 

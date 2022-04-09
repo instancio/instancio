@@ -16,10 +16,10 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.misc.UninstantiableArrayElementType;
-import org.instancio.pojo.misc.UninstantiableCollectionElementType;
-import org.instancio.pojo.misc.UninstantiableFieldType;
-import org.instancio.pojo.misc.UninstantiableMapKeyValueType;
+import org.instancio.test.support.pojo.misc.UninstantiableArrayElementType;
+import org.instancio.test.support.pojo.misc.UninstantiableCollectionElementType;
+import org.instancio.test.support.pojo.misc.UninstantiableFieldType;
+import org.instancio.test.support.pojo.misc.UninstantiableMapKeyValueType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

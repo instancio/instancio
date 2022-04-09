@@ -21,7 +21,7 @@ import org.instancio.TypeTokenSupplier;
 import org.instancio.internal.InternalModel;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeFactory;
-import org.instancio.testsupport.tags.NodeTag;
+import org.instancio.test.support.tags.NodeTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 

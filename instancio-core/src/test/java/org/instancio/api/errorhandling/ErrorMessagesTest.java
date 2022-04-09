@@ -17,8 +17,9 @@ package org.instancio.api.errorhandling;
 
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.pojo.generics.container.ItemContainer;
-import org.instancio.pojo.person.Person;
+import org.instancio.exception.InstancioException;
+import org.instancio.test.support.pojo.generics.container.ItemContainer;
+import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -35,7 +36,7 @@ class ErrorMessagesTest {
         assertThatThrownBy(() -> Instancio.of(ItemContainer.class).create())
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(
-                        "Class 'org.instancio.pojo.generics.container.ItemContainer' has 2 type parameters: [X, Y].",
+                        "Class 'org.instancio.test.support.pojo.generics.container.ItemContainer' has 2 type parameters: [X, Y].",
                         "Specify the required type parameters using 'withTypeParameters(Class... types)`");
 
         assertThatThrownBy(() -> Instancio.of(List.class).create())
@@ -51,8 +52,9 @@ class ErrorMessagesTest {
                 Instancio.of(Person.class)
                         .supply(field("name"), () -> 123)
                         .create())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Can not set java.lang.String field org.instancio.pojo.person.Person.name to java.lang.Integer");
+                .isInstanceOf(InstancioException.class)
+                .hasMessage("Could not set value to the field: private java.lang.String org.instancio.test.support.pojo.person.Person.name."
+                        + "\nCaused by: Can not set java.lang.String field org.instancio.test.support.pojo.person.Person.name to java.lang.Integer");
     }
 
     @Test

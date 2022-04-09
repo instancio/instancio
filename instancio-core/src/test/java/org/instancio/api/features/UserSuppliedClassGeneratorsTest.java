@@ -16,10 +16,10 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.basic.IntegerHolder;
-import org.instancio.pojo.collections.TwoStringCollections;
-import org.instancio.pojo.person.Person;
-import org.instancio.pojo.person.Pet;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.collections.TwoStringCollections;
+import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Pet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

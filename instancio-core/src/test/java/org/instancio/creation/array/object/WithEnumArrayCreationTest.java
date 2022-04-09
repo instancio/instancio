@@ -15,8 +15,8 @@
  */
 package org.instancio.creation.array.object;
 
-import org.instancio.pojo.arrays.object.WithEnumArray;
-import org.instancio.testsupport.tags.NonDeterministicTag;
+import org.instancio.test.support.pojo.arrays.object.WithEnumArray;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.testsupport.templates.ArrayCreationTestTemplate;
 import org.instancio.testsupport.templates.NumberOfExecutions;
 import org.instancio.testsupport.utils.ArrayUtils;

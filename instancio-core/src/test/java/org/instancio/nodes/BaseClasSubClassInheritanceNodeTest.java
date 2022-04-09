@@ -16,7 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.inheritance.BaseClasSubClassInheritance;
+import org.instancio.test.support.pojo.inheritance.BaseClasSubClassInheritance;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 

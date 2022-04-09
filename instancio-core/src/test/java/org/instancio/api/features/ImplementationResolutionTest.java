@@ -16,8 +16,8 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.interfaces.MultipleInterfaceImpls;
-import org.instancio.pojo.interfaces.SingleInterfaceImpl;
+import org.instancio.test.support.pojo.interfaces.MultipleInterfaceImpls;
+import org.instancio.test.support.pojo.interfaces.SingleInterfaceImpl;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

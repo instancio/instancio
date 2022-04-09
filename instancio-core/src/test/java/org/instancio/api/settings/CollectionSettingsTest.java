@@ -16,11 +16,11 @@
 package org.instancio.api.settings;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.collections.sets.SetLong;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
-import org.instancio.testsupport.tags.NonDeterministicTag;
-import org.instancio.testsupport.tags.SettingsTag;
+import org.instancio.test.support.pojo.collections.sets.SetLong;
+import org.instancio.test.support.tags.NonDeterministicTag;
+import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

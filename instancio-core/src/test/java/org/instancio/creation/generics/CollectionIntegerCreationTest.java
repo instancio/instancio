@@ -15,9 +15,9 @@
  */
 package org.instancio.creation.generics;
 
-import org.instancio.pojo.generics.CollectionInteger;
+import org.instancio.test.support.pojo.generics.CollectionInteger;
+import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.Constants;
-import org.instancio.testsupport.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import java.util.Collection;

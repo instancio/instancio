@@ -16,7 +16,7 @@
 package org.instancio.util;
 
 import org.instancio.TypeToken;
-import org.instancio.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.generics.basic.Item;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

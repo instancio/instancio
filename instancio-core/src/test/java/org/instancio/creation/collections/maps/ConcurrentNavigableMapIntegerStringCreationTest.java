@@ -15,7 +15,7 @@
  */
 package org.instancio.creation.collections.maps;
 
-import org.instancio.pojo.collections.maps.ConcurrentNavigableMapIntegerString;
+import org.instancio.test.support.pojo.collections.maps.ConcurrentNavigableMapIntegerString;
 import org.instancio.testsupport.Constants;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 

@@ -15,9 +15,9 @@
  */
 package org.instancio.creation.collections.maps;
 
-import org.instancio.pojo.generics.basic.Pair;
-import org.instancio.pojo.person.Address;
-import org.instancio.testsupport.tags.GenericsTag;
+import org.instancio.test.support.pojo.generics.basic.Pair;
+import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import java.util.Map;

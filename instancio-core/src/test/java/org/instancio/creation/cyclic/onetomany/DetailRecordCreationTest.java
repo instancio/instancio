@@ -15,9 +15,9 @@
  */
 package org.instancio.creation.cyclic.onetomany;
 
-import org.instancio.pojo.cyclic.onetomany.DetailRecord;
-import org.instancio.pojo.cyclic.onetomany.MainRecord;
-import org.instancio.testsupport.tags.CyclicTag;
+import org.instancio.test.support.pojo.cyclic.onetomany.DetailRecord;
+import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
+import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.AutoVerificationDisabled;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 

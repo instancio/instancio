@@ -17,8 +17,8 @@ package org.instancio.nodes;
 
 import org.instancio.internal.nodes.ClassNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.generics.PairLongPairIntegerString;
-import org.instancio.pojo.generics.basic.Pair;
+import org.instancio.test.support.pojo.generics.PairLongPairIntegerString;
+import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;

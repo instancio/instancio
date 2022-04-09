@@ -18,7 +18,7 @@ package org.instancio.nodes;
 import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.collections.maps.MapIntegerListString;
+import org.instancio.test.support.pojo.collections.maps.MapIntegerListString;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 

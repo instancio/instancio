@@ -15,8 +15,8 @@
  */
 package org.instancio.creation.inheritance;
 
-import org.instancio.pojo.inheritance.BaseClasSubClassInheritance;
-import org.instancio.testsupport.tags.GenericsTag;
+import org.instancio.test.support.pojo.inheritance.BaseClasSubClassInheritance;
+import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
