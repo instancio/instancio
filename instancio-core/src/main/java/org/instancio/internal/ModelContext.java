@@ -77,6 +77,7 @@ public class ModelContext<T> {
     private final Set<Binding> nullableBindings;
     private final Map<Binding, Generator<?>> generatorBindings;
     private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings;
+    private final Generators generators;
 
     private ModelContext(final Builder<T> builder) {
         this.rootType = builder.rootType;
@@ -109,9 +110,10 @@ public class ModelContext<T> {
 
         this.seed = builder.seed;
         this.randomProvider = resolveRandomProvider(seed);
+        this.generators = new Generators(new GeneratorContext(settings, randomProvider));
 
-        putAllCallbacks(builder.onCompleteCallbacks);
-        putAllBuiltInGenerators(builder.generatorSpecBindings);
+        builder.onCompleteCallbacks.forEach(this::putCallbackBinding);
+        builder.generatorSpecBindings.forEach(this::putGeneratorBinding);
         putAllUserSuppliedGenerators(builder.generatorBindings);
         putIgnored(builder.ignoredBindings);
         putNullable(builder.nullableBindings);
@@ -127,21 +129,12 @@ public class ModelContext<T> {
                 () -> new RandomProviderImpl(SeedUtil.randomSeed()));
     }
 
-    private void putAllCallbacks(final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks) {
-        onCompleteCallbacks.forEach(this::putCallbackBinding);
-    }
-
-    private void putAllBuiltInGenerators(final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings) {
-        final GeneratorContext generatorContext = new GeneratorContext(settings, randomProvider);
-        final Generators generators = new Generators(generatorContext);
-        generatorSpecBindings.forEach((target, genSpecFn) -> {
-            final Generator<?> generator = (Generator<?>) genSpecFn.apply(generators);
-            putGeneratorBinding(target, generator);
-        });
-    }
-
     private void putAllUserSuppliedGenerators(final Map<Binding, Generator<?>> generatorBindings) {
-        generatorBindings.forEach(this::putGeneratorBinding);
+        generatorBindings.forEach((binding, generator) -> {
+            for (Binding.BindingTarget target : binding.getTargets()) {
+                bindGeneratorToTarget(target, generator);
+            }
+        });
     }
 
     private void putCallbackBinding(final Binding binding, final OnCompleteCallback<?> callback) {
@@ -156,23 +149,31 @@ public class ModelContext<T> {
         }
     }
 
-    private void putGeneratorBinding(final Binding binding, final Generator<?> generator) {
+    private void putGeneratorBinding(final Binding binding, final Function<Generators, ? extends GeneratorSpec<?>> genFn) {
         for (Binding.BindingTarget target : binding.getTargets()) {
-            if (target.isFieldBinding()) {
-                final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
-                final Field field = getField(targetType, target.getFieldName());
+            // Do not share generator instances among binding targets of a composite binding.
+            // For example, array generators are created for each component type.
+            // Therefore, using 'gen.array().length(10)' would fail when targets are different array types.
+            final Generator<?> generator = (Generator<?>) genFn.apply(generators);
+            bindGeneratorToTarget(target, generator);
+        }
+    }
 
-                // TODO refactor to remove the isArray conditional
-                if (field.getType().isArray() && generator instanceof ArrayGenerator) {
-                    ((ArrayGenerator<?>) generator).type(field.getType());
-                }
-                this.userSuppliedFieldGenerators.put(field, generator);
-            } else {
-                if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
-                    ((ArrayGenerator<?>) generator).type(target.getTargetType());
-                }
-                this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
+    private void bindGeneratorToTarget(final Binding.BindingTarget target, Generator<?> generator) {
+        if (target.isFieldBinding()) {
+            final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
+            final Field field = getField(targetType, target.getFieldName());
+
+            // TODO refactor to remove the isArray conditional
+            if (field.getType().isArray() && generator instanceof ArrayGenerator) {
+                ((ArrayGenerator<?>) generator).type(field.getType());
             }
+            this.userSuppliedFieldGenerators.put(field, generator);
+        } else {
+            if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
+                ((ArrayGenerator<?>) generator).type(target.getTargetType());
+            }
+            this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
         }
     }
 

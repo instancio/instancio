@@ -16,11 +16,11 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.generics.foobarbaz.Foo;
-import org.instancio.pojo.generics.foobarbaz.FooContainer;
-import org.instancio.pojo.person.Address;
-import org.instancio.pojo.person.Gender;
-import org.instancio.pojo.person.Person;
+import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.generics.foobarbaz.FooContainer;
+import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.Gender;
+import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

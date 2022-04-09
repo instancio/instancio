@@ -16,9 +16,9 @@
 package org.instancio.api.features.generators;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.collections.lists.TwoListsOfItemString;
-import org.instancio.pojo.person.Address;
-import org.instancio.pojo.person.Person;
+import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
+import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

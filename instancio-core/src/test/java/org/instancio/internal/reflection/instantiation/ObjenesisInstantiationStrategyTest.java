@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.reflection.instantiation;
 
-import org.instancio.pojo.basic.IntegerHolderWithoutDefaultConstructor;
+import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -16,8 +16,8 @@
 package org.instancio.api.features.generators;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.collections.maps.MapByteDouble;
-import org.instancio.pojo.collections.sets.SetLong;
+import org.instancio.test.support.pojo.collections.maps.MapByteDouble;
+import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

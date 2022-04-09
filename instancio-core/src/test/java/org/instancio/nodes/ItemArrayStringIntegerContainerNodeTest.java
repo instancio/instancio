@@ -17,8 +17,8 @@ package org.instancio.nodes;
 
 import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.generics.basic.Item;
-import org.instancio.pojo.generics.container.ItemArrayContainer;
+import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.generics.container.ItemArrayContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 
@@ -44,7 +44,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
         final ArrayNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
                 .hasFieldName(itemArrayField)
                 .hasTargetClass(Item[].class)
-                .hasGenericTypeName("org.instancio.pojo.generics.basic.Item<X>[]")
+                .hasGenericTypeName("org.instancio.test.support.pojo.generics.basic.Item<X>[]")
                 .hasNoChildren()
                 .hasEmptyTypeMap()
                 .getAs(ArrayNode.class);
@@ -57,7 +57,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
         final ArrayNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
                 .hasFieldName(itemArrayField)
                 .hasTargetClass(Item[].class)
-                .hasGenericTypeName("org.instancio.pojo.generics.basic.Item<Y>[]")
+                .hasGenericTypeName("org.instancio.test.support.pojo.generics.basic.Item<Y>[]")
                 .hasNoChildren()
                 .hasEmptyTypeMap()
                 .getAs(ArrayNode.class);

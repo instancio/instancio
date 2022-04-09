@@ -16,10 +16,10 @@
 package org.instancio.testsupport.fixtures;
 
 import org.instancio.TypeToken;
-import org.instancio.pojo.generics.basic.Item;
-import org.instancio.pojo.generics.basic.Pair;
-import org.instancio.pojo.generics.basic.Triplet;
-import org.instancio.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.generics.basic.Pair;
+import org.instancio.test.support.pojo.generics.basic.Triplet;
+import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 
 import java.util.List;
 import java.util.Map;

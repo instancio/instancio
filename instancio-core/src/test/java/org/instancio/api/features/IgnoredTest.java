@@ -17,13 +17,13 @@ package org.instancio.api.features;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
-import org.instancio.pojo.basic.ClassWithInitializedField;
-import org.instancio.pojo.basic.SupportedNumericTypes;
-import org.instancio.pojo.collections.maps.MapStringPerson;
-import org.instancio.pojo.person.Person;
-import org.instancio.pojo.person.Pet;
-import org.instancio.pojo.person.Phone;
-import org.instancio.testsupport.tags.NonDeterministicTag;
+import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
+import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
+import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
+import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Pet;
+import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -15,7 +15,7 @@
  */
 package org.instancio.creation.collections.lists;
 
-import org.instancio.testsupport.tags.GenericsTag;
+import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import java.time.LocalDateTime;

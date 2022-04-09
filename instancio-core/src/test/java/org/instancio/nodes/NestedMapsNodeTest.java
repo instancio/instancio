@@ -17,7 +17,7 @@ package org.instancio.nodes;
 
 import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.generics.NestedMaps;
+import org.instancio.test.support.pojo.generics.NestedMaps;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;

@@ -15,7 +15,7 @@
  */
 package org.instancio.creation.collections.maps;
 
-import org.instancio.pojo.collections.maps.SortedMapIntegerString;
+import org.instancio.test.support.pojo.collections.maps.SortedMapIntegerString;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;

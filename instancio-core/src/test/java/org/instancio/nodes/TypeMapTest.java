@@ -16,13 +16,13 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.TypeMap;
-import org.instancio.pojo.generics.PairAPairIntegerString;
-import org.instancio.pojo.generics.PairLongPairIntegerString;
-import org.instancio.pojo.generics.TripletAFooBarBazStringListOfB;
-import org.instancio.pojo.generics.basic.Pair;
-import org.instancio.pojo.generics.basic.Triplet;
-import org.instancio.pojo.person.Person;
-import org.instancio.testsupport.tags.GenericsTag;
+import org.instancio.test.support.pojo.generics.PairAPairIntegerString;
+import org.instancio.test.support.pojo.generics.PairLongPairIntegerString;
+import org.instancio.test.support.pojo.generics.TripletAFooBarBazStringListOfB;
+import org.instancio.test.support.pojo.generics.basic.Pair;
+import org.instancio.test.support.pojo.generics.basic.Triplet;
+import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.utils.TypeMapBuilder;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
@@ -61,7 +61,7 @@ class TypeMapTest {
 
         assertThatResolver(resolver)
                 .hasTypeMapping(Pair.class, "L", Boolean.class)
-                .hasTypeMapping(Pair.class, "R", "org.instancio.pojo.generics.basic." +
+                .hasTypeMapping(Pair.class, "R", "org.instancio.test.support.pojo.generics.basic." +
                         "Pair<java.lang.Integer, java.lang.String>")
                 .hasTypeMapWithSize(2);
     }
@@ -75,7 +75,7 @@ class TypeMapTest {
 
         assertThatResolver(resolver)
                 .hasTypeMapping(Pair.class, "L", Long.class)
-                .hasTypeMapping(Pair.class, "R", "org.instancio.pojo.generics.basic." +
+                .hasTypeMapping(Pair.class, "R", "org.instancio.test.support.pojo.generics.basic." +
                         "Pair<java.lang.Integer, java.lang.String>")
                 .hasTypeMapWithSize(2);
     }
@@ -93,9 +93,9 @@ class TypeMapTest {
 
         assertThatResolver(resolver)
                 .hasTypeMapping(Triplet.class, "M", Long.class)
-                .hasTypeMapping(Triplet.class, "N", "org.instancio.pojo.generics.foobarbaz." +
-                        "Foo<org.instancio.pojo.generics.foobarbaz." +
-                        "Bar<org.instancio.pojo.generics.foobarbaz." +
+                .hasTypeMapping(Triplet.class, "N", "org.instancio.test.support.pojo.generics.foobarbaz." +
+                        "Foo<org.instancio.test.support.pojo.generics.foobarbaz." +
+                        "Bar<org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Baz<java.lang." +
                         "String>>>")
                 .hasTypeMapping(Triplet.class, "O", "java.util.List<B>")

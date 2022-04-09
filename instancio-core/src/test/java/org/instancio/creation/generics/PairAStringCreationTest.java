@@ -15,9 +15,9 @@
  */
 package org.instancio.creation.generics;
 
-import org.instancio.pojo.generics.PairAString;
-import org.instancio.pojo.generics.basic.Pair;
-import org.instancio.testsupport.tags.GenericsTag;
+import org.instancio.test.support.pojo.generics.PairAString;
+import org.instancio.test.support.pojo.generics.basic.Pair;
+import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import java.util.UUID;

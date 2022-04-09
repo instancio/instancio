@@ -15,8 +15,8 @@
  */
 package org.instancio.creation.cyclic;
 
-import org.instancio.pojo.cyclic.CyclicList;
-import org.instancio.testsupport.tags.CyclicTag;
+import org.instancio.test.support.pojo.cyclic.CyclicList;
+import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.AutoVerificationDisabled;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 

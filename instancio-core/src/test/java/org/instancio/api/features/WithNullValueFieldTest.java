@@ -16,8 +16,8 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.basic.ClassWithInitializedField;
-import org.instancio.pojo.basic.StringHolder;
+import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

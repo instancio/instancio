@@ -16,7 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.cyclic.CyclicList;
+import org.instancio.test.support.pojo.cyclic.CyclicList;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;

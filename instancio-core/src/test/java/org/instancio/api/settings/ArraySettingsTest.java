@@ -16,10 +16,10 @@
 package org.instancio.api.settings;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.arrays.ArrayLong;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
-import org.instancio.testsupport.tags.SettingsTag;
+import org.instancio.test.support.pojo.arrays.ArrayLong;
+import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

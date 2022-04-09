@@ -40,8 +40,9 @@ public class ReflectionUtils {
         try {
             field.setAccessible(true);
             field.set(target, value);
-        } catch (IllegalAccessException ex) {
-            throw new InstancioException("Could not set value to the field: " + field, ex);
+        } catch (Exception ex) {
+            throw new InstancioException(String.format("Could not set value to the field: %s.%nCaused by: %s",
+                    field, ex.getMessage()), ex);
         }
     }
 
@@ -78,7 +79,7 @@ public class ReflectionUtils {
     public static Class<?> getClass(final String name) {
         try {
             return Class.forName(name);
-        } catch (ClassNotFoundException ex) {
+        } catch (Exception ex) {
             throw new InstancioApiException(String.format("Class not found: '%s'", name), ex);
         }
     }

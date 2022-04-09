@@ -18,7 +18,7 @@ package org.instancio.nodes;
 import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.collections.maps.MapIntegerArrayString;
+import org.instancio.test.support.pojo.collections.maps.MapIntegerArrayString;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import java.util.Map;

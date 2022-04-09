@@ -17,7 +17,7 @@ package org.instancio.nodes;
 
 import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.pojo.arrays.ArrayLong;
+import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 

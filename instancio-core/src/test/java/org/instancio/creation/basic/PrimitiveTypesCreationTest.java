@@ -16,8 +16,8 @@
 package org.instancio.creation.basic;
 
 import org.instancio.Instancio;
-import org.instancio.testsupport.tags.CreateTag;
-import org.instancio.testsupport.tags.NonDeterministicTag;
+import org.instancio.test.support.tags.CreateTag;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;

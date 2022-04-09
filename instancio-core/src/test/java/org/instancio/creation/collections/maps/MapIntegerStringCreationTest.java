@@ -15,9 +15,9 @@
  */
 package org.instancio.creation.collections.maps;
 
-import org.instancio.pojo.collections.maps.MapIntegerString;
+import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
+import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.Constants;
-import org.instancio.testsupport.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;

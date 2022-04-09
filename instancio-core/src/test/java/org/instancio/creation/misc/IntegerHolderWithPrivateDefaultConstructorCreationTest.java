@@ -15,7 +15,7 @@
  */
 package org.instancio.creation.misc;
 
-import org.instancio.pojo.basic.IntegerHolderWithPrivateDefaultConstructor;
+import org.instancio.test.support.pojo.basic.IntegerHolderWithPrivateDefaultConstructor;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;

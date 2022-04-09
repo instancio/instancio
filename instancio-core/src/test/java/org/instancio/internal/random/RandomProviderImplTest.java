@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.random;
 
-import org.instancio.testsupport.tags.NonDeterministicTag;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -17,8 +17,8 @@ package org.instancio.api.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
-import org.instancio.pojo.basic.SupportedNumericTypes;
-import org.instancio.testsupport.tags.NonDeterministicTag;
+import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

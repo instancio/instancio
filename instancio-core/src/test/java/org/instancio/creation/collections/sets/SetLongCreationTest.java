@@ -15,7 +15,7 @@
  */
 package org.instancio.creation.collections.sets;
 
-import org.instancio.pojo.collections.sets.SetLong;
+import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -18,7 +18,7 @@ package org.instancio.testsupport.templates;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
-import org.instancio.testsupport.tags.CreateTag;
+import org.instancio.test.support.tags.CreateTag;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.TestInstance;

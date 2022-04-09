@@ -16,9 +16,9 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.pojo.basic.ClassWithInitializedField;
-import org.instancio.pojo.basic.IntegerHolder;
-import org.instancio.testsupport.tags.NonDeterministicTag;
+import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

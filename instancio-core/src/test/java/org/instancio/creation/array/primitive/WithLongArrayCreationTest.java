@@ -15,8 +15,8 @@
  */
 package org.instancio.creation.array.primitive;
 
-import org.instancio.pojo.arrays.primitive.WithLongArray;
-import org.instancio.testsupport.tags.NonDeterministicTag;
+import org.instancio.test.support.pojo.arrays.primitive.WithLongArray;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.testsupport.templates.ArrayCreationTestTemplate;
 import org.instancio.testsupport.templates.NumberOfExecutions;
 import org.instancio.testsupport.utils.ArrayUtils;

@@ -15,9 +15,9 @@
  */
 package org.instancio.internal.reflection.instantiation;
 
-import org.instancio.pojo.basic.IntegerHolder;
-import org.instancio.pojo.basic.IntegerHolderWithPrivateDefaultConstructor;
-import org.instancio.pojo.basic.IntegerHolderWithoutDefaultConstructor;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.basic.IntegerHolderWithPrivateDefaultConstructor;
+import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
