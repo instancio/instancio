@@ -13,17 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.util;
+package org.instancio.test.support.pojo.generics.basic;
 
-public final class Sonar {
-
-    public static final String ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED = "java:S3011";
-    public static final String ADD_ASSERTION = "java:S2699";
-    public static final String CATCH_EXCEPTION_INSTEAD_OF_THROWABLE = "java:S1181";
-    public static final String DISABLED_TEST = "java:S1607";
-    public static final String RETURN_EMPTY_COLLECTION = "java:S1168";
-
-    private Sonar() {
-        // non-instantiable
-    }
+public class NonGenericItemStringExtension extends Item<String> {
 }
