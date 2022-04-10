@@ -17,10 +17,12 @@ package org.instancio.test.client.generator.array;
 
 import org.instancio.Instancio;
 import org.instancio.generator.array.ArrayGeneratorSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.function.Function;
 
@@ -31,6 +33,7 @@ import static org.instancio.Bindings.all;
         Feature.ARRAY_GENERATOR_MIN_LENGTH,
         Feature.ARRAY_GENERATOR_MAX_LENGTH,
         Feature.ARRAY_GENERATOR_LENGTH})
+@ExtendWith(InstancioExtension.class)
 class ArrayGeneratorSizeTest {
 
     private static final int EXPECTED_SIZE = 50;

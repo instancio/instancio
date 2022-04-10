@@ -16,11 +16,13 @@
 package org.instancio.test.client.generator.array;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ import static org.instancio.Bindings.all;
 
 @NonDeterministicTag
 @FeatureTag(Feature.ARRAY_GENERATOR_NULLABLE_ELEMENT)
+@ExtendWith(InstancioExtension.class)
 class ArrayGeneratorWithNullableElementsTest {
     private static final int ARRAY_LENGTH = 1000;
 

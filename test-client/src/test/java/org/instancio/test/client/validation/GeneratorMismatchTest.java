@@ -19,6 +19,7 @@ import org.instancio.Generators;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
@@ -31,6 +32,7 @@ import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -41,6 +43,7 @@ import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.allInts;
 
 @FeatureTag(Feature.VALIDATION)
+@ExtendWith(InstancioExtension.class)
 class GeneratorMismatchTest {
 
     @Test

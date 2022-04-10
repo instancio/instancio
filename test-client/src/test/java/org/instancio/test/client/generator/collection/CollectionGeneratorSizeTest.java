@@ -17,10 +17,12 @@ package org.instancio.test.client.generator.collection;
 
 import org.instancio.Instancio;
 import org.instancio.generator.util.CollectionGeneratorSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.function.Function;
@@ -32,6 +34,7 @@ import static org.instancio.Bindings.all;
         Feature.COLLECTION_GENERATOR_MIN_SIZE,
         Feature.COLLECTION_GENERATOR_MAX_SIZE,
         Feature.COLLECTION_GENERATOR_SIZE})
+@ExtendWith(InstancioExtension.class)
 class CollectionGeneratorSizeTest {
 
     private static final int EXPECTED_SIZE = 50;

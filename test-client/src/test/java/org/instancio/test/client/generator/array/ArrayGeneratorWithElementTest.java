@@ -17,16 +17,19 @@ package org.instancio.test.client.generator.array;
 
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Bindings.all;
 
 @FeatureTag(Feature.ARRAY_GENERATOR_WITH)
+@ExtendWith(InstancioExtension.class)
 class ArrayGeneratorWithElementTest {
     private static final Long[] EXPECTED_LONGS = {1L, 2L, 3L};
 

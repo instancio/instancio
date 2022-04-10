@@ -18,11 +18,13 @@ package org.instancio.test.client.generator.collection;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.Set;
@@ -32,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Bindings.all;
 
 @FeatureTag(Feature.COLLECTION_GENERATOR_WITH)
+@ExtendWith(InstancioExtension.class)
 class CollectionGeneratorWithElementTest {
     private static final Long[] EXPECTED_LONGS = {1L, 2L, 3L};
 

@@ -17,6 +17,7 @@ package org.instancio.test.client.subtype;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.basic.ItemInterfaceHolder;
 import org.instancio.test.support.pojo.generics.basic.ItemInterfaceStringHolder;
 import org.instancio.test.support.pojo.generics.basic.NonGenericItemStringExtension;
@@ -28,11 +29,13 @@ import org.instancio.util.Sonar;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.field;
 
 @FeatureTag(Feature.MAP_FIELD_SUBTYPE)
+@ExtendWith(InstancioExtension.class)
 class MapFieldSubtypeTest {
 
     @Test

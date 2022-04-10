@@ -17,10 +17,12 @@ package org.instancio.test.client.generator.map;
 
 import org.instancio.Instancio;
 import org.instancio.generator.util.MapGeneratorSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -32,6 +34,7 @@ import static org.instancio.Bindings.all;
         Feature.MAP_GENERATOR_MIN_SIZE,
         Feature.MAP_GENERATOR_MAX_SIZE,
         Feature.MAP_GENERATOR_SIZE})
+@ExtendWith(InstancioExtension.class)
 class MapGeneratorSizeTest {
 
     private static final int EXPECTED_SIZE = 50;

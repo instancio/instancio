@@ -16,6 +16,7 @@
 package org.instancio.test.client.generator.array;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayCharSequence;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemInterfaceString;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -26,11 +27,13 @@ import org.instancio.util.Sonar;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
 
 @FeatureTag(Feature.ARRAY_GENERATOR_TYPE)
+@ExtendWith(InstancioExtension.class)
 class ArrayTypeTest {
 
     @Test
