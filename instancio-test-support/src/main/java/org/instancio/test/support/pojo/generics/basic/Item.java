@@ -15,14 +15,18 @@
  */
 package org.instancio.test.support.pojo.generics.basic;
 
-import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 
-@Getter
 public class Item<K> implements ItemInterface<K> {
+
     private K value;
+
+    @Override
+    public K getValue() {
+        return value;
+    }
 
     @Override
     public String toString() {

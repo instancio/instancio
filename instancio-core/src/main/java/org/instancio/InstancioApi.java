@@ -195,7 +195,7 @@ public interface InstancioApi<T> {
     <V> InstancioApi<T> onComplete(Binding target, OnCompleteCallback<V> callback);
 
     /**
-     * Maps target field or class to the given subclass.
+     * Maps target field or class to the given subtype.
      * <p>
      * For example, by default Instancio will assign an {@link java.util.ArrayList}
      * to a {@link java.util.List} field. If an alternative implementation is
