@@ -20,8 +20,6 @@ import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
 import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
 import org.instancio.test.support.pojo.arrays.primitive.WithIntArray;
@@ -30,6 +28,8 @@ import org.instancio.test.support.pojo.basic.CharacterHolder;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -94,13 +94,13 @@ class GeneratorMismatchTest {
         assertMessageContains(TwoArraysOfItemString.class, Item[].class, "string()", Generators::string);
     }
 
-    private void assertMessageContains(final Class<?> typeToCreate,
-                                       final Class<?> bindingType,
-                                       final String expectedGeneratorMethod,
-                                       final Function<Generators, GeneratorSpec> genFn) {
+    private static <T> void assertMessageContains(final Class<?> typeToCreate,
+                                                  final Class<?> bindingType,
+                                                  final String expectedGeneratorMethod,
+                                                  final Function<Generators, GeneratorSpec<T>> genFn) {
 
         assertThatThrownBy(() -> Instancio.of(typeToCreate)
-                .generate(all(bindingType), genFn::apply)
+                .generate(all(bindingType), genFn)
                 .create())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Generator type mismatch:\n",
