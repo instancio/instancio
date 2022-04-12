@@ -16,10 +16,11 @@
 package org.instancio.test.client.binding;
 
 import org.instancio.Instancio;
+import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Person_;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Phone;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,6 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.allStrings;
-import static org.instancio.Bindings.field;
 import static org.instancio.Bindings.of;
 
 @FeatureTag(Feature.BINDING)
@@ -43,9 +43,9 @@ class BindingsWithIgnoreTest {
                         allStrings(),
                         all(LocalDateTime.class),
                         all(Date.class),
-                        field("gender"),
-                        field("age"),
-                        field("pets"),
+                        Person_.gender,
+                        Person_.age,
+                        Person_.pets,
                         all(Phone.class)))
                 .create();
 
