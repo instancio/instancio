@@ -19,6 +19,7 @@ import org.instancio.InstancioMetaModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -38,12 +39,9 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
-import javax.tools.FileObject;
-import javax.tools.StandardLocation;
-import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.Writer;
 import java.lang.annotation.Annotation;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,34 +59,21 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
     private static final MetaModelSourceGenerator sourceGenerator = new MetaModelSourceGenerator();
 
     private Messager messager;
-    private Types typeUtils;
-    private Elements elementUtils;
-    private Path buildDirectory;
-    private MetaModelSourceWriter sourceWriter;
+    private Types types;
+    private Elements elements;
 
     @Override
     public synchronized void init(final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         this.messager = processingEnv.getMessager();
-        this.typeUtils = processingEnv.getTypeUtils();
-        this.elementUtils = processingEnv.getElementUtils();
-        this.buildDirectory = resolveBuildDirectory();
-        this.sourceWriter = new MetaModelSourceWriter(buildDirectory);
+        this.types = processingEnv.getTypeUtils();
+        this.elements = processingEnv.getElementUtils();
     }
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-        if (buildDirectory == null) {
-            LOG.warn("Could not resolve output directory");
-            messager.printMessage(Kind.WARNING,
-                    "Instancio metamodel processor could not resolve output directory. Will not generate metamodels.");
-            return false;
-        }
-
         final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(InstancioMetaModel.class);
-        if (!elements.isEmpty()) {
-            messager.printMessage(Kind.NOTE, "Preparing to process " + elements.size() + " elements");
-        }
+        LOG.debug("Preparing to process {} elements", elements.size());
 
         for (Element element : elements) {
             final TypeElement rootType = (TypeElement) element;
@@ -97,17 +82,12 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
                     rootType, InstancioMetaModel.class, MODEL_CLASSES_ATTRIBUTE);
 
             for (TypeMirror typeMirror : modelClasses) {
-                final Element modelClass = typeUtils.asElement(typeMirror);
-                final MetaModelClass metaModelClass = new MetaModelClass(
-                        getClassName(modelClass), getFieldNames(modelClass));
-
-                try {
-                    LOG.debug("Generating metamodel class: {}", metaModelClass);
-                    sourceWriter.writeSource(metaModelClass, sourceGenerator.getSource(metaModelClass));
-                } catch (Exception ex) {
-                    LOG.error("Error generating metamodel for class '{}'", metaModelClass, ex);
-                    messager.printMessage(Kind.WARNING,
-                            "Instancio metamodel processor error: " + ex.getMessage());
+                final Element modelClass = types.asElement(typeMirror);
+                final String className = getClassName(modelClass);
+                if (className == null) {
+                    LOG.warn("Could not resolve class name for element: {}", element);
+                } else {
+                    writeSourceFile(new MetaModelClass(className, getFieldNames(modelClass)), element);
                 }
             }
         }
@@ -115,22 +95,21 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
         return true;
     }
 
-    private Path resolveBuildDirectory() {
-        try {
-            final Filer filer = processingEnv.getFiler();
-            final FileObject resource = filer.createResource(
-                    StandardLocation.CLASS_OUTPUT, "", "anything", (Element[]) null);
+    private void writeSourceFile(final MetaModelClass metaModelClass, final Element element) {
+        final Filer filer = processingEnv.getFiler();
+        final String filename = metaModelClass.getName() + "_";
 
-            final Path projectPath = Paths.get(resource.toUri()).getParent().getParent();
-            resource.delete();
-            return projectPath.resolve("src").getParent();
-        } catch (IOException ex) {
-            LOG.error("Error resolving build directory", ex);
+        try (Writer writer = new BufferedWriter(filer.createSourceFile(filename, element).openWriter())) {
+            LOG.debug("Generating metamodel class: {}", filename);
+            writer.write(sourceGenerator.getSource(metaModelClass));
+        } catch (Exception ex) {
+            LOG.error("Error generating metamodel for class '{}'", metaModelClass, ex);
+            messager.printMessage(Kind.WARNING,
+                    "Instancio metamodel processor error: " + ex.getMessage());
         }
-        return null;
     }
 
-    private static List<String> getFieldNames(final Element element) {
+    private static List<String> getFieldNames(@Nullable final Element element) {
         if (element == null) {
             return Collections.emptyList();
         }
@@ -142,7 +121,7 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
                 .collect(toList());
     }
 
-    private static String getClassName(final Element element) {
+    private static String getClassName(@Nullable final Element element) {
         if (element instanceof QualifiedNameable) {
             return ((QualifiedNameable) element).getQualifiedName().toString();
         }
@@ -155,13 +134,13 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
         final List<TypeMirror> values = new ArrayList<>();
 
         for (AnnotationMirror am : element.getAnnotationMirrors()) {
-            if (typeUtils.isSameType(am.getAnnotationType(), elementUtils.getTypeElement(annotation.getCanonicalName()).asType())) {
+            if (types.isSameType(am.getAnnotationType(), elements.getTypeElement(annotation.getCanonicalName()).asType())) {
+
                 for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet()) {
                     if (attributeName.equals(entry.getKey().getSimpleName().toString())) {
                         final List<AnnotationValue> classesTypes = (List<AnnotationValue>) entry.getValue().getValue();
-
-                        for (AnnotationValue next : classesTypes) {
-                            values.add((TypeMirror) next.getValue());
+                        for (AnnotationValue annotationValue : classesTypes) {
+                            values.add((TypeMirror) annotationValue.getValue());
                         }
                     }
                 }

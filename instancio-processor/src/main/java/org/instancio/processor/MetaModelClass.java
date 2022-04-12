@@ -17,7 +17,7 @@ package org.instancio.processor;
 
 import java.util.List;
 
-public class MetaModelClass {
+class MetaModelClass {
 
     private final String name;
     private final String simpleName;
@@ -30,7 +30,6 @@ public class MetaModelClass {
         this.packageName = idx == -1 ? null : name.substring(0, idx);
         this.simpleName = idx == -1 ? name : name.substring(idx + 1);
         this.fieldNames = fieldNames;
-
     }
 
     /**
@@ -38,7 +37,7 @@ public class MetaModelClass {
      *
      * @return fully qualified class name
      */
-    public String getName() {
+    String getName() {
         return name;
     }
 
@@ -47,7 +46,7 @@ public class MetaModelClass {
      *
      * @return simple name
      */
-    public String getSimpleName() {
+    String getSimpleName() {
         return simpleName;
     }
 
@@ -56,7 +55,7 @@ public class MetaModelClass {
      *
      * @return package name, or {@code null} if none
      */
-    public String getPackageName() {
+    String getPackageName() {
         return packageName;
     }
 
@@ -65,7 +64,7 @@ public class MetaModelClass {
      *
      * @return declared field names
      */
-    public List<String> getFieldNames() {
+    List<String> getFieldNames() {
         return fieldNames;
     }
 
