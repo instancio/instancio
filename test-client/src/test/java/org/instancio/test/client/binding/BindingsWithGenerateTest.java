@@ -19,13 +19,14 @@ import org.instancio.Bindings;
 import org.instancio.Generators;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.arrays.MiscArrays;
 import org.instancio.test.support.pojo.basic.LongHolder;
 import org.instancio.test.support.pojo.generics.basic.Item;
-import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.Address_;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Person_;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,6 @@ import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.allInts;
 import static org.instancio.Bindings.allLongs;
 import static org.instancio.Bindings.allStrings;
-import static org.instancio.Bindings.field;
 import static org.instancio.Bindings.of;
 
 @FeatureTag(Feature.BINDING)
@@ -81,9 +81,7 @@ class BindingsWithGenerateTest {
     void compositeBinding() {
         final int expectedLength = 100;
         final Person result = Instancio.of(Person.class)
-                .generate(Bindings.of(
-                                field("name"),
-                                field(Address.class, "city")),
+                .generate(Bindings.of(Person_.name, Address_.city),
                         gen -> gen.string().length(expectedLength))
                 .create();
 

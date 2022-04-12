@@ -23,6 +23,7 @@ import org.instancio.test.support.pojo.generics.basic.ItemInterfaceStringHolder;
 import org.instancio.test.support.pojo.generics.basic.NonGenericItemStringExtension;
 import org.instancio.test.support.pojo.person.AddressExtension;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.util.Sonar;
@@ -42,7 +43,7 @@ class MapFieldSubtypeTest {
     @DisplayName("Map non-generic field type to non-generic subtype")
     void mapNonGenericFieldTypeToNonGenericSubtype() {
         final Person result = Instancio.of(Person.class)
-                .map(field("address"), AddressExtension.class)
+                .map(Person_.address, AddressExtension.class)
                 .create();
 
         assertThat(result.getAddress()).isExactlyInstanceOf(AddressExtension.class);
