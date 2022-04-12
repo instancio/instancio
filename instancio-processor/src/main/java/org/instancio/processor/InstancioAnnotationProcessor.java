@@ -80,12 +80,15 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         if (buildDirectory == null) {
             LOG.warn("Could not resolve output directory");
-            messager.printMessage(Kind.ERROR, "Could not resolve output directory");
+            messager.printMessage(Kind.WARNING,
+                    "Instancio metamodel processor could not resolve output directory. Will not generate metamodels.");
             return false;
         }
 
         final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(InstancioMetaModel.class);
-        messager.printMessage(Kind.NOTE, "Preparing to process " + elements.size() + " elements");
+        if (!elements.isEmpty()) {
+            messager.printMessage(Kind.NOTE, "Preparing to process " + elements.size() + " elements");
+        }
 
         for (Element element : elements) {
             final TypeElement rootType = (TypeElement) element;
@@ -99,11 +102,12 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
                         getClassName(modelClass), getFieldNames(modelClass));
 
                 try {
-                    messager.printMessage(Kind.NOTE, "Generating metamodel class: " + metaModelClass);
+                    LOG.debug("Generating metamodel class: {}", metaModelClass);
                     sourceWriter.writeSource(metaModelClass, sourceGenerator.getSource(metaModelClass));
                 } catch (Exception ex) {
                     LOG.error("Error generating metamodel for class '{}'", metaModelClass, ex);
-                    messager.printMessage(Kind.ERROR, "Exception occurred: " + ex.getMessage());
+                    messager.printMessage(Kind.WARNING,
+                            "Instancio metamodel processor error: " + ex.getMessage());
                 }
             }
         }
@@ -122,7 +126,6 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
             return projectPath.resolve("src").getParent();
         } catch (IOException ex) {
             LOG.error("Error resolving build directory", ex);
-            messager.printMessage(Kind.ERROR, "Cannot get output directory");
         }
         return null;
     }
