@@ -29,7 +29,7 @@ import org.instancio.internal.nodes.ClassNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.ImplementationResolver;
-import org.instancio.internal.reflection.InterfaceImplementationResolver;
+import org.instancio.internal.reflection.NoopImplementationResolver;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
@@ -44,7 +44,7 @@ class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
     private final AncestorTree ancestorTree = new AncestorTree();
-    private final ImplementationResolver implementationResolver = new InterfaceImplementationResolver();
+    private final ImplementationResolver implementationResolver = new NoopImplementationResolver();
     private final ModelContext<?> context;
     private final RandomProvider random;
     private final NodeHandler[] nodeHandlers;

@@ -13,24 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.test.lombok;
 
-import org.instancio.Instancio;
-import org.instancio.InstancioMetaModel;
-import org.junit.jupiter.api.Test;
+import lombok.Data;
 
-import static org.assertj.core.api.Assertions.assertThat;
+@Data
+class DefaultPackageClass {
 
-@InstancioMetaModel(classes = SamplePojo.class)
-class ProcessorWithLombokTest {
-
-    @Test
-    void verifyProcessorWithLombok() {
-        final String expected = "foo";
-        final SamplePojo result = Instancio.of(SamplePojo.class)
-                .supply(SamplePojo_.someProperty, () -> expected)
-                .create();
-
-        assertThat(result.getSomeProperty()).isEqualTo(expected);
-    }
+    private String value;
 }

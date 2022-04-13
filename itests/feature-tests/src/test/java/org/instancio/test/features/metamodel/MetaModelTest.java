@@ -16,13 +16,16 @@
 package org.instancio.test.features.metamodel;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioMetaModel;
 import org.instancio.TypeToken;
+import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.generics.MiscFields;
 import org.instancio.test.support.pojo.generics.MiscFields_;
 import org.instancio.test.support.pojo.nested.InnerClass_;
 import org.instancio.test.support.pojo.nested.InnerStaticClass_;
 import org.instancio.test.support.pojo.nested.InnermostStaticClass_;
 import org.instancio.test.support.pojo.nested.OuterClass;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
@@ -33,6 +36,16 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@InstancioMetaModel(classes = {
+        Address.class,
+        MiscFields.class,
+        Person.class,
+        SupportedNumericTypes.class,
+        OuterClass.class,
+        OuterClass.InnerClass.class,
+        OuterClass.InnerStaticClass.class,
+        OuterClass.InnerStaticClass.InnermostStaticClass.class
+})
 @FeatureTag(Feature.METAMODEL)
 class MetaModelTest {
 
