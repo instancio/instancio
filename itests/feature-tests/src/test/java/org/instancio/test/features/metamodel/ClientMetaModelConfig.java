@@ -18,6 +18,7 @@ package org.instancio.test.features.metamodel;
 import org.instancio.InstancioMetaModel;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.generics.MiscFields;
+import org.instancio.test.support.pojo.nested.OuterClass;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 
@@ -25,7 +26,11 @@ import org.instancio.test.support.pojo.person.Person;
         Address.class,
         MiscFields.class,
         Person.class,
-        SupportedNumericTypes.class
+        SupportedNumericTypes.class,
+        OuterClass.class,
+        OuterClass.InnerClass.class,
+        OuterClass.InnerStaticClass.class,
+        OuterClass.InnerStaticClass.InnermostStaticClass.class
 })
 public interface ClientMetaModelConfig {
 

@@ -19,15 +19,39 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.generics.MiscFields;
 import org.instancio.test.support.pojo.generics.MiscFields_;
+import org.instancio.test.support.pojo.nested.InnerClass_;
+import org.instancio.test.support.pojo.nested.InnerStaticClass_;
+import org.instancio.test.support.pojo.nested.InnermostStaticClass_;
+import org.instancio.test.support.pojo.nested.OuterClass;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@FeatureTag(Feature.METAMODEL)
 class MetaModelTest {
+
+    @Test
+    void nestedClasses() {
+        final String expectedInner = "foo";
+        final String expectedInnerStatic = "bar";
+        final String expectedInnermostStatic = "baz";
+
+        final OuterClass result = Instancio.of(OuterClass.class)
+                .supply(InnerClass_.value, () -> expectedInner)
+                .supply(InnerStaticClass_.value, () -> expectedInnerStatic)
+                .supply(InnermostStaticClass_.value, () -> expectedInnermostStatic)
+                .create();
+
+        assertThat(result.getInnerClass().getValue()).isEqualTo(expectedInner);
+        assertThat(result.getInnerStaticClass().getValue()).isEqualTo(expectedInnerStatic);
+        assertThat(result.getInnermostStaticClass().getValue()).isEqualTo(expectedInnermostStatic);
+    }
 
     @Test
     void person() {

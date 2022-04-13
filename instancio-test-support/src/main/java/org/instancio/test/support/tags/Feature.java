@@ -65,5 +65,7 @@ public enum Feature {
     INHERITANCE,
     VALIDATION,
 
+    METAMODEL,
+
     UNSUPPORTED
 }

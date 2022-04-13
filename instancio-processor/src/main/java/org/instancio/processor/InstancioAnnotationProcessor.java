@@ -19,7 +19,6 @@ import org.instancio.InstancioMetaModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -31,7 +30,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
@@ -43,12 +41,9 @@ import java.io.BufferedWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("org.instancio.InstancioMetaModel")
@@ -75,19 +70,18 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
         final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(InstancioMetaModel.class);
         LOG.debug("Preparing to process {} elements", elements.size());
 
-        for (Element element : elements) {
-            final TypeElement rootType = (TypeElement) element;
+        for (Element annotatedElement : elements) {
+            final TypeElement rootType = (TypeElement) annotatedElement;
 
             final List<TypeMirror> modelClasses = getClassArrayValueFromAnnotation(
                     rootType, InstancioMetaModel.class, MODEL_CLASSES_ATTRIBUTE);
 
             for (TypeMirror typeMirror : modelClasses) {
-                final Element modelClass = types.asElement(typeMirror);
-                final String className = getClassName(modelClass);
-                if (className == null) {
-                    LOG.warn("Could not resolve class name for element: {}", element);
+                final Element element = types.asElement(typeMirror);
+                if (element instanceof QualifiedNameable) {
+                    writeSourceFile(new MetaModelClass((QualifiedNameable) element), annotatedElement);
                 } else {
-                    writeSourceFile(new MetaModelClass(className, getFieldNames(modelClass)), element);
+                    LOG.debug("Not a QualifiedNameable: {}", typeMirror);
                 }
             }
         }
@@ -109,25 +103,6 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private static List<String> getFieldNames(@Nullable final Element element) {
-        if (element == null) {
-            return Collections.emptyList();
-        }
-
-        return element.getEnclosedElements()
-                .stream()
-                .filter(elem -> elem.getKind() == ElementKind.FIELD)
-                .map(Object::toString)
-                .collect(toList());
-    }
-
-    private static String getClassName(@Nullable final Element element) {
-        if (element instanceof QualifiedNameable) {
-            return ((QualifiedNameable) element).getQualifiedName().toString();
-        }
-        return element == null ? null : element.getSimpleName().toString();
-    }
-
     private List<TypeMirror> getClassArrayValueFromAnnotation(final Element element,
                                                               final Class<? extends Annotation> annotation,
                                                               final String attributeName) {
@@ -140,7 +115,12 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
                     if (attributeName.equals(entry.getKey().getSimpleName().toString())) {
                         final List<AnnotationValue> classesTypes = (List<AnnotationValue>) entry.getValue().getValue();
                         for (AnnotationValue annotationValue : classesTypes) {
-                            values.add((TypeMirror) annotationValue.getValue());
+                            final Object value = annotationValue.getValue();
+                            if (value instanceof TypeMirror) {
+                                values.add((TypeMirror) value);
+                            } else {
+                                LOG.warn("Unexpected annotation value: {} -> {}", annotationValue, value);
+                            }
                         }
                     }
                 }

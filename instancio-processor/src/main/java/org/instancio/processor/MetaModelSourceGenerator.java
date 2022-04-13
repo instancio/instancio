@@ -27,21 +27,21 @@ class MetaModelSourceGenerator {
     private static final String CLASS_TEMPLATE = "%s\n\n%s\n\n%s"; // package, imports, class body
     private static final String META_MODEL_FILE_SUFFIX = "_";
 
-    String getSource(final MetaModelClass type) {
+    String getSource(final MetaModelClass modelClass) {
         return String.format(CLASS_TEMPLATE,
-                packageDeclaration(type.getPackageName()),
+                packageDeclaration(modelClass.getPackageName()),
                 IMPORTS,
-                classBody(type));
+                classBody(modelClass));
     }
 
-    private String classBody(final MetaModelClass type) {
-        final String metaModelClassNAme = type.getSimpleName() + META_MODEL_FILE_SUFFIX;
-        return String.format(CLASS_BODY_TEMPLATE, metaModelClassNAme, getFields(type));
+    private String classBody(final MetaModelClass modelClass) {
+        final String metaModelClassName = modelClass.getSimpleName() + META_MODEL_FILE_SUFFIX;
+        return String.format(CLASS_BODY_TEMPLATE, metaModelClassName, getFields(modelClass));
     }
 
     private String getFields(final MetaModelClass type) {
         return type.getFieldNames().stream()
-                .map(field -> String.format(FIELD_TEMPLATE, field, type.getSimpleName() + ".class", field))
+                .map(field -> String.format(FIELD_TEMPLATE, field, type.getName() + ".class", field))
                 .collect(Collectors.joining("\n\n"));
     }
 

@@ -16,27 +16,40 @@
 package org.instancio.processor;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Collections;
+import javax.lang.model.element.QualifiedNameable;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 class MetaModelClassTest {
 
-    @ValueSource(strings = {"org.foo.Example", "Example"})
-    @ParameterizedTest
-    void getSimpleName(String className) {
-        assertThat(new MetaModelClass(className, Collections.emptyList()).getSimpleName()).isEqualTo("Example");
+    @Test
+    void topLevelClass() {
+        final QualifiedNameable outerType = ElementMocks.mockClassElementWithPackage(
+                "Outer", "org.example.Outer", "org.example");
+
+        final MetaModelClass modelClass = new MetaModelClass(outerType);
+
+        assertThat(modelClass.getName()).isEqualTo("org.example.Outer");
+        assertThat(modelClass.getSimpleName()).isEqualTo("Outer");
+        assertThat(modelClass.getPackageName()).isEqualTo("org.example");
     }
 
     @Test
-    void getPackageName() {
-        assertThat(new MetaModelClass("org.foo.Example", Collections.emptyList()).getPackageName())
-                .isEqualTo("org.foo");
+    void innerClass() {
+        final QualifiedNameable outerType = ElementMocks.mockClassElementWithPackage(
+                "Outer", "org.example.Outer", "org.example");
 
-        assertThat(new MetaModelClass("Example", Collections.emptyList()).getPackageName())
-                .isNull();
+        final QualifiedNameable innerType = ElementMocks.mockQualifiedNameable("org.example.Outer.Inner");
+        when(innerType.getSimpleName().toString()).thenReturn("Inner");
+        when(innerType.getEnclosingElement()).thenReturn(outerType);
+
+        final MetaModelClass modelClass = new MetaModelClass(innerType);
+
+        assertThat(modelClass.getName()).isEqualTo("org.example.Outer.Inner");
+        assertThat(modelClass.getSimpleName()).isEqualTo("Inner");
+        assertThat(modelClass.getPackageName()).isEqualTo("org.example");
     }
+
 }

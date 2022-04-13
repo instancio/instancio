@@ -13,6 +13,7 @@
 
     <modules>
         <module>feature-tests</module>
+        <module>processor-with-lombok</module>
     </modules>
 
     <build>
