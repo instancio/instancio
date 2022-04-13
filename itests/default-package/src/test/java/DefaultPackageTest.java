@@ -13,24 +13,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.test.lombok;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioMetaModel;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@InstancioMetaModel(classes = SamplePojo.class)
-class ProcessorWithLombokTest {
+@FeatureTag(
+        value = {Feature.UNSUPPORTED, Feature.METAMODEL},
+        desc = "Classes in the default package will not be populated")
+@InstancioMetaModel(classes = DefaultPackageClass.class)
+class DefaultPackageTest {
 
     @Test
-    void verifyProcessorWithLombok() {
-        final String expected = "foo";
-        final SamplePojo result = Instancio.of(SamplePojo.class)
-                .supply(SamplePojo_.someProperty, () -> expected)
+    void create() {
+        final DefaultPackageClass result = Instancio.create(DefaultPackageClass.class);
+        assertThat(result.getValue()).isNull();
+    }
+
+    @Test
+    void withMetaModel() {
+        final DefaultPackageClass result = Instancio.of(DefaultPackageClass.class)
+                .supply(DefaultPackageClass_.value, () -> "some value")
                 .create();
 
-        assertThat(result.getSomeProperty()).isEqualTo(expected);
+        assertThat(result.getValue()).isNull();
     }
 }

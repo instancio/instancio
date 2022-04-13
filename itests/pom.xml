@@ -9,11 +9,12 @@
     </parent>
     <artifactId>itests</artifactId>
     <packaging>pom</packaging>
-    <name>Instancio Integration Tests</name>
+    <name>Instancio Integration Tests Parent</name>
 
     <modules>
         <module>feature-tests</module>
         <module>processor-with-lombok</module>
+        <module>default-package</module>
     </modules>
 
     <build>

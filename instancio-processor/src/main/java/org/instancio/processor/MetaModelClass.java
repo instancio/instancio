@@ -34,9 +34,14 @@ class MetaModelClass {
     public MetaModelClass(final QualifiedNameable classElement) {
         final Element packageElement = getPackageElement(classElement);
         this.name = classElement.getQualifiedName().toString();
-        this.packageName = ((QualifiedNameable) packageElement).getQualifiedName().toString();
+        this.packageName = getPackageName((QualifiedNameable) packageElement);
         this.fieldNames = getFieldNames(classElement);
         this.simpleName = classElement.getSimpleName().toString();
+    }
+
+    private String getPackageName(final QualifiedNameable packageElement) {
+        final String pkg = packageElement.getQualifiedName().toString();
+        return "".equals(pkg) ? null : pkg;
     }
 
     private static Element getPackageElement(final Element classElement) {
