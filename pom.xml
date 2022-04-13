@@ -73,7 +73,7 @@
         <module>instancio-core</module>
         <module>instancio-junit</module>
         <module>instancio-processor</module>
-        <module>test-client</module>
+        <module>itests</module>
     </modules>
 
     <profiles>

@@ -15,22 +15,48 @@
  */
 package org.instancio.processor;
 
+import javax.annotation.Nullable;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.QualifiedNameable;
+import java.util.Collections;
 import java.util.List;
 
-public class MetaModelClass {
+import static java.util.stream.Collectors.toList;
+
+class MetaModelClass {
 
     private final String name;
     private final String simpleName;
     private final String packageName;
     private final List<String> fieldNames;
 
-    public MetaModelClass(final String name, final List<String> fieldNames) {
-        final int idx = name.lastIndexOf('.');
-        this.name = name;
-        this.packageName = idx == -1 ? null : name.substring(0, idx);
-        this.simpleName = idx == -1 ? name : name.substring(idx + 1);
-        this.fieldNames = fieldNames;
+    public MetaModelClass(final QualifiedNameable classElement) {
+        final Element packageElement = getPackageElement(classElement);
+        this.name = classElement.getQualifiedName().toString();
+        this.packageName = ((QualifiedNameable) packageElement).getQualifiedName().toString();
+        this.fieldNames = getFieldNames(classElement);
+        this.simpleName = classElement.getSimpleName().toString();
+    }
 
+    private static Element getPackageElement(final Element classElement) {
+        Element packageElement = classElement.getEnclosingElement();
+        while (packageElement.getKind() != ElementKind.PACKAGE) {
+            packageElement = packageElement.getEnclosingElement();
+        }
+        return packageElement;
+    }
+
+    private static List<String> getFieldNames(@Nullable final Element element) {
+        if (element == null) {
+            return Collections.emptyList();
+        }
+
+        return element.getEnclosedElements()
+                .stream()
+                .filter(elem -> elem.getKind() == ElementKind.FIELD)
+                .map(elem -> elem.getSimpleName().toString())
+                .collect(toList());
     }
 
     /**
@@ -38,7 +64,7 @@ public class MetaModelClass {
      *
      * @return fully qualified class name
      */
-    public String getName() {
+    String getName() {
         return name;
     }
 
@@ -47,7 +73,7 @@ public class MetaModelClass {
      *
      * @return simple name
      */
-    public String getSimpleName() {
+    String getSimpleName() {
         return simpleName;
     }
 
@@ -56,7 +82,7 @@ public class MetaModelClass {
      *
      * @return package name, or {@code null} if none
      */
-    public String getPackageName() {
+    String getPackageName() {
         return packageName;
     }
 
@@ -65,7 +91,7 @@ public class MetaModelClass {
      *
      * @return declared field names
      */
-    public List<String> getFieldNames() {
+    List<String> getFieldNames() {
         return fieldNames;
     }
 

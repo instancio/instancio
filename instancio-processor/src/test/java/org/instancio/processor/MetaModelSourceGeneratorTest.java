@@ -17,10 +17,15 @@ package org.instancio.processor;
 
 import org.junit.jupiter.api.Test;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.QualifiedNameable;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.processor.ElementMocks.mockElementWithSimpleName;
+import static org.mockito.Mockito.doReturn;
 
 class MetaModelSourceGeneratorTest {
 
@@ -28,42 +33,27 @@ class MetaModelSourceGeneratorTest {
 
     @Test
     void getSource() {
-        final String source = sourceGenerator.getSource(
-                new MetaModelClass("org.example.SomeClass", Arrays.asList("fieldOne", "fieldTwo")));
+        final QualifiedNameable classElement = ElementMocks.mockClassElementWithPackage(
+                "SomeClass",
+                "org.example.SomeClass",
+                "org.example");
+
+        final List<Element> fields = Arrays.asList(
+                mockElementWithSimpleName(ElementKind.FIELD, "fieldOne"),
+                mockElementWithSimpleName(ElementKind.FIELD, "fieldTwo"));
+
+        doReturn(fields).when(classElement).getEnclosedElements();
+
+        final String source = sourceGenerator.getSource(new MetaModelClass(classElement));
 
         assertThat(source).containsSubsequence(
                 "package org.example;",
                 "import org.instancio.Binding;",
                 "import org.instancio.Bindings;",
                 "public class SomeClass_ {",
-                "public static final Binding fieldOne = Bindings.field(SomeClass.class, \"fieldOne\");",
-                "public static final Binding fieldTwo = Bindings.field(SomeClass.class, \"fieldTwo\");",
+                "public static final Binding fieldOne = Bindings.field(org.example.SomeClass.class, \"fieldOne\");",
+                "public static final Binding fieldTwo = Bindings.field(org.example.SomeClass.class, \"fieldTwo\");",
                 "}");
     }
 
-    @Test
-    void getSourceWithNullPackage() {
-        final String source = sourceGenerator.getSource(
-                new MetaModelClass("SomeClass", Arrays.asList("fieldOne", "fieldTwo")));
-
-        assertThat(source).containsSubsequence(
-                "import org.instancio.Binding;",
-                "import org.instancio.Bindings;",
-                "public class SomeClass_ {",
-                "public static final Binding fieldOne = Bindings.field(SomeClass.class, \"fieldOne\");",
-                "public static final Binding fieldTwo = Bindings.field(SomeClass.class, \"fieldTwo\");",
-                "}");
-    }
-
-    @Test
-    void getSourceWithoutFields() {
-        final String source = sourceGenerator.getSource(
-                new MetaModelClass("SomeClass", Collections.emptyList()));
-
-        assertThat(source).containsSubsequence(
-                "import org.instancio.Binding;",
-                "import org.instancio.Bindings;",
-                "public class SomeClass_ {",
-                "}");
-    }
 }
