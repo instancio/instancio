@@ -15,6 +15,7 @@
         <module>feature-tests</module>
         <module>processor-with-lombok</module>
         <module>default-package</module>
+        <module>annotation-processor-with-gradle</module>
     </modules>
 
     <properties>
