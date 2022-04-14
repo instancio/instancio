@@ -18,9 +18,12 @@ package org.instancio.test.features.generator.map;
 import org.instancio.Instancio;
 import org.instancio.generator.util.MapGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Setting;
+import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,7 +40,15 @@ import static org.instancio.Bindings.all;
 @ExtendWith(InstancioExtension.class)
 class MapGeneratorSizeTest {
 
+    // Longer string to minimise chance of test failure due to string collisions
+    private static final int STRING_LENGTH = 15;
+
     private static final int EXPECTED_SIZE = 50;
+
+    @WithSettings
+    private static final Settings settings = Settings.create()
+            .set(Setting.STRING_MIN_LENGTH, STRING_LENGTH)
+            .set(Setting.STRING_MAX_LENGTH, STRING_LENGTH + 1);
 
     @Test
     void size() {

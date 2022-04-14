@@ -15,6 +15,7 @@
  */
 package org.instancio.processor;
 
+import javax.annotation.Nullable;
 import java.util.stream.Collectors;
 
 class MetaModelSourceGenerator {
@@ -45,7 +46,7 @@ class MetaModelSourceGenerator {
                 .collect(Collectors.joining("\n\n"));
     }
 
-    private String packageDeclaration(final String packageName) {
+    private String packageDeclaration(@Nullable final String packageName) {
         return packageName == null ? "" : String.format(PACKAGE_TEMPLATE, packageName);
     }
 }

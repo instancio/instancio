@@ -21,6 +21,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.QualifiedNameable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,4 +57,24 @@ class MetaModelSourceGeneratorTest {
                 "}");
     }
 
+    @Test
+    void getSourceForClassInDefaultPackage() {
+        final QualifiedNameable classElement = ElementMocks.mockClassElementWithPackage(
+                "SomeClass",
+                "SomeClass",
+                "");
+
+        doReturn(Collections.emptyList()).when(classElement).getEnclosedElements();
+
+        final String source = sourceGenerator.getSource(new MetaModelClass(classElement));
+
+        assertThat(source.trim())
+                .doesNotContain("package")
+                .startsWith("import")
+                .containsSubsequence(
+                        "import org.instancio.Binding;",
+                        "import org.instancio.Bindings;",
+                        "public class SomeClass_ {",
+                        "}");
+    }
 }

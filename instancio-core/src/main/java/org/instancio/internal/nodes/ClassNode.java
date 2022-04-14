@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.internal.reflection.DefaultPackageFilter;
+import org.instancio.internal.reflection.PackageFilter;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 
@@ -30,6 +32,8 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 public class ClassNode extends Node {
+
+    private static final PackageFilter packageFilter = new DefaultPackageFilter();
 
     public ClassNode(final NodeContext nodeContext,
                      final Class<?> klass,
@@ -61,10 +65,9 @@ public class ClassNode extends Node {
 
     @Override
     protected List<Node> collectChildren() {
-        if (getTargetClass().getPackage() == null || getTargetClass().getPackage().getName().startsWith(JAVA_PKG_PREFIX)) {
-            return Collections.emptyList();
-        }
-        return makeChildren(getNodeContext(), getTargetClass());
+        return packageFilter.isExcluded(getTargetClass().getPackage())
+                ? Collections.emptyList()
+                : makeChildren(getNodeContext(), getTargetClass());
     }
 
     private List<Node> makeChildren(final NodeContext nodeContext, final Class<?> klass) {

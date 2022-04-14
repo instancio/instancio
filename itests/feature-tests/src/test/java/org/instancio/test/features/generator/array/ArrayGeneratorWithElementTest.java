@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.array;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -28,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Bindings.all;
 
+// Casts added to suppress "non-varargs call of varargs" during the build
+@SuppressWarnings("RedundantCast")
 @FeatureTag(Feature.ARRAY_GENERATOR_WITH)
 @ExtendWith(InstancioExtension.class)
 class ArrayGeneratorWithElementTest {
@@ -36,8 +38,8 @@ class ArrayGeneratorWithElementTest {
     @Test
     void arrayWithElements() {
         final ArrayLong result = Instancio.of(ArrayLong.class)
-                .generate(all(long[].class), gen -> gen.array().with(EXPECTED_LONGS))
-                .generate(all(Long[].class), gen -> gen.array().with(EXPECTED_LONGS))
+                .generate(all(long[].class), gen -> gen.array().with((Object[]) EXPECTED_LONGS))
+                .generate(all(Long[].class), gen -> gen.array().with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result.getPrimitive()).contains(EXPECTED_LONGS);
@@ -47,7 +49,7 @@ class ArrayGeneratorWithElementTest {
     @Test
     void createArrayDirectly() {
         final long[] result = Instancio.of(long[].class)
-                .generate(all(long[].class), gen -> gen.array().with(EXPECTED_LONGS))
+                .generate(all(long[].class), gen -> gen.array().with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result).contains(EXPECTED_LONGS);
@@ -56,7 +58,7 @@ class ArrayGeneratorWithElementTest {
     @Test
     void withElementsAndMaxLengthOfZero() {
         final ArrayLong result = Instancio.of(ArrayLong.class)
-                .generate(all(long[].class), gen -> gen.array().maxLength(0).with(EXPECTED_LONGS))
+                .generate(all(long[].class), gen -> gen.array().maxLength(0).with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result.getPrimitive()).containsOnly(EXPECTED_LONGS);
@@ -64,7 +66,7 @@ class ArrayGeneratorWithElementTest {
 
     @Test
     void withNullOrEmpty() {
-        assertValidation(null);
+        assertValidation((Object[]) null);
         assertValidation();
     }
 

@@ -26,4 +26,16 @@ public final class StringUtils {
         while (times-- > 0) sb.append(s);
         return sb.toString();
     }
+
+    public static boolean startsWithAny(String s, String... prefixes) {
+        if (s == null) {
+            return false;
+        }
+        for (String prefix : prefixes) {
+            if (s.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

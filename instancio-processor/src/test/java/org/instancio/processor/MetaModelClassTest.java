@@ -51,5 +51,4 @@ class MetaModelClassTest {
         assertThat(modelClass.getSimpleName()).isEqualTo("Inner");
         assertThat(modelClass.getPackageName()).isEqualTo("org.example");
     }
-
 }

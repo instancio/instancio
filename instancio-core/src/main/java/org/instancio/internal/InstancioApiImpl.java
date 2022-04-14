@@ -25,7 +25,6 @@ import org.instancio.TypeTokenSupplier;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.Settings;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -35,12 +34,11 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     private final ModelContext.Builder<T> modelContextBuilder;
 
     public InstancioApiImpl(final Class<T> klass) {
-        this.modelContextBuilder = ModelContext.builder(klass);
+        this.modelContextBuilder = ModelContext.builder(InstancioValidator.validateRootClass(klass));
     }
 
     public InstancioApiImpl(final TypeTokenSupplier<T> typeToken) {
-        final Type rootType = typeToken.get();
-        this.modelContextBuilder = ModelContext.builder(rootType);
+        this.modelContextBuilder = ModelContext.builder(InstancioValidator.validateTypeToken(typeToken));
     }
 
     public InstancioApiImpl(final Model<T> model) {

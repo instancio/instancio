@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.Queue;
 
 import static java.util.stream.Collectors.toList;
+import static org.instancio.util.ExceptionHandler.conditionalFailOnError;
 
 public class PopulatingNodeVisitor implements NodeVisitor {
 
@@ -74,10 +75,10 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         Verify.notNull(owner, "null owner for node: %s", node);
 
         if (generatorResult.getValue() != null) {
-            ReflectionUtils.setField(owner, field, generatorResult.getValue());
+            conditionalFailOnError(() -> ReflectionUtils.setField(owner, field, generatorResult.getValue()));
             enqueueChildrenOf(node, generatorResult, queue);
         } else if (!field.getType().isPrimitive()) {
-            ReflectionUtils.setField(owner, field, null);
+            conditionalFailOnError(() -> ReflectionUtils.setField(owner, field, null));
         }
     }
 
@@ -91,7 +92,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         final Node elementNode = collectionNode.getElementNode();
 
         if (collectionNode.getField() != null) {
-            ReflectionUtils.setField(owner, collectionNode.getField(), collectionObj);
+            conditionalFailOnError(() -> ReflectionUtils.setField(owner, collectionNode.getField(), collectionObj));
         }
 
         final boolean nullableElement = generatorResult.getHints().nullableElements();

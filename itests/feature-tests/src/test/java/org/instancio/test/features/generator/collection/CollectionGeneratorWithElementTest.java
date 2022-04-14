@@ -19,10 +19,10 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -33,6 +33,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Bindings.all;
 
+// Casts added to suppress "non-varargs call of varargs" during the build
+@SuppressWarnings("RedundantCast")
 @FeatureTag(Feature.COLLECTION_GENERATOR_WITH)
 @ExtendWith(InstancioExtension.class)
 class CollectionGeneratorWithElementTest {
@@ -41,7 +43,7 @@ class CollectionGeneratorWithElementTest {
     @Test
     void setWithElements() {
         final SetLong result = Instancio.of(SetLong.class)
-                .generate(all(Set.class), gen -> gen.collection().with(EXPECTED_LONGS))
+                .generate(all(Set.class), gen -> gen.collection().with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result.getSet()).contains(EXPECTED_LONGS);
@@ -50,7 +52,7 @@ class CollectionGeneratorWithElementTest {
     @Test
     void createSetDirectly() {
         final Set<Long> result = Instancio.of(new TypeToken<Set<Long>>() {})
-                .generate(all(Set.class), gen -> gen.collection().with(EXPECTED_LONGS))
+                .generate(all(Set.class), gen -> gen.collection().with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result).contains(EXPECTED_LONGS);
@@ -59,7 +61,7 @@ class CollectionGeneratorWithElementTest {
     @Test
     void listWithElements() {
         final ListLong result = Instancio.of(ListLong.class)
-                .generate(all(List.class), gen -> gen.collection().with(EXPECTED_LONGS))
+                .generate(all(List.class), gen -> gen.collection().with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result.getList()).contains(EXPECTED_LONGS);
@@ -68,7 +70,7 @@ class CollectionGeneratorWithElementTest {
     @Test
     void listWithElementsAndMaxSizeZero() {
         final ListLong result = Instancio.of(ListLong.class)
-                .generate(all(List.class), gen -> gen.collection().maxSize(0).with(EXPECTED_LONGS))
+                .generate(all(List.class), gen -> gen.collection().maxSize(0).with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result.getList()).containsOnly(EXPECTED_LONGS);
@@ -76,7 +78,7 @@ class CollectionGeneratorWithElementTest {
 
     @Test
     void withNullOrEmpty() {
-        assertValidation(null);
+        assertValidation((Object[]) null);
         assertValidation();
     }
 

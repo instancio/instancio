@@ -25,7 +25,6 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -45,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("org.instancio.InstancioMetaModel")
 public class InstancioAnnotationProcessor extends AbstractProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioAnnotationProcessor.class);
@@ -63,6 +61,11 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
         this.messager = processingEnv.getMessager();
         this.types = processingEnv.getTypeUtils();
         this.elements = processingEnv.getElementUtils();
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latestSupported();
     }
 
     @Override

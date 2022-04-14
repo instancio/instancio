@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public abstract class Node {
-    static final String JAVA_PKG_PREFIX = "java";
 
     private final NodeContext nodeContext;
     private final Field field;

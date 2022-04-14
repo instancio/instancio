@@ -355,7 +355,7 @@ public class ModelContext<T> {
         private Integer seed;
 
         private Builder(final Class<T> rootClass, final Type rootType) {
-            this.rootClass = rootClass;
+            this.rootClass = Verify.notNull(rootClass, "Root class is null");
             this.rootType = rootType;
         }
 
