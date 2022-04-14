@@ -7,8 +7,10 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    name: Build
+    name: Sonar Analysis
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
     steps:
       - uses: actions/checkout@v2
         with:
@@ -33,5 +35,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=instancio_instancio
-      
+        # Note: sonar analysis for PRs created from forked repos is not supported.
+        # SONAR_TOKEN value will be empty which will result in "You're not authorized to run analysis" error
+        # https://community.sonarsource.com/t/code-analysis-on-pull-request-from-forked-repository-with-github-actions/43986/6
+        run: mvn -B install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=instancio_instancio
