@@ -12,6 +12,7 @@
     <name>Instancio tests: Annotation Processor with Gradle</name>
 
     <properties>
+        <sonar.skip>true</sonar.skip>
         <gradle.executable>./gradlew</gradle.executable>
     </properties>
 
