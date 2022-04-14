@@ -14,6 +14,7 @@
     <properties>
         <sonar.skip>true</sonar.skip>
         <gradle.executable>./gradlew</gradle.executable>
+        <gradle.module>gradle-module</gradle.module>
     </properties>
 
     <profiles>
@@ -32,7 +33,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -43,14 +43,14 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <copy file="build.gradle.template" tofile="build.gradle"/>
-                                <replace token="#{instancio.version}" value="${project.version}" dir=".">
+                                <copy file="${gradle.module}/build.gradle.template" tofile="${gradle.module}/build.gradle"/>
+                                <replace token="#{instancio.version}" value="${project.version}" dir="gradle-module">
                                     <include name="build.gradle"/>
                                 </replace>
-                                <replace token="#{java.version}" value="${java.version}" dir=".">
+                                <replace token="#{java.version}" value="${java.version}" dir="${gradle.module}">
                                     <include name="build.gradle"/>
                                 </replace>
-                                <exec executable="${gradle.executable}" failonerror="true">
+                                <exec executable="${gradle.executable}" failonerror="true" dir="${gradle.module}">
                                     <arg line="clean build"/>
                                 </exec>
                             </target>
