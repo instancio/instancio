@@ -15,7 +15,17 @@
  */
 package org.instancio.exception;
 
+/**
+ * Exception generated as a result of an internal error.
+ */
 public class InstancioException extends RuntimeException {
+
+    public static InstancioException unhandledException(Throwable cause) {
+        return new InstancioException(String.format(
+                "Instancio encountered an error.%n" +
+                        "Please submit a bug report including the stacktrace:%n" +
+                        "https://github.com/instancio/instancio/issues"), cause);
+    }
 
     public InstancioException(String message) {
         super(message);

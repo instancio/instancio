@@ -15,7 +15,7 @@
  */
 package org.instancio.junit;
 
-import org.instancio.exception.InstancioException;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ThreadLocalRandomProvider;
 import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.random.RandomProvider;
@@ -104,7 +104,7 @@ class InstancioExtensionTest {
 
         // Method under test
         assertThatThrownBy(() -> extension.beforeEach(context))
-                .isInstanceOf(InstancioException.class)
+                .isInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("\nFound more than one field annotated '@WithSettings':\n\n",
                         "private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings1\n",
                         "private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings2");
@@ -119,7 +119,7 @@ class InstancioExtensionTest {
 
         // Method under test
         assertThatThrownBy(() -> extension.beforeEach(context))
-                .isInstanceOf(InstancioException.class)
+                .isInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("\n@WithSettings must be annotated on a Settings field.\n\n",
                         "Found annotation on: private final java.lang.String org.instancio.junit.InstancioExtensionTest$DummyWithSettingsOnWrongFieldTypeTest.settings");
     }
@@ -132,7 +132,7 @@ class InstancioExtensionTest {
 
         // Method under test
         assertThatThrownBy(() -> extension.beforeEach(context))
-                .isInstanceOf(InstancioException.class)
+                .isInstanceOf(InstancioApiException.class)
                 .hasMessage("\n@WithSettings must be annotated on a non-null field.");
     }
 

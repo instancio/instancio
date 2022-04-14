@@ -22,24 +22,23 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@FeatureTag(
-        value = {Feature.UNSUPPORTED, Feature.METAMODEL},
-        desc = "Classes in the default package will not be populated")
+@FeatureTag(Feature.METAMODEL)
 @InstancioMetaModel(classes = DefaultPackageClass.class)
 class DefaultPackageTest {
 
     @Test
     void create() {
         final DefaultPackageClass result = Instancio.create(DefaultPackageClass.class);
-        assertThat(result.getValue()).isNull();
+        assertThat(result.getValue()).isNotBlank();
     }
 
     @Test
     void withMetaModel() {
+        final String expected = "some value";
         final DefaultPackageClass result = Instancio.of(DefaultPackageClass.class)
-                .supply(DefaultPackageClass_.value, () -> "some value")
+                .supply(DefaultPackageClass_.value, () -> expected)
                 .create();
 
-        assertThat(result.getValue()).isNull();
+        assertThat(result.getValue()).isEqualTo(expected);
     }
 }

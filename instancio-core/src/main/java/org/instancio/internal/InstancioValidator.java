@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.Generator;
+import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.SettingKey;
@@ -24,15 +25,49 @@ import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public class InstancioValidator {
+    private static final String CREATE_TYPE_TOKEN_HELP =
+            "%nMap<String, Integer> map = Instancio.create(new TypeToken<Map<String, Integer>>(){});" +
+                    "%n%nor the builder version:%n" +
+                    "%nMap<String, Integer> map = Instancio.of(new TypeToken<Map<String, Integer>>(){}).create();";
+
+    private static final String CREATE_CLASS_HELP =
+            "%nPerson person = Instancio.create(Person.class);" +
+                    "%n%nor the builder version:%n" +
+                    "%nPerson person = Instancio.of(Person.class).create();";
 
     private InstancioValidator() {
         // non-instantiable
+    }
+
+    public static <T> Class<T> validateRootClass(@Nullable final Class<T> klass) {
+        if (klass == null) {
+            throw new InstancioApiException(String.format("%nClass must not be null." +
+                    "%nProvide a valid class, for example:%n"
+                    + CREATE_CLASS_HELP));
+        }
+        return klass;
+    }
+
+    public static Type validateTypeToken(@Nullable final TypeTokenSupplier<?> typeTokenSupplier) {
+        if (typeTokenSupplier == null) {
+            throw new InstancioApiException(String.format("%nType token supplier must not be null." +
+                    "%nProvide a valid type token, for example:%n"
+                    + CREATE_TYPE_TOKEN_HELP));
+        }
+        final Type type = typeTokenSupplier.get();
+        if (type == null) {
+            throw new InstancioApiException(String.format("%nType token supplier must not return a null Type." +
+                    "%nProvide a valid Type, for example:%n"
+                    + CREATE_TYPE_TOKEN_HELP));
+        }
+        return type;
     }
 
     public static void validateTypeParameters(Class<?> rootClass, List<Class<?>> rootTypeParameters) {
@@ -67,9 +102,7 @@ public class InstancioValidator {
                 throw new InstancioApiException(String.format(
                         "%n%n'withTypeParameters(%s)` contains a generic class: %s'" +
                                 "%n%nFor nested generics use the type token API, for example:" +
-                                "%nMap<String, List<Integer>> map = Instancio.create(new TypeToken<Map<String, List<Integer>>>(){});" +
-                                "%n%nor the builder version:" +
-                                "%nMap<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();",
+                                CREATE_TYPE_TOKEN_HELP,
                         suppliedParams, classWithTypeParams));
             }
         }

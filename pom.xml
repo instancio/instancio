@@ -54,6 +54,7 @@
         <version.apache.commons>3.12.0</version.apache.commons>
         <version.assertj>3.22.0</version.assertj>
         <version.equalsverifier>3.9</version.equalsverifier>
+        <version.junit.pioneer>1.7.0</version.junit.pioneer>
         <version.junit>5.8.2</version.junit>
         <version.logback>1.2.11</version.logback>
         <version.lombok>1.18.22</version.lombok>
@@ -156,6 +157,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.3.2</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -164,6 +168,14 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.2</version>
+                    <configuration>
+                        <skipIfEmpty>true</skipIfEmpty>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -264,6 +276,12 @@
                 <groupId>nl.jqno.equalsverifier</groupId>
                 <artifactId>equalsverifier-nodep</artifactId>
                 <version>${version.equalsverifier}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit-pioneer</groupId>
+                <artifactId>junit-pioneer</artifactId>
+                <version>${version.junit.pioneer}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

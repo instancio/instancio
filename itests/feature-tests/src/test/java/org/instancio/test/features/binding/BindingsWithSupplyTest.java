@@ -18,12 +18,12 @@ package org.instancio.test.features.binding;
 import org.instancio.Bindings;
 import org.instancio.Generator;
 import org.instancio.Instancio;
-import org.instancio.exception.InstancioException;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.basic.LongHolder;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -97,7 +97,7 @@ class BindingsWithSupplyTest {
         assertThatThrownBy(() -> Instancio.of(Person.class)
                 .supply(of(allInts(), allStrings()), () -> "some value")
                 .create())
-                .isInstanceOf(InstancioException.class)
+                .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("Caused by: Can not set int field", "to java.lang.String");
     }
 
@@ -124,7 +124,7 @@ class BindingsWithSupplyTest {
         assertThatThrownBy(() -> Instancio.of(Person.class)
                 .supply(allInts(), generator)
                 .create())
-                .isExactlyInstanceOf(InstancioException.class)
+                .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("Caused by: Can not set int field", " to java.lang.String");
     }
 }

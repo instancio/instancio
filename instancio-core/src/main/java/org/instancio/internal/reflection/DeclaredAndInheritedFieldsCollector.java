@@ -27,6 +27,8 @@ import java.util.List;
  */
 public class DeclaredAndInheritedFieldsCollector implements FieldCollector {
 
+    private static final PackageFilter packageFilter = new DefaultPackageFilter();
+
     @Override
     public List<Field> getFields(final Class<?> klass) {
         Class<?> next = Verify.notNull(klass, "Class is null");
@@ -49,7 +51,6 @@ public class DeclaredAndInheritedFieldsCollector implements FieldCollector {
             return false;
         }
 
-        final Package pkg = next.getPackage();
-        return pkg != null && !pkg.getName().startsWith("java");
+        return !packageFilter.isExcluded(next.getPackage());
     }
 }

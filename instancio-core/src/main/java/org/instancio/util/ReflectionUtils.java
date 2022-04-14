@@ -40,6 +40,9 @@ public class ReflectionUtils {
         try {
             field.setAccessible(true);
             field.set(target, value);
+        } catch (IllegalArgumentException ex) {
+            throw new InstancioApiException(String.format("Could not set value to the field: %s.%nCaused by: %s",
+                    field, ex.getMessage()), ex);
         } catch (Exception ex) {
             throw new InstancioException(String.format("Could not set value to the field: %s.%nCaused by: %s",
                     field, ex.getMessage()), ex);

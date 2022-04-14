@@ -15,7 +15,7 @@
  */
 package org.instancio.junit;
 
-import org.instancio.exception.InstancioException;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ThreadLocalRandomProvider;
 import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.random.RandomProviderImpl;
@@ -126,17 +126,17 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
         final List<Field> fields = ReflectionUtils.getAnnotatedFields(testClass.get(), WithSettings.class);
 
         if (fields.size() > 1) {
-            throw new InstancioException("\nFound more than one field annotated '@WithSettings':\n\n"
+            throw new InstancioApiException("\nFound more than one field annotated '@WithSettings':\n\n"
                     + fields.stream().map(Field::toString).collect(joining("\n")));
         } else if (fields.size() == 1) {
             final Field field = fields.get(0);
             field.setAccessible(true);
             final Object obj = field.get(testInstance.get());
             if (obj == null) {
-                throw new InstancioException("\n@WithSettings must be annotated on a non-null field.");
+                throw new InstancioApiException("\n@WithSettings must be annotated on a non-null field.");
             }
             if (!(obj instanceof Settings)) {
-                throw new InstancioException("\n@WithSettings must be annotated on a Settings field." +
+                throw new InstancioApiException("\n@WithSettings must be annotated on a Settings field." +
                         "\n\nFound annotation on: " + field);
             }
             final Settings settings = (Settings) obj;

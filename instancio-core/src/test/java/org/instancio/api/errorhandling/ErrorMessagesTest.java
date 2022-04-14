@@ -16,20 +16,60 @@
 package org.instancio.api.errorhandling;
 
 import org.instancio.Instancio;
+import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.exception.InstancioException;
 import org.instancio.test.support.pojo.generics.container.ItemContainer;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.util.SystemProperties;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ClearSystemProperty;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Bindings.field;
 
+@ClearSystemProperty(key = SystemProperties.FAIL_ON_ERROR)
 class ErrorMessagesTest {
 
     private static final Class<InstancioApiException> API_EXCEPTION = InstancioApiException.class;
+
+    @Test
+    void nullRootClass() {
+        assertThatThrownBy(() -> Instancio.of((Class<?>) null).create())
+                .isExactlyInstanceOf(API_EXCEPTION)
+                .hasMessageContainingAll(
+                        "Class must not be null.",
+                        "Provide a valid class, for example:",
+                        "Person person = Instancio.create(Person.class);",
+                        "or the builder version:",
+                        "Person person = Instancio.of(Person.class).create();");
+    }
+
+    @Test
+    void nullTypeTokenSupplier() {
+        assertThatThrownBy(() -> Instancio.create((TypeToken<?>) null))
+                .isExactlyInstanceOf(API_EXCEPTION)
+                .hasMessageContainingAll(
+                        "Type token supplier must not be null.",
+                        "Provide a valid type token, for example:",
+                        "Map<String, Integer> map = Instancio.create(new TypeToken<Map<String, Integer>>(){});",
+                        "or the builder version:",
+                        "Map<String, Integer> map = Instancio.of(new TypeToken<Map<String, Integer>>(){}).create();");
+    }
+
+    @Test
+    void nullTypeSuppliedByTypeTokenSupplier() {
+        assertThatThrownBy(() -> Instancio.create(() -> null))
+                .isExactlyInstanceOf(API_EXCEPTION)
+                .hasMessageContainingAll(
+                        "Type token supplier must not return a null Type.",
+                        "Provide a valid Type, for example:",
+                        "Map<String, Integer> map = Instancio.create(new TypeToken<Map<String, Integer>>(){});",
+                        "or the builder version:",
+                        "Map<String, Integer> map = Instancio.of(new TypeToken<Map<String, Integer>>(){}).create();");
+    }
 
     @Test
     void unboundTypeVariablesErrorMessage() {
@@ -47,12 +87,13 @@ class ErrorMessagesTest {
     }
 
     @Test
-    void invalidTypeCreatedByGenerator() {
+    @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
+    void invalidTypeCreatedByGeneratorWithFailOnErrorTrue() {
         assertThatThrownBy(() ->
                 Instancio.of(Person.class)
                         .supply(field("name"), () -> 123)
                         .create())
-                .isInstanceOf(InstancioException.class)
+                .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Could not set value to the field: private java.lang.String org.instancio.test.support.pojo.person.Person.name."
                         + "\nCaused by: Can not set java.lang.String field org.instancio.test.support.pojo.person.Person.name to java.lang.Integer");
     }
