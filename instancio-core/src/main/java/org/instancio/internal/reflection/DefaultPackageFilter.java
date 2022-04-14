@@ -15,19 +15,16 @@
  */
 package org.instancio.internal.reflection;
 
-import java.util.function.Predicate;
+import org.instancio.util.StringUtils;
 
-import static org.instancio.util.StringUtils.startsWithAny;
+import javax.annotation.Nullable;
 
 public class DefaultPackageFilter implements PackageFilter {
 
     private static final String[] SYSTEM_PACKAGES = {"java.", "javax.", "com.sun.", "sun."};
 
-    private static final Predicate<Package> EXCLUDED_PACKAGE_PREDICATE = pkg
-            -> pkg != null && startsWithAny(pkg.getName(), SYSTEM_PACKAGES);
-
     @Override
-    public boolean isExcluded(final Package pkg) {
-        return EXCLUDED_PACKAGE_PREDICATE.test(pkg);
+    public boolean isExcluded(@Nullable final Package pkg) {
+        return pkg != null && StringUtils.startsWithAny(pkg.getName(), SYSTEM_PACKAGES);
     }
 }
