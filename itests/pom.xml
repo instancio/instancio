@@ -15,12 +15,12 @@
         <module>feature-tests</module>
         <module>processor-with-lombok</module>
         <module>default-package</module>
+        <module>annotation-processor-with-gradle</module>
     </modules>
 
     <properties>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <maven.source.skip>true</maven.source.skip>
-        <maven.install.skip>true</maven.install.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
         <gpg.skip>true</gpg.skip>
     </properties>

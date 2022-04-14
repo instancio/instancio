@@ -1,4 +1,3 @@
-*.iml
 *.bak
 *.out
 *.log
@@ -6,10 +5,48 @@
 TEMP_*
 NOTES.md
 
-.classpath
-.project
 .settings/
 .idea/
 .run/
 target/
 src/test/java/experimental/
+
+# Instancio build includes a gradle module for testing the annotation processor.
+# The build.gradle file is generated from a template, therefore not checked in.
+build.gradle
+.gradle
+build/
+!**/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
