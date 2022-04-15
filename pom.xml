@@ -80,6 +80,12 @@
     <profiles>
         <profile>
             <id>release</id>
+            <modules>
+                <module>instancio-test-support</module>
+                <module>instancio-core</module>
+                <module>instancio-junit</module>
+                <module>instancio-processor</module>
+            </modules>
             <build>
                 <plugins>
                     <plugin>
