@@ -16,12 +16,10 @@
 package org.instancio.processor;
 
 import org.instancio.InstancioMetaModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.instancio.processor.util.Logger;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -35,7 +33,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic.Kind;
 import java.io.BufferedWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
@@ -45,22 +42,21 @@ import java.util.Map;
 import java.util.Set;
 
 @SupportedAnnotationTypes("org.instancio.InstancioMetaModel")
-public class InstancioAnnotationProcessor extends AbstractProcessor {
-    private static final Logger LOG = LoggerFactory.getLogger(InstancioAnnotationProcessor.class);
+public final class InstancioAnnotationProcessor extends AbstractProcessor {
 
     private static final String MODEL_CLASSES_ATTRIBUTE = "classes";
     private static final MetaModelSourceGenerator sourceGenerator = new MetaModelSourceGenerator();
 
-    private Messager messager;
     private Types types;
     private Elements elements;
+    private Logger logger;
 
     @Override
     public synchronized void init(final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        this.messager = processingEnv.getMessager();
         this.types = processingEnv.getTypeUtils();
         this.elements = processingEnv.getElementUtils();
+        this.logger = new Logger(processingEnv.getMessager(), true);
     }
 
     @Override
@@ -71,7 +67,11 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(InstancioMetaModel.class);
-        LOG.debug("Preparing to process {} elements", elements.size());
+        if (elements.isEmpty()) {
+            logger.debug("No elements to process");
+        } else {
+            logger.debug("Preparing to process %s elements", elements.size());
+        }
 
         for (Element annotatedElement : elements) {
             final TypeElement rootType = (TypeElement) annotatedElement;
@@ -84,7 +84,7 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
                 if (element instanceof QualifiedNameable) {
                     writeSourceFile(new MetaModelClass((QualifiedNameable) element), annotatedElement);
                 } else {
-                    LOG.debug("Not a QualifiedNameable: {}", typeMirror);
+                    logger.debug("Not a QualifiedNameable: %s", typeMirror);
                 }
             }
         }
@@ -97,12 +97,10 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
         final String filename = metaModelClass.getName() + "_";
 
         try (Writer writer = new BufferedWriter(filer.createSourceFile(filename, element).openWriter())) {
-            LOG.debug("Generating metamodel class: {}", filename);
+            logger.debug("Generating metamodel class: %s", filename);
             writer.write(sourceGenerator.getSource(metaModelClass));
         } catch (Exception ex) {
-            LOG.error("Error generating metamodel for class '{}'", metaModelClass, ex);
-            messager.printMessage(Kind.WARNING,
-                    "Instancio metamodel processor error: " + ex.getMessage());
+            logger.warn("Error generating metamodel for class '%s'. Cause: %s", metaModelClass, ex.getMessage());
         }
     }
 
@@ -122,7 +120,7 @@ public class InstancioAnnotationProcessor extends AbstractProcessor {
                             if (value instanceof TypeMirror) {
                                 values.add((TypeMirror) value);
                             } else {
-                                LOG.warn("Unexpected annotation value: {} -> {}", annotationValue, value);
+                                logger.warn("Unexpected annotation value: %s -> %s", annotationValue, value);
                             }
                         }
                     }
