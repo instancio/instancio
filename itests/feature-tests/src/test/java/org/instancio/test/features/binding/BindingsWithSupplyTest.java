@@ -106,7 +106,7 @@ class BindingsWithSupplyTest {
     @DisplayName("Supply with custom Generator")
     void supplyWithCustomerGenerator() {
         final int expectedLength = 20;
-        final Generator<String> generator = random -> random.alphabetic(expectedLength);
+        final Generator<String> generator = random -> random.upperCaseAlphabetic(expectedLength);
 
         final Person result = Instancio.of(Person.class)
                 .supply(allStrings(), generator)

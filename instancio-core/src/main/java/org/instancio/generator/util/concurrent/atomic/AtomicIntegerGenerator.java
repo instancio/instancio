@@ -37,6 +37,6 @@ public class AtomicIntegerGenerator extends AbstractRandomNumberGeneratorSpec<At
 
     @Override
     protected AtomicInteger generateNonNullValue(final RandomProvider random) {
-        return new AtomicInteger(random.intBetween(min.intValue(), max.intValue()));
+        return new AtomicInteger(random.intRange(min.intValue(), max.intValue()));
     }
 }

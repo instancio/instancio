@@ -58,6 +58,6 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
 
     @Override
     protected BigDecimal generateNonNullValue(final RandomProvider random) {
-        return BigDecimal.valueOf(random.doubleBetween(min.doubleValue(), max.doubleValue()));
+        return BigDecimal.valueOf(random.doubleRange(min.doubleValue(), max.doubleValue()));
     }
 }

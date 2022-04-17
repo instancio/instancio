@@ -61,7 +61,7 @@ public class LocalDateGenerator extends AbstractGenerator<LocalDate> implements 
 
     @Override
     public LocalDate generate(final RandomProvider random) {
-        return LocalDate.ofEpochDay(random.longBetween(
+        return LocalDate.ofEpochDay(random.longRange(
                 min.getLong(EPOCH_DAY),
                 max.getLong(EPOCH_DAY)));
     }

@@ -46,53 +46,103 @@ public interface RandomProvider {
      * @param max upper bound (exclusive)
      * @return a random byte between the min and max, exclusive
      */
-    byte byteBetween(byte min, byte max);
+    byte byteRange(byte min, byte max);
 
     /**
      * @param min lower bound
      * @param max upper bound (exclusive)
      * @return a random short between the min and max, exclusive
      */
-    short shortBetween(short min, short max);
+    short shortRange(short min, short max);
 
     /**
      * @param min lower bound
      * @param max upper bound (exclusive)
      * @return a random int between the min and max, exclusive
      */
-    int intBetween(int min, int max);
+    int intRange(int min, int max);
 
     /**
      * @param min lower bound
      * @param max upper bound (exclusive)
      * @return a random long between the min and max, exclusive
      */
-    long longBetween(long min, long max);
+    long longRange(long min, long max);
 
     /**
      * @param min lower bound
      * @param max upper bound (exclusive)
      * @return a random float between the min and max, exclusive
      */
-    float floatBetween(float min, float max);
+    float floatRange(float min, float max);
 
     /**
      * @param min lower bound
      * @param max upper bound (exclusive)
      * @return a random double between the min and max, exclusive
      */
-    double doubleBetween(double min, double max);
+    double doubleRange(double min, double max);
 
     /**
-     * @return random uppercase character between A-Z inclusive.
+     * Returns a random alphabetic character, {@code [a-z, A-Z]}.
+     *
+     * @return random character, either lower or upper case
      */
     char character();
 
     /**
-     * @param length of the string to generate
-     * @return random uppercase String with given length
+     * Returns a random lower alphabetic character, {@code [a-z]}.
+     *
+     * @return random lower character
      */
-    String alphabetic(int length);
+    char lowerCaseCharacter();
+
+    /**
+     * Returns a random upper alphabetic character, {@code [A-Z]}.
+     *
+     * @return random uppercase character
+     */
+    char upperCaseCharacter();
+
+    /**
+     * Generates a lower case String comprised of {@code [a-z]}.
+     *
+     * @param length of a string to generate
+     * @return random lower case String with given length
+     */
+    String lowerCaseAlphabetic(int length);
+
+    /**
+     * Generates a random upper case String comprised of {@code [A-Z]}.
+     *
+     * @param length of a string to generate
+     * @return random upper case String with given length
+     */
+    String upperCaseAlphabetic(int length);
+
+    /**
+     * Generates a random mixed case String comprised of {@code [a-z, A-Z]}.
+     *
+     * @param length of a string to generate
+     * @return random mixed case String with given length
+     */
+    String mixedCaseAlphabetic(int length);
+
+    /**
+     * Generates a random alphanumeric String comprised of {@code [a-z, A-Z, 0-9]}.
+     *
+     * @param length of a string to generate
+     * @return random alphanumeric String with given length
+     */
+    String alphaNumeric(int length);
+
+    /**
+     * Generates a random String comprised of digits {@code [0-9]}.
+     *
+     * @param length of a string to generate
+     * @return random String comprised of digits with given length
+     */
+    String digits(int length);
 
     /**
      * Returns a random element from given array.

@@ -25,6 +25,7 @@ import org.instancio.generator.lang.IntegerGenerator;
 import org.instancio.generator.lang.LongGenerator;
 import org.instancio.generator.lang.ShortGenerator;
 import org.instancio.generator.lang.StringGenerator;
+import org.instancio.generator.text.TextPatternGenerator;
 import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
 import org.instancio.generator.time.LocalDateGenerator;
@@ -37,7 +38,7 @@ import org.instancio.generator.util.concurrent.atomic.AtomicLongGenerator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GeneratorSpecDescription {
+public class GeneratorApiMethodNames {
 
     @SuppressWarnings("rawtypes")
     private static final Map<Class<? extends GeneratorSpec>, String> SPECS = new HashMap<>();
@@ -52,6 +53,7 @@ public class GeneratorSpecDescription {
         SPECS.put(CharacterGenerator.class, "chars()");
         SPECS.put(BooleanGenerator.class, "booleans()");
         SPECS.put(StringGenerator.class, "strings()");
+        SPECS.put(TextPatternGenerator.class, "pattern()");
 
         SPECS.put(AtomicIntegerGenerator.class, "atomicInteger()");
         SPECS.put(AtomicLongGenerator.class, "atomicLong()");
@@ -70,7 +72,7 @@ public class GeneratorSpecDescription {
         return SPECS.get(klass);
     }
 
-    private GeneratorSpecDescription() {
+    private GeneratorApiMethodNames() {
         // non-instantiable
     }
 }

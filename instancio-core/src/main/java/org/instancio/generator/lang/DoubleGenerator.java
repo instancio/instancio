@@ -30,6 +30,6 @@ public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec
 
     @Override
     protected Double generateNonNullValue(final RandomProvider random) {
-        return random.doubleBetween(min, max);
+        return random.doubleRange(min, max);
     }
 }

@@ -31,6 +31,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     private boolean nullable;
     private boolean allowEmpty;
     private String prefix = "";
+    private StringType stringType;
 
     public StringGenerator(final GeneratorContext context) {
         super(context);
@@ -85,6 +86,36 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
+    public StringGeneratorSpec lowerCase() {
+        stringType = StringType.LOWER_CASE;
+        return this;
+    }
+
+    @Override
+    public StringGeneratorSpec upperCase() {
+        stringType = StringType.UPPER_CASE;
+        return this;
+    }
+
+    @Override
+    public StringGeneratorSpec mixedCase() {
+        stringType = StringType.MIXED_CASE;
+        return this;
+    }
+
+    @Override
+    public StringGeneratorSpec alphaNumeric() {
+        stringType = StringType.ALPHANUMERIC;
+        return this;
+    }
+
+    @Override
+    public StringGeneratorSpec digits() {
+        stringType = StringType.DIGITS;
+        return this;
+    }
+
+    @Override
     public String generate(final RandomProvider random) {
         if (random.diceRoll(nullable)) {
             return null;
@@ -92,7 +123,29 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         if (random.diceRoll(allowEmpty)) {
             return "";
         }
-        return prefix + random.alphabetic(random.intBetween(minLength, maxLength + 1));
+
+        final int length = random.intRange(minLength, maxLength + 1);
+        return prefix + generateString(random, length);
+    }
+
+    private String generateString(final RandomProvider random, final int length) {
+        if (stringType == null || stringType == StringType.UPPER_CASE) {
+            return random.upperCaseAlphabetic(length);
+        }
+        if (stringType == StringType.LOWER_CASE) {
+            return random.lowerCaseAlphabetic(length);
+        }
+        if (stringType == StringType.MIXED_CASE) {
+            return random.mixedCaseAlphabetic(length);
+        }
+        if (stringType == StringType.ALPHANUMERIC) {
+            return random.alphaNumeric(length);
+        }
+        if (stringType == StringType.DIGITS) {
+            return random.digits(length);
+        }
+
+        throw new IllegalStateException("Unknown StringType: " + stringType); // unreachable
     }
 
     @Override
