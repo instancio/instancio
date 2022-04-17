@@ -17,8 +17,8 @@ package org.instancio.generator.array;
 
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.util.Verify;
 
 public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArrayGeneratorSpec<T> {
 
@@ -30,7 +30,7 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
 
     @Override
     public OneOfArrayGeneratorSpec<T> oneOf(final T[] values) {
-        this.values = Verify.notEmpty(values, "Array must have at least one element");
+        this.values = ApiValidator.notEmpty(values, "Array must have at least one element");
         return this;
     }
 

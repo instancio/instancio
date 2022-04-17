@@ -27,8 +27,8 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.joining;
-import static org.instancio.internal.InstancioValidator.validateSettingKey;
-import static org.instancio.internal.InstancioValidator.validateSubtypeMapping;
+import static org.instancio.internal.ApiValidator.validateSettingKey;
+import static org.instancio.internal.ApiValidator.validateSubtypeMapping;
 
 /**
  * Instancio settings API.

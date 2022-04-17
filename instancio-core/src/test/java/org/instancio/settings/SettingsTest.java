@@ -96,7 +96,7 @@ class SettingsTest {
     @Test
     void setThrowsErrorIfGivenInvalidType() {
         assertThatThrownBy(() -> Settings.create().set(Setting.LONG_MAX, false))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InstancioApiException.class)
                 .hasMessage("The value 'false' is of unexpected type (Boolean) for key 'LONG_MAX'");
     }
 

@@ -34,11 +34,11 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     private final ModelContext.Builder<T> modelContextBuilder;
 
     public InstancioApiImpl(final Class<T> klass) {
-        this.modelContextBuilder = ModelContext.builder(InstancioValidator.validateRootClass(klass));
+        this.modelContextBuilder = ModelContext.builder(ApiValidator.validateRootClass(klass));
     }
 
     public InstancioApiImpl(final TypeTokenSupplier<T> typeToken) {
-        this.modelContextBuilder = ModelContext.builder(InstancioValidator.validateTypeToken(typeToken));
+        this.modelContextBuilder = ModelContext.builder(ApiValidator.validateTypeToken(typeToken));
     }
 
     public InstancioApiImpl(final Model<T> model) {
@@ -66,18 +66,21 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public <V> InstancioApi<T> supply(Binding binding, Generator<V> generator) {
+        ApiValidator.validateSupplierOrGenerator(generator);
         modelContextBuilder.withGenerator(binding, generator);
         return this;
     }
 
     @Override
     public <V> InstancioApi<T> supply(Binding binding, Supplier<V> supplier) {
+        ApiValidator.validateSupplierOrGenerator(supplier);
         modelContextBuilder.withSupplier(binding, supplier);
         return this;
     }
 
     @Override
     public <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(final Binding target, final Function<Generators, S> gen) {
+        ApiValidator.validateGeneratorFunction(gen);
         modelContextBuilder.withGeneratorSpec(target, gen);
         return this;
     }

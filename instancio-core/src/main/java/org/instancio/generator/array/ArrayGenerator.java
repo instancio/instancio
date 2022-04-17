@@ -18,7 +18,7 @@ package org.instancio.generator.array;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.InstancioValidator;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Setting;
 import org.instancio.util.Verify;
@@ -96,7 +96,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     @Override
     public ArrayGeneratorSpec<T> with(final T... elements) {
-        InstancioValidator.notEmpty(elements, "'array().with(...)' must contain at least one element");
+        ApiValidator.notEmpty(elements, "'array().with(...)' must contain at least one element");
 
         if (withElements == null) {
             withElements = new ArrayList<>();
