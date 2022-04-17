@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.instancio</groupId>
@@ -42,15 +43,17 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <copy file="${gradle.module}/build.gradle.template" tofile="${gradle.module}/build.gradle" />
+                                <copy file="${gradle.module}/build.gradle.template"
+                                      tofile="${gradle.module}/build.gradle"
+                                      overwrite="true"/>
                                 <replace token="#{instancio.version}" value="${project.version}" dir="gradle-module">
-                                    <include name="build.gradle" />
+                                    <include name="build.gradle"/>
                                 </replace>
                                 <replace token="#{java.version}" value="${java.version}" dir="${gradle.module}">
-                                    <include name="build.gradle" />
+                                    <include name="build.gradle"/>
                                 </replace>
                                 <exec executable="${gradle.executable}" failonerror="true" dir="${gradle.module}">
-                                    <arg line="clean build" />
+                                    <arg line="clean build"/>
                                 </exec>
                             </target>
                         </configuration>
