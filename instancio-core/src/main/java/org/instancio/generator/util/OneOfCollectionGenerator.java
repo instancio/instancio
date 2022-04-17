@@ -39,6 +39,6 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
     @Override
     public T generate(final RandomProvider random) {
         Verify.notEmpty(values, "Array must have at least one element");
-        return random.from(values);
+        return random.oneOf(values);
     }
 }

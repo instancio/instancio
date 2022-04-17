@@ -89,15 +89,15 @@ class RandomProviderImplTest {
     }
 
     @Nested
-    class FromArrayTest {
+    class OneOfArrayTest {
 
         @Test
-        void fromArray() {
+        void oneOfArray() {
             final Integer[] array = {0, 1, 2};
             final int[] counts = new int[array.length];
 
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final Integer value = random.from(array);
+                final Integer value = random.oneOf(array);
                 counts[value]++;
                 results.add(value);
             }
@@ -107,22 +107,22 @@ class RandomProviderImplTest {
         }
 
         @Test
-        void fromSingleElementArray() {
+        void oneOfSingleElementArray() {
             final String[] array = {"foo"};
-            assertThat(random.from(array)).isEqualTo(array[0]);
+            assertThat(random.oneOf(array)).isEqualTo(array[0]);
         }
     }
 
     @Nested
-    class FromCollectionTest {
+    class OneOfCollectionTest {
 
         @Test
-        void fromCollection() {
+        void oneOfCollection() {
             final List<Integer> list = Arrays.asList(0, 1, 2);
             final int[] counts = new int[list.size()];
 
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final Integer value = random.from(list);
+                final Integer value = random.oneOf(list);
                 counts[value]++;
                 results.add(value);
             }
@@ -132,9 +132,9 @@ class RandomProviderImplTest {
         }
 
         @Test
-        void fromSingleElementCollection() {
+        void oneOfSingleElementCollection() {
             final Set<String> set = Collections.singleton("foo");
-            assertThat(random.from(set)).isEqualTo(set.iterator().next());
+            assertThat(random.oneOf(set)).isEqualTo(set.iterator().next());
         }
     }
 

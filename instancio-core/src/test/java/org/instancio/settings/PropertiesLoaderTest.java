@@ -27,7 +27,7 @@ class PropertiesLoaderTest {
 
     @Test
     void load() {
-        final Properties props = new PropertiesLoader().load("instancio-test.properties");
+        final Properties props = new PropertiesLoader().load("custom-instancio-test.properties");
         assertThat(props).isNotNull();
         assertThat(props.get(Setting.LONG_MAX.key())).isNotNull();
     }

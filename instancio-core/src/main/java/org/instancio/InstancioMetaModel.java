@@ -21,14 +21,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Provides support for generating metamodels for classes in order to
+ * This annotation provides support for generating metamodels for classes in order to
  * avoid referencing fields as literal strings.
  * <p>
  * For example, instead of:
  *
  * <pre>{@code
  * Person person = Instancio.of(Person.class)
- *     .generate(field(Address.class, "city"), gen -> gen.oneOf("London", "Tokyo", "Paris"))
+ *     .supply(field(Address.class, "city"), () -> "Paris")
  *     .create();
  * }</pre>
  * <p>
@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  *
  * <pre>{@code
  * Person person = Instancio.of(Person.class)
- *     .generate(Address_.city, gen -> gen.oneOf("London", "Tokyo", "Paris"))
+ *     .supply(Address_.city, () -> "Paris")
  *     .create();
  * }</pre>
  * <p>
@@ -45,14 +45,22 @@ import java.lang.annotation.Target;
  * (see documentation for Maven and Gradle examples).
  *
  * <pre class="code"><code class="java">
- * &#064;InstancioMetaModel(classes = {
- *         Address.class,
- *         Person.class
- * })
+ * &#064;InstancioMetaModel(classes = {Address.class, Person.class})
  * class PersonTest {
  *     // ... snip
  * }
  * </code></pre>
+ * <p>
+ * Note: if you need the same metamodels in multiple test classes, it is recommended to create
+ * a separate class containing the {@code @InstancioMetaModel} annotation, for example:
+ * <p>
+ * <pre class="code"><code class="java">
+ * &#064;InstancioMetaModel(classes = {Address.class, Person.class})
+ * interface MetaModelConfig { /* empty *{@literal /} }
+ * </code></pre>
+ * <p>
+ * The reason for this is that duplicating the annotation for the same {@code 'classes'}
+ * will cause metamodels for those classes to be generated more than once.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)

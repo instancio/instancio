@@ -37,6 +37,6 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     @Override
     public T generate(final RandomProvider random) {
         Verify.notEmpty(values, "Array must have at least one element");
-        return random.from(values);
+        return random.oneOf(values);
     }
 }
