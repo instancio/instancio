@@ -320,7 +320,7 @@ In this case, you can specify the type of `Pet` using the map method:
 
 ```java
 Person person = Instancio.of(Person.class)
-    .map(Pet.class, Cat.class)
+    .map(all(Pet.class), Cat.class)
     .create();
 ```
 

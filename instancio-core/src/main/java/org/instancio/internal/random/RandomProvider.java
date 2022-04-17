@@ -101,7 +101,7 @@ public interface RandomProvider {
      * @param <T>   element type
      * @return random element
      */
-    <T> T from(T... array);
+    <T> T oneOf(T... array);
 
     /**
      * Returns a random element from given collection.
@@ -110,5 +110,5 @@ public interface RandomProvider {
      * @param <T>        element type
      * @return random element
      */
-    <T> T from(Collection<T> collection);
+    <T> T oneOf(Collection<T> collection);
 }

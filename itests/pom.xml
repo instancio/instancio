@@ -38,6 +38,9 @@
                             <version>${project.parent.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Ainstancio.processor.verbose=true</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

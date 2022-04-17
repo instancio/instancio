@@ -23,6 +23,7 @@ import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -41,11 +42,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@SupportedOptions({"instancio.processor.verbose"})
 @SupportedAnnotationTypes("org.instancio.InstancioMetaModel")
 public final class InstancioAnnotationProcessor extends AbstractProcessor {
 
     private static final String MODEL_CLASSES_ATTRIBUTE = "classes";
     private static final MetaModelSourceGenerator sourceGenerator = new MetaModelSourceGenerator();
+    private static final String TRUE = "true";
 
     private Types types;
     private Elements elements;
@@ -56,7 +59,8 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
         super.init(processingEnv);
         this.types = processingEnv.getTypeUtils();
         this.elements = processingEnv.getElementUtils();
-        this.logger = new Logger(processingEnv.getMessager(), true);
+        this.logger = new Logger(processingEnv.getMessager(),
+                TRUE.equalsIgnoreCase(processingEnv.getOptions().get("instancio.processor.verbose")));
     }
 
     @Override
@@ -66,12 +70,17 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        if (roundEnv.processingOver() || roundEnv.errorRaised()) {
+            return true;
+        }
+
         final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(InstancioMetaModel.class);
         if (elements.isEmpty()) {
-            logger.debug("No elements to process");
-        } else {
-            logger.debug("Preparing to process %s elements", elements.size());
+            logger.debug("No @InstancioMetaModel annotations to process");
+            return true;
         }
+
+        logger.debug("Preparing to process %s @InstancioMetaModel annotation(s)", elements.size());
 
         for (Element annotatedElement : elements) {
             final TypeElement rootType = (TypeElement) annotatedElement;
@@ -100,7 +109,7 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
             logger.debug("Generating metamodel class: %s", filename);
             writer.write(sourceGenerator.getSource(metaModelClass));
         } catch (Exception ex) {
-            logger.warn("Error generating metamodel for class '%s'. Cause: %s", metaModelClass, ex.getMessage());
+            logger.warn("Error generating metamodel for '%s'", metaModelClass, ex);
         }
     }
 

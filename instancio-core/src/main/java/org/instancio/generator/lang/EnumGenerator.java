@@ -36,7 +36,7 @@ public class EnumGenerator extends AbstractGenerator<Enum<?>> {
         try {
             Method m = enumClass.getDeclaredMethod("values");
             Enum<?>[] res = (Enum<?>[]) m.invoke(null);
-            return random.from(res);
+            return random.oneOf(res);
         } catch (Exception ex) {
             throw new InstancioException("Error generating enum value for: " + enumClass.getName(), ex);
         }

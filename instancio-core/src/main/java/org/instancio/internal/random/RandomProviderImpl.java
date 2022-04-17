@@ -106,13 +106,13 @@ public class RandomProviderImpl implements RandomProvider {
     }
 
     @Override
-    public <T> T from(final T[] array) {
+    public <T> T oneOf(final T[] array) {
         Verify.notEmpty(array, "Array must have at least one element");
         return array[intBetween(0, array.length)];
     }
 
     @Override
-    public <T> T from(final Collection<T> collection) {
+    public <T> T oneOf(final Collection<T> collection) {
         Verify.notEmpty(collection, "Collection must have at least one element");
         return collection.stream()
                 .skip(intBetween(0, collection.size()))

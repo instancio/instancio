@@ -18,6 +18,8 @@ package org.instancio.processor.util;
 
 import javax.annotation.processing.Messager;
 import javax.tools.Diagnostic;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public final class Logger {
     private static final String MSG_PREFIX = "Instancio Processor: ";
@@ -35,12 +37,38 @@ public final class Logger {
         }
     }
 
-    public void warn(final String message, Object... args) {
-        messager.printMessage(Diagnostic.Kind.WARNING, formatMessage(message, args));
+    public void warn(final String message, final Object... args) {
+        String msg = formatMessage(message, args);
+
+        final Exception ex = unpackException(args);
+        if (ex != null) {
+            if (verbose) {
+                msg += String.format("%nStacktrace:%n%s", getStackTraceAsString(ex));
+            } else {
+                final String cause = ex.getClass().getName() + ": " + ex.getMessage();
+                msg += String.format(". Caused by %s", cause);
+            }
+        }
+
+        messager.printMessage(Diagnostic.Kind.WARNING, msg);
     }
 
     private String formatMessage(final String message, final Object... args) {
         final String msg = MSG_PREFIX + message;
         return String.format(msg, args);
+    }
+
+    private static Exception unpackException(final Object[] args) {
+        if (args.length > 0 && args[args.length - 1] instanceof Exception) {
+            return (Exception) args[args.length - 1];
+        }
+        return null;
+    }
+
+    private static String getStackTraceAsString(final Exception ex) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        return sw.toString();
     }
 }
