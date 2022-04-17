@@ -17,8 +17,8 @@ package org.instancio.generator.util;
 
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.util.Verify;
 
 import java.util.Collection;
 
@@ -32,7 +32,7 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
 
     @Override
     public OneOfCollectionGeneratorSpec<T> oneOf(final Collection<T> values) {
-        this.values = Verify.notEmpty(values, "Array must have at least one element");
+        this.values = ApiValidator.notEmpty(values, "Collection must have at least one element");
         return this;
     }
 

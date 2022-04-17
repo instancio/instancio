@@ -133,7 +133,7 @@ public class ModelContext<T> {
                     // TODO validate
                     fieldSubtypeMap.put(field, subtype);
                 } else {
-                    InstancioValidator.validateSubtypeMapping(target.getTargetType(), subtype);
+                    ApiValidator.validateSubtypeMapping(target.getTargetType(), subtype);
                     classSubtypeMap.put(target.getTargetType(), subtype);
                 }
             }
@@ -304,7 +304,7 @@ public class ModelContext<T> {
             final Class<?> rootClass,
             final List<Class<?>> rootTypeParameters) {
 
-        InstancioValidator.validateTypeParameters(rootClass, rootTypeParameters);
+        ApiValidator.validateTypeParameters(rootClass, rootTypeParameters);
 
         final Class<?> targetClass = rootClass.isArray()
                 ? rootClass.getComponentType()
@@ -365,7 +365,7 @@ public class ModelContext<T> {
         }
 
         public Builder<T> withRootTypeParameters(final List<Class<?>> rootTypeParameters) {
-            InstancioValidator.validateTypeParameters(rootClass, rootTypeParameters);
+            ApiValidator.validateTypeParameters(rootClass, rootTypeParameters);
             this.rootTypeParameters.addAll(rootTypeParameters);
             return this;
         }
