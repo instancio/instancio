@@ -31,6 +31,7 @@ import org.instancio.generator.lang.StringGenerator;
 import org.instancio.generator.lang.StringGeneratorSpec;
 import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
+import org.instancio.generator.text.TextGenerators;
 import org.instancio.generator.time.LocalDateGenerator;
 import org.instancio.generator.time.LocalDateTimeGenerator;
 import org.instancio.generator.time.TemporalGeneratorSpec;
@@ -68,6 +69,15 @@ public class Generators {
      */
     public StringGeneratorSpec string() {
         return new StringGenerator(context);
+    }
+
+    /**
+     * Provides access to text generators.
+     *
+     * @return available text generators
+     */
+    public TextGenerators text() {
+        return new TextGenerators();
     }
 
     /**

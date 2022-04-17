@@ -15,21 +15,13 @@
  */
 package org.instancio.generator.lang;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
-
-public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<Float> {
-
-    public FloatGenerator(final GeneratorContext context) {
-        super(context,
-                context.getSettings().get(Setting.FLOAT_MIN),
-                context.getSettings().get(Setting.FLOAT_MAX),
-                context.getSettings().get(Setting.FLOAT_NULLABLE));
-    }
-
-    @Override
-    protected Float generateNonNullValue(final RandomProvider random) {
-        return random.floatRange(min, max);
-    }
+/**
+ * String types supported by built-in String generator.
+ */
+enum StringType {
+    LOWER_CASE,
+    UPPER_CASE,
+    MIXED_CASE,
+    ALPHANUMERIC,
+    DIGITS
 }

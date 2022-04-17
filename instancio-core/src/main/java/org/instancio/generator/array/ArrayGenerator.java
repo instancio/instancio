@@ -119,7 +119,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
             return null;
         }
 
-        final int length = random.intBetween(minLength, maxLength + 1)
+        final int length = random.intRange(minLength, maxLength + 1)
                 + (withElements == null ? 0 : withElements.size());
 
         return (T) Array.newInstance(arrayType.getComponentType(), length);

@@ -67,4 +67,39 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
      * @return spec builder
      */
     StringGeneratorSpec maxLength(int length);
+
+    /**
+     * Generates a lower case string.
+     *
+     * @return spec builder
+     */
+    StringGeneratorSpec lowerCase();
+
+    /**
+     * Generates an upper case string.
+     *
+     * @return spec builder
+     */
+    StringGeneratorSpec upperCase();
+
+    /**
+     * Generates a mixed case string.
+     *
+     * @return spec builder
+     */
+    StringGeneratorSpec mixedCase();
+
+    /**
+     * Generates a mixed case alphanumeric string.
+     *
+     * @return spec builder
+     */
+    StringGeneratorSpec alphaNumeric();
+
+    /**
+     * Generates a string comprised of only digits.
+     *
+     * @return spec builder
+     */
+    StringGeneratorSpec digits();
 }

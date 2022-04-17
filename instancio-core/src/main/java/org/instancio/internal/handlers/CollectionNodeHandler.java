@@ -58,6 +58,6 @@ public class CollectionNodeHandler implements NodeHandler {
     private int randomSize() {
         final RandomProvider random = context.getRandomProvider();
         final Settings settings = context.getSettings();
-        return random.intBetween(settings.get(Setting.COLLECTION_MIN_SIZE), settings.get(Setting.COLLECTION_MAX_SIZE));
+        return random.intRange(settings.get(Setting.COLLECTION_MIN_SIZE), settings.get(Setting.COLLECTION_MAX_SIZE));
     }
 }

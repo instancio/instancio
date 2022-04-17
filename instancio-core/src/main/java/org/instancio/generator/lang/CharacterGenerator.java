@@ -32,7 +32,7 @@ public class CharacterGenerator extends AbstractGenerator<Character> {
 
     @Override
     public Character generate(final RandomProvider random) {
-        return random.diceRoll(nullable) ? null : random.character();
+        return random.diceRoll(nullable) ? null : random.upperCaseCharacter();
     }
 
     @Override

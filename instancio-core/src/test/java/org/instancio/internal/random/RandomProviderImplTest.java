@@ -39,7 +39,11 @@ import static org.assertj.core.data.Percentage.withPercentage;
 class RandomProviderImplTest {
     private static final int SAMPLE_SIZE = 50_000;
     private static final int PERCENTAGE_THRESHOLD = 20;
-    private static final Pattern ALPHABETIC_PATTERN = Pattern.compile("^[A-Z]*$");
+    private static final Pattern UPPER_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[A-Z]*$");
+    private static final Pattern LOWER_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[a-z]*$");
+    private static final Pattern MIXED_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[a-zA-Z]*$");
+    private static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile("^[a-zA-Z0-9]*$");
+    private static final Pattern DIGITS_PATTERN = Pattern.compile("^[0-9]*$");
 
     private final RandomProviderImpl random = new RandomProviderImpl();
     private Set<Object> results;
@@ -81,7 +85,7 @@ class RandomProviderImplTest {
     @Test
     void doubleBetweenMinAndMax() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final double value = random.doubleBetween(Double.MIN_VALUE, Double.MAX_VALUE);
+            final double value = random.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE);
             results.add(value);
         }
 
@@ -142,13 +146,57 @@ class RandomProviderImplTest {
     class AlphabeticTest {
 
         @Test
-        void alphabetic() {
+        void lowerCaseAlphabetic() {
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final int length = random.intBetween(0, 5);
+                final int length = random.intRange(0, 5);
 
-                assertThat(random.alphabetic(length))
+                assertThat(random.lowerCaseAlphabetic(length))
                         .hasSize(length)
-                        .containsPattern(ALPHABETIC_PATTERN);
+                        .containsPattern(LOWER_CASE_ALPHABETIC_PATTERN);
+            }
+        }
+
+        @Test
+        void upperCaseAlphabetic() {
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                final int length = random.intRange(0, 5);
+
+                assertThat(random.upperCaseAlphabetic(length))
+                        .hasSize(length)
+                        .containsPattern(UPPER_CASE_ALPHABETIC_PATTERN);
+            }
+        }
+
+        @Test
+        void mixedCaseAlphabetic() {
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                final int length = random.intRange(0, 5);
+
+                assertThat(random.mixedCaseAlphabetic(length))
+                        .hasSize(length)
+                        .containsPattern(MIXED_CASE_ALPHABETIC_PATTERN);
+            }
+        }
+
+        @Test
+        void alphaNumeric() {
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                final int length = random.intRange(0, 5);
+
+                assertThat(random.alphaNumeric(length))
+                        .hasSize(length)
+                        .containsPattern(ALPHANUMERIC_PATTERN);
+            }
+        }
+
+        @Test
+        void digits() {
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                final int length = random.intRange(0, 5);
+
+                assertThat(random.digits(length))
+                        .hasSize(length)
+                        .containsPattern(DIGITS_PATTERN);
             }
         }
 
@@ -162,10 +210,10 @@ class RandomProviderImplTest {
             final int length = 26;
             int[] counts = new int[26];
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final String alphabetic = random.alphabetic(length);
+                final String alphabetic = random.upperCaseAlphabetic(length);
                 assertThat(alphabetic)
                         .hasSize(length)
-                        .containsPattern(ALPHABETIC_PATTERN);
+                        .containsPattern(UPPER_CASE_ALPHABETIC_PATTERN);
 
                 for (char c : alphabetic.toCharArray())
                     counts[c - 'A']++;
@@ -189,7 +237,7 @@ class RandomProviderImplTest {
             Arrays.fill(counts, 0);
 
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final int value = random.intBetween(min, max);
+                final int value = random.intRange(min, max);
                 final int index = value + -min;
                 counts[index]++;
                 results.add(value);
@@ -206,7 +254,7 @@ class RandomProviderImplTest {
         @Test
         void intBetweenMinAndMax() {
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final int value = random.intBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);
+                final int value = random.intRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
                 results.add(value);
             }
 
@@ -235,7 +283,7 @@ class RandomProviderImplTest {
             Arrays.fill(counts, 0);
 
             for (int i = 0; i < SAMPLE_SIZE; i++) {
-                final long value = random.longBetween(min, max);
+                final long value = random.longRange(min, max);
                 final int index = (int) (value + -min);
                 counts[index]++;
                 results.add(value);

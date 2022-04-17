@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.generator.GeneratedHints;
+import org.instancio.generator.GeneratorApiMethodNames;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGeneratorSpec;
 import org.instancio.generator.util.CollectionGeneratorSpec;
@@ -67,6 +68,16 @@ public interface Generator<T> extends GeneratorSpec<T> {
      */
     default void setDelegate(Generator<?> delegate) {
         // no-op by default
+    }
+
+    /**
+     * Returns the public API method name of this generator.
+     * Will return an empty result if this instance is a lambda.
+     *
+     * @return spec name, if defined
+     */
+    default Optional<String> apiMethodName() {
+        return Optional.ofNullable(GeneratorApiMethodNames.get(getClass()));
     }
 
     /**

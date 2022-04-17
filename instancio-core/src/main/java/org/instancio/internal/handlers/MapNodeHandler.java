@@ -58,6 +58,6 @@ public class MapNodeHandler implements NodeHandler {
     private int randomSize() {
         final RandomProvider random = context.getRandomProvider();
         final Settings settings = context.getSettings();
-        return random.intBetween(settings.get(Setting.MAP_MIN_SIZE), settings.get(Setting.MAP_MAX_SIZE));
+        return random.intRange(settings.get(Setting.MAP_MIN_SIZE), settings.get(Setting.MAP_MAX_SIZE));
     }
 }

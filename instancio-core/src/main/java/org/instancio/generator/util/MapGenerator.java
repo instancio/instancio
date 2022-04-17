@@ -109,7 +109,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     @Override
     public GeneratedHints getHints() {
         return GeneratedHints.builder()
-                .dataStructureSize(getContext().random().intBetween(minSize, maxSize + 1))
+                .dataStructureSize(getContext().random().intRange(minSize, maxSize + 1))
                 .ignoreChildren(false)
                 .nullableResult(nullable)
                 .nullableKeys(nullableKeys)

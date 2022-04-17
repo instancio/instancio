@@ -71,7 +71,7 @@ public class LocalDateTimeGenerator extends AbstractGenerator<LocalDateTime> imp
 
     @Override
     public LocalDateTime generate(final RandomProvider random) {
-        final Instant instant = Instant.ofEpochMilli(random.longBetween(
+        final Instant instant = Instant.ofEpochMilli(random.longRange(
                 min.toInstant(UTC).toEpochMilli(),
                 max.toInstant(UTC).toEpochMilli()));
 

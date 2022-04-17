@@ -32,13 +32,12 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
 
     @Override
     public OneOfCollectionGeneratorSpec<T> oneOf(final Collection<T> values) {
-        this.values = values;
+        this.values = Verify.notEmpty(values, "Array must have at least one element");
         return this;
     }
 
     @Override
     public T generate(final RandomProvider random) {
-        Verify.notEmpty(values, "Array must have at least one element");
         return random.oneOf(values);
     }
 }

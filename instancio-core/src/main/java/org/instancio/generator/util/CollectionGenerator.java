@@ -117,7 +117,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     @Override
     public GeneratedHints getHints() {
         return GeneratedHints.builder()
-                .dataStructureSize(getContext().random().intBetween(minSize, maxSize + 1))
+                .dataStructureSize(getContext().random().intRange(minSize, maxSize + 1))
                 .ignoreChildren(false)
                 .nullableResult(nullable)
                 .nullableElements(nullableElements)

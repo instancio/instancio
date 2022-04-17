@@ -155,7 +155,7 @@ public class InstancioValidator {
     }
 
     public static void validateGeneratorUsage(Node node, Generator<?> generator) {
-        final Optional<String> name = generator.name();
+        final Optional<String> name = generator.apiMethodName();
         if (name.isPresent() && !generator.supports(node.getTargetClass())) {
             throw new InstancioApiException("\nGenerator type mismatch:\n"
                     + "Method '" + name.get() + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()

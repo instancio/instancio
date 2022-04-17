@@ -50,53 +50,111 @@ public class RandomProviderImpl implements RandomProvider {
 
     @Override
     public boolean trueOrFalse() {
-        return intBetween(0, 2) == 1;
+        return intRange(0, 2) == 1;
     }
 
     @Override
     public boolean diceRoll(final boolean precondition) {
-        return precondition && intBetween(0, 6) == 1;
+        return precondition && intRange(0, 6) == 1;
     }
 
     @Override
-    public byte byteBetween(final byte min, final byte max) {
-        return (byte) longBetween(min, max);
+    public byte byteRange(final byte min, final byte max) {
+        return (byte) longRange(min, max);
     }
 
     @Override
-    public short shortBetween(final short min, final short max) {
-        return (short) longBetween(min, max);
+    public short shortRange(final short min, final short max) {
+        return (short) longRange(min, max);
     }
 
     @Override
-    public int intBetween(final int min, final int max) {
+    public int intRange(final int min, final int max) {
         Verify.isTrue(min < max, "Min must be less than max");
-        return (int) longBetween(min, max);
+        return (int) longRange(min, max);
     }
 
     @Override
-    public long longBetween(final long min, final long max) {
+    public long longRange(final long min, final long max) {
         Verify.isTrue(min < max, "Min must be less than max");
         return RandomDataGenerator.nextLong(random, min, max);
     }
 
     @Override
-    public float floatBetween(final float min, final float max) {
-        return (float) doubleBetween(min, max);
+    public float floatRange(final float min, final float max) {
+        return (float) doubleRange(min, max);
     }
 
     @Override
-    public double doubleBetween(final double min, final double max) {
+    public double doubleRange(final double min, final double max) {
         return RandomDataGenerator.nextDouble(random, min, max);
     }
 
     @Override
     public char character() {
-        return (char) (intBetween(0, 26) + 'A');
+        return trueOrFalse() ? lowerCaseCharacter() : upperCaseCharacter();
     }
 
     @Override
-    public String alphabetic(final int length) {
+    public char lowerCaseCharacter() {
+        return (char) (intRange(0, 26) + 'a');
+    }
+
+    @Override
+    public char upperCaseCharacter() {
+        return (char) (intRange(0, 26) + 'A');
+    }
+
+    private char digitChar() {
+        return (char) (intRange(0, 10) + '0');
+    }
+
+    @Override
+    public String lowerCaseAlphabetic(final int length) {
+        char[] s = new char[length];
+        for (int i = 0; i < length; i++) {
+            s[i] = lowerCaseCharacter();
+        }
+
+        return new String(s);
+    }
+
+    @Override
+    public String upperCaseAlphabetic(final int length) {
+        char[] s = new char[length];
+        for (int i = 0; i < length; i++) {
+            s[i] = upperCaseCharacter();
+        }
+
+        return new String(s);
+    }
+
+    @Override
+    public String digits(final int length) {
+        char[] s = new char[length];
+        for (int i = 0; i < length; i++) {
+            s[i] = digitChar();
+        }
+
+        return new String(s);
+    }
+
+    @Override
+    public String alphaNumeric(final int length) {
+        char[] s = new char[length];
+        for (int i = 0; i < length; i++) {
+            if (intRange(0, 3) == 1) {
+                s[i] = digitChar();
+            } else {
+                s[i] = character();
+            }
+        }
+
+        return new String(s);
+    }
+
+    @Override
+    public String mixedCaseAlphabetic(final int length) {
         char[] s = new char[length];
         for (int i = 0; i < length; i++) {
             s[i] = character();
@@ -108,14 +166,14 @@ public class RandomProviderImpl implements RandomProvider {
     @Override
     public <T> T oneOf(final T[] array) {
         Verify.notEmpty(array, "Array must have at least one element");
-        return array[intBetween(0, array.length)];
+        return array[intRange(0, array.length)];
     }
 
     @Override
     public <T> T oneOf(final Collection<T> collection) {
         Verify.notEmpty(collection, "Collection must have at least one element");
         return collection.stream()
-                .skip(intBetween(0, collection.size()))
+                .skip(intRange(0, collection.size()))
                 .findFirst()
                 .orElse(null);
     }
