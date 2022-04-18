@@ -17,6 +17,7 @@ package org.instancio.internal.reflection;
 
 import org.instancio.util.Verify;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class DeclaredAndInheritedFieldsCollector implements FieldCollector {
 
-    private static final PackageFilter packageFilter = new DefaultPackageFilter();
+    private static final ClassFilter classFilter = new DefaultClassFilter();
 
     @Override
     public List<Field> getFields(final Class<?> klass) {
@@ -46,11 +47,11 @@ public class DeclaredAndInheritedFieldsCollector implements FieldCollector {
         return collected;
     }
 
-    private boolean shouldCollectFrom(Class<?> next) {
+    private boolean shouldCollectFrom(@Nullable final Class<?> next) {
         if (next == null || next.isInterface() || next.isArray() || next == Object.class) {
             return false;
         }
 
-        return !packageFilter.isExcluded(next.getPackage());
+        return !classFilter.isExcluded(next);
     }
 }

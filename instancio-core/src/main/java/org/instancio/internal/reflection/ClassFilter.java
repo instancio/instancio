@@ -16,15 +16,15 @@
 package org.instancio.internal.reflection;
 
 /**
- * A filter for checking whether a {@link Package} should be excluded from processing.
+ * A filter for checking whether a {@link Class} should be excluded from processing.
  */
-public interface PackageFilter {
+public interface ClassFilter {
 
     /**
-     * Checks if given package is excluded.
+     * Checks if given class is excluded.
      *
-     * @param pkg package to check
-     * @return {@code true} if package should be excluded, {@code false} otherwise
+     * @param klass to check
+     * @return {@code true} if class should be excluded, {@code false} otherwise
      */
-    boolean isExcluded(Package pkg);
+    boolean isExcluded(Class<?> klass);
 }

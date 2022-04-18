@@ -13,18 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.internal.reflection;
+package org.instancio.generator.util;
 
-/**
- * A filter for checking whether a {@link Package} should be excluded from processing.
- */
-public interface PackageFilter {
+import org.instancio.Generator;
+import org.instancio.internal.random.RandomProvider;
 
-    /**
-     * Checks if given package is excluded.
-     *
-     * @param pkg package to check
-     * @return {@code true} if package should be excluded, {@code false} otherwise
-     */
-    boolean isExcluded(Package pkg);
+import java.util.EnumSet;
+
+public class EnumSetGenerator<E extends Enum<E>> implements Generator<EnumSet<E>> {
+
+    private final Class<E> enumClass;
+
+    public EnumSetGenerator(final Class<E> enumClass) {
+        this.enumClass = enumClass;
+    }
+
+    @Override
+    public EnumSet<E> generate(final RandomProvider random) {
+        return EnumSet.noneOf(enumClass);
+    }
+
 }

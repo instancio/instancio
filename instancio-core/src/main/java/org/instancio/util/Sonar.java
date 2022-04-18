@@ -21,6 +21,7 @@ public final class Sonar {
     public static final String ADD_ASSERTION = "java:S2699";
     public static final String CATCH_EXCEPTION_INSTEAD_OF_THROWABLE = "java:S1181";
     public static final String DISABLED_TEST = "java:S1607";
+    public static final String RAW_USE_OF_PARAMETERIZED_CLASS = "java:S3740";
     public static final String RETURN_EMPTY_COLLECTION = "java:S1168";
 
     private Sonar() {
