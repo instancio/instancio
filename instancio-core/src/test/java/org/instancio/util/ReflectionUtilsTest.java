@@ -16,6 +16,7 @@
 package org.instancio.util;
 
 import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,12 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReflectionUtilsTest {
+
+    @Test
+    void getEnumValues() {
+        final Gender[] enumValues = ReflectionUtils.getEnumValues(Gender.class);
+        assertThat(enumValues).containsExactly(Gender.values());
+    }
 
     @Test
     void getField() {

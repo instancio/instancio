@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.toList;
 import static org.instancio.util.ExceptionHandler.conditionalFailOnError;
 
 public class PopulatingNodeVisitor implements NodeVisitor {
-
+    private static final Object NULL_VALUE = null;
     private final Object owner;
     private final GeneratorResult generatorResult;
     private final GeneratorFacade generatorFacade;
@@ -78,7 +78,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             conditionalFailOnError(() -> ReflectionUtils.setField(owner, field, generatorResult.getValue()));
             enqueueChildrenOf(node, generatorResult, queue);
         } else if (!field.getType().isPrimitive()) {
-            conditionalFailOnError(() -> ReflectionUtils.setField(owner, field, null));
+            conditionalFailOnError(() -> ReflectionUtils.setField(owner, field, NULL_VALUE));
         }
     }
 

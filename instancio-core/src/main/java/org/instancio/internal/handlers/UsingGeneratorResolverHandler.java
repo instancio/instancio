@@ -43,7 +43,11 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
 
         return generatorOpt.map(generator -> {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
-            final GeneratorResult result = GeneratorResult.create(generator.generate(context.getRandomProvider()), generator.getHints());
+
+            final GeneratorResult result = GeneratorResult.create(
+                    generator.generate(context.getRandomProvider()),
+                    generator.getHints());
+
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
             return result;
         });

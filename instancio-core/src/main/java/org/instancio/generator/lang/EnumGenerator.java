@@ -15,30 +15,21 @@
  */
 package org.instancio.generator.lang;
 
-import org.instancio.exception.InstancioException;
-import org.instancio.generator.AbstractGenerator;
-import org.instancio.generator.GeneratorContext;
+import org.instancio.Generator;
 import org.instancio.internal.random.RandomProvider;
+import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
-import java.lang.reflect.Method;
+public class EnumGenerator<E extends Enum<E>> implements Generator<E> {
+    private final Class<E> enumClass;
 
-public class EnumGenerator extends AbstractGenerator<Enum<?>> {
-    private final Class<?> enumClass;
-
-    public EnumGenerator(final GeneratorContext context, final Class<?> enumClass) {
-        super(context);
+    public EnumGenerator(final Class<E> enumClass) {
         this.enumClass = Verify.notNull(enumClass, "Enum class must not be null");
     }
 
     @Override
-    public Enum<?> generate(final RandomProvider random) {
-        try {
-            Method m = enumClass.getDeclaredMethod("values");
-            Enum<?>[] res = (Enum<?>[]) m.invoke(null);
-            return random.oneOf(res);
-        } catch (Exception ex) {
-            throw new InstancioException("Error generating enum value for: " + enumClass.getName(), ex);
-        }
+    public E generate(final RandomProvider random) {
+        final E[] enumValues = ReflectionUtils.getEnumValues(enumClass);
+        return random.oneOf(enumValues);
     }
 }

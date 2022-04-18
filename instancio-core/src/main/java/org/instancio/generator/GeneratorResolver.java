@@ -123,7 +123,7 @@ public class GeneratorResolver {
             if (klass.isArray()) {
                 generator = new ArrayGenerator<>(context, klass);
             } else if (klass.isEnum()) {
-                generator = new EnumGenerator(context, klass);
+                generator = new EnumGenerator(klass);
             }
         }
         return Optional.ofNullable(generator);

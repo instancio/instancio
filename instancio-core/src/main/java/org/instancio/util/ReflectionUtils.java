@@ -20,6 +20,7 @@ import org.instancio.exception.InstancioException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +31,16 @@ public class ReflectionUtils {
 
     private ReflectionUtils() {
         // non-instantiable
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E extends Enum<E>> E[] getEnumValues(final Class<E> enumClass) {
+        try {
+            Method m = enumClass.getDeclaredMethod("values");
+            return (E[]) m.invoke(null);
+        } catch (Exception ex) {
+            throw new InstancioException("Error getting enum values for class: " + enumClass.getName());
+        }
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)

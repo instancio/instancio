@@ -17,6 +17,7 @@ package org.instancio.internal.handlers;
 
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorResult;
+import org.instancio.generator.util.EnumSetGenerator;
 import org.instancio.internal.CallbackHandler;
 import org.instancio.internal.ModelContext;
 import org.instancio.internal.nodes.CollectionNode;
@@ -25,9 +26,12 @@ import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Setting;
 import org.instancio.settings.Settings;
+import org.instancio.util.ReflectionUtils;
+import org.instancio.util.Sonar;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Optional;
 
 public class CollectionNodeHandler implements NodeHandler {
@@ -36,7 +40,9 @@ public class CollectionNodeHandler implements NodeHandler {
     private final Instantiator instantiator;
     private final CallbackHandler callbackHandler;
 
-    public CollectionNodeHandler(final ModelContext<?> context, final Instantiator instantiator, final CallbackHandler callbackHandler) {
+    public CollectionNodeHandler(final ModelContext<?> context,
+                                 final Instantiator instantiator,
+                                 final CallbackHandler callbackHandler) {
         this.context = context;
         this.instantiator = instantiator;
         this.callbackHandler = callbackHandler;
@@ -44,8 +50,15 @@ public class CollectionNodeHandler implements NodeHandler {
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
+
         if (node instanceof CollectionNode) {
-            Verify.isTrue(Collection.class.isAssignableFrom(node.getTargetClass()), "Expected a collection type: %s", node.getTargetClass());
+            Verify.isTrue(Collection.class.isAssignableFrom(node.getTargetClass()),
+                    "Expected a collection type: %s", node.getTargetClass());
+
+            if (EnumSet.class.isAssignableFrom(node.getTargetClass())) {
+                return generateEnumSet((CollectionNode) node);
+            }
+
             final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
             final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(randomSize()).build();
             final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(effectiveType), hints);
@@ -53,6 +66,16 @@ public class CollectionNodeHandler implements NodeHandler {
             return Optional.of(result);
         }
         return Optional.empty();
+    }
+
+    @SuppressWarnings({"unchecked", Sonar.RAW_USE_OF_PARAMETERIZED_CLASS})
+    private Optional<GeneratorResult> generateEnumSet(final CollectionNode collectionNode) {
+        final Class<Enum> enumClass = (Class<Enum>) collectionNode.getElementNode().getTargetClass();
+        final Enum<?>[] enumValues = ReflectionUtils.getEnumValues(enumClass);
+        final int enumSetSize = Math.min(randomSize(), enumValues.length);
+        final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(enumSetSize).build();
+        final EnumSetGenerator<?> generator = new EnumSetGenerator<>(enumClass);
+        return Optional.of(GeneratorResult.create(generator.generate(context.getRandomProvider()), hints));
     }
 
     private int randomSize() {

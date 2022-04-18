@@ -18,6 +18,7 @@ package org.instancio.internal;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
+import org.instancio.internal.AncestorTree.AncestorTreeNode;
 import org.instancio.internal.handlers.ArrayNodeHandler;
 import org.instancio.internal.handlers.CollectionNodeHandler;
 import org.instancio.internal.handlers.InstantiatingHandler;
@@ -96,7 +97,7 @@ class GeneratorFacade {
         for (NodeHandler handler : nodeHandlers) {
             generatorResult = handler.getResult(node);
             if (generatorResult.isPresent()) {
-                ancestorTree.setObjectAncestor(generatorResult.get().getValue(), new AncestorTree.AncestorTreeNode(owner, node.getParent()));
+                ancestorTree.setObjectAncestor(generatorResult.get().getValue(), new AncestorTreeNode(owner, node.getParent()));
                 break;
             }
         }
