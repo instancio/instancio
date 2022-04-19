@@ -15,11 +15,17 @@
  */
 package org.instancio;
 
+import org.instancio.BindingTarget.BindingType;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * A collection of static factory methods for creating {@link Binding}s.
+ * A collection of static factory methods for creating {@link BindingImpl}s.
  * <p>
  * A binding allows targeting a specific class or field.
  * <p>
@@ -48,11 +54,11 @@ public class Bindings {
     }
 
     public static Binding of(final Binding... bindings) {
-        final List<Binding.BindingTarget> targets = new ArrayList<>();
+        final List<BindingTarget> targets = new ArrayList<>();
         for (Binding b : bindings) {
             targets.addAll(b.getTargets());
         }
-        return new Binding(targets);
+        return new BindingImpl(targets);
     }
 
     /**
@@ -63,7 +69,7 @@ public class Bindings {
      * @return binding
      */
     public static Binding field(final Class<?> declaringClass, final String fieldName) {
-        return Binding.fieldBinding(declaringClass, fieldName);
+        return BindingImpl.fieldBinding(declaringClass, fieldName);
     }
 
     /**
@@ -80,7 +86,7 @@ public class Bindings {
      * @return binding
      */
     public static Binding field(final String fieldName) {
-        return Binding.fieldBinding(fieldName);
+        return BindingImpl.fieldBinding(fieldName);
     }
 
     /**
@@ -98,7 +104,7 @@ public class Bindings {
      * @return binding
      */
     public static Binding all(final Class<?> type) {
-        return Binding.typeBinding(type);
+        return BindingImpl.typeBinding(type);
     }
 
     /**
@@ -181,6 +187,93 @@ public class Bindings {
      */
     public static Binding allChars() {
         return ALL_CHARS;
+    }
+
+    static class BindingTargetImpl implements BindingTarget {
+        private final BindingType bindingType;
+        private final Class<?> targetType;
+        private final String fieldName;
+
+        BindingTargetImpl(final BindingType bindingType,
+                          @Nullable final Class<?> targetType,
+                          @Nullable final String fieldName) {
+
+            this.bindingType = bindingType;
+            this.targetType = targetType;
+            this.fieldName = fieldName;
+        }
+
+        @Override
+        public BindingType getType() {
+            return bindingType;
+        }
+
+        @Override
+        public Class<?> getTargetClass() {
+            return targetType;
+        }
+
+        @Override
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        @Override
+        public final boolean equals(final Object o) {
+            if (this == o) return true;
+            if (!(o instanceof BindingTarget)) return false;
+            final BindingTarget that = (BindingTarget) o;
+            return bindingType == that.getType()
+                    && Objects.equals(targetType, that.getTargetClass())
+                    && Objects.equals(fieldName, that.getFieldName());
+        }
+
+        @Override
+        public final int hashCode() {
+            return Objects.hash(bindingType, targetType, fieldName);
+        }
+    }
+
+    static class BindingImpl implements Binding {
+        private final List<BindingTarget> targets;
+
+        BindingImpl(final List<BindingTarget> targets) {
+            this.targets = Collections.unmodifiableList(targets);
+        }
+
+        BindingImpl(final BindingTarget... targets) {
+            this(Arrays.asList(targets));
+        }
+
+        static Binding fieldBinding(@Nullable final Class<?> targetType, final String fieldName) {
+            return new BindingImpl(new BindingTargetImpl(BindingType.FIELD, targetType, fieldName));
+        }
+
+        static Binding fieldBinding(final String fieldName) {
+            return new BindingImpl(new BindingTargetImpl(BindingType.FIELD, null, fieldName));
+        }
+
+        static Binding typeBinding(final Class<?> targetType) {
+            return new BindingImpl(new BindingTargetImpl(BindingType.TYPE, targetType, null));
+        }
+
+        @Override
+        public List<BindingTarget> getTargets() {
+            return targets;
+        }
+
+        @Override
+        public final boolean equals(final Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Binding)) return false;
+            final Binding binding = (Binding) o;
+            return Objects.equals(targets, binding.getTargets());
+        }
+
+        @Override
+        public final int hashCode() {
+            return Objects.hash(targets);
+        }
     }
 
 }

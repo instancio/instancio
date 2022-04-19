@@ -28,6 +28,7 @@ import org.instancio.settings.Settings;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class InstancioApiImpl<T> implements InstancioApi<T> {
 
@@ -118,6 +119,12 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     public T create() {
         final InstancioEngine engine = new InstancioEngine(createModel());
         return engine.createObject();
+    }
+
+    @Override
+    public Stream<T> stream() {
+        final InstancioEngine engine = new InstancioEngine(createModel());
+        return Stream.generate(engine::createObject);
     }
 
     private InternalModel<T> createModel() {
