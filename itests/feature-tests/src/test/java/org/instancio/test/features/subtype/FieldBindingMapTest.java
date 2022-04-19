@@ -35,13 +35,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.field;
 
-@FeatureTag(Feature.MAP_FIELD_SUBTYPE)
+@FeatureTag(Feature.MAP_FIELD_BINDING)
 @ExtendWith(InstancioExtension.class)
-class MapFieldSubtypeTest {
+class FieldBindingMapTest {
 
     @Test
     @DisplayName("Map non-generic field type to non-generic subtype")
-    void mapNonGenericFieldTypeToNonGenericSubtype() {
+    void mapNonGenericTypeToNonGenericSubtype() {
         final Person result = Instancio.of(Person.class)
                 .map(Person_.address, AddressExtension.class)
                 .create();
@@ -54,7 +54,7 @@ class MapFieldSubtypeTest {
     @Disabled
     @FeatureTag(Feature.UNSUPPORTED)
     @SuppressWarnings(Sonar.DISABLED_TEST)
-    void mapGenericFieldTypeToNonGenericSubtype_GenericRootClass() {
+    void mapGenericTypeToNonGenericSubtype_GenericRootClass() {
         // e.g. ItemInterface<String> foo = new NonGenericItemStringExtension();
         final ItemInterfaceHolder<String> result = Instancio.of(new TypeToken<ItemInterfaceHolder<String>>() {})
                 .map(field("itemInterface"), NonGenericItemStringExtension.class)
@@ -67,7 +67,7 @@ class MapFieldSubtypeTest {
     @Disabled
     @FeatureTag(Feature.UNSUPPORTED)
     @SuppressWarnings(Sonar.DISABLED_TEST)
-    void mapGenericFieldTypeToNonGenericSubtype_NonGenericRootClass() {
+    void mapGenericTypeToNonGenericSubtype_NonGenericRootClass() {
         final ItemInterfaceStringHolder result = Instancio.of(ItemInterfaceStringHolder.class)
                 .map(field("itemInterfaceString"), NonGenericItemStringExtension.class)
                 .create();

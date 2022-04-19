@@ -18,6 +18,8 @@ package org.instancio;
 import org.instancio.internal.ClassInstancioApiImpl;
 import org.instancio.internal.InstancioApiImpl;
 
+import java.util.stream.Stream;
+
 /**
  * Instancio API for creating instances of a class.
  *
@@ -137,6 +139,24 @@ public class Instancio {
     }
 
     /**
+     * Creates an infinite stream of distinct, fully populated instances of given class.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     List<Person> persons = Instancio.stream(Person.class)
+     *         .limit(5)
+     *         .collect(Collectors.toList());
+     * }</pre>
+     *
+     * @param klass to create
+     * @param <T>   type
+     * @return an infinite stream of distinct, fully populated instances
+     */
+    public static <T> Stream<T> stream(final Class<T> klass) {
+        return of(klass).stream();
+    }
+
+    /**
      * Creates a fully-populated instance of type specified in the type token.
      * This method can be used to create generic classes.
      * <p>
@@ -148,6 +168,24 @@ public class Instancio {
      */
     public static <T> T create(final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).create();
+    }
+
+    /**
+     * Creates an infinite stream of distinct, fully populated instances of type specified in the type token.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     List<Pair<Integer, String>> pairs = Instancio.stream(new TypeToken<Pair<Integer, String>>() {})
+     *         .limit(5)
+     *         .collect(Collectors.toList());
+     * }</pre>
+     *
+     * @param typeToken containing type to create
+     * @param <T>       type
+     * @return an infinite stream of distinct, fully populated instances
+     */
+    public static <T> Stream<T> stream(final TypeTokenSupplier<T> typeToken) {
+        return of(typeToken).stream();
     }
 
     /**

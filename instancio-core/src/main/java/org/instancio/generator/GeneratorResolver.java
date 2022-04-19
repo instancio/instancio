@@ -26,6 +26,7 @@ import org.instancio.generator.lang.FloatGenerator;
 import org.instancio.generator.lang.IntegerGenerator;
 import org.instancio.generator.lang.LongGenerator;
 import org.instancio.generator.lang.ShortGenerator;
+import org.instancio.generator.lang.StringBuilderGenerator;
 import org.instancio.generator.lang.StringGenerator;
 import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
@@ -92,7 +93,7 @@ public class GeneratorResolver {
         generators.put(Boolean.class, new BooleanGenerator(context));
         generators.put(Character.class, new CharacterGenerator(context));
         generators.put(String.class, new StringGenerator(context));
-
+        generators.put(StringBuilder.class, new StringBuilderGenerator(context));
         generators.put(Number.class, new IntegerGenerator(context));
         generators.put(BigInteger.class, new BigIntegerGenerator(context));
         generators.put(BigDecimal.class, new BigDecimalGenerator(context));

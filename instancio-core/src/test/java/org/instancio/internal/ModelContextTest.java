@@ -248,7 +248,7 @@ class ModelContextTest {
     }
 
     private static Binding toFieldBinding(final Field field) {
-        return Binding.fieldBinding(field.getDeclaringClass(), field.getName());
+        return Bindings.field(field.getDeclaringClass(), field.getName());
     }
 
 }

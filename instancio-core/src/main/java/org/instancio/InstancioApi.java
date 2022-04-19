@@ -20,6 +20,7 @@ import org.instancio.settings.Settings;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Instancio API for generating instances of a class populated with random data.
@@ -42,6 +43,21 @@ public interface InstancioApi<T> {
      * @return a fully populated object
      */
     T create();
+
+    /**
+     * Creates an infinite stream of distinct, fully populated objects.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     List<Person> persons = Instancio.of(Person.class)
+     *         .stream()
+     *         .limit(5)
+     *         .collect(Collectors.toList());
+     * }</pre>
+     *
+     * @return an infinite stream of distinct, populated objects
+     */
+    Stream<T> stream();
 
     /**
      * Creates a model containing all the information for populating a class.

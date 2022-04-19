@@ -16,6 +16,8 @@
 package org.instancio.internal;
 
 import org.instancio.Binding;
+import org.instancio.BindingTarget;
+import org.instancio.BindingTarget.BindingType;
 import org.instancio.Generator;
 import org.instancio.Generators;
 import org.instancio.OnCompleteCallback;
@@ -126,15 +128,15 @@ public class ModelContext<T> {
 
     private void putAllSubtypeBindings(final Map<Binding, Class<?>> subtypeBindings) {
         subtypeBindings.forEach((binding, subtype) -> {
-            for (Binding.BindingTarget target : binding.getTargets()) {
-                if (target.isFieldBinding()) {
-                    final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
+            for (BindingTarget target : binding.getTargets()) {
+                if (target.getType() == BindingType.FIELD) {
+                    final Class<?> targetType = defaultIfNull(target.getTargetClass(), this.rootClass);
                     final Field field = getField(targetType, target.getFieldName());
                     // TODO validate
                     fieldSubtypeMap.put(field, subtype);
                 } else {
-                    ApiValidator.validateSubtypeMapping(target.getTargetType(), subtype);
-                    classSubtypeMap.put(target.getTargetType(), subtype);
+                    ApiValidator.validateSubtypeMapping(target.getTargetClass(), subtype);
+                    classSubtypeMap.put(target.getTargetClass(), subtype);
                 }
             }
         });
@@ -152,26 +154,26 @@ public class ModelContext<T> {
 
     private void putAllUserSuppliedGenerators(final Map<Binding, Generator<?>> generatorBindings) {
         generatorBindings.forEach((binding, generator) -> {
-            for (Binding.BindingTarget target : binding.getTargets()) {
+            for (BindingTarget target : binding.getTargets()) {
                 bindGeneratorToTarget(target, generator);
             }
         });
     }
 
     private void putCallbackBinding(final Binding binding, final OnCompleteCallback<?> callback) {
-        for (Binding.BindingTarget target : binding.getTargets()) {
-            if (target.isFieldBinding()) {
-                final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
+        for (BindingTarget target : binding.getTargets()) {
+            if (target.getType() == BindingType.FIELD) {
+                final Class<?> targetType = defaultIfNull(target.getTargetClass(), this.rootClass);
                 final Field field = getField(targetType, target.getFieldName());
                 this.userSuppliedFieldCallbacks.put(field, callback);
             } else {
-                this.userSuppliedClassCallbacks.put(target.getTargetType(), callback);
+                this.userSuppliedClassCallbacks.put(target.getTargetClass(), callback);
             }
         }
     }
 
     private void putGeneratorBinding(final Binding binding, final Function<Generators, ? extends GeneratorSpec<?>> genFn) {
-        for (Binding.BindingTarget target : binding.getTargets()) {
+        for (BindingTarget target : binding.getTargets()) {
             // Do not share generator instances among binding targets of a composite binding.
             // For example, array generators are created for each component type.
             // Therefore, using 'gen.array().length(10)' would fail when targets are different array types.
@@ -180,9 +182,9 @@ public class ModelContext<T> {
         }
     }
 
-    private void bindGeneratorToTarget(final Binding.BindingTarget target, Generator<?> generator) {
-        if (target.isFieldBinding()) {
-            final Class<?> targetType = defaultIfNull(target.getTargetType(), this.rootClass);
+    private void bindGeneratorToTarget(final BindingTarget target, Generator<?> generator) {
+        if (target.getType() == BindingType.FIELD) {
+            final Class<?> targetType = defaultIfNull(target.getTargetClass(), this.rootClass);
             final Field field = getField(targetType, target.getFieldName());
 
             // TODO refactor to remove the isArray conditional
@@ -191,25 +193,25 @@ public class ModelContext<T> {
             }
             this.userSuppliedFieldGenerators.put(field, generator);
         } else {
-            final Class<?> userSpecifiedClass = generator.targetClass().orElse(target.getTargetType());
-            if (target.getTargetType().isArray() && generator instanceof ArrayGenerator) {
+            final Class<?> userSpecifiedClass = generator.targetClass().orElse(target.getTargetClass());
+            if (target.getTargetClass().isArray() && generator instanceof ArrayGenerator) {
                 ((ArrayGenerator<?>) generator).type(userSpecifiedClass);
             }
-            if (userSpecifiedClass != target.getTargetType()) {
-                this.classSubtypeMap.put(target.getTargetType(), userSpecifiedClass);
+            if (userSpecifiedClass != target.getTargetClass()) {
+                this.classSubtypeMap.put(target.getTargetClass(), userSpecifiedClass);
             }
-            this.userSuppliedClassGenerators.put(target.getTargetType(), generator);
+            this.userSuppliedClassGenerators.put(target.getTargetClass(), generator);
         }
     }
 
     private void putIgnored(Set<Binding> ignoredBindings) {
         for (Binding binding : ignoredBindings) {
-            for (Binding.BindingTarget target : binding.getTargets()) {
-                if (target.isFieldBinding()) {
-                    final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
+            for (BindingTarget target : binding.getTargets()) {
+                if (target.getType() == BindingType.FIELD) {
+                    final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetClass(), this.rootClass);
                     this.ignoredFields.add(getField(targetType, target.getFieldName()));
                 } else {
-                    this.ignoredClasses.add(target.getTargetType());
+                    this.ignoredClasses.add(target.getTargetClass());
                 }
             }
         }
@@ -217,10 +219,10 @@ public class ModelContext<T> {
 
     private void putNullable(final Set<Binding> nullableBindings) {
         for (Binding binding : nullableBindings) {
-            for (Binding.BindingTarget target : binding.getTargets()) {
-                final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetType(), this.rootClass);
+            for (BindingTarget target : binding.getTargets()) {
+                final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetClass(), this.rootClass);
 
-                if (target.isFieldBinding()) {
+                if (target.getType() == BindingType.FIELD) {
                     final Field field = getField(targetType, target.getFieldName());
                     if (!field.getType().isPrimitive()) {
                         this.nullableFields.add(field);

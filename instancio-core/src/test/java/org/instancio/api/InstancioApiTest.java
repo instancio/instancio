@@ -29,11 +29,14 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.instancio.Bindings.all;
 import static org.instancio.Bindings.field;
+import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
 
 /**
  * Smoke test invoking various API methods.
@@ -112,5 +115,35 @@ class InstancioApiTest {
         assertThat(homer.getPets())
                 .isNotEmpty()
                 .hasOnlyElementsOfType(Pet.class);
+    }
+
+    @Test
+    void createStreamFromClass() {
+        final List<Person> results = Instancio.of(Person.class)
+                .supply(field("name"), () -> HOMER)
+                .stream()
+                .limit(5)
+                .collect(toList());
+
+        assertThat(results).hasSize(5)
+                .extracting(Person::getName)
+                .containsOnly(HOMER);
+
+        assertThatObject(results).isFullyPopulated();
+    }
+
+    @Test
+    void createStreamFromTypeToken() {
+        final List<Person> results = Instancio.of(new TypeToken<Person>() {})
+                .supply(field("name"), () -> HOMER)
+                .stream()
+                .limit(5)
+                .collect(toList());
+
+        assertThat(results).hasSize(5)
+                .extracting(Person::getName)
+                .containsOnly(HOMER);
+
+        assertThatObject(results).isFullyPopulated();
     }
 }
