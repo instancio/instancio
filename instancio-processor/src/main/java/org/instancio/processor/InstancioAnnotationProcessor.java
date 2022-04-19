@@ -41,25 +41,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @SupportedOptions({"instancio.verbose", "instancio.suffix"})
 @SupportedAnnotationTypes("org.instancio.InstancioMetaModel")
 public final class InstancioAnnotationProcessor extends AbstractProcessor {
-
-    private static final String MODEL_CLASSES_ATTRIBUTE = "classes";
-    private static final MetaModelSourceGenerator sourceGenerator = new MetaModelSourceGenerator();
+    private static final String CLASSES_ATTRIBUTE = "classes";
     private static final String TRUE = "true";
+    private static final MetaModelSourceGenerator sourceGenerator = new MetaModelSourceGenerator();
 
-    private Types types;
-    private Elements elements;
+    private Types typeUtils;
+    private Elements elementUtils;
     private Logger logger;
     private String classNameSuffix;
 
     @Override
     public synchronized void init(final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        this.types = processingEnv.getTypeUtils();
-        this.elements = processingEnv.getElementUtils();
+        this.typeUtils = processingEnv.getTypeUtils();
+        this.elementUtils = processingEnv.getElementUtils();
         this.logger = new Logger(processingEnv.getMessager(),
                 TRUE.equalsIgnoreCase(processingEnv.getOptions().get("instancio.verbose")));
         this.classNameSuffix = processingEnv.getOptions().get("instancio.suffix");
@@ -76,28 +76,23 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
             return true;
         }
 
-        final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(InstancioMetaModel.class);
-        if (elements.isEmpty()) {
+        final Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(InstancioMetaModel.class);
+        if (annotatedElements.isEmpty()) {
             logger.debug("No @InstancioMetaModel annotations to process");
             return true;
         }
 
-        logger.debug("Preparing to process %s @InstancioMetaModel annotation(s)", elements.size());
+        logger.debug("Preparing to process %s @InstancioMetaModel annotation(s)", annotatedElements.size());
 
-        for (Element annotatedElement : elements) {
+        for (Element annotatedElement : annotatedElements) {
             final TypeElement rootType = (TypeElement) annotatedElement;
 
-            final List<TypeMirror> modelClasses = getClassArrayValueFromAnnotation(
-                    rootType, InstancioMetaModel.class, MODEL_CLASSES_ATTRIBUTE);
-
-            for (TypeMirror typeMirror : modelClasses) {
-                final Element element = types.asElement(typeMirror);
-                if (element instanceof QualifiedNameable) {
-                    writeSourceFile(new MetaModelClass((QualifiedNameable) element, classNameSuffix), annotatedElement);
-                } else {
-                    logger.debug("Not a QualifiedNameable: %s", typeMirror);
-                }
-            }
+            getAnnotationValues(rootType, CLASSES_ATTRIBUTE)
+                    .stream()
+                    .filter(av -> av.getValue() instanceof TypeMirror)
+                    .map(av -> typeUtils.asElement((TypeMirror) av.getValue()))
+                    .filter(e -> e instanceof QualifiedNameable)
+                    .forEach(e -> writeSourceFile(new MetaModelClass((QualifiedNameable) e, classNameSuffix), rootType));
         }
 
         return true;
@@ -115,29 +110,19 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private List<TypeMirror> getClassArrayValueFromAnnotation(final Element element,
-                                                              final Class<? extends Annotation> annotation,
-                                                              final String attributeName) {
-        final List<TypeMirror> values = new ArrayList<>();
+    private List<AnnotationValue> getAnnotationValues(final Element element, final String attributeName) {
+        final TypeElement typeElement = elementUtils.getTypeElement(InstancioMetaModel.class.getCanonicalName());
+        final List<AnnotationValue> annotationValues = new ArrayList<>();
 
         for (AnnotationMirror am : element.getAnnotationMirrors()) {
-            if (types.isSameType(am.getAnnotationType(), elements.getTypeElement(annotation.getCanonicalName()).asType())) {
-
-                for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet()) {
-                    if (attributeName.equals(entry.getKey().getSimpleName().toString())) {
-                        final List<AnnotationValue> classesTypes = (List<AnnotationValue>) entry.getValue().getValue();
-                        for (AnnotationValue annotationValue : classesTypes) {
-                            final Object value = annotationValue.getValue();
-                            if (value instanceof TypeMirror) {
-                                values.add((TypeMirror) value);
-                            } else {
-                                logger.warn("Unexpected annotation value: %s -> %s", annotationValue, value);
-                            }
-                        }
+            if (typeUtils.isSameType(am.getAnnotationType(), typeElement.asType())) {
+                am.getElementValues().forEach((executableElement, annotationValue) -> {
+                    if (attributeName.equals(executableElement.getSimpleName().toString())) {
+                        annotationValues.addAll((List<AnnotationValue>) annotationValue.getValue());
                     }
-                }
+                });
             }
         }
-        return values;
+        return annotationValues;
     }
 }
