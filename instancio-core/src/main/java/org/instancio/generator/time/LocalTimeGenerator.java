@@ -19,39 +19,36 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 
-import java.time.LocalDate;
+import java.time.LocalTime;
 
-import static java.time.temporal.ChronoField.EPOCH_DAY;
+public class LocalTimeGenerator extends AbstractTemporalGenerator<LocalTime> {
 
-public class LocalDateGenerator extends AbstractTemporalGenerator<LocalDate> {
+    private static final LocalTime MIN = LocalTime.of(0, 0, 0);
+    private static final LocalTime MAX = LocalTime.of(23, 59, 59);
 
-    private static final LocalDate MIN = LocalDate.of(1970, 1, 1);
-    private static final LocalDate MAX = LocalDate.now().plusYears(50);
-
-    public LocalDateGenerator(final GeneratorContext context) {
+    public LocalTimeGenerator(final GeneratorContext context) {
         super(context, MIN, MAX);
     }
 
     @Override
-    LocalDate now() {
-        return LocalDate.now();
+    LocalTime now() {
+        return LocalTime.now();
     }
 
     @Override
-    LocalDate getEarliestFuture() {
-        return LocalDate.now().plusDays(1);
+    LocalTime getEarliestFuture() {
+        return LocalTime.now().plusMinutes(1);
     }
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.isBefore(max),
-                "Start date must be before end date by at least 1 day: %s, %s", min, max);
+        ApiValidator.isTrue(min.isBefore(max), "Start time must be before end time: %s, %s", min, max);
     }
 
     @Override
-    public LocalDate generate(final RandomProvider random) {
-        return LocalDate.ofEpochDay(random.longRange(
-                min.getLong(EPOCH_DAY),
-                max.getLong(EPOCH_DAY)));
+    public LocalTime generate(final RandomProvider random) {
+        return LocalTime.ofNanoOfDay(random.longRange(
+                min.toNanoOfDay(),
+                max.toNanoOfDay()));
     }
 }

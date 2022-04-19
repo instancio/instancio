@@ -22,46 +22,46 @@ import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.Year;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LocalDateGeneratorTest {
+class YearGeneratorTest {
 
     private static final Settings settings = Settings.create();
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
-    private final LocalDateGenerator generator = new LocalDateGenerator(context);
+    private final YearGenerator generator = new YearGenerator(context);
 
     @Test
     void past() {
         generator.past();
-        assertThat(generator.generate(random)).isBefore(LocalDate.now());
+        assertThat(generator.generate(random).isBefore(Year.now())).isTrue();
     }
 
     @Test
     void future() {
         generator.future();
-        assertThat(generator.generate(random)).isAfter(LocalDate.now());
+        assertThat(generator.generate(random).isAfter(Year.now())).isTrue();
     }
 
     @Test
     void validateRange() {
-        final LocalDate date = LocalDate.of(1970, 1, 1);
+        final Year year = Year.of(1970);
 
-        assertThatThrownBy(() -> generator.range(date, date))
+        assertThatThrownBy(() -> generator.range(year, year))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start date must be before end date by at least 1 day: 1970-01-01, 1970-01-01");
+                .hasMessage("Start year must be before end year: 1970, 1970");
 
-        generator.range(date, date.plusDays(1)); // no error
+        generator.range(year, year.plusYears(1)); // no error
     }
 
     @Test
     void range() {
-        final LocalDate min = LocalDate.now().plusDays(5);
-        final LocalDate max = min.plusDays(1);
+        final Year min = Year.now().plusYears(5);
+        final Year max = min.plusYears(1);
         generator.range(min, max);
         assertThat(generator.generate(random)).isBetween(min, max);
     }

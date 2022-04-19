@@ -19,39 +19,38 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 
-import static java.time.temporal.ChronoField.EPOCH_DAY;
+public class YearMonthGenerator extends AbstractTemporalGenerator<YearMonth> {
 
-public class LocalDateGenerator extends AbstractTemporalGenerator<LocalDate> {
+    private static final YearMonth MIN = YearMonth.of(1970, 1);
+    private static final YearMonth MAX = YearMonth.now().plusYears(50);
 
-    private static final LocalDate MIN = LocalDate.of(1970, 1, 1);
-    private static final LocalDate MAX = LocalDate.now().plusYears(50);
-
-    public LocalDateGenerator(final GeneratorContext context) {
+    public YearMonthGenerator(final GeneratorContext context) {
         super(context, MIN, MAX);
     }
 
     @Override
-    LocalDate now() {
-        return LocalDate.now();
+    YearMonth now() {
+        return YearMonth.now();
     }
 
     @Override
-    LocalDate getEarliestFuture() {
-        return LocalDate.now().plusDays(1);
+    YearMonth getEarliestFuture() {
+        return YearMonth.now().plusMonths(1);
     }
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.isBefore(max),
-                "Start date must be before end date by at least 1 day: %s, %s", min, max);
+        ApiValidator.isTrue(min.isBefore(max), "Start value must be before end: %s, %s", min, max);
     }
 
     @Override
-    public LocalDate generate(final RandomProvider random) {
-        return LocalDate.ofEpochDay(random.longRange(
-                min.getLong(EPOCH_DAY),
-                max.getLong(EPOCH_DAY)));
+    public YearMonth generate(final RandomProvider random) {
+        int minMonth = min.getYear() * 12 + min.getMonthValue();
+        int maxMonth = max.getYear() * 12 + max.getMonthValue();
+        int result = random.intRange(minMonth, maxMonth);
+
+        return YearMonth.of(result / 12, result % 12 + 1);
     }
 }

@@ -15,18 +15,19 @@
  */
 package org.instancio.creation.basic;
 
-import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
+import org.instancio.test.support.pojo.basic.SupportedTemporalTypes;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SupportedNumericTypesCreationTest extends CreationTestTemplate<SupportedNumericTypes> {
+public class SupportedTemporalTypesCreationTest extends CreationTestTemplate<SupportedTemporalTypes> {
 
     @Override
-    protected void verify(final SupportedNumericTypes result) {
-        assertThat(result.getBigInteger()).isNotNull();
-        assertThat(result.getBigDecimal()).isNotNull();
-        assertThat(result.getAtomicInteger()).isNotNull();
-        assertThat(result.getAtomicLong()).isNotNull();
+    protected void verify(final SupportedTemporalTypes result) {
+        assertThat(result.getLocalTime()).isNotNull();
+        assertThat(result.getLocalDate()).isNotNull();
+        assertThat(result.getLocalDateTime()).isNotNull();
+        assertThat(result.getYearMonth()).isNotNull();
+        assertThat(result.getYear()).isNotNull();
     }
 }

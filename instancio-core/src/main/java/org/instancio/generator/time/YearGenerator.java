@@ -19,39 +19,34 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 
-import java.time.LocalDate;
+import java.time.Year;
 
-import static java.time.temporal.ChronoField.EPOCH_DAY;
+public class YearGenerator extends AbstractTemporalGenerator<Year> {
 
-public class LocalDateGenerator extends AbstractTemporalGenerator<LocalDate> {
+    private static final Year MIN = Year.of(1970);
+    private static final Year MAX = Year.now().plusYears(50);
 
-    private static final LocalDate MIN = LocalDate.of(1970, 1, 1);
-    private static final LocalDate MAX = LocalDate.now().plusYears(50);
-
-    public LocalDateGenerator(final GeneratorContext context) {
+    public YearGenerator(final GeneratorContext context) {
         super(context, MIN, MAX);
     }
 
     @Override
-    LocalDate now() {
-        return LocalDate.now();
+    Year now() {
+        return Year.now();
     }
 
     @Override
-    LocalDate getEarliestFuture() {
-        return LocalDate.now().plusDays(1);
+    Year getEarliestFuture() {
+        return Year.now().plusYears(1);
     }
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.isBefore(max),
-                "Start date must be before end date by at least 1 day: %s, %s", min, max);
+        ApiValidator.isTrue(min.isBefore(max), "Start year must be before end year: %s, %s", min, max);
     }
 
     @Override
-    public LocalDate generate(final RandomProvider random) {
-        return LocalDate.ofEpochDay(random.longRange(
-                min.getLong(EPOCH_DAY),
-                max.getLong(EPOCH_DAY)));
+    public Year generate(final RandomProvider random) {
+        return Year.of(random.intRange(min.getValue(), max.getValue()));
     }
 }

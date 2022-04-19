@@ -20,28 +20,28 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static java.time.ZoneOffset.UTC;
 
-public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateTime> {
+public class ZonedDateTimeGenerator extends AbstractTemporalGenerator<ZonedDateTime> {
 
-    private static final LocalDateTime MIN = LocalDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MIN, UTC);
-    private static final LocalDateTime MAX = LocalDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MAX, UTC);
+    private static final ZonedDateTime MIN = ZonedDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MIN, UTC);
+    private static final ZonedDateTime MAX = ZonedDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MAX, UTC);
 
-    public LocalDateTimeGenerator(final GeneratorContext context) {
+    public ZonedDateTimeGenerator(final GeneratorContext context) {
         super(context, MIN, MAX);
     }
 
     @Override
-    LocalDateTime now() {
-        return LocalDateTime.now();
+    ZonedDateTime now() {
+        return ZonedDateTime.now();
     }
 
     @Override
-    LocalDateTime getEarliestFuture() {
-        return LocalDateTime.now().plusMinutes(1);
+    ZonedDateTime getEarliestFuture() {
+        return ZonedDateTime.now().plusMinutes(1);
     }
 
     @Override
@@ -57,16 +57,16 @@ public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateT
      * between the start and end dates, or else an error will be thrown.
      */
     @Override
-    public TemporalGeneratorSpec<LocalDateTime> range(final LocalDateTime startInclusive, final LocalDateTime endExclusive) {
+    public TemporalGeneratorSpec<ZonedDateTime> range(final ZonedDateTime startInclusive, final ZonedDateTime endExclusive) {
         return super.range(startInclusive, endExclusive);
     }
 
     @Override
-    public LocalDateTime generate(final RandomProvider random) {
+    public ZonedDateTime generate(final RandomProvider random) {
         final Instant instant = Instant.ofEpochMilli(random.longRange(
-                min.toInstant(UTC).toEpochMilli(),
-                max.toInstant(UTC).toEpochMilli()));
+                min.toInstant().toEpochMilli(),
+                max.toInstant().toEpochMilli()));
 
-        return LocalDateTime.ofInstant(instant, UTC);
+        return ZonedDateTime.ofInstant(instant, UTC);
     }
 }

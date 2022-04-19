@@ -113,38 +113,38 @@ class SettingsTest {
 
         assertThatThrownBy(() -> locked.set(Setting.LONG_MAX, 1L))
                 .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessage("Settings are read-only");
+                .hasMessage("This instance of Settings has been locked and is read-only");
 
         assertThatThrownBy(() -> locked.mapType(List.class, ArrayList.class))
                 .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessage("Settings are read-only");
+                .hasMessage("This instance of Settings has been locked and is read-only");
     }
 
     @Test
     void verifyToStringEmptySettings() {
-        final String expected = "Settings[\n" +
-                "isLockedForModifications: false\n" +
-                "settingsMap: {}\n" +
-                "subtypeMap: {}";
-
-        assertThat(Settings.create()).hasToString(expected);
+        assertThat(Settings.create().toString()).containsSubsequence(
+                "Settings[",
+                "isLockedForModifications: false",
+                "settingsMap: {}",
+                "subtypeMap: {}");
     }
 
     @Test
     void verifyToString() {
-        final String expected = "Settings[\n" +
-                "isLockedForModifications: true\n" +
-                "settingsMap:\n" +
-                "\tDOUBLE_MIN: 345.9\n" +
-                "\tLONG_MIN: 123\n" +
-                "subtypeMap:\n" +
-                "\tinterface java.util.List: class java.util.ArrayList";
-
         assertThat(Settings.create()
                 .set(Setting.LONG_MIN, 123L)
                 .set(Setting.DOUBLE_MIN, 345.9)
                 .mapType(List.class, ArrayList.class)
                 .lock()
-        ).hasToString(expected);
+                .toString()
+        ).containsSubsequence(
+                "Settings[",
+                "isLockedForModifications: true",
+                "settingsMap:",
+                "\tDOUBLE_MIN: 345.9",
+                "\tLONG_MIN: 123",
+                "subtypeMap:",
+                "\tinterface java.util.List: class java.util.ArrayList"
+        );
     }
 }
