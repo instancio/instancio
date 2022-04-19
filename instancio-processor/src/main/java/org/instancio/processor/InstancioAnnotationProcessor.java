@@ -17,6 +17,7 @@ package org.instancio.processor;
 
 import org.instancio.InstancioMetaModel;
 import org.instancio.processor.util.Logger;
+import org.instancio.util.Sonar;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -71,6 +72,7 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
     }
 
     @Override
+    @SuppressWarnings(Sonar.METHODS_RETURNS_SHOULD_NOT_BE_INVARIANT)
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         if (roundEnv.processingOver() || roundEnv.errorRaised()) {
             return true;

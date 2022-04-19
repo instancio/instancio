@@ -40,7 +40,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     protected boolean nullable;
     protected boolean nullableElements;
     protected Class<?> type;
-    protected List<T> withElements;
+    protected List<Object> withElements;
 
     public CollectionGenerator(final GeneratorContext context) {
         super(context);

@@ -37,7 +37,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     private boolean nullable;
     private boolean nullableElements;
     private Class<?> arrayType;
-    private List<T> withElements;
+    private List<Object> withElements;
 
     public ArrayGenerator(final GeneratorContext context) {
         super(context);

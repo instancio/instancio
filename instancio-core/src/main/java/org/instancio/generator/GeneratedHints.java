@@ -32,7 +32,7 @@ public class GeneratedHints {
     private final boolean nullableElements;
     private final boolean nullableMapKeys;
     private final boolean nullableMapValues;
-    private final List<?> withElements;
+    private final List<Object> withElements;
 
     private GeneratedHints(final Builder builder) {
         dataStructureSize = builder.dataStructureSize;
@@ -95,7 +95,7 @@ public class GeneratedHints {
         private boolean nullableElements;
         private boolean nullableKeys;
         private boolean nullableValues;
-        private List<?> withElements;
+        private List<Object> withElements;
 
         private Builder() {
         }
@@ -130,7 +130,7 @@ public class GeneratedHints {
             return this;
         }
 
-        public Builder withElements(final List<?> withElements) {
+        public Builder withElements(final List<Object> withElements) {
             this.withElements = withElements;
             return this;
         }
