@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         OuterClass.InnerStaticClass.InnermostStaticClass.class
 })
 @FeatureTag(Feature.METAMODEL)
-class MetaModelTest {
+class MetaModelBasedOnClassesTest {
 
     @Test
     void nestedClasses() {
