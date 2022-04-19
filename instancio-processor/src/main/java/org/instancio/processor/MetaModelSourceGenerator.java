@@ -26,7 +26,6 @@ class MetaModelSourceGenerator {
     private static final String CLASS_BODY_TEMPLATE = "public class %s {\n%s\n}"; // class name, class body
     private static final String FIELD_TEMPLATE = "\tpublic static final Binding %s = Bindings.field(%s, \"%s\");";
     private static final String CLASS_TEMPLATE = "%s\n\n%s\n\n%s"; // package, imports, class body
-    private static final String META_MODEL_FILE_SUFFIX = "_";
 
     String getSource(final MetaModelClass modelClass) {
         return String.format(CLASS_TEMPLATE,
@@ -36,7 +35,7 @@ class MetaModelSourceGenerator {
     }
 
     private String classBody(final MetaModelClass modelClass) {
-        final String metaModelClassName = modelClass.getSimpleName() + META_MODEL_FILE_SUFFIX;
+        final String metaModelClassName = modelClass.getMetaModelSimpleName();
         return String.format(CLASS_BODY_TEMPLATE, metaModelClassName, getFields(modelClass));
     }
 

@@ -20,6 +20,14 @@ public final class StringUtils {
     private StringUtils() {
     }
 
+    public static boolean isBlank(final String s) {
+        return s == null || "".equals(s.trim());
+    }
+
+    public static String trimToEmpty(final String s) {
+        return s == null ? "" : s.trim();
+    }
+
     public static String repeat(String s, int times) {
         if (times < 0) throw new IllegalArgumentException("Number of times must be positive: " + times);
         StringBuilder sb = new StringBuilder(s.length() * times);

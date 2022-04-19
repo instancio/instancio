@@ -24,16 +24,20 @@ import static org.mockito.Mockito.when;
 
 class MetaModelClassTest {
 
+    private static final String SUFFIX = "$";
+
     @Test
     void topLevelClass() {
         final QualifiedNameable outerType = ElementMocks.mockClassElementWithPackage(
                 "Outer", "org.example.Outer", "org.example");
 
-        final MetaModelClass modelClass = new MetaModelClass(outerType);
+        final MetaModelClass modelClass = new MetaModelClass(outerType, SUFFIX);
 
         assertThat(modelClass.getName()).isEqualTo("org.example.Outer");
         assertThat(modelClass.getSimpleName()).isEqualTo("Outer");
         assertThat(modelClass.getPackageName()).isEqualTo("org.example");
+        assertThat(modelClass.getMetaModelSimpleName()).isEqualTo("Outer" + SUFFIX);
+        assertThat(modelClass.getMetaModelClassName()).isEqualTo("org.example.Outer" + SUFFIX);
     }
 
     @Test
@@ -45,10 +49,12 @@ class MetaModelClassTest {
         when(innerType.getSimpleName().toString()).thenReturn("Inner");
         when(innerType.getEnclosingElement()).thenReturn(outerType);
 
-        final MetaModelClass modelClass = new MetaModelClass(innerType);
+        final MetaModelClass modelClass = new MetaModelClass(innerType, SUFFIX);
 
         assertThat(modelClass.getName()).isEqualTo("org.example.Outer.Inner");
         assertThat(modelClass.getSimpleName()).isEqualTo("Inner");
         assertThat(modelClass.getPackageName()).isEqualTo("org.example");
+        assertThat(modelClass.getMetaModelSimpleName()).isEqualTo("Inner" + SUFFIX);
+        assertThat(modelClass.getMetaModelClassName()).isEqualTo("org.example.Outer.Inner" + SUFFIX);
     }
 }

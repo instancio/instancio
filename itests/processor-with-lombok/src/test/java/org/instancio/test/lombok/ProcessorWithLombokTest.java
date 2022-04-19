@@ -28,7 +28,7 @@ class ProcessorWithLombokTest {
     void verifyProcessorWithLombok() {
         final String expected = "foo";
         final SamplePojo result = Instancio.of(SamplePojo.class)
-                .supply(SamplePojo_.someProperty, () -> expected)
+                .supply(SamplePojo$.someProperty, () -> expected)
                 .create();
 
         assertThat(result.getSomeProperty()).isEqualTo(expected);

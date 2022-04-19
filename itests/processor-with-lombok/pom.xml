@@ -29,7 +29,9 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>
-                        <arg>-Ainstancio.processor.verbose=true</arg>
+                        <!-- Use a custom suffix instead of the default '_' -->
+                        <arg>-Ainstancio.suffix=$</arg>
+                        <arg>-Ainstancio.verbose=true</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

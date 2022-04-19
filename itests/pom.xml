@@ -39,7 +39,7 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>
-                        <arg>-Ainstancio.processor.verbose=true</arg>
+                        <arg>-Ainstancio.verbose=true</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
