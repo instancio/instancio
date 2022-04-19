@@ -16,11 +16,33 @@
 package org.instancio.util;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StringUtilsTest {
+
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "\t"})
+    @ParameterizedTest
+    void isBlankTrue(String value) {
+        assertThat(StringUtils.isBlank(value)).isTrue();
+    }
+
+    @Test
+    void isBlankFalse() {
+        assertThat(StringUtils.isBlank("foo")).isFalse();
+    }
+
+    @Test
+    void trimToEmpty() {
+        assertThat(StringUtils.trimToEmpty(null)).isEmpty();
+        assertThat(StringUtils.trimToEmpty(" ")).isEmpty();
+        assertThat(StringUtils.trimToEmpty(" foo ")).isEqualTo("foo");
+    }
 
     @Test
     void repeat() {

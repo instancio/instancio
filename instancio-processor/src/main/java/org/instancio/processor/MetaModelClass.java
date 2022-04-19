@@ -15,6 +15,8 @@
  */
 package org.instancio.processor;
 
+import org.instancio.util.StringUtils;
+
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -25,18 +27,22 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 class MetaModelClass {
+    private static final String DEFAULT_SUFFIX = "_";
 
     private final String name;
     private final String simpleName;
     private final String packageName;
     private final List<String> fieldNames;
+    private final String metamodelClassSuffix;
 
-    public MetaModelClass(final QualifiedNameable classElement) {
+    public MetaModelClass(final QualifiedNameable classElement, final String metamodelClassSuffix) {
         final Element packageElement = getPackageElement(classElement);
         this.name = classElement.getQualifiedName().toString();
         this.packageName = getPackageName((QualifiedNameable) packageElement);
         this.fieldNames = getFieldNames(classElement);
         this.simpleName = classElement.getSimpleName().toString();
+        this.metamodelClassSuffix = StringUtils.isBlank(metamodelClassSuffix)
+                ? DEFAULT_SUFFIX : metamodelClassSuffix.trim();
     }
 
     private String getPackageName(final QualifiedNameable packageElement) {
@@ -65,7 +71,7 @@ class MetaModelClass {
     }
 
     /**
-     * Returns fully qualified class name, as returned by {@link Class#getName()}.
+     * Returns a fully qualified class name, as returned by {@link Class#getName()}.
      *
      * @return fully qualified class name
      */
@@ -80,6 +86,26 @@ class MetaModelClass {
      */
     String getSimpleName() {
         return simpleName;
+    }
+
+
+    /**
+     * Simple name of the metamodel class.
+     *
+     * @return simple name of the metamodel class
+     */
+    String getMetaModelSimpleName() {
+        return simpleName + metamodelClassSuffix;
+    }
+
+
+    /**
+     * Returns a fully qualified name of the metamodel class.
+     *
+     * @return fully qualified metamodel class name
+     */
+    String getMetaModelClassName() {
+        return name + metamodelClassSuffix;
     }
 
     /**

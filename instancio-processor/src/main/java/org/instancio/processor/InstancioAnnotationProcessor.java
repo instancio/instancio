@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@SupportedOptions({"instancio.processor.verbose"})
+@SupportedOptions({"instancio.verbose", "instancio.suffix"})
 @SupportedAnnotationTypes("org.instancio.InstancioMetaModel")
 public final class InstancioAnnotationProcessor extends AbstractProcessor {
 
@@ -53,6 +53,7 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
     private Types types;
     private Elements elements;
     private Logger logger;
+    private String classNameSuffix;
 
     @Override
     public synchronized void init(final ProcessingEnvironment processingEnv) {
@@ -60,7 +61,8 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
         this.types = processingEnv.getTypeUtils();
         this.elements = processingEnv.getElementUtils();
         this.logger = new Logger(processingEnv.getMessager(),
-                TRUE.equalsIgnoreCase(processingEnv.getOptions().get("instancio.processor.verbose")));
+                TRUE.equalsIgnoreCase(processingEnv.getOptions().get("instancio.verbose")));
+        this.classNameSuffix = processingEnv.getOptions().get("instancio.suffix");
     }
 
     @Override
@@ -91,7 +93,7 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
             for (TypeMirror typeMirror : modelClasses) {
                 final Element element = types.asElement(typeMirror);
                 if (element instanceof QualifiedNameable) {
-                    writeSourceFile(new MetaModelClass((QualifiedNameable) element), annotatedElement);
+                    writeSourceFile(new MetaModelClass((QualifiedNameable) element, classNameSuffix), annotatedElement);
                 } else {
                     logger.debug("Not a QualifiedNameable: %s", typeMirror);
                 }
@@ -103,7 +105,7 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
 
     private void writeSourceFile(final MetaModelClass metaModelClass, final Element element) {
         final Filer filer = processingEnv.getFiler();
-        final String filename = metaModelClass.getName() + "_";
+        final String filename = metaModelClass.getMetaModelClassName();
 
         try (Writer writer = new BufferedWriter(filer.createSourceFile(filename, element).openWriter())) {
             logger.debug("Generating metamodel class: %s", filename);
