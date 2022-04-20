@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>itests</artifactId>
-        <version>1.1.9</version>
+        <version>1.1.10-SNAPSHOT</version>
     </parent>
     <artifactId>processor-with-lombok</artifactId>
     <packaging>jar</packaging>
