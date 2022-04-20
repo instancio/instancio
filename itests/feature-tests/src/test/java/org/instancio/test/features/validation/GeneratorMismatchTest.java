@@ -54,8 +54,8 @@ class GeneratorMismatchTest {
                 .create())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll(
-                        "Generator type mismatch:\n",
-                        "Method 'doubles()' cannot be used for type: int\n",
+                        "Generator type mismatch:",
+                        "Method 'doubles()' cannot be used for type: int",
                         "Field: private int org.instancio.test.support.pojo.basic.SupportedNumericTypes.primitiveInt");
     }
 
@@ -103,8 +103,8 @@ class GeneratorMismatchTest {
                 .generate(all(bindingType), genFn)
                 .create())
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Generator type mismatch:\n",
-                        String.format("Method '%s' cannot be used for type: %s\n",
+                .hasMessageContaining("Generator type mismatch:",
+                        String.format("%nMethod '%s' cannot be used for type: %s%n",
                                 expectedGeneratorMethod, bindingType.getCanonicalName()));
     }
 

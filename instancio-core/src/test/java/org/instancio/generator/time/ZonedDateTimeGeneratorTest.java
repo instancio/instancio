@@ -22,46 +22,51 @@ import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
+import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LocalDateGeneratorTest {
+class ZonedDateTimeGeneratorTest {
 
     private static final Settings settings = Settings.create();
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
-    private final LocalDateGenerator generator = new LocalDateGenerator(context);
+    private final ZonedDateTimeGenerator generator = new ZonedDateTimeGenerator(context);
 
     @Test
     void past() {
         generator.past();
-        assertThat(generator.generate(random)).isBefore(LocalDate.now());
+        assertThat(generator.generate(random)).isBefore(ZonedDateTime.now());
     }
 
     @Test
     void future() {
         generator.future();
-        assertThat(generator.generate(random)).isAfter(LocalDate.now());
+        assertThat(generator.generate(random)).isAfter(ZonedDateTime.now());
     }
 
     @Test
     void validateRange() {
-        final LocalDate date = LocalDate.of(1970, 1, 1);
+        final ZonedDateTime min = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 0, 0, 0), UTC);
+        final ZonedDateTime max = min.plus(1, ChronoUnit.MILLIS);
 
-        assertThatThrownBy(() -> generator.range(date, date))
+        generator.range(min, max); // no error with 1 millisecond delta
+
+        assertThatThrownBy(() -> generator.range(min, max.minus(1, ChronoUnit.NANOS)))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start date must be before end date by at least 1 day: 1970-01-01, 1970-01-01");
-
-        generator.range(date, date.plusDays(1)); // no error
+                .hasMessage("Start date must be before end date by at least one millisecond: " +
+                        "1970-01-01T00:00Z, 1970-01-01T00:00:00.000999999Z");
     }
 
     @Test
     void range() {
-        final LocalDate min = LocalDate.now().plusDays(5);
-        final LocalDate max = min.plusDays(1);
+        final ZonedDateTime min = ZonedDateTime.now().plusMinutes(5);
+        final ZonedDateTime max = min.plusMinutes(1);
         generator.range(min, max);
         assertThat(generator.generate(random)).isBetween(min, max);
     }

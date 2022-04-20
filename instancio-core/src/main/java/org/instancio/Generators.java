@@ -34,7 +34,11 @@ import org.instancio.generator.math.BigIntegerGenerator;
 import org.instancio.generator.text.TextGenerators;
 import org.instancio.generator.time.LocalDateGenerator;
 import org.instancio.generator.time.LocalDateTimeGenerator;
+import org.instancio.generator.time.LocalTimeGenerator;
 import org.instancio.generator.time.TemporalGeneratorSpec;
+import org.instancio.generator.time.YearGenerator;
+import org.instancio.generator.time.YearMonthGenerator;
+import org.instancio.generator.time.ZonedDateTimeGenerator;
 import org.instancio.generator.util.CollectionGeneratorSpec;
 import org.instancio.generator.util.CollectionGeneratorSpecImpl;
 import org.instancio.generator.util.MapGeneratorSpec;
@@ -46,6 +50,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
 /**
@@ -162,12 +170,48 @@ public class Generators {
     }
 
     /**
+     * Customises generated {@link LocalTime} values.
+     *
+     * @return customised generator
+     */
+    public TemporalGeneratorSpec<LocalTime> localTime() {
+        return new LocalTimeGenerator(context);
+    }
+
+    /**
      * Customises generated {@link LocalDateTime} values.
      *
      * @return customised generator
      */
     public TemporalGeneratorSpec<LocalDateTime> localDateTime() {
         return new LocalDateTimeGenerator(context);
+    }
+
+    /**
+     * Customises generated {@link ZonedDateTimeGenerator} values.
+     *
+     * @return customised generator
+     */
+    public TemporalGeneratorSpec<ZonedDateTime> zonedDateTime() {
+        return new ZonedDateTimeGenerator(context);
+    }
+
+    /**
+     * Customises generated {@link YearMonth} values.
+     *
+     * @return customised generator
+     */
+    public TemporalGeneratorSpec<YearMonth> yearMonth() {
+        return new YearMonthGenerator(context);
+    }
+
+    /**
+     * Customises generated {@link Year} values.
+     *
+     * @return customised generator
+     */
+    public TemporalGeneratorSpec<Year> year() {
+        return new YearGenerator(context);
     }
 
     /**

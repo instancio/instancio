@@ -161,8 +161,9 @@ class ErrorMessagesTest {
                         .supply(field("name"), () -> 123)
                         .create())
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Could not set value to the field: private java.lang.String org.instancio.test.support.pojo.person.Person.name."
-                        + "\nCaused by: Can not set java.lang.String field org.instancio.test.support.pojo.person.Person.name to java.lang.Integer");
+                .hasMessageContainingAll(
+                        "Could not set value to the field: private java.lang.String org.instancio.test.support.pojo.person.Person.name.",
+                        "Caused by: Can not set java.lang.String field org.instancio.test.support.pojo.person.Person.name to java.lang.Integer");
     }
 
     @Test

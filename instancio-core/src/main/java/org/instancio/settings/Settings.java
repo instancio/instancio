@@ -187,16 +187,17 @@ public class Settings {
 
     private void checkLockedForModifications() {
         if (isLockedForModifications) {
-            throw new UnsupportedOperationException("Settings are read-only");
+            throw new UnsupportedOperationException("This instance of Settings has been locked and is read-only");
         }
     }
 
     @Override
     public String toString() {
-        return "Settings[" +
-                "\nisLockedForModifications: " + isLockedForModifications +
-                "\nsettingsMap:" + mapToString(new TreeMap<>(settingsMap)) +
-                "\nsubtypeMap:" + mapToString(subtypeMap);
+        return String.format("Settings[%nisLockedForModifications: %s" +
+                        "%nsettingsMap:%s" +
+                        "%nsubtypeMap:%s",
+                isLockedForModifications,
+                mapToString(new TreeMap<>(settingsMap)), mapToString(subtypeMap));
     }
 
     private static String mapToString(Map<?, ?> map) {

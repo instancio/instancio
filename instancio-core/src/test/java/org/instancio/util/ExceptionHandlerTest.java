@@ -36,9 +36,11 @@ import static org.instancio.util.ExceptionHandler.conditionalFailOnError;
 @ClearSystemProperty(key = SystemProperties.FAIL_ON_ERROR)
 class ExceptionHandlerTest {
 
-    private static final String SUBMIT_BUG_REPORT_MESSAGE = "Instancio encountered an error.\n" +
-            "Please submit a bug report including the stacktrace:\n" +
-            "https://github.com/instancio/instancio/issues";
+    private static final String[] SUBMIT_BUG_REPORT_MESSAGE = {
+            "Instancio encountered an error.",
+            "Please submit a bug report including the stacktrace:",
+            "https://github.com/instancio/instancio/issues"
+    };
 
     private static final String EXCEPTION_MSG = "Test exception";
     private static final InstancioException INSTANCIO_EXCEPTION = new InstancioException(EXCEPTION_MSG);
@@ -90,12 +92,12 @@ class ExceptionHandlerTest {
         assertThatThrownBy(() -> conditionalFailOnError(supplierThrowing(RUNTIME_EXCEPTION)))
                 .isExactlyInstanceOf(InstancioException.class)
                 .hasCause(RUNTIME_EXCEPTION)
-                .hasMessage(SUBMIT_BUG_REPORT_MESSAGE);
+                .hasMessageContainingAll(SUBMIT_BUG_REPORT_MESSAGE);
 
         assertThatThrownBy(() -> conditionalFailOnError(functionThrowing(THROWABLE)))
                 .isExactlyInstanceOf(InstancioException.class)
                 .hasCause(THROWABLE)
-                .hasMessage(SUBMIT_BUG_REPORT_MESSAGE);
+                .hasMessageContainingAll(SUBMIT_BUG_REPORT_MESSAGE);
     }
 
     private static VoidFunction functionThrowing(final Throwable t) {

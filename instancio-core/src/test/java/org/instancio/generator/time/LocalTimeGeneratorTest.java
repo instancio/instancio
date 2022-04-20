@@ -22,46 +22,47 @@ import org.instancio.internal.random.RandomProviderImpl;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LocalDateGeneratorTest {
+class LocalTimeGeneratorTest {
 
     private static final Settings settings = Settings.create();
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
-    private final LocalDateGenerator generator = new LocalDateGenerator(context);
+    private final LocalTimeGenerator generator = new LocalTimeGenerator(context);
 
     @Test
     void past() {
         generator.past();
-        assertThat(generator.generate(random)).isBefore(LocalDate.now());
+        assertThat(generator.generate(random)).isBefore(LocalTime.now());
     }
 
     @Test
     void future() {
         generator.future();
-        assertThat(generator.generate(random)).isAfter(LocalDate.now());
+        assertThat(generator.generate(random)).isAfter(LocalTime.now());
     }
 
     @Test
     void validateRange() {
-        final LocalDate date = LocalDate.of(1970, 1, 1);
+        final LocalTime time = LocalTime.of(0, 0, 0);
 
-        assertThatThrownBy(() -> generator.range(date, date))
+        assertThatThrownBy(() -> generator.range(time, time))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start date must be before end date by at least 1 day: 1970-01-01, 1970-01-01");
+                .hasMessage("Start time must be before end time: 00:00, 00:00");
 
-        generator.range(date, date.plusDays(1)); // no error
+        generator.range(time, time.plus(1, ChronoUnit.NANOS)); // no error
     }
 
     @Test
     void range() {
-        final LocalDate min = LocalDate.now().plusDays(5);
-        final LocalDate max = min.plusDays(1);
+        final LocalTime min = LocalTime.now().plusMinutes(5);
+        final LocalTime max = min.plusMinutes(1);
         generator.range(min, max);
         assertThat(generator.generate(random)).isBetween(min, max);
     }

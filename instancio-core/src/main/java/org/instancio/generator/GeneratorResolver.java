@@ -32,6 +32,10 @@ import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
 import org.instancio.generator.time.LocalDateGenerator;
 import org.instancio.generator.time.LocalDateTimeGenerator;
+import org.instancio.generator.time.LocalTimeGenerator;
+import org.instancio.generator.time.YearGenerator;
+import org.instancio.generator.time.YearMonthGenerator;
+import org.instancio.generator.time.ZonedDateTimeGenerator;
 import org.instancio.generator.util.CollectionGenerator;
 import org.instancio.generator.util.DateGenerator;
 import org.instancio.generator.util.HashSetGenerator;
@@ -50,6 +54,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -93,29 +101,45 @@ public class GeneratorResolver {
         generators.put(Boolean.class, new BooleanGenerator(context));
         generators.put(Character.class, new CharacterGenerator(context));
         generators.put(String.class, new StringGenerator(context));
-        generators.put(StringBuilder.class, new StringBuilderGenerator(context));
+
+        // java.lang
         generators.put(Number.class, new IntegerGenerator(context));
-        generators.put(BigInteger.class, new BigIntegerGenerator(context));
+        generators.put(StringBuilder.class, new StringBuilderGenerator(context));
+
+        // java.math
         generators.put(BigDecimal.class, new BigDecimalGenerator(context));
-        generators.put(AtomicInteger.class, new AtomicIntegerGenerator(context));
-        generators.put(AtomicLong.class, new AtomicLongGenerator(context));
-        generators.put(Date.class, new DateGenerator(context));
+        generators.put(BigInteger.class, new BigIntegerGenerator(context));
+
+        // java.time
         generators.put(LocalDate.class, new LocalDateGenerator(context));
         generators.put(LocalDateTime.class, new LocalDateTimeGenerator(context));
-        generators.put(UUID.class, new UUIDGenerator(context));
-        generators.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(context));
+        generators.put(LocalTime.class, new LocalTimeGenerator(context));
+        generators.put(Year.class, new YearGenerator(context));
+        generators.put(YearMonth.class, new YearMonthGenerator(context));
+        generators.put(ZonedDateTime.class, new ZonedDateTimeGenerator(context));
 
-        // Collections
+        // java.util
+        generators.put(Date.class, new DateGenerator(context));
+        generators.put(UUID.class, new UUIDGenerator(context));
+
+        // java.util collections
         generators.put(Collection.class, new CollectionGenerator<>(context));
-        generators.put(List.class, new CollectionGenerator<>(context));
-        generators.put(Map.class, new MapGenerator<>(context));
         generators.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>(context));
         generators.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>(context));
-        generators.put(SortedMap.class, new TreeMapGenerator<>(context));
+        generators.put(List.class, new CollectionGenerator<>(context));
+        generators.put(Map.class, new MapGenerator<>(context));
         generators.put(NavigableMap.class, new TreeMapGenerator<>(context));
-        generators.put(Set.class, new HashSetGenerator<>(context));
-        generators.put(SortedSet.class, new TreeSetGenerator<>(context));
         generators.put(NavigableSet.class, new TreeSetGenerator<>(context));
+        generators.put(Set.class, new HashSetGenerator<>(context));
+        generators.put(SortedMap.class, new TreeMapGenerator<>(context));
+        generators.put(SortedSet.class, new TreeSetGenerator<>(context));
+
+        // java.util.concurrent
+        generators.put(AtomicInteger.class, new AtomicIntegerGenerator(context));
+        generators.put(AtomicLong.class, new AtomicLongGenerator(context));
+
+        // javax.xml.datatype
+        generators.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(context));
     }
 
     public Optional<Generator<?>> get(final Class<?> klass) {
