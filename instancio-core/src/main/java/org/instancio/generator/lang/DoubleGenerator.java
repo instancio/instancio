@@ -17,15 +17,15 @@ package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 
 public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec<Double> {
 
     public DoubleGenerator(final GeneratorContext context) {
         super(context,
-                context.getSettings().get(Setting.DOUBLE_MIN),
-                context.getSettings().get(Setting.DOUBLE_MAX),
-                context.getSettings().get(Setting.DOUBLE_NULLABLE));
+                context.getSettings().get(Keys.DOUBLE_MIN),
+                context.getSettings().get(Keys.DOUBLE_MAX),
+                context.getSettings().get(Keys.DOUBLE_NULLABLE));
     }
 
     @Override

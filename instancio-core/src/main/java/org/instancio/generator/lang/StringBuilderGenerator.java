@@ -18,7 +18,7 @@ package org.instancio.generator.lang;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
 public class StringBuilderGenerator extends AbstractGenerator<StringBuilder> {
@@ -30,8 +30,8 @@ public class StringBuilderGenerator extends AbstractGenerator<StringBuilder> {
         super(context);
 
         final Settings settings = context.getSettings();
-        this.minLength = settings.get(Setting.STRING_MIN_LENGTH);
-        this.maxLength = settings.get(Setting.STRING_MAX_LENGTH);
+        this.minLength = settings.get(Keys.STRING_MIN_LENGTH);
+        this.maxLength = settings.get(Keys.STRING_MAX_LENGTH);
     }
 
     @Override

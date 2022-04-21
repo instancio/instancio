@@ -19,7 +19,7 @@ import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.util.Sonar;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -41,11 +41,11 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     public MapGenerator(final GeneratorContext context) {
         super(context);
-        this.minSize = context.getSettings().get(Setting.MAP_MIN_SIZE);
-        this.maxSize = context.getSettings().get(Setting.MAP_MAX_SIZE);
-        this.nullable = context.getSettings().get(Setting.MAP_NULLABLE);
-        this.nullableKeys = context.getSettings().get(Setting.MAP_KEYS_NULLABLE);
-        this.nullableValues = context.getSettings().get(Setting.MAP_VALUES_NULLABLE);
+        this.minSize = context.getSettings().get(Keys.MAP_MIN_SIZE);
+        this.maxSize = context.getSettings().get(Keys.MAP_MAX_SIZE);
+        this.nullable = context.getSettings().get(Keys.MAP_NULLABLE);
+        this.nullableKeys = context.getSettings().get(Keys.MAP_KEYS_NULLABLE);
+        this.nullableValues = context.getSettings().get(Keys.MAP_VALUES_NULLABLE);
     }
 
     public MapGeneratorSpec<K, V> type(final Class<?> type) {

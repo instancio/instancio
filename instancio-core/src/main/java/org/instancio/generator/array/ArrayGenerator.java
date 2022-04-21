@@ -20,7 +20,7 @@ import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.util.Verify;
 
 import java.lang.reflect.Array;
@@ -41,10 +41,10 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     public ArrayGenerator(final GeneratorContext context) {
         super(context);
-        this.minLength = context.getSettings().get(Setting.ARRAY_MIN_LENGTH);
-        this.maxLength = context.getSettings().get(Setting.ARRAY_MAX_LENGTH);
-        this.nullable = context.getSettings().get(Setting.ARRAY_NULLABLE);
-        this.nullableElements = context.getSettings().get(Setting.ARRAY_ELEMENTS_NULLABLE);
+        this.minLength = context.getSettings().get(Keys.ARRAY_MIN_LENGTH);
+        this.maxLength = context.getSettings().get(Keys.ARRAY_MAX_LENGTH);
+        this.nullable = context.getSettings().get(Keys.ARRAY_NULLABLE);
+        this.nullableElements = context.getSettings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
     }
 
     public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {

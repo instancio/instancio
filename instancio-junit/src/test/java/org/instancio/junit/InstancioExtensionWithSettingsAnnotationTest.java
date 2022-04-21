@@ -17,7 +17,7 @@ package org.instancio.junit;
 
 import org.instancio.Instancio;
 import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
@@ -33,8 +33,8 @@ class InstancioExtensionWithSettingsAnnotationTest {
 
     @WithSettings
     private final Settings settings = Settings.create()
-            .set(Setting.LONG_MIN, MIN)
-            .set(Setting.LONG_MAX, MIN + 1);
+            .set(Keys.LONG_MIN, MIN)
+            .set(Keys.LONG_MAX, MIN + 1);
 
     @AfterAll
     static void afterAll() {
@@ -55,8 +55,8 @@ class InstancioExtensionWithSettingsAnnotationTest {
 
         final Long result = Instancio.of(Long.class)
                 .withSettings(Settings.create()
-                        .set(Setting.LONG_MIN, minOverride)
-                        .set(Setting.LONG_MAX, minOverride + 1))
+                        .set(Keys.LONG_MIN, minOverride)
+                        .set(Keys.LONG_MAX, minOverride + 1))
                 .create();
 
         assertThat(result).isEqualTo(minOverride);

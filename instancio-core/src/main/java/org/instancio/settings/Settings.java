@@ -19,7 +19,6 @@ import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.joining;
-import static org.instancio.internal.ApiValidator.validateSettingKey;
+import static org.instancio.internal.ApiValidator.validateNotNullAndType;
 import static org.instancio.internal.ApiValidator.validateSubtypeMapping;
 
 /**
@@ -35,9 +34,10 @@ import static org.instancio.internal.ApiValidator.validateSubtypeMapping;
  */
 public class Settings {
     private static final String TYPE_MAPPING_PREFIX = "type.mapping.";
+    private static final boolean AUTO_ADJUST_ENABLED = true;
 
     private boolean isLockedForModifications;
-    private Map<Object, Object> settingsMap;
+    private Map<SettingKey, Object> settingsMap;
     private Map<Class<?>, Class<?>> subtypeMap;
 
     private Settings() {
@@ -61,7 +61,7 @@ public class Settings {
      */
     public static Settings defaults() {
         Settings settings = new Settings();
-        for (Setting setting : Setting.values()) {
+        for (SettingKey setting : Keys.all()) {
             settings.set(setting, setting.defaultValue());
         }
         return settings;
@@ -82,7 +82,7 @@ public class Settings {
                 final String fromClass = key.replace(TYPE_MAPPING_PREFIX, "");
                 settings.mapType(ReflectionUtils.getClass(fromClass), ReflectionUtils.getClass(v.toString()));
             } else {
-                final SettingKey settingKey = Setting.getByKey(key);
+                final SettingKey settingKey = Keys.get(key);
                 final Function<String, Object> fn = ValueOfFunctions.getFunction(settingKey.type());
                 final Object val = fn.apply(v.toString());
                 settings.set(settingKey, val);
@@ -136,16 +136,38 @@ public class Settings {
     }
 
     /**
-     * Set setting with given key to the specified value.
+     * Set the setting with the given key to the specified value.
      *
      * @param key   to set
      * @param value to set
      * @return updated settings
      */
     public Settings set(final SettingKey key, final Object value) {
+        return set(key, value, AUTO_ADJUST_ENABLED);
+    }
+
+    /**
+     * Set the setting with the given key to the specified value.
+     * <p>
+     * If {@code autoAdjust} parameter is {@code true}, then updating
+     * a range setting (such numeric range) will automatically adjust the
+     * opposite bound (for example, min is set to higher than max, then
+     * max will be auto-adjusted).
+     *
+     * @param key        to set
+     * @param value      to set
+     * @param autoAdjust whether to auto-adjust related
+     * @return updated setting
+     */
+    Settings set(final SettingKey key, final Object value, boolean autoAdjust) {
         checkLockedForModifications();
-        validateSettingKey(key, value);
+        validateNotNullAndType(key, value);
         settingsMap.put(key, value);
+
+        if (autoAdjust) {
+            Keys.getAutoAdjustable(key).ifPresent(k -> k.autoAdjust(this, value));
+        }
+
         return this;
     }
 
@@ -181,7 +203,7 @@ public class Settings {
     public Settings lock() {
         settingsMap = Collections.unmodifiableMap(settingsMap);
         subtypeMap = Collections.unmodifiableMap(subtypeMap);
-        isLockedForModifications = true;
+        isLockedForModifications = AUTO_ADJUST_ENABLED;
         return this;
     }
 
@@ -203,7 +225,7 @@ public class Settings {
     private static String mapToString(Map<?, ?> map) {
         if (map.isEmpty()) return " {}";
         return "\n" + map.entrySet().stream()
-                .map(e -> MessageFormat.format("\t{0}: {1}", e.getKey(), e.getValue()))
+                .map(e -> String.format("\t'%s': %s", e.getKey(), e.getValue()))
                 .collect(joining("\n"));
     }
 }

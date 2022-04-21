@@ -62,7 +62,7 @@ Instancio with [JUnit 5 integration](#junit-5-integration):
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>1.1.8</version>
+        <version>1.1.9</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -73,7 +73,7 @@ Instancio standalone:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>1.1.8</version>
+        <version>1.1.9</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -406,7 +406,7 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-The `org.instancio.settings.Setting` enum contains all the setting keys.
+The `org.instancio.settings.Keys` class contains all the setting keys.
 
 # JUnit 5 integration
 

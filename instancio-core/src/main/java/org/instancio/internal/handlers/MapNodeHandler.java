@@ -23,7 +23,7 @@ import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.util.Verify;
 
@@ -58,6 +58,6 @@ public class MapNodeHandler implements NodeHandler {
     private int randomSize() {
         final RandomProvider random = context.getRandomProvider();
         final Settings settings = context.getSettings();
-        return random.intRange(settings.get(Setting.MAP_MIN_SIZE), settings.get(Setting.MAP_MAX_SIZE));
+        return random.intRange(settings.get(Keys.MAP_MIN_SIZE), settings.get(Keys.MAP_MAX_SIZE));
     }
 }

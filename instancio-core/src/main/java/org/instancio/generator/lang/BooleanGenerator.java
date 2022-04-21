@@ -19,7 +19,7 @@ import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 
 public class BooleanGenerator extends AbstractGenerator<Boolean> {
 
@@ -27,7 +27,7 @@ public class BooleanGenerator extends AbstractGenerator<Boolean> {
 
     public BooleanGenerator(final GeneratorContext context) {
         super(context);
-        this.nullable = context.getSettings().get(Setting.BOOLEAN_NULLABLE);
+        this.nullable = context.getSettings().get(Keys.BOOLEAN_NULLABLE);
     }
 
     @Override

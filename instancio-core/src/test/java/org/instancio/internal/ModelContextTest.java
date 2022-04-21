@@ -25,7 +25,7 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGeneratorSpec;
 import org.instancio.generator.lang.StringGeneratorSpec;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
@@ -225,7 +225,7 @@ class ModelContextTest {
                 .withNullable(all(nullableClass))
                 .withNullable(toFieldBinding(ADDRESS_FIELD))
                 .withSeed(seed)
-                .withSettings(Settings.create().set(Setting.INTEGER_MIN, integerMinValue))
+                .withSettings(Settings.create().set(Keys.INTEGER_MIN, integerMinValue))
                 .withSubtype(all(List.class), LinkedList.class)
                 .build();
 
@@ -239,10 +239,10 @@ class ModelContextTest {
         assertThat(context.isNullable(nullableClass)).isTrue();
         assertThat(context.isNullable(ADDRESS_FIELD)).isTrue();
         assertThat(context.getSeed()).isEqualTo(seed);
-        assertThat((int) context.getSettings().get(Setting.INTEGER_MIN)).isEqualTo(integerMinValue);
+        assertThat((int) context.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
         assertThat(context.getClassSubtypeMap()).containsEntry(List.class, LinkedList.class);
 
-        assertThatThrownBy(() -> context.getSettings().set(Setting.STRING_MIN_LENGTH, 5))
+        assertThatThrownBy(() -> context.getSettings().set(Keys.STRING_MIN_LENGTH, 5))
                 .as("Settings should be locked")
                 .isInstanceOf(UnsupportedOperationException.class);
     }

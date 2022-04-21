@@ -18,27 +18,15 @@ package org.instancio.test.features.stream;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.WithSettings;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.test.support.pojo.generics.MiscFields;
-import org.instancio.test.support.pojo.generics.MiscFields_;
-import org.instancio.test.support.pojo.nested.InnerClass_;
-import org.instancio.test.support.pojo.nested.InnerStaticClass_;
-import org.instancio.test.support.pojo.nested.InnermostStaticClass_;
-import org.instancio.test.support.pojo.nested.OuterClass;
-import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.allStrings;
@@ -52,8 +40,8 @@ class CreateStreamTest {
 
     @WithSettings
     private static final Settings settings = Settings.create()
-            .set(Setting.STRING_MIN_LENGTH, STRING_LENGTH)
-            .set(Setting.STRING_MAX_LENGTH, STRING_LENGTH + 1)
+            .set(Keys.STRING_MIN_LENGTH, STRING_LENGTH)
+            .set(Keys.STRING_MAX_LENGTH, STRING_LENGTH + 1)
             .lock();
 
     @Test

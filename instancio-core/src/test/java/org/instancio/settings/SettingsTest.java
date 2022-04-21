@@ -30,12 +30,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SettingsTest {
     private static final String TYPE_MAPPING_PREFIX = "type.mapping.";
+    private static final boolean AUTO_ADJUST_DISABLED = false;
 
     @Test
     void defaults() {
         final Settings defaults = Settings.defaults();
 
-        for (SettingKey settingKey : Setting.values()) {
+        for (SettingKey settingKey : Keys.all()) {
             final Object actual = defaults.get(settingKey);
             final Object expected = settingKey.defaultValue();
             assertThat(actual).isEqualTo(expected);
@@ -45,15 +46,15 @@ class SettingsTest {
     @Test
     void from() {
         final Map<Object, Object> map = new HashMap<>();
-        map.put(Setting.FLOAT_MAX.key(), 9f);
-        map.put(Setting.LONG_NULLABLE.key(), true);
+        map.put(Keys.FLOAT_MAX.propertyKey(), 9f);
+        map.put(Keys.LONG_NULLABLE.propertyKey(), true);
         map.put(TYPE_MAPPING_PREFIX + "java.util.List", "java.util.ArrayList");
         map.put(TYPE_MAPPING_PREFIX + "java.util.Set", "java.util.HashSet"); // TODO validation
 
         final Settings settings = Settings.from(map);
 
-        assertThat((Float) settings.get(Setting.FLOAT_MAX)).isEqualTo(9f);
-        assertThat((Boolean) settings.get(Setting.LONG_NULLABLE)).isTrue();
+        assertThat((Float) settings.get(Keys.FLOAT_MAX)).isEqualTo(9f);
+        assertThat((Boolean) settings.get(Keys.LONG_NULLABLE)).isTrue();
         assertThat(settings.getSubtypeMap())
                 .containsEntry(List.class, ArrayList.class)
                 .containsEntry(Set.class, HashSet.class);
@@ -70,18 +71,18 @@ class SettingsTest {
     }
 
     private void verifyMergeSuccessful(final Settings defaults) {
-        final Long originalLongMax = defaults.get(Setting.LONG_MAX);
+        final Long originalLongMax = defaults.get(Keys.LONG_MAX);
 
         final Settings overrides = Settings.create()
-                .set(Setting.BYTE_MIN, (byte) 99)
-                .set(Setting.ARRAY_NULLABLE, true)
+                .set(Keys.BYTE_MIN, (byte) 99)
+                .set(Keys.ARRAY_NULLABLE, true)
                 .lock();
 
         final Settings result = defaults.merge(overrides);
 
-        assertThat((Byte) result.get(Setting.BYTE_MIN)).isEqualTo((byte) 99);
-        assertThat((Boolean) result.get(Setting.ARRAY_NULLABLE)).isTrue();
-        assertThat((Long) result.get(Setting.LONG_MAX))
+        assertThat((Byte) result.get(Keys.BYTE_MIN)).isEqualTo((byte) 99);
+        assertThat((Boolean) result.get(Keys.ARRAY_NULLABLE)).isTrue();
+        assertThat((Long) result.get(Keys.LONG_MAX))
                 .as("Properties that were not overridden should retain their value")
                 .isEqualTo(originalLongMax);
 
@@ -90,14 +91,15 @@ class SettingsTest {
 
     @Test
     void getReturnsNullIfKeyHasNoValue() {
-        assertThat((Byte) Settings.create().get(Setting.BYTE_MIN)).isNull();
+        assertThat((Byte) Settings.create().get(Keys.BYTE_MIN)).isNull();
     }
 
     @Test
     void setThrowsErrorIfGivenInvalidType() {
-        assertThatThrownBy(() -> Settings.create().set(Setting.LONG_MAX, false))
+        final Settings settings = Settings.create();
+        assertThatThrownBy(() -> settings.set(Keys.LONG_MAX, AUTO_ADJUST_DISABLED))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("The value 'false' is of unexpected type (Boolean) for key 'LONG_MAX'");
+                .hasMessage("The value 'false' is of unexpected type (Boolean) for key '%s'", Keys.LONG_MAX.propertyKey());
     }
 
     @Test
@@ -111,7 +113,7 @@ class SettingsTest {
     void lockSettings() {
         final Settings locked = Settings.create().lock();
 
-        assertThatThrownBy(() -> locked.set(Setting.LONG_MAX, 1L))
+        assertThatThrownBy(() -> locked.set(Keys.LONG_MAX, 1L))
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("This instance of Settings has been locked and is read-only");
 
@@ -132,8 +134,8 @@ class SettingsTest {
     @Test
     void verifyToString() {
         assertThat(Settings.create()
-                .set(Setting.LONG_MIN, 123L)
-                .set(Setting.DOUBLE_MIN, 345.9)
+                .set(Keys.LONG_MIN, 123L)
+                .set(Keys.DOUBLE_MIN, 345.9)
                 .mapType(List.class, ArrayList.class)
                 .lock()
                 .toString()
@@ -141,10 +143,34 @@ class SettingsTest {
                 "Settings[",
                 "isLockedForModifications: true",
                 "settingsMap:",
-                "\tDOUBLE_MIN: 345.9",
-                "\tLONG_MIN: 123",
+                "\t'double.min': 345.9",
+                "\t'long.min': 123",
                 "subtypeMap:",
-                "\tinterface java.util.List: class java.util.ArrayList"
+                "\t'interface java.util.List': class java.util.ArrayList"
         );
+    }
+
+    @Test
+    void setAutoAdjustsRangeBounds() {
+        final int minLength = 1000;
+        final int newMaxLength = 100;
+        final Settings settings = Settings.defaults()
+                .set(Keys.ARRAY_MIN_LENGTH, minLength)
+                .set(Keys.ARRAY_MAX_LENGTH, newMaxLength);
+
+        final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
+        assertThat(newMin).isEqualTo(80);
+    }
+
+    @Test
+    void setWithoutAutoAdjust() {
+        final int minLength = 1000;
+        final int newMaxLength = 100;
+        final Settings settings = Settings.defaults()
+                .set(Keys.ARRAY_MIN_LENGTH, minLength)
+                .set(Keys.ARRAY_MAX_LENGTH, newMaxLength, AUTO_ADJUST_DISABLED);
+
+        final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
+        assertThat(newMin).isEqualTo(minLength);
     }
 }

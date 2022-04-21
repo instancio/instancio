@@ -16,7 +16,7 @@
 package org.instancio.api.settings;
 
 import org.instancio.Instancio;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.test.support.tags.SettingsTag;
@@ -36,8 +36,8 @@ class ArraySettingsTest {
     private static final int MAX_SIZE_OVERRIDE = 102;
 
     private static final Settings settings = Settings.create()
-            .set(Setting.ARRAY_MIN_LENGTH, MIN_SIZE_OVERRIDE)
-            .set(Setting.ARRAY_MAX_LENGTH, MAX_SIZE_OVERRIDE)
+            .set(Keys.ARRAY_MIN_LENGTH, MIN_SIZE_OVERRIDE)
+            .set(Keys.ARRAY_MAX_LENGTH, MAX_SIZE_OVERRIDE)
             .lock();
 
     @Test
@@ -51,7 +51,7 @@ class ArraySettingsTest {
     @Test
     @DisplayName("Allow null to be generated for array")
     void nullable() {
-        final Settings overrides = settings.merge(Settings.create().set(Setting.ARRAY_NULLABLE, true));
+        final Settings overrides = settings.merge(Settings.create().set(Keys.ARRAY_NULLABLE, true));
         final Set<long[]> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final ArrayLong result = createArray(overrides);
@@ -63,7 +63,7 @@ class ArraySettingsTest {
     @Test
     @DisplayName("Allow null elements in arrays")
     void nullableElements() {
-        final Settings overrides = Settings.create().set(Setting.ARRAY_ELEMENTS_NULLABLE, true);
+        final Settings overrides = Settings.create().set(Keys.ARRAY_ELEMENTS_NULLABLE, true);
         final ArrayLong result = createArray(settings.merge(overrides));
         assertThat(result.getWrapper()).containsNull();
     }

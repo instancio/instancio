@@ -17,7 +17,7 @@ package org.instancio.api.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.tags.SettingsTag;
@@ -34,8 +34,8 @@ class ModelWithSettingsTest {
     void verifyModelRetainsSettings() {
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
                 .withSettings(Settings.create()
-                        .set(Setting.INTEGER_MIN, INT_MIN)
-                        .set(Setting.INTEGER_MAX, INT_MAX))
+                        .set(Keys.INTEGER_MIN, INT_MIN)
+                        .set(Keys.INTEGER_MAX, INT_MAX))
                 .toModel();
 
         final SupportedNumericTypes result = Instancio.create(model);
@@ -47,16 +47,16 @@ class ModelWithSettingsTest {
     void verifyModelSettingsOverride() {
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
                 .withSettings(Settings.create()
-                        .set(Setting.INTEGER_MIN, INT_MIN)
-                        .set(Setting.INTEGER_MAX, INT_MAX))
+                        .set(Keys.INTEGER_MIN, INT_MIN)
+                        .set(Keys.INTEGER_MAX, INT_MAX))
                 .toModel();
 
         final int newIntMin = 5678;
         final int newIntMax = 5679;
         final SupportedNumericTypes result = Instancio.of(model)
                 .withSettings(Settings.create()
-                        .set(Setting.INTEGER_MIN, newIntMin)
-                        .set(Setting.INTEGER_MAX, newIntMax))
+                        .set(Keys.INTEGER_MIN, newIntMin)
+                        .set(Keys.INTEGER_MAX, newIntMax))
                 .create();
 
         assertThat(result.getPrimitiveInt()).isBetween(newIntMin, newIntMax);

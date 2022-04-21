@@ -15,23 +15,24 @@
  */
 package org.instancio.settings;
 
+import org.instancio.exception.InstancioApiException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.settings.Setting.COLLECTION_NULLABLE;
+import static org.instancio.settings.Keys.COLLECTION_NULLABLE;
 
-class SettingTest {
+class KeysTest {
 
     @Test
-    void getByKey() {
-        assertThat(Setting.getByKey(COLLECTION_NULLABLE.key())).isEqualTo(COLLECTION_NULLABLE);
+    void get() {
+        assertThat(Keys.get(COLLECTION_NULLABLE.propertyKey())).isEqualTo(COLLECTION_NULLABLE);
     }
 
     @Test
-    void getByInvalidKey() {
-        assertThatThrownBy(() -> Setting.getByKey("foo"))
-                .isInstanceOf(NullPointerException.class)
+    void getWithInvalidProperty() {
+        assertThatThrownBy(() -> Keys.get("foo"))
+                .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Invalid instancio property key: 'foo'");
     }
 }

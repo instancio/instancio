@@ -19,7 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.generator.util.MapGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.tags.Feature;
@@ -47,8 +47,8 @@ class MapGeneratorSizeTest {
 
     @WithSettings
     private static final Settings settings = Settings.create()
-            .set(Setting.STRING_MIN_LENGTH, STRING_LENGTH)
-            .set(Setting.STRING_MAX_LENGTH, STRING_LENGTH + 1);
+            .set(Keys.STRING_MIN_LENGTH, STRING_LENGTH)
+            .set(Keys.STRING_MAX_LENGTH, STRING_LENGTH + 1);
 
     @Test
     void size() {
