@@ -17,15 +17,15 @@ package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 
 public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<Short> {
 
     public ShortGenerator(final GeneratorContext context) {
         super(context,
-                context.getSettings().get(Setting.SHORT_MIN),
-                context.getSettings().get(Setting.SHORT_MAX),
-                context.getSettings().get(Setting.SHORT_NULLABLE));
+                context.getSettings().get(Keys.SHORT_MIN),
+                context.getSettings().get(Keys.SHORT_MAX),
+                context.getSettings().get(Keys.SHORT_NULLABLE));
     }
 
     @Override

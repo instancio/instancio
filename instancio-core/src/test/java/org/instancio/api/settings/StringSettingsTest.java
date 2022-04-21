@@ -16,7 +16,7 @@
 package org.instancio.api.settings;
 
 import org.instancio.Instancio;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.collections.lists.ListString;
@@ -36,11 +36,11 @@ class StringSettingsTest {
     private static final int MAX_SIZE_OVERRIDE = 102;
 
     private static final Settings settings = Settings.create()
-            .set(Setting.STRING_MIN_LENGTH, MIN_SIZE_OVERRIDE)
-            .set(Setting.STRING_MAX_LENGTH, MAX_SIZE_OVERRIDE)
+            .set(Keys.STRING_MIN_LENGTH, MIN_SIZE_OVERRIDE)
+            .set(Keys.STRING_MAX_LENGTH, MAX_SIZE_OVERRIDE)
             // increase collection size for bigger sample
-            .set(Setting.COLLECTION_MIN_SIZE, MIN_SIZE_OVERRIDE)
-            .set(Setting.COLLECTION_MAX_SIZE, MAX_SIZE_OVERRIDE)
+            .set(Keys.COLLECTION_MIN_SIZE, MIN_SIZE_OVERRIDE)
+            .set(Keys.COLLECTION_MAX_SIZE, MAX_SIZE_OVERRIDE)
             .lock();
 
     @Test
@@ -53,7 +53,7 @@ class StringSettingsTest {
     @Test
     @DisplayName("Override allowEmpty to true")
     void allowEmpty() {
-        final Settings overrides = settings.merge(Settings.create().set(Setting.STRING_ALLOW_EMPTY, true));
+        final Settings overrides = settings.merge(Settings.create().set(Keys.STRING_ALLOW_EMPTY, true));
         final ListString result = Instancio.of(ListString.class).withSettings(overrides).create();
         assertThat(result.getList()).contains("");
     }
@@ -61,7 +61,7 @@ class StringSettingsTest {
     @Test
     @DisplayName("Override nullable to true - generates null in String fields")
     void nullable() {
-        final Settings overrides = settings.merge(Settings.create().set(Setting.STRING_NULLABLE, true));
+        final Settings overrides = settings.merge(Settings.create().set(Keys.STRING_NULLABLE, true));
         final Set<String> results = new HashSet<>();
         for (int i = 0; i < 1000; i++) {
             final StringHolder result = Instancio.of(StringHolder.class).withSettings(overrides).create();
@@ -73,7 +73,7 @@ class StringSettingsTest {
     @Test
     @DisplayName("Override nullable to true - does not generate null in collection elements")
     void stringIsNotNullInCollections() {
-        final Settings overrides = settings.merge(Settings.create().set(Setting.STRING_NULLABLE, true));
+        final Settings overrides = settings.merge(Settings.create().set(Keys.STRING_NULLABLE, true));
         final ListString result = Instancio.of(ListString.class).withSettings(overrides).create();
         assertThat(result.getList()).doesNotContainNull();
     }

@@ -18,7 +18,7 @@ package org.instancio.generator.lang;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.random.RandomProviderImpl;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
@@ -27,8 +27,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class IntegerGeneratorTest {
     private static final Settings settings = Settings.defaults();
-    private static final int MIN = settings.get(Setting.INTEGER_MIN);
-    private static final int MAX = settings.get(Setting.INTEGER_MAX);
+    private static final int MIN = settings.get(Keys.INTEGER_MIN);
+    private static final int MAX = settings.get(Keys.INTEGER_MAX);
     private final RandomProvider random = new RandomProviderImpl();
     private final GeneratorContext context = new GeneratorContext(settings, random);
     private final IntegerGenerator generator = new IntegerGenerator(context);

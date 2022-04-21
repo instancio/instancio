@@ -19,7 +19,7 @@ import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 
 public class CharacterGenerator extends AbstractGenerator<Character> {
 
@@ -27,7 +27,7 @@ public class CharacterGenerator extends AbstractGenerator<Character> {
 
     public CharacterGenerator(final GeneratorContext context) {
         super(context);
-        this.nullable = context.getSettings().get(Setting.CHARACTER_NULLABLE);
+        this.nullable = context.getSettings().get(Keys.CHARACTER_NULLABLE);
     }
 
     @Override

@@ -17,15 +17,15 @@ package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 
 public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<Byte> {
 
     public ByteGenerator(final GeneratorContext context) {
         super(context,
-                context.getSettings().get(Setting.BYTE_MIN),
-                context.getSettings().get(Setting.BYTE_MAX),
-                context.getSettings().get(Setting.BYTE_NULLABLE));
+                context.getSettings().get(Keys.BYTE_MIN),
+                context.getSettings().get(Keys.BYTE_MAX),
+                context.getSettings().get(Keys.BYTE_NULLABLE));
     }
 
     @Override

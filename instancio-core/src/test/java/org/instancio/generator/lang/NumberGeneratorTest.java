@@ -20,7 +20,7 @@ import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.random.RandomProviderImpl;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.test.support.tags.SettingsTag;
@@ -42,24 +42,24 @@ class NumberGeneratorTest {
     private static final int MAX = 10;
     private static final int SAMPLE_SIZE = 10_000;
     private static final Settings settings = Settings.defaults()
-            .set(Setting.BYTE_MIN, (byte) MIN)
-            .set(Setting.BYTE_MAX, (byte) MAX)
-            .set(Setting.BYTE_NULLABLE, true)
-            .set(Setting.SHORT_MIN, (short) MIN)
-            .set(Setting.SHORT_MAX, (short) MAX)
-            .set(Setting.SHORT_NULLABLE, true)
-            .set(Setting.INTEGER_MIN, MIN)
-            .set(Setting.INTEGER_MAX, MAX)
-            .set(Setting.INTEGER_NULLABLE, true)
-            .set(Setting.LONG_MIN, (long) MIN)
-            .set(Setting.LONG_MAX, (long) MAX)
-            .set(Setting.LONG_NULLABLE, true)
-            .set(Setting.FLOAT_MIN, (float) MIN)
-            .set(Setting.FLOAT_MAX, (float) MAX)
-            .set(Setting.FLOAT_NULLABLE, true)
-            .set(Setting.DOUBLE_MIN, (double) MIN)
-            .set(Setting.DOUBLE_MAX, (double) MAX)
-            .set(Setting.DOUBLE_NULLABLE, true);
+            .set(Keys.BYTE_MIN, (byte) MIN)
+            .set(Keys.BYTE_MAX, (byte) MAX)
+            .set(Keys.BYTE_NULLABLE, true)
+            .set(Keys.SHORT_MIN, (short) MIN)
+            .set(Keys.SHORT_MAX, (short) MAX)
+            .set(Keys.SHORT_NULLABLE, true)
+            .set(Keys.INTEGER_MIN, MIN)
+            .set(Keys.INTEGER_MAX, MAX)
+            .set(Keys.INTEGER_NULLABLE, true)
+            .set(Keys.LONG_MIN, (long) MIN)
+            .set(Keys.LONG_MAX, (long) MAX)
+            .set(Keys.LONG_NULLABLE, true)
+            .set(Keys.FLOAT_MIN, (float) MIN)
+            .set(Keys.FLOAT_MAX, (float) MAX)
+            .set(Keys.FLOAT_NULLABLE, true)
+            .set(Keys.DOUBLE_MIN, (double) MIN)
+            .set(Keys.DOUBLE_MAX, (double) MAX)
+            .set(Keys.DOUBLE_NULLABLE, true);
 
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);

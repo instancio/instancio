@@ -17,15 +17,15 @@ package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 
 public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<Float> {
 
     public FloatGenerator(final GeneratorContext context) {
         super(context,
-                context.getSettings().get(Setting.FLOAT_MIN),
-                context.getSettings().get(Setting.FLOAT_MAX),
-                context.getSettings().get(Setting.FLOAT_NULLABLE));
+                context.getSettings().get(Keys.FLOAT_MIN),
+                context.getSettings().get(Keys.FLOAT_MAX),
+                context.getSettings().get(Keys.FLOAT_NULLABLE));
     }
 
     @Override

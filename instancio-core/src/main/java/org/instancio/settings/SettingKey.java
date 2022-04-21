@@ -17,25 +17,22 @@ package org.instancio.settings;
 
 /**
  * A setting key for modifying configuration.
- * <p>
- * Configuration file is read from {@code instancio.properties}
- * at the root of the classpath.
  */
-public interface SettingKey {
+public interface SettingKey extends Comparable<SettingKey> {
 
     /**
-     * A key used in the properties file.
+     * A property key used in the properties file.
      *
      * @return property key
      */
-    String key();
+    String propertyKey();
 
     /**
      * Type of the property value.
      *
      * @return value class
      */
-    Class<?> type();
+    <T> Class<T> type();
 
     /**
      * Default value for this key.
@@ -45,4 +42,13 @@ public interface SettingKey {
      */
     <T> T defaultValue();
 
+    /**
+     * Auto-adjusts the {@link Settings} value for this key based on the other setting value.
+     *
+     * @param settings   to adjust
+     * @param otherValue value of the other setting to base the adjustment off
+     */
+    default void autoAdjust(Settings settings, Object otherValue) {
+        // no-op by default
+    }
 }

@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class InstancioExtensionWithoutSettingsAnnotationTest {
     void shouldUseDefaultSettings() {
         final Settings defaults = Settings.defaults();
         assertThat(Instancio.create(Long.class))
-                .isBetween(defaults.get(Setting.LONG_MIN), defaults.get(Setting.LONG_MAX));
+                .isBetween(defaults.get(Keys.LONG_MIN), defaults.get(Keys.LONG_MAX));
     }
 
 }

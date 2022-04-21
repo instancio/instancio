@@ -19,7 +19,7 @@ import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.util.Verify;
 
@@ -37,10 +37,10 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         super(context);
 
         final Settings settings = context.getSettings();
-        this.minLength = settings.get(Setting.STRING_MIN_LENGTH);
-        this.maxLength = settings.get(Setting.STRING_MAX_LENGTH);
-        this.nullable = settings.get(Setting.STRING_NULLABLE);
-        this.allowEmpty = settings.get(Setting.STRING_ALLOW_EMPTY);
+        this.minLength = settings.get(Keys.STRING_MIN_LENGTH);
+        this.maxLength = settings.get(Keys.STRING_MAX_LENGTH);
+        this.nullable = settings.get(Keys.STRING_NULLABLE);
+        this.allowEmpty = settings.get(Keys.STRING_ALLOW_EMPTY);
     }
 
     @Override

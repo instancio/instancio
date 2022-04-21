@@ -18,7 +18,7 @@ package org.instancio.generator.array;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.random.RandomProviderImpl;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.test.support.tags.SettingsTag;
@@ -38,10 +38,10 @@ class ArrayGeneratorTest {
     private static final int PERCENTAGE_THRESHOLD = 10;
 
     private static final Settings settings = Settings.defaults()
-            .set(Setting.ARRAY_MIN_LENGTH, MIN_SIZE)
-            .set(Setting.ARRAY_MAX_LENGTH, MAX_SIZE)
-            .set(Setting.ARRAY_NULLABLE, true)
-            .set(Setting.ARRAY_ELEMENTS_NULLABLE, true)
+            .set(Keys.ARRAY_MIN_LENGTH, MIN_SIZE)
+            .set(Keys.ARRAY_MAX_LENGTH, MAX_SIZE)
+            .set(Keys.ARRAY_NULLABLE, true)
+            .set(Keys.ARRAY_ELEMENTS_NULLABLE, true)
             .lock();
 
     private static final RandomProvider random = new RandomProviderImpl();

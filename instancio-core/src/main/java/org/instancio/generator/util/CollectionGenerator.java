@@ -20,7 +20,7 @@ import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.util.Sonar;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -44,10 +44,10 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     public CollectionGenerator(final GeneratorContext context) {
         super(context);
-        this.minSize = context.getSettings().get(Setting.COLLECTION_MIN_SIZE);
-        this.maxSize = context.getSettings().get(Setting.COLLECTION_MAX_SIZE);
-        this.nullable = context.getSettings().get(Setting.COLLECTION_NULLABLE);
-        this.nullableElements = context.getSettings().get(Setting.COLLECTION_ELEMENTS_NULLABLE);
+        this.minSize = context.getSettings().get(Keys.COLLECTION_MIN_SIZE);
+        this.maxSize = context.getSettings().get(Keys.COLLECTION_MAX_SIZE);
+        this.nullable = context.getSettings().get(Keys.COLLECTION_NULLABLE);
+        this.nullableElements = context.getSettings().get(Keys.COLLECTION_ELEMENTS_NULLABLE);
         this.type = ArrayList.class; // default collection type
     }
 

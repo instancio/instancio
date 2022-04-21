@@ -18,7 +18,7 @@ package org.instancio.generator.lang;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.random.RandomProviderImpl;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.test.support.tags.SettingsTag;
@@ -35,10 +35,10 @@ import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints
 class StringGeneratorTest {
     private static final int SAMPLE_SIZE = 1000;
     private static final Settings settings = Settings.defaults()
-            .set(Setting.STRING_MIN_LENGTH, 1)
-            .set(Setting.STRING_MAX_LENGTH, 1)
-            .set(Setting.STRING_ALLOW_EMPTY, true)
-            .set(Setting.STRING_NULLABLE, true);
+            .set(Keys.STRING_MIN_LENGTH, 1)
+            .set(Keys.STRING_MAX_LENGTH, 1)
+            .set(Keys.STRING_ALLOW_EMPTY, true)
+            .set(Keys.STRING_NULLABLE, true);
 
     private static final RandomProvider random = new RandomProviderImpl();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
@@ -68,8 +68,8 @@ class StringGeneratorTest {
         final int length = 10;
         final GeneratorContext ctxWithUpdatedSettings = new GeneratorContext(
                 Settings.from(settings)
-                        .set(Setting.STRING_NULLABLE, false)
-                        .set(Setting.STRING_ALLOW_EMPTY, false),
+                        .set(Keys.STRING_NULLABLE, false)
+                        .set(Keys.STRING_ALLOW_EMPTY, false),
                 random);
         final StringGenerator generator = new StringGenerator(ctxWithUpdatedSettings);
 

@@ -16,7 +16,7 @@
 package org.instancio.api.settings;
 
 import org.instancio.Instancio;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -38,8 +38,8 @@ class CollectionSettingsTest {
     private static final int MAX_SIZE_OVERRIDE = 102;
 
     private static final Settings settings = Settings.create()
-            .set(Setting.COLLECTION_MIN_SIZE, MIN_SIZE_OVERRIDE)
-            .set(Setting.COLLECTION_MAX_SIZE, MAX_SIZE_OVERRIDE)
+            .set(Keys.COLLECTION_MIN_SIZE, MIN_SIZE_OVERRIDE)
+            .set(Keys.COLLECTION_MAX_SIZE, MAX_SIZE_OVERRIDE)
             .lock();
 
     @Test
@@ -52,7 +52,7 @@ class CollectionSettingsTest {
     @Test
     @DisplayName("Allow null to be generated for collection")
     void nullable() {
-        final Settings overrides = settings.merge(Settings.create().set(Setting.COLLECTION_NULLABLE, true));
+        final Settings overrides = settings.merge(Settings.create().set(Keys.COLLECTION_NULLABLE, true));
         final Set<Set<?>> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final SetLong result = createCollection(overrides);
@@ -64,7 +64,7 @@ class CollectionSettingsTest {
     @Test
     @DisplayName("Allow null elements in collections")
     void nullableElements() {
-        final Settings overrides = Settings.create().set(Setting.COLLECTION_ELEMENTS_NULLABLE, true);
+        final Settings overrides = Settings.create().set(Keys.COLLECTION_ELEMENTS_NULLABLE, true);
         final SetLong result = createCollection(settings.merge(overrides));
         assertThat(result.getSet()).containsNull();
     }

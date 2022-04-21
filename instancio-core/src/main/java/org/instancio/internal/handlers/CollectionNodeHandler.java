@@ -24,7 +24,7 @@ import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Sonar;
@@ -81,6 +81,6 @@ public class CollectionNodeHandler implements NodeHandler {
     private int randomSize() {
         final RandomProvider random = context.getRandomProvider();
         final Settings settings = context.getSettings();
-        return random.intRange(settings.get(Setting.COLLECTION_MIN_SIZE), settings.get(Setting.COLLECTION_MAX_SIZE));
+        return random.intRange(settings.get(Keys.COLLECTION_MIN_SIZE), settings.get(Keys.COLLECTION_MAX_SIZE));
     }
 }

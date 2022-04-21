@@ -120,7 +120,7 @@ public class ApiValidator {
                 "Class must not be an interface or abstract class: '%s'", klass.getName());
     }
 
-    public static void validateSettingKey(@Nullable final SettingKey key, @Nullable final Object value) {
+    public static void validateNotNullAndType(@Nullable final SettingKey key, @Nullable final Object value) {
         isTrue(key != null, "Setting key must not be null");
         isTrue(value != null, "Setting value must not be null");
         isTrue(key.type() == value.getClass(),

@@ -15,28 +15,20 @@
  */
 package org.instancio.settings;
 
-import org.instancio.exception.InstancioException;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;
 
-import java.util.Properties;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PropertiesLoaderTest {
-
-    @Test
-    void load() {
-        final Properties props = new PropertiesLoader().load("custom-instancio-test.properties");
-        assertThat(props).isNotNull();
-        assertThat(props.get(Keys.LONG_MAX.propertyKey())).isNotNull();
-    }
+class KeyTest {
 
     @Test
-    void loadFileNotFound() {
-        final String file = "non-existent.properties";
-        assertThatThrownBy(() -> new PropertiesLoader().load(file))
-                .isInstanceOf(InstancioException.class)
-                .hasMessage("Unable to load properties from '%s'", file);
+    void verifyEqualsAndHashcode() {
+        EqualsVerifier.forClass(Key.class)
+                .suppress(Warning.ALL_FIELDS_SHOULD_BE_USED)
+                .verify();
     }
 }

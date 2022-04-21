@@ -16,7 +16,7 @@
 package org.instancio.api.settings;
 
 import org.instancio.Instancio;
-import org.instancio.settings.Setting;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
 import org.instancio.test.support.tags.SettingsTag;
@@ -37,8 +37,8 @@ class MapSettingsTest {
     private static final int MAX_SIZE_OVERRIDE = 102;
 
     private static final Settings settings = Settings.create()
-            .set(Setting.MAP_MIN_SIZE, MIN_SIZE_OVERRIDE)
-            .set(Setting.MAP_MAX_SIZE, MAX_SIZE_OVERRIDE)
+            .set(Keys.MAP_MIN_SIZE, MIN_SIZE_OVERRIDE)
+            .set(Keys.MAP_MAX_SIZE, MAX_SIZE_OVERRIDE)
             .lock();
 
     @Test
@@ -51,7 +51,7 @@ class MapSettingsTest {
     @Test
     @DisplayName("Allow null to be generated for map")
     void nullable() {
-        final Settings overrides = settings.merge(Settings.create().set(Setting.MAP_NULLABLE, true));
+        final Settings overrides = settings.merge(Settings.create().set(Keys.MAP_NULLABLE, true));
         final Set<Map<?, ?>> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final MapIntegerString result = createMap(overrides);
@@ -63,7 +63,7 @@ class MapSettingsTest {
     @Test
     @DisplayName("Allow null keys in maps")
     void nullableKeys() {
-        final Settings overrides = Settings.create().set(Setting.MAP_KEYS_NULLABLE, true);
+        final Settings overrides = Settings.create().set(Keys.MAP_KEYS_NULLABLE, true);
         final MapIntegerString result = createMap(settings.merge(overrides));
         assertThat(result.getMap().keySet()).containsNull();
     }
@@ -71,7 +71,7 @@ class MapSettingsTest {
     @Test
     @DisplayName("Allow null values in maps")
     void nullableValues() {
-        final Settings overrides = Settings.create().set(Setting.MAP_VALUES_NULLABLE, true);
+        final Settings overrides = Settings.create().set(Keys.MAP_VALUES_NULLABLE, true);
         final MapIntegerString result = createMap(settings.merge(overrides));
         assertThat(result.getMap().values()).containsNull();
     }

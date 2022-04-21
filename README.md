@@ -406,7 +406,7 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-The `org.instancio.settings.Setting` enum contains all the setting keys.
+The `org.instancio.settings.Keys` class contains all the setting keys.
 
 # JUnit 5 integration
 
