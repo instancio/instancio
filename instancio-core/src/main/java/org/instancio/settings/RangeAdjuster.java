@@ -17,8 +17,6 @@ package org.instancio.settings;
 
 import org.instancio.util.NumberUtils;
 
-import java.util.function.Function;
-
 /**
  * Provides support for auto-adjusting 'range' settings that have a min and a max value.
  */
@@ -35,38 +33,26 @@ public interface RangeAdjuster {
      * @param otherValue based on which to update given setting key
      * @param <T>        numeric type
      */
-    <T extends Number & Comparable<T>> void adjustRange(Settings settings, SettingKey key, Object otherValue);
+    <T extends Number & Comparable<T>> void adjustRange(Settings settings, SettingKey key, T otherValue);
 
     /**
      * Adjusts the lower bound of a range given a new upper bound.
      */
     class ForMin implements RangeAdjuster {
-        private final double percentageDelta;
+        private final int percentage;
 
         ForMin(final int percentage) {
-            percentageDelta = (percentage / 100d);
+            this.percentage = percentage;
         }
 
         @Override
         public <T extends Number & Comparable<T>> void adjustRange(
-                final Settings settings, final SettingKey minSetting, final Object otherValue) {
+                final Settings settings, final SettingKey minSetting, final T newMax) {
 
             final T curMin = settings.get(minSetting);
-            if (curMin == null) {
-                return;
-            }
-
-            final T newMax = (T) otherValue;
-
-            if (curMin.compareTo(newMax) >= 0) {
-                final long delta = (long) Math.abs((newMax.longValue() * percentageDelta));
-                final T absoluteMin = NumberUtils.getMinValue(newMax.getClass());
-                final long newMin = absoluteMin.longValue() + delta <= newMax.longValue()
-                        ? newMax.longValue() - delta
-                        : absoluteMin.longValue();
-
-                final Function<Long, Number> fn = NumberUtils.getLongConverter(newMax.getClass());
-                settings.set(minSetting, fn.apply(newMin), false);
+            if (curMin != null) {
+                final Number newMin = NumberUtils.calculateNewMin(curMin, newMax, percentage);
+                settings.set(minSetting, newMin, false);
             }
         }
     }
@@ -75,32 +61,20 @@ public interface RangeAdjuster {
      * Adjusts the upper bound of a range given a new lower bound.
      */
     class ForMax implements RangeAdjuster {
-        private final double percentageDelta;
+        private final int percentage;
 
         ForMax(final int percentage) {
-            percentageDelta = (percentage / 100d);
+            this.percentage = percentage;
         }
 
         @Override
         public <T extends Number & Comparable<T>> void adjustRange(
-                final Settings settings, final SettingKey maxSetting, final Object otherValue) {
+                final Settings settings, final SettingKey maxSetting, final T newMin) {
 
             final T curMax = settings.get(maxSetting);
-            if (curMax == null) {
-                return;
-            }
-
-            final T newMin = (T) otherValue;
-
-            if (curMax.compareTo(newMin) <= 0) {
-                final long delta = (long) Math.abs((newMin.longValue() * percentageDelta));
-                final T absoluteMax = NumberUtils.getMaxValue(newMin.getClass());
-                final long newMax = absoluteMax.longValue() - delta >= newMin.longValue()
-                        ? newMin.longValue() + delta
-                        : absoluteMax.longValue();
-
-                final Function<Long, Number> fn = NumberUtils.getLongConverter(newMin.getClass());
-                settings.set(maxSetting, fn.apply(newMax), false);
+            if (curMax != null) {
+                final Number newMax = NumberUtils.calculateNewMax(curMax, newMin, percentage);
+                settings.set(maxSetting, newMax, false);
             }
         }
     }

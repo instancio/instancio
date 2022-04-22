@@ -15,6 +15,7 @@
  */
 package org.instancio.settings;
 
+import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -44,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class SettingsAutoAdjustmentTest {
 
-    private static final int PERCENTAGE = 20;
+    private static final int PERCENTAGE = Constants.RANGE_ADJUSTMENT_PERCENTAGE;
 
     private final Settings settings = Settings.defaults();
 
@@ -99,7 +100,7 @@ class SettingsAutoAdjustmentTest {
     void newMaxIsNegativeAndIsLessThanMin() {
         settings.set(Keys.INTEGER_MAX, -100);
 
-        assertThat((Object) settings.get(Keys.INTEGER_MIN)).isEqualTo(-120);
+        assertThat((Object) settings.get(Keys.INTEGER_MIN)).isEqualTo(-150);
     }
 
     @Test
@@ -109,7 +110,7 @@ class SettingsAutoAdjustmentTest {
                 .set(Keys.INTEGER_MAX, -120)
                 .set(Keys.INTEGER_MIN, -100);
 
-        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isEqualTo(-80);
+        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isEqualTo(-50);
     }
 
     @Test
@@ -133,8 +134,8 @@ class SettingsAutoAdjustmentTest {
             assertThat(maxSetting).isPresent();
 
             final Number max = NumberUtils.getLongConverter(minSetting.type()).apply(50L);
-            final Number newMin = NumberUtils.getLongConverter(minSetting.type()).apply(100L);
-            final Number expectedMax = NumberUtils.getLongConverter(minSetting.type()).apply(120L);
+            final Number newMin = NumberUtils.getLongConverter(minSetting.type()).apply(60L);
+            final Number expectedMax = NumberUtils.getLongConverter(minSetting.type()).apply(90L);
 
             settings
                     .set(maxSetting.get(), max)
@@ -152,7 +153,7 @@ class SettingsAutoAdjustmentTest {
 
             final Number min = NumberUtils.getLongConverter(maxSetting.type()).apply(120L);
             final Number newMax = NumberUtils.getLongConverter(maxSetting.type()).apply(100L);
-            final Number expectedMin = NumberUtils.getLongConverter(maxSetting.type()).apply(80L);
+            final Number expectedMin = NumberUtils.getLongConverter(maxSetting.type()).apply(50L);
 
             settings
                     .set(minSetting.get(), min)

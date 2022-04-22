@@ -165,7 +165,7 @@ public class Settings {
         settingsMap.put(key, value);
 
         if (autoAdjust) {
-            Keys.getAutoAdjustable(key).ifPresent(k -> k.autoAdjust(this, value));
+            Keys.getAutoAdjustable(key).ifPresent(k -> k.autoAdjust(this, new NumberCaster<>().cast(value)));
         }
 
         return this;
@@ -178,7 +178,7 @@ public class Settings {
      * @param to   subtype class
      * @return updated settings
      */
-    public Settings mapType(final Class<?> from, Class<?> to) {
+    public Settings mapType(final Class<?> from, final Class<?> to) {
         checkLockedForModifications();
         validateSubtypeMapping(from, to);
         subtypeMap.put(from, to);
@@ -222,10 +222,18 @@ public class Settings {
                 mapToString(new TreeMap<>(settingsMap)), mapToString(subtypeMap));
     }
 
-    private static String mapToString(Map<?, ?> map) {
+    private static String mapToString(final Map<?, ?> map) {
         if (map.isEmpty()) return " {}";
         return "\n" + map.entrySet().stream()
                 .map(e -> String.format("\t'%s': %s", e.getKey(), e.getValue()))
                 .collect(joining("\n"));
+    }
+
+    // a hack to workaround generics... we know the type is valid since it's a numeric settings
+    private static class NumberCaster<T extends Number & Comparable<T>> {
+        @SuppressWarnings("unchecked")
+        private T cast(final Object obj) {
+            return (T) obj;
+        }
     }
 }

@@ -165,6 +165,11 @@ public class ApiValidator {
                 + "%n\t\t.create()");
     }
 
+    public static <T> T notNull(@Nullable final T obj, final String message, final Object... values) {
+        if (obj == null) throw new InstancioApiException(String.format(message, values));
+        return obj;
+    }
+
     public static void isTrue(final boolean condition, final String message, final Object... values) {
         if (!condition) throw new InstancioApiException(String.format(message, values));
     }

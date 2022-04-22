@@ -53,6 +53,10 @@ public interface Generator<T> extends GeneratorSpec<T> {
     /**
      * If {@code true}, then this generator delegate object instantiation
      * to another generator supplied via {@link #setDelegate(Generator)}.
+     * <p>
+     * A generator is delegating when it does not know the type it needs
+     * to generate. For example, the collection generator could generate
+     * an {@code ArrayList}, a {@code HashSet}, or some other collection type.
      *
      * @return {@code true} if this is a delegating generator
      */

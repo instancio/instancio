@@ -23,11 +23,10 @@ import java.time.LocalTime;
 
 public class LocalTimeGenerator extends AbstractTemporalGenerator<LocalTime> {
 
-    private static final LocalTime MIN = LocalTime.of(0, 0, 0);
-    private static final LocalTime MAX = LocalTime.of(23, 59, 59);
-
     public LocalTimeGenerator(final GeneratorContext context) {
-        super(context, MIN, MAX);
+        super(context,
+                LocalTime.of(0, 0, 0),
+                LocalTime.of(23, 59, 59));
     }
 
     @Override

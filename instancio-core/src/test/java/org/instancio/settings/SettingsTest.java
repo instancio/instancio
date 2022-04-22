@@ -16,6 +16,7 @@
 package org.instancio.settings;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -158,8 +159,9 @@ class SettingsTest {
                 .set(Keys.ARRAY_MIN_LENGTH, minLength)
                 .set(Keys.ARRAY_MAX_LENGTH, newMaxLength);
 
+        final int expected = newMaxLength - newMaxLength * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
         final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
-        assertThat(newMin).isEqualTo(80);
+        assertThat(newMin).isEqualTo(expected);
     }
 
     @Test

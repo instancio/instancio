@@ -43,12 +43,12 @@ public interface SettingKey extends Comparable<SettingKey> {
     <T> T defaultValue();
 
     /**
-     * Auto-adjusts the {@link Settings} value for this key based on the other setting value.
+     * Auto-adjusts the {@link Settings} value for this key based on the value of another setting key.
      *
      * @param settings   to adjust
      * @param otherValue value of the other setting to base the adjustment off
      */
-    default void autoAdjust(Settings settings, Object otherValue) {
+    default <T extends Number & Comparable<T>> void autoAdjust(Settings settings, T otherValue) {
         // no-op by default
     }
 }

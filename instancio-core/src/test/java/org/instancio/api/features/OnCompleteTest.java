@@ -20,13 +20,19 @@ import org.instancio.Model;
 import org.instancio.test.support.pojo.arrays.ArrayPerson;
 import org.instancio.test.support.pojo.collections.lists.ListPerson;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Bindings.all;
+import static org.instancio.Bindings.field;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class OnCompleteTest {
     private static final String COUNTRY_CODE = "+1";
@@ -88,6 +94,39 @@ class OnCompleteTest {
         assertThat(result.getArray()).allSatisfy(OnCompleteTest::assertPerson);
     }
 
+    @Test
+    void onCompleteFieldForIgnoredClass() {
+        final Person result = Instancio.of(Person.class)
+                .ignore(all(Address.class))
+                .onComplete(all(Phone.class), (Phone phone) -> failIfCalled())
+                .create();
+
+        assertThat(result.getAddress()).isNull();
+    }
+
+    @Test
+    void onCompleteFieldForIgnoredField() {
+        final Person result = Instancio.of(Person.class)
+                .ignore(field("name"))
+                .onComplete(field("name"), (String name) -> failIfCalled())
+                .create();
+
+        assertThat(result.getName()).isNull();
+    }
+
+    @Test
+    void onCompleteForNullableClass() {
+        final Set<Address> result = Instancio.of(Person.class)
+                .ignore(all(Address.class))
+                .onComplete(field(Address.class, "city"), (String city) -> failIfCalled())
+                .stream()
+                .map(Person::getAddress)
+                .limit(100)
+                .collect(toSet());
+
+        assertThat(result).hasSize(1).containsOnlyNulls();
+    }
+
     private static void assertPerson(final Person result) {
         assertThat(result.getAddress().getPhoneNumbers()).allSatisfy(
                 phone -> assertThat(phone.getCountryCode()).isEqualTo(COUNTRY_CODE));
@@ -96,5 +135,9 @@ class OnCompleteTest {
                 pet -> assertThat(pet.getName()).isEqualTo(SNOWBALL));
 
         assertThat(result.getName()).isEqualTo(HOMER);
+    }
+
+    private static void failIfCalled() {
+        fail("Should not be called");
     }
 }

@@ -16,17 +16,12 @@
 package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.util.ReflectionUtils;
-import org.instancio.util.TypeUtils;
-import org.instancio.util.Verify;
-
-import java.util.Optional;
+import org.instancio.internal.ApiValidator;
+import org.instancio.util.Constants;
+import org.instancio.util.NumberUtils;
 
 public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Number & Comparable<T>>
         extends AbstractRandomNumberGeneratorSpec<T> {
-
-    private static final String MAX_VALUE_FIELD = "MAX_VALUE";
-    private static final String MIN_VALUE_FIELD = "MIN_VALUE";
 
     protected AbstractRandomComparableNumberGeneratorSpec(
             final GeneratorContext context, final T min, final T max, final boolean nullable) {
@@ -42,10 +37,8 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
      */
     @Override
     public NumberGeneratorSpec<T> min(final T min) {
-        this.min = Verify.notNull(min);
-        if (min.compareTo(max) >= 0) {
-            max = getNumberClassConstant(MAX_VALUE_FIELD).orElse(max);
-        }
+        super.min(min);
+        super.max(NumberUtils.calculateNewMax(max, min, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
         return this;
     }
 
@@ -57,25 +50,16 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
      */
     @Override
     public NumberGeneratorSpec<T> max(final T max) {
-        this.max = Verify.notNull(max);
-        if (max.compareTo(min) <= 0) {
-            min = getNumberClassConstant(MIN_VALUE_FIELD).orElse(min);
-        }
+        super.max(max);
+        super.min(NumberUtils.calculateNewMin(min, max, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
         return this;
     }
 
     @Override
     public NumberGeneratorSpec<T> range(final T min, final T max) {
-        Verify.isTrue(min.compareTo(max) < 0,
+        super.range(min, max);
+        ApiValidator.isTrue(min.compareTo(max) < 0,
                 "Invalid 'range(%s, %s)': lower bound must be less than upper bound", min, max);
-        this.min = min;
-        this.max = max;
         return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Optional<T> getNumberClassConstant(final String fieldName) {
-        final Class<?> numberClass = TypeUtils.getGenericSuperclassRawTypeArgument(getClass());
-        return Optional.ofNullable((T) ReflectionUtils.safeStaticFieldValue(numberClass, fieldName));
     }
 }
