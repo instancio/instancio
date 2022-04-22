@@ -47,7 +47,7 @@ public final class Key implements SettingKey {
     }
 
     @Override
-    public void autoAdjust(final Settings settings, final Object otherValue) {
+    public <T extends Number & Comparable<T>> void autoAdjust(final Settings settings, final T otherValue) {
         if (rangeAdjuster != null) {
             rangeAdjuster.adjustRange(settings, this, otherValue);
         }

@@ -25,11 +25,10 @@ import static java.time.temporal.ChronoField.EPOCH_DAY;
 
 public class LocalDateGenerator extends AbstractTemporalGenerator<LocalDate> {
 
-    private static final LocalDate MIN = LocalDate.of(1970, 1, 1);
-    private static final LocalDate MAX = LocalDate.now().plusYears(50);
-
     public LocalDateGenerator(final GeneratorContext context) {
-        super(context, MIN, MAX);
+        super(context,
+                LocalDate.of(1970, 1, 1),
+                LocalDate.now().plusYears(50));
     }
 
     @Override

@@ -27,11 +27,10 @@ import static java.time.ZoneOffset.UTC;
 
 public class ZonedDateTimeGenerator extends AbstractTemporalGenerator<ZonedDateTime> {
 
-    private static final ZonedDateTime MIN = ZonedDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MIN, UTC);
-    private static final ZonedDateTime MAX = ZonedDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MAX, UTC);
-
     public ZonedDateTimeGenerator(final GeneratorContext context) {
-        super(context, MIN, MAX);
+        super(context,
+                ZonedDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MIN, UTC),
+                ZonedDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MAX, UTC));
     }
 
     @Override

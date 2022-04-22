@@ -27,11 +27,10 @@ import static java.time.ZoneOffset.UTC;
 
 public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateTime> {
 
-    private static final LocalDateTime MIN = LocalDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MIN, UTC);
-    private static final LocalDateTime MAX = LocalDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MAX, UTC);
-
     public LocalDateTimeGenerator(final GeneratorContext context) {
-        super(context, MIN, MAX);
+        super(context,
+                LocalDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MIN, UTC),
+                LocalDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MAX, UTC));
     }
 
     @Override

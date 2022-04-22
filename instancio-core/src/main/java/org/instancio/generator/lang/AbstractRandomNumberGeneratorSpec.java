@@ -18,6 +18,7 @@ package org.instancio.generator.lang;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
@@ -49,20 +50,20 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
 
     @Override
     public NumberGeneratorSpec<T> min(final T min) {
-        this.min = Verify.notNull(min);
+        this.min = ApiValidator.notNull(min, "'min' must not be null");
         return this;
     }
 
     @Override
     public NumberGeneratorSpec<T> max(final T max) {
-        this.max = Verify.notNull(max);
+        this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
     }
 
     @Override
     public NumberGeneratorSpec<T> range(final T min, final T max) {
-        this.min = min;
-        this.max = max;
+        this.min = ApiValidator.notNull(min, "'min' must not be null");
+        this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
     }
 

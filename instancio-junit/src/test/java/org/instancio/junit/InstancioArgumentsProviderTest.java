@@ -20,11 +20,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class InstancioArgumentsProviderTest {
 
@@ -34,10 +36,12 @@ class InstancioArgumentsProviderTest {
     void provideArguments() throws Exception {
         final Method method = InstancioArgumentsProviderTest.class.getDeclaredMethod("dummy");
         final InstancioSource instancioSource = method.getAnnotation(InstancioSource.class);
+        final ExtensionContext mockContext = mock(ExtensionContext.class);
+        when(mockContext.getTestMethod()).thenReturn(Optional.of(method));
 
         // Methods under test
         provider.accept(instancioSource);
-        final Stream<? extends Arguments> stream = provider.provideArguments(mock(ExtensionContext.class));
+        final Stream<? extends Arguments> stream = provider.provideArguments(mockContext);
 
         assertThat(stream.collect(toList()))
                 .hasSize(1)

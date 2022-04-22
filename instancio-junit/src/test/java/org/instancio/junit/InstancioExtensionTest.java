@@ -85,7 +85,7 @@ class InstancioExtensionTest {
 
     @Test
     @DisplayName("Verify annotated Settings are passed to thread local")
-    void beforeEachWithSettingsAnnotation() throws Exception {
+    void beforeEachWithSettingsAnnotation() {
         doReturn(Optional.of(DummyTest.class)).when(context).getTestClass();
         doReturn(Optional.of(new DummyTest())).when(context).getTestInstance();
 
@@ -100,7 +100,6 @@ class InstancioExtensionTest {
     @DisplayName("Verify exception is thrown if test class has more than one field annotated @WithSettings")
     void moreThanOneFieldAnnotatedWithSettings() {
         doReturn(Optional.of(DummyWithTwoSettingsTest.class)).when(context).getTestClass();
-        doReturn(Optional.of(new DummyWithTwoSettingsTest())).when(context).getTestInstance();
 
         // Method under test
         assertThatThrownBy(() -> extension.beforeEach(context))

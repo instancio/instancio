@@ -16,6 +16,7 @@
 package org.instancio.settings;
 
 import org.instancio.internal.ApiValidator;
+import org.instancio.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -29,10 +30,9 @@ public class Keys {
     private static final int MIN_SIZE = 2;
     private static final int MAX_SIZE = 6;
     private static final int NUMERIC_MAX = 10000;
-    private static final int RANGE_BOUNDS_PERCENTAGE = 20;
 
-    private static final RangeAdjuster minAdjuster = new RangeAdjuster.ForMin(RANGE_BOUNDS_PERCENTAGE);
-    private static final RangeAdjuster maxAdjuster = new RangeAdjuster.ForMax(RANGE_BOUNDS_PERCENTAGE);
+    private static final RangeAdjuster minAdjuster = new RangeAdjuster.ForMin(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+    private static final RangeAdjuster maxAdjuster = new RangeAdjuster.ForMax(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
     private static final List<SettingKey> ALL_KEYS = new ArrayList<>();
 
     public static final SettingKey ARRAY_ELEMENTS_NULLABLE = register("array.elements.nullable", Boolean.class, false);

@@ -23,11 +23,10 @@ import java.time.Year;
 
 public class YearGenerator extends AbstractTemporalGenerator<Year> {
 
-    private static final Year MIN = Year.of(1970);
-    private static final Year MAX = Year.now().plusYears(50);
-
     public YearGenerator(final GeneratorContext context) {
-        super(context, MIN, MAX);
+        super(context,
+                Year.of(1970),
+                Year.now().plusYears(50));
     }
 
     @Override

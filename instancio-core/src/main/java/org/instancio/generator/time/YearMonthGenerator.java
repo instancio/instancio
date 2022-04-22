@@ -23,11 +23,10 @@ import java.time.YearMonth;
 
 public class YearMonthGenerator extends AbstractTemporalGenerator<YearMonth> {
 
-    private static final YearMonth MIN = YearMonth.of(1970, 1);
-    private static final YearMonth MAX = YearMonth.now().plusYears(50);
-
     public YearMonthGenerator(final GeneratorContext context) {
-        super(context, MIN, MAX);
+        super(context,
+                YearMonth.of(1970, 1),
+                YearMonth.now().plusYears(50));
     }
 
     @Override

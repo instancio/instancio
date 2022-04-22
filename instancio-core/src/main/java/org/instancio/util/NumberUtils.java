@@ -58,8 +58,67 @@ public class NumberUtils {
         return (T) NUMERIC_MAX_VALUES.get(klass);
     }
 
-    public static Function<Long, Number> getLongConverter(final Class<?> klass) {
-        return LONG_CONVERTER_FUNCTIONS.get(klass);
+    @SuppressWarnings("unchecked")
+    public static <T extends Number> Function<Long, T> getLongConverter(final Class<?> klass) {
+        return (Function<Long, T>) LONG_CONVERTER_FUNCTIONS.get(klass);
+    }
+
+    /**
+     * Calculate a new minimum given the new maximum.
+     * <p>
+     * If the new maximum is less than or equal to the current minimum,
+     * returns a new minimum value that is lower than the nex maximum
+     * by the specified percentage. Otherwise, returns the current minimum.
+     *
+     * @param curMin     current minimum
+     * @param newMax     new maximum
+     * @param percentage to adjust by
+     * @param <T>        number type
+     * @return new minimum if current is greater than or equal to current maximum
+     */
+    public static <T extends Number & Comparable<T>> T calculateNewMin(
+            final T curMin, final T newMax, final int percentage) {
+
+        long newMin = curMin.longValue();
+        if (curMin.compareTo(newMax) >= 0) {
+            final long delta = (long) Math.abs((newMax.longValue() * (percentage / 100d)));
+            final T absoluteMin = NumberUtils.getMinValue(newMax.getClass());
+            newMin = absoluteMin.longValue() + delta <= newMax.longValue()
+                    ? newMax.longValue() - delta
+                    : absoluteMin.longValue();
+        }
+
+        final Function<Long, T> fn = getLongConverter(newMax.getClass());
+        return fn.apply(newMin);
+    }
+
+    /**
+     * Calculate a new maximum given the new minimum.
+     * <p>
+     * If the new minimum is greater than or equal to the current maximum,
+     * returns a new maximum value that is higher than the new minimum
+     * by the specified percentage. Otherwise, returns the current maximum.
+     *
+     * @param curMax     current maximum
+     * @param newMin     new minimum
+     * @param percentage to adjust by
+     * @param <T>        number type
+     * @return new maximum if current is lower than or equal to current minimum
+     */
+    public static <T extends Number & Comparable<T>> T calculateNewMax(
+            final T curMax, final T newMin, final int percentage) {
+
+        long newMax = curMax.longValue();
+        if (curMax.compareTo(newMin) <= 0) {
+            final long delta = (long) Math.abs((newMin.longValue() * (percentage / 100d)));
+            final T absoluteMax = NumberUtils.getMaxValue(newMin.getClass());
+            newMax = absoluteMax.longValue() - delta >= newMin.longValue()
+                    ? newMin.longValue() + delta
+                    : absoluteMax.longValue();
+        }
+
+        final Function<Long, T> fn = getLongConverter(newMin.getClass());
+        return fn.apply(newMax);
     }
 
     private NumberUtils() {

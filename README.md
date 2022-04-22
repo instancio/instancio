@@ -93,6 +93,7 @@ The following is an overview of the API and its features for creating objects an
 - [Creating generic classes](#creating-generic-classes) - for creating instances of generic classes.
 - [Using Models](#using-models) - for encapsulating generation parameters in reusable models.
 - [`withSettings()`](#withsettings) - for specifying custom settings at runtime.
+- [Metamodels](#metamodels) - generate metamodels for your classes.
 
 
 
@@ -410,63 +411,66 @@ The `org.instancio.settings.Keys` class contains all the setting keys.
 
 # JUnit 5 integration
 
-Instancio supports JUnit 5 integration via the `InstancioExtension`.
+Instancio supports JUnit 5 integration with the following features:
 
-Since Instancio generates random data on each test run, its usefulness in unit testing would be limited if
-a failed test could not be reproduced. `InstancioExtension` exists primarily for this purpose.
-It allows you to reproduce data that resulted in a test failure.
+ - `InstancioExtension` - enables the extension
+ - `@InstancioSource` - an arguments provider for `ParameterizedTest`s
+ - `@WithSettings` - specify settings for all test methods within a test class
+ - `@Seed` - allows reproducing generated data in a test method using a custom seed value
 
-For example, if we have the following test class where the `verifyPerson()` method failed:
+
+The following is an overview of what a test class. For details refer to the [Instancio JUnit README](instancio-junit/README.md).
 
 ```java
+// Declare the extension. This enables additional reporting (such as the seed value) when a test fails.
+// The extension can be combined with other extensions, such as MockitoExtension, SpringExtension, etc.
 @ExtendWith(InstancioExtension.class)
 class ExampleTest {
 
-    @Test
-    void verifyPerson() {
-        Person person = Instancio.create(Person.class);
-        // some test code...
-        // ... some assertion fails
-    }
-}
-```
-
-The failed test will report the seed value that was used by the random number generator, for example:
-
-**`"Test method 'verifyPerson' failed with seed: 12345"`**
-
-You can annotate the failed test method with `@Seed(12345)` and it will generate exactly
-the same data as in the previous test run:
-
-```java
-@Test
-@Seed(12345) // will reproduce previously generated data
-void verifyPerson() {
-    Person person = Instancio.create(Person.class);
-    // snip...
-}
-```
-
-With the `Seed` annotation in place, the data basically becomes static. Therefore, once you've
-determined what caused the test failure and resolved it, you can remove the `Seed` annotation
-so that new data will be generated on each subsequent test run.
-
-## Custom settings in unit tests
-
-The extension also allows specifying custom `Settings` using the `@WithSettings` annotation.
-Annotated settings will be automatically injected into Instancio models.
-For example:
-
-```java
-@ExtendWith(InstancioExtension.class)
-class ExampleTest {
-  
+    // Optional: allows overriding default settings.
+    // All test methods will use these settings
     @WithSettings
     private final Settings settings = Settings.create()
         .set(Setting.COLLECTION_MIN_SIZE, 50)
         .set(Setting.COLLECTION_MAX_SIZE, 100);
-    
+
+    @Test
+    void example() {
+        Person person = Instancio.create(Person.class);
+        // test code...
+    }
+
+    @Test
+    @Seed(12345)
+    void example() {
+        Person person = Instancio.create(Person.class);
+        // Person data will be generated using the custom seed value.
+        // Same data will be generated every time.
+    }
+
+    @ParameterizedTest
+    @InstancioSource({Foo.class, Bar.class, Baz.class})
+    void parameterizedExample(Foo foo, Bar bar, Baz baz) {
+        // provides fully-populated instances of Foo, Bar, and Baz
+    }
 }
 ```
 
-At most one `Settings` field can be annotated per test class.
+## Metamodels
+
+If you prefer not to refer to fields by their names, Instancio also supports metamodels (similar to JPA's metamodel).
+Metamodels are generated using Instancio's annotation processor during compile time.
+
+With metamodels, the code will look like this:
+
+```java
+Person person = Instancio.of(Person.class)
+    .ignore(Address_.city)
+    .supply(Person_.name, () -> "Homer Simpson")
+    .supply(Phone_.countryCode, () -> "+1")
+    .generate(Address_.phoneNumbers, gen -> gen.collection().size(5))
+    .create();
+```
+
+For more details, including how to set it up with Maven or Gradle, see the
+[annotation processor's README](instancio-processor/README.md).
