@@ -21,6 +21,8 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
+import org.instancio.util.Constants;
+import org.instancio.util.NumberUtils;
 import org.instancio.util.Verify;
 
 import java.lang.reflect.Array;
@@ -31,9 +33,8 @@ import java.util.Optional;
 
 public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGeneratorSpec<T> {
 
-    private static final String NEGATIVE_LENGTH = "Length must not be negative: %s";
-    private int minLength;
-    private int maxLength;
+    protected int minLength;
+    protected int maxLength;
     private boolean nullable;
     private boolean nullableElements;
     private Class<?> arrayType;
@@ -54,24 +55,21 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     @Override
     public ArrayGeneratorSpec<T> minLength(final int length) {
-        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
-        this.minLength = length;
-        this.maxLength = Math.max(maxLength, minLength);
+        this.minLength = ApiValidator.validateLength(length);
+        this.maxLength = NumberUtils.calculateNewMax(maxLength, minLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 
     @Override
     public ArrayGeneratorSpec<T> maxLength(final int length) {
-        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
-        this.maxLength = length;
-        this.minLength = Math.min(minLength, maxLength);
+        this.maxLength = ApiValidator.validateLength(length);
+        this.minLength = NumberUtils.calculateNewMin(minLength, maxLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 
     @Override
     public ArrayGeneratorSpec<T> length(final int length) {
-        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
-        this.maxLength = length;
+        this.maxLength = ApiValidator.validateLength(length);
         this.minLength = length;
         return this;
     }
@@ -89,13 +87,14 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     }
 
     public ArrayGenerator<T> type(final Class<?> type) {
-        Verify.isTrue(type != null && type.isArray(), "Type must be an array: %s", type);
+        ApiValidator.isTrue(type != null && type.isArray(), "Type must be an array: %s", type);
         this.arrayType = type;
         return this;
     }
 
     @Override
-    public ArrayGeneratorSpec<T> with(final T... elements) {
+    @SafeVarargs
+    public final ArrayGeneratorSpec<T> with(final T... elements) {
         ApiValidator.notEmpty(elements, "'array().with(...)' must contain at least one element");
 
         if (withElements == null) {

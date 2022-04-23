@@ -42,7 +42,7 @@ class UserSuppliedFieldGeneratorsTest {
         final Address customAddress = new Address();
 
         Person person = Instancio.of(Person.class)
-                .generate(field("name"), gen -> gen.string().prefix("first-name-").minLength(10))
+                .generate(field("name"), gen -> gen.string().prefix("first-name-").length(10))
                 .supply(field("gender"), () -> Gender.FEMALE)
                 .supply(field("lastModified"), () -> LocalDateTime.now(ZoneOffset.UTC))
                 .supply(field("address"), () -> customAddress)

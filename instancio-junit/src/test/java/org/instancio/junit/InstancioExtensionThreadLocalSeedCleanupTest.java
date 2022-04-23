@@ -17,8 +17,6 @@ package org.instancio.junit;
 
 import org.instancio.Instancio;
 import org.instancio.internal.ThreadLocalRandomProvider;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,48 +26,52 @@ import org.junit.platform.testkit.engine.EngineTestKit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
-class InstancioExtensionWithSettingsAnnotationTest {
+class InstancioExtensionThreadLocalSeedCleanupTest {
 
     @Test
-    void threadLocalSettingsCleanup() {
+    void threadLocalRandomCleanupWithSeedAnnotation() {
+        assertThreadLocalIsNull(WithSeedAnnotationTest.class);
+    }
+
+    @Test
+    void threadLocalRandomCleanupWithoutSeedAnnotation() {
+        assertThreadLocalIsNull(WithoutSeedAnnotationTest.class);
+    }
+
+    private static void assertThreadLocalIsNull(final Class<?> testClass) {
         EngineTestKit.engine("junit-jupiter")
-                .selectors(selectClass(ThreadLocalSettingsCleanupTest.class))
+                .selectors(selectClass(testClass))
                 .execute()
                 .testEvents()
-                .assertStatistics(stats -> stats.succeeded(2));
+                .assertStatistics(stats -> stats.succeeded(1));
 
         assertThat(ThreadLocalRandomProvider.getInstance().get())
-                .as("Expected thread local Settings to be removed after the test is done")
+                .as("Expected thread local RandomProvider to be removed after the test is done")
                 .isNull();
     }
 
     @Nested
     @ExtendWith(InstancioExtension.class)
-    class ThreadLocalSettingsCleanupTest {
-        private final long EXPECTED_LONG_VALUE = 9;
-
-        @WithSettings
-        private final Settings settings = Settings.create()
-                .set(Keys.LONG_MIN, EXPECTED_LONG_VALUE)
-                .set(Keys.LONG_MAX, EXPECTED_LONG_VALUE + 1);
-
+    class WithSeedAnnotationTest {
         @Test
-        void assertValueCreatedUsingAnnotatedSettings() {
-            assertThat(Instancio.create(Long.class)).isEqualTo(EXPECTED_LONG_VALUE);
+        @Seed(1234)
+        @DisplayName("Dummy test method to verify thread local is cleared in afterAll()")
+        void dummy() {
+            assertThat(Instancio.create(String.class)).isNotNull();
         }
+    }
 
+    @Nested
+    @ExtendWith(InstancioExtension.class)
+    class WithoutSeedAnnotationTest {
         @Test
-        @DisplayName("withSettings() should take precedence over the thread local settings")
-        void modelSettingsShouldTakePrecedenceOverThreadLocalSettings() {
-            final long minOverride = 100;
-
-            final Long result = Instancio.of(Long.class)
-                    .withSettings(Settings.create()
-                            .set(Keys.LONG_MIN, minOverride)
-                            .set(Keys.LONG_MAX, minOverride + 1))
-                    .create();
-
-            assertThat(result).isEqualTo(minOverride);
+        @DisplayName("Dummy test method to verify thread local is cleared in afterAll()")
+        void dummy() {
+            final int seed1 = ThreadLocalRandomProvider.getInstance().get().getSeed();
+            final int seed2 = ThreadLocalRandomProvider.getInstance().get().getSeed();
+            assertThat(seed1)
+                    .as("Same seed should be used within the test method")
+                    .isEqualTo(seed2);
         }
     }
 }

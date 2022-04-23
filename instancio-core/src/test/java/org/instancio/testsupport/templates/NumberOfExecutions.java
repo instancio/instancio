@@ -29,11 +29,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NumberOfExecutions {
 
-    int DEFAULT_VALUE = 10;
+    int DEFAULT_NUM_TEST_EXECUTIONS = 10;
 
     /**
      * Number of times a test will be executed.
      * This is how many times an object will be created.
      */
-    int value() default DEFAULT_VALUE;
+    int value() default DEFAULT_NUM_TEST_EXECUTIONS;
 }

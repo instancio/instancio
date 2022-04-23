@@ -24,6 +24,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -62,7 +63,8 @@ class MapGeneratorSizeTest {
 
     @Test
     void minSize() {
-        assertSize(spec -> spec.minSize(EXPECTED_SIZE), EXPECTED_SIZE);
+        final int maxSize = EXPECTED_SIZE + EXPECTED_SIZE * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
+        assertSizeBetween(spec -> spec.minSize(EXPECTED_SIZE), EXPECTED_SIZE, maxSize);
     }
 
     @Test
@@ -71,10 +73,14 @@ class MapGeneratorSizeTest {
     }
 
     private void assertSize(Function<MapGeneratorSpec<?, ?>, MapGeneratorSpec<?, ?>> fn, int expectedSize) {
+        assertSizeBetween(fn, expectedSize, expectedSize);
+    }
+
+    private void assertSizeBetween(Function<MapGeneratorSpec<?, ?>, MapGeneratorSpec<?, ?>> fn, int minSize, int maxSize) {
         final MapStringPerson result = Instancio.of(MapStringPerson.class)
                 .generate(all(Map.class), gen -> fn.apply(gen.map()))
                 .create();
 
-        assertThat(result.getMap()).hasSize(expectedSize);
+        assertThat(result.getMap()).hasSizeBetween(minSize, maxSize);
     }
 }

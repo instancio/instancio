@@ -18,10 +18,12 @@ package org.instancio.test.features.generator.seed;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.util.Sonar;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
@@ -29,24 +31,29 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(InstancioExtension.class)
 class WithoutSeedAnnotationTest {
 
     private static final Set<Object> results = new HashSet<>();
-    private static final int NUM_INVOCATIONS = 5;
+    private static final int REPEATED_TEST_NUM_INVOCATIONS = 5;
 
-    @AfterAll
-    static void afterAll() {
-        assertThat(results).hasSize(NUM_INVOCATIONS);
-    }
-
-    @RepeatedTest(NUM_INVOCATIONS)
+    @Order(1)
     @SuppressWarnings(Sonar.ADD_ASSERTION)
+    @RepeatedTest(REPEATED_TEST_NUM_INVOCATIONS)
     @DisplayName("Results Set should contain distinct elements")
     void withSeedAnnotation() {
         results.add(Instancio.create(long.class));
     }
 
+    @Order(2)
+    @Test
+    @DisplayName("Verify distinct elements were generated in each call to @RepeatedTest")
+    void withSeedAnnotationVerifyResults() {
+        assertThat(results).hasSize(REPEATED_TEST_NUM_INVOCATIONS);
+    }
+
+    @Order(3)
     @Test
     @DisplayName("Separate calls to create() within the same test method should produce distinct values")
     void eachCreateInstanceGeneratesDistinctValue() {

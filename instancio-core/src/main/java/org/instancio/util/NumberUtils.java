@@ -79,13 +79,15 @@ public class NumberUtils {
     public static <T extends Number & Comparable<T>> T calculateNewMin(
             final T curMin, final T newMax, final int percentage) {
 
-        long newMin = curMin.longValue();
-        if (curMin.compareTo(newMax) >= 0) {
+        final long newMin;
+        if (curMin == null || curMin.compareTo(newMax) >= 0) {
             final long delta = (long) Math.abs((newMax.longValue() * (percentage / 100d)));
             final T absoluteMin = NumberUtils.getMinValue(newMax.getClass());
             newMin = absoluteMin.longValue() + delta <= newMax.longValue()
                     ? newMax.longValue() - delta
                     : absoluteMin.longValue();
+        } else {
+            newMin = curMin.longValue();
         }
 
         final Function<Long, T> fn = getLongConverter(newMax.getClass());
@@ -108,13 +110,15 @@ public class NumberUtils {
     public static <T extends Number & Comparable<T>> T calculateNewMax(
             final T curMax, final T newMin, final int percentage) {
 
-        long newMax = curMax.longValue();
-        if (curMax.compareTo(newMin) <= 0) {
+        final long newMax;
+        if (curMax == null || curMax.compareTo(newMin) <= 0) {
             final long delta = (long) Math.abs((newMin.longValue() * (percentage / 100d)));
             final T absoluteMax = NumberUtils.getMaxValue(newMin.getClass());
             newMax = absoluteMax.longValue() - delta >= newMin.longValue()
                     ? newMin.longValue() + delta
                     : absoluteMax.longValue();
+        } else {
+            newMax = curMax.longValue();
         }
 
         final Function<Long, T> fn = getLongConverter(newMin.getClass());

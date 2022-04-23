@@ -18,8 +18,11 @@ package org.instancio.generator.util;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
+import org.instancio.util.Constants;
+import org.instancio.util.NumberUtils;
 import org.instancio.util.Sonar;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -30,7 +33,6 @@ import java.util.Map;
 
 public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
     private static final Logger LOG = LoggerFactory.getLogger(MapGenerator.class);
-    private static final String NEGATIVE_SIZE = "Size must not be negative: %s";
 
     protected int minSize;
     protected int maxSize;
@@ -55,25 +57,22 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @Override
     public MapGeneratorSpec<K, V> size(final int size) {
-        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
-        this.minSize = size;
+        this.minSize = ApiValidator.validateSize(size);
         this.maxSize = size;
         return this;
     }
 
     @Override
     public MapGeneratorSpec<K, V> minSize(final int size) {
-        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
-        this.minSize = size;
-        this.maxSize = Math.max(maxSize, minSize);
+        this.minSize = ApiValidator.validateSize(size);
+        this.maxSize = NumberUtils.calculateNewMax(maxSize, minSize, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 
     @Override
     public MapGeneratorSpec<K, V> maxSize(final int size) {
-        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
-        this.maxSize = size;
-        this.minSize = Math.min(minSize, maxSize);
+        this.maxSize = ApiValidator.validateSize(size);
+        this.minSize = NumberUtils.calculateNewMin(minSize, maxSize, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 
