@@ -20,7 +20,7 @@
     - [Using Models](#using-models)
     - [`withSettings()`](#withsettings)
 - [JUnit 5 integration](#junit-5-integration)
-    - [Custom settings in unit tests](#custom-settings-in-unit-tests)
+- [Using Instancio metamodels](#metamodels)
 -----
 
 # What is it?
