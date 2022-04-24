@@ -18,9 +18,10 @@ package org.instancio.test.features.generator.collection;
 import org.instancio.Instancio;
 import org.instancio.generator.util.CollectionGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.pojo.collections.lists.ListLong;
+import org.instancio.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -51,7 +52,8 @@ class CollectionGeneratorSizeTest {
 
     @Test
     void minSize() {
-        assertSize(spec -> spec.minSize(EXPECTED_SIZE), EXPECTED_SIZE);
+        final int maxSize = EXPECTED_SIZE + EXPECTED_SIZE * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
+        assertSizeBetween(spec -> spec.minSize(EXPECTED_SIZE), EXPECTED_SIZE, maxSize);
     }
 
     @Test
@@ -60,10 +62,14 @@ class CollectionGeneratorSizeTest {
     }
 
     private void assertSize(Function<CollectionGeneratorSpec<?>, CollectionGeneratorSpec<?>> fn, int expectedSize) {
+        assertSizeBetween(fn, expectedSize, expectedSize);
+    }
+
+    private void assertSizeBetween(Function<CollectionGeneratorSpec<?>, CollectionGeneratorSpec<?>> fn, int minSize, int maxSize) {
         final ListLong result = Instancio.of(ListLong.class)
                 .generate(all(List.class), gen -> fn.apply(gen.collection()))
                 .create();
 
-        assertThat(result.getList()).hasSize(expectedSize);
+        assertThat(result.getList()).hasSizeBetween(minSize, maxSize);
     }
 }

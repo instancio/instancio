@@ -18,16 +18,17 @@ package org.instancio.generator.lang;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.util.Verify;
+import org.instancio.util.Constants;
+import org.instancio.util.NumberUtils;
 
 public class StringGenerator extends AbstractGenerator<String> implements StringGeneratorSpec {
 
-    private static final String NEGATIVE_LENGTH = "Length must be negative: %s";
-    private int minLength;
-    private int maxLength;
+    protected int minLength;
+    protected int maxLength;
     private boolean nullable;
     private boolean allowEmpty;
     private String prefix = "";
@@ -63,25 +64,22 @@ public class StringGenerator extends AbstractGenerator<String> implements String
 
     @Override
     public StringGeneratorSpec length(final int length) {
-        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
-        this.minLength = length;
+        this.minLength = ApiValidator.validateLength(length);
         this.maxLength = length;
         return this;
     }
 
     @Override
     public StringGeneratorSpec minLength(final int length) {
-        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
-        this.minLength = length;
-        this.maxLength = Math.max(length, maxLength);
+        this.minLength = ApiValidator.validateLength(length);
+        this.maxLength = NumberUtils.calculateNewMax(maxLength, minLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 
     @Override
     public StringGeneratorSpec maxLength(final int length) {
-        Verify.isTrue(length >= 0, NEGATIVE_LENGTH, length);
-        this.maxLength = length;
-        this.minLength = Math.min(minLength, length);
+        this.maxLength = ApiValidator.validateLength(length);
+        this.minLength = NumberUtils.calculateNewMin(minLength, maxLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 

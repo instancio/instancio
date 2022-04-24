@@ -165,6 +165,16 @@ public class ApiValidator {
                 + "%n\t\t.create()");
     }
 
+    public static int validateSize(final int size) {
+        ApiValidator.isTrue(size >= 0, "Size must not be negative: %s", size);
+        return size;
+    }
+
+    public static int validateLength(final int length) {
+        ApiValidator.isTrue(length >= 0, "Length must not be negative: %s", length);
+        return length;
+    }
+
     public static <T> T notNull(@Nullable final T obj, final String message, final Object... values) {
         if (obj == null) throw new InstancioApiException(String.format(message, values));
         return obj;

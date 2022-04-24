@@ -114,12 +114,21 @@ class SettingsAutoAdjustmentTest {
     }
 
     @Test
-    @DisplayName("max is null: should not update max")
-    void returnEmptyIfCurMaxIsNull() {
+    @DisplayName("max is null: should set max")
+    void setMaxIfNull() {
         final Settings settings = Settings.create();
         assertThat((Object) settings.get(Keys.INTEGER_MAX)).isNull();
         settings.set(Keys.INTEGER_MIN, 100);
-        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isNull();
+        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isEqualTo(150);
+    }
+
+    @Test
+    @DisplayName("min is null: should set min")
+    void setMinIfNull() {
+        final Settings settings = Settings.create();
+        assertThat((Object) settings.get(Keys.INTEGER_MIN)).isNull();
+        settings.set(Keys.INTEGER_MAX, -100);
+        assertThat((Object) settings.get(Keys.INTEGER_MIN)).isEqualTo(-150);
     }
 
     @Nested

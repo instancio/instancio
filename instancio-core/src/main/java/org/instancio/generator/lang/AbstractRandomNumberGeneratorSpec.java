@@ -20,7 +20,6 @@ import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
-import org.instancio.util.Verify;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         extends AbstractGenerator<T> implements NumberGeneratorSpec<T> {

@@ -27,11 +27,11 @@ public abstract class ArrayCreationTestTemplate<T> extends CreationTestTemplate<
     protected final Set<Object> generatedValues = new HashSet<>();
 
     protected int minNumberOfGeneratedValues() {
-        return NumberOfExecutions.DEFAULT_VALUE * 2;
+        return NumberOfExecutions.DEFAULT_NUM_TEST_EXECUTIONS * 4;
     }
 
     @AfterAll
-    void verifyUniqueValues() {
+    protected void verifyUniqueValues() {
         assertThat(generatedValues)
                 .as("Expected distinct randomly generated values")
                 .hasSizeGreaterThanOrEqualTo(minNumberOfGeneratedValues());

@@ -21,6 +21,8 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
+import org.instancio.util.Constants;
+import org.instancio.util.NumberUtils;
 import org.instancio.util.Sonar;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -33,7 +35,6 @@ import java.util.List;
 
 public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
     private static final Logger LOG = LoggerFactory.getLogger(CollectionGenerator.class);
-    private static final String NEGATIVE_SIZE = "Size must not be negative: %s";
 
     protected int minSize;
     protected int maxSize;
@@ -53,25 +54,22 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     public CollectionGeneratorSpec<T> size(final int size) {
-        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
-        this.minSize = size;
+        this.minSize = ApiValidator.validateSize(size);
         this.maxSize = size;
         return this;
     }
 
     @Override
     public CollectionGeneratorSpec<T> minSize(final int size) {
-        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
-        this.minSize = size;
-        this.maxSize = Math.max(minSize, maxSize);
+        this.minSize = ApiValidator.validateSize(size);
+        this.maxSize = NumberUtils.calculateNewMax(maxSize, minSize, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 
     @Override
     public CollectionGeneratorSpec<T> maxSize(final int size) {
-        Verify.isTrue(size >= 0, NEGATIVE_SIZE, size);
-        this.maxSize = size;
-        this.minSize = Math.min(minSize, maxSize);
+        this.maxSize = ApiValidator.validateSize(size);
+        this.minSize = NumberUtils.calculateNewMin(minSize, maxSize, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 

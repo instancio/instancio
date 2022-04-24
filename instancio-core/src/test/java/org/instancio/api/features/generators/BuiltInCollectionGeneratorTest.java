@@ -106,18 +106,16 @@ class BuiltInCollectionGeneratorTest {
             assertThat(result.getTwo()).hasSizeGreaterThanOrEqualTo(minSize);
         }
 
-
         @Test
         @DisplayName("When map type not specified: field type SortedMap")
         void sortedMap() {
             final SortedMapIntegerString result = Instancio.of(SortedMapIntegerString.class)
                     .generate(all(SortedMap.class), gen -> gen.map()
-                            .minSize(EXPECTED_SIZE)) // .type() not specified
+                            .size(EXPECTED_SIZE)) // .type() not specified
                     .create();
 
-            assertThat(result.getMap()).hasSizeBetween(EXPECTED_SIZE, EXPECTED_SIZE);
+            assertThat(result.getMap()).hasSize(EXPECTED_SIZE);
         }
-
     }
 
     @Nested

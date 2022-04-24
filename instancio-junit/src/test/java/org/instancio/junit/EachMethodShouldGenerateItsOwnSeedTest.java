@@ -17,9 +17,11 @@ package org.instancio.junit;
 
 import org.instancio.internal.ThreadLocalRandomProvider;
 import org.instancio.util.Sonar;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
@@ -33,36 +35,40 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This test has a very small probability of failure if seeds happen to clash.
  */
 @SuppressWarnings(Sonar.ADD_ASSERTION)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(InstancioExtension.class)
 class EachMethodShouldGenerateItsOwnSeedTest {
 
     private static final Set<Integer> seeds = new HashSet<>();
-
-    @AfterAll
-    static void afterAll() {
-        assertThat(seeds).hasSize(5);
-    }
+    private static int seedCount;
 
     @Test
+    @Order(1)
     void method1() {
         seeds.add(ThreadLocalRandomProvider.getInstance().get().getSeed());
+        seedCount++;
     }
 
     @Test
+    @Order(2)
     void method2() {
         seeds.add(ThreadLocalRandomProvider.getInstance().get().getSeed());
-    }
-
-    @Test
-    void method3() {
-        // same seed each time
-        seeds.add(ThreadLocalRandomProvider.getInstance().get().getSeed());
-        seeds.add(ThreadLocalRandomProvider.getInstance().get().getSeed());
+        seedCount++;
     }
 
     // new seed per invocation
     @RepeatedTest(2)
-    void method5() {
+    @Order(3)
+    void method4() {
         seeds.add(ThreadLocalRandomProvider.getInstance().get().getSeed());
+        seedCount++;
+    }
+
+    @Test
+    @Order(4)
+    void verifyNumberOfSeeds() {
+        seeds.add(ThreadLocalRandomProvider.getInstance().get().getSeed());
+        seedCount++;
+        assertThat(seeds).hasSize(seedCount);
     }
 }

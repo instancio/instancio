@@ -15,9 +15,12 @@
  */
 package org.instancio.junit;
 
+import org.instancio.Instancio;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.basic.StringHolder;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -25,25 +28,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
 class InstancioSourceWithSeedTest {
-    private static final int EXPECTED_INT = 12345;
+    private static final int SEED = 1234;
+    private static final int STRING_MIN_LENGTH = 20;
+    private static final String EXPECTED_STRING = "XTYQHJHHZQYVIJOMCHHKTHKMPEI";
 
     @WithSettings
     private static final Settings settings = Settings.create()
-            .set(Keys.INTEGER_MIN, EXPECTED_INT)
-            .set(Keys.INTEGER_MAX, EXPECTED_INT + 1);
+            .set(Keys.STRING_MIN_LENGTH, STRING_MIN_LENGTH);
 
-    @Seed(1234)
+
+    @Seed(SEED)
     @InstancioSource(String.class)
     @ParameterizedTest
-    void withSeed(final String value) {
-        final String expected = "XTYQ";
-        assertThat(value).isEqualTo(expected);
+    @DisplayName("Parameterized test: generate value using seed")
+    void parameterizedWithSeed(final String value) {
+        assertThat(value).isEqualTo(EXPECTED_STRING);
     }
 
-    @InstancioSource(IntegerHolder.class)
+    @Seed(SEED)
+    @Test
+    @DisplayName("Non-parameterized test: generate value using seed")
+    void nonParameterizedWithSeed() {
+        assertThat(Instancio.create(String.class)).isEqualTo(EXPECTED_STRING);
+    }
+
+    @InstancioSource(StringHolder.class)
     @ParameterizedTest
-    void withSettings(final IntegerHolder holder) {
-        assertThat(holder.getPrimitive()).isEqualTo(EXPECTED_INT);
-        assertThat(holder.getWrapper()).isEqualTo(EXPECTED_INT);
+    void withSettings(final StringHolder holder) {
+        assertThat(holder.getValue()).hasSizeGreaterThanOrEqualTo(STRING_MIN_LENGTH);
     }
 }

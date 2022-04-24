@@ -18,9 +18,10 @@ package org.instancio.test.features.generator.array;
 import org.instancio.Instancio;
 import org.instancio.generator.array.ArrayGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.pojo.arrays.ArrayLong;
+import org.instancio.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -50,7 +51,8 @@ class ArrayGeneratorSizeTest {
 
     @Test
     void minLength() {
-        assertSize(spec -> spec.minLength(EXPECTED_SIZE), EXPECTED_SIZE);
+        final int maxSize = EXPECTED_SIZE + EXPECTED_SIZE * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
+        assertSizeBetween(spec -> spec.minLength(EXPECTED_SIZE), EXPECTED_SIZE, maxSize);
     }
 
     @Test
@@ -58,13 +60,17 @@ class ArrayGeneratorSizeTest {
         assertSize(spec -> spec.maxLength(1), 1);
     }
 
-    private void assertSize(Function<ArrayGeneratorSpec<?>, ArrayGeneratorSpec<?>> fn, int expectedSize) {
+    private void assertSize(Function<ArrayGeneratorSpec<?>, ArrayGeneratorSpec<?>> fn, int size) {
+        assertSizeBetween(fn, size, size);
+    }
+
+    private void assertSizeBetween(Function<ArrayGeneratorSpec<?>, ArrayGeneratorSpec<?>> fn, int minSize, int maxSize) {
         final ArrayLong result = Instancio.of(ArrayLong.class)
                 .generate(all(long[].class), gen -> fn.apply(gen.array()))
                 .generate(all(Long[].class), gen -> fn.apply(gen.array()))
                 .create();
 
-        assertThat(result.getPrimitive()).hasSize(expectedSize);
-        assertThat(result.getWrapper()).hasSize(expectedSize);
+        assertThat(result.getPrimitive()).hasSizeBetween(minSize, maxSize);
+        assertThat(result.getWrapper()).hasSizeBetween(minSize, maxSize);
     }
 }

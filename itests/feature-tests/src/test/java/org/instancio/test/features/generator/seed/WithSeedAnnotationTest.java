@@ -18,35 +18,17 @@ package org.instancio.test.features.generator.seed;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
-import org.instancio.util.Sonar;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
 class WithSeedAnnotationTest {
 
-    static final int SEED = 1234;
+    private static final int SEED = 1234;
     private static final String EXPECTED_RANDOM_STRING = "XTYQ";
-    private static final Set<Object> results = new HashSet<>();
-
-    @AfterAll
-    static void afterAll() {
-        assertThat(results).hasSize(1);
-    }
-
-    @Test
-    @Seed(SEED)
-    @SuppressWarnings(Sonar.ADD_ASSERTION)
-    void withSeedAnnotation() {
-        results.add(Instancio.create(long.class));
-    }
 
     @Test
     @Seed(SEED)
