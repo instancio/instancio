@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>itests</artifactId>
-        <version>1.1.11-SNAPSHOT</version>
+        <version>1.1.11</version>
     </parent>
     <artifactId>annotation-processor-with-gradle</artifactId>
     <packaging>pom</packaging>
