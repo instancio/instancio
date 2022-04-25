@@ -90,10 +90,10 @@ The following is an overview of the API and its features for creating objects an
 - [`ignore()`](#ignore) - for ignoring certain fields or types.
 - [`withNullable()`](#withnullable) - for allowing random null values for certain fields or types.
 - [`map()`](#map) - for mapping a superclass to a specific subclass.
-- [Creating generic classes](#creating-generic-classes) - for creating instances of generic classes.
+- [Creating generic classes](#creating-generic-classes) - using Type Tokens to create instances of generic classes.
 - [Using Models](#using-models) - for encapsulating generation parameters in reusable models.
 - [`withSettings()`](#withsettings) - for specifying custom settings at runtime.
-- [Metamodels](#metamodels) - generate metamodels for your classes.
+- [Metamodels](#metamodels) - generating metamodels for your classes.
 
 
 
