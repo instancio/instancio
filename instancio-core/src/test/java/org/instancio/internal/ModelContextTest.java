@@ -15,10 +15,10 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Binding;
-import org.instancio.Bindings;
 import org.instancio.Generator;
 import org.instancio.Generators;
+import org.instancio.Select;
+import org.instancio.SelectorGroup;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
@@ -49,8 +49,8 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 import static org.mockito.Mockito.mock;
 
 class ModelContextTest {
@@ -70,8 +70,8 @@ class ModelContextTest {
     @Test
     void withNullableField() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withNullable(toFieldBinding(NAME_FIELD))
-                .withNullable(toFieldBinding(ADDRESS_FIELD))
+                .withNullable(toFieldSelector(NAME_FIELD))
+                .withNullable(toFieldSelector(ADDRESS_FIELD))
                 .build();
 
         assertThat(ctx.isNullable(NAME_FIELD)).isTrue();
@@ -83,7 +83,7 @@ class ModelContextTest {
     void withNullableFieldIgnoresPrimitiveField() {
         final Field ageField = ReflectionUtils.getField(Person.class, "age");
         final ModelContext<Object> ctx = ModelContext.builder(Person.class)
-                .withNullable(toFieldBinding(ageField))
+                .withNullable(toFieldSelector(ageField))
                 .build();
 
         assertThat(ctx.getUserSuppliedGenerator(ageField)).isEmpty();
@@ -120,8 +120,8 @@ class ModelContextTest {
     @Test
     void withIgnoredField() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withIgnored(toFieldBinding(NAME_FIELD))
-                .withIgnored(toFieldBinding(ADDRESS_FIELD))
+                .withIgnored(toFieldSelector(NAME_FIELD))
+                .withIgnored(toFieldSelector(ADDRESS_FIELD))
                 .build();
 
         assertThat(ctx.isIgnored(NAME_FIELD)).isTrue();
@@ -131,7 +131,7 @@ class ModelContextTest {
     @Test
     void withIgnoredClass() {
         ModelContext<?> ctx = ModelContext.builder(Person.class)
-                .withIgnored(Bindings.of(all(Address.class), all(Pet.class)))
+                .withIgnored(Select.all(all(Address.class), all(Pet.class)))
                 .build();
 
         assertThat(ctx.isIgnored(Address.class)).isTrue();
@@ -218,12 +218,12 @@ class ModelContextTest {
 
         final ModelContext<?> ctx = ModelContext.builder(Person.class)
                 .withGenerator(all(String.class), allStringsGenerator)
-                .withGenerator(toFieldBinding(ADDRESS_CITY_FIELD), addressCityGenerator)
-                .withGeneratorSpec(toFieldBinding(PETS_FIELD), petsGeneratorFn)
+                .withGenerator(toFieldSelector(ADDRESS_CITY_FIELD), addressCityGenerator)
+                .withGeneratorSpec(toFieldSelector(PETS_FIELD), petsGeneratorFn)
                 .withIgnored(all(ignoredClass))
-                .withIgnored(toFieldBinding(NAME_FIELD))
+                .withIgnored(toFieldSelector(NAME_FIELD))
                 .withNullable(all(nullableClass))
-                .withNullable(toFieldBinding(ADDRESS_FIELD))
+                .withNullable(toFieldSelector(ADDRESS_FIELD))
                 .withSeed(seed)
                 .withSettings(Settings.create().set(Keys.INTEGER_MIN, integerMinValue))
                 .withSubtype(all(List.class), LinkedList.class)
@@ -247,8 +247,8 @@ class ModelContextTest {
                 .isInstanceOf(UnsupportedOperationException.class);
     }
 
-    private static Binding toFieldBinding(final Field field) {
-        return Bindings.field(field.getDeclaringClass(), field.getName());
+    private static SelectorGroup toFieldSelector(final Field field) {
+        return Select.field(field.getDeclaringClass(), field.getName());
     }
 
 }

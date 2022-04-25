@@ -27,10 +27,10 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.allBytes;
-import static org.instancio.Bindings.allDoubles;
-import static org.instancio.Bindings.allLongs;
+import static org.instancio.Select.all;
+import static org.instancio.Select.allBytes;
+import static org.instancio.Select.allDoubles;
+import static org.instancio.Select.allLongs;
 
 class BuiltInNumberGeneratorTest {
 

@@ -98,10 +98,10 @@ public interface InstancioApi<T> {
      * will create a fully populated person, but will ignore the {@code address} field
      * and all string fields.
      *
-     * @param target to ignore
+     * @param selectors for fields and/or classes this method should be applied to
      * @return API builder reference
      */
-    InstancioApi<T> ignore(Binding target);
+    InstancioApi<T> ignore(SelectorGroup selectors);
 
     /**
      * Specifies that a field or class is nullable. By default, Instancio assigns
@@ -116,10 +116,10 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      *
-     * @param target that is nullable
+     * @param selectors for fields and/or classes this method should be applied to
      * @return API builder reference
      */
-    InstancioApi<T> withNullable(Binding target);
+    InstancioApi<T> withNullable(SelectorGroup selectors);
 
     /**
      * Supplies a <b>non-random</b> value for a field or class using a {@link Supplier}.
@@ -138,15 +138,15 @@ public interface InstancioApi<T> {
      * Note: Instancio will not modify the supplied instance in any way. If the {@code PhoneNumber} class
      * has other fields, they will be ignored.
      * <p>
-     * For supplying random values, see {@link #supply(Binding, Generator)}.
+     * For supplying random values, see {@link #supply(SelectorGroup, Generator)}.
      *
-     * @param target   binding
-     * @param supplier for the target's value
-     * @param <V>      type of the value to generate
+     * @param selectors for fields and/or classes this method should be applied to
+     * @param supplier  providing the value for given selectors
+     * @param <V>       type of the value to generate
      * @return API builder reference
-     * @see #supply(Binding, Generator)
+     * @see #supply(SelectorGroup, Generator)
      */
-    <V> InstancioApi<T> supply(Binding target, Supplier<V> supplier);
+    <V> InstancioApi<T> supply(SelectorGroup selectors, Supplier<V> supplier);
 
     /**
      * Supplies a randomised value for a field or class using a custom {@link Generator}.
@@ -164,12 +164,12 @@ public interface InstancioApi<T> {
      * Note: Instancio will not modify the supplied instance in any way. If the {@code PhoneNumber} class
      * has other fields, they will be ignored.
      *
-     * @param target    binding
-     * @param generator for supplying the target's value
+     * @param selectors for fields and/or classes this method should be applied to
+     * @param generator that will provide the values
      * @param <V>       type of the value to generate
      * @return API builder reference
      */
-    <V> InstancioApi<T> supply(Binding target, Generator<V> generator);
+    <V> InstancioApi<T> supply(SelectorGroup selectors, Generator<V> generator);
 
     /**
      * Generates a random value for a field or class using a built-in generator.
@@ -184,13 +184,13 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      *
-     * @param target binding
-     * @param gen    provider of built-in generators
-     * @param <V>    type of the value to generate
-     * @param <S>    generator spec type
+     * @param selectors for fields and/or classes this method should be applied to
+     * @param gen       provider of built-in generators
+     * @param <V>       type of the value to generate
+     * @param <S>       generator spec type
      * @return API builder reference
      */
-    <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(Binding target, Function<Generators, S> gen);
+    <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(SelectorGroup selectors, Function<Generators, S> gen);
 
     /**
      * A callback that gets invoked after an object has been fully populated.
@@ -203,33 +203,54 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      *
-     * @param target   binding
-     * @param callback to invoke after object has been populated
-     * @param <V>      type of object handled by the callback
+     * @param selectors for fields and/or classes this method should be applied to
+     * @param callback  to invoke after object has been populated
+     * @param <V>       type of object handled by the callback
      * @return API builder reference
      */
-    <V> InstancioApi<T> onComplete(Binding target, OnCompleteCallback<V> callback);
+    <V> InstancioApi<T> onComplete(SelectorGroup selectors, OnCompleteCallback<V> callback);
 
     /**
-     * Maps target field or class to the given subtype.
+     * Maps target field or class to the given subtype. This can be used
+     * in the following cases:
+     *
+     * <ol>
+     *     <li>to specify an implementation for interfaces or abstract classes</li>
+     *     <li>to override default implementations used by Instancio</li>
+     * </ol>
+     * <h4>Specify an implementation for an abstract type</h4>
      * <p>
-     * For example, by default Instancio will assign an {@link java.util.ArrayList}
-     * to a {@link java.util.List} field. If an alternative implementation is
-     * required, this method allows to specify it:
+     * When Instancio encounters an interface or an abstract type it is not aware of
+     * (for example, that is not part of the JDK), it will not be able to instantiate it.
+     * This method can be used to specify an implementation to use in such cases.
+     * For example:
+     *
+     * <pre>{@code
+     *     WidgetContainer container = Instancio.of(WidgetContainer.class)
+     *             .map(all(AbstractWidget.class), ConcreteWidget.class)
+     *             .create();
+     * }</pre>
+     *
+     * <p>
+     * <h4>Override default implementations</h4>
+     * <p>
+     * By default, Instancio uses certain defaults for collection classes, for example
+     * {@link java.util.ArrayList} for {@link java.util.List}.
+     * If an alternative implementation is required, this method allows to specify it:
      *
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *             .map(all(List.class), Vector.class)
+     *             .map(all(List.class), LinkedList.class)
      *             .create();
      * }</pre>
      * <p>
-     * will assign all {@code List}s to {@code Vector}s.
+     * will use the {@code LinkedList} implementation for all {@code List}s.
      *
-     * @param target  binding
-     * @param subtype of the type {@code target} binding
+     * @param selectors for fields and/or classes this method should be applied to
+     * @param subtype   to map the selectors to
      * @return API builder reference
      */
-    InstancioApi<T> map(Binding target, Class<?> subtype);
+    InstancioApi<T> map(SelectorGroup selectors, Class<?> subtype);
 
     /**
      * Override default settings for generated values.

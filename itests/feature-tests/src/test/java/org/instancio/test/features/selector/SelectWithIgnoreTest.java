@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.test.features.binding;
+package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
+import org.instancio.Select;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.pojo.person.Phone;
@@ -28,18 +29,17 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.allStrings;
-import static org.instancio.Bindings.of;
+import static org.instancio.Select.all;
+import static org.instancio.Select.allStrings;
 
-@FeatureTag(Feature.BINDING)
-class BindingsWithIgnoreTest {
+@FeatureTag(Feature.SELECTOR)
+class SelectWithIgnoreTest {
 
     @Test
-    @DisplayName("Composite binding with different types")
-    void compositeBindingWithDifferentTypes() {
+    @DisplayName("Composite selector group with different types")
+    void compositeSelectorGroupWithDifferentTypes() {
         final Person result = Instancio.of(Person.class)
-                .ignore(of(
+                .ignore(Select.all(
                         allStrings(),
                         all(LocalDateTime.class),
                         all(Date.class),

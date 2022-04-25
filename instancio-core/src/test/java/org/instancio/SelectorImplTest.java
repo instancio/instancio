@@ -3,10 +3,10 @@ package org.instancio;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
-class BindingTargetImplTest {
+class SelectorImplTest {
 
     @Test
     void verifyEqualsAndHashcode() {
-        EqualsVerifier.forClass(Bindings.BindingTargetImpl.class).verify();
+        EqualsVerifier.forClass(Select.SelectorImpl.class).verify();
     }
 }

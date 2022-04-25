@@ -22,8 +22,8 @@ import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.allInts;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.allInts;
+import static org.instancio.Select.field;
 
 @NonDeterministicTag
 class ModelWithGenerateTest {

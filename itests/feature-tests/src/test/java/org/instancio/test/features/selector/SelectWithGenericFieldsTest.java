@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.test.features.binding;
+package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
@@ -32,13 +32,13 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.allLongs;
-import static org.instancio.Bindings.allStrings;
+import static org.instancio.Select.all;
+import static org.instancio.Select.allLongs;
+import static org.instancio.Select.allStrings;
 
 @GenericsTag
-@FeatureTag(Feature.BINDING)
-class BindingsWithGenericFieldsTest {
+@FeatureTag(Feature.SELECTOR)
+class SelectWithGenericFieldsTest {
 
     @Test
     @DisplayName("Bound type parameters should have expected values")
@@ -73,8 +73,8 @@ class BindingsWithGenericFieldsTest {
     }
 
     @Test
-    @DisplayName("Binding wildcard extends")
-    void bindingWildcardExtends() {
+    @DisplayName("Selecting wildcard extends")
+    void selectingWildcardExtends() {
         // Given declared field: List<? extends Number> list
         final double expectedValue = 1.234;
         final ListExtendsNumber result = Instancio.of(ListExtendsNumber.class)
@@ -88,8 +88,8 @@ class BindingsWithGenericFieldsTest {
     }
 
     @Test
-    @DisplayName("Binding parameterized class with matching type argument")
-    void bindingParameterizedClassWithMatchingTypeArgument() {
+    @DisplayName("Selecting parameterized class with matching type argument")
+    void selectingParameterizedClassWithMatchingTypeArgument() {
         // Given declared field: Foo<Bar<Baz<String>>> item
         // and supplied value:       Bar<Baz<String>>
         final Bar<Baz<String>> expectedBar = Instancio.create(new TypeToken<Bar<Baz<String>>>() {});
@@ -106,8 +106,8 @@ class BindingsWithGenericFieldsTest {
 
     @Test
     @SuppressWarnings("AssertBetweenInconvertibleTypes")
-    @DisplayName("Binding parameterized type with incorrect type argument")
-    void bindingParameterizedClassWithIncorrectTypeArgument() {
+    @DisplayName("Selecting parameterized type with incorrect type argument")
+    void selectingParameterizedClassWithIncorrectTypeArgument() {
         // Given declared field: Foo<Bar<Baz<String>>> item
         // and supplied value:       Bar<Baz<Integer>>
         final Bar<Baz<Integer>> expectedBar = Instancio.create(new TypeToken<Bar<Baz<Integer>>>() {});

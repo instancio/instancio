@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.allBytes;
-import static org.instancio.Bindings.allInts;
-import static org.instancio.Bindings.allShorts;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.allBytes;
+import static org.instancio.Select.allInts;
+import static org.instancio.Select.allShorts;
+import static org.instancio.Select.field;
 
 /**
  * Verify that create(Model) and create(Class) generate same values given the same seed.

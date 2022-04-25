@@ -26,7 +26,6 @@ import org.instancio.test.support.pojo.collections.sets.HashSetLong;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.testsupport.Constants;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -41,8 +40,8 @@ import java.util.SortedMap;
 import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
 
 // TODO test nested lists/maps
@@ -52,21 +51,18 @@ class BuiltInCollectionGeneratorTest {
     @Nested
     class CollectionTypeTest {
 
-        @Disabled
         @Test
-        @DisplayName("TODO need to decide how to handle this case: should all(Foo.class) target Foo base types?")
-        void TODO() {
-
-            // NOTE the binding is targetting 'Set' but HashSetLong declares a 'HashSet'.
-            //  Therefore custom generator lookup fails; defaults to generator for HashSet
-            final int minSize = 100;
+        @DisplayName("Selecting supertype (Set) does not apply to subtype (HashSet)")
+        void selectSupertypeDoesNotIncludeSubtype() {
+            final int size = 100;
             final HashSetLong result = Instancio.of(HashSetLong.class)
-                    //.generate(allLongs(), gen -> gen.longs().min(Long.MIN_VALUE).max(Long.MAX_VALUE))
-                    .generate(all(Set.class), gen -> gen.collection().minSize(minSize))
+                    .generate(all(Set.class), gen -> gen.collection().size(size))
                     .create();
 
             assertThatObject(result).isFullyPopulated();
-            assertThat(result.getSet()).hasSizeGreaterThan(minSize * 90 / 100);
+            assertThat(result.getSet())
+                    .as("Selecting 'Set' should not include 'HashSet'")
+                    .hasSizeLessThan(size);
         }
 
         @Test

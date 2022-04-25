@@ -34,8 +34,8 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
 
 /**

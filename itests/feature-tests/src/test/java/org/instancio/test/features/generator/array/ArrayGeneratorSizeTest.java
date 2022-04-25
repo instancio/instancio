@@ -28,7 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
+import static org.instancio.Select.all;
 
 @FeatureTag({
         Feature.ARRAY_GENERATOR_MIN_LENGTH,

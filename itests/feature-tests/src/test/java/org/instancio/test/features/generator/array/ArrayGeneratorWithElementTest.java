@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Bindings.all;
+import static org.instancio.Select.all;
 
 // Casts added to suppress "non-varargs call of varargs" during the build
 @SuppressWarnings("RedundantCast")

@@ -18,10 +18,10 @@ package org.instancio;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
-class BindingImplTest {
+class SelectorGroupImplTest {
 
     @Test
     void verifyEqualsAndHashcode() {
-        EqualsVerifier.forClass(Bindings.BindingImpl.class).verify();
+        EqualsVerifier.forClass(Select.SelectorGroupImpl.class).verify();
     }
 }

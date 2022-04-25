@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Bindings.allInts;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.allInts;
+import static org.instancio.Select.field;
 
 @SuppressWarnings("ConstantConditions")
 @ClearSystemProperty(key = SystemProperties.FAIL_ON_ERROR)
@@ -82,7 +82,7 @@ class ErrorMessagesTest {
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(
                         "The second argument of 'generate()' method must not be null.",
-                        "To generate a null value, use 'supply(Binding, () -> null)",
+                        "To generate a null value, use 'supply(SelectorGroup, () -> null)",
                         "For example:",
                         "\tPerson person = Instancio.of(Person.class)",
                         "\t\t.supply(field(\"firstName\"), () -> null)",
@@ -93,7 +93,7 @@ class ErrorMessagesTest {
     void nullGeneratorPassedToSupply() {
         final CharSequence[] expectedErrorMsg = {
                 "The second argument of 'supply()' method must not be null.",
-                "To generate a null value, use 'supply(Binding, () -> null)",
+                "To generate a null value, use 'supply(SelectorGroup, () -> null)",
                 "For example:",
                 "\tPerson person = Instancio.of(Person.class)",
                 "\t\t.supply(field(\"firstName\"), () -> null)",
@@ -167,7 +167,7 @@ class ErrorMessagesTest {
     }
 
     @Test
-    void invalidFieldBinding() {
+    void invalidFieldSelector() {
         final String invalidField = "does-not-exist";
         assertThatThrownBy(() ->
                 Instancio.of(Person.class)

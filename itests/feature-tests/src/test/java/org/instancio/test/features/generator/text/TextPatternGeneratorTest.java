@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.allStrings;
+import static org.instancio.Select.allStrings;
 
 @FeatureTag(Feature.TEXT_PATTERN_GENERATOR)
 @ExtendWith(InstancioExtension.class)

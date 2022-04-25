@@ -28,11 +28,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
+import static org.instancio.Select.all;
 
-@FeatureTag(Feature.MAP_CLASS_BINDING)
+@FeatureTag(Feature.MAP_CLASS_SELECTOR)
 @ExtendWith(InstancioExtension.class)
-class ClassBindingMapTest {
+class MapClassSelectorTest {
 
     @Test
     @DisplayName("Map non-generic type to non-generic subtype")
