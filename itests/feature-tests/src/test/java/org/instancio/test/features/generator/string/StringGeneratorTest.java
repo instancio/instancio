@@ -28,7 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.allStrings;
+import static org.instancio.Select.allStrings;
 
 @FeatureTag(Feature.STRING_GENERATOR)
 @ExtendWith(InstancioExtension.class)

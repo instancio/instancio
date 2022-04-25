@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
+import static org.instancio.Select.all;
 
 @NonDeterministicTag
 @FeatureTag(Feature.ARRAY_GENERATOR_NULLABLE_ELEMENT)

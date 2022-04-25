@@ -28,16 +28,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.allInts;
-import static org.instancio.Bindings.allStrings;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.all;
+import static org.instancio.Select.allInts;
+import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 
 class UserSuppliedClassGeneratorsTest {
 
     @Test
-    @DisplayName("Binding core type should bind both, primitive and wrapper class")
-    void userSuppliedIntegerClassGenerator() {
+    @DisplayName("Selecting both, primitive and wrapper class")
+    void userSuppliedGeneratorSelectingPrimitiveAndWrapper() {
         final int expectedValue = 123;
         final IntegerHolder result = Instancio.of(IntegerHolder.class)
                 .supply(allInts(), () -> expectedValue)

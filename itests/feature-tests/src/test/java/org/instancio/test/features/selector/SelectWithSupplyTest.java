@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.test.features.binding;
+package org.instancio.test.features.selector;
 
-import org.instancio.Bindings;
 import org.instancio.Generator;
 import org.instancio.Instancio;
+import org.instancio.Select;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.basic.LongHolder;
 import org.instancio.test.support.pojo.person.Address;
@@ -29,21 +29,20 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.allInts;
-import static org.instancio.Bindings.allLongs;
-import static org.instancio.Bindings.allStrings;
-import static org.instancio.Bindings.field;
-import static org.instancio.Bindings.of;
+import static org.instancio.Select.all;
+import static org.instancio.Select.allInts;
+import static org.instancio.Select.allLongs;
+import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 
-@FeatureTag(Feature.BINDING)
-class BindingsWithSupplyTest {
+@FeatureTag(Feature.SELECTOR)
+class SelectWithSupplyTest {
 
     private static final long EXPECTED_VALUE = 2L;
 
     @Test
-    @DisplayName("Should bind to primitive but not wrapper")
-    void primitiveBinding() {
+    @DisplayName("Should select primitive but not wrapper")
+    void primitiveSelectorGroup() {
         final LongHolder result = Instancio.of(LongHolder.class)
                 .supply(all(long.class), () -> EXPECTED_VALUE)
                 .create();
@@ -53,8 +52,8 @@ class BindingsWithSupplyTest {
     }
 
     @Test
-    @DisplayName("Should bind to wrapper but not primitive")
-    void wrapperBinding() {
+    @DisplayName("Should select wrapper but not primitive")
+    void wrapperSelectorGroup() {
         final LongHolder result = Instancio.of(LongHolder.class)
                 .supply(all(Long.class), () -> EXPECTED_VALUE)
                 .create();
@@ -64,8 +63,8 @@ class BindingsWithSupplyTest {
     }
 
     @Test
-    @DisplayName("Should bind to both, primitive and wrapper")
-    void primitiveAndWrapperBinding() {
+    @DisplayName("Should select both, primitive and wrapper")
+    void primitiveAndWrapperSelectorGroup() {
         final LongHolder result = Instancio.of(LongHolder.class)
                 .supply(allLongs(), () -> EXPECTED_VALUE)
                 .create();
@@ -75,12 +74,12 @@ class BindingsWithSupplyTest {
     }
 
     @Test
-    @DisplayName("Composite binding with compatible types")
-    void compositeBinding() {
+    @DisplayName("Composite select group with compatible types")
+    void compositeSelectorGroup() {
         final String expectedString = "foo";
 
         final Person result = Instancio.of(Person.class)
-                .supply(Bindings.of(
+                .supply(Select.all(
                                 field("name"),
                                 field(Address.class, "city")),
                         () -> expectedString)
@@ -92,10 +91,10 @@ class BindingsWithSupplyTest {
     }
 
     @Test
-    @DisplayName("Composite binding with non-compatible types")
-    void compositeBindingWithNonCompatibleTypes() {
+    @DisplayName("Composite selector group with non-compatible types")
+    void compositeSelectorGroupWithNonCompatibleTypes() {
         assertThatThrownBy(() -> Instancio.of(Person.class)
-                .supply(of(allInts(), allStrings()), () -> "some value")
+                .supply(Select.all(allInts(), allStrings()), () -> "some value")
                 .create())
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("Caused by: Can not set int field", "to java.lang.String");

@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.test.features.binding;
+package org.instancio.test.features.selector;
 
-import org.instancio.Bindings;
 import org.instancio.Generators;
 import org.instancio.Instancio;
+import org.instancio.Select;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.arrays.MiscArrays;
 import org.instancio.test.support.pojo.basic.LongHolder;
@@ -32,20 +32,19 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.allInts;
-import static org.instancio.Bindings.allLongs;
-import static org.instancio.Bindings.allStrings;
-import static org.instancio.Bindings.of;
+import static org.instancio.Select.all;
+import static org.instancio.Select.allInts;
+import static org.instancio.Select.allLongs;
+import static org.instancio.Select.allStrings;
 
-@FeatureTag(Feature.BINDING)
-class BindingsWithGenerateTest {
+@FeatureTag(Feature.SELECTOR)
+class SelectWithGenerateTest {
 
     private static final long EXPECTED_VALUE = 2L;
 
     @Test
-    @DisplayName("Should bind to primitive but not wrapper")
-    void primitiveBinding() {
+    @DisplayName("Should select primitive but not wrapper")
+    void selectPrimitive() {
         final LongHolder result = Instancio.of(LongHolder.class)
                 .generate(all(long.class), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE + 1))
                 .create();
@@ -55,8 +54,8 @@ class BindingsWithGenerateTest {
     }
 
     @Test
-    @DisplayName("Should bind to wrapper but not primitive")
-    void wrapperBinding() {
+    @DisplayName("Should select wrapper but not primitive")
+    void selectWrapper() {
         final LongHolder result = Instancio.of(LongHolder.class)
                 .generate(all(Long.class), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE + 1))
                 .create();
@@ -66,8 +65,8 @@ class BindingsWithGenerateTest {
     }
 
     @Test
-    @DisplayName("Should bind to both, primitive and wrapper")
-    void primitiveAndWrapperBinding() {
+    @DisplayName("Should select both, primitive and wrapper")
+    void selectPrimitiveAndWrapper() {
         final LongHolder result = Instancio.of(LongHolder.class)
                 .generate(allLongs(), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE + 1))
                 .create();
@@ -77,11 +76,11 @@ class BindingsWithGenerateTest {
     }
 
     @Test
-    @DisplayName("Composite binding with compatible types")
-    void compositeBinding() {
+    @DisplayName("Composite selector group with compatible types")
+    void compositeSelectorGroup() {
         final int expectedLength = 100;
         final Person result = Instancio.of(Person.class)
-                .generate(Bindings.of(Person_.name, Address_.city),
+                .generate(Select.all(Person_.name, Address_.city),
                         gen -> gen.string().length(expectedLength))
                 .create();
 
@@ -91,21 +90,21 @@ class BindingsWithGenerateTest {
     }
 
     @Test
-    @DisplayName("Composite binding with non-compatible types")
-    void compositeBindingWithNonCompatibleTypes() {
+    @DisplayName("Composite selector group with non-compatible types")
+    void compositeSelectorGroupWithNonCompatibleTypes() {
         assertThatThrownBy(() -> Instancio.of(Person.class)
-                .generate(of(allInts(), allStrings()), Generators::ints)
+                .generate(Select.all(allInts(), allStrings()), Generators::ints)
                 .create())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Method 'ints()' cannot be used for type: java.lang.String");
     }
 
     @Test
-    @DisplayName("Composite binding with different array types")
-    void compositeBindingWithDifferentArrayTypes() {
+    @DisplayName("Composite selector group with different array types")
+    void compositeSelectorGroupWithDifferentArrayTypes() {
         final int expectedLength = 100;
         final MiscArrays result = Instancio.of(MiscArrays.class)
-                .generate(of(
+                .generate(Select.all(
                                 all(long[].class),
                                 all(Long[].class),
                                 all(String[].class),

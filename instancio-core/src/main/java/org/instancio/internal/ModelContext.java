@@ -15,12 +15,12 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Binding;
-import org.instancio.BindingTarget;
-import org.instancio.BindingTarget.BindingType;
 import org.instancio.Generator;
 import org.instancio.Generators;
 import org.instancio.OnCompleteCallback;
+import org.instancio.Selector;
+import org.instancio.Selector.SelectorType;
+import org.instancio.SelectorGroup;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGenerator;
@@ -69,18 +69,18 @@ public class ModelContext<T> {
     private final Map<Class<?>, Generator<?>> userSuppliedClassGenerators;
     private final Map<Field, OnCompleteCallback<?>> userSuppliedFieldCallbacks;
     private final Map<Class<?>, OnCompleteCallback<?>> userSuppliedClassCallbacks;
-    private final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks;
+    private final Map<SelectorGroup, OnCompleteCallback<?>> onCompleteCallbacks;
     private final Map<Class<?>, Class<?>> classSubtypeMap;
     private final Map<Field, Class<?>> fieldSubtypeMap;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final Settings settings;
     private final Integer seed;
     private final RandomProvider randomProvider;
-    private final Set<Binding> ignoredBindings;
-    private final Set<Binding> nullableBindings;
-    private final Map<Binding, Class<?>> subtypeBindings;
-    private final Map<Binding, Generator<?>> generatorBindings;
-    private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings;
+    private final Set<SelectorGroup> ignoredSelectorGroups;
+    private final Set<SelectorGroup> nullableSelectorGroups;
+    private final Map<SelectorGroup, Class<?>> subtypeSelectors;
+    private final Map<SelectorGroup, Generator<?>> generatorSelectors;
+    private final Map<SelectorGroup, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors;
     private final Generators generators;
 
     private ModelContext(final Builder<T> builder) {
@@ -97,11 +97,11 @@ public class ModelContext<T> {
         this.userSuppliedClassCallbacks = new HashMap<>();
         this.fieldSubtypeMap = new HashMap<>();
         this.classSubtypeMap = new HashMap<>();
-        this.ignoredBindings = Collections.unmodifiableSet(builder.ignoredBindings);
-        this.nullableBindings = Collections.unmodifiableSet(builder.nullableBindings);
-        this.subtypeBindings = Collections.unmodifiableMap(builder.subtypeBindings);
-        this.generatorBindings = Collections.unmodifiableMap(builder.generatorBindings);
-        this.generatorSpecBindings = Collections.unmodifiableMap(builder.generatorSpecBindings);
+        this.ignoredSelectorGroups = Collections.unmodifiableSet(builder.ignoredSelectorGroups);
+        this.nullableSelectorGroups = Collections.unmodifiableSet(builder.nullableSelectorGroups);
+        this.subtypeSelectors = Collections.unmodifiableMap(builder.subtypeSelectors);
+        this.generatorSelectors = Collections.unmodifiableMap(builder.generatorSelectors);
+        this.generatorSpecSelectors = Collections.unmodifiableMap(builder.generatorSpecSelectors);
         this.onCompleteCallbacks = Collections.unmodifiableMap(builder.onCompleteCallbacks);
 
         this.rootTypeMap = rootType instanceof ParameterizedType || rootType instanceof GenericArrayType
@@ -118,25 +118,25 @@ public class ModelContext<T> {
         this.randomProvider = resolveRandomProvider(seed);
         this.generators = new Generators(new GeneratorContext(settings, randomProvider));
 
-        builder.onCompleteCallbacks.forEach(this::putCallbackBinding);
-        builder.generatorSpecBindings.forEach(this::putGeneratorBinding);
-        putAllSubtypeBindings(builder.subtypeBindings);
-        putAllUserSuppliedGenerators(builder.generatorBindings);
-        putIgnored(builder.ignoredBindings);
-        putNullable(builder.nullableBindings);
+        builder.onCompleteCallbacks.forEach(this::putCallbackSelectors);
+        builder.generatorSpecSelectors.forEach(this::putGeneratorSelectors);
+        putAllSubtypeSelectors(builder.subtypeSelectors);
+        putAllUserSuppliedGenerators(builder.generatorSelectors);
+        putIgnored(builder.ignoredSelectorGroups);
+        putNullable(builder.nullableSelectorGroups);
     }
 
-    private void putAllSubtypeBindings(final Map<Binding, Class<?>> subtypeBindings) {
-        subtypeBindings.forEach((binding, subtype) -> {
-            for (BindingTarget target : binding.getTargets()) {
-                if (target.getType() == BindingType.FIELD) {
-                    final Class<?> targetType = defaultIfNull(target.getTargetClass(), this.rootClass);
-                    final Field field = getField(targetType, target.getFieldName());
+    private void putAllSubtypeSelectors(final Map<SelectorGroup, Class<?>> groups) {
+        groups.forEach((selectorGroup, subtype) -> {
+            for (Selector selector : selectorGroup.getSelectors()) {
+                if (selector.selectorType() == SelectorType.FIELD) {
+                    final Class<?> targetType = defaultIfNull(selector.getTargetClass(), this.rootClass);
+                    final Field field = getField(targetType, selector.getFieldName());
                     // TODO validate
                     fieldSubtypeMap.put(field, subtype);
                 } else {
-                    ApiValidator.validateSubtypeMapping(target.getTargetClass(), subtype);
-                    classSubtypeMap.put(target.getTargetClass(), subtype);
+                    ApiValidator.validateSubtypeMapping(selector.getTargetClass(), subtype);
+                    classSubtypeMap.put(selector.getTargetClass(), subtype);
                 }
             }
         });
@@ -152,40 +152,40 @@ public class ModelContext<T> {
                 () -> new RandomProviderImpl(SeedUtil.randomSeed()));
     }
 
-    private void putAllUserSuppliedGenerators(final Map<Binding, Generator<?>> generatorBindings) {
-        generatorBindings.forEach((binding, generator) -> {
-            for (BindingTarget target : binding.getTargets()) {
-                bindGeneratorToTarget(target, generator);
+    private void putAllUserSuppliedGenerators(final Map<SelectorGroup, Generator<?>> generatorSelectors) {
+        generatorSelectors.forEach((selectorGroup, generator) -> {
+            for (Selector selector : selectorGroup.getSelectors()) {
+                mapSelectedToGenerator(selector, generator);
             }
         });
     }
 
-    private void putCallbackBinding(final Binding binding, final OnCompleteCallback<?> callback) {
-        for (BindingTarget target : binding.getTargets()) {
-            if (target.getType() == BindingType.FIELD) {
-                final Class<?> targetType = defaultIfNull(target.getTargetClass(), this.rootClass);
-                final Field field = getField(targetType, target.getFieldName());
+    private void putCallbackSelectors(final SelectorGroup selectorGroup, final OnCompleteCallback<?> callback) {
+        for (Selector selector : selectorGroup.getSelectors()) {
+            if (selector.selectorType() == SelectorType.FIELD) {
+                final Class<?> targetType = defaultIfNull(selector.getTargetClass(), this.rootClass);
+                final Field field = getField(targetType, selector.getFieldName());
                 this.userSuppliedFieldCallbacks.put(field, callback);
             } else {
-                this.userSuppliedClassCallbacks.put(target.getTargetClass(), callback);
+                this.userSuppliedClassCallbacks.put(selector.getTargetClass(), callback);
             }
         }
     }
 
-    private void putGeneratorBinding(final Binding binding, final Function<Generators, ? extends GeneratorSpec<?>> genFn) {
-        for (BindingTarget target : binding.getTargets()) {
-            // Do not share generator instances among binding targets of a composite binding.
+    private void putGeneratorSelectors(final SelectorGroup selectorGroup, final Function<Generators, ? extends GeneratorSpec<?>> genFn) {
+        for (Selector selector : selectorGroup.getSelectors()) {
+            // Do not share generator instances among selectors of a selector group.
             // For example, array generators are created for each component type.
-            // Therefore, using 'gen.array().length(10)' would fail when targets are different array types.
+            // Therefore, using 'gen.array().length(10)' would fail when selectors are different array types.
             final Generator<?> generator = (Generator<?>) genFn.apply(generators);
-            bindGeneratorToTarget(target, generator);
+            mapSelectedToGenerator(selector, generator);
         }
     }
 
-    private void bindGeneratorToTarget(final BindingTarget target, Generator<?> generator) {
-        if (target.getType() == BindingType.FIELD) {
-            final Class<?> targetType = defaultIfNull(target.getTargetClass(), this.rootClass);
-            final Field field = getField(targetType, target.getFieldName());
+    private void mapSelectedToGenerator(final Selector selector, Generator<?> generator) {
+        if (selector.selectorType() == SelectorType.FIELD) {
+            final Class<?> targetType = defaultIfNull(selector.getTargetClass(), this.rootClass);
+            final Field field = getField(targetType, selector.getFieldName());
 
             // TODO refactor to remove the isArray conditional
             if (field.getType().isArray() && generator instanceof ArrayGenerator) {
@@ -193,21 +193,21 @@ public class ModelContext<T> {
             }
             this.userSuppliedFieldGenerators.put(field, generator);
         } else {
-            final Class<?> userSpecifiedClass = generator.targetClass().orElse(target.getTargetClass());
-            if (target.getTargetClass().isArray() && generator instanceof ArrayGenerator) {
+            final Class<?> userSpecifiedClass = generator.targetClass().orElse(selector.getTargetClass());
+            if (selector.getTargetClass().isArray() && generator instanceof ArrayGenerator) {
                 ((ArrayGenerator<?>) generator).type(userSpecifiedClass);
             }
-            if (userSpecifiedClass != target.getTargetClass()) {
-                this.classSubtypeMap.put(target.getTargetClass(), userSpecifiedClass);
+            if (userSpecifiedClass != selector.getTargetClass()) {
+                this.classSubtypeMap.put(selector.getTargetClass(), userSpecifiedClass);
             }
-            this.userSuppliedClassGenerators.put(target.getTargetClass(), generator);
+            this.userSuppliedClassGenerators.put(selector.getTargetClass(), generator);
         }
     }
 
-    private void putIgnored(Set<Binding> ignoredBindings) {
-        for (Binding binding : ignoredBindings) {
-            for (BindingTarget target : binding.getTargets()) {
-                if (target.getType() == BindingType.FIELD) {
+    private void putIgnored(Set<SelectorGroup> ignoredSelectorGroups) {
+        for (SelectorGroup selectorGroup : ignoredSelectorGroups) {
+            for (Selector target : selectorGroup.getSelectors()) {
+                if (target.selectorType() == SelectorType.FIELD) {
                     final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetClass(), this.rootClass);
                     this.ignoredFields.add(getField(targetType, target.getFieldName()));
                 } else {
@@ -217,12 +217,12 @@ public class ModelContext<T> {
         }
     }
 
-    private void putNullable(final Set<Binding> nullableBindings) {
-        for (Binding binding : nullableBindings) {
-            for (BindingTarget target : binding.getTargets()) {
+    private void putNullable(final Set<SelectorGroup> nullableSelectorGroups) {
+        for (SelectorGroup selectorGroup : nullableSelectorGroups) {
+            for (Selector target : selectorGroup.getSelectors()) {
                 final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetClass(), this.rootClass);
 
-                if (target.getType() == BindingType.FIELD) {
+                if (target.selectorType() == SelectorType.FIELD) {
                     final Field field = getField(targetType, target.getFieldName());
                     if (!field.getType().isPrimitive()) {
                         this.nullableFields.add(field);
@@ -329,11 +329,11 @@ public class ModelContext<T> {
         builder.rootTypeParameters.addAll(this.rootTypeParameters);
         builder.seed = this.seed;
         builder.settings = this.settings;
-        builder.nullableBindings.addAll(this.nullableBindings);
-        builder.ignoredBindings.addAll(this.ignoredBindings);
-        builder.generatorBindings.putAll(this.generatorBindings);
-        builder.generatorSpecBindings.putAll(this.generatorSpecBindings);
-        builder.subtypeBindings.putAll(this.subtypeBindings);
+        builder.nullableSelectorGroups.addAll(this.nullableSelectorGroups);
+        builder.ignoredSelectorGroups.addAll(this.ignoredSelectorGroups);
+        builder.generatorSelectors.putAll(this.generatorSelectors);
+        builder.generatorSpecSelectors.putAll(this.generatorSpecSelectors);
+        builder.subtypeSelectors.putAll(this.subtypeSelectors);
         builder.onCompleteCallbacks.putAll(this.onCompleteCallbacks);
         return builder;
     }
@@ -347,12 +347,12 @@ public class ModelContext<T> {
         private final Type rootType;
         private final Class<T> rootClass;
         private final List<Class<?>> rootTypeParameters = new ArrayList<>();
-        private final Map<Binding, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecBindings = new HashMap<>();
-        private final Map<Binding, Generator<?>> generatorBindings = new HashMap<>();
-        private final Map<Binding, OnCompleteCallback<?>> onCompleteCallbacks = new HashMap<>();
-        private final Set<Binding> ignoredBindings = new HashSet<>();
-        private final Set<Binding> nullableBindings = new HashSet<>();
-        private final Map<Binding, Class<?>> subtypeBindings = new HashMap<>();
+        private final Map<SelectorGroup, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors = new HashMap<>();
+        private final Map<SelectorGroup, Generator<?>> generatorSelectors = new HashMap<>();
+        private final Map<SelectorGroup, OnCompleteCallback<?>> onCompleteCallbacks = new HashMap<>();
+        private final Set<SelectorGroup> ignoredSelectorGroups = new HashSet<>();
+        private final Set<SelectorGroup> nullableSelectorGroups = new HashSet<>();
+        private final Map<SelectorGroup, Class<?>> subtypeSelectors = new HashMap<>();
         private Settings settings;
         private Integer seed;
 
@@ -372,37 +372,37 @@ public class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withIgnored(final Binding binding) {
-            this.ignoredBindings.add(binding);
+        public Builder<T> withIgnored(final SelectorGroup selectorGroup) {
+            this.ignoredSelectorGroups.add(selectorGroup);
             return this;
         }
 
-        public Builder<T> withNullable(final Binding binding) {
-            this.nullableBindings.add(binding);
+        public Builder<T> withNullable(final SelectorGroup selectorGroup) {
+            this.nullableSelectorGroups.add(selectorGroup);
             return this;
         }
 
-        public Builder<T> withSubtype(final Binding binding, final Class<?> subtype) {
-            this.subtypeBindings.put(binding, subtype);
+        public Builder<T> withSubtype(final SelectorGroup selectorGroup, final Class<?> subtype) {
+            this.subtypeSelectors.put(selectorGroup, subtype);
             return this;
         }
 
-        public Builder<T> withGenerator(final Binding binding, final Generator<?> generator) {
-            this.generatorBindings.put(binding, generator);
+        public Builder<T> withGenerator(final SelectorGroup selectorGroup, final Generator<?> generator) {
+            this.generatorSelectors.put(selectorGroup, generator);
             return this;
         }
 
-        public Builder<T> withSupplier(final Binding binding, final Supplier<?> supplier) {
-            this.generatorBindings.put(binding, random -> supplier.get());
+        public Builder<T> withSupplier(final SelectorGroup selectorGroup, final Supplier<?> supplier) {
+            this.generatorSelectors.put(selectorGroup, random -> supplier.get());
             return this;
         }
 
-        public Builder<T> withGeneratorSpec(final Binding target, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
-            this.generatorSpecBindings.put(target, spec);
+        public Builder<T> withGeneratorSpec(final SelectorGroup target, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
+            this.generatorSpecSelectors.put(target, spec);
             return this;
         }
 
-        public <V> Builder<T> withOnCompleteCallback(final Binding target, final OnCompleteCallback<V> callback) {
+        public <V> Builder<T> withOnCompleteCallback(final SelectorGroup target, final OnCompleteCallback<V> callback) {
             this.onCompleteCallbacks.put(target, callback);
             return this;
         }

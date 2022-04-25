@@ -23,8 +23,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 
 class ModelWithIgnoredTest {
 

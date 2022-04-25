@@ -29,7 +29,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.allStrings;
+import static org.instancio.Select.allStrings;
 
 @NonDeterministicTag("Assuming unique Strings are generated")
 @FeatureTag(Feature.STREAM)

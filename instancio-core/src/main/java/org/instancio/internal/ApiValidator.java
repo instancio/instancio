@@ -149,7 +149,7 @@ public class ApiValidator {
 
     public static void validateGeneratorFunction(@Nullable final Function<Generators, ?> gen) {
         isTrue(gen != null, "%nThe second argument of 'generate()' method must not be null."
-                + "%nTo generate a null value, use 'supply(Binding, () -> null)"
+                + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
                 + "%nFor example:"
                 + "%n\tPerson person = Instancio.of(Person.class)"
                 + "%n\t\t.supply(field(\"firstName\"), () -> null)"
@@ -158,7 +158,7 @@ public class ApiValidator {
 
     public static void validateSupplierOrGenerator(@Nullable final Object obj) {
         isTrue(obj != null, "%nThe second argument of 'supply()' method must not be null."
-                + "%nTo generate a null value, use 'supply(Binding, () -> null)"
+                + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
                 + "%nFor example:"
                 + "%n\tPerson person = Instancio.of(Person.class)"
                 + "%n\t\t.supply(field(\"firstName\"), () -> null)"

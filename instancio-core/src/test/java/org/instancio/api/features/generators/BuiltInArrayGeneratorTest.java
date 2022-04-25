@@ -28,8 +28,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 
 class BuiltInArrayGeneratorTest {
     private static final int EXPECTED_LENGTH = RandomUtils.nextInt(0, 10);

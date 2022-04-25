@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 
 class SubtypeMappingTest {
 

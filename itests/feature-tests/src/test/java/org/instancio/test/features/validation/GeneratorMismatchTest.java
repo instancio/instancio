@@ -39,8 +39,8 @@ import java.math.BigInteger;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Bindings.all;
-import static org.instancio.Bindings.allInts;
+import static org.instancio.Select.all;
+import static org.instancio.Select.allInts;
 
 @FeatureTag(Feature.VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -95,17 +95,17 @@ class GeneratorMismatchTest {
     }
 
     private static <T> void assertMessageContains(final Class<?> typeToCreate,
-                                                  final Class<?> bindingType,
+                                                  final Class<?> selectedType,
                                                   final String expectedGeneratorMethod,
                                                   final Function<Generators, GeneratorSpec<T>> genFn) {
 
         assertThatThrownBy(() -> Instancio.of(typeToCreate)
-                .generate(all(bindingType), genFn)
+                .generate(all(selectedType), genFn)
                 .create())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Generator type mismatch:",
                         String.format("%nMethod '%s' cannot be used for type: %s%n",
-                                expectedGeneratorMethod, bindingType.getCanonicalName()));
+                                expectedGeneratorMethod, selectedType.getCanonicalName()));
     }
 
 }

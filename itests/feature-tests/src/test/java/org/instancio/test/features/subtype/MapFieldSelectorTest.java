@@ -33,11 +33,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.field;
 
-@FeatureTag(Feature.MAP_FIELD_BINDING)
+@FeatureTag(Feature.MAP_FIELD_SELECTOR)
 @ExtendWith(InstancioExtension.class)
-class FieldBindingMapTest {
+class MapFieldSelectorTest {
 
     @Test
     @DisplayName("Map non-generic field type to non-generic subtype")

@@ -30,8 +30,8 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
-import static org.instancio.Bindings.allInts;
-import static org.instancio.Bindings.field;
+import static org.instancio.Select.allInts;
+import static org.instancio.Select.field;
 
 class UserSuppliedFieldGeneratorsTest {
 

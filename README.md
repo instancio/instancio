@@ -9,7 +9,7 @@
 - [Try it out](#try-it-out)
 - [Instancio API](#instancio-api)
     - [`create()`](#create)
-    - [Bindings](#bindings)
+    - [Selectors](#selectors)
     - [`supply()`](#supply)
     - [`generate()`](#generate)
     - [`onComplete()`](#oncomplete)
@@ -83,7 +83,7 @@ Instancio standalone:
 The following is an overview of the API and its features for creating objects and customising generated data.
 
 - [`create()`](#create) - create an instance from a Class.
-- [Bindings](#bindings) - for targeting which values to customise, either by field or class.
+- [Selectors](#selectors) - for targeting which values to customise, either by field or class.
 - [`supply()`](#supply) - for supplying custom (non-random) values.
 - [`generate()`](#generate) - for customising the generated random data, such as number ranges, string lengths, collection sizes, etc.
 - [`onComplete()`](#oncomplete) - for updating a generated object via a callback.
@@ -115,11 +115,11 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-## Bindings
+## Selectors
 
-In order to customise generated values Instancio uses `Bindings`. Bindings are used to target fields and classes.
+In order to customise generated values Instancio uses selectors to target fields and classes.
 
-To illustrate how bindings work, we will use the `ignore()` method, which tells Instancio to ignore a field or class.
+To illustrate how selectors work, we will use the `ignore()` method, which tells Instancio to ignore a field or class.
 
 For example, to specify that all `LocalDate` fields should be ignored:
 
@@ -148,39 +148,39 @@ Person person = Instancio.of(Person.class)
 
 If we specify `ignore(all(Address.class))`, then `List<Address> addresses` field will be an empty list.
 
-We can also combine several bindings using `Bindings.of(Binding...)` method:
+We can also combine several `SelectorGroup`s using `Select.of(SelectorGroup...)` method:
 
 ```java
     Person person = Instancio.of(Person.class)
-        .ignore(Bindings.of(field("dateOfBirth"), field(Address.class,"city"), all(LocalDate.class)))
+        .ignore(Select.of(field("dateOfBirth"), field(Address.class,"city"), all(LocalDate.class)))
         .create();
 ```
 
-To summarise, the `Bindings` class contains static methods for targeting:
+To summarise, the `Select` class contains static methods for targeting:
 
 - `field("someField")` - target field of the class being created
 - `field(Foo.class, "someField")` - target `someField` of `Foo` class
 - `all(Bar.class)` - target all fields of type `Bar`
-- `of(Binding...)` - convenience method for targeting several bindings at once
+- `of(SelectorGroup...)` - convenience method for combining several `SelectorGroup`s at once
 
-In addition, the `Bindings` class also contains convenience methods for targeting core types such as strings and numeric
+In addition, the `Select` class also contains convenience methods for targeting core types such as strings and numeric
 types, for example `allStrings()`, which is a shorthand for `all(String.class)`.
 
 Note that the `allXxx()` methods such as `allInts()` and `allBooleans()`, are convenience methods for targeting both,
-the primitive and wrapper types. For example, `allInts()` is a composite binding defined
-as `Binding.of(all(int.class), all(Integer.class))`.
+the primitive and wrapper types. For example, `allInts()` is a composite `SelectorGroup` defined
+as `Select.of(all(int.class), all(Integer.class))`.
 
 ## `supply()`
 
 Instancio has two `supply()` methods for setting custom values.
 
-- `supply(Binding, Supplier)` - for supplying non-random values
-- `supply(Binding, Generator)` - for supplying random values
+- `supply(SelectorGroup, Supplier)` - for supplying non-random values
+- `supply(SelectorGroup, Generator)` - for supplying random values
 
-### Using `supply(Binding, Supplier)`
+### Using `supply(SelectorGroup, Supplier)`
 
 This method takes a `java.util.function.Supplier` as an argument and should be
-used for provding non-random values:
+used for providing non-random values:
 
 
 ```java
@@ -192,7 +192,7 @@ Person person = Instancio.of(Person.class)
 
 The above snippet will set `Phone.countryCode` to `"+1"` and `Person.name` to `"Homer Simpson"`.
 
-### Using `supply(Binding, Generator)`
+### Using `supply(SelectorGroup, Generator)`
 
 This method takes a `org.instancio.Generator` as an argument. The generator is a
 functional interface with the following signature:
@@ -276,7 +276,7 @@ differences that can make one preferable over the other:
 ## `ignore()`
 
 The `ignore()` method tells Instancio to ignore a field or class. Instancio will not generate values for
-ignored bindings. This can be useful when:
+ignored selector targets. This can be useful when:
 
 - we want to ignore an irrelevant complex type with a lot of data
 - preserve value of fields  pre-initialised with a default value

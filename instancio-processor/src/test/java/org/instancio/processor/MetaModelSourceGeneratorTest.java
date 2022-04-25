@@ -50,11 +50,11 @@ class MetaModelSourceGeneratorTest {
 
         assertThat(source).containsSubsequence(
                 "package org.example;",
-                "import org.instancio.Binding;",
-                "import org.instancio.Bindings;",
+                "import org.instancio.SelectorGroup;",
+                "import org.instancio.Select;",
                 "public class SomeClass_ {",
-                "public static final Binding fieldOne = Bindings.field(org.example.SomeClass.class, \"fieldOne\");",
-                "public static final Binding fieldTwo = Bindings.field(org.example.SomeClass.class, \"fieldTwo\");",
+                "public static final SelectorGroup fieldOne = Select.field(org.example.SomeClass.class, \"fieldOne\");",
+                "public static final SelectorGroup fieldTwo = Select.field(org.example.SomeClass.class, \"fieldTwo\");",
                 "}");
     }
 
@@ -73,8 +73,8 @@ class MetaModelSourceGeneratorTest {
                 .doesNotContain("package")
                 .startsWith("import")
                 .containsSubsequence(
-                        "import org.instancio.Binding;",
-                        "import org.instancio.Bindings;",
+                        "import org.instancio.SelectorGroup;",
+                        "import org.instancio.Select;",
                         "public class SomeClass_ {",
                         "}");
     }

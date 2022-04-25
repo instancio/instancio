@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 class MetaModelSourceGenerator {
     private static final String PACKAGE_TEMPLATE = "package %s;";
     private static final String IMPORTS = ""
-            + "import org.instancio.Binding;\n"
-            + "import org.instancio.Bindings;";
+            + "import org.instancio.SelectorGroup;\n"
+            + "import org.instancio.Select;";
     private static final String CLASS_BODY_TEMPLATE = "public class %s {\n%s\n}"; // class name, class body
-    private static final String FIELD_TEMPLATE = "\tpublic static final Binding %s = Bindings.field(%s, \"%s\");";
+    private static final String FIELD_TEMPLATE = "\tpublic static final SelectorGroup %s = Select.field(%s, \"%s\");";
     private static final String CLASS_TEMPLATE = "%s\n\n%s\n\n%s"; // package, imports, class body
 
     String getSource(final MetaModelClass modelClass) {
