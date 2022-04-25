@@ -218,7 +218,7 @@ public interface InstancioApi<T> {
      *     <li>to specify an implementation for interfaces or abstract classes</li>
      *     <li>to override default implementations used by Instancio</li>
      * </ol>
-     * <h4>Specify an implementation for an abstract type</h4>
+     * <b>Specify an implementation for an abstract type</b>
      * <p>
      * When Instancio encounters an interface or an abstract type it is not aware of
      * (for example, that is not part of the JDK), it will not be able to instantiate it.
@@ -230,9 +230,8 @@ public interface InstancioApi<T> {
      *             .map(all(AbstractWidget.class), ConcreteWidget.class)
      *             .create();
      * }</pre>
-     *
      * <p>
-     * <h4>Override default implementations</h4>
+     * <b>Override default implementations</b>
      * <p>
      * By default, Instancio uses certain defaults for collection classes, for example
      * {@link java.util.ArrayList} for {@link java.util.List}.
