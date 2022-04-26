@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.misc;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 
 public class InstantiatingGenerator extends AbstractGenerator<Object> {
@@ -32,7 +32,7 @@ public class InstantiatingGenerator extends AbstractGenerator<Object> {
     }
 
     @Override
-    public Object generate(final RandomProvider random) {
+    public Object generate(final Random random) {
         return instantiator.instantiate(targetType);
     }
 }

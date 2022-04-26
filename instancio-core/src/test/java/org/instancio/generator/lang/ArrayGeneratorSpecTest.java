@@ -18,7 +18,7 @@ package org.instancio.generator.lang;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.array.ArrayGenerator;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.instancio.util.Constants;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ArrayGeneratorSpecTest {
     private static final int PERCENTAGE = Constants.RANGE_ADJUSTMENT_PERCENTAGE;
 
-    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new RandomProviderImpl());
+    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
 
     private final ArrayGeneratorExt<?> generator = new ArrayGeneratorExt<>(context);
 

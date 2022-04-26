@@ -45,7 +45,7 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
 
             final GeneratorResult result = GeneratorResult.create(
-                    generator.generate(context.getRandomProvider()),
+                    generator.generate(context.getRandom()),
                     generator.getHints());
 
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());

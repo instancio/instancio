@@ -16,9 +16,9 @@
 package org.instancio.junit;
 
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.SeedUtil;
@@ -34,11 +34,10 @@ import static java.util.stream.Collectors.joining;
 
 class ExtensionSupport {
 
-    static void processSeedAnnotation(
-            final ExtensionContext context,
-            final ThreadLocalRandomProvider threadLocalRandomProvider) {
+    static void processSeedAnnotation(final ExtensionContext context,
+                                      final ThreadLocalRandom threadLocalRandom) {
 
-        if (threadLocalRandomProvider.get() != null) {
+        if (threadLocalRandom.get() != null) {
             return;
         }
         final Optional<Method> testMethod = context.getTestMethod();
@@ -48,7 +47,7 @@ class ExtensionSupport {
                     ? SeedUtil.randomSeed()
                     : seedAnnotation.value();
 
-            threadLocalRandomProvider.set(new RandomProviderImpl(seed));
+            threadLocalRandom.set(new DefaultRandom(seed));
         }
     }
 

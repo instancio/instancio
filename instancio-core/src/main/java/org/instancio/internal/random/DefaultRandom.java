@@ -15,21 +15,21 @@
  */
 package org.instancio.internal.random;
 
+import org.instancio.Random;
 import org.instancio.util.SeedUtil;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
-import java.util.Random;
 
-public class RandomProviderImpl implements RandomProvider {
+public class DefaultRandom implements Random {
 
     private final int seed;
-    private final Random random;
+    private final java.util.Random random;
 
     /**
      * Create an instance with a random seed value.
      */
-    public RandomProviderImpl() {
+    public DefaultRandom() {
         this(SeedUtil.randomSeed());
     }
 
@@ -38,9 +38,9 @@ public class RandomProviderImpl implements RandomProvider {
      *
      * @param seed for the random generator
      */
-    public RandomProviderImpl(final int seed) {
+    public DefaultRandom(final int seed) {
         this.seed = seed;
-        this.random = new Random(seed); // NOSONAR
+        this.random = new java.util.Random(seed); // NOSONAR
     }
 
     @Override

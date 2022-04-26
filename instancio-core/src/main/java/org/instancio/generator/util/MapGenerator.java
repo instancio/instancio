@@ -15,11 +15,11 @@
  */
 package org.instancio.generator.util;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
@@ -96,7 +96,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
-    public Map<K, V> generate(final RandomProvider random) {
+    public Map<K, V> generate(final Random random) {
         try {
             return random.diceRoll(nullable) ? null : (Map<K, V>) type.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {

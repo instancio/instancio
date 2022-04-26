@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.util;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -49,7 +49,7 @@ class MapGeneratorTest {
             .set(Keys.MAP_KEYS_NULLABLE, true)
             .set(Keys.MAP_VALUES_NULLABLE, true);
 
-    private static final RandomProvider random = new RandomProviderImpl();
+    private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
     private final MapGenerator<?, ?> generator = new MapGenerator<>(context);
 

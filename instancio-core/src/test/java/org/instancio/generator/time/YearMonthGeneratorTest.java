@@ -15,10 +15,10 @@
  */
 package org.instancio.generator.time;
 
+import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class YearMonthGeneratorTest {
 
     private static final Settings settings = Settings.create();
-    private static final RandomProvider random = new RandomProviderImpl();
+    private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     private final YearMonthGenerator generator = new YearMonthGenerator(context);

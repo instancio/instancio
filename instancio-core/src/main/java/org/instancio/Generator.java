@@ -22,7 +22,6 @@ import org.instancio.generator.array.ArrayGeneratorSpec;
 import org.instancio.generator.util.CollectionGeneratorSpec;
 import org.instancio.generator.util.MapGeneratorSpec;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.TypeUtils;
 
 import java.util.Collection;
@@ -41,14 +40,14 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * Returns a generated value.
      * <p>
      * If the generated value is random, it needs to be generated using the given
-     * {@link RandomProvider} instance. This ensures the data is generated with
+     * {@link Random} instance. This ensures the data is generated with
      * the same seed value and allows random data to be reproduced by specifying
      * the seed value.
      *
      * @param random provider for random values
      * @return generated value
      */
-    T generate(RandomProvider random);
+    T generate(Random random);
 
     /**
      * If {@code true}, then this generator delegate object instantiation

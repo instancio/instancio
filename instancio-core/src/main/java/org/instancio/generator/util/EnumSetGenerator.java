@@ -16,7 +16,7 @@
 package org.instancio.generator.util;
 
 import org.instancio.Generator;
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.Random;
 
 import java.util.EnumSet;
 
@@ -29,7 +29,7 @@ public class EnumSetGenerator<E extends Enum<E>> implements Generator<EnumSet<E>
     }
 
     @Override
-    public EnumSet<E> generate(final RandomProvider random) {
+    public EnumSet<E> generate(final Random random) {
         return EnumSet.noneOf(enumClass);
     }
 

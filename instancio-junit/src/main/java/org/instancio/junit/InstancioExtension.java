@@ -15,7 +15,7 @@
  */
 package org.instancio.junit;
 
-import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -67,7 +67,7 @@ import java.util.Optional;
 public class InstancioExtension implements BeforeEachCallback, AfterEachCallback, AfterTestExecutionCallback {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstancioExtension.class);
-    private final ThreadLocalRandomProvider threadLocalRandomProvider;
+    private final ThreadLocalRandom threadLocalRandom;
     private final ThreadLocalSettings threadLocalSettings;
 
     /**
@@ -75,27 +75,27 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
      */
     @SuppressWarnings("unused")
     public InstancioExtension() {
-        threadLocalRandomProvider = ThreadLocalRandomProvider.getInstance();
+        threadLocalRandom = ThreadLocalRandom.getInstance();
         threadLocalSettings = ThreadLocalSettings.getInstance();
     }
 
     // Constructor used by unit test only
     @SuppressWarnings("unused")
-    InstancioExtension(final ThreadLocalRandomProvider threadLocalRandomProvider,
+    InstancioExtension(final ThreadLocalRandom threadLocalRandom,
                        final ThreadLocalSettings threadLocalSettings) {
-        this.threadLocalRandomProvider = threadLocalRandomProvider;
+        this.threadLocalRandom = threadLocalRandom;
         this.threadLocalSettings = threadLocalSettings;
     }
 
     @Override
     public void beforeEach(final ExtensionContext context) {
         ExtensionSupport.processWithSettingsAnnotation(context, threadLocalSettings);
-        ExtensionSupport.processSeedAnnotation(context, threadLocalRandomProvider);
+        ExtensionSupport.processSeedAnnotation(context, threadLocalRandom);
     }
 
     @Override
     public void afterEach(final ExtensionContext context) {
-        threadLocalRandomProvider.remove();
+        threadLocalRandom.remove();
         threadLocalSettings.remove();
     }
 
@@ -107,7 +107,7 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
                 return;
             }
 
-            final int seed = threadLocalRandomProvider.get().getSeed();
+            final int seed = threadLocalRandom.get().getSeed();
             final String msg = String.format("Test method '%s' failed with seed: %d%n",
                     testMethod.get().getName(), seed);
 

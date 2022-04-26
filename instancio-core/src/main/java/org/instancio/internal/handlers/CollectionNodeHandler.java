@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.handlers;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.generator.util.EnumSetGenerator;
@@ -22,7 +23,6 @@ import org.instancio.internal.CallbackHandler;
 import org.instancio.internal.ModelContext;
 import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -75,11 +75,11 @@ public class CollectionNodeHandler implements NodeHandler {
         final int enumSetSize = Math.min(randomSize(), enumValues.length);
         final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(enumSetSize).build();
         final EnumSetGenerator<?> generator = new EnumSetGenerator<>(enumClass);
-        return Optional.of(GeneratorResult.create(generator.generate(context.getRandomProvider()), hints));
+        return Optional.of(GeneratorResult.create(generator.generate(context.getRandom()), hints));
     }
 
     private int randomSize() {
-        final RandomProvider random = context.getRandomProvider();
+        final Random random = context.getRandom();
         final Settings settings = context.getSettings();
         return random.intRange(settings.get(Keys.COLLECTION_MIN_SIZE), settings.get(Keys.COLLECTION_MAX_SIZE));
     }

@@ -15,11 +15,11 @@
  */
 package org.instancio.util;
 
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.Random;
 
 public class ArrayUtils {
 
-    public static void shuffle(final Object arr, final RandomProvider random) {
+    public static void shuffle(final Object arr, final Random random) {
         if (arr instanceof Object[]) {
             shuffleArray((Object[]) arr, random);
         } else if (arr instanceof byte[]) {
@@ -43,7 +43,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(Object[] arr, RandomProvider random) {
+    private static void shuffleArray(Object[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             Object tmp = arr[i];
@@ -52,7 +52,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(byte[] arr, RandomProvider random) {
+    private static void shuffleArray(byte[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             byte tmp = arr[i];
@@ -61,7 +61,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(short[] arr, RandomProvider random) {
+    private static void shuffleArray(short[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             short tmp = arr[i];
@@ -70,7 +70,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(int[] arr, RandomProvider random) {
+    private static void shuffleArray(int[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             int tmp = arr[i];
@@ -79,7 +79,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(long[] arr, RandomProvider random) {
+    private static void shuffleArray(long[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             long tmp = arr[i];
@@ -88,7 +88,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(float[] arr, RandomProvider random) {
+    private static void shuffleArray(float[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             float tmp = arr[i];
@@ -97,7 +97,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(double[] arr, RandomProvider random) {
+    private static void shuffleArray(double[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             double tmp = arr[i];
@@ -106,7 +106,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(char[] arr, RandomProvider random) {
+    private static void shuffleArray(char[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             char tmp = arr[i];
@@ -115,7 +115,7 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(boolean[] arr, RandomProvider random) {
+    private static void shuffleArray(boolean[] arr, Random random) {
         for (int i = 0; i < arr.length; i++) {
             int r = random.intRange(0, i + 1);
             boolean tmp = arr[i];

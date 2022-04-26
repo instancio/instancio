@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.array;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -44,7 +44,7 @@ class ArrayGeneratorTest {
             .set(Keys.ARRAY_ELEMENTS_NULLABLE, true)
             .lock();
 
-    private static final RandomProvider random = new RandomProviderImpl();
+    private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     @Test

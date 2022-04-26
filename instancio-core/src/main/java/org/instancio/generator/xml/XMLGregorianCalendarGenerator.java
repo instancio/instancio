@@ -16,10 +16,10 @@
 package org.instancio.generator.xml;
 
 import org.instancio.Generator;
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.time.LocalDateTimeGenerator;
-import org.instancio.internal.random.RandomProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregoria
     }
 
     @Override
-    public XMLGregorianCalendar generate(final RandomProvider random) {
+    public XMLGregorianCalendar generate(final Random random) {
         LocalDateTime localDateTime = localDateTimeGenerator.generate(random);
         try {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(

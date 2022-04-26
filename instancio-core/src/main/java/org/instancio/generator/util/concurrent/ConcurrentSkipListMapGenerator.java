@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.util.concurrent;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.util.MapGenerator;
-import org.instancio.internal.random.RandomProvider;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -30,7 +30,7 @@ public class ConcurrentSkipListMapGenerator<K, V> extends MapGenerator<K, V> {
 
     @Override
     @SuppressWarnings("SortedCollectionWithNonComparableKeys")
-    public Map<K, V> generate(final RandomProvider random) {
+    public Map<K, V> generate(final Random random) {
         return random.diceRoll(nullable) ? null : new ConcurrentSkipListMap<>();
     }
 }

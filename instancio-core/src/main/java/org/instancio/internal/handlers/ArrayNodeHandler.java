@@ -45,7 +45,7 @@ public class ArrayNodeHandler implements NodeHandler {
             final Generator<?> generator = generatorResolver.get(node.getTargetClass()).orElseThrow(
                     () -> new IllegalStateException("Unable to get array generator for node: " + node));
 
-            final Object arrayObject = generator.generate(context.getRandomProvider());
+            final Object arrayObject = generator.generate(context.getRandom());
             final GeneratorResult result = GeneratorResult.create(arrayObject, generator.getHints());
             callbackHandler.addResult(node, result);
             return Optional.of(result);

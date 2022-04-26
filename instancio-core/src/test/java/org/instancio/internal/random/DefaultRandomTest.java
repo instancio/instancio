@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Percentage.withPercentage;
 
 @NonDeterministicTag
-class RandomProviderImplTest {
+class DefaultRandomTest {
     private static final int SAMPLE_SIZE = 50_000;
     private static final int PERCENTAGE_THRESHOLD = 20;
     private static final Pattern UPPER_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[A-Z]*$");
@@ -45,7 +45,7 @@ class RandomProviderImplTest {
     private static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile("^[a-zA-Z0-9]*$");
     private static final Pattern DIGITS_PATTERN = Pattern.compile("^[0-9]*$");
 
-    private final RandomProviderImpl random = new RandomProviderImpl();
+    private final DefaultRandom random = new DefaultRandom();
     private Set<Object> results;
 
     @BeforeEach

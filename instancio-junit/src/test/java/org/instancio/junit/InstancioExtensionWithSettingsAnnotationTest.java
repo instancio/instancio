@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +38,7 @@ class InstancioExtensionWithSettingsAnnotationTest {
                 .testEvents()
                 .assertStatistics(stats -> stats.succeeded(2));
 
-        assertThat(ThreadLocalRandomProvider.getInstance().get())
+        assertThat(ThreadLocalRandom.getInstance().get())
                 .as("Expected thread local Settings to be removed after the test is done")
                 .isNull();
     }

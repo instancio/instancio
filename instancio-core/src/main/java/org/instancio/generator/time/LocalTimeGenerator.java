@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.time;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 
 import java.time.LocalTime;
 
@@ -45,7 +45,7 @@ public class LocalTimeGenerator extends AbstractTemporalGenerator<LocalTime> {
     }
 
     @Override
-    public LocalTime generate(final RandomProvider random) {
+    public LocalTime generate(final Random random) {
         return LocalTime.ofNanoOfDay(random.longRange(
                 min.toNanoOfDay(),
                 max.toNanoOfDay()));

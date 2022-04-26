@@ -17,6 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.Generator;
 import org.instancio.Generators;
+import org.instancio.Random;
 import org.instancio.Select;
 import org.instancio.SelectorGroup;
 import org.instancio.exception.InstancioApiException;
@@ -24,7 +25,6 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGeneratorSpec;
 import org.instancio.generator.lang.StringGeneratorSpec;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
@@ -154,7 +154,7 @@ class ModelContextTest {
 
     @Test
     void withGeneratorSpecs() {
-        final GeneratorContext genContext = new GeneratorContext(Settings.defaults(), mock(RandomProvider.class));
+        final GeneratorContext genContext = new GeneratorContext(Settings.defaults(), mock(Random.class));
         final Generators generators = new Generators(genContext);
 
         final ArrayGeneratorSpec<Object> petsSpec = generators.array().type(Pet[].class).length(3);

@@ -15,10 +15,10 @@
  */
 package org.instancio.generator.util;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 
 import java.util.Collection;
 
@@ -37,7 +37,7 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
     }
 
     @Override
-    public T generate(final RandomProvider random) {
+    public T generate(final Random random) {
         return random.oneOf(values);
     }
 }

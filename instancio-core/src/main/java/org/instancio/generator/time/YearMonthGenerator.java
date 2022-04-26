@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.time;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 
 import java.time.YearMonth;
 
@@ -45,7 +45,7 @@ public class YearMonthGenerator extends AbstractTemporalGenerator<YearMonth> {
     }
 
     @Override
-    public YearMonth generate(final RandomProvider random) {
+    public YearMonth generate(final Random random) {
         int minMonth = min.getYear() * 12 + min.getMonthValue();
         int maxMonth = max.getYear() * 12 + max.getMonthValue();
         int result = random.intRange(minMonth, maxMonth);

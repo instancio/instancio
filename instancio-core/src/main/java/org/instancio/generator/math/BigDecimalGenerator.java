@@ -15,10 +15,10 @@
  */
 package org.instancio.generator.math;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
 import org.instancio.generator.lang.NumberGeneratorSpec;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 import java.math.BigDecimal;
@@ -57,7 +57,7 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
-    protected BigDecimal generateNonNullValue(final RandomProvider random) {
+    protected BigDecimal generateNonNullValue(final Random random) {
         return BigDecimal.valueOf(random.doubleRange(min.doubleValue(), max.doubleValue()));
     }
 }

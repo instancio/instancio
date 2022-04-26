@@ -15,8 +15,8 @@
  */
 package org.instancio.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 
 public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<Short> {
@@ -29,7 +29,7 @@ public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     }
 
     @Override
-    protected Short generateNonNullValue(final RandomProvider random) {
+    protected Short generateNonNullValue(final Random random) {
         return random.shortRange(min, max);
     }
 }

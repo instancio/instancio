@@ -106,7 +106,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             GeneratorResult elementResult = optResult.get();
             final Object elementValue;
 
-            if (context.getRandomProvider().diceRoll(nullableElement)) {
+            if (context.getRandom().diceRoll(nullableElement)) {
                 elementValue = null;
             } else {
                 elementValue = elementResult.getValue();
@@ -151,7 +151,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             GeneratorResult keyResult = null;
             GeneratorResult valueResult = null;
 
-            if (context.getRandomProvider().diceRoll(nullableKey)) {
+            if (context.getRandom().diceRoll(nullableKey)) {
                 mapKey = null;
             } else {
                 final Optional<GeneratorResult> keyResultOpt = generatorFacade.generateNodeValue(keyNode, mapObj);
@@ -165,7 +165,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             }
 
             final Object mapValue;
-            if (context.getRandomProvider().diceRoll(nullableValue)) {
+            if (context.getRandom().diceRoll(nullableValue)) {
                 mapValue = null;
             } else {
                 final Optional<GeneratorResult> valueResultOpt = generatorFacade.generateNodeValue(valueNode, mapObj);
@@ -210,7 +210,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         int index = 0;
         for (int len = Array.getLength(arrayObj) - withElements.size(); index < len; index++) {
             final boolean isNullableElement = generatorResult.getHints().nullableElements();
-            if (context.getRandomProvider().diceRoll(isNullableElement)) {
+            if (context.getRandom().diceRoll(isNullableElement)) {
                 continue;
             }
 
@@ -228,7 +228,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             for (int j = 0; j < withElements.size(); j++) {
                 Array.set(arrayObj, j + index, withElements.get(j));
             }
-            ArrayUtils.shuffle(arrayObj, context.getRandomProvider());
+            ArrayUtils.shuffle(arrayObj, context.getRandom());
         }
     }
 

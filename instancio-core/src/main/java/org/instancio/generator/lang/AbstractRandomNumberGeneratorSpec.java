@@ -15,11 +15,11 @@
  */
 package org.instancio.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         extends AbstractGenerator<T> implements NumberGeneratorSpec<T> {
@@ -37,7 +37,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         this.nullable = nullable;
     }
 
-    protected abstract T generateNonNullValue(final RandomProvider random);
+    protected abstract T generateNonNullValue(final Random random);
 
     protected T getMin() {
         return min;
@@ -73,7 +73,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public final T generate(final RandomProvider random) {
+    public final T generate(final Random random) {
         return random.diceRoll(nullable) ? null : generateNonNullValue(random);
     }
 

@@ -15,11 +15,11 @@
  */
 package org.instancio.generator.array;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
@@ -111,7 +111,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     @Override
     @SuppressWarnings("unchecked")
-    public T generate(final RandomProvider random) {
+    public T generate(final Random random) {
         Verify.state(arrayType.isArray(), "Expected an array type: %s", arrayType);
 
         if (random.diceRoll(nullable)) {

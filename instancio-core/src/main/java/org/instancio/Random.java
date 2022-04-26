@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.random;
+package org.instancio;
 
 import java.util.Collection;
 
@@ -21,7 +21,7 @@ import java.util.Collection;
  * Provides methods for generating random values such as numbers,
  * booleans, characters, and strings.
  */
-public interface RandomProvider {
+public interface Random {
 
     /**
      * Returns the seed value used by the random number generator.

@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.math;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +29,7 @@ class BigIntegerGeneratorTest {
     private static final BigInteger MIN = BigInteger.ONE;
     private static final BigInteger MAX = BigInteger.valueOf(10_000L);
 
-    private final RandomProvider random = new RandomProviderImpl();
+    private final Random random = new DefaultRandom();
     private final GeneratorContext context = new GeneratorContext(Settings.defaults(), random);
     private final BigIntegerGeneratorExt generator = new BigIntegerGeneratorExt(context, MIN, MAX, false);
 

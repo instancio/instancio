@@ -15,10 +15,10 @@
  */
 package org.instancio.generator.array;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 
 public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArrayGeneratorSpec<T> {
 
@@ -35,7 +35,7 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     }
 
     @Override
-    public T generate(final RandomProvider random) {
+    public T generate(final Random random) {
         return random.oneOf(values);
     }
 }
