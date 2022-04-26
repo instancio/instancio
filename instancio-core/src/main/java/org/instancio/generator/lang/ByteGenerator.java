@@ -15,8 +15,8 @@
  */
 package org.instancio.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 
 public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<Byte> {
@@ -29,7 +29,7 @@ public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<B
     }
 
     @Override
-    protected Byte generateNonNullValue(final RandomProvider random) {
+    protected Byte generateNonNullValue(final Random random) {
         return random.byteRange(min, max);
     }
 }

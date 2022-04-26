@@ -15,24 +15,24 @@
  */
 package org.instancio.generator;
 
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.Random;
 import org.instancio.settings.Settings;
 
 public class GeneratorContext {
 
     private final Settings settings;
-    private final RandomProvider randomProvider;
+    private final Random random;
 
-    public GeneratorContext(final Settings settings, final RandomProvider randomProvider) {
+    public GeneratorContext(final Settings settings, final Random random) {
         this.settings = settings;
-        this.randomProvider = randomProvider;
+        this.random = random;
     }
 
     public Settings getSettings() {
         return settings;
     }
 
-    public RandomProvider random() {
-        return randomProvider;
+    public Random random() {
+        return random;
     }
 }

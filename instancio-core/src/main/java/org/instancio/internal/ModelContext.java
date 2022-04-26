@@ -18,14 +18,14 @@ package org.instancio.internal;
 import org.instancio.Generator;
 import org.instancio.Generators;
 import org.instancio.OnCompleteCallback;
+import org.instancio.Random;
 import org.instancio.Selector;
 import org.instancio.Selector.SelectorType;
 import org.instancio.SelectorGroup;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGenerator;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.PropertiesLoader;
 import org.instancio.settings.Settings;
 import org.instancio.util.ObjectUtils;
@@ -75,7 +75,7 @@ public class ModelContext<T> {
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final Settings settings;
     private final Integer seed;
-    private final RandomProvider randomProvider;
+    private final Random random;
     private final Set<SelectorGroup> ignoredSelectorGroups;
     private final Set<SelectorGroup> nullableSelectorGroups;
     private final Map<SelectorGroup, Class<?>> subtypeSelectors;
@@ -115,8 +115,8 @@ public class ModelContext<T> {
                 .lock();
 
         this.seed = builder.seed;
-        this.randomProvider = resolveRandomProvider(seed);
-        this.generators = new Generators(new GeneratorContext(settings, randomProvider));
+        this.random = resolveRandom(seed);
+        this.generators = new Generators(new GeneratorContext(settings, random));
 
         builder.onCompleteCallbacks.forEach(this::putCallbackSelectors);
         builder.generatorSpecSelectors.forEach(this::putGeneratorSelectors);
@@ -142,14 +142,14 @@ public class ModelContext<T> {
         });
     }
 
-    private static RandomProvider resolveRandomProvider(@Nullable final Integer userSuppliedSeed) {
+    private static Random resolveRandom(@Nullable final Integer userSuppliedSeed) {
         if (userSuppliedSeed != null) {
-            return new RandomProviderImpl(userSuppliedSeed);
+            return new DefaultRandom(userSuppliedSeed);
         }
         // If running under JUnit extension, use the provider supplied by the extension
         return ObjectUtils.defaultIfNull(
-                ThreadLocalRandomProvider.getInstance().get(),
-                () -> new RandomProviderImpl(SeedUtil.randomSeed()));
+                ThreadLocalRandom.getInstance().get(),
+                () -> new DefaultRandom(SeedUtil.randomSeed()));
     }
 
     private void putAllUserSuppliedGenerators(final Map<SelectorGroup, Generator<?>> generatorSelectors) {
@@ -298,8 +298,8 @@ public class ModelContext<T> {
         return seed;
     }
 
-    public RandomProvider getRandomProvider() {
-        return randomProvider;
+    public Random getRandom() {
+        return random;
     }
 
     private static Map<TypeVariable<?>, Class<?>> buildRootTypeMap(

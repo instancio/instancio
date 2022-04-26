@@ -16,7 +16,7 @@
 package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Nested;
 
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class NumberGeneratorSpecTest {
-    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new RandomProviderImpl());
+    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
 
     @Nested
     class ByteGeneratorTest extends NumberGeneratorSpecTestTemplate<Byte> {

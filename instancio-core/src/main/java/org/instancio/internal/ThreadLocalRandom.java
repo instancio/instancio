@@ -15,31 +15,31 @@
  */
 package org.instancio.internal;
 
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.Random;
 
-public class ThreadLocalRandomProvider {
+public class ThreadLocalRandom {
 
-    private static final ThreadLocalRandomProvider INSTANCE = new ThreadLocalRandomProvider();
+    private static final ThreadLocalRandom INSTANCE = new ThreadLocalRandom();
 
-    private static final ThreadLocal<RandomProvider> randomProvider = new ThreadLocal<>();
+    private static final ThreadLocal<Random> random = new ThreadLocal<>();
 
-    private ThreadLocalRandomProvider() {
+    private ThreadLocalRandom() {
         // non-instantiable
     }
 
-    public RandomProvider get() {
-        return randomProvider.get();
+    public Random get() {
+        return random.get();
     }
 
     public void remove() {
-        randomProvider.remove();
+        random.remove();
     }
 
-    public void set(final RandomProvider provider) {
-        randomProvider.set(provider);
+    public void set(final Random provider) {
+        random.set(provider);
     }
 
-    public static ThreadLocalRandomProvider getInstance() {
+    public static ThreadLocalRandom getInstance() {
         return INSTANCE;
     }
 }

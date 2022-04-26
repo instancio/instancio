@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.text;
 
+import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -32,7 +32,7 @@ class TextPatternGeneratorTest {
             + "%n\t#d - digit [0-9]"
             + "%n\t## - hash symbol escape%n");
 
-    private static final RandomProvider random = new RandomProviderImpl();
+    private static final Random random = new DefaultRandom();
 
     @ValueSource(strings = {"", " \n \t \r\n ", "abc", "123", "a1b2", "`~!@$%^&*()_-+={[}]|\\:;\"'<,>.?/"})
     @ParameterizedTest

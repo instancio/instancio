@@ -16,7 +16,7 @@
 package org.instancio.generator.lang;
 
 import org.instancio.Generator;
-import org.instancio.internal.random.RandomProvider;
+import org.instancio.Random;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
@@ -28,7 +28,7 @@ public class EnumGenerator<E extends Enum<E>> implements Generator<E> {
     }
 
     @Override
-    public E generate(final RandomProvider random) {
+    public E generate(final Random random) {
         final E[] enumValues = ReflectionUtils.getEnumValues(enumClass);
         return random.oneOf(enumValues);
     }

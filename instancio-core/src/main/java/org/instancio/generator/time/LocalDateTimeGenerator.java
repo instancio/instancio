@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.time;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -61,7 +61,7 @@ public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateT
     }
 
     @Override
-    public LocalDateTime generate(final RandomProvider random) {
+    public LocalDateTime generate(final Random random) {
         final Instant instant = Instant.ofEpochMilli(random.longRange(
                 min.toInstant(UTC).toEpochMilli(),
                 max.toInstant(UTC).toEpochMilli()));

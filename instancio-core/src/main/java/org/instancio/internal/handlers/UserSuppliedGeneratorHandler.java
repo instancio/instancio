@@ -52,7 +52,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     public Optional<GeneratorResult> getResult(final Node node) {
         return getUserSuppliedGenerator(node).map(g -> {
             ApiValidator.validateGeneratorUsage(node, g);
-            return GeneratorResult.create(g.generate(modelContext.getRandomProvider()), g.getHints());
+            return GeneratorResult.create(g.generate(modelContext.getRandom()), g.getHints());
         });
     }
 

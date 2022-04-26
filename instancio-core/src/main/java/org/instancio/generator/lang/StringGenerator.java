@@ -15,11 +15,11 @@
  */
 package org.instancio.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.util.Constants;
@@ -114,7 +114,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
-    public String generate(final RandomProvider random) {
+    public String generate(final Random random) {
         if (random.diceRoll(nullable)) {
             return null;
         }
@@ -126,7 +126,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         return prefix + generateString(random, length);
     }
 
-    private String generateString(final RandomProvider random, final int length) {
+    private String generateString(final Random random, final int length) {
         if (stringType == null || stringType == StringType.UPPER_CASE) {
             return random.upperCaseAlphabetic(length);
         }

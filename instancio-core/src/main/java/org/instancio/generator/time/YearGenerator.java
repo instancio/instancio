@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.time;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 
 import java.time.Year;
 
@@ -45,7 +45,7 @@ public class YearGenerator extends AbstractTemporalGenerator<Year> {
     }
 
     @Override
-    public Year generate(final RandomProvider random) {
+    public Year generate(final Random random) {
         return Year.of(random.intRange(min.getValue(), max.getValue()));
     }
 }

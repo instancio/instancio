@@ -16,9 +16,9 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.Random;
+import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
@@ -42,19 +42,19 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
 
     @Override
     public Stream<? extends Arguments> provideArguments(final ExtensionContext context) {
-        final ThreadLocalRandomProvider threadLocalRandomProvider = ThreadLocalRandomProvider.getInstance();
+        final ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.getInstance();
         final ThreadLocalSettings threadLocalSettings = ThreadLocalSettings.getInstance();
 
-        ExtensionSupport.processSeedAnnotation(context, threadLocalRandomProvider);
+        ExtensionSupport.processSeedAnnotation(context, threadLocalRandom);
         ExtensionSupport.processWithSettingsAnnotation(context, threadLocalSettings);
 
-        final RandomProvider randomProvider = threadLocalRandomProvider.get();
+        final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
 
         final Object[] args = Arrays.stream(instancioSource.value())
                 .map(it -> Instancio.of(it)
                         .withSettings(settings)
-                        .withSeed(randomProvider.getSeed())
+                        .withSeed(random.getSeed())
                         .create())
                 .toArray();
 

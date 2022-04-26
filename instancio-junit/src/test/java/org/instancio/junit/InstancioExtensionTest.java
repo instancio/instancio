@@ -15,11 +15,11 @@
  */
 package org.instancio.junit;
 
+import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.ThreadLocalRandomProvider;
+import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ class InstancioExtensionTest {
     private static final Settings SETTINGS = Settings.defaults();
 
     @Mock
-    private ThreadLocalRandomProvider threadLocalRandomProvider;
+    private ThreadLocalRandom threadLocalRandom;
 
     @Mock
     private ThreadLocalSettings threadLocalSettings;
@@ -62,7 +62,7 @@ class InstancioExtensionTest {
     private ExtensionContext context;
 
     @Captor
-    private ArgumentCaptor<RandomProvider> randomProviderCaptor;
+    private ArgumentCaptor<Random> randomCaptor;
 
     @Captor
     private ArgumentCaptor<Settings> settingsCaptor;
@@ -79,8 +79,8 @@ class InstancioExtensionTest {
         // Method under test
         extension.beforeEach(context);
 
-        verify(threadLocalRandomProvider).set(randomProviderCaptor.capture());
-        assertThat(randomProviderCaptor.getValue().getSeed()).isEqualTo(SEED_ANNOTATION_VALUE);
+        verify(threadLocalRandom).set(randomCaptor.capture());
+        assertThat(randomCaptor.getValue().getSeed()).isEqualTo(SEED_ANNOTATION_VALUE);
     }
 
     @Test
@@ -144,15 +144,15 @@ class InstancioExtensionTest {
         // Method under test
         extension.beforeEach(context);
 
-        verify(threadLocalRandomProvider).set(randomProviderCaptor.capture());
-        assertThat(randomProviderCaptor.getValue().getSeed()).isNotEqualTo(SEED_ANNOTATION_VALUE);
+        verify(threadLocalRandom).set(randomCaptor.capture());
+        assertThat(randomCaptor.getValue().getSeed()).isNotEqualTo(SEED_ANNOTATION_VALUE);
     }
 
     @Test
     @DisplayName("Thread locals should be cleared after each test method")
     void afterEach() {
         extension.afterEach(context);
-        verify(threadLocalRandomProvider).remove();
+        verify(threadLocalRandom).remove();
         verify(threadLocalSettings).remove();
     }
 
@@ -164,7 +164,7 @@ class InstancioExtensionTest {
 
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
         when(context.getTestMethod()).thenReturn(Optional.of(method));
-        when(threadLocalRandomProvider.get()).thenReturn(new RandomProviderImpl(expectedSeed));
+        when(threadLocalRandom.get()).thenReturn(new DefaultRandom(expectedSeed));
 
         // Method under test
         extension.afterTestExecution(context);
@@ -182,7 +182,7 @@ class InstancioExtensionTest {
         extension.afterTestExecution(context);
 
         verifyNoMoreInteractions(context);
-        verifyNoInteractions(threadLocalRandomProvider);
+        verifyNoInteractions(threadLocalRandom);
         verifyNoInteractions(threadLocalSettings);
     }
 

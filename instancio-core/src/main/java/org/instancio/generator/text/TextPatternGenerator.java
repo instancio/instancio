@@ -16,8 +16,8 @@
 package org.instancio.generator.text;
 
 import org.instancio.Generator;
+import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.util.Verify;
 
 public class TextPatternGenerator implements Generator<String> {
@@ -38,7 +38,7 @@ public class TextPatternGenerator implements Generator<String> {
     }
 
     @Override
-    public String generate(final RandomProvider random) {
+    public String generate(final Random random) {
         final StringBuilder res = new StringBuilder(pattern.length());
         final char[] p = pattern.toCharArray();
 

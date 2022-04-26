@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
@@ -35,7 +35,7 @@ public class StringBuilderGenerator extends AbstractGenerator<StringBuilder> {
     }
 
     @Override
-    public StringBuilder generate(final RandomProvider random) {
+    public StringBuilder generate(final Random random) {
         final int length = random.intRange(minLength, maxLength + 1);
         return new StringBuilder(random.upperCaseAlphabetic(length));
     }

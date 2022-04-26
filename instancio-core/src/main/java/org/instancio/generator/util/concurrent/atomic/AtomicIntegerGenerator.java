@@ -15,10 +15,10 @@
  */
 package org.instancio.generator.util.concurrent.atomic;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.generator.lang.NumberGeneratorSpec;
-import org.instancio.internal.random.RandomProvider;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -36,7 +36,7 @@ public class AtomicIntegerGenerator extends AbstractRandomNumberGeneratorSpec<At
     }
 
     @Override
-    protected AtomicInteger generateNonNullValue(final RandomProvider random) {
+    protected AtomicInteger generateNonNullValue(final Random random) {
         return new AtomicInteger(random.intRange(min.intValue(), max.intValue()));
     }
 }

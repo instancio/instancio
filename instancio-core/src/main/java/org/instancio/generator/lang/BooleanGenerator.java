@@ -15,10 +15,10 @@
  */
 package org.instancio.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 
 public class BooleanGenerator extends AbstractGenerator<Boolean> {
@@ -31,7 +31,7 @@ public class BooleanGenerator extends AbstractGenerator<Boolean> {
     }
 
     @Override
-    public Boolean generate(final RandomProvider random) {
+    public Boolean generate(final Random random) {
         return random.diceRoll(nullable) ? null : random.trueOrFalse();
     }
 

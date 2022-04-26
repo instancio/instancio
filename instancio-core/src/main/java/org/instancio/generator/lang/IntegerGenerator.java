@@ -15,8 +15,8 @@
  */
 package org.instancio.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 
 public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpec<Integer> {
@@ -29,7 +29,7 @@ public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpe
     }
 
     @Override
-    protected Integer generateNonNullValue(final RandomProvider random) {
+    protected Integer generateNonNullValue(final Random random) {
         return random.intRange(min, max);
     }
 

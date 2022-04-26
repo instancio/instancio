@@ -15,11 +15,11 @@
  */
 package org.instancio.generator.util;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.settings.Keys;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
@@ -103,7 +103,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
-    public Collection<T> generate(final RandomProvider random) {
+    public Collection<T> generate(final Random random) {
         try {
             return random.diceRoll(nullable) ? null : (Collection<T>) type.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {

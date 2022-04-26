@@ -15,8 +15,8 @@
  */
 package org.instancio.generator.util;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public class HashSetGenerator<T> extends CollectionGenerator<T> {
     }
 
     @Override
-    public Collection<T> generate(final RandomProvider random) {
+    public Collection<T> generate(final Random random) {
         return random.diceRoll(nullable) ? null : new HashSet<>();
     }
 }

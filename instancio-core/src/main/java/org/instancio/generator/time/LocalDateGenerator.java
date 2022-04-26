@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.time;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.random.RandomProvider;
 
 import java.time.LocalDate;
 
@@ -48,7 +48,7 @@ public class LocalDateGenerator extends AbstractTemporalGenerator<LocalDate> {
     }
 
     @Override
-    public LocalDate generate(final RandomProvider random) {
+    public LocalDate generate(final Random random) {
         return LocalDate.ofEpochDay(random.longRange(
                 min.getLong(EPOCH_DAY),
                 max.getLong(EPOCH_DAY)));

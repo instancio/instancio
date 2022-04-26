@@ -15,33 +15,33 @@
  */
 package org.instancio.internal;
 
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.Random;
+import org.instancio.internal.random.DefaultRandom;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ThreadLocalRandomProviderTest {
+class ThreadLocalRandomTest {
 
     @Test
     @Order(1)
     void get() {
-        assertThat(ThreadLocalRandomProvider.getInstance().get()).isNull();
+        assertThat(ThreadLocalRandom.getInstance().get()).isNull();
     }
 
     @Test
     @Order(2)
     void set() {
-        final RandomProvider provider = new RandomProviderImpl();
-        ThreadLocalRandomProvider.getInstance().set(provider);
-        assertThat(ThreadLocalRandomProvider.getInstance().get()).isSameAs(provider);
+        final Random provider = new DefaultRandom();
+        ThreadLocalRandom.getInstance().set(provider);
+        assertThat(ThreadLocalRandom.getInstance().get()).isSameAs(provider);
     }
 
     @Test
     @Order(3)
     void remove() {
-        ThreadLocalRandomProvider.getInstance().remove();
-        assertThat(ThreadLocalRandomProvider.getInstance().get()).isNull();
+        ThreadLocalRandom.getInstance().remove();
+        assertThat(ThreadLocalRandom.getInstance().get()).isNull();
     }
 }

@@ -15,13 +15,13 @@
  */
 package org.instancio.internal.handlers;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.CallbackHandler;
 import org.instancio.internal.ModelContext;
 import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -56,7 +56,7 @@ public class MapNodeHandler implements NodeHandler {
     }
 
     private int randomSize() {
-        final RandomProvider random = context.getRandomProvider();
+        final Random random = context.getRandom();
         final Settings settings = context.getSettings();
         return random.intRange(settings.get(Keys.MAP_MIN_SIZE), settings.get(Keys.MAP_MAX_SIZE));
     }

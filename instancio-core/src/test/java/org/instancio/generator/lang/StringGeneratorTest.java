@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
-import org.instancio.internal.random.RandomProviderImpl;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -40,7 +40,7 @@ class StringGeneratorTest {
             .set(Keys.STRING_ALLOW_EMPTY, true)
             .set(Keys.STRING_NULLABLE, true);
 
-    private static final RandomProvider random = new RandomProviderImpl();
+    private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
     private final StringGenerator generator = new StringGenerator(context);
 

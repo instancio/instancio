@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
@@ -28,7 +29,6 @@ import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.nodes.ClassNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.internal.random.RandomProvider;
 import org.instancio.internal.reflection.ImplementationResolver;
 import org.instancio.internal.reflection.NoopImplementationResolver;
 import org.instancio.internal.reflection.instantiation.Instantiator;
@@ -47,12 +47,12 @@ class GeneratorFacade {
     private final AncestorTree ancestorTree = new AncestorTree();
     private final ImplementationResolver implementationResolver = new NoopImplementationResolver();
     private final ModelContext<?> context;
-    private final RandomProvider random;
+    private final Random random;
     private final NodeHandler[] nodeHandlers;
 
     public GeneratorFacade(final ModelContext<?> context, final CallbackHandler callbackHandler) {
         this.context = context;
-        this.random = context.getRandomProvider();
+        this.random = context.getRandom();
 
         final GeneratorContext generatorContext = new GeneratorContext(context.getSettings(), random);
         final GeneratorResolver generatorResolver = new GeneratorResolver(generatorContext);

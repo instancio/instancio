@@ -15,9 +15,9 @@
  */
 package org.instancio.generator.util;
 
+import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.RandomProvider;
 
 import java.util.UUID;
 
@@ -28,7 +28,7 @@ public class UUIDGenerator extends AbstractGenerator<UUID> {
     }
 
     @Override
-    public UUID generate(final RandomProvider random) {
+    public UUID generate(final Random random) {
         final byte[] randomBytes = new byte[16];
         for (int i = 0; i < randomBytes.length; i++) {
             randomBytes[i] = random.byteRange(Byte.MIN_VALUE, Byte.MAX_VALUE);
