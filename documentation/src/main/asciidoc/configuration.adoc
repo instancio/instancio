@@ -128,5 +128,5 @@ type.mapping.java.util.SortedMap=java.util.TreeMap
 
 <1> These keys specify whether Instancio can generate `null` values for array/collection elements and map keys and values.
 <2> The `nullable` property specifes whether Instancio can generate `null` values for a given type.
-<3> Properties prefixed with `type.mapping.` are used to specify default implementations for abstract types, or map types to subtypes in general.
+<3> Properties prefixed with `type.mapping` are used to specify default implementations for abstract types, or map types to subtypes in general.
 This is the same mechanism as <<subtype-mapping, Subtype Mapping>> but configured via properties.

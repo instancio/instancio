@@ -20,6 +20,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -41,14 +42,13 @@ class YearMonthGeneratorTest {
 
     private final YearMonthGenerator generator = new YearMonthGenerator(context);
 
-    @Test
+    @RepeatedTest(100)
     void past() {
         generator.past();
-
         assertThat(generator.generate(random).isBefore(YearMonth.now())).isTrue();
     }
 
-    @Test
+    @RepeatedTest(100)
     void future() {
         generator.future();
         assertThat(generator.generate(random).isAfter(YearMonth.now())).isTrue();

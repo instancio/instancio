@@ -91,6 +91,13 @@ public interface Random {
     char character();
 
     /**
+     * Returns a random alphanumeric character, {@code [a-z, A-Z, 0-9]}.
+     *
+     * @return an alphanumeric character
+     */
+    char alphanumericCharacter();
+
+    /**
      * Returns a random lower alphabetic character, {@code [a-z]}.
      *
      * @return random lower character
@@ -134,7 +141,7 @@ public interface Random {
      * @param length of a string to generate
      * @return random alphanumeric String with given length
      */
-    String alphaNumeric(int length);
+    String alphanumeric(int length);
 
     /**
      * Generates a random String comprised of digits {@code [0-9]}.

@@ -105,6 +105,11 @@ public class DefaultRandom implements Random {
         return (char) (intRange(0, 26) + 'A');
     }
 
+    @Override
+    public char alphanumericCharacter() {
+        return intRange(0, 3) == 1 ? digitChar() : character();
+    }
+
     private char digitChar() {
         return (char) (intRange(0, 10) + '0');
     }
@@ -140,14 +145,10 @@ public class DefaultRandom implements Random {
     }
 
     @Override
-    public String alphaNumeric(final int length) {
+    public String alphanumeric(final int length) {
         char[] s = new char[length];
         for (int i = 0; i < length; i++) {
-            if (intRange(0, 3) == 1) {
-                s[i] = digitChar();
-            } else {
-                s[i] = character();
-            }
+            s[i] = alphanumericCharacter();
         }
 
         return new String(s);

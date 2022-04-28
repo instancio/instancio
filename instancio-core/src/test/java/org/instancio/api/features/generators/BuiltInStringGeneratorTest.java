@@ -64,4 +64,16 @@ class BuiltInStringGeneratorTest {
         assertThat(person.getAddress().getCity()).isEqualTo(springfield);
         assertThat(person.getAddress().getCountry()).startsWith(PREFIX);
     }
+
+
+    @Test
+    @DisplayName("Customising one field should not affect other fields of the same type")
+    void onlySelectedElementShouldBeCustomised() {
+        final Person result = Instancio.of(Person.class)
+                .generate(field("name"), gen -> gen.string().maxLength(0))
+                .create();
+
+        assertThat(result.getName()).isEmpty();
+        assertThat(result.getAddress().getCity()).isNotBlank();
+    }
 }

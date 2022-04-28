@@ -46,10 +46,11 @@ public class YearMonthGenerator extends AbstractTemporalGenerator<YearMonth> {
 
     @Override
     public YearMonth generate(final Random random) {
-        int minMonth = min.getYear() * 12 + min.getMonthValue();
-        int maxMonth = max.getYear() * 12 + max.getMonthValue();
-        int result = random.intRange(minMonth, maxMonth);
-
-        return YearMonth.of(result / 12, result % 12 + 1);
+        final int minMonth = min.getYear() * 12 + min.getMonthValue() - 1;
+        final int maxMonth = max.getYear() * 12 + max.getMonthValue() - 1;
+        final int result = random.intRange(minMonth, maxMonth);
+        final int year = result / 12;
+        final int month = result - year * 12 + 1;
+        return YearMonth.of(year, month);
     }
 }
