@@ -33,7 +33,7 @@ This returns a fully-populated person, including nested objects and collections.
 - numbers greater than zero
 - collections/maps/arrays will have at least one element
 
-This page contains a few samples. Refer to the (User Guide)[https://www.instancio.org] for more information.
+This page contains a few samples. Refer to the [User Guide](https://www.instancio.org) for more information.
 
 
 # Try it out
