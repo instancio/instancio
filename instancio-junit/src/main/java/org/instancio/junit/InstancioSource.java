@@ -24,10 +24,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An {@link ArgumentsSource} that provides classes for Instancio to generate.
+ * Provides arguments for {@code @ParameterizedTest} methods.
+ * Supports multiple arguments. Each argument will be a fully-populated instance.
  * <p>
- * The generated objects will be provided as arguments to the annotated
- * {@link org.junit.jupiter.params.ParameterizedTest} method.
+ * Example:
+ * <pre class="code"><code class="java">
+ *
+ * &#064;ExtendWith(InstancioExtension.class)
+ * class ExampleTest {
+ *
+ *     &#064;ParameterizedTest
+ *     <b>&#064;InstancioSource(Person.class)</b>
+ *     void someTestMethod(Person person) {
+ *         // ... use supplied person
+ *     }
+ * }
+ * </code></pre>
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

@@ -19,10 +19,13 @@ import org.instancio.Instancio;
 import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.util.Sonar;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.platform.testkit.engine.EngineTestKit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +73,24 @@ class InstancioExtensionWithSettingsAnnotationTest {
                     .create();
 
             assertThat(result).isEqualTo(minOverride);
+        }
+    }
+
+    @Nested
+    class ParameterizedWithNonStaticSettingsFieldTest {
+
+        @WithSettings
+        private final Settings nonStaticSettings = Settings.create();
+
+        @ParameterizedTest
+        @InstancioSource(String.class)
+        @DisplayName("Expecting the test to fail without running")
+        @Disabled("Need to find a way to verify the error. JUnit's EngineTestKit swallows the exception.")
+        @SuppressWarnings(Sonar.ADD_ASSERTION)
+        void verify(final String any) {
+            // Expected:  the test method to fail before getting a chance to run.
+            // Exception: InstancioApiException
+            // Message:   "If @WithSettings is used with a @ParameterizedTest, the Settings field must be static."
         }
     }
 }

@@ -1,0 +1,74 @@
+[[getting-started]]
+== Getting Started
+
+Instancio requires Java 8 or higher.
+
+=== Instancio Modules
+
+Instancio consists of the following three modules that are available from https://search.maven.org/search?q=org.instancio[Maven Central].
+
+. `instancio-core` - the core library
+. `instancio-junit` - JUnit 5 integration
+. `instancio-processor` - annotation processor for generating metamodels
+
+Since `instancio-junit` has a transitive dependency on the core library, it is not necessary to import both.
+Importing only one would suffice.
+
+`instancio-processor` is only needed if you would like to generate <<metamodel,metamodels>> to avoid referencing fields by their names, refer to <<processor-build-config, processor configuration>>.
+
+`instancio-core` itself has only two dependencies:
+
+- `org.slf4j:slf4j-api`
+- `org.objenesis:objenesis`
+
+=== Importing Instancio
+
+*If you use JUnit 5, then use `instancio-junit`:*
+
+====
+.Maven:
+[source%nowrap,xml]
+----
+    <dependency>
+        <groupId>org.instancio</groupId>
+        <artifactId>instancio-junit</artifactId>
+        <version>${instancio.version}</version>
+        <scope>test</scope>
+    </dependency>
+----
+====
+
+====
+.Gradle:
+[source%nowrap,groovy]
+----
+dependencies {
+    testImplementation 'org.instancio:instancio-junit:$instancioVersion}'
+}
+----
+====
+
+*If you use JUnit 4, TestNG, or would like to use Instancio standalone, then use `instancio-core`:*
+
+====
+.Maven:
+[source%nowrap,xml]
+----
+    <dependency>
+        <groupId>org.instancio</groupId>
+        <artifactId>instancio-core</artifactId>
+        <version>${instancio.version}</version>
+        <scope>test</scope>
+    </dependency>
+----
+====
+
+====
+.Gradle:
+[source%nowrap,groovy]
+----
+dependencies {
+    testImplementation 'org.instancio:instancio-core:$instancioVersion}'
+}
+----
+====

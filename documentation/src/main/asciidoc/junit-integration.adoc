@@ -1,0 +1,210 @@
+[[junit-integration]]
+== JUnit Integration
+
+Instancio supports JUnit 5 via the {InstancioExtension} and can be used in combination with extensions from other testing frameworks.
+The extension adds a few useful features, such as
+
+- the ability to use {InstancioSource} with `@ParameterizedTest` methods,
+- injection of custom settings using {WithSettings},
+- and most importantly support for reproducing failed tests using the {Seed} annotation.
+
+[[reproducing-tests]]
+=== Reproducing Failed Tests
+
+Since using Instancio validates your code against random inputs on each test run, having the ability to reproduce a failed tests with previously generated data becomes a necessity.
+Instancio supports this use case by reporting the seed value of a failed test in the failure message using JUnit's `publishReportEntry` mechanism.
+
+==== Seed Lifecycle in a JUnit Test
+
+Instancio initialises a seed value before each test method.
+This seed value is used for creating all objects during the test method's execution, unless another seed is specified explicitly using the {withSeed} method.
+
+====
+.Seed Lifecycle in a JUnit Test
+[source%nowrap,java]
+----
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @Test
+    void example() {                                      // <1>
+
+        Person person1 = Instancio.create(Person.class);  // <2>
+
+        Person person2 = Instancio.of(Person.class)
+            .withSeed(123)                                // <3>
+            .create();
+
+        Person person3 = Instancio.create(Person.class);  // <4>
+
+    }                                                     // <5>
+}
+----
+====
+
+<1> Instancio initialises a random seed value, for example `8276`.
+<2> Uses seed value `8276`.
+<3> Uses the supplied seed value `123`.
+<4> Uses seed value `8276`.
+<5> Seed value `8276` goes out of scope.
+
+[NOTE]
+Even though `person1` and `person3` are created using the same seed value of `8276`, they are actually distinct objects, each containing different values.
+
+==== Test Failure Reporting
+
+When a test method fails, Instancio adds a message containing the seed value to the failed test's output.
+Using the following failing test as an example:
+
+====
+.Test failure example
+[source%nowrap,java]
+----
+@Test
+void verifyShippingAddress() {
+    Person person = Instancio.create(Person.class);
+
+    // Some method under test
+    Address address = shippingService.getShippingAddress(person);
+
+    // A failing assertion
+    assertThat(address).isEqualTo(person.getAddress());
+}
+----
+====
+
+The failed test output will include the following message:
+
+----
+Test method 'verifyShippingAddress' failed with seed: 8532
+----
+
+The failed test can be reproduced by using the seed reported in the failure message.
+This can be done by placing the {Seed} annotation on the test method:
+
+====
+.Reproducing a failed test
+[source%nowrap,java]
+----
+@Test
+@Seed(8532)   // <1>
+void verifyShippingAddress() {
+    // snip ... same test code as above
+}
+----
+====
+
+<1> Specifying the seed will reproduce previously generated values
+
+With the `@Seed` annotation in place, the data becomes effectively static.
+This allows the root cause to be established and fixed.
+Once the test is passing, the `@Seed` annotation can be removed so that new data will be generated on each subsequent test run.
+
+[[settings-injection]]
+=== Settings Injection
+
+The `InstancioExtension` also adds support for injecting {Settings} into a test class.
+The injected settings will be used by every test method within the class.
+This can be done using the {WithSettings} annotation.
+
+====
+.Injecting Settings into a test class
+[source%nowrap,java]
+----
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @WithSettings // <1>
+    private final Settings settings = Settings.create()
+        .set(Setting.COLLECTION_MIN_SIZE, 10);
+
+    @Test
+    void example() {
+        Person person = Instancio.create(Person.class);
+
+        assertThat(person.getPhoneNumbers())
+            .hasSizeGreaterThanOrEqualTo(10); // <2>
+    }
+}
+----
+====
+
+<1> Inject custom settings to be used by every test method within the class.
+<2> Every object will be created using the injected settings.
+
+[NOTE]
+There can be only one field annotated `@WithSettings` per test class.
+
+Instancio also supports overriding the injected settings using the `withSettings` method as shown below.
+The settings provided via the method take precedence over the injected settings (see <<settings-precedence, Settings Precedence>> for further information).
+
+====
+.Overriding injecting Settings
+[source%nowrap,java]
+----
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+        .set(Setting.COLLECTION_MIN_SIZE, 10);
+
+    @Test
+    void overrideInjectedSettings() {
+        Person person = Instancio.of(Person.class)
+            .withSettings(Settings.create()             // <1>
+                .set(Setting.COLLECTION_MAX_SIZE, 3))
+            .create();
+
+        assertThat(person.getPhoneNumbers())
+            .as("Injected settings can be overridden")
+            .hasSizeLessThanOrEqualTo(3);
+    }
+}
+----
+====
+
+<1> Settings passed in to the builder method take precedence over the injected settings.
+
+Instancio supports `@WithSettings` placed on static and non-static fields.
+However, if the injected settings are required by a `@ParameterizedTest` method, then the settings field *must be static*.
+
+=== Arguments Source
+
+Using the {InstancioSource} annotation it is possible to have arguments provided directly to a `@ParameterzedTest` test method.
+This works with a single argument and multiple arguments, each class representing one argument.
+
+[NOTE]
+Using `@ParameterizedTest` requires the `junit-jupiter-params` module. See https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-setup[JUnit documentation for details].
+
+====
+.Using @InstancioSource with @ParameterizedTest
+[source%nowrap,java]
+----
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @ParameterizedTest
+    @InstancioSource(Person.class)
+    void singleArgument(Person person) {
+        // snip...
+    }
+
+    @ParameterizedTest
+    @InstancioSource({Foo.class, Bar.class, Baz.class})
+    void multipleArguments(Foo foo, Bar bar, Baz baz) {
+        // snip...
+    }
+}
+----
+====
+
+It should be noted that using `@InstancioSource` has a couple of important limitations that makes it unsuitable in many situations.
+
+The biggest limitation is that the generated objects cannot be customised.
+The only option is to customise generated values using <<settings-injection, settings injection>>.
+However, it is not possible to customise values on a per-field basis, as you would with the builder API.
+
+The second limitation is that it does not support parameterized types.
+For instance, it is not possible to specify that `@InstancioSource(List.class)` should be of type `List<String>`.
+

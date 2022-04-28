@@ -1,0 +1,124 @@
+[[metamodel]]
+== Metamodel
+
+This section expands on the <<selectors, Selectors>> section, which described how to target fields.
+Instancio uses reflection at field level to populate objects.
+The main reason for using fields and not setters is https://docs.oracle.com/javase/tutorial/java/generics/erasure.html[type erasure,window=_blank].
+It is not possible to determine the generic type of method parameters at runtime.
+However, generic type information is available at field level.
+In other words:
+
+====
+[source%nowrap,java]
+----
+class Example {
+    private List<String> values;         // <1>
+
+    void setList(List<String> values) {  // <2>
+        this.values = values;
+    }
+}
+----
+====
+
+<1> At runtime, this will be a `List<String>`.
+<2> This becomes a `List<Object>`.
+
+Without knowing the list's generic type, Instancio would not be able to populate the list.
+For this reason, it operates at field level.
+Using fields, however, has one drawback: they require the use of field names.
+To circumvent this problem, Instancio includes an annotation processor that can generate metamodel classes.
+
+====
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .generate(field(Address.class, "city"), gen -> gen.oneOf("Paris", "London"))
+    .create();
+
+// Using the 'Address_' metamodel class
+Person person = Instancio.of(Person.class)
+    .generate(Address_.city, gen -> gen.oneOf("Paris", "London")) // <1>
+    .create();
+----
+====
+
+<1> By default, '_' is used as the metamodel class suffix, but this can be customised.
+
+[[processor-build-config]]
+=== Configuring the Annotation Processor
+
+==== Maven
+
+To configure the annotation processor with Maven, add the `<annotationProcessorPaths>` element to the build plugins section in your `pom.xml` as shown below.
+
+[NOTE]
+You still need to have the Instancio library, either `instancio-core` or `instancio-junit`, in your `<dependencies>` (see <<getting-started, Getting Started>>).
+
+====
+[source%nowrap,xml]
+----
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <source>${your.java.version}</source>
+                <target>${your.java.version}</target>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.instancio</groupId>
+                        <artifactId>instancio-processor</artifactId>
+                        <version>${instancio.version}</version>
+                    </path>
+                    <!-- include other processors, if any -->
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+----
+====
+
+==== Gradle
+
+The following can be used with Gradle version 4.6 or higher, add the following to your `build.gradle` file:
+
+====
+[source%nowrap,groovy]
+----
+dependencies {
+
+    // use the processor in production scope
+    annotationProcessor "org.instancio:instancio-processor:$instancioVersion"
+    //
+    // OR
+    //
+    // use the processor in test scope
+    testAnnotationProcessor "org.instancio:instancio-processor:$instancio.version"
+}
+----
+====
+
+=== Generating Metamodels
+
+With the annotation processor build configuration in place, metamodels can be generated using the {InstancioMetamodel} annotation.
+The annotation can be placed on any type, including an interface as shown below.
+
+====
+.Using @InstancioMetamodel
+[source%nowrap,java]
+----
+@InstancioMetamodel(classes = {Address.class, Person.class})
+interface SampleConfig {
+    // can be left blank
+}
+----
+====
+
+[WARNING]
+It is not recommended declaring the `@InstancioMetamodel` annotation with the same `classes` more than once.
+Doing so will result in metamodels being generated more than once as well.
+For this reason, it is better to have a dedicated class containing the `@InstancioMetamodel` annotation.

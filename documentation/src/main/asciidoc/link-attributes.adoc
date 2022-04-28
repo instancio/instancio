@@ -1,0 +1,31 @@
+:core-javadoc-root: https://javadoc.io/doc/org.instancio/instancio-core/latest
+:processor-javadoc-root: https://javadoc.io/doc/org.instancio/instancio-core/latest
+:junit-javadoc-root: https://javadoc.io/doc/org.instancio/instancio-junit/latest
+
+// instancio-core
+:Instancio:  {core-javadoc-root}/org/instancio/Instancio.html[Instancio,role=api,window=_blank]
+:InstancioApi:  {core-javadoc-root}/org/instancio/InstancioApi.html[InstancioApi,role=api,window=_blank]
+:Generator:  {core-javadoc-root}/org/instancio/Generator.html[Generator,role=api,window=_blank]
+:GeneratorProvider:  {core-javadoc-root}/org/instancio/spi/GeneratorProvider.html[GeneratorProvider,role=api,window=_blank]
+:Generators:  {core-javadoc-root}/org/instancio/Generators.html[Generators,role=api,window=_blank]
+:Model:  {core-javadoc-root}/org/instancio/Model.html[Model,role=api,window=_blank]
+:OnCompleteCallback:  {core-javadoc-root}/org/instancio/OnCompleteCallback.html[OnCompleteCallback,role=api,window=_blank]
+:Random:  {core-javadoc-root}/org/instancio/Random.html[Random,role=api,window=_blank]
+:Select:  {core-javadoc-root}/org/instancio/Select.html[Select,role=api,window=_blank]
+:Selector:  {core-javadoc-root}/org/instancio/Selector.html[Selector,role=api,window=_blank]
+:SelectorGroup:  {core-javadoc-root}/org/instancio/SelectorGroup.html[SelectorGroup,role=api,window=_blank]
+// Settings
+:Keys:  {core-javadoc-root}/org/instancio/settings/Keys.html[Keys,role=api,window=_blank]
+:SettingKey:  {core-javadoc-root}/org/instancio/settings/SettingKey.html[SettingKey,role=api,window=_blank]
+:Settings:  {core-javadoc-root}/org/instancio/settings/Settings.html[Settings,role=api,window=_blank]
+
+:withSeed:  {core-javadoc-root}/org/instancio/InstancioApi.html#withSeed(int)[withSeed(int seed),role=api,window=_blank]
+
+// instancio-processor
+:InstancioMetamodel:  {processor-javadoc-root}/org/instancio/InstancioMetamodel.html[@InstancioMetamodel,role=api,window=_blank]
+
+// instancio-junit
+:InstancioExtension:  {junit-javadoc-root}/org/instancio/junit/InstancioExtension.html[InstancioExtension,role=api,window=_blank]
+:InstancioSource:  {junit-javadoc-root}/org/instancio/junit/InstancioSource.html[@InstancioSource,role=api,window=_blank]
+:Seed:  {junit-javadoc-root}/org/instancio/junit/Seed.html[@Seed,role=api,window=_blank]
+:WithSettings:  {junit-javadoc-root}/org/instancio/junit/WithSettings.html[@WithSettings,role=api,window=_blank]

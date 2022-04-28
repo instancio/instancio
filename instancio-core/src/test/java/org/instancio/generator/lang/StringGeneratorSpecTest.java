@@ -23,6 +23,8 @@ import org.instancio.util.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -83,6 +85,22 @@ class StringGeneratorSpecTest {
         generator.length(length);
         assertThat(generator.getMinLength()).isEqualTo(length);
         assertThat(generator.getMaxLength()).isEqualTo(length);
+    }
+
+    @Test
+    void lengthRange() {
+        generator.length(1, 2);
+        assertThat(generator.getMinLength()).isEqualTo(1);
+        assertThat(generator.getMaxLength()).isEqualTo(2);
+    }
+
+    @ValueSource(ints = {5, 6})
+    @ParameterizedTest
+    void lengthRangeValidation(int minLength) {
+        final int maxLength = 5;
+        assertThatThrownBy(() -> generator.length(minLength, maxLength))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Min length must be less than max (%s, %s)", minLength, maxLength);
     }
 
     @Test

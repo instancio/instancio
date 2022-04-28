@@ -16,18 +16,18 @@
 package org.instancio.test.gradle;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioMetaModel;
+import org.instancio.InstancioMetamodel;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@InstancioMetaModel(classes = {
+@InstancioMetamodel(classes = {
         ClassFromSameModule.class,
         Person.class
 })
-class MetaModelWithGradleTest {
+class MetamodelWithGradleTest {
 
     private static final String EXPECTED = "foo";
 

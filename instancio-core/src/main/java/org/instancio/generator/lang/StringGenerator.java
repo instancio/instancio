@@ -70,6 +70,15 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
+    public StringGeneratorSpec length(final int minLength, final int maxLength) {
+        this.minLength = ApiValidator.validateLength(minLength);
+        this.maxLength = ApiValidator.validateLength(maxLength);
+        ApiValidator.isTrue(minLength < maxLength,
+                "Min length must be less than max (%s, %s)", minLength, maxLength);
+        return this;
+    }
+
+    @Override
     public StringGeneratorSpec minLength(final int length) {
         this.minLength = ApiValidator.validateLength(length);
         this.maxLength = NumberUtils.calculateNewMax(maxLength, minLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);

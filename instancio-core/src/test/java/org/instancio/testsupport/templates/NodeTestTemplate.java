@@ -18,13 +18,14 @@ package org.instancio.testsupport.templates;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
-import org.instancio.internal.InternalModel;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.test.support.tags.NodeTag;
+import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -41,9 +42,11 @@ public abstract class NodeTestTemplate<T> {
     private final TypeContext typeContext = new TypeContext(this.getClass());
 
     @Test
-    protected final void verifyingModelFromTypeToken() {
+    protected final void verifyingModelFromTypeToken() throws Exception {
         Model<?> model = Instancio.of((TypeTokenSupplier<Type>) typeContext::getGenericType).toModel();
-        verify(((InternalModel<?>) model).getRootNode());
+        Field field = ReflectionUtils.getField(model.getClass(), "rootNode");
+        field.setAccessible(true);
+        verify((Node) field.get(model));
     }
 
     /**

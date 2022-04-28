@@ -84,8 +84,8 @@ public class Select {
      */
     public static SelectorGroup all(final SelectorGroup... selectorGroups) {
         final List<Selector> selectors = new ArrayList<>();
-        for (SelectorGroup b : selectorGroups) {
-            selectors.addAll(b.getSelectors());
+        for (SelectorGroup group : selectorGroups) {
+            selectors.addAll(group.getSelectors());
         }
         return new SelectorGroupImpl(selectors);
     }

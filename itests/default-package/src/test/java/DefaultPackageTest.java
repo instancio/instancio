@@ -15,7 +15,7 @@
  */
 
 import org.instancio.Instancio;
-import org.instancio.InstancioMetaModel;
+import org.instancio.InstancioMetamodel;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.METAMODEL)
-@InstancioMetaModel(classes = DefaultPackageClass.class)
+@InstancioMetamodel(classes = DefaultPackageClass.class)
 class DefaultPackageTest {
 
     @Test
@@ -33,7 +33,7 @@ class DefaultPackageTest {
     }
 
     @Test
-    void withMetaModel() {
+    void withMetamodel() {
         final String expected = "some value";
         final DefaultPackageClass result = Instancio.of(DefaultPackageClass.class)
                 .supply(DefaultPackageClass_.value, () -> expected)

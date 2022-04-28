@@ -16,7 +16,7 @@
 package org.instancio.test.features.metamodel;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioMetaModel;
+import org.instancio.InstancioMetamodel;
 import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.generics.MiscFields;
@@ -36,7 +36,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@InstancioMetaModel(classes = {
+@InstancioMetamodel(classes = {
         Address.class,
         MiscFields.class,
         Person.class,
@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         OuterClass.InnerStaticClass.InnermostStaticClass.class
 })
 @FeatureTag(Feature.METAMODEL)
-class MetaModelBasedOnClassesTest {
+class MetamodelBasedOnClassesTest {
 
     @Test
     void nestedClasses() {

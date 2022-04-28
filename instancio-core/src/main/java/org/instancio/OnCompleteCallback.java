@@ -20,6 +20,7 @@ package org.instancio;
  *
  * @param <T> type handled by the callback
  */
+@FunctionalInterface
 public interface OnCompleteCallback<T> {
 
     /**

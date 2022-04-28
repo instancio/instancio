@@ -146,7 +146,7 @@ public class ModelContext<T> {
         if (userSuppliedSeed != null) {
             return new DefaultRandom(userSuppliedSeed);
         }
-        // If running under JUnit extension, use the provider supplied by the extension
+        // If running under JUnit extension, use the Random instance supplied by the extension
         return ObjectUtils.defaultIfNull(
                 ThreadLocalRandom.getInstance().get(),
                 () -> new DefaultRandom(SeedUtil.randomSeed()));

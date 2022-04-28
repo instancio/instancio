@@ -5,24 +5,6 @@
 
 ---
 
-- [What is it?](#what-is-it)
-- [Try it out](#try-it-out)
-- [Instancio API](#instancio-api)
-    - [`create()`](#create)
-    - [Selectors](#selectors)
-    - [`supply()`](#supply)
-    - [`generate()`](#generate)
-    - [`onComplete()`](#oncomplete)
-    - [`ignore()`](#ignore)
-    - [`withNullable()`](#withnullable)
-    - [`map()`](#map)
-    - [Creating generic classes](#creating-generic-classes)
-    - [Using Models](#using-models)
-    - [`withSettings()`](#withsettings)
-- [JUnit 5 integration](#junit-5-integration)
-- [Using Instancio metamodels](#metamodels)
------
-
 # What is it?
 
 Instancio is a Java library for auto-populating objects with random data.
@@ -44,15 +26,15 @@ Instancio can do the manual work for you:
 Person person = Instancio.create(Person.class);
 ```
 
-This returns a fully-populated person, including nested objects and collections. Instancio will set all fields
-to random values. By default, values will be:
+This returns a fully-populated person, including nested objects and collections. Instancio will set all fields to random values. By default, values will be:
 
 - non-null
 - non-blank strings
 - numbers greater than zero
 - collections/maps/arrays will have at least one element
 
-The out-of-the-box defaults can be customised through a properties file or at runtime.
+This page contains a few samples. Refer to the (User Guide)[https://www.instancio.org] for more information.
+
 
 # Try it out
 
@@ -94,7 +76,6 @@ The following is an overview of the API and its features for creating objects an
 - [Using Models](#using-models) - for encapsulating generation parameters in reusable models.
 - [`withSettings()`](#withsettings) - for specifying custom settings at runtime.
 - [Metamodels](#metamodels) - generating metamodels for your classes.
-
 
 
 ## Create
@@ -248,10 +229,10 @@ to `oneOf` the given values.
 
 ## `onComplete()`
 
-The `onComplete()` method allows to modifing generated instances via a callback.
+The `onComplete()` method allows to modifying generated instances via a callback.
 This method only makes sense for mutable types. For example, the following
 will update all instances of `Phone` class `countryCode` to `"+1"` after
-`Phone` class has been fully popoulated.
+`Phone` class has been fully populated.
 
 
 ```java
@@ -418,17 +399,14 @@ Instancio supports JUnit 5 integration with the following features:
  - `@WithSettings` - specify settings for all test methods within a test class
  - `@Seed` - allows reproducing generated data in a test method using a custom seed value
 
+For details refer to the [user guide](https://www.instancio.org).
 
-The following is an overview of what a test class. For details refer to the [Instancio JUnit README](instancio-junit/README.md).
+Sample test:
 
 ```java
-// Declare the extension. This enables additional reporting (such as the seed value) when a test fails.
-// The extension can be combined with other extensions, such as MockitoExtension, SpringExtension, etc.
 @ExtendWith(InstancioExtension.class)
 class ExampleTest {
 
-    // Optional: allows overriding default settings.
-    // All test methods will use these settings
     @WithSettings
     private final Settings settings = Settings.create()
         .set(Setting.COLLECTION_MIN_SIZE, 50)
@@ -442,10 +420,10 @@ class ExampleTest {
 
     @Test
     @Seed(12345)
-    void example() {
+    void seedExample() {
         Person person = Instancio.create(Person.class);
-        // Person data will be generated using the custom seed value.
-        // Same data will be generated every time.
+        // Person data will be generated using the custom seed value
+        // (same data will be generated every time)
     }
 
     @ParameterizedTest
@@ -472,5 +450,4 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-For more details, including how to set it up with Maven or Gradle, see the
-[annotation processor's README](instancio-processor/README.md).
+For more details, including how to set it up with Maven or Gradle, see the [user guide](https://www.instancio.org).

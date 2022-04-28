@@ -34,8 +34,22 @@ import static java.util.stream.Collectors.joining;
 
 class ExtensionSupport {
 
-    static void processSeedAnnotation(final ExtensionContext context,
-                                      final ThreadLocalRandom threadLocalRandom) {
+
+    static void processAnnotations(final ExtensionContext context,
+                                   final ThreadLocalRandom threadLocalRandom,
+                                   final ThreadLocalSettings threadLocalSettings) {
+        try {
+            ExtensionSupport.processWithSettingsAnnotation(context, threadLocalSettings);
+            ExtensionSupport.processSeedAnnotation(context, threadLocalRandom);
+        } catch (Exception ex) {
+            threadLocalRandom.remove();
+            threadLocalSettings.remove();
+            throw ex;
+        }
+    }
+
+    private static void processSeedAnnotation(final ExtensionContext context,
+                                              final ThreadLocalRandom threadLocalRandom) {
 
         if (threadLocalRandom.get() != null) {
             return;
@@ -52,8 +66,8 @@ class ExtensionSupport {
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    static void processWithSettingsAnnotation(final ExtensionContext context,
-                                              final ThreadLocalSettings threadLocalSettings) {
+    private static void processWithSettingsAnnotation(final ExtensionContext context,
+                                                      final ThreadLocalSettings threadLocalSettings) {
         if (threadLocalSettings.get() != null) {
             return;
         }
@@ -85,8 +99,7 @@ class ExtensionSupport {
             if (!settings.isPresent()) {
                 throw new InstancioApiException(String.format(
                         "%n@WithSettings must be annotated on a non-null field."
-                                + "%nIf this error occurred with a @ParameterizedTest," +
-                                " then the settings field should be static."));
+                                + "%nIf @WithSettings is used with a @ParameterizedTest, the Settings field must be static."));
             }
             if (!(settings.get() instanceof Settings)) {
                 throw new InstancioApiException(String.format(
