@@ -26,12 +26,7 @@ Instancio can do the manual work for you:
 Person person = Instancio.create(Person.class);
 ```
 
-This returns a fully-populated person, including nested objects and collections. Instancio will set all fields to random values. By default, values will be:
-
-- non-null
-- non-blank strings
-- numbers greater than zero
-- collections/maps/arrays will have at least one element
+This returns a fully-populated person, including nested objects and collections.
 
 This page contains a few samples. Refer to the [User Guide](https://www.instancio.org) for more information.
 
