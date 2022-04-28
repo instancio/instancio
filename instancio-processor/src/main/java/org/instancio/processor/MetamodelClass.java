@@ -26,7 +26,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-class MetaModelClass {
+class MetamodelClass {
     private static final String DEFAULT_SUFFIX = "_";
 
     private final String name;
@@ -35,7 +35,7 @@ class MetaModelClass {
     private final List<String> fieldNames;
     private final String metamodelClassSuffix;
 
-    public MetaModelClass(final QualifiedNameable classElement, final String metamodelClassSuffix) {
+    public MetamodelClass(final QualifiedNameable classElement, final String metamodelClassSuffix) {
         final Element packageElement = getPackageElement(classElement);
         this.name = classElement.getQualifiedName().toString();
         this.packageName = getPackageName((QualifiedNameable) packageElement);
@@ -94,7 +94,7 @@ class MetaModelClass {
      *
      * @return simple name of the metamodel class
      */
-    String getMetaModelSimpleName() {
+    String getMetamodelSimpleName() {
         return simpleName + metamodelClassSuffix;
     }
 
@@ -104,7 +104,7 @@ class MetaModelClass {
      *
      * @return fully qualified metamodel class name
      */
-    String getMetaModelClassName() {
+    String getMetamodelClassName() {
         return name + metamodelClassSuffix;
     }
 

@@ -89,8 +89,7 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
 
     @Override
     public void beforeEach(final ExtensionContext context) {
-        ExtensionSupport.processWithSettingsAnnotation(context, threadLocalSettings);
-        ExtensionSupport.processSeedAnnotation(context, threadLocalRandom);
+        ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
     }
 
     @Override

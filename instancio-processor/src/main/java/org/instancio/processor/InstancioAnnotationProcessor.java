@@ -15,7 +15,7 @@
  */
 package org.instancio.processor;
 
-import org.instancio.InstancioMetaModel;
+import org.instancio.InstancioMetamodel;
 import org.instancio.processor.util.Logger;
 import org.instancio.util.Sonar;
 
@@ -41,11 +41,11 @@ import java.util.List;
 import java.util.Set;
 
 @SupportedOptions({"instancio.verbose", "instancio.suffix"})
-@SupportedAnnotationTypes("org.instancio.InstancioMetaModel")
+@SupportedAnnotationTypes("org.instancio.InstancioMetamodel")
 public final class InstancioAnnotationProcessor extends AbstractProcessor {
     private static final String CLASSES_ATTRIBUTE = "classes";
     private static final String TRUE = "true";
-    private static final MetaModelSourceGenerator sourceGenerator = new MetaModelSourceGenerator();
+    private static final MetamodelSourceGenerator sourceGenerator = new MetamodelSourceGenerator();
 
     private Types typeUtils;
     private Elements elementUtils;
@@ -74,13 +74,13 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
             return true;
         }
 
-        final Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(InstancioMetaModel.class);
+        final Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(InstancioMetamodel.class);
         if (annotatedElements.isEmpty()) {
-            logger.debug("No @InstancioMetaModel annotations to process");
+            logger.debug("No @InstancioMetamodel annotations to process");
             return true;
         }
 
-        logger.debug("Preparing to process %s @InstancioMetaModel annotation(s)", annotatedElements.size());
+        logger.debug("Preparing to process %s @InstancioMetamodel annotation(s)", annotatedElements.size());
 
         for (Element annotatedElement : annotatedElements) {
             final TypeElement rootType = (TypeElement) annotatedElement;
@@ -90,15 +90,15 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
                     .filter(av -> av.getValue() instanceof TypeMirror)
                     .map(av -> typeUtils.asElement((TypeMirror) av.getValue()))
                     .filter(e -> e instanceof QualifiedNameable)
-                    .forEach(e -> writeSourceFile(new MetaModelClass((QualifiedNameable) e, classNameSuffix), rootType));
+                    .forEach(e -> writeSourceFile(new MetamodelClass((QualifiedNameable) e, classNameSuffix), rootType));
         }
 
         return true;
     }
 
-    private void writeSourceFile(final MetaModelClass metaModelClass, final Element element) {
+    private void writeSourceFile(final MetamodelClass metaModelClass, final Element element) {
         final Filer filer = processingEnv.getFiler();
-        final String filename = metaModelClass.getMetaModelClassName();
+        final String filename = metaModelClass.getMetamodelClassName();
 
         try (Writer writer = new BufferedWriter(filer.createSourceFile(filename, element).openWriter())) {
             logger.debug("Generating metamodel class: %s", filename);
@@ -109,7 +109,7 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
     }
 
     private List<AnnotationValue> getAnnotationValues(final Element element, final String attributeName) {
-        final TypeElement typeElement = elementUtils.getTypeElement(InstancioMetaModel.class.getCanonicalName());
+        final TypeElement typeElement = elementUtils.getTypeElement(InstancioMetamodel.class.getCanonicalName());
         final List<AnnotationValue> annotationValues = new ArrayList<>();
 
         for (AnnotationMirror am : element.getAnnotationMirrors()) {

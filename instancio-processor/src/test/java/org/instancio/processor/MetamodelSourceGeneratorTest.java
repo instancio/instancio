@@ -28,10 +28,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.processor.ElementMocks.mockElementWithSimpleName;
 import static org.mockito.Mockito.doReturn;
 
-class MetaModelSourceGeneratorTest {
+class MetamodelSourceGeneratorTest {
     private static final String SUFFIX = ""; // not specified - should use default suffix "_"
 
-    private final MetaModelSourceGenerator sourceGenerator = new MetaModelSourceGenerator();
+    private final MetamodelSourceGenerator sourceGenerator = new MetamodelSourceGenerator();
 
     @Test
     void getSource() {
@@ -46,7 +46,7 @@ class MetaModelSourceGeneratorTest {
 
         doReturn(fields).when(classElement).getEnclosedElements();
 
-        final String source = sourceGenerator.getSource(new MetaModelClass(classElement, SUFFIX));
+        final String source = sourceGenerator.getSource(new MetamodelClass(classElement, SUFFIX));
 
         assertThat(source).containsSubsequence(
                 "package org.example;",
@@ -67,7 +67,7 @@ class MetaModelSourceGeneratorTest {
 
         doReturn(Collections.emptyList()).when(classElement).getEnclosedElements();
 
-        final String source = sourceGenerator.getSource(new MetaModelClass(classElement, SUFFIX));
+        final String source = sourceGenerator.getSource(new MetamodelClass(classElement, SUFFIX));
 
         assertThat(source.trim())
                 .doesNotContain("package")

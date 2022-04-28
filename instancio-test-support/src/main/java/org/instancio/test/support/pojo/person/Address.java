@@ -27,7 +27,6 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 public class Address {
-
     private String address;
     private String city;
     private String country;

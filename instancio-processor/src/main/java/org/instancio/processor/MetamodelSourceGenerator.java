@@ -18,7 +18,7 @@ package org.instancio.processor;
 import javax.annotation.Nullable;
 import java.util.stream.Collectors;
 
-class MetaModelSourceGenerator {
+class MetamodelSourceGenerator {
     private static final String PACKAGE_TEMPLATE = "package %s;";
     private static final String IMPORTS = ""
             + "import org.instancio.SelectorGroup;\n"
@@ -27,19 +27,19 @@ class MetaModelSourceGenerator {
     private static final String FIELD_TEMPLATE = "\tpublic static final SelectorGroup %s = Select.field(%s, \"%s\");";
     private static final String CLASS_TEMPLATE = "%s\n\n%s\n\n%s"; // package, imports, class body
 
-    String getSource(final MetaModelClass modelClass) {
+    String getSource(final MetamodelClass modelClass) {
         return String.format(CLASS_TEMPLATE,
                 packageDeclaration(modelClass.getPackageName()),
                 IMPORTS,
                 classBody(modelClass));
     }
 
-    private String classBody(final MetaModelClass modelClass) {
-        final String metaModelClassName = modelClass.getMetaModelSimpleName();
+    private String classBody(final MetamodelClass modelClass) {
+        final String metaModelClassName = modelClass.getMetamodelSimpleName();
         return String.format(CLASS_BODY_TEMPLATE, metaModelClassName, getFields(modelClass));
     }
 
-    private String getFields(final MetaModelClass type) {
+    private String getFields(final MetamodelClass type) {
         return type.getFieldNames().stream()
                 .map(field -> String.format(FIELD_TEMPLATE, field, type.getName() + ".class", field))
                 .collect(Collectors.joining("\n\n"));

@@ -16,7 +16,7 @@
 package org.instancio.test.features.generator.oneof;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioMetaModel;
+import org.instancio.InstancioMetamodel;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Address_;
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@InstancioMetaModel(classes = Address.class)
+@InstancioMetamodel(classes = Address.class)
 @FeatureTag(Feature.ONE_OF_ARRAY_GENERATOR)
 @ExtendWith(InstancioExtension.class)
 class OneOfArrayGeneratorTest {

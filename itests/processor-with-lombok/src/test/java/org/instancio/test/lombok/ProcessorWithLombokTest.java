@@ -16,12 +16,12 @@
 package org.instancio.test.lombok;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioMetaModel;
+import org.instancio.InstancioMetamodel;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@InstancioMetaModel(classes = SamplePojo.class)
+@InstancioMetamodel(classes = SamplePojo.class)
 class ProcessorWithLombokTest {
 
     @Test

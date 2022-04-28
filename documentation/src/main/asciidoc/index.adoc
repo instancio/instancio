@@ -1,0 +1,25 @@
+= Instancio User Guide
+:stylesheet: style.css
+:revdate: {docdate}
+:toc: left
+:toclevels: 4
+:icons: font
+:sectanchors:
+:source-highlighter: coderay
+:Author: Arman Sharif
+include::link-attributes.adoc[]
+
+[[Preface]]
+:numbered:
+
+include::introduction.adoc[]
+
+include::getting-started.adoc[]
+
+include::instancio-api.adoc[]
+
+include::metamodel.adoc[]
+
+include::configuration.adoc[]
+
+include::junit-integration.adoc[]

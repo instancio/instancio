@@ -1,0 +1,595 @@
+== Instancio API
+
+=== Creating Objects
+
+The {Instancio} class is the entry point to the API.
+It provides the following shorthand methods for creating objects.
+These can be used when defaults suffice and generated values do not need to be customised.
+
+====
+.Shorthand methods
+[source%nowrap,java]
+----
+Instancio.create(Class<T> klass)                 // <1>
+Instancio.create(TypeTokenSupplier<T> supplier)  // <2>
+Instancio.create(Model<T> model)                 // <3>
+----
+====
+
+The following builder methods allow chaining additional method calls in order to customise generated values, ignore certain fields, provide custom settings, and so on.
+
+====
+.Builder API
+[source%nowrap,java]
+----
+Instancio.of(Class<T> klass).create()                 // <1>
+Instancio.of(TypeTokenSupplier<T> supplier).create()  // <2>
+Instancio.of(Model<T> model).create()                 // <3>
+----
+====
+
+The three arguments accepted by these methods can be used for different purposes.
+
+<1> Creates an instance by specifying a class; this method should suffice in most cases.
+<2> This method is for creating instances of generic types by supplying a type token.
+<3> Creates an instance using an Instancio {Model}, which acts as a template for creating objects (see <<using-models, Using Models>>).
+
+====
+.Examples of create() methods
+[source%nowrap,java]
+----
+// Create by specifying the class
+Person person = Instancio.create(Person.class);
+
+// Using type tokens
+Pair<String, Long> pair = Instancio.create(new TypeToken<Pair<String, Long>>() {});
+
+Map<Integer, List<String>> map = Instancio.create(new TypeToken<Map<Integer, List<String>>>() {});
+
+// Create from a model
+Model<Person> personModel = Instancio.of(Person.class)
+    .ignore(field("age"))
+    .toModel();
+
+Person personWithoutAgeAndAddress = Instancio.of(personModel)
+    .ignore(field("address"))
+    .create();
+----
+====
+
+It should be noted that generic types can also be created using the `Instancio.of(Class)` methods and specifying the type parameters manually:
+
+====
+[source%nowrap,java]
+----
+Pair<String,Long> pair = Instancio.of(Pair.class)
+    .withTypeParameters(String.class, Long.class)
+    .create();
+----
+====
+
+However, this approach has a couple of drawbacks: it does not supported nested generics, and its usage will generate an "unchecked assignment" warning.
+
+==== Creating a Stream of Objects
+
+Instancio also provides methods for creating a `Stream` of objects.
+The `stream()` methods return an infinite stream of distinct fully-populated instances.
+Similarly to the `create()` methods, these have a shorthand form if no customisations are needed:
+
+====
+.Shorthand methods
+[source%nowrap,java]
+----
+Instancio.stream(Class<T> klass)
+Instancio.stream(TypeTokenSupplier<T> supplier)
+----
+====
+
+as well as the builder API that allows customising generated values:
+
+====
+.Stream Builder API
+[source%nowrap,java]
+----
+Instancio.of(Class<T> klass).stream()
+Instancio.of(TypeTokenSupplier<T> supplier).stream()
+----
+====
+
+The following are a couple of examples of using streams.
+
+====
+.Examples of stream() methods
+[source%nowrap,java]
+----
+List<Person> personList = Instancio.stream(Person.class)
+    .limit(3)
+    .collect(Collectors.toList());
+
+Map<UUID, Person> personMap = Instancio.of(new TypeToken<Person>() {})
+    .ignore(all(field("age"), field("address")))
+    .stream()
+    .limit(3)
+    .collect(Collectors.toMap(Person::getUuid, Function.identity()));
+
+----
+====
+
+[[selectors]]
+=== Selectors
+
+Selectors are used to target fields and classes, for example in order to customise generated values.
+Selectors are provided by the {Select} class which contains the following methods:
+
+====
+.Static methods for targeting fields and classes
+[source%nowrap,java]
+----
+Select.field(String field)                           // <1>
+Select.field(Class<?> declaringClass, String field)  // <2>
+Select.all(Class<?> type)                            // <3>
+Select.all(SelectorGroup... groups)                  // <4>
+Select.allStrings()                                  // <5>
+Select.allInts()                                     // <6>
+// allLongs(), allChars()...
+----
+====
+
+<1> selects the specified field of the class being created
+<2> selects the specified field of the given class
+<3> selects all fields of the given type
+<4> convenience method for combining multiple selectors
+<5> convenience method equivalent to `all(String.class)`
+<6> convenience method equivalent to `all(all(int.class), all(Integer.class))`
+
+[NOTE]
+The `allXxx()` methods such as `allInts()` , are convenience methods for selecting both, the primitive and wrapper types.
+For example, `allInts()` is defined as `all(all(int.class), all(Integer.class))`.
+
+====
+.Examples of using selectors
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .ignore(field("name"))
+    .ignore(field(Address.class, "street"))
+    .ignore(all(Phone.class))
+    .create();
+
+// Equivalent to above
+Person person = Instancio.of(Person.class)
+        .ignore(all(
+                field("name"),
+                field(Address.class, "street"),
+                all(Phone.class)))
+        .create();
+----
+====
+
+=== Customising Objects
+
+Objects created by Instancio can be customised using the `supply()` and `generate()` methods defined in the {InstancioApi} class.
+
+[#generate-method]
+==== Using the `generate()` method
+
+The `generate()` method provides access to built-in generators for core types from the JDK, such strings, numeric types, dates, arrays, collections, and so on.
+It allows modifying generation parameters for these types in order to fine-tune the data.
+The usage is shown in the following example, where the `gen` parameter (of type {Generators}) exposes the available generators in order to simplify discovery of the available generators through IDE auto-completion.
+
+====
+.Example of using generate()
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .generate(field("age"), gen -> gen.ints().range(18, 65))
+    .generate(field("pets"), gen -> gen.array().length(3))
+    .generate(field(Phone.class, "number"), gen -> gen.text().pattern("#d#d#d-#d#d-#d#d"))
+    .create();
+----
+====
+
+Each generator provides methods applicable to the type it generates, for example:
+
+- `gen.string().minLength(3).allowEmpty()`
+- `geb.collection().size(5).nullableElements()`
+- `gen.localDate().future()`
+- `gen.longs().min(Long.MIN_VALUE)`
+
+Below is another example of customising a `Person`.
+For instance, if the  `Person` class has a field `List<Phone>`, by default Instancio would use `ArrayList` as the implementation.
+Using the collection generator, this can be overridden by specifying the type explicitly:
+
+====
+.Example: customising a collection
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    // Use LinkedList as List implementation
+    .generate(field("phoneNumbers"), gen -> gen.collection().minSize(3).type(LinkedList.class))
+    // Use random country codes from given choices
+    .generate(field(Phone.class, "countryCode"), gen -> gen.oneOf("+33", "+39", "+44", "+49"))
+    .create();
+----
+====
+
+[#supply-methods]
+==== Using the `supply()` methods
+
+The `supply()` method has two variants:
+
+====
+[source%nowrap,java]
+----
+supply(SelectorGroup selectors, Supplier<V> supplier)    // <1>
+supply(SelectorGroup selectors, Generator<V> generator)  // <2>
+----
+====
+
+<1> for supplying non-random values using a `java.util.function.Supplier`
+<2> for using custom {Generator} implementations
+
+The first variant can be used where random values are not appropriate and the generated object needs to have a meaningful state.
+
+====
+.Example
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .supply(field(Phone.class, "countryCode"), () -> "+1")       // <1>
+    .supply(all(LocalDateTime.class), () -> LocalDateTime.now()) // <2>
+    .create();
+----
+====
+
+<1> Set `countryCode` to "+1" for all instances of `Phone`
+<2> All `LocalDateTime` instances will be distinct objects with the value `now()`
+
+The second variant of the `supply()` method can be used to generate random objects.
+This method takes a {Generator} as an argument, which is a functional interface with the following signature:
+
+====
+[source%nowrap,java]
+----
+import org.instancio.Random;
+
+interface Generator<T> {
+    T generate(Random random);
+}
+----
+====
+
+Using the provided {Random} instance ensures that Instancio will be able to reproduce the generated object when needed.
+The {Random} implementation uses a `java.util.Random` internally, but offers a more user-friendly interface and convenience methods not available in the JDK class.
+
+====
+.Creating a custom Generator
+[source%nowrap,java]
+----
+import org.instancio.Random;
+
+class PhoneGenerator implements Generator<Phone> {
+
+    public Phone generate(Random random) {
+        Phone phone = new Phone();
+        phone.setCountryCode(random.oneOf("+1", "+52"));
+        phone.setNumber(random.digits(7));
+        return  phone;
+    }
+}
+----
+====
+
+The custom `PhoneGenerator` can now be passed into the `supply()` method:
+
+====
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .supply(all(Phone.class), new PhoneGenerator())
+    .create();
+----
+====
+
+[NOTE]
+Instancio also offers a Service Provider Interface, {GeneratorProvider} that can be used to register custom generators.
+This removes the need for manually passing custom generators to the `supply` method as in the above example.
+They will be picked up automatically.
+
+===== `supply()` anti-pattern
+
+Since the `supply()` method provides an instance of {Random}, the method can also be used for customising values of core type, such as strings and numbers.
+However, the `generate()` method should be preferred in such cases if possible as it provides a better abstraction and would result in more readable code.
+
+====
+.Example: generate() vs supply()
+[source%nowrap,java]
+----
+Person bad = Instancio.of(Person.class)
+    .supply(field("password"), random -> {
+        int length = random.intRange(8, 21);
+        return random.alphaNumeric(length);  // <1>
+    })
+    .create();
+
+Person person = Instancio.of(Person.class)
+    .generate(field("password"), gen -> gen.string().alphaNumeric().length(8, 20)) // <2>
+    .create();
+----
+====
+
+<1> Not recommended: using `random` to generate a `String`.
+<2> Better approach: using the built-in string generator.
+
+==== Customising Generated Objects via Callbacks
+
+Generated objects can also be customised using the {OnCompleteCallback}, a functional interface with the following signature:
+
+====
+[source%nowrap,java]
+----
+interface OnCompleteCallback<T> {
+    void onComplete(T object);
+}
+----
+====
+
+While the <<supply-methods, supply()>> and <<generate-method, generate()>> methods allow specifying values during object construction, the `OnCompleteCallback` is used to modify the generated object _after_ it has been fully populated.
+
+The following example shows how the `Address` can be modified using a callback.
+If the `Person` has a `List<Address>`, the callback will be invoked for every instance of the `Address` class that was generated.
+
+====
+.Example: modifying an object via a callback
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .onComplete(all(Address.class), (Address address) -> {
+        address.setCity("Vancouver");
+        address.setProvince("BC");
+        address.setCountry("Canada");
+    })
+    .create();
+----
+====
+
+The advantage of callbacks is that they can be used to update multiple fields at once.
+The disadvantage, however, is that they can only be used to update mutable types.
+
+==== Ignoring Fields or Classes
+
+By default, Instancio will attempt to populate every non-static field with a non-null value.
+The `ignore` method can be used where this is not desirable:
+
+====
+.Example: ignoring certain fields and classes
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .ignore(field("pets"))
+    .ignore(all(LocalDateTime.class))
+    .create();
+
+// Or combining the selectors
+Person person = Instancio.of(Person.class)
+    .ignore(all(field("pets"), all(LocalDateTime.class)))
+    .create();
+----
+====
+
+==== Nullable Values
+
+By default, Instancio generates non-null values for all fields.
+There are cases where this behaviour may need to be relaxed, for example to verify that a piece of code does not fail in the presence of certain `null` values.
+There are a few way to specify that values can be nullable.
+This can be done using:
+
+- `withNullable` method of the builder API
+- generator methods (if a generator supports it)
+- {Settings}
+
+To specify that something is nullable using the builder API can be done as follows:
+
+====
+.Example: specifying nullability using the builder API
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .withNullable(field("address"))
+    .withNullable(allStrings())
+    .create();
+----
+====
+
+Some built-in generators also support marking values as nullable.
+In addition, Collection, Map, and Array generators allow specifying whether elements, key, or values are nullable.
+
+====
+.Example: specifying nullability using the collection generator
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .generate(field("phoneNumbers"), gen -> gen.collection()
+            .nullable()             // <1>
+            .nullableElements())    // <2>
+    .create();
+----
+====
+
+<1> The collection itself is nullable.
+<2> Collection elements are nullable.
+
+Assuming the `Person` class contains a `Map`, nullability can be specified for keys and values:
+
+====
+.Example: specifying nullability using the map generator
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .generate(all(Map.class), gen -> gen.map().nullableKeys().nullableValues())
+    .create();
+----
+====
+
+Lastly, nullability can be specified using {Settings}, but only for core types, such as strings and numbers:
+
+====
+.Example: specifying nullability using Settings
+[source%nowrap,java]
+----
+Settings settings = Settings.create()
+    .set(Keys.STRING_NULLABLE, true)
+    .set(Keys.INTEGER_NULLABLE, true)
+    .set(Keys.COLLECTION_NULLABLE, true)
+    .set(Keys.COLLECTION_ELEMENTS_NULLABLE, true);
+
+Person person = Instancio.of(Person.class)
+    .withSettings(settings)
+    .create();
+----
+====
+
+[#subtype-mapping]
+=== Subtype Mapping
+
+Subtype mapping allows mapping a particular type to its subtype.
+This can be useful for specifying a specific implementation for an abstract type.
+The mapping can be specified using the `map` method:
+
+====
+[source%nowrap,java]
+----
+map(SelectorGroup selectors, Class<?> subtype)
+----
+====
+
+All the types represented by the selectors must be supertypes of the given `subtype` parameter.
+
+====
+.Example: subtype mapping
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .map(all(Pet.class), Cat.class)  // <1>
+    .map(all(all(Collection.class), all(Set.class)), TreeSet.class)  // <2>
+    .map(field("address"), AddressImpl.class)  // <3>
+    .create();
+----
+====
+
+<1> If `Pet` is an abstract type, then without the mapping all `Pet` instances will be `null` since Instancio would not be able to resolve the implementation class.
+<2> Multiple types can be mapped as long as the subtype is valid for all of them.
+<3> Assuming `Person` has an `Address` field, where `Address` is a superclass of `AddressImpl`.
+
+[[using-models]]
+=== Using Models
+
+A {Model} is a template for creating objects, which encapsulates all the generation parameters specified using the builder API.
+For example, the following model of the Simpson's household can be used to create individual Simpson characters.
+
+====
+.Example: using a model as a template for creating objects
+[source%nowrap,java]
+----
+Model<Person> simpsonsModel = Instancio.of(Person.class)
+        .supply(field("address"), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
+        .supply(field("pets"), () -> List.of(
+                     new Pet(PetType.CAT, "Snowball"),
+                     new Pet(PetType.DOG, "Santa's Little Helper"))
+        .toModel();
+
+Person homer = Instancio.of(simpsonsModel)
+    .supply(field("name"), () -> "Homer")
+    .create();
+
+Person marge = Instancio.of(simpsonsModel)
+    .supply(field("name"), () -> "Marge")
+    .create();
+----
+====
+
+The `Model` class does not expose any public methods, and its instances are effectively immutable.
+However, a model can be used as template for creating other models.
+The next example creates a new model that includes a new `Pet`:
+
+====
+.Example: using a model as a template for creating other models
+[source%nowrap,java]
+----
+Model<Person> modelWithNewPet = Instancio.of(simpsonsModel)
+    .supply(field("pets"), () -> List.of(
+                new Pet(PetType.PIG, "Plopper"),
+                new Pet(PetType.CAT, "Snowball"),
+                new Pet(PetType.DOG, "Santa's Little Helper"))
+    .toModel();
+----
+====
+
+=== Seed
+
+Before creating an object, Instancio initialises a random seed value.
+This seed value is used internally by the pseudorandom number generator, that is, `java.util.Random`.
+Instancio ensures that the same instance of the random number generator is used throughout object creation, from start to finish.
+This constraint means that Instancio can reproduce the same object again by using the same seed value.
+This feature allows reproducing failed tests (see the section on <<reproducing-tests, reproducing tests with JUnit>>).
+
+In addition, Instancio takes care in generating values for classes like `UUID` and `LocalDateTime`, where a minor difference in values can cause an object equality check to fail.
+These classes are generated in such a way, that for a given seed value, the generated values will be the same.
+To illustrate with an example, we will use the following `SamplePojo` class.
+
+====
+.Sample POJO
+[source%nowrap,java]
+----
+
+class SamplePojo {
+    private UUID uuid;
+    private LocalDateTime localDateTime;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SamplePojo)) return false;
+        SamplePojo p = (SamplePojo) o;
+        return uuid.equals(p.uuid) && localDateTime.equals(p.localDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, localDateTime);
+    }
+}
+----
+====
+
+By supplying the same seed value, the same object is generated:
+
+====
+.Generating two SamplePojo instances with the same seed
+[source%nowrap,java]
+----
+final int seed = 123;
+
+SamplePojo pojo1 = Instancio.of(SamplePojo.class)
+    .withSeed(seed)
+    .create();
+
+SamplePojo pojo2 = Instancio.of(SamplePojo.class)
+    .withSeed(seed)
+    .create();
+
+assertThat(pojo1).isEqualTo(pojo2);
+----
+====
+
+If the objects are printed, both produce the same output:
+
+----
+SamplePojo(
+  uuid=3bf992ad-1121-36a2-826d-94112bf1d82b,
+  localDateTime=2069-10-15T10:28:31.940
+)
+----
+
+[WARNING]
+While the generated values are the same, it is not recommended to write assertions using hard-coded values.

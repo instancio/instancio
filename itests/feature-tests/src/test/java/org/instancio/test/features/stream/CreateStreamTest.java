@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 
-@NonDeterministicTag("Assuming unique Strings are generated")
+@NonDeterministicTag("Assumes no String collisions")
 @FeatureTag(Feature.STREAM)
 class CreateStreamTest {
 

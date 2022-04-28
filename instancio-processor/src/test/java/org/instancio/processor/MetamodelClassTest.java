@@ -22,7 +22,7 @@ import javax.lang.model.element.QualifiedNameable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-class MetaModelClassTest {
+class MetamodelClassTest {
 
     private static final String SUFFIX = "$";
 
@@ -31,13 +31,13 @@ class MetaModelClassTest {
         final QualifiedNameable outerType = ElementMocks.mockClassElementWithPackage(
                 "Outer", "org.example.Outer", "org.example");
 
-        final MetaModelClass modelClass = new MetaModelClass(outerType, SUFFIX);
+        final MetamodelClass modelClass = new MetamodelClass(outerType, SUFFIX);
 
         assertThat(modelClass.getName()).isEqualTo("org.example.Outer");
         assertThat(modelClass.getSimpleName()).isEqualTo("Outer");
         assertThat(modelClass.getPackageName()).isEqualTo("org.example");
-        assertThat(modelClass.getMetaModelSimpleName()).isEqualTo("Outer" + SUFFIX);
-        assertThat(modelClass.getMetaModelClassName()).isEqualTo("org.example.Outer" + SUFFIX);
+        assertThat(modelClass.getMetamodelSimpleName()).isEqualTo("Outer" + SUFFIX);
+        assertThat(modelClass.getMetamodelClassName()).isEqualTo("org.example.Outer" + SUFFIX);
     }
 
     @Test
@@ -49,12 +49,12 @@ class MetaModelClassTest {
         when(innerType.getSimpleName().toString()).thenReturn("Inner");
         when(innerType.getEnclosingElement()).thenReturn(outerType);
 
-        final MetaModelClass modelClass = new MetaModelClass(innerType, SUFFIX);
+        final MetamodelClass modelClass = new MetamodelClass(innerType, SUFFIX);
 
         assertThat(modelClass.getName()).isEqualTo("org.example.Outer.Inner");
         assertThat(modelClass.getSimpleName()).isEqualTo("Inner");
         assertThat(modelClass.getPackageName()).isEqualTo("org.example");
-        assertThat(modelClass.getMetaModelSimpleName()).isEqualTo("Inner" + SUFFIX);
-        assertThat(modelClass.getMetaModelClassName()).isEqualTo("org.example.Outer.Inner" + SUFFIX);
+        assertThat(modelClass.getMetamodelSimpleName()).isEqualTo("Inner" + SUFFIX);
+        assertThat(modelClass.getMetamodelClassName()).isEqualTo("org.example.Outer.Inner" + SUFFIX);
     }
 }

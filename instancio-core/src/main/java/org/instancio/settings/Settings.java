@@ -73,7 +73,7 @@ public class Settings {
      * @param map to create settings from
      * @return settings
      */
-    public static Settings from(final Map<?, ?> map) {
+    public static Settings from(final Map<Object, Object> map) {
         final Settings settings = new Settings();
 
         map.forEach((k, v) -> {

@@ -45,8 +45,7 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
         final ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.getInstance();
         final ThreadLocalSettings threadLocalSettings = ThreadLocalSettings.getInstance();
 
-        ExtensionSupport.processSeedAnnotation(context, threadLocalRandom);
-        ExtensionSupport.processWithSettingsAnnotation(context, threadLocalSettings);
+        ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
 
         final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
