@@ -39,7 +39,7 @@ Instancio with [JUnit 5 integration](#junit-5-integration):
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -50,7 +50,7 @@ Instancio standalone:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
         <scope>test</scope>
     </dependency>
 ```
