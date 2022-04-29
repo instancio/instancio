@@ -1,11 +1,12 @@
 = Instancio User Guide
 :stylesheet: style.css
-:revdate: {docdate}
+:revnumber: {latest-release-version}
 :toc: left
 :toclevels: 4
 :icons: font
 :sectanchors:
 :source-highlighter: coderay
+:docinfo:
 :Author: Arman Sharif
 include::link-attributes.adoc[]
 

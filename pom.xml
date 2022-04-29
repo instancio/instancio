@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-parent</artifactId>
@@ -51,6 +52,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <sonar.organization>instancio</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <latest.release.version>1.2.1</latest.release.version>
         <version.apache.commons>3.12.0</version.apache.commons>
         <version.assertj>3.22.0</version.assertj>
         <version.equalsverifier>3.9</version.equalsverifier>
@@ -112,6 +114,21 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>update-latest-release-version</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                        <configuration>
+                            <property>latest.release.version</property>
+                            <newVersion>${project.version}</newVersion>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <build>
@@ -137,6 +154,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.10.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -217,9 +239,10 @@
                     <configuration>
                         <!-- install release jars into local m2
                              (required for the Gradle test module to work during release) -->
-                        <preparationGoals>install</preparationGoals>
+                        <preparationGoals>versions:set-property install</preparationGoals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <localCheckout>true</localCheckout>
+                        <arguments>-Pupdate-latest-release-version</arguments>
                     </configuration>
                 </plugin>
             </plugins>
