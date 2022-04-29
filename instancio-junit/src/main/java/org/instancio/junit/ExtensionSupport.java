@@ -34,7 +34,6 @@ import static java.util.stream.Collectors.joining;
 
 class ExtensionSupport {
 
-
     static void processAnnotations(final ExtensionContext context,
                                    final ThreadLocalRandom threadLocalRandom,
                                    final ThreadLocalSettings threadLocalSettings) {
@@ -51,9 +50,6 @@ class ExtensionSupport {
     private static void processSeedAnnotation(final ExtensionContext context,
                                               final ThreadLocalRandom threadLocalRandom) {
 
-        if (threadLocalRandom.get() != null) {
-            return;
-        }
         final Optional<Method> testMethod = context.getTestMethod();
         if (testMethod.isPresent()) {
             final Seed seedAnnotation = testMethod.get().getAnnotation(Seed.class);
@@ -68,9 +64,6 @@ class ExtensionSupport {
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     private static void processWithSettingsAnnotation(final ExtensionContext context,
                                                       final ThreadLocalSettings threadLocalSettings) {
-        if (threadLocalSettings.get() != null) {
-            return;
-        }
 
         final Optional<Class<?>> testClass = context.getTestClass();
         if (!testClass.isPresent()) {

@@ -22,11 +22,13 @@ import org.instancio.util.Verify;
 
 public class TextPatternGenerator implements Generator<String> {
     private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
+            + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
             + "%n\t#c - lower case character [a-z]"
             + "%n\t#C - upper case character [A-Z]"
             + "%n\t#d - digit [0-9]"
             + "%n\t## - hash symbol escape%n");
 
+    private static final char ALNUM_CHAR = 'a';
     private static final char LCASE_CHAR = 'c';
     private static final char UCASE_CHAR = 'C';
     private static final char DIGIT = 'd';
@@ -52,7 +54,9 @@ public class TextPatternGenerator implements Generator<String> {
                             + "Expected a character after the last '#'");
                 }
                 final char tag = p[i++];
-                if (tag == LCASE_CHAR) {
+                if (tag == ALNUM_CHAR) {
+                    res.append(random.alphanumericCharacter());
+                } else if (tag == LCASE_CHAR) {
                     res.append(random.lowerCaseCharacter());
                 } else if (tag == UCASE_CHAR) {
                     res.append(random.upperCaseCharacter());

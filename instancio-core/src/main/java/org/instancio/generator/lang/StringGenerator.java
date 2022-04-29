@@ -146,7 +146,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
             return random.mixedCaseAlphabetic(length);
         }
         if (stringType == StringType.ALPHANUMERIC) {
-            return random.alphaNumeric(length);
+            return random.alphanumeric(length);
         }
         if (stringType == StringType.DIGITS) {
             return random.digits(length);

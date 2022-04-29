@@ -57,7 +57,7 @@ Person personWithoutAgeAndAddress = Instancio.of(personModel)
 ----
 ====
 
-It should be noted that generic types can also be created using the `Instancio.of(Class)` methods and specifying the type parameters manually:
+It should be noted that generic types can also be created using the `Instancio.of(Class)` method and specifying the type parameters manually:
 
 ====
 [source%nowrap,java]
@@ -146,6 +146,8 @@ Select.allInts()                                     // <6>
 The `allXxx()` methods such as `allInts()` , are convenience methods for selecting both, the primitive and wrapper types.
 For example, `allInts()` is defined as `all(all(int.class), all(Integer.class))`.
 
+All of the above methods return the {SelectorGroup} type, a container for one or more {Selector}s. For example, `Select.field()` methods both return a group containing a single selector, the one targeting the specified field.
+
 ====
 .Examples of using selectors
 [source%nowrap,java]
@@ -175,7 +177,7 @@ Objects created by Instancio can be customised using the `supply()` and `generat
 
 The `generate()` method provides access to built-in generators for core types from the JDK, such strings, numeric types, dates, arrays, collections, and so on.
 It allows modifying generation parameters for these types in order to fine-tune the data.
-The usage is shown in the following example, where the `gen` parameter (of type {Generators}) exposes the available generators in order to simplify discovery of the available generators through IDE auto-completion.
+The usage is shown in the following example, where the `gen` parameter (of type {Generators}) exposes the available generators to simplify their discovery using IDE auto-completion.
 
 ====
 .Example of using generate()
@@ -358,7 +360,7 @@ The disadvantage, however, is that they can only be used to update mutable types
 
 ==== Ignoring Fields or Classes
 
-By default, Instancio will attempt to populate every non-static field with a non-null value.
+By default, Instancio will attempt to populate every non-static field value.
 The `ignore` method can be used where this is not desirable:
 
 ====
@@ -402,7 +404,7 @@ Person person = Instancio.of(Person.class)
 ====
 
 Some built-in generators also support marking values as nullable.
-In addition, Collection, Map, and Array generators allow specifying whether elements, key, or values are nullable.
+In addition, Collection, Map, and Array generators allow specifying whether elements, keys or values are nullable.
 
 ====
 .Example: specifying nullability using the collection generator
@@ -479,12 +481,12 @@ Person person = Instancio.of(Person.class)
 
 <1> If `Pet` is an abstract type, then without the mapping all `Pet` instances will be `null` since Instancio would not be able to resolve the implementation class.
 <2> Multiple types can be mapped as long as the subtype is valid for all of them.
-<3> Assuming `Person` has an `Address` field, where `Address` is a superclass of `AddressImpl`.
+<3> Assuming `Person` has an `Address` field, where `Address` is the superclass of `AddressImpl`.
 
 [[using-models]]
 === Using Models
 
-A {Model} is a template for creating objects, which encapsulates all the generation parameters specified using the builder API.
+A {Model} is a template for creating objects which encapsulates all the generation parameters specified using the builder API.
 For example, the following model of the Simpson's household can be used to create individual Simpson characters.
 
 ====

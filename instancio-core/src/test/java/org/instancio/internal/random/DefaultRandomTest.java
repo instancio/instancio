@@ -183,7 +183,7 @@ class DefaultRandomTest {
             for (int i = 0; i < SAMPLE_SIZE; i++) {
                 final int length = random.intRange(0, 5);
 
-                assertThat(random.alphaNumeric(length))
+                assertThat(random.alphanumeric(length))
                         .hasSize(length)
                         .containsPattern(ALPHANUMERIC_PATTERN);
             }

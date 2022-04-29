@@ -18,6 +18,8 @@ package org.instancio.generator.text;
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.random.DefaultRandom;
+import org.instancio.test.support.tags.NonDeterministicTag;
+import org.instancio.util.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -27,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TextPatternGeneratorTest {
     private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
+            + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
             + "%n\t#c - lower case character [a-z]"
             + "%n\t#C - upper case character [A-Z]"
             + "%n\t#d - digit [0-9]"
@@ -38,6 +41,21 @@ class TextPatternGeneratorTest {
     @ParameterizedTest
     void literal(final String pattern) {
         assertThat(generate(pattern)).isEqualTo(pattern);
+    }
+
+    @Test
+    void alphanumeric() {
+        assertThat(generate("#a")).matches("^[a-zA-Z\\d]$");
+    }
+
+    @Test
+    @NonDeterministicTag("Assumes that generating a string of given length will produce at least one of each character types")
+    void alphanumericContainsLowerUpperAndDigit() {
+        final int length = 500;
+        assertThat(generate(StringUtils.repeat("#a", length)))
+                .containsPattern("[a-z]")
+                .containsPattern("[A-Z]")
+                .containsPattern("\\d");
     }
 
     @Test
@@ -54,8 +72,8 @@ class TextPatternGeneratorTest {
 
     @Test
     void digits() {
-        assertThat(generate("#d")).matches("^[0-9]$");
-        assertThat(generate("#d#d")).matches("^[0-9]{2}$");
+        assertThat(generate("#d")).matches("^\\d$");
+        assertThat(generate("#d#d")).matches("^\\d{2}$");
     }
 
     @Test
@@ -66,7 +84,7 @@ class TextPatternGeneratorTest {
 
     @Test
     void mixed() {
-        assertThat(generate("#c#C#d###c#C#d")).matches("^[a-z][A-Z][0-9]#[a-z][A-Z][0-9]$");
+        assertThat(generate("#c#C#d###c#C#d")).matches("^[a-z][A-Z]\\d#[a-z][A-Z]\\d$");
     }
 
     @ValueSource(strings = {"#", "###", "#c#"})
@@ -79,10 +97,10 @@ class TextPatternGeneratorTest {
 
     @Test
     void errorMessage() {
-        final String pattern = "b#ad";
+        final String pattern = "b#xd";
         assertThatThrownBy(() -> generate(pattern))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Text pattern '%s' contains an invalid hashtag '#a'", pattern)
+                .hasMessageContaining("Text pattern '%s' contains an invalid hashtag '#x'", pattern)
                 .hasMessageContaining(ALLOWED_HASHTAGS_MESSAGE);
     }
 
