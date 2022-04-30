@@ -59,6 +59,7 @@ public enum Feature {
     IGNORE,
     NULLABLE,
 
+    SET_VALUE,
     SUPPLY_VIA_SUPPLIER,
     SUPPLY_VIA_GENERATOR,
     GENERATE,

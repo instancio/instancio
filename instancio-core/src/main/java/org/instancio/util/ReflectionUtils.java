@@ -78,14 +78,6 @@ public class ReflectionUtils {
         }
     }
 
-    public static Object safeStaticFieldValue(final Class<?> klass, final String fieldName) {
-        try {
-            return klass.getDeclaredField(fieldName).get(null);
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
     public static boolean isConcrete(Class<?> klass) {
         return !klass.isInterface() && !Modifier.isAbstract(klass.getModifiers());
     }
