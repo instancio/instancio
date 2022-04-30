@@ -270,7 +270,7 @@
                     <configuration>
                         <!-- install release jars into local m2
                              (required for the Gradle test module to work during release) -->
-                        <preparationGoals>versions:set-property install</preparationGoals>
+                        <preparationGoals>versions:set-property versions:commit install</preparationGoals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <localCheckout>true</localCheckout>
                         <arguments>-Pupdate-latest-release-version</arguments>
