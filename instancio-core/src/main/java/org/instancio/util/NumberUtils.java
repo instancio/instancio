@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class NumberUtils {
+@SuppressWarnings("PMD.UseConcurrentHashMap")
+public final class NumberUtils {
 
     private static final Map<Class<?>, Number> NUMERIC_MIN_VALUES = new HashMap<>();
     private static final Map<Class<?>, Number> NUMERIC_MAX_VALUES = new HashMap<>();

@@ -51,6 +51,7 @@ class AncestorTree {
     /**
      * Maps object instance to its parent instance.
      */
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private final Map<Object, AncestorTreeNode> idMap = new IdentityHashMap<>();
 
     void setObjectAncestor(@Nullable final Object obj, final AncestorTreeNode ancestor) {
@@ -60,6 +61,7 @@ class AncestorTree {
         }
     }
 
+    @SuppressWarnings("PMD.AccessorMethodGeneration")
     Object getObjectAncestor(@Nullable final Object obj, final Node nodeToCreate) {
         AncestorTreeNode ancestor = idMap.get(obj);
 
@@ -77,7 +79,7 @@ class AncestorTree {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder(512);
         sb.append(getClass().getSimpleName()).append(" {\n");
         idMap.forEach((k, v) -> sb
                 .append("  [").append(System.identityHashCode(k)).append("] ")
@@ -85,7 +87,7 @@ class AncestorTree {
                 .append(" -> ")
                 .append(v == null ? "null" : v.getClass().getSimpleName())
                 .append(" [").append(System.identityHashCode(v)).append("]\n"));
-        return sb.append("}").toString();
+        return sb.append('}').toString();
     }
 
 

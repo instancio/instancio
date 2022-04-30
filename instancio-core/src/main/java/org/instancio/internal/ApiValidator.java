@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ApiValidator {
+public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
     private static final String CREATE_TYPE_TOKEN_HELP =

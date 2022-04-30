@@ -17,16 +17,16 @@ package org.instancio.util;
 
 import java.util.function.Supplier;
 
-public class ObjectUtils {
+public final class ObjectUtils {
     private ObjectUtils() {
         //non-instantiable
     }
 
-    public static <T> T defaultIfNull(T value, T defaultValue) {
+    public static <T> T defaultIfNull(final T value, final T defaultValue) {
         return value == null ? defaultValue : value;
     }
 
-    public static <T> T defaultIfNull(T value, Supplier<T> defaultValue) {
+    public static <T> T defaultIfNull(final T value, final Supplier<T> defaultValue) {
         return value == null ? defaultValue.get() : value;
     }
 }

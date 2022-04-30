@@ -19,5 +19,5 @@ import org.instancio.generator.GeneratorSpec;
 
 public interface OneOfArrayGeneratorSpec<T> extends GeneratorSpec<T> {
 
-    OneOfArrayGeneratorSpec<T> oneOf(T[] values);
+    OneOfArrayGeneratorSpec<T> oneOf(T... values);
 }

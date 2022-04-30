@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal>
         implements NumberGeneratorSpec<BigDecimal> {
 
-    private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(0.000001d);
+    private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(0.000_001d);
     private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
 
     public BigDecimalGenerator(final GeneratorContext context) {

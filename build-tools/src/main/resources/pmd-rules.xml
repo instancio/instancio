@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright 2022 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<ruleset name="Custom Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>Instancio PMD rule set</description>
+
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="AccessorClassGeneration"/>
+        <exclude name="GuardLogStatement"/>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="ConfusingTernary"/>
+        <exclude name="ControlStatementBraces"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="LongVariable"/>
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="ShortClassName"/>
+        <exclude name="ShortMethodName"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="UselessParentheses"/>
+    </rule>
+    <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal">
+        <priority>5</priority>
+    </rule>
+
+    <rule ref="category/java/design.xml">
+        <exclude name="AvoidCatchingGenericException"/>
+    </rule>
+    <rule ref="category/java/design.xml/DataClass">
+        <priority>5</priority>
+    </rule>
+    <rule ref="category/java/design.xml/LawOfDemeter">
+        <priority>5</priority>
+    </rule>
+    <rule ref="category/java/design.xml/TooManyMethods">
+        <priority>5</priority>
+    </rule>
+
+    <rule ref="category/java/documentation.xml">
+        <priority>5</priority>
+    </rule>
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="AvoidAccessibilityAlteration"/>
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+        <exclude name="AvoidFieldNameMatchingTypeName"/>
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="MissingSerialVersionUID"/>
+    </rule>
+    <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
+        <priority>5</priority>
+    </rule>
+
+    <rule ref="category/java/multithreading.xml"/>
+
+    <rule ref="category/java/performance.xml">
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+        <exclude name="AddEmptyString"/>
+    </rule>
+    <rule ref="category/java/performance.xml/UseStringBufferForStringAppends">
+        <priority>5</priority>
+    </rule>
+
+    <rule ref="category/java/security.xml"/>
+
+</ruleset>

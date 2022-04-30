@@ -29,7 +29,7 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
 
     public CollectionGeneratorSpecImpl(final GeneratorContext context) {
         super(context);
-        this.type = null; // must be either supplied by user, or obtained from the field declaration
+        this.type = null; //NOPMD: must be either supplied by user, or obtained from the field declaration
     }
 
     @Override

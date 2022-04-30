@@ -23,7 +23,7 @@ import org.instancio.settings.Keys;
 
 public class CharacterGenerator extends AbstractGenerator<Character> {
 
-    private boolean nullable;
+    private final boolean nullable;
 
     public CharacterGenerator(final GeneratorContext context) {
         super(context);

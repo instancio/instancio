@@ -58,7 +58,7 @@ public final class Logger {
         return String.format(msg, args);
     }
 
-    private static Exception unpackException(final Object[] args) {
+    private static Exception unpackException(final Object... args) {
         if (args.length > 0 && args[args.length - 1] instanceof Exception) {
             return (Exception) args[args.length - 1];
         }

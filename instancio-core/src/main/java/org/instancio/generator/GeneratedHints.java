@@ -15,8 +15,6 @@
  */
 package org.instancio.generator;
 
-import org.instancio.util.ObjectUtils;
-
 import javax.annotation.concurrent.Immutable;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +32,7 @@ public class GeneratedHints {
     private final boolean nullableMapValues;
     private final List<Object> withElements;
 
+    @SuppressWarnings("PMD.AccessorMethodGeneration")
     private GeneratedHints(final Builder builder) {
         dataStructureSize = builder.dataStructureSize;
         ignoreChildren = builder.ignoreChildren;
@@ -41,7 +40,9 @@ public class GeneratedHints {
         nullableElements = builder.nullableElements;
         nullableMapKeys = builder.nullableKeys;
         nullableMapValues = builder.nullableValues;
-        withElements = ObjectUtils.defaultIfNull(builder.withElements, Collections.emptyList());
+        withElements = builder.withElements == null
+                ? Collections.emptyList()
+                : Collections.unmodifiableList(builder.withElements);
     }
 
     /**

@@ -45,7 +45,7 @@ import java.util.Set;
 public final class InstancioAnnotationProcessor extends AbstractProcessor {
     private static final String CLASSES_ATTRIBUTE = "classes";
     private static final String TRUE = "true";
-    private static final MetamodelSourceGenerator sourceGenerator = new MetamodelSourceGenerator();
+    private final MetamodelSourceGenerator sourceGenerator = new MetamodelSourceGenerator();
 
     private Types typeUtils;
     private Elements elementUtils;
@@ -53,6 +53,7 @@ public final class InstancioAnnotationProcessor extends AbstractProcessor {
     private String classNameSuffix;
 
     @Override
+    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     public synchronized void init(final ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         this.typeUtils = processingEnv.getTypeUtils();

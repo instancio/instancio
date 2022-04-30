@@ -18,7 +18,7 @@ package org.instancio.generator;
 import javax.annotation.Nullable;
 import java.util.StringJoiner;
 
-public class GeneratorResult {
+public final class GeneratorResult {
     private static final GeneratorResult NULL_RESULT = new GeneratorResult(
             null, GeneratedHints.builder().ignoreChildren(true).build());
 

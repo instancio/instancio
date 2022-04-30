@@ -39,7 +39,8 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     protected boolean nullable;
     protected boolean nullableKeys;
     protected boolean nullableValues;
-    protected Class<?> type = HashMap.class;
+    @SuppressWarnings("PMD.LooseCoupling")
+    protected Class<?> type = HashMap.class; // default map type
 
     public MapGenerator(final GeneratorContext context) {
         super(context);
@@ -50,6 +51,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
         this.nullableValues = context.getSettings().get(Keys.MAP_VALUES_NULLABLE);
     }
 
+    @Override
     public MapGeneratorSpec<K, V> type(final Class<?> type) {
         this.type = Verify.notNull(type, "Type must not be null");
         return this;
@@ -101,7 +103,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
             return random.diceRoll(nullable) ? null : (Map<K, V>) type.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             LOG.debug("Error creating instance of: {}", type, ex);
-            return null;
+            return null; // NOPMD
         }
     }
 

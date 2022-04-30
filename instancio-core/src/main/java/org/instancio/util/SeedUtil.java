@@ -20,13 +20,13 @@ import java.util.Random;
 
 public final class SeedUtil {
 
-    private static final Random random = new SecureRandom();
+    private static final Random RANDOM = new SecureRandom();
 
     private SeedUtil() {
         // non-instantiable
     }
 
     public static int randomSeed() {
-        return random.nextInt(Integer.MAX_VALUE);
+        return RANDOM.nextInt(Integer.MAX_VALUE);
     }
 }

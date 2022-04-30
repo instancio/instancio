@@ -21,7 +21,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.joining;
 
-public class Format {
+public final class Format {
     private Format() {
         // non-instantiable
     }

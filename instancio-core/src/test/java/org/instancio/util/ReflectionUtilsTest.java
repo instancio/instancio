@@ -15,11 +15,17 @@
  */
 package org.instancio.util;
 
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
 import org.junit.jupiter.api.Test;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,4 +52,27 @@ class ReflectionUtilsTest {
         assertThat(ReflectionUtils.getField(Phone.class, "countryCode").getName()).isEqualTo("countryCode");
     }
 
+    @Test
+    void getAnnotatedFields() {
+        final List<Field> fields = ReflectionUtils.getAnnotatedFields(WithAnnotatedField.class, Nullable.class);
+
+        assertThat(fields).hasSize(2)
+                .extracting(Field::getName)
+                .contains("foo", "bar");
+    }
+
+    @Test
+    void getAnnotatedFieldsReturnsEmptyList() {
+        assertThat(ReflectionUtils.getAnnotatedFields(StringHolder.class, Nullable.class)).isEmpty();
+    }
+
+    @SuppressWarnings({"unused", "NotNullFieldNotInitialized", "NullableProblems"})
+    private static class WithAnnotatedField {
+        @Nullable
+        private String foo;
+        @Nullable
+        private Integer bar;
+        @Nonnull
+        private Integer baz;
+    }
 }

@@ -38,9 +38,9 @@ import org.instancio.generator.util.concurrent.atomic.AtomicLongGenerator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GeneratorApiMethodNames {
+public final class GeneratorApiMethodNames {
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "PMD.UseConcurrentHashMap"})
     private static final Map<Class<? extends GeneratorSpec>, String> SPECS = new HashMap<>();
 
     static {

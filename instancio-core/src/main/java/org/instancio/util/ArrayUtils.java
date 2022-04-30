@@ -17,8 +17,9 @@ package org.instancio.util;
 
 import org.instancio.Random;
 
-public class ArrayUtils {
+public final class ArrayUtils {
 
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     public static void shuffle(final Object arr, final Random random) {
         if (arr instanceof Object[]) {
             shuffleArray((Object[]) arr, random);
@@ -43,82 +44,82 @@ public class ArrayUtils {
         }
     }
 
-    private static void shuffleArray(Object[] arr, Random random) {
+    private static void shuffleArray(final Object[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            Object tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final Object tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }
     }
 
-    private static void shuffleArray(byte[] arr, Random random) {
+    private static void shuffleArray(final byte[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            byte tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final byte tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }
     }
 
-    private static void shuffleArray(short[] arr, Random random) {
+    private static void shuffleArray(final short[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            short tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final short tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }
     }
 
-    private static void shuffleArray(int[] arr, Random random) {
+    private static void shuffleArray(final int[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            int tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final int tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }
     }
 
-    private static void shuffleArray(long[] arr, Random random) {
+    private static void shuffleArray(final long[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            long tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final long tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }
     }
 
-    private static void shuffleArray(float[] arr, Random random) {
+    private static void shuffleArray(final float[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            float tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final float tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }
     }
 
-    private static void shuffleArray(double[] arr, Random random) {
+    private static void shuffleArray(final double[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            double tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final double tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }
     }
 
-    private static void shuffleArray(char[] arr, Random random) {
+    private static void shuffleArray(final char[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            char tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final char tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }
     }
 
-    private static void shuffleArray(boolean[] arr, Random random) {
+    private static void shuffleArray(final boolean[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            int r = random.intRange(0, i + 1);
-            boolean tmp = arr[i];
+            final int r = random.intRange(0, i + 1);
+            final boolean tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
         }

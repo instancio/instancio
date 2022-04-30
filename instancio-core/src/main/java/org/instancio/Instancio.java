@@ -121,7 +121,7 @@ import java.util.stream.Stream;
  * <p>
  * This will not generate a warning, though the syntax is slightly more awkward.
  */
-public class Instancio {
+public final class Instancio {
 
     private Instancio() {
         // non-instantiable

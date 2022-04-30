@@ -25,7 +25,8 @@ import java.util.function.Supplier;
 
 import static org.instancio.util.SystemProperties.isFailOnError;
 
-public class ExceptionHandler {
+@SuppressWarnings("PMD.AvoidRethrowingException")
+public final class ExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
 
     private ExceptionHandler() {
@@ -62,7 +63,7 @@ public class ExceptionHandler {
                 throw ex;
             }
             logSuppressed(ex);
-        } catch (Throwable ex) {
+        } catch (Throwable ex) { //NOPMD
             if (isFailOnError()) {
                 throw InstancioException.unhandledException(ex);
             }

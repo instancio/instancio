@@ -23,7 +23,7 @@ import org.instancio.settings.Keys;
 
 public class BooleanGenerator extends AbstractGenerator<Boolean> {
 
-    private boolean nullable;
+    private final boolean nullable;
 
     public BooleanGenerator(final GeneratorContext context) {
         super(context);

@@ -49,7 +49,7 @@ public class Instantiator {
     private <T> T createInstance(final Class<T> klass, final InstantiationStrategy strategy) {
         try {
             return strategy.createInstance(klass);
-        } catch (Throwable ex) {
+        } catch (Throwable ex) { //NOPMD
             LOG.trace("'{}' failed instantiating class '{}'", strategy.getClass().getSimpleName(), klass.getName(), ex);
         }
         return null;

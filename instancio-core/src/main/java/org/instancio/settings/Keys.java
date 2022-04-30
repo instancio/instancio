@@ -29,13 +29,14 @@ import java.util.Optional;
 /**
  * Defines all keys supported by Instancio.
  */
-public class Keys {
+@SuppressWarnings("PMD.UseConcurrentHashMap")
+public final class Keys {
     private static final int MIN_SIZE = 2;
     private static final int MAX_SIZE = 6;
-    private static final int NUMERIC_MAX = 10000;
+    private static final int NUMERIC_MAX = 10_000;
 
-    private static final RangeAdjuster minAdjuster = new RangeAdjuster.ForMin(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
-    private static final RangeAdjuster maxAdjuster = new RangeAdjuster.ForMax(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+    private static final RangeAdjuster MIN_ADJUSTER = new RangeAdjuster.ForMin(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+    private static final RangeAdjuster MAX_ADJUSTER = new RangeAdjuster.ForMax(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
     private static final List<SettingKey> ALL_KEYS = new ArrayList<>();
 
     /**
@@ -45,11 +46,11 @@ public class Keys {
     /**
      * Specifies maximum length for arrays, default is 6.
      */
-    public static final SettingKey ARRAY_MAX_LENGTH = register("array.max.length", Integer.class, MAX_SIZE, maxAdjuster);
+    public static final SettingKey ARRAY_MAX_LENGTH = register("array.max.length", Integer.class, MAX_SIZE, MAX_ADJUSTER);
     /**
      * Specifies minimum length for arrays, default is 2.
      */
-    public static final SettingKey ARRAY_MIN_LENGTH = register("array.min.length", Integer.class, MIN_SIZE, minAdjuster);
+    public static final SettingKey ARRAY_MIN_LENGTH = register("array.min.length", Integer.class, MIN_SIZE, MIN_ADJUSTER);
     /**
      * Specifies whether a null can be generated for arrays, default is {@code false}.
      */
@@ -61,11 +62,11 @@ public class Keys {
     /**
      * Specifies maximum value for bytes, default value is 127.
      */
-    public static final SettingKey BYTE_MAX = register("byte.max", Byte.class, (byte) 127, maxAdjuster);
+    public static final SettingKey BYTE_MAX = register("byte.max", Byte.class, (byte) 127, MAX_ADJUSTER);
     /**
      * Specifies minimum value for bytes, default value is 1.
      */
-    public static final SettingKey BYTE_MIN = register("byte.min", Byte.class, (byte) 1, minAdjuster);
+    public static final SettingKey BYTE_MIN = register("byte.min", Byte.class, (byte) 1, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Byte type, default is {@code false}.
      */
@@ -81,11 +82,11 @@ public class Keys {
     /**
      * Specifies maximum size for collections, default is 6.
      */
-    public static final SettingKey COLLECTION_MAX_SIZE = register("collection.max.size", Integer.class, MAX_SIZE, maxAdjuster);
+    public static final SettingKey COLLECTION_MAX_SIZE = register("collection.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER);
     /**
      * Specifies minimum size for collections, default is 2.
      */
-    public static final SettingKey COLLECTION_MIN_SIZE = register("collection.min.size", Integer.class, MIN_SIZE, minAdjuster);
+    public static final SettingKey COLLECTION_MIN_SIZE = register("collection.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for collections, default is {@code false}.
      */
@@ -93,11 +94,11 @@ public class Keys {
     /**
      * Specifies maximum value for doubles, default value is 10000.
      */
-    public static final SettingKey DOUBLE_MAX = register("double.max", Double.class, (double) NUMERIC_MAX, maxAdjuster);
+    public static final SettingKey DOUBLE_MAX = register("double.max", Double.class, (double) NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for doubles, default value is 1.0.
      */
-    public static final SettingKey DOUBLE_MIN = register("double.min", Double.class, 1d, minAdjuster);
+    public static final SettingKey DOUBLE_MIN = register("double.min", Double.class, 1d, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Double type, default is {@code false}.
      */
@@ -105,11 +106,11 @@ public class Keys {
     /**
      * Specifies maximum value for floats, default value is 10000.
      */
-    public static final SettingKey FLOAT_MAX = register("float.max", Float.class, (float) NUMERIC_MAX, maxAdjuster);
+    public static final SettingKey FLOAT_MAX = register("float.max", Float.class, (float) NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for floats, default value is 1.
      */
-    public static final SettingKey FLOAT_MIN = register("float.min", Float.class, 1f, minAdjuster);
+    public static final SettingKey FLOAT_MIN = register("float.min", Float.class, 1f, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Float type, default is {@code false}.
      */
@@ -117,11 +118,11 @@ public class Keys {
     /**
      * Specifies maximum value for integers, default value is 10000.
      */
-    public static final SettingKey INTEGER_MAX = register("integer.max", Integer.class, NUMERIC_MAX, maxAdjuster);
+    public static final SettingKey INTEGER_MAX = register("integer.max", Integer.class, NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for integers, default value is 1.
      */
-    public static final SettingKey INTEGER_MIN = register("integer.min", Integer.class, 1, minAdjuster);
+    public static final SettingKey INTEGER_MIN = register("integer.min", Integer.class, 1, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Integer type, default is {@code false}.
      */
@@ -129,11 +130,11 @@ public class Keys {
     /**
      * Specifies maximum value for longs, default value is 10000.
      */
-    public static final SettingKey LONG_MAX = register("long.max", Long.class, (long) NUMERIC_MAX, maxAdjuster);
+    public static final SettingKey LONG_MAX = register("long.max", Long.class, (long) NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for longs, default value is 1.
      */
-    public static final SettingKey LONG_MIN = register("long.min", Long.class, 1L, minAdjuster);
+    public static final SettingKey LONG_MIN = register("long.min", Long.class, 1L, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Long type, default is {@code false}.
      */
@@ -145,11 +146,11 @@ public class Keys {
     /**
      * Specifies maximum size for maps, default is 6.
      */
-    public static final SettingKey MAP_MAX_SIZE = register("map.max.size", Integer.class, MAX_SIZE, maxAdjuster);
+    public static final SettingKey MAP_MAX_SIZE = register("map.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER);
     /**
      * Specifies minimum size for maps, default is 2.
      */
-    public static final SettingKey MAP_MIN_SIZE = register("map.min.size", Integer.class, MIN_SIZE, minAdjuster);
+    public static final SettingKey MAP_MIN_SIZE = register("map.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for maps, default is {@code false}.
      */
@@ -161,11 +162,11 @@ public class Keys {
     /**
      * Specifies maximum value for shorts, default value is 10000.
      */
-    public static final SettingKey SHORT_MAX = register("short.max", Short.class, (short) NUMERIC_MAX, maxAdjuster);
+    public static final SettingKey SHORT_MAX = register("short.max", Short.class, (short) NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for shorts, default value is 1.
      */
-    public static final SettingKey SHORT_MIN = register("short.min", Short.class, (short) 1, minAdjuster);
+    public static final SettingKey SHORT_MIN = register("short.min", Short.class, (short) 1, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Short type, default is {@code false}.
      */
@@ -177,11 +178,11 @@ public class Keys {
     /**
      * Specifies maximum length of strings, default is 10.
      */
-    public static final SettingKey STRING_MAX_LENGTH = register("string.max.length", Integer.class, 10, maxAdjuster);
+    public static final SettingKey STRING_MAX_LENGTH = register("string.max.length", Integer.class, 10, MAX_ADJUSTER);
     /**
      * Specifies minimum length of strings, default is 3.
      */
-    public static final SettingKey STRING_MIN_LENGTH = register("string.min.length", Integer.class, 3, minAdjuster);
+    public static final SettingKey STRING_MIN_LENGTH = register("string.min.length", Integer.class, 3, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for String type, default is {@code false}.
      */

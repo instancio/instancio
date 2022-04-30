@@ -19,13 +19,13 @@ import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import org.objenesis.instantiator.ObjectInstantiator;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ObjenesisInstantiationStrategy implements InstantiationStrategy {
 
     private final Objenesis objenesis = new ObjenesisStd();
-    private final Map<Class<?>, ObjectInstantiator<?>> cache = new HashMap<>();
+    private final Map<Class<?>, ObjectInstantiator<?>> cache = new ConcurrentHashMap<>();
 
     @Override
     @SuppressWarnings("unchecked")

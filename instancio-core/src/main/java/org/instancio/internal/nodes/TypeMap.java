@@ -31,6 +31,7 @@ import java.util.StringJoiner;
 /**
  * Helper class for mapping type variables to actual type arguments.
  */
+@SuppressWarnings("PMD.UseConcurrentHashMap")
 public class TypeMap {
 
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;

@@ -73,6 +73,7 @@ public class NodeFactory {
         return result;
     }
 
+    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     private Node createArrayNode(
             final Class<?> arrayClass,
             @Nullable final Type arrayGenericType,
@@ -179,6 +180,7 @@ public class NodeFactory {
                 : Optional.ofNullable(nodeContext.getClassSubtypeMap().get(targetClass));
     }
 
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     private Node createClassNode(
             final Class<?> targetClass,
             final @Nullable Type genericType,
@@ -214,6 +216,7 @@ public class NodeFactory {
                 "Error creating a class node for klass: %s, type: %s", actualClass.getName(), genericType));
     }
 
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private Map<Type, Type> createTypeMapForSubtype(final Class<?> type, final Class<?> subtype) {
         if (type == subtype) {
             return Collections.emptyMap();

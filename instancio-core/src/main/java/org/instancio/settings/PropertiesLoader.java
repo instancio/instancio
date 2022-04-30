@@ -31,7 +31,7 @@ public class PropertiesLoader {
         Verify.notNull(file, "Properties file must not be null");
 
         final Properties properties = new Properties();
-        try (InputStream inStream = getClass().getClassLoader().getResourceAsStream(file)) {
+        try (InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
             if (inStream == null) {
                 throw new InstancioException(String.format("Unable to load properties from '%s'", file));
             }
