@@ -25,8 +25,11 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
@@ -80,5 +83,24 @@ class CreateStreamTest {
         assertThat(results)
                 .hasSize(EXPECTED_SIZE)
                 .allSatisfy(s -> assertThat(s.length()).isEqualTo(overriddenLength));
+    }
+
+    @Test
+    void withSeed() {
+        final int seed = Instancio.create(int.class);
+
+        final List<UUID> list1 = Instancio.of(UUID.class)
+                .withSeed(seed)
+                .stream()
+                .limit(EXPECTED_SIZE)
+                .collect(toList());
+
+        final List<UUID> list2 = Instancio.of(UUID.class)
+                .withSeed(seed)
+                .stream()
+                .limit(EXPECTED_SIZE)
+                .collect(toList());
+
+        assertThat(list1).hasSize(EXPECTED_SIZE).isEqualTo(list2);
     }
 }
