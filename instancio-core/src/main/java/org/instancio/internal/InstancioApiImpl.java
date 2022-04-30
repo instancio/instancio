@@ -73,6 +73,12 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
+    public <V> InstancioApi<T> set(SelectorGroup selectorGroup, V value) {
+        modelContextBuilder.withSupplier(selectorGroup, () -> value);
+        return this;
+    }
+
+    @Override
     public <V> InstancioApi<T> supply(SelectorGroup selectorGroup, Supplier<V> supplier) {
         ApiValidator.validateSupplierOrGenerator(supplier);
         modelContextBuilder.withSupplier(selectorGroup, supplier);

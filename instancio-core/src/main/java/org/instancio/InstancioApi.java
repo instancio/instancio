@@ -122,6 +122,27 @@ public interface InstancioApi<T> {
     InstancioApi<T> withNullable(SelectorGroup selectors);
 
     /**
+     * Sets a value for a field or class.
+     * <p>
+     * Example: if a {@code Person} has a {@code List<PhoneNumber>}, the following
+     * will set all generated phone numbers' country codes to "+1".
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *             .supply(field(PhoneNumber.class, "phoneNumbers"), "+1")
+     *             .create();
+     * }</pre>
+     * <p>
+     * For supplying random values, see {@link #supply(SelectorGroup, Generator)}.
+     *
+     * @param selectors for fields and/or classes this method should be applied to
+     * @param value     value to set
+     * @param <V>       type of the value
+     * @return API builder reference
+     * @see #supply(SelectorGroup, Supplier)
+     */
+    <V> InstancioApi<T> set(SelectorGroup selectors, V value);
+
+    /**
      * Supplies a <b>non-random</b> value for a field or class using a {@link Supplier}.
      * <p>
      * Example:
