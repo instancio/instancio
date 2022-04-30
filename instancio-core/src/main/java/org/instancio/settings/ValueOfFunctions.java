@@ -20,8 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-class ValueOfFunctions {
-    private static final Map<Class<?>, Function<String, Object>> VALUEOF_FUNCTIONS = createMap();
+@SuppressWarnings("PMD.UseConcurrentHashMap")
+final class ValueOfFunctions {
+
+    private static final Map<Class<?>, Function<String, Object>> VALUE_OF_FUNCTIONS = createMap();
 
     private static Map<Class<?>, Function<String, Object>> createMap() {
         final Map<Class<?>, Function<String, Object>> fnMap = new HashMap<>();
@@ -36,7 +38,7 @@ class ValueOfFunctions {
     }
 
     static Function<String, Object> getFunction(final Class<?> type) {
-        return VALUEOF_FUNCTIONS.get(type);
+        return VALUE_OF_FUNCTIONS.get(type);
     }
 
     private ValueOfFunctions() {

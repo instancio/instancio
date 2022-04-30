@@ -13,26 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio;
-
-import java.lang.reflect.Type;
-import java.util.function.Supplier;
-
 /**
- * A supplier that provides {@link Type} information.
- *
- * @param <T> type being supplied
+ * Text generators.
  */
-// <T> is required to be present, even though not used directly here.
-@SuppressWarnings("unused")
-@FunctionalInterface
-public interface TypeTokenSupplier<T> extends Supplier<Type> {
+@ParametersAreNonnullByDefault
+package org.instancio.generator.text;
 
-    /**
-     * Returns type information.
-     *
-     * @return type
-     */
-    @Override
-    Type get();
-}
+import javax.annotation.ParametersAreNonnullByDefault;

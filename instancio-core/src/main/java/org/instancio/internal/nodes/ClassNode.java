@@ -33,7 +33,7 @@ import static java.util.stream.Collectors.toList;
 
 public class ClassNode extends Node {
 
-    private static final ClassFilter classFilter = new DefaultClassFilter();
+    private static final ClassFilter CLASS_FILTER = new DefaultClassFilter();
 
     public ClassNode(final NodeContext nodeContext,
                      final Class<?> klass,
@@ -65,7 +65,7 @@ public class ClassNode extends Node {
 
     @Override
     protected List<Node> collectChildren() {
-        return classFilter.isExcluded(getTargetClass())
+        return CLASS_FILTER.isExcluded(getTargetClass())
                 ? Collections.emptyList()
                 : makeChildren(getNodeContext(), getTargetClass());
     }

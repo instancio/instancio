@@ -29,7 +29,8 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     }
 
     @Override
-    public OneOfArrayGeneratorSpec<T> oneOf(final T[] values) {
+    @SafeVarargs
+    public final OneOfArrayGeneratorSpec<T> oneOf(final T... values) {
         this.values = ApiValidator.notEmpty(values, "Array must have at least one element");
         return this;
     }

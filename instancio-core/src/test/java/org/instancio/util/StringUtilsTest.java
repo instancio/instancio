@@ -46,6 +46,8 @@ class StringUtilsTest {
 
     @Test
     void repeat() {
+        assertThat(StringUtils.repeat("a", 0)).isEqualTo("");
+        assertThat(StringUtils.repeat("a", 1)).isEqualTo("a");
         assertThat(StringUtils.repeat("a", 3)).isEqualTo("aaa");
         assertThatThrownBy(() -> StringUtils.repeat("a", -1))
                 .isInstanceOf(IllegalArgumentException.class);

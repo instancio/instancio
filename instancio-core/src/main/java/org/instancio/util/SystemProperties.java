@@ -15,7 +15,7 @@
  */
 package org.instancio.util;
 
-public class SystemProperties {
+public final class SystemProperties {
 
     public static final String FAIL_ON_ERROR = "instancio.failOnError";
 

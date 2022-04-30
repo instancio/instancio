@@ -32,16 +32,19 @@ public final class Key implements SettingKey {
         this.rangeAdjuster = rangeAdjuster;
     }
 
+    @Override
     public String propertyKey() {
         return propertyKey;
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> Class<T> type() {
         return (Class<T>) type;
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T defaultValue() {
         return (T) defaultValue;
     }

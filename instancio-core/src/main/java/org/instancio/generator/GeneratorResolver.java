@@ -63,7 +63,6 @@ import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -74,15 +73,17 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class GeneratorResolver {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorResolver.class);
 
-    private final Map<Class<?>, Generator<?>> generators = new HashMap<>();
+    private final Map<Class<?>, Generator<?>> generators = new ConcurrentHashMap<>();
     private final GeneratorContext context;
 
     public GeneratorResolver(final GeneratorContext context) {

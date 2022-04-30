@@ -10,6 +10,15 @@
     <packaging>jar</packaging>
     <name>Instancio JUnit 5 Support</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.instancio</groupId>

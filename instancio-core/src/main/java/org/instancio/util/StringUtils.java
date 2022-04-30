@@ -28,14 +28,16 @@ public final class StringUtils {
         return s == null ? "" : s.trim();
     }
 
-    public static String repeat(String s, int times) {
+    public static String repeat(final String s, final int times) {
         if (times < 0) throw new IllegalArgumentException("Number of times must be positive: " + times);
         StringBuilder sb = new StringBuilder(s.length() * times);
-        while (times-- > 0) sb.append(s);
+        for (int i = 0; i < times; i++) {
+            sb.append(s);
+        }
         return sb.toString();
     }
 
-    public static boolean startsWithAny(String s, String... prefixes) {
+    public static boolean startsWithAny(final String s, final String... prefixes) {
         if (s == null) {
             return false;
         }

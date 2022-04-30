@@ -28,7 +28,6 @@ import org.instancio.generator.array.ArrayGenerator;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.PropertiesLoader;
 import org.instancio.settings.Settings;
-import org.instancio.util.ObjectUtils;
 import org.instancio.util.SeedUtil;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
@@ -55,6 +54,12 @@ import java.util.function.Supplier;
 import static org.instancio.util.ObjectUtils.defaultIfNull;
 import static org.instancio.util.ReflectionUtils.getField;
 
+@SuppressWarnings({
+        "PMD.ExcessiveImports",
+        "PMD.GodClass",
+        "PMD.TooManyFields",
+        "PMD.UseConcurrentHashMap"
+})
 public class ModelContext<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
@@ -147,7 +152,7 @@ public class ModelContext<T> {
             return new DefaultRandom(userSuppliedSeed);
         }
         // If running under JUnit extension, use the Random instance supplied by the extension
-        return ObjectUtils.defaultIfNull(
+        return defaultIfNull(
                 ThreadLocalRandom.getInstance().get(),
                 () -> new DefaultRandom(SeedUtil.randomSeed()));
     }
@@ -208,7 +213,7 @@ public class ModelContext<T> {
         for (SelectorGroup selectorGroup : ignoredSelectorGroups) {
             for (Selector target : selectorGroup.getSelectors()) {
                 if (target.selectorType() == SelectorType.FIELD) {
-                    final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetClass(), this.rootClass);
+                    final Class<?> targetType = defaultIfNull(target.getTargetClass(), this.rootClass);
                     this.ignoredFields.add(getField(targetType, target.getFieldName()));
                 } else {
                     this.ignoredClasses.add(target.getTargetClass());
@@ -220,7 +225,7 @@ public class ModelContext<T> {
     private void putNullable(final Set<SelectorGroup> nullableSelectorGroups) {
         for (SelectorGroup selectorGroup : nullableSelectorGroups) {
             for (Selector target : selectorGroup.getSelectors()) {
-                final Class<?> targetType = ObjectUtils.defaultIfNull(target.getTargetClass(), this.rootClass);
+                final Class<?> targetType = defaultIfNull(target.getTargetClass(), this.rootClass);
 
                 if (target.selectorType() == SelectorType.FIELD) {
                     final Field field = getField(targetType, target.getFieldName());
@@ -324,6 +329,7 @@ public class ModelContext<T> {
         return typeMap;
     }
 
+    @SuppressWarnings("PMD.AccessorClassGeneratio")
     public Builder<T> toBuilder() {
         final Builder<T> builder = new Builder<>(rootClass, rootType);
         builder.rootTypeParameters.addAll(this.rootTypeParameters);
@@ -338,6 +344,7 @@ public class ModelContext<T> {
         return builder;
     }
 
+    @SuppressWarnings("PMD.AccessorClassGeneratio")
     public static <T> Builder<T> builder(final Type rootType) {
         return new Builder<>(rootType);
     }

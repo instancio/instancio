@@ -29,7 +29,8 @@ public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
 
     public MapGeneratorSpecImpl(final GeneratorContext context) {
         super(context);
-        this.type = null; // must be either supplied by user, or obtained from the field declaration
+        // must be either supplied by user, or obtained from the field declaration
+        this.type = null; //NOPMD: overwrite default type
     }
 
     @Override

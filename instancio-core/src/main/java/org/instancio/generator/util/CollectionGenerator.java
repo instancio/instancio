@@ -40,7 +40,8 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     protected int maxSize;
     protected boolean nullable;
     protected boolean nullableElements;
-    protected Class<?> type;
+    @SuppressWarnings("PMD.LooseCoupling")
+    protected Class<?> type = ArrayList.class; // default collection type
     protected List<Object> withElements;
 
     public CollectionGenerator(final GeneratorContext context) {
@@ -49,7 +50,6 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         this.maxSize = context.getSettings().get(Keys.COLLECTION_MAX_SIZE);
         this.nullable = context.getSettings().get(Keys.COLLECTION_NULLABLE);
         this.nullableElements = context.getSettings().get(Keys.COLLECTION_ELEMENTS_NULLABLE);
-        this.type = ArrayList.class; // default collection type
     }
 
     @Override
@@ -108,7 +108,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
             return random.diceRoll(nullable) ? null : (Collection<T>) type.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             LOG.debug("Error creating instance of: {}", type, ex);
-            return null;
+            return null; // NOPMD
         }
     }
 

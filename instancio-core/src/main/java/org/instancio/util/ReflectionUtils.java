@@ -27,7 +27,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class ReflectionUtils {
+public final class ReflectionUtils {
 
     private ReflectionUtils() {
         // non-instantiable
@@ -39,12 +39,12 @@ public class ReflectionUtils {
             Method m = enumClass.getDeclaredMethod("values");
             return (E[]) m.invoke(null);
         } catch (Exception ex) {
-            throw new InstancioException("Error getting enum values for class: " + enumClass.getName());
+            throw new InstancioException("Error getting enum values for class: " + enumClass.getName(), ex);
         }
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    public static void setField(Object target, Field field, Object value) {
+    public static void setField(final Object target, final Field field, final Object value) {
         if (target == null) {
             return;
         }
@@ -78,7 +78,7 @@ public class ReflectionUtils {
         }
     }
 
-    public static boolean isConcrete(Class<?> klass) {
+    public static boolean isConcrete(final Class<?> klass) {
         return !klass.isInterface() && !Modifier.isAbstract(klass.getModifiers());
     }
 
@@ -90,7 +90,7 @@ public class ReflectionUtils {
         }
     }
 
-    public static List<Field> getAnnotatedFields(Class<?> klass, Class<? extends Annotation> annotation) {
+    public static List<Field> getAnnotatedFields(final Class<?> klass, final Class<? extends Annotation> annotation) {
         return Arrays.stream(klass.getDeclaredFields())
                 .filter(field -> field.getAnnotation(annotation) != null)
                 .collect(toList());

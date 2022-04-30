@@ -88,43 +88,48 @@ public class PopulatingNodeVisitor implements NodeVisitor {
             return;
         }
 
-        final Collection<Object> collectionObj = (Collection<Object>) generatorResult.getValue();
+        final Collection<Object> collection = (Collection<Object>) generatorResult.getValue();
         final Node elementNode = collectionNode.getElementNode();
 
         if (collectionNode.getField() != null) {
-            conditionalFailOnError(() -> ReflectionUtils.setField(owner, collectionNode.getField(), collectionObj));
+            conditionalFailOnError(() -> ReflectionUtils.setField(owner, collectionNode.getField(), collection));
         }
 
         final boolean nullableElement = generatorResult.getHints().nullableElements();
 
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
-            final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(elementNode, collectionObj);
-            if (!optResult.isPresent()) {
-                continue;
-            }
-
-            GeneratorResult elementResult = optResult.get();
-            final Object elementValue;
-
-            if (context.getRandom().diceRoll(nullableElement)) {
-                elementValue = null;
-            } else {
-                elementValue = elementResult.getValue();
-                elementNode.accept(new PopulatingNodeVisitor(collectionObj, elementResult, generatorFacade, context, queue, callbackHandler));
-                enqueueChildrenOf(elementNode, elementResult, queue);
-            }
-
-            if (elementValue != null || nullableElement) {
-                collectionObj.add(elementValue);
-                callbackHandler.addResult(elementNode, elementResult);
-            }
+            addCollectionValue(collection, elementNode, nullableElement);
         }
 
         if (!generatorResult.getHints().getWithElements().isEmpty()) {
-            collectionObj.addAll(generatorResult.getHints().getWithElements());
-            if (collectionObj instanceof List) {
-                Collections.shuffle((List<?>) collectionObj);
+            collection.addAll(generatorResult.getHints().getWithElements());
+            if (collection instanceof List) {
+                Collections.shuffle((List<?>) collection);
             }
+        }
+    }
+
+    private void addCollectionValue(final Collection<Object> collection, final Node elementNode, final boolean nullableElement) {
+        final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(elementNode, collection);
+        if (!optResult.isPresent()) {
+            return;
+        }
+
+        GeneratorResult elementResult = optResult.get();
+        final Object elementValue;
+
+        if (context.getRandom().diceRoll(nullableElement)) {
+            elementValue = null;
+        } else {
+            elementValue = elementResult.getValue();
+            elementNode.accept(new PopulatingNodeVisitor(
+                    collection, elementResult, generatorFacade, context, queue, callbackHandler));
+            enqueueChildrenOf(elementNode, elementResult, queue);
+        }
+
+        if (elementValue != null || nullableElement) {
+            collection.add(elementValue);
+            callbackHandler.addResult(elementNode, elementResult);
         }
     }
 
@@ -146,47 +151,57 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         final boolean nullableValue = generatorResult.getHints().nullableMapValues();
 
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
-            final Object mapKey;
+            putKeyValue(mapObj, keyNode, valueNode, nullableKey, nullableValue);
+        }
+    }
 
-            GeneratorResult keyResult = null;
-            GeneratorResult valueResult = null;
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
+    private void putKeyValue(final Map<Object, Object> map,
+                             final Node keyNode,
+                             final Node valueNode,
+                             final boolean nullableKey,
+                             final boolean nullableValue) {
+        final Object mapKey;
 
-            if (context.getRandom().diceRoll(nullableKey)) {
+        GeneratorResult keyResult = null;
+        GeneratorResult valueResult = null;
+
+        if (context.getRandom().diceRoll(nullableKey)) {
+            mapKey = null;
+        } else {
+            final Optional<GeneratorResult> keyResultOpt = generatorFacade.generateNodeValue(keyNode, map);
+            if (keyResultOpt.isPresent()) {
+                keyResult = keyResultOpt.get();
+                enqueueChildrenOf(keyNode, keyResult, queue);
+                mapKey = keyResult.getValue();
+            } else {
                 mapKey = null;
-            } else {
-                final Optional<GeneratorResult> keyResultOpt = generatorFacade.generateNodeValue(keyNode, mapObj);
-                if (keyResultOpt.isPresent()) {
-                    keyResult = keyResultOpt.get();
-                    enqueueChildrenOf(keyNode, keyResult, queue);
-                    mapKey = keyResult.getValue();
-                } else {
-                    mapKey = null;
-                }
             }
+        }
 
-            final Object mapValue;
-            if (context.getRandom().diceRoll(nullableValue)) {
+        final Object mapValue;
+        if (context.getRandom().diceRoll(nullableValue)) {
+            mapValue = null;
+        } else {
+            final Optional<GeneratorResult> valueResultOpt = generatorFacade.generateNodeValue(valueNode, map);
+            if (valueResultOpt.isPresent()) {
+                valueResult = valueResultOpt.get();
+                enqueueChildrenOf(valueNode, valueResult, queue);
+                mapValue = valueResult.getValue();
+                valueNode.accept(new PopulatingNodeVisitor(
+                        map, valueResult, generatorFacade, context, queue, callbackHandler)); //NOPMD
+            } else {
                 mapValue = null;
-            } else {
-                final Optional<GeneratorResult> valueResultOpt = generatorFacade.generateNodeValue(valueNode, mapObj);
-                if (valueResultOpt.isPresent()) {
-                    valueResult = valueResultOpt.get();
-                    enqueueChildrenOf(valueNode, valueResult, queue);
-                    mapValue = valueResult.getValue();
-                    valueNode.accept(new PopulatingNodeVisitor(mapObj, valueResult, generatorFacade, context, queue, callbackHandler));
-                } else {
-                    mapValue = null;
-                }
             }
+        }
 
-            if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
-                mapObj.put(mapKey, mapValue);
-                if (mapKey != null) {
-                    callbackHandler.addResult(keyNode, keyResult);
-                }
-                if (mapValue != null) {
-                    callbackHandler.addResult(valueNode, valueResult);
-                }
+        if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
+            map.put(mapKey, mapValue);
+            if (mapKey != null) {
+                callbackHandler.addResult(keyNode, keyResult);
+            }
+            if (mapValue != null) {
+                callbackHandler.addResult(valueNode, valueResult);
             }
         }
     }

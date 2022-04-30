@@ -32,7 +32,7 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
-class ExtensionSupport {
+final class ExtensionSupport {
 
     static void processAnnotations(final ExtensionContext context,
                                    final ThreadLocalRandom threadLocalRandom,
@@ -61,7 +61,7 @@ class ExtensionSupport {
         }
     }
 
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    @SuppressWarnings({Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED, "PMD.CyclomaticComplexity"})
     private static void processWithSettingsAnnotation(final ExtensionContext context,
                                                       final ThreadLocalSettings threadLocalSettings) {
 
@@ -110,5 +110,9 @@ class ExtensionSupport {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    private ExtensionSupport() {
+        // non-instantiable
     }
 }

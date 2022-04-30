@@ -37,7 +37,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         this.nullable = nullable;
     }
 
-    protected abstract T generateNonNullValue(final Random random);
+    protected abstract T generateNonNullValue(Random random);
 
     protected T getMin() {
         return min;

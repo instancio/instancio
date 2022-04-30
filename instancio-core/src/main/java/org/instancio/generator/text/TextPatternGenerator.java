@@ -40,6 +40,7 @@ public class TextPatternGenerator implements Generator<String> {
     }
 
     @Override
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     public String generate(final Random random) {
         final StringBuilder res = new StringBuilder(pattern.length());
         final char[] p = pattern.toCharArray();

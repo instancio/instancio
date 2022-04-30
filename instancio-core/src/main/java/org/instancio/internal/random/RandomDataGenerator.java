@@ -21,11 +21,12 @@ import org.instancio.util.Verify;
 import java.util.Random;
 
 /**
- * Copied from Apache Commons Math library: https://commons.apache.org/proper/commons-math/
+ * Copied from the <a href="https://commons.apache.org/proper/commons-math">Apache Commons Math</a> library.
  * <p>
  * This is a modified version of {@code org.apache.commons.math3.random.RandomDataGenerator},
  * with most of the code from the original class omitted.
  */
+@SuppressWarnings("PMD")
 public class RandomDataGenerator {
 
     public static long nextLong(final Random random, final long lower, final long upper) {
