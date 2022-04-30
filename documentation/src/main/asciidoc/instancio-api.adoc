@@ -1,5 +1,10 @@
 == Instancio API
 
+This section provides an overview of the API for creating and customising objects.
+
+[NOTE]
+The green links, such as {Instancio}, represent Instancio classes. They link to the Javadocs on https://javadoc.io and open in a new window.
+
 === Creating Objects
 
 The {Instancio} class is the entry point to the API.
@@ -146,7 +151,8 @@ Select.allInts()                                     // <6>
 The `allXxx()` methods such as `allInts()` , are convenience methods for selecting both, the primitive and wrapper types.
 For example, `allInts()` is defined as `all(all(int.class), all(Integer.class))`.
 
-All of the above methods return the {SelectorGroup} type, a container for one or more {Selector}s. For example, `Select.field()` methods both return a group containing a single selector, the one targeting the specified field.
+All of the above methods return the {SelectorGroup} type, a container for one or more {Selector}s.
+For example, `Select.field()` methods both return a group containing a single selector, the one targeting the specified field.
 
 ====
 .Examples of using selectors
@@ -170,10 +176,16 @@ Person person = Instancio.of(Person.class)
 
 === Customising Objects
 
-Objects created by Instancio can be customised using the `supply()` and `generate()` methods defined in the {InstancioApi} class.
+Properties of an object created by Instancio can be customised using
+
+- `generate()`
+- `set()`
+- `supply()`
+
+methods defined in the {InstancioApi} class.
 
 [#generate-method]
-==== Using the `generate()` method
+==== Using `generate()`
 
 The `generate()` method provides access to built-in generators for core types from the JDK, such strings, numeric types, dates, arrays, collections, and so on.
 It allows modifying generation parameters for these types in order to fine-tune the data.
@@ -215,8 +227,27 @@ Person person = Instancio.of(Person.class)
 ----
 ====
 
+==== Using `set()`
+
+The `set()` method is self-explanatory.
+It can be used to set a static value to selected fields or classes, for example:
+
+====
+.Example
+[source%nowrap,java]
+----
+Person person = Instancio.of(Person.class)
+    .set(field(Phone.class, "countryCode"), "+1")        // <1>
+    .set(all(LocalDateTime.class), LocalDateTime.now())  // <2>
+    .create();
+----
+====
+
+<1> Set `countryCode` to "+1" on _all_ generated instances of `Phone` class.
+<2> Set all `LocalDateTime` values to `now`.
+
 [#supply-methods]
-==== Using the `supply()` methods
+==== Using `supply()`
 
 The `supply()` method has two variants:
 
@@ -228,8 +259,11 @@ supply(SelectorGroup selectors, Generator<V> generator)  // <2>
 ----
 ====
 
-<1> for supplying non-random values using a `java.util.function.Supplier`
-<2> for using custom {Generator} implementations
+<1> for supplying *non-random* values using a `java.util.function.Supplier`
+<2> for supplying *random* values using custom {Generator} implementations
+
+[discrete]
+===== Using supply() to provide *non-random* values
 
 The first variant can be used where random values are not appropriate and the generated object needs to have a meaningful state.
 
@@ -246,6 +280,37 @@ Person person = Instancio.of(Person.class)
 
 <1> Set `countryCode` to "+1" for all instances of `Phone`
 <2> All `LocalDateTime` instances will be distinct objects with the value `now()`
+
+There is some overlap between the `set()` and `supply()` methods.
+For instance, the following two lines will produce identical results:
+
+====
+.Example
+[source%nowrap,java]
+----
+set(field(Phone.class, "countryCode"), "+1")
+supply(field(Phone.class, "countryCode"), () -> "+1")
+----
+====
+
+In fact, `set()` is just a convenience method to avoid using `supply()` when the value is constant.
+However, the `supply()` method can be used to provide a new instance each time it is called.
+For example, the following methods are _not_ identical:
+
+====
+.Example
+[source%nowrap,java]
+----
+set(all(LocalDateTime.class), LocalDateTime.now())
+supply(all(LocalDatime.class), () -> LocalDateTime.now())
+----
+====
+
+If the `Person` class has multiple `LocalDateTime` fields, using `set()` will set them all to the same instance, while using `supply()` will set them all to distinct instances.
+This difference is even more important if supplying a `Collection`, since sharing a collection instance among multiple objects is usually not desired.
+
+[discrete]
+===== Using supply() to provide *random* values
 
 The second variant of the `supply()` method can be used to generate random objects.
 This method takes a {Generator} as an argument, which is a functional interface with the following signature:
@@ -298,6 +363,7 @@ Instancio also offers a Service Provider Interface, {GeneratorProvider} that can
 This removes the need for manually passing custom generators to the `supply` method as in the above example.
 They will be picked up automatically.
 
+[discrete]
 ===== `supply()` anti-pattern
 
 Since the `supply()` method provides an instance of {Random}, the method can also be used for customising values of core type, such as strings and numbers.
@@ -323,7 +389,7 @@ Person person = Instancio.of(Person.class)
 <1> Not recommended: using `random` to generate a `String`.
 <2> Better approach: using the built-in string generator.
 
-==== Customising Generated Objects via Callbacks
+==== Using `onComplete()`
 
 Generated objects can also be customised using the {OnCompleteCallback}, a functional interface with the following signature:
 
