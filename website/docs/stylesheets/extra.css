@@ -1,0 +1,11 @@
+.linenodiv span.normal {
+    /*color: rgb(255, 94, 0) !important;*/
+    color: #ff9100;
+    font-weight: bold;
+}
+
+lnum {
+    color: #ff9100;
+    font-weight: bold;
+    font-family: Roboto Mono;
+}
