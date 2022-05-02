@@ -963,11 +963,3 @@ However, it is not possible to customise values on a per-field basis, as you wou
 
 The second limitation is that it does not support parameterized types.
 For instance, it is not possible to specify that `@InstancioSource(List.class)` should be of type `List<String>`.
-
-
-# xxx
-
-``` java
-Person person = Instancio.create(Person.class)
-System.out.println(person);
-```
