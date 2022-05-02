@@ -1,7 +1,10 @@
 #!/bin/sh
-cd target/generated-docs
+rm -fr site
+mkdocs build
+cd site
 git init
-git add .
-git commit -m "Deploy documentation"
 git checkout -b gh-pages
+git add .
+git commit -m "Deploy site"
 git push -f "https://`dbget GHP_TOKEN`@github.com/instancio/instancio" gh-pages
+echo "Done"
