@@ -17,6 +17,7 @@ package org.instancio.test.features.stream;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -24,6 +25,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.Set;
@@ -36,6 +38,7 @@ import static org.instancio.Select.allStrings;
 
 @NonDeterministicTag("Assumes no String collisions")
 @FeatureTag(Feature.STREAM)
+@ExtendWith(InstancioExtension.class)
 class CreateStreamTest {
 
     private static final int STRING_LENGTH = 50;

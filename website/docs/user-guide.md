@@ -778,9 +778,9 @@ type.mapping.java.util.SortedMap=java.util.TreeMap
 
 !!! attention ""
     <lnum>1</lnum>The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
-    <lnum>4</lnum> The other `*.nullable` properties specifes whether Instancio can generate `null` values for a given type.<br/>
+    <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
     <lnum>38</lnum> Properties prefixed with `type.mapping` are used to specify default implementations for abstract types, or map types to subtypes in general.
-This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
+    This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 # JUnit Integration
 
@@ -827,7 +827,7 @@ class ExampleTest {
     <lnum>15</lnum> Seed value `8276` goes out of scope.
 
 !!! note
-    Even though `person1` and `person3` are created using the same seed value of `8276`, they are actually distinct objects, each containing different values.
+    Even though `person1` and `person3` are created using the same seed value of `8276`, they are actually distinct objects, each containing different values. This is because the same instance of the random number generator is used througout the test method.
 
 ### Test Failure Reporting
 
