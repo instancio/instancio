@@ -1,4 +1,4 @@
 ---
 template: home.html
-title: Home
+title: "Instancio: Test Data Generator for Java"
 ---

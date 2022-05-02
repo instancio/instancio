@@ -17,7 +17,11 @@ package org.instancio.processor;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.QualifiedNameable;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
@@ -47,5 +51,13 @@ public class ElementMocks {
         when(classElement.getEnclosingElement()).thenReturn(packageType);
         when(classElement.getSimpleName().toString()).thenReturn(simpleName);
         return classElement;
+    }
+
+    static Element mockFieldWithModifiers(final String simpleName, final Modifier... modifiers) {
+        final Element element = mock(Element.class, RETURNS_DEEP_STUBS);
+        when(element.getKind()).thenReturn(ElementKind.FIELD);
+        when(element.getModifiers()).thenReturn(new HashSet<>(Arrays.asList(modifiers)));
+        when(element.getSimpleName().toString()).thenReturn(simpleName);
+        return element;
     }
 }

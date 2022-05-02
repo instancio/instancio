@@ -20,6 +20,7 @@ import org.instancio.util.StringUtils;
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.QualifiedNameable;
 import java.util.Collections;
 import java.util.List;
@@ -58,16 +59,13 @@ class MetamodelClass {
         return packageElement;
     }
 
-    private static List<String> getFieldNames(@Nullable final Element element) {
-        if (element == null) {
-            return Collections.emptyList();
-        }
-
-        return element.getEnclosedElements()
-                .stream()
-                .filter(elem -> elem.getKind() == ElementKind.FIELD)
-                .map(elem -> elem.getSimpleName().toString())
-                .collect(toList());
+    private static List<String> getFieldNames(@Nullable final Element typeElement) {
+        return typeElement == null ? Collections.emptyList() :
+                typeElement.getEnclosedElements()
+                        .stream()
+                        .filter(e -> e.getKind() == ElementKind.FIELD && !e.getModifiers().contains(Modifier.STATIC))
+                        .map(elem -> elem.getSimpleName().toString())
+                        .collect(toList());
     }
 
     /**

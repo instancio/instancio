@@ -17,9 +17,15 @@ package org.instancio.processor;
 
 import org.junit.jupiter.api.Test;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.QualifiedNameable;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 class MetamodelClassTest {
@@ -56,5 +62,23 @@ class MetamodelClassTest {
         assertThat(modelClass.getPackageName()).isEqualTo("org.example");
         assertThat(modelClass.getMetamodelSimpleName()).isEqualTo("Inner" + SUFFIX);
         assertThat(modelClass.getMetamodelClassName()).isEqualTo("org.example.Outer.Inner" + SUFFIX);
+    }
+
+    @Test
+    void getFieldNames() {
+        final QualifiedNameable typeElement = ElementMocks.mockClassElementWithPackage("", "", "");
+
+        final List<Element> fields = Arrays.asList(
+                ElementMocks.mockFieldWithModifiers("foo"),
+                ElementMocks.mockFieldWithModifiers("bar", Modifier.STATIC),
+                ElementMocks.mockFieldWithModifiers("baz", Modifier.FINAL),
+                ElementMocks.mockElementWithSimpleName(ElementKind.CLASS, "paz"),
+                ElementMocks.mockFieldWithModifiers("gaz", Modifier.STATIC, Modifier.FINAL));
+
+        doReturn(fields).when(typeElement).getEnclosedElements();
+
+        final MetamodelClass modelClass = new MetamodelClass(typeElement, SUFFIX);
+
+        assertThat(modelClass.getFieldNames()).containsOnly("foo", "baz");
     }
 }

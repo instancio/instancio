@@ -30,11 +30,14 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @InstancioMetamodel(classes = {
         Address.class,
@@ -84,5 +87,17 @@ class MetamodelBasedOnClassesTest {
                 .create();
 
         assertThat(result.getFieldA()).isEqualTo(expectedValue);
+    }
+
+    @Test
+    void metamodelDoesNotIncludeStaticFields() {
+        final Field staticField = ReflectionUtils.getField(Person.class, "staticField");
+        final Field staticFinalField = ReflectionUtils.getField(Person.class, "STATIC_FINAL_FIELD");
+
+        assertThatThrownBy(() -> ReflectionUtils.getField(Person_.class, staticField.getName()))
+                .hasMessageContaining("Invalid field");
+
+        assertThatThrownBy(() -> ReflectionUtils.getField(Person_.class, staticFinalField.getName()))
+                .hasMessageContaining("Invalid field");
     }
 }
