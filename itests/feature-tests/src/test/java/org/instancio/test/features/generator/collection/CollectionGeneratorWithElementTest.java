@@ -19,10 +19,12 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.Seed;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -74,6 +76,16 @@ class CollectionGeneratorWithElementTest {
                 .create();
 
         assertThat(result.getList()).containsOnly(EXPECTED_LONGS);
+    }
+
+    @Seed(-12345)
+    @RepeatedTest(5)
+    void shuffledElementShouldBeInTheSameOrderForAGivenSeed() {
+        final ListLong result = Instancio.of(ListLong.class)
+                .generate(all(List.class), gen -> gen.collection().maxSize(5).with((Object[]) EXPECTED_LONGS))
+                .create();
+
+        assertThat(result.getList()).containsExactly(1L, 5163L, 2L, 3495L, 3L, 7687L, 1934L);
     }
 
     @Test

@@ -1,0 +1,36 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
+# Building From Sources
+
+Instancio requires Java 8+. To build the sources:
+
+```sh
+git clone https://github.com/instancio/instancio.git
+mvn install
+```
+
+!!! note
+    The build includes a Gradle test module which requires the dependencies to be installed into
+    the local `~/.m2` repository. For this reason, `mvn install` must be run at least once
+    for the Gradle test module to build successfully.
+
+# Building the Website
+
+This site is built using <a href="https://www.mkdocs.org">MkDocs</a>
+and <a href="https://squidfunk.github.io/mkdocs-material">MkDocs Material</a> theme.
+Home page theme overrides are from <a href="https://sdk.up42.com">UP42</a>.
+
+To build the site, you will need the following Python packages:
+
+```sh
+pip install mkdocs \
+    mkdocs-material \
+    mkdocs-macros-plugin \
+    mkdocs-autolinks-plugin
+```
+
+To run the site locally: `cd website && mkdocs serve`. To generate static HTML: `mkdocs build`.

@@ -18,6 +18,7 @@ package org.instancio;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.Settings;
 
+import javax.annotation.Nullable;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -140,7 +141,7 @@ public interface InstancioApi<T> {
      * @return API builder reference
      * @see #supply(SelectorGroup, Supplier)
      */
-    <V> InstancioApi<T> set(SelectorGroup selectors, V value);
+    <V> InstancioApi<T> set(SelectorGroup selectors, @Nullable V value);
 
     /**
      * Supplies a <b>non-random</b> value for a field or class using a {@link Supplier}.

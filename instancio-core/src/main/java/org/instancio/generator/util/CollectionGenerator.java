@@ -91,8 +91,9 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         return this;
     }
 
+    @SafeVarargs
     @Override
-    public CollectionGeneratorSpec<T> with(final T... elements) {
+    public final CollectionGeneratorSpec<T> with(final T... elements) {
         ApiValidator.notEmpty(elements, "'collection().with(...)' must contain at least one element");
         if (withElements == null) {
             withElements = new ArrayList<>();

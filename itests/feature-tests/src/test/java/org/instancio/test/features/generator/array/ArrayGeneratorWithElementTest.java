@@ -18,9 +18,11 @@ package org.instancio.test.features.generator.array;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.Seed;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -62,6 +64,18 @@ class ArrayGeneratorWithElementTest {
                 .create();
 
         assertThat(result.getPrimitive()).containsOnly(EXPECTED_LONGS);
+    }
+
+    @Seed(-12345)
+    @RepeatedTest(5)
+    void shuffledElementShouldBeInTheSameOrderForAGivenSeed() {
+        final ArrayLong result = Instancio.of(ArrayLong.class)
+                .generate(all(long[].class), gen -> gen.array().maxLength(5).with((Object[]) EXPECTED_LONGS))
+                .generate(all(Long[].class), gen -> gen.array().maxLength(5).with((Object[]) EXPECTED_LONGS))
+                .create();
+
+        assertThat(result.getPrimitive()).containsExactly(1L, 5163L, 2L, 3495L, 3L, 7687L, 1934L);
+        assertThat(result.getWrapper()).containsExactly(1L, 5382L, 3L, 7068L, 2159L, 2L, 2030L);
     }
 
     @Test
