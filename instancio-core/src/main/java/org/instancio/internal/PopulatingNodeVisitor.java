@@ -23,6 +23,7 @@ import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeVisitor;
 import org.instancio.util.ArrayUtils;
+import org.instancio.util.CollectionUtils;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Verify;
 
@@ -30,7 +31,6 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -103,9 +103,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
 
         if (!generatorResult.getHints().getWithElements().isEmpty()) {
             collection.addAll(generatorResult.getHints().getWithElements());
-            if (collection instanceof List) {
-                Collections.shuffle((List<?>) collection);
-            }
+            CollectionUtils.shuffle(collection, context.getRandom());
         }
     }
 
