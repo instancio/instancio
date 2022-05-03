@@ -1,5 +1,4 @@
 .linenodiv span.normal {
-    /*color: rgb(255, 94, 0) !important;*/
     color: #ff9100;
     font-weight: bold;
 }
@@ -8,4 +7,16 @@ lnum {
     color: #ff9100;
     font-weight: bold;
     font-family: Roboto Mono;
+}
+
+.md-footer-meta {
+    background-color: #292929;
+}
+
+.md-typeset {
+    font-size: 0.8rem;
+}
+
+footer .md-typeset {
+    font-size: 0.5rem;
 }
