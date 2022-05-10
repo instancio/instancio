@@ -126,7 +126,7 @@ Selectors are provided by the {{Select}} class which contains the following meth
 Select.field(String field)
 Select.field(Class<?> declaringClass, String field)
 Select.all(Class<?> type)
-Select.all(SelectorGroup... groups)
+Select.all(GroupableSelector... selectors)
 Select.allStrings()
 Select.allInts()
 ```
@@ -141,8 +141,8 @@ Select.allInts()
 
 !!! info "The `allXxx()` methods such as `allInts()`, are available for all core types."
 
-All of the above methods return the {{SelectorGroup}} type, a container for one or more {{Selector}}s.
-For example, `Select.field()` methods both return a group containing a single selector, the one targeting the specified field.
+The above methods return either an instance of {{Selector}} or {{SelectorGroup}} type. The latter is a container combining multiple {{Selector}}s.
+For example, to ignore certain values, we can specify them individually as follows:
 
 ``` java linenums="1" title="Examples of using selectors"
 Person person = Instancio.of(Person.class)
@@ -150,15 +150,91 @@ Person person = Instancio.of(Person.class)
     .ignore(field(Address.class, "street"))
     .ignore(all(Phone.class))
     .create();
-
-// Equivalent to above
-Person person = Instancio.of(Person.class)
-        .ignore(all(
-                field("name"),
-                field(Address.class, "street"),
-                all(Phone.class)))
-        .create();
 ```
+
+or alternatively, we can combine the selectors into a single group:
+
+``` java linenums="1" title="Examples of using a selector group"
+Person person = Instancio.of(Person.class)
+    .ignore(all(
+            field("name"),
+            field(Address.class, "street"),
+            all(Phone.class)))
+    .create();
+```
+
+### Selector Scopes
+
+Selectors also offer the `within(Scope... scopes)` method for fine-tuning which targets they should be applied to.
+The method accepts one or more `Scope` objects that can be creating using the static methods in the `Select` class.
+
+``` java linenums="1" title="Static methods for specifying selector scopes"
+Select.scope(Class<?> targetClass, String field)
+Select.scope(Class<?> targetClass)
+```
+!!! attention ""
+    <lnum>1</lnum> Scope a selector to the specified field of the target class<br/>
+    <lnum>2</lnum> Scope a selector to the specified class<br/>
+
+
+To illustrate how scopes work we will assume the following structure for the `Person` class:
+
+``` java linenums="1" title="Sample POJOs with getters and setters omitted"
+class Person {
+    private String name;
+    private Address home;
+    private Address work;
+}
+
+class Address {
+    private String street;
+    private String city;
+    private List<Phone> phoneNumbers;
+}
+
+class Phone {
+    private String areaCode;
+    private String number;
+}
+```
+
+To start off, without using scopes we can set all strings to the same value.
+For example, the following snippet will set each string field of each class to "foo".
+
+``` java linenums="1" title="Set all strings to &quot;Foo&quot;"
+Person person = Instancio.of(Person.class)
+    .set(allStrings(), "foo")
+    .create();
+```
+
+Using `within()` we can narrow down the scope of the `allStrings()` selector. For brevity,
+the `Instancio.of(Person.class)` line will be omitted.
+
+
+``` java title="Set all strings in all Address instances; this includes Phone instances as they are contained within addresses"
+set(allStrings().within(scope(Address.class)), "foo")
+```
+
+``` java title="Set all strings contained within lists (matches all Phone instances in our example)"
+set(allStrings().within(scope(List.class)), "foo")
+```
+
+``` java title="Set all strings in Person.address1 object"
+set(allStrings().within(scope(Person.class, "address1")), "foo")
+```
+
+``` java title="Set Address.city of the Person.address1 field"
+set(field(Address.class, "city").within(scope(Person.class, "address1")), "foo")
+```
+
+Using `within()` also allows specifying multiple scopes. Scopes must be specified top-down, starting from the outermost to the innermost.
+
+``` java title="Set all strings of all Phone instances contained within Person.address2 field"
+set(allStrings().within(scope(Person.class, "address2"), scope(Phone.class)), "foo")
+```
+
+The `address2` object contains a list of phones, therefore `address2` is the outermost scope and is specified first.
+
 
 ## Customising Objects
 
@@ -188,7 +264,7 @@ Person person = Instancio.of(Person.class)
 Each generator provides methods applicable to the type it generates, for example:
 
 - `gen.string().minLength(3).allowEmpty()`
-- `geb.collection().size(5).nullableElements()`
+- `gen.collection().size(5).nullableElements()`
 - `gen.localDate().future()`
 - `gen.longs().min(Long.MIN_VALUE)`
 
