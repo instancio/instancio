@@ -219,22 +219,22 @@ set(allStrings().within(scope(Address.class)), "foo")
 set(allStrings().within(scope(List.class)), "foo")
 ```
 
-``` java title="Set all strings in Person.address1 object"
-set(allStrings().within(scope(Person.class, "address1")), "foo")
+``` java title="Set all strings in Person.home address object"
+set(allStrings().within(scope(Person.class, "home")), "foo")
 ```
 
-``` java title="Set Address.city of the Person.address1 field"
-set(field(Address.class, "city").within(scope(Person.class, "address1")), "foo")
+``` java title="Set Address.city of the Person.home field"
+set(field(Address.class, "city").within(scope(Person.class, "home")), "foo")
 ```
 
 Using `within()` also allows specifying multiple scopes. Scopes must be specified top-down, starting from the outermost to the innermost.
 
-``` java title="Set all strings of all Phone instances contained within Person.address2 field"
-set(allStrings().within(scope(Person.class, "address2"), scope(Phone.class)), "foo")
+``` java title="Set all strings of all Phone instances contained within Person.work address field"
+set(allStrings().within(scope(Person.class, "work"), scope(Phone.class)), "foo")
 ```
 
-The `address2` object contains a list of phones, therefore `address2` is the outermost scope and is specified first.
-
+The `Person.work` address object contains a list of phones, therefore `Person.work` is the outermost scope and is specified first.
+`Phone` class is the innermost scope and is specified last.
 
 ## Customising Objects
 
