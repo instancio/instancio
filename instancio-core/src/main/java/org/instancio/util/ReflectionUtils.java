@@ -60,6 +60,15 @@ public final class ReflectionUtils {
         }
     }
 
+    public static boolean isValidField(final Class<?> klass, final String fieldName) {
+        try {
+            klass.getDeclaredField(fieldName);
+            return true;
+        } catch (NoSuchFieldException ex) {
+            return false;
+        }
+    }
+
     public static Field getField(final Class<?> klass, final String fieldPath) {
         try {
             final String[] pathItems = fieldPath.split("\\.");

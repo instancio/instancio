@@ -56,7 +56,7 @@ class NodeTest {
 
             Node bazInteger = createNode(List.class, rootTypeMap, typeBazInteger);
             Node bazString = createNode(List.class, rootTypeMap, typeBazString);
-            NodeContext nodeContext = new NodeContext(rootTypeMap, Collections.emptyMap(), Collections.emptyMap());
+            NodeContext nodeContext = new NodeContext(rootTypeMap, null);
             Node bazIntegerClassNode = new ClassNode(nodeContext, Baz.class, null,
                     getTypeOf(typeBazInteger), null);
 
@@ -151,7 +151,7 @@ class NodeTest {
     }
 
     private static Node createNode(Class<?> klass, Map<TypeVariable<?>, Class<?>> rootTypeMap, TypeToken<?> type) {
-        final NodeContext nodeContext = new NodeContext(rootTypeMap, Collections.emptyMap(), Collections.emptyMap());
+        final NodeContext nodeContext = new NodeContext(rootTypeMap, null);
         return new NodeImpl(nodeContext, klass, null, getTypeOf(type), null);
     }
 

@@ -37,6 +37,7 @@
         <exclude name="ShortClassName"/>
         <exclude name="ShortMethodName"/>
         <exclude name="ShortVariable"/>
+        <exclude name="TooManyStaticImports"/>
         <exclude name="UselessParentheses"/>
     </rule>
     <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal">
@@ -45,6 +46,11 @@
 
     <rule ref="category/java/design.xml">
         <exclude name="AvoidCatchingGenericException"/>
+    </rule>
+    <rule ref="category/java/design.xml/CognitiveComplexity">
+        <properties>
+            <property name="reportLevel" value="19"/>
+        </properties>
     </rule>
     <rule ref="category/java/design.xml/DataClass">
         <priority>5</priority>
@@ -71,7 +77,9 @@
         <priority>5</priority>
     </rule>
 
-    <rule ref="category/java/multithreading.xml"/>
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="UseConcurrentHashMap"/>
+    </rule>
 
     <rule ref="category/java/performance.xml">
         <exclude name="AvoidInstantiatingObjectsInLoops"/>

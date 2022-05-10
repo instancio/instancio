@@ -1,0 +1,250 @@
+/*
+ * Copyright 2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.instancio.internal.context;
+
+import org.instancio.Generator;
+import org.instancio.Generators;
+import org.instancio.OnCompleteCallback;
+import org.instancio.Random;
+import org.instancio.TargetSelector;
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.GeneratorSpec;
+import org.instancio.internal.ApiValidator;
+import org.instancio.internal.ThreadLocalRandom;
+import org.instancio.internal.ThreadLocalSettings;
+import org.instancio.internal.nodes.Node;
+import org.instancio.internal.random.DefaultRandom;
+import org.instancio.settings.PropertiesLoader;
+import org.instancio.settings.Settings;
+import org.instancio.util.ObjectUtils;
+import org.instancio.util.SeedUtil;
+import org.instancio.util.TypeUtils;
+import org.instancio.util.Verify;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static org.instancio.internal.context.ModelContextHelper.applyRootClass;
+import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap;
+
+@SuppressWarnings("PMD.ExcessiveImports")
+public final class ModelContext<T> {
+    private final Type rootType;
+    private final Class<T> rootClass;
+    private final List<Class<?>> rootTypeParameters;
+    private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final Integer seed;
+    private final Random random;
+    private final Settings settings;
+    private final BooleanSelectorMap ignoredSelectorMap;
+    private final BooleanSelectorMap nullableSelectorMap;
+    private final OnCompleteCallbackSelectorMap onCompleteCallbackSelectorMap;
+    private final SubtypeSelectorMap subtypeSelectorMap;
+    private final GeneratorSelectorMap generatorSelectorMap;
+
+    private ModelContext(final Builder<T> builder) {
+        rootType = builder.rootType;
+        rootClass = builder.rootClass;
+        rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
+        rootTypeMap = rootType instanceof ParameterizedType || rootType instanceof GenericArrayType
+                ? Collections.emptyMap()
+                : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
+
+        seed = builder.seed;
+        random = resolveRandom(builder.seed);
+        settings = Settings.defaults()
+                .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
+                .merge(ThreadLocalSettings.getInstance().get())
+                .merge(builder.settings)
+                .lock();
+
+        ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
+        nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
+        onCompleteCallbackSelectorMap = new OnCompleteCallbackSelectorMap(builder.onCompleteCallbacks);
+        subtypeSelectorMap = new SubtypeSelectorMap(builder.subtypeSelectors);
+        generatorSelectorMap = new GeneratorSelectorMap(
+                new Generators(new GeneratorContext(settings, random)),
+                builder.generatorSelectors,
+                builder.generatorSpecSelectors);
+
+        subtypeSelectorMap.putAll(generatorSelectorMap.getClassSubtypeMap());
+    }
+
+    private static Random resolveRandom(@Nullable final Integer userSuppliedSeed) {
+        if (userSuppliedSeed != null) {
+            return new DefaultRandom(userSuppliedSeed);
+        }
+        // If running under JUnit extension, use the Random instance supplied by the extension
+        return ObjectUtils.defaultIfNull(
+                ThreadLocalRandom.getInstance().get(),
+                () -> new DefaultRandom(SeedUtil.randomSeed()));
+    }
+
+    public Type getRootType() {
+        return rootType;
+    }
+
+    public Class<T> getRootClass() {
+        return rootClass;
+    }
+
+    public boolean isIgnored(final Node node) {
+        return ignoredSelectorMap.isTrue(node);
+    }
+
+    public boolean isNullable(final Node node) {
+        return nullableSelectorMap.isTrue(node);
+    }
+
+    public Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
+        return generatorSelectorMap.getUserSuppliedGenerator(node);
+    }
+
+    public OnCompleteCallback<?> getUserSuppliedCallback(final Node node) {
+        return onCompleteCallbackSelectorMap.getUserSuppliedFieldCallback(node).orElse(null);
+    }
+
+    public Class<?> getSubtypeMapping(final Class<?> superType) {
+        return subtypeSelectorMap.getSubtypeMapping(superType).orElse(superType);
+    }
+
+    public SubtypeSelectorMap getModelContextSubtypeMapping() {
+        return subtypeSelectorMap;
+    }
+
+    public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
+        return rootTypeMap;
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public Random getRandom() {
+        return random;
+    }
+
+    public Builder<T> toBuilder() {
+        final Builder<T> builder = new Builder<>(rootClass, rootType);
+        builder.rootTypeParameters.addAll(this.rootTypeParameters);
+        builder.seed = this.seed;
+        builder.settings = this.settings;
+        builder.nullableTargets.addAll(this.nullableSelectorMap.getTargetSelectors());
+        builder.ignoredTargets.addAll(this.ignoredSelectorMap.getTargetSelectors());
+        builder.generatorSelectors.putAll(this.generatorSelectorMap.getGeneratorSelectors());
+        builder.generatorSpecSelectors.putAll(this.generatorSelectorMap.getGeneratorSpecSelectors());
+        builder.subtypeSelectors.putAll(this.subtypeSelectorMap.getSubtypeSelectors());
+        builder.onCompleteCallbacks.putAll(this.onCompleteCallbackSelectorMap.getOnCompleteCallbackSelectors());
+        return builder;
+    }
+
+    public static <T> Builder<T> builder(final Type rootType) {
+        return new Builder<>(rootType);
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static final class Builder<T> {
+        private final Type rootType;
+        private final Class<T> rootClass;
+        private final List<Class<?>> rootTypeParameters = new ArrayList<>();
+        private final Map<TargetSelector, Class<?>> subtypeSelectors = new LinkedHashMap<>();
+        private final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors = new LinkedHashMap<>();
+        private final Map<TargetSelector, Generator<?>> generatorSelectors = new LinkedHashMap<>();
+        private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks = new LinkedHashMap<>();
+        private final Set<TargetSelector> ignoredTargets = new HashSet<>();
+        private final Set<TargetSelector> nullableTargets = new HashSet<>();
+        private Settings settings;
+        private Integer seed;
+
+        private Builder(final Class<T> rootClass, final Type rootType) {
+            this.rootClass = Verify.notNull(rootClass, "Root class is null");
+            this.rootType = rootType;
+        }
+
+        private Builder(final Type rootType) {
+            this.rootType = Verify.notNull(rootType, "Root type is null");
+            this.rootClass = TypeUtils.getRawType(this.rootType);
+        }
+
+        public Builder<T> withRootTypeParameters(final List<Class<?>> rootTypeParameters) {
+            ApiValidator.validateTypeParameters(rootClass, rootTypeParameters);
+            this.rootTypeParameters.addAll(rootTypeParameters);
+            return this;
+        }
+
+        public Builder<T> withSubtype(final TargetSelector selector, final Class<?> subtype) {
+            this.subtypeSelectors.put(applyRootClass(selector, rootClass), subtype);
+            return this;
+        }
+
+        public Builder<T> withGenerator(final TargetSelector selector, final Generator<?> generator) {
+            this.generatorSelectors.put(applyRootClass(selector, rootClass), generator);
+            return this;
+        }
+
+        public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
+            this.generatorSelectors.put(applyRootClass(selector, rootClass), random -> supplier.get());
+            return this;
+        }
+
+        public Builder<T> withGeneratorSpec(final TargetSelector selector, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
+            this.generatorSpecSelectors.put(applyRootClass(selector, rootClass), spec);
+            return this;
+        }
+
+        public Builder<T> withOnCompleteCallback(final TargetSelector selector, final OnCompleteCallback<?> callback) {
+            this.onCompleteCallbacks.put(applyRootClass(selector, rootClass), callback);
+            return this;
+        }
+
+        public Builder<T> withIgnored(final TargetSelector selector) {
+            this.ignoredTargets.add(applyRootClass(selector, rootClass));
+            return this;
+        }
+
+        public Builder<T> withNullable(final TargetSelector selector) {
+            this.nullableTargets.add(applyRootClass(selector, rootClass));
+            return this;
+        }
+
+        public Builder<T> withSettings(final Settings settings) {
+            this.settings = settings;
+            return this;
+        }
+
+        public Builder<T> withSeed(final int seed) {
+            this.seed = seed;
+            return this;
+        }
+
+        public ModelContext<T> build() {
+            return new ModelContext<>(this);
+        }
+    }
+}

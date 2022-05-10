@@ -16,11 +16,14 @@
 package org.instancio.api.settings;
 
 import org.instancio.Instancio;
+import org.instancio.TypeToken;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.test.support.tags.SettingsTag;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +50,17 @@ class CollectionSettingsTest {
     void size() {
         final SetLong result = createCollection(settings);
         assertThat(result.getSet()).hasSizeBetween(MIN_SIZE_OVERRIDE, MAX_SIZE_OVERRIDE);
+    }
+
+    @Test
+    @Disabled("FIXME")
+    @DisplayName("Override default size with type token method")
+    void typeToken() {
+        final Set<Phone> results = Instancio.of(new TypeToken<Set<Phone>>() {})
+                .withSettings(settings)
+                .create();
+
+        assertThat(results).hasSizeBetween(MIN_SIZE_OVERRIDE, MAX_SIZE_OVERRIDE);
     }
 
     @Test

@@ -20,7 +20,7 @@ import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.generator.util.EnumSetGenerator;
 import org.instancio.internal.CallbackHandler;
-import org.instancio.internal.ModelContext;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;

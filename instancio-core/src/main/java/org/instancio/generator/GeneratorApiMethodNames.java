@@ -40,7 +40,7 @@ import java.util.Map;
 
 public final class GeneratorApiMethodNames {
 
-    @SuppressWarnings({"rawtypes", "PMD.UseConcurrentHashMap"})
+    @SuppressWarnings("rawtypes")
     private static final Map<Class<? extends GeneratorSpec>, String> SPECS = new HashMap<>();
 
     static {

@@ -20,6 +20,7 @@ import org.instancio.Model;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
@@ -32,7 +33,9 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allShorts;
+import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
+import static org.instancio.Select.scope;
 
 @NonDeterministicTag("Asserts generated primitive is not zero")
 class IgnoredTest {
@@ -109,4 +112,16 @@ class IgnoredTest {
         assertThat(result.getMap()).isEmpty();
     }
 
+    @Test
+    void ignoredSelectorWithScope() {
+        final Person person = Instancio.of(Person.class)
+                .ignore(allStrings().within(scope(Address.class)))
+                .create();
+
+        assertThat(person.getName()).isNotNull();
+        assertThat(person.getAddress().getAddress()).isNull();
+        assertThat(person.getAddress().getCity()).isNull();
+        assertThat(person.getAddress().getCountry()).isNull();
+        assertThat(person.getAddress().getPhoneNumbers()).extracting(Phone::getNumber).containsOnlyNulls();
+    }
 }

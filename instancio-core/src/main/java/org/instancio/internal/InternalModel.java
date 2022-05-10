@@ -16,11 +16,12 @@
 package org.instancio.internal;
 
 import org.instancio.Model;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 
-class InternalModel<T> implements Model<T> {
+final class InternalModel<T> implements Model<T> {
 
     private final ModelContext<T> modelContext;
     private final Node rootNode;
@@ -41,8 +42,7 @@ class InternalModel<T> implements Model<T> {
     private Node createRootNode() {
         final NodeContext nodeContext = new NodeContext(
                 modelContext.getRootTypeMap(),
-                modelContext.getClassSubtypeMap(),
-                modelContext.getFieldSubtypeMap());
+                modelContext.getModelContextSubtypeMapping());
 
         final NodeFactory nodeFactory = new NodeFactory(nodeContext);
         return nodeFactory.createRootNode(modelContext.getRootClass(), modelContext.getRootType());

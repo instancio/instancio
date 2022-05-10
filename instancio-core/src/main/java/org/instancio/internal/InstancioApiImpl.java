@@ -20,9 +20,10 @@ import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
-import org.instancio.SelectorGroup;
+import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.settings.Settings;
 
 import java.util.Arrays;
@@ -54,52 +55,52 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> ignore(SelectorGroup selectorGroup) {
+    public InstancioApi<T> ignore(TargetSelector selectorGroup) {
         modelContextBuilder.withIgnored(selectorGroup);
         return this;
     }
 
     @Override
-    public InstancioApi<T> withNullable(SelectorGroup target) {
+    public InstancioApi<T> withNullable(TargetSelector target) {
         modelContextBuilder.withNullable(target);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> supply(SelectorGroup selectorGroup, Generator<V> generator) {
+    public <V> InstancioApi<T> supply(TargetSelector selectorGroup, Generator<V> generator) {
         ApiValidator.validateSupplierOrGenerator(generator);
         modelContextBuilder.withGenerator(selectorGroup, generator);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> set(SelectorGroup selectorGroup, V value) {
+    public <V> InstancioApi<T> set(TargetSelector selectorGroup, V value) {
         modelContextBuilder.withSupplier(selectorGroup, () -> value);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> supply(SelectorGroup selectorGroup, Supplier<V> supplier) {
+    public <V> InstancioApi<T> supply(TargetSelector selectorGroup, Supplier<V> supplier) {
         ApiValidator.validateSupplierOrGenerator(supplier);
         modelContextBuilder.withSupplier(selectorGroup, supplier);
         return this;
     }
 
     @Override
-    public <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(final SelectorGroup target, final Function<Generators, S> gen) {
+    public <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(final TargetSelector target, final Function<Generators, S> gen) {
         ApiValidator.validateGeneratorFunction(gen);
         modelContextBuilder.withGeneratorSpec(target, gen);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> onComplete(final SelectorGroup target, final OnCompleteCallback<V> callback) {
+    public <V> InstancioApi<T> onComplete(final TargetSelector target, final OnCompleteCallback<V> callback) {
         modelContextBuilder.withOnCompleteCallback(target, callback);
         return this;
     }
 
     @Override
-    public InstancioApi<T> map(SelectorGroup selectorGroup, Class<?> subtype) {
+    public InstancioApi<T> map(TargetSelector selectorGroup, Class<?> subtype) {
         modelContextBuilder.withSubtype(selectorGroup, subtype);
         return this;
     }

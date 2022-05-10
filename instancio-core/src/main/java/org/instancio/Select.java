@@ -15,14 +15,12 @@
  */
 package org.instancio;
 
-import org.instancio.Selector.SelectorType;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import org.instancio.internal.ApiValidator;
+import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
+import org.instancio.internal.selectors.ScopeImpl;
+import org.instancio.internal.selectors.SelectorGroupImpl;
+import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.SelectorTargetType;
 
 /**
  * A collection of static factory methods selecting fields and classes.
@@ -31,25 +29,12 @@ import java.util.Objects;
  * <ul>
  *   <li>{@code field(Example.class, "someField")} - select some field of Example class</li>
  *   <li>{@code all(Example.class)} - select all instances of Example class</li>
- *   <li>{@code all(SelectorGroup...)} - convenience method for combining multiple selector groups</li>
+ *   <li>{@code all(GroupableSelector...)} - convenience method for combining multiple selectors</li>
  *   <li>{@code allStrings()} - select all Strings</li>
  *   <li>{@code allInts()} - select all {@code Integer} objects and {@code int} primitives</li>
  * </ul>
  */
-public class Select {
-    private static final SelectorGroup ALL_BYTES = all(all(byte.class), all(Byte.class));
-    private static final SelectorGroup ALL_SHORTS = all(all(short.class), all(Short.class));
-    private static final SelectorGroup ALL_INTS = all(all(int.class), all(Integer.class));
-    private static final SelectorGroup ALL_LONGS = all(all(long.class), all(Long.class));
-    private static final SelectorGroup ALL_FLOATS = all(all(float.class), all(Float.class));
-    private static final SelectorGroup ALL_DOUBLES = all(all(double.class), all(Double.class));
-    private static final SelectorGroup ALL_BOOLEANS = all(all(boolean.class), all(Boolean.class));
-    private static final SelectorGroup ALL_CHARS = all(all(char.class), all(Character.class));
-    private static final SelectorGroup ALL_STRINGS = all(String.class);
-
-    private Select() {
-        // non-instantiable
-    }
+public final class Select {
 
     /**
      * Select all instances of the given type, not including subtypes.
@@ -63,30 +48,21 @@ public class Select {
      * In order to select both, primitive {@code int} and wrapper, use the {@link #allInts()}.
      *
      * @param type to select
-     * @return a selector group composed of a single type selector
+     * @return a selector for given class
      */
-    public static SelectorGroup all(final Class<?> type) {
-        return SelectorGroupImpl.forType(type);
+    public static Selector all(final Class<?> type) {
+        ApiValidator.notNull(type, "Class must not be null");
+        return new SelectorImpl(SelectorTargetType.CLASS, type, null);
     }
 
     /**
-     * Convenience method for combining multiple selections, for example:
+     * A convenience method for combining multiple selectors.
      *
-     * <pre>{@code
-     *   all(
-     *      field(Address.class, "city"),
-     *      field(Address.class, "state"),
-     *      field(Address.class, "country"));
-     * }</pre>
-     *
-     * @param selectorGroups to combine
-     * @return a group composed of given arguments
+     * @param selectors to combine
+     * @return a group containing given selectors
      */
-    public static SelectorGroup all(final SelectorGroup... selectorGroups) {
-        final List<Selector> selectors = new ArrayList<>();
-        for (SelectorGroup group : selectorGroups) {
-            selectors.addAll(group.getSelectors());
-        }
+    public static SelectorGroup all(final GroupableSelector... selectors) {
+        ApiValidator.notEmpty(selectors, "Selector group must contain at least one selector");
         return new SelectorGroupImpl(selectors);
     }
 
@@ -95,10 +71,14 @@ public class Select {
      *
      * @param declaringClass class declaring the field
      * @param fieldName      field name to select
-     * @return a selector group composed of a single field selector
+     * @return a selector for given field
      */
-    public static SelectorGroup field(final Class<?> declaringClass, final String fieldName) {
-        return SelectorGroupImpl.forField(declaringClass, fieldName);
+    public static Selector field(final Class<?> declaringClass, final String fieldName) {
+        final String className = declaringClass == null ? null : declaringClass.getCanonicalName();
+        ApiValidator.validateField(declaringClass, fieldName,
+                String.format("Invalid field selector: (%s, %s)", className, fieldName));
+
+        return new SelectorImpl(SelectorTargetType.FIELD, declaringClass, fieldName);
     }
 
     /**
@@ -112,10 +92,11 @@ public class Select {
      * }</pre>
      *
      * @param fieldName field name to select
-     * @return a selector group composed of a single field selector
+     * @return a selector for given field
      */
-    public static SelectorGroup field(final String fieldName) {
-        return SelectorGroupImpl.forField(fieldName);
+    public static Selector field(final String fieldName) {
+        ApiValidator.notNull(fieldName, "Field name must not be null");
+        return new SelectorImpl(SelectorTargetType.FIELD, null, fieldName);
     }
 
     /**
@@ -123,8 +104,8 @@ public class Select {
      *
      * @return selector for all Strings
      */
-    public static SelectorGroup allStrings() {
-        return ALL_STRINGS;
+    public static Selector allStrings() {
+        return all(String.class);
     }
 
     /**
@@ -132,8 +113,8 @@ public class Select {
      *
      * @return selector for all bytes
      */
-    public static SelectorGroup allBytes() {
-        return ALL_BYTES;
+    public static Selector allBytes() {
+        return new PrimitiveAndWrapperSelectorImpl(byte.class, Byte.class);
     }
 
     /**
@@ -141,8 +122,8 @@ public class Select {
      *
      * @return selector for all floats
      */
-    public static SelectorGroup allFloats() {
-        return ALL_FLOATS;
+    public static Selector allFloats() {
+        return new PrimitiveAndWrapperSelectorImpl(float.class, Float.class);
     }
 
     /**
@@ -150,8 +131,8 @@ public class Select {
      *
      * @return selector for all shorts
      */
-    public static SelectorGroup allShorts() {
-        return ALL_SHORTS;
+    public static Selector allShorts() {
+        return new PrimitiveAndWrapperSelectorImpl(short.class, Short.class);
     }
 
     /**
@@ -159,8 +140,8 @@ public class Select {
      *
      * @return selector for all integers
      */
-    public static SelectorGroup allInts() {
-        return ALL_INTS;
+    public static Selector allInts() {
+        return new PrimitiveAndWrapperSelectorImpl(int.class, Integer.class);
     }
 
     /**
@@ -168,8 +149,8 @@ public class Select {
      *
      * @return selector for all longs
      */
-    public static SelectorGroup allLongs() {
-        return ALL_LONGS;
+    public static Selector allLongs() {
+        return new PrimitiveAndWrapperSelectorImpl(long.class, Long.class);
     }
 
     /**
@@ -177,8 +158,8 @@ public class Select {
      *
      * @return selector for all doubles
      */
-    public static SelectorGroup allDoubles() {
-        return ALL_DOUBLES;
+    public static Selector allDoubles() {
+        return new PrimitiveAndWrapperSelectorImpl(double.class, Double.class);
     }
 
     /**
@@ -186,105 +167,63 @@ public class Select {
      *
      * @return selector for all booleans
      */
-    public static SelectorGroup allBooleans() {
-        return ALL_BOOLEANS;
+    public static Selector allBooleans() {
+        return new PrimitiveAndWrapperSelectorImpl(boolean.class, Boolean.class);
     }
-
 
     /**
      * Selects all characters, primitive and wrapper.
      *
      * @return selector for all characters
      */
-    public static SelectorGroup allChars() {
-        return ALL_CHARS;
+    public static Selector allChars() {
+        return new PrimitiveAndWrapperSelectorImpl(char.class, Character.class);
     }
 
-    static class SelectorImpl implements Selector {
-        private final SelectorType selectorType;
-        private final Class<?> targetClass;
-        private final String fieldName;
+    /**
+     * Creates a scope for narrowing down a selector's target to a field of the specified class.
+     * <p>
+     * For example, the following will set all lists within {@code Person.address} object to an empty list.
+     *
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *         .set(all(List.class).within(scope(Person.class, "address")), Collections.emptyList())
+     *         .create();
+     * }</pre>
+     *
+     * @param targetClass of the scope
+     * @param fieldName   declared by the target class
+     * @return a scope for fine-tuning a selector
+     */
+    public static Scope scope(final Class<?> targetClass, final String fieldName) {
+        final String className = targetClass == null ? null : targetClass.getCanonicalName();
+        ApiValidator.validateField(targetClass, fieldName,
+                String.format("Invalid scope: (%s, %s)", className, fieldName));
 
-        SelectorImpl(final SelectorType selectorType,
-                     @Nullable final Class<?> targetClass,
-                     @Nullable final String fieldName) {
-
-            this.selectorType = selectorType;
-            this.targetClass = targetClass;
-            this.fieldName = fieldName;
-        }
-
-        @Override
-        public SelectorType selectorType() {
-            return selectorType;
-        }
-
-        @Override
-        public Class<?> getTargetClass() {
-            return targetClass;
-        }
-
-        @Override
-        public String getFieldName() {
-            return fieldName;
-        }
-
-        @Override
-        public final boolean equals(final Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Selector)) return false;
-            final Selector that = (Selector) o;
-            return selectorType == that.selectorType()
-                    && Objects.equals(targetClass, that.getTargetClass())
-                    && Objects.equals(fieldName, that.getFieldName());
-        }
-
-        @Override
-        public final int hashCode() {
-            return Objects.hash(selectorType, targetClass, fieldName);
-        }
+        return new ScopeImpl(targetClass, fieldName);
     }
 
-    static class SelectorGroupImpl implements SelectorGroup {
-        private final List<Selector> selectors;
-
-        SelectorGroupImpl(final List<Selector> selectors) {
-            this.selectors = Collections.unmodifiableList(selectors);
-        }
-
-        SelectorGroupImpl(final Selector... selectors) {
-            this(Arrays.asList(selectors));
-        }
-
-        static SelectorGroup forField(@Nullable final Class<?> targetType, final String fieldName) {
-            return new SelectorGroupImpl(new SelectorImpl(SelectorType.FIELD, targetType, fieldName));
-        }
-
-        static SelectorGroup forField(final String fieldName) {
-            return new SelectorGroupImpl(new SelectorImpl(SelectorType.FIELD, null, fieldName));
-        }
-
-        static SelectorGroup forType(final Class<?> targetType) {
-            return new SelectorGroupImpl(new SelectorImpl(SelectorType.TYPE, targetType, null));
-        }
-
-        @Override
-        public List<Selector> getSelectors() {
-            return selectors;
-        }
-
-        @Override
-        public final boolean equals(final Object o) {
-            if (this == o) return true;
-            if (!(o instanceof SelectorGroup)) return false;
-            final SelectorGroup selectorGroup = (SelectorGroup) o;
-            return Objects.equals(selectors, selectorGroup.getSelectors());
-        }
-
-        @Override
-        public final int hashCode() {
-            return Objects.hash(selectors);
-        }
+    /**
+     * Creates a selector scope for narrowing down a selector's target to the specified class.
+     * <p>
+     * For example, assuming a {@code Customer} class that has a {@code CustomerConsent} class.
+     * the following will set all booleans within {@code CustomerConsent} to {@code true}.
+     *
+     * <pre>{@code
+     *     Customer customer = Instancio.of(Customer.class)
+     *         .set(allBooleans().within(scope(CustomerConsent.class)), true)
+     *         .create();
+     * }</pre>
+     *
+     * @param targetClass of the scope
+     * @return a scope for fine-tuning a selector
+     */
+    public static Scope scope(final Class<?> targetClass) {
+        ApiValidator.notNull(targetClass, "Scope class must not be null");
+        return new ScopeImpl(targetClass, null);
     }
 
+    private Select() {
+        // non-instantiable
+    }
 }

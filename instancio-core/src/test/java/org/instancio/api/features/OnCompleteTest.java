@@ -22,8 +22,10 @@ import org.instancio.test.support.pojo.collections.lists.ListPerson;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.pojo.person.RichPerson;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -32,6 +34,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
+import static org.instancio.Select.scope;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class OnCompleteTest {
@@ -125,6 +128,18 @@ class OnCompleteTest {
                 .collect(toSet());
 
         assertThat(result).hasSize(1).containsOnlyNulls();
+    }
+
+    @Test
+    void onCompleteWithScope() {
+        final PersonHolder result = Instancio.of(PersonHolder.class)
+                .onComplete(all(Phone.class).within(
+                                scope(RichPerson.class, "address1")),
+                        (Phone p) -> p.setNumber("foo"))
+                .create();
+
+        assertThat(result.getRichPerson().getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly("foo");
+        assertThat(result.getRichPerson().getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain("foo");
     }
 
     private static void assertPerson(final Person result) {

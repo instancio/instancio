@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.AncestorTree.AncestorTreeNode;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.handlers.ArrayNodeHandler;
 import org.instancio.internal.handlers.CollectionNodeHandler;
 import org.instancio.internal.handlers.InstantiatingHandler;
@@ -69,9 +70,7 @@ class GeneratorFacade {
     }
 
     private boolean isIgnored(final Node node) {
-        return context.isIgnored(node.getField())
-                || context.isIgnored(node.getTargetClass())
-                || (node.getField() != null && Modifier.isStatic(node.getField().getModifiers()));
+        return context.isIgnored(node) || (node.getField() != null && Modifier.isStatic(node.getField().getModifiers()));
     }
 
     Optional<GeneratorResult> generateNodeValue(final Node node, @Nullable final Object owner) {
@@ -135,7 +134,7 @@ class GeneratorFacade {
     }
 
     private boolean shouldReturnNullForNullable(final Node node) {
-        final boolean precondition = context.isNullable(node.getField()) || context.isNullable(node.getTargetClass());
+        final boolean precondition = context.isNullable(node);
         return random.diceRoll(precondition);
     }
 }

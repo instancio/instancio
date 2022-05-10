@@ -99,10 +99,10 @@ public interface InstancioApi<T> {
      * will create a fully populated person, but will ignore the {@code address} field
      * and all string fields.
      *
-     * @param selectors for fields and/or classes this method should be applied to
+     * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
      */
-    InstancioApi<T> ignore(SelectorGroup selectors);
+    InstancioApi<T> ignore(TargetSelector selector);
 
     /**
      * Specifies that a field or class is nullable. By default, Instancio assigns
@@ -117,10 +117,10 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      *
-     * @param selectors for fields and/or classes this method should be applied to
+     * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
      */
-    InstancioApi<T> withNullable(SelectorGroup selectors);
+    InstancioApi<T> withNullable(TargetSelector selector);
 
     /**
      * Sets a value for a field or class.
@@ -133,15 +133,15 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      * <p>
-     * For supplying random values, see {@link #supply(SelectorGroup, Generator)}.
+     * For supplying random values, see {@link #supply(TargetSelector, Generator)}.
      *
-     * @param selectors for fields and/or classes this method should be applied to
-     * @param value     value to set
-     * @param <V>       type of the value
+     * @param selector for fields and/or classes this method should be applied to
+     * @param value    value to set
+     * @param <V>      type of the value
      * @return API builder reference
-     * @see #supply(SelectorGroup, Supplier)
+     * @see #supply(TargetSelector, Supplier)
      */
-    <V> InstancioApi<T> set(SelectorGroup selectors, @Nullable V value);
+    <V> InstancioApi<T> set(TargetSelector selector, @Nullable V value);
 
     /**
      * Supplies a <b>non-random</b> value for a field or class using a {@link Supplier}.
@@ -160,15 +160,15 @@ public interface InstancioApi<T> {
      * Note: Instancio will not modify the supplied instance in any way. If the {@code PhoneNumber} class
      * has other fields, they will be ignored.
      * <p>
-     * For supplying random values, see {@link #supply(SelectorGroup, Generator)}.
+     * For supplying random values, see {@link #supply(TargetSelector, Generator)}.
      *
-     * @param selectors for fields and/or classes this method should be applied to
-     * @param supplier  providing the value for given selectors
-     * @param <V>       type of the value to generate
+     * @param selector for fields and/or classes this method should be applied to
+     * @param supplier providing the value for given selector
+     * @param <V>      type of the value to generate
      * @return API builder reference
-     * @see #supply(SelectorGroup, Generator)
+     * @see #supply(TargetSelector, Generator)
      */
-    <V> InstancioApi<T> supply(SelectorGroup selectors, Supplier<V> supplier);
+    <V> InstancioApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
      * Supplies a randomised value for a field or class using a custom {@link Generator}.
@@ -186,12 +186,12 @@ public interface InstancioApi<T> {
      * Note: Instancio will not modify the supplied instance in any way. If the {@code PhoneNumber} class
      * has other fields, they will be ignored.
      *
-     * @param selectors for fields and/or classes this method should be applied to
+     * @param selector  for fields and/or classes this method should be applied to
      * @param generator that will provide the values
      * @param <V>       type of the value to generate
      * @return API builder reference
      */
-    <V> InstancioApi<T> supply(SelectorGroup selectors, Generator<V> generator);
+    <V> InstancioApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
      * Generates a random value for a field or class using a built-in generator.
@@ -206,13 +206,13 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      *
-     * @param selectors for fields and/or classes this method should be applied to
-     * @param gen       provider of built-in generators
-     * @param <V>       type of the value to generate
-     * @param <S>       generator spec type
+     * @param selector for fields and/or classes this method should be applied to
+     * @param gen      provider of built-in generators
+     * @param <V>      type of the value to generate
+     * @param <S>      generator spec type
      * @return API builder reference
      */
-    <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(SelectorGroup selectors, Function<Generators, S> gen);
+    <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(TargetSelector selector, Function<Generators, S> gen);
 
     /**
      * A callback that gets invoked after an object has been fully populated.
@@ -225,12 +225,12 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      *
-     * @param selectors for fields and/or classes this method should be applied to
-     * @param callback  to invoke after object has been populated
-     * @param <V>       type of object handled by the callback
+     * @param selector for fields and/or classes this method should be applied to
+     * @param callback to invoke after object has been populated
+     * @param <V>      type of object handled by the callback
      * @return API builder reference
      */
-    <V> InstancioApi<T> onComplete(SelectorGroup selectors, OnCompleteCallback<V> callback);
+    <V> InstancioApi<T> onComplete(TargetSelector selector, OnCompleteCallback<V> callback);
 
     /**
      * Maps target field or class to the given subtype. This can be used
@@ -267,11 +267,11 @@ public interface InstancioApi<T> {
      * <p>
      * will use the {@code LinkedList} implementation for all {@code List}s.
      *
-     * @param selectors for fields and/or classes this method should be applied to
-     * @param subtype   to map the selectors to
+     * @param selector for fields and/or classes this method should be applied to
+     * @param subtype  to map the selector to
      * @return API builder reference
      */
-    InstancioApi<T> map(SelectorGroup selectors, Class<?> subtype);
+    InstancioApi<T> map(TargetSelector selector, Class<?> subtype);
 
     /**
      * Override default settings for generated values.

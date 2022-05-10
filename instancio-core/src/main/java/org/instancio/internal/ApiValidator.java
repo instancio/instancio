@@ -193,4 +193,10 @@ public final class ApiValidator {
     private ApiValidator() {
         // non-instantiable
     }
+
+    public static void validateField(final Class<?> declaringClass, final String fieldName, String message) {
+        ApiValidator.notNull(declaringClass, message);
+        ApiValidator.notNull(fieldName, message);
+        isTrue(ReflectionUtils.isValidField(declaringClass, fieldName), message);
+    }
 }
