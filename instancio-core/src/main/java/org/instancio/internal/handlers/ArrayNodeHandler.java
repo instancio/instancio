@@ -19,7 +19,7 @@ import org.instancio.Generator;
 import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.CallbackHandler;
-import org.instancio.internal.ModelContext;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.util.Verify;

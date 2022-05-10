@@ -20,12 +20,13 @@ import java.util.stream.Collectors;
 
 class MetamodelSourceGenerator {
     private static final String PACKAGE_TEMPLATE = "package %s;";
-    private static final String IMPORTS = ""
-            + "import org.instancio.SelectorGroup;\n"
-            + "import org.instancio.Select;";
-    private static final String CLASS_BODY_TEMPLATE = "public class %s {\n%s\n}"; // class name, class body
-    private static final String FIELD_TEMPLATE = "\tpublic static final SelectorGroup %s = Select.field(%s, \"%s\");";
-    private static final String CLASS_TEMPLATE = "%s\n\n%s\n\n%s"; // package, imports, class body
+    private static final String IMPORTS = String.format(""
+            + "import org.instancio.Select;%n"
+            + "import org.instancio.Selector;"
+    );
+    private static final String CLASS_BODY_TEMPLATE = "public class %s {%n%s%n}"; // class name, class body
+    private static final String FIELD_TEMPLATE = "\tpublic static final Selector %s = Select.field(%s, \"%s\");";
+    private static final String CLASS_TEMPLATE = "%s%n%n%s%n%n%s"; // package, imports, class body
 
     String getSource(final MetamodelClass modelClass) {
         return String.format(CLASS_TEMPLATE,
@@ -42,7 +43,7 @@ class MetamodelSourceGenerator {
     private String getFields(final MetamodelClass type) {
         return type.getFieldNames().stream()
                 .map(field -> String.format(FIELD_TEMPLATE, field, type.getName() + ".class", field))
-                .collect(Collectors.joining("\n\n"));
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
     private String packageDeclaration(@Nullable final String packageName) {

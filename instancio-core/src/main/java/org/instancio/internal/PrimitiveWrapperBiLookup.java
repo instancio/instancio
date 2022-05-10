@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@SuppressWarnings("PMD.UseConcurrentHashMap")
 public final class PrimitiveWrapperBiLookup {
 
     private static final Map<Class<?>, Class<?>> CORE_TYPES = Collections.unmodifiableMap(initCoreTypesMap());

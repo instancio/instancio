@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@SuppressWarnings("PMD.UseConcurrentHashMap")
 final class ValueOfFunctions {
 
     private static final Map<Class<?>, Function<String, Object>> VALUE_OF_FUNCTIONS = createMap();

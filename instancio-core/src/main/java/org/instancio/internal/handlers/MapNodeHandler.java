@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.CallbackHandler;
-import org.instancio.internal.ModelContext;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;

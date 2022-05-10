@@ -16,18 +16,14 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.SelectorGroup;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Fail.fail;
 import static org.instancio.Select.field;
 
 @FeatureTag(Feature.SET_VALUE)

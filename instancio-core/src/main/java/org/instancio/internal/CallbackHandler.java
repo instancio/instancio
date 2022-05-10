@@ -17,6 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.OnCompleteCallback;
 import org.instancio.generator.GeneratorResult;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("PMD.UseConcurrentHashMap")
 public class CallbackHandler {
 
     private final ModelContext<?> context;
@@ -50,10 +50,6 @@ public class CallbackHandler {
 
     @SuppressWarnings("unchecked")
     private <T> OnCompleteCallback<T> getCallbackHandler(final Node node) {
-        OnCompleteCallback<?> result = context.getUserSuppliedFieldCallback(node.getField());
-        if (result == null) {
-            result = context.getUserSuppliedClassCallback(node.getTargetClass());
-        }
-        return (OnCompleteCallback<T>) result;
+        return (OnCompleteCallback<T>) context.getUserSuppliedCallback(node);
     }
 }

@@ -18,16 +18,29 @@ package org.instancio.api.features;
 import org.instancio.Instancio;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.basic.LongHolder;
+import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Pet;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.withinPercentage;
 import static org.instancio.Select.allInts;
+import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
+import static org.instancio.Select.scope;
 
 @NonDeterministicTag
 class WithNullableFieldTest {
@@ -53,13 +66,48 @@ class WithNullableFieldTest {
     }
 
     @Test
-    @DisplayName("Specifying nullable for a primitive field does not throw an exception")
-    void nullableWithPrimitiveFieldThrowsException() {
-        final IntegerHolder result = Instancio.of(IntegerHolder.class)
-                .withNullable(field("primitive"))
-                .create();
+    @DisplayName("Set selector with scope as nullable")
+    void nullableWithSelectorScope() {
+        Set<String> nullableCountryCode = new HashSet<>();
+        Set<String> nullablePhoneNumber = new HashSet<>();
+        Set<String> nonNullableResults = new HashSet<>();
 
-        assertThat(result.getPrimitive()).isNotZero();
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final Person person = Instancio.of(Person.class)
+                    .withNullable(allStrings().within(scope(Phone.class)))
+                    .create();
+
+            final Address address = person.getAddress();
+            final List<Phone> phoneNumbers = address.getPhoneNumbers();
+            nullableCountryCode.addAll(phoneNumbers.stream().map(Phone::getCountryCode).collect(toSet()));
+            nullablePhoneNumber.addAll(phoneNumbers.stream().map(Phone::getNumber).collect(toSet()));
+            nonNullableResults.add(person.getName());
+            nonNullableResults.add(address.getAddress());
+            nonNullableResults.add(address.getCity());
+            nonNullableResults.add(address.getCountry());
+            nonNullableResults.addAll(Arrays.stream(person.getPets()).map(Pet::getName).collect(toSet()));
+        }
+
+        assertThat(nullableCountryCode).containsNull();
+        assertThat(nullablePhoneNumber).containsNull();
+        assertThat(nonNullableResults).doesNotContainNull();
+    }
+
+    @Test
+    @DisplayName("Specifying nullable for a primitive field leaves the field with a default value")
+    void nullableWithPrimitiveFieldResultsInDefaultValue() {
+        final int sampleSize = 10_000;
+        final List<Long> results = Instancio.of(LongHolder.class)
+                .withNullable(field("primitive"))
+                .stream()
+                .limit(sampleSize)
+                .map(LongHolder::getPrimitive)
+                .collect(toList());
+
+        final int frequency = Collections.frequency(results, 0L);
+        final double percentage = frequency / (double) sampleSize * 100;
+        final double diceRoll = 1 / 6d * 100;
+        assertThat(percentage).isCloseTo(diceRoll, withinPercentage(25));
     }
 
     @Test

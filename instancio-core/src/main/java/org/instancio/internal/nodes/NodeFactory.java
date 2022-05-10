@@ -174,10 +174,7 @@ public class NodeFactory {
     }
 
     private Optional<Class<?>> getUserSuppliedSubtype(final Class<?> targetClass, @Nullable final Field field) {
-        final Class<?> fieldSubtype = nodeContext.getFieldSubtypeMap().get(field);
-        return fieldSubtype != null
-                ? Optional.of(fieldSubtype)
-                : Optional.ofNullable(nodeContext.getClassSubtypeMap().get(targetClass));
+        return nodeContext.getUserSuppliedSubtype(targetClass, field);
     }
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -216,7 +213,6 @@ public class NodeFactory {
                 "Error creating a class node for klass: %s, type: %s", actualClass.getName(), genericType));
     }
 
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private Map<Type, Type> createTypeMapForSubtype(final Class<?> type, final Class<?> subtype) {
         if (type == subtype) {
             return Collections.emptyMap();

@@ -20,6 +20,6 @@ public final class Constants {
         // non-instantiable
     }
 
-    public static final int MIN_SIZE = 1;
+    public static final int MIN_SIZE = 2;
     public static final int MAX_SIZE = 6;
 }

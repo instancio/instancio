@@ -51,7 +51,6 @@ class AncestorTree {
     /**
      * Maps object instance to its parent instance.
      */
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private final Map<Object, AncestorTreeNode> idMap = new IdentityHashMap<>();
 
     void setObjectAncestor(@Nullable final Object obj, final AncestorTreeNode ancestor) {

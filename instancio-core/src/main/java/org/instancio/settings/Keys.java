@@ -29,7 +29,6 @@ import java.util.Optional;
 /**
  * Defines all keys supported by Instancio.
  */
-@SuppressWarnings("PMD.UseConcurrentHashMap")
 public final class Keys {
     private static final int MIN_SIZE = 2;
     private static final int MAX_SIZE = 6;

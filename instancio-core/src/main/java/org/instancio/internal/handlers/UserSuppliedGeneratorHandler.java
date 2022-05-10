@@ -21,7 +21,7 @@ import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.ModelContext;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 
@@ -57,10 +57,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     }
 
     private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
-        Optional<Generator<?>> generatorOpt = modelContext.getUserSuppliedGenerator(node.getField());
-        if (!generatorOpt.isPresent()) {
-            generatorOpt = modelContext.getUserSuppliedGenerator(node.getTargetClass());
-        }
+        final Optional<Generator<?>> generatorOpt = modelContext.getUserSuppliedGenerator(node);
 
         if (generatorOpt.isPresent()) {
             final Generator<?> generator = generatorOpt.get();
