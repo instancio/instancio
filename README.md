@@ -31,16 +31,15 @@ This returns a fully-populated person, including nested objects and collections.
 
 See the [User Guide](https://www.instancio.org/user-guide) for more information.
 
-
 # Try it out
 
-To use Instancio with [JUnit 5 integration](#junit-5-integration):
+To use Instancio with JUnit 5:
 
 ```xml
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>1.2.3</version>
+        <version>1.3.0</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -51,7 +50,7 @@ To use Instancio with JUnit 4, TestNG, or standalone:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>1.2.3</version>
+        <version>1.3.0</version>
         <scope>test</scope>
     </dependency>
 ```
