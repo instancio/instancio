@@ -16,65 +16,50 @@
 package org.instancio.test.features.generator.array;
 
 import org.instancio.Instancio;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.Seed;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 
 // Casts added to suppress "non-varargs call of varargs" during the build
 @SuppressWarnings("RedundantCast")
 @FeatureTag(Feature.ARRAY_GENERATOR_WITH)
 @ExtendWith(InstancioExtension.class)
-class ArrayGeneratorWithElementTest {
+class ArrayGeneratorWithElementOrderTest {
     private static final Long[] EXPECTED_LONGS = {1L, 2L, 3L};
 
-    @Test
-    void arrayWithElements() {
+    private static final Set<List<Long>> PRIMITIVE_SEQUENCES = new LinkedHashSet<>();
+    private static final Set<List<Long>> WRAPPER_SEQUENCES = new LinkedHashSet<>();
+
+    @Seed(-12345)
+    @RepeatedTest(5)
+    void shuffledElementShouldBeInTheSameOrderForAGivenSeed() {
         final ArrayLong result = Instancio.of(ArrayLong.class)
-                .generate(all(long[].class), gen -> gen.array().with((Object[]) EXPECTED_LONGS))
-                .generate(all(Long[].class), gen -> gen.array().with((Object[]) EXPECTED_LONGS))
+                .generate(all(long[].class), gen -> gen.array().maxLength(5).with((Object[]) EXPECTED_LONGS))
+                .generate(all(Long[].class), gen -> gen.array().maxLength(5).with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result.getPrimitive()).contains(EXPECTED_LONGS);
         assertThat(result.getWrapper()).contains(EXPECTED_LONGS);
-    }
 
-    @Test
-    void createArrayDirectly() {
-        final long[] result = Instancio.of(long[].class)
-                .generate(all(long[].class), gen -> gen.array().with((Object[]) EXPECTED_LONGS))
-                .create();
+        PRIMITIVE_SEQUENCES.add(Arrays.stream(result.getPrimitive()).boxed().collect(toList()));
+        WRAPPER_SEQUENCES.add(Arrays.stream(result.getWrapper()).collect(toList()));
 
-        assertThat(result).contains(EXPECTED_LONGS);
-    }
-
-    @Test
-    void withElementsAndMaxLengthOfZero() {
-        final ArrayLong result = Instancio.of(ArrayLong.class)
-                .generate(all(long[].class), gen -> gen.array().maxLength(0).with((Object[]) EXPECTED_LONGS))
-                .create();
-
-        assertThat(result.getPrimitive()).containsOnly(EXPECTED_LONGS);
-    }
-
-    @Test
-    void withNullOrEmpty() {
-        assertValidation((Object[]) null);
-        assertValidation();
-    }
-
-    private void assertValidation(final Object... arg) {
-        assertThatThrownBy(() -> Instancio.of(ArrayLong.class)
-                .generate(all(long[].class), gen -> gen.array().with(arg))
-                .create())
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage("'array().with(...)' must contain at least one element");
+        assertThat(PRIMITIVE_SEQUENCES)
+                .as("Same shuffled sequence should be generated each time")
+                .hasSameSizeAs(WRAPPER_SEQUENCES)
+                .hasSize(1);
     }
 }

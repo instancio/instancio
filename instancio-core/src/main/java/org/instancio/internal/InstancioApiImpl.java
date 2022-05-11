@@ -125,13 +125,13 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     @Override
     public T create() {
         final InstancioEngine engine = new InstancioEngine(createModel());
-        return engine.createObject();
+        return engine.createRootObject();
     }
 
     @Override
     public Stream<T> stream() {
         final InstancioEngine engine = new InstancioEngine(createModel());
-        return Stream.generate(engine::createObject);
+        return Stream.generate(engine::createRootObject);
     }
 
     private InternalModel<T> createModel() {

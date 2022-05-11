@@ -74,6 +74,7 @@ public final class Select {
      * @return a selector for given field
      */
     public static Selector field(final Class<?> declaringClass, final String fieldName) {
+        //noinspection ConstantConditions
         final String className = declaringClass == null ? null : declaringClass.getCanonicalName();
         ApiValidator.validateField(declaringClass, fieldName,
                 String.format("Invalid field selector: (%s, %s)", className, fieldName));
@@ -196,6 +197,7 @@ public final class Select {
      * @return a scope for fine-tuning a selector
      */
     public static Scope scope(final Class<?> targetClass, final String fieldName) {
+        //noinspection ConstantConditions
         final String className = targetClass == null ? null : targetClass.getCanonicalName();
         ApiValidator.validateField(targetClass, fieldName,
                 String.format("Invalid scope: (%s, %s)", className, fieldName));

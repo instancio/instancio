@@ -23,7 +23,6 @@ import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.test.support.tags.SettingsTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +52,6 @@ class CollectionSettingsTest {
     }
 
     @Test
-    @Disabled("FIXME")
     @DisplayName("Override default size with type token method")
     void typeToken() {
         final Set<Phone> results = Instancio.of(new TypeToken<Set<Phone>>() {})

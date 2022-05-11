@@ -21,6 +21,7 @@ import org.instancio.internal.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Queue;
@@ -42,22 +43,27 @@ class InstancioEngine {
     }
 
     @SuppressWarnings("unchecked")
-    <T> T createObject() {
-        final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(rootNode, null);
+    <T> T createRootObject() {
+        final Optional<GeneratorResult> optResult = createObject(rootNode, /* owner = */ null);
+        return (T) optResult.map(GeneratorResult::getValue).orElse(null);
+    }
+
+    Optional<GeneratorResult> createObject(final Node node, @Nullable final Object owner) {
+        final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(node, owner);
         if (!optResult.isPresent()) {
-            return null;
+            return Optional.empty();
         }
 
         final GeneratorResult rootResult = optResult.get();
-        rootNode.accept(new PopulatingNodeVisitor(null, rootResult, generatorFacade, context, queue, callbackHandler));
-        callbackHandler.addResult(rootNode, rootResult);
+        node.accept(new PopulatingNodeVisitor(owner, rootResult, context, queue, this));
 
         while (!queue.isEmpty()) {
             processNextItem(queue.poll());
         }
 
+        callbackHandler.addResult(node, rootResult);
         callbackHandler.invokeCallbacks();
-        return (T) rootResult.getValue();
+        return optResult;
     }
 
     private void processNextItem(final CreateItem createItem) {
@@ -66,7 +72,7 @@ class InstancioEngine {
         final Node node = createItem.getNode();
         final Optional<GeneratorResult> result = generatorFacade.generateNodeValue(node, createItem.getOwner());
         if (result.isPresent()) {
-            node.accept(new PopulatingNodeVisitor(createItem.getOwner(), result.get(), generatorFacade, context, queue, callbackHandler));
+            node.accept(new PopulatingNodeVisitor(createItem.getOwner(), result.get(), context, queue, this));
             callbackHandler.addResult(node, result.get());
         }
     }

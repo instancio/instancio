@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.creation.collections.maps;
+package org.instancio.creation.collections.lists;
 
-import org.instancio.test.support.pojo.person.Phone;
-import org.instancio.test.support.tags.GenericsTag;
-import org.instancio.testsupport.Constants;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@GenericsTag
-class MapStringHolderLongHolderCreationTest extends CreationTestTemplate<Map<Phone, UUID>> {
+public class ListOfStringHolderCreationTest extends CreationTestTemplate<List<StringHolder>> {
 
     @Override
-    protected void verify(Map<Phone, UUID> result) {
-        assertThat(result).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
+    protected void verify(List<StringHolder> result) {
+        assertThat(result)
+                .isNotEmpty()
+                .hasOnlyElementsOfType(StringHolder.class);
     }
+
 }

@@ -17,6 +17,8 @@ package org.instancio.api.features;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.container.ItemContainer;
@@ -35,7 +37,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -111,16 +112,13 @@ class SetWithScopeTest {
 
     @Test
     void selectPhonesContainedByAddress1WithinMapValue() {
-        final int size = 5;
+        final int minSize = 10;
         final Map<Person, RichPerson> result = Instancio.of(new TypeToken<Map<Person, RichPerson>>() {})
-                .set(field(Phone.class, "number").within(
-                        scope(RichPerson.class, "address1")), FOO)
-                .stream()
-                .limit(size)
-                .flatMap(it -> it.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .withSettings(Settings.create().set(Keys.MAP_MIN_SIZE, minSize))
+                .set(field(Phone.class, "number").within(scope(RichPerson.class, "address1")), FOO)
+                .create();
 
-        assertThat(result.entrySet()).hasSize(size).allSatisfy(entry -> {
+        assertThat(result.entrySet()).hasSizeGreaterThanOrEqualTo(minSize).allSatisfy(entry -> {
             assertThat(entry.getKey().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
 
             assertThat(entry.getValue().getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
