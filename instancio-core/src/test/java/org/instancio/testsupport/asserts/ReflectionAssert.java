@@ -21,6 +21,7 @@ import org.instancio.testsupport.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,6 +51,17 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
     public ReflectionAssert isFullyPopulated() {
         as("Object contains a null value: %s", actual).isNotNull();
 
+        if (Collection.class.isAssignableFrom(actual.getClass())) {
+            assertCollection((Collection<?>) actual, null);
+            return this;
+        } else if (Map.class.isAssignableFrom(actual.getClass())) {
+            assertMap((Map<?, ?>) actual, null);
+            return this;
+        } else if (actual.getClass().isArray()) {
+            assertArray(actual, null);
+            return this;
+        }
+
         if (actual.getClass().getPackage() == null || actual.getClass().getPackage().getName().startsWith("java")) {
             return this;
         }
@@ -77,11 +89,11 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
                 // noinspection ConstantConditions
                 if (result != null) {
                     if (Collection.class.isAssignableFrom(result.getClass())) {
-                        assertCollection(method, (Collection<?>) result);
+                        assertCollection((Collection<?>) result, method);
                     } else if (Map.class.isAssignableFrom(result.getClass())) {
-                        assertMap(method, (Map<?, ?>) result);
+                        assertMap((Map<?, ?>) result, method);
                     } else if (result.getClass().isArray()) {
-                        assertArray(method, result);
+                        assertArray(result, method);
                     } else {
                         assertThatObject(result).isFullyPopulated(); // recurse
                     }
@@ -96,7 +108,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         return this;
     }
 
-    private void assertMap(Method method, Map<?, ?> map) {
+    private void assertMap(Map<?, ?> map, @Nullable Method method) {
         softly.assertThat(map)
                 .as("Method '%s' return unexpected result", method)
                 .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
@@ -107,14 +119,14 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         }
     }
 
-    private void assertCollection(Method method, Collection<?> collection) {
+    private void assertCollection(Collection<?> collection, @Nullable Method method) {
         softly.assertThat(collection)
                 .as("Method '%s' return unexpected result", method)
                 .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .allSatisfy(it -> assertThatObject(it).isFullyPopulated());
     }
 
-    private void assertArray(Method method, Object array) {
+    private void assertArray(Object array, @Nullable Method method) {
         final int size = Array.getLength(array);
 
         softly.assertThat(size)

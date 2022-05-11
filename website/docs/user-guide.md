@@ -702,7 +702,7 @@ To configure the annotation processor with Maven, add the `<annotationProcessorP
                     <path>
                         <groupId>org.instancio</groupId>
                         <artifactId>instancio-processor</artifactId>
-                        <version>${instancio.version}</version>
+                        <version>{{config.latest_release}}</version>
                     </path>
                     <!-- include other processors, if any -->
                 </annotationProcessorPaths>
@@ -718,7 +718,7 @@ The following can be used with Gradle version 4.6 or higher, add the following t
 
 ``` groovy linenums="1" title="Gradle"
 dependencies {
-    testAnnotationProcessor "org.instancio:instancio-processor:$instancioVersion"
+    testAnnotationProcessor "org.instancio:instancio-processor:{{config.latest_release}}"
 }
 ```
 

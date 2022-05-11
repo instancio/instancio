@@ -40,7 +40,6 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
-import static org.instancio.Select.allInts;
 
 @FeatureTag(Feature.VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -50,7 +49,7 @@ class GeneratorMismatchTest {
     @DisplayName("Full error message for reference")
     void fullErrorMessage() {
         assertThatThrownBy(() -> Instancio.of(SupportedNumericTypes.class)
-                .generate(allInts(), Generators::doubles)
+                .generate(all(int.class), Generators::doubles)
                 .create())
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll(

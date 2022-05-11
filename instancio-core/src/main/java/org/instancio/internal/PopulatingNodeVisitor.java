@@ -44,23 +44,20 @@ public class PopulatingNodeVisitor implements NodeVisitor {
     private static final Object NULL_VALUE = null;
     private final Object owner;
     private final GeneratorResult generatorResult;
-    private final GeneratorFacade generatorFacade;
     private final ModelContext<?> context;
     private final Queue<CreateItem> queue;
-    private final CallbackHandler callbackHandler;
+    private final InstancioEngine engine;
 
     public PopulatingNodeVisitor(@Nullable final Object owner,
                                  final GeneratorResult generatorResult,
-                                 final GeneratorFacade generatorFacade,
                                  final ModelContext<?> context,
                                  final Queue<CreateItem> queue,
-                                 final CallbackHandler callbackHandler) {
+                                 final InstancioEngine engine) {
         this.owner = owner;
         this.generatorResult = generatorResult;
-        this.generatorFacade = generatorFacade;
         this.context = context;
         this.queue = queue;
-        this.callbackHandler = callbackHandler;
+        this.engine = engine;
     }
 
     @Override
@@ -109,26 +106,24 @@ public class PopulatingNodeVisitor implements NodeVisitor {
     }
 
     private void addCollectionValue(final Collection<Object> collection, final Node elementNode, final boolean nullableElement) {
-        final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(elementNode, collection);
+        final Optional<GeneratorResult> optResult = engine.createObject(elementNode, collection);
+
         if (!optResult.isPresent()) {
             return;
         }
 
-        GeneratorResult elementResult = optResult.get();
+        final GeneratorResult elementResult = optResult.get();
         final Object elementValue;
 
         if (context.getRandom().diceRoll(nullableElement)) {
             elementValue = null;
         } else {
-            elementValue = elementResult.getValue();
-            elementNode.accept(new PopulatingNodeVisitor(
-                    collection, elementResult, generatorFacade, context, queue, callbackHandler));
+            elementValue = optResult.get().getValue();
             enqueueChildrenOf(elementNode, elementResult, queue);
         }
 
         if (elementValue != null || nullableElement) {
             collection.add(elementValue);
-            callbackHandler.addResult(elementNode, elementResult);
         }
     }
 
@@ -154,7 +149,6 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         }
     }
 
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     private void putKeyValue(final Map<Object, Object> map,
                              final Node keyNode,
                              final Node valueNode,
@@ -162,13 +156,13 @@ public class PopulatingNodeVisitor implements NodeVisitor {
                              final boolean nullableValue) {
         final Object mapKey;
 
-        GeneratorResult keyResult = null;
-        GeneratorResult valueResult = null;
+        GeneratorResult keyResult;
+        GeneratorResult valueResult;
 
         if (context.getRandom().diceRoll(nullableKey)) {
             mapKey = null;
         } else {
-            final Optional<GeneratorResult> keyResultOpt = generatorFacade.generateNodeValue(keyNode, map);
+            final Optional<GeneratorResult> keyResultOpt = engine.createObject(keyNode, map);
             if (keyResultOpt.isPresent()) {
                 keyResult = keyResultOpt.get();
                 enqueueChildrenOf(keyNode, keyResult, queue);
@@ -182,13 +176,11 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         if (context.getRandom().diceRoll(nullableValue)) {
             mapValue = null;
         } else {
-            final Optional<GeneratorResult> valueResultOpt = generatorFacade.generateNodeValue(valueNode, map);
+            final Optional<GeneratorResult> valueResultOpt = engine.createObject(valueNode, map);
             if (valueResultOpt.isPresent()) {
                 valueResult = valueResultOpt.get();
                 enqueueChildrenOf(valueNode, valueResult, queue);
                 mapValue = valueResult.getValue();
-                valueNode.accept(new PopulatingNodeVisitor(
-                        map, valueResult, generatorFacade, context, queue, callbackHandler)); //NOPMD
             } else {
                 mapValue = null;
             }
@@ -196,12 +188,6 @@ public class PopulatingNodeVisitor implements NodeVisitor {
 
         if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
             map.put(mapKey, mapValue);
-            if (mapKey != null) {
-                callbackHandler.addResult(keyNode, keyResult);
-            }
-            if (mapValue != null) {
-                callbackHandler.addResult(valueNode, valueResult);
-            }
         }
     }
 
@@ -228,13 +214,12 @@ public class PopulatingNodeVisitor implements NodeVisitor {
                 continue;
             }
 
-            final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(elementNode, arrayObj);
+            final Optional<GeneratorResult> optResult = engine.createObject(elementNode, arrayObj);
             if (optResult.isPresent()) {
                 final GeneratorResult elementResult = optResult.get();
                 final Object elementValue = elementResult.getValue();
                 Array.set(arrayObj, index, elementValue);
                 enqueueChildrenOf(elementNode, elementResult, queue);
-                callbackHandler.addResult(elementNode, elementResult);
             }
         }
 

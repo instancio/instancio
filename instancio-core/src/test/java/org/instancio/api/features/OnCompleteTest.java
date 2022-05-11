@@ -17,6 +17,7 @@ package org.instancio.api.features;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.arrays.ArrayPerson;
 import org.instancio.test.support.pojo.collections.lists.ListPerson;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
@@ -26,8 +27,10 @@ import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
+import org.instancio.testsupport.Constants;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -65,36 +68,55 @@ class OnCompleteTest {
     }
 
     @Test
-    void personAsMapValue() {
+    void withMapKKey() {
+        final Map<Person, String> result = Instancio.of(new TypeToken<Map<Person, String>>() {})
+                .onComplete(all(Phone.class), (Phone phone) -> phone.setCountryCode(COUNTRY_CODE))
+                .onComplete(all(Person.class), (Person person) -> person.setName(HOMER))
+                .onComplete(all(Pet.class), (Pet pet) -> pet.setName(SNOWBALL))
+                .create();
+
+        assertThat(result.keySet())
+                .hasSizeGreaterThanOrEqualTo(Constants.MIN_SIZE)
+                .allSatisfy(OnCompleteTest::assertPerson);
+    }
+
+    @Test
+    void withMapValue() {
         final MapStringPerson result = Instancio.of(MapStringPerson.class)
                 .onComplete(all(Phone.class), (Phone phone) -> phone.setCountryCode(COUNTRY_CODE))
                 .onComplete(all(Person.class), (Person person) -> person.setName(HOMER))
                 .onComplete(all(Pet.class), (Pet pet) -> pet.setName(SNOWBALL))
                 .create();
 
-        result.getMap().values().forEach(OnCompleteTest::assertPerson);
+        assertThat(result.getMap().values())
+                .hasSizeGreaterThanOrEqualTo(Constants.MIN_SIZE)
+                .allSatisfy(OnCompleteTest::assertPerson);
     }
 
     @Test
-    void personAsListElement() {
+    void withListElement() {
         final ListPerson result = Instancio.of(ListPerson.class)
                 .onComplete(all(Phone.class), (Phone phone) -> phone.setCountryCode(COUNTRY_CODE))
                 .onComplete(all(Person.class), (Person person) -> person.setName(HOMER))
                 .onComplete(all(Pet.class), (Pet pet) -> pet.setName(SNOWBALL))
                 .create();
 
-        result.getList().forEach(OnCompleteTest::assertPerson);
+        assertThat(result.getList())
+                .hasSizeGreaterThanOrEqualTo(Constants.MIN_SIZE)
+                .allSatisfy(OnCompleteTest::assertPerson);
     }
 
     @Test
-    void personAsArrayElement() {
+    void withArrayElement() {
         final ArrayPerson result = Instancio.of(ArrayPerson.class)
                 .onComplete(all(Phone.class), (Phone phone) -> phone.setCountryCode(COUNTRY_CODE))
                 .onComplete(all(Person.class), (Person person) -> person.setName(HOMER))
                 .onComplete(all(Pet.class), (Pet pet) -> pet.setName(SNOWBALL))
                 .create();
 
-        assertThat(result.getArray()).allSatisfy(OnCompleteTest::assertPerson);
+        assertThat(result.getArray())
+                .hasSizeGreaterThanOrEqualTo(Constants.MIN_SIZE)
+                .allSatisfy(OnCompleteTest::assertPerson);
     }
 
     @Test
