@@ -39,7 +39,7 @@ To use Instancio with JUnit 5:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -50,7 +50,7 @@ To use Instancio with JUnit 4, TestNG, or standalone:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
         <scope>test</scope>
     </dependency>
 ```
