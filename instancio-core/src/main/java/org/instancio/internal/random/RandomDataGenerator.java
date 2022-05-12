@@ -30,10 +30,9 @@ import java.util.Random;
 public class RandomDataGenerator {
 
     public static long nextLong(final Random random, final long lower, final long upper) {
-        Verify.isTrue(lower < upper, "Lower must be less than upper: %s, %s", lower, upper);
+        Verify.isTrue(lower <= upper, "Lower must be less than upper: %s, %s", lower, upper);
 
-        //final long max = (upper - lower) + 1; // modified to be exclusive of upper bound
-        final long max = (upper - lower);
+        final long max = (upper - lower) + 1;
 
         if (max <= 0) {
             // the range is too wide to fit in a positive long (larger than 2^63); as it covers
@@ -73,7 +72,7 @@ public class RandomDataGenerator {
     }
 
     static double nextDouble(final Random random, double lower, double upper) {
-        Verify.isTrue(lower < upper, "Lower must be less than upper: %s, %s", lower, upper);
+        Verify.isTrue(lower <= upper, "Lower must be less than or equal to upper: %s, %s", lower, upper);
         Verify.isFalse(Double.isInfinite(lower), "Lower bound must not be infinite");
         Verify.isFalse(Double.isInfinite(upper), "Upper bound must not be infinite");
 

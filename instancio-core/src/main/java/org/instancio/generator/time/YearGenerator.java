@@ -30,8 +30,8 @@ public class YearGenerator extends AbstractTemporalGenerator<Year> {
     }
 
     @Override
-    Year now() {
-        return Year.now();
+    Year getLatestPast() {
+        return Year.now().minusYears(1);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class YearGenerator extends AbstractTemporalGenerator<Year> {
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.isBefore(max), "Start year must be before end year: %s, %s", min, max);
+        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
     }
 
     @Override

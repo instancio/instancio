@@ -137,6 +137,11 @@ public class Settings {
 
     /**
      * Set the setting with the given key to the specified value.
+     * <p>
+     * Note: when updating range settings (such as {@link Keys#COLLECTION_MIN_SIZE}
+     * and {@link Keys#COLLECTION_MAX_SIZE}), range bounds are auto-adjusted by
+     * {@link org.instancio.util.Constants#RANGE_ADJUSTMENT_PERCENTAGE} if the new minimum
+     * is higher than the current maximum, and vice versa.
      *
      * @param key   to set
      * @param value to set

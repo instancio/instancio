@@ -76,5 +76,14 @@ class IntegerSettingsTest {
         assertThat(result.getList()).doesNotContainNull();
     }
 
+    @Test
+    void integerMinIsSameAsMax() {
+        final Integer result = Instancio.of(Integer.class)
+                .withSettings(Settings.create()
+                        .set(Keys.INTEGER_MIN, 5)
+                        .set(Keys.INTEGER_MAX, 5))
+                .create();
 
+        assertThat(result).isEqualTo(5);
+    }
 }

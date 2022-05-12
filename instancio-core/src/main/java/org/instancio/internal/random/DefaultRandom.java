@@ -50,12 +50,12 @@ public class DefaultRandom implements Random {
 
     @Override
     public boolean trueOrFalse() {
-        return intRange(0, 2) == 1;
+        return intRange(0, 1) == 1;
     }
 
     @Override
     public boolean diceRoll(final boolean precondition) {
-        return precondition && intRange(0, 6) == 1;
+        return precondition && intRange(0, 5) == 1;
     }
 
     @Override
@@ -70,13 +70,11 @@ public class DefaultRandom implements Random {
 
     @Override
     public int intRange(final int min, final int max) {
-        Verify.isTrue(min < max, "Min must be less than max");
         return (int) longRange(min, max);
     }
 
     @Override
     public long longRange(final long min, final long max) {
-        Verify.isTrue(min < max, "Min must be less than max");
         return RandomDataGenerator.nextLong(random, min, max);
     }
 
@@ -97,21 +95,21 @@ public class DefaultRandom implements Random {
 
     @Override
     public char lowerCaseCharacter() {
-        return (char) (intRange(0, 26) + 'a');
+        return (char) (intRange(0, 25) + 'a');
     }
 
     @Override
     public char upperCaseCharacter() {
-        return (char) (intRange(0, 26) + 'A');
+        return (char) (intRange(0, 25) + 'A');
     }
 
     @Override
     public char alphanumericCharacter() {
-        return intRange(0, 3) == 1 ? digitChar() : character();
+        return intRange(0, 2) == 1 ? digitChar() : character();
     }
 
     private char digitChar() {
-        return (char) (intRange(0, 10) + '0');
+        return (char) (intRange(0, 9) + '0');
     }
 
     @Override
@@ -167,14 +165,14 @@ public class DefaultRandom implements Random {
     @Override
     public <T> T oneOf(final T[] array) {
         Verify.notEmpty(array, "Array must have at least one element");
-        return array[intRange(0, array.length)];
+        return array[intRange(0, array.length - 1)];
     }
 
     @Override
     public <T> T oneOf(final Collection<T> collection) {
         Verify.notEmpty(collection, "Collection must have at least one element");
         return collection.stream()
-                .skip(intRange(0, collection.size()))
+                .skip(intRange(0, collection.size() - 1))
                 .findFirst()
                 .orElse(null);
     }

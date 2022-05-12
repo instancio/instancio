@@ -23,7 +23,6 @@ import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,6 +34,13 @@ class LocalTimeGeneratorTest {
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     private final LocalTimeGenerator generator = new LocalTimeGenerator(context);
+
+    @Test
+    void smallestAllowedRange() {
+        final LocalTime time = LocalTime.of(1, 1, 1);
+        generator.range(time, time);
+        assertThat(generator.generate(random)).isEqualTo(time);
+    }
 
     @Test
     void past() {
@@ -50,13 +56,11 @@ class LocalTimeGeneratorTest {
 
     @Test
     void validateRange() {
-        final LocalTime time = LocalTime.of(0, 0, 0);
+        final LocalTime time = LocalTime.of(0, 0, 1);
 
-        assertThatThrownBy(() -> generator.range(time, time))
+        assertThatThrownBy(() -> generator.range(time.plusSeconds(1), time))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start time must be before end time: 00:00, 00:00");
-
-        generator.range(time, time.plus(1, ChronoUnit.NANOS)); // no error
+                .hasMessage("Start must not exceed end: 00:00:02, 00:00:01");
     }
 
     @Test

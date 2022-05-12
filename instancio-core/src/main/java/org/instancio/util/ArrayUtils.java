@@ -46,7 +46,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final Object[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final Object tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
@@ -55,7 +55,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final byte[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final byte tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
@@ -64,7 +64,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final short[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final short tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
@@ -73,7 +73,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final int[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final int tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
@@ -82,7 +82,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final long[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final long tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
@@ -91,7 +91,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final float[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final float tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
@@ -100,7 +100,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final double[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final double tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
@@ -109,7 +109,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final char[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final char tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;
@@ -118,7 +118,7 @@ public final class ArrayUtils {
 
     private static void shuffleArray(final boolean[] arr, final Random random) {
         for (int i = 0; i < arr.length; i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final boolean tmp = arr[i];
             arr[i] = arr[r];
             arr[r] = tmp;

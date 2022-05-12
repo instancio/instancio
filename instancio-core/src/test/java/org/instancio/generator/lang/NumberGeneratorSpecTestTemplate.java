@@ -16,6 +16,7 @@
 package org.instancio.generator.lang;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.random.DefaultRandom;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
 import org.instancio.util.TypeUtils;
@@ -75,7 +76,7 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
     }
 
     @Test
-    @DisplayName("newMin > max: new nax should be set to greater than newMin by PERCENTAGE")
+    @DisplayName("newMin > max: new max should be set to greater than newMin by PERCENTAGE")
     void newMinIsGreaterThanMax() {
         T newMin = asT(initialMax.longValue() + 1);
         generator.min(newMin);
@@ -83,11 +84,17 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
     }
 
     @Test
-    @DisplayName("newMin == max: new nax should be set to greater than newMin by PERCENTAGE")
+    @DisplayName("newMin == max: max should remain unchanged")
     void newMinIsEqualToMax() {
         T newMin = asT(initialMax.longValue());
         generator.min(newMin);
-        assertThat(generator.getMax()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
+        assertThat(generator.getMin())
+                .isEqualTo(newMin)
+                .isEqualTo(initialMax)
+                .isEqualTo(generator.getMax());
+
+        final T result = generator.generate(new DefaultRandom());
+        assertThat(result).isEqualTo(newMin);
     }
 
     @Test
@@ -97,6 +104,16 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
         generator.range(min, max);
         assertThat(generator.getMin()).isEqualTo(min);
         assertThat(generator.getMax()).isEqualTo(max);
+    }
+
+    @Test
+    void rangeWithEqualMinMax() {
+        final T min = asT(3L);
+        final T max = asT(3L);
+        generator.range(min, max);
+        assertThat(generator.getMin())
+                .isEqualTo(generator.getMax())
+                .isEqualTo(min);
     }
 
     @Test
@@ -131,17 +148,7 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
         final String errorRange = String.format("%s, %s", min, max);
         assertThatThrownBy(() -> generator.range(min, max))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid 'range(%s)': lower bound must be less than upper bound", errorRange);
-    }
-
-    @Test
-    void rangeThrowsErrorIfMinIsEqualToMax() {
-        final T min = asT(3L);
-        final T max = asT(3L);
-        final String errorRange = String.format("%s, %s", min, max);
-        assertThatThrownBy(() -> generator.range(min, max))
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid 'range(%s)': lower bound must be less than upper bound", errorRange);
+                .hasMessage("Invalid 'range(%s)': lower bound must be less than or equal to upper bound", errorRange);
     }
 
     @Test

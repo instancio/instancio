@@ -62,7 +62,7 @@ public class TextPatternGenerator implements Generator<String> {
                 } else if (tag == UCASE_CHAR) {
                     res.append(random.upperCaseCharacter());
                 } else if (tag == DIGIT) {
-                    res.append(random.intRange(0, 10));
+                    res.append(random.digits(1));
                 } else if (tag == HASH) {
                     res.append(HASH);
                 } else {

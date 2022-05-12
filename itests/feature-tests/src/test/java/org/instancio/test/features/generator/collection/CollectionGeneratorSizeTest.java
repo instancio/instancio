@@ -61,6 +61,11 @@ class CollectionGeneratorSizeTest {
         assertSize(spec -> spec.maxSize(1), 1);
     }
 
+    @Test
+    void minSizeEqualToMaxSize() {
+        assertSizeBetween(spec -> spec.minSize(EXPECTED_SIZE).maxSize(EXPECTED_SIZE), EXPECTED_SIZE, EXPECTED_SIZE);
+    }
+
     private void assertSize(Function<CollectionGeneratorSpec<?>, CollectionGeneratorSpec<?>> fn, int expectedSize) {
         assertSizeBetween(fn, expectedSize, expectedSize);
     }

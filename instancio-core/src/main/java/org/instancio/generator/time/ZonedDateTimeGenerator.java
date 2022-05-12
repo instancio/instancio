@@ -21,7 +21,6 @@ import org.instancio.internal.ApiValidator;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 
 import static java.time.ZoneOffset.UTC;
 
@@ -34,8 +33,8 @@ public class ZonedDateTimeGenerator extends AbstractTemporalGenerator<ZonedDateT
     }
 
     @Override
-    ZonedDateTime now() {
-        return ZonedDateTime.now();
+    ZonedDateTime getLatestPast() {
+        return ZonedDateTime.now().minusSeconds(1);
     }
 
     @Override
@@ -45,8 +44,7 @@ public class ZonedDateTimeGenerator extends AbstractTemporalGenerator<ZonedDateT
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(ChronoUnit.MILLIS.between(min, max) >= 1,
-                "Start date must be before end date by at least one millisecond: %s, %s", min, max);
+        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
     }
 
     /**
@@ -56,8 +54,8 @@ public class ZonedDateTimeGenerator extends AbstractTemporalGenerator<ZonedDateT
      * between the start and end dates, or else an error will be thrown.
      */
     @Override
-    public TemporalGeneratorSpec<ZonedDateTime> range(final ZonedDateTime startInclusive, final ZonedDateTime endExclusive) {
-        return super.range(startInclusive, endExclusive);
+    public TemporalGeneratorSpec<ZonedDateTime> range(final ZonedDateTime start, final ZonedDateTime end) {
+        return super.range(start, end);
     }
 
     @Override

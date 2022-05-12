@@ -37,6 +37,13 @@ class LocalDateTimeGeneratorTest {
     private final LocalDateTimeGenerator generator = new LocalDateTimeGenerator(context);
 
     @Test
+    void smallestAllowedRange() {
+        final LocalDateTime time = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+        generator.range(time, time);
+        assertThat(generator.generate(random)).isEqualTo(time);
+    }
+
+    @Test
     void past() {
         generator.past();
         assertThat(generator.generate(random)).isBefore(LocalDateTime.now());
@@ -50,15 +57,12 @@ class LocalDateTimeGeneratorTest {
 
     @Test
     void validateRange() {
-        final LocalDateTime min = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
-        final LocalDateTime max = min.plus(1, ChronoUnit.MILLIS);
-
-        generator.range(min, max); // no error with 1 millisecond delta
+        final LocalDateTime max = LocalDateTime.of(1970, 1, 1, 0, 0, 1);
+        final LocalDateTime min = max.plus(1, ChronoUnit.NANOS);
 
         assertThatThrownBy(() -> generator.range(min, max.minus(1, ChronoUnit.NANOS)))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start date must be before end date by at least one millisecond: " +
-                        "1970-01-01T00:00, 1970-01-01T00:00:00.000999999");
+                .hasMessage("Start must not exceed end: 1970-01-01T00:00:01.000000001, 1970-01-01T00:00:00.999999999");
     }
 
     @Test

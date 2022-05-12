@@ -54,7 +54,7 @@ class InstancioExtensionWithSettingsAnnotationTest {
         @WithSettings
         private final Settings settings = Settings.create()
                 .set(Keys.LONG_MIN, EXPECTED_LONG_VALUE)
-                .set(Keys.LONG_MAX, EXPECTED_LONG_VALUE + 1);
+                .set(Keys.LONG_MAX, EXPECTED_LONG_VALUE);
 
         @Test
         void assertValueCreatedUsingAnnotatedSettings() {
@@ -69,7 +69,7 @@ class InstancioExtensionWithSettingsAnnotationTest {
             final Long result = Instancio.of(Long.class)
                     .withSettings(Settings.create()
                             .set(Keys.LONG_MIN, minOverride)
-                            .set(Keys.LONG_MAX, minOverride + 1))
+                            .set(Keys.LONG_MAX, minOverride))
                     .create();
 
             assertThat(result).isEqualTo(minOverride);

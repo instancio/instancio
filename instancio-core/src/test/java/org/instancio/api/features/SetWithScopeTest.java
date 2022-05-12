@@ -25,6 +25,7 @@ import org.instancio.test.support.pojo.generics.container.ItemContainer;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonHolder;
+import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.test.support.tags.Feature;
@@ -96,7 +97,6 @@ class SetWithScopeTest {
         assertThat(result.getRichPerson().getPhone().getNumber()).isNotEqualTo(FOO);
         assertThat(result.getRichPerson().getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
         assertThat(result.getRichPerson().getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
-
         assertThat(result.getPerson().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
     }
 
@@ -120,10 +120,25 @@ class SetWithScopeTest {
 
         assertThat(result.entrySet()).hasSizeGreaterThanOrEqualTo(minSize).allSatisfy(entry -> {
             assertThat(entry.getKey().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
-
             assertThat(entry.getValue().getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
             assertThat(entry.getValue().getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
             assertThat(entry.getValue().getPhone().getNumber()).doesNotContain(FOO);
+        });
+    }
+
+    @Test
+    void selectPhonesContainedByAddress1WithinMapKey() {
+        final int minSize = 10;
+        final Map<RichPerson, Person> result = Instancio.of(new TypeToken<Map<RichPerson, Person>>() {})
+                .withSettings(Settings.create().set(Keys.MAP_MIN_SIZE, minSize))
+                .set(field(Phone.class, "number").within(scope(RichPerson.class, "address1")), FOO)
+                .create();
+
+        assertThat(result.keySet()).hasSizeGreaterThanOrEqualTo(minSize).allSatisfy(key -> {
+            assertThat(key.getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
+            assertThat(key.getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
+            assertThat(key.getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
+            assertThat(key.getPhone().getNumber()).doesNotContain(FOO);
         });
     }
 
@@ -136,7 +151,6 @@ class SetWithScopeTest {
         assertThat(result.getRichPerson().getPhone().getNumber()).isEqualTo(FOO);
         assertThat(result.getRichPerson().getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
         assertThat(result.getRichPerson().getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
-
         assertThat(result.getPerson().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
     }
 
@@ -149,7 +163,6 @@ class SetWithScopeTest {
         assertThat(result.getRichPerson().getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
         assertThat(result.getRichPerson().getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
         assertThat(result.getRichPerson().getPhone().getNumber()).isEqualTo(FOO);
-
         assertThat(result.getPerson().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
     }
 
@@ -195,7 +208,6 @@ class SetWithScopeTest {
         assertThat(richPerson.getPhone().getNumber()).isEqualTo(FOO);
         assertThat(richPerson.getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
         assertThat(richPerson.getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
-
         assertThat(result.getItemValueX().getValue().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
     }
 
@@ -210,7 +222,6 @@ class SetWithScopeTest {
         assertThat(richPerson.getPhone().getNumber()).isNotEqualTo(FOO);
         assertThat(richPerson.getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
         assertThat(richPerson.getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
-
         assertThat(result.getItemValueX().getValue().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
     }
 
@@ -251,7 +262,6 @@ class SetWithScopeTest {
         assertThat(result.getRichPerson().getAddress1().getCity()).isNotNull();
         assertThat(result.getRichPerson().getAddress2().getCity()).isNotNull();
         assertThat(result.getRichPerson().getAge()).isNotNull();
-
         assertThat(result.getPerson().getAge()).isZero();
         assertThat(result.getPerson().getLastModified()).isNull();
     }
@@ -268,7 +278,6 @@ class SetWithScopeTest {
         assertThat(result.getRichPerson().getPhone().getNumber()).isNotEqualTo(FOO);
         assertThat(result.getRichPerson().getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
         assertThat(result.getRichPerson().getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
-
         assertThat(result.getPerson().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
     }
 
@@ -286,7 +295,24 @@ class SetWithScopeTest {
         assertThat(result.getRichPerson().getAddress1().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
         assertThat(result.getRichPerson().getAddress1().getPhoneNumbers()).extracting(Phone::getCountryCode).containsOnly(FOO);
         assertThat(result.getRichPerson().getAddress2().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
-
         assertThat(result.getPerson().getAddress().getPhoneNumbers()).extracting(Phone::getNumber).doesNotContain(FOO);
+    }
+
+    @Test
+    void selectAllStringsWithinArray() {
+        final PersonHolder result = Instancio.of(PersonHolder.class)
+                .set(allStrings().within(scope(Pet[].class)), FOO)
+                .create();
+
+        assertThat(result.getPerson().getPets()).extracting(Pet::getName).containsOnly(FOO);
+    }
+
+    @Test
+    void selectFieldWithinArray() {
+        final PersonHolder result = Instancio.of(PersonHolder.class)
+                .set(field(Pet.class, "name").within(scope(Pet[].class)), FOO)
+                .create();
+
+        assertThat(result.getPerson().getPets()).extracting(Pet::getName).containsOnly(FOO);
     }
 }

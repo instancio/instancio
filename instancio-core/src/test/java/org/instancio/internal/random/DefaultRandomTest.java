@@ -38,7 +38,7 @@ import static org.assertj.core.data.Percentage.withPercentage;
 @NonDeterministicTag
 class DefaultRandomTest {
     private static final int SAMPLE_SIZE = 50_000;
-    private static final int PERCENTAGE_THRESHOLD = 20;
+    private static final int PERCENTAGE_THRESHOLD = 10;
     private static final Pattern UPPER_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[A-Z]*$");
     private static final Pattern LOWER_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[a-z]*$");
     private static final Pattern MIXED_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[a-zA-Z]*$");
@@ -51,6 +51,21 @@ class DefaultRandomTest {
     @BeforeEach
     void setUp() {
         results = new HashSet<>();
+    }
+
+    @Test
+    void bounds() {
+        assertThat(random.byteRange((byte) 1, (byte) 1)).isEqualTo((byte) 1);
+        assertThat(random.shortRange((short) 1, (short) 1)).isEqualTo((short) 1);
+        assertThat(random.intRange(1, 1)).isEqualTo(1);
+        assertThat(random.longRange(1, 1)).isEqualTo(1);
+        assertThat(random.floatRange(1, 1)).isEqualTo(1);
+        assertThat(random.doubleRange(1, 1)).isEqualTo(1);
+        assertThat(String.valueOf(random.digits(1))).hasSize(1);
+        assertThat(random.lowerCaseAlphabetic(1)).hasSize(1);
+        assertThat(random.upperCaseAlphabetic(1)).hasSize(1);
+        assertThat(random.mixedCaseAlphabetic(1)).hasSize(1);
+        assertThat(random.alphanumeric(1)).hasSize(1);
     }
 
     @Test
@@ -232,7 +247,7 @@ class DefaultRandomTest {
         @MethodSource("intRanges")
         @ParameterizedTest
         void intBetween(final int min, final int max) {
-            final int totalResults = max - min;
+            final int totalResults = max - min + 1;
             final Integer[] counts = new Integer[totalResults];
             Arrays.fill(counts, 0);
 
@@ -278,7 +293,7 @@ class DefaultRandomTest {
         @MethodSource("longRanges")
         @ParameterizedTest
         void longBetween(final long min, final long max) {
-            final int totalResults = (int) (max - min);
+            final int totalResults = (int) (max - min) + 1;
             final Integer[] counts = new Integer[totalResults];
             Arrays.fill(counts, 0);
 

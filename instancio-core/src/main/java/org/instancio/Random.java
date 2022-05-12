@@ -31,55 +31,72 @@ public interface Random {
     int getSeed();
 
     /**
-     * @return a random {@code true} or {@code false} value with a {@code 0.5} probability.
+     * Returns a random boolean with a {@code 0.5} probability.
+     *
+     * @return a random {@code true} or {@code false}
      */
     boolean trueOrFalse();
 
     /**
+     * Returns {@code true} with a {@code 1/6} probability, but only
+     * if the {@code precondition} is true.
+     *
      * @param precondition required for returning {@code true} value
      * @return a random {@code true} with {@code 1/6} probability.
      */
     boolean diceRoll(boolean precondition);
 
     /**
+     * Returns a random {@code byte} within the given range.
+     *
      * @param min lower bound
-     * @param max upper bound (exclusive)
-     * @return a random byte between the min and max, exclusive
+     * @param max upper bound (inclusive)
+     * @return a random byte between the min and max, inclusive
      */
     byte byteRange(byte min, byte max);
 
     /**
+     * Returns a random {@code short} within the given range.
+     *
      * @param min lower bound
-     * @param max upper bound (exclusive)
-     * @return a random short between the min and max, exclusive
+     * @param max upper bound (inclusive)
+     * @return a random short between the min and max, inclusive
      */
     short shortRange(short min, short max);
 
     /**
+     * Returns a random {@code int} within the given range.
+     *
      * @param min lower bound
-     * @param max upper bound (exclusive)
-     * @return a random int between the min and max, exclusive
+     * @param max upper bound (inclusive)
+     * @return a random int between the min and max, inclusive
      */
     int intRange(int min, int max);
 
     /**
+     * Returns a random {@code long} within the given range.
+     *
      * @param min lower bound
-     * @param max upper bound (exclusive)
-     * @return a random long between the min and max, exclusive
+     * @param max upper bound (inclusive)
+     * @return a random long between the min and max, inclusive
      */
     long longRange(long min, long max);
 
     /**
+     * Returns a random {@code float} within the given range.
+     *
      * @param min lower bound
-     * @param max upper bound (exclusive)
-     * @return a random float between the min and max, exclusive
+     * @param max upper bound (inclusive)
+     * @return a random float between the min and max, inclusive
      */
     float floatRange(float min, float max);
 
     /**
+     * Returns a random {@code double} within the given range.
+     *
      * @param min lower bound
-     * @param max upper bound (exclusive)
-     * @return a random double between the min and max, exclusive
+     * @param max upper bound (inclusive)
+     * @return a random double between the min and max, inclusive
      */
     double doubleRange(double min, double max);
 
@@ -152,7 +169,7 @@ public interface Random {
     String digits(int length);
 
     /**
-     * Returns a random element from given array.
+     * Returns a random element from the given array.
      *
      * @param array to pick a value from
      * @param <T>   element type
@@ -161,7 +178,7 @@ public interface Random {
     <T> T oneOf(T... array);
 
     /**
-     * Returns a random element from given collection.
+     * Returns a random element from the given collection.
      *
      * @param collection to pick a value from
      * @param <T>        element type

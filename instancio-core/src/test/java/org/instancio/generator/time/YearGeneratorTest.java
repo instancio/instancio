@@ -36,6 +36,12 @@ class YearGeneratorTest {
     private final YearGenerator generator = new YearGenerator(context);
 
     @Test
+    void smallestAllowedRange() {
+        generator.range(Year.of(2000), Year.of(2000));
+        assertThat(generator.generate(random)).isEqualTo(Year.of(2000));
+    }
+
+    @Test
     void past() {
         generator.past();
         assertThat(generator.generate(random).isBefore(Year.now())).isTrue();
@@ -51,11 +57,9 @@ class YearGeneratorTest {
     void validateRange() {
         final Year year = Year.of(1970);
 
-        assertThatThrownBy(() -> generator.range(year, year))
+        assertThatThrownBy(() -> generator.range(year.plusYears(1), year))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start year must be before end year: 1970, 1970");
-
-        generator.range(year, year.plusYears(1)); // no error
+                .hasMessage("Start must not exceed end: 1971, 1970");
     }
 
     @Test

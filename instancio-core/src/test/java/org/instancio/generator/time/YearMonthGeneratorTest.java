@@ -42,6 +42,12 @@ class YearMonthGeneratorTest {
 
     private final YearMonthGenerator generator = new YearMonthGenerator(context);
 
+    @Test
+    void smallestAllowedRange() {
+        generator.range(YearMonth.of(2000, 1), YearMonth.of(2000, 1));
+        assertThat(generator.generate(random)).isEqualTo(YearMonth.of(2000, 1));
+    }
+
     @RepeatedTest(100)
     void past() {
         generator.past();
@@ -65,11 +71,10 @@ class YearMonthGeneratorTest {
     void validateRange() {
         final YearMonth yearMonth = YearMonth.of(1970, 1);
 
-        assertThatThrownBy(() -> generator.range(yearMonth, yearMonth))
+        assertThatThrownBy(() -> generator.range(yearMonth.plusMonths(1), yearMonth))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start value must be before end: 1970-01, 1970-01");
+                .hasMessage("Start must not exceed end: 1970-02, 1970-01");
 
-        generator.range(yearMonth, yearMonth.plusMonths(1)); // no error
     }
 
     private static Stream<Arguments> temporalRanges() {

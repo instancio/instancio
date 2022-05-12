@@ -77,7 +77,7 @@ class NumberGeneratorTest {
                 }
             }
 
-            assertThat(results).containsNull().hasSize(MAX - MIN + 1);
+            assertThat(results).containsNull().hasSize(MAX - MIN + 2);
             assertHints(generator.getHints())
                     .nullableResult(true)
                     .ignoreChildren(true);

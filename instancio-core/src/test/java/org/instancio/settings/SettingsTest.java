@@ -165,6 +165,23 @@ class SettingsTest {
     }
 
     @Test
+    void setAutoAdjustEqualBounds() {
+        final Settings settings = Settings.defaults()
+                .set(Keys.COLLECTION_MIN_SIZE, 2)
+                .set(Keys.COLLECTION_MAX_SIZE, 2)
+                .set(Keys.FLOAT_MIN, 3f)
+                .set(Keys.FLOAT_MAX, 3f);
+
+        assertThat((int) settings.get(Keys.COLLECTION_MIN_SIZE))
+                .isEqualTo(settings.get(Keys.COLLECTION_MIN_SIZE))
+                .isEqualTo(2);
+
+        assertThat((float) settings.get(Keys.FLOAT_MIN))
+                .isEqualTo(settings.get(Keys.FLOAT_MAX))
+                .isEqualTo(3f);
+    }
+
+    @Test
     void setWithoutAutoAdjust() {
         final int minLength = 1000;
         final int newMaxLength = 100;

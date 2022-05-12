@@ -47,7 +47,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.allStrings;
-import static org.instancio.Select.scope;
 
 @InstancioMetamodel(classes = {
         Address.class,
@@ -88,7 +87,7 @@ class MetamodelBasedOnClassesTest {
     void person() {
         final int expected = 20;
         final Person result = Instancio.of(Person.class)
-                .generate(Person_.age, gen -> gen.ints().range(expected, expected + 1))
+                .generate(Person_.age, gen -> gen.ints().range(expected, expected))
                 .create();
 
         assertThat(result.getAge()).isEqualTo(expected);
