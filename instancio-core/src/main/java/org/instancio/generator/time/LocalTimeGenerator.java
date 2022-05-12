@@ -30,8 +30,8 @@ public class LocalTimeGenerator extends AbstractTemporalGenerator<LocalTime> {
     }
 
     @Override
-    LocalTime now() {
-        return LocalTime.now();
+    LocalTime getLatestPast() {
+        return LocalTime.now().minusSeconds(1);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class LocalTimeGenerator extends AbstractTemporalGenerator<LocalTime> {
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.isBefore(max), "Start time must be before end time: %s, %s", min, max);
+        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
     }
 
     @Override

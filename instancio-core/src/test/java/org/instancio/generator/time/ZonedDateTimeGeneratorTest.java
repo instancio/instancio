@@ -39,6 +39,13 @@ class ZonedDateTimeGeneratorTest {
     private final ZonedDateTimeGenerator generator = new ZonedDateTimeGenerator(context);
 
     @Test
+    void smallestAllowedRange() {
+        final ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 0, 0, 0), UTC);
+        generator.range(dateTime, dateTime);
+        assertThat(generator.generate(random)).isEqualTo(dateTime);
+    }
+
+    @Test
     void past() {
         generator.past();
         assertThat(generator.generate(random)).isBefore(ZonedDateTime.now());
@@ -52,15 +59,12 @@ class ZonedDateTimeGeneratorTest {
 
     @Test
     void validateRange() {
-        final ZonedDateTime min = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 0, 0, 0), UTC);
-        final ZonedDateTime max = min.plus(1, ChronoUnit.MILLIS);
-
-        generator.range(min, max); // no error with 1 millisecond delta
+        final ZonedDateTime max = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 0, 0, 0), UTC);
+        final ZonedDateTime min = max.plus(1, ChronoUnit.NANOS);
 
         assertThatThrownBy(() -> generator.range(min, max.minus(1, ChronoUnit.NANOS)))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start date must be before end date by at least one millisecond: " +
-                        "1970-01-01T00:00Z, 1970-01-01T00:00:00.000999999Z");
+                .hasMessage("Start must not exceed end: 1970-01-01T00:00:00.000000001Z, 1969-12-31T23:59:59.999999999Z");
     }
 
     @Test

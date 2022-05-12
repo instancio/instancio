@@ -38,7 +38,7 @@ These can be used when defaults suffice and generated values do not need to be c
 ``` java linenums="1" title="Shorthand methods"
 Instancio.create(Class<T> klass)
 Instancio.create(TypeTokenSupplier<T> supplier)
-Instancio.create(Model<T> 
+Instancio.create(Model<T>)
 ```
 
 The following builder methods allow chaining additional method calls in order to customise generated values, ignore certain fields, provide custom settings, and so on.
@@ -103,9 +103,10 @@ Instancio.of(Class<T> klass).stream()
 Instancio.of(TypeTokenSupplier<T> supplier).stream()
 ```
 
-The following are a couple of examples of using streams.
+The following are a couple of examples of using streams. Note the calls to `limit()`,
+which are required to avoid an infinite loop.
 
-``` java linenums="1" title="Examples of stream() methods"
+``` java linenums="1" title="Examples of stream() methods" hl_lines="2 8"
 List<Person> personList = Instancio.stream(Person.class)
     .limit(3)
     .collect(Collectors.toList());
@@ -116,6 +117,8 @@ Map<UUID, Person> personMap = Instancio.of(new TypeToken<Person>() {})
     .limit(3)
     .collect(Collectors.toMap(Person::getUuid, Function.identity()));
 ```
+
+!!! warning "Since returned streams are infinite, `limit()` _must_ be called to avoid an infinite loop."
 
 ## Selectors
 
@@ -738,6 +741,10 @@ interface SampleConfig {
     Doing so will result in metamodels being generated more than once as well.
     For this reason, it is better to have a dedicated class containing the `@InstancioMetamodel` annotation.
 
+Metamodels for classes specified in the annotation will be automatically generated during the build.
+Typically metamodels are placed under a generated sources directory, such as `generated/sources` or `generated-sources`.
+If your IDE does not pick up the generated classes, then adding the generated sources directory to the build path
+(or simply reloading the project) should resolve this.
 
 # Configuration
 
@@ -783,6 +790,11 @@ Person person = Instancio.of(Person.class)
     <lnum>4</lnum> The `lock()` method makes the settings instance immutable. This is an optional method call.
     It can be used to prevent modifications if settings are shared across multiple methods or classes.<br/>
     <lnum>7</lnum> The passed in settings instance will override default settings.
+
+!!! attention "Range settings auto-adjust"
+    When updating range settings, such as `COLLECTION_MIN_SIZE` and `COLLECTION_MAX_SIZE`,
+    range bound is auto-adjusted if the new minimum is higher than the current maximum, and vice versa.
+
 
 ## Overriding Settings Using a Properties File
 

@@ -21,7 +21,6 @@ import org.instancio.internal.ApiValidator;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import static java.time.ZoneOffset.UTC;
 
@@ -34,8 +33,8 @@ public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateT
     }
 
     @Override
-    LocalDateTime now() {
-        return LocalDateTime.now();
+    LocalDateTime getLatestPast() {
+        return LocalDateTime.now().minusSeconds(1);
     }
 
     @Override
@@ -45,8 +44,7 @@ public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateT
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(ChronoUnit.MILLIS.between(min, max) >= 1,
-                "Start date must be before end date by at least one millisecond: %s, %s", min, max);
+        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
     }
 
     /**
@@ -56,8 +54,8 @@ public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateT
      * between the start and end dates, or else an error will be thrown.
      */
     @Override
-    public TemporalGeneratorSpec<LocalDateTime> range(final LocalDateTime startInclusive, final LocalDateTime endExclusive) {
-        return super.range(startInclusive, endExclusive);
+    public TemporalGeneratorSpec<LocalDateTime> range(final LocalDateTime start, final LocalDateTime end) {
+        return super.range(start, end);
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,6 +35,13 @@ class LocalDateGeneratorTest {
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
     private final LocalDateGenerator generator = new LocalDateGenerator(context);
+
+    @Test
+    void smallestAllowedRange() {
+        final LocalDate time = LocalDate.of(2000, 1, 1);
+        generator.range(time, time);
+        assertThat(generator.generate(random)).isEqualTo(time);
+    }
 
     @Test
     void past() {
@@ -51,11 +59,9 @@ class LocalDateGeneratorTest {
     void validateRange() {
         final LocalDate date = LocalDate.of(1970, 1, 1);
 
-        assertThatThrownBy(() -> generator.range(date, date))
+        assertThatThrownBy(() -> generator.range(date.plusDays(1), date))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start date must be before end date by at least 1 day: 1970-01-01, 1970-01-01");
-
-        generator.range(date, date.plusDays(1)); // no error
+                .hasMessage("Start must not exceed end: 1970-01-02, 1970-01-01");
     }
 
     @Test

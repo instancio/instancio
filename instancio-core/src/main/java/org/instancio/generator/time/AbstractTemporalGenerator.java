@@ -37,7 +37,7 @@ abstract class AbstractTemporalGenerator<T extends Temporal> extends AbstractGen
         this.max = max;
     }
 
-    abstract T now();
+    abstract T getLatestPast();
 
     abstract T getEarliestFuture();
 
@@ -46,7 +46,7 @@ abstract class AbstractTemporalGenerator<T extends Temporal> extends AbstractGen
     @Override
     public final TemporalGeneratorSpec<T> past() {
         min = defaultMin;
-        max = now();
+        max = getLatestPast();
         return this;
     }
 
@@ -58,9 +58,9 @@ abstract class AbstractTemporalGenerator<T extends Temporal> extends AbstractGen
     }
 
     @Override
-    public TemporalGeneratorSpec<T> range(final T startInclusive, final T endExclusive) {
-        min = Verify.notNull(startInclusive, "Start parameter must not be null");
-        max = Verify.notNull(endExclusive, "End parameter must not be null");
+    public TemporalGeneratorSpec<T> range(final T start, final T end) {
+        min = Verify.notNull(start, "Start parameter must not be null");
+        max = Verify.notNull(end, "End parameter must not be null");
         validateRange();
         return this;
     }

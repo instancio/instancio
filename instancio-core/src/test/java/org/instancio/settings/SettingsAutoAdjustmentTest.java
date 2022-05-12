@@ -32,13 +32,13 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Expectations based on 10% delta between min and max:
+ * Expected newMax is based on 10% delta between min and max:
  *
  * <pre>
  *   newMin curMax MAX_VALUE | newMax
  *   910    900    1000      | 1000
  *   100    99     1000      | 110
- *   100    100    1000      | 110
+ *   100    100    1000      | 100
  *   100    101    1000      | 101
  *   100    null   1000      | null
  * </pre>
@@ -49,20 +49,22 @@ class SettingsAutoAdjustmentTest {
 
     private final Settings settings = Settings.defaults();
 
-    @Test
-    @DisplayName("max > newMin: then max should not change")
-    void maxGreaterThanNewMin() {
-        final int newMin = 100;
-        final int max = settings.get(Keys.INTEGER_MAX);
-        settings.set(Keys.INTEGER_MIN, newMin, false);
+    @ValueSource(ints = {99, 100})
+    @ParameterizedTest
+    @DisplayName("newMin < max: then max should not change")
+    void newMinLessThanOrEqualToMax(final int newMin) {
+        final int max = 100;
+        settings
+                .set(Keys.INTEGER_MAX, max)
+                .set(Keys.INTEGER_MIN, newMin);
 
         assertThat((Object) settings.get(Keys.INTEGER_MAX)).isEqualTo(max);
     }
 
-    @ValueSource(ints = {100, 101})
-    @ParameterizedTest
-    @DisplayName("newMin >= max: should update max to: newMin + PERCENTAGE")
-    void newMinGreaterThanOrEqualToMax(final int max) {
+    @Test
+    @DisplayName("newMin > max: should update max to: newMin + PERCENTAGE")
+    void newMinGreaterThanOrEqualToMax() {
+        final int max = 100;
         final int newMin = 101;
         settings
                 .set(Keys.ARRAY_MAX_LENGTH, max)

@@ -32,8 +32,8 @@ public class LocalDateGenerator extends AbstractTemporalGenerator<LocalDate> {
     }
 
     @Override
-    LocalDate now() {
-        return LocalDate.now();
+    LocalDate getLatestPast() {
+        return LocalDate.now().minusDays(1);
     }
 
     @Override
@@ -43,8 +43,7 @@ public class LocalDateGenerator extends AbstractTemporalGenerator<LocalDate> {
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.isBefore(max),
-                "Start date must be before end date by at least 1 day: %s, %s", min, max);
+        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
     }
 
     @Override

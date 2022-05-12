@@ -35,7 +35,7 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
     /**
      * Upper bound for the random number generator.
      *
-     * @param max upper bound (exclusive)
+     * @param max upper bound (inclusive)
      * @return spec builder
      */
     NumberGeneratorSpec<T> max(T max);
@@ -44,7 +44,7 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
      * Range for the random number generator
      *
      * @param min lower bound (inclusive)
-     * @param max upper bound (exclusive)
+     * @param max upper bound (inclusive)
      * @return spec builder
      */
     NumberGeneratorSpec<T> range(T min, T max);

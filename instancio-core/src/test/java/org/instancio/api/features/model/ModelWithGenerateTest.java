@@ -34,8 +34,8 @@ class ModelWithGenerateTest {
         final int intValue = 222;
 
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
-                .generate(field("primitiveLong"), gen -> gen.longs().min(longValue).max(longValue + 1))
-                .generate(allInts(), gen -> gen.ints().min(intValue).max(intValue + 1))
+                .generate(field("primitiveLong"), gen -> gen.longs().min(longValue).max(longValue))
+                .generate(allInts(), gen -> gen.ints().min(intValue).max(intValue))
                 .toModel();
 
         final SupportedNumericTypes result = Instancio.create(model);

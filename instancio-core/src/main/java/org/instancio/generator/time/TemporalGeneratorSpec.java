@@ -49,9 +49,9 @@ public interface TemporalGeneratorSpec<T extends Temporal> extends GeneratorSpec
     /**
      * Generate a temporal value between the given range.
      *
-     * @param startInclusive start date (inclusive)
-     * @param endExclusive   end date (exclusive)
+     * @param start start date (inclusive)
+     * @param end   end date (inclusive)
      * @return spec builder
      */
-    TemporalGeneratorSpec<T> range(T startInclusive, T endExclusive);
+    TemporalGeneratorSpec<T> range(T start, T end);
 }

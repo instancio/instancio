@@ -60,6 +60,11 @@ class ArrayGeneratorSizeTest {
         assertSize(spec -> spec.maxLength(1), 1);
     }
 
+    @Test
+    void minLengthEqualToMaxLength() {
+        assertSizeBetween(spec -> spec.minLength(EXPECTED_SIZE).maxLength(EXPECTED_SIZE), EXPECTED_SIZE, EXPECTED_SIZE);
+    }
+
     private void assertSize(Function<ArrayGeneratorSpec<?>, ArrayGeneratorSpec<?>> fn, int size) {
         assertSizeBetween(fn, size, size);
     }

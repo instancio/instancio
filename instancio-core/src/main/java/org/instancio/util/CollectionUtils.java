@@ -27,14 +27,23 @@ public final class CollectionUtils {
     }
 
     public static void shuffle(final Collection<Object> collection, final Random random) {
-        List<Object> list = collection instanceof List
-                ? (List<Object>) collection
-                : new ArrayList<>(collection);
+        if (collection.isEmpty()) {
+            return;
+        } else if (collection instanceof List) {
+            shuffleList((List<Object>) collection, random);
+            return;
+        }
 
+        final List<Object> list = new ArrayList<>(collection);
+        shuffleList(list, random);
+        collection.clear();
+        collection.addAll(list);
+    }
+
+    private static void shuffleList(final List<Object> list, final Random random) {
         for (int i = 0; i < list.size(); i++) {
-            final int r = random.intRange(0, i + 1);
+            final int r = random.intRange(0, i);
             final Object tmp = list.get(i);
-
             list.set(i, list.get(r));
             list.set(r, tmp);
         }

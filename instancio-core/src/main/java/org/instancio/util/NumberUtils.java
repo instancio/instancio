@@ -66,21 +66,21 @@ public final class NumberUtils {
     /**
      * Calculate a new minimum given the new maximum.
      * <p>
-     * If the new maximum is less than or equal to the current minimum,
-     * returns a new minimum value that is lower than the nex maximum
+     * If the new maximum is less than the current minimum,
+     * returns a new minimum value that is less than the nex maximum
      * by the specified percentage. Otherwise, returns the current minimum.
      *
      * @param curMin     current minimum
      * @param newMax     new maximum
      * @param percentage to adjust by
      * @param <T>        number type
-     * @return new minimum if current is greater than or equal to current maximum
+     * @return new minimum if current minimum is greater than the new maximum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMin(
             final T curMin, final T newMax, final int percentage) {
 
         final long newMin;
-        if (curMin == null || curMin.compareTo(newMax) >= 0) {
+        if (curMin == null || curMin.compareTo(newMax) > 0) {
             final long delta = (long) Math.abs((newMax.longValue() * (percentage / 100d)));
             final T absoluteMin = NumberUtils.getMinValue(newMax.getClass());
             newMin = absoluteMin.longValue() + delta <= newMax.longValue()
@@ -97,7 +97,7 @@ public final class NumberUtils {
     /**
      * Calculate a new maximum given the new minimum.
      * <p>
-     * If the new minimum is greater than or equal to the current maximum,
+     * If the new minimum is greater than the current maximum,
      * returns a new maximum value that is higher than the new minimum
      * by the specified percentage. Otherwise, returns the current maximum.
      *
@@ -105,13 +105,13 @@ public final class NumberUtils {
      * @param newMin     new minimum
      * @param percentage to adjust by
      * @param <T>        number type
-     * @return new maximum if current is lower than or equal to current minimum
+     * @return new maximum if current maximum is less than the new minimum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMax(
             final T curMax, final T newMin, final int percentage) {
 
         final long newMax;
-        if (curMax == null || curMax.compareTo(newMin) <= 0) {
+        if (curMax == null || curMax.compareTo(newMin) < 0) {
             final long delta = (long) Math.abs((newMin.longValue() * (percentage / 100d)));
             final T absoluteMax = NumberUtils.getMaxValue(newMin.getClass());
             newMax = absoluteMax.longValue() - delta >= newMin.longValue()

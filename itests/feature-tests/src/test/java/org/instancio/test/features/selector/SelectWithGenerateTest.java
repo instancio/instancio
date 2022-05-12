@@ -46,7 +46,7 @@ class SelectWithGenerateTest {
     @DisplayName("Should select primitive but not wrapper")
     void selectPrimitive() {
         final LongHolder result = Instancio.of(LongHolder.class)
-                .generate(all(long.class), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE + 1))
+                .generate(all(long.class), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE))
                 .create();
 
         assertThat(result.getPrimitive()).isEqualTo(EXPECTED_VALUE);
@@ -57,7 +57,7 @@ class SelectWithGenerateTest {
     @DisplayName("Should select wrapper but not primitive")
     void selectWrapper() {
         final LongHolder result = Instancio.of(LongHolder.class)
-                .generate(all(Long.class), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE + 1))
+                .generate(all(Long.class), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE))
                 .create();
 
         assertThat(result.getWrapper()).isEqualTo(EXPECTED_VALUE);
@@ -68,7 +68,7 @@ class SelectWithGenerateTest {
     @DisplayName("Should select both, primitive and wrapper")
     void selectPrimitiveAndWrapper() {
         final LongHolder result = Instancio.of(LongHolder.class)
-                .generate(allLongs(), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE + 1))
+                .generate(allLongs(), gen -> gen.longs().range(EXPECTED_VALUE, EXPECTED_VALUE))
                 .create();
 
         assertThat(result.getWrapper()).isEqualTo(EXPECTED_VALUE);

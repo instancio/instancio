@@ -131,7 +131,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
             return "";
         }
 
-        final int length = random.intRange(minLength, maxLength + 1);
+        final int length = random.intRange(minLength, maxLength);
         return prefix + generateString(random, length);
     }
 
