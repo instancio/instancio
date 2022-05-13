@@ -38,7 +38,7 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
-@FeatureTag(Feature.TEMPORAL_GENERATOR)
+@FeatureTag({Feature.GENERATE, Feature.TEMPORAL_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class TemporalGeneratorsTest {
 

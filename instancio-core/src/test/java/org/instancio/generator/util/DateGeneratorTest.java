@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +36,7 @@ class DateGeneratorTest {
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final Instant START = LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999)
-            .toInstant(ZoneOffset.UTC);
+            .toInstant(OffsetDateTime.now().getOffset());
 
     private final DateGenerator generator = new DateGenerator(context);
 
@@ -66,7 +66,7 @@ class DateGeneratorTest {
 
         assertThatThrownBy(() -> generator.range(min, max))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 1970-01-01T00:00:01.999Z, 1970-01-01T00:00:01.998Z");
+                .hasMessageContaining("Start must not exceed end");
     }
 
     @Test

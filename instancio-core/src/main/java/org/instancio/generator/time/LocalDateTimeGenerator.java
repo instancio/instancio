@@ -21,16 +21,14 @@ import org.instancio.internal.ApiValidator;
 
 import java.time.LocalDateTime;
 
-import static java.time.ZoneOffset.UTC;
-
 public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateTime> {
 
     private final InstantGenerator delegate;
 
     public LocalDateTimeGenerator(final GeneratorContext context) {
         super(context,
-                LocalDateTime.ofInstant(DEFAULT_MIN, UTC),
-                LocalDateTime.ofInstant(DEFAULT_MAX, UTC));
+                LocalDateTime.ofInstant(DEFAULT_MIN, ZONE_OFFSET),
+                LocalDateTime.ofInstant(DEFAULT_MAX, ZONE_OFFSET));
 
         delegate = new InstantGenerator(context);
     }
@@ -52,7 +50,7 @@ public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateT
 
     @Override
     public LocalDateTime generate(final Random random) {
-        delegate.range(min.toInstant(UTC), max.toInstant(UTC));
-        return LocalDateTime.ofInstant(delegate.generate(random), UTC);
+        delegate.range(min.toInstant(ZONE_OFFSET), max.toInstant(ZONE_OFFSET));
+        return LocalDateTime.ofInstant(delegate.generate(random), ZONE_OFFSET);
     }
 }

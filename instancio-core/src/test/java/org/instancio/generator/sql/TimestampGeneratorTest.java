@@ -61,7 +61,7 @@ class TimestampGeneratorTest {
 
         assertThatThrownBy(() -> generator.range(Timestamp.valueOf(START), end))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 1970-01-01T08:00:01.999999999Z, 1970-01-01T08:00:01.999999998Z");
+                .hasMessageContaining("Start must not exceed end");
     }
 
     @Test

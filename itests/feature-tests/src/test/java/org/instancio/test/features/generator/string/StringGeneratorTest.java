@@ -30,7 +30,7 @@ import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 
-@FeatureTag(Feature.STRING_GENERATOR)
+@FeatureTag({Feature.GENERATE, Feature.STRING_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class StringGeneratorTest {
 

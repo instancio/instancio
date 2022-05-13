@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -38,7 +38,8 @@ class CalendarGeneratorTest {
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final ZonedDateTime START = ZonedDateTime.of(
-            LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999), ZoneId.systemDefault());
+            LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999),
+            OffsetDateTime.now().getOffset());
 
     private final CalendarGenerator generator = new CalendarGenerator(context);
 
@@ -46,7 +47,7 @@ class CalendarGeneratorTest {
     void smallestAllowedRange() {
         final GregorianCalendar calendar = GregorianCalendar.from(START);
         generator.range(calendar, calendar);
-        assertThat(generator.generate(random)).isEqualTo(calendar);
+        assertThat(generator.generate(random).getTimeInMillis()).isEqualTo(calendar.getTimeInMillis());
     }
 
     @Test
@@ -68,7 +69,7 @@ class CalendarGeneratorTest {
 
         assertThatThrownBy(() -> generator.range(min, max))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 1970-01-01T08:00:01.999Z, 1970-01-01T08:00:01.998Z");
+                .hasMessageContaining("Start must not exceed end");
     }
 
     @Test

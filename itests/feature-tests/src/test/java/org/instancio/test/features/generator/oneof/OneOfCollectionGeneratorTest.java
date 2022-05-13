@@ -13,30 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.instancio.test.features.generator.text;
+package org.instancio.test.features.generator.oneof;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 
-@FeatureTag({Feature.GENERATE, Feature.TEXT_PATTERN_GENERATOR})
+@FeatureTag({Feature.GENERATE, Feature.ONE_OF_COLLECTION_GENERATOR})
 @ExtendWith(InstancioExtension.class)
-class TextPatternGeneratorTest {
+class OneOfCollectionGeneratorTest {
 
     @Test
-    void pattern() {
-        final StringHolder result = Instancio.of(StringHolder.class)
-                .generate(allStrings(), gen -> gen.text().pattern("Foo: #C#c#d."))
+    void oneOfSingleChoice() {
+        final String result = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen.oneOf(Collections.singleton("one")))
                 .create();
 
-        assertThat(result.getValue()).matches("^Foo: [A-Z][a-z][0-9].$");
+        assertThat(result).isEqualTo("one");
+    }
+
+    @Test
+    void oneOfConsidersAllChoices() {
+        final Set<String> results = new HashSet<>();
+        final List<String> choices = Arrays.asList("one", "two", "three");
+        for (int i = 0; i < 30; i++) {
+            results.add(Instancio.of(String.class)
+                    .generate(allStrings(), gen -> gen.oneOf(choices))
+                    .create());
+        }
+        assertThat(results).containsAll(choices);
     }
 }

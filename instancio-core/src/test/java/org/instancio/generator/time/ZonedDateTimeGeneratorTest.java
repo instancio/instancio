@@ -24,9 +24,9 @@ import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -35,7 +35,8 @@ class ZonedDateTimeGeneratorTest {
     private static final Settings settings = Settings.create();
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private static final ZonedDateTime START = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999), UTC);
+    private static final ZonedDateTime START = ZonedDateTime.of(LocalDateTime.of(
+            1970, 1, 1, 0, 0, 1, 999999999), ZoneId.systemDefault());
 
     private final ZonedDateTimeGenerator generator = new ZonedDateTimeGenerator(context);
 
@@ -61,7 +62,7 @@ class ZonedDateTimeGeneratorTest {
     void validateRange() {
         assertThatThrownBy(() -> generator.range(START, START.minusNanos(1)))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 1970-01-01T00:00:01.999999999Z, 1970-01-01T00:00:01.999999998Z");
+                .hasMessageContaining("Start must not exceed end");
     }
 
     @Test

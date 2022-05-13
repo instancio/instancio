@@ -30,7 +30,7 @@ import java.math.BigInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
-@FeatureTag(Feature.MATH_GENERATOR)
+@FeatureTag({Feature.GENERATE, Feature.MATH_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class MathGeneratorsTest {
 
@@ -42,6 +42,6 @@ class MathGeneratorsTest {
                 .create();
 
         assertThat(result.getBigInteger()).isEqualTo(BigInteger.ONE);
-        assertThat(result.getBigDecimal().compareTo(BigDecimal.ONE)).isZero();
+        assertThat(result.getBigDecimal()).isEqualByComparingTo(BigDecimal.ONE);
     }
 }

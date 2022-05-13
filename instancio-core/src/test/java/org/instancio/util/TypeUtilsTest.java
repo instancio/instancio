@@ -24,6 +24,7 @@ import org.instancio.test.support.pojo.generics.basic.Item;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TypeUtilsTest {
 
@@ -33,6 +34,10 @@ class TypeUtilsTest {
         assertThat(TypeUtils.getArrayClass(new TypeToken<int[]>() {}.get())).isEqualTo(int[].class);
         assertThat(TypeUtils.getArrayClass(new TypeToken<Item<Integer>[]>() {}.get())).isEqualTo(Item[].class);
         assertThat(TypeUtils.getArrayClass(new TypeToken<Item<String>[]>() {}.get())).isEqualTo(Item[].class);
+
+        assertThatThrownBy(() -> TypeUtils.getArrayClass(new TypeToken<String>() {}.get()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Not an array");
     }
 
     @Test

@@ -35,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
 @FeatureTag({
+        Feature.GENERATE,
         Feature.MAP_GENERATOR_MIN_SIZE,
         Feature.MAP_GENERATOR_MAX_SIZE,
         Feature.MAP_GENERATOR_SIZE})

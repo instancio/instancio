@@ -19,20 +19,19 @@ import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
-import org.instancio.generator.time.InstantGenerator;
+import org.instancio.generator.time.ZonedDateTimeGenerator;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class CalendarGenerator extends AbstractGenerator<Calendar> implements TemporalGeneratorSpec<Calendar> {
 
-    private final InstantGenerator delegate;
+    private final ZonedDateTimeGenerator delegate;
 
     public CalendarGenerator(final GeneratorContext context) {
         super(context);
-        this.delegate = new InstantGenerator(context);
+        this.delegate = new ZonedDateTimeGenerator(context);
     }
 
     @Override
@@ -49,13 +48,14 @@ public class CalendarGenerator extends AbstractGenerator<Calendar> implements Te
 
     @Override
     public TemporalGeneratorSpec<Calendar> range(final Calendar start, final Calendar end) {
-        delegate.range(start.toInstant(), end.toInstant());
+        delegate.range(
+                ZonedDateTime.ofInstant(start.toInstant(), start.getTimeZone().toZoneId()),
+                ZonedDateTime.ofInstant(end.toInstant(), end.getTimeZone().toZoneId()));
         return this;
     }
 
     @Override
     public Calendar generate(final Random random) {
-        final ZonedDateTime zdt = ZonedDateTime.ofInstant(delegate.generate(random), ZoneId.systemDefault());
-        return GregorianCalendar.from(zdt);
+        return GregorianCalendar.from(delegate.generate(random));
     }
 }

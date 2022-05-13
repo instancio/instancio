@@ -16,30 +16,40 @@
 package org.instancio.test.features.generator.oneof;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioMetamodel;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.person.Address;
-import org.instancio.test.support.pojo.person.Address_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.HashSet;
+import java.util.Set;
 
-@InstancioMetamodel(classes = Address.class)
-@FeatureTag(Feature.ONE_OF_ARRAY_GENERATOR)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.allStrings;
+
+@FeatureTag({Feature.GENERATE, Feature.ONE_OF_ARRAY_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class OneOfArrayGeneratorTest {
 
     @Test
-    void oneOf() {
-        final Address result = Instancio.of(Address.class)
-                .generate(Address_.city, gen -> gen.oneOf("one"))
-                .generate(Address_.country, gen -> gen.oneOf("two"))
+    void oneOfSingleChoice() {
+        final String result = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen.oneOf("one"))
                 .create();
 
-        assertThat(result.getCity()).isEqualTo("one");
-        assertThat(result.getCountry()).isEqualTo("two");
+        assertThat(result).isEqualTo("one");
+    }
+
+    @Test
+    void oneOfConsidersAllChoices() {
+        final Set<String> results = new HashSet<>();
+        final String[] choices = {"one", "two", "three"};
+        for (int i = 0; i < 30; i++) {
+            results.add(Instancio.of(String.class)
+                    .generate(allStrings(), gen -> gen.oneOf(choices))
+                    .create());
+        }
+        assertThat(results).containsExactlyInAnyOrder(choices);
     }
 }

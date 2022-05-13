@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
-@FeatureTag(Feature.ATOMIC_GENERATOR)
+@FeatureTag({Feature.GENERATE, Feature.ATOMIC_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class AtomicGeneratorsTest {
 
