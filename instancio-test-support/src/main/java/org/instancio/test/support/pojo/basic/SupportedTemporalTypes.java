@@ -18,26 +18,30 @@ package org.instancio.test.support.pojo.basic;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Calendar;
+import java.util.Date;
 
 @Getter
 @ToString
 public class SupportedTemporalTypes {
 
+    private Instant instant;
     private LocalTime localTime;
     private LocalDate localDate;
     private LocalDateTime localDateTime;
     private ZonedDateTime zonedDateTime;
     private YearMonth yearMonth;
     private Year year;
+    private Date date;
+    private java.sql.Date sqlDate;
+    private Timestamp timestamp;
+    private Calendar calendar;
 }

@@ -16,7 +16,7 @@
 package org.instancio.test.features.generator.map;
 
 import org.instancio.Instancio;
-import org.instancio.generator.util.MapGeneratorSpec;
+import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;

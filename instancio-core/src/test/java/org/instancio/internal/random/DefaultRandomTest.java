@@ -276,13 +276,19 @@ class DefaultRandomTest {
             assertThat(results).hasSizeGreaterThan(SAMPLE_SIZE * 99 / 100);
         }
 
+        @Test
+        void maxValue() {
+            assertThat(random.intRange(Integer.MAX_VALUE, Integer.MAX_VALUE)).isEqualTo(Integer.MAX_VALUE);
+        }
+
         private Stream<Arguments> intRanges() {
             return Stream.of(
                     Arguments.of(Integer.MIN_VALUE, Integer.MIN_VALUE + 1),
                     Arguments.of(-10, 1),
                     Arguments.of(-10, 11),
                     Arguments.of(0, 11),
-                    Arguments.of(Integer.MAX_VALUE - 1, Integer.MAX_VALUE));
+                    Arguments.of(Integer.MAX_VALUE - 1, Integer.MAX_VALUE),
+                    Arguments.of(Integer.MAX_VALUE, Integer.MAX_VALUE));
         }
     }
 
@@ -312,13 +318,19 @@ class DefaultRandomTest {
             );
         }
 
+        @Test
+        void maxValue() {
+            assertThat(random.longRange(Long.MAX_VALUE, Long.MAX_VALUE)).isEqualTo(Long.MAX_VALUE);
+        }
+
         private Stream<Arguments> longRanges() {
             return Stream.of(
                     Arguments.of(Long.MIN_VALUE, Long.MIN_VALUE + 1),
                     Arguments.of(-10, 1),
                     Arguments.of(-10, 11),
                     Arguments.of(0, 11),
-                    Arguments.of(Long.MAX_VALUE - 1, Long.MAX_VALUE));
+                    Arguments.of(Long.MAX_VALUE - 1, Long.MAX_VALUE),
+                    Arguments.of(Long.MAX_VALUE, Long.MAX_VALUE));
         }
     }
 

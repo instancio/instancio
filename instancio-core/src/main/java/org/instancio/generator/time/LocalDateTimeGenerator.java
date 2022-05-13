@@ -19,17 +19,20 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import static java.time.ZoneOffset.UTC;
 
-public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateTime> {
+public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateTime> {
+
+    private final InstantGenerator delegate;
 
     public LocalDateTimeGenerator(final GeneratorContext context) {
         super(context,
-                LocalDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MIN, UTC),
-                LocalDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MAX, UTC));
+                LocalDateTime.ofInstant(DEFAULT_MIN, UTC),
+                LocalDateTime.ofInstant(DEFAULT_MAX, UTC));
+
+        delegate = new InstantGenerator(context);
     }
 
     @Override
@@ -47,23 +50,9 @@ public class LocalDateTimeGenerator extends AbstractTemporalGenerator<LocalDateT
         ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * There must be at least 1-millisecond (1,000,000 nanoseconds) difference
-     * between the start and end dates, or else an error will be thrown.
-     */
-    @Override
-    public TemporalGeneratorSpec<LocalDateTime> range(final LocalDateTime start, final LocalDateTime end) {
-        return super.range(start, end);
-    }
-
     @Override
     public LocalDateTime generate(final Random random) {
-        final Instant instant = Instant.ofEpochMilli(random.longRange(
-                min.toInstant(UTC).toEpochMilli(),
-                max.toInstant(UTC).toEpochMilli()));
-
-        return LocalDateTime.ofInstant(instant, UTC);
+        delegate.range(min.toInstant(UTC), max.toInstant(UTC));
+        return LocalDateTime.ofInstant(delegate.generate(random), UTC);
     }
 }

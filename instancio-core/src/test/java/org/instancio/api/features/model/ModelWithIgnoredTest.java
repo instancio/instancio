@@ -17,7 +17,7 @@ package org.instancio.api.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
-import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
+import org.instancio.test.support.pojo.basic.SupportedMathTypes;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -30,12 +30,12 @@ class ModelWithIgnoredTest {
 
     @Test
     void verifyIgnored() {
-        final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
+        final Model<SupportedMathTypes> model = Instancio.of(SupportedMathTypes.class)
                 .ignore(field("bigInteger"))
                 .ignore(all(BigDecimal.class))
                 .toModel();
 
-        final SupportedNumericTypes result = Instancio.create(model);
+        final SupportedMathTypes result = Instancio.create(model);
 
         assertThat(result.getBigInteger()).isNull();
         assertThat(result.getBigDecimal()).isNull();

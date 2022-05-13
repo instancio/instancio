@@ -18,6 +18,7 @@ package org.instancio.generator.array;
 import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 
 public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArrayGeneratorSpec<T> {

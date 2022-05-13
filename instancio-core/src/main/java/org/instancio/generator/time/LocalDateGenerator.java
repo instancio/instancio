@@ -23,7 +23,7 @@ import java.time.LocalDate;
 
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 
-public class LocalDateGenerator extends AbstractTemporalGenerator<LocalDate> {
+public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate> {
 
     public LocalDateGenerator(final GeneratorContext context) {
         super(context,

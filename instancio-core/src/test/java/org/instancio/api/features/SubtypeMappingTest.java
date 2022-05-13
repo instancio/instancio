@@ -19,7 +19,9 @@ import org.instancio.Instancio;
 import org.instancio.test.support.pojo.basic.StringHolderAlternativeImpl;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
+import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.basic.ItemAlternativeImpl;
+import org.instancio.test.support.pojo.generics.basic.NonGenericItemStringExtension;
 import org.instancio.test.support.pojo.interfaces.ArrayOfItemInterfaceString;
 import org.instancio.test.support.pojo.interfaces.ArrayOfStringHolderInterface;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
@@ -27,6 +29,7 @@ import org.instancio.test.support.pojo.interfaces.ListOfItemInterfaceString;
 import org.instancio.test.support.pojo.interfaces.ListOfStringHolderInterface;
 import org.instancio.test.support.pojo.interfaces.MapOfItemInterfaceString;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,6 +41,7 @@ import java.util.Vector;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
+import static org.instancio.Select.scope;
 
 class SubtypeMappingTest {
 
@@ -61,6 +65,31 @@ class SubtypeMappingTest {
 
         assertThat(result.getList1()).isNotEmpty().isInstanceOf(LinkedList.class);
         assertThat(result.getList2()).isNotEmpty().isInstanceOf(Vector.class);
+    }
+
+    @Test
+    @Disabled("FIXME")
+    void subtypeMappingListWithScope() {
+        final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
+                .map(all(List.class).within(scope(TwoListsOfItemString.class, "list1")), Vector.class)
+                .create();
+
+        assertThat(result.getList1()).isNotEmpty().isInstanceOf(Vector.class);
+        assertThat(result.getList2()).isNotEmpty().isNotInstanceOf(Vector.class);
+    }
+
+    @Test
+    @Disabled("FIXME")
+    void subtypeMappingListElementWithScope() {
+        final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
+                .map(all(Item.class).within(scope(TwoListsOfItemString.class, "list1")), NonGenericItemStringExtension.class)
+                .create();
+
+        assertThat(result.getList1()).isNotEmpty().allSatisfy(
+                item -> assertThat(item).isExactlyInstanceOf(NonGenericItemStringExtension.class));
+
+        assertThat(result.getList2()).isNotEmpty().allSatisfy(
+                item -> assertThat(item).isExactlyInstanceOf(Item.class));
     }
 
     @Nested

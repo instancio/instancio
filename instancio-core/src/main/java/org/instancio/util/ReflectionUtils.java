@@ -69,21 +69,13 @@ public final class ReflectionUtils {
         }
     }
 
-    public static Field getField(final Class<?> klass, final String fieldPath) {
+    public static Field getField(final Class<?> klass, final String fieldName) {
         try {
-            final String[] pathItems = fieldPath.split("\\.");
-            Class<?> currentClass = klass;
-            Field result = null;
-
-            for (String pathItem : pathItems) {
-                Field field = currentClass.getDeclaredField(pathItem);
-                currentClass = field.getType();
-                result = field;
-            }
-
-            return result;
-        } catch (Exception ex) {
-            throw new InstancioApiException("Invalid field '" + fieldPath + "' for " + klass, ex);
+            return klass.getDeclaredField(Verify.notNull(fieldName, "null field name"));
+        } catch (NoSuchFieldException ex) {
+            throw new InstancioApiException("Invalid field '" + fieldName + "' for " + klass, ex);
+        } catch (SecurityException ex) {
+            throw new InstancioApiException("Unable to access '" + fieldName + "' of " + klass, ex);
         }
     }
 
@@ -94,8 +86,10 @@ public final class ReflectionUtils {
     public static Class<?> getClass(final String name) {
         try {
             return Class.forName(name);
-        } catch (Exception ex) {
+        } catch (ClassNotFoundException ex) {
             throw new InstancioApiException(String.format("Class not found: '%s'", name), ex);
+        } catch (Exception ex) {
+            throw new InstancioApiException(String.format("Unable to get class: '%s'", name), ex);
         }
     }
 

@@ -21,7 +21,6 @@ import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -37,13 +36,13 @@ class ModelWithNullableTest {
     @Test
     void verifyNullable() {
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
-                .withNullable(field("bigInteger"))
-                .withNullable(all(BigDecimal.class))
+                .withNullable(field("byteWrapper"))
+                .withNullable(all(Float.class))
                 .withNullable(allInts())
                 .toModel();
 
-        assertThat(collectResults(model, SupportedNumericTypes::getBigInteger)).containsNull();
-        assertThat(collectResults(model, SupportedNumericTypes::getBigDecimal)).containsNull();
+        assertThat(collectResults(model, SupportedNumericTypes::getByteWrapper)).containsNull();
+        assertThat(collectResults(model, SupportedNumericTypes::getFloatWrapper)).containsNull();
         assertThat(collectResults(model, SupportedNumericTypes::getIntegerWrapper)).containsNull();
     }
 

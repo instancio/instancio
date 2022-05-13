@@ -17,7 +17,7 @@
 package org.instancio.test.features.generator.string;
 
 import org.instancio.Instancio;
-import org.instancio.generator.lang.StringGeneratorSpec;
+import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;

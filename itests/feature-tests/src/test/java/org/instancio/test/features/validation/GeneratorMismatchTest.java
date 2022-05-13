@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.validation;
 
-import org.instancio.Generators;
+import org.instancio.generators.Generators;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorSpec;
@@ -26,8 +26,13 @@ import org.instancio.test.support.pojo.arrays.primitive.WithIntArray;
 import org.instancio.test.support.pojo.basic.BooleanHolder;
 import org.instancio.test.support.pojo.basic.CharacterHolder;
 import org.instancio.test.support.pojo.basic.StringHolder;
+import org.instancio.test.support.pojo.basic.SupportedAtomicTypes;
+import org.instancio.test.support.pojo.basic.SupportedMathTypes;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
+import org.instancio.test.support.pojo.basic.SupportedTemporalTypes;
 import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +41,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Year;
+import java.time.YearMonth;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -60,20 +69,49 @@ class GeneratorMismatchTest {
 
     @Test
     void assertNumericTypes() {
-        final Class<?> createClass = SupportedNumericTypes.class;
-        assertMessageContains(createClass, short.class, "bytes()", Generators::bytes);
-        assertMessageContains(createClass, BigDecimal.class, "shorts()", Generators::shorts);
-        assertMessageContains(createClass, long.class, "ints()", Generators::ints);
-        assertMessageContains(createClass, double.class, "longs()", Generators::longs);
-        assertMessageContains(createClass, int.class, "floats()", Generators::floats);
-        assertMessageContains(createClass, BigInteger.class, "doubles()", Generators::doubles);
-        assertMessageContains(createClass, byte.class, "bigDecimal()", Generators::bigDecimal);
-        assertMessageContains(createClass, long.class, "bigInteger()", Generators::bigInteger);
+        assertMessageContains(SupportedNumericTypes.class, short.class, "bytes()", Generators::bytes);
+        assertMessageContains(SupportedNumericTypes.class, long.class, "ints()", Generators::ints);
+        assertMessageContains(SupportedNumericTypes.class, double.class, "longs()", Generators::longs);
+        assertMessageContains(SupportedNumericTypes.class, int.class, "floats()", Generators::floats);
+        assertMessageContains(SupportedNumericTypes.class, byte.class, "bigDecimal()", gen -> gen.math().bigDecimal());
+        assertMessageContains(SupportedNumericTypes.class, long.class, "bigInteger()", gen -> gen.math().bigInteger());
+    }
+
+    @Test
+    void assertMathTypes() {
+        assertMessageContains(SupportedMathTypes.class, BigDecimal.class, "shorts()", Generators::shorts);
+        assertMessageContains(SupportedMathTypes.class, BigInteger.class, "doubles()", Generators::doubles);
+    }
+
+    @Test
+    void assertAtomicTypes() {
+        assertMessageContains(SupportedAtomicTypes.class, AtomicLong.class, "atomicInteger()", gen -> gen.atomic().atomicInteger());
+        assertMessageContains(SupportedAtomicTypes.class, AtomicInteger.class, "atomicLong()", gen -> gen.atomic().atomicLong());
+    }
+
+    @Test
+    void assertTemporalTypes() {
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "instant()", gen -> gen.temporal().instant());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "localTime()", gen -> gen.temporal().localTime());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "localDate()", gen -> gen.temporal().localDate());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "localDateTime()", gen -> gen.temporal().localDateTime());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "zonedDateTime()", gen -> gen.temporal().zonedDateTime());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "yearMonth()", gen -> gen.temporal().yearMonth());
+        assertMessageContains(SupportedTemporalTypes.class, YearMonth.class, "year()", gen -> gen.temporal().year());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "date()", gen -> gen.temporal().date());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "sqlDate()", gen -> gen.temporal().sqlDate());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "timestamp()", gen -> gen.temporal().timestamp());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "calendar()", gen -> gen.temporal().calendar());
     }
 
     @Test
     void assertString() {
         assertMessageContains(StringHolder.class, String.class, "ints()", Generators::ints);
+    }
+
+    @Test
+    void assertText() {
+        assertMessageContains(Person.class, Address.class, "pattern()", gen -> gen.text().pattern("foo"));
     }
 
     @Test

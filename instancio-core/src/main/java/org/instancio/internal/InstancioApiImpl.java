@@ -16,13 +16,13 @@
 package org.instancio.internal;
 
 import org.instancio.Generator;
-import org.instancio.Generators;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.settings.Settings;
 

@@ -16,7 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.Generator;
-import org.instancio.Generators;
+import org.instancio.generators.Generators;
 import org.instancio.TargetSelector;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGenerator;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.time;
+package org.instancio.generator.specs;
 
 import org.instancio.generator.GeneratorSpec;
 
@@ -27,7 +27,7 @@ import static java.time.ZoneOffset.UTC;
 /**
  * Generator spec for {@link Temporal} types.
  */
-public interface TemporalGeneratorSpec<T extends Temporal> extends GeneratorSpec<T> {
+public interface TemporalGeneratorSpec<T> extends GeneratorSpec<T> {
 
     Instant DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(UTC);
     Instant DEFAULT_MAX = LocalDateTime.now().plusYears(50).truncatedTo(ChronoUnit.DAYS).toInstant(UTC);

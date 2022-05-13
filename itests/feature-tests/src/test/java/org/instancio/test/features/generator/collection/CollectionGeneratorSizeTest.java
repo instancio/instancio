@@ -16,7 +16,7 @@
 package org.instancio.test.features.generator.collection;
 
 import org.instancio.Instancio;
-import org.instancio.generator.util.CollectionGeneratorSpec;
+import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.tags.Feature;

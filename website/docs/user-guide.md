@@ -268,7 +268,7 @@ Each generator provides methods applicable to the type it generates, for example
 
 - `gen.string().minLength(3).allowEmpty()`
 - `gen.collection().size(5).nullableElements()`
-- `gen.localDate().future()`
+- `gen.temporal().localDate().future()`
 - `gen.longs().min(Long.MIN_VALUE)`
 
 Below is another example of customising a `Person`.

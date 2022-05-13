@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.selector;
 
-import org.instancio.Generators;
+import org.instancio.generators.Generators;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.instancio.exception.InstancioApiException;

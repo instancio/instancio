@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.settings.Settings;
 
 import javax.annotation.Nullable;

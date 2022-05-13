@@ -15,28 +15,43 @@
  */
 package org.instancio.generator.util;
 
-import org.instancio.Generator;
 import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.time.LocalDateTimeGenerator;
+import org.instancio.generator.specs.TemporalGeneratorSpec;
+import org.instancio.generator.time.InstantGenerator;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
-public class DateGenerator extends AbstractGenerator<Date> {
+public class DateGenerator extends AbstractGenerator<Date> implements TemporalGeneratorSpec<Date> {
 
-    private final Generator<LocalDateTime> localDateTimeGenerator;
+    private final InstantGenerator delegate;
 
     public DateGenerator(final GeneratorContext context) {
         super(context);
-        this.localDateTimeGenerator = new LocalDateTimeGenerator(context);
+        this.delegate = new InstantGenerator(context);
+    }
+
+    @Override
+    public TemporalGeneratorSpec<Date> past() {
+        delegate.past();
+        return this;
+    }
+
+    @Override
+    public TemporalGeneratorSpec<Date> future() {
+        delegate.future();
+        return this;
+    }
+
+    @Override
+    public TemporalGeneratorSpec<Date> range(final Date start, final Date end) {
+        delegate.range(start.toInstant(), end.toInstant());
+        return this;
     }
 
     @Override
     public Date generate(final Random random) {
-        final LocalDateTime ldt = localDateTimeGenerator.generate(random);
-        return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from((delegate).generate(random));
     }
 }

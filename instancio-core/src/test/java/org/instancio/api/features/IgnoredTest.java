@@ -28,8 +28,6 @@ import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allShorts;
@@ -55,8 +53,8 @@ class IgnoredTest {
     @Test
     void primitiveAndWrapperTypes() {
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
-                .ignore(field("bigInteger"))
-                .ignore(all(BigDecimal.class))
+                .ignore(field("primitiveFloat"))
+                .ignore(all(Float.class))
                 .ignore(all(int.class)) // does NOT include Integer wrapper
                 .ignore(all(Long.class)) // does NOT include primitive long
                 .ignore(allShorts()) // includes BOTH, primitive and wrapper short
@@ -64,8 +62,8 @@ class IgnoredTest {
 
         final SupportedNumericTypes result = Instancio.create(model);
 
-        assertThat(result.getBigInteger()).isNull();
-        assertThat(result.getBigDecimal()).isNull();
+        assertThat(result.getPrimitiveFloat()).isZero();
+        assertThat(result.getFloatWrapper()).isNull();
         assertThat(result.getLongWrapper()).isNull();
         assertThat(result.getPrimitiveInt()).isZero();
         assertThat(result.getPrimitiveLong()).isNotZero();

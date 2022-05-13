@@ -32,14 +32,14 @@ class LocalTimeGeneratorTest {
     private static final Settings settings = Settings.create();
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private static final LocalTime START = LocalTime.of(1, 1, 2);
 
     private final LocalTimeGenerator generator = new LocalTimeGenerator(context);
 
     @Test
     void smallestAllowedRange() {
-        final LocalTime time = LocalTime.of(1, 1, 1);
-        generator.range(time, time);
-        assertThat(generator.generate(random)).isEqualTo(time);
+        generator.range(START, START);
+        assertThat(generator.generate(random)).isEqualTo(START);
     }
 
     @Test
@@ -56,18 +56,15 @@ class LocalTimeGeneratorTest {
 
     @Test
     void validateRange() {
-        final LocalTime time = LocalTime.of(0, 0, 1);
-
-        assertThatThrownBy(() -> generator.range(time.plusSeconds(1), time))
+        assertThatThrownBy(() -> generator.range(START, START.minusSeconds(1)))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 00:00:02, 00:00:01");
+                .hasMessage("Start must not exceed end: 01:01:02, 01:01:01");
     }
 
     @Test
     void range() {
-        final LocalTime min = LocalTime.now().plusMinutes(5);
-        final LocalTime max = min.plusMinutes(1);
-        generator.range(min, max);
-        assertThat(generator.generate(random)).isBetween(min, max);
+        final LocalTime max = START.plusMinutes(1);
+        generator.range(START, max);
+        assertThat(generator.generate(random)).isBetween(START, max);
     }
 }

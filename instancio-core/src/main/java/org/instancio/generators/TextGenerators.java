@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package org.instancio.generator.text;
+package org.instancio.generators;
 
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.text.TextPatternGenerator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Contains built-in text generators.
  */
 public class TextGenerators {
+
+    static Map<Class<?>, String> getApiMethods() {
+        Map<Class<?>, String> map = new HashMap<>();
+        map.put(TextPatternGenerator.class, "pattern()");
+        return map;
+    }
 
     /**
      * Generates a random string based on the specified pattern template.

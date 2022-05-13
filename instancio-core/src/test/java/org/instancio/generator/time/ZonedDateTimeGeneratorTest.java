@@ -15,6 +15,7 @@
  */
 package org.instancio.generator.time;
 
+import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
@@ -24,25 +25,24 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 
 import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ZonedDateTimeGeneratorTest {
-
+    private static final int SAMPLE_SIZE = 1000;
     private static final Settings settings = Settings.create();
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private static final ZonedDateTime START = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999), UTC);
 
     private final ZonedDateTimeGenerator generator = new ZonedDateTimeGenerator(context);
 
     @Test
     void smallestAllowedRange() {
-        final ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 0, 0, 0), UTC);
-        generator.range(dateTime, dateTime);
-        assertThat(generator.generate(random)).isEqualTo(dateTime);
+        generator.range(START, START);
+        assertThat(generator.generate(random)).isEqualTo(START);
     }
 
     @Test
@@ -59,19 +59,35 @@ class ZonedDateTimeGeneratorTest {
 
     @Test
     void validateRange() {
-        final ZonedDateTime max = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 0, 0, 0), UTC);
-        final ZonedDateTime min = max.plus(1, ChronoUnit.NANOS);
-
-        assertThatThrownBy(() -> generator.range(min, max.minus(1, ChronoUnit.NANOS)))
+        assertThatThrownBy(() -> generator.range(START, START.minusNanos(1)))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 1970-01-01T00:00:00.000000001Z, 1969-12-31T23:59:59.999999999Z");
+                .hasMessage("Start must not exceed end: 1970-01-01T00:00:01.999999999Z, 1970-01-01T00:00:01.999999998Z");
     }
 
     @Test
-    void range() {
-        final ZonedDateTime min = ZonedDateTime.now().plusMinutes(5);
-        final ZonedDateTime max = min.plusMinutes(1);
-        generator.range(min, max);
-        assertThat(generator.generate(random)).isBetween(min, max);
+    void smallRange() {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            assertResult(START, START.plusDays(8));
+        }
+    }
+
+    @Test
+    void bigRange() {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            assertResult(START, START.plusYears(10));
+        }
+    }
+
+    @Test
+    void randomStart() {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final ZonedDateTime start = Instancio.create(ZonedDateTime.class);
+            assertResult(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
+        }
+    }
+
+    private void assertResult(final ZonedDateTime start, final ZonedDateTime end) {
+        generator.range(start, end);
+        assertThat(generator.generate(random)).isBetween(START, end);
     }
 }

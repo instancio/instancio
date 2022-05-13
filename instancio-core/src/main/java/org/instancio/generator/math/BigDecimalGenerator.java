@@ -18,7 +18,7 @@ package org.instancio.generator.math;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
-import org.instancio.generator.lang.NumberGeneratorSpec;
+import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.util.Verify;
 
 import java.math.BigDecimal;

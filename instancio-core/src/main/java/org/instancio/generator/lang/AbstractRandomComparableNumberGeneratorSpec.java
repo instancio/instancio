@@ -16,6 +16,7 @@
 package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;

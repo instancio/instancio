@@ -16,9 +16,9 @@
 package org.instancio.internal;
 
 import org.instancio.Generator;
-import org.instancio.Generators;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generators.Generators;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.SettingKey;
 import org.instancio.util.Format;
