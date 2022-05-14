@@ -27,13 +27,51 @@ Instancio can do the manual work for you:
 Person person = Instancio.create(Person.class);
 ```
 
-This returns a fully-populated person, including nested objects and collections.
+This one-liner returns a fully-populated person, including nested objects and collections.
+
+You can also customise generated values using the builder API:
+
+```java
+Person person = Instancio.of(Person.class)
+    .generate(field("age"), gen -> gen.ints().range(18, 65))
+    .generate(field(Phone.class, "areaCode"), gen -> gen.oneOf("604", "778"))
+    .generate(field(Phone.class, "number"), gen -> gen.text().pattern("#d#d#d-#d#d-#d#d"))
+    .generate(all(List.class).within(scope(Address.class)), gen -> gen.collection().size(4))
+    .set(field(Address.class, "city"), "Vancouver")
+    .ignore(field(Address.class, "postalCode"))
+    .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
+    .withNullable(field("pets"))
+    .onComplete(all(Person.class), (Person p) -> p.setName(p.getGender() == Gender.MALE ? "John" : "Jane"))
+    .create();
+```
+
+One of possible outputs:
+
+```java
+Person[
+  name=Jane
+  gender=FEMALE
+  age=39
+  pets=["MSUI", "OSQRCB"]
+  address=[
+    street=RMRCREFF
+    city=Vancouver
+    postalCode=null
+    country=IFYFKJ
+    phoneNumbers=[
+      Phone[areaCode=778,number=271-15-75],
+      Phone[areaCode=604,number=159-74-61],
+      Phone[areaCode=604,number=694-13-82],
+      Phone[areaCode=778,number=376-49-29]]]
+  lastModified=2022-05-12T22:41:10.356320]
+```
 
 See the [User Guide](https://www.instancio.org/user-guide) for more information.
 
 # Try it out
 
-To use Instancio with JUnit 5:
+To use Instancio with JUnit 5 use the  `instancio-junit` dependency. It includes `InstancioExtension`
+which allows reproducing data in case of a test failure, as well as a few other things.
 
 ```xml
     <dependency>
@@ -44,7 +82,7 @@ To use Instancio with JUnit 5:
     </dependency>
 ```
 
-To use Instancio with JUnit 4, TestNG, or standalone:
+To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
 
 ```xml
     <dependency>
