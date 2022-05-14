@@ -19,17 +19,20 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 
-import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static java.time.ZoneOffset.UTC;
+public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateTime> {
 
-public class ZonedDateTimeGenerator extends AbstractTemporalGenerator<ZonedDateTime> {
+    private static final ZoneId ZONE_ID = ZoneId.systemDefault();
+    private final InstantGenerator delegate;
 
     public ZonedDateTimeGenerator(final GeneratorContext context) {
         super(context,
-                ZonedDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MIN, UTC),
-                ZonedDateTime.ofInstant(TemporalGeneratorSpec.DEFAULT_MAX, UTC));
+                ZonedDateTime.ofInstant(DEFAULT_MIN, ZONE_ID),
+                ZonedDateTime.ofInstant(DEFAULT_MAX, ZONE_ID));
+
+        delegate = new InstantGenerator(context);
     }
 
     @Override
@@ -47,23 +50,9 @@ public class ZonedDateTimeGenerator extends AbstractTemporalGenerator<ZonedDateT
         ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * There must be at least 1-millisecond (1,000,000 nanoseconds) difference
-     * between the start and end dates, or else an error will be thrown.
-     */
-    @Override
-    public TemporalGeneratorSpec<ZonedDateTime> range(final ZonedDateTime start, final ZonedDateTime end) {
-        return super.range(start, end);
-    }
-
     @Override
     public ZonedDateTime generate(final Random random) {
-        final Instant instant = Instant.ofEpochMilli(random.longRange(
-                min.toInstant().toEpochMilli(),
-                max.toInstant().toEpochMilli()));
-
-        return ZonedDateTime.ofInstant(instant, UTC);
+        delegate.range(min.toInstant(), max.toInstant());
+        return ZonedDateTime.ofInstant(delegate.generate(random), ZONE_ID);
     }
 }

@@ -16,11 +16,11 @@
 package org.instancio;
 
 import org.instancio.generator.GeneratedHints;
-import org.instancio.generator.GeneratorApiMethodNames;
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.array.ArrayGeneratorSpec;
-import org.instancio.generator.util.CollectionGeneratorSpec;
-import org.instancio.generator.util.MapGeneratorSpec;
+import org.instancio.generator.specs.ArrayGeneratorSpec;
+import org.instancio.generator.specs.CollectionGeneratorSpec;
+import org.instancio.generator.specs.MapGeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.util.TypeUtils;
 
@@ -80,7 +80,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * @return spec name, if defined
      */
     default Optional<String> apiMethodName() {
-        return Optional.ofNullable(GeneratorApiMethodNames.get(getClass()));
+        return Optional.ofNullable(Generators.getApiMethod(getClass()));
     }
 
     /**
@@ -114,7 +114,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
         if (Map.class.isAssignableFrom(type)) {
             return this instanceof MapGeneratorSpec;
         }
-        final Class<?> typeArg = TypeUtils.getGenericSuperclassRawTypeArgument(getClass());
+        final Class<?> typeArg = TypeUtils.getGeneratorTypeArgument(getClass());
         return typeArg == null // couldn't determine type arg ('this' is probably a lambda)
                 || typeArg.isAssignableFrom(type)
                 || PrimitiveWrapperBiLookup.getEquivalent(typeArg)

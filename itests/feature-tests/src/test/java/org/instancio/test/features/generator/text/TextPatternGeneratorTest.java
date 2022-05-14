@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 
-@FeatureTag(Feature.TEXT_PATTERN_GENERATOR)
+@FeatureTag({Feature.GENERATE, Feature.TEXT_PATTERN_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class TextPatternGeneratorTest {
 

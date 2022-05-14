@@ -30,12 +30,16 @@ import org.instancio.generator.lang.StringBuilderGenerator;
 import org.instancio.generator.lang.StringGenerator;
 import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
+import org.instancio.generator.sql.SqlDateGenerator;
+import org.instancio.generator.sql.TimestampGenerator;
+import org.instancio.generator.time.InstantGenerator;
 import org.instancio.generator.time.LocalDateGenerator;
 import org.instancio.generator.time.LocalDateTimeGenerator;
 import org.instancio.generator.time.LocalTimeGenerator;
 import org.instancio.generator.time.YearGenerator;
 import org.instancio.generator.time.YearMonthGenerator;
 import org.instancio.generator.time.ZonedDateTimeGenerator;
+import org.instancio.generator.util.CalendarGenerator;
 import org.instancio.generator.util.CollectionGenerator;
 import org.instancio.generator.util.DateGenerator;
 import org.instancio.generator.util.HashSetGenerator;
@@ -55,12 +59,14 @@ import org.slf4j.LoggerFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +123,7 @@ public class GeneratorResolver {
         generators.put(BigInteger.class, new BigIntegerGenerator(context));
 
         // java.time
+        generators.put(Instant.class, new InstantGenerator(context));
         generators.put(LocalDate.class, new LocalDateGenerator(context));
         generators.put(LocalDateTime.class, new LocalDateTimeGenerator(context));
         generators.put(LocalTime.class, new LocalTimeGenerator(context));
@@ -124,7 +131,12 @@ public class GeneratorResolver {
         generators.put(YearMonth.class, new YearMonthGenerator(context));
         generators.put(ZonedDateTime.class, new ZonedDateTimeGenerator(context));
 
+        // java.sql
+        generators.put(java.sql.Date.class, new SqlDateGenerator(context));
+        generators.put(java.sql.Timestamp.class, new TimestampGenerator(context));
+
         // java.util
+        generators.put(Calendar.class, new CalendarGenerator(context));
         generators.put(Date.class, new DateGenerator(context));
         generators.put(UUID.class, new UUIDGenerator(context));
 

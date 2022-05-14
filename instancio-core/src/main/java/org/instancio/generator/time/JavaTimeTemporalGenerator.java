@@ -17,11 +17,12 @@ package org.instancio.generator.time;
 
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.util.Verify;
 
 import java.time.temporal.Temporal;
 
-abstract class AbstractTemporalGenerator<T extends Temporal> extends AbstractGenerator<T> implements TemporalGeneratorSpec<T> {
+abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGenerator<T> implements TemporalGeneratorSpec<T> {
 
     private final T defaultMin;
     private final T defaultMax;
@@ -29,7 +30,7 @@ abstract class AbstractTemporalGenerator<T extends Temporal> extends AbstractGen
     protected T min;
     protected T max;
 
-    AbstractTemporalGenerator(final GeneratorContext context, final T min, final T max) {
+    JavaTimeTemporalGenerator(final GeneratorContext context, final T min, final T max) {
         super(context);
         this.defaultMin = min;
         this.defaultMax = max;

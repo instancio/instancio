@@ -18,11 +18,7 @@ package org.instancio.test.support.pojo.basic;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Getter
 @ToString
@@ -41,15 +37,6 @@ public class SupportedNumericTypes {
     private Float floatWrapper;
     private Double doubleWrapper;
 
-    private BigInteger bigInteger;
-    private BigDecimal bigDecimal;
-
-    private AtomicInteger atomicInteger;
-    private AtomicLong atomicLong;
-
-    //
-    // Note: using intValue()/longValue() for AtomicXxx types
-    //
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -66,11 +53,7 @@ public class SupportedNumericTypes {
                 && Objects.equals(getIntegerWrapper(), that.getIntegerWrapper())
                 && Objects.equals(getLongWrapper(), that.getLongWrapper())
                 && Objects.equals(getFloatWrapper(), that.getFloatWrapper())
-                && Objects.equals(getDoubleWrapper(), that.getDoubleWrapper())
-                && Objects.equals(getBigInteger(), that.getBigInteger())
-                && Objects.equals(getBigDecimal(), that.getBigDecimal())
-                && Objects.equals(getAtomicInteger().intValue(), that.getAtomicInteger().intValue())
-                && Objects.equals(getAtomicLong().longValue(), that.getAtomicLong().longValue());
+                && Objects.equals(getDoubleWrapper(), that.getDoubleWrapper());
     }
 
     @Override
@@ -79,7 +62,6 @@ public class SupportedNumericTypes {
                 getPrimitiveInt(), getPrimitiveLong(), getPrimitiveFloat(),
                 getPrimitiveDouble(), getByteWrapper(), getShortWrapper(),
                 getIntegerWrapper(), getLongWrapper(), getFloatWrapper(),
-                getDoubleWrapper(), getBigInteger(), getBigDecimal(),
-                getAtomicInteger().intValue(), getAtomicLong().longValue());
+                getDoubleWrapper());
     }
 }

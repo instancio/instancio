@@ -65,4 +65,9 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     public int hashCode() {
         return Objects.hash(primitive, wrapper);
     }
+
+    @Override
+    public String toString() {
+        return String.format("PrimitiveAndWrapperSelector[%s, %s]", primitive, wrapper);
+    }
 }

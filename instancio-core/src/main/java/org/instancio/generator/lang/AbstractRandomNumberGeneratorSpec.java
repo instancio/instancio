@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>

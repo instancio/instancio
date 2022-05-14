@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public final class SelectorGroupImpl implements SelectorGroup, Flattener {
@@ -67,5 +68,15 @@ public final class SelectorGroupImpl implements SelectorGroup, Flattener {
     @Override
     public int hashCode() {
         return Objects.hash(getSelectors());
+    }
+
+    @Override
+    public String toString() {
+        if (selectors.isEmpty()) {
+            return "SelectorGroup[empty]";
+        }
+        return String.format("SelectorGroup[%n%s%n]", selectors.stream()
+                .map(it -> "\t" + it)
+                .collect(joining(System.lineSeparator())));
     }
 }

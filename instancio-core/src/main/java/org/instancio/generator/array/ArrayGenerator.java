@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.settings.Keys;
 import org.instancio.util.Constants;

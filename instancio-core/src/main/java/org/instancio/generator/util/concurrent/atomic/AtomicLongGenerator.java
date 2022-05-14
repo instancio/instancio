@@ -18,7 +18,7 @@ package org.instancio.generator.util.concurrent.atomic;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomNumberGeneratorSpec;
-import org.instancio.generator.lang.NumberGeneratorSpec;
+import org.instancio.generator.specs.NumberGeneratorSpec;
 
 import java.util.concurrent.atomic.AtomicLong;
 

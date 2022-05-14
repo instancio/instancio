@@ -36,6 +36,11 @@ class PrimitiveAndWrapperSelectorImplTest {
     }
 
     @Test
+    void verifyToString() {
+        assertThat(Select.allInts()).hasToString("PrimitiveAndWrapperSelector[Selector[(int)], Selector[(Integer)]]");
+    }
+
+    @Test
     void flatten() {
         final Selector selector = Select.allBooleans();
         final List<SelectorImpl> results = ((Flattener) selector).flatten();

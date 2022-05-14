@@ -17,7 +17,7 @@
 package org.instancio.test.features.generator.string;
 
 import org.instancio.Instancio;
-import org.instancio.generator.lang.StringGeneratorSpec;
+import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
@@ -30,7 +30,7 @@ import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 
-@FeatureTag(Feature.STRING_GENERATOR)
+@FeatureTag({Feature.GENERATE, Feature.STRING_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class StringGeneratorTest {
 

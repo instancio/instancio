@@ -17,11 +17,11 @@ package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
 import org.instancio.Scope;
-import org.instancio.TargetSelector;
 import org.instancio.Selector;
+import org.instancio.TargetSelector;
+import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorTargetType;
 
 import java.util.List;

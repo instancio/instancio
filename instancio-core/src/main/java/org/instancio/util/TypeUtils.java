@@ -58,11 +58,19 @@ public final class TypeUtils {
         throw new UnsupportedOperationException("Unhandled type: " + type.getClass().getSimpleName());
     }
 
-    public static Class<?> getGenericSuperclassRawTypeArgument(final Class<?> klass) {
+    // NOTE: the implementation could be improved (see unit test describing the unhandled case)
+    public static Class<?> getGeneratorTypeArgument(final Class<?> klass) {
         if (klass.getGenericSuperclass() instanceof ParameterizedType) {
             final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
             final Type genericType = genericSuperclass.getActualTypeArguments()[0];
             return getRawType(genericType);
+        }
+        for (Type type : klass.getGenericInterfaces()) {
+            if (type instanceof ParameterizedType) {
+                final ParameterizedType genericSuperclass = (ParameterizedType) type;
+                final Type genericType = genericSuperclass.getActualTypeArguments()[0];
+                return getRawType(genericType);
+            }
         }
         return null;
     }

@@ -61,6 +61,21 @@ class SelectorGroupImplTest {
     }
 
     @Test
+    void verifyToString() {
+        assertThat(new SelectorGroupImpl()).hasToString("SelectorGroup[empty]");
+
+        assertThat(Select.all(
+                Select.allBytes().within(Select.scope(Bar.class)),
+                Select.field(Foo.class, "fooValue"),
+                Select.all(String.class)
+        )).hasToString(String.format("SelectorGroup[%n" +
+                "\tPrimitiveAndWrapperSelector[Selector[(byte), scope(Bar)], Selector[(Byte), scope(Bar)]]%n" +
+                "\tSelector[(Foo, \"fooValue\")]%n" +
+                "\tSelector[(String)]%n" +
+                "]"));
+    }
+
+    @Test
     void empty() {
         assertThatThrownBy(Select::all)
                 .isExactlyInstanceOf(InstancioApiException.class)

@@ -24,10 +24,15 @@ public class SupportedTemporalTypesCreationTest extends CreationTestTemplate<Sup
 
     @Override
     protected void verify(final SupportedTemporalTypes result) {
+        assertThat(result.getInstant()).isNotNull();
         assertThat(result.getLocalTime()).isNotNull();
         assertThat(result.getLocalDate()).isNotNull();
         assertThat(result.getLocalDateTime()).isNotNull();
         assertThat(result.getYearMonth()).isNotNull();
         assertThat(result.getYear()).isNotNull();
+        assertThat(result.getDate()).isNotNull();
+        assertThat(result.getSqlDate()).isNotNull();
+        assertThat(result.getTimestamp()).isNotNull();
+        assertThat(result.getCalendar()).isNotNull();
     }
 }

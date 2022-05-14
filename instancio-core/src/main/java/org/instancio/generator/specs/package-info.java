@@ -13,11 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.generator.array;
+@ParametersAreNonnullByDefault
+package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
-public interface OneOfArrayGeneratorSpec<T> extends GeneratorSpec<T> {
-
-    OneOfArrayGeneratorSpec<T> oneOf(T... values);
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -21,7 +21,7 @@ import org.instancio.internal.ApiValidator;
 
 import java.time.YearMonth;
 
-public class YearMonthGenerator extends AbstractTemporalGenerator<YearMonth> {
+public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth> {
 
     public YearMonthGenerator(final GeneratorContext context) {
         super(context,

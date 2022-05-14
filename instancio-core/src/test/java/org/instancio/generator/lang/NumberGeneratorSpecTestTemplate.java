@@ -16,6 +16,7 @@
 package org.instancio.generator.lang;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
@@ -167,7 +168,7 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
 
     @SuppressWarnings("unchecked")
     private T asT(final long value) {
-        final Class<?> numberType = TypeUtils.getGenericSuperclassRawTypeArgument(getClass());
+        final Class<?> numberType = TypeUtils.getGeneratorTypeArgument(getClass());
         return (T) NumberUtils.getLongConverter(numberType).apply(value);
     }
 }

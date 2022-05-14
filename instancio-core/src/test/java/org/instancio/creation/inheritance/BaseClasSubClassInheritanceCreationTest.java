@@ -16,12 +16,10 @@
 package org.instancio.creation.inheritance;
 
 import org.instancio.test.support.pojo.inheritance.BaseClasSubClassInheritance;
-import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@GenericsTag
 public class BaseClasSubClassInheritanceCreationTest extends CreationTestTemplate<BaseClasSubClassInheritance> {
 
     @Override

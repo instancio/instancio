@@ -15,11 +15,16 @@
  */
 package org.instancio.util;
 
+import org.instancio.Generator;
+import org.instancio.Random;
 import org.instancio.TypeToken;
+import org.instancio.generator.lang.StringGenerator;
+import org.instancio.generator.text.TextPatternGenerator;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TypeUtilsTest {
 
@@ -29,5 +34,27 @@ class TypeUtilsTest {
         assertThat(TypeUtils.getArrayClass(new TypeToken<int[]>() {}.get())).isEqualTo(int[].class);
         assertThat(TypeUtils.getArrayClass(new TypeToken<Item<Integer>[]>() {}.get())).isEqualTo(Item[].class);
         assertThat(TypeUtils.getArrayClass(new TypeToken<Item<String>[]>() {}.get())).isEqualTo(Item[].class);
+
+        assertThatThrownBy(() -> TypeUtils.getArrayClass(new TypeToken<String>() {}.get()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Not an array");
+    }
+
+    @Test
+    void getGenericSuperclassRawTypeArgument() {
+        assertThat(TypeUtils.getGeneratorTypeArgument(StringGenerator.class)).isEqualTo(String.class);
+        assertThat(TypeUtils.getGeneratorTypeArgument(TextPatternGenerator.class)).isEqualTo(String.class);
+        assertThat(TypeUtils.getGeneratorTypeArgument(Bar.class))
+                .as("Should return String.class. Currently unsupported as it's needed at this time.")
+                .isNull();
+    }
+
+    private static class Bar extends Foo {}
+
+    private static class Foo implements Generator<String> {
+        @Override
+        public String generate(final Random random) {
+            return null;
+        }
     }
 }

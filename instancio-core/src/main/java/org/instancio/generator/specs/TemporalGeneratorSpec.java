@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.time;
+package org.instancio.generator.specs;
 
 import org.instancio.generator.GeneratorSpec;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-
-import static java.time.ZoneOffset.UTC;
 
 /**
  * Generator spec for {@link Temporal} types.
  */
-public interface TemporalGeneratorSpec<T extends Temporal> extends GeneratorSpec<T> {
+public interface TemporalGeneratorSpec<T> extends GeneratorSpec<T> {
 
-    Instant DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(UTC);
-    Instant DEFAULT_MAX = LocalDateTime.now().plusYears(50).truncatedTo(ChronoUnit.DAYS).toInstant(UTC);
+    ZoneOffset ZONE_OFFSET = OffsetDateTime.now().getOffset();
+    Instant DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(ZONE_OFFSET);
+    Instant DEFAULT_MAX = LocalDateTime.now().plusYears(50).truncatedTo(ChronoUnit.DAYS).toInstant(ZONE_OFFSET);
 
     /**
      * Generate a temporal value in the past.

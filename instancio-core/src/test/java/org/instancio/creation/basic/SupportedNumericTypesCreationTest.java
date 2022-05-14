@@ -24,9 +24,11 @@ public class SupportedNumericTypesCreationTest extends CreationTestTemplate<Supp
 
     @Override
     protected void verify(final SupportedNumericTypes result) {
-        assertThat(result.getBigInteger()).isNotNull();
-        assertThat(result.getBigDecimal()).isNotNull();
-        assertThat(result.getAtomicInteger()).isNotNull();
-        assertThat(result.getAtomicLong()).isNotNull();
+        assertThat(result.getByteWrapper()).isNotNull();
+        assertThat(result.getShortWrapper()).isNotNull();
+        assertThat(result.getIntegerWrapper()).isNotNull();
+        assertThat(result.getLongWrapper()).isNotNull();
+        assertThat(result.getFloatWrapper()).isNotNull();
+        assertThat(result.getDoubleWrapper()).isNotNull();
     }
 }

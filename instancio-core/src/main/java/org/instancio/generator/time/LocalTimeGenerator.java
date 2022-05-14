@@ -21,7 +21,7 @@ import org.instancio.internal.ApiValidator;
 
 import java.time.LocalTime;
 
-public class LocalTimeGenerator extends AbstractTemporalGenerator<LocalTime> {
+public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime> {
 
     public LocalTimeGenerator(final GeneratorContext context) {
         super(context,
