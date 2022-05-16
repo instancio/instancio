@@ -17,7 +17,7 @@ package org.instancio.api.features.seed;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
-import org.instancio.testsupport.Constants;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;

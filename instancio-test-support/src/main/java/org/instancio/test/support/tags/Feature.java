@@ -52,6 +52,7 @@ public enum Feature {
     TEXT_PATTERN_GENERATOR,
 
     SELECTOR,
+    SCOPE,
 
     WITH_SEED,
     WITH_SEED_ANNOTATION,

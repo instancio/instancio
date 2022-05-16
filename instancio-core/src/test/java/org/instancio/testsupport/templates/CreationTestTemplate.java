@@ -35,7 +35,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
+import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 

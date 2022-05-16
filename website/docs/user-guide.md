@@ -458,6 +458,19 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
+The `ignore()` method has higher precedence than other methods. For example, in the following snippet
+specifying `ignore(all(LocalDateTime.class))` but supplying a value for the `lastModified` field
+will actually generate a `lastModified` with a `null` value.
+
+``` java linenums="1" title="ignore() has higher precedence than other methods"
+Person person = Instancio.of(Person.class)
+    .ignore(all(LocalDateTime.class))
+    .supply(field("lastModified"), () -> LocalDateTime.now())
+    .create();
+```
+
+
+
 ### Nullable Values
 
 By default, Instancio generates non-null values for all fields.

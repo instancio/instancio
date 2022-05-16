@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Fail.fail;
-import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
+import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 /**
  * Various contrived generic types.

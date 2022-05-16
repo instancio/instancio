@@ -18,7 +18,7 @@ package org.instancio.creation.generics;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.container.ItemArrayContainer;
 import org.instancio.test.support.tags.GenericsTag;
-import org.instancio.testsupport.Constants;
+import org.instancio.test.support.util.Constants;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;

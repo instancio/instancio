@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.testsupport.asserts;
+package org.instancio.test.support.asserts;
 
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Fail;
 import org.assertj.core.api.SoftAssertions;
-import org.instancio.testsupport.Constants;
+import org.instancio.test.support.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("UnusedReturnValue")
 public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
@@ -48,6 +49,46 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         return new ReflectionAssert(actual);
     }
 
+    /**
+     * Verifies that all fields with the given type declared by object's class are null.
+     *
+     * @return this reflection assert instance
+     */
+    public ReflectionAssert hasAllFieldsOfTypeSetToNull(final Class<?> fieldType) {
+        collectDeclaredFieldsOfType(fieldType).forEach(field -> {
+            final Object fieldValue = getFieldValue(field);
+            assertThat(fieldValue)
+                    .as(String.format("Expected '%s' to be null, but was: '%s'", format(field), fieldValue))
+                    .isNull();
+        });
+        return this;
+    }
+
+    public ReflectionAssert hasAllFieldsOfTypeEqualTo(final Class<?> fieldType, final String value) {
+        collectDeclaredFieldsOfType(fieldType).forEach(field -> {
+            final Object fieldValue = getFieldValue(field);
+            assertThat(fieldValue)
+                    .as(String.format("Expected '%s' to be equal to '%s', but was: '%s'", format(field), value, fieldValue))
+                    .isEqualTo(value);
+        });
+        return this;
+    }
+
+    public ReflectionAssert hasAllFieldsOfTypeNotEqualTo(final Class<?> fieldType, final String value) {
+        collectDeclaredFieldsOfType(fieldType).forEach(field -> {
+            final Object fieldValue = getFieldValue(field);
+            assertThat(fieldValue)
+                    .as(String.format("Expected '%s' to NOT be equal to '%s', but was: '%s'", format(field), value, fieldValue))
+                    .isNotEqualTo(value);
+        });
+        return this;
+    }
+
+    /**
+     * Recursively verifies that all fields are not null and all arrays/maps/collections are non-empty.
+     *
+     * @return this reflection assert instance
+     */
     public ReflectionAssert isFullyPopulated() {
         as("Object contains a null value: %s", actual).isNotNull();
 
@@ -82,7 +123,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
 
                 Object result = method.invoke(actual);
                 softly.assertThat(result)
-                        .as("Method '%s' returned a null", method)
+                        .as("Method '%s' returned a null", format(method))
                         .isNotNull();
 
                 // False positive: 'result != null' is not always true due to soft assertions
@@ -100,7 +141,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
                 }
 
             } catch (IllegalAccessException | InvocationTargetException ex) {
-                fail("Invocation of method '%s' failed with: '%s'", method.getName(), ex.getMessage());
+                Fail.fail("Invocation of method '%s' failed with: '%s'", method.getName(), ex.getMessage());
             }
         }
 
@@ -108,9 +149,9 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         return this;
     }
 
-    private void assertMap(Map<?, ?> map, @Nullable Method method) {
+    private void assertMap(Map<?, ?> map, Method method) {
         softly.assertThat(map)
-                .as("Method '%s' return unexpected result", method)
+                .as("Method '%s' returned unexpected result", format(method))
                 .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
         for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -119,18 +160,18 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         }
     }
 
-    private void assertCollection(Collection<?> collection, @Nullable Method method) {
+    private void assertCollection(Collection<?> collection, Method method) {
         softly.assertThat(collection)
-                .as("Method '%s' return unexpected result", method)
+                .as("Method '%s' returned unexpected result", format(method))
                 .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .allSatisfy(it -> assertThatObject(it).isFullyPopulated());
     }
 
-    private void assertArray(Object array, @Nullable Method method) {
+    private void assertArray(Object array, Method method) {
         final int size = Array.getLength(array);
 
         softly.assertThat(size)
-                .as("Method '%s' return unexpected result", method)
+                .as("Method '%s' returned unexpected result", format(method))
                 .isBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
 
         for (int i = 0; i < size; i++) {
@@ -139,4 +180,30 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         }
     }
 
+    private Object getFieldValue(final Field field) {
+        try {
+            field.setAccessible(true);
+            return field.get(actual);
+        } catch (IllegalAccessException ex) {
+            throw new AssertionError("Could not verify field value: " + field, ex);
+        }
+    }
+
+    private List<Field> collectDeclaredFieldsOfType(final Class<?> fieldType) {
+        return Arrays.stream(actual.getClass().getDeclaredFields())
+                .filter(f -> f.getType() == fieldType
+                        && !Modifier.isStatic(f.getModifiers())
+                        && !Modifier.isFinal(f.getModifiers()))
+                .collect(toList());
+    }
+
+    private static String format(final Field field) {
+        return String.format("%s.%s", field.getDeclaringClass().getSimpleName(), field.getName());
+    }
+
+    private static String format(final Method method) {
+        return method == null
+                ? "n/a"
+                : String.format("%s.%s", method.getDeclaringClass().getSimpleName(), method.getName());
+    }
 }

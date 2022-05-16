@@ -17,7 +17,7 @@ package org.instancio.creation.generics;
 
 import org.instancio.test.support.pojo.generics.MapWithoutTypes;
 import org.instancio.test.support.tags.GenericsTag;
-import org.instancio.testsupport.Constants;
+import org.instancio.test.support.util.Constants;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import java.util.Map;

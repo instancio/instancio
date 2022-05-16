@@ -66,7 +66,7 @@ class GeneratorSelectorMap {
         return Collections.unmodifiableMap(classSubtypeMap);
     }
 
-    Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
+    Optional<Generator<?>> getGenerator(final Node node) {
         return selectorMap.getValue(node);
     }
 

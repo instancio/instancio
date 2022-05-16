@@ -24,8 +24,10 @@ import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,12 +50,33 @@ class SelectorMapTest {
     private final NodeFactory nodeFactory = new NodeFactory(
             new NodeContext(Collections.emptyMap(), new SubtypeSelectorMap(Collections.emptyMap())));
 
-    private final Node rootNode = nodeFactory.createRootNode(Person.class, null);
+    private final Node rootNode = nodeFactory.createRootNode(PersonHolder.class, null);
     private final Node personNameNode = getNodeWithField(rootNode, Person.class, "name");
     private final Node phoneNumberNode = getNodeWithField(rootNode, Phone.class, "number");
     private final Node petNameNode = getNodeWithField(rootNode, Pet.class, "name");
+    // RichPerson.phone.number
+    private final Node richPersonPhoneFieldNumberFieldNode = getNodeWithField(
+            getNodeWithField(rootNode, RichPerson.class, "phone"), Phone.class, "number");
+    // RichPerson.address1.List<Phone>.number
+    private final Node richPersonListOfPhonesPhoneNumberFieldNode = getNodeWithField(
+            getNodeWithField(rootNode, RichPerson.class, "address1"), Phone.class, "number");
 
     private final SelectorMap<String> selectorMap = new SelectorMap<>();
+
+    @Test
+    void getValues() {
+        put(allStrings().within(scope(RichPerson.class, "phone")), "foo");
+        // Given two equal selector keys, last value overwrites the first one
+        put(allStrings().within(scope(RichPerson.class, "address1"), scope(Phone.class)), "bar");
+        put(allStrings().within(scope(RichPerson.class, "address1"), scope(Phone.class)), "baz");
+
+        assertThat(selectorMap.getValue(richPersonPhoneFieldNumberFieldNode)).contains("foo");
+        assertThat(selectorMap.getValue(richPersonListOfPhonesPhoneNumberFieldNode)).contains("baz");
+
+        // get all values
+        assertThat(selectorMap.getValues(richPersonPhoneFieldNumberFieldNode)).containsOnly("foo");
+        assertThat(selectorMap.getValues(richPersonListOfPhonesPhoneNumberFieldNode)).containsOnly("baz");
+    }
 
     @Test
     void precedence() {

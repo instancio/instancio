@@ -45,7 +45,9 @@ class InstancioEngine {
     @SuppressWarnings("unchecked")
     <T> T createRootObject() {
         final Optional<GeneratorResult> optResult = createObject(rootNode, /* owner = */ null);
-        return (T) optResult.map(GeneratorResult::getValue).orElse(null);
+        final T rootResult = (T) optResult.map(GeneratorResult::getValue).orElse(null);
+        callbackHandler.invokeCallbacks();
+        return rootResult;
     }
 
     Optional<GeneratorResult> createObject(final Node node, @Nullable final Object owner) {
@@ -62,7 +64,6 @@ class InstancioEngine {
         }
 
         callbackHandler.addResult(node, rootResult);
-        callbackHandler.invokeCallbacks();
         return optResult;
     }
 

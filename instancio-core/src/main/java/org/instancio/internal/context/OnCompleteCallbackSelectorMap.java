@@ -22,8 +22,8 @@ import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 class OnCompleteCallbackSelectorMap {
 
@@ -39,8 +39,8 @@ class OnCompleteCallbackSelectorMap {
         return onCompleteCallbacks;
     }
 
-    Optional<OnCompleteCallback<?>> getUserSuppliedFieldCallback(final Node node) {
-        return selectorMap.getValue(node);
+    List<OnCompleteCallback<?>> getCallbacks(final Node node) {
+        return selectorMap.getValues(node);
     }
 
     private void putAll(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {

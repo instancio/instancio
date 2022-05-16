@@ -16,12 +16,12 @@
 package org.instancio.internal.context;
 
 import org.instancio.Generator;
-import org.instancio.generators.Generators;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
 import org.instancio.TargetSelector;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
@@ -123,11 +123,11 @@ public final class ModelContext<T> {
     }
 
     public Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
-        return generatorSelectorMap.getUserSuppliedGenerator(node);
+        return generatorSelectorMap.getGenerator(node);
     }
 
-    public OnCompleteCallback<?> getUserSuppliedCallback(final Node node) {
-        return onCompleteCallbackSelectorMap.getUserSuppliedFieldCallback(node).orElse(null);
+    public List<OnCompleteCallback<?>> getUserSuppliedCallbacks(final Node node) {
+        return onCompleteCallbackSelectorMap.getCallbacks(node);
     }
 
     public Class<?> getSubtypeMapping(final Class<?> superType) {

@@ -16,7 +16,6 @@
 package org.instancio.internal.context;
 
 import org.instancio.Generator;
-import org.instancio.generators.Generators;
 import org.instancio.Random;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
@@ -25,6 +24,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
