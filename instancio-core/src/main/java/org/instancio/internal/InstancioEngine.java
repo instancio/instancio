@@ -26,6 +26,11 @@ import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Queue;
 
+/**
+ * Entry point for generating an object.
+ * <p>
+ * A new instance of this class should be created for each object generated via {@link #createRootObject()}.
+ */
 class InstancioEngine {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioEngine.class);
 

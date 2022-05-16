@@ -130,8 +130,8 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public Stream<T> stream() {
-        final InstancioEngine engine = new InstancioEngine(createModel());
-        return Stream.generate(engine::createRootObject);
+        final InternalModel<T> model = createModel();
+        return Stream.generate(() -> new InstancioEngine(model).createRootObject());
     }
 
     private InternalModel<T> createModel() {
