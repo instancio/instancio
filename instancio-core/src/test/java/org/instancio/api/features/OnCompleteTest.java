@@ -27,7 +27,7 @@ import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
-import org.instancio.testsupport.Constants;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;

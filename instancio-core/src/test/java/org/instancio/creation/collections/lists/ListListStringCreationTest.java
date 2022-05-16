@@ -17,7 +17,7 @@ package org.instancio.creation.collections.lists;
 
 import org.instancio.test.support.pojo.collections.lists.ListListString;
 import org.instancio.test.support.tags.GenericsTag;
-import org.instancio.testsupport.Constants;
+import org.instancio.test.support.util.Constants;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;

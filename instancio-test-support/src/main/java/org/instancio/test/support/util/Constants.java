@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.testsupport;
+package org.instancio.test.support.util;
 
 public final class Constants {
     private Constants() {

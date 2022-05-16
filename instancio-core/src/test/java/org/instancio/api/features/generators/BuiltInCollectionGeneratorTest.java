@@ -25,7 +25,7 @@ import org.instancio.test.support.pojo.collections.maps.TwoMapsOfIntegerItemStri
 import org.instancio.test.support.pojo.collections.sets.HashSetLong;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.pojo.generics.basic.Item;
-import org.instancio.testsupport.Constants;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ import java.util.Vector;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
-import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
+import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 // TODO test nested lists/maps
 class BuiltInCollectionGeneratorTest {

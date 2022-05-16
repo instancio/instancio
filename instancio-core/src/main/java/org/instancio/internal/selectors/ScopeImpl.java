@@ -51,4 +51,12 @@ public final class ScopeImpl implements Scope {
     public int hashCode() {
         return Objects.hash(getTargetClass(), getField());
     }
+
+    @Override
+    public String toString() {
+        if (field == null) {
+            return String.format("scope(%s)", targetClass.getSimpleName());
+        }
+        return String.format("scope(%s, \"%s\")", getTargetClass().getSimpleName(), field.getName());
+    }
 }

@@ -15,10 +15,10 @@
  */
 package org.instancio.test.features.validation;
 
-import org.instancio.generators.Generators;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
 import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;

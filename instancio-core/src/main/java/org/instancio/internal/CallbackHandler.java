@@ -19,37 +19,46 @@ import org.instancio.OnCompleteCallback;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CallbackHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(CallbackHandler.class);
 
     private final ModelContext<?> context;
-    private final Map<Node, List<GeneratorResult>> callbackItems = new LinkedHashMap<>();
+    private final Map<Node, List<GeneratorResult>> resultsForCallbacks = new IdentityHashMap<>();
 
     public CallbackHandler(final ModelContext<?> context) {
         this.context = context;
     }
 
     public void addResult(final Node node, final GeneratorResult result) {
-        final OnCompleteCallback<?> callback = getCallbackHandler(node);
-        if (callback != null) {
-            callbackItems.computeIfAbsent(node, res -> new ArrayList<>()).add(result);
+        if (!getCallbacks(node).isEmpty()) {
+            resultsForCallbacks.computeIfAbsent(node, res -> new ArrayList<>()).add(result);
         }
     }
 
     public void invokeCallbacks() {
-        callbackItems.forEach((node, results) -> {
-            final OnCompleteCallback<Object> callback = getCallbackHandler(node);
-            results.forEach(result -> callback.onComplete(result.getValue()));
+        LOG.trace("Preparing to call {} callback(s)", resultsForCallbacks.size());
+        resultsForCallbacks.forEach((node, results) -> {
+            final List<OnCompleteCallback<?>> callbacks = getCallbacks(node);
+
+            for (OnCompleteCallback<?> callback : callbacks) {
+                LOG.trace("Invoking a callback for {} value(s) of {}", results.size(), node);
+                for (GeneratorResult result : results) {
+                    //noinspection unchecked
+                    ((OnCompleteCallback) callback).onComplete(result.getValue());
+                }
+            }
         });
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> OnCompleteCallback<T> getCallbackHandler(final Node node) {
-        return (OnCompleteCallback<T>) context.getUserSuppliedCallback(node);
+    private List<OnCompleteCallback<?>> getCallbacks(final Node node) {
+        return context.getUserSuppliedCallbacks(node);
     }
 }

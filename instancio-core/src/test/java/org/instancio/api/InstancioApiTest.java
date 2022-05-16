@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
-import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
+import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 /**
  * Smoke test invoking various API methods.

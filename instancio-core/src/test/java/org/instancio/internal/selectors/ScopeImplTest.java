@@ -16,12 +16,30 @@
 package org.instancio.internal.selectors;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.instancio.exception.InstancioApiException;
+import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ScopeImplTest {
 
     @Test
+    void constructor() {
+        assertThatThrownBy(() -> new ScopeImpl(Person.class, "foo"))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("Invalid field 'foo'");
+    }
+
+    @Test
     void verifyEqualsAndHashcode() {
         EqualsVerifier.forClass(ScopeImpl.class).verify();
+    }
+
+    @Test
+    void verifyToString() {
+        assertThat(new ScopeImpl(String.class, null)).hasToString("scope(String)");
+        assertThat(new ScopeImpl(Person.class, "name")).hasToString("scope(Person, \"name\")");
     }
 }

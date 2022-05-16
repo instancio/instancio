@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Fail.fail;
-import static org.instancio.testsupport.asserts.ReflectionAssert.assertThatObject;
+import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 
 /**
