@@ -40,6 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 class GeneratorFacade {
@@ -50,8 +52,9 @@ class GeneratorFacade {
     private final ModelContext<?> context;
     private final Random random;
     private final NodeHandler[] nodeHandlers;
+    private final List<GenerationListener> listeners = new ArrayList<>();
 
-    public GeneratorFacade(final ModelContext<?> context, final CallbackHandler callbackHandler) {
+    public GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
         this.random = context.getRandom();
 
@@ -61,12 +64,16 @@ class GeneratorFacade {
 
         this.nodeHandlers = new NodeHandler[]{
                 new UserSuppliedGeneratorHandler(context, generatorContext, generatorResolver, instantiator),
-                new ArrayNodeHandler(context, generatorResolver, callbackHandler),
+                new ArrayNodeHandler(context, generatorResolver),
                 new UsingGeneratorResolverHandler(context, generatorResolver),
-                new CollectionNodeHandler(context, instantiator, callbackHandler),
-                new MapNodeHandler(context, instantiator, callbackHandler),
+                new CollectionNodeHandler(context, instantiator),
+                new MapNodeHandler(context, instantiator),
                 new InstantiatingHandler(context, instantiator)
         };
+    }
+
+    public void addGenerationListener(final GenerationListener listener) {
+        listeners.add(listener);
     }
 
     private boolean isIgnored(final Node node) {
@@ -74,6 +81,17 @@ class GeneratorFacade {
     }
 
     Optional<GeneratorResult> generateNodeValue(final Node node, @Nullable final Object owner) {
+        final Optional<GeneratorResult> generatorResult = generateInternal(node, owner);
+        final Object generatedObject = generatorResult.map(GeneratorResult::getValue).orElse(null);
+        notifyListeners(node, generatedObject);
+        return generatorResult;
+    }
+
+    private void notifyListeners(final Node node, @Nullable final Object generatedObject) {
+        listeners.forEach(it -> it.objectCreated(node, generatedObject));
+    }
+
+    private Optional<GeneratorResult> generateInternal(final Node node, @Nullable final Object owner) {
         if (isIgnored(node)) {
             return Optional.empty();
         }

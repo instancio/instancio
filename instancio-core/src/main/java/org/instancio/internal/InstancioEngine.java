@@ -44,7 +44,8 @@ class InstancioEngine {
         this.context = model.getModelContext();
         this.rootNode = model.getRootNode();
         this.callbackHandler = new CallbackHandler(context);
-        this.generatorFacade = new GeneratorFacade(context, callbackHandler);
+        this.generatorFacade = new GeneratorFacade(context);
+        generatorFacade.addGenerationListener(callbackHandler);
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +69,6 @@ class InstancioEngine {
             processNextItem(queue.poll());
         }
 
-        callbackHandler.addResult(node, rootResult);
         return optResult;
     }
 
@@ -79,7 +79,6 @@ class InstancioEngine {
         final Optional<GeneratorResult> result = generatorFacade.generateNodeValue(node, createItem.getOwner());
         if (result.isPresent()) {
             node.accept(new PopulatingNodeVisitor(createItem.getOwner(), result.get(), context, queue, this));
-            callbackHandler.addResult(node, result.get());
         }
     }
 }
