@@ -16,30 +16,31 @@
 package org.instancio.internal;
 
 import org.instancio.OnCompleteCallback;
-import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CallbackHandler {
+public class CallbackHandler implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(CallbackHandler.class);
 
     private final ModelContext<?> context;
-    private final Map<Node, List<GeneratorResult>> resultsForCallbacks = new IdentityHashMap<>();
+    private final Map<Node, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
 
     public CallbackHandler(final ModelContext<?> context) {
         this.context = context;
     }
 
-    public void addResult(final Node node, final GeneratorResult result) {
+    @Override
+    public void objectCreated(final Node node, @Nullable final Object instance) {
         if (!getCallbacks(node).isEmpty()) {
-            resultsForCallbacks.computeIfAbsent(node, res -> new ArrayList<>()).add(result);
+            resultsForCallbacks.computeIfAbsent(node, res -> new ArrayList<>()).add(instance);
         }
     }
 
@@ -49,10 +50,13 @@ public class CallbackHandler {
             final List<OnCompleteCallback<?>> callbacks = getCallbacks(node);
 
             for (OnCompleteCallback<?> callback : callbacks) {
-                LOG.trace("Invoking a callback for {} value(s) of {}", results.size(), node);
-                for (GeneratorResult result : results) {
-                    //noinspection unchecked
-                    ((OnCompleteCallback) callback).onComplete(result.getValue());
+
+                LOG.trace("{} potential results available for callbacks generated for: {}", results.size(), node);
+                for (Object result : results) {
+                    if (result != null) { // e.g. null generated for nullable value
+                        //noinspection unchecked,rawtypes
+                        ((OnCompleteCallback) callback).onComplete(result);
+                    }
                 }
             }
         });
