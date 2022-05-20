@@ -15,6 +15,7 @@
  */
 package org.instancio.settings;
 
+import org.instancio.Mode;
 import org.instancio.internal.ApiValidator;
 import org.instancio.util.Constants;
 
@@ -158,6 +159,12 @@ public final class Keys {
      * Specifies whether a {@code null} can be generated for map values, default is {@code false}.
      */
     public static final SettingKey MAP_VALUES_NULLABLE = register("map.values.nullable", Boolean.class, false);
+    /**
+     * Specifies the mode: strict (unused selectors will trigger an exception) or lenient; default is strict.
+     *
+     * @since 1.3.3
+     */
+    public static final SettingKey MODE = register("mode", Mode.class, Mode.STRICT);
     /**
      * Specifies maximum value for shorts, default value is 10000.
      */

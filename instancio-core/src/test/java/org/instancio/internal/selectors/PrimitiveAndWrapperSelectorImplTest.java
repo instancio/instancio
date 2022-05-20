@@ -19,14 +19,32 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.instancio.Select;
 import org.instancio.Selector;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.scope;
 import static org.instancio.testsupport.asserts.SelectorAssert.assertSelector;
 
 class PrimitiveAndWrapperSelectorImplTest {
+
+    @Test
+    void withinReturnsANewSelectorInstance() {
+        final PrimitiveAndWrapperSelectorImpl selector = (PrimitiveAndWrapperSelectorImpl) Select.allInts();
+        final PrimitiveAndWrapperSelectorImpl scopedSelector = (PrimitiveAndWrapperSelectorImpl) selector.within(scope(IntegerHolder.class));
+
+        assertThat(selector)
+                .as("within() should return a new selector")
+                .isNotSameAs(scopedSelector)
+                .isNotEqualTo(scopedSelector);
+
+        assertSelector(selector).isCoreTypeSelectorWithoutScope(int.class, Integer.class);
+        assertSelector(scopedSelector).isCoreTypeSelector(int.class, Integer.class);
+        assertThat(scopedSelector.flatten().get(0).getScopes()).containsExactly(scope(IntegerHolder.class));
+        assertThat(scopedSelector.flatten().get(1).getScopes()).containsExactly(scope(IntegerHolder.class));
+    }
 
     @Test
     void verifyEqualsAndHashcode() {

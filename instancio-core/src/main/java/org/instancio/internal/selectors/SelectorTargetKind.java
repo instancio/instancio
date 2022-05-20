@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio;
-
-import java.lang.reflect.Type;
-import java.util.function.Supplier;
+package org.instancio.internal.selectors;
 
 /**
- * A supplier that provides {@link Type} information.
- *
- * @param <T> type being supplied
- * @since 1.0.1
+ * Represents what is being targeted, a field or a class.
  */
-// <T> is required to be present, even though not used directly here.
-@SuppressWarnings("unused")
-@FunctionalInterface
-public interface TypeTokenSupplier<T> extends Supplier<Type> {
+public enum SelectorTargetKind {
 
     /**
-     * Returns type information.
-     *
-     * @return type
-     * @since 1.0.1
+     * Class target.
      */
-    @Override
-    Type get();
+    CLASS,
+
+    /**
+     * Field target.
+     */
+    FIELD
 }

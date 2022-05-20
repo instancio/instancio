@@ -19,14 +19,32 @@ package org.instancio;
  * A callback that gets invoked after an object has been fully populated.
  *
  * @param <T> type handled by the callback
+ * @since 1.0.4
  */
 @FunctionalInterface
 public interface OnCompleteCallback<T> {
 
     /**
-     * Method called after object has been populated.
+     * A callback method that is called after an object has been populated.
+     * <p>
+     * If a {@code null} value is generated for a selector with a callback,
+     * the callback will not be invoked.
+     * <p>
+     * In the following snippet, all {@code Phone} instances are nullable
+     * and also have a callback associated with them. The callback will only
+     * be called when a non-null value is generated.
+     *
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *         .withNullable(all(Phone.class))
+     *         .onComplete(all(Phone.class), (Phone phone) -> {
+     *             // will only be called on non-null phones
+     *         })
+     *         .create();
+     * }</pre>
      *
      * @param object fully populated instance to call the callback on
+     * @since 1.0.4
      */
     void onComplete(T object);
 }

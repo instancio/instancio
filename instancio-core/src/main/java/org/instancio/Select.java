@@ -20,7 +20,7 @@ import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetType;
+import org.instancio.internal.selectors.SelectorTargetKind;
 
 /**
  * A collection of static factory methods selecting fields and classes.
@@ -52,7 +52,7 @@ public final class Select {
      */
     public static Selector all(final Class<?> type) {
         ApiValidator.notNull(type, "Class must not be null");
-        return new SelectorImpl(SelectorTargetType.CLASS, type, null);
+        return new SelectorImpl(SelectorTargetKind.CLASS, type, null);
     }
 
     /**
@@ -79,7 +79,7 @@ public final class Select {
         ApiValidator.validateField(declaringClass, fieldName,
                 String.format("Invalid field selector: (%s, %s)", className, fieldName));
 
-        return new SelectorImpl(SelectorTargetType.FIELD, declaringClass, fieldName);
+        return new SelectorImpl(SelectorTargetKind.FIELD, declaringClass, fieldName);
     }
 
     /**
@@ -97,7 +97,7 @@ public final class Select {
      */
     public static Selector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "Field name must not be null");
-        return new SelectorImpl(SelectorTargetType.FIELD, null, fieldName);
+        return new SelectorImpl(SelectorTargetKind.FIELD, null, fieldName);
     }
 
     /**
@@ -195,6 +195,7 @@ public final class Select {
      * @param targetClass of the scope
      * @param fieldName   declared by the target class
      * @return a scope for fine-tuning a selector
+     * @since 1.3.0
      */
     public static Scope scope(final Class<?> targetClass, final String fieldName) {
         //noinspection ConstantConditions
@@ -219,6 +220,7 @@ public final class Select {
      *
      * @param targetClass of the scope
      * @return a scope for fine-tuning a selector
+     * @since 1.3.0
      */
     public static Scope scope(final Class<?> targetClass) {
         ApiValidator.notNull(targetClass, "Scope class must not be null");

@@ -16,14 +16,20 @@
 package org.instancio.api.features.model;
 
 import org.instancio.Instancio;
+import org.instancio.Mode;
 import org.instancio.Model;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
+import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
+import static org.instancio.Select.scope;
 
 @NonDeterministicTag
 class ModelWithGenerateTest {
@@ -43,5 +49,30 @@ class ModelWithGenerateTest {
         assertThat(result.getIntegerWrapper()).isEqualTo(intValue);
         assertThat(result.getPrimitiveLong()).isEqualTo(longValue);
         assertThat(result.getLongWrapper()).isNotNull().isNotEqualTo(longValue);
+    }
+
+    @Test
+    void generateCollectionUsingSelectorGroup() {
+        final Model<TwoListsOfItemString> sourceModel = Instancio.of(TwoListsOfItemString.class)
+                .generate(all(
+                        field(TwoListsOfItemString.class, "list1"),
+                        field(TwoListsOfItemString.class, "list2")), gen -> gen.collection().size(1))
+                .toModel();
+
+        final Model<TwoListsOfItemString> derivedModel = Instancio.of(sourceModel)
+                .generate(all(
+                        field(TwoListsOfItemString.class, "list1").within(scope(TwoListsOfItemString.class)),
+                        field(TwoListsOfItemString.class, "list2")), gen -> gen.collection().size(2))
+                .toModel();
+
+        final TwoListsOfItemString result1 = Instancio.create(sourceModel);
+        assertThat(result1.getList1()).hasSize(1);
+        assertThat(result1.getList2()).hasSize(1);
+
+        final TwoListsOfItemString result2 = Instancio.of(derivedModel)
+                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .create();
+        assertThat(result2.getList1()).hasSize(2);
+        assertThat(result2.getList2()).hasSize(2);
     }
 }

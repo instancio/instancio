@@ -19,9 +19,9 @@ import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.templates.NodeTestTemplate;
-import org.instancio.testsupport.utils.CollectionUtils;
 import org.instancio.testsupport.utils.NodeUtils;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;

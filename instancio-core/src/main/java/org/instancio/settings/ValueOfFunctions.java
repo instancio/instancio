@@ -15,6 +15,8 @@
  */
 package org.instancio.settings;
 
+import org.instancio.Mode;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +35,7 @@ final class ValueOfFunctions {
         fnMap.put(Long.class, Long::valueOf);
         fnMap.put(Float.class, Float::valueOf);
         fnMap.put(Double.class, Double::valueOf);
+        fnMap.put(Mode.class, Mode::valueOf);
         return Collections.unmodifiableMap(fnMap);
     }
 

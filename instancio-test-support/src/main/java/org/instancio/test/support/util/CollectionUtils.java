@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.testsupport.utils;
+package org.instancio.test.support.util;
 
 import java.util.Collection;
 

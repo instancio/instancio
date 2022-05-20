@@ -17,11 +17,13 @@ package org.instancio.internal.context;
 
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
+import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.ScopelessSelector;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetType;
+import org.instancio.internal.selectors.SelectorTargetKind;
 import org.instancio.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -30,10 +32,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -50,11 +55,12 @@ class SelectorMap<V> {
 
     private final Map<ScopelessSelector, List<SelectorImpl>> scopelessSelectors = new LinkedHashMap<>();
     private final Map<? super TargetSelector, V> selectors = new LinkedHashMap<>();
+    private final Set<? super TargetSelector> unusedSelectors = new LinkedHashSet<>();
 
     void put(final SelectorImpl selector, final V value) {
         final ScopelessSelector scopeless;
 
-        if (selector.selectorType() == SelectorTargetType.FIELD) {
+        if (selector.selectorType() == SelectorTargetKind.FIELD) {
             final Field field = ReflectionUtils.getField(selector.getTargetClass(), selector.getFieldName());
             scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
         } else {
@@ -62,7 +68,12 @@ class SelectorMap<V> {
         }
 
         selectors.put(selector, value);
+        unusedSelectors.add(selector);
         scopelessSelectors.computeIfAbsent(scopeless, selectorList -> new ArrayList<>()).add(selector);
+    }
+
+    public Set<? super TargetSelector> getUnusedKeys() {
+        return unusedSelectors;
     }
 
     /**
@@ -72,8 +83,10 @@ class SelectorMap<V> {
      * @return value for given node, if present
      */
     Optional<V> getValue(final Node node) {
-        return getSelectorsWithParent(node, getCandidates(node), FIND_ONE_ONLY)
-                .stream().findFirst().map(selectors::get);
+        return getSelectorsWithParent(node, getCandidates(node), FIND_ONE_ONLY).stream()
+                .findFirst()
+                .map(this::markUsed)
+                .map(selectors::get);
     }
 
     /**
@@ -85,8 +98,27 @@ class SelectorMap<V> {
     List<V> getValues(final Node node) {
         return getSelectorsWithParent(node, getCandidates(node), !FIND_ONE_ONLY)
                 .stream()
+                .map(this::markUsed)
                 .map(selectors::get)
                 .collect(toList());
+    }
+
+    private SelectorImpl markUsed(final SelectorImpl selector) {
+        // Special treatment of convenience PrimitiveAndWrapper selectors such as Select.allInts(),
+        // which contains all(Integer.class) and all(int.class). If we only
+        // match one, consider the equivalent to be matched as well.
+        if (selector.getParent() instanceof PrimitiveAndWrapperSelectorImpl) {
+            final SelectorImpl equivalent = new SelectorImpl(
+                    selector.selectorType(),
+                    PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass()),
+                    selector.getFieldName(),
+                    selector.getScopes(),
+                    selector.getParent());
+
+            unusedSelectors.remove(equivalent);
+        }
+        unusedSelectors.remove(selector);
+        return selector;
     }
 
     private List<SelectorImpl> getCandidates(final Node node) {
@@ -100,7 +132,7 @@ class SelectorMap<V> {
         return candidates == null ? Collections.emptyList() : candidates;
     }
 
-    private static List<TargetSelector> getSelectorsWithParent(
+    private static List<SelectorImpl> getSelectorsWithParent(
             final Node targetNode,
             final List<SelectorImpl> candidates,
             final boolean findOneOnly) {
@@ -109,7 +141,7 @@ class SelectorMap<V> {
             return Collections.emptyList();
         }
 
-        final List<TargetSelector> results = new ArrayList<>();
+        final List<SelectorImpl> results = new ArrayList<>();
 
         // Start from the end so that in case of overlaps last selector wins
         // (only matters if a single result is requested)
@@ -149,5 +181,17 @@ class SelectorMap<V> {
             node = node.getParent();
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        if (selectors.isEmpty()) {
+            return "SelectorMap{}";
+        }
+
+        return String.format("SelectorMap:{%n%s%n}", selectors.entrySet()
+                .stream()
+                .map(Object::toString)
+                .collect(joining(System.lineSeparator())));
     }
 }

@@ -22,8 +22,8 @@ import org.instancio.testsupport.utils.NodeUtils;
 
 import java.util.Optional;
 
+import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
-import static org.instancio.testsupport.utils.CollectionUtils.getOnlyElement;
 
 class OptionalStringNodeTest extends NodeTestTemplate<OptionalString> {
 

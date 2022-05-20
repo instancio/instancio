@@ -18,6 +18,8 @@ package org.instancio.test.features.metamodel;
 import org.instancio.Instancio;
 import org.instancio.InstancioMetamodel;
 import org.instancio.TypeToken;
+import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
+import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -46,7 +48,9 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.scope;
 
 @InstancioMetamodel(classes = {
         Address.class,
@@ -119,15 +123,24 @@ class MetamodelBasedOnClassesTest {
     void withinScope() {
         final String foo = "foo";
         final String bar = "bar";
+        final int baz = 1;
         final Person result = Instancio.of(Person.class)
                 .set(Phone_.number.within(Address_.phoneNumbers.toScope()), foo)
                 .set(allStrings().within(Person_.address.toScope()), bar)
+                .set(allInts().within(scope(Person.class)), baz)
                 .create();
+
+        // Calling within() on a metamodel field should not modify it, but return a new selector with scope
+        assertThat(((SelectorImpl) Phone_.number).getScopes()).isEmpty();
+        assertThat(((SelectorImpl) allStrings()).getScopes()).isEmpty();
+        assertThat(((PrimitiveAndWrapperSelectorImpl) allInts()).flatten()).allSatisfy(selector ->
+                assertThat(selector.getScopes()).isEmpty());
 
         assertThat(result.getAddress().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(foo);
         assertThat(result.getAddress().getPhoneNumbers()).extracting(Phone::getCountryCode).containsOnly(bar);
         assertThat(result.getAddress().getCity()).isEqualTo(bar);
         assertThat(result.getAddress().getCountry()).isEqualTo(bar);
         assertThat(result.getName()).isNotEqualTo(bar);
+        assertThat(result.getAge()).isEqualTo(baz);
     }
 }

@@ -16,6 +16,7 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
+import org.instancio.Mode;
 import org.instancio.TypeToken;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -46,7 +47,7 @@ import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
-@FeatureTag({Feature.SELECTOR, Feature.SET_VALUE})
+@FeatureTag({Feature.SELECTOR, Feature.SET})
 class SetWithScopeTest {
 
     private static final String FOO = "foo";
@@ -68,6 +69,7 @@ class SetWithScopeTest {
         @Test
         void selectAllIntsAndAge2() {
             final PersonHolder result = Instancio.of(PersonHolder.class)
+                    .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
                     .set(allInts().within(scope(Person.class)), 100)
                     .set(allInts(), -1)
                     .set(allInts().within(scope(RichPerson.class)), 100)

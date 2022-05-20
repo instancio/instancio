@@ -26,12 +26,17 @@ import java.util.Objects;
 
 public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattener {
 
-    private SelectorImpl primitive;
-    private SelectorImpl wrapper;
+    private final SelectorImpl primitive;
+    private final SelectorImpl wrapper;
 
     public PrimitiveAndWrapperSelectorImpl(final Class<?> primitiveType, final Class<?> wrapperType) {
-        this.primitive = new SelectorImpl(SelectorTargetType.CLASS, primitiveType, null);
-        this.wrapper = new SelectorImpl(SelectorTargetType.CLASS, wrapperType, null);
+        this.primitive = new SelectorImpl(SelectorTargetKind.CLASS, primitiveType, null, Collections.emptyList(), this);
+        this.wrapper = new SelectorImpl(SelectorTargetKind.CLASS, wrapperType, null, Collections.emptyList(), this);
+    }
+
+    private PrimitiveAndWrapperSelectorImpl(final SelectorImpl primitive, SelectorImpl wrapper) {
+        this.primitive = primitive;
+        this.wrapper = wrapper;
     }
 
     @Override
@@ -41,10 +46,10 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
 
     @Override
     public Selector within(final Scope... scopes) {
-        final List<Scope> scopeList = Collections.unmodifiableList(Arrays.asList(scopes));
-        primitive = new SelectorImpl(SelectorTargetType.CLASS, primitive.getTargetClass(), null, scopeList);
-        wrapper = new SelectorImpl(SelectorTargetType.CLASS, wrapper.getTargetClass(), null, scopeList);
-        return this;
+        final List<Scope> scopeList = Arrays.asList(scopes);
+        return new PrimitiveAndWrapperSelectorImpl(
+                new SelectorImpl(SelectorTargetKind.CLASS, primitive.getTargetClass(), null, scopeList, this),
+                new SelectorImpl(SelectorTargetKind.CLASS, wrapper.getTargetClass(), null, scopeList, this));
     }
 
     @Override

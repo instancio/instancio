@@ -63,9 +63,9 @@ public enum Feature {
     IGNORE,
     NULLABLE,
 
-    SET_VALUE,
-    SUPPLY_VIA_SUPPLIER,
-    SUPPLY_VIA_GENERATOR,
+    SET,
+    SUPPLY,
+    SUPPLY_WITH_RANDOM,
     GENERATE,
     ON_COMPLETE,
 
@@ -73,6 +73,8 @@ public enum Feature {
     MAP_CLASS_SELECTOR,
 
     INHERITANCE,
+
+    MODE,
     VALIDATION,
 
     METAMODEL,

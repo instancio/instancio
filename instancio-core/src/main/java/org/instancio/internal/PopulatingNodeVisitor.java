@@ -106,18 +106,19 @@ public class PopulatingNodeVisitor implements NodeVisitor {
     }
 
     private void addCollectionValue(final Collection<Object> collection, final Node elementNode, final boolean nullableElement) {
-        final Optional<GeneratorResult> optResult = engine.createObject(elementNode, collection);
-
-        if (!optResult.isPresent()) {
-            return;
-        }
-
-        final GeneratorResult elementResult = optResult.get();
         final Object elementValue;
 
         if (context.getRandom().diceRoll(nullableElement)) {
             elementValue = null;
+            engine.notifyListeners(elementNode, null);
         } else {
+            final Optional<GeneratorResult> optResult = engine.createObject(elementNode, collection);
+
+            if (!optResult.isPresent()) {
+                return;
+            }
+
+            final GeneratorResult elementResult = optResult.get();
             elementValue = optResult.get().getValue();
             enqueueChildrenOf(elementNode, elementResult, queue);
         }
@@ -161,6 +162,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
 
         if (context.getRandom().diceRoll(nullableKey)) {
             mapKey = null;
+            engine.notifyListeners(keyNode, null);
         } else {
             final Optional<GeneratorResult> keyResultOpt = engine.createObject(keyNode, map);
             if (keyResultOpt.isPresent()) {
@@ -175,6 +177,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         final Object mapValue;
         if (context.getRandom().diceRoll(nullableValue)) {
             mapValue = null;
+            engine.notifyListeners(valueNode, null);
         } else {
             final Optional<GeneratorResult> valueResultOpt = engine.createObject(valueNode, map);
             if (valueResultOpt.isPresent()) {
@@ -211,6 +214,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         for (int len = Array.getLength(arrayObj) - withElements.size(); index < len; index++) {
             final boolean isNullableElement = generatorResult.getHints().nullableElements();
             if (context.getRandom().diceRoll(isNullableElement)) {
+                engine.notifyListeners(elementNode, null);
                 continue;
             }
 

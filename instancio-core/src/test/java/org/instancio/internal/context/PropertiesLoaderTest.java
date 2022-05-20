@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.settings;
+package org.instancio.internal.context;
 
-import org.instancio.exception.InstancioException;
+import org.instancio.settings.Keys;
 import org.junit.jupiter.api.Test;
 
-import java.util.Properties;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PropertiesLoaderTest {
 
     @Test
     void load() {
-        final Properties props = new PropertiesLoader().load("custom-instancio-test.properties");
-        assertThat(props).isNotNull();
-        assertThat(props.get(Keys.LONG_MAX.propertyKey())).isNotNull();
+        assertThat(PropertiesLoader.load("custom-instancio-test.properties"))
+                .containsEntry(Keys.LONG_MAX.propertyKey(), "44");
     }
 
     @Test
     void loadFileNotFound() {
-        final String file = "non-existent.properties";
-        assertThatThrownBy(() -> new PropertiesLoader().load(file))
-                .isInstanceOf(InstancioException.class)
-                .hasMessage("Unable to load properties from '%s'", file);
+        assertThat(PropertiesLoader.load("non-existent.properties")).isEmpty();
     }
 }

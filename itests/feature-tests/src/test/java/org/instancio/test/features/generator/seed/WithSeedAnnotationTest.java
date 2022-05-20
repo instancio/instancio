@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class WithSeedAnnotationTest {
 
     private static final int SEED = 1234;
-    private static final String EXPECTED_RANDOM_STRING = "XTYQ";
+    private static final String EXPECTED_RANDOM_STRING = "XTYQHJHH";
 
     @Test
     @Seed(SEED)

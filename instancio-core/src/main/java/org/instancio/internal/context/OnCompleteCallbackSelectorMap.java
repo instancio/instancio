@@ -35,6 +35,10 @@ class OnCompleteCallbackSelectorMap {
         putAll(callbacks);
     }
 
+    public SelectorMap<OnCompleteCallback<?>> getSelectorMap() {
+        return selectorMap;
+    }
+
     public Map<TargetSelector, OnCompleteCallback<?>> getOnCompleteCallbackSelectors() {
         return onCompleteCallbacks;
     }

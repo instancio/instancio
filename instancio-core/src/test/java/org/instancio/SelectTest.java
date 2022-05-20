@@ -17,7 +17,7 @@ package org.instancio;
 
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetType;
+import org.instancio.internal.selectors.SelectorTargetKind;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
@@ -34,7 +34,7 @@ class SelectTest {
     @Test
     void allClass() {
         assertSelector(Select.all(String.class))
-                .hasSelectorType(SelectorTargetType.CLASS)
+                .hasSelectorType(SelectorTargetKind.CLASS)
                 .hasTargetClass(String.class)
                 .hasNullField()
                 .hasNoScope();
@@ -54,7 +54,7 @@ class SelectTest {
                 .hasTargetClass(String.class);
 
         final List<Scope> scopes = assertSelector(selectors.get(1))
-                .hasSelectorType(SelectorTargetType.CLASS)
+                .hasSelectorType(SelectorTargetKind.CLASS)
                 .hasTargetClass(Integer.class)
                 .hasNullField()
                 .hasScopeSize(1)
@@ -68,13 +68,13 @@ class SelectTest {
     @Test
     void field() {
         assertSelector(Select.field("value"))
-                .hasSelectorType(SelectorTargetType.FIELD)
+                .hasSelectorType(SelectorTargetKind.FIELD)
                 .hasNullTargetClass()
                 .hasFieldName("value")
                 .hasNoScope();
 
         assertSelector(Select.field(StringHolder.class, "value"))
-                .hasSelectorType(SelectorTargetType.FIELD)
+                .hasSelectorType(SelectorTargetKind.FIELD)
                 .hasTargetClass(StringHolder.class)
                 .hasFieldName("value")
                 .hasNoScope();
@@ -86,7 +86,7 @@ class SelectTest {
                 .within(
                         Select.scope(Foo.class),
                         Select.scope(Bar.class, "barValue")))
-                .hasSelectorType(SelectorTargetType.CLASS)
+                .hasSelectorType(SelectorTargetKind.CLASS)
                 .hasTargetClass(String.class)
                 .hasNullField()
                 .hasScopeSize(2)

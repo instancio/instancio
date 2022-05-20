@@ -33,6 +33,10 @@ class BooleanSelectorMap {
         putAll(targetSelectors);
     }
 
+    public SelectorMap<Boolean> getSelectorMap() {
+        return selectorMap;
+    }
+
     Set<TargetSelector> getTargetSelectors() {
         return targetSelectors;
     }

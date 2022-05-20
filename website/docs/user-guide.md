@@ -180,8 +180,9 @@ Select.scope(Class<?> targetClass)
     <lnum>2</lnum> Scope a selector to the specified class<br/>
 
 
-To illustrate how scopes work we will assume the following structure for the `Person` class:
+To illustrate how scopes work we will assume the following structure for the `Person` class.
 
+#### Person class structure
 ``` java linenums="1" title="Sample POJOs with getters and setters omitted"
 class Person {
     private String name;
@@ -238,6 +239,96 @@ set(allStrings().within(scope(Person.class, "work"), scope(Phone.class)), "foo")
 
 The `Person.work` address object contains a list of phones, therefore `Person.work` is the outermost scope and is specified first.
 `Phone` class is the innermost scope and is specified last.
+
+### Selector Strictness
+
+#### Strict Mode
+Instancio supports two modes: strict and lenient, an idea inspired by Mockito's highly useful strict stubbing feature.
+
+In strict mode unused selectors will trigger an error. In lenient mode unused selectors are simply ignored.
+
+By default, Instancio runs in strict mode. This is done for the following reasons:
+
+- to eliminate errors in data setup
+- to simplify fixing tests after refactoring
+- to keep test code clean and maintainable
+
+##### Eliminate errors in data setup
+
+An unused selector could indicate an error in the data setup.
+As an example, consider populating the following POJO:
+
+``` java title="Sample POJO with getters and setters omitted"
+class SamplePojo {
+    private SortedSet<String> values;
+}
+```
+
+If we want to create the POJO with a set of size 10, it might be tempting to do the following:
+
+``` java title="<i>BAD:</i> populating SamplePOJO" hl_lines="2"
+SamplePojo pojo = Instancio.of(SamplePojo.class)
+    .generate(all(Set.class), gen -> gen.collection().size(10))
+    .create();
+```
+
+This, however, will not work. The field is declared as a `SortedSet`, but the selector is for `Set`.
+For the selector to match, the target class must be the same as the field's:
+
+``` java title="<i>GOOD:</i> populating SamplePOJO" hl_lines="2"
+SamplePojo pojo = Instancio.of(SamplePojo.class)
+    .generate(all(SortedSet.class), gen -> gen.collection().size(10))
+    .create();
+```
+
+Without being aware of this detail, it is easy to make this kind of error and face unexpected results
+even with a simple class like above. It gets trickier when generating more complex classes.
+Strict mode helps reduce errors.
+
+Consider another example where the problem may not be immediately obvious:
+
+``` java title="Generate phone numbers"
+Person person = Instancio.of(Person.class)
+    .ignore(all(Address.class))
+    .generate(field(Phone.class, "number"), gen -> gen.text().pattern("#d#d#d-#d#d-#d#d"))
+    .create();
+```
+
+Since `List<Phone>` is contained within the `Address` class, the `generate()` method is redundant
+(see [`Person` class structure](#person-class-structure) outlined at the beginning of this section).
+All addresses will be null, therefore no phone instances will be created.
+Strict mode will trigger an error highlighting this problem.
+
+##### Simplify fixing tests after refactoring
+
+Somewhat related to the above is refactoring. Refactoring always causes test failures to some degree.
+Classes get reorganised and tests need to be updated to reflect those changes. Assuming there are existing
+tests utilising Instancio, running tests in strict mode will quickly highlight any problems in
+data setup caused by refactoring.
+
+##### Keep test code clean and maintainable
+
+Last but not least, it is important to keep tests clean and maintainable. Test code should be treated
+with as much care as production code. Keeping the tests concise makes them easier to maintain.
+
+#### Lenient Mode
+
+While strict mode is highly recommended, there is an option to disable it.
+The lenient mode can be enabled using settings:
+
+``` java title="Setting lenient mode through settings"
+Person person = Instancio.of(Person.class)
+    .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+    // snip...
+    .create();
+```
+
+Lenient mode can also be enabled globally using [`instancio.properties`](#overriding-settings-using-a-properties-file):
+
+``` java title="Setting lenient mode through properties"
+mode=STRICT
+```
+
 
 ## Customising Objects
 
@@ -440,6 +531,21 @@ Person person = Instancio.of(Person.class)
 
 The advantage of callbacks is that they can be used to update multiple fields at once.
 The disadvantage, however, is that they can only be used to update mutable types.
+
+It should also be noted that callbacks are only invoked on non-null values.
+In the following example, all address instances are nullable.
+Therefore, a generated address instance may either be `null` or a fully-populated object.
+However, if a `null` was generated, the callback will not invoked.
+
+``` java linenums="1" title="Callbacks only called on non-null values"
+Person person = Instancio.of(Person.class)
+    .withNullable(all(Address.class))
+    .onComplete(all(Address.class), (Address address) -> {
+        // only-called if generated address is not null
+    })
+    .create();
+```
+
 
 ### Ignoring Fields or Classes
 
@@ -833,7 +939,7 @@ Therefore, settings supplied manually take precedence over everything else.
 
 ## Listing of all Supported Property Keys
 
-``` java linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 38"
+``` java linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 39"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -864,11 +970,12 @@ map.values.nullable=false
 map.max.size=6
 map.min.size=2
 map.nullable=false
+mode=STRICT
 short.max=10000
 short.min=1
 short.nullable=false
 string.allow.empty=false
-string.max.length=9
+string.max.length=10
 string.min.length=3
 string.nullable=false
 type.mapping.java.util.Collection=java.util.ArrayList
@@ -880,7 +987,8 @@ type.mapping.java.util.SortedMap=java.util.TreeMap
 !!! attention ""
     <lnum>1</lnum>The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
-    <lnum>38</lnum> Properties prefixed with `type.mapping` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>31</lnum> Specifies the mode, either `STRICT` or `LENIENT`. See [Selector Strictness](#selector-strictness)<br/>
+    <lnum>39</lnum> Properties prefixed with `type.mapping` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 # JUnit Integration

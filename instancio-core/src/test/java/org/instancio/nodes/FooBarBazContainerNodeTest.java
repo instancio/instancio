@@ -24,8 +24,8 @@ import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.platform.commons.util.CollectionUtils;
 
+import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
-import static org.instancio.testsupport.utils.CollectionUtils.getOnlyElement;
 
 class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
 

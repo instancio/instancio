@@ -18,8 +18,8 @@ package org.instancio.nodes;
 import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.MapWithoutTypes;
+import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
-import org.instancio.testsupport.utils.CollectionUtils;
 
 import java.util.Map;
 

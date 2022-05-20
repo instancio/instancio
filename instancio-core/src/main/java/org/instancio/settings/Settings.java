@@ -31,6 +31,8 @@ import static org.instancio.internal.ApiValidator.validateSubtypeMapping;
 
 /**
  * Instancio settings API.
+ *
+ * @since 1.0.1
  */
 public class Settings {
     private static final String TYPE_MAPPING_PREFIX = "type.mapping.";

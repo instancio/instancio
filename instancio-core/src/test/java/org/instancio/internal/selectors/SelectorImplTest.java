@@ -19,6 +19,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.instancio.Select;
 import org.instancio.Selector;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.scope;
 import static org.instancio.testsupport.asserts.ScopeAssert.assertScope;
 
 class SelectorImplTest {
@@ -36,6 +38,7 @@ class SelectorImplTest {
     void verifyEqualsAndHashcode() {
         EqualsVerifier.forClass(SelectorImpl.class)
                 .suppress(Warning.NONFINAL_FIELDS)
+                .withIgnoredFields("parent")
                 .verify();
     }
 
@@ -58,6 +61,23 @@ class SelectorImplTest {
     }
 
     @Test
+    void withinReturnsANewSelectorInstance() {
+        final SelectorImpl selector = new SelectorImpl(SelectorTargetKind.CLASS, String.class, null);
+        final SelectorImpl scopedSelector = (SelectorImpl) selector.within(scope(StringHolder.class));
+
+        assertThat(selector)
+                .as("within() should return a new selector")
+                .isNotSameAs(scopedSelector)
+                .isNotEqualTo(scopedSelector);
+
+        assertThat(selector.getScopes())
+                .as("The original selector should not be modified")
+                .isEmpty();
+
+        assertThat(scopedSelector.getScopes()).containsExactly(scope(StringHolder.class));
+    }
+
+    @Test
     void verifyToString() {
         assertThat(Select.field("foo"))
                 .hasToString("Selector[(\"foo\")]");
@@ -68,12 +88,12 @@ class SelectorImplTest {
         assertThat(Select.field(Person.class, "name"))
                 .hasToString("Selector[(Person, \"name\")]");
 
-        assertThat(Select.field(Phone.class, "number").within(Select.scope(Address.class)))
+        assertThat(Select.field(Phone.class, "number").within(scope(Address.class)))
                 .hasToString("Selector[(Phone, \"number\"), scope(Address)]");
 
         assertThat(Select.field(Phone.class, "number").within(
-                Select.scope(Person.class, "address"),
-                Select.scope(Address.class)))
+                scope(Person.class, "address"),
+                scope(Address.class)))
                 .hasToString(
                         "Selector[(Phone, \"number\"), scope(Person, \"address\"), scope(Address)]");
     }

@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 
-@FeatureTag({Feature.SELECTOR, Feature.SUPPLY_VIA_SUPPLIER})
+@FeatureTag({Feature.SELECTOR, Feature.SUPPLY})
 class SelectorWithSubclassTest {
 
     @Test

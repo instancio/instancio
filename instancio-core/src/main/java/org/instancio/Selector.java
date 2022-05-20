@@ -46,6 +46,7 @@ public interface Selector extends GroupableSelector, ToScopeConvertible {
      *
      * @param scopes one or more scopes to apply
      * @return a selector with the specified scope
+     * @since 1.3.0
      */
     GroupableSelector within(Scope... scopes);
 }

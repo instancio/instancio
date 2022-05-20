@@ -16,14 +16,14 @@
 package org.instancio.internal.context;
 
 import org.instancio.Generator;
-import org.instancio.generators.Generators;
 import org.instancio.TargetSelector;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGenerator;
+import org.instancio.generators.Generators;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetType;
+import org.instancio.internal.selectors.SelectorTargetKind;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -52,6 +52,10 @@ class GeneratorSelectorMap {
         this.generatorSpecSelectors = Collections.unmodifiableMap(generatorSpecSelectors);
         putAllGeneratorSpecs(generatorSpecSelectors);
         putAllGenerators(generatorSelectors);
+    }
+
+    public SelectorMap<Generator<?>> getSelectorMap() {
+        return selectorMap;
     }
 
     Map<TargetSelector, Generator<?>> getGeneratorSelectors() {
@@ -93,7 +97,7 @@ class GeneratorSelectorMap {
     private void putGenerator(final SelectorImpl selector, final Generator<?> generator) {
         selectorMap.put(selector, generator);
 
-        if (selector.selectorType() == SelectorTargetType.FIELD) {
+        if (selector.selectorType() == SelectorTargetKind.FIELD) {
             final Field field = getField(selector.getTargetClass(), selector.getFieldName());
 
             if (field.getType().isArray() && generator instanceof ArrayGenerator) {

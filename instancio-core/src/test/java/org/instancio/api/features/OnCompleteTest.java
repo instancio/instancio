@@ -16,8 +16,11 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
+import org.instancio.Mode;
 import org.instancio.Model;
 import org.instancio.TypeToken;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.arrays.ArrayPerson;
 import org.instancio.test.support.pojo.collections.lists.ListPerson;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
@@ -32,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,6 +126,7 @@ class OnCompleteTest {
     @Test
     void onCompleteFieldForIgnoredClass() {
         final Person result = Instancio.of(Person.class)
+                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
                 .ignore(all(Address.class))
                 .onComplete(all(Phone.class), (Phone phone) -> failIfCalled())
                 .create();
@@ -132,6 +137,7 @@ class OnCompleteTest {
     @Test
     void onCompleteFieldForIgnoredField() {
         final Person result = Instancio.of(Person.class)
+                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
                 .ignore(field("name"))
                 .onComplete(field("name"), (String name) -> failIfCalled())
                 .create();
@@ -140,9 +146,11 @@ class OnCompleteTest {
     }
 
     @Test
-    void onCompleteForNullableClass() {
+    void onCompleteOnIgnoredClass() {
         final Set<Address> result = Instancio.of(Person.class)
+                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
                 .ignore(all(Address.class))
+                // all addresses will be null, so the address.city callback should not be called
                 .onComplete(field(Address.class, "city"), (String city) -> failIfCalled())
                 .stream()
                 .map(Person::getAddress)
@@ -150,6 +158,27 @@ class OnCompleteTest {
                 .collect(toSet());
 
         assertThat(result).hasSize(1).containsOnlyNulls();
+    }
+
+    @Test
+    void onCompleteForNullableClass() {
+        final AtomicInteger callbackCount = new AtomicInteger();
+
+        final int limit = 100;
+        final Set<Address> result = Instancio.of(Person.class)
+                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .withNullable(all(Address.class))
+                .onComplete(all(Address.class), (Address address) -> {
+                    assertThat(address).as("Callback should not get invoked with null values").isNotNull();
+                    callbackCount.incrementAndGet();
+                })
+                .stream()
+                .map(Person::getAddress)
+                .limit(limit)
+                .collect(toSet());
+
+        assertThat(callbackCount.get()).isGreaterThan(limit / 2);
+        assertThat(result).hasSizeGreaterThan(limit / 2).containsNull();
     }
 
     @Test

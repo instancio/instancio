@@ -20,6 +20,7 @@ import org.instancio.Random;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
@@ -131,8 +132,8 @@ class ModelContextTest {
                 .withGenerator(all(String.class), stringGenerator)
                 .build();
 
-        assertThat(ctx.getUserSuppliedGenerator(mockNode(Person.class, ADDRESS_FIELD))).containsSame(addressGenerator);
-        assertThat(ctx.getUserSuppliedGenerator(mockNode(String.class))).containsSame(stringGenerator);
+        assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD))).containsSame(addressGenerator);
+        assertThat(ctx.getGenerator(mockNode(String.class))).containsSame(stringGenerator);
     }
 
     @Test
@@ -149,8 +150,8 @@ class ModelContextTest {
                 .withGeneratorSpec(all(String.class), gen -> stringSpec)
                 .build();
 
-        assertThat(ctx.getUserSuppliedGenerator(mockNode(Person.class, PETS_FIELD))).isPresent().get().isSameAs(petsSpec);
-        assertThat(ctx.getUserSuppliedGenerator(mockNode(String.class))).isPresent().get().isSameAs(stringSpec);
+        assertThat(ctx.getGenerator(mockNode(Person.class, PETS_FIELD))).isPresent().get().isSameAs(petsSpec);
+        assertThat(ctx.getGenerator(mockNode(String.class))).isPresent().get().isSameAs(stringSpec);
     }
 
     @Test
@@ -189,6 +190,26 @@ class ModelContextTest {
     }
 
     @Test
+    void unusedSelectors() {
+        final ModelContext<?> ctx = ModelContext.builder(Person.class)
+                .withSupplier(field("name"), () -> "foo")
+                .withIgnored(field("address"))
+                .build();
+
+        assertThatThrownBy(ctx::reportUnusedSelectorWarnings).isInstanceOf(UnusedSelectorException.class);
+
+        ctx.getGenerator(mockNode(Person.class, NAME_FIELD));
+        ctx.isIgnored(mockNode(Person.class, ADDRESS_FIELD));
+        ctx.reportUnusedSelectorWarnings(); // no error
+
+        final ModelContext<?> newCtx = ctx.toBuilder().build();
+
+        assertThatThrownBy(newCtx::reportUnusedSelectorWarnings)
+                .as("Cloned context should have its own unused selectors state")
+                .isInstanceOf(UnusedSelectorException.class);
+    }
+
+    @Test
     void toBuilder() {
         final Generator<?> allStringsGenerator = random -> "foo";
         final Generator<?> addressCityGenerator = random -> "bar";
@@ -214,9 +235,9 @@ class ModelContextTest {
 
         final ModelContext<?> actual = ctx.toBuilder().build();
 
-        assertThat(actual.getUserSuppliedGenerator(mockNode(String.class))).containsSame(allStringsGenerator);
-        assertThat(actual.getUserSuppliedGenerator(mockNode(Person.class, ADDRESS_CITY_FIELD))).containsSame(addressCityGenerator);
-        assertThat(actual.getUserSuppliedGenerator(mockNode(Person.class, PETS_FIELD))).containsSame(petsGenerator);
+        assertThat(actual.getGenerator(mockNode(String.class))).containsSame(allStringsGenerator);
+        assertThat(actual.getGenerator(mockNode(Person.class, ADDRESS_CITY_FIELD))).containsSame(addressCityGenerator);
+        assertThat(actual.getGenerator(mockNode(Person.class, PETS_FIELD))).containsSame(petsGenerator);
         assertThat(actual.isIgnored(mockNode(Person.class, NAME_FIELD))).isTrue();
         assertThat(actual.isIgnored(mockNode(ignoredClass))).isTrue();
         assertThat(actual.isNullable(mockNode(nullableClass))).isTrue();

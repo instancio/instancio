@@ -22,8 +22,8 @@ import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import java.util.Map;
 
+import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
-import static org.instancio.testsupport.utils.CollectionUtils.getOnlyElement;
 
 class MapIntegerStringNodeTest extends NodeTestTemplate<MapIntegerString> {
 

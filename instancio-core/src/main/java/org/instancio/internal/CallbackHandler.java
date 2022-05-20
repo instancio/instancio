@@ -50,7 +50,6 @@ public class CallbackHandler implements GenerationListener {
             final List<OnCompleteCallback<?>> callbacks = getCallbacks(node);
 
             for (OnCompleteCallback<?> callback : callbacks) {
-
                 LOG.trace("{} potential results available for callbacks generated for: {}", results.size(), node);
                 for (Object result : results) {
                     if (result != null) { // e.g. null generated for nullable value
@@ -63,6 +62,6 @@ public class CallbackHandler implements GenerationListener {
     }
 
     private List<OnCompleteCallback<?>> getCallbacks(final Node node) {
-        return context.getUserSuppliedCallbacks(node);
+        return context.getCallbacks(node);
     }
 }
