@@ -28,37 +28,44 @@ import java.util.stream.Collectors;
 
 public final class SelectorImpl implements Selector, GroupableSelector, Flattener {
 
-    private final SelectorTargetType selectorTargetType;
+    private final SelectorTargetKind selectorTargetKind;
     private final Class<?> targetClass;
     private final String fieldName;
-    private List<Scope> scopes;
+    private final List<Scope> scopes;
+    private final Selector parent;
 
-    public SelectorImpl(final SelectorTargetType selectorTargetType,
+    /**
+     * Constructor.
+     *
+     * @param selectorTargetKind selector target's kind
+     * @param targetClass        target class
+     * @param fieldName          field name, applicable to field selectors only
+     * @param scopes             scopes specified top-down, from outermost to innermost
+     * @param parent             required only for {@link PrimitiveAndWrapperSelectorImpl} for checking unused selectors
+     */
+    public SelectorImpl(final SelectorTargetKind selectorTargetKind,
                         @Nullable final Class<?> targetClass,
                         @Nullable final String fieldName,
-                        @Nullable final List<Scope> scopes) {
+                        @Nullable final List<Scope> scopes,
+                        @Nullable final Selector parent) {
 
-        this.selectorTargetType = selectorTargetType;
+        this.selectorTargetKind = selectorTargetKind;
         this.targetClass = targetClass;
         this.fieldName = fieldName;
-        this.scopes = scopes;
+        this.scopes = scopes == null ? Collections.emptyList() : Collections.unmodifiableList(scopes);
+        this.parent = parent;
     }
 
-    public SelectorImpl(final SelectorTargetType selectorTargetType,
+    public SelectorImpl(final SelectorTargetKind selectorTargetKind,
                         @Nullable final Class<?> targetClass,
                         @Nullable final String fieldName) {
 
-        this(selectorTargetType, targetClass, fieldName, Collections.emptyList());
+        this(selectorTargetKind, targetClass, fieldName, Collections.emptyList(), null);
     }
 
     @Override
     public Selector within(final Scope... scopes) {
-        this.scopes = Collections.unmodifiableList(Arrays.asList(scopes));
-        return this;
-    }
-
-    public List<Scope> getScopes() {
-        return scopes;
+        return new SelectorImpl(selectorTargetKind, targetClass, fieldName, Arrays.asList(scopes), parent);
     }
 
     @Override
@@ -66,8 +73,21 @@ public final class SelectorImpl implements Selector, GroupableSelector, Flattene
         return new ScopeImpl(targetClass, fieldName);
     }
 
-    public SelectorTargetType selectorType() {
-        return selectorTargetType;
+    @Override
+    public List<SelectorImpl> flatten() {
+        return Collections.singletonList(this);
+    }
+
+    public Selector getParent() {
+        return parent;
+    }
+
+    public List<Scope> getScopes() {
+        return scopes;
+    }
+
+    public SelectorTargetKind selectorType() {
+        return selectorTargetKind;
     }
 
     public Class<?> getTargetClass() {
@@ -78,25 +98,30 @@ public final class SelectorImpl implements Selector, GroupableSelector, Flattene
         return fieldName;
     }
 
-    @Override
-    public List<SelectorImpl> flatten() {
-        return Collections.singletonList(this);
-    }
-
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Performs equality check with all fields except {@code parent}.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof SelectorImpl)) return false;
         final SelectorImpl that = (SelectorImpl) o;
-        return selectorTargetType == that.selectorTargetType
+        return selectorTargetKind == that.selectorTargetKind
                 && Objects.equals(getTargetClass(), that.getTargetClass())
                 && Objects.equals(getFieldName(), that.getFieldName())
                 && Objects.equals(getScopes(), that.getScopes());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Calculates hashcode using all fields except {@code parent}.
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(selectorTargetType, getTargetClass(), getFieldName(), getScopes());
+        return Objects.hash(selectorTargetKind, getTargetClass(), getFieldName(), getScopes());
     }
 
     @Override

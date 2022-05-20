@@ -17,6 +17,8 @@ package org.instancio;
 
 /**
  * A marker for selectors that can be grouped using {@link Select#all(GroupableSelector...)}.
+ *
+ * @since 1.3.0
  */
 public interface GroupableSelector extends TargetSelector {
 }

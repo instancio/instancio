@@ -39,6 +39,7 @@ import java.lang.reflect.Type;
  *
  * @param <T> type being supplied.<p>
  *            Required to be present, though not used directly.
+ * @since 1.0.1
  */
 public interface TypeToken<T> extends TypeTokenSupplier<T> {
 
@@ -46,6 +47,7 @@ public interface TypeToken<T> extends TypeTokenSupplier<T> {
      * Returns the type to be created.
      *
      * @return type to create
+     * @since 1.0.1
      */
     @Override
     default Type get() {

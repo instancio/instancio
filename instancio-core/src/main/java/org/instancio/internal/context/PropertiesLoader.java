@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.settings;
+package org.instancio.internal.context;
 
-import org.instancio.exception.InstancioException;
-import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,17 +22,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PropertiesLoader {
+final class PropertiesLoader {
     private static final Logger LOG = LoggerFactory.getLogger(PropertiesLoader.class);
+    private static final String DEFAULT_PROPERTIES_FILE = "instancio.properties";
 
-    public Properties load(final String file) {
-        Verify.notNull(file, "Properties file must not be null");
+    private PropertiesLoader() {
+        // non-instantiable
+    }
 
+    static Properties loadDefaultPropertiesFile() {
+        return load(DEFAULT_PROPERTIES_FILE);
+    }
+
+    static Properties load(final String file) {
         final Properties properties = new Properties();
         try (InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
             if (inStream == null) {
-                throw new InstancioException(String.format("Unable to load properties from '%s'", file));
+                LOG.info("No '{}' found on classpath", file);
+                return properties;
             }
+            LOG.info("Found '{}' on classpath", file);
             properties.load(inStream);
             return properties;
         } catch (IOException ex) {

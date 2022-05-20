@@ -22,7 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetType;
+import org.instancio.internal.selectors.SelectorTargetKind;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
         return this;
     }
 
-    public SelectorAssert hasSelectorType(final SelectorTargetType expected) {
+    public SelectorAssert hasSelectorType(final SelectorTargetKind expected) {
         assertThat(getAs(SelectorImpl.class).selectorType()).isEqualTo(expected);
         return this;
     }
@@ -90,7 +90,7 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     }
 
     public SelectorAssert isClassSelector() {
-        hasSelectorType(SelectorTargetType.CLASS);
+        hasSelectorType(SelectorTargetKind.CLASS);
         return hasNullField();
     }
 

@@ -15,6 +15,9 @@
  */
 package org.instancio.internal.context;
 
+import org.instancio.GroupableSelector;
+import org.instancio.Select;
+import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.CollectionNode;
@@ -29,6 +32,7 @@ import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.util.ReflectionUtils;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -62,6 +66,10 @@ class SelectorMapTest {
             getNodeWithField(rootNode, RichPerson.class, "address1"), Phone.class, "number");
 
     private final SelectorMap<String> selectorMap = new SelectorMap<>();
+
+    private void put(final TargetSelector selector, final String value) {
+        selectorMap.put(cast(selector), value);
+    }
 
     @Test
     void getValues() {
@@ -196,13 +204,77 @@ class SelectorMapTest {
         return result;
     }
 
-    private void put(final TargetSelector selector, final String value) {
-        selectorMap.put(cast(selector), value);
+    @Nested
+    class ToStringTest {
+        @Test
+        void verifyEmptyMapToString() {
+            assertThat(selectorMap).hasToString("SelectorMap{}");
+        }
+
+        @Test
+        void verifyToString() {
+            put(Select.all(byte.class), "foo");
+            put(Select.field(Phone.class, "number"), "bar");
+
+            assertThat(selectorMap).hasToString(String.format("SelectorMap:{%n" +
+                    "Selector[(byte)]=foo%n" +
+                    "Selector[(Phone, \"number\")]=bar%n" +
+                    "}"));
+        }
+    }
+
+    @Nested
+    class UnusedKeysTest {
+        @Test
+        void emptyMap() {
+            assertThat(selectorMap.getUnusedKeys()).isEmpty();
+        }
+
+        @Test
+        void unusedUsingGetValue() {
+            final Selector nameSelector = field(Person.class, "name");
+            final GroupableSelector addressOnePhoneSelector = allStrings().within(
+                    scope(RichPerson.class, "address1"),
+                    scope(Phone.class));
+
+            assertThat(selectorMap.getUnusedKeys()).isEmpty();
+
+            put(nameSelector, "foo");
+            put(addressOnePhoneSelector, "bar");
+
+            assertThat(selectorMap.getUnusedKeys()).hasSize(2);
+
+            // non-matching key
+            selectorMap.getValue(petNameNode);
+            assertThat(selectorMap.getUnusedKeys()).hasSize(2);
+
+            // get name
+            selectorMap.getValue(personNameNode);
+            assertThat(selectorMap.getUnusedKeys()).containsExactlyInAnyOrder(addressOnePhoneSelector);
+
+            // get address1...phone
+            selectorMap.getValue(richPersonListOfPhonesPhoneNumberFieldNode);
+            assertThat(selectorMap.getUnusedKeys()).isEmpty();
+        }
+
+        @Test
+        void unusedUsingGetValues() {
+            final Selector nameSelector1 = field(Person.class, "name");
+            final GroupableSelector nameSelector2 = field(Person.class, "name")
+                    .within(scope(Person.class));
+
+            put(nameSelector1, "foo");
+            put(nameSelector2, "bar");
+
+            assertThat(selectorMap.getUnusedKeys()).hasSize(2);
+
+            // matches all selectors
+            selectorMap.getValues(personNameNode);
+            assertThat(selectorMap.getUnusedKeys()).isEmpty();
+        }
     }
 
     private static SelectorImpl cast(final TargetSelector selector) {
         return (SelectorImpl) selector;
     }
-
-
 }

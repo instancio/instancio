@@ -22,16 +22,30 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
 @FeatureTag(Feature.NULLABLE)
 class NullableTest {
+
+    @Test
+    void nullableRootObject() {
+        final Set<String> results = new HashSet<>();
+        for (int i = 0; i < 100; i++) {
+            results.add(Instancio.of(String.class)
+                    .withNullable(allStrings())
+                    .create());
+        }
+        assertThat(results).containsNull();
+    }
 
     @Test
     void nullableGroup() {

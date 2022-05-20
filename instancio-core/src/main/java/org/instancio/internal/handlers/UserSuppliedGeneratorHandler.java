@@ -57,7 +57,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     }
 
     private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
-        final Optional<Generator<?>> generatorOpt = modelContext.getUserSuppliedGenerator(node);
+        final Optional<Generator<?>> generatorOpt = modelContext.getGenerator(node);
 
         if (generatorOpt.isPresent()) {
             final Generator<?> generator = generatorOpt.get();

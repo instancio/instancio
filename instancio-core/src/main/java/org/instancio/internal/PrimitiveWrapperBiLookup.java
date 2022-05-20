@@ -15,6 +15,8 @@
  */
 package org.instancio.internal;
 
+import org.instancio.exception.InstancioException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +48,13 @@ public final class PrimitiveWrapperBiLookup {
         return map;
     }
 
-    public static Optional<Class<?>> getEquivalent(final Class<?> primitiveOrWrapper) {
+    public static Optional<Class<?>> findEquivalent(final Class<?> primitiveOrWrapper) {
         return Optional.ofNullable(CORE_TYPES.get(primitiveOrWrapper));
+    }
+
+    public static Class<?> getEquivalent(final Class<?> primitiveOrWrapper) {
+        return findEquivalent(primitiveOrWrapper).orElseThrow(
+                () -> new InstancioException("Neither primitive, nor wrapper: " + primitiveOrWrapper));
     }
 
     private PrimitiveWrapperBiLookup() {

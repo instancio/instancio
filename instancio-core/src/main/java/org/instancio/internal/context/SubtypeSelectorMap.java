@@ -19,7 +19,7 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetType;
+import org.instancio.internal.selectors.SelectorTargetKind;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -64,7 +64,7 @@ public class SubtypeSelectorMap {
     private void putAllSubtypeSelectors(final Map<TargetSelector, Class<?>> groups) {
         groups.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
             for (SelectorImpl selector : ((Flattener) targetSelector).flatten()) {
-                if (selector.selectorType() == SelectorTargetType.FIELD) {
+                if (selector.selectorType() == SelectorTargetKind.FIELD) {
                     final Field field = getField(selector.getTargetClass(), selector.getFieldName());
                     // TODO validate
                     fieldSubtypeMap.put(field, subtype);

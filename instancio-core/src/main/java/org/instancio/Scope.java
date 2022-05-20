@@ -17,6 +17,8 @@ package org.instancio;
 
 /**
  * A scope for narrowing down selector targets.
+ *
+ * @since 1.3.0
  */
 public interface Scope {
 }

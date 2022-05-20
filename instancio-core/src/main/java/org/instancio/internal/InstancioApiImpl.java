@@ -26,6 +26,7 @@ import org.instancio.generators.Generators;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.settings.Settings;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -50,37 +51,37 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
         this.modelContextBuilder = suppliedContext.toBuilder();
     }
 
-    protected void addTypeParameters(Class<?>... type) {
+    protected void addTypeParameters(final Class<?>... type) {
         modelContextBuilder.withRootTypeParameters(Arrays.asList(type));
     }
 
     @Override
-    public InstancioApi<T> ignore(TargetSelector selectorGroup) {
+    public InstancioApi<T> ignore(final TargetSelector selectorGroup) {
         modelContextBuilder.withIgnored(selectorGroup);
         return this;
     }
 
     @Override
-    public InstancioApi<T> withNullable(TargetSelector target) {
+    public InstancioApi<T> withNullable(final TargetSelector target) {
         modelContextBuilder.withNullable(target);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> supply(TargetSelector selectorGroup, Generator<V> generator) {
+    public <V> InstancioApi<T> supply(final TargetSelector selectorGroup, final Generator<V> generator) {
         ApiValidator.validateSupplierOrGenerator(generator);
         modelContextBuilder.withGenerator(selectorGroup, generator);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> set(TargetSelector selectorGroup, V value) {
+    public <V> InstancioApi<T> set(final TargetSelector selectorGroup, @Nullable final V value) {
         modelContextBuilder.withSupplier(selectorGroup, () -> value);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> supply(TargetSelector selectorGroup, Supplier<V> supplier) {
+    public <V> InstancioApi<T> supply(final TargetSelector selectorGroup, final Supplier<V> supplier) {
         ApiValidator.validateSupplierOrGenerator(supplier);
         modelContextBuilder.withSupplier(selectorGroup, supplier);
         return this;
@@ -100,7 +101,7 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> map(TargetSelector selectorGroup, Class<?> subtype) {
+    public InstancioApi<T> map(final TargetSelector selectorGroup, final Class<?> subtype) {
         modelContextBuilder.withSubtype(selectorGroup, subtype);
         return this;
     }

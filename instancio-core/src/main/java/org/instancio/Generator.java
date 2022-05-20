@@ -32,6 +32,7 @@ import java.util.Optional;
  * A generator of values of a specific type.
  *
  * @param <T> type to generate
+ * @since 1.0.1
  */
 @FunctionalInterface
 public interface Generator<T> extends GeneratorSpec<T> {
@@ -117,7 +118,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
         final Class<?> typeArg = TypeUtils.getGeneratorTypeArgument(getClass());
         return typeArg == null // couldn't determine type arg ('this' is probably a lambda)
                 || typeArg.isAssignableFrom(type)
-                || PrimitiveWrapperBiLookup.getEquivalent(typeArg)
+                || PrimitiveWrapperBiLookup.findEquivalent(typeArg)
                 .filter(type::isAssignableFrom)
                 .isPresent();
     }

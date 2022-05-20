@@ -15,26 +15,29 @@
  */
 package org.instancio;
 
-import java.lang.reflect.Type;
-import java.util.function.Supplier;
-
 /**
- * A supplier that provides {@link Type} information.
+ * The mode is used to specify strictness level, either {@link #STRICT} or {@link #LENIENT},
+ * an idea borrowed from the Mockito library.
+ * <p>
+ * In strict mode, which is enabled by default, unused selectors will trigger an exception.
+ * This is done in order to keep tests concise and clean.
  *
- * @param <T> type being supplied
- * @since 1.0.1
+ * @since 1.3.3
  */
-// <T> is required to be present, even though not used directly here.
-@SuppressWarnings("unused")
-@FunctionalInterface
-public interface TypeTokenSupplier<T> extends Supplier<Type> {
+public enum Mode {
 
     /**
-     * Returns type information.
+     * Triggers an exception if at least one selector was not used.
+     * This mode is enabled by default.
      *
-     * @return type
-     * @since 1.0.1
+     * @since 1.3.3
      */
-    @Override
-    Type get();
+    STRICT,
+
+    /**
+     * No exception is triggered on unused selectors.
+     *
+     * @since 1.3.3
+     */
+    LENIENT
 }

@@ -28,6 +28,7 @@ import java.util.stream.Stream;
  * Instancio API for generating instances of a class populated with random data.
  *
  * @param <T> type being created
+ * @since 1.0.1
  */
 public interface InstancioApi<T> {
 
@@ -58,6 +59,7 @@ public interface InstancioApi<T> {
      * }</pre>
      *
      * @return an infinite stream of distinct, populated objects
+     * @since 1.1.9
      */
     Stream<T> stream();
 
@@ -230,6 +232,7 @@ public interface InstancioApi<T> {
      * @param callback to invoke after object has been populated
      * @param <V>      type of object handled by the callback
      * @return API builder reference
+     * @since 1.0.4
      */
     <V> InstancioApi<T> onComplete(TargetSelector selector, OnCompleteCallback<V> callback);
 

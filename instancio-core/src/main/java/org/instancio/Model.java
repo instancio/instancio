@@ -38,6 +38,7 @@ package org.instancio;
  * this interface does not contain any methods.
  *
  * @param <T> type to be created by this model
+ * @since 1.0.1
  */
 @SuppressWarnings("unused")
 public interface Model<T> {

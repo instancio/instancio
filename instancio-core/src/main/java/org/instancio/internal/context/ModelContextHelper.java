@@ -57,7 +57,7 @@ final class ModelContextHelper {
                     final SelectorImpl source = (SelectorImpl) groupMember;
                     final Class<?> targetClass = defaultIfNull(source.getTargetClass(), rootClass);
                     final SelectorImpl selectorWithClass = new SelectorImpl(
-                            source.selectorType(), targetClass, source.getFieldName(), source.getScopes());
+                            source.selectorType(), targetClass, source.getFieldName(), source.getScopes(), source.getParent());
 
                     results.add(selectorWithClass);
                 } else if (groupMember instanceof PrimitiveAndWrapperSelectorImpl) {
@@ -72,7 +72,7 @@ final class ModelContextHelper {
         } else if (selector instanceof SelectorImpl) {
             final SelectorImpl source = (SelectorImpl) selector;
             return source.getTargetClass() == null
-                    ? new SelectorImpl(source.selectorType(), rootClass, source.getFieldName(), source.getScopes())
+                    ? new SelectorImpl(source.selectorType(), rootClass, source.getFieldName(), source.getScopes(), source.getParent())
                     : source;
 
         } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {

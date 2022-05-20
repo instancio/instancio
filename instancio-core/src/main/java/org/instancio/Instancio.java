@@ -120,6 +120,8 @@ import java.util.stream.Stream;
  * }</pre>
  * <p>
  * This will not generate a warning, though the syntax is slightly more awkward.
+ *
+ * @since 1.0.1
  */
 public final class Instancio {
 
@@ -133,6 +135,7 @@ public final class Instancio {
      * @param klass to create
      * @param <T>   type
      * @return a fully-populated instance
+     * @since 1.0.1
      */
     public static <T> T create(final Class<T> klass) {
         return of(klass).create();
@@ -151,6 +154,7 @@ public final class Instancio {
      * @param klass to create
      * @param <T>   type
      * @return an infinite stream of distinct, fully populated instances
+     * @since 1.1.9
      */
     public static <T> Stream<T> stream(final Class<T> klass) {
         return of(klass).stream();
@@ -183,6 +187,7 @@ public final class Instancio {
      * @param typeToken containing type to create
      * @param <T>       type
      * @return an infinite stream of distinct, fully populated instances
+     * @since 1.1.9
      */
     public static <T> Stream<T> stream(final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).stream();

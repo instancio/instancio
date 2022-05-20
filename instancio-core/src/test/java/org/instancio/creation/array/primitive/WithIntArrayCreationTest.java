@@ -17,9 +17,9 @@ package org.instancio.creation.array.primitive;
 
 import org.instancio.test.support.pojo.arrays.primitive.WithIntArray;
 import org.instancio.test.support.tags.NonDeterministicTag;
+import org.instancio.test.support.util.ArrayUtils;
 import org.instancio.testsupport.templates.ArrayCreationTestTemplate;
 import org.instancio.testsupport.templates.NumberOfExecutions;
-import org.instancio.testsupport.utils.ArrayUtils;
 
 public class WithIntArrayCreationTest extends ArrayCreationTestTemplate<WithIntArray> {
 

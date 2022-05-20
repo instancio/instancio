@@ -16,7 +16,7 @@
 package org.instancio.creation.array.primitive;
 
 import org.instancio.Instancio;
-import org.instancio.testsupport.utils.ArrayUtils;
+import org.instancio.test.support.util.ArrayUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;

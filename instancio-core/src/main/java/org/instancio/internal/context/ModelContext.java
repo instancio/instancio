@@ -16,6 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.Generator;
+import org.instancio.Mode;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
 import org.instancio.TargetSelector;
@@ -27,7 +28,7 @@ import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.PropertiesLoader;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.util.ObjectUtils;
 import org.instancio.util.SeedUtil;
@@ -41,8 +42,8 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,6 +56,8 @@ import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class ModelContext<T> {
+    private static final Settings PROPERTIES_FILE_SETTINGS = Settings.from(PropertiesLoader.loadDefaultPropertiesFile()).lock();
+
     private final Type rootType;
     private final Class<T> rootClass;
     private final List<Class<?>> rootTypeParameters;
@@ -79,7 +82,7 @@ public final class ModelContext<T> {
         seed = builder.seed;
         random = resolveRandom(builder.seed);
         settings = Settings.defaults()
-                .merge(Settings.from(new PropertiesLoader().load("instancio.properties")))
+                .merge(PROPERTIES_FILE_SETTINGS)
                 .merge(ThreadLocalSettings.getInstance().get())
                 .merge(builder.settings)
                 .lock();
@@ -94,6 +97,19 @@ public final class ModelContext<T> {
                 builder.generatorSpecSelectors);
 
         subtypeSelectorMap.putAll(generatorSelectorMap.getClassSubtypeMap());
+    }
+
+    public void reportUnusedSelectorWarnings() {
+        if (settings.get(Keys.MODE) == Mode.STRICT) {
+            final UnusedSelectorReporter reporter = UnusedSelectorReporter.builder()
+                    .ignored(ignoredSelectorMap.getSelectorMap().getUnusedKeys())
+                    .nullable(nullableSelectorMap.getSelectorMap().getUnusedKeys())
+                    .generators(generatorSelectorMap.getSelectorMap().getUnusedKeys())
+                    .callbacks(onCompleteCallbackSelectorMap.getSelectorMap().getUnusedKeys())
+                    .build();
+
+            reporter.report();
+        }
     }
 
     private static Random resolveRandom(@Nullable final Integer userSuppliedSeed) {
@@ -122,11 +138,11 @@ public final class ModelContext<T> {
         return nullableSelectorMap.isTrue(node);
     }
 
-    public Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
+    public Optional<Generator<?>> getGenerator(final Node node) {
         return generatorSelectorMap.getGenerator(node);
     }
 
-    public List<OnCompleteCallback<?>> getUserSuppliedCallbacks(final Node node) {
+    public List<OnCompleteCallback<?>> getCallbacks(final Node node) {
         return onCompleteCallbackSelectorMap.getCallbacks(node);
     }
 
@@ -177,8 +193,8 @@ public final class ModelContext<T> {
         private final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, Generator<?>> generatorSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks = new LinkedHashMap<>();
-        private final Set<TargetSelector> ignoredTargets = new HashSet<>();
-        private final Set<TargetSelector> nullableTargets = new HashSet<>();
+        private final Set<TargetSelector> ignoredTargets = new LinkedHashSet<>();
+        private final Set<TargetSelector> nullableTargets = new LinkedHashSet<>();
         private Settings settings;
         private Integer seed;
 

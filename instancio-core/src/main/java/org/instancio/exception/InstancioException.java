@@ -17,6 +17,8 @@ package org.instancio.exception;
 
 /**
  * Exception generated as a result of an internal error.
+ *
+ * @since 1.0.1
  */
 public class InstancioException extends RuntimeException {
 

@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 
@@ -39,13 +41,19 @@ class InstancioEngine {
     private final ModelContext<?> context;
     private final Node rootNode;
     private final CallbackHandler callbackHandler;
+    private final List<GenerationListener> listeners = new ArrayList<>();
 
     InstancioEngine(InternalModel<?> model) {
-        this.context = model.getModelContext();
-        this.rootNode = model.getRootNode();
-        this.callbackHandler = new CallbackHandler(context);
-        this.generatorFacade = new GeneratorFacade(context);
-        generatorFacade.addGenerationListener(callbackHandler);
+        context = model.getModelContext();
+        rootNode = model.getRootNode();
+        callbackHandler = new CallbackHandler(context);
+        generatorFacade = new GeneratorFacade(context);
+        listeners.add(callbackHandler);
+        listeners.add(new GeneratedNullValueListener(context));
+    }
+
+    void notifyListeners(final Node node, @Nullable final Object generatedObject) {
+        listeners.forEach(it -> it.objectCreated(node, generatedObject));
     }
 
     @SuppressWarnings("unchecked")
@@ -53,11 +61,12 @@ class InstancioEngine {
         final Optional<GeneratorResult> optResult = createObject(rootNode, /* owner = */ null);
         final T rootResult = (T) optResult.map(GeneratorResult::getValue).orElse(null);
         callbackHandler.invokeCallbacks();
+        context.reportUnusedSelectorWarnings();
         return rootResult;
     }
 
     Optional<GeneratorResult> createObject(final Node node, @Nullable final Object owner) {
-        final Optional<GeneratorResult> optResult = generatorFacade.generateNodeValue(node, owner);
+        final Optional<GeneratorResult> optResult = generateValue(node, owner);
         if (!optResult.isPresent()) {
             return Optional.empty();
         }
@@ -76,9 +85,14 @@ class InstancioEngine {
         LOG.trace("Creating: {}", createItem);
 
         final Node node = createItem.getNode();
-        final Optional<GeneratorResult> result = generatorFacade.generateNodeValue(node, createItem.getOwner());
-        if (result.isPresent()) {
-            node.accept(new PopulatingNodeVisitor(createItem.getOwner(), result.get(), context, queue, this));
-        }
+        final Optional<GeneratorResult> result = generateValue(node, createItem.getOwner());
+        result.ifPresent(generatorResult -> node.accept(
+                new PopulatingNodeVisitor(createItem.getOwner(), generatorResult, context, queue, this)));
+    }
+
+    private Optional<GeneratorResult> generateValue(final Node node, @Nullable final Object owner) {
+        final Optional<GeneratorResult> generatorResult = generatorFacade.generateNodeValue(node, owner);
+        notifyListeners(node, generatorResult.map(GeneratorResult::getValue).orElse(null));
+        return generatorResult;
     }
 }

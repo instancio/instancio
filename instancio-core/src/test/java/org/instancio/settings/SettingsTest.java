@@ -15,6 +15,7 @@
  */
 package org.instancio.settings;
 
+import org.instancio.Mode;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.util.Constants;
 import org.junit.jupiter.api.Test;
@@ -93,6 +94,17 @@ class SettingsTest {
     @Test
     void getReturnsNullIfKeyHasNoValue() {
         assertThat((Byte) Settings.create().get(Keys.BYTE_MIN)).isNull();
+    }
+
+    @Test
+    void strictModeIsEnabledByDefault() {
+        assertThat((Mode) Settings.defaults().get(Keys.MODE)).isEqualTo(Mode.STRICT);
+    }
+
+    @Test
+    void getSetEnum() {
+        final Settings settings = Settings.create().set(Keys.MODE, Mode.LENIENT);
+        assertThat((Mode) settings.get(Keys.MODE)).isEqualTo(Mode.LENIENT);
     }
 
     @Test

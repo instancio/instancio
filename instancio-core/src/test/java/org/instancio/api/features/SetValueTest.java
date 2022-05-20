@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 
-@FeatureTag(Feature.SET_VALUE)
+@FeatureTag(Feature.SET)
 class SetValueTest {
 
     @Test

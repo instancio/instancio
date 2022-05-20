@@ -16,7 +16,10 @@
 package org.instancio.test.features.oncomplete;
 
 import org.instancio.Instancio;
+import org.instancio.Mode;
 import org.instancio.TypeToken;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -78,6 +81,7 @@ class OnCompleteTest {
     @DisplayName("Ignore has higher precedence than other methods")
     void setAndOnCompleteWithIgnore() {
         final StringHolder result = Instancio.of(StringHolder.class)
+                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
                 .ignore(allStrings())
                 .set(allStrings(), "foo")
                 .onComplete(allStrings(), (String s) -> callbacksCount.incrementAndGet())

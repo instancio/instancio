@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.selectors;
+package org.instancio.exception;
+
+import org.instancio.util.Sonar;
 
 /**
- * Represents what is being targeted, a field or a class.
+ * Exception triggered as a result of unused selectors.
+ *
+ * @since 1.3.3
  */
-public enum SelectorTargetType {
+@SuppressWarnings(Sonar.NUMBER_OF_PARENTS)
+public class UnusedSelectorException extends InstancioApiException {
 
-    /**
-     * Class target.
-     */
-    CLASS,
-
-    /**
-     * Field target.
-     */
-    FIELD
+    public UnusedSelectorException(String message) {
+        super(message);
+    }
 }
