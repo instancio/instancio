@@ -55,7 +55,14 @@ class PrimitiveAndWrapperSelectorImplTest {
 
     @Test
     void verifyToString() {
-        assertThat(Select.allInts()).hasToString("PrimitiveAndWrapperSelector[Selector[(int)], Selector[(Integer)]]");
+        assertThat(Select.allChars()).hasToString("allChars()");
+        assertThat(Select.allBooleans()).hasToString("allBooleans()");
+        assertThat(Select.allBytes()).hasToString("allBytes()");
+        assertThat(Select.allShorts()).hasToString("allShorts()");
+        assertThat(Select.allInts()).hasToString("allInts()");
+        assertThat(Select.allLongs()).hasToString("allLongs()");
+        assertThat(Select.allFloats()).hasToString("allFloats()");
+        assertThat(Select.allDoubles()).hasToString("allDoubles()");
     }
 
     @Test

@@ -35,12 +35,16 @@ public class UnusedSelectorsAssert extends StringAssert {
     }
 
     public UnusedSelectorsAssert hasUnusedSelectorCount(final int expectedCount) {
-        final int actualCount = StringUtils.countMatches(actual, "Selector[");
+        final int actualCount = reportedSelectorsCount();
         assertThat(actualCount)
                 .as("Expected %s selectors, but found %s. Actual message:%n%s",
                         expectedCount, actualCount, actual)
                 .isEqualTo(expectedCount);
         return this;
+    }
+
+    private int reportedSelectorsCount() {
+        return StringUtils.countMatches(actual, "all(") + StringUtils.countMatches(actual, "field(");
     }
 
     public UnusedSelectorsAssert containsUnusedSelector(final Class<?> targetClass, final String field) {
@@ -87,12 +91,11 @@ public class UnusedSelectorsAssert extends StringAssert {
     }
 
     private static String format(final Class<?> targetClass) {
-        // NOTE: unterminated '[' since we're not asserting scope(s)
-        return String.format("Selector[(%s)", targetClass.getSimpleName());
+        return String.format("all(%s)", targetClass.getSimpleName());
     }
 
     private static String format(final Class<?> targetClass, final String field) {
-        return String.format("Selector[(%s, \"%s\")]", targetClass.getSimpleName(), field);
+        return String.format("field(%s, \"%s\")", targetClass.getSimpleName(), field);
     }
 
     public enum ApiMethod {
@@ -112,7 +115,7 @@ public class UnusedSelectorsAssert extends StringAssert {
         }
 
         String getHeading() {
-            return String.format(" -> %s", description);
+            return String.format(" -> Unused selectors in %s", description);
         }
     }
 }

@@ -15,6 +15,9 @@
  */
 package org.instancio.util;
 
+import org.instancio.Scope;
+import org.instancio.internal.selectors.ScopeImpl;
+
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +27,15 @@ import static java.util.stream.Collectors.joining;
 public final class Format {
     private Format() {
         // non-instantiable
+    }
+
+    public static String scopes(final List<Scope> scopes) {
+        return scopes.stream()
+                .map(ScopeImpl.class::cast)
+                .map(s -> s.getField() == null
+                        ? String.format("scope(%s)", s.getTargetClass().getSimpleName())
+                        : String.format("scope(%s, \"%s\")", s.getTargetClass().getSimpleName(), s.getField().getName()))
+                .collect(joining(", "));
     }
 
     public static String getTypeVariablesCsv(final Class<?> klass) {

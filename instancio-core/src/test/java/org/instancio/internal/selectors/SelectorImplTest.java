@@ -80,21 +80,21 @@ class SelectorImplTest {
     @Test
     void verifyToString() {
         assertThat(Select.field("foo"))
-                .hasToString("Selector[(\"foo\")]");
+                .hasToString("field(\"foo\")");
 
         assertThat(Select.all(Person.class))
-                .hasToString("Selector[(Person)]");
+                .hasToString("all(Person)");
 
         assertThat(Select.field(Person.class, "name"))
-                .hasToString("Selector[(Person, \"name\")]");
+                .hasToString("field(Person, \"name\")");
 
         assertThat(Select.field(Phone.class, "number").within(scope(Address.class)))
-                .hasToString("Selector[(Phone, \"number\"), scope(Address)]");
+                .hasToString("field(Phone, \"number\"), scope(Address)");
 
         assertThat(Select.field(Phone.class, "number").within(
                 scope(Person.class, "address"),
                 scope(Address.class)))
                 .hasToString(
-                        "Selector[(Phone, \"number\"), scope(Person, \"address\"), scope(Address)]");
+                        "field(Phone, \"number\"), scope(Person, \"address\"), scope(Address)");
     }
 }
