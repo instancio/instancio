@@ -56,10 +56,10 @@ final class UnusedSelectorReporter {
         append(callbacks, sb, "onComplete()");
 
         sb.append(NL)
-                .append("This error aims to highlight potential problems and help maintain clean test code:").append(NL).append(NL)
+                .append("This error aims to highlight potential problems and help maintain clean test code:").append(NL)
                 .append("- You might be selecting a field or class that does not exist within this object.").append(NL)
                 .append("- The target or its parent might be ignored using the ignore() method.").append(NL).append(NL)
-                .append("To suppress this error, use lenient mode.").append(NL)
+                .append("This error can be suppressed by switching to lenient mode.").append(NL)
                 .append("For more information see: https://www.instancio.org/user-guide/").append(NL);
 
         throw new UnusedSelectorException(sb.toString());
@@ -72,7 +72,7 @@ final class UnusedSelectorReporter {
 
         if (!selectors.isEmpty()) {
             sb.append(NL)
-                    .append(" -> ").append(apiMethodName)
+                    .append(" -> Unused selectors in ").append(apiMethodName).append(':')
                     .append(NL)
                     .append(formatSelectors(selectors))
                     .append(NL);
@@ -86,6 +86,8 @@ final class UnusedSelectorReporter {
     private static String formatSelectors(final Set<? super TargetSelector> selectors) {
         int[] count = {1};
         return selectors.stream()
+                .map(Object::toString)
+                .filter(it -> !"".equals(it))
                 .map(it -> String.format(" %s: %s", count[0]++, it))
                 .collect(joining(NL));
     }

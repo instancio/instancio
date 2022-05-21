@@ -217,8 +217,8 @@ class SelectorMapTest {
             put(Select.field(Phone.class, "number"), "bar");
 
             assertThat(selectorMap).hasToString(String.format("SelectorMap:{%n" +
-                    "Selector[(byte)]=foo%n" +
-                    "Selector[(Phone, \"number\")]=bar%n" +
+                    "all(byte)=foo%n" +
+                    "field(Phone, \"number\")=bar%n" +
                     "}"));
         }
     }

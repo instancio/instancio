@@ -52,6 +52,13 @@
             <property name="reportLevel" value="19"/>
         </properties>
     </rule>
+    <rule ref="category/java/design.xml/CyclomaticComplexity">
+        <properties>
+            <property name="classReportLevel" value="80"/>
+            <property name="methodReportLevel" value="12"/>
+        </properties>
+    </rule>
+
     <rule ref="category/java/design.xml/DataClass">
         <priority>5</priority>
     </rule>

@@ -22,6 +22,8 @@ import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
@@ -35,8 +37,9 @@ import java.util.Queue;
  * false positive "unused selector" errors in strict mode.
  */
 class GeneratedNullValueListener implements GenerationListener {
+    private static final Logger LOG = LoggerFactory.getLogger(GeneratedNullValueListener.class);
+    private static final int CYCLIC_NODE_LOOP_LIMIT = 50_000;
 
-    private static final int CYCLIC_NODE_LOOP_LIMIT = 500;
     private final Map<Node, Boolean> seen = new IdentityHashMap<>();
     private final ModelContext<?> context;
     private final boolean isLenientMode;
@@ -62,7 +65,8 @@ class GeneratedNullValueListener implements GenerationListener {
         final Queue<Node> queue = new ArrayDeque<>();
         queue.add(node);
 
-        for (int i = 0; i < CYCLIC_NODE_LOOP_LIMIT && !queue.isEmpty(); i++) {
+        int i = 0;
+        for (; i < CYCLIC_NODE_LOOP_LIMIT && !queue.isEmpty(); i++) {
             final Node current = queue.poll();
 
             if (seen.putIfAbsent(current, true) != null) {
@@ -82,6 +86,11 @@ class GeneratedNullValueListener implements GenerationListener {
                 queue.add(((MapNode) current).getKeyNode());
                 queue.add(((MapNode) current).getValueNode());
             }
+        }
+
+        if (i == CYCLIC_NODE_LOOP_LIMIT) {
+            LOG.debug("Reached iteration limit of {} marking selectors as 'used'. " +
+                    "This may results in a false positive 'unused selector' warning.", CYCLIC_NODE_LOOP_LIMIT);
         }
     }
 }

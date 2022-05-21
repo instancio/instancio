@@ -73,10 +73,10 @@ public final class SelectorGroupImpl implements SelectorGroup, Flattener {
     @Override
     public String toString() {
         if (selectors.isEmpty()) {
-            return "SelectorGroup[empty]";
+            return "all()";
         }
-        return String.format("SelectorGroup[%n%s%n]", selectors.stream()
+        return String.format("all(%n%s%n)", selectors.stream()
                 .map(it -> "\t" + it)
-                .collect(joining(System.lineSeparator())));
+                .collect(joining("," + System.lineSeparator())));
     }
 }

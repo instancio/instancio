@@ -18,13 +18,13 @@ package org.instancio.internal.selectors;
 import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.Selector;
+import org.instancio.util.Format;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public final class SelectorImpl implements Selector, GroupableSelector, Flattener {
 
@@ -126,31 +126,31 @@ public final class SelectorImpl implements Selector, GroupableSelector, Flattene
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Selector[(");
+        final StringBuilder sb = new StringBuilder();
 
-        if (targetClass != null) {
-            sb.append(targetClass.getSimpleName());
-        }
-        if (fieldName != null) {
-            if (targetClass != null) {
-                sb.append(", ");
+        if (getParent() instanceof PrimitiveAndWrapperSelectorImpl) {
+            if (targetClass.isPrimitive()) {
+                sb.append(getParent());
             }
-            sb.append('"').append(fieldName).append('"');
-        }
-        sb.append(')');
+        } else {
+            sb.append(selectorTargetKind == SelectorTargetKind.CLASS ? "all(" : "field(");
 
-        if (!scopes.isEmpty()) {
-            sb.append(", ").append(scopesToString());
+            if (targetClass != null) {
+                sb.append(targetClass.getSimpleName());
+            }
+            if (fieldName != null) {
+                if (targetClass != null) {
+                    sb.append(", ");
+                }
+                sb.append('"').append(fieldName).append('"');
+            }
+            sb.append(')');
+
+            if (!scopes.isEmpty()) {
+                sb.append(", ").append(Format.scopes(scopes));
+            }
         }
-        return sb.append(']').toString();
+        return sb.toString();
     }
 
-    private String scopesToString() {
-        return scopes.stream()
-                .map(ScopeImpl.class::cast)
-                .map(s -> s.getField() == null
-                        ? String.format("scope(%s)", s.getTargetClass().getSimpleName())
-                        : String.format("scope(%s, \"%s\")", s.getTargetClass().getSimpleName(), s.getField().getName()))
-                .collect(Collectors.joining(", "));
-    }
 }

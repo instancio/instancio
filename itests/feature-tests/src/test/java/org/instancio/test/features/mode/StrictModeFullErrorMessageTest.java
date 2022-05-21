@@ -62,22 +62,22 @@ class StrictModeFullErrorMessageTest {
                 .isExactlyInstanceOf(UnusedSelectorException.class)
                 .hasMessageContaining(String.format("Found unused selectors referenced in the following methods:%n" +
                         "%n" +
-                        " -> ignore()%n" +
-                        " 1: Selector[(YearMonth)]%n" +
-                        " 2: Selector[(Bar, \"barValue\")]%n" +
+                        " -> Unused selectors in ignore():%n" +
+                        " 1: all(YearMonth)%n" +
+                        " 2: field(Bar, \"barValue\")%n" +
                         "%n" +
-                        " -> withNullable()%n" +
-                        " 1: Selector[(BigDecimal)]%n" +
-                        " 2: Selector[(Foo, \"fooValue\")]%n" +
+                        " -> Unused selectors in withNullable():%n" +
+                        " 1: all(BigDecimal)%n" +
+                        " 2: field(Foo, \"fooValue\")%n" +
                         "%n" +
-                        " -> generate(), set(), or supply()%n" +
-                        " 1: Selector[(StringHolder, \"value\")]%n" +
-                        " 2: Selector[(Year)]%n" +
-                        " 3: Selector[(Baz, \"bazValue\")]%n" +
+                        " -> Unused selectors in generate(), set(), or supply():%n" +
+                        " 1: field(StringHolder, \"value\")%n" +
+                        " 2: all(Year)%n" +
+                        " 3: field(Baz, \"bazValue\")%n" +
                         "%n" +
-                        " -> onComplete()%n" +
-                        " 1: Selector[(IntegerHolder, \"primitive\")]%n" +
-                        " 2: Selector[(ZonedDateTime)]"));
+                        " -> Unused selectors in onComplete():%n" +
+                        " 1: field(IntegerHolder, \"primitive\")%n" +
+                        " 2: all(ZonedDateTime)"));
     }
 
     private <V> V failIfCalled() {

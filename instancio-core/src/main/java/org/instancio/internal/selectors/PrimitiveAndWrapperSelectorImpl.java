@@ -18,13 +18,18 @@ package org.instancio.internal.selectors;
 import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.util.Format;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattener {
+
+    private static final Map<Class<?>, String> API_METHOD_NAMES = getApiMethodNames();
 
     private final SelectorImpl primitive;
     private final SelectorImpl wrapper;
@@ -73,6 +78,23 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
 
     @Override
     public String toString() {
-        return String.format("PrimitiveAndWrapperSelector[%s, %s]", primitive, wrapper);
+        String str = API_METHOD_NAMES.get(primitive.getTargetClass());
+        if (!primitive.getScopes().isEmpty()) {
+            str += ", " + Format.scopes(primitive.getScopes());
+        }
+        return str;
+    }
+
+    private static Map<Class<?>, String> getApiMethodNames() {
+        final Map<Class<?>, String> map = new HashMap<>();
+        map.put(boolean.class, "allBooleans()");
+        map.put(char.class, "allChars()");
+        map.put(byte.class, "allBytes()");
+        map.put(short.class, "allShorts()");
+        map.put(int.class, "allInts()");
+        map.put(long.class, "allLongs()");
+        map.put(float.class, "allFloats()");
+        map.put(double.class, "allDoubles()");
+        return Collections.unmodifiableMap(map);
     }
 }

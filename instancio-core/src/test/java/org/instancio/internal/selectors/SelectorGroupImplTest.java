@@ -62,17 +62,17 @@ class SelectorGroupImplTest {
 
     @Test
     void verifyToString() {
-        assertThat(new SelectorGroupImpl()).hasToString("SelectorGroup[empty]");
+        assertThat(new SelectorGroupImpl()).hasToString("all()");
 
         assertThat(Select.all(
                 Select.allBytes().within(Select.scope(Bar.class)),
                 Select.field(Foo.class, "fooValue"),
                 Select.all(String.class)
-        )).hasToString(String.format("SelectorGroup[%n" +
-                "\tPrimitiveAndWrapperSelector[Selector[(byte), scope(Bar)], Selector[(Byte), scope(Bar)]]%n" +
-                "\tSelector[(Foo, \"fooValue\")]%n" +
-                "\tSelector[(String)]%n" +
-                "]"));
+        )).hasToString(String.format("all(%n" +
+                "\tallBytes(), scope(Bar),%n" +
+                "\tfield(Foo, \"fooValue\"),%n" +
+                "\tall(String)%n" +
+                ")"));
     }
 
     @Test
