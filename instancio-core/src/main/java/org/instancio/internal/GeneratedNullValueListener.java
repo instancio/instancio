@@ -90,7 +90,7 @@ class GeneratedNullValueListener implements GenerationListener {
 
         if (i == CYCLIC_NODE_LOOP_LIMIT) {
             LOG.debug("Reached iteration limit of {} marking selectors as 'used'. " +
-                    "This may results in a false positive 'unused selector' warning.", CYCLIC_NODE_LOOP_LIMIT);
+                    "This may result in a false positive 'unused selector' warning.", CYCLIC_NODE_LOOP_LIMIT);
         }
     }
 }
