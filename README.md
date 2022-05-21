@@ -77,7 +77,7 @@ which allows reproducing data in case of a test failure, as well as a few other 
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>1.3.3</version>
+        <version>1.3.4</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -88,7 +88,7 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>1.3.3</version>
+        <version>1.3.4</version>
         <scope>test</scope>
     </dependency>
 ```
