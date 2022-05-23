@@ -50,12 +50,9 @@ public class CollectionNode extends Node {
         visitor.visitCollectionNode(this);
     }
 
-    /**
-     * Returns an empty list; children come from the {@link #getElementNode()}.
-     */
     @Override
     protected List<Node> collectChildren() {
-        return Collections.emptyList();
+        return Collections.singletonList(elementNode);
     }
 
     public Node getElementNode() {

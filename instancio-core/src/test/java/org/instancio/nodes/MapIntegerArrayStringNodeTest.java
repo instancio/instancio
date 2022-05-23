@@ -41,7 +41,7 @@ class MapIntegerArrayStringNodeTest extends NodeTestTemplate<MapIntegerArrayStri
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", String[].class)
                 .hasTypeMapWithSize(2)
-                .hasNoChildren()
+                .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
         assertNode(map.getKeyNode())
@@ -53,7 +53,7 @@ class MapIntegerArrayStringNodeTest extends NodeTestTemplate<MapIntegerArrayStri
                 .hasParent(map)
                 .hasNullField()
                 .hasTargetClass(String[].class)
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .getAs(ArrayNode.class);
 
         assertNode(array.getElementNode())

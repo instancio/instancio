@@ -107,7 +107,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasParent(outerElement)
                 .hasFieldName("midList")
                 .hasTargetClass(List.class)
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
         assertNode(midList.getElementNode())
@@ -126,7 +126,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasParent(midListElement)
                 .hasFieldName("innerList")
                 .hasTargetClass(List.class)
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
         assertNode(innerList.getElementNode())

@@ -31,7 +31,7 @@ public class ListLocalDateTimeNodeTest extends NodeTestTemplate<List<LocalDateTi
         final CollectionNode listNode = assertNode(rootNode)
                 .hasTargetClass(List.class)
                 .hasTypeMappedTo(List.class, "E", LocalDateTime.class)
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
         assertNode(listNode.getElementNode())

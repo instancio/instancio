@@ -45,7 +45,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
                 .hasFieldName(itemArrayField)
                 .hasTargetClass(Item[].class)
                 .hasGenericTypeName("org.instancio.test.support.pojo.generics.basic.Item<X>[]")
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .hasEmptyTypeMap()
                 .getAs(ArrayNode.class);
 
@@ -58,7 +58,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
                 .hasFieldName(itemArrayField)
                 .hasTargetClass(Item[].class)
                 .hasGenericTypeName("org.instancio.test.support.pojo.generics.basic.Item<Y>[]")
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .hasEmptyTypeMap()
                 .getAs(ArrayNode.class);
 

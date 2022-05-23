@@ -35,7 +35,7 @@ class MapWithoutTypesNodeTest extends NodeTestTemplate<MapWithoutTypes> {
 
         final MapNode map = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("map")
-                .hasNoChildren()
+                .hasChildrenOfSize(2)
                 .hasTargetClass(Map.class)
                 .getAs(MapNode.class);
 

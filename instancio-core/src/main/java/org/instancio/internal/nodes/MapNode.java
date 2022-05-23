@@ -20,6 +20,7 @@ import org.instancio.util.Verify;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,12 +55,9 @@ public class MapNode extends Node {
         visitor.visitMapNode(this);
     }
 
-    /**
-     * Children come from the {@link #getKeyNode()} and {@link #getValueNode()}.
-     */
     @Override
     protected List<Node> collectChildren() {
-        return Collections.emptyList();
+        return Arrays.asList(keyNode, valueNode);
     }
 
     public Node getKeyNode() {

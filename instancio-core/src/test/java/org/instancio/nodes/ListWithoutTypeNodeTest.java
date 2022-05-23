@@ -35,7 +35,7 @@ class ListWithoutTypeNodeTest extends NodeTestTemplate<ListWithoutType> {
 
         final CollectionNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("list")
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .hasTargetClass(List.class)
                 .getAs(CollectionNode.class);
 
