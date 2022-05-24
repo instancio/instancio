@@ -16,6 +16,7 @@
 package org.instancio.test.features.mode;
 
 import org.instancio.Instancio;
+import org.instancio.Model;
 import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.arrays.ArrayPerson;
 import org.instancio.test.support.pojo.collections.lists.ListPerson;
@@ -62,6 +63,19 @@ class StrictModeWithNullableValuesTest {
     private static final int CONTAINER_SIZE_WITH_NULLABLE = 1;
 
     private final Set<Object> results = new HashSet<>();
+
+    @Test
+    void overrideModelWithNullValue() {
+        final Model<Person> model = Instancio.of(Person.class)
+                .set(Address_.city, "foo")
+                .toModel();
+
+        final Person result = Instancio.of(model)
+                .set(Person_.address, null)
+                .create();
+
+        assertThat(result.getAddress()).isNull();
+    }
 
     @RepeatedTest(SAMPLE_SIZE)
     @DisplayName("Selectors whose field type is nullable")

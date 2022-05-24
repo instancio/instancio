@@ -60,7 +60,7 @@ class SelectorMap<V> {
     void put(final SelectorImpl selector, final V value) {
         final ScopelessSelector scopeless;
 
-        if (selector.selectorType() == SelectorTargetKind.FIELD) {
+        if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
             final Field field = ReflectionUtils.getField(selector.getTargetClass(), selector.getFieldName());
             scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
         } else {
@@ -109,7 +109,7 @@ class SelectorMap<V> {
         // match one, consider the equivalent to be matched as well.
         if (selector.getParent() instanceof PrimitiveAndWrapperSelectorImpl) {
             final SelectorImpl equivalent = new SelectorImpl(
-                    selector.selectorType(),
+                    selector.getSelectorTargetKind(),
                     PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass()),
                     selector.getFieldName(),
                     selector.getScopes(),

@@ -26,13 +26,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public final class SelectorImpl implements Selector, GroupableSelector, Flattener {
+public class SelectorImpl implements Selector, GroupableSelector, Flattener {
 
     private final SelectorTargetKind selectorTargetKind;
     private final Class<?> targetClass;
     private final String fieldName;
     private final List<Scope> scopes;
     private final Selector parent;
+    private final Throwable stackTraceHolder;
 
     /**
      * Constructor.
@@ -47,13 +48,24 @@ public final class SelectorImpl implements Selector, GroupableSelector, Flattene
                         @Nullable final Class<?> targetClass,
                         @Nullable final String fieldName,
                         @Nullable final List<Scope> scopes,
-                        @Nullable final Selector parent) {
+                        @Nullable final Selector parent,
+                        @Nullable final Throwable stackTraceHolder) {
 
         this.selectorTargetKind = selectorTargetKind;
         this.targetClass = targetClass;
         this.fieldName = fieldName;
         this.scopes = scopes == null ? Collections.emptyList() : Collections.unmodifiableList(scopes);
         this.parent = parent;
+        this.stackTraceHolder = stackTraceHolder;
+    }
+
+    public SelectorImpl(final SelectorTargetKind selectorTargetKind,
+                        @Nullable final Class<?> targetClass,
+                        @Nullable final String fieldName,
+                        @Nullable final List<Scope> scopes,
+                        @Nullable final Selector parent) {
+
+        this(selectorTargetKind, targetClass, fieldName, scopes, parent, new Throwable());
     }
 
     public SelectorImpl(final SelectorTargetKind selectorTargetKind,
@@ -63,9 +75,28 @@ public final class SelectorImpl implements Selector, GroupableSelector, Flattene
         this(selectorTargetKind, targetClass, fieldName, Collections.emptyList(), null);
     }
 
+    public Throwable getStackTraceHolder() {
+        return stackTraceHolder;
+    }
+
+    /**
+     * Returns the line where this selector was declared in client code.
+     * Used for reporting unused selectors.
+     *
+     * @return the first non-Instancio stacktrace element as a string.
+     */
+    public String getStackTraceLine() {
+        for (StackTraceElement element : stackTraceHolder.getStackTrace()) {
+            if (!element.getClassName().startsWith("org.instancio")) {
+                return element.toString();
+            }
+        }
+        return "<unknown location>";
+    }
+
     @Override
     public Selector within(final Scope... scopes) {
-        return new SelectorImpl(selectorTargetKind, targetClass, fieldName, Arrays.asList(scopes), parent);
+        return new SelectorImpl(selectorTargetKind, targetClass, fieldName, Arrays.asList(scopes), parent, stackTraceHolder);
     }
 
     @Override
@@ -86,7 +117,7 @@ public final class SelectorImpl implements Selector, GroupableSelector, Flattene
         return scopes;
     }
 
-    public SelectorTargetKind selectorType() {
+    public SelectorTargetKind getSelectorTargetKind() {
         return selectorTargetKind;
     }
 
@@ -101,27 +132,27 @@ public final class SelectorImpl implements Selector, GroupableSelector, Flattene
     /**
      * {@inheritDoc}
      * <p>
-     * Performs equality check with all fields except {@code parent}.
+     * Performs equality check with all fields except {@code parent} and {@code stackTraceHolder}.
      */
     @Override
-    public boolean equals(final Object o) {
+    public final boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof SelectorImpl)) return false;
         final SelectorImpl that = (SelectorImpl) o;
         return selectorTargetKind == that.selectorTargetKind
-                && Objects.equals(getTargetClass(), that.getTargetClass())
-                && Objects.equals(getFieldName(), that.getFieldName())
-                && Objects.equals(getScopes(), that.getScopes());
+                && Objects.equals(targetClass, that.targetClass)
+                && Objects.equals(fieldName, that.fieldName)
+                && Objects.equals(scopes, that.scopes);
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * Calculates hashcode using all fields except {@code parent}.
+     * Calculates hashcode using all fields except {@code parent} and {@code stackTraceHolder}.
      */
     @Override
-    public int hashCode() {
-        return Objects.hash(selectorTargetKind, getTargetClass(), getFieldName(), getScopes());
+    public final int hashCode() {
+        return Objects.hash(selectorTargetKind, targetClass, fieldName, scopes);
     }
 
     @Override
@@ -152,5 +183,4 @@ public final class SelectorImpl implements Selector, GroupableSelector, Flattene
         }
         return sb.toString();
     }
-
 }

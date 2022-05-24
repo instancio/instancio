@@ -43,7 +43,7 @@ class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", Types.LIST_STRING.get())
                 .hasTypeMapWithSize(2)
-                .hasNoChildren()
+                .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
         assertNode(map.getKeyNode())
@@ -56,7 +56,7 @@ class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString
                 .hasNullField()
                 .hasTargetClass(List.class)
                 .hasTypeMappedTo(List.class, "E", String.class)
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
         assertNode(list.getElementNode())

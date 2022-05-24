@@ -75,13 +75,13 @@ class InstancioEngine {
         node.accept(new PopulatingNodeVisitor(owner, rootResult, context, queue, this));
 
         while (!queue.isEmpty()) {
-            processNextItem(queue.poll());
+            process(queue.poll());
         }
 
         return optResult;
     }
 
-    private void processNextItem(final CreateItem createItem) {
+    private void process(final CreateItem createItem) {
         LOG.trace("Creating: {}", createItem);
 
         final Node node = createItem.getNode();

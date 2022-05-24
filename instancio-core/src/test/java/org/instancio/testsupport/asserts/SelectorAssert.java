@@ -66,7 +66,7 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     }
 
     public SelectorAssert hasSelectorType(final SelectorTargetKind expected) {
-        assertThat(getAs(SelectorImpl.class).selectorType()).isEqualTo(expected);
+        assertThat(getAs(SelectorImpl.class).getSelectorTargetKind()).isEqualTo(expected);
         return this;
     }
 

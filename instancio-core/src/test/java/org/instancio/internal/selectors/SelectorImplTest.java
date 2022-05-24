@@ -38,7 +38,7 @@ class SelectorImplTest {
     void verifyEqualsAndHashcode() {
         EqualsVerifier.forClass(SelectorImpl.class)
                 .suppress(Warning.NONFINAL_FIELDS)
-                .withIgnoredFields("parent")
+                .withIgnoredFields("parent", "stackTraceHolder")
                 .verify();
     }
 

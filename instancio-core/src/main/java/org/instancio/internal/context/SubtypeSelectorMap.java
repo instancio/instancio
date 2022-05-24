@@ -64,7 +64,7 @@ public class SubtypeSelectorMap {
     private void putAllSubtypeSelectors(final Map<TargetSelector, Class<?>> groups) {
         groups.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
             for (SelectorImpl selector : ((Flattener) targetSelector).flatten()) {
-                if (selector.selectorType() == SelectorTargetKind.FIELD) {
+                if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
                     final Field field = getField(selector.getTargetClass(), selector.getFieldName());
                     // TODO validate
                     fieldSubtypeMap.put(field, subtype);

@@ -42,7 +42,7 @@ class MapIntegerItemOfStringNodeTest extends NodeTestTemplate<MapIntegerItemOfSt
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", Types.ITEM_STRING.get())
                 .hasTypeMapWithSize(2)
-                .hasNoChildren()
+                .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
         assertNode(outerMap.getKeyNode())

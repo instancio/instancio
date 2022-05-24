@@ -35,7 +35,7 @@ class ListExtendsNumberNodeTest extends NodeTestTemplate<ListExtendsNumber> {
 
         final CollectionNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("list")
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .hasTargetClass(List.class)
                 .getAs(CollectionNode.class);
 

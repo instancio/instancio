@@ -50,7 +50,7 @@ public class NodeFactory {
     public Node createNode(final Class<?> klass,
                            @Nullable final Type genericType,
                            @Nullable final Field field,
-                           final Node parent) {
+                           @Nullable final Node parent) {
 
         final Node result;
 
@@ -64,10 +64,7 @@ public class NodeFactory {
             result = createClassNode(klass, genericType, field, parent);
         }
 
-        if (nodeContext.isUnvisited(result)) {
-            // mark as visited before invoking getChildren() to avoid stack overflow
-            nodeContext.visited(result);
-        }
+        nodeContext.visited(result);
 
         LOG.trace("Created node: {}", result);
         return result;
@@ -78,7 +75,7 @@ public class NodeFactory {
             final Class<?> arrayClass,
             @Nullable final Type arrayGenericType,
             @Nullable final Field field,
-            final Node parent) {
+            @Nullable final Node parent) {
 
         Class<?> compRawType = field != null && field.getType().getComponentType() != null
                 ? field.getType().getComponentType()
@@ -122,7 +119,7 @@ public class NodeFactory {
             final Class<?> klass,
             @Nullable final Type genericType,
             @Nullable final Field field,
-            final Node parent) {
+            @Nullable final Node parent) {
 
         if (genericType instanceof ParameterizedType) {
             final Type[] typeArgs = TypeUtils.getTypeArguments(genericType);
@@ -146,7 +143,7 @@ public class NodeFactory {
             final Class<?> klass,
             @Nullable final Type genericType,
             @Nullable final Field field,
-            final Node parent) {
+            @Nullable final Node parent) {
 
         if (genericType instanceof ParameterizedType) {
             final Type[] typeArgs = TypeUtils.getTypeArguments(genericType);
@@ -180,9 +177,9 @@ public class NodeFactory {
     @SuppressWarnings("PMD.CyclomaticComplexity")
     private Node createClassNode(
             final Class<?> targetClass,
-            final @Nullable Type genericType,
-            final @Nullable Field field,
-            Node parent) {
+            @Nullable final Type genericType,
+            @Nullable final Field field,
+            @Nullable final Node parent) {
 
         final Class<?> actualClass = getUserSuppliedSubtype(targetClass, field).orElse(targetClass);
 
@@ -232,7 +229,8 @@ public class NodeFactory {
     }
 
     // Note: field is null for collection/map/array element nodes as they are set via add()/put()/array[i]
-    private Node createElementNode(final Node parent, final Type elementType) {
+    private Node createElementNode(@Nullable final Node parent, final Type elementType) {
+
         final Type type = elementType instanceof TypeVariable
                 ? resolveTypeVariable(elementType, parent)
                 : elementType;
@@ -260,10 +258,10 @@ public class NodeFactory {
     }
 
 
-    private Type resolveTypeVariable(final Type typeVariable, final Node parent) {
+    private Type resolveTypeVariable(final Type typeVariable, @Nullable final Node parent) {
         Verify.isTrue(typeVariable instanceof TypeVariable, "Expected a type variable: %s", typeVariable.getClass());
 
-        Type mappedType = parent.getTypeMap().getOrDefault(typeVariable, typeVariable);
+        Type mappedType = parent == null ? typeVariable : parent.getTypeMap().getOrDefault(typeVariable, typeVariable);
         Node ancestor = parent;
 
         while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {

@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 class MetamodelSourceGenerator {
     private static final String PACKAGE_TEMPLATE = "package %s;";
     private static final String IMPORTS = String.format(""
-            + "import org.instancio.Select;%n"
+            + "import org.instancio.internal.selectors.MetamodelSelector;%n"
             + "import org.instancio.Selector;"
     );
     private static final String CLASS_BODY_TEMPLATE = "public class %s {%n%s%n}"; // class name, class body
-    private static final String FIELD_TEMPLATE = "\tpublic static final Selector %s = Select.field(%s, \"%s\");";
+    private static final String FIELD_TEMPLATE = "\tpublic static final Selector %s = MetamodelSelector.of(%s, \"%s\");";
     private static final String CLASS_TEMPLATE = "%s%n%n%s%n%n%s"; // package, imports, class body
 
     String getSource(final MetamodelClass modelClass) {

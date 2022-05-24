@@ -29,7 +29,7 @@ class ArrayLongNodeTest extends NodeTestTemplate<ArrayLong> {
     protected void verify(Node rootNode) {
         final ArrayNode primitiveArray = assertNode(NodeUtils.getChildNode(rootNode, "primitive"))
                 .hasTargetClass(long[].class)
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .getAs(ArrayNode.class);
 
         assertNode(primitiveArray.getElementNode())
@@ -38,7 +38,7 @@ class ArrayLongNodeTest extends NodeTestTemplate<ArrayLong> {
 
         final ArrayNode wrapperArray = assertNode(NodeUtils.getChildNode(rootNode, "wrapper"))
                 .hasTargetClass(Long[].class)
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .getAs(ArrayNode.class);
 
         assertNode(wrapperArray.getElementNode())

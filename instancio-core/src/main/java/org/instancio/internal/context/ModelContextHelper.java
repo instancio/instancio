@@ -20,6 +20,7 @@ import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.selectors.MetamodelSelector;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
@@ -48,16 +49,20 @@ final class ModelContextHelper {
     static TargetSelector applyRootClass(final TargetSelector selector, final Class<?> rootClass) {
         conditionalFailOnError(() -> Verify.notNull(selector, "null selector"));
 
-        if (selector instanceof SelectorGroupImpl) {
+        if (selector instanceof MetamodelSelector) {
+            return ((MetamodelSelector) selector).copyWithNewStackTraceHolder();
+        } else if (selector instanceof SelectorGroupImpl) {
             final List<Selector> selectors = ((SelectorGroupImpl) selector).getSelectors();
             final List<TargetSelector> results = new ArrayList<>();
 
             for (Selector groupMember : selectors) {
-                if (groupMember instanceof SelectorImpl) {
+                if (groupMember instanceof MetamodelSelector) {
+                    results.add(((MetamodelSelector) groupMember).copyWithNewStackTraceHolder());
+                } else if (groupMember instanceof SelectorImpl) {
                     final SelectorImpl source = (SelectorImpl) groupMember;
                     final Class<?> targetClass = defaultIfNull(source.getTargetClass(), rootClass);
                     final SelectorImpl selectorWithClass = new SelectorImpl(
-                            source.selectorType(), targetClass, source.getFieldName(), source.getScopes(), source.getParent());
+                            source.getSelectorTargetKind(), targetClass, source.getFieldName(), source.getScopes(), source.getParent(), source.getStackTraceHolder());
 
                     results.add(selectorWithClass);
                 } else if (groupMember instanceof PrimitiveAndWrapperSelectorImpl) {
@@ -72,7 +77,7 @@ final class ModelContextHelper {
         } else if (selector instanceof SelectorImpl) {
             final SelectorImpl source = (SelectorImpl) selector;
             return source.getTargetClass() == null
-                    ? new SelectorImpl(source.selectorType(), rootClass, source.getFieldName(), source.getScopes(), source.getParent())
+                    ? new SelectorImpl(source.getSelectorTargetKind(), rootClass, source.getFieldName(), source.getScopes(), source.getParent(), source.getStackTraceHolder())
                     : source;
 
         } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {

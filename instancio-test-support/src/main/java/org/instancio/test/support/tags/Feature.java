@@ -72,6 +72,7 @@ public enum Feature {
     MAP_FIELD_SELECTOR,
     MAP_CLASS_SELECTOR,
 
+    CYCLIC,
     INHERITANCE,
 
     MODE,

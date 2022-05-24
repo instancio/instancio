@@ -43,7 +43,7 @@ class TwoListsOfItemStringNodeTest extends NodeTestTemplate<TwoListsOfItemString
 
     private void assertListNode(Node rootNode, String listField) {
         final CollectionNode list = assertNode(NodeUtils.getChildNode(rootNode, listField))
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .hasGenericType(Types.LIST_ITEM_STRING.get())
                 .getAs(CollectionNode.class);
 

@@ -36,7 +36,7 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
 
         // List<List<String>>
         final CollectionNode outerListNode = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .hasFieldName("nested")
                 .hasGenericType(Types.LIST_LIST_STRING.get())
                 .getAs(CollectionNode.class);
@@ -48,7 +48,7 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
                 .hasTargetClass(List.class)
                 .hasNullField()
                 .hasGenericType(Types.LIST_STRING.get())
-                .hasNoChildren()
+                .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
         // String

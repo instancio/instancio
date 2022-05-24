@@ -17,7 +17,9 @@ package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
+import org.instancio.internal.selectors.SelectorImpl;
 
+import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
@@ -86,9 +88,12 @@ final class UnusedSelectorReporter {
     private static String formatSelectors(final Set<? super TargetSelector> selectors) {
         int[] count = {1};
         return selectors.stream()
-                .map(Object::toString)
-                .filter(it -> !"".equals(it))
-                .map(it -> String.format(" %s: %s", count[0]++, it))
+                .map(SelectorImpl.class::cast)
+                .map(it -> {
+                    final String str = it.toString();
+                    return "".equals(str) ? null : String.format(" %s: %s%n    at %s", count[0]++, str, it.getStackTraceLine());
+                })
+                .filter(Objects::nonNull)
                 .collect(joining(NL));
     }
 

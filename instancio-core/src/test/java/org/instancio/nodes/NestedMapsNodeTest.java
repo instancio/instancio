@@ -45,7 +45,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
                 .hasTypeMappedTo(Map.class, "K", Long.class)
                 .hasTypeMappedTo(Map.class, "V", Types.MAP_STRING_BOOLEAN.get())
                 .hasTypeMapWithSize(2)
-                .hasNoChildren()
+                .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
         assertNestedMap(outerMap);
@@ -62,7 +62,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
                 .hasTypeMappedTo(Map.class, "K", "OKEY")
                 .hasTypeMappedTo(Map.class, "V", "java.util.Map<IKEY, java.lang.Boolean>")
                 .hasTypeMapWithSize(2)
-                .hasNoChildren()
+                .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
         assertNestedMap(outerMap);
@@ -79,7 +79,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
                 .hasParent(outerMap)
                 .hasNullField()
                 .hasTargetClass(Map.class)
-                .hasNoChildren()
+                .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
         assertNode(innerMapNode.getKeyNode())

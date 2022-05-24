@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@ParametersAreNonnullByDefault
-package org.instancio.processor;
+/**
+ * This package contains tests verifying stacktrace locations of unused selectors.
+ * Due to the way stacktraces are filtered, this needs to be tested from
+ * a base package other than 'org.instancio'.
+ */
+package org.other.test.features.mode;
 
-import javax.annotation.ParametersAreNonnullByDefault;
