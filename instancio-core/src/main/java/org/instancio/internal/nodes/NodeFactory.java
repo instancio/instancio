@@ -261,7 +261,7 @@ public class NodeFactory {
     private Type resolveTypeVariable(final Type typeVariable, @Nullable final Node parent) {
         Verify.isTrue(typeVariable instanceof TypeVariable, "Expected a type variable: %s", typeVariable.getClass());
 
-        Type mappedType = parent.getTypeMap().getOrDefault(typeVariable, typeVariable);
+        Type mappedType = parent == null ? typeVariable : parent.getTypeMap().getOrDefault(typeVariable, typeVariable);
         Node ancestor = parent;
 
         while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {

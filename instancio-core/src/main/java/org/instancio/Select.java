@@ -75,7 +75,7 @@ public final class Select {
      */
     public static Selector field(final Class<?> declaringClass, final String fieldName) {
         //noinspection ConstantConditions
-        final String className = declaringClass == null ? null : declaringClass.getCanonicalName();
+        final String className = declaringClass == null ? null : declaringClass.getCanonicalName(); // NOSONAR
         ApiValidator.validateField(declaringClass, fieldName,
                 String.format("Invalid field selector: (%s, %s)", className, fieldName));
 
@@ -199,7 +199,7 @@ public final class Select {
      */
     public static Scope scope(final Class<?> targetClass, final String fieldName) {
         //noinspection ConstantConditions
-        final String className = targetClass == null ? null : targetClass.getCanonicalName();
+        final String className = targetClass == null ? null : targetClass.getCanonicalName(); // NOSONAR
         ApiValidator.validateField(targetClass, fieldName,
                 String.format("Invalid scope: (%s, %s)", className, fieldName));
 

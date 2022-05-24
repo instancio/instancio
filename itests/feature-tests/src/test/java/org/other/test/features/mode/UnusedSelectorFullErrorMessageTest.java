@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.mode;
+package org.other.test.features.mode;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
@@ -39,8 +39,8 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@FeatureTag({Feature.MODE, Feature.VALIDATION})
-class StrictModeFullErrorMessageTest {
+@FeatureTag({Feature.MODE, Feature.SELECTOR, Feature.VALIDATION})
+class UnusedSelectorFullErrorMessageTest {
 
     /**
      * Complete error message for reference.
@@ -64,20 +64,30 @@ class StrictModeFullErrorMessageTest {
                         "%n" +
                         " -> Unused selectors in ignore():%n" +
                         " 1: all(YearMonth)%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:51)%n" +
                         " 2: field(Bar, \"barValue\")%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:52)%n" +
                         "%n" +
                         " -> Unused selectors in withNullable():%n" +
                         " 1: all(BigDecimal)%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:53)%n" +
                         " 2: field(Foo, \"fooValue\")%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:54)%n" +
                         "%n" +
                         " -> Unused selectors in generate(), set(), or supply():%n" +
                         " 1: field(StringHolder, \"value\")%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:57)%n" +
                         " 2: all(Year)%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:55)%n" +
                         " 3: field(Baz, \"bazValue\")%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:56)%n" +
                         "%n" +
                         " -> Unused selectors in onComplete():%n" +
                         " 1: field(IntegerHolder, \"primitive\")%n" +
-                        " 2: all(ZonedDateTime)"));
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:58)%n" +
+                        " 2: all(ZonedDateTime)%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:59)"
+                ));
     }
 
     private <V> V failIfCalled() {

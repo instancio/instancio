@@ -97,7 +97,7 @@ class GeneratorSelectorMap {
     private void putGenerator(final SelectorImpl selector, final Generator<?> generator) {
         selectorMap.put(selector, generator);
 
-        if (selector.selectorType() == SelectorTargetKind.FIELD) {
+        if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
             final Field field = getField(selector.getTargetClass(), selector.getFieldName());
 
             if (field.getType().isArray() && generator instanceof ArrayGenerator) {

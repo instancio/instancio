@@ -19,12 +19,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.StringAssert;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("UnusedReturnValue")
 public class UnusedSelectorsAssert extends StringAssert {
+    private static final Pattern UNUSED_SELECTOR = Pattern.compile("all\\w*\\(|field\\(");
 
     private UnusedSelectorsAssert(String actual) {
         super(actual);
@@ -44,7 +46,9 @@ public class UnusedSelectorsAssert extends StringAssert {
     }
 
     private int reportedSelectorsCount() {
-        return StringUtils.countMatches(actual, "all(") + StringUtils.countMatches(actual, "field(");
+        return (int) Arrays.stream(actual.split(System.lineSeparator()))
+                .filter(line -> UNUSED_SELECTOR.matcher(line).find())
+                .count();
     }
 
     public UnusedSelectorsAssert containsUnusedSelector(final Class<?> targetClass, final String field) {
@@ -61,6 +65,45 @@ public class UnusedSelectorsAssert extends StringAssert {
                 .as("Expected to match one '%s'. Actual message:%n%s", expected, actual)
                 .isOne();
         return this;
+    }
+
+    public UnusedSelectorsAssert containsUnusedSelector(final String expectedSelector) {
+        assertThat(StringUtils.countMatches(actual, expectedSelector))
+                .as("Expected to match one '%s'. Actual message:%n%s", expectedSelector, actual)
+                .isOne();
+        return this;
+    }
+
+    public UnusedSelectorsAssert containsUnusedSelectorAt(final Class<?> targetClass, final String field, final String stackTraceLine) {
+        containsUnusedSelector(targetClass, field);
+        final String expected = format(targetClass, field);
+        assertThat(getActualStackTraceLine(expected)).containsSubsequence(stackTraceLine);
+        return this;
+    }
+
+    public UnusedSelectorsAssert containsUnusedSelectorAt(final Class<?> targetClass, final String stackTraceLine) {
+        containsUnusedSelector(targetClass);
+        final String expected = format(targetClass);
+        assertThat(getActualStackTraceLine(expected)).containsSubsequence(stackTraceLine);
+        return this;
+    }
+
+    public UnusedSelectorsAssert containsUnusedSelectorAt(final String expectedSelector, final String stackTraceLine) {
+        containsUnusedSelector(expectedSelector);
+        assertThat(getActualStackTraceLine(expectedSelector)).containsSubsequence(stackTraceLine);
+        return this;
+    }
+
+    private String getActualStackTraceLine(final String expected) {
+        final String[] actualLines = actual.split(System.lineSeparator());
+        String actualStackTraceLine = null;
+        for (int i = 0; i < actualLines.length; i++) {
+            if (actualLines[i].contains(expected)) {
+                actualStackTraceLine = actualLines[i + 1];
+                break;
+            }
+        }
+        return actualStackTraceLine;
     }
 
     public UnusedSelectorsAssert containsOnly(final ApiMethod... apiMethods) {
@@ -85,6 +128,7 @@ public class UnusedSelectorsAssert extends StringAssert {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public UnusedSelectorsAssert print() {
         System.out.println(actual); // NOSONAR
         return this;
