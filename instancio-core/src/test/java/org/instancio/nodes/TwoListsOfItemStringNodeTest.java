@@ -47,12 +47,12 @@ class TwoListsOfItemStringNodeTest extends NodeTestTemplate<TwoListsOfItemString
                 .hasGenericType(Types.LIST_ITEM_STRING.get())
                 .getAs(CollectionNode.class);
 
-        assertNode(list.getElementNode())
+        assertNode(list.getOnlyChild())
                 .hasNullField()
                 .hasTargetClass(Item.class)
                 .hasChildrenOfSize(1);
 
-        assertNode(CollectionUtils.getOnlyElement(list.getElementNode().getChildren()))
+        assertNode(CollectionUtils.getOnlyElement(list.getOnlyChild().getChildren()))
                 .hasFieldName("value")
                 .hasTargetClass(String.class)
                 .hasNoChildren();

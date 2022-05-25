@@ -34,7 +34,7 @@ public class ListLocalDateTimeNodeTest extends NodeTestTemplate<List<LocalDateTi
                 .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
-        assertNode(listNode.getElementNode())
+        assertNode(listNode.getOnlyChild())
                 .hasParent(listNode)
                 .hasNullField()
                 .hasTargetClass(LocalDateTime.class)

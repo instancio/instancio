@@ -45,17 +45,17 @@ class MapIntegerItemOfStringNodeTest extends NodeTestTemplate<MapIntegerItemOfSt
                 .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
-        assertNode(outerMap.getKeyNode())
+        assertNode(outerMap.getChildren().get(0))
                 .hasParent(outerMap)
                 .hasTargetClass(Integer.class);
 
-        assertNode(outerMap.getValueNode())
+        assertNode(outerMap.getChildren().get(1))
                 .hasParent(outerMap)
                 .hasTargetClass(Item.class)
                 .hasChildrenOfSize(1);
 
-        assertNode(getOnlyElement(outerMap.getValueNode().getChildren()))
-                .hasParent(outerMap.getValueNode())
+        assertNode(getOnlyElement(outerMap.getChildren().get(1).getChildren()))
+                .hasParent(outerMap.getChildren().get(1))
                 .hasTargetClass(String.class)
                 .hasNoChildren();
     }

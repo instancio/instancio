@@ -46,12 +46,12 @@ class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString
                 .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
-        assertNode(map.getKeyNode())
+        assertNode(map.getChildren().get(0))
                 .hasParent(map)
                 .hasTargetClass(Integer.class)
                 .hasNoChildren();
 
-        final CollectionNode list = assertNode(map.getValueNode())
+        final CollectionNode list = assertNode(map.getChildren().get(1))
                 .hasParent(map)
                 .hasNullField()
                 .hasTargetClass(List.class)
@@ -59,7 +59,7 @@ class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString
                 .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
-        assertNode(list.getElementNode())
+        assertNode(list.getOnlyChild())
                 .hasNoChildren()
                 .hasParent(list)
                 .hasTargetClass(String.class)

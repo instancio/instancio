@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class CollectionNode extends Node {
 
@@ -53,24 +52,5 @@ public class CollectionNode extends Node {
     @Override
     protected List<Node> collectChildren() {
         return Collections.singletonList(elementNode);
-    }
-
-    public Node getElementNode() {
-        return elementNode;
-    }
-
-    @Override
-    public boolean equals(@Nullable Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (this.getClass() != o.getClass()) return false;
-        CollectionNode other = (CollectionNode) o;
-        return Objects.equals(this.getTargetClass(), other.getTargetClass())
-                && Objects.equals(this.getElementNode(), other.getElementNode());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getTargetClass(), getElementNode());
     }
 }

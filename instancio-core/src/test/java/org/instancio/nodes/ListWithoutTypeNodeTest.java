@@ -39,7 +39,7 @@ class ListWithoutTypeNodeTest extends NodeTestTemplate<ListWithoutType> {
                 .hasTargetClass(List.class)
                 .getAs(CollectionNode.class);
 
-        assertNode(list.getElementNode())
+        assertNode(list.getOnlyChild())
                 .hasTargetClass(Object.class);
     }
 }

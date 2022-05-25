@@ -39,7 +39,7 @@ class ListExtendsNumberNodeTest extends NodeTestTemplate<ListExtendsNumber> {
                 .hasTargetClass(List.class)
                 .getAs(CollectionNode.class);
 
-        assertNode(list.getElementNode())
+        assertNode(list.getOnlyChild())
                 .hasTargetClass(Number.class);
     }
 }

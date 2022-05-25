@@ -86,6 +86,11 @@ public abstract class Node {
         return typeMap;
     }
 
+    public Node getOnlyChild() {
+        Verify.state(getChildren().size() == 1, "Expected one child, but were %s", getChildren().size());
+        return getChildren().get(0);
+    }
+
     public List<Node> getChildren() {
         if (children == null) {
             children = Collections.unmodifiableList(collectChildren());
@@ -94,7 +99,7 @@ public abstract class Node {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public final boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node other = (Node) o;
@@ -105,7 +110,7 @@ public abstract class Node {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(getTargetClass(), getGenericType(), getField());
     }
 

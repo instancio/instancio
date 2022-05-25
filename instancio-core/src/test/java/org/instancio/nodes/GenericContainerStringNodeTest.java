@@ -51,7 +51,7 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .hasChildrenOfSize(1)
                 .getAs(ArrayNode.class);
 
-        assertNode(array.getElementNode())
+        assertNode(array.getOnlyChild())
                 .hasParent(array)
                 .hasNullField()
                 .hasTargetClass(String.class)
@@ -68,7 +68,7 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
-        assertNode(list.getElementNode())
+        assertNode(list.getOnlyChild())
                 .hasParent(list)
                 .hasNullField()
                 .hasTargetClass(String.class)

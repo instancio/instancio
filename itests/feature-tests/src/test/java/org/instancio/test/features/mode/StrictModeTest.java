@@ -23,6 +23,7 @@ import org.instancio.test.support.asserts.UnusedSelectorsAssert.ApiMethod;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
@@ -51,6 +52,25 @@ import static org.junit.jupiter.api.Assertions.fail;
         Feature.ON_COMPLETE
 })
 class StrictModeTest {
+
+    @Nested
+    class DuplicateSelectorsTest {
+
+        @Test
+        @DisplayName("Since field selector takes precedence over class selector, the latter remains unused")
+        void sameTargetUsingFieldAndClassSelectors() {
+            final InstancioApi<Person> api = Instancio.of(Person.class)
+                    .supply(field("address"), () -> null)
+                    .supply(all(Address.class), Address::new);
+
+            assertThatThrownBy(api::create)
+                    .isExactlyInstanceOf(UnusedSelectorException.class)
+                    .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
+                            .hasUnusedSelectorCount(1)
+                            .containsOnly(ApiMethod.GENERATE_SET_SUPPLY)
+                            .containsUnusedSelector(Address.class));
+        }
+    }
 
     @Nested
     class UnusedSelectorsPrimitiveAndWrappersTest {

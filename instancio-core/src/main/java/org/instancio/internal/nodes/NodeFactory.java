@@ -47,10 +47,10 @@ public class NodeFactory {
         return createNode(klass, genericType, null, null);
     }
 
-    public Node createNode(final Class<?> klass,
-                           @Nullable final Type genericType,
-                           @Nullable final Field field,
-                           @Nullable final Node parent) {
+    Node createNode(final Class<?> klass,
+                    @Nullable final Type genericType,
+                    @Nullable final Field field,
+                    @Nullable final Node parent) {
 
         final Node result;
 
@@ -64,7 +64,9 @@ public class NodeFactory {
             result = createClassNode(klass, genericType, field, parent);
         }
 
-        nodeContext.visited(result);
+        if (nodeContext.isUnvisited(result)) {
+            nodeContext.visited(result);
+        }
 
         LOG.trace("Created node: {}", result);
         return result;

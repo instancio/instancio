@@ -16,11 +16,15 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
+import org.instancio.Mode;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Pet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +34,9 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
+import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
 class UserSuppliedFieldGeneratorsTest {
@@ -89,5 +95,21 @@ class UserSuppliedFieldGeneratorsTest {
 
         assertThat(result.getName()).isEqualTo(expectedName);
         assertThat(result.getAge()).isEqualTo(expectedAge);
+    }
+
+    @Test
+    @DisplayName("Values provided via supply() using a field selector should take precedence over class selector")
+    void supplyUsingFieldSelectorShouldTakePrecedenceOverClassSelector() {
+        final Person result = Instancio.of(Person.class)
+                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .supply(field("address"), () -> null)
+                .supply(all(Address.class), Address::new)
+                .set(allStrings(), "foo")
+                .set(field("name"), "bar")
+                .create();
+
+        assertThat(result.getAddress()).isNull();
+        assertThat(result.getName()).isEqualTo("bar");
+        assertThat(result.getPets()).extracting(Pet::getName).containsOnly("foo");
     }
 }

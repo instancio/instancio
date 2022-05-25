@@ -32,7 +32,7 @@ class ArrayLongNodeTest extends NodeTestTemplate<ArrayLong> {
                 .hasChildrenOfSize(1)
                 .getAs(ArrayNode.class);
 
-        assertNode(primitiveArray.getElementNode())
+        assertNode(primitiveArray.getOnlyChild())
                 .hasTargetClass(long.class)
                 .hasNullField();
 
@@ -41,7 +41,7 @@ class ArrayLongNodeTest extends NodeTestTemplate<ArrayLong> {
                 .hasChildrenOfSize(1)
                 .getAs(ArrayNode.class);
 
-        assertNode(wrapperArray.getElementNode())
+        assertNode(wrapperArray.getOnlyChild())
                 .hasTargetClass(Long.class)
                 .hasNullField();
     }

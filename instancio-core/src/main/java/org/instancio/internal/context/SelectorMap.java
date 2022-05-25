@@ -121,15 +121,23 @@ class SelectorMap<V> {
         return selector;
     }
 
+    /**
+     * Returns candidate selectors for the given node, with class selectors first and field selectors last.
+     *
+     * @param node to look up selectors for
+     * @return list of selectors
+     */
     private List<SelectorImpl> getCandidates(final Node node) {
-        List<SelectorImpl> candidates = null;
+        final List<SelectorImpl> candidates = new ArrayList<>(
+                scopelessSelectors.getOrDefault(new ScopelessSelector(node.getTargetClass()), Collections.emptyList()));
+
         if (node.getField() != null) {
-            candidates = scopelessSelectors.get(new ScopelessSelector(node.getField().getDeclaringClass(), node.getField()));
+            final List<SelectorImpl> fieldSelectors = scopelessSelectors.getOrDefault(
+                    new ScopelessSelector(node.getField().getDeclaringClass(), node.getField()), Collections.emptyList());
+
+            candidates.addAll(fieldSelectors);
         }
-        if (candidates == null) {
-            candidates = scopelessSelectors.get(new ScopelessSelector(node.getTargetClass()));
-        }
-        return candidates == null ? Collections.emptyList() : candidates;
+        return candidates;
     }
 
     private static List<SelectorImpl> getSelectorsWithParent(

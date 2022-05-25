@@ -43,12 +43,12 @@ class MapIntegerStringNodeTest extends NodeTestTemplate<MapIntegerString> {
                 .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
-        assertNode(map.getKeyNode())
+        assertNode(map.getChildren().get(0))
                 .hasParent(map)
                 .hasTargetClass(Integer.class)
                 .hasNoChildren();
 
-        assertNode(map.getValueNode())
+        assertNode(map.getChildren().get(1))
                 .hasParent(map)
                 .hasTargetClass(String.class)
                 .hasNoChildren();

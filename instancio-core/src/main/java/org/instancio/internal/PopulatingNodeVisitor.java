@@ -87,7 +87,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         }
 
         final Collection<Object> collection = (Collection<Object>) generatorResult.getValue();
-        final Node elementNode = collectionNode.getElementNode();
+        final Node elementNode = collectionNode.getOnlyChild();
 
         if (collectionNode.getField() != null) {
             conditionalFailOnError(() -> ReflectionUtils.setField(owner, collectionNode.getField(), collection));
@@ -135,8 +135,8 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         }
 
         final Map<Object, Object> mapObj = (Map<Object, Object>) generatorResult.getValue();
-        final Node keyNode = mapNode.getKeyNode();
-        final Node valueNode = mapNode.getValueNode();
+        final Node keyNode = mapNode.getChildren().get(0);
+        final Node valueNode = mapNode.getChildren().get(1);
 
         if (mapNode.getField() != null) {
             ReflectionUtils.setField(owner, mapNode.getField(), mapObj);
@@ -201,7 +201,7 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         }
 
         final Object arrayObj = generatorResult.getValue();
-        final Node elementNode = arrayNode.getElementNode();
+        final Node elementNode = arrayNode.getOnlyChild();
 
         // Field can be null when array is an element of a collection
         if (arrayNode.getField() != null) {
