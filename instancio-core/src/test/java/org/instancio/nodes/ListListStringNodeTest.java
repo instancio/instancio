@@ -42,7 +42,7 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
                 .getAs(CollectionNode.class);
 
         // List<String>
-        final CollectionNode outerListElementNode = (CollectionNode) outerListNode.getElementNode();
+        final CollectionNode outerListElementNode = (CollectionNode) outerListNode.getOnlyChild();
 
         assertNode(outerListElementNode)
                 .hasTargetClass(List.class)
@@ -52,7 +52,7 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
                 .getAs(CollectionNode.class);
 
         // String
-        assertNode(outerListElementNode.getElementNode())
+        assertNode(outerListElementNode.getOnlyChild())
                 .hasTargetClass(String.class)
                 .hasNullField()
                 .hasNoChildren();

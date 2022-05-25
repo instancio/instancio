@@ -65,7 +65,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .getAs(CollectionNode.class);
 
         // Outer
-        assertNode(rootList.getElementNode())
+        assertNode(rootList.getOnlyChild())
                 .hasParent(rootList)
                 .hasNullField()
                 .hasTargetClass(Outer.class)
@@ -78,7 +78,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                         "Inner<java.lang.String>>>")
                 .hasChildrenOfSize(1);
 
-        return rootList.getElementNode();
+        return rootList.getOnlyChild();
     }
 
     private Node assertOuterList(Node rootListElement) {
@@ -88,7 +88,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasTargetClass(List.class)
                 .getAs(CollectionNode.class);
 
-        assertNode(outerList.getElementNode())
+        assertNode(outerList.getOnlyChild())
                 .hasParent(outerList)
                 .hasNullField()
                 .hasTargetClass(Mid.class)
@@ -99,7 +99,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                         "Inner<java.lang.String>")
                 .hasChildrenOfSize(1);
 
-        return outerList.getElementNode();
+        return outerList.getOnlyChild();
     }
 
     private Node assertMidList(Node outerElement) {
@@ -110,7 +110,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
-        assertNode(midList.getElementNode())
+        assertNode(midList.getOnlyChild())
                 .hasParent(midList)
                 .hasNullField()
                 .hasTargetClass(Inner.class)
@@ -118,7 +118,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1);
 
-        return midList.getElementNode();
+        return midList.getOnlyChild();
     }
 
     private void assertInnerList(Node midListElement) {
@@ -129,7 +129,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
                 .hasChildrenOfSize(1)
                 .getAs(CollectionNode.class);
 
-        assertNode(innerList.getElementNode())
+        assertNode(innerList.getOnlyChild())
                 .hasParent(innerList)
                 .hasNullField()
                 .hasTargetClass(String.class)

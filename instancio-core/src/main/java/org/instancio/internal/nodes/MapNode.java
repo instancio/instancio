@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class MapNode extends Node {
 
@@ -59,28 +58,4 @@ public class MapNode extends Node {
     protected List<Node> collectChildren() {
         return Arrays.asList(keyNode, valueNode);
     }
-
-    public Node getKeyNode() {
-        return keyNode;
-    }
-
-    public Node getValueNode() {
-        return valueNode;
-    }
-
-    @Override
-    public boolean equals(@Nullable Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (this.getClass() != o.getClass()) return false;
-        MapNode other = (MapNode) o;
-        return Objects.equals(this.getKeyNode(), other.getKeyNode())
-                && Objects.equals(this.getValueNode(), other.getValueNode());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getKeyNode(), getValueNode());
-    }
-
 }

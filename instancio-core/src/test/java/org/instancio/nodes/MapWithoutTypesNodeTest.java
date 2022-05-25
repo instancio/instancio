@@ -39,7 +39,7 @@ class MapWithoutTypesNodeTest extends NodeTestTemplate<MapWithoutTypes> {
                 .hasTargetClass(Map.class)
                 .getAs(MapNode.class);
 
-        assertNode(map.getKeyNode()).hasTargetClass(Object.class);
-        assertNode(map.getValueNode()).hasTargetClass(Object.class);
+        assertNode(map.getChildren().get(0)).hasTargetClass(Object.class);
+        assertNode(map.getChildren().get(1)).hasTargetClass(Object.class);
     }
 }

@@ -69,26 +69,26 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
     }
 
     private void assertNestedMap(MapNode outerMap) {
-        assertNode(outerMap.getKeyNode())
+        assertNode(outerMap.getChildren().get(0))
                 .hasParent(outerMap)
                 .hasNullField()
                 .hasTargetClass(Long.class)
                 .hasNoChildren();
 
-        final MapNode innerMapNode = assertNode(outerMap.getValueNode())
+        final MapNode innerMapNode = assertNode(outerMap.getChildren().get(1))
                 .hasParent(outerMap)
                 .hasNullField()
                 .hasTargetClass(Map.class)
                 .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
-        assertNode(innerMapNode.getKeyNode())
+        assertNode(innerMapNode.getChildren().get(0))
                 .hasParent(innerMapNode)
                 .hasNullField()
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
-        assertNode(innerMapNode.getValueNode())
+        assertNode(innerMapNode.getChildren().get(1))
                 .hasParent(innerMapNode)
                 .hasNullField()
                 .hasTargetClass(Boolean.class)

@@ -166,6 +166,20 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
+### Selector Precedence
+
+Field selectors have higher precedence than class selectors. Consider the following example:
+
+``` java linenums="1" title="Selector precedence example"
+Person person = Instancio.of(Person.class)
+    .set(allStrings(), "foo")
+    .set(field("name"), "bar")
+    .create();
+```
+
+This will produce a person object with all strings set to "foo". However, since field selectors
+have higher precedence, person's name will be set to "bar".
+
 ### Selector Scopes
 
 Selectors also offer the `within(Scope... scopes)` method for fine-tuning which targets they should be applied to.
@@ -283,7 +297,7 @@ SamplePojo pojo = Instancio.of(SamplePojo.class)
 
 Without being aware of this detail, it is easy to make this kind of error and face unexpected results
 even with a simple class like above. It gets trickier when generating more complex classes.
-Strict mode helps reduce errors.
+Strict mode helps reduce this type of error.
 
 Consider another example where the problem may not be immediately obvious:
 

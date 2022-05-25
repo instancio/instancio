@@ -17,9 +17,6 @@ package org.instancio.internal;
 
 import org.instancio.Mode;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.nodes.ArrayNode;
-import org.instancio.internal.nodes.CollectionNode;
-import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.Keys;
 import org.slf4j.Logger;
@@ -78,14 +75,6 @@ class GeneratedNullValueListener implements GenerationListener {
             context.getCallbacks(current);
 
             queue.addAll(current.getChildren());
-            if (current instanceof CollectionNode) {
-                queue.add(((CollectionNode) current).getElementNode());
-            } else if (current instanceof ArrayNode) {
-                queue.add(((ArrayNode) current).getElementNode());
-            } else if (current instanceof MapNode) {
-                queue.add(((MapNode) current).getKeyNode());
-                queue.add(((MapNode) current).getValueNode());
-            }
         }
 
         if (i == CYCLIC_NODE_LOOP_LIMIT) {

@@ -192,9 +192,9 @@ class SelectorMapTest {
 
         final List<Node> children = new ArrayList<>(node.getChildren());
         if (node instanceof CollectionNode) {
-            children.add(((CollectionNode) node).getElementNode());
+            children.add(node.getOnlyChild());
         } else if (node instanceof ArrayNode) {
-            children.add(((ArrayNode) node).getElementNode());
+            children.add(node.getOnlyChild());
         }
         Node result = null;
         for (Node child : children) {

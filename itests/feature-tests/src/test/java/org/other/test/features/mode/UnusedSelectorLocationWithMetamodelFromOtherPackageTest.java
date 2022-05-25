@@ -17,15 +17,12 @@ package org.other.test.features.mode;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.InstancioMetamodel;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.test.support.asserts.UnusedSelectorsAssert.ApiMethod;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Fail.fail;
@@ -38,32 +35,23 @@ class UnusedSelectorLocationWithMetamodelFromOtherPackageTest {
     @Test
     void unused() {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
-                .supply(org.other.test.features.mode.OtherPojo_.foo, () -> fail("should not be called"))
+                .supply(OtherPojo_.foo, () -> fail("should not be called"))
                 .ignore(all(
-                        org.other.test.features.mode.OtherPojo_.bar,
-                        org.other.test.features.mode.OtherPojo_.baz));
+                        OtherPojo_.bar,
+                        OtherPojo_.baz));
 
         assertThatThrownBy(api::create)
                 .isInstanceOf(UnusedSelectorException.class)
                 .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
                         .hasUnusedSelectorCount(3)
                         .containsOnly(ApiMethod.GENERATE_SET_SUPPLY, ApiMethod.IGNORE)
-                        .containsUnusedSelectorAt(OtherPojo.class, "foo", line(41))
-                        .containsUnusedSelectorAt(OtherPojo.class, "bar", line(42))
-                        .containsUnusedSelectorAt(OtherPojo.class, "baz", line(42)));
+                        .containsUnusedSelectorAt(OtherPojo.class, "foo", line(38))
+                        .containsUnusedSelectorAt(OtherPojo.class, "bar", line(39))
+                        .containsUnusedSelectorAt(OtherPojo.class, "baz", line(39)));
     }
 
     private static String line(final int line) {
         return String.format("at org.other.test.features.mode.UnusedSelectorLocationWithMetamodelFromOtherPackageTest" +
                 ".unused(UnusedSelectorLocationWithMetamodelFromOtherPackageTest.java:%s)", line);
     }
-
-    @SuppressWarnings("unused")
-    @InstancioMetamodel(classes = OtherPojo.class)
-    static class OtherPojo {
-        private String foo;
-        private Integer bar;
-        private LocalDate baz;
-    }
-
 }

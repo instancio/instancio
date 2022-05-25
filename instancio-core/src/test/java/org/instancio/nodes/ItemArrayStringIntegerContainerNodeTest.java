@@ -66,7 +66,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
     }
 
     private void assertElementNode(ArrayNode arrayNode, String expectedType) {
-        final Node elementNode = arrayNode.getElementNode();
+        final Node elementNode = arrayNode.getOnlyChild();
         assertNode(elementNode)
                 .hasTargetClass(Item.class)
                 .hasNullField()

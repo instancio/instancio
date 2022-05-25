@@ -44,19 +44,19 @@ class MapIntegerArrayStringNodeTest extends NodeTestTemplate<MapIntegerArrayStri
                 .hasChildrenOfSize(2)
                 .getAs(MapNode.class);
 
-        assertNode(map.getKeyNode())
+        assertNode(map.getChildren().get(0))
                 .hasParent(map)
                 .hasTargetClass(Integer.class)
                 .hasNoChildren();
 
-        final ArrayNode array = assertNode(map.getValueNode())
+        final ArrayNode array = assertNode(map.getChildren().get(1))
                 .hasParent(map)
                 .hasNullField()
                 .hasTargetClass(String[].class)
                 .hasChildrenOfSize(1)
                 .getAs(ArrayNode.class);
 
-        assertNode(array.getElementNode())
+        assertNode(array.getOnlyChild())
                 .hasNoChildren()
                 .hasParent(array)
                 .hasTargetClass(String.class)
