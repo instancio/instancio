@@ -34,6 +34,7 @@ class SqlDateGeneratorTest {
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final LocalDate START = LocalDate.of(2000, 1, 1);
+    private static final boolean INCLUSIVE = true;
 
     private final SqlDateGenerator generator = new SqlDateGenerator(context);
 
@@ -70,6 +71,6 @@ class SqlDateGeneratorTest {
         final Date start = Date.valueOf(START);
         final Date end = Date.valueOf(START.plusYears(1));
         generator.range(start, end);
-        assertThat(generator.generate(random)).isBetween(start, end);
+        assertThat(generator.generate(random)).isBetween(start, end, INCLUSIVE, INCLUSIVE);
     }
 }

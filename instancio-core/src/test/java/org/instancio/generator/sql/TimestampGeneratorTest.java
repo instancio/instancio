@@ -33,6 +33,7 @@ class TimestampGeneratorTest {
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final LocalDateTime START = LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999);
+    private static final boolean INCLUSIVE = true;
 
     private final TimestampGenerator generator = new TimestampGenerator(context);
 
@@ -69,6 +70,6 @@ class TimestampGeneratorTest {
         final Timestamp start = Timestamp.valueOf(START);
         final Timestamp end = Timestamp.valueOf(START.plusYears(1));
         generator.range(start, end);
-        assertThat(generator.generate(random)).isBetween(start, end);
+        assertThat(generator.generate(random)).isBetween(start, end, INCLUSIVE, INCLUSIVE);
     }
 }
