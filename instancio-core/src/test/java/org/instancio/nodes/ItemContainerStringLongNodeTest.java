@@ -40,7 +40,7 @@ class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<Str
                 .hasTypeMappedTo(Item.class, "K", "X")
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
-                .getAs(Node.class);
+                .get();
 
         assertNode(getOnlyElement(itemValueX.getChildren()))
                 .hasParent(itemValueX)
@@ -56,7 +56,7 @@ class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<Str
                 .hasTypeMappedTo(Item.class, "K", "Y")
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
-                .getAs(Node.class);
+                .get();
 
         assertNode(getOnlyElement(itemValueY.getChildren()))
                 .hasParent(itemValueY)

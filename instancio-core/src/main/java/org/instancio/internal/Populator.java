@@ -17,12 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.nodes.ArrayNode;
-import org.instancio.internal.nodes.ClassNode;
-import org.instancio.internal.nodes.CollectionNode;
-import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.internal.nodes.NodeVisitor;
 import org.instancio.util.ArrayUtils;
 import org.instancio.util.CollectionUtils;
 import org.instancio.util.ReflectionUtils;
@@ -40,7 +35,7 @@ import java.util.Queue;
 import static java.util.stream.Collectors.toList;
 import static org.instancio.util.ExceptionHandler.conditionalFailOnError;
 
-public class PopulatingNodeVisitor implements NodeVisitor {
+public class Populator {
     private static final Object NULL_VALUE = null;
     private final Object owner;
     private final GeneratorResult generatorResult;
@@ -48,11 +43,11 @@ public class PopulatingNodeVisitor implements NodeVisitor {
     private final Queue<CreateItem> queue;
     private final InstancioEngine engine;
 
-    public PopulatingNodeVisitor(@Nullable final Object owner,
-                                 final GeneratorResult generatorResult,
-                                 final ModelContext<?> context,
-                                 final Queue<CreateItem> queue,
-                                 final InstancioEngine engine) {
+    public Populator(@Nullable final Object owner,
+                     final GeneratorResult generatorResult,
+                     final ModelContext<?> context,
+                     final Queue<CreateItem> queue,
+                     final InstancioEngine engine) {
         this.owner = owner;
         this.generatorResult = generatorResult;
         this.context = context;
@@ -60,8 +55,19 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         this.engine = engine;
     }
 
-    @Override
-    public void visitClassNode(final ClassNode node) {
+    public void populate(final Node node) {
+        if (node.getTargetClass().isArray()) {
+            populateArray(node);
+        } else if (Collection.class.isAssignableFrom(node.getTargetClass())) {
+            populateCollection(node);
+        } else if (Map.class.isAssignableFrom(node.getTargetClass())) {
+            populateMap(node);
+        } else {
+            populateClass(node);
+        }
+    }
+
+    public void populateClass(final Node node) {
         final Field field = node.getField();
         if (field == null) {
             if (owner == null) { // i.e. root node
@@ -80,19 +86,23 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         }
     }
 
-    @Override
-    public void visitCollectionNode(final CollectionNode collectionNode) {
+    public void populateCollection(final Node collectionNode) {
         if (generatorResult.getValue() == null) {
             return;
         }
 
         final Collection<Object> collection = (Collection<Object>) generatorResult.getValue();
-        final Node elementNode = collectionNode.getOnlyChild();
+
 
         if (collectionNode.getField() != null) {
             conditionalFailOnError(() -> ReflectionUtils.setField(owner, collectionNode.getField(), collection));
         }
 
+        if (collectionNode.getChildren().isEmpty()) {
+            return;
+        }
+
+        final Node elementNode = collectionNode.getOnlyChild();
         final boolean nullableElement = generatorResult.getHints().nullableElements();
 
         for (int i = 0; i < generatorResult.getHints().getDataStructureSize(); i++) {
@@ -128,19 +138,23 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         }
     }
 
-    @Override
-    public void visitMapNode(final MapNode mapNode) {
+    public void populateMap(final Node mapNode) {
         if (generatorResult.getValue() == null) {
             return;
         }
 
         final Map<Object, Object> mapObj = (Map<Object, Object>) generatorResult.getValue();
-        final Node keyNode = mapNode.getChildren().get(0);
-        final Node valueNode = mapNode.getChildren().get(1);
 
         if (mapNode.getField() != null) {
             ReflectionUtils.setField(owner, mapNode.getField(), mapObj);
         }
+
+        if (mapNode.getChildren().size() < 2) {
+            return;
+        }
+
+        final Node keyNode = mapNode.getChildren().get(0);
+        final Node valueNode = mapNode.getChildren().get(1);
 
         final boolean nullableKey = generatorResult.getHints().nullableMapKeys();
         final boolean nullableValue = generatorResult.getHints().nullableMapValues();
@@ -194,14 +208,12 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         }
     }
 
-    @Override
-    public void visitArrayNode(final ArrayNode arrayNode) {
+    public void populateArray(final Node arrayNode) {
         if (generatorResult.getValue() == null) {
             return;
         }
 
         final Object arrayObj = generatorResult.getValue();
-        final Node elementNode = arrayNode.getOnlyChild();
 
         // Field can be null when array is an element of a collection
         if (arrayNode.getField() != null) {
@@ -211,19 +223,23 @@ public class PopulatingNodeVisitor implements NodeVisitor {
         final List<?> withElements = generatorResult.getHints().getWithElements();
 
         int index = 0;
-        for (int len = Array.getLength(arrayObj) - withElements.size(); index < len; index++) {
-            final boolean isNullableElement = generatorResult.getHints().nullableElements();
-            if (context.getRandom().diceRoll(isNullableElement)) {
-                engine.notifyListeners(elementNode, null);
-                continue;
-            }
 
-            final Optional<GeneratorResult> optResult = engine.createObject(elementNode, arrayObj);
-            if (optResult.isPresent()) {
-                final GeneratorResult elementResult = optResult.get();
-                final Object elementValue = elementResult.getValue();
-                Array.set(arrayObj, index, elementValue);
-                enqueueChildrenOf(elementNode, elementResult, queue);
+        if (!arrayNode.getChildren().isEmpty()) {
+            final Node elementNode = arrayNode.getOnlyChild();
+            for (int len = Array.getLength(arrayObj) - withElements.size(); index < len; index++) {
+                final boolean isNullableElement = generatorResult.getHints().nullableElements();
+                if (context.getRandom().diceRoll(isNullableElement)) {
+                    engine.notifyListeners(elementNode, null);
+                    continue;
+                }
+
+                final Optional<GeneratorResult> optResult = engine.createObject(elementNode, arrayObj);
+                if (optResult.isPresent()) {
+                    final GeneratorResult elementResult = optResult.get();
+                    final Object elementValue = elementResult.getValue();
+                    Array.set(arrayObj, index, elementValue);
+                    enqueueChildrenOf(elementNode, elementResult, queue);
+                }
             }
         }
 

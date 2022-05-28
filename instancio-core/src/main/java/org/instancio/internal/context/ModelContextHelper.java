@@ -24,10 +24,12 @@ import org.instancio.internal.selectors.MetamodelSelector;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,9 +94,10 @@ final class ModelContextHelper {
     }
 
     static Map<TypeVariable<?>, Class<?>> buildRootTypeMap(
-            final Class<?> rootClass,
+            final Type rootType,
             final List<Class<?>> rootTypeParameters) {
 
+        final Class<?> rootClass = TypeUtils.getRawType(rootType);
         ApiValidator.validateTypeParameters(rootClass, rootTypeParameters);
 
         final Class<?> targetClass = rootClass.isArray()

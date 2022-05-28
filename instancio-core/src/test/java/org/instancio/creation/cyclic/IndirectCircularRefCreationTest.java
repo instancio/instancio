@@ -40,14 +40,9 @@ public class IndirectCircularRefCreationTest extends CreationTestTemplate<Indire
                 .satisfies(endA -> assertThat(endA).isNotNull())
                 // A -> B
                 .extracting(IndirectCircularRef.A::getB)
-                .satisfies(b -> assertThat(b).isNotNull())
-                // B -> C
-                .extracting(IndirectCircularRef.B::getC)
-                .satisfies(c -> assertThat(c).isNotNull())
-                // C -> endA
-                .extracting(IndirectCircularRef.C::getEndA)
-                .as("Reached 'endA' again; end cycle with a null value")
-                .satisfies(endA -> assertThat(endA).isNull());
+                .satisfies(b -> assertThat(b)
+                        .as("Reached 'B' again; end cycle with a null value")
+                        .isNull());
     }
 
 }

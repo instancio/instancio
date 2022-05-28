@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.ClassNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.PairAString;
 import org.instancio.test.support.pojo.generics.basic.Pair;
@@ -45,7 +44,7 @@ class PairAStringNodeTest extends NodeTestTemplate<PairAString<UUID>> {
                 .hasTypeMappedTo(Pair.class, "R", String.class)
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
-                .getAs(ClassNode.class);
+                .get();
 
         assertNode(NodeUtils.getChildNode(pair, "left"))
                 .hasFieldName("left")

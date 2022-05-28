@@ -38,11 +38,11 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-        final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
-        final Optional<Generator<?>> generatorOpt = generatorResolver.get(effectiveType);
+        final Class<?> targetClass = node.getTargetClass();
+        final Optional<Generator<?>> generatorOpt = generatorResolver.get(targetClass);
 
         return generatorOpt.map(generator -> {
-            LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), effectiveType.getName());
+            LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), targetClass.getName());
 
             final GeneratorResult result = GeneratorResult.create(
                     generator.generate(context.getRandom()),

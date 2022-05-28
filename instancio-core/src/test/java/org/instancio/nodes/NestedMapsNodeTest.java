@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.NestedMaps;
 import org.instancio.testsupport.fixtures.Types;
@@ -38,7 +37,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
         // Map<Long, Map<String, Boolean>> map1
         final String fieldName = "map1";
 
-        final MapNode outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
+        final Node outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
                 .hasTargetClass(Map.class)
@@ -46,7 +45,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
                 .hasTypeMappedTo(Map.class, "V", Types.MAP_STRING_BOOLEAN.get())
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
-                .getAs(MapNode.class);
+                .get();
 
         assertNestedMap(outerMap);
     }
@@ -55,7 +54,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
         // Map<OKEY, Map<IKEY, Boolean>> map2
         final String fieldName = "map2";
 
-        final MapNode outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
+        final Node outerMap = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
                 .hasTargetClass(Map.class)
@@ -63,33 +62,33 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
                 .hasTypeMappedTo(Map.class, "V", "java.util.Map<IKEY, java.lang.Boolean>")
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
-                .getAs(MapNode.class);
+                .get();
 
         assertNestedMap(outerMap);
     }
 
-    private void assertNestedMap(MapNode outerMap) {
+    private void assertNestedMap(Node outerMap) {
         assertNode(outerMap.getChildren().get(0))
                 .hasParent(outerMap)
                 .hasNullField()
                 .hasTargetClass(Long.class)
                 .hasNoChildren();
 
-        final MapNode innerMapNode = assertNode(outerMap.getChildren().get(1))
+        final Node innerNode = assertNode(outerMap.getChildren().get(1))
                 .hasParent(outerMap)
                 .hasNullField()
                 .hasTargetClass(Map.class)
                 .hasChildrenOfSize(2)
-                .getAs(MapNode.class);
+                .get();
 
-        assertNode(innerMapNode.getChildren().get(0))
-                .hasParent(innerMapNode)
+        assertNode(innerNode.getChildren().get(0))
+                .hasParent(innerNode)
                 .hasNullField()
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
-        assertNode(innerMapNode.getChildren().get(1))
-                .hasParent(innerMapNode)
+        assertNode(innerNode.getChildren().get(1))
+                .hasParent(innerNode)
                 .hasNullField()
                 .hasTargetClass(Boolean.class)
                 .hasNoChildren();

@@ -19,9 +19,7 @@ import org.instancio.Generator;
 import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.Node;
-import org.instancio.util.Verify;
 
 import java.util.Optional;
 
@@ -37,8 +35,7 @@ public class ArrayNodeHandler implements NodeHandler {
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-        if (node instanceof ArrayNode) {
-            Verify.isTrue(node.getTargetClass().isArray(), "Expected array class: %s", node.getTargetClass());
+        if (node.getTargetClass().isArray()) {
             final Generator<?> generator = generatorResolver.get(node.getTargetClass()).orElseThrow(
                     () -> new IllegalStateException("Unable to get array generator for node: " + node));
 

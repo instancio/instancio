@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.collections.lists.ListListString;
 import org.instancio.test.support.util.CollectionUtils;
@@ -35,21 +34,20 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
                 .hasChildrenOfSize(1);
 
         // List<List<String>>
-        final CollectionNode outerListNode = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        final Node outerListNode = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasChildrenOfSize(1)
                 .hasFieldName("nested")
-                .hasGenericType(Types.LIST_LIST_STRING.get())
-                .getAs(CollectionNode.class);
+                .hasType(Types.LIST_LIST_STRING.get())
+                .get();
 
         // List<String>
-        final CollectionNode outerListElementNode = (CollectionNode) outerListNode.getOnlyChild();
+        final Node outerListElementNode = outerListNode.getOnlyChild();
 
         assertNode(outerListElementNode)
                 .hasTargetClass(List.class)
                 .hasNullField()
-                .hasGenericType(Types.LIST_STRING.get())
-                .hasChildrenOfSize(1)
-                .getAs(CollectionNode.class);
+                .hasType(Types.LIST_STRING.get())
+                .hasChildrenOfSize(1);
 
         // String
         assertNode(outerListElementNode.getOnlyChild())

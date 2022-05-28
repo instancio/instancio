@@ -23,6 +23,7 @@ import org.instancio.internal.selectors.SelectorTargetKind;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,11 +34,11 @@ import static org.instancio.util.ReflectionUtils.getField;
 // TODO subtype selectors with scope
 public class SubtypeSelectorMap {
 
-    private final Map<Class<?>, Class<?>> classSubtypeMap = new LinkedHashMap<>();
+    private final Map<Type, Class<?>> classSubtypeMap = new LinkedHashMap<>();
     private final Map<Field, Class<?>> fieldSubtypeMap = new LinkedHashMap<>();
     private final Map<TargetSelector, Class<?>> subtypeSelectors;
 
-    SubtypeSelectorMap(final Map<TargetSelector, Class<?>> subtypeSelectors) {
+    public SubtypeSelectorMap(final Map<TargetSelector, Class<?>> subtypeSelectors) {
         this.subtypeSelectors = Collections.unmodifiableMap(subtypeSelectors);
         putAllSubtypeSelectors(subtypeSelectors);
     }
@@ -46,7 +47,7 @@ public class SubtypeSelectorMap {
         return subtypeSelectors;
     }
 
-    Optional<Class<?>> getSubtypeMapping(final Class<?> superType) {
+    Optional<Class<?>> getSubtypeMapping(final Type superType) {
         return Optional.ofNullable(classSubtypeMap.get(superType));
     }
 

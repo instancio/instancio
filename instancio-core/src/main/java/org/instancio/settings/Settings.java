@@ -166,7 +166,6 @@ public class Settings {
      * @param autoAdjust whether to auto-adjust related
      * @return updated setting
      */
-    @SuppressWarnings("PMD.AccessorMethodGeneration")
     Settings set(final SettingKey key, final Object value, boolean autoAdjust) {
         checkLockedForModifications();
         validateNotNullAndType(key, value);

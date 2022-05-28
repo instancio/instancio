@@ -15,8 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.ArrayNode;
-import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.container.GenericContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -43,13 +41,13 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .hasNoChildren();
 
         // T[] array
-        final ArrayNode array = assertNode(NodeUtils.getChildNode(rootNode, "array"))
+        final Node array = assertNode(NodeUtils.getChildNode(rootNode, "array"))
                 .hasParent(rootNode)
                 .hasFieldName("array")
                 .hasTargetClass(String[].class)
                 .hasEmptyTypeMap()
                 .hasChildrenOfSize(1)
-                .getAs(ArrayNode.class);
+                .get();
 
         assertNode(array.getOnlyChild())
                 .hasParent(array)
@@ -59,14 +57,14 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .hasNoChildren();
 
         // List<T> list
-        final CollectionNode list = assertNode(NodeUtils.getChildNode(rootNode, "list"))
+        final Node list = assertNode(NodeUtils.getChildNode(rootNode, "list"))
                 .hasParent(rootNode)
                 .hasFieldName("list")
                 .hasTargetClass(List.class)
                 .hasTypeMappedTo(List.class, "E", "T")
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
-                .getAs(CollectionNode.class);
+                .get();
 
         assertNode(list.getOnlyChild())
                 .hasParent(list)

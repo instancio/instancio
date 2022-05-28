@@ -62,10 +62,9 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
         if (generatorOpt.isPresent()) {
             final Generator<?> generator = generatorOpt.get();
             if (generator.isDelegating()) {
-                final Class<?> targetType = generator.targetClass().orElse(node.getTargetClass());
-                final Class<?> effectiveType = modelContext.getSubtypeMapping(targetType);
-                final Generator<?> delegate = generatorResolver.get(effectiveType).orElseGet(
-                        () -> new InstantiatingGenerator(generatorContext, instantiator, effectiveType));
+                final Class<?> targetClass = generator.targetClass().orElse(node.getTargetClass());
+                final Generator<?> delegate = generatorResolver.get(targetClass).orElseGet(
+                        () -> new InstantiatingGenerator(generatorContext, instantiator, targetClass));
 
                 generator.setDelegate(delegate);
             }

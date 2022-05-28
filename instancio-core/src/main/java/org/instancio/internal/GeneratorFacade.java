@@ -19,7 +19,6 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorResolver;
 import org.instancio.generator.GeneratorResult;
-import org.instancio.internal.AncestorTree.AncestorTreeNode;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.handlers.ArrayNodeHandler;
 import org.instancio.internal.handlers.CollectionNodeHandler;
@@ -28,7 +27,6 @@ import org.instancio.internal.handlers.MapNodeHandler;
 import org.instancio.internal.handlers.NodeHandler;
 import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
-import org.instancio.internal.nodes.ClassNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.ImplementationResolver;
 import org.instancio.internal.reflection.NoopImplementationResolver;
@@ -45,7 +43,6 @@ import java.util.Optional;
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
-    private final AncestorTree ancestorTree = new AncestorTree();
     private final ImplementationResolver implementationResolver = new NoopImplementationResolver();
     private final ModelContext<?> context;
     private final Random random;
@@ -65,7 +62,7 @@ class GeneratorFacade {
                 new UsingGeneratorResolverHandler(context, generatorResolver),
                 new CollectionNodeHandler(context, instantiator),
                 new MapNodeHandler(context, instantiator),
-                new InstantiatingHandler(context, instantiator)
+                new InstantiatingHandler(instantiator)
         };
     }
 
@@ -78,16 +75,6 @@ class GeneratorFacade {
             return Optional.empty();
         }
 
-        if (owner != null) {
-            final Object ancestor = ancestorTree.getObjectAncestor(owner, node.getParent());
-            if (ancestor != null) {
-                LOG.debug("{} has a circular dependency to {}. Ignoring {}",
-                        owner.getClass().getSimpleName(), ancestor, node);
-
-                return Optional.of(GeneratorResult.nullResult());
-            }
-        }
-
         if (shouldReturnNullForNullable(node)) {
             return Optional.of(GeneratorResult.nullResult());
         }
@@ -96,14 +83,12 @@ class GeneratorFacade {
         for (NodeHandler handler : nodeHandlers) {
             generatorResult = handler.getResult(node);
             if (generatorResult.isPresent()) {
-                ancestorTree.setObjectAncestor(generatorResult.get().getValue(), new AncestorTreeNode(owner, node.getParent()));
                 break;
             }
         }
 
         if (!generatorResult.isPresent()) {
-            final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
-            generatorResult = resolveImplementationAndGenerate(effectiveType, node, owner);
+            generatorResult = resolveImplementationAndGenerate(node, owner);
         }
 
         return generatorResult;
@@ -113,9 +98,10 @@ class GeneratorFacade {
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private Optional<GeneratorResult> resolveImplementationAndGenerate(final Class<?> abstractType,
-                                                                       final Node parentNode,
+    private Optional<GeneratorResult> resolveImplementationAndGenerate(final Node parentNode,
                                                                        @Nullable final Object owner) {
+        final Class<?> abstractType = parentNode.getTargetClass();
+
         Verify.isFalse(ReflectionUtils.isConcrete(abstractType),
                 "Expecting an interface or abstract class: %s", abstractType.getName());
         Verify.isNotArrayCollectionOrMap(abstractType);
@@ -124,8 +110,12 @@ class GeneratorFacade {
 
         final Optional<Class<?>> targetClass = implementationResolver.resolve(abstractType);
         if (targetClass.isPresent()) {
-            final Node implementorNode = new ClassNode(parentNode.getNodeContext(),
-                    targetClass.get(), parentNode.getField(), null, parentNode);
+            final Node implementorNode = Node.builder()
+                    .nodeContext(parentNode.getNodeContext())
+                    .targetClass(targetClass.get())
+                    .field(parentNode.getField())
+                    .parent(parentNode)
+                    .build();
 
             return generateNodeValue(implementorNode, owner);
         }

@@ -17,24 +17,17 @@ package org.instancio.creation.generics;
 
 import org.instancio.test.support.pojo.generics.ListWithoutType;
 import org.instancio.test.support.tags.GenericsTag;
-import org.instancio.test.support.util.Constants;
+import org.instancio.testsupport.templates.AutoVerificationDisabled;
 import org.instancio.testsupport.templates.CreationTestTemplate;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @GenericsTag
+@AutoVerificationDisabled
 public class ListWithoutTypeCreationTest extends CreationTestTemplate<ListWithoutType> {
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
     protected void verify(ListWithoutType result) {
-        final List list = result.getList();
-
-        assertThat(list)
-                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
-                .hasOnlyElementsOfType(Object.class);
+        assertThat(result.getList()).isEmpty();
     }
-
 }

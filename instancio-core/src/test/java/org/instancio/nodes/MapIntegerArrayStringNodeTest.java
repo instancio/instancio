@@ -15,8 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.ArrayNode;
-import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerArrayString;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -34,7 +32,7 @@ class MapIntegerArrayStringNodeTest extends NodeTestTemplate<MapIntegerArrayStri
                 .hasTargetClass(MapIntegerArrayString.class)
                 .hasChildrenOfSize(1);
 
-        final MapNode map = assertNode(getOnlyElement(rootNode.getChildren()))
+        final Node map = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
                 .hasFieldName("map")
                 .hasTargetClass(Map.class)
@@ -42,19 +40,19 @@ class MapIntegerArrayStringNodeTest extends NodeTestTemplate<MapIntegerArrayStri
                 .hasTypeMappedTo(Map.class, "V", String[].class)
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
-                .getAs(MapNode.class);
+                .get();
 
         assertNode(map.getChildren().get(0))
                 .hasParent(map)
                 .hasTargetClass(Integer.class)
                 .hasNoChildren();
 
-        final ArrayNode array = assertNode(map.getChildren().get(1))
+        final Node array = assertNode(map.getChildren().get(1))
                 .hasParent(map)
                 .hasNullField()
                 .hasTargetClass(String[].class)
                 .hasChildrenOfSize(1)
-                .getAs(ArrayNode.class);
+                .get();
 
         assertNode(array.getOnlyChild())
                 .hasNoChildren()

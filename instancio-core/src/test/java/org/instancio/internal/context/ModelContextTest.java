@@ -29,7 +29,6 @@ import org.instancio.generators.Generators;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
@@ -68,7 +67,6 @@ class ModelContextTest {
         final Type rootGenericType = Types.FOO_LIST_INTEGER.get();
         ModelContext<?> ctx = ModelContext.builder(rootGenericType).build();
         assertThat(ctx.getRootType()).isEqualTo(rootGenericType);
-        assertThat(ctx.getRootClass()).isEqualTo(Foo.class);
     }
 
     @Test
@@ -258,7 +256,7 @@ class ModelContextTest {
 
     private static Node mockNode(Class<?> targetClass, @Nullable Field field) {
         final Node node = mock(Node.class);
-        doReturn(targetClass).when(node).getTargetClass();
+        doReturn(targetClass).when(node).getRawType();
         doReturn(field).when(node).getField();
         return node;
     }

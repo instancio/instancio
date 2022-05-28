@@ -15,18 +15,17 @@
  */
 package org.instancio.testsupport.templates;
 
-import org.instancio.Instancio;
-import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
+import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.test.support.tags.NodeTag;
-import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
@@ -37,16 +36,19 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
  */
 @NodeTag
 @TestInstance(PER_CLASS)
+@SuppressWarnings("unused") // false positive (type T is used by TypeContext)
 public abstract class NodeTestTemplate<T> {
 
     private final TypeContext typeContext = new TypeContext(this.getClass());
 
     @Test
-    protected final void verifyingModelFromTypeToken() throws Exception {
-        Model<?> model = Instancio.of((TypeTokenSupplier<Type>) typeContext::getGenericType).toModel();
-        Field field = ReflectionUtils.getField(model.getClass(), "rootNode");
-        field.setAccessible(true);
-        verify((Node) field.get(model));
+    protected final void verifyingModelFromTypeToken() {
+        final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap(Collections.emptyMap());
+        final NodeContext nodeContext = new NodeContext(Collections.emptyMap(), subtypeSelectorMap);
+        final NodeFactory nodeFactory = new NodeFactory(nodeContext);
+        final TypeTokenSupplier<Type> typeSupplier = typeContext::getGenericType;
+        final Node rootNode = nodeFactory.createRootNode(typeSupplier.get());
+        verify(rootNode);
     }
 
     /**

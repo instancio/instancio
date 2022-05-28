@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -27,19 +26,19 @@ class ArrayLongNodeTest extends NodeTestTemplate<ArrayLong> {
 
     @Override
     protected void verify(Node rootNode) {
-        final ArrayNode primitiveArray = assertNode(NodeUtils.getChildNode(rootNode, "primitive"))
+        final Node primitiveArray = assertNode(NodeUtils.getChildNode(rootNode, "primitive"))
                 .hasTargetClass(long[].class)
                 .hasChildrenOfSize(1)
-                .getAs(ArrayNode.class);
+                .get();
 
         assertNode(primitiveArray.getOnlyChild())
                 .hasTargetClass(long.class)
                 .hasNullField();
 
-        final ArrayNode wrapperArray = assertNode(NodeUtils.getChildNode(rootNode, "wrapper"))
+        final Node wrapperArray = assertNode(NodeUtils.getChildNode(rootNode, "wrapper"))
                 .hasTargetClass(Long[].class)
                 .hasChildrenOfSize(1)
-                .getAs(ArrayNode.class);
+                .get();
 
         assertNode(wrapperArray.getOnlyChild())
                 .hasTargetClass(Long.class)

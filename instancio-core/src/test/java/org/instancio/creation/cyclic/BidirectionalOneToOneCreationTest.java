@@ -35,7 +35,7 @@ public class BidirectionalOneToOneCreationTest extends CreationTestTemplate<Bidi
                 .satisfies(parent -> assertThat(parent).isNotNull()
                         // Parent -> Child
                         .extracting(BidirectionalOneToOne.Parent::getChild)
-                        .satisfies(child -> assertThat(child.getParent()).isNotNull()));
+                        .satisfies(child -> assertThat(child).isNull()));
     }
 
 }

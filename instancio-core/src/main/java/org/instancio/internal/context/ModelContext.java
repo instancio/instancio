@@ -59,7 +59,6 @@ public final class ModelContext<T> {
     private static final Settings PROPERTIES_FILE_SETTINGS = Settings.from(PropertiesLoader.loadDefaultPropertiesFile()).lock();
 
     private final Type rootType;
-    private final Class<T> rootClass;
     private final List<Class<?>> rootTypeParameters;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final Integer seed;
@@ -73,11 +72,10 @@ public final class ModelContext<T> {
 
     private ModelContext(final Builder<T> builder) {
         rootType = builder.rootType;
-        rootClass = builder.rootClass;
         rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
         rootTypeMap = rootType instanceof ParameterizedType || rootType instanceof GenericArrayType
                 ? Collections.emptyMap()
-                : Collections.unmodifiableMap(buildRootTypeMap(rootClass, builder.rootTypeParameters));
+                : Collections.unmodifiableMap(buildRootTypeMap(builder.rootType, builder.rootTypeParameters));
 
         seed = builder.seed;
         random = resolveRandom(builder.seed);
@@ -126,10 +124,6 @@ public final class ModelContext<T> {
         return rootType;
     }
 
-    public Class<T> getRootClass() {
-        return rootClass;
-    }
-
     public boolean isIgnored(final Node node) {
         return ignoredSelectorMap.isTrue(node);
     }
@@ -167,7 +161,7 @@ public final class ModelContext<T> {
     }
 
     public Builder<T> toBuilder() {
-        final Builder<T> builder = new Builder<>(rootClass, rootType);
+        final Builder<T> builder = new Builder<>(rootType);
         builder.rootTypeParameters.addAll(this.rootTypeParameters);
         builder.seed = this.seed;
         builder.settings = this.settings;
@@ -197,11 +191,6 @@ public final class ModelContext<T> {
         private final Set<TargetSelector> nullableTargets = new LinkedHashSet<>();
         private Settings settings;
         private Integer seed;
-
-        private Builder(final Class<T> rootClass, final Type rootType) {
-            this.rootClass = Verify.notNull(rootClass, "Root class is null");
-            this.rootType = rootType;
-        }
 
         private Builder(final Type rootType) {
             this.rootType = Verify.notNull(rootType, "Root type is null");

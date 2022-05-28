@@ -35,12 +35,21 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return new NodeAssert(actual);
     }
 
-    public <T extends Node> T getAs(Class<T> nodeType) {
-        isNotNull();
-        assertThat(nodeType).isAssignableFrom(actual.getClass());
-        return nodeType.cast(actual);
+    public Node get() {
+        return actual;
     }
 
+    public NodeAssert hasType(Type expected) {
+        isNotNull();
+        assertThat(actual.getType()).isEqualTo(expected);
+        return this;
+    }
+
+    public NodeAssert hasRawType(Class<?> expected) {
+        isNotNull();
+        assertThat(actual.getRawType()).isEqualTo(expected);
+        return this;
+    }
 
     public NodeAssert hasTargetClass(Class<?> expected) {
         isNotNull();
@@ -48,18 +57,12 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return this;
     }
 
-    public NodeAssert hasGenericType(Type expected) {
+    public NodeAssert hasTypeName(String expected) {
         isNotNull();
-        assertThat(actual.getGenericType()).isEqualTo(expected);
-        return this;
-    }
-
-    public NodeAssert hasGenericTypeName(String expected) {
-        isNotNull();
-        assertThat(actual.getGenericType())
+        assertThat(actual.getType())
                 .as("Generic type is null")
                 .isNotNull();
-        assertThat(actual.getGenericType().getTypeName()).isEqualTo(expected);
+        assertThat(actual.getType().getTypeName()).isEqualTo(expected);
         return this;
     }
 

@@ -19,12 +19,10 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.util.Verify;
 
 import java.util.Map;
 import java.util.Optional;
@@ -41,11 +39,9 @@ public class MapNodeHandler implements NodeHandler {
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-        if (node instanceof MapNode) {
-            Verify.isTrue(Map.class.isAssignableFrom(node.getTargetClass()), "Expected a map type: %s", node.getTargetClass());
-            final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
+        if (Map.class.isAssignableFrom(node.getTargetClass())) {
             final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(randomSize()).build();
-            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(effectiveType), hints);
+            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(node.getTargetClass()), hints);
             return Optional.of(result);
         }
         return Optional.empty();

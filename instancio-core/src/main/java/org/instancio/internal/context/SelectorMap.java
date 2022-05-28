@@ -129,7 +129,7 @@ class SelectorMap<V> {
      */
     private List<SelectorImpl> getCandidates(final Node node) {
         final List<SelectorImpl> candidates = new ArrayList<>(
-                scopelessSelectors.getOrDefault(new ScopelessSelector(node.getTargetClass()), Collections.emptyList()));
+                scopelessSelectors.getOrDefault(new ScopelessSelector(node.getRawType()), Collections.emptyList()));
 
         if (node.getField() != null) {
             final List<SelectorImpl> fieldSelectors = scopelessSelectors.getOrDefault(
@@ -179,7 +179,7 @@ class SelectorMap<V> {
                 if (scope.getField().equals(node.getField())) {
                     scope = (ScopeImpl) deq.pollLast();
                 }
-            } else if (node.getTargetClass().equals(scope.getTargetClass())) {
+            } else if (node.getRawType().equals(scope.getTargetClass())) {
                 scope = (ScopeImpl) deq.pollLast();
             }
 

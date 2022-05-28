@@ -16,22 +16,16 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.internal.context.SubtypeSelectorMap;
-import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
-import org.instancio.internal.reflection.FieldCollector;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public final class NodeContext {
 
-    private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
-    private final Set<Node> visited = new HashSet<>();
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
 
@@ -49,17 +43,5 @@ public final class NodeContext {
 
     Optional<Class<?>> getUserSuppliedSubtype(final Class<?> targetClass, @Nullable final Field field) {
         return subtypeSelectorMap.getUserSuppliedSubtype(targetClass, field);
-    }
-
-    public void visited(final Node node) {
-        visited.add(node);
-    }
-
-    public boolean isUnvisited(final Node node) {
-        return !visited.contains(node);
-    }
-
-    public FieldCollector getFieldCollector() {
-        return fieldCollector;
     }
 }

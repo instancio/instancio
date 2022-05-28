@@ -15,6 +15,8 @@
  */
 package org.instancio.util;
 
+import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.testsupport.fixtures.Types;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -25,6 +27,22 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FormatTest {
+
+    private static class Nested1 {
+        private static class Nested2 {}
+    }
+
+    @Test
+    void withoutPackage() {
+        assertThat(Format.withoutPackage(Types.FOO_LIST_INTEGER.get())).isEqualTo("Foo<List<Integer>>");
+        assertThat(Format.withoutPackage(Types.MAP_INTEGER_STRING.get())).isEqualTo("Map<Integer, String>");
+        assertThat(Format.withoutPackage(Types.LIST_LIST_STRING.get())).isEqualTo("List<List<String>>");
+        assertThat(Format.withoutPackage(Nested1.Nested2.class)).isEqualTo("FormatTest$Nested1$Nested2");
+        assertThat(Format.withoutPackage(Foo.class)).isEqualTo("Foo");
+        assertThat(Format.withoutPackage(String.class)).isEqualTo("String");
+        assertThat(Format.withoutPackage(List.class.getTypeParameters()[0])).isEqualTo("E");
+        assertThat(Format.withoutPackage(int[].class)).isEqualTo("int[]");
+    }
 
     @Test
     void getTypeVariablesCsv() {

@@ -24,7 +24,6 @@ import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.platform.commons.util.CollectionUtils;
 
-import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
@@ -41,7 +40,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                 .hasTypeMappedTo(Foo.class, "X", "org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Bar<org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Baz<java.lang.String>>")
-                .hasGenericTypeName("org.instancio.test.support.pojo.generics.foobarbaz." +
+                .hasTypeName("org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Foo<org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Bar<org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Baz<java.lang.String>>>")
@@ -52,7 +51,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                 .hasTargetClass(Bar.class)
                 .hasTypeMappedTo(Bar.class, "Y", "org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Baz<java.lang.String>")
-                .hasGenericTypeName("org.instancio.test.support.pojo.generics.foobarbaz." +
+                .hasTypeName("org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Bar<org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Baz<java.lang.String>>")
                 .hasChildrenOfSize(2);
@@ -65,16 +64,16 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
         assertNode(barValueNode)
                 .hasTargetClass(Baz.class)
                 .hasTypeMappedTo(Baz.class, "Z", String.class)
-                .hasGenericTypeName("org.instancio.test.support.pojo.generics.foobarbaz.Baz<java.lang.String>")
+                .hasTypeName("org.instancio.test.support.pojo.generics.foobarbaz.Baz<java.lang.String>")
                 .hasChildrenOfSize(1);
 
         assertNode(NodeUtils.getChildNode(fooValueNode, "otherBarValue"))
                 .hasTargetClass(Object.class)
                 .hasNoChildren();
 
-        assertNode(getOnlyElement(barValueNode.getChildren()))
+        assertNode(barValueNode.getOnlyChild())
                 .hasTargetClass(String.class)
-                .hasGenericTypeName("Z")
+                .hasTypeName("java.lang.String")
                 .hasNoChildren();
     }
 }

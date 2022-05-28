@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -33,7 +32,7 @@ class MapIntegerStringNodeTest extends NodeTestTemplate<MapIntegerString> {
                 .hasTargetClass(MapIntegerString.class)
                 .hasChildrenOfSize(1);
 
-        final MapNode map = assertNode(getOnlyElement(rootNode.getChildren()))
+        final Node map = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
                 .hasFieldName("map")
                 .hasTargetClass(Map.class)
@@ -41,7 +40,7 @@ class MapIntegerStringNodeTest extends NodeTestTemplate<MapIntegerString> {
                 .hasTypeMappedTo(Map.class, "V", String.class)
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
-                .getAs(MapNode.class);
+                .get();
 
         assertNode(map.getChildren().get(0))
                 .hasParent(map)

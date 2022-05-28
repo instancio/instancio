@@ -20,14 +20,12 @@ import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.generator.util.EnumSetGenerator;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.util.ReflectionUtils;
 import org.instancio.util.Sonar;
-import org.instancio.util.Verify;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -46,25 +44,20 @@ public class CollectionNodeHandler implements NodeHandler {
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-
-        if (node instanceof CollectionNode) {
-            Verify.isTrue(Collection.class.isAssignableFrom(node.getTargetClass()),
-                    "Expected a collection type: %s", node.getTargetClass());
-
+        if (Collection.class.isAssignableFrom(node.getTargetClass())) {
             if (EnumSet.class.isAssignableFrom(node.getTargetClass())) {
-                return generateEnumSet((CollectionNode) node);
+                return generateEnumSet(node);
             }
 
-            final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
             final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(randomSize()).build();
-            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(effectiveType), hints);
+            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(node.getTargetClass()), hints);
             return Optional.of(result);
         }
         return Optional.empty();
     }
 
     @SuppressWarnings({"unchecked", Sonar.RAW_USE_OF_PARAMETERIZED_CLASS})
-    private Optional<GeneratorResult> generateEnumSet(final CollectionNode collectionNode) {
+    private Optional<GeneratorResult> generateEnumSet(final Node collectionNode) {
         final Class<Enum> enumClass = (Class<Enum>) collectionNode.getOnlyChild().getTargetClass();
         final Enum<?>[] enumValues = ReflectionUtils.getEnumValues(enumClass);
         final int enumSetSize = Math.min(randomSize(), enumValues.length);
