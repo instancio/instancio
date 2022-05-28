@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.ArrayNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.container.ItemArrayContainer;
@@ -41,31 +40,31 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
 
     private void assertItemArrayX(Node rootNode) {
         final String itemArrayField = "itemArrayX";
-        final ArrayNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
+        final Node array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
                 .hasFieldName(itemArrayField)
                 .hasTargetClass(Item[].class)
-                .hasGenericTypeName("org.instancio.test.support.pojo.generics.basic.Item<X>[]")
+                .hasTypeName("org.instancio.test.support.pojo.generics.basic.Item<X>[]")
                 .hasChildrenOfSize(1)
                 .hasEmptyTypeMap()
-                .getAs(ArrayNode.class);
+                .get();
 
         assertElementNode(array, "X");
     }
 
     private void assertItemArrayY(Node rootNode) {
         final String itemArrayField = "itemArrayY";
-        final ArrayNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
+        final Node array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
                 .hasFieldName(itemArrayField)
                 .hasTargetClass(Item[].class)
-                .hasGenericTypeName("org.instancio.test.support.pojo.generics.basic.Item<Y>[]")
+                .hasTypeName("org.instancio.test.support.pojo.generics.basic.Item<Y>[]")
                 .hasChildrenOfSize(1)
                 .hasEmptyTypeMap()
-                .getAs(ArrayNode.class);
+                .get();
 
         assertElementNode(array, "Y");
     }
 
-    private void assertElementNode(ArrayNode arrayNode, String expectedType) {
+    private void assertElementNode(Node arrayNode, String expectedType) {
         final Node elementNode = arrayNode.getOnlyChild();
         assertNode(elementNode)
                 .hasTargetClass(Item.class)

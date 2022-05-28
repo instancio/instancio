@@ -31,11 +31,7 @@ public class CyclicListCreationTest extends CreationTestTemplate<CyclicList> {
     @Override
     protected void verify(CyclicList result) {
         List<CyclicList> items = result.getItems();
-        assertThat(items)
-                .isNotEmpty()
-                .allSatisfy(item -> assertThat(item.getItems())
-                        .isNotEmpty()
-                        .allSatisfy(nestedItem -> assertThat(nestedItem.getItems()).isNull()));
+        assertThat(items).isEmpty();
     }
 
 }

@@ -17,24 +17,18 @@ package org.instancio.creation.generics;
 
 import org.instancio.test.support.pojo.generics.MapWithoutTypes;
 import org.instancio.test.support.tags.GenericsTag;
-import org.instancio.test.support.util.Constants;
+import org.instancio.testsupport.templates.AutoVerificationDisabled;
 import org.instancio.testsupport.templates.CreationTestTemplate;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @GenericsTag
+@AutoVerificationDisabled
 public class MapWithoutTypesCreationTest extends CreationTestTemplate<MapWithoutTypes> {
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings("unchecked")
     protected void verify(MapWithoutTypes result) {
-        final Map map = result.getMap();
-
-        assertThat(map).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
-        assertThat(map.keySet()).hasOnlyElementsOfType(Object.class);
-        assertThat(map.values()).hasOnlyElementsOfType(Object.class);
+        assertThat(result.getMap()).isEmpty();
     }
-
 }

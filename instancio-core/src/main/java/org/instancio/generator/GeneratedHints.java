@@ -32,7 +32,6 @@ public class GeneratedHints {
     private final boolean nullableMapValues;
     private final List<Object> withElements;
 
-    @SuppressWarnings("PMD.AccessorMethodGeneration")
     private GeneratedHints(final Builder builder) {
         dataStructureSize = builder.dataStructureSize;
         ignoreChildren = builder.ignoreChildren;

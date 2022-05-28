@@ -37,29 +37,19 @@ class BidirectionalOneToOneNodeTest extends NodeTestTemplate<BidirectionalOneToO
                 .hasFieldName("child")
                 .hasTargetClass(BidirectionalOneToOne.Child.class)
                 .hasChildrenOfSize(2)
-                .getAs(Node.class);
+                .get();
 
         final Node parent = assertNode(NodeUtils.getChildNode(child, "parent"))
                 .hasParent(child)
                 .hasFieldName("parent")
                 .hasTargetClass(BidirectionalOneToOne.Parent.class)
-                .hasChildrenOfSize(2)
-                .getAs(Node.class);
+                .hasChildrenOfSize(1)
+                .get();
 
-        final Node childAgain = assertNode(NodeUtils.getChildNode(parent, "child"))
+        assertNode(parent.getOnlyChild())
                 .hasParent(parent)
-                .hasFieldName("child")
-                .hasTargetClass(BidirectionalOneToOne.Child.class)
-                .hasChildrenOfSize(2)
-                .getAs(Node.class);
-
-        assertNode(NodeUtils.getChildNode(childAgain, "parent"))
-                .hasParent(childAgain)
-                .hasFieldName("parent")
-                .hasTargetClass(BidirectionalOneToOne.Parent.class)
-                .hasChildrenOfSize(2)
-                .getAs(Node.class);
-
-        // TBC...
+                .hasFieldName("parentName")
+                .hasTargetClass(String.class)
+                .hasNoChildren();
     }
 }

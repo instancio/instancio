@@ -21,14 +21,14 @@ import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.basic.Triplet;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.test.support.tags.NodeTag;
 import org.instancio.testsupport.fixtures.Types;
+import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
@@ -41,24 +41,26 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 @NodeTag
 class NodeTest {
-
+    private static final NodeContext NODE_CONTEXT = new NodeContext(Collections.emptyMap(), null);
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap = new HashMap<>();
 
     @Nested
-    class EqualsTests {
+    class EqualsTest {
 
         @Test
         void equalsHashCode() {
-            TypeToken<?> typeBazInteger = new TypeToken<Baz<Integer>>() {
-            };
-            TypeToken<?> typeBazString = new TypeToken<Baz<String>>() {
-            };
+            TypeToken<?> typeBazInteger = new TypeToken<Baz<Integer>>() {};
+            TypeToken<?> typeBazString = new TypeToken<Baz<String>>() {};
 
             Node bazInteger = createNode(List.class, rootTypeMap, typeBazInteger);
             Node bazString = createNode(List.class, rootTypeMap, typeBazString);
             NodeContext nodeContext = new NodeContext(rootTypeMap, null);
-            Node bazIntegerClassNode = new ClassNode(nodeContext, Baz.class, null,
-                    getTypeOf(typeBazInteger), null);
+            Node bazIntegerClassNode = Node.builder()
+                    .nodeContext(nodeContext)
+                    .type(getTypeOf(typeBazInteger))
+                    .rawType(Baz.class)
+                    .targetClass(Baz.class)
+                    .build();
 
             assertThat(bazString).isEqualTo(bazString).hasSameHashCodeAs(bazString);
             assertThat(bazString).isNotEqualTo(bazInteger).doesNotHaveSameHashCodeAs(bazInteger);
@@ -68,50 +70,49 @@ class NodeTest {
 
     @Nested
     @GenericsTag
-    class EffectiveTypeTests {
+    class GenericTypeTest {
 
         @Test
         void listOfString() {
             assertNode(createNode(List.class, rootTypeMap, Types.LIST_STRING))
                     .hasTargetClass(List.class)
-                    .hasGenericType(getTypeOf(Types.LIST_STRING));
+                    .hasType(getTypeOf(Types.LIST_STRING));
         }
 
         @Test
         void mapOfIntegerString() {
             assertNode(createNode(Map.class, rootTypeMap, Types.MAP_INTEGER_STRING))
                     .hasTargetClass(Map.class)
-                    .hasGenericType(getTypeOf(Types.MAP_INTEGER_STRING));
+                    .hasType(getTypeOf(Types.MAP_INTEGER_STRING));
         }
 
         @Test
         void pairOfIntegerString() {
             assertNode(createNode(Pair.class, rootTypeMap, Types.PAIR_INTEGER_STRING))
                     .hasTargetClass(Pair.class)
-                    .hasGenericType(getTypeOf(Types.PAIR_INTEGER_STRING));
+                    .hasType(getTypeOf(Types.PAIR_INTEGER_STRING));
         }
 
         @Test
         void tripletOfBooleanStringInteger() {
             assertNode(createNode(Triplet.class, rootTypeMap, Types.TRIPLET_BOOLEAN_INTEGER_STRING))
                     .hasTargetClass(Triplet.class)
-                    .hasGenericType(getTypeOf(Types.TRIPLET_BOOLEAN_INTEGER_STRING));
+                    .hasType(getTypeOf(Types.TRIPLET_BOOLEAN_INTEGER_STRING));
         }
 
         @Test
         void pairOfGenericItemFooList() {
-            final TypeToken<?> type = new TypeToken<Pair<Item<Foo<List<Integer>>>, Map<Integer, Foo<String>>>>() {
-            };
+            final TypeToken<?> type = new TypeToken<Pair<Item<Foo<List<Integer>>>, Map<Integer, Foo<String>>>>() {};
 
             assertNode(createNode(Pair.class, rootTypeMap, type))
                     .hasTargetClass(Pair.class)
-                    .hasGenericType(getTypeOf(type));
+                    .hasType(getTypeOf(type));
         }
     }
 
     @Nested
     @GenericsTag
-    class TypeMapTests {
+    class TypeMapTest {
 
         @Test
         void listOfStrings() {
@@ -142,42 +143,66 @@ class NodeTest {
             final Type typeLeft = getTypeOf(Types.ITEM_STRING);
             final Type typeRight = getTypeOf(Types.FOO_LIST_INTEGER);
 
-            assertNode(createNode(Pair.class, rootTypeMap, new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {
-            }))
+            assertNode(createNode(Pair.class, rootTypeMap, new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {}))
                     .hasTypeMappedTo(Pair.class, "L", typeLeft)
                     .hasTypeMappedTo(Pair.class, "R", typeRight)
                     .hasTypeMapWithSize(2);
         }
     }
 
+    @Nested
+    class ToStringTest {
+
+        @Test
+        void verifyToString() {
+            final Node age = Node.builder()
+                    .nodeContext(NODE_CONTEXT)
+                    .type(Person.class)
+                    .rawType(Person.class)
+                    .targetClass(Person.class)
+                    .field(ReflectionUtils.getField(Person.class, "age"))
+                    .build();
+
+            assertThat(age).hasToString("Node[Person.age, #chn=0, Person]");
+
+            final Node node = Node.builder().nodeContext(NODE_CONTEXT)
+                    .type(Person.class)
+                    .rawType(Person.class)
+                    .targetClass(Person.class)
+                    .build();
+
+            node.setChildren(Collections.singletonList(age));
+            assertThat(node).hasToString("Node[Person, #chn=1, Person]");
+
+            assertThat(Node.builder()
+                    .nodeContext(NODE_CONTEXT)
+                    .type(String.class)
+                    .rawType(String.class)
+                    .targetClass(String.class)
+                    .field(null)
+                    .build()).hasToString("Node[String, #chn=0, String]");
+
+            assertThat(Node.builder()
+                    .nodeContext(NODE_CONTEXT)
+                    .type(getTypeOf(new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {}))
+                    .rawType(Pair.class)
+                    .targetClass(Pair.class)
+                    .build())
+                    .hasToString("Node[Pair, #chn=0, Pair<Item<String>, Foo<List<Integer>>>]");
+        }
+    }
+
     private static Node createNode(Class<?> klass, Map<TypeVariable<?>, Class<?>> rootTypeMap, TypeToken<?> type) {
         final NodeContext nodeContext = new NodeContext(rootTypeMap, null);
-        return new NodeImpl(nodeContext, klass, null, getTypeOf(type), null);
+        return Node.builder()
+                .nodeContext(nodeContext)
+                .type(getTypeOf(type))
+                .rawType(klass)
+                .targetClass(klass)
+                .build();
     }
 
     private static Type getTypeOf(TypeToken<?> type) {
         return type.get();
-    }
-
-
-    private static class NodeImpl extends Node {
-        NodeImpl(NodeContext nodeContext,
-                 Class<?> klass,
-                 @Nullable Field field,
-                 @Nullable Type genericType,
-                 @Nullable Node parent) {
-
-            super(nodeContext, klass, field, genericType, parent, Collections.emptyMap());
-        }
-
-        @Override
-        public void accept(final NodeVisitor visitor) {
-            // no-op
-        }
-
-        @Override
-        protected List<Node> collectChildren() {
-            return Collections.emptyList();
-        }
     }
 }

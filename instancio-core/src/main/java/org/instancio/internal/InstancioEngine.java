@@ -72,7 +72,8 @@ class InstancioEngine {
         }
 
         final GeneratorResult rootResult = optResult.get();
-        node.accept(new PopulatingNodeVisitor(owner, rootResult, context, queue, this));
+        final Populator populator = new Populator(owner, rootResult, context, queue, this);
+        populator.populate(node);
 
         while (!queue.isEmpty()) {
             process(queue.poll());
@@ -86,8 +87,11 @@ class InstancioEngine {
 
         final Node node = createItem.getNode();
         final Optional<GeneratorResult> result = generateValue(node, createItem.getOwner());
-        result.ifPresent(generatorResult -> node.accept(
-                new PopulatingNodeVisitor(createItem.getOwner(), generatorResult, context, queue, this)));
+
+        result.ifPresent(generatorResult -> {
+            final Populator populator = new Populator(createItem.getOwner(), generatorResult, context, queue, this);
+            populator.populate(node);
+        });
     }
 
     private Optional<GeneratorResult> generateValue(final Node node, @Nullable final Object owner) {

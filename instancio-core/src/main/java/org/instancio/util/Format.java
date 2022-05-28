@@ -18,15 +18,19 @@ package org.instancio.util;
 import org.instancio.Scope;
 import org.instancio.internal.selectors.ScopeImpl;
 
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.joining;
 
 public final class Format {
-    private Format() {
-        // non-instantiable
+    private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
+
+    public static String withoutPackage(final Type type) {
+        return PACKAGE_PATTERN.matcher(type.getTypeName()).replaceAll("");
     }
 
     public static String scopes(final List<Scope> scopes) {
@@ -48,5 +52,9 @@ public final class Format {
         return rootTypeParameters.stream()
                 .map(klass -> klass.getSimpleName() + ".class")
                 .collect(joining(", "));
+    }
+
+    private Format() {
+        // non-instantiable
     }
 }

@@ -15,13 +15,10 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.ListWithoutType;
 import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
-
-import java.util.List;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
@@ -33,13 +30,8 @@ class ListWithoutTypeNodeTest extends NodeTestTemplate<ListWithoutType> {
                 .hasTargetClass(ListWithoutType.class)
                 .hasChildrenOfSize(1);
 
-        final CollectionNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("list")
-                .hasChildrenOfSize(1)
-                .hasTargetClass(List.class)
-                .getAs(CollectionNode.class);
-
-        assertNode(list.getOnlyChild())
-                .hasTargetClass(Object.class);
+                .hasNoChildren();
     }
 }

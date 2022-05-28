@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.ListExtendsNumber;
 import org.instancio.test.support.util.CollectionUtils;
@@ -33,11 +32,11 @@ class ListExtendsNumberNodeTest extends NodeTestTemplate<ListExtendsNumber> {
                 .hasTargetClass(ListExtendsNumber.class)
                 .hasChildrenOfSize(1);
 
-        final CollectionNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        final Node list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("list")
                 .hasChildrenOfSize(1)
                 .hasTargetClass(List.class)
-                .getAs(CollectionNode.class);
+                .get();
 
         assertNode(list.getOnlyChild())
                 .hasTargetClass(Number.class);

@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.ClassNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.PairLongPairIntegerString;
 import org.instancio.test.support.pojo.generics.basic.Pair;
@@ -44,7 +43,7 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
                 .hasTypeMappedTo(Pair.class, "R", Types.PAIR_INTEGER_STRING.get())
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
-                .getAs(ClassNode.class);
+                .get();
 
         assertNode(NodeUtils.getChildNode(outerPair, "left"))
                 .hasFieldName("left")
@@ -60,7 +59,7 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
                 .hasTypeMappedTo(Pair.class, "R", String.class)
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
-                .getAs(ClassNode.class);
+                .get();
 
         assertInnerPair(innerPair);
     }

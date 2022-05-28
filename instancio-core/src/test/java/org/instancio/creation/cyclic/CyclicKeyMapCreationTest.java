@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.creation.cyclic.onetomany;
+package org.instancio.creation.cyclic;
 
-import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
+import org.instancio.test.support.pojo.cyclic.CyclicKeyMap;
 import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.AutoVerificationDisabled;
 import org.instancio.testsupport.templates.CreationTestTemplate;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @CyclicTag
 @AutoVerificationDisabled
-public class MainRecordCreationTest extends CreationTestTemplate<MainRecord> {
+public class CyclicKeyMapCreationTest extends CreationTestTemplate<CyclicKeyMap> {
 
     @Override
-    protected void verify(MainRecord result) {
-        assertThat(result.getDetailRecords()).isNotEmpty().allSatisfy(detail -> {
-            assertThat(detail.getMainRecord()).isNotNull();
-            assertThat(detail.getMainRecord().getId()).isNotNull();
-            assertThat(detail.getMainRecord().getDetailRecords()).isNull();
-        });
+    protected void verify(CyclicKeyMap result) {
+        Map<CyclicKeyMap, String> items = result.getMap();
+        assertThat(items).isEmpty();
     }
+
 }

@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.util.Format;
 import org.instancio.util.ObjectUtils;
 import org.instancio.util.Verify;
 
@@ -26,56 +27,78 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class Node {
+public final class Node {
 
     private final NodeContext nodeContext;
-    private final Field field;
+    private final Type type;
+    private final Class<?> rawType;
     private final Class<?> targetClass;
-    private final Type genericType;
-    private Node parent;
-    private List<Node> children;
+    private final Field field;
+    private final Node parent;
     private final TypeMap typeMap;
+    private List<Node> children = Collections.emptyList();
 
-    Node(final NodeContext nodeContext,
-         final Class<?> targetClass,
-         @Nullable final Field field,
-         @Nullable final Type genericType,
-         @Nullable final Node parent,
-         final Map<Type, Type> additionalTypeMap) {
+    private Node(final Builder builder) {
+        nodeContext = builder.nodeContext;
+        type = Verify.notNull(builder.type, "null type");
+        rawType = Verify.notNull(builder.rawType, "null rawType");
+        targetClass = Verify.notNull(builder.targetClass, "null targetClass");
+        field = builder.field;
+        parent = builder.parent;
 
-        this.nodeContext = Verify.notNull(nodeContext, "nodeContext is null");
-        this.targetClass = Verify.notNull(targetClass, "targetClass is null");
-        this.field = field;
-        this.genericType = genericType;
-        this.parent = parent;
-        this.typeMap = new TypeMap(
-                ObjectUtils.defaultIfNull(genericType, targetClass),
+        typeMap = new TypeMap(
+                ObjectUtils.defaultIfNull(type, targetClass),
                 nodeContext.getRootTypeMap(),
-                additionalTypeMap);
+                builder.additionalTypeMap);
     }
 
-    protected abstract List<Node> collectChildren();
-
-    public abstract void accept(NodeVisitor visitor);
-
-    void setParent(final Node parent) {
-        this.parent = parent;
+    public static Builder builder() {
+        return new Builder();
     }
 
     public NodeContext getNodeContext() {
         return nodeContext;
     }
 
-    public Field getField() {
-        return field;
+    /**
+     * Returns the type represented by this node,
+     * either a {@link Class} or {@link java.lang.reflect.ParameterizedType}.
+     *
+     * @return type represented by this node
+     */
+    public Type getType() {
+        return type;
     }
 
+    /**
+     * Returns the raw type equivalent to this node's {@link #getType()}.
+     * In the absence of subtype mapping, this method and {@link #getTargetClass()}
+     * return the same value.
+     *
+     * @return raw type represented by this node.
+     * @see #getTargetClass()
+     */
+    public Class<?> getRawType() {
+        return rawType;
+    }
+
+    /**
+     * Returns the target class represented by this node. Unlike {@link #getRawType()},
+     *
+     * @return target class represented by this node
+     * @see #getRawType()
+     */
     public Class<?> getTargetClass() {
         return targetClass;
     }
 
-    public Type getGenericType() {
-        return genericType;
+    /**
+     * Returns a field associated with this node, or {@code null} if none.
+     *
+     * @return field, if present, or {@code null}
+     */
+    public Field getField() {
+        return field;
     }
 
     public Node getParent() {
@@ -91,34 +114,120 @@ public abstract class Node {
         return getChildren().get(0);
     }
 
+    /**
+     * Returns this node's children. For "container" nodes like arrays, collections, and maps,
+     * the children will be nodes representing array/collection element or map key/value.
+     * For other nodes, the children are based on the {@link #getTargetClass()} fields.
+     * <p>
+     * A node (including container nodes) may not have children in case of cyclic relationships.
+     * An empty list would be returned to break the cycle.
+     *
+     * @return this node's children or an empty list if none
+     */
     public List<Node> getChildren() {
-        if (children == null) {
-            children = Collections.unmodifiableList(collectChildren());
-        }
         return children;
     }
 
+    public void setChildren(final List<Node> children) {
+        this.children = children;
+    }
+
+    /**
+     * This method is used for detecting cycles. If this node
+     * is equal to any of its ancestors, then there is a cycle.
+     *
+     * @return {@code true} if this node has an ancestor equal to it,
+     * {@code false} otherwise.
+     */
+    public boolean hasAncestorEqualToSelf() {
+        Node ancestor = parent;
+
+        while (ancestor != null && !ancestor.equals(this)) {
+            ancestor = ancestor.getParent();
+        }
+
+        return ancestor != null;
+    }
+
     @Override
-    public final boolean equals(@Nullable Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node other = (Node) o;
 
         return this.getTargetClass().equals(other.getTargetClass())
-                && Objects.equals(this.getGenericType(), other.getGenericType())
+                && Objects.equals(this.getType(), other.getType())
                 && Objects.equals(this.getField(), other.getField());
     }
 
     @Override
-    public final int hashCode() {
-        return Objects.hash(getTargetClass(), getGenericType(), getField());
+    public int hashCode() {
+        return Objects.hash(getTargetClass(), getType(), getField());
     }
 
     @Override
-    public final String toString() {
-        String fieldName = field == null ? "null" : field.getName();
-        String numChildren = String.format("[%s]", (children == null ? 0 : children.size()));
-        return this.getClass().getSimpleName() + numChildren + "["
-                + targetClass.getSimpleName() + ", " + genericType + ", field: " + fieldName + "]";
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Node[").append(targetClass.getSimpleName());
+        if (field != null) {
+            sb.append('.').append(field.getName());
+        }
+        sb.append(", #chn=").append(children == null ? 0 : children.size());
+        if (type != null) {
+            sb.append(", ").append(Format.withoutPackage(type));
+        }
+        return sb.append(']').toString();
+    }
+
+    public static final class Builder {
+        private NodeContext nodeContext;
+        private Type type;
+        private Class<?> rawType;
+        private Class<?> targetClass;
+        private Field field;
+        private Node parent;
+        private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
+
+        private Builder() {
+        }
+
+        public Builder nodeContext(final NodeContext nodeContext) {
+            this.nodeContext = nodeContext;
+            return this;
+        }
+
+        public Builder type(final Type type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder rawType(final Class<?> rawType) {
+            this.rawType = rawType;
+            return this;
+        }
+
+        public Builder targetClass(final Class<?> targetClass) {
+            this.targetClass = targetClass;
+            return this;
+        }
+
+        public Builder field(@Nullable final Field field) {
+            this.field = field;
+            return this;
+        }
+
+        public Builder parent(@Nullable final Node parent) {
+            this.parent = parent;
+            return this;
+        }
+
+        public Builder additionalTypeMap(final Map<Type, Type> additionalTypeMap) {
+            this.additionalTypeMap = additionalTypeMap;
+            return this;
+        }
+
+        public Node build() {
+            return new Node(this);
+        }
     }
 }

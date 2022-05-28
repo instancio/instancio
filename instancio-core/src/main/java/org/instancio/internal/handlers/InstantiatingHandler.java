@@ -16,7 +16,6 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.generator.GeneratorResult;
-import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.util.ReflectionUtils;
@@ -25,19 +24,17 @@ import java.util.Optional;
 
 public class InstantiatingHandler implements NodeHandler {
 
-    private final ModelContext<?> context;
     private final Instantiator instantiator;
 
-    public InstantiatingHandler(final ModelContext<?> context, final Instantiator instantiator) {
-        this.context = context;
+    public InstantiatingHandler(final Instantiator instantiator) {
         this.instantiator = instantiator;
     }
 
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
-        final Class<?> effectiveType = context.getSubtypeMapping(node.getTargetClass());
-        if (ReflectionUtils.isConcrete(effectiveType)) {
-            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(effectiveType));
+        final Class<?> targetClass = node.getTargetClass();
+        if (ReflectionUtils.isConcrete(targetClass)) {
+            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(targetClass));
             return Optional.of(result);
         }
         return Optional.empty();

@@ -17,6 +17,9 @@ package org.instancio.test.features.generator.seed;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.util.Sonar;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -37,6 +40,11 @@ class WithoutSeedAnnotationTest {
 
     private static final Set<Object> results = new HashSet<>();
     private static final int REPEATED_TEST_NUM_INVOCATIONS = 5;
+
+    @WithSettings
+    private static final Settings settings = Settings.create()
+            .set(Keys.LONG_MIN, Long.MIN_VALUE)
+            .set(Keys.LONG_MAX, Long.MAX_VALUE);
 
     @Order(1)
     @SuppressWarnings(Sonar.ADD_ASSERTION)

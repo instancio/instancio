@@ -32,7 +32,7 @@ class BaseClasSubClassInheritanceNodeTest extends NodeTestTemplate<BaseClasSubCl
 
         final Node subClass = assertNode(NodeUtils.getChildNode(rootNode, "subClass"))
                 .hasChildrenOfSize(3)
-                .getAs(Node.class);
+                .get();
 
         // Subclass field
         assertNode(NodeUtils.getChildNode(subClass, "subClassField"))

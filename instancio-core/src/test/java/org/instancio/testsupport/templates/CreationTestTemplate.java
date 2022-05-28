@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.test.support.tags.CreateTag;
+import org.instancio.util.Format;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.TestInstance;
@@ -36,7 +37,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
-import static org.instancio.testsupport.utils.TypeUtils.shortenPackageNames;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 /**
@@ -119,7 +119,7 @@ public abstract class CreationTestTemplate<T> {
     }
 
     private String getDisplayName(final String apiMethod) {
-        return String.format("of type '%s' using %s", shortenPackageNames(genericType), apiMethod);
+        return String.format("of type '%s' using %s", Format.withoutPackage(genericType), apiMethod);
     }
 
     private boolean isAutoVerificationEnabled() {

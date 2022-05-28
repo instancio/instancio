@@ -19,8 +19,6 @@ import org.instancio.GroupableSelector;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
-import org.instancio.internal.nodes.ArrayNode;
-import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
@@ -39,7 +37,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +51,7 @@ class SelectorMapTest {
     private final NodeFactory nodeFactory = new NodeFactory(
             new NodeContext(Collections.emptyMap(), new SubtypeSelectorMap(Collections.emptyMap())));
 
-    private final Node rootNode = nodeFactory.createRootNode(PersonHolder.class, null);
+    private final Node rootNode = nodeFactory.createRootNode(PersonHolder.class);
     private final Node personNameNode = getNodeWithField(rootNode, Person.class, "name");
     private final Node phoneNumberNode = getNodeWithField(rootNode, Phone.class, "number");
     private final Node petNameNode = getNodeWithField(rootNode, Pet.class, "name");
@@ -179,7 +176,7 @@ class SelectorMapTest {
         assertThat(selectorMap.getValue(personNameNode)).isEmpty();
         assertThat(selectorMap.getValue(phoneNumberNode)).isEmpty();
 
-        final Node stringNode = nodeFactory.createRootNode(String.class, null);
+        final Node stringNode = nodeFactory.createRootNode(String.class);
         assertThat(selectorMap.getValue(stringNode)).isEmpty();
     }
 
@@ -190,14 +187,8 @@ class SelectorMapTest {
             return node;
         }
 
-        final List<Node> children = new ArrayList<>(node.getChildren());
-        if (node instanceof CollectionNode) {
-            children.add(node.getOnlyChild());
-        } else if (node instanceof ArrayNode) {
-            children.add(node.getOnlyChild());
-        }
         Node result = null;
-        for (Node child : children) {
+        for (Node child : node.getChildren()) {
             result = getNodeWithField(child, declaringClass, fieldName);
             if (result != null) break;
         }

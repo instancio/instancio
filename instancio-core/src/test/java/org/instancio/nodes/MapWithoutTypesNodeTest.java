@@ -15,13 +15,10 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.MapNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.generics.MapWithoutTypes;
 import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
-
-import java.util.Map;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
@@ -33,13 +30,8 @@ class MapWithoutTypesNodeTest extends NodeTestTemplate<MapWithoutTypes> {
                 .hasTargetClass(MapWithoutTypes.class)
                 .hasChildrenOfSize(1);
 
-        final MapNode map = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("map")
-                .hasChildrenOfSize(2)
-                .hasTargetClass(Map.class)
-                .getAs(MapNode.class);
-
-        assertNode(map.getChildren().get(0)).hasTargetClass(Object.class);
-        assertNode(map.getChildren().get(1)).hasTargetClass(Object.class);
+                .hasNoChildren();
     }
 }

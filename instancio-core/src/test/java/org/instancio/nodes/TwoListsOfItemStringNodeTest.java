@@ -15,7 +15,6 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.CollectionNode;
 import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -42,10 +41,10 @@ class TwoListsOfItemStringNodeTest extends NodeTestTemplate<TwoListsOfItemString
     }
 
     private void assertListNode(Node rootNode, String listField) {
-        final CollectionNode list = assertNode(NodeUtils.getChildNode(rootNode, listField))
+        final Node list = assertNode(NodeUtils.getChildNode(rootNode, listField))
                 .hasChildrenOfSize(1)
-                .hasGenericType(Types.LIST_ITEM_STRING.get())
-                .getAs(CollectionNode.class);
+                .hasType(Types.LIST_ITEM_STRING.get())
+                .get();
 
         assertNode(list.getOnlyChild())
                 .hasNullField()

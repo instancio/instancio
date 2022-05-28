@@ -13,15 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.internal.nodes;
+package org.instancio.test.support.pojo.cyclic;
 
-public interface NodeVisitor {
+import lombok.Getter;
+import lombok.ToString;
 
-    void visitClassNode(ClassNode node);
+import java.util.Map;
 
-    void visitCollectionNode(CollectionNode node);
+@Getter
+@ToString
+public class CyclicValueMap {
 
-    void visitMapNode(MapNode node);
-
-    void visitArrayNode(ArrayNode node);
+    private Map<String, CyclicValueMap> map;
 }

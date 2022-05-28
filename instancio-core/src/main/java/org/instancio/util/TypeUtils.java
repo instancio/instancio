@@ -27,11 +27,23 @@ public final class TypeUtils {
     }
 
     public static Class<?> getArrayClass(final Type type) {
+
         if (type instanceof Class) {
-            final Class<?> arrayClass = (Class<?>) type;
-            Verify.isTrue(arrayClass.isArray(), "Not an array: %s", type);
-            return arrayClass;
+            final Class<?> klass = (Class<?>) type;
+
+            if (klass.isArray()) {
+                return klass;
+            }
+
+            return Array.newInstance(klass, 0).getClass();
         }
+        if (type instanceof ParameterizedType) {
+            final Type rawType = ((ParameterizedType) type).getRawType();
+
+            return getArrayClass(rawType);
+        }
+
+
         if (type instanceof GenericArrayType) {
             final GenericArrayType arrayType = (GenericArrayType) type;
             final Type genericComponent = arrayType.getGenericComponentType();
@@ -47,6 +59,8 @@ public final class TypeUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getRawType(final Type type) {
+        Verify.notNull(type, "type is null");
+
         if (type instanceof Class) {
             return (Class<T>) type;
         } else if (type instanceof ParameterizedType) {

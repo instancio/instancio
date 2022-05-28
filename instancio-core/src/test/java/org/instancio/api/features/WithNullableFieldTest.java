@@ -45,7 +45,7 @@ import static org.instancio.Select.scope;
 @NonDeterministicTag
 class WithNullableFieldTest {
 
-    private static final int SAMPLE_SIZE = 50;
+    private static final int SAMPLE_SIZE = 100;
 
     @Test
     @DisplayName("A nullable field will be randomly set to null")

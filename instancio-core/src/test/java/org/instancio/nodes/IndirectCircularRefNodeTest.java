@@ -36,44 +36,23 @@ class IndirectCircularRefNodeTest extends NodeTestTemplate<IndirectCircularRef> 
                 .hasTargetClass(IndirectCircularRef.A.class)
                 .hasFieldName("startA")
                 .hasChildrenOfSize(1)
-                .getAs(Node.class);
+                .get();
 
         final Node b = assertNode(CollectionUtils.getOnlyElement(startA.getChildren()))
                 .hasTargetClass(IndirectCircularRef.B.class)
                 .hasFieldName("b")
                 .hasChildrenOfSize(1)
-                .getAs(Node.class);
+                .get();
 
         final Node c = assertNode(CollectionUtils.getOnlyElement(b.getChildren()))
                 .hasTargetClass(IndirectCircularRef.C.class)
                 .hasFieldName("c")
                 .hasChildrenOfSize(1)
-                .getAs(Node.class);
+                .get();
 
-        final Node endA = assertNode(CollectionUtils.getOnlyElement(c.getChildren()))
+        assertNode(CollectionUtils.getOnlyElement(c.getChildren()))
                 .hasTargetClass(IndirectCircularRef.A.class)
                 .hasFieldName("endA")
-                .hasChildrenOfSize(1)
-                .getAs(Node.class);
-
-        final Node bAgain = assertNode(CollectionUtils.getOnlyElement(endA.getChildren()))
-                .hasTargetClass(IndirectCircularRef.B.class)
-                .hasFieldName("b")
-                .hasChildrenOfSize(1)
-                .getAs(Node.class);
-
-        final Node cAgain = assertNode(CollectionUtils.getOnlyElement(bAgain.getChildren()))
-                .hasTargetClass(IndirectCircularRef.C.class)
-                .hasFieldName("c")
-                .hasChildrenOfSize(1)
-                .getAs(Node.class);
-
-        assertNode(CollectionUtils.getOnlyElement(cAgain.getChildren()))
-                .hasTargetClass(IndirectCircularRef.A.class)
-                .hasFieldName("endA")
-                .hasChildrenOfSize(1)
-                .getAs(Node.class);
-
-        // TBC...
+                .hasNoChildren();
     }
 }

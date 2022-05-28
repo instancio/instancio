@@ -41,7 +41,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
                 .hasTypeMappedTo(Item.class, "K", "T")
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
-                .getAs(Node.class);
+                .get();
 
         final Node nestedItem = assertNode(getOnlyElement(item.getChildren()))
                 .hasParent(item)
@@ -50,7 +50,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
                 .hasTypeMappedTo(Item.class, "K", String.class)
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
-                .getAs(Node.class);
+                .get();
 
         assertNode(getOnlyElement(nestedItem.getChildren()))
                 .hasParent(nestedItem)

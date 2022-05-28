@@ -28,128 +28,78 @@ import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.CreateTag;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import static org.assertj.core.api.Fail.fail;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 /**
- * Various contrived generic types.
+ * Tests for creating objects via {@link Instancio#of(Class)} and
+ * {@link org.instancio.InstancioOfClassApi#withTypeParameters(Class[])}.
  */
 @CreateTag
 class CreateClassBulkAutoVerificationTest {
-    private static final Logger LOG = LoggerFactory.getLogger(CreateClassBulkAutoVerificationTest.class);
 
-    @Test
-    void arrays() {
-        bulkAssertFullyPopulated(
-                TypeToCreate.of(int[].class),
-                TypeToCreate.of(Integer[].class),
-                TypeToCreate.of(Item[].class, Integer.class),
-                TypeToCreate.of(Pair[].class, String.class, int.class),
-                TypeToCreate.of(Triplet[].class, String.class, Address.class, Person.class),
-                TypeToCreate.of(OneItemContainer[].class, Integer.class),
-                TypeToCreate.of(MiscFields[].class, Integer.class, String.class, Boolean.class),
-                TypeToCreate.of(MiscFields[].class, Person.class, Address.class, Boolean.class),
-                TypeToCreate.of(TripletAFooBarBazStringListOfB[].class, Integer.class, String.class),
-                TypeToCreate.of(List[].class, int.class),
-                TypeToCreate.of(List[].class, Person.class),
-                TypeToCreate.of(Map[].class, Integer.class, String.class),
-                TypeToCreate.of(Map[].class, Person.class, Address.class));
+    @MethodSource("typesToCreate")
+    @ParameterizedTest
+    void verifyFullyPopulated(final TypeToCreate typeToCreate) {
+        final Object result = Instancio.of(typeToCreate.targetClass)
+                .withTypeParameters(typeToCreate.typeArgs)
+                .create();
+
+        assertThatObject(result)
+                .as("Expected fully-populated object for argument '%s', but was: %s", typeToCreate, result)
+                .isFullyPopulated();
     }
 
-    @Test
-    void collections() {
-        bulkAssertFullyPopulated(
-                TypeToCreate.of(Collection.class, String.class),
-                TypeToCreate.of(Collection.class, Person.class));
+    private static Stream<Arguments> typesToCreate() {
+        return Stream.of(
+                Arguments.of(TypeToCreate.of(Bar.class, Address.class)),
+                Arguments.of(TypeToCreate.of(Baz.class, Person.class)),
+                Arguments.of(TypeToCreate.of(Collection.class, Person.class)),
+                Arguments.of(TypeToCreate.of(Collection.class, String.class)),
+                Arguments.of(TypeToCreate.of(Foo.class, String.class)),
+                Arguments.of(TypeToCreate.of(Integer[].class)),
+                Arguments.of(TypeToCreate.of(Item.class, Integer.class)),
+                Arguments.of(TypeToCreate.of(Item.class, Integer[].class)),
+                Arguments.of(TypeToCreate.of(Item.class, Person.class)),
+                Arguments.of(TypeToCreate.of(Item.class, int[].class)),
+                Arguments.of(TypeToCreate.of(Item[].class, Integer.class)),
+                Arguments.of(TypeToCreate.of(List.class, Person.class)),
+                Arguments.of(TypeToCreate.of(List.class, String.class)),
+                Arguments.of(TypeToCreate.of(List[].class, Person.class)),
+                Arguments.of(TypeToCreate.of(List[].class, int.class)),
+                Arguments.of(TypeToCreate.of(Map.class, Person.class, Address.class)),
+                Arguments.of(TypeToCreate.of(Map.class, String.class, Integer.class)),
+                Arguments.of(TypeToCreate.of(Map.class, String.class, Person.class)),
+                Arguments.of(TypeToCreate.of(Map[].class, Integer.class, String.class)),
+                Arguments.of(TypeToCreate.of(Map[].class, Person.class, Address.class)),
+                Arguments.of(TypeToCreate.of(MiscFields.class, Integer.class, String.class, Boolean.class)),
+                Arguments.of(TypeToCreate.of(MiscFields[].class, Integer.class, String.class, Boolean.class)),
+                Arguments.of(TypeToCreate.of(MiscFields[].class, Person.class, Address.class, Boolean.class)),
+                Arguments.of(TypeToCreate.of(OneItemContainer[].class, Integer.class)),
+                Arguments.of(TypeToCreate.of(Pair.class, Boolean.class, Byte.class)),
+                Arguments.of(TypeToCreate.of(Pair.class, Person.class, Address.class)),
+                Arguments.of(TypeToCreate.of(Pair.class, int[].class, Integer[].class)),
+                Arguments.of(TypeToCreate.of(Pair[].class, String.class, int.class)),
+                Arguments.of(TypeToCreate.of(TripletAFooBarBazStringListOfB[].class, Integer.class, String.class)),
+                Arguments.of(TypeToCreate.of(Triplet[].class, String.class, Address.class, Person.class)),
+                Arguments.of(TypeToCreate.of(int[].class)));
     }
 
-    @Test
-    void lists() {
-        bulkAssertFullyPopulated(
-                TypeToCreate.of(List.class, String.class),
-                TypeToCreate.of(List.class, Person.class));
-    }
-
-    @Test
-    void maps() {
-        bulkAssertFullyPopulated(
-                TypeToCreate.of(Map.class, String.class, Integer.class),
-                TypeToCreate.of(Map.class, String.class, Person.class),
-                TypeToCreate.of(Map.class, Person.class, Address.class));
-    }
-
-    @Test
-    void items() {
-        bulkAssertFullyPopulated(
-                TypeToCreate.of(Item.class, int[].class),
-                TypeToCreate.of(Item.class, Integer[].class),
-                TypeToCreate.of(Item.class, Integer.class),
-                TypeToCreate.of(Item.class, Person.class));
-    }
-
-    @Test
-    void pairs() {
-        bulkAssertFullyPopulated(
-                TypeToCreate.of(Pair.class, int[].class, Integer[].class),
-                TypeToCreate.of(Pair.class, Boolean.class, Byte.class),
-                TypeToCreate.of(Pair.class, Person.class, Address.class));
-    }
-
-    @Test
-    void fooBarBaz() {
-        bulkAssertFullyPopulated(
-                TypeToCreate.of(Foo.class, String.class),
-                TypeToCreate.of(Bar.class, Address.class),
-                TypeToCreate.of(Baz.class, Person.class));
-    }
-
-    @Test
-    void miscFields() {
-        bulkAssertFullyPopulated(
-                TypeToCreate.of(MiscFields.class, Integer.class, String.class, Boolean.class));
-    }
-
-    private static void bulkAssertFullyPopulated(TypeToCreate... typesToCreate) {
-        List<TypeToCreate> failed = new ArrayList<>();
-        for (TypeToCreate typeToCreate : typesToCreate) {
-            try {
-                final Object result = Instancio.of(typeToCreate.targetClass)
-                        .withTypeParameters(typeToCreate.typeArgs)
-                        .create();
-
-                assertThatObject(result)
-                        .as("Type '%s' failed: %s", typeToCreate.targetClass.getTypeName(), result)
-                        .isFullyPopulated();
-            } catch (Throwable ex) {
-                LOG.error("Error creating: {}", typesToCreate, ex);
-                failed.add(typeToCreate);
-            }
-        }
-
-        if (!failed.isEmpty()) {
-            LOG.error("Failures:");
-            failed.forEach((typeToCreate) -> LOG.error("\n\n-> {}", typeToCreate));
-
-            fail("Number of failures: %s", failed.size());
-        }
-    }
-
-    static class TypeToCreate {
+    private static class TypeToCreate {
         private Class<?> targetClass;
         private Class<?>[] typeArgs;
 
-        static TypeToCreate of(Class<?> targetClass, Class<?>... typeArgs) {
-            TypeToCreate type = new TypeToCreate();
+        private static TypeToCreate of(final Class<?> targetClass, final Class<?>... typeArgs) {
+            final TypeToCreate type = new TypeToCreate();
             type.targetClass = targetClass;
             type.typeArgs = typeArgs;
             return type;
@@ -157,7 +107,7 @@ class CreateClassBulkAutoVerificationTest {
 
         @Override
         public String toString() {
-            return String.format("'%s', type params: %s", targetClass, Arrays.toString(typeArgs));
+            return String.format("'%s', type params: %s", targetClass.getSimpleName(), Arrays.toString(typeArgs));
         }
     }
 }
