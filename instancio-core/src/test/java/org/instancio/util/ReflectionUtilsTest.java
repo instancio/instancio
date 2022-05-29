@@ -20,16 +20,31 @@ import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.AbstractList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ReflectionUtilsTest {
+
+    @ValueSource(classes = {String.class, String[].class, List[].class})
+    @ParameterizedTest
+    void isArrayOrConcreteTrue(final Class<?> klass) {
+        assertThat(ReflectionUtils.isArrayOrConcrete(klass)).isTrue();
+    }
+
+    @ValueSource(classes = {List.class, AbstractList.class})
+    @ParameterizedTest
+    void isArrayOrConcreteFalse(final Class<?> klass) {
+        assertThat(ReflectionUtils.isArrayOrConcrete(klass)).isFalse();
+    }
 
     @Test
     void getEnumValues() {

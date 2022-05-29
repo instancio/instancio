@@ -27,7 +27,7 @@ import java.util.function.Function;
 
 import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.ApiValidator.validateNotNullAndType;
-import static org.instancio.internal.ApiValidator.validateSubtypeMapping;
+import static org.instancio.internal.ApiValidator.validateSubtype;
 
 /**
  * Instancio settings API.
@@ -35,7 +35,7 @@ import static org.instancio.internal.ApiValidator.validateSubtypeMapping;
  * @since 1.0.1
  */
 public class Settings {
-    private static final String TYPE_MAPPING_PREFIX = "type.mapping.";
+    private static final String TYPE_MAPPING_PREFIX = "subtype.";
     private static final boolean AUTO_ADJUST_ENABLED = true;
 
     private boolean isLockedForModifications;
@@ -187,7 +187,7 @@ public class Settings {
      */
     public Settings mapType(final Class<?> from, final Class<?> to) {
         checkLockedForModifications();
-        validateSubtypeMapping(from, to);
+        validateSubtype(from, to);
         subtypeMap.put(from, to);
         return this;
     }

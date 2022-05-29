@@ -16,8 +16,11 @@
 package org.instancio.test.features.subtype;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.collections.lists.ListInteger;
 import org.instancio.test.support.pojo.generics.basic.ItemInterfaceHolder;
 import org.instancio.test.support.pojo.generics.basic.ItemInterfaceStringHolder;
 import org.instancio.test.support.pojo.generics.basic.NonGenericItemStringExtension;
@@ -26,24 +29,26 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.util.Sonar;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 
-@FeatureTag(Feature.MAP_FIELD_SELECTOR)
+@FeatureTag(Feature.SUBTYPE)
 @ExtendWith(InstancioExtension.class)
-class MapFieldSelectorTest {
+class SubtypeUsingFieldSelectorTest {
 
     @Test
     @DisplayName("Map non-generic field type to non-generic subtype")
     void mapNonGenericTypeToNonGenericSubtype() {
         final Person result = Instancio.of(Person.class)
-                .map(Person_.address, AddressExtension.class)
+                .subtype(Person_.address, AddressExtension.class)
                 .create();
 
         assertThat(result.getAddress()).isExactlyInstanceOf(AddressExtension.class);
@@ -51,28 +56,44 @@ class MapFieldSelectorTest {
     }
 
     @Test
-    @Disabled
-    @FeatureTag(Feature.UNSUPPORTED)
-    @SuppressWarnings(Sonar.DISABLED_TEST)
     void mapGenericTypeToNonGenericSubtype_GenericRootClass() {
         // e.g. ItemInterface<String> foo = new NonGenericItemStringExtension();
         final ItemInterfaceHolder<String> result = Instancio.of(new TypeToken<ItemInterfaceHolder<String>>() {})
-                .map(field("itemInterface"), NonGenericItemStringExtension.class)
+                .subtype(field("itemInterface"), NonGenericItemStringExtension.class)
                 .create();
 
         assertThat(result.getItemInterface().getValue()).isNotBlank();
     }
 
     @Test
-    @Disabled
-    @FeatureTag(Feature.UNSUPPORTED)
-    @SuppressWarnings(Sonar.DISABLED_TEST)
     void mapGenericTypeToNonGenericSubtype_NonGenericRootClass() {
         final ItemInterfaceStringHolder result = Instancio.of(ItemInterfaceStringHolder.class)
-                .map(field("itemInterfaceString"), NonGenericItemStringExtension.class)
+                .subtype(field("itemInterfaceString"), NonGenericItemStringExtension.class)
                 .create();
 
         assertThat(result.getItemInterfaceString().getValue()).isNotBlank();
     }
 
+    @Nested
+    class ValidationTest {
+        @Test
+        void invalidSubtypeMappingArrayListToList() {
+            final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
+                    .subtype(field("list"), String.class);
+
+            assertThatThrownBy(api::create)
+                    .isInstanceOf(InstancioApiException.class)
+                    .hasMessage("Class '%s' is not a subtype of '%s'", String.class.getName(), List.class.getName());
+        }
+
+        @Test
+        void invalidSubtypeMappingListToList() {
+            final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
+                    .subtype(field("list"), List.class);
+
+            assertThatThrownBy(api::create)
+                    .isInstanceOf(InstancioApiException.class)
+                    .hasMessage("Invalid subtype mapping from '%s' to '%s'", List.class.getName(), List.class.getName());
+        }
+    }
 }

@@ -70,7 +70,7 @@ public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>>
      * @param type of collection to generate
      * @return spec builder
      */
-    CollectionGeneratorSpec<T> type(Class<?> type);
+    CollectionGeneratorSpec<T> subtype(Class<?> type);
 
     /**
      * Adds given elements to the generated collection at random positions.

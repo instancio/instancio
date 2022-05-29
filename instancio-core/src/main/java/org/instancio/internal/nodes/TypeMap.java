@@ -26,12 +26,13 @@ import java.lang.reflect.WildcardType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
  * Helper class for mapping type variables to actual type arguments.
  */
-public class TypeMap {
+public final class TypeMap {
 
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final Map<Type, Type> typeMap;
@@ -121,6 +122,19 @@ public class TypeMap {
             return resolveTypeMapping(wType.getUpperBounds()[0]); // TODO multiple bounds
         }
         throw new UnsupportedOperationException("Unsupported type: " + typeArg.getClass());
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TypeMap)) return false;
+        final TypeMap typeMap1 = (TypeMap) o;
+        return Objects.equals(rootTypeMap, typeMap1.rootTypeMap) && Objects.equals(typeMap, typeMap1.typeMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rootTypeMap, typeMap);
     }
 
     @Override

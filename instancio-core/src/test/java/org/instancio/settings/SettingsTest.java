@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SettingsTest {
-    private static final String TYPE_MAPPING_PREFIX = "type.mapping.";
+    private static final String TYPE_MAPPING_PREFIX = "subtype.";
     private static final boolean AUTO_ADJUST_DISABLED = false;
 
     @Test

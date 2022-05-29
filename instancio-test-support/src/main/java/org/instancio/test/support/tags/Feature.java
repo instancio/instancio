@@ -68,9 +68,7 @@ public enum Feature {
     SUPPLY_WITH_RANDOM,
     GENERATE,
     ON_COMPLETE,
-
-    MAP_FIELD_SELECTOR,
-    MAP_CLASS_SELECTOR,
+    SUBTYPE,
 
     CYCLIC,
     INHERITANCE,

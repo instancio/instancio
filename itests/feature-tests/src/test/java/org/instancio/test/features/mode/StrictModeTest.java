@@ -49,7 +49,8 @@ import static org.junit.jupiter.api.Assertions.fail;
         Feature.MODE,
         Feature.GENERATE,
         Feature.SET,
-        Feature.ON_COMPLETE
+        Feature.ON_COMPLETE,
+        Feature.SUBTYPE
 })
 class StrictModeTest {
 
@@ -117,23 +118,26 @@ class StrictModeTest {
                     .generate(field(Baz.class, "bazValue"), Generators::string)
                     .supply(allStrings().within(Person_.age.toScope()), StrictModeTest::failIfCalled)
                     .onComplete(all(LinkedList.class), list -> failIfCalled())
-                    .withNullable(all(SortedSet.class));
+                    .withNullable(all(SortedSet.class))
+                    .subtype(all(CharSequence.class), String.class);
 
             assertThatThrownBy(api::create)
                     .isInstanceOf(UnusedSelectorException.class)
                     .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
-                            .hasUnusedSelectorCount(6)
+                            .hasUnusedSelectorCount(7)
                             .containsOnly(
                                     ApiMethod.IGNORE,
                                     ApiMethod.GENERATE_SET_SUPPLY,
                                     ApiMethod.ON_COMPLETE,
-                                    ApiMethod.WITH_NULLABLE)
+                                    ApiMethod.WITH_NULLABLE,
+                                    ApiMethod.SUBTYPE)
                             .containsUnusedSelector(LinkedList.class)
                             .containsUnusedSelector(SortedSet.class)
                             .containsUnusedSelector(String.class) // TODO assert scope in reported message
                             .containsUnusedSelector(Foo.class, "fooValue")
                             .containsUnusedSelector(Bar.class, "barValue")
-                            .containsUnusedSelector(Baz.class, "bazValue"));
+                            .containsUnusedSelector(Baz.class, "bazValue")
+                            .containsUnusedSelector(CharSequence.class));
         }
     }
 
@@ -202,6 +206,18 @@ class StrictModeTest {
                     .onComplete(all(SortedSet.class), obj -> failIfCalled());
 
             assertUnusedSelectorsForMethod(api, ApiMethod.ON_COMPLETE);
+        }
+
+        @Test
+        void unusedWithSubtype() {
+            final InstancioApi<Person> api = Instancio.of(Person.class)
+                    .subtype(field(Foo.class, "fooValue"), Object.class)
+                    .subtype(all(
+                            field(Bar.class, "barValue"),
+                            field(Baz.class, "bazValue")), Object.class)
+                    .subtype(all(SortedSet.class), Object.class);
+
+            assertUnusedSelectorsForMethod(api, ApiMethod.SUBTYPE);
         }
 
         private void assertUnusedSelectorsForMethod(final InstancioApi<?> api, final ApiMethod apiMethod) {

@@ -102,7 +102,7 @@ class GeneratorFacade {
                                                                        @Nullable final Object owner) {
         final Class<?> abstractType = parentNode.getTargetClass();
 
-        Verify.isFalse(ReflectionUtils.isConcrete(abstractType),
+        Verify.isFalse(ReflectionUtils.isArrayOrConcrete(abstractType),
                 "Expecting an interface or abstract class: %s", abstractType.getName());
         Verify.isNotArrayCollectionOrMap(abstractType);
 

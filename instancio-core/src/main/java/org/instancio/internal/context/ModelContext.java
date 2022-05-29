@@ -94,7 +94,7 @@ public final class ModelContext<T> {
                 builder.generatorSelectors,
                 builder.generatorSpecSelectors);
 
-        subtypeSelectorMap.putAll(generatorSelectorMap.getClassSubtypeMap());
+        subtypeSelectorMap.putAdditional(generatorSelectorMap.getClassSubtypeMap());
     }
 
     public void reportUnusedSelectorWarnings() {
@@ -104,6 +104,7 @@ public final class ModelContext<T> {
                     .nullable(nullableSelectorMap.getSelectorMap().getUnusedKeys())
                     .generators(generatorSelectorMap.getSelectorMap().getUnusedKeys())
                     .callbacks(onCompleteCallbackSelectorMap.getSelectorMap().getUnusedKeys())
+                    .subtypes(subtypeSelectorMap.getSelectorMap().getUnusedKeys())
                     .build();
 
             reporter.report();
@@ -140,11 +141,7 @@ public final class ModelContext<T> {
         return onCompleteCallbackSelectorMap.getCallbacks(node);
     }
 
-    public Class<?> getSubtypeMapping(final Class<?> superType) {
-        return subtypeSelectorMap.getSubtypeMapping(superType).orElse(superType);
-    }
-
-    public SubtypeSelectorMap getModelContextSubtypeMapping() {
+    public SubtypeSelectorMap getSubtypeMap() {
         return subtypeSelectorMap;
     }
 
@@ -204,7 +201,8 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> withSubtype(final TargetSelector selector, final Class<?> subtype) {
-            this.subtypeSelectors.put(applyRootClass(selector, rootClass), subtype);
+            this.subtypeSelectors.put(applyRootClass(selector, rootClass),
+                    ApiValidator.notNull(subtype, "Subtype must not be null"));
             return this;
         }
 

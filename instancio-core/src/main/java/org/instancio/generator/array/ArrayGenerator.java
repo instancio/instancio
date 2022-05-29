@@ -88,7 +88,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     }
 
     @Override
-    public ArrayGenerator<T> type(final Class<?> type) {
+    public ArrayGenerator<T> subtype(final Class<?> type) {
         ApiValidator.isTrue(type != null && type.isArray(), "Type must be an array: %s", type);
         this.arrayType = type;
         return this;

@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
 import org.instancio.internal.reflection.FieldCollector;
 import org.instancio.util.Format;
@@ -39,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -102,22 +104,43 @@ public final class NodeFactory {
         return createNode(resolvedType, field, parent);
     }
 
-    private Node fromClass(final Class<?> type, @Nullable final Field field, @Nullable final Node parent) {
-        final Class<?> targetClass = nodeContext.getUserSuppliedSubtype(type, field).orElse(type);
-
+    private Node createNodeWithSubtypeMapping(final Type type, @Nullable final Field field, @Nullable final Node parent) {
+        final Class<?> rawType = TypeUtils.getRawType(type);
         final Node node = Node.builder()
                 .nodeContext(nodeContext)
                 .type(type)
-                .rawType(type)
-                .targetClass(targetClass)
+                .rawType(rawType)
+                .targetClass(rawType)
                 .field(field)
                 .parent(parent)
-                .additionalTypeMap(createTypeMapForSubtype(type, targetClass))
                 .build();
 
+        final Optional<Class<?>> target = nodeContext.getUserSuppliedSubtype(node);
+
+        if (target.isPresent()) {
+            final Class<?> targetClass = target.get();
+            ApiValidator.validateSubtype(rawType, targetClass);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Subtype mapping '{}' to '{}'", Format.withoutPackage(rawType), Format.withoutPackage(targetClass));
+            }
+
+            return node.toBuilder()
+                    .targetClass(targetClass)
+                    .additionalTypeMap(createTypeMapForSubtype(rawType, targetClass))
+                    .build();
+        }
+
+        return node;
+    }
+
+    private Node fromClass(final Class<?> type, @Nullable final Field field, @Nullable final Node parent) {
+        final Node node = createNodeWithSubtypeMapping(type, field, parent);
         if (node.hasAncestorEqualToSelf()) {
             return null;
         }
+
+        final Class<?> targetClass = node.getTargetClass();
 
         if (isContainerClass(targetClass)) {
             final Type[] types = targetClass.isArray() ? new Type[]{targetClass.getComponentType()} : targetClass.getTypeParameters();
@@ -131,24 +154,13 @@ public final class NodeFactory {
     }
 
     private Node fromParameterizedType(final ParameterizedType type, @Nullable final Field field, @Nullable final Node parent) {
-        final Class<?> rawType = TypeUtils.getRawType(type);
-        final Class<?> targetClass = nodeContext.getUserSuppliedSubtype(rawType, field).orElse(rawType);
-
-        final Node node = Node.builder()
-                .nodeContext(nodeContext)
-                .type(type)
-                .rawType(rawType)
-                .targetClass(targetClass)
-                .field(field)
-                .parent(parent)
-                .additionalTypeMap(createTypeMapForSubtype(rawType, targetClass))
-                .build();
-
+        final Node node = createNodeWithSubtypeMapping(type, field, parent);
         if (node.hasAncestorEqualToSelf()) {
             return null;
         }
 
-        final List<Node> children = isContainerClass(rawType)
+        final Class<?> targetClass = node.getTargetClass();
+        final List<Node> children = isContainerClass(targetClass)
                 ? createContainerNodeChildren(Arrays.stream(type.getActualTypeArguments()), node)
                 : createChildrenFromFields(targetClass, node);
 
@@ -166,9 +178,9 @@ public final class NodeFactory {
         final Class<?> rawType = TypeUtils.getArrayClass(gcType);
         final Node node = Node.builder()
                 .nodeContext(nodeContext)
+                .type(type)
                 .targetClass(rawType)
                 .rawType(rawType)
-                .type(type)
                 .field(field)
                 .parent(parent)
                 .build();
@@ -249,20 +261,34 @@ public final class NodeFactory {
      *
      * @param supertype base class
      * @param subtype   of the base class
-     * @return a type map bridging subtype and supertype type variables.
+     * @return additional type mappings that might help resolve type variables
      */
     private static Map<Type, Type> createTypeMapForSubtype(final Class<?> supertype, final Class<?> subtype) {
         if (supertype.equals(subtype)) {
             return Collections.emptyMap();
         }
 
+        final Map<Type, Type> typeMap = new HashMap<>();
         final TypeVariable<?>[] subtypeParams = subtype.getTypeParameters();
         final TypeVariable<?>[] supertypeParams = supertype.getTypeParameters();
-        final Map<Type, Type> typeMap = new HashMap<>();
 
         if (subtypeParams.length == supertypeParams.length) {
             for (int i = 0; i < subtypeParams.length; i++) {
                 typeMap.put(subtypeParams[i], supertypeParams[i]);
+            }
+        }
+
+        // If subtype has a generic superclass, add its type variables and type arguments to the type map
+        if (subtype.getGenericSuperclass() instanceof ParameterizedType) {
+            final ParameterizedType genericSuperclass = (ParameterizedType) subtype.getGenericSuperclass();
+            final Class<?> rawSuperclassType = TypeUtils.getRawType(genericSuperclass);
+            final TypeVariable<?>[] typeVars = rawSuperclassType.getTypeParameters();
+            final Type[] typeArgs = genericSuperclass.getActualTypeArguments();
+
+            if (typeVars.length == typeArgs.length) {
+                for (int i = 0; i < typeVars.length; i++) {
+                    typeMap.put(typeVars[i], typeArgs[i]);
+                }
             }
         }
 

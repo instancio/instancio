@@ -39,7 +39,6 @@ class StrictModeTest {
         assertUnusedSelectors(api);
     }
 
-
     @Test
     void unusedSelectorsInNullable() {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)

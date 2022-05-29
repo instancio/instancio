@@ -42,7 +42,7 @@ class ArrayTypeTest {
     @SuppressWarnings(Sonar.DISABLED_TEST)
     void shouldCreateArrayOfSpecifiedType2() {
         final TwoArraysOfItemInterfaceString result = Instancio.of(TwoArraysOfItemInterfaceString.class)
-                .generate(all(ItemInterface[].class), gen -> gen.array().type(Item[].class))
+                .generate(all(ItemInterface[].class), gen -> gen.array().subtype(Item[].class))
                 .create();
 
         assertThat(result.getArray1()).isNotEmpty().allSatisfy(it -> {
@@ -59,7 +59,7 @@ class ArrayTypeTest {
     @DisplayName("Create array with non-generic component type")
     void nonGenericSubtype() {
         final ArrayCharSequence result = Instancio.of(ArrayCharSequence.class)
-                .generate(all(CharSequence[].class), gen -> gen.array().type(String[].class))
+                .generate(all(CharSequence[].class), gen -> gen.array().subtype(String[].class))
                 .create();
 
         assertThat(result.getArray())

@@ -253,7 +253,7 @@ public interface InstancioApi<T> {
      *
      * <pre>{@code
      *     WidgetContainer container = Instancio.of(WidgetContainer.class)
-     *             .map(all(AbstractWidget.class), ConcreteWidget.class)
+     *             .subtype(all(AbstractWidget.class), ConcreteWidget.class)
      *             .create();
      * }</pre>
      * <p>
@@ -265,7 +265,7 @@ public interface InstancioApi<T> {
      *
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *             .map(all(List.class), LinkedList.class)
+     *             .subtype(all(List.class), LinkedList.class)
      *             .create();
      * }</pre>
      * <p>
@@ -275,7 +275,7 @@ public interface InstancioApi<T> {
      * @param subtype  to map the selector to
      * @return API builder reference
      */
-    InstancioApi<T> map(TargetSelector selector, Class<?> subtype);
+    InstancioApi<T> subtype(TargetSelector selector, Class<?> subtype);
 
     /**
      * Override default settings for generated values.

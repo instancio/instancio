@@ -101,7 +101,7 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> map(final TargetSelector selectorGroup, final Class<?> subtype) {
+    public InstancioApi<T> subtype(final TargetSelector selectorGroup, final Class<?> subtype) {
         modelContextBuilder.withSubtype(selectorGroup, subtype);
         return this;
     }

@@ -75,7 +75,7 @@ class BuiltInCollectionGeneratorTest {
             final int minSize = 100;
 
             final HashSetLong result = Instancio.of(HashSetLong.class)
-                    .generate(all(HashSet.class), gen -> gen.collection().minSize(minSize)) //.type() not specified
+                    .generate(all(HashSet.class), gen -> gen.collection().minSize(minSize)) //.subtype() not specified
                     .create();
 
             assertThat(result.getSet()).hasSizeGreaterThanOrEqualTo(minSize);
@@ -87,7 +87,7 @@ class BuiltInCollectionGeneratorTest {
             final int minSize = 100;
 
             final SetLong result = Instancio.of(SetLong.class)
-                    .generate(all(Set.class), gen -> gen.collection().minSize(minSize)) //.type() not specified
+                    .generate(all(Set.class), gen -> gen.collection().minSize(minSize)) //.subtype() not specified
                     .create();
 
             assertThat(result.getSet()).hasSizeGreaterThanOrEqualTo(minSize);
@@ -99,7 +99,7 @@ class BuiltInCollectionGeneratorTest {
             final int minSize = 100;
 
             final TwoStringCollections result = Instancio.of(TwoStringCollections.class)
-                    .generate(all(Collection.class), gen -> gen.collection().minSize(minSize)) //.type() not specified
+                    .generate(all(Collection.class), gen -> gen.collection().minSize(minSize)) //.subtype() not specified
                     .create();
 
             assertThat(result.getOne()).hasSizeGreaterThanOrEqualTo(minSize);
@@ -111,7 +111,7 @@ class BuiltInCollectionGeneratorTest {
         void sortedMap() {
             final SortedMapIntegerString result = Instancio.of(SortedMapIntegerString.class)
                     .generate(all(SortedMap.class), gen -> gen.map()
-                            .size(EXPECTED_SIZE)) // .type() not specified
+                            .size(EXPECTED_SIZE)) // .subtype() not specified
                     .create();
 
             assertThat(result.getMap()).hasSize(EXPECTED_SIZE);
@@ -125,7 +125,7 @@ class BuiltInCollectionGeneratorTest {
         @DisplayName("List should be of expected type")
         void listWithSubType() {
             final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                    .generate(field("list1"), gen -> gen.collection().type(Vector.class))
+                    .generate(field("list1"), gen -> gen.collection().subtype(Vector.class))
                     .create();
 
             assertThat(result.getList1()).isNotEmpty().isInstanceOf(Vector.class)

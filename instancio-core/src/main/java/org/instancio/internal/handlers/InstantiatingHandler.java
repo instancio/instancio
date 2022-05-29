@@ -33,7 +33,7 @@ public class InstantiatingHandler implements NodeHandler {
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         final Class<?> targetClass = node.getTargetClass();
-        if (ReflectionUtils.isConcrete(targetClass)) {
+        if (ReflectionUtils.isArrayOrConcrete(targetClass)) {
             final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(targetClass));
             return Optional.of(result);
         }
