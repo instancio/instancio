@@ -136,7 +136,7 @@ class ModelContextTest {
         final GeneratorContext genContext = new GeneratorContext(Settings.defaults(), mock(Random.class));
         final Generators generators = new Generators(genContext);
 
-        final ArrayGeneratorSpec<Object> petsSpec = generators.array().type(Pet[].class).length(3);
+        final ArrayGeneratorSpec<Object> petsSpec = generators.array().subtype(Pet[].class).length(3);
 
         final StringGeneratorSpec stringSpec = generators.string().minLength(5).allowEmpty();
 
@@ -163,7 +163,8 @@ class ModelContextTest {
     @Test
     void nullSubtype() {
         final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
-        assertThatThrownBy(() -> builder.withSubtype(all(List.class), null).build())
+
+        assertThatThrownBy(() -> builder.withSubtype(all(List.class), null))
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Subtype must not be null");
     }

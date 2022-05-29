@@ -101,12 +101,12 @@ class GeneratorSelectorMap {
             final Field field = getField(selector.getTargetClass(), selector.getFieldName());
 
             if (field.getType().isArray() && generator instanceof ArrayGenerator) {
-                ((ArrayGenerator<?>) generator).type(field.getType());
+                ((ArrayGenerator<?>) generator).subtype(field.getType());
             }
         } else {
             final Class<?> userSpecifiedClass = generator.targetClass().orElse(selector.getTargetClass());
             if (selector.getTargetClass().isArray() && generator instanceof ArrayGenerator) {
-                ((ArrayGenerator<?>) generator).type(userSpecifiedClass);
+                ((ArrayGenerator<?>) generator).subtype(userSpecifiedClass);
             }
             if (userSpecifiedClass != selector.getTargetClass()) {
                 classSubtypeMap.put(selector.getTargetClass(), userSpecifiedClass);

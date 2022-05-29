@@ -121,7 +121,9 @@ public final class NodeFactory {
             final Class<?> targetClass = target.get();
             ApiValidator.validateSubtype(rawType, targetClass);
 
-            LOG.debug("Subtype mapping '{}' to '{}'", rawType.getName(), targetClass.getName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Subtype mapping '{}' to '{}'", Format.withoutPackage(rawType), Format.withoutPackage(targetClass));
+            }
 
             return node.toBuilder()
                     .targetClass(targetClass)
@@ -259,20 +261,34 @@ public final class NodeFactory {
      *
      * @param supertype base class
      * @param subtype   of the base class
-     * @return a type map bridging subtype and supertype type variables.
+     * @return additional type mappings that might help resolve type variables
      */
     private static Map<Type, Type> createTypeMapForSubtype(final Class<?> supertype, final Class<?> subtype) {
         if (supertype.equals(subtype)) {
             return Collections.emptyMap();
         }
 
+        final Map<Type, Type> typeMap = new HashMap<>();
         final TypeVariable<?>[] subtypeParams = subtype.getTypeParameters();
         final TypeVariable<?>[] supertypeParams = supertype.getTypeParameters();
-        final Map<Type, Type> typeMap = new HashMap<>();
 
         if (subtypeParams.length == supertypeParams.length) {
             for (int i = 0; i < subtypeParams.length; i++) {
                 typeMap.put(subtypeParams[i], supertypeParams[i]);
+            }
+        }
+
+        // If subtype has a generic superclass, add its type variables and type arguments to the type map
+        if (subtype.getGenericSuperclass() instanceof ParameterizedType) {
+            final ParameterizedType genericSuperclass = (ParameterizedType) subtype.getGenericSuperclass();
+            final Class<?> rawSuperclassType = TypeUtils.getRawType(genericSuperclass);
+            final TypeVariable<?>[] typeVars = rawSuperclassType.getTypeParameters();
+            final Type[] typeArgs = genericSuperclass.getActualTypeArguments();
+
+            if (typeVars.length == typeArgs.length) {
+                for (int i = 0; i < typeVars.length; i++) {
+                    typeMap.put(typeVars[i], typeArgs[i]);
+                }
             }
         }
 

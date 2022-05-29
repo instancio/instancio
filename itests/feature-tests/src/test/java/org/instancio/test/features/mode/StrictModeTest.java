@@ -119,7 +119,7 @@ class StrictModeTest {
                     .supply(allStrings().within(Person_.age.toScope()), StrictModeTest::failIfCalled)
                     .onComplete(all(LinkedList.class), list -> failIfCalled())
                     .withNullable(all(SortedSet.class))
-                    .map(all(CharSequence.class), String.class);
+                    .subtype(all(CharSequence.class), String.class);
 
             assertThatThrownBy(api::create)
                     .isInstanceOf(UnusedSelectorException.class)
@@ -211,11 +211,11 @@ class StrictModeTest {
         @Test
         void unusedWithSubtype() {
             final InstancioApi<Person> api = Instancio.of(Person.class)
-                    .map(field(Foo.class, "fooValue"), Object.class)
-                    .map(all(
+                    .subtype(field(Foo.class, "fooValue"), Object.class)
+                    .subtype(all(
                             field(Bar.class, "barValue"),
                             field(Baz.class, "bazValue")), Object.class)
-                    .map(all(SortedSet.class), Object.class);
+                    .subtype(all(SortedSet.class), Object.class);
 
             assertUnusedSelectorsForMethod(api, ApiMethod.SUBTYPE);
         }

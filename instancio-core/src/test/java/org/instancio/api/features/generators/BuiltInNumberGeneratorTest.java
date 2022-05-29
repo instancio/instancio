@@ -41,7 +41,7 @@ class BuiltInNumberGeneratorTest {
     void nullableNumberInCollection() {
         final SetLong result = Instancio.of(SetLong.class)
                 .generate(allLongs(), gen -> gen.longs().nullable())
-                .generate(all(Set.class), gen -> gen.collection().minSize(SAMPLE_SIZE).type(HashSet.class))
+                .generate(all(Set.class), gen -> gen.collection().minSize(SAMPLE_SIZE).subtype(HashSet.class))
                 .create();
 
         assertThat(result.getSet()).doesNotContainNull();
@@ -52,7 +52,7 @@ class BuiltInNumberGeneratorTest {
     void nullableNumberAsMapKey() {
         final MapByteDouble result = Instancio.of(MapByteDouble.class)
                 .generate(allBytes(), gen -> gen.bytes().nullable())
-                .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE).type(HashMap.class))
+                .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE).subtype(HashMap.class))
                 .create();
 
         assertThat(result.getMap().keySet()).doesNotContainNull();
@@ -63,7 +63,7 @@ class BuiltInNumberGeneratorTest {
     void nullableNumberAsMapValue() {
         final MapByteDouble result = Instancio.of(MapByteDouble.class)
                 .generate(allDoubles(), gen -> gen.doubles().nullable())
-                .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE).type(HashMap.class))
+                .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE).subtype(HashMap.class))
                 .create();
 
         assertThat(result.getMap().values()).doesNotContainNull();

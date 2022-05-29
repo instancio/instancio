@@ -17,13 +17,16 @@ package org.instancio.test.features.subtype;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.arrays.ArrayCharSequence;
 import org.instancio.test.support.pojo.collections.lists.ListInteger;
-import org.instancio.test.support.pojo.person.Address;
-import org.instancio.test.support.pojo.person.Phone;
-import org.instancio.test.support.pojo.person.PhoneWithType;
+import org.instancio.test.support.pojo.generics.basic.ItemInterfaceHolder;
+import org.instancio.test.support.pojo.generics.basic.ItemInterfaceStringHolder;
+import org.instancio.test.support.pojo.generics.basic.NonGenericItemStringExtension;
+import org.instancio.test.support.pojo.person.AddressExtension;
+import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -35,69 +38,48 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 
 @FeatureTag(Feature.SUBTYPE)
 @ExtendWith(InstancioExtension.class)
-class MapClassSelectorTest {
+class SubtypeUsingFieldSelectorTest {
 
     @Test
-    @DisplayName("Map non-generic type to non-generic subtype")
+    @DisplayName("Map non-generic field type to non-generic subtype")
     void mapNonGenericTypeToNonGenericSubtype() {
-        final PhoneWithType result = (PhoneWithType) Instancio.of(Phone.class)
-                .map(all(Phone.class), PhoneWithType.class)
+        final Person result = Instancio.of(Person.class)
+                .subtype(Person_.address, AddressExtension.class)
                 .create();
 
-        assertThat(result.getPhoneType()).isNotNull();
-        assertThat(result.getNumber()).isNotNull();
+        assertThat(result.getAddress()).isExactlyInstanceOf(AddressExtension.class);
+        assertThat(((AddressExtension) result.getAddress()).getAdditionalInfo()).isNotBlank();
     }
 
     @Test
-    @DisplayName("Map non-generic type to non-generic subtype in a collection")
-    void mapNonGenericTypeToNonGenericSubtypeInCollectionElement() {
-        final Address result = Instancio.of(Address.class)
-                .map(all(Phone.class), PhoneWithType.class)
+    void mapGenericTypeToNonGenericSubtype_GenericRootClass() {
+        // e.g. ItemInterface<String> foo = new NonGenericItemStringExtension();
+        final ItemInterfaceHolder<String> result = Instancio.of(new TypeToken<ItemInterfaceHolder<String>>() {})
+                .subtype(field("itemInterface"), NonGenericItemStringExtension.class)
                 .create();
 
-        assertThat(result.getPhoneNumbers())
-                .hasOnlyElementsOfType(PhoneWithType.class)
-                .allSatisfy(phone -> {
-                    assertThat(((PhoneWithType) phone).getPhoneType()).isNotNull();
-                    assertThat(phone.getNumber()).isNotNull();
-                });
+        assertThat(result.getItemInterface().getValue()).isNotBlank();
     }
 
     @Test
-    @DisplayName("Map non-generic type to non-generic subtype in an array")
-    void mapNonGenericTypeToNonGenericSubtypeInArrayElement() {
-        final ArrayCharSequence result = Instancio.of(ArrayCharSequence.class)
-                .map(all(CharSequence.class), StringBuilder.class)
+    void mapGenericTypeToNonGenericSubtype_NonGenericRootClass() {
+        final ItemInterfaceStringHolder result = Instancio.of(ItemInterfaceStringHolder.class)
+                .subtype(field("itemInterfaceString"), NonGenericItemStringExtension.class)
                 .create();
 
-        assertThat(result.getArray())
-                .hasOnlyElementsOfType(StringBuilder.class)
-                .allSatisfy(elem -> assertThat(elem).isNotBlank());
+        assertThat(result.getItemInterfaceString().getValue()).isNotBlank();
     }
-
-    @Test
-    @DisplayName("Map non-generic type to non-generic subtype in an array (create array directly)")
-    void mapNonGenericTypeToNonGenericSubtypeInArrayElementDirect() {
-        final CharSequence[] result = Instancio.of(CharSequence[].class)
-                .map(all(CharSequence.class), StringBuilder.class)
-                .create();
-
-        assertThat(result)
-                .hasOnlyElementsOfType(StringBuilder.class)
-                .allSatisfy(elem -> assertThat(elem).isNotBlank());
-    }
-
 
     @Nested
     class ValidationTest {
         @Test
         void invalidSubtypeMappingArrayListToList() {
             final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
-                    .map(all(List.class), String.class);
+                    .subtype(field("list"), String.class);
 
             assertThatThrownBy(api::create)
                     .isInstanceOf(InstancioApiException.class)
@@ -107,7 +89,7 @@ class MapClassSelectorTest {
         @Test
         void invalidSubtypeMappingListToList() {
             final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
-                    .map(all(List.class), List.class);
+                    .subtype(field("list"), List.class);
 
             assertThatThrownBy(api::create)
                     .isInstanceOf(InstancioApiException.class)

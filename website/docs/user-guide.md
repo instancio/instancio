@@ -383,7 +383,7 @@ Using the collection generator, this can be overridden by specifying the type ex
 ``` java linenums="1" title="Example: customising a collection"
 Person person = Instancio.of(Person.class)
     // Use LinkedList as List implementation
-    .generate(field("phoneNumbers"), gen -> gen.collection().minSize(3).type(LinkedList.class))
+    .generate(field("phoneNumbers"), gen -> gen.collection().minSize(3).subtype(LinkedList.class))
     // Use random country codes from given choices
     .generate(field(Phone.class, "countryCode"), gen -> gen.oneOf("+33", "+39", "+44", "+49"))
     .create();
@@ -651,20 +651,20 @@ Person person = Instancio.of(Person.class)
 
 Subtype mapping allows mapping a particular type to its subtype.
 This can be useful for specifying a specific implementation for an abstract type.
-The mapping can be specified using the `map` method:
+The mapping can be specified using the `subtype` method:
 
 
 ``` java linenums="1"
-map(SelectorGroup selectors, Class<?> subtype)
+subtype(SelectorGroup selectors, Class<?> subtype)
 ```
 
 All the types represented by the selectors must be supertypes of the given `subtype` parameter.
 
 ``` java linenums="1" title="Example: subtype mapping" hl_lines="2 3 4"
 Person person = Instancio.of(Person.class)
-    .map(all(Pet.class), Cat.class)
-    .map(all(all(Collection.class), all(Set.class)), TreeSet.class)
-    .map(field("address"), AddressImpl.class)
+    .subtype(all(Pet.class), Cat.class)
+    .subtype(all(all(Collection.class), all(Set.class)), TreeSet.class)
+    .subtype(field("address"), AddressImpl.class)
     .create();
 ```
 
@@ -992,17 +992,17 @@ string.allow.empty=false
 string.max.length=10
 string.min.length=3
 string.nullable=false
-type.mapping.java.util.Collection=java.util.ArrayList
-type.mapping.java.util.List=java.util.ArrayList
-type.mapping.java.util.Map=java.util.HashMap
-type.mapping.java.util.SortedMap=java.util.TreeMap
+subtype.java.util.Collection=java.util.ArrayList
+subtype.java.util.List=java.util.ArrayList
+subtype.java.util.Map=java.util.HashMap
+subtype.java.util.SortedMap=java.util.TreeMap
 ```
 
 !!! attention ""
     <lnum>1</lnum>The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
     <lnum>31</lnum> Specifies the mode, either `STRICT` or `LENIENT`. See [Selector Strictness](#selector-strictness)<br/>
-    <lnum>39</lnum> Properties prefixed with `type.mapping` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>39</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 # JUnit Integration

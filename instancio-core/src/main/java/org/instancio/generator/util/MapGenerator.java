@@ -53,7 +53,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     }
 
     @Override
-    public MapGeneratorSpec<K, V> type(final Class<?> type) {
+    public MapGeneratorSpec<K, V> subtype(final Class<?> type) {
         this.type = Verify.notNull(type, "Type must not be null");
         return this;
     }

@@ -58,7 +58,7 @@ final class UnusedSelectorReporter {
         append(nullable, sb, "withNullable()");
         append(generators, sb, "generate(), set(), or supply()");
         append(callbacks, sb, "onComplete()");
-        append(subtypes, sb, "map() or type()"); // TODO interface for this?
+        append(subtypes, sb, "subtype()");
 
         sb.append(NL)
                 .append("This error aims to highlight potential problems and help maintain clean test code:").append(NL)

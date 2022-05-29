@@ -56,7 +56,7 @@ class InstancioApiTest {
                 .withNullable(field("date"))
                 .withNullable(field(Person.class, "pets"))
                 .withNullable(all(Gender.class))
-                .map(all(Address.class), AddressExtension.class)
+                .subtype(all(Address.class), AddressExtension.class)
                 .create();
 
         assertThat(homer.getName()).isEqualTo(HOMER);

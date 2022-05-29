@@ -87,7 +87,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     }
 
     @Override
-    public CollectionGeneratorSpec<T> type(final Class<?> type) {
+    public CollectionGeneratorSpec<T> subtype(final Class<?> type) {
         this.type = Verify.notNull(type, "Type must not be null");
         return this;
     }
