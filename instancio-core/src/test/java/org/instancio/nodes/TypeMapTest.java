@@ -15,6 +15,7 @@
  */
 package org.instancio.nodes;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.instancio.internal.nodes.TypeMap;
 import org.instancio.test.support.pojo.generics.PairAPairIntegerString;
 import org.instancio.test.support.pojo.generics.PairLongPairIntegerString;
@@ -38,6 +39,11 @@ import static org.instancio.testsupport.asserts.TypeMapResolverAssert.assertThat
 class TypeMapTest {
 
     public static final Map<TypeVariable<?>, Class<?>> EMPTY_ROOT_TYPE_MAP = Collections.emptyMap();
+
+    @Test
+    void verifyEqualsAndHashcode() {
+        EqualsVerifier.forClass(TypeMap.class).verify();
+    }
 
     @Test
     void personAge() {

@@ -16,7 +16,6 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.util.Format;
-import org.instancio.util.ObjectUtils;
 import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;
@@ -36,7 +35,7 @@ public final class Node {
     private final Field field;
     private final Node parent;
     private final TypeMap typeMap;
-    private List<Node> children = Collections.emptyList();
+    private List<Node> children;
 
     private Node(final Builder builder) {
         nodeContext = builder.nodeContext;
@@ -45,11 +44,20 @@ public final class Node {
         targetClass = Verify.notNull(builder.targetClass, "null targetClass");
         field = builder.field;
         parent = builder.parent;
+        children = builder.children == null ? Collections.emptyList() : Collections.unmodifiableList(builder.children);
+        typeMap = new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap);
+    }
 
-        typeMap = new TypeMap(
-                ObjectUtils.defaultIfNull(type, targetClass),
-                nodeContext.getRootTypeMap(),
-                builder.additionalTypeMap);
+    public Builder toBuilder() {
+        final Builder builder = new Builder();
+        builder.nodeContext = nodeContext;
+        builder.type = type;
+        builder.rawType = rawType;
+        builder.targetClass = targetClass;
+        builder.field = field;
+        builder.parent = parent;
+        builder.children = children;
+        return builder;
     }
 
     public static Builder builder() {
@@ -153,7 +161,7 @@ public final class Node {
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Node other = (Node) o;
+        final Node other = (Node) o;
 
         return this.getTargetClass().equals(other.getTargetClass())
                 && Objects.equals(this.getType(), other.getType())
@@ -186,6 +194,7 @@ public final class Node {
         private Class<?> targetClass;
         private Field field;
         private Node parent;
+        private List<Node> children;
         private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
 
         private Builder() {
@@ -218,6 +227,11 @@ public final class Node {
 
         public Builder parent(@Nullable final Node parent) {
             this.parent = parent;
+            return this;
+        }
+
+        public Builder children(final List<Node> children) {
+            this.children = children;
             return this;
         }
 

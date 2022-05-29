@@ -39,8 +39,6 @@ import org.junit.jupiter.api.Test;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -97,7 +95,6 @@ class ModelContextTest {
         ModelContext<?> ctx = ModelContext.builder(Person.class).withSeed(expected).build();
         assertThat(ctx.getRandom().getSeed()).isEqualTo(expected);
     }
-
 
     @Test
     void withIgnoredField() {
@@ -159,32 +156,16 @@ class ModelContextTest {
                 .withSubtype(all(List.class), LinkedList.class)
                 .build();
 
-        assertThat(ctx.getSubtypeMapping(Collection.class)).isEqualTo(HashSet.class);
-        assertThat(ctx.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
+        assertThat(ctx.getSubtypeMap().getSubtype(mockNode(Collection.class))).contains(HashSet.class);
+        assertThat(ctx.getSubtypeMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
     }
 
     @Test
-    void invalidSubtypeMappingArrayListToList() {
+    void nullSubtype() {
         final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
-        assertThatThrownBy(() -> builder.withSubtype(all(ArrayList.class), List.class).build())
+        assertThatThrownBy(() -> builder.withSubtype(all(List.class), null).build())
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Class '%s' is not a subtype of '%s'", List.class.getName(), ArrayList.class.getName());
-    }
-
-    @Test
-    void invalidSubtypeMappingArrayListToArrayList() {
-        final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
-        assertThatThrownBy(() -> builder.withSubtype(all(ArrayList.class), ArrayList.class).build())
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Cannot map the class to itself: '%s'", ArrayList.class.getName());
-    }
-
-    @Test
-    void invalidSubtypeMappingArrayListToAbstractList() {
-        final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
-        assertThatThrownBy(() -> builder.withSubtype(all(List.class), AbstractList.class).build())
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Class must not be an interface or abstract class: '%s'", AbstractList.class.getName());
+                .hasMessage("Subtype must not be null");
     }
 
     @Test
@@ -242,7 +223,7 @@ class ModelContextTest {
         assertThat(actual.isNullable(mockNode(Person.class, ADDRESS_FIELD))).isTrue();
         assertThat(actual.getRandom().getSeed()).isEqualTo(seed);
         assertThat((int) actual.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
-        assertThat(actual.getSubtypeMapping(List.class)).isEqualTo(LinkedList.class);
+        assertThat(ctx.getSubtypeMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
 
         assertThatThrownBy(() -> actual.getSettings().set(Keys.STRING_MIN_LENGTH, 5))
                 .as("Settings should be locked")

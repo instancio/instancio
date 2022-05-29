@@ -107,16 +107,14 @@ public final class ApiValidator {
         }
     }
 
-    public static void validateSubtypeMapping(@Nullable final Class<?> from, @Nullable final Class<?> to) {
-        isTrue(from != null, "'from' class must not be null");
-        isTrue(to != null, "'to' class must not be null");
-        isTrue(from != to, "Cannot map the class to itself: '%s'", to.getName());
+    public static void validateSubtype(final Class<?> from, final Class<?> to) {
         isTrue(from.isAssignableFrom(to), "Class '%s' is not a subtype of '%s'", to.getName(), from.getName());
+        isFalse(from.equals(to), "Invalid subtype mapping from '%s' to '%s'", to.getName(), from.getName());
         validateConcreteClass(to);
     }
 
     public static void validateConcreteClass(final Class<?> klass) {
-        isTrue(ReflectionUtils.isConcrete(klass),
+        isTrue(ReflectionUtils.isArrayOrConcrete(klass),
                 "Class must not be an interface or abstract class: '%s'", klass.getName());
     }
 
@@ -166,12 +164,12 @@ public final class ApiValidator {
     }
 
     public static int validateSize(final int size) {
-        ApiValidator.isTrue(size >= 0, "Size must not be negative: %s", size);
+        isTrue(size >= 0, "Size must not be negative: %s", size);
         return size;
     }
 
     public static int validateLength(final int length) {
-        ApiValidator.isTrue(length >= 0, "Length must not be negative: %s", length);
+        isTrue(length >= 0, "Length must not be negative: %s", length);
         return length;
     }
 
@@ -184,19 +182,23 @@ public final class ApiValidator {
         if (!condition) throw new InstancioApiException(String.format(message, values));
     }
 
+    public static void isFalse(final boolean condition, final String message, final Object... values) {
+        if (condition) throw new InstancioApiException(String.format(message, values));
+    }
+
     // Suppressed because String.format() translates %n to platform-specific newlines
     @SuppressWarnings("RedundantStringFormatCall")
     private static void isTrue(final boolean condition, final Supplier<String> message) {
         if (!condition) throw new InstancioApiException(String.format(message.get()));
     }
 
-    private ApiValidator() {
-        // non-instantiable
-    }
-
     public static void validateField(final Class<?> declaringClass, final String fieldName, String message) {
         ApiValidator.notNull(declaringClass, message);
         ApiValidator.notNull(fieldName, message);
         isTrue(ReflectionUtils.isValidField(declaringClass, fieldName), message);
+    }
+
+    private ApiValidator() {
+        // non-instantiable
     }
 }

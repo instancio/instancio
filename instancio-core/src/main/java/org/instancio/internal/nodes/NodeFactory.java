@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
 import org.instancio.internal.reflection.FieldCollector;
 import org.instancio.util.Format;
@@ -39,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -102,22 +104,41 @@ public final class NodeFactory {
         return createNode(resolvedType, field, parent);
     }
 
-    private Node fromClass(final Class<?> type, @Nullable final Field field, @Nullable final Node parent) {
-        final Class<?> targetClass = nodeContext.getUserSuppliedSubtype(type, field).orElse(type);
-
+    private Node createNodeWithSubtypeMapping(final Type type, @Nullable final Field field, @Nullable final Node parent) {
+        final Class<?> rawType = TypeUtils.getRawType(type);
         final Node node = Node.builder()
                 .nodeContext(nodeContext)
                 .type(type)
-                .rawType(type)
-                .targetClass(targetClass)
+                .rawType(rawType)
+                .targetClass(rawType)
                 .field(field)
                 .parent(parent)
-                .additionalTypeMap(createTypeMapForSubtype(type, targetClass))
                 .build();
 
+        final Optional<Class<?>> target = nodeContext.getUserSuppliedSubtype(node);
+
+        if (target.isPresent()) {
+            final Class<?> targetClass = target.get();
+            ApiValidator.validateSubtype(rawType, targetClass);
+
+            LOG.debug("Subtype mapping '{}' to '{}'", rawType.getName(), targetClass.getName());
+
+            return node.toBuilder()
+                    .targetClass(targetClass)
+                    .additionalTypeMap(createTypeMapForSubtype(rawType, targetClass))
+                    .build();
+        }
+
+        return node;
+    }
+
+    private Node fromClass(final Class<?> type, @Nullable final Field field, @Nullable final Node parent) {
+        final Node node = createNodeWithSubtypeMapping(type, field, parent);
         if (node.hasAncestorEqualToSelf()) {
             return null;
         }
+
+        final Class<?> targetClass = node.getTargetClass();
 
         if (isContainerClass(targetClass)) {
             final Type[] types = targetClass.isArray() ? new Type[]{targetClass.getComponentType()} : targetClass.getTypeParameters();
@@ -131,24 +152,13 @@ public final class NodeFactory {
     }
 
     private Node fromParameterizedType(final ParameterizedType type, @Nullable final Field field, @Nullable final Node parent) {
-        final Class<?> rawType = TypeUtils.getRawType(type);
-        final Class<?> targetClass = nodeContext.getUserSuppliedSubtype(rawType, field).orElse(rawType);
-
-        final Node node = Node.builder()
-                .nodeContext(nodeContext)
-                .type(type)
-                .rawType(rawType)
-                .targetClass(targetClass)
-                .field(field)
-                .parent(parent)
-                .additionalTypeMap(createTypeMapForSubtype(rawType, targetClass))
-                .build();
-
+        final Node node = createNodeWithSubtypeMapping(type, field, parent);
         if (node.hasAncestorEqualToSelf()) {
             return null;
         }
 
-        final List<Node> children = isContainerClass(rawType)
+        final Class<?> targetClass = node.getTargetClass();
+        final List<Node> children = isContainerClass(targetClass)
                 ? createContainerNodeChildren(Arrays.stream(type.getActualTypeArguments()), node)
                 : createChildrenFromFields(targetClass, node);
 
@@ -166,9 +176,9 @@ public final class NodeFactory {
         final Class<?> rawType = TypeUtils.getArrayClass(gcType);
         final Node node = Node.builder()
                 .nodeContext(nodeContext)
+                .type(type)
                 .targetClass(rawType)
                 .rawType(rawType)
-                .type(type)
                 .field(field)
                 .parent(parent)
                 .build();

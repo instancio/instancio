@@ -146,7 +146,8 @@ public class UnusedSelectorsAssert extends StringAssert {
         IGNORE("ignore()"),
         WITH_NULLABLE("withNullable()"),
         GENERATE_SET_SUPPLY("generate(), set(), or supply()"),
-        ON_COMPLETE("onComplete()");
+        ON_COMPLETE("onComplete()"),
+        SUBTYPE("map() or type()");
 
         private final String description;
 

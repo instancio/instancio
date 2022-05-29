@@ -79,8 +79,8 @@ public final class ReflectionUtils {
         }
     }
 
-    public static boolean isConcrete(final Class<?> klass) {
-        return !klass.isInterface() && !Modifier.isAbstract(klass.getModifiers());
+    public static boolean isArrayOrConcrete(final Class<?> klass) {
+        return klass.isArray() || (!klass.isInterface() && !Modifier.isAbstract(klass.getModifiers()));
     }
 
     public static Class<?> getClass(final String name) {

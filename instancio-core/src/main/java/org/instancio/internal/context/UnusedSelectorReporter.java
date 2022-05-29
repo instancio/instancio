@@ -30,12 +30,14 @@ final class UnusedSelectorReporter {
     private final Set<? super TargetSelector> nullable;
     private final Set<? super TargetSelector> generators;
     private final Set<? super TargetSelector> callbacks;
+    private final Set<? super TargetSelector> subtypes;
 
     private UnusedSelectorReporter(final Builder builder) {
         ignored = builder.ignored;
         nullable = builder.nullable;
         generators = builder.generators;
         callbacks = builder.callbacks;
+        subtypes = builder.subtypes;
     }
 
     public static Builder builder() {
@@ -56,6 +58,7 @@ final class UnusedSelectorReporter {
         append(nullable, sb, "withNullable()");
         append(generators, sb, "generate(), set(), or supply()");
         append(callbacks, sb, "onComplete()");
+        append(subtypes, sb, "map() or type()"); // TODO interface for this?
 
         sb.append(NL)
                 .append("This error aims to highlight potential problems and help maintain clean test code:").append(NL)
@@ -82,7 +85,7 @@ final class UnusedSelectorReporter {
     }
 
     private boolean hasNoUnusedSelectors() {
-        return ignored.isEmpty() && nullable.isEmpty() && generators.isEmpty() && callbacks.isEmpty();
+        return ignored.isEmpty() && nullable.isEmpty() && generators.isEmpty() && callbacks.isEmpty() && subtypes.isEmpty();
     }
 
     private static String formatSelectors(final Set<? super TargetSelector> selectors) {
@@ -102,6 +105,7 @@ final class UnusedSelectorReporter {
         private Set<? super TargetSelector> nullable;
         private Set<? super TargetSelector> generators;
         private Set<? super TargetSelector> callbacks;
+        private Set<? super TargetSelector> subtypes;
 
         private Builder() {
         }
@@ -123,6 +127,11 @@ final class UnusedSelectorReporter {
 
         public Builder callbacks(final Set<? super TargetSelector> callbacks) {
             this.callbacks = callbacks;
+            return this;
+        }
+
+        public Builder subtypes(final Set<? super TargetSelector> subtypes) {
+            this.subtypes = subtypes;
             return this;
         }
 

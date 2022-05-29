@@ -27,7 +27,6 @@ public final class TypeUtils {
     }
 
     public static Class<?> getArrayClass(final Type type) {
-
         if (type instanceof Class) {
             final Class<?> klass = (Class<?>) type;
 

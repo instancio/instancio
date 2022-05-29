@@ -16,21 +16,28 @@
 package org.instancio.test.features.subtype;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayCharSequence;
+import org.instancio.test.support.pojo.collections.lists.ListInteger;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 
-@FeatureTag(Feature.MAP_CLASS_SELECTOR)
+@FeatureTag(Feature.SUBTYPE)
 @ExtendWith(InstancioExtension.class)
 class MapClassSelectorTest {
 
@@ -60,7 +67,6 @@ class MapClassSelectorTest {
                 });
     }
 
-
     @Test
     @DisplayName("Map non-generic type to non-generic subtype in an array")
     void mapNonGenericTypeToNonGenericSubtypeInArrayElement() {
@@ -85,4 +91,27 @@ class MapClassSelectorTest {
                 .allSatisfy(elem -> assertThat(elem).isNotBlank());
     }
 
+
+    @Nested
+    class ValidationTest {
+        @Test
+        void invalidSubtypeMappingArrayListToList() {
+            final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
+                    .map(all(List.class), String.class);
+
+            assertThatThrownBy(api::create)
+                    .isInstanceOf(InstancioApiException.class)
+                    .hasMessage("Class '%s' is not a subtype of '%s'", String.class.getName(), List.class.getName());
+        }
+
+        @Test
+        void invalidSubtypeMappingListToList() {
+            final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
+                    .map(all(List.class), List.class);
+
+            assertThatThrownBy(api::create)
+                    .isInstanceOf(InstancioApiException.class)
+                    .hasMessage("Invalid subtype mapping from '%s' to '%s'", List.class.getName(), List.class.getName());
+        }
+    }
 }

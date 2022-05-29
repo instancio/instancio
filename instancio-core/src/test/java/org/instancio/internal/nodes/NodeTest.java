@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.TypeToken;
+import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.basic.Triplet;
@@ -43,6 +44,34 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class NodeTest {
     private static final NodeContext NODE_CONTEXT = new NodeContext(Collections.emptyMap(), null);
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap = new HashMap<>();
+
+    @Test
+    void toBuilder() {
+        final Node parent = createNode(Person.class, rootTypeMap, new TypeToken<Person>() {});
+        final List<Node> children = Collections.singletonList(createNode(String.class, rootTypeMap, new TypeToken<String>() {}));
+
+        final Node node = Node.builder()
+                .type(Types.LIST_STRING.get())
+                .rawType(List.class)
+                .targetClass(List.class)
+                .field(ReflectionUtils.getField(ListString.class, "list"))
+                .parent(parent)
+                .nodeContext(NODE_CONTEXT)
+                .children(children)
+                .build();
+
+        final Node copy = node.toBuilder().build();
+
+        assertThat(copy.getNodeContext()).isEqualTo(node.getNodeContext());
+        assertThat(copy.getType()).isEqualTo(node.getType());
+        assertThat(copy.getRawType()).isEqualTo(node.getRawType());
+        assertThat(copy.getTargetClass()).isEqualTo(node.getTargetClass());
+        assertThat(copy.getField()).isEqualTo(node.getField());
+        assertThat(copy.getParent()).isEqualTo(node.getParent());
+        assertThat(copy.getTypeMap()).isEqualTo(node.getTypeMap());
+        assertThat(copy.getOnlyChild()).isEqualTo(node.getOnlyChild());
+        assertThat(copy.getChildren()).isEqualTo(node.getChildren());
+    }
 
     @Nested
     class EqualsTest {
@@ -112,7 +141,7 @@ class NodeTest {
 
     @Nested
     @GenericsTag
-    class TypeMapTest {
+    class NodeTypeMapTest {
 
         @Test
         void listOfStrings() {

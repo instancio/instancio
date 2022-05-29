@@ -27,7 +27,7 @@ import java.util.function.Function;
 
 import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.ApiValidator.validateNotNullAndType;
-import static org.instancio.internal.ApiValidator.validateSubtypeMapping;
+import static org.instancio.internal.ApiValidator.validateSubtype;
 
 /**
  * Instancio settings API.
@@ -187,7 +187,7 @@ public class Settings {
      */
     public Settings mapType(final Class<?> from, final Class<?> to) {
         checkLockedForModifications();
-        validateSubtypeMapping(from, to);
+        validateSubtype(from, to);
         subtypeMap.put(from, to);
         return this;
     }

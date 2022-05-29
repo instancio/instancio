@@ -17,8 +17,6 @@ package org.instancio.internal.nodes;
 
 import org.instancio.internal.context.SubtypeSelectorMap;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.Map;
@@ -41,7 +39,7 @@ public final class NodeContext {
         return rootTypeMap;
     }
 
-    Optional<Class<?>> getUserSuppliedSubtype(final Class<?> targetClass, @Nullable final Field field) {
-        return subtypeSelectorMap.getUserSuppliedSubtype(targetClass, field);
+    Optional<Class<?>> getUserSuppliedSubtype(final Node node) {
+        return subtypeSelectorMap.getSubtype(node);
     }
 }

@@ -29,11 +29,11 @@ import org.instancio.test.support.pojo.interfaces.ListOfItemInterfaceString;
 import org.instancio.test.support.pojo.interfaces.ListOfStringHolderInterface;
 import org.instancio.test.support.pojo.interfaces.MapOfItemInterfaceString;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -68,18 +68,16 @@ class SubtypeMappingTest {
     }
 
     @Test
-    @Disabled("FIXME")
     void subtypeMappingListWithScope() {
         final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
                 .map(all(List.class).within(scope(TwoListsOfItemString.class, "list1")), Vector.class)
                 .create();
 
-        assertThat(result.getList1()).isNotEmpty().isInstanceOf(Vector.class);
-        assertThat(result.getList2()).isNotEmpty().isNotInstanceOf(Vector.class);
+        assertThat(result.getList1()).isNotEmpty().isExactlyInstanceOf(Vector.class);
+        assertThat(result.getList2()).isNotEmpty().isExactlyInstanceOf(ArrayList.class);
     }
 
     @Test
-    @Disabled("FIXME")
     void subtypeMappingListElementWithScope() {
         final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
                 .map(all(Item.class).within(scope(TwoListsOfItemString.class, "list1")), NonGenericItemStringExtension.class)

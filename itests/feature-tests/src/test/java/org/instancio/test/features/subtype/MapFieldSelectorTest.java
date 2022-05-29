@@ -35,7 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 
-@FeatureTag(Feature.MAP_FIELD_SELECTOR)
+@FeatureTag(Feature.SUBTYPE)
 @ExtendWith(InstancioExtension.class)
 class MapFieldSelectorTest {
 

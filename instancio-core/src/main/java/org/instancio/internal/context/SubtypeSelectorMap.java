@@ -15,66 +15,47 @@
  */
 package org.instancio.internal.context;
 
+import org.instancio.Select;
 import org.instancio.TargetSelector;
-import org.instancio.internal.ApiValidator;
+import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetKind;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.instancio.util.ReflectionUtils.getField;
-
-// TODO subtype selectors with scope
 public class SubtypeSelectorMap {
 
-    private final Map<Type, Class<?>> classSubtypeMap = new LinkedHashMap<>();
-    private final Map<Field, Class<?>> fieldSubtypeMap = new LinkedHashMap<>();
     private final Map<TargetSelector, Class<?>> subtypeSelectors;
+    private final SelectorMap<Class<?>> selectorMap = new SelectorMap<>();
 
     public SubtypeSelectorMap(final Map<TargetSelector, Class<?>> subtypeSelectors) {
         this.subtypeSelectors = Collections.unmodifiableMap(subtypeSelectors);
-        putAllSubtypeSelectors(subtypeSelectors);
+        putAll(subtypeSelectors);
     }
 
     Map<TargetSelector, Class<?>> getSubtypeSelectors() {
         return subtypeSelectors;
     }
 
-    Optional<Class<?>> getSubtypeMapping(final Type superType) {
-        return Optional.ofNullable(classSubtypeMap.get(superType));
+    SelectorMap<Class<?>> getSelectorMap() {
+        return selectorMap;
     }
 
-    void putAll(final Map<Class<?>, Class<?>> additional) {
-        classSubtypeMap.putAll(additional);
+    public Optional<Class<?>> getSubtype(final Node node) {
+        return selectorMap.getValue(node);
     }
 
-    public Optional<Class<?>> getUserSuppliedSubtype(final Class<?> targetClass, @Nullable final Field field) {
-        final Class<?> fieldSubtype = fieldSubtypeMap.get(field);
-        return fieldSubtype != null
-                ? Optional.of(fieldSubtype)
-                : Optional.ofNullable(classSubtypeMap.get(targetClass));
+    void putAdditional(final Map<Class<?>, Class<?>> additional) {
+        additional.forEach((k, v) -> selectorMap.put((SelectorImpl) Select.all(k), v));
     }
 
-    private void putAllSubtypeSelectors(final Map<TargetSelector, Class<?>> groups) {
-        groups.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
+    private void putAll(final Map<TargetSelector, Class<?>> subtypes) {
+        subtypes.forEach((TargetSelector targetSelector, Class<?> callback) -> {
             for (SelectorImpl selector : ((Flattener) targetSelector).flatten()) {
-                if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
-                    final Field field = getField(selector.getTargetClass(), selector.getFieldName());
-                    // TODO validate
-                    fieldSubtypeMap.put(field, subtype);
-                } else {
-                    ApiValidator.validateSubtypeMapping(selector.getTargetClass(), subtype);
-                    classSubtypeMap.put(selector.getTargetClass(), subtype);
-                }
+                selectorMap.put(selector, callback);
             }
         });
     }
-
 }
