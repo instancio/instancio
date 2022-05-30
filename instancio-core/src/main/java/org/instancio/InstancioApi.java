@@ -274,6 +274,7 @@ public interface InstancioApi<T> {
      * @param selector for fields and/or classes this method should be applied to
      * @param subtype  to map the selector to
      * @return API builder reference
+     * @since 1.4.0
      */
     InstancioApi<T> subtype(TargetSelector selector, Class<?> subtype);
 
