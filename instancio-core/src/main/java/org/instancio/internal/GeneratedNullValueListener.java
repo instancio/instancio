@@ -24,8 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import java.util.Queue;
 
 /**
@@ -35,9 +33,7 @@ import java.util.Queue;
  */
 class GeneratedNullValueListener implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratedNullValueListener.class);
-    private static final int CYCLIC_NODE_LOOP_LIMIT = 50_000;
 
-    private final Map<Node, Boolean> seen = new IdentityHashMap<>();
     private final ModelContext<?> context;
     private final boolean isLenientMode;
 
@@ -52,6 +48,8 @@ class GeneratedNullValueListener implements GenerationListener {
             return;
         }
 
+        LOG.debug("Generated null for {}. Marking selectors matching its descendants as \"used\"", node);
+
         // A null value was generated for this node.
         // There might be selectors targeting the node's descendants.
         // However, since descendant values may not be generated,
@@ -62,13 +60,8 @@ class GeneratedNullValueListener implements GenerationListener {
         final Queue<Node> queue = new ArrayDeque<>();
         queue.add(node);
 
-        int i = 0;
-        for (; i < CYCLIC_NODE_LOOP_LIMIT && !queue.isEmpty(); i++) {
+        while (!queue.isEmpty()) {
             final Node current = queue.poll();
-
-            if (seen.putIfAbsent(current, true) != null) {
-                continue;
-            }
 
             // mark as "used"
             context.getGenerator(current);
@@ -76,11 +69,6 @@ class GeneratedNullValueListener implements GenerationListener {
             context.getSubtypeMap().getSubtype(current);
 
             queue.addAll(current.getChildren());
-        }
-
-        if (i == CYCLIC_NODE_LOOP_LIMIT) {
-            LOG.debug("Reached iteration limit of {} marking selectors as 'used'. " +
-                    "This may result in a false positive 'unused selector' warning.", CYCLIC_NODE_LOOP_LIMIT);
         }
     }
 }

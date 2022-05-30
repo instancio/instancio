@@ -62,6 +62,7 @@ public interface ArrayGeneratorSpec<T> extends GeneratorSpec<T> {
      *
      * @param type of array to generate
      * @return spec builder
+     * @since 1.4.0
      */
     ArrayGeneratorSpec<T> subtype(Class<?> type);
 

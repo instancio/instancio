@@ -173,18 +173,20 @@ public final class Node {
         return Objects.hash(getTargetClass(), getType(), getField());
     }
 
+    public String getNodeName() {
+        return field == null
+                ? Format.withoutPackage(targetClass)
+                : Format.withoutPackage(parent.targetClass) + '.' + field.getName();
+    }
+
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Node[").append(targetClass.getSimpleName());
-        if (field != null) {
-            sb.append('.').append(field.getName());
-        }
-        sb.append(", #chn=").append(children == null ? 0 : children.size());
-        if (type != null) {
-            sb.append(", ").append(Format.withoutPackage(type));
-        }
-        return sb.append(']').toString();
+        return new StringBuilder().append("Node[")
+                .append(getNodeName())
+                .append(", #chn=").append(children.size())
+                .append(", ").append(Format.withoutPackage(type))
+                .append(']')
+                .toString();
     }
 
     public static final class Builder {

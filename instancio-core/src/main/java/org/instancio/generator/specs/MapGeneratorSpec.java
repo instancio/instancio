@@ -78,6 +78,7 @@ public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
      *
      * @param type of collection to generate
      * @return spec builder
+     * @since 1.4.0
      */
     MapGeneratorSpec<K, V> subtype(Class<?> type);
 

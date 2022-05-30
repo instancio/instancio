@@ -22,8 +22,11 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayCharSequence;
 import org.instancio.test.support.pojo.collections.lists.ListInteger;
 import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.AddressExtension;
+import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.PhoneWithType;
+import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +39,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
+import static org.instancio.Select.scope;
 
 @FeatureTag(Feature.SUBTYPE)
 @ExtendWith(InstancioExtension.class)
@@ -50,6 +54,23 @@ class SubtypeUsingClassSelectorTest {
 
         assertThat(result.getPhoneType()).isNotNull();
         assertThat(result.getNumber()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Map class selector with scope to a subtype")
+    void mapClassSelectorWithScope() {
+        final PersonHolder result = Instancio.of(PersonHolder.class)
+                .subtype(all(Address.class).within(scope(RichPerson.class)), AddressExtension.class)
+                .create();
+
+        assertThat(result.getPerson().getAddress()).isExactlyInstanceOf(Address.class);
+        assertThat(result.getRichPerson().getAddress1())
+                .isExactlyInstanceOf(AddressExtension.class)
+                .extracting(it -> ((AddressExtension) it).getAdditionalInfo()).isNotNull();
+
+        assertThat(result.getRichPerson().getAddress2())
+                .isExactlyInstanceOf(AddressExtension.class)
+                .extracting(it -> ((AddressExtension) it).getAdditionalInfo()).isNotNull();
     }
 
     @Test

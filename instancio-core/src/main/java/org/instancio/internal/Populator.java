@@ -170,17 +170,13 @@ public class Populator {
                              final boolean nullableKey,
                              final boolean nullableValue) {
         final Object mapKey;
-
-        GeneratorResult keyResult;
-        GeneratorResult valueResult;
-
         if (context.getRandom().diceRoll(nullableKey)) {
             mapKey = null;
             engine.notifyListeners(keyNode, null);
         } else {
             final Optional<GeneratorResult> keyResultOpt = engine.createObject(keyNode, map);
             if (keyResultOpt.isPresent()) {
-                keyResult = keyResultOpt.get();
+                final GeneratorResult keyResult = keyResultOpt.get();
                 enqueueChildrenOf(keyNode, keyResult, queue);
                 mapKey = keyResult.getValue();
             } else {
@@ -195,7 +191,7 @@ public class Populator {
         } else {
             final Optional<GeneratorResult> valueResultOpt = engine.createObject(valueNode, map);
             if (valueResultOpt.isPresent()) {
-                valueResult = valueResultOpt.get();
+                final GeneratorResult valueResult = valueResultOpt.get();
                 enqueueChildrenOf(valueNode, valueResult, queue);
                 mapValue = valueResult.getValue();
             } else {
