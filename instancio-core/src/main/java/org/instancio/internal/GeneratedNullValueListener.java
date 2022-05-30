@@ -19,8 +19,6 @@ import org.instancio.Mode;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
@@ -32,8 +30,6 @@ import java.util.Queue;
  * false positive "unused selector" errors in strict mode.
  */
 class GeneratedNullValueListener implements GenerationListener {
-    private static final Logger LOG = LoggerFactory.getLogger(GeneratedNullValueListener.class);
-
     private final ModelContext<?> context;
     private final boolean isLenientMode;
 
@@ -47,8 +43,6 @@ class GeneratedNullValueListener implements GenerationListener {
         if (isLenientMode || instance != null) {
             return;
         }
-
-        LOG.debug("Generated null for {}. Marking selectors matching its descendants as \"used\"", node);
 
         // A null value was generated for this node.
         // There might be selectors targeting the node's descendants.
