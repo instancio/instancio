@@ -57,9 +57,9 @@ class SelectorApiContractTest {
     void passingSelectorToWithinNotAllowed() throws Exception {
         assertCompilationError("NonCompilable_SelectorWithinSelector.java",
                 "method within in interface org.instancio.Selector cannot be applied to given types;",
-                "required: org.instancio.Scope[]",
-                "found: org.instancio.Selector",
-                "reason: varargs mismatch; org.instancio.Selector cannot be converted to org.instancio.Scope");
+                "required: ", "org.instancio.Scope[]",
+                "found: ", "org.instancio.Selector",
+                "reason: ", "varargs mismatch; org.instancio.Selector cannot be converted to org.instancio.Scope");
     }
 
     @Test
@@ -67,8 +67,8 @@ class SelectorApiContractTest {
     void groupSelectorDoesNotHaveAWithinMethod() throws Exception {
         assertCompilationError("NonCompilable_GroupSelectorDoesNotExposeWithinMethod.java",
                 "cannot find symbol",
-                "symbol:   method within(org.instancio.Scope)",
-                "location: interface org.instancio.SelectorGroup");
+                "symbol: ", "method within(org.instancio.Scope)",
+                "location: ", "interface org.instancio.SelectorGroup");
     }
 
     @Test
@@ -90,8 +90,8 @@ class SelectorApiContractTest {
     void selectorGroupHasNoScope() throws Exception {
         assertCompilationError("NonCompilable_SelectorGroupHasNoScope.java",
                 "cannot find symbol",
-                "symbol:   method scope()",
-                "location: interface org.instancio.SelectorGroup");
+                "symbol: ", "method scope()",
+                "location: ", "interface org.instancio.SelectorGroup");
     }
 
     @Test
@@ -99,8 +99,8 @@ class SelectorApiContractTest {
     void selectorGroupHasNoToScope() throws Exception {
         assertCompilationError("NonCompilable_SelectorGroupCannotBeConvertedToScope.java",
                 "cannot find symbol",
-                "symbol:   method toScope()",
-                "location: interface org.instancio.SelectorGroup");
+                "symbol: ", "method toScope()",
+                "location: ", "interface org.instancio.SelectorGroup");
     }
 
     @Test
@@ -115,7 +115,7 @@ class SelectorApiContractTest {
     void cannotChainWithinMethods() throws Exception {
         assertCompilationError("NonCompilable_CannotChainWithinMethods.java",
                 "cannot find symbol",
-                "location: interface org.instancio.GroupableSelector");
+                "location: ", "interface org.instancio.GroupableSelector");
     }
 
     private static void assertCompilationError(final String sourceFile, final String... expectedErrorMsg) throws Exception {

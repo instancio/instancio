@@ -76,6 +76,7 @@ public enum Feature {
     MODE,
     VALIDATION,
 
+    MODEL,
     METAMODEL,
 
     STREAM,
