@@ -51,7 +51,7 @@ class SettingsTest {
         map.put(Keys.FLOAT_MAX.propertyKey(), 9f);
         map.put(Keys.LONG_NULLABLE.propertyKey(), true);
         map.put(TYPE_MAPPING_PREFIX + "java.util.List", "java.util.ArrayList");
-        map.put(TYPE_MAPPING_PREFIX + "java.util.Set", "java.util.HashSet"); // TODO validation
+        map.put(TYPE_MAPPING_PREFIX + "java.util.Set", "java.util.HashSet");
 
         final Settings settings = Settings.from(map);
 

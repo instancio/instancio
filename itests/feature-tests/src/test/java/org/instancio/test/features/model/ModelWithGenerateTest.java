@@ -1,19 +1,19 @@
 /*
- *  Copyright 2022 the original author or authors.
+ * Copyright 2022 the original author or authors.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       https://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.instancio.api.features.model;
+package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Mode;
@@ -22,7 +22,8 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
-import org.instancio.test.support.tags.NonDeterministicTag;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,7 @@ import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
-@NonDeterministicTag
+@FeatureTag({Feature.MODEL, Feature.GENERATE})
 class ModelWithGenerateTest {
 
     @Test
@@ -72,6 +73,7 @@ class ModelWithGenerateTest {
         final TwoListsOfItemString result2 = Instancio.of(derivedModel)
                 .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
                 .create();
+
         assertThat(result2.getList1()).hasSize(2);
         assertThat(result2.getList2()).hasSize(2);
     }
