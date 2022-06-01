@@ -79,11 +79,7 @@ public final class ModelContext<T> {
 
         seed = builder.seed;
         random = resolveRandom(builder.seed);
-        settings = Settings.defaults()
-                .merge(PROPERTIES_FILE_SETTINGS)
-                .merge(ThreadLocalSettings.getInstance().get())
-                .merge(builder.settings)
-                .lock();
+        settings = createSettings(builder);
 
         ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
         nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
@@ -95,6 +91,18 @@ public final class ModelContext<T> {
                 builder.generatorSpecSelectors);
 
         subtypeSelectorMap.putAdditional(generatorSelectorMap.getClassSubtypeMap());
+    }
+
+    private static Settings createSettings(final Builder<?> builder) {
+        final Settings settings = Settings.defaults()
+                .merge(PROPERTIES_FILE_SETTINGS)
+                .merge(ThreadLocalSettings.getInstance().get())
+                .merge(builder.settings);
+
+        if (Boolean.TRUE.equals(builder.lenient)) {
+            settings.set(Keys.MODE, Mode.LENIENT);
+        }
+        return settings.lock();
     }
 
     public void reportUnusedSelectorWarnings() {
@@ -188,6 +196,7 @@ public final class ModelContext<T> {
         private final Set<TargetSelector> nullableTargets = new LinkedHashSet<>();
         private Settings settings;
         private Integer seed;
+        private Boolean lenient;
 
         private Builder(final Type rootType) {
             this.rootType = Verify.notNull(rootType, "Root type is null");
@@ -243,6 +252,11 @@ public final class ModelContext<T> {
 
         public Builder<T> withSeed(final int seed) {
             this.seed = seed;
+            return this;
+        }
+
+        public Builder<T> lenient() {
+            this.lenient = true;
             return this;
         }
 

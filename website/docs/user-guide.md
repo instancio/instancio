@@ -327,22 +327,32 @@ with as much care as production code. Keeping the tests concise makes them easie
 
 #### Lenient Mode
 
-While strict mode is highly recommended, there is an option to disable it.
-The lenient mode can be enabled using settings:
+While strict mode is highly recommended, there is an option to switch to lenient mode.
+The lenient mode can be enabled using the `lenient()` method:
 
-``` java title="Setting lenient mode through settings"
+``` java title="Setting lenient mode using builder API"
 Person person = Instancio.of(Person.class)
-    .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+    .lenient()
+    // snip...
+    .create();
+
+Lenient mode can also be enabled via `Settings`. In fact, the `lenient()` method above is a shorthand for the following:
+
+``` java title="Setting lenient mode using Settings"
+Settings settings = Settings.create()
+    .set(Keys.MODE, Mode.LENIENT);
+
+Person person = Instancio.of(Person.class)
+    .withSettings(settings)
     // snip...
     .create();
 ```
 
 Lenient mode can also be enabled globally using [`instancio.properties`](#overriding-settings-using-a-properties-file):
 
-``` java title="Setting lenient mode through properties"
-mode=STRICT
+``` java title="Setting lenient mode using properties file"
+mode=LENIENT
 ```
-
 
 ## Customising Objects
 

@@ -119,6 +119,12 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
+    public InstancioApi<T> lenient() {
+        modelContextBuilder.lenient();
+        return this;
+    }
+
+    @Override
     public Model<T> toModel() {
         return createModel();
     }

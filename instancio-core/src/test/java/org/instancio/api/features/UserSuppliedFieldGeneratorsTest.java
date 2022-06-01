@@ -16,9 +16,6 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.Mode;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.test.support.pojo.person.Address;
@@ -101,7 +98,7 @@ class UserSuppliedFieldGeneratorsTest {
     @DisplayName("Values provided via supply() using a field selector should take precedence over class selector")
     void supplyUsingFieldSelectorShouldTakePrecedenceOverClassSelector() {
         final Person result = Instancio.of(Person.class)
-                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .lenient()
                 .supply(field("address"), () -> null)
                 .supply(all(Address.class), Address::new)
                 .set(allStrings(), "foo")

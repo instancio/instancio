@@ -16,11 +16,8 @@
 package org.instancio.api.features;
 
 import org.instancio.Instancio;
-import org.instancio.Mode;
 import org.instancio.Model;
 import org.instancio.TypeToken;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.arrays.ArrayPerson;
 import org.instancio.test.support.pojo.collections.lists.ListPerson;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
@@ -126,7 +123,7 @@ class OnCompleteTest {
     @Test
     void onCompleteFieldForIgnoredClass() {
         final Person result = Instancio.of(Person.class)
-                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .lenient()
                 .ignore(all(Address.class))
                 .onComplete(all(Phone.class), (Phone phone) -> failIfCalled())
                 .create();
@@ -137,7 +134,7 @@ class OnCompleteTest {
     @Test
     void onCompleteFieldForIgnoredField() {
         final Person result = Instancio.of(Person.class)
-                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .lenient()
                 .ignore(field("name"))
                 .onComplete(field("name"), (String name) -> failIfCalled())
                 .create();
@@ -148,7 +145,7 @@ class OnCompleteTest {
     @Test
     void onCompleteOnIgnoredClass() {
         final Set<Address> result = Instancio.of(Person.class)
-                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .lenient()
                 .ignore(all(Address.class))
                 // all addresses will be null, so the address.city callback should not be called
                 .onComplete(field(Address.class, "city"), (String city) -> failIfCalled())
@@ -166,7 +163,7 @@ class OnCompleteTest {
 
         final int limit = 100;
         final Set<Address> result = Instancio.of(Person.class)
-                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .lenient()
                 .withNullable(all(Address.class))
                 .onComplete(all(Address.class), (Address address) -> {
                     assertThat(address).as("Callback should not get invoked with null values").isNotNull();

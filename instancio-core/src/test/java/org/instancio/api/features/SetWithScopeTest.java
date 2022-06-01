@@ -69,7 +69,7 @@ class SetWithScopeTest {
         @Test
         void selectAllIntsAndAge2() {
             final PersonHolder result = Instancio.of(PersonHolder.class)
-                    .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                    .lenient()
                     .set(allInts().within(scope(Person.class)), 100)
                     .set(allInts(), -1)
                     .set(allInts().within(scope(RichPerson.class)), 100)

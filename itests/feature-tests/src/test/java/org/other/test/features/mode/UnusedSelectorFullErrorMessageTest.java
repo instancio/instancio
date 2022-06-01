@@ -86,7 +86,19 @@ class UnusedSelectorFullErrorMessageTest {
                         " 1: field(IntegerHolder, \"primitive\")%n" +
                         "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:58)%n" +
                         " 2: all(ZonedDateTime)%n" +
-                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:59)"
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:59)%n" +
+                        "%n" +
+                        "This error aims to highlight potential problems and help maintain clean test code:%n" +
+                        "- You might be selecting a field or class that does not exist within this object.%n" +
+                        "- The target or its parent might be ignored using the ignore() method.%n" +
+                        "%n" +
+                        "This error can be suppressed by switching to lenient mode, for example:%n" +
+                        "%n" +
+                        "      Example example = Instancio.of(Example.class).lenient()%n" +
+                        "          // snip...%n" +
+                        "          .create();%n" +
+                        "%n" +
+                        "For more information see: https://www.instancio.org/user-guide/"
                 ));
     }
 

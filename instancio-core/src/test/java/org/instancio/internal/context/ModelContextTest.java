@@ -16,6 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.Generator;
+import org.instancio.Mode;
 import org.instancio.Random;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
@@ -170,6 +171,12 @@ class ModelContextTest {
     }
 
     @Test
+    void lenient() {
+        final ModelContext<?> ctx = ModelContext.builder(Person.class).lenient().build();
+        assertThat((Mode) ctx.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
+    }
+
+    @Test
     void unusedSelectors() {
         final ModelContext<?> ctx = ModelContext.builder(Person.class)
                 .withSupplier(field("name"), () -> "foo")
@@ -201,6 +208,7 @@ class ModelContextTest {
         final int integerMinValue = 26546;
 
         final ModelContext<?> ctx = ModelContext.builder(Person.class)
+                .lenient()
                 .withGenerator(all(String.class), allStringsGenerator)
                 .withGenerator(toFieldSelector(ADDRESS_CITY_FIELD), addressCityGenerator)
                 .withGeneratorSpec(toFieldSelector(PETS_FIELD), petsGeneratorFn)
@@ -224,6 +232,7 @@ class ModelContextTest {
         assertThat(actual.isNullable(mockNode(Person.class, ADDRESS_FIELD))).isTrue();
         assertThat(actual.getRandom().getSeed()).isEqualTo(seed);
         assertThat((int) actual.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
+        assertThat((Mode) actual.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
         assertThat(ctx.getSubtypeMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
 
         assertThatThrownBy(() -> actual.getSettings().set(Keys.STRING_MIN_LENGTH, 5))

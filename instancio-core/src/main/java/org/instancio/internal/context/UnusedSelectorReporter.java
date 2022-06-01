@@ -49,7 +49,7 @@ final class UnusedSelectorReporter {
             return;
         }
 
-        final StringBuilder sb = new StringBuilder(512)
+        final StringBuilder sb = new StringBuilder(1024)
                 .append(NL)
                 .append("Found unused selectors referenced in the following methods:")
                 .append(NL);
@@ -64,7 +64,10 @@ final class UnusedSelectorReporter {
                 .append("This error aims to highlight potential problems and help maintain clean test code:").append(NL)
                 .append("- You might be selecting a field or class that does not exist within this object.").append(NL)
                 .append("- The target or its parent might be ignored using the ignore() method.").append(NL).append(NL)
-                .append("This error can be suppressed by switching to lenient mode.").append(NL)
+                .append("This error can be suppressed by switching to lenient mode, for example:").append(NL).append(NL)
+                .append("      Example example = Instancio.of(Example.class).lenient()").append(NL)
+                .append("          // snip...").append(NL)
+                .append("          .create();").append(NL).append(NL)
                 .append("For more information see: https://www.instancio.org/user-guide/").append(NL);
 
         throw new UnusedSelectorException(sb.toString());
