@@ -3,7 +3,7 @@
 ### Overview
 
 Instancio is a Java library for generating test objects.
-Its main goal is to reduce the amount of manual data setup in unit tests.
+Its main goal is to reduce manual data setup in unit tests.
 Its API was designed to be as non-intrusive and as concise as possible, while providing enough flexibility to customise generated objects.
 Instancio requires no changes to production code, and it can be used out-of-the-box with zero configuration.
 

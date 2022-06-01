@@ -7,8 +7,8 @@
 
 # What is it?
 
-Instancio is a Java library for auto-populating objects with random data.
-Its main goal is to reduce the amount of manual data setup in unit tests,
+Instancio is a Java library for populating objects.
+Its main goal is to reduce manual data setup in unit tests,
 especially when working with large classes.
 
 Instead of:
@@ -40,7 +40,6 @@ Person person = Instancio.of(Person.class)
     .set(field(Address.class, "city"), "Vancouver")
     .ignore(field(Address.class, "postalCode"))
     .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
-    .withNullable(field("pets"))
     .onComplete(all(Person.class), (Person p) -> p.setName(p.getGender() == Gender.MALE ? "John" : "Jane"))
     .create();
 ```
@@ -68,6 +67,14 @@ Person[
 
 See the [User Guide](https://www.instancio.org/user-guide) for more information.
 
+# Features
+
+- [JUnit 5 extension](https://www.instancio.org/user-guide/#junit-integration)
+- [Reproducible data using seeds](https://www.instancio.org/user-guide/#seed)
+- [Metamodels](https://www.instancio.org/user-guide/#metamodel)
+- [Object templates using models](https://www.instancio.org/user-guide/#using-models)
+
+
 # Try it out
 
 To use Instancio with JUnit 5 use the  `instancio-junit` dependency. It includes `InstancioExtension`
@@ -77,7 +84,7 @@ which allows reproducing data in case of a test failure, as well as a few other 
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -88,7 +95,7 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
         <scope>test</scope>
     </dependency>
 ```
