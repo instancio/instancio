@@ -16,10 +16,7 @@
 package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
-import org.instancio.Mode;
 import org.instancio.Model;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.test.support.tags.Feature;
@@ -71,7 +68,7 @@ class ModelWithGenerateTest {
         assertThat(result1.getList2()).hasSize(1);
 
         final TwoListsOfItemString result2 = Instancio.of(derivedModel)
-                .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                .lenient()
                 .create();
 
         assertThat(result2.getList1()).hasSize(2);

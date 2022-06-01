@@ -8,7 +8,7 @@
 
     <name>Instancio Parent</name>
     <description>Instancio is a library for auto-populating objects with random data.</description>
-    <url>https://github.com/instancio/instancio</url>
+    <url>https://www.instancio.org</url>
 
     <licenses>
         <license>
@@ -167,7 +167,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.7</version>
+                    <version>0.8.8</version>
                     <executions>
                         <execution>
                             <goals>

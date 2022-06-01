@@ -17,9 +17,6 @@ package org.instancio.api.features.generators;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
-import org.instancio.Mode;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.TwoStringCollections;
 import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
@@ -59,7 +56,7 @@ class BuiltInCollectionGeneratorTest {
         void selectSupertypeDoesNotIncludeSubtype() {
             final int size = 100;
             final HashSetLong result = Instancio.of(HashSetLong.class)
-                    .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+                    .lenient()
                     .generate(all(Set.class), gen -> gen.collection().size(size))
                     .create();
 

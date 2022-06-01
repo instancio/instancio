@@ -44,6 +44,7 @@ public interface InstancioApi<T> {
      * including collection and array fields.
      *
      * @return a fully populated object
+     * @since 1.0.1
      */
     T create();
 
@@ -84,6 +85,7 @@ public interface InstancioApi<T> {
      * the {@link Model} interface does not contain any methods.
      *
      * @return a model containing all the details
+     * @since 1.0.1
      */
     Model<T> toModel();
 
@@ -284,6 +286,7 @@ public interface InstancioApi<T> {
      *
      * @param settings to use
      * @return API builder reference
+     * @since 1.0.1
      */
     InstancioApi<T> withSettings(Settings settings);
 
@@ -306,6 +309,24 @@ public interface InstancioApi<T> {
      *
      * @param seed for the random number generator
      * @return API builder reference
+     * @since 1.0.1
      */
     InstancioApi<T> withSeed(int seed);
+
+    /**
+     * Disables strict mode in which unused selectors trigger an error.
+     * In lenient mode unused selectors are simply ignored.
+     * <p>
+     * This method is a shorthand for:
+     *
+     * <pre>{@code
+     *     Example example = Instancio.of(Example.class)
+     *         .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+     *         .create();
+     * }</pre>
+     *
+     * @return API builder reference
+     * @since 1.4.1
+     */
+    InstancioApi<T> lenient();
 }
