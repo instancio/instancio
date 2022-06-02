@@ -208,9 +208,11 @@ public class Settings {
      * @return read-only settings
      */
     public Settings lock() {
-        settingsMap = Collections.unmodifiableMap(settingsMap);
-        subtypeMap = Collections.unmodifiableMap(subtypeMap);
-        isLockedForModifications = AUTO_ADJUST_ENABLED;
+        if (!isLockedForModifications) {
+            settingsMap = Collections.unmodifiableMap(settingsMap);
+            subtypeMap = Collections.unmodifiableMap(subtypeMap);
+            isLockedForModifications = true;
+        }
         return this;
     }
 
