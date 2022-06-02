@@ -60,7 +60,8 @@ public final class Key implements SettingKey {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof Key)) return false;
-        return propertyKey.equals(((SettingKey) o).propertyKey());
+        final Key key = (Key) o;
+        return Objects.equals(propertyKey, key.propertyKey);
     }
 
     @Override

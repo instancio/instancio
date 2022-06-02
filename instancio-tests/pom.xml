@@ -11,6 +11,7 @@
     <name>Instancio Tests Parent</name>
 
     <modules>
+        <module>core-tests</module>
         <module>feature-tests</module>
         <module>default-package</module>
         <module>api-contract-tests</module>
