@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features.generators;
+package org.instancio.test.features.generator;
 
 import org.instancio.Instancio;
 import org.instancio.test.support.pojo.collections.maps.MapByteDouble;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +34,7 @@ import static org.instancio.Select.allBytes;
 import static org.instancio.Select.allDoubles;
 import static org.instancio.Select.allLongs;
 
+@FeatureTag(Feature.GENERATE)
 class BuiltInNumberGeneratorTest {
 
     private static final int SAMPLE_SIZE = 500;

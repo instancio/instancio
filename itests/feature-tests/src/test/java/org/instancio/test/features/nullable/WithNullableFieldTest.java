@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features;
+package org.instancio.test.features.nullable;
 
 import org.instancio.Instancio;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
@@ -23,6 +23,8 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
 @NonDeterministicTag
+@FeatureTag(Feature.NULLABLE)
 class WithNullableFieldTest {
 
     private static final int SAMPLE_SIZE = 100;

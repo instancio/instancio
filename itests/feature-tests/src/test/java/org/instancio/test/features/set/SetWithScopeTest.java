@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features;
+package org.instancio.test.features.set;
 
 import org.instancio.Instancio;
-import org.instancio.Mode;
 import org.instancio.TypeToken;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;

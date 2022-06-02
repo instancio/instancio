@@ -22,8 +22,9 @@ import org.instancio.generator.math.BigIntegerGenerator;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -34,8 +35,8 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints;
 
-@SettingsTag
 @NonDeterministicTag
+@FeatureTag(Feature.SETTINGS)
 class NumberGeneratorTest {
 
     private static final int MIN = -10;

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features.generators;
+package org.instancio.test.features.generator;
 
 import org.instancio.Instancio;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
+@FeatureTag(Feature.GENERATE)
 class BuiltInStringGeneratorTest {
 
     private static final int MIN_LENGTH = 50;

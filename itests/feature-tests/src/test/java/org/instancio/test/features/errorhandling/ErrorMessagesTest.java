@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.errorhandling;
+package org.instancio.test.features.errorhandling;
 
 import org.instancio.Generator;
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.generics.container.ItemContainer;
@@ -42,7 +43,7 @@ class ErrorMessagesTest {
 
     @Test
     void nullRootClass() {
-        assertThatThrownBy(() -> Instancio.of((Class<?>) null).create())
+        assertThatThrownBy(() -> Instancio.of((Class<?>) null))
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(
                         "Class must not be null.",
@@ -156,10 +157,10 @@ class ErrorMessagesTest {
     @Test
     @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
     void invalidTypeCreatedByGeneratorWithFailOnErrorTrue() {
-        assertThatThrownBy(() ->
-                Instancio.of(Person.class)
-                        .supply(field("name"), () -> 123)
-                        .create())
+        final InstancioApi<Person> api = Instancio.of(Person.class)
+                .supply(field("name"), () -> 123);
+
+        assertThatThrownBy(api::create)
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll(
                         "Could not set value to the field: private java.lang.String org.instancio.test.support.pojo.person.Person.name.",
@@ -169,10 +170,11 @@ class ErrorMessagesTest {
     @Test
     void invalidFieldSelector() {
         final String invalidField = "does-not-exist";
-        assertThatThrownBy(() ->
-                Instancio.of(Person.class)
-                        .supply(field(invalidField), () -> null)
-                        .create())
+
+        final InstancioApi<Person> api = Instancio.of(Person.class)
+                .supply(field(invalidField), () -> null);
+
+        assertThatThrownBy(api::create)
                 .isInstanceOf(API_EXCEPTION)
                 .hasMessage("Invalid field '%s' for class %s", invalidField, Person.class.getName());
     }

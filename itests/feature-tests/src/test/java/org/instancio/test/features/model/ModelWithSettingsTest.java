@@ -22,18 +22,16 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@FeatureTag(Feature.MODEL)
+@FeatureTag({Feature.MODEL, Feature.SETTINGS})
 class ModelWithSettingsTest {
     private static final int INT_MIN = 1234;
     private static final int INT_MAX = 1235;
 
     @Test
-    @SettingsTag
     void verifyModelRetainsSettings() {
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
                 .withSettings(Settings.create()
@@ -46,7 +44,6 @@ class ModelWithSettingsTest {
     }
 
     @Test
-    @SettingsTag
     void verifyModelSettingsOverride() {
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
                 .withSettings(Settings.create()

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features;
+package org.instancio.test.features.mode;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.test.support.pojo.basic.StringHolder;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -29,7 +31,8 @@ import static org.assertj.core.api.Fail.fail;
 import static org.instancio.Select.all;
 import static org.instancio.test.support.asserts.UnusedSelectorsAssert.assertUnusedSelectorMessage;
 
-class StrictModeTest {
+@FeatureTag(Feature.MODE)
+class StrictModeBasicTest {
 
     @Test
     void unusedSelectorsInIgnore() {

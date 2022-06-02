@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features.generators;
+package org.instancio.test.features.generator;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
@@ -22,6 +22,8 @@ import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
 import org.instancio.test.support.pojo.arrays.primitive.WithIntArray;
 import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
+@FeatureTag(Feature.GENERATE)
 class BuiltInArrayGeneratorTest {
     private static final int EXPECTED_LENGTH = RandomUtils.nextInt(0, 10);
 

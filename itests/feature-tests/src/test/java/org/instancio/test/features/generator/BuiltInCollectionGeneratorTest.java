@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features.generators;
+package org.instancio.test.features.generator;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.TwoStringCollections;
 import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
@@ -25,10 +29,13 @@ import org.instancio.test.support.pojo.collections.maps.TwoMapsOfIntegerItemStri
 import org.instancio.test.support.pojo.collections.sets.HashSetLong;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,11 +52,21 @@ import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 // TODO test nested lists/maps
+@FeatureTag(Feature.GENERATE)
 class BuiltInCollectionGeneratorTest {
     private static final int EXPECTED_SIZE = RandomUtils.nextInt(90, 100);
 
     @Nested
-    class CollectionTypeTest {
+    @DisplayName("Tests with unspecified collection().subtype()")
+    @ExtendWith(InstancioExtension.class)
+    class UnspecifiedCollectionSubtypeTest {
+
+        @WithSettings
+        private final Settings settings = Settings.create()
+                .set(Keys.INTEGER_MIN, Integer.MIN_VALUE)
+                .set(Keys.INTEGER_MAX, Integer.MAX_VALUE)
+                .set(Keys.LONG_MIN, Long.MIN_VALUE)
+                .set(Keys.LONG_MAX, Long.MAX_VALUE);
 
         @Test
         @DisplayName("Selecting supertype (Set) does not apply to subtype (HashSet)")
@@ -67,7 +84,7 @@ class BuiltInCollectionGeneratorTest {
         }
 
         @Test
-        @DisplayName("When collection type not specified: field type HashSet")
+        @DisplayName("When collection subtype not specified: field type HashSet")
         void collectionTypeNotSpecifiedWithHashSetField() {
             final int minSize = 100;
 
@@ -79,7 +96,7 @@ class BuiltInCollectionGeneratorTest {
         }
 
         @Test
-        @DisplayName("When collection type not specified: field type Set")
+        @DisplayName("When collection subtype not specified: field type Set")
         void collectionTypeNotSpecifiedWithSetField() {
             final int minSize = 100;
 
@@ -91,7 +108,7 @@ class BuiltInCollectionGeneratorTest {
         }
 
         @Test
-        @DisplayName("When collection type not specified: field type Collection")
+        @DisplayName("When collection subtype not specified: field type Collection")
         void collectionTypeNotSpecifiedWithCollectionField() {
             final int minSize = 100;
 
@@ -104,8 +121,8 @@ class BuiltInCollectionGeneratorTest {
         }
 
         @Test
-        @DisplayName("When map type not specified: field type SortedMap")
-        void sortedMap() {
+        @DisplayName("When map subtype not specified: field type SortedMap")
+        void mapTypeNotSpecifiedWithSortedMapField() {
             final SortedMapIntegerString result = Instancio.of(SortedMapIntegerString.class)
                     .generate(all(SortedMap.class), gen -> gen.map()
                             .size(EXPECTED_SIZE)) // .subtype() not specified
@@ -172,7 +189,13 @@ class BuiltInCollectionGeneratorTest {
     }
 
     @Nested
+    @ExtendWith(InstancioExtension.class)
     class MapTest {
+
+        @WithSettings
+        private final Settings settings = Settings.create()
+                .set(Keys.INTEGER_MIN, Integer.MIN_VALUE)
+                .set(Keys.INTEGER_MAX, Integer.MAX_VALUE);
 
         @Test
         @DisplayName("Map of the target field should have expected size and be fully populated")

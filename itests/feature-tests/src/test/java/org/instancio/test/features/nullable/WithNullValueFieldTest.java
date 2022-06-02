@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features;
+package org.instancio.test.features.nullable;
 
 import org.instancio.Instancio;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
 import org.instancio.test.support.pojo.basic.StringHolder;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 
+@FeatureTag(Feature.NULLABLE)
 class WithNullValueFieldTest {
 
     @Test

@@ -20,8 +20,9 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,8 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Percentage.withPercentage;
 import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints;
 
-@SettingsTag
 @NonDeterministicTag
+@FeatureTag(Feature.SETTINGS)
 class CollectionGeneratorTest {
     private static final int MIN_SIZE = 101;
     private static final int MAX_SIZE = 102;

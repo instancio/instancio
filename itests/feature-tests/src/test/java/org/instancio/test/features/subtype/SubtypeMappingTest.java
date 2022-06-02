@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.features;
+package org.instancio.test.features.subtype;
 
 import org.instancio.Instancio;
 import org.instancio.test.support.pojo.basic.StringHolderAlternativeImpl;
@@ -29,6 +29,8 @@ import org.instancio.test.support.pojo.interfaces.ListOfItemInterfaceString;
 import org.instancio.test.support.pojo.interfaces.ListOfStringHolderInterface;
 import org.instancio.test.support.pojo.interfaces.MapOfItemInterfaceString;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
+@FeatureTag(Feature.SUBTYPE)
 class SubtypeMappingTest {
 
     @Test

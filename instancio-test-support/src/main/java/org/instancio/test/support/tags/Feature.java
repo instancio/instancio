@@ -57,7 +57,7 @@ public enum Feature {
     WITH_SEED,
     WITH_SEED_ANNOTATION,
 
-    WITH_SETTINGS,
+    SETTINGS,
     WITH_SETTINGS_ANNOTATION,
 
     IGNORE,

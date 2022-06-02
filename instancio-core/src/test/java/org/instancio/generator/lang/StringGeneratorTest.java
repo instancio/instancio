@@ -20,8 +20,9 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -30,8 +31,8 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.GeneratedHintsAssert.assertHints;
 
-@SettingsTag
 @NonDeterministicTag
+@FeatureTag(Feature.SETTINGS)
 class StringGeneratorTest {
     private static final int SAMPLE_SIZE = 1000;
     private static final Settings settings = Settings.defaults()

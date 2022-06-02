@@ -10,4 +10,11 @@
     <packaging>jar</packaging>
     <name>Instancio tests: Feature Tests</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.junit-pioneer</groupId>
+            <artifactId>junit-pioneer</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

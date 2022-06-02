@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.api.settings;
+package org.instancio.test.features.settings;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
@@ -21,8 +21,9 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.test.support.tags.SettingsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,8 +32,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SettingsTag
 @NonDeterministicTag
+@FeatureTag(Feature.SETTINGS)
 class CollectionSettingsTest {
 
     private static final int SAMPLE_SIZE = 100;
@@ -42,6 +43,8 @@ class CollectionSettingsTest {
     private static final Settings settings = Settings.create()
             .set(Keys.COLLECTION_MIN_SIZE, MIN_SIZE_OVERRIDE)
             .set(Keys.COLLECTION_MAX_SIZE, MAX_SIZE_OVERRIDE)
+            .set(Keys.LONG_MIN, Long.MIN_VALUE)
+            .set(Keys.LONG_MAX, Long.MAX_VALUE)
             .lock();
 
     @Test

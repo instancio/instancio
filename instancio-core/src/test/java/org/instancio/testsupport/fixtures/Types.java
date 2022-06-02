@@ -26,12 +26,6 @@ import java.util.Map;
 
 public class Types {
 
-    public static final TypeToken<?> STRING = new TypeToken<String>() {
-    };
-
-    public static final TypeToken<?> INTEGER = new TypeToken<Integer>() {
-    };
-
     public static final TypeToken<?> LIST_STRING = new TypeToken<List<String>>() {
     };
 
