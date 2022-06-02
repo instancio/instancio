@@ -6,9 +6,9 @@
         <artifactId>instancio-parent</artifactId>
         <version>1.4.2-SNAPSHOT</version>
     </parent>
-    <artifactId>itests</artifactId>
+    <artifactId>instancio-tests</artifactId>
     <packaging>pom</packaging>
-    <name>Instancio Integration Tests Parent</name>
+    <name>Instancio Tests Parent</name>
 
     <modules>
         <module>feature-tests</module>
@@ -42,38 +42,6 @@
                     <compilerArgs>
                         <arg>-Ainstancio.verbose=true</arg>
                     </compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <properties>
-                        <configurationParameters>
-                            junit.jupiter.execution.parallel.enabled = true
-                            junit.jupiter.execution.parallel.mode.default = concurrent
-                            junit.jupiter.execution.parallel.mode.classes.default = concurrent
-                        </configurationParameters>
-                    </properties>
-                    <testSourceDirectory>${basedir}/src/test/</testSourceDirectory>
-                    <includes>
-                        <include>**/*Test.java</include>
-                    </includes>
                 </configuration>
             </plugin>
         </plugins>
