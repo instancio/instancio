@@ -38,7 +38,7 @@ import static org.assertj.core.data.Percentage.withPercentage;
 @NonDeterministicTag
 class DefaultRandomTest {
     private static final int SAMPLE_SIZE = 50_000;
-    private static final int PERCENTAGE_THRESHOLD = 10;
+    private static final int PERCENTAGE_THRESHOLD = 15;
     private static final Pattern UPPER_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[A-Z]*$");
     private static final Pattern LOWER_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[a-z]*$");
     private static final Pattern MIXED_CASE_ALPHABETIC_PATTERN = Pattern.compile("^[a-zA-Z]*$");
