@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.instancio</groupId>
+        <artifactId>instancio-tests</artifactId>
+        <version>1.4.2-SNAPSHOT</version>
+    </parent>
+    <artifactId>annotation-processor-with-gradle</artifactId>
+    <packaging>pom</packaging>
+    <name>Instancio tests: Annotation Processor with Gradle</name>
+
+    <properties>
+        <sonar.skip>true</sonar.skip>
+        <gradle.executable>./gradlew</gradle.executable>
+        <gradle.module>gradle-module</gradle.module>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <!-- Windows needs a full path -->
+                <gradle.executable>${basedir}\${gradle.module}\gradlew.bat</gradle.executable>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>generate-gradle-build-file</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <copy file="${gradle.module}/build.gradle.template" tofile="${gradle.module}/build.gradle" overwrite="true" />
+                                <replace token="#{instancio.version}" value="${project.version}" dir="${gradle.module}">
+                                    <include name="build.gradle" />
+                                </replace>
+                                <replace token="#{java.version}" value="${java.version}" dir="${gradle.module}">
+                                    <include name="build.gradle" />
+                                </replace>
+                                <exec executable="${gradle.executable}" failonerror="true" dir="${gradle.module}">
+                                    <arg line="clean build" />
+                                </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
