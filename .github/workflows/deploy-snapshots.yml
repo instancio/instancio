@@ -1,0 +1,21 @@
+name: "Deploy Snapshots"
+on:
+  pull_request:
+    types:
+      - closed
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "PR merged, deploying snapshots"
+      - uses: actions/checkout@v2
+      - name: Set up Maven Central Repository
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          server-id: sonatype-snapshots
+          server-username: ${{ secrets.OSS_SONATYPE_USERNAME }}
+          server-password: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+      - name: Deploy
+        run: mvn -b deploy
