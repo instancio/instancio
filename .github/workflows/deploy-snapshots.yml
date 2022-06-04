@@ -18,4 +18,4 @@ jobs:
           server-username: ${{ secrets.OSS_SONATYPE_USERNAME }}
           server-password: ${{ secrets.OSS_SONATYPE_PASSWORD }}
       - name: Deploy
-        run: mvn -b deploy
+        run: mvn -B deploy
