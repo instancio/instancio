@@ -6,14 +6,14 @@
         <artifactId>instancio-tests</artifactId>
         <version>1.4.2-SNAPSHOT</version>
     </parent>
-    <artifactId>instancio-junit-tests</artifactId>
+    <artifactId>spi-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: instancio-junit Tests</name>
+    <name>Instancio tests: SPI Tests</name>
 
     <dependencies>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>instancio-junit</artifactId>
+            <artifactId>instancio-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
@@ -22,18 +22,6 @@
             <artifactId>instancio-test-support</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-testkit</artifactId>
         </dependency>
     </dependencies>
 </project>
