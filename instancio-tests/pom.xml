@@ -34,6 +34,7 @@
         <module>feature-tests</module>
         <module>default-package-tests</module>
         <module>api-contract-tests</module>
+        <module>spi-tests</module>
         <module>annotation-processor-with-lombok</module>
         <module>annotation-processor-with-gradle</module>
         <module>report-aggregate</module>
