@@ -6,9 +6,9 @@
         <artifactId>instancio-tests</artifactId>
         <version>1.4.2-SNAPSHOT</version>
     </parent>
-    <artifactId>processor-with-lombok</artifactId>
+    <artifactId>default-package-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: Processor with Lombok</name>
+    <name>Instancio tests: Default Package Tests</name>
 
     <build>
         <plugins>
@@ -28,13 +28,27 @@
                             <version>${version.lombok}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <compilerArgs>
-                        <!-- Use a custom suffix instead of the default '_' -->
-                        <arg>-Ainstancio.suffix=$</arg>
-                        <arg>-Ainstancio.verbose=true</arg>
-                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-core</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-test-support</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 </project>
