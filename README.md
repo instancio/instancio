@@ -99,3 +99,4 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
         <scope>test</scope>
     </dependency>
 ```
+
