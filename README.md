@@ -65,7 +65,11 @@ Person[
   lastModified=2022-05-12T22:41:10.356320]
 ```
 
-See the [User Guide](https://www.instancio.org/user-guide) for more information.
+# Documentation
+
+- [User Guide](https://www.instancio.org/user-guide)
+- [Building from sources](https://www.instancio.org/building/)
+- [Sample projects](https://github.com/instancio/instancio-samples)
 
 # Features
 
@@ -77,8 +81,9 @@ See the [User Guide](https://www.instancio.org/user-guide) for more information.
 
 # Try it out
 
-To use Instancio with JUnit 5 use the  `instancio-junit` dependency. It includes `InstancioExtension`
-which allows reproducing data in case of a test failure, as well as a few other things.
+To use Instancio with JUnit 5, use the `instancio-junit` dependency.
+It includes `InstancioExtension` which allows reproducing data in case of a test failure,
+as well as a few other useful features.
 
 ```xml
     <dependency>
@@ -100,3 +105,8 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
     </dependency>
 ```
 
+# Feedback
+
+Feedback and bug reports are greatly appreciated. Please submit an
+[issue](https://github.com/instancio/instancio/issues) to report a bug,
+or if you have a question or a suggestion.

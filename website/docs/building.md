@@ -6,10 +6,11 @@ hide:
 
 # Building From Sources
 
-Instancio requires Java 8+. To build the sources:
+Instancio requires Java 8+. To build from sources:
 
 ```sh
 git clone https://github.com/instancio/instancio.git
+cd instancio
 mvn install
 ```
 
