@@ -110,3 +110,11 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
 Feedback and bug reports are greatly appreciated. Please submit an
 [issue](https://github.com/instancio/instancio/issues) to report a bug,
 or if you have a question or a suggestion.
+
+# Special thanks to
+
+JetBrains for supporting this project with their [Open Source Licenses](https://www.jetbrains.com/opensource).
+
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="150px">
+
+
