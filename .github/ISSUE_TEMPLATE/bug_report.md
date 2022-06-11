@@ -16,6 +16,7 @@ A clear and concise description of what the bug is.
 [ ] instancio-processor
 
  - Instancio version:
+ - JDK version:
 
 **Sample code reproducing the issue**
 ```java
