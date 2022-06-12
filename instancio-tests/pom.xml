@@ -33,6 +33,8 @@
         <module>instancio-processor-tests</module>
         <module>feature-tests</module>
         <module>default-package-tests</module>
+        <module>java16-tests</module>
+        <module>java17-tests</module>
         <module>api-contract-tests</module>
         <module>spi-tests</module>
         <module>annotation-processor-with-lombok</module>

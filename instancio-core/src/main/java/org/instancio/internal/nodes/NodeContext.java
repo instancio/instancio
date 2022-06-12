@@ -16,9 +16,16 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.internal.context.SubtypeSelectorMap;
+import org.instancio.internal.nodes.resolvers.NodeKindArrayResolver;
+import org.instancio.internal.nodes.resolvers.NodeKindCollectionResolver;
+import org.instancio.internal.nodes.resolvers.NodeKindMapResolver;
+import org.instancio.internal.nodes.resolvers.NodeKindOptionalResolver;
+import org.instancio.internal.nodes.resolvers.NodeKindRecordResolver;
 
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,6 +33,7 @@ public final class NodeContext {
 
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
+    private final List<NodeKindResolver> nodeKindResolvers;
 
     public NodeContext(
             final Map<TypeVariable<?>, Class<?>> rootTypeMap,
@@ -33,6 +41,16 @@ public final class NodeContext {
 
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
         this.subtypeSelectorMap = subtypeSelectorMap;
+        this.nodeKindResolvers = Arrays.asList(
+                new NodeKindCollectionResolver(),
+                new NodeKindMapResolver(),
+                new NodeKindArrayResolver(),
+                new NodeKindOptionalResolver(),
+                new NodeKindRecordResolver());
+    }
+
+    public List<NodeKindResolver> getNodeKindResolvers() {
+        return nodeKindResolvers;
     }
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {

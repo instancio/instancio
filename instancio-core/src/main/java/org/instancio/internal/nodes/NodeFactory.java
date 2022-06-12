@@ -62,7 +62,7 @@ public final class NodeFactory {
         return createNode(type, null, null);
     }
 
-    Node createNode(final Type type, @Nullable final Field field, @Nullable final Node parent) {
+    private Node createNode(final Type type, @Nullable final Field field, @Nullable final Node parent) {
         Verify.notNull(type, "'type' is null");
 
         if (LOG.isTraceEnabled()) {
@@ -216,6 +216,7 @@ public final class NodeFactory {
 
     private static boolean isContainerClass(final Class<?> targetClass) {
         return targetClass.isArray()
+                || targetClass == Optional.class
                 || Collection.class.isAssignableFrom(targetClass)
                 || Map.class.isAssignableFrom(targetClass);
     }

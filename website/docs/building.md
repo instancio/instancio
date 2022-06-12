@@ -6,7 +6,9 @@ hide:
 
 # Building From Sources
 
-Instancio requires Java 8+. To build from sources:
+Instancio is packaged as a [multi-release JAR](https://openjdk.java.net/jeps/238).
+It can be used with Java 8 or higher.
+Building Instancio from sources requires JDK 17 or higher:
 
 ```sh
 git clone https://github.com/instancio/instancio.git

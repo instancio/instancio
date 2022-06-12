@@ -33,6 +33,7 @@ interface GenerationListener {
      * @param node     for which the object has been created
      * @param instance that was created, could be {@code null} if
      *                 value is 'nullable' or could not be generated.
+     * @since 1.3.3
      */
     default void objectCreated(Node node, @Nullable Object instance) {
         // no-op

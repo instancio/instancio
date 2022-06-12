@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class Node {
 
@@ -35,6 +36,7 @@ public final class Node {
     private final Field field;
     private final Node parent;
     private final TypeMap typeMap;
+    private final NodeKind nodeKind;
     private List<Node> children;
 
     private Node(final Builder builder) {
@@ -45,7 +47,25 @@ public final class Node {
         field = builder.field;
         parent = builder.parent;
         children = builder.children == null ? Collections.emptyList() : Collections.unmodifiableList(builder.children);
+        nodeKind = getNodeKind(targetClass);
         typeMap = new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap);
+    }
+
+    private NodeKind getNodeKind(final Class<?> rawType) {
+        return nodeContext.getNodeKindResolvers().stream()
+                .map(resolver -> resolver.resolve(rawType))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findAny()
+                .orElse(NodeKind.DEFAULT);
+    }
+
+    public NodeKind getNodeKind() {
+        return nodeKind;
+    }
+
+    public boolean is(final NodeKind nodeKind) {
+        return this.nodeKind == nodeKind;
     }
 
     public Builder toBuilder() {

@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
@@ -57,6 +58,16 @@ class NodeTest {
         assertThat(getChildNode(personNode, "age").getNodeName()).isEqualTo("Person.age");
         assertThat(getChildNode(personNode, "name").getNodeName()).isEqualTo("Person.name");
         assertThat(getChildNode(personNode, "address").getNodeName()).isEqualTo("Person.address");
+    }
+
+    @Test
+    void getNodeKind() {
+        assertThat(NODE_FACTORY.createRootNode(Person.class).getNodeKind()).isEqualTo(NodeKind.DEFAULT);
+        assertThat(NODE_FACTORY.createRootNode(int.class).getNodeKind()).isEqualTo(NodeKind.DEFAULT);
+        assertThat(NODE_FACTORY.createRootNode(Person[].class).getNodeKind()).isEqualTo(NodeKind.ARRAY);
+        assertThat(NODE_FACTORY.createRootNode(Types.LIST_STRING.get()).getNodeKind()).isEqualTo(NodeKind.COLLECTION);
+        assertThat(NODE_FACTORY.createRootNode(Types.MAP_INTEGER_STRING.get()).getNodeKind()).isEqualTo(NodeKind.MAP);
+        assertThat(NODE_FACTORY.createRootNode(new TypeToken<Optional<Integer>>() {}.get()).getNodeKind()).isEqualTo(NodeKind.OPTIONAL);
     }
 
     @Test
@@ -85,6 +96,7 @@ class NodeTest {
         assertThat(copy.getTypeMap()).isEqualTo(node.getTypeMap());
         assertThat(copy.getOnlyChild()).isEqualTo(node.getOnlyChild());
         assertThat(copy.getChildren()).isEqualTo(node.getChildren());
+        assertThat(copy.getNodeKind()).isNotNull().isEqualTo(node.getNodeKind());
     }
 
     @Nested

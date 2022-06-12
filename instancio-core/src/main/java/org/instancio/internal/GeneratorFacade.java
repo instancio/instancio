@@ -36,7 +36,6 @@ import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Modifier;
 import java.util.Optional;
 
@@ -70,7 +69,7 @@ class GeneratorFacade {
         return context.isIgnored(node) || (node.getField() != null && Modifier.isStatic(node.getField().getModifiers()));
     }
 
-    Optional<GeneratorResult> generateNodeValue(final Node node, @Nullable final Object owner) {
+    Optional<GeneratorResult> generateNodeValue(final Node node) {
         if (isIgnored(node)) {
             return Optional.empty();
         }
@@ -88,7 +87,7 @@ class GeneratorFacade {
         }
 
         if (!generatorResult.isPresent()) {
-            generatorResult = resolveImplementationAndGenerate(node, owner);
+            generatorResult = resolveImplementationAndGenerate(node);
         }
 
         return generatorResult;
@@ -98,8 +97,7 @@ class GeneratorFacade {
      * Resolve an implementation class for the given interface and attempt to generate it.
      * This method should not be called for JDK classes, such as Collection interfaces.
      */
-    private Optional<GeneratorResult> resolveImplementationAndGenerate(final Node parentNode,
-                                                                       @Nullable final Object owner) {
+    private Optional<GeneratorResult> resolveImplementationAndGenerate(final Node parentNode) {
         final Class<?> abstractType = parentNode.getTargetClass();
 
         Verify.isFalse(ReflectionUtils.isArrayOrConcrete(abstractType),
@@ -117,7 +115,7 @@ class GeneratorFacade {
                     .parent(parentNode)
                     .build();
 
-            return generateNodeValue(implementorNode, owner);
+            return generateNodeValue(implementorNode);
         }
 
         return Optional.empty();
