@@ -6,9 +6,27 @@ hide:
 
 # Getting Started
 
-**Requirements**: Java 8 or higher.
+**Requirements**:
 
-If you use JUnit 5, then use `instancio-junit`:
+Instancio is packaged as a multi-release JAR and can be used with **Java 8** or higher.
+
+- If used with Java 16, it supports creating `record` classes.
+- If used with Java 17, it supports creating `sealed` classes.
+
+## Dependencies
+
+There are three dependencies available from Maven central:
+
+- `instancio-core` - the core library.
+- `instancio-junit` - JUnit Jupiter integration.
+- `instancio-processor` - annotation processor for generating metamodels.
+
+
+### **`instancio-junit`**
+
+If you use JUnit Jupiter, then use `instancio-junit`.
+Since `instancio-junit` has a transitive dependency on `instancio-core`, it is not necessary to import both.
+Importing only `instancio-junit` one would suffice.
 
 
 === "Maven"
@@ -26,6 +44,8 @@ If you use JUnit 5, then use `instancio-junit`:
         testImplementation 'org.instancio:instancio-junit:{{config.latest_release}}'
     }
     ```
+
+### **`instancio-core`**
 
 If you use JUnit 4, TestNG, or would like to use Instancio standalone, then use `instancio-core`:
 
@@ -45,9 +65,14 @@ If you use JUnit 4, TestNG, or would like to use Instancio standalone, then use 
     }
     ```
 
-## With the Annotation Processor
+`instancio-core` itself has minimal `compile` dependencies:
 
-Enable the annotation processor for metamodel support. Refer to the [Metamodel](user-guide.md#metamodel) section of the user guide for examples.
+- `org.slf4j:slf4j-api`
+- `org.objenesis:objenesis`
+
+### **`instancio-processor`**
+
+The annotation processor generates metamodels, which can be used to avoid referencing fields by their names. The annotation processor can be enabled as shown below. Please refer to the [Metamodel](user-guide.md#metamodel) section of the user guide for examples.
 
 === "Maven"
     ``` xml linenums="1" title="Maven"
@@ -79,23 +104,3 @@ Enable the annotation processor for metamodel support. Refer to the [Metamodel](
         testAnnotationProcessor "org.instancio:instancio-processor:{{config.latest_release}}"
     }
     ```
-
-
-## Dependency Information
-
-Instancio consists of the following three modules:
-
-- `instancio-core` - the core library
-- `instancio-junit` - JUnit 5 integration
-- `instancio-processor` - annotation processor for generating metamodels
-
-Since `instancio-junit` has a transitive dependency on the core library, it is not necessary to import both.
-Importing only one would suffice.
-
-`instancio-processor` is only needed if you would like to generate [metamodels](user-guide.md#metamodel) to avoid referencing fields by their names.
-
-`instancio-core` itself has only two dependencies:
-
-- `org.slf4j:slf4j-api`
-- `org.objenesis:objenesis`
-

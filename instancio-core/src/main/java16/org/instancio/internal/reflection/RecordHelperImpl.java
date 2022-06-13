@@ -34,7 +34,7 @@ public class RecordHelperImpl implements RecordHelper {
 
     @Override
     public Optional<Constructor<?>> getCanonicalConstructor(final Class<?> recordClass) {
-        Verify.isTrue(recordClass.isRecord(), "Not a record class: '%s'", recordClass.getName());
+        Verify.isTrue(recordClass.isRecord(), "Class '%s' is not a record!", recordClass.getName());
 
         final Class<?>[] componentTypes = Arrays.stream(recordClass.getRecordComponents())
                 .map(RecordComponent::getType)
