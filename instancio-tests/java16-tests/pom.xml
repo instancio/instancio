@@ -10,6 +10,10 @@
     <packaging>jar</packaging>
     <name>Instancio tests: Java 16 Tests</name>
 
+    <properties>
+        <maven.enforcer.require.java.version>[16,)</maven.enforcer.require.java.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
