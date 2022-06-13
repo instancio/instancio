@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class LargeCyclicSubclassTest {
 
     @Test
-    @Timeout(value = 20)
+    @Timeout(value = 40)
     void largeCyclicShouldBeGeneratedWithinGivenTimeout() {
         final LargeCyclicSubclass result = Instancio.create(LargeCyclicSubclass.class);
 
