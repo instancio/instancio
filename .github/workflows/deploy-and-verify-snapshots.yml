@@ -4,7 +4,7 @@ on:
     types:
       - closed
 jobs:
-  if_merged:
+  deploy:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
@@ -13,12 +13,22 @@ jobs:
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v1
         with:
-          java-version: 8
+          java-version: 17
           server-id: sonatype-snapshots
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-      - name: Deploy snapshots
+      - name: "Deploy snapshots"
         run: mvn -B deploy --no-transfer-progress
         env:
           MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Run tests with JDK 8 using deployed snapshots"
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - run: cd instancio-tests && mvn -v && mvn -B -pl '!java16-tests,!java17-tests' install
