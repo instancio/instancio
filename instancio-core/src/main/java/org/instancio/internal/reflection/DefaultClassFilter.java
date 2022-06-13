@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.reflection;
 
-// TODO refactor to remove this class
+// TODO refactor to remove this class.
 public class DefaultClassFilter implements ClassFilter {
 
     private final PackageFilter packageFilter = new DefaultPackageFilter();
