@@ -56,6 +56,10 @@ public final class GeneratorResult {
         return value;
     }
 
+    public boolean isNull() {
+        return value == null;
+    }
+
     public boolean ignoreChildren() {
         return generatedHints != null && generatedHints.ignoreChildren();
     }

@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class CustomGeneratorProvider implements GeneratorProvider {
 
-    public static final String STRING_GENERATOR_VALUE = "overridden string generator!";
+    public static final String STRING_GENERATOR_VALUE = "overridden string generator from GeneratorProvider SPI!";
     public static final Pattern PATTERN_GENERATOR_VALUE = Pattern.compile("foo");
 
     @Override

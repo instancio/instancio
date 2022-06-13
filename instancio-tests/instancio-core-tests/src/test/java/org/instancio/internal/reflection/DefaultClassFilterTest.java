@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.reflection;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -28,12 +27,7 @@ class DefaultClassFilterTest {
 
     private final ClassFilter classFilter = new DefaultClassFilter();
 
-    @Test
-    void notExcluded() {
-        assertThat(classFilter.isExcluded(Optional.class)).isFalse();
-    }
-
-    @ValueSource(classes = {List.class, String.class, Object.class})
+    @ValueSource(classes = {List.class, String.class, Object.class, Optional.class})
     @ParameterizedTest
     void excluded(final Class<?> klass) {
         assertThat(classFilter.isExcluded(klass)).isTrue();

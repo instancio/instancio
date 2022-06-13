@@ -15,22 +15,13 @@
  */
 package org.instancio.internal.reflection;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
+// TODO refactor to remove this class
 public class DefaultClassFilter implements ClassFilter {
 
     private final PackageFilter packageFilter = new DefaultPackageFilter();
 
-    private static final Set<Class<?>> INCLUDED = new HashSet<>();
-
-    static {
-        INCLUDED.add(Optional.class);
-    }
-
     @Override
     public boolean isExcluded(final Class<?> klass) {
-        return !INCLUDED.contains(klass) && packageFilter.isExcluded(klass.getPackage());
+        return packageFilter.isExcluded(klass.getPackage());
     }
 }

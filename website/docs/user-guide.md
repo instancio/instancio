@@ -85,6 +85,15 @@ Pair<String,Long> pair = Instancio.of(Pair.class)
 
 However, this approach has a couple of drawbacks: it does not supported nested generics, and its usage will generate an "unchecked assignment" warning.
 
+### Creating `record` and `sealed` Classes
+
+Instancio version `1.5.0` introduced support for creating
+
+ - `record` classes when run on Java 16+, and
+ - `sealed` classes when run on Java 17+.
+
+This uses the same API as described above for creating regular classes.
+
 ### Creating a Stream of Objects
 
 Instancio also provides methods for creating a `Stream` of objects.
