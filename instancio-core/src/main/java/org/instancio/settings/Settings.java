@@ -34,7 +34,7 @@ import static org.instancio.internal.ApiValidator.validateSubtype;
  *
  * @since 1.0.1
  */
-public class Settings {
+public final class Settings {
     private static final String TYPE_MAPPING_PREFIX = "subtype.";
     private static final boolean AUTO_ADJUST_ENABLED = true;
 

@@ -47,7 +47,7 @@ class GeneratorFacade {
     private final Random random;
     private final NodeHandler[] nodeHandlers;
 
-    public GeneratorFacade(final ModelContext<?> context) {
+    GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
         this.random = context.getRandom();
 

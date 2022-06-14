@@ -30,7 +30,7 @@ class OnCompleteCallbackSelectorMap {
     private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks;
     private final SelectorMap<OnCompleteCallback<?>> selectorMap = new SelectorMap<>();
 
-    public OnCompleteCallbackSelectorMap(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
+    OnCompleteCallbackSelectorMap(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
         this.onCompleteCallbacks = Collections.unmodifiableMap(callbacks);
         putAll(callbacks);
     }

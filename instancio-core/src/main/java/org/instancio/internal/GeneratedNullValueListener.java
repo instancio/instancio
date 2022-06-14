@@ -33,7 +33,7 @@ class GeneratedNullValueListener implements GenerationListener {
     private final ModelContext<?> context;
     private final boolean isLenientMode;
 
-    public GeneratedNullValueListener(final ModelContext<?> context) {
+    GeneratedNullValueListener(final ModelContext<?> context) {
         this.context = context;
         this.isLenientMode = context.getSettings().get(Keys.MODE) == Mode.LENIENT;
     }
