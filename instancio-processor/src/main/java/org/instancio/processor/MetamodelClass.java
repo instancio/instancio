@@ -36,7 +36,7 @@ class MetamodelClass {
     private final List<String> fieldNames;
     private final String metamodelClassSuffix;
 
-    public MetamodelClass(final QualifiedNameable classElement, final String metamodelClassSuffix) {
+    MetamodelClass(final QualifiedNameable classElement, final String metamodelClassSuffix) {
         final Element packageElement = getPackageElement(classElement);
         this.name = classElement.getQualifiedName().toString();
         this.packageName = getPackageName((QualifiedNameable) packageElement);

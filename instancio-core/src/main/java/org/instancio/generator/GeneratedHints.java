@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 @Immutable
-public class GeneratedHints {
+public final class GeneratedHints {
     private static final GeneratedHints IGNORE_CHILDREN_HINT = GeneratedHints.builder().ignoreChildren(true).build();
 
     private final int dataStructureSize;

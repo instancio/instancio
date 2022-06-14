@@ -27,7 +27,7 @@ import java.util.Random;
  * with most of the code from the original class omitted.
  */
 @SuppressWarnings("PMD")
-public class RandomDataGenerator {
+public final class RandomDataGenerator {
 
     public static long nextLong(final Random random, final long lower, final long upper) {
         Verify.isTrue(lower <= upper, "Lower must be less than upper: %s, %s", lower, upper);
