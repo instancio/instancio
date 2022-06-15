@@ -113,7 +113,7 @@ class InstancioEngine {
     private Optional<GeneratorResult> generateMap(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
-        if (!nodeResult.isPresent() || nodeResult.get().isNull() || node.getChildren().size() != 2) { // raw map type
+        if (!nodeResult.isPresent() || nodeResult.get().isNull() || node.getChildren().size() != 2) {
             return nodeResult;
         }
 
@@ -154,6 +154,7 @@ class InstancioEngine {
                 final Constructor<?> ctor = optCtor.get();
                 ctor.setAccessible(true); // NOSONAR
                 final Object result = ctor.newInstance(args);
+                notifyListeners(node, result);
                 return Optional.of(GeneratorResult.create(result));
             }
         } catch (Exception ex) {

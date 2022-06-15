@@ -70,7 +70,7 @@ public final class ApiValidator {
         return type;
     }
 
-    public static void validateTypeParameters(Class<?> rootClass, List<Class<?>> rootTypeParameters) {
+    public static void validateTypeParameters(final Class<?> rootClass, final List<Class<?>> rootTypeParameters) {
         final int typeVarsLength = rootClass.isArray()
                 ? rootClass.getComponentType().getTypeParameters().length
                 : rootClass.getTypeParameters().length;
@@ -192,7 +192,7 @@ public final class ApiValidator {
         if (!condition) throw new InstancioApiException(String.format(message.get()));
     }
 
-    public static void validateField(final Class<?> declaringClass, final String fieldName, String message) {
+    public static void validateField(final Class<?> declaringClass, final String fieldName, final String message) {
         ApiValidator.notNull(declaringClass, message);
         ApiValidator.notNull(fieldName, message);
         isTrue(ReflectionUtils.isValidField(declaringClass, fieldName), message);

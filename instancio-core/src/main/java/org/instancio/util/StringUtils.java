@@ -15,16 +15,18 @@
  */
 package org.instancio.util;
 
+import javax.annotation.Nullable;
+
 public final class StringUtils {
 
     private StringUtils() {
     }
 
-    public static boolean isBlank(final String s) {
+    public static boolean isBlank(@Nullable final String s) {
         return s == null || "".equals(s.trim());
     }
 
-    public static String trimToEmpty(final String s) {
+    public static String trimToEmpty(@Nullable final String s) {
         return s == null ? "" : s.trim();
     }
 
@@ -37,7 +39,7 @@ public final class StringUtils {
         return sb.toString();
     }
 
-    public static boolean startsWithAny(final String s, final String... prefixes) {
+    public static boolean startsWithAny(@Nullable final String s, final String... prefixes) {
         if (s == null) {
             return false;
         }

@@ -17,10 +17,15 @@ package org.instancio.test.java16;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.java16.record.AddressRecord;
 import org.instancio.test.support.java16.record.PersonRecord;
+import org.instancio.test.support.java16.record.PhoneRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 /**
@@ -30,8 +35,44 @@ import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObje
 class PersonRecordTest {
 
     @Test
-    void createPersonRecord() {
+    void createRecord() {
         final PersonRecord result = Instancio.create(PersonRecord.class);
         assertThatObject(result).isFullyPopulated();
+    }
+
+    @Test
+    void createArrayOfRecords() {
+        final PersonRecord[] results = Instancio.create(PersonRecord[].class);
+
+        assertThat(results).isNotEmpty().allSatisfy(result -> {
+            assertThatObject(result).isFullyPopulated();
+        });
+    }
+
+    @Test
+    void customiseRecordValues() {
+        final PersonRecord result = Instancio.of(PersonRecord.class)
+                .generate(field(PhoneRecord.class, "number"), gen -> gen.string().digits().length(7))
+                .create();
+
+        assertThat(result.address().phoneNumbers())
+                .isNotEmpty()
+                .extracting(PhoneRecord::number)
+                .allSatisfy(number -> assertThat(number).hasSize(7).containsOnlyDigits());
+    }
+
+    @Test
+    void verifyCallbackIsCalled() {
+        int[] callbackCount = {0};
+        Instancio.of(PersonRecord.class)
+                .set(field(AddressRecord.class, "city"), "foo")
+                .onComplete(all(AddressRecord.class), (AddressRecord address) -> {
+                    assertThatObject(address).isFullyPopulated();
+                    assertThat(address.city()).isEqualTo("foo");
+                    callbackCount[0]++;
+                })
+                .create();
+
+        assertThat(callbackCount[0]).isEqualTo(1);
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.instancio.util;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -26,7 +27,7 @@ public final class TypeUtils {
         // non-instantiable
     }
 
-    public static Class<?> getArrayClass(final Type type) {
+    public static Class<?> getArrayClass(@Nullable final Type type) {
         if (type instanceof Class) {
             final Class<?> klass = (Class<?>) type;
 
@@ -38,11 +39,8 @@ public final class TypeUtils {
         }
         if (type instanceof ParameterizedType) {
             final Type rawType = ((ParameterizedType) type).getRawType();
-
             return getArrayClass(rawType);
         }
-
-
         if (type instanceof GenericArrayType) {
             final GenericArrayType arrayType = (GenericArrayType) type;
             final Type genericComponent = arrayType.getGenericComponentType();
