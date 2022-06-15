@@ -15,6 +15,7 @@
  */
 package org.instancio.util;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -77,7 +78,7 @@ public final class NumberUtils {
      * @return new minimum if current minimum is greater than the new maximum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMin(
-            final T curMin, final T newMax, final int percentage) {
+            @Nullable final T curMin, final T newMax, final int percentage) {
 
         final long newMin;
         if (curMin == null || curMin.compareTo(newMax) > 0) {
@@ -108,7 +109,7 @@ public final class NumberUtils {
      * @return new maximum if current maximum is less than the new minimum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMax(
-            final T curMax, final T newMin, final int percentage) {
+            @Nullable final T curMax, final T newMin, final int percentage) {
 
         final long newMax;
         if (curMax == null || curMax.compareTo(newMin) < 0) {

@@ -256,6 +256,7 @@
                         <printFailingErrors>true</printFailingErrors>
                         <failOnViolation>true</failOnViolation>
                         <failurePriority>4</failurePriority>
+                        <minimumTokens>120</minimumTokens>
                         <rulesets>
                             <ruleset>pmd-rules.xml</ruleset>
                         </rulesets>

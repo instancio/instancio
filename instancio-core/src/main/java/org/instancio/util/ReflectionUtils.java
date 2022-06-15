@@ -18,6 +18,7 @@ package org.instancio.util;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -44,7 +45,7 @@ public final class ReflectionUtils {
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    public static void setField(final Object target, final Field field, final Object value) {
+    public static void setField(@Nullable final Object target, final Field field, final Object value) {
         if (target == null) {
             return;
         }
