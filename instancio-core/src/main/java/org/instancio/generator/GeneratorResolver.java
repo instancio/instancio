@@ -138,7 +138,7 @@ public class GeneratorResolver {
         // java.util
         generators.put(Calendar.class, new CalendarGenerator(context));
         generators.put(Date.class, new DateGenerator(context));
-        generators.put(UUID.class, new UUIDGenerator(context));
+        generators.put(UUID.class, new UUIDGenerator());
 
         // java.util collections
         generators.put(Collection.class, new CollectionGenerator<>(context));

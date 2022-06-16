@@ -15,17 +15,12 @@
  */
 package org.instancio.generator.util;
 
+import org.instancio.Generator;
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
-import org.instancio.generator.GeneratorContext;
 
 import java.util.UUID;
 
-public class UUIDGenerator extends AbstractGenerator<UUID> {
-
-    public UUIDGenerator(final GeneratorContext context) {
-        super(context);
-    }
+public class UUIDGenerator implements Generator<UUID> {
 
     @Override
     public UUID generate(final Random random) {
