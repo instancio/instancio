@@ -112,6 +112,7 @@ class GeneratorMismatchTest {
     @Test
     void assertText() {
         assertMessageContains(Person.class, Address.class, "pattern()", gen -> gen.text().pattern("foo"));
+        assertMessageContains(Person.class, Address.class, "uuid()", gen -> gen.text().uuid());
     }
 
     @Test
