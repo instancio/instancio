@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-parent</artifactId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.5.0</version>
     <packaging>pom</packaging>
 
     <name>Instancio Parent</name>
@@ -31,7 +30,7 @@
         <url>https://github.com/instancio/instancio</url>
         <connection>scm:git:https://github.com/instancio/instancio.git</connection>
         <developerConnection>scm:git:https://github.com/instancio/instancio.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>instancio-parent-1.5.0</tag>
     </scm>
 
     <distributionManagement>
@@ -56,7 +55,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
-        <latest.release.version>1.4.1</latest.release.version>
+        <latest.release.version>1.5.0</latest.release.version>
         <version.objenesis>3.2</version.objenesis>
         <version.findbugs.jsr305>3.0.2</version.findbugs.jsr305>
         <version.slf4j>1.7.36</version.slf4j>
@@ -141,7 +140,7 @@
                             </goals>
                             <configuration>
                                 <rules>
-                                    <dependencyConvergence/>
+                                    <dependencyConvergence />
                                     <requireJavaVersion>
                                         <version>${maven.enforcer.require.java.version}</version>
                                     </requireJavaVersion>
