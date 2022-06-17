@@ -23,7 +23,7 @@
         <version.junit.pioneer>1.7.1</version.junit.pioneer>
         <version.junit.platform>1.8.2</version.junit.platform>
         <version.logback>1.2.11</version.logback>
-        <version.lombok>1.18.22</version.lombok>
+        <version.lombok>1.18.24</version.lombok>
         <version.mockito>4.4.0</version.mockito>
     </properties>
 
