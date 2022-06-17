@@ -10,16 +10,21 @@ hide:
 
 Instancio is packaged as a multi-release JAR and can be used with **Java 8** or higher.
 
-- If used with Java 16, it supports creating `record` classes.
-- If used with Java 17, it supports creating `sealed` classes.
+Since version `1.5.0` supports creating
+
+- `java.lang.Record` classes on Java 16
+- `sealed` classes on Java 17
 
 ## Dependencies
 
 There are three dependencies available from Maven central:
 
-- `instancio-core` - the core library.
-- `instancio-junit` - JUnit Jupiter integration.
-- `instancio-processor` - annotation processor for generating metamodels.
+
+| Dependency            | Module Name               | Description |
+| --------------------- | ------------------------- |------------ |
+| `instancio-core`      | `org.instancio.core`      | Core library |
+| `instancio-junit`     | `org.instancio.junit`     | JUnit Jupiter integration |
+| `instancio-processor` | `org.instancio.processor` | Annotation processor for generating metamodels |
 
 
 ### **`instancio-junit`**
