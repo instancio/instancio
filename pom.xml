@@ -302,7 +302,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.3.2</version>
                     <configuration>
-                        <source>${java.version}</source>
+                        <source>${maven.compiler.source}</source>
                     </configuration>
                     <executions>
                         <execution>
