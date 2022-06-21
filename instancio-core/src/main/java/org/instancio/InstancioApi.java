@@ -49,6 +49,14 @@ public interface InstancioApi<T> {
     T create();
 
     /**
+     * Returns a {@link Result} containing the created object.
+     *
+     * @return result containing the created object
+     * @since 1.5.1
+     */
+    Result<T> asResult();
+
+    /**
      * Creates an infinite stream of distinct, fully populated objects.
      * <p>
      * Example:

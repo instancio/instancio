@@ -102,6 +102,14 @@ class SettingsTest {
     }
 
     @Test
+    void setNullOnNonNullableValue() {
+        final Settings settings = Settings.create();
+        assertThatThrownBy(() -> settings.set(Keys.INTEGER_MIN, null))
+                .isInstanceOf(InstancioApiException.class)
+                .hasMessage("Setting value for key 'integer.min' must not be null");
+    }
+
+    @Test
     void getSetEnum() {
         final Settings settings = Settings.create().set(Keys.MODE, Mode.LENIENT);
         assertThat((Mode) settings.get(Keys.MODE)).isEqualTo(Mode.LENIENT);

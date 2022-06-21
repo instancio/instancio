@@ -18,6 +18,7 @@ package org.instancio.junit;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.instancio.util.ReflectionUtils;
@@ -53,10 +54,18 @@ final class ExtensionSupport {
         final Optional<Method> testMethod = context.getTestMethod();
         if (testMethod.isPresent()) {
             final Seed seedAnnotation = testMethod.get().getAnnotation(Seed.class);
-            final int seed = seedAnnotation == null
-                    ? SeedUtil.randomSeed()
-                    : seedAnnotation.value();
+            final int seed;
 
+            if (seedAnnotation != null) {
+                seed = seedAnnotation.value();
+            } else if (ModelContext.getGlobalRandom() != null) {
+                seed = ModelContext.getGlobalRandom().getSeed();
+            } else {
+                seed = SeedUtil.randomSeed();
+            }
+
+            // each test method gets a new instance of random to avoid
+            // the state of the random leaking across tests
             threadLocalRandom.set(new DefaultRandom(seed));
         }
     }

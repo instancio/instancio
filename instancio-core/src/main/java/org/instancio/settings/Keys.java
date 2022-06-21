@@ -166,6 +166,12 @@ public final class Keys {
      */
     public static final SettingKey MODE = register("mode", Mode.class, Mode.STRICT);
     /**
+     * Specifies the seed value.
+     *
+     * @since 1.5.1
+     */
+    public static final SettingKey SEED = registerWithNullDefault("seed", Integer.class);
+    /**
      * Specifies maximum value for shorts, default value is 10000.
      */
     public static final SettingKey SHORT_MAX = register("short.max", Short.class, (short) NUMERIC_MAX, MAX_ADJUSTER);
@@ -225,16 +231,29 @@ public final class Keys {
 
     private static SettingKey register(final String propertyKey,
                                        final Class<?> type,
-                                       final Object defaultValue,
-                                       @Nullable final RangeAdjuster rangeAdjuster) {
+                                       @Nullable final Object defaultValue,
+                                       @Nullable final RangeAdjuster rangeAdjuster,
+                                       final boolean allowsNullValue) {
 
-        final SettingKey settingKey = new Key(propertyKey, type, defaultValue, rangeAdjuster);
+        final SettingKey settingKey = new Key(propertyKey, type, defaultValue, rangeAdjuster, allowsNullValue);
         ALL_KEYS.add(settingKey);
         return settingKey;
     }
 
+    private static SettingKey register(final String propertyKey,
+                                       final Class<?> type,
+                                       @Nullable final Object defaultValue,
+                                       @Nullable final RangeAdjuster rangeAdjuster) {
+
+        return register(propertyKey, type, defaultValue, rangeAdjuster, false);
+    }
+
     private static SettingKey register(final String key, final Class<?> type, final Object defaultValue) {
-        return register(key, type, defaultValue, null);
+        return register(key, type, defaultValue, null, false);
+    }
+
+    private static SettingKey registerWithNullDefault(final String key, final Class<?> type) {
+        return register(key, type, null, null, true);
     }
 
     private static Map<String, SettingKey> settingKeyMap() {

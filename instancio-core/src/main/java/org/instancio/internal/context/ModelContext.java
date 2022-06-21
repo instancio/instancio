@@ -30,7 +30,6 @@ import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.util.ObjectUtils;
 import org.instancio.util.SeedUtil;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
@@ -56,7 +55,12 @@ import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class ModelContext<T> {
-    private static final Settings PROPERTIES_FILE_SETTINGS = Settings.from(PropertiesLoader.loadDefaultPropertiesFile()).lock();
+
+    private static final Settings PROPERTIES_FILE_SETTINGS =
+            Settings.from(PropertiesLoader.loadDefaultPropertiesFile()).lock();
+
+    private static final Random GLOBAL_RANDOM = PROPERTIES_FILE_SETTINGS.get(Keys.SEED) == null
+            ? null : new DefaultRandom(PROPERTIES_FILE_SETTINGS.get(Keys.SEED));
 
     private final Type rootType;
     private final List<Class<?>> rootTypeParameters;
@@ -78,8 +82,8 @@ public final class ModelContext<T> {
                 : Collections.unmodifiableMap(buildRootTypeMap(builder.rootType, builder.rootTypeParameters));
 
         seed = builder.seed;
-        random = resolveRandom(builder.seed);
         settings = createSettings(builder);
+        random = resolveRandom(settings, builder.seed);
 
         ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
         nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
@@ -119,14 +123,26 @@ public final class ModelContext<T> {
         }
     }
 
-    private static Random resolveRandom(@Nullable final Integer userSuppliedSeed) {
+    private static Random resolveRandom(final Settings settings, @Nullable final Integer userSuppliedSeed) {
         if (userSuppliedSeed != null) {
             return new DefaultRandom(userSuppliedSeed);
         }
+
+        final Integer settingsSeed = settings.get(Keys.SEED);
+        if (settingsSeed != null && (getGlobalRandom() == null || getGlobalRandom().getSeed() != settingsSeed)) {
+            // Use seed from settings unless it's the value from the properties file.
+            return new DefaultRandom(settingsSeed);
+        }
+
         // If running under JUnit extension, use the Random instance supplied by the extension
-        return ObjectUtils.defaultIfNull(
-                ThreadLocalRandom.getInstance().get(),
-                () -> new DefaultRandom(SeedUtil.randomSeed()));
+        if (ThreadLocalRandom.getInstance().get() != null) {
+            return ThreadLocalRandom.getInstance().get();
+        }
+        if (getGlobalRandom() != null) {
+            return getGlobalRandom();
+        }
+
+        return new DefaultRandom(SeedUtil.randomSeed());
     }
 
     public Type getRootType() {
@@ -163,6 +179,10 @@ public final class ModelContext<T> {
 
     public Random getRandom() {
         return random;
+    }
+
+    public static Random getGlobalRandom() {
+        return GLOBAL_RANDOM;
     }
 
     public Builder<T> toBuilder() {

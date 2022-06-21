@@ -118,12 +118,16 @@ public final class ApiValidator {
                 "Class must not be an interface or abstract class: '%s'", klass.getName());
     }
 
-    public static void validateNotNullAndType(@Nullable final SettingKey key, @Nullable final Object value) {
+    public static void validateKeyValue(@Nullable final SettingKey key, @Nullable final Object value) {
         isTrue(key != null, "Setting key must not be null");
-        isTrue(value != null, "Setting value must not be null");
-        isTrue(key.type() == value.getClass(),
-                "The value '%s' is of unexpected type (%s) for key '%s'",
-                value, value.getClass().getSimpleName(), key);
+        if (!key.allowsNullValue()) {
+            isTrue(value != null, "Setting value for key '%s' must not be null", key);
+        }
+        if (value != null) {
+            isTrue(key.type() == value.getClass(),
+                    "The value '%s' is of unexpected type (%s) for key '%s'",
+                    value, value.getClass().getSimpleName(), key);
+        }
     }
 
     public static <T> T[] notEmpty(@Nullable final T[] array, final String message, final Object... values) {

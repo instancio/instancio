@@ -26,7 +26,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.joining;
-import static org.instancio.internal.ApiValidator.validateNotNullAndType;
+import static org.instancio.internal.ApiValidator.validateKeyValue;
 import static org.instancio.internal.ApiValidator.validateSubtype;
 
 /**
@@ -149,7 +149,7 @@ public final class Settings {
      * @param value to set
      * @return updated settings
      */
-    public Settings set(final SettingKey key, final Object value) {
+    public Settings set(final SettingKey key, @Nullable final Object value) {
         return set(key, value, AUTO_ADJUST_ENABLED);
     }
 
@@ -166,12 +166,13 @@ public final class Settings {
      * @param autoAdjust whether to auto-adjust related
      * @return updated setting
      */
-    Settings set(final SettingKey key, final Object value, boolean autoAdjust) {
+    Settings set(final SettingKey key, @Nullable final Object value, boolean autoAdjust) {
         checkLockedForModifications();
-        validateNotNullAndType(key, value);
+        validateKeyValue(key, value);
         settingsMap.put(key, value);
 
         if (autoAdjust) {
+            //noinspection ConstantConditions
             Keys.getAutoAdjustable(key).ifPresent(k -> k.autoAdjust(this, new NumberCaster<>().cast(value)));
         }
 
