@@ -76,6 +76,12 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
+            <artifactId>global-seed-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
             <artifactId>spi-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

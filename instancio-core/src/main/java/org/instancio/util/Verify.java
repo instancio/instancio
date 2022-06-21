@@ -22,14 +22,11 @@ import java.util.Objects;
 
 public final class Verify {
 
-    private Verify() {
-    }
-
-    public static <T> T notNull(final T object) {
+    public static <T> T notNull(@Nullable final T object) {
         return Objects.requireNonNull(object);
     }
 
-    public static <T> T notNull(final T object, final String message, final Object... values) {
+    public static <T> T notNull(@Nullable final T object, final String message, final Object... values) {
         return Objects.requireNonNull(object, () -> String.format(message, values));
     }
 
@@ -68,5 +65,9 @@ public final class Verify {
 
             throw new IllegalArgumentException("Unexpected: " + klass);
         }
+    }
+
+    private Verify() {
+        // non-instantiable
     }
 }

@@ -19,6 +19,7 @@ import org.instancio.Generator;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
+import org.instancio.Result;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.generator.GeneratorSpec;
@@ -133,6 +134,13 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     public T create() {
         final InstancioEngine engine = new InstancioEngine(createModel());
         return engine.createRootObject();
+    }
+
+    @Override
+    public Result<T> asResult() {
+        final InternalModel<T> model = createModel();
+        final InstancioEngine engine = new InstancioEngine(model);
+        return new Result<>(engine.createRootObject(), model.getModelContext().getRandom().getSeed());
     }
 
     @Override

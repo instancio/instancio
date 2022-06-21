@@ -25,7 +25,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.AnnotationConsumer;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -49,14 +55,36 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
 
         final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
-
-        final Object[] args = Arrays.stream(instancioSource.value())
-                .map(it -> Instancio.of(it)
-                        .withSettings(settings)
-                        .withSeed(random.getSeed())
-                        .create())
-                .toArray();
-
+        final Object[] args = createObjectsGroupingByType(instancioSource.value(), random, settings);
         return Stream.of(Arguments.of(args));
+    }
+
+    /*
+     * Since the seed value is the same for all parameters, parameters of the same type
+     * should be generated using a single context. This is to prevent the same value being
+     * generated, e.g. @InstancioSource({String.class, String.class}) => "foo", "foo"
+     */
+    static Object[] createObjectsGroupingByType(final Class<?>[] types, final Random random, final Settings settings) {
+        final Map<Class<?>, Long> counts = Arrays.stream(types)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        final Map<Class<?>, Queue<Object>> resultsByType = new LinkedHashMap<>();
+
+        counts.forEach((type, count) -> {
+            final Queue<Object> results = Instancio.of(type)
+                    .withSettings(settings)
+                    .withSeed(random.getSeed())
+                    .stream()
+                    .limit(count)
+                    .collect(Collectors.toCollection(ArrayDeque::new));
+
+            resultsByType.put(type, results);
+        });
+
+        final Object[] results = new Object[types.length];
+        for (int i = 0; i < results.length; i++) {
+            results[i] = resultsByType.get(types[i]).poll();
+        }
+        return results;
     }
 }

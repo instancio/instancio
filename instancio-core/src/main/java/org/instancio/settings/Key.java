@@ -15,6 +15,8 @@
  */
 package org.instancio.settings;
 
+import org.instancio.util.Verify;
+
 import javax.annotation.Nullable;
 import java.util.Objects;
 
@@ -24,12 +26,23 @@ public final class Key implements SettingKey {
     private final Class<?> type;
     private final Object defaultValue;
     private final RangeAdjuster rangeAdjuster;
+    private final boolean allowsNullValue;
 
-    Key(final String propertyKey, final Class<?> type, final Object defaultValue, @Nullable final RangeAdjuster rangeAdjuster) {
+    Key(final String propertyKey,
+        final Class<?> type,
+        @Nullable final Object defaultValue,
+        @Nullable final RangeAdjuster rangeAdjuster,
+        boolean allowsNullValue) {
+
         this.propertyKey = propertyKey;
         this.type = type;
         this.defaultValue = defaultValue;
         this.rangeAdjuster = rangeAdjuster;
+        this.allowsNullValue = allowsNullValue;
+    }
+
+    Key(final String propertyKey, final Class<?> type, @Nullable final Object defaultValue, @Nullable final RangeAdjuster rangeAdjuster) {
+        this(propertyKey, type, Verify.notNull(defaultValue, "Null default value"), rangeAdjuster, false);
     }
 
     @Override
@@ -47,6 +60,11 @@ public final class Key implements SettingKey {
     @Override
     public <T> T defaultValue() {
         return (T) defaultValue;
+    }
+
+    @Override
+    public boolean allowsNullValue() {
+        return allowsNullValue;
     }
 
     @Override

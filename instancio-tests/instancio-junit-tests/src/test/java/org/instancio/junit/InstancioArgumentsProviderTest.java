@@ -15,9 +15,14 @@
  */
 package org.instancio.junit;
 
+import org.instancio.Random;
+import org.instancio.internal.random.DefaultRandom;
+import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -31,6 +36,10 @@ import static org.mockito.Mockito.when;
 class InstancioArgumentsProviderTest {
 
     private final InstancioArgumentsProvider provider = new InstancioArgumentsProvider();
+
+    @InstancioSource({String.class, Integer.class})
+    private void dummy() {
+    }
 
     @Test
     void provideArguments() throws Exception {
@@ -53,7 +62,27 @@ class InstancioArgumentsProviderTest {
                 });
     }
 
-    @InstancioSource({String.class, Integer.class})
-    private void dummy() {
+    @MethodSource("types")
+    @ParameterizedTest
+    void createObjectsGroupingByType(final Class<?>[] types) {
+        final Random random = new DefaultRandom();
+        final Settings settings = Settings.create();
+        final Object[] results = InstancioArgumentsProvider.createObjectsGroupingByType(types, random, settings);
+
+        assertThat(results).hasExactlyElementsOfTypes(types);
+    }
+
+    private static Stream<Arguments> types() {
+        return Stream.of(
+                args(),
+                args(String.class),
+                args(String.class, String.class),
+                args(String.class, Integer.class, String.class),
+                args(String.class, Integer.class, Integer.class, String.class, Integer.class, Long.class)
+        );
+    }
+
+    private static Arguments args(final Class<?>... types) {
+        return Arguments.of((Object) types);
     }
 }

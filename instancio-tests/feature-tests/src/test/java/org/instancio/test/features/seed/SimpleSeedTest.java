@@ -37,17 +37,15 @@ class SimpleSeedTest {
     @Test
     void generateValuesWithTheSameSeed() {
         final Set<UUID> allResults = new HashSet<>();
+        final Set<UUID> uuids = Instancio.of(new TypeToken<Set<UUID>>() {}).withSeed(SEED).create();
 
-        Set<UUID> uuids = null;
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            uuids = Instancio.of(new TypeToken<Set<UUID>>() {})
-                    .withSeed(SEED)
-                    .create();
-
-            assertThat(uuids).hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
-            allResults.addAll(uuids);
+            allResults.addAll(Instancio.of(new TypeToken<Set<UUID>>() {}).withSeed(SEED).create());
         }
-        assertThat(allResults).isEqualTo(uuids);
+
+        assertThat(allResults)
+                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
+                .isEqualTo(uuids);
     }
 
     @Test
