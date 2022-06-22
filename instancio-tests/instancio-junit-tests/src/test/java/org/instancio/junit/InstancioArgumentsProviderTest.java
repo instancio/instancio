@@ -25,6 +25,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -70,6 +72,9 @@ class InstancioArgumentsProviderTest {
         final Object[] results = InstancioArgumentsProvider.createObjectsGroupingByType(types, random, settings);
 
         assertThat(results).hasExactlyElementsOfTypes(types);
+        assertThat(new HashSet<>(Arrays.asList(results)))
+                .as("Distinct parameter values should be generated")
+                .hasSize(types.length);
     }
 
     private static Stream<Arguments> types() {

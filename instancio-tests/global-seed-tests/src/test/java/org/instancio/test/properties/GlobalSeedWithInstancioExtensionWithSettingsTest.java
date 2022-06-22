@@ -23,6 +23,8 @@ import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Using {@code @WithSettings} annotation.
  */
+@FeatureTag({Feature.GLOBAL_SEED, Feature.WITH_SEED, Feature.WITH_SEED_ANNOTATION})
 @ExtendWith(InstancioExtension.class)
 class GlobalSeedWithInstancioExtensionWithSettingsTest {
 

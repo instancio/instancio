@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Contains node type resolvers.
+ */
 @ParametersAreNonnullByDefault
 package org.instancio.internal.nodes.resolvers;
 

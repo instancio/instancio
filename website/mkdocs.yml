@@ -68,6 +68,7 @@ extra:
   SettingKey:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/settings/SettingKey.html" target="_blank">SettingKey</a>'
   Settings:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/settings/Settings.html" target="_blank">Settings</a>'
   withSeed: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSeed(int)" target="_blank">withSeed(int seed)</a>'
+  withSettings: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSettings(org.instancio.settings.Settings)" target="_blank">withSettings(Settings)</a>'
   # Processor
   InstancioMetamodel:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioMetamodel.html" target="_blank">@InstancioMetamodel</a>'
   # JUnit

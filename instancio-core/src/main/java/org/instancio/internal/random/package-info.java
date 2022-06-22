@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Implementation classes for generating random values.
+ */
 @ParametersAreNonnullByDefault
 package org.instancio.internal.random;
 

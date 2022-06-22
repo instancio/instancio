@@ -73,7 +73,7 @@ Person[
 
 # Features
 
-- [JUnit 5 extension](https://www.instancio.org/user-guide/#junit-integration)
+- [JUnit 5 extension](https://www.instancio.org/user-guide/#junit-jupiter-integration)
 - [Reproducible data using seeds](https://www.instancio.org/user-guide/#seed)
 - [Metamodels](https://www.instancio.org/user-guide/#metamodel)
 - [Object templates using models](https://www.instancio.org/user-guide/#using-models)

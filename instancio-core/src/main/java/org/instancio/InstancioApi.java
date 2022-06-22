@@ -49,7 +49,9 @@ public interface InstancioApi<T> {
     T create();
 
     /**
-     * Returns a {@link Result} containing the created object.
+     * Returns a {@link Result} containing the created object and seed value
+     * used to generate its values. The seed value can be used to reproduce
+     * the same object again.
      *
      * @return result containing the created object
      * @since 1.5.1

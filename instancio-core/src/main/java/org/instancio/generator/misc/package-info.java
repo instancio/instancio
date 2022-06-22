@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Miscellaneous generators.
+ */
 @ParametersAreNonnullByDefault
 package org.instancio.generator.misc;
 
