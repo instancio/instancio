@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Generators for {@code java.lang.*} types.
+ * Provides generators for {@code java.lang.*} types.
  */
 @ParametersAreNonnullByDefault
 package org.instancio.generator.lang;

@@ -733,7 +733,7 @@ Model<Person> modelWithNewPet = Instancio.of(simpsonsModel)
 Before creating an object, Instancio initialises a random seed value.
 This seed value is used internally by the pseudorandom number generator, that is, `java.util.Random`.
 Instancio ensures that the same instance of the random number generator is used throughout object creation, from start to finish.
-This constraint means that Instancio can reproduce the same object again by using the same seed value.
+This means that Instancio can reproduce the same object again by using the same seed.
 This feature allows reproducing failed tests (see the section on [reproducing tests with JUnit](#reproducing-failed-tests)).
 
 In addition, Instancio takes care in generating values for classes like `UUID` and `LocalDateTime`, where a minor difference in values can cause an object equality check to fail.
@@ -787,6 +787,30 @@ SamplePojo(
 
 !!! warning "While the generated values are the same, it is not recommended to write assertions using hard-coded values."
 
+### Specifying Seed Value
+
+By default, Instancio uses a random seed to generate an object. This behaviour can be overridden using any of the following options:
+
+- `instancio.properties` file
+- `@Seed` and `@WithSettings` annotations (when using [`InstancioExtension`](#junit-jupiter-integration) for  JUnit Jupiter)
+- [`Settings`](#overriding-settings-programmatically) class
+- {{withSeed}}  method of the builder API
+
+These are ranked from lowest precedence to highest. Seed value passed to `withSeed()` takes precedence over other values, such as those supplied through properties or `@Seed` annotation.
+
+Seed value specified through properties is a "global" seed. All objects created by Instancio will use this seed (unless the seed is overridden using one of the other methods). This will result in the same data being generated on each run.
+
+### Getting Seed Value
+
+Sometimes it is necessary to get the seed value that was used to generate the data. One such example is for reproducing failed tests. If you are using JUnit 5, seed value is reported automatically using the `InstancioExtension` (see [JUnit Jupiter integration](#junit-jupiter-integration)). If you are using JUnit 4, TestNG, or Instancio standalone, the seed value can be obtained by calling the `asResult()` method of the builder API. This returns a `Result` containing the created object and the seed value that was used to populate its values.
+
+
+``` java linenums="1" title="Example of using asResult()"
+Result<Person> result = Instancio.of(Person.class).asResult();
+Person person = result.get();
+int seed = result.getSeed(); // seed value that was used for populating the person
+// snip...
+```
 
 # Metamodel
 
@@ -911,25 +935,24 @@ Settings.from(Settings other)
 ```
 !!! attention ""
     <lnum>1</lnum> Creates a new instance of blank settings.<br/>
-    <lnum>2</lnum> Creates a new instance of default settings.<br/>
+    <lnum>2</lnum> Creates a new instance containing default settings.<br/>
     <lnum>3</lnum> Creates settings from a `Map` or `java.util.Properties`.<br/>
     <lnum>4</lnum> Creates a copy of `other` settings (a clone operation).
 
 Settings can be overridden programmatically or through a properties file.
 
-
 !!! info
     To inspect all the keys and default values, simply: `System.out.println(Settings.defaults())`
-
 
 ## Overriding Settings Programmatically
 
 To override programmatically, an instance of `Settings` can be passed in to the builder API:
 
-``` java linenums="1" title="Supplying custom settings" hl_lines="2 4 7"
+``` java linenums="1" title="Supplying custom settings" hl_lines="2 5 8"
 Settings overrides = Settings.create()
     .set(Keys.COLLECTION_MIN_SIZE, 10)
     .set(Keys.STRING_ALLOW_EMPTY, true)
+    .set(Keys.SEED, 12345)
     .lock();
 
 Person person = Instancio.of(Person.class)
@@ -939,40 +962,29 @@ Person person = Instancio.of(Person.class)
 
 !!! attention ""
     <lnum>2</lnum> The {{Keys}} class provides static fields for all the keys supported by Instancio.<br/>
-    <lnum>4</lnum> The `lock()` method makes the settings instance immutable. This is an optional method call.
+    <lnum>5</lnum> The `lock()` method makes the settings instance immutable. This is an optional method call.
     It can be used to prevent modifications if settings are shared across multiple methods or classes.<br/>
-    <lnum>7</lnum> The passed in settings instance will override default settings.
+    <lnum>8</lnum> The passed in settings instance will override default settings.
 
 !!! attention "Range settings auto-adjust"
     When updating range settings, such as `COLLECTION_MIN_SIZE` and `COLLECTION_MAX_SIZE`,
     range bound is auto-adjusted if the new minimum is higher than the current maximum, and vice versa.
 
 
-## Overriding Settings Using a Properties File
-
 The {{Keys}} class defines a _property key_ for every key object, for example:
 
 - `Keys.COLLECTION_MIN_SIZE` -> `"collection.min.size"`
 - `Keys.STRING_ALLOW_EMPTY`  -> `"string.allow.empty"`
 
-Using these property keys, configuration values can also be overridden via a properties file.
-This can be done by placing `instancio.properties` at the root of the classpath and using property keys to override values (see the [sample properties file](#listing-of-all-supported-property-keys)).
+Using these property keys, configuration values can also be overridden using a properties file.
 
-## Settings Precedence
 
-Instancio layers settings on top of each other, each layer overriding the previous ones.
-This is done in the following order:
+## Overriding Settings Using a Properties File
 
-1. `Settings.defaults()`
-1. Settings from `instancio.properties`
-1. Settings injected into a JUnit test using `@WithSettings` annotation (see [Settings Injection](#settings-injection))
-1. Settings supplied to the builder API's `withSettings(Settings)` method
+Default settings can be overridden using `instancio.properties`. Instancio will automatically load this file from the root of the classpath. The following listing shows all the property keys that can be configured.
 
-Therefore, settings supplied manually take precedence over everything else.
 
-## Listing of all Supported Property Keys
-
-``` java linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 39"
+``` java linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 32 40"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -1004,6 +1016,7 @@ map.max.size=6
 map.min.size=2
 map.nullable=false
 mode=STRICT
+seed=12345
 short.max=10000
 short.min=1
 short.nullable=false
@@ -1018,13 +1031,27 @@ subtype.java.util.SortedMap=java.util.TreeMap
 ```
 
 !!! attention ""
-    <lnum>1</lnum>The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
+    <lnum>1,10,26-27</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
-    <lnum>31</lnum> Specifies the mode, either `STRICT` or `LENIENT`. See [Selector Strictness](#selector-strictness)<br/>
-    <lnum>39</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>31</lnum> Specifies the mode, either `STRICT` or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
+    <lnum>32</lnum> Specifies a global seed value.<br/>
+    <lnum>40</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
-# JUnit Integration
+
+## Settings Precedence
+
+Instancio layers settings on top of each other, each layer overriding the previous ones.
+This is done in the following order:
+
+1. `Settings.defaults()`
+1. Settings from `instancio.properties`
+1. Settings injected using `@WithSettings` annotation when using `InstancioExtension` (see [Settings Injection](#settings-injection))
+1. Settings supplied using the builder API's {{withSettings}} method
+
+In the absence of any other configuration, Instancio uses defaults as returned by `Settings.defaults()`. If `instancio.properties` is found at the root of the classpath, it will override the defaults. Finally, settings can also be overridden at runtime using `@WithSettings` annotation or {{withSettings}} method. The latter takes precedence over everything else.
+
+# JUnit Jupiter Integration
 
 Instancio supports JUnit 5 via the {{InstancioExtension}} and can be used in combination with extensions from other testing frameworks.
 The extension adds a few useful features, such as
@@ -1038,7 +1065,7 @@ The extension adds a few useful features, such as
 Since using Instancio validates your code against random inputs on each test run, having the ability to reproduce a failed tests with previously generated data becomes a necessity.
 Instancio supports this use case by reporting the seed value of a failed test in the failure message using JUnit's `publishReportEntry` mechanism.
 
-### Seed Lifecycle in a JUnit Test
+### Seed Lifecycle in a JUnit Jupiter Test
 
 Instancio initialises a seed value before each test method.
 This seed value is used for creating all objects during the test method's execution, unless another seed is specified explicitly using the {{withSeed}} method.

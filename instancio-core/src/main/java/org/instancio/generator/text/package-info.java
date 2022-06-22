@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Text generators.
+ * Provides text generators.
  */
 @ParametersAreNonnullByDefault
 package org.instancio.generator.text;

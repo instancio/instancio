@@ -22,6 +22,8 @@ import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -41,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *   <li>(f) random seed, if none of the above specified (default behaviour, not tested here)</li>
  * </ul>
  */
+@FeatureTag({Feature.GLOBAL_SEED, Feature.WITH_SEED, Feature.WITH_SEED_ANNOTATION})
 @ExtendWith(InstancioExtension.class)
 class GlobalSeedWithInstancioExtensionTest {
 

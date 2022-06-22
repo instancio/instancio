@@ -27,6 +27,12 @@ class InstancioSourceTest {
         assertThat(arg).isNotBlank();
     }
 
+    @InstancioSource({String.class, String.class})
+    @ParameterizedTest
+    void twoArgsSameType(final String first, final String second) {
+        assertThat(first).isNotBlank().isNotEqualTo(second);
+    }
+
     @InstancioSource({First.class, Second.class})
     @ParameterizedTest
     void twoArgs(final First first, final Second second) {

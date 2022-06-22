@@ -13,6 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+/**
+ * Provides generators for {@code java.util.concurrent.*} types.
+ */
 @ParametersAreNonnullByDefault
 package org.instancio.generator.util.concurrent;
 

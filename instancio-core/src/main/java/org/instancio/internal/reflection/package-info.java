@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Implementation classes providing support for reflection.
+ */
 @ParametersAreNonnullByDefault
 package org.instancio.internal.reflection;
 

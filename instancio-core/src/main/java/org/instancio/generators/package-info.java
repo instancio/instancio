@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Defines classes that provide access to built-in generators.
+ */
 @ParametersAreNonnullByDefault
 package org.instancio.generators;
 

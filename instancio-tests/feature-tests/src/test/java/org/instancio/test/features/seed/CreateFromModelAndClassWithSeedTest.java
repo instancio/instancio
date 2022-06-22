@@ -18,6 +18,7 @@ package org.instancio.test.features.seed;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
+import org.instancio.Result;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.person.Person;
@@ -36,7 +37,7 @@ import static org.instancio.Select.field;
 /**
  * Verify that create(Model) and create(Class) generate same values given the same seed.
  */
-@FeatureTag(Feature.WITH_SEED)
+@FeatureTag({Feature.MODEL, Feature.WITH_SEED})
 class CreateFromModelAndClassWithSeedTest {
 
     private static final int SEED = 123;
@@ -48,14 +49,15 @@ class CreateFromModelAndClassWithSeedTest {
                 .withSeed(SEED)
                 .toModel();
 
-        final IntegerHolder obj1 = Instancio.create(model);
+        final Result<IntegerHolder> obj1 = Instancio.of(model).asResult();
 
-        final IntegerHolder obj2 = Instancio.of(IntegerHolder.class)
+        final Result<IntegerHolder> obj2 = Instancio.of(IntegerHolder.class)
                 .generate(allInts(), gen -> gen.ints().min(Integer.MIN_VALUE))
                 .withSeed(SEED)
-                .create();
+                .asResult();
 
-        assertThat(obj1).isEqualTo(obj2);
+        assertThat(obj1.get()).isEqualTo(obj2.get());
+        assertThat(obj1.getSeed()).isEqualTo(obj2.getSeed()).isEqualTo(SEED);
     }
 
     @Test
