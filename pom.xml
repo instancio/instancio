@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-parent</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.5.1</version>
     <packaging>pom</packaging>
 
     <name>Instancio Parent</name>
@@ -30,7 +30,7 @@
         <url>https://github.com/instancio/instancio</url>
         <connection>scm:git:https://github.com/instancio/instancio.git</connection>
         <developerConnection>scm:git:https://github.com/instancio/instancio.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>instancio-parent-1.5.1</tag>
     </scm>
 
     <distributionManagement>
@@ -55,7 +55,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
-        <latest.release.version>1.5.0</latest.release.version>
+        <latest.release.version>1.5.1</latest.release.version>
         <version.objenesis>3.2</version.objenesis>
         <version.findbugs.jsr305>3.0.2</version.findbugs.jsr305>
         <version.slf4j>1.7.36</version.slf4j>
