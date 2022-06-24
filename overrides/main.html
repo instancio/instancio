@@ -1,0 +1,19 @@
+<!-- Elements added to main will be displayed on all pages -->
+{% extends "base.html" %}
+
+{% block extrahead %}
+<meta name="description" content="Instancio is a library for instantiating and populating objects with random data. Its goal is to reduce the time and lines of code spent on manual data setup in unit tests.">
+{% endblock %}
+
+<!-- Google Tag Manager -->
+{% block libs %}
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MYZQVSS3LL"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-MYZQVSS3LL');
+</script>
+{% endblock %}
+
+<!-- Announcement bar -->
