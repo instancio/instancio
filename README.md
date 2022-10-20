@@ -89,7 +89,7 @@ as well as a few other useful features.
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>1.5.1</version>
+        <version>1.5.2</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -100,7 +100,7 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>1.5.1</version>
+        <version>1.5.2</version>
         <scope>test</scope>
     </dependency>
 ```
