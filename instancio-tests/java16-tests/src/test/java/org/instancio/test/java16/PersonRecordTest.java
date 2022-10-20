@@ -23,6 +23,8 @@ import org.instancio.test.support.java16.record.PhoneRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
@@ -50,7 +52,7 @@ class PersonRecordTest {
     }
 
     @Test
-    void customiseRecordValues() {
+    void customiseRecordFields() {
         final PersonRecord result = Instancio.of(PersonRecord.class)
                 .generate(field(PhoneRecord.class, "number"), gen -> gen.string().digits().length(7))
                 .create();
@@ -59,6 +61,25 @@ class PersonRecordTest {
                 .isNotEmpty()
                 .extracting(PhoneRecord::number)
                 .allSatisfy(number -> assertThat(number).hasSize(7).containsOnlyDigits());
+    }
+
+    @Test
+    void supplyWholeRecord() {
+        final String city = "some-city";
+        final String streetPrefix = "street-";
+
+        int[] callbackCount = {0};
+        final PersonRecord result = Instancio.of(PersonRecord.class)
+                .supply(field("address"), rnd -> new AddressRecord(streetPrefix + rnd.digits(3), city, List.of()))
+                .onComplete(all(AddressRecord.class), (AddressRecord address) -> {
+                    assertThatObject(address).isFullyPopulated();
+                    callbackCount[0]++;
+                })
+                .create();
+
+        assertThat(result.address().city()).isEqualTo(city);
+        assertThat(result.address().street()).startsWith(streetPrefix).hasSizeGreaterThan(streetPrefix.length());
+        assertThat(callbackCount[0]).isOne();
     }
 
     @Test
@@ -73,6 +94,6 @@ class PersonRecordTest {
                 })
                 .create();
 
-        assertThat(callbackCount[0]).isEqualTo(1);
+        assertThat(callbackCount[0]).isOne();
     }
 }

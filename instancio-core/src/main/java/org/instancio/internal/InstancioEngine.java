@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.Generator;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.context.ModelContext;
@@ -137,6 +138,15 @@ class InstancioEngine {
     }
 
     private Optional<GeneratorResult> generateRecord(final Node node) {
+
+        // Handle the case where user supplies a generator for creating a record.
+        final Optional<Generator<?>> generator = context.getGenerator(node);
+        if (generator.isPresent()) {
+            final Optional<GeneratorResult> generatorResult = generatorFacade.generateNodeValue(node);
+            generatorResult.ifPresent(result -> notifyListeners(node, result.getValue()));
+            return generatorResult;
+        }
+
         final List<Node> children = node.getChildren();
         final Object[] args = new Object[children.size()];
 
