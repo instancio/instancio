@@ -7,29 +7,36 @@
 
 # What is it?
 
-Instancio is a Java library for populating objects.
-Its main goal is to reduce manual data setup in unit tests,
-especially when working with large classes.
+Instancio is a Java library that automatically creates and populates objects for your unit tests.
 
-Instead of:
+Instead of manually setting up test data:
 
 ```java
+Address address  = new Address();
+address.setStreet("street");
+address.setCity("city");
+//...
+
 Person person = new Person();
-person.setFirstName("test-first-name");
-person.setLastName("test-last-name");
-person.setDateOfBirth(LocalDate.of(1990,7,30));
-// etc...
+person.setFirstName("first-name");
+person.setLastName("last-name");
+person.setAge(22);
+person.setGender(Gender.MALE);
+person.setAddress(address);
+//...
 ```
 
-Instancio can do the manual work for you:
+You can simply do the following:
 
 ```java
 Person person = Instancio.create(Person.class);
 ```
 
 This one-liner returns a fully-populated person, including nested objects and collections.
+The object is populated with random data that can be reproduced in case of test failure.
 
-You can also customise generated values using the builder API:
+If you require specific values, generated data can be customised using the builder API.
+The following example is a little over the top just to show some of the API capabilities.
 
 ```java
 Person person = Instancio.of(Person.class)
@@ -44,46 +51,24 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-One of possible outputs:
+## Main Features
 
-```java
-Person[
-  name=Jane
-  gender=FEMALE
-  age=39
-  pets=["MSUI", "OSQRCB"]
-  address=[
-    street=RMRCREFF
-    city=Vancouver
-    postalCode=null
-    country=IFYFKJ
-    phoneNumbers=[
-      Phone[areaCode=778,number=271-15-75],
-      Phone[areaCode=604,number=159-74-61],
-      Phone[areaCode=604,number=694-13-82],
-      Phone[areaCode=778,number=376-49-29]]]
-  lastModified=2022-05-12T22:41:10.356320]
-```
+- Fully reproducible data in case of test failures.
+- Support for generics, `record` and `sealed` classes.
+- Support for defining custom generators for types not supported out of the box.
+- Flexible configuration options.
+- `InstancioExtension` for Junit 5 `@ExtendWith`.
 
-# Documentation
 
-- [User Guide](https://www.instancio.org/user-guide)
-- [Building from sources](https://www.instancio.org/building/)
+## Documentation
+
+- The official [user guide](https://www.instancio.org/user-guide) 
 - [Sample projects](https://github.com/instancio/instancio-samples)
+- [An introductory article](https://medium.com/@armandino/instancio-random-test-data-generator-for-java-a7b283dd258d) on Medium.
 
-# Features
+# Getting Started
 
-- [JUnit 5 extension](https://www.instancio.org/user-guide/#junit-jupiter-integration)
-- [Reproducible data using seeds](https://www.instancio.org/user-guide/#seed)
-- [Metamodels](https://www.instancio.org/user-guide/#metamodel)
-- [Object templates using models](https://www.instancio.org/user-guide/#using-models)
-
-
-# Try it out
-
-To use Instancio with JUnit 5, use the `instancio-junit` dependency.
-It includes `InstancioExtension` which allows reproducing data in case of a test failure,
-as well as a few other useful features.
+If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
 
 ```xml
     <dependency>

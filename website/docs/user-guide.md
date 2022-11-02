@@ -789,16 +789,35 @@ SamplePojo(
 
 ### Specifying Seed Value
 
-By default, Instancio uses a random seed to generate an object. This behaviour can be overridden using any of the following options:
+By default, if no custom seed is specified, Instancio generates a random seed value.
+Therefore each execution results in different outputs.
+This behaviour can be overridden by specifying a custom seed using any of the options below.
+These are ranked from lowest to highest precedence:
 
 - `instancio.properties` file
 - `@Seed` and `@WithSettings` annotations (when using [`InstancioExtension`](#junit-jupiter-integration) for  JUnit Jupiter)
 - [`Settings`](#overriding-settings-programmatically) class
 - {{withSeed}}  method of the builder API
 
-These are ranked from lowest precedence to highest. Seed value passed to `withSeed()` takes precedence over other values, such as those supplied through properties or `@Seed` annotation.
+For example, if a seed value is specified in the properties file, then Instancio will use this seed to generate the data
+and each execution will result in the same data being generated.
+If another seed is specified using `withSeed()` method, then it will take precedence over the one from the properties file.
 
-Seed value specified through properties is a "global" seed. All objects created by Instancio will use this seed (unless the seed is overridden using one of the other methods). This will result in the same data being generated on each run.
+``` java linenums="1" title="Example: instancio.properties"
+seed = 123
+```
+
+``` java linenums="1" title="Seed precedence" hl_lines="1 4"
+SamplePojo pojo1 = Instancio.create(SamplePojo.class);
+
+SamplePojo pojo2 = Instancio.of(SamplePojo.class)
+    .withSeed(456)
+    .create();
+```
+!!! attention ""
+    <lnum>1</lnum> `pojo1` generated using seed `123` specified in `instancio.properties`.<br/>
+    <lnum>4</lnum> `pojo2` generated using seed `456` since `withSeed()` has higher precedence.
+
 
 ### Getting Seed Value
 

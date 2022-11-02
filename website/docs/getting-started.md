@@ -31,7 +31,7 @@ There are three dependencies available from Maven central:
 
 If you use JUnit Jupiter, then use `instancio-junit`.
 Since `instancio-junit` has a transitive dependency on `instancio-core`, it is not necessary to import both.
-Importing only `instancio-junit` one would suffice.
+Importing only `instancio-junit` would suffice.
 
 
 === "Maven"
