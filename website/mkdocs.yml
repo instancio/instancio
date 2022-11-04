@@ -50,6 +50,7 @@ nav:
     - 'Getting Started': 'getting-started.md'
     - 'User Guide': 'user-guide.md'
     - 'Building': 'building.md'
+    - 'Articles': 'articles.md'
 
 extra:
   # Core

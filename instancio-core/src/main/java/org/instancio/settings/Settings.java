@@ -30,8 +30,35 @@ import static org.instancio.internal.ApiValidator.validateKeyValue;
 import static org.instancio.internal.ApiValidator.validateSubtype;
 
 /**
- * Instancio settings API.
+ * This class provides an API for updating settings programmatically.
+ * An instance of this class can be created using one of the following static methods:
  *
+ * <ul>
+ *   <li>{@link #create()} - returns a new instance of blank settings</li>
+ *   <li>{@link #defaults()} - returns a new instance containing default settings</li>
+ * </ul>
+ *
+ * Out of the box, Instancio uses default settings as returned by {@link #defaults()}.
+ * Defaults can be overridden either globally using a configuration file, or per-object
+ * using the API, for example:
+ *
+ * <pre>{@code
+ *     // Create a blank instance of settings and set the overrides
+ *     Settings settings = Settings.create()
+ *         .set(Keys.COLLECTION_MIN_SIZE, 50)
+ *         .set(Keys.COLLECTION_MAX_SIZE, 100);
+ *
+ *     // Pass the overrides when creating an object
+ *     Person person = Instancio.of(Person.class)
+ *         .withSettings(settings)
+ *         .create();
+ * }</pre>
+ *
+ * For information on how to override settings globally using a configuration file, please refer
+ * to the <a href="https://www.instancio.org/user-guide/">user guide</a>.
+ *
+ * @see Keys
+ * @see SettingKey
  * @since 1.0.1
  */
 public final class Settings {
