@@ -16,12 +16,14 @@
 package org.instancio.creation.collections.sets;
 
 import org.instancio.test.support.pojo.person.Gender;
+import org.instancio.testsupport.templates.AutoVerificationDisabled;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import java.util.EnumSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@AutoVerificationDisabled
 class EnumSetCreationTest extends CreationTestTemplate<EnumSet<Gender>> {
 
     @Override

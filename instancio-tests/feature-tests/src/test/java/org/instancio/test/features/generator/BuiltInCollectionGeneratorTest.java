@@ -17,6 +17,7 @@ package org.instancio.test.features.generator;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
+import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -31,6 +32,7 @@ import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -51,8 +53,8 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
-// TODO test nested lists/maps
 @FeatureTag(Feature.GENERATE)
+@NonDeterministicTag("Set/Map size assertions may fail if same value is generated more than once")
 class BuiltInCollectionGeneratorTest {
     private static final int EXPECTED_SIZE = RandomUtils.nextInt(90, 100);
 
@@ -150,6 +152,7 @@ class BuiltInCollectionGeneratorTest {
         }
 
         @Test
+        @DisplayName("List should contain provided elements")
         void withElements() {
             final String[] expectedElements = {"foo", "bar"};
             final ListString result = Instancio.of(ListString.class)
@@ -181,6 +184,17 @@ class BuiltInCollectionGeneratorTest {
             assertList(result.getList2(), EXPECTED_SIZE, EXPECTED_SIZE);
         }
 
+        @Test
+        @DisplayName("Nested lists should have expected size and be fully populated")
+        void nestedListsShouldHaveExpectedSize() {
+            final List<List<String>> result = Instancio.of(new TypeToken<List<List<String>>>() {})
+                    .generate(all(List.class), gen -> gen.collection().size(EXPECTED_SIZE))
+                    .create();
+
+            assertThat(result).hasSize(EXPECTED_SIZE)
+                    .allSatisfy(nested -> assertThat(nested).hasSize(EXPECTED_SIZE));
+        }
+
         private void assertList(final List<Item<String>> list, final int minSize, final int maxSize) {
             assertThat(list)
                     .hasSizeBetween(minSize, maxSize)
@@ -194,6 +208,7 @@ class BuiltInCollectionGeneratorTest {
 
         @WithSettings
         private final Settings settings = Settings.create()
+                .set(Keys.STRING_MIN_LENGTH, 30)
                 .set(Keys.INTEGER_MIN, Integer.MIN_VALUE)
                 .set(Keys.INTEGER_MAX, Integer.MAX_VALUE);
 
@@ -206,6 +221,19 @@ class BuiltInCollectionGeneratorTest {
 
             assertEntries(result.getMap1(), EXPECTED_SIZE, EXPECTED_SIZE);
             assertEntries(result.getMap2(), Constants.MIN_SIZE, Constants.MAX_SIZE);
+        }
+
+        @Test
+        @DisplayName("Nested maps should have expected size and be fully populated")
+        void nestedMapShouldHaveExpectedSize() {
+            final Map<String, Map<String, Integer>> result = Instancio.of(new TypeToken<Map<String, Map<String, Integer>>>() {})
+                    .generate(all(Map.class), gen -> gen.map().size(EXPECTED_SIZE))
+                    .create();
+
+            assertThat(result).hasSize(EXPECTED_SIZE).allSatisfy((k, v) ->
+                    assertThat(v)
+                            .as("Nested map should have expected size")
+                            .hasSize(EXPECTED_SIZE));
         }
 
         @Test

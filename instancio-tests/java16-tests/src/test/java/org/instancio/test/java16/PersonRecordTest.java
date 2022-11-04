@@ -71,10 +71,7 @@ class PersonRecordTest {
         int[] callbackCount = {0};
         final PersonRecord result = Instancio.of(PersonRecord.class)
                 .supply(field("address"), rnd -> new AddressRecord(streetPrefix + rnd.digits(3), city, List.of()))
-                .onComplete(all(AddressRecord.class), (AddressRecord address) -> {
-                    assertThatObject(address).isFullyPopulated();
-                    callbackCount[0]++;
-                })
+                .onComplete(all(AddressRecord.class), (AddressRecord address) -> callbackCount[0]++)
                 .create();
 
         assertThat(result.address().city()).isEqualTo(city);

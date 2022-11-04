@@ -128,8 +128,8 @@ public final class TypeMap {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof TypeMap)) return false;
-        final TypeMap typeMap1 = (TypeMap) o;
-        return Objects.equals(rootTypeMap, typeMap1.rootTypeMap) && Objects.equals(typeMap, typeMap1.typeMap);
+        final TypeMap other = (TypeMap) o;
+        return Objects.equals(rootTypeMap, other.rootTypeMap) && Objects.equals(typeMap, other.typeMap);
     }
 
     @Override
