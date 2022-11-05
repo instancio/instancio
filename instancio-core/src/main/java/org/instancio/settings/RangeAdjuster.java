@@ -19,6 +19,8 @@ import org.instancio.util.NumberUtils;
 
 /**
  * Provides support for auto-adjusting 'range' settings that have a min and a max value.
+ *
+ * @since 1.1.10
  */
 public interface RangeAdjuster {
 
