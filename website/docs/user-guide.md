@@ -1170,7 +1170,7 @@ class ExampleTest {
 
     @WithSettings
     private final Settings settings = Settings.create()
-        .set(Setting.COLLECTION_MIN_SIZE, 10);
+        .set(Keys.COLLECTION_MIN_SIZE, 10);
 
     @Test
     void example() {
@@ -1196,13 +1196,13 @@ class ExampleTest {
 
     @WithSettings
     private final Settings settings = Settings.create()
-        .set(Setting.COLLECTION_MIN_SIZE, 10);
+        .set(Keys.COLLECTION_MIN_SIZE, 10);
 
     @Test
     void overrideInjectedSettings() {
         Person person = Instancio.of(Person.class)
             .withSettings(Settings.create()
-                .set(Setting.COLLECTION_MAX_SIZE, 3))
+                .set(Keys.COLLECTION_MAX_SIZE, 3))
             .create();
 
         assertThat(person.getPhoneNumbers())

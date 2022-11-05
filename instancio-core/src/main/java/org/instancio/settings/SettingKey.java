@@ -16,14 +16,21 @@
 package org.instancio.settings;
 
 /**
- * A setting key for modifying configuration.
+ * A setting key represents a configuration item and has the following properties:
  *
+ * <ul>
+ *   <li>{@link #propertyKey()} - property name that can be used in a configuration file</li>
+ *   <li>{@link #defaultValue()} - that will be used if there is no configuration file present</li>
+ * </ul>
+ *
+ * @see Keys
+ * @see Settings
  * @since 1.0.1
  */
 public interface SettingKey extends Comparable<SettingKey> {
 
     /**
-     * A property key used in the properties file.
+     * A property key that can be used to configure this setting in a properties file.
      *
      * @return property key
      * @since 1.2.0

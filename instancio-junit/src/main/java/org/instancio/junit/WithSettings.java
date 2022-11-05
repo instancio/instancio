@@ -34,8 +34,8 @@ import java.lang.annotation.Target;
  *
  *     <b>&#064;WithSettings</b>
  *     private final Settings settings = Settings.create()
- *         .set(Setting.COLLECTION_MIN_SIZE, 50)
- *         .set(Setting.COLLECTION_MAX_SIZE, 100);
+ *         .set(Keys.COLLECTION_MIN_SIZE, 50)
+ *         .set(Keys.COLLECTION_MAX_SIZE, 100);
  * }
  * </code></pre>
  */
