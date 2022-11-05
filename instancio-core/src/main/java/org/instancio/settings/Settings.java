@@ -37,7 +37,7 @@ import static org.instancio.internal.ApiValidator.validateSubtype;
  *   <li>{@link #create()} - returns a new instance of blank settings</li>
  *   <li>{@link #defaults()} - returns a new instance containing default settings</li>
  * </ul>
- *
+ * <p>
  * Out of the box, Instancio uses default settings as returned by {@link #defaults()}.
  * Defaults can be overridden either globally using a configuration file, or per-object
  * using the API, for example:
@@ -53,7 +53,7 @@ import static org.instancio.internal.ApiValidator.validateSubtype;
  *         .withSettings(settings)
  *         .create();
  * }</pre>
- *
+ * <p>
  * For information on how to override settings globally using a configuration file, please refer
  * to the <a href="https://www.instancio.org/user-guide/">user guide</a>.
  *

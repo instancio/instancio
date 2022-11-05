@@ -20,7 +20,7 @@
     <property name="severity" value="error"/>
     <module name="TreeWalker">
         <module name="AtclauseOrder">
-            <property name="tagOrder" value="@param, @return, @throws, @exception, @since, @see"/>
+            <property name="tagOrder" value="@param, @return, @throws, @exception, @see, @since"/>
         </module>
         <module name="AvoidStarImport"/>
         <module name="EmptyStatement"/>
