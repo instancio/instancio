@@ -16,6 +16,7 @@
 package org.instancio.util;
 
 import javax.annotation.Nullable;
+import java.util.Locale;
 
 public final class StringUtils {
 
@@ -50,4 +51,13 @@ public final class StringUtils {
         }
         return false;
     }
+
+    public static String capitalise(@Nullable final String s) {
+        if (s == null || s.equals("")) {
+            return s;
+        }
+        final String first = s.substring(0, 1).toUpperCase(Locale.getDefault());
+        return s.length() == 1 ? first : first + s.substring(1);
+    }
+
 }

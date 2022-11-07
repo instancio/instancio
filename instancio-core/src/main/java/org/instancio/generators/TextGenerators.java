@@ -17,7 +17,9 @@
 package org.instancio.generators;
 
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.generator.specs.UUIDStringGeneratorSpec;
+import org.instancio.generator.text.LoremIpsumGenerator;
 import org.instancio.generator.text.TextPatternGenerator;
 import org.instancio.generator.text.UUIDStringGenerator;
 
@@ -33,10 +35,22 @@ public class TextGenerators {
 
     static Map<Class<?>, String> getApiMethods() {
         Map<Class<?>, String> map = new HashMap<>();
+        map.put(LoremIpsumGeneratorSpec.class, "loremIpsum()");
         map.put(TextPatternGenerator.class, "pattern()");
         map.put(UUIDStringGenerator.class, "uuidString()");
         return map;
     }
+
+    /**
+     * Generates "Lorem ipsum" text.
+     *
+     * @return lorem ipsum text generator
+     * @since 1.5.3
+     */
+    public LoremIpsumGeneratorSpec loremIpsum() {
+        return new LoremIpsumGenerator();
+    }
+
 
     /**
      * Generates a random string based on the specified pattern template.
