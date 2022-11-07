@@ -52,4 +52,13 @@ class StringUtilsTest {
         assertThatThrownBy(() -> StringUtils.repeat("a", -1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void capitalise() {
+        assertThat(StringUtils.capitalise(null)).isNull();
+        assertThat(StringUtils.capitalise("")).isEmpty();
+        assertThat(StringUtils.capitalise("a")).isEqualTo("A");
+        assertThat(StringUtils.capitalise("aa")).isEqualTo("Aa");
+        assertThat(StringUtils.capitalise(".")).isEqualTo(".");
+    }
 }
