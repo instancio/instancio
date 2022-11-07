@@ -16,7 +16,7 @@
 package org.instancio;
 
 /**
- * The result encapsulates the created object and seed that was used for populating its values.
+ * A result containing a created object and seed that was used for populating its values.
  *
  * @param <T> result type
  * @since 1.5.1

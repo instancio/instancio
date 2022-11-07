@@ -16,7 +16,16 @@
 package org.instancio;
 
 /**
- * A class for selecting fields and classes.
+ * A selector that can be:
+ *
+ * <ul>
+ *   <li>grouped with other selectors</li>
+ *   <li>narrowed down using {@link Scope}</li>
+ *   <li>converted to {@link Scope}</li>
+ * </ul>
+ *
+ * @see TargetSelector
+ * @since 1.2.0
  */
 public interface Selector extends GroupableSelector, ToScopeConvertible {
 

@@ -11,7 +11,7 @@ Instancio requires no changes to production code, and it can be used out-of-the-
 
 There are several existing libraries for generating realistic test data, such as addresses, first and last names, and so on.
 While Instancio also supports this use case, this is not its goal.
-The idea behind the project is that most unit tests do not care about the actual values.
+The idea behind the project is that most unit tests do not care what the actual values are.
 They just require the _presence of a value_.
 Therefore, the main goal of Instancio is simply to generate fully populated objects with random data, including arrays, collections, nested collections, generic types, and so on.
 And it aims to do so with as little code as possible in order to keep the tests concise.
@@ -74,16 +74,17 @@ Person personWithoutAgeAndAddress = Instancio.of(personModel)
     .create();
 ```
 
-It should be noted that generic types can also be created using the `Instancio.of(Class)` method and specifying the type parameters manually:
+It should be noted that generic types can also be created using `Instancio.of(Class)` and specifying the type parameters as arguments
+to the `withTypeParameters()` method:
 
 
 ``` java linenums="1"
-Pair<String,Long> pair = Instancio.of(Pair.class)
+Pair<String, Long> pair = Instancio.of(Pair.class)
     .withTypeParameters(String.class, Long.class)
     .create();
 ```
 
-However, this approach has a couple of drawbacks: it does not supported nested generics, and its usage will generate an "unchecked assignment" warning.
+However, this approach has a couple of drawbacks: it does not supported nested generics, and its usage will produce an "unchecked assignment" warning.
 
 ### Creating `record` and `sealed` Classes
 
@@ -192,7 +193,7 @@ have higher precedence, person's name will be set to "bar".
 ### Selector Scopes
 
 Selectors also offer the `within(Scope... scopes)` method for fine-tuning which targets they should be applied to.
-The method accepts one or more `Scope` objects that can be creating using the static methods in the `Select` class.
+The method accepts one or more `Scope` objects that can be created using static methods in the `Select` class.
 
 ``` java linenums="1" title="Static methods for specifying selector scopes"
 Select.scope(Class<?> targetClass, String field)
@@ -296,6 +297,16 @@ SamplePojo pojo = Instancio.of(SamplePojo.class)
 ```
 
 This, however, will not work. The field is declared as a `SortedSet`, but the selector is for `Set`.
+Executing the above code will produce the following error:
+
+```
+org.instancio.exception.UnusedSelectorException:
+Found unused selectors referenced in the following methods:
+
+ -> Unused selectors in generate(), set(), or supply():
+ 1: all(Set)
+```
+
 For the selector to match, the target class must be the same as the field's:
 
 ``` java title="<i>GOOD:</i> populating SamplePOJO" hl_lines="2"
@@ -837,8 +848,7 @@ This section expands on the [Selectors](#selectors) section, which described how
 Instancio uses reflection at field level to populate objects.
 The main reason for using fields and not setters is <a hred="https://docs.oracle.com/javase/tutorial/java/generics/erasure.html" target="_blank">type erasure</a>.
 It is not possible to determine the generic type of method parameters at runtime.
-However, generic type information is available at field level.
-In other words:
+However, generic type information is available at field level:
 
 
 ``` java linenums="1" hl_lines="2 4"

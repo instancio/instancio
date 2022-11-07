@@ -45,7 +45,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * the same seed value and allows random data to be reproduced by specifying
      * the seed value.
      *
-     * @param random provider for random values
+     * @param random provider for generating random values
      * @return generated value
      */
     T generate(Random random);

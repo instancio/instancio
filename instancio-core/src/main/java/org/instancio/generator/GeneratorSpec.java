@@ -21,6 +21,7 @@ import org.instancio.Generator;
  * Marker interface for configurable {@link Generator}s.
  *
  * @param <T> generated type
+ * @since 1.0.1
  */
 @SuppressWarnings("unused")
 public interface GeneratorSpec<T> {
