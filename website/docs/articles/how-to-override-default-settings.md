@@ -60,7 +60,7 @@ Person person = Instancio.of(Person.class)
 ## Overriding settings per test class
 
 Using `InstancioExtension` with JUnit 5 allows injecting settings into a test class.
-This can be achieved by annotating the settings field with `@WithSettings`.
+This can be achieved by annotating the `Settings` field with `@WithSettings`.
 
 ``` java linenums="1" title="Example of custom settings per test class" hl_lines="4"
 @ExtendWith(InstancioExtension.class)
@@ -80,7 +80,7 @@ class ExampleTest {
 ```
 
 The benefit of this approach is that all test methods within the class will use the specified settings.
-It is more concise, as there is no need to call `withSettings(settings)` manually.
+It is more concise as there is no need to call `withSettings(settings)` manually on each object.
 
 
 ## Overriding settings globally using `instancio.properties`
@@ -116,14 +116,14 @@ From lowest to highest:
 
 As an example, assume we have this configuration file on the classpath:
 
-``` java title="instancio.properties"
+``` java title="instancio.properties" hl_lines="1 2"
 integer.min=10
 integer.max=99
 ```
 
-Since the properties file is loaded automatically from the classpath, when the following snippet run it will generate a number in the 10..99 range.
+The properties file is loaded automatically from the classpath. Therefore the following snippet will generate a number in the 10..99 range.
 
-``` java linenums="1"
+``` java linenums="1" hl_lines="7"
 @ExtendWith(InstancioExtension.class)
 class SettingsPrecedenceExampleTest {
 
@@ -135,12 +135,9 @@ class SettingsPrecedenceExampleTest {
 }
 ```
 
-Next we modify the above class to overrides the configuration using `@WithSettings`.
-Since `@WithSettings` has higher precedence than the properties file, the generated number `x` will be within the 100..999 range.
-Finally, when generating number `y` we specify the settings using the API, which has a higher precedence than
-the properties file and `@WithSettings` annotation.
+Next we will modify the above class to override the configuration by injecting `Settings` into the test class:
 
-``` java linenums="1"
+``` java linenums="1" hl_lines="6 7 12"
 @ExtendWith(InstancioExtension.class)
 class SettingsPrecedenceExampleTest {
 
@@ -152,14 +149,37 @@ class SettingsPrecedenceExampleTest {
     @Test
     void overridingSettings() {
         int x = Instancio.create(Integer.class);
-        int y = Instancio.of(Integer.class)
+        assertThat(x).isBetween(100, 999);
+    }
+}
+```
+
+Since `@WithSettings` has higher precedence than the properties file, the generated number `x` will be within the 100..999 range.
+
+Finally, we will override settings by passing an instance via the API:
+
+``` java linenums="1" hl_lines="13 14 17"
+@ExtendWith(InstancioExtension.class)
+class SettingsPrecedenceExampleTest {
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+            .set(Keys.INTEGER_MIN, 100)
+            .set(Keys.INTEGER_MAX, 999);
+
+    @Test
+    void overridingSettings() {
+        int x = Instancio.of(Integer.class)
                 .withSettings(Settings.create()
                         .set(Keys.INTEGER_MIN, 1000)
                         .set(Keys.INTEGER_MAX, 9999))
                 .create();
 
-        assertThat(x).isBetween(100, 999);
-        assertThat(y).isBetween(1000, 9999);
+        assertThat(x).isBetween(1000, 9999);
     }
 }
 ```
+
+Configuration provided using `withSettings(Settings)` method has higher precedence than configuration from `instancio.properties` and `@WithSettings`.
+Therefore, in the above example `x` will be in the 1000..9999 range.
+

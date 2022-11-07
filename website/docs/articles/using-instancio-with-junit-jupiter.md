@@ -38,7 +38,7 @@ This article is an introduction to using Instancio extension for JUnit 5. Here w
 
 By default, Instancio tests your code against randomly generated data. Unless you configured it otherwise, each time a test is executed, it is run against a different data set. This brings up the question of how to reproduce a failed test? One of the benefits of the extension is that it reports the seed value that was used to generate the data. Knowing the seed value allows us to reproduce the original data that caused the test to fail.
 
-To get started, we will need to declare the extension on our test class. This is similar to using other test extensions, such as `MockitoExtension`. In fact, they can be used together if both are needed. We will use the following sample test case verifying the conversion of a `Person` to `PersonDTO`.
+To get started, we will need to declare the extension in our test class. This is similar to using other test extensions, such as `MockitoExtension`. In fact, they can be used together if both are needed. We will use the following sample test case verifying the conversion of a `Person` to `PersonDTO`.
 
 
 
@@ -108,7 +108,7 @@ class PersonToPersonDTOTest {
             .set(Keys.COLLECTION_MIN_SIZE, 0)
             .set(Keys.COLLECTION_MAX_SIZE, 5)
             .set(Keys.INTEGER_MIN, Integer.MIN_VALUE)
-            .set(Keys.INTEGER_MIN, Integer.MAX_VALUE)
+            .set(Keys.INTEGER_MAX, Integer.MAX_VALUE)
             .set(Keys.STRING_NULLABLE, true);
 
     @Test
@@ -130,13 +130,13 @@ Last but not least, you can use the `@InstancioSource` annotation with `@Paramet
 
 Once you have the dependency on the classpath, you can declare a test method as follows:
 
-``` java linenums="1" title="Injecting settings" hl_lines="4-5"
+``` java linenums="1" title="Parameterized test with a single argument" hl_lines="4-5"
 @ExtendWith(InstancioExtension.class)
 class PersonToPersonDTOTest {
 
     @ParameterizedTest
     @InstancioSource(Person.class)
-    void multipleArguments(Person person) {
+    void singleArgument(Person person) {
         // provides a fully-populated person as an argument
     }
 }
@@ -145,7 +145,7 @@ class PersonToPersonDTOTest {
 Instancio will provide a populated instance of the class specified in the annotation. You can specify any number of classes in the annotation. Just remember to declare a method argument for each class in the annotation:
 
 
-``` java linenums="1" title="Injecting settings"
+``` java linenums="1" title="Parameterized test with multiple arguments"
 @ParameterizedTest
 @InstancioSource(String.class, UUID.class, Foo.class)
 void multipleArguments(String str, UUID uuid, Foo foo) {
@@ -159,7 +159,7 @@ First, it cannot provide instances of generic types. For example, there is no wa
 
 Second, you cannot customise the object as you would with the builder API. In other words, there is no way to specify something like this:
 
-``` java linenums="1" title="Injecting settings"
+``` java linenums="1"
 Person person = Instancio.of(Person.class)
     .set(field(Phone.class, "countryCode"), "+1")
     .set(all(LocalDateTime.class), LocalDateTime.now())

@@ -20,7 +20,42 @@ import org.instancio.Generator;
 import java.util.Map;
 
 /**
- * A Service Provider Interface for registering custom generators.
+ * A Service Provider Interface for mapping classes to custom {@link Generator}
+ * implementations.
+ *
+ * <p>Implementations of this class can be registered by placing a file named
+ * {@code org.instancio.spi.GeneratorProvider} under {@code /META-INF/services}.
+ * The file must contain the fully-qualified name of the implementing class.</p>
+ *
+ * <p>For example, the following sample implementation:</p>
+ *
+ * <pre>{@code
+ * package com.example;
+ *
+ * // imports omitted
+ *
+ * public class SampleGeneratorProvider implements GeneratorProvider {
+ *
+ *     @Override
+ *     public Map<Class<?>, Generator<?>> getGenerators() {
+ *         Map<Class<?>, Generator<?>> map = new HashMap<>();
+ *         map.put(Book.class, new BookGenerator());
+ *         map.put(Author.class, new AuthorGenerator());
+ *         return map;
+ *     }
+ * }
+ * }</pre>
+ *
+ * <p>can be registered by creating a file
+ * {@code /META-INF/services/org.instancio.spi.GeneratorProvider}
+ * containing the following line:</p>
+ *
+ * <pre>{@code
+ * com.example.SampleGeneratorProvider
+ * }</pre>
+ *
+ * @see Generator
+ * @since 1.2.0
  */
 public interface GeneratorProvider {
 
@@ -28,6 +63,7 @@ public interface GeneratorProvider {
      * Provides a map of generators to register.
      *
      * @return class to generator mapping
+     * @since 1.2.0
      */
     Map<Class<?>, Generator<?>> getGenerators();
 }

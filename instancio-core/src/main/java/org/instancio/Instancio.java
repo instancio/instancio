@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .supply(field("fullName"), () -> "Homer Simpson") // Person.name
+ *             .supply(field("fullName"), () -> "Homer Simpson") // Person.fullName
  *             .supply(field(Address.class, "phoneNumber"), () -> new PhoneNumber("+1", "123-45-67"))
  *             .create();
  * }</pre>
