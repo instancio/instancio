@@ -26,25 +26,26 @@ import java.util.stream.Stream;
  * <h2>Usage</h2>
  *
  * <h3>Create and populate an instance of a class</h3>
- * Returns an object fully populated with random data with no {@code null} values.
+ * Returns an object fully populated with random data with non-null values.
  *
  * <pre>{@code
- *     Person person = Instancio.of(Person.class).create();
+ *     Person person = Instancio.create(Person.class);
  * }</pre>
  *
- * <h3>Specify custom value generators for fields</h3>
- * Returns an object populated with random data except the specified fields using custom generators.
+ * <h3>Customise object's values</h3>
+ * Returns an object populated with random data and some specified fields' values customised.
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .supply(field("fullName"), () -> "Homer Simpson") // Person.fullName
- *             .supply(field(Address.class, "phoneNumber"), () -> new PhoneNumber("+1", "123-45-67"))
+ *             .set(field("fullName"), "Homer Simpson") // Person.fullName
+ *             .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
+ *             .generate(field(Phone.class, "number"), gen -> gen.text().pattern("(#d#d#d) #d#d#d-#d#d#d#d"))
  *             .create();
  * }</pre>
  *
  * <h3>Allow {@code null} values to be generated</h3>
  * Default behaviour is to populate every field with a non-null, random value.
- * Specifying nullable will randomly generate either a {@code null} value or an actual value.
+ * Specifying nullable will randomly generate either {@code null} or an actual value.
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
@@ -55,14 +56,14 @@ import java.util.stream.Stream;
  * }</pre>
  *
  * <h3>Ignore certain fields or classes</h3>
- * Ignored field will not be populated. Ignored fields values will be {@code null}
- * (unless they have a default value).
+ * Ignored fields will not be populated. Their values will be {@code null}
+ * (unless they have a default value assigned).
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .ignore(field("age")) // Person.age will be ignored
- *             .ignore(field(Address.class, "city")) // Address.city will be ignored
- *             .ignore(all(Date.class)) // all dates will be ignored
+ *             .ignore(field("age"))
+ *             .ignore(field(Address.class, "city"))
+ *             .ignore(all(Date.class))
  *             .create();
  * }</pre>
  *
@@ -89,12 +90,12 @@ import java.util.stream.Stream;
  *     // Use the above model as is
  *     Person person = Instancio.of(simpsons).create();
  *
- *     // Use the model but override the name field generator
- *     Person homer = Instancio.of(simpsons).supply(field("name"), () -> "Homer").create();
- *     Person marge = Instancio.of(simpsons).supply(field("name"), () -> "Marge").create();
+ *     // Use the model but override the name
+ *     Person homer = Instancio.of(simpsons).set(field("name"), "Homer").create();
+ *     Person marge = Instancio.of(simpsons).set(field("name"), "Marge").create();
  *
  *     // A model can also used to create another model.
- *     // This snippet overrides the original model to include a new pet.
+ *     // This snippet creates a new model from the original model to include a new pet.
  *     Model<Person> withNewPet = Instancio.of(simpsons)
  *             .supply(field("pets"), () -> List.of(
  *                          new Pet(PetType.PIG, "Plopper"),
@@ -107,20 +108,20 @@ import java.util.stream.Stream;
  * <h3>Creating generic classes</h3>
  * There are two ways to create generic class instances.
  *
- * <h4>Option 1: using {@code withTypeParameters} to specify generic type arguments</h4>
+ * <h4>Option 1: using a {@link TypeToken}</h4>
+ * <pre>{@code
+ *     List<Person> person = Instancio.create(new TypeToken<List<Person>>() {}); // note the empty '{}' braces
+ * }</pre>
+ *
+ * <h4>Option 2: using {@code withTypeParameters} to specify generic type arguments</h4>
  * <pre>{@code
  *     List<Person> person = Instancio.of(List.class).withTypeParameters(Person.class).create();
  * }</pre>
  * <p>
- * This will create a list of persons however it will generate an "unchecked assignment" warning.
+ * Note: the second approach will produce an "unchecked assignment" warning.
  *
- * <h4>Option 2: using a {@link TypeToken}</h4>
- * <pre>{@code
- *     List<Person> person = Instancio.of(new TypeToken<List<Person>>() {}).create(); // note the empty '{}' braces
- * }</pre>
- * <p>
- * This will not generate a warning, though the syntax is slightly more awkward.
- *
+ * @see InstancioApi
+ * @see Select
  * @since 1.0.1
  */
 public final class Instancio {

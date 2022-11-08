@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 /**
- * Contains internal classes implementing the core functionality of Instancio
+ * Contains internal classes implementing the core functionality of Instancio.
+ *
+ * <p><b>Classes within this package are not part of the public API.</b></p>
  */
 @ParametersAreNonnullByDefault
 package org.instancio.internal;

@@ -5,6 +5,7 @@ package org.instancio;
  * <p>
  * This interface acts as a marker for all selector types.
  *
+ * @see Select
  * @see Selector
  * @see GroupableSelector
  * @since 1.3.0
