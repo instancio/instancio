@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-tests</artifactId>
-        <version>1.5.3</version>
+        <version>1.5.4-SNAPSHOT</version>
     </parent>
     <artifactId>instancio-junit-tests</artifactId>
     <packaging>jar</packaging>
