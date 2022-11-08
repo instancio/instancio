@@ -30,9 +30,9 @@ import java.util.function.Supplier;
 public interface TypeTokenSupplier<T> extends Supplier<Type> {
 
     /**
-     * Returns type information.
+     * Returns the type to be created.
      *
-     * @return type
+     * @return type to be created
      * @since 1.0.1
      */
     @Override

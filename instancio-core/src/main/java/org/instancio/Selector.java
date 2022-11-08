@@ -24,6 +24,7 @@ package org.instancio;
  *   <li>converted to {@link Scope}</li>
  * </ul>
  *
+ * @see Select
  * @see TargetSelector
  * @since 1.2.0
  */

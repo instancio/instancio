@@ -15,6 +15,8 @@
  */
 /**
  * Provides internal utility classes.
+ *
+ * <p><b>Classes within this package are not part of the public API.</b></p>
  */
 @ParametersAreNonnullByDefault
 package org.instancio.util;
