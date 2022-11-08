@@ -29,6 +29,7 @@ import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.pojo.person.Phone_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.test.support.util.ArrayUtils;
 import org.instancio.util.Sonar;
 import org.junit.jupiter.api.DisplayName;
@@ -55,8 +56,9 @@ import static org.instancio.Select.allStrings;
         Feature.SET,
         Feature.ON_COMPLETE
 })
+@NonDeterministicTag
 class StrictModeWithNullableValuesTest {
-    private static final int SAMPLE_SIZE = 50;
+    private static final int SAMPLE_SIZE = 100;
 
     // Limit size to 1 so that there's a higher probability of unused selector error.
     // With greater size, some values will be not non-null, preventing the error.
