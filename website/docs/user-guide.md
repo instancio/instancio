@@ -500,15 +500,15 @@ Using the provided {{Random}} instance ensures that Instancio will be able to re
 The {{Random}} implementation uses a `java.util.Random` internally, but offers a more user-friendly interface and convenience methods not available in the JDK class.
 
 ``` java linenums="1" title="Creating a custom Generator"
+import org.instancio.Generator;
 import org.instancio.Random;
 
 class PhoneGenerator implements Generator<Phone> {
 
     public Phone generate(Random random) {
-        Phone phone = new Phone();
-        phone.setCountryCode(random.oneOf("+1", "+52"));
-        phone.setNumber(random.digits(7));
-        return  phone;
+        String countryCode = random.oneOf("+1", "+52");
+        String number = random.digits(7);
+        return new Phone(countryCode, number);
     }
 }
 ```
@@ -521,9 +521,26 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-!!! info "Instancio also offers a Service Provider Interface, {{GeneratorProvider}} that can be used to register custom generators."
-    This removes the need for manually passing custom generators to the `supply` method as in the above example.
-    They will be picked up automatically.
+It is important to note that objects created by a custom generator cannot be modified using `set()`, `supply()`, or `generate()` methods.
+This is shown in the following example:
+
+``` java linenums="1" hl_lines="3"
+Person person = Instancio.of(Person.class)
+    .supply(all(Phone.class), new PhoneGenerator())
+    .set(field(Phone.class, "number"), "1234567") // will not be invoked!
+    .create();
+```
+
+Since an entire `Phone` instance is created by the custom `PhoneGenerator`, Instancio will not populate its fields.
+Therefore, the `set()` method will not be invoked, which will result in the following error:
+
+```
+-> Unused selectors in generate(), set(), or supply():
+ 1: field(Phone, "number")
+```
+
+In short, Instancio does not modify objects returned by custom generators.
+If you need to modify an object created by a custom generator, the best option would be to use an [`onComplete() callback`](#using-oncomplete).
 
 
 #### `supply()` anti-pattern
