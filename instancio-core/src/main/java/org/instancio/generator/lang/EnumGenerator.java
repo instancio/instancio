@@ -30,6 +30,6 @@ public class EnumGenerator<E extends Enum<E>> implements Generator<E> {
     @Override
     public E generate(final Random random) {
         final E[] enumValues = ReflectionUtils.getEnumValues(enumClass);
-        return random.oneOf(enumValues);
+        return enumValues.length == 0 ? null : random.oneOf(enumValues);
     }
 }
