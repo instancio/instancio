@@ -38,6 +38,7 @@ public final class ReflectionUtils {
     public static <E extends Enum<E>> E[] getEnumValues(final Class<E> enumClass) {
         try {
             Method m = enumClass.getDeclaredMethod("values");
+            m.setAccessible(true); // NOSONAR needed when Enum.values() is an empty array
             return (E[]) m.invoke(null);
         } catch (Exception ex) {
             throw new InstancioException("Error getting enum values for class: " + enumClass.getName(), ex);
