@@ -19,6 +19,7 @@ package org.instancio.generators;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.generator.math.BigIntegerGenerator;
+import org.instancio.generator.specs.BigDecimalGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 
 import java.math.BigDecimal;
@@ -58,7 +59,7 @@ public class MathGenerators {
      *
      * @return customised generator
      */
-    public NumberGeneratorSpec<BigDecimal> bigDecimal() {
+    public BigDecimalGeneratorSpec bigDecimal() {
         return new BigDecimalGenerator(context);
     }
 }

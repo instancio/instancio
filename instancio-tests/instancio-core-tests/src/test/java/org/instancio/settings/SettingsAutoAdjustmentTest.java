@@ -144,9 +144,9 @@ class SettingsAutoAdjustmentTest {
             final Optional<SettingKey> maxSetting = Keys.getAutoAdjustable(minSetting);
             assertThat(maxSetting).isPresent();
 
-            final Number max = NumberUtils.getLongConverter(minSetting.type()).apply(50L);
-            final Number newMin = NumberUtils.getLongConverter(minSetting.type()).apply(60L);
-            final Number expectedMax = NumberUtils.getLongConverter(minSetting.type()).apply(90L);
+            final Number max = NumberUtils.getToLongConverter(minSetting.type()).apply(50L);
+            final Number newMin = NumberUtils.getToLongConverter(minSetting.type()).apply(60L);
+            final Number expectedMax = NumberUtils.getToLongConverter(minSetting.type()).apply(90L);
 
             settings
                     .set(maxSetting.get(), max)
@@ -162,9 +162,9 @@ class SettingsAutoAdjustmentTest {
             final Optional<SettingKey> minSetting = Keys.getAutoAdjustable(maxSetting);
             assertThat(minSetting).isPresent();
 
-            final Number min = NumberUtils.getLongConverter(maxSetting.type()).apply(120L);
-            final Number newMax = NumberUtils.getLongConverter(maxSetting.type()).apply(100L);
-            final Number expectedMin = NumberUtils.getLongConverter(maxSetting.type()).apply(50L);
+            final Number min = NumberUtils.getToLongConverter(maxSetting.type()).apply(120L);
+            final Number newMax = NumberUtils.getToLongConverter(maxSetting.type()).apply(100L);
+            final Number expectedMin = NumberUtils.getToLongConverter(maxSetting.type()).apply(50L);
 
             settings
                     .set(minSetting.get(), min)

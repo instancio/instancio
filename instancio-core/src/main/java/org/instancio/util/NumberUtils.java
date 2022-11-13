@@ -16,6 +16,7 @@
 package org.instancio.util;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -24,7 +25,7 @@ public final class NumberUtils {
 
     private static final Map<Class<?>, Number> NUMERIC_MIN_VALUES = new HashMap<>();
     private static final Map<Class<?>, Number> NUMERIC_MAX_VALUES = new HashMap<>();
-    private static final Map<Class<?>, Function<Long, Number>> LONG_CONVERTER_FUNCTIONS = new HashMap<>();
+    private static final Map<Class<?>, Function<Long, Number>> CONVERT_TO_LONG_FN_MAP = new HashMap<>();
 
     static {
         NUMERIC_MIN_VALUES.put(Byte.class, Byte.MIN_VALUE);
@@ -33,6 +34,7 @@ public final class NumberUtils {
         NUMERIC_MIN_VALUES.put(Long.class, Long.MIN_VALUE);
         NUMERIC_MIN_VALUES.put(Float.class, Float.MIN_VALUE);
         NUMERIC_MIN_VALUES.put(Double.class, Double.MIN_VALUE);
+        NUMERIC_MIN_VALUES.put(BigDecimal.class, new BigDecimal(Long.MIN_VALUE));
 
         NUMERIC_MAX_VALUES.put(Byte.class, Byte.MAX_VALUE);
         NUMERIC_MAX_VALUES.put(Short.class, Short.MAX_VALUE);
@@ -40,13 +42,15 @@ public final class NumberUtils {
         NUMERIC_MAX_VALUES.put(Long.class, Long.MAX_VALUE);
         NUMERIC_MAX_VALUES.put(Float.class, Float.MAX_VALUE);
         NUMERIC_MAX_VALUES.put(Double.class, Double.MAX_VALUE);
+        NUMERIC_MAX_VALUES.put(BigDecimal.class, new BigDecimal(Long.MAX_VALUE));
 
-        LONG_CONVERTER_FUNCTIONS.put(Byte.class, Long::byteValue);
-        LONG_CONVERTER_FUNCTIONS.put(Short.class, Long::shortValue);
-        LONG_CONVERTER_FUNCTIONS.put(Integer.class, Long::intValue);
-        LONG_CONVERTER_FUNCTIONS.put(Long.class, l -> l);
-        LONG_CONVERTER_FUNCTIONS.put(Float.class, Long::floatValue);
-        LONG_CONVERTER_FUNCTIONS.put(Double.class, Long::doubleValue);
+        CONVERT_TO_LONG_FN_MAP.put(Byte.class, Long::byteValue);
+        CONVERT_TO_LONG_FN_MAP.put(Short.class, Long::shortValue);
+        CONVERT_TO_LONG_FN_MAP.put(Integer.class, Long::intValue);
+        CONVERT_TO_LONG_FN_MAP.put(Long.class, l -> l);
+        CONVERT_TO_LONG_FN_MAP.put(Float.class, Long::floatValue);
+        CONVERT_TO_LONG_FN_MAP.put(Double.class, Long::doubleValue);
+        CONVERT_TO_LONG_FN_MAP.put(BigDecimal.class, BigDecimal::new);
     }
 
     @SuppressWarnings("unchecked")
@@ -60,8 +64,8 @@ public final class NumberUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Number> Function<Long, T> getLongConverter(final Class<?> klass) {
-        return (Function<Long, T>) LONG_CONVERTER_FUNCTIONS.get(klass);
+    public static <T extends Number> Function<Long, T> getToLongConverter(final Class<?> klass) {
+        return (Function<Long, T>) CONVERT_TO_LONG_FN_MAP.get(klass);
     }
 
     /**
@@ -91,7 +95,7 @@ public final class NumberUtils {
             newMin = curMin.longValue();
         }
 
-        final Function<Long, T> fn = getLongConverter(newMax.getClass());
+        final Function<Long, T> fn = getToLongConverter(newMax.getClass());
         return fn.apply(newMin);
     }
 
@@ -122,7 +126,7 @@ public final class NumberUtils {
             newMax = curMax.longValue();
         }
 
-        final Function<Long, T> fn = getLongConverter(newMin.getClass());
+        final Function<Long, T> fn = getToLongConverter(newMin.getClass());
         return fn.apply(newMax);
     }
 

@@ -18,9 +18,10 @@ package org.instancio.generator.specs;
 import org.instancio.generator.GeneratorSpec;
 
 /**
- * Generator spec for core numeric types.
+ * Generator spec for numeric types.
  *
  * @param <T> type of number
+ * @since 1.0.1
  */
 public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> {
 
@@ -29,6 +30,7 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
      *
      * @param min lower bound (inclusive)
      * @return spec builder
+     * @since 1.0.1
      */
     NumberGeneratorSpec<T> min(T min);
 
@@ -37,6 +39,7 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
      *
      * @param max upper bound (inclusive)
      * @return spec builder
+     * @since 1.0.1
      */
     NumberGeneratorSpec<T> max(T max);
 
@@ -46,6 +49,7 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
      * @param min lower bound (inclusive)
      * @param max upper bound (inclusive)
      * @return spec builder
+     * @since 1.1.2
      */
     NumberGeneratorSpec<T> range(T min, T max);
 
@@ -53,6 +57,7 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
      * Specifies the generated value can be {@code null}.
      *
      * @return spec builder
+     * @since 1.0.1
      */
     NumberGeneratorSpec<T> nullable();
 

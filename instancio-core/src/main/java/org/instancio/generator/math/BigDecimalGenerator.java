@@ -18,19 +18,21 @@ package org.instancio.generator.math;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
-import org.instancio.generator.specs.NumberGeneratorSpec;
-import org.instancio.util.Verify;
+import org.instancio.generator.specs.BigDecimalGeneratorSpec;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal>
-        implements NumberGeneratorSpec<BigDecimal> {
+public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal> implements BigDecimalGeneratorSpec {
 
     private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(0.000_001d);
     private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
+    private static final int DEFAULT_SCALE = 5;
+
+    private int scale = DEFAULT_SCALE;
 
     public BigDecimalGenerator(final GeneratorContext context) {
-        super(context, DEFAULT_MIN, DEFAULT_MAX, false);
+        this(context, DEFAULT_MIN, DEFAULT_MAX, false);
     }
 
     public BigDecimalGenerator(
@@ -39,25 +41,38 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
-    public NumberGeneratorSpec<BigDecimal> min(final BigDecimal min) {
-        this.min = Verify.notNull(min);
-        if (min.compareTo(max) >= 0) {
-            max = min.add(DEFAULT_MAX);
-        }
+    public BigDecimalGeneratorSpec scale(final int scale) {
+        this.scale = scale;
         return this;
     }
 
     @Override
-    public NumberGeneratorSpec<BigDecimal> max(final BigDecimal max) {
-        this.max = Verify.notNull(max);
-        if (max.compareTo(min) <= 0) {
-            min = max.subtract(DEFAULT_MAX);
-        }
+    public BigDecimalGeneratorSpec min(final BigDecimal min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public BigDecimalGeneratorSpec max(final BigDecimal max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public BigDecimalGeneratorSpec range(final BigDecimal min, final BigDecimal max) {
+        super.range(min, max);
+        return this;
+    }
+
+    @Override
+    public BigDecimalGeneratorSpec nullable() {
+        this.nullable = true;
         return this;
     }
 
     @Override
     protected BigDecimal generateNonNullValue(final Random random) {
-        return BigDecimal.valueOf(random.doubleRange(min.doubleValue(), max.doubleValue()));
+        final double val = random.doubleRange(min.doubleValue(), max.doubleValue());
+        return BigDecimal.valueOf(val).setScale(scale, RoundingMode.HALF_UP);
     }
 }

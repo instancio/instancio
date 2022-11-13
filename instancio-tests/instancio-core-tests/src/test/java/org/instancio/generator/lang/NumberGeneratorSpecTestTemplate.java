@@ -25,7 +25,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,6 +39,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>> {
     private static final int PERCENTAGE = Constants.RANGE_ADJUSTMENT_PERCENTAGE;
+    private static final long INITIAL_MIN = 0;
+    private static final long INITIAL_MAX = 50;
+    private static final DefaultRandom RANDOM = new DefaultRandom();
 
     private AbstractRandomNumberGeneratorSpec<T> generator;
 
@@ -54,10 +59,14 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
 
     @BeforeEach
     final void initTemplate() {
-        initialMin = asT(0L);
-        initialMax = asT(50L);
+        initialMin = asT(INITIAL_MIN);
+        initialMax = asT(INITIAL_MAX);
         generator = createGenerator();
         generator.range(initialMin, initialMax);
+    }
+
+    protected final AbstractRandomNumberGeneratorSpec<T> getGenerator() {
+        return generator;
     }
 
     @Test
@@ -89,13 +98,16 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
     void newMinIsEqualToMax() {
         T newMin = asT(initialMax.longValue());
         generator.min(newMin);
+
         assertThat(generator.getMin())
                 .isEqualTo(newMin)
                 .isEqualTo(initialMax)
                 .isEqualTo(generator.getMax());
 
-        final T result = generator.generate(new DefaultRandom());
-        assertThat(result).isEqualTo(newMin);
+        final T result = generator.generate(RANDOM);
+        // Not using isEqualTo() here because BigDecimal equality check includes the scale field,
+        // therefore 50 and 50.0 are not equal, which fails the test
+        assertThat(result).isEqualByComparingTo(newMin);
     }
 
     @Test
@@ -161,6 +173,18 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
         });
     }
 
+    @Test
+    void nullable() {
+        final Set<T> results = new HashSet<>();
+
+        generator.nullable();
+        for (int i = 0; i < 1000; i++) {
+            results.add(generator.generate(RANDOM));
+        }
+
+        assertThat(results).hasSizeGreaterThan(1).containsNull();
+    }
+
     private T calculatePercentage(final T initial, final int percentage) {
         final long result = initial.longValue() + initial.longValue() * percentage / 100;
         return asT(result);
@@ -169,6 +193,6 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
     @SuppressWarnings("unchecked")
     private T asT(final long value) {
         final Class<?> numberType = TypeUtils.getGeneratorTypeArgument(getClass());
-        return (T) NumberUtils.getLongConverter(numberType).apply(value);
+        return (T) NumberUtils.getToLongConverter(numberType).apply(value);
     }
 }
