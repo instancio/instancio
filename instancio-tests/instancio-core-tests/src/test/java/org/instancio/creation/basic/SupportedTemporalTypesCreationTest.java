@@ -30,6 +30,7 @@ public class SupportedTemporalTypesCreationTest extends CreationTestTemplate<Sup
         assertThat(result.getLocalDateTime()).isNotNull();
         assertThat(result.getYearMonth()).isNotNull();
         assertThat(result.getYear()).isNotNull();
+        assertThat(result.getPeriod()).isNotNull();
         assertThat(result.getDate()).isNotNull();
         assertThat(result.getSqlDate()).isNotNull();
         assertThat(result.getTimestamp()).isNotNull();

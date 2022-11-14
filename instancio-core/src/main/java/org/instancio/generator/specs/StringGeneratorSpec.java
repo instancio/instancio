@@ -55,8 +55,8 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
     /**
      * Length of string to generate.
      *
-     * @param minLength exact length to generate
-     * @param maxLength exact length to generate
+     * @param minLength minimum length (inclusive)
+     * @param maxLength maximum length (inclusive)
      * @return spec builder
      */
     StringGeneratorSpec length(int minLength, int maxLength);

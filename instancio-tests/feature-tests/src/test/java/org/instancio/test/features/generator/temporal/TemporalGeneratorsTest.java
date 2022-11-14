@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
@@ -55,6 +56,7 @@ class TemporalGeneratorsTest {
         final java.sql.Date sqlDate = java.sql.Date.valueOf(localDate);
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         final Calendar calendar = Calendar.getInstance();
+        final int periodYears = 10;
 
         final SupportedTemporalTypes result = Instancio.of(SupportedTemporalTypes.class)
                 .generate(all(Instant.class), gen -> gen.temporal().instant().range(instant, instant))
@@ -64,6 +66,7 @@ class TemporalGeneratorsTest {
                 .generate(all(ZonedDateTime.class), gen -> gen.temporal().zonedDateTime().range(zonedDateTime, zonedDateTime))
                 .generate(all(YearMonth.class), gen -> gen.temporal().yearMonth().range(yearMonth, yearMonth))
                 .generate(all(Year.class), gen -> gen.temporal().year().range(year, year))
+                .generate(all(Period.class), gen -> gen.temporal().period().years(periodYears, periodYears))
                 .generate(all(Date.class), gen -> gen.temporal().date().range(date, date))
                 .generate(all(java.sql.Date.class), gen -> gen.temporal().sqlDate().range(sqlDate, sqlDate))
                 .generate(all(Timestamp.class), gen -> gen.temporal().timestamp().range(timestamp, timestamp))
@@ -77,6 +80,7 @@ class TemporalGeneratorsTest {
         assertThat(result.getZonedDateTime()).isEqualTo(zonedDateTime);
         assertThat(result.getYearMonth()).isEqualTo(yearMonth);
         assertThat(result.getYear()).isEqualTo(year);
+        assertThat(result.getPeriod()).hasYears(periodYears);
         assertThat(result.getDate()).isEqualTo(date);
         assertThat(result.getSqlDate()).isEqualTo(sqlDate);
         assertThat(result.getTimestamp()).isEqualTo(timestamp);
