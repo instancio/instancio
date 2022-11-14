@@ -80,7 +80,7 @@ public class Generators {
         map.put(DoubleGenerator.class, "doubles()");
         map.put(CharacterGenerator.class, "chars()");
         map.put(BooleanGenerator.class, "booleans()");
-        map.put(StringGenerator.class, "strings()");
+        map.put(StringGenerator.class, "string()");
         map.put(ArrayGenerator.class, "array()");
         map.put(CollectionGeneratorSpecImpl.class, "collection()");
         map.put(MapGeneratorSpecImpl.class, "map()");

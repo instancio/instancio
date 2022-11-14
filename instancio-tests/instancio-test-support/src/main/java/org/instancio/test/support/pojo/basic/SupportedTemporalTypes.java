@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
@@ -39,6 +40,7 @@ public class SupportedTemporalTypes {
     private LocalDateTime localDateTime;
     private ZonedDateTime zonedDateTime;
     private YearMonth yearMonth;
+    private Period period;
     private Year year;
     private Date date;
     private java.sql.Date sqlDate;

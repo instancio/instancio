@@ -35,9 +35,9 @@ public class TextGenerators {
 
     static Map<Class<?>, String> getApiMethods() {
         Map<Class<?>, String> map = new HashMap<>();
-        map.put(LoremIpsumGeneratorSpec.class, "loremIpsum()");
+        map.put(LoremIpsumGenerator.class, "loremIpsum()");
         map.put(TextPatternGenerator.class, "pattern()");
-        map.put(UUIDStringGenerator.class, "uuidString()");
+        map.put(UUIDStringGenerator.class, "uuid()");
         return map;
     }
 

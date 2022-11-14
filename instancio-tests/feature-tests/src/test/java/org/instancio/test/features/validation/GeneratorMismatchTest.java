@@ -98,6 +98,7 @@ class GeneratorMismatchTest {
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "zonedDateTime()", gen -> gen.temporal().zonedDateTime());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "yearMonth()", gen -> gen.temporal().yearMonth());
         assertMessageContains(SupportedTemporalTypes.class, YearMonth.class, "year()", gen -> gen.temporal().year());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "period()", gen -> gen.temporal().period());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "date()", gen -> gen.temporal().date());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "sqlDate()", gen -> gen.temporal().sqlDate());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "timestamp()", gen -> gen.temporal().timestamp());
@@ -111,7 +112,7 @@ class GeneratorMismatchTest {
 
     @Test
     void assertText() {
-        assertMessageContains(Person.class, Address.class, "loremIpsum()", gen -> gen.text().pattern("foo"));
+        assertMessageContains(Person.class, Address.class, "loremIpsum()", gen -> gen.text().loremIpsum());
         assertMessageContains(Person.class, Address.class, "pattern()", gen -> gen.text().pattern("foo"));
         assertMessageContains(Person.class, Address.class, "uuid()", gen -> gen.text().uuid());
     }
@@ -142,7 +143,7 @@ class GeneratorMismatchTest {
                 .generate(all(selectedType), genFn)
                 .create())
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Generator type mismatch:",
+                .hasMessageContainingAll("Generator type mismatch:",
                         String.format("%nMethod '%s' cannot be used for type: %s%n",
                                 expectedGeneratorMethod, selectedType.getCanonicalName()));
     }
