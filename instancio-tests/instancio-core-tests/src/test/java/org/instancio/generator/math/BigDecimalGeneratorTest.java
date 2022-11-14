@@ -40,7 +40,7 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
 
     @Override
     protected Map<Class<?>, Boolean> verifySupported() {
-        return new HashMap<>() {{
+        return new HashMap<Class<?>, Boolean>() {{
             put(BigDecimal.class, true);
             put(BigDecimal[].class, false);
         }};

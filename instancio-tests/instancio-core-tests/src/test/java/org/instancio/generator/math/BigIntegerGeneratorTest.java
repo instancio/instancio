@@ -40,7 +40,7 @@ class BigIntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<BigInteger
 
     @Override
     protected Map<Class<?>, Boolean> verifySupported() {
-        return new HashMap<>() {{
+        return new HashMap<Class<?>, Boolean>() {{
             put(BigInteger.class, true);
             put(BigInteger[].class, false);
         }};

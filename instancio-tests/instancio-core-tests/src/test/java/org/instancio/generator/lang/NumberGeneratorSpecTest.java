@@ -38,7 +38,7 @@ class NumberGeneratorSpecTest {
 
         @Override
         protected Map<Class<?>, Boolean> verifySupported() {
-            return new HashMap<>() {{
+            return new HashMap<Class<?>, Boolean>() {{
                 put(byte.class, true);
                 put(Byte.class, true);
                 put(byte[].class, false);
@@ -55,7 +55,7 @@ class NumberGeneratorSpecTest {
 
         @Override
         protected Map<Class<?>, Boolean> verifySupported() {
-            return new HashMap<>() {{
+            return new HashMap<Class<?>, Boolean>() {{
                 put(short.class, true);
                 put(Short.class, true);
                 put(short[].class, false);
@@ -72,7 +72,7 @@ class NumberGeneratorSpecTest {
 
         @Override
         protected Map<Class<?>, Boolean> verifySupported() {
-            return new HashMap<>() {{
+            return new HashMap<Class<?>, Boolean>() {{
                 put(int.class, true);
                 put(Integer.class, true);
                 put(int[].class, false);
@@ -89,7 +89,7 @@ class NumberGeneratorSpecTest {
 
         @Override
         protected Map<Class<?>, Boolean> verifySupported() {
-            return new HashMap<>() {{
+            return new HashMap<Class<?>, Boolean>() {{
                 put(long.class, true);
                 put(Long.class, true);
                 put(long[].class, false);
@@ -106,7 +106,7 @@ class NumberGeneratorSpecTest {
 
         @Override
         protected Map<Class<?>, Boolean> verifySupported() {
-            return new HashMap<>() {{
+            return new HashMap<Class<?>, Boolean>() {{
                 put(float.class, true);
                 put(Float.class, true);
                 put(float[].class, false);
@@ -132,7 +132,7 @@ class NumberGeneratorSpecTest {
 
         @Override
         protected Map<Class<?>, Boolean> verifySupported() {
-            return new HashMap<>() {{
+            return new HashMap<Class<?>, Boolean>() {{
                 put(double.class, true);
                 put(Double.class, true);
                 put(double[].class, false);
