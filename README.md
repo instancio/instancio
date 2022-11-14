@@ -55,10 +55,9 @@ Person person = Instancio.of(Person.class)
 
 - Fully reproducible data in case of test failures.
 - Support for generics, `record` and `sealed` classes.
-- Support for defining custom generators for types not supported out of the box.
+- Support for defining custom generators.
 - Flexible configuration options.
 - `InstancioExtension` for Junit 5 `@ExtendWith`.
-
 
 ## Documentation
 
