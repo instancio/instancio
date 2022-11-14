@@ -26,7 +26,7 @@ import java.math.RoundingMode;
 public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal> implements BigDecimalGeneratorSpec {
 
     private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(0.000_001d);
-    private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
+    private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(10_000);
     private static final int DEFAULT_SCALE = 5;
 
     private int scale = DEFAULT_SCALE;
