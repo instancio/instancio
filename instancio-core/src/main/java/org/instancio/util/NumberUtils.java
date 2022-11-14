@@ -17,6 +17,7 @@ package org.instancio.util;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -34,6 +35,7 @@ public final class NumberUtils {
         NUMERIC_MIN_VALUES.put(Long.class, Long.MIN_VALUE);
         NUMERIC_MIN_VALUES.put(Float.class, Float.MIN_VALUE);
         NUMERIC_MIN_VALUES.put(Double.class, Double.MIN_VALUE);
+        NUMERIC_MIN_VALUES.put(BigInteger.class, BigInteger.valueOf(Long.MIN_VALUE));
         NUMERIC_MIN_VALUES.put(BigDecimal.class, new BigDecimal(Long.MIN_VALUE));
 
         NUMERIC_MAX_VALUES.put(Byte.class, Byte.MAX_VALUE);
@@ -42,6 +44,7 @@ public final class NumberUtils {
         NUMERIC_MAX_VALUES.put(Long.class, Long.MAX_VALUE);
         NUMERIC_MAX_VALUES.put(Float.class, Float.MAX_VALUE);
         NUMERIC_MAX_VALUES.put(Double.class, Double.MAX_VALUE);
+        NUMERIC_MAX_VALUES.put(BigInteger.class, BigInteger.valueOf(Long.MAX_VALUE));
         NUMERIC_MAX_VALUES.put(BigDecimal.class, new BigDecimal(Long.MAX_VALUE));
 
         CONVERT_TO_LONG_FN_MAP.put(Byte.class, Long::byteValue);
@@ -51,6 +54,7 @@ public final class NumberUtils {
         CONVERT_TO_LONG_FN_MAP.put(Float.class, Long::floatValue);
         CONVERT_TO_LONG_FN_MAP.put(Double.class, Long::doubleValue);
         CONVERT_TO_LONG_FN_MAP.put(BigDecimal.class, BigDecimal::new);
+        CONVERT_TO_LONG_FN_MAP.put(BigInteger.class, BigInteger::valueOf);
     }
 
     @SuppressWarnings("unchecked")

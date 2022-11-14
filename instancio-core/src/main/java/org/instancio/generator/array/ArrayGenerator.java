@@ -24,7 +24,6 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.settings.Keys;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
-import org.instancio.util.Verify;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {
         this(context);
-        this.arrayType = Verify.notNull(arrayType, "Type must not be null");
+        this.arrayType = ApiValidator.notNull(arrayType, "Type must not be null");
     }
 
     @Override
@@ -114,7 +113,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     @Override
     @SuppressWarnings("unchecked")
     public T generate(final Random random) {
-        Verify.state(arrayType.isArray(), "Expected an array type: %s", arrayType);
+        ApiValidator.isTrue(arrayType.isArray(), "Expected an array type: %s", arrayType);
 
         if (random.diceRoll(nullable)) {
             return null;

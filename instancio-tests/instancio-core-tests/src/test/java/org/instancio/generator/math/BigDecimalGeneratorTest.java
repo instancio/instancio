@@ -23,40 +23,40 @@ import org.instancio.settings.Settings;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BigIntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<BigInteger> {
+class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal> {
 
     private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
 
     @Override
-    protected AbstractRandomNumberGeneratorSpec<BigInteger> createGenerator() {
-        return new BigIntegerGenerator(context);
+    protected AbstractRandomNumberGeneratorSpec<BigDecimal> createGenerator() {
+        return new BigDecimalGenerator(context);
     }
 
     @Override
     protected Map<Class<?>, Boolean> verifySupported() {
         return new HashMap<>() {{
-            put(BigInteger.class, true);
-            put(BigInteger[].class, false);
+            put(BigDecimal.class, true);
+            put(BigDecimal[].class, false);
         }};
     }
 
     @CsvSource({
-            "-10000000000001, -10000000000000",
-            "0, 1",
-            "100000000000000, 100000000000001"
+            "-10.0012, -10.0011",
+            "0.00015, 0.00019",
+            "9999999999999.555, 9999999999999.557"
     })
     @ParameterizedTest
-    void bigIntegerRange(final BigInteger min, final BigInteger max) {
-        final AbstractRandomNumberGeneratorSpec<BigInteger> generator = getGenerator();
+    void rangeWithFractionalValues(final BigDecimal min, final BigDecimal max) {
+        final AbstractRandomNumberGeneratorSpec<BigDecimal> generator = getGenerator();
         generator.range(min, max);
 
-        final BigInteger result = generator.generate(new DefaultRandom());
+        final BigDecimal result = generator.generate(new DefaultRandom());
 
         assertThat(result)
                 .isNotNull()

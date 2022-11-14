@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  *
  * @param <T> number type
  */
-abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>> {
+public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>> {
     private static final int PERCENTAGE = Constants.RANGE_ADJUSTMENT_PERCENTAGE;
     private static final long INITIAL_MIN = 0;
     private static final long INITIAL_MAX = 50;
@@ -50,12 +50,12 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
     /**
      * @return generator under test
      */
-    abstract AbstractRandomNumberGeneratorSpec<T> createGenerator();
+    protected abstract AbstractRandomNumberGeneratorSpec<T> createGenerator();
 
     /**
      * @return map indicating whether given types are supported by the generator
      */
-    abstract Map<Class<?>, Boolean> verifySupported();
+    protected abstract Map<Class<?>, Boolean> verifySupported();
 
     @BeforeEach
     final void initTemplate() {
@@ -193,6 +193,7 @@ abstract class NumberGeneratorSpecTestTemplate<T extends Number & Comparable<T>>
     @SuppressWarnings("unchecked")
     private T asT(final long value) {
         final Class<?> numberType = TypeUtils.getGeneratorTypeArgument(getClass());
+        assertThat(numberType).isNotNull();
         return (T) NumberUtils.getToLongConverter(numberType).apply(value);
     }
 }
