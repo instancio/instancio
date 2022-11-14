@@ -44,4 +44,19 @@ class MathGeneratorsTest {
         assertThat(result.getBigInteger()).isEqualTo(BigInteger.ONE);
         assertThat(result.getBigDecimal()).isEqualByComparingTo(BigDecimal.ONE);
     }
+
+    @Test
+    void bigDecimalWithScale() {
+        final int expectedScale = 9;
+        final SupportedMathTypes result = Instancio.of(SupportedMathTypes.class)
+                .generate(all(BigDecimal.class), gen -> gen.math().bigDecimal()
+                        .scale(expectedScale)
+                        .min(BigDecimal.ZERO)
+                        .max(BigDecimal.ONE))
+                .create();
+
+        assertThat(result.getBigDecimal())
+                .isBetween(BigDecimal.ZERO, BigDecimal.ONE)
+                .hasScaleOf(expectedScale);
+    }
 }
