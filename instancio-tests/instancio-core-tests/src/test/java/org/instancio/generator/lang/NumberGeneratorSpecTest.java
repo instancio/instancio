@@ -16,15 +16,11 @@
 package org.instancio.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.math.BigDecimalGenerator;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,12 +32,12 @@ class NumberGeneratorSpecTest {
     @Nested
     class ByteGeneratorTest extends NumberGeneratorSpecTestTemplate<Byte> {
         @Override
-        AbstractRandomNumberGeneratorSpec<Byte> createGenerator() {
+        protected AbstractRandomNumberGeneratorSpec<Byte> createGenerator() {
             return new ByteGenerator(context);
         }
 
         @Override
-        Map<Class<?>, Boolean> verifySupported() {
+        protected Map<Class<?>, Boolean> verifySupported() {
             return new HashMap<>() {{
                 put(byte.class, true);
                 put(Byte.class, true);
@@ -53,12 +49,12 @@ class NumberGeneratorSpecTest {
     @Nested
     class ShortGeneratorTest extends NumberGeneratorSpecTestTemplate<Short> {
         @Override
-        AbstractRandomNumberGeneratorSpec<Short> createGenerator() {
+        protected AbstractRandomNumberGeneratorSpec<Short> createGenerator() {
             return new ShortGenerator(context);
         }
 
         @Override
-        Map<Class<?>, Boolean> verifySupported() {
+        protected Map<Class<?>, Boolean> verifySupported() {
             return new HashMap<>() {{
                 put(short.class, true);
                 put(Short.class, true);
@@ -70,12 +66,12 @@ class NumberGeneratorSpecTest {
     @Nested
     class IntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<Integer> {
         @Override
-        AbstractRandomNumberGeneratorSpec<Integer> createGenerator() {
+        protected AbstractRandomNumberGeneratorSpec<Integer> createGenerator() {
             return new IntegerGenerator(context);
         }
 
         @Override
-        Map<Class<?>, Boolean> verifySupported() {
+        protected Map<Class<?>, Boolean> verifySupported() {
             return new HashMap<>() {{
                 put(int.class, true);
                 put(Integer.class, true);
@@ -87,12 +83,12 @@ class NumberGeneratorSpecTest {
     @Nested
     class LongGeneratorTest extends NumberGeneratorSpecTestTemplate<Long> {
         @Override
-        AbstractRandomNumberGeneratorSpec<Long> createGenerator() {
+        protected AbstractRandomNumberGeneratorSpec<Long> createGenerator() {
             return new LongGenerator(context);
         }
 
         @Override
-        Map<Class<?>, Boolean> verifySupported() {
+        protected Map<Class<?>, Boolean> verifySupported() {
             return new HashMap<>() {{
                 put(long.class, true);
                 put(Long.class, true);
@@ -104,12 +100,12 @@ class NumberGeneratorSpecTest {
     @Nested
     class FloatGeneratorTest extends NumberGeneratorSpecTestTemplate<Float> {
         @Override
-        AbstractRandomNumberGeneratorSpec<Float> createGenerator() {
+        protected AbstractRandomNumberGeneratorSpec<Float> createGenerator() {
             return new FloatGenerator(context);
         }
 
         @Override
-        Map<Class<?>, Boolean> verifySupported() {
+        protected Map<Class<?>, Boolean> verifySupported() {
             return new HashMap<>() {{
                 put(float.class, true);
                 put(Float.class, true);
@@ -130,12 +126,12 @@ class NumberGeneratorSpecTest {
     @Nested
     class DoubleGeneratorTest extends NumberGeneratorSpecTestTemplate<Double> {
         @Override
-        AbstractRandomNumberGeneratorSpec<Double> createGenerator() {
+        protected AbstractRandomNumberGeneratorSpec<Double> createGenerator() {
             return new DoubleGenerator(context);
         }
 
         @Override
-        Map<Class<?>, Boolean> verifySupported() {
+        protected Map<Class<?>, Boolean> verifySupported() {
             return new HashMap<>() {{
                 put(double.class, true);
                 put(Double.class, true);
@@ -152,40 +148,4 @@ class NumberGeneratorSpecTest {
             assertThat(generator.generate(new DefaultRandom())).isBetween(min, max);
         }
     }
-
-    @Nested
-    class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal> {
-
-        @Override
-        AbstractRandomNumberGeneratorSpec<BigDecimal> createGenerator() {
-            return new BigDecimalGenerator(context);
-        }
-
-        @Override
-        Map<Class<?>, Boolean> verifySupported() {
-            return new HashMap<>() {{
-                put(BigDecimal.class, true);
-                put(BigDecimal[].class, false);
-            }};
-        }
-
-        @CsvSource({
-                "-10.0012, -10.0011",
-                "0.00015, 0.00019",
-                "9999999999999.555, 9999999999999.557"
-        })
-        @ParameterizedTest
-        void rangeWithFractionalValues(final BigDecimal min, final BigDecimal max) {
-            final AbstractRandomNumberGeneratorSpec<BigDecimal> generator = getGenerator();
-            generator.range(min, max);
-
-            final BigDecimal result = generator.generate(new DefaultRandom());
-
-            assertThat(result)
-                    .isNotNull()
-                    .isGreaterThanOrEqualTo(min)
-                    .isLessThanOrEqualTo(max);
-        }
-    }
-
 }

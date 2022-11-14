@@ -18,7 +18,7 @@ package org.instancio.generator.text;
 import org.instancio.Generator;
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.util.Verify;
+import org.instancio.internal.ApiValidator;
 
 public class TextPatternGenerator implements Generator<String> {
     private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
@@ -36,11 +36,10 @@ public class TextPatternGenerator implements Generator<String> {
     private final String pattern;
 
     public TextPatternGenerator(final String pattern) {
-        this.pattern = Verify.notNull(pattern, "Text pattern is null");
+        this.pattern = ApiValidator.notNull(pattern, "Text pattern must not be null");
     }
 
     @Override
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     public String generate(final Random random) {
         final StringBuilder res = new StringBuilder(pattern.length());
         final char[] p = pattern.toCharArray();
@@ -50,10 +49,9 @@ public class TextPatternGenerator implements Generator<String> {
             final char c = p[i++];
 
             if (c == HASH) {
-                if (i == p.length) {
-                    throw new InstancioApiException("Invalid text pattern '" + pattern + "'. "
-                            + "Expected a character after the last '#'");
-                }
+                ApiValidator.isFalse(i == p.length,
+                        "Invalid text pattern '%s'. Expected a character after the last '#'", pattern);
+
                 final char tag = p[i++];
                 if (tag == ALNUM_CHAR) {
                     res.append(random.alphanumericCharacter());

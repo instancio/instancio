@@ -17,14 +17,14 @@ package org.instancio.generator.lang;
 
 import org.instancio.Generator;
 import org.instancio.Random;
+import org.instancio.internal.ApiValidator;
 import org.instancio.util.ReflectionUtils;
-import org.instancio.util.Verify;
 
 public class EnumGenerator<E extends Enum<E>> implements Generator<E> {
     private final Class<E> enumClass;
 
     public EnumGenerator(final Class<E> enumClass) {
-        this.enumClass = Verify.notNull(enumClass, "Enum class must not be null");
+        this.enumClass = ApiValidator.notNull(enumClass, "Enum class must not be null");
     }
 
     @Override

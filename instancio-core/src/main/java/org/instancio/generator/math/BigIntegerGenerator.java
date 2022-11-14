@@ -19,7 +19,6 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
-import org.instancio.util.Verify;
 
 import java.math.BigInteger;
 
@@ -40,19 +39,13 @@ public class BigIntegerGenerator extends AbstractRandomComparableNumberGenerator
 
     @Override
     public NumberGeneratorSpec<BigInteger> min(final BigInteger min) {
-        this.min = Verify.notNull(min);
-        if (min.compareTo(max) >= 0) {
-            max = min.add(DEFAULT_MAX);
-        }
+        super.min(min);
         return this;
     }
 
     @Override
     public NumberGeneratorSpec<BigInteger> max(final BigInteger max) {
-        this.max = Verify.notNull(max);
-        if (max.compareTo(min) <= 0) {
-            min = max.subtract(DEFAULT_MAX);
-        }
+        super.max(max);
         return this;
     }
 
