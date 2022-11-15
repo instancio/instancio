@@ -17,10 +17,12 @@
 package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.DurationGeneratorSpec;
 import org.instancio.generator.specs.PeriodGeneratorSpec;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.generator.sql.SqlDateGenerator;
 import org.instancio.generator.sql.TimestampGenerator;
+import org.instancio.generator.time.DurationGenerator;
 import org.instancio.generator.time.InstantGenerator;
 import org.instancio.generator.time.LocalDateGenerator;
 import org.instancio.generator.time.LocalDateTimeGenerator;
@@ -65,6 +67,7 @@ public class TemporalGenerators {
         map.put(LocalTimeGenerator.class, "localTime()");
         map.put(YearGenerator.class, "year()");
         map.put(YearMonthGenerator.class, "yearMonth()");
+        map.put(DurationGenerator.class, "duration()");
         map.put(PeriodGenerator.class, "period()");
         map.put(DateGenerator.class, "date()");
         map.put(SqlDateGenerator.class, "sqlDate()");
@@ -134,6 +137,15 @@ public class TemporalGenerators {
      */
     public TemporalGeneratorSpec<Year> year() {
         return new YearGenerator(context);
+    }
+
+    /**
+     * Customises returned {@link java.time.Duration} value.
+     *
+     * @return customised generator
+     */
+    public DurationGeneratorSpec duration() {
+        return new DurationGenerator();
     }
 
     /**

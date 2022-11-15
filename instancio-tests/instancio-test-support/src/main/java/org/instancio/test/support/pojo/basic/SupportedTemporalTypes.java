@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class SupportedTemporalTypes {
     private LocalDateTime localDateTime;
     private ZonedDateTime zonedDateTime;
     private YearMonth yearMonth;
+    private Duration duration;
     private Period period;
     private Year year;
     private Date date;
