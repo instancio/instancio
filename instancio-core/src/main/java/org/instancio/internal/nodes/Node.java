@@ -111,7 +111,7 @@ public final class Node {
     }
 
     /**
-     * Returns the target class represented by this node. Unlike {@link #getRawType()},
+     * Returns the target class represented by this node.
      *
      * @return target class represented by this node
      * @see #getRawType()

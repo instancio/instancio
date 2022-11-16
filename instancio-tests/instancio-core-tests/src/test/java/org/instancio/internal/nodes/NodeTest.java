@@ -45,7 +45,7 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 @NodeTag
 class NodeTest {
     private static final NodeContext NODE_CONTEXT = new NodeContext(
-            Collections.emptyMap(), new SubtypeSelectorMap(Collections.emptyMap()));
+            Collections.emptyMap(), new SubtypeSelectorMap(Collections.emptyMap(), Collections.emptyMap()));
 
     private static final NodeFactory NODE_FACTORY = new NodeFactory(NODE_CONTEXT);
 

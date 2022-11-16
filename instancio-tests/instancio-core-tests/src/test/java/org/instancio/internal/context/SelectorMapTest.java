@@ -49,7 +49,7 @@ import static org.instancio.Select.scope;
 
 class SelectorMapTest {
     private final NodeFactory nodeFactory = new NodeFactory(
-            new NodeContext(Collections.emptyMap(), new SubtypeSelectorMap(Collections.emptyMap())));
+            new NodeContext(Collections.emptyMap(), new SubtypeSelectorMap(Collections.emptyMap(), Collections.emptyMap())));
 
     private final Node rootNode = nodeFactory.createRootNode(PersonHolder.class);
     private final Node personNameNode = getNodeWithField(rootNode, Person.class, "name");

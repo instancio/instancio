@@ -88,13 +88,13 @@ public final class ModelContext<T> {
         ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
         nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
         onCompleteCallbackSelectorMap = new OnCompleteCallbackSelectorMap(builder.onCompleteCallbacks);
-        subtypeSelectorMap = new SubtypeSelectorMap(builder.subtypeSelectors);
+        subtypeSelectorMap = new SubtypeSelectorMap(settings.getSubtypeMap(), builder.subtypeSelectors);
         generatorSelectorMap = new GeneratorSelectorMap(
                 new Generators(new GeneratorContext(settings, random)),
                 builder.generatorSelectors,
                 builder.generatorSpecSelectors);
 
-        subtypeSelectorMap.putAdditional(generatorSelectorMap.getClassSubtypeMap());
+        subtypeSelectorMap.putAll(generatorSelectorMap.getClassSubtypeMap());
     }
 
     private static Settings createSettings(final Builder<?> builder) {
