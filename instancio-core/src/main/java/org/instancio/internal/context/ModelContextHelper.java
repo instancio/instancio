@@ -29,6 +29,8 @@ import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
@@ -113,7 +115,33 @@ final class ModelContextHelper {
             LOG.trace("Mapping type variable '{}' to '{}'", typeVariable, actualType);
             typeMap.put(typeVariable, actualType);
         }
+
+        populateTypeMapFromGenericSuperclass(rootClass, typeMap);
         return typeMap;
+    }
+
+    private static void populateTypeMapFromGenericSuperclass(@Nullable final Class<?> rootClass, final Map<TypeVariable<?>, Class<?>> typeMap) {
+        if (rootClass == null) {
+            return;
+        }
+
+        final Type gsClass = rootClass.getGenericSuperclass();
+        if (gsClass instanceof ParameterizedType) {
+            final ParameterizedType genericSuperclass = (ParameterizedType) gsClass;
+            final TypeVariable<?>[] typeParameters = TypeUtils.getRawType(genericSuperclass.getRawType()).getTypeParameters();
+            final Type[] actualTypeArguments = genericSuperclass.getActualTypeArguments();
+
+            for (int i = 0; i < typeParameters.length; i++) {
+                final TypeVariable<?> typeVariable = typeParameters[i];
+                final Class<?> actualType = TypeUtils.getRawType(actualTypeArguments[i]);
+                LOG.trace("Mapping type variable '{}' to '{}'", typeVariable, actualType);
+                typeMap.put(typeVariable, actualType);
+            }
+        }
+
+        if (gsClass != null) {
+            populateTypeMapFromGenericSuperclass(TypeUtils.getRawType(gsClass), typeMap);
+        }
     }
 
     private ModelContextHelper() {
