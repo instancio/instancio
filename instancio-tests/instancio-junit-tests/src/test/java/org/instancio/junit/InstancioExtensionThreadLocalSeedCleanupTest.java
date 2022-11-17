@@ -67,8 +67,8 @@ class InstancioExtensionThreadLocalSeedCleanupTest {
         @Test
         @DisplayName("Dummy test method to verify thread local is cleared in afterAll()")
         void dummy() {
-            final int seed1 = ThreadLocalRandom.getInstance().get().getSeed();
-            final int seed2 = ThreadLocalRandom.getInstance().get().getSeed();
+            final long seed1 = ThreadLocalRandom.getInstance().get().getSeed();
+            final long seed2 = ThreadLocalRandom.getInstance().get().getSeed();
             assertThat(seed1)
                     .as("Same seed should be used within the test method")
                     .isEqualTo(seed2);

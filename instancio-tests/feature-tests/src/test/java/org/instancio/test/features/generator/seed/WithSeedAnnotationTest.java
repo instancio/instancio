@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class WithSeedAnnotationTest {
 
-    private static final int SEED = 1234;
+    private static final long SEED = 1234;
     private static final String EXPECTED_RANDOM_STRING = "XTYQHJHH";
 
     @Test
@@ -52,7 +52,7 @@ class WithSeedAnnotationTest {
     void modelSeedShouldTakePrecedenceOverSeedAnnotation() {
         final String result1 = Instancio.create(String.class);
 
-        final int otherSeed = 4567;
+        final long otherSeed = 4567;
         final String result2 = Instancio.of(String.class)
                 .withSeed(otherSeed)
                 .create();

@@ -321,7 +321,7 @@ public interface InstancioApi<T> {
      * @return API builder reference
      * @since 1.0.1
      */
-    InstancioApi<T> withSeed(int seed);
+    InstancioApi<T> withSeed(long seed);
 
     /**
      * Disables strict mode in which unused selectors trigger an error.

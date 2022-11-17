@@ -54,5 +54,5 @@ public @interface Seed {
      *
      * @return seed value
      */
-    int value();
+    long value();
 }

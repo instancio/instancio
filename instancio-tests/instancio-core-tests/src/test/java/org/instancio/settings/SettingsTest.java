@@ -120,7 +120,8 @@ class SettingsTest {
         final Settings settings = Settings.create();
         assertThatThrownBy(() -> settings.set(Keys.LONG_MAX, AUTO_ADJUST_DISABLED))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("The value 'false' is of unexpected type (Boolean) for key '%s'", Keys.LONG_MAX.propertyKey());
+                .hasMessage("The value 'false' is of unexpected type (Boolean) for key '%s' (expected: Long)",
+                        Keys.LONG_MAX.propertyKey());
     }
 
     @Test

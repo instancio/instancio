@@ -65,7 +65,7 @@ public final class ModelContext<T> {
     private final Type rootType;
     private final List<Class<?>> rootTypeParameters;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
-    private final Integer seed;
+    private final Long seed;
     private final Random random;
     private final Settings settings;
     private final BooleanSelectorMap ignoredSelectorMap;
@@ -123,12 +123,12 @@ public final class ModelContext<T> {
         }
     }
 
-    private static Random resolveRandom(final Settings settings, @Nullable final Integer userSuppliedSeed) {
+    private static Random resolveRandom(final Settings settings, @Nullable final Long userSuppliedSeed) {
         if (userSuppliedSeed != null) {
             return new DefaultRandom(userSuppliedSeed);
         }
 
-        final Integer settingsSeed = settings.get(Keys.SEED);
+        final Long settingsSeed = settings.get(Keys.SEED);
         if (settingsSeed != null && (getGlobalRandom() == null || getGlobalRandom().getSeed() != settingsSeed)) {
             // Use seed from settings unless it's the value from the properties file.
             return new DefaultRandom(settingsSeed);
@@ -215,7 +215,7 @@ public final class ModelContext<T> {
         private final Set<TargetSelector> ignoredTargets = new LinkedHashSet<>();
         private final Set<TargetSelector> nullableTargets = new LinkedHashSet<>();
         private Settings settings;
-        private Integer seed;
+        private Long seed;
         private Boolean lenient;
 
         private Builder(final Type rootType) {
@@ -270,7 +270,7 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withSeed(final int seed) {
+        public Builder<T> withSeed(final long seed) {
             this.seed = seed;
             return this;
         }

@@ -39,8 +39,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class GlobalSeedWithInstancioExtensionWithSettingsTest {
 
-    private static final int ANNOTATION_SEED = -123;
-    private static final int SETTINGS_SEED = -5678;
+    private static final long ANNOTATION_SEED = -123;
+    private static final long SETTINGS_SEED = -5678;
 
     @WithSettings
     private static final Settings settings = Settings.create()
@@ -56,7 +56,7 @@ class GlobalSeedWithInstancioExtensionWithSettingsTest {
     @Test
     @DisplayName("withSettings() takes precedence over @WithSettings")
     void withSettingsTakesPrecedenceOverWithSettingsAnnotation() {
-        final int seed = Instancio.create(int.class);
+        final long seed = Instancio.create(long.class);
 
         final Result<String> s1 = Instancio.of(String.class)
                 .withSettings(Settings.create().set(Keys.SEED, seed))
@@ -78,7 +78,7 @@ class GlobalSeedWithInstancioExtensionWithSettingsTest {
     @Test
     @Seed(ANNOTATION_SEED)
     void seedAnnotation() {
-        final int seed = Instancio.create(int.class);
+        final long seed = Instancio.create(long.class);
         final Result<String> s1 = Instancio.of(String.class).withSeed(seed).asResult();
         final Result<String> s2 = Instancio.of(String.class).asResult();
 

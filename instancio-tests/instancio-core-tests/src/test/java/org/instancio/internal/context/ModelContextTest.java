@@ -203,7 +203,7 @@ class ModelContextTest {
         final Function<Generators, ? extends GeneratorSpec<?>> petsGeneratorFn = (gen) -> petsGenerator;
         final Class<UUID> ignoredClass = UUID.class;
         final Class<Date> nullableClass = Date.class;
-        final int seed = 37635;
+        final long seed = 37635;
         final int integerMinValue = 26546;
 
         final ModelContext<?> ctx = ModelContext.builder(Person.class)

@@ -47,20 +47,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class GlobalSeedWithInstancioExtensionTest {
 
-    private static final int ANNOTATION_SEED = -123;
+    private static final long ANNOTATION_SEED = -123;
 
     @Test
     @Seed(ANNOTATION_SEED)
     @DisplayName("(a) withSeed() takes precedence over everything else")
     void withSeedTakesPrecedenceOverGlobalSeed() {
-        final int seed = Instancio.create(int.class);
+        final long seed = Instancio.create(long.class);
         final Result<String> s1 = Instancio.of(String.class)
                 .withSeed(seed)
                 .asResult();
 
         final Result<String> s2 = Instancio.of(String.class)
                 .withSeed(seed)
-                .withSettings(Settings.create().set(Keys.SEED, Instancio.create(int.class)))
+                .withSettings(Settings.create().set(Keys.SEED, Instancio.create(long.class)))
                 .asResult();
 
         final Result<String> s3 = Instancio.of(String.class).asResult();
@@ -80,7 +80,7 @@ class GlobalSeedWithInstancioExtensionTest {
     @Seed(ANNOTATION_SEED)
     @DisplayName("(b) withSettings() takes precedence over seed from properties and @Seed annotation")
     void settingsSeedTakesPrecedenceOverGlobalSeed() {
-        final int seed = Instancio.create(int.class);
+        final long seed = Instancio.create(long.class);
         final Settings settings = Settings.create().set(Keys.SEED, seed);
         final Result<String> s1 = Instancio.of(String.class).withSettings(settings).asResult();
         final Result<String> s2 = Instancio.of(String.class).withSettings(settings).asResult();
@@ -100,7 +100,7 @@ class GlobalSeedWithInstancioExtensionTest {
     @Nested
     @ExtendWith(InstancioExtension.class)
     class WithSettingsAnnotationTest {
-        private final int WITH_SETTINGS_ANNOTATION_SEED = Instancio.create(int.class);
+        private final long WITH_SETTINGS_ANNOTATION_SEED = Instancio.create(long.class);
 
         @WithSettings
         private final Settings settings = Settings.create().set(Keys.SEED, WITH_SETTINGS_ANNOTATION_SEED);

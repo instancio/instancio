@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @FeatureTag(Feature.WITH_SEED)
 class SimpleSeedTest {
 
-    private static final int SEED = 123;
+    private static final long SEED = 123;
     private static final int SAMPLE_SIZE = 10;
 
     @Test

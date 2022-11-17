@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class EachMethodShouldGenerateItsOwnSeedTest {
 
-    private static final Set<Integer> seeds = new HashSet<>();
+    private static final Set<Long> seeds = new HashSet<>();
     private static int seedCount;
 
     @Test

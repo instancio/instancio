@@ -125,8 +125,8 @@ public final class ApiValidator {
         }
         if (value != null) {
             isTrue(key.type() == value.getClass(),
-                    "The value '%s' is of unexpected type (%s) for key '%s'",
-                    value, value.getClass().getSimpleName(), key);
+                    "The value '%s' is of unexpected type (%s) for key '%s' (expected: %s)",
+                    value, value.getClass().getSimpleName(), key, key.type().getSimpleName());
         }
     }
 

@@ -42,7 +42,7 @@ class GlobalSeedTest {
     @Test
     @DisplayName("(a) withSeed() takes precedence over everything else")
     void withSeedTakesPrecedenceOverGlobalSeed() {
-        final int seed = Instancio.create(int.class);
+        final long seed = Instancio.create(long.class);
         final Result<String> s1 = Instancio.of(String.class).withSeed(seed).asResult();
         final Result<String> s2 = Instancio.of(String.class).withSeed(seed).asResult();
         final Result<String> s3 = Instancio.of(String.class).asResult();
@@ -61,7 +61,7 @@ class GlobalSeedTest {
     @Test
     @DisplayName("(b) withSettings()")
     void settingsSeedTakesPrecedenceOverGlobalSeed() {
-        final int seed = Instancio.create(int.class);
+        final long seed = Instancio.create(long.class);
         final Settings settings = Settings.create().set(Keys.SEED, seed);
         final Result<String> s1 = Instancio.of(String.class).withSettings(settings).asResult();
         final Result<String> s2 = Instancio.of(String.class).withSettings(settings).asResult();

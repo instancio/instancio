@@ -40,7 +40,7 @@ import static org.instancio.Select.field;
 @FeatureTag({Feature.MODEL, Feature.WITH_SEED})
 class CreateFromModelAndClassWithSeedTest {
 
-    private static final int SEED = 123;
+    private static final long SEED = 123;
 
     @Test
     void integerHolder() {
