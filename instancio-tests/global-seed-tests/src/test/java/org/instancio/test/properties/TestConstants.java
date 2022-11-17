@@ -18,5 +18,5 @@ package org.instancio.test.properties;
 final class TestConstants {
 
     // defined in instancio.properties
-    static final int GLOBAL_SEED = -112233;
+    static final long GLOBAL_SEED = -112233;
 }

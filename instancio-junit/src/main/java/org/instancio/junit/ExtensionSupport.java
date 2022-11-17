@@ -54,7 +54,7 @@ final class ExtensionSupport {
         final Optional<Method> testMethod = context.getTestMethod();
         if (testMethod.isPresent()) {
             final Seed seedAnnotation = testMethod.get().getAnnotation(Seed.class);
-            final int seed;
+            final long seed;
 
             if (seedAnnotation != null) {
                 seed = seedAnnotation.value();

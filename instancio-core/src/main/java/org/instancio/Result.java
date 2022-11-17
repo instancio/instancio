@@ -23,9 +23,9 @@ package org.instancio;
  */
 public final class Result<T> {
     private final T object;
-    private final int seed;
+    private final long seed;
 
-    public Result(final T object, final int seed) {
+    public Result(final T object, final long seed) {
         this.object = object;
         this.seed = seed;
     }
@@ -46,7 +46,7 @@ public final class Result<T> {
      * @return the seed
      * @since 1.5.1
      */
-    public int getSeed() {
+    public long getSeed() {
         return seed;
     }
 

@@ -791,7 +791,7 @@ class SamplePojo {
 By supplying the same seed value, the same object is generated:
 
 ``` java linenums="1" title="Generating two SamplePojo instances with the same seed"
-final int seed = 123;
+final long seed = 123;
 
 SamplePojo pojo1 = Instancio.of(SamplePojo.class)
     .withSeed(seed)
@@ -818,7 +818,7 @@ SamplePojo(
 ### Specifying Seed Value
 
 By default, if no custom seed is specified, Instancio generates a random seed value.
-Therefore each execution results in different outputs.
+Therefore, each execution results in different outputs.
 This behaviour can be overridden by specifying a custom seed using any of the options below.
 These are ranked from lowest to highest precedence:
 
@@ -855,7 +855,7 @@ Sometimes it is necessary to get the seed value that was used to generate the da
 ``` java linenums="1" title="Example of using asResult()"
 Result<Person> result = Instancio.of(Person.class).asResult();
 Person person = result.get();
-int seed = result.getSeed(); // seed value that was used for populating the person
+long seed = result.getSeed(); // seed value that was used for populating the person
 // snip...
 ```
 
@@ -998,7 +998,7 @@ To override programmatically, an instance of `Settings` can be passed in to the 
 Settings overrides = Settings.create()
     .set(Keys.COLLECTION_MIN_SIZE, 10)
     .set(Keys.STRING_ALLOW_EMPTY, true)
-    .set(Keys.SEED, 12345)
+    .set(Keys.SEED, 12345L) // seed is of type long (note the 'L')
     .lock();
 
 Person person = Instancio.of(Person.class)

@@ -28,7 +28,7 @@ public interface Random {
      *
      * @return seed value
      */
-    int getSeed();
+    long getSeed();
 
     /**
      * Returns a random boolean with a {@code 0.5} probability.

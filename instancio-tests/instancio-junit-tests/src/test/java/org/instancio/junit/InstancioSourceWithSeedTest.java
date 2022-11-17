@@ -38,7 +38,7 @@ class InstancioSourceWithSeedTest {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioSourceWithSeedTest.class);
     private static final String EXPECTED_STRING = "YDOQGZUVWOINKQNTDAONTOBMAYC";
     private static final int STRING_MIN_LENGTH = 20;
-    private static final int SEED = -1234;
+    private static final long SEED = -1234;
 
     @WithSettings
     private static final Settings settings = Settings.create()

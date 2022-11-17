@@ -114,7 +114,7 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> withSeed(final int seed) {
+    public InstancioApi<T> withSeed(final long seed) {
         modelContextBuilder.withSeed(seed);
         return this;
     }

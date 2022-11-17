@@ -47,7 +47,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class InstancioExtensionTest {
 
-    private static final int SEED_ANNOTATION_VALUE = -2345212;
+    private static final long SEED_ANNOTATION_VALUE = -2345212;
     private static final String METHOD_WITHOUT_SEED_ANNOTATION = "methodWithoutSeedAnnotation";
     private static final String METHOD_WITH_SEED_ANNOTATION = "methodWithSeedAnnotation";
     private static final Settings SETTINGS = Settings.defaults();
@@ -159,7 +159,7 @@ class InstancioExtensionTest {
     @Test
     @DisplayName("Verify seed value is reported if a test fails")
     void afterTestExecutionWithFailedTest() throws NoSuchMethodException {
-        final int expectedSeed = 789;
+        final long expectedSeed = 789;
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
 
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));

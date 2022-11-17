@@ -205,7 +205,7 @@ public final class Keys {
      *
      * @since 1.5.1
      */
-    public static final SettingKey SEED = registerWithNullDefault("seed", Integer.class);
+    public static final SettingKey SEED = registerWithNullDefault("seed", Long.class);
     /**
      * Specifies maximum value for shorts;
      * default is 10000; property name {@code short.max}.

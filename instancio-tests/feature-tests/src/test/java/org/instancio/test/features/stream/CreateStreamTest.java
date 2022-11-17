@@ -90,7 +90,7 @@ class CreateStreamTest {
 
     @Test
     void withSeed() {
-        final int seed = Instancio.create(int.class);
+        final long seed = Instancio.create(long.class);
 
         final List<UUID> list1 = Instancio.of(UUID.class)
                 .withSeed(seed)

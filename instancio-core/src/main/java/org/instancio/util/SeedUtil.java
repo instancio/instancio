@@ -16,17 +16,16 @@
 package org.instancio.util;
 
 import java.security.SecureRandom;
-import java.util.Random;
 
 public final class SeedUtil {
 
-    private static final Random RANDOM = new SecureRandom();
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private SeedUtil() {
         // non-instantiable
     }
 
-    public static int randomSeed() {
-        return RANDOM.nextInt(Integer.MAX_VALUE);
+    public static long randomSeed() {
+        return SECURE_RANDOM.nextLong();
     }
 }

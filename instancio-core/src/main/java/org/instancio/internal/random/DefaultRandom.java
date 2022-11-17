@@ -23,7 +23,7 @@ import java.util.Collection;
 
 public class DefaultRandom implements Random {
 
-    private final int seed;
+    private final long seed;
     private final java.util.Random random;
 
     /**
@@ -38,13 +38,13 @@ public class DefaultRandom implements Random {
      *
      * @param seed for the random generator
      */
-    public DefaultRandom(final int seed) {
+    public DefaultRandom(final long seed) {
         this.seed = seed;
         this.random = new java.util.Random(seed); // NOSONAR
     }
 
     @Override
-    public int getSeed() {
+    public long getSeed() {
         return seed;
     }
 

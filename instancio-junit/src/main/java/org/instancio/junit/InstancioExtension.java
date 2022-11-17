@@ -106,7 +106,7 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
                 return;
             }
 
-            final int seed = threadLocalRandom.get().getSeed();
+            final long seed = threadLocalRandom.get().getSeed();
             final String msg = String.format("Test method '%s' failed with seed: %d%n",
                     testMethod.get().getName(), seed);
 

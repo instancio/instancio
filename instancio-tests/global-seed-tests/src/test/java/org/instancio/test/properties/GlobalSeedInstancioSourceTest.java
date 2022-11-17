@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class GlobalSeedInstancioSourceTest {
 
-    private static final int ANNOTATION_SEED = -123;
+    private static final long ANNOTATION_SEED = -123;
 
     @ParameterizedTest
     @InstancioSource(value = {String.class, String.class})
