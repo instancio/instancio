@@ -59,6 +59,7 @@ public class CollectionNodeHandler implements NodeHandler {
     @SuppressWarnings({"unchecked", Sonar.RAW_USE_OF_PARAMETERIZED_CLASS})
     private Optional<GeneratorResult> generateEnumSet(final Node collectionNode) {
         final Class<Enum> enumClass = (Class<Enum>) collectionNode.getOnlyChild().getTargetClass();
+        // TODO refactor
         final Enum<?>[] enumValues = ReflectionUtils.getEnumValues(enumClass);
         final int enumSetSize = Math.min(randomSize(), enumValues.length);
         final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(enumSetSize).build();

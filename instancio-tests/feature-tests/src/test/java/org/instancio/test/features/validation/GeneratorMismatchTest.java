@@ -32,6 +32,7 @@ import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.basic.SupportedTemporalTypes;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -120,12 +121,19 @@ class GeneratorMismatchTest {
 
     @Test
     void assertBoolean() {
+        // Note: there's no GeneratorSpec for booleans
         assertMessageContains(BooleanHolder.class, boolean.class, "ints()", Generators::ints);
     }
 
     @Test
     void assertCharacter() {
+        // Note: there's no GeneratorSpec for chars
         assertMessageContains(CharacterHolder.class, char.class, "ints()", Generators::ints);
+    }
+
+    @Test
+    void assertEnum() {
+        assertMessageContains(CharacterHolder.class, char.class, "enumOf()", gen -> gen.enumOf(Gender.class));
     }
 
     @Test
