@@ -142,9 +142,7 @@ class InstancioEngine {
         // Handle the case where user supplies a generator for creating a record.
         final Optional<Generator<?>> generator = context.getGenerator(node);
         if (generator.isPresent()) {
-            final Optional<GeneratorResult> generatorResult = generatorFacade.generateNodeValue(node);
-            generatorResult.ifPresent(result -> notifyListeners(node, result.getValue()));
-            return generatorResult;
+            return generateValue(node);
         }
 
         final List<Node> children = node.getChildren();

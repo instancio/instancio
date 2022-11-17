@@ -17,6 +17,7 @@ package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.AddressExtension;
 import org.instancio.test.support.pojo.person.Person;
@@ -39,9 +40,16 @@ class ModelWithSubtypeTest {
                 .subtype(all(Address.class), AddressExtension.class)
                 .toModel();
 
-        final Person result = Instancio.create(model);
-        assertThat(result.getAddress()).isExactlyInstanceOf(AddressExtension.class);
-        assertThat(((AddressExtension) result.getAddress()).getAdditionalInfo()).isNotBlank();
+        assertSubtype(model);
+    }
+
+    @Test
+    void subtypeViaSettings() {
+        final Model<Person> model = Instancio.of(Person.class)
+                .withSettings(Settings.create().mapType(Address.class, AddressExtension.class))
+                .toModel();
+
+        assertSubtype(model);
     }
 
     @Test
@@ -54,5 +62,11 @@ class ModelWithSubtypeTest {
         assertThat(result.getAddress().getPhoneNumbers())
                 .isNotEmpty()
                 .isExactlyInstanceOf(LinkedList.class);
+    }
+
+    private static void assertSubtype(final Model<Person> model) {
+        final Person result = Instancio.create(model);
+        assertThat(result.getAddress()).isExactlyInstanceOf(AddressExtension.class);
+        assertThat(((AddressExtension) result.getAddress()).getAdditionalInfo()).isNotBlank();
     }
 }

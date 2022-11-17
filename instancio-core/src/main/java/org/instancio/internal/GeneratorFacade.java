@@ -28,11 +28,7 @@ import org.instancio.internal.handlers.NodeHandler;
 import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.nodes.Node;
-import org.instancio.internal.reflection.ImplementationResolver;
-import org.instancio.internal.reflection.NoopImplementationResolver;
 import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.util.ReflectionUtils;
-import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +38,6 @@ import java.util.Optional;
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
-    private final ImplementationResolver implementationResolver = new NoopImplementationResolver();
     private final ModelContext<?> context;
     private final Random random;
     private final NodeHandler[] nodeHandlers;
@@ -82,43 +77,12 @@ class GeneratorFacade {
         for (NodeHandler handler : nodeHandlers) {
             generatorResult = handler.getResult(node);
             if (generatorResult.isPresent()) {
+                LOG.trace("{} generated using '{}'", node, handler.getClass().getName());
                 break;
             }
         }
 
-        if (!generatorResult.isPresent()) {
-            generatorResult = resolveImplementationAndGenerate(node);
-        }
-
         return generatorResult;
-    }
-
-    /**
-     * Resolve an implementation class for the given interface and attempt to generate it.
-     * This method should not be called for JDK classes, such as Collection interfaces.
-     */
-    private Optional<GeneratorResult> resolveImplementationAndGenerate(final Node parentNode) {
-        final Class<?> abstractType = parentNode.getTargetClass();
-
-        Verify.isFalse(ReflectionUtils.isArrayOrConcrete(abstractType),
-                "Expecting an interface or abstract class: %s", abstractType.getName());
-        Verify.isNotArrayCollectionOrMap(abstractType);
-
-        LOG.debug("No generator for interface '{}'", abstractType.getName());
-
-        final Optional<Class<?>> targetClass = implementationResolver.resolve(abstractType);
-        if (targetClass.isPresent()) {
-            final Node implementorNode = Node.builder()
-                    .nodeContext(parentNode.getNodeContext())
-                    .targetClass(targetClass.get())
-                    .field(parentNode.getField())
-                    .parent(parentNode)
-                    .build();
-
-            return generateNodeValue(implementorNode);
-        }
-
-        return Optional.empty();
     }
 
     private boolean shouldReturnNullForNullable(final Node node) {

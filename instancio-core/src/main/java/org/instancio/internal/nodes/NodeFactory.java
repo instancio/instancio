@@ -15,10 +15,13 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
 import org.instancio.internal.reflection.FieldCollector;
+import org.instancio.util.ServiceLoaders;
+import org.instancio.spi.TypeResolver;
 import org.instancio.util.Format;
 import org.instancio.util.ObjectUtils;
 import org.instancio.util.TypeUtils;
@@ -48,14 +51,17 @@ import static java.util.stream.Collectors.toList;
 /**
  * Class for creating a node hierarchy for a given {@link Type}.
  */
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
 public final class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
     private final NodeContext nodeContext;
+    private final List<TypeResolver> typeResolvers;
 
     public NodeFactory(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
+        this.typeResolvers = ServiceLoaders.loadAll(TypeResolver.class);
     }
 
     public Node createRootNode(final Type type) {
@@ -104,6 +110,46 @@ public final class NodeFactory {
         return createNode(resolvedType, field, parent);
     }
 
+    /**
+     * Checks if there is a user-supplied type provided via
+     * {@link org.instancio.InstancioApi#subtype(TargetSelector, Class)}}
+     * method or via generator {@code gen.collection().subtype(Class)}.
+     * <p>
+     * If above is not present, then checks if subtype is available using
+     * {@link TypeResolver} SPI.
+     *
+     * @param node whose type to resolve
+     * @return resolved class or an empty result if unresolved
+     */
+    private Optional<Class<?>> resolveSubtype(final Node node) {
+        // User supplied subtype via API or generator
+        final Optional<Class<?>> target = nodeContext.getUserSuppliedSubtype(node);
+        if (target.isPresent()) {
+            LOG.debug("Using subtype provided via API: {} -> {}", node.getRawType().getName(), target.get().getName());
+            return target;
+        }
+
+        final Class<?> typeToResolve = node.getRawType();
+
+        // Do not resolve subtypes via SPI for collection classes
+        if (Collection.class.isAssignableFrom(typeToResolve) || Map.class.isAssignableFrom(typeToResolve)) {
+            return Optional.empty();
+        }
+
+        LOG.debug("Resolving subtype via SPI for type '{}'", typeToResolve.getTypeName());
+
+        for (TypeResolver resolver : typeResolvers) {
+            final Optional<Class<?>> resolved = resolver.resolve(typeToResolve);
+            if (resolved.isPresent()) {
+                LOG.debug("Using subtype provided via '{}': {} -> {}",
+                        resolver.getClass().getName(), node.getRawType().getName(), resolved.get().getName());
+                return resolved;
+            }
+        }
+
+        return Optional.empty();
+    }
+
     private Node createNodeWithSubtypeMapping(final Type type, @Nullable final Field field, @Nullable final Node parent) {
         final Class<?> rawType = TypeUtils.getRawType(type);
         final Node node = Node.builder()
@@ -115,7 +161,7 @@ public final class NodeFactory {
                 .parent(parent)
                 .build();
 
-        final Optional<Class<?>> target = nodeContext.getUserSuppliedSubtype(node);
+        final Optional<Class<?>> target = resolveSubtype(node);
 
         if (target.isPresent()) {
             final Class<?> targetClass = target.get();

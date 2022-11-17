@@ -17,13 +17,19 @@ package org.instancio.util;
 
 import org.instancio.Random;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public final class CollectionUtils {
     private CollectionUtils() {
         // non-instantiable
+    }
+
+    public static boolean isNullOrEmpty(@Nullable final Map<?, ?> map) {
+        return map == null || map.isEmpty();
     }
 
     public static void shuffle(final Collection<Object> collection, final Random random) {
@@ -48,5 +54,4 @@ public final class CollectionUtils {
             list.set(r, tmp);
         }
     }
-
 }
