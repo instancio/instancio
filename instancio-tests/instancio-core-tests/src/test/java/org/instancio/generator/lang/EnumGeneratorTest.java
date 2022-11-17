@@ -17,14 +17,19 @@ package org.instancio.generator.lang;
 
 import org.instancio.Generator;
 import org.instancio.Random;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.IntStream;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @NonDeterministicTag
 @FeatureTag(Feature.ENUM_GENERATOR)
@@ -33,6 +38,8 @@ class EnumGeneratorTest {
     private static final Random random = new DefaultRandom();
 
     enum EmptyEnum {}
+
+    enum SingleValueEnum {ONLY}
 
     @Test
     void generate() {
@@ -46,4 +53,44 @@ class EnumGeneratorTest {
         assertThat(generator.generate(random)).isNull();
     }
 
+    @Test
+    void generateIncludesAllValues() {
+        final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
+        assertThat(IntStream.range(1, 500).mapToObj(i -> generator.generate(random))).contains(Gender.values());
+    }
+
+    @RepeatedTest(3)
+    void exclude() {
+        final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
+        generator.exclude(Gender.MALE, Gender.FEMALE);
+        assertThat(generator.generate(random)).isEqualTo(Gender.OTHER);
+    }
+
+    @Test
+    void excludeWithEmptyArgs() {
+        final EnumGenerator<SingleValueEnum> generator = new EnumGenerator<>(SingleValueEnum.class);
+        generator.exclude();
+        assertThat(generator.generate(random)).isEqualTo(SingleValueEnum.ONLY);
+    }
+
+    @Test
+    void nullable() {
+        final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
+        generator.nullable();
+
+        assertThat(IntStream.range(1, 500).mapToObj(i -> generator.generate(random)))
+                .containsNull();
+    }
+
+    @Test
+    void validation() {
+        final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
+        assertThatThrownBy(() -> generator.exclude(null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Excluded values must not be null: exclude()");
+
+        assertThatThrownBy(() -> new EnumGenerator<>(null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Enum class must not be null");
+    }
 }

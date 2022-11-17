@@ -22,6 +22,7 @@ import org.instancio.generator.lang.BooleanGenerator;
 import org.instancio.generator.lang.ByteGenerator;
 import org.instancio.generator.lang.CharacterGenerator;
 import org.instancio.generator.lang.DoubleGenerator;
+import org.instancio.generator.lang.EnumGenerator;
 import org.instancio.generator.lang.FloatGenerator;
 import org.instancio.generator.lang.IntegerGenerator;
 import org.instancio.generator.lang.LongGenerator;
@@ -29,6 +30,7 @@ import org.instancio.generator.lang.ShortGenerator;
 import org.instancio.generator.lang.StringGenerator;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
+import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
@@ -81,6 +83,7 @@ public class Generators {
         map.put(CharacterGenerator.class, "chars()");
         map.put(BooleanGenerator.class, "booleans()");
         map.put(StringGenerator.class, "string()");
+        map.put(EnumGenerator.class, "enumOf()");
         map.put(ArrayGenerator.class, "array()");
         map.put(CollectionGeneratorSpecImpl.class, "collection()");
         map.put(MapGeneratorSpecImpl.class, "map()");
@@ -152,6 +155,17 @@ public class Generators {
      */
     public NumberGeneratorSpec<Double> doubles() {
         return new DoubleGenerator(context);
+    }
+
+    /**
+     * Customises generated enum values.
+     *
+     * @param enumClass type of enum to generate
+     * @param <E>       enum type
+     * @return customised generator
+     */
+    public <E extends Enum<E>> EnumGeneratorSpec<E> enumOf(final Class<E> enumClass) {
+        return new EnumGenerator<>(enumClass);
     }
 
     /**

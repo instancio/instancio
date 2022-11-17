@@ -17,19 +17,56 @@ package org.instancio.generator.lang;
 
 import org.instancio.Generator;
 import org.instancio.Random;
+import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.util.ReflectionUtils;
 
-public class EnumGenerator<E extends Enum<E>> implements Generator<E> {
+import java.util.Arrays;
+import java.util.EnumSet;
+
+public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, Generator<E> {
+
     private final Class<E> enumClass;
+    private final EnumSet<E> values;
+    private EnumSet<E> valuesWithExclusions;
+    private boolean nullable;
 
     public EnumGenerator(final Class<E> enumClass) {
         this.enumClass = ApiValidator.notNull(enumClass, "Enum class must not be null");
+        this.values = EnumSet.allOf(enumClass);
+        this.valuesWithExclusions = EnumSet.noneOf(enumClass);
+    }
+
+    @Override
+    @SafeVarargs
+    public final EnumGeneratorSpec<E> exclude(final E... values) {
+        ApiValidator.notNull(values, "Excluded values must not be null: exclude()");
+
+        // Allow passing empty array, meaning 'no exclusions'
+        if (values.length > 0) {
+            final EnumSet<E> exclusions = EnumSet.copyOf(Arrays.asList(values));
+            valuesWithExclusions = EnumSet.complementOf(exclusions);
+        }
+        return this;
+    }
+
+    @Override
+    public EnumGeneratorSpec<E> nullable() {
+        this.nullable = true;
+        return this;
     }
 
     @Override
     public E generate(final Random random) {
-        final E[] enumValues = ReflectionUtils.getEnumValues(enumClass);
-        return enumValues.length == 0 ? null : random.oneOf(enumValues);
+        if (values.isEmpty() || random.diceRoll(nullable)) {
+            return null;
+        }
+        return valuesWithExclusions.isEmpty()
+                ? random.oneOf(values)
+                : random.oneOf(valuesWithExclusions);
+    }
+
+    @Override
+    public boolean supports(final Class<?> type) {
+        return enumClass.isAssignableFrom(type);
     }
 }
