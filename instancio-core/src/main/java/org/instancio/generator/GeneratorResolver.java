@@ -55,6 +55,8 @@ import org.instancio.generator.util.concurrent.atomic.AtomicIntegerGenerator;
 import org.instancio.generator.util.concurrent.atomic.AtomicLongGenerator;
 import org.instancio.generator.xml.XMLGregorianCalendarGenerator;
 import org.instancio.spi.GeneratorProvider;
+import org.instancio.util.CollectionUtils;
+import org.instancio.util.ServiceLoaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +80,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -165,13 +166,14 @@ public class GeneratorResolver {
         // javax.xml.datatype
         generators.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(context));
 
-        ServiceLoader.load(GeneratorProvider.class).forEach(provider -> {
-            if (provider.getGenerators() != null) {
-                generators.putAll(provider.getGenerators());
+        for (GeneratorProvider provider : ServiceLoaders.loadAll(GeneratorProvider.class)) {
+            final Map<Class<?>, Generator<?>> providers = provider.getGenerators();
+            if (CollectionUtils.isNullOrEmpty(providers)) {
+                LOG.warn("No generators loaded from '{}' - provided map is null or empty", provider.getClass().getName());
             } else {
-                LOG.warn("No generators loaded from '{}' - provided map is null", provider.getClass().getSimpleName());
+                generators.putAll(providers);
             }
-        });
+        }
     }
 
     public Optional<Generator<?>> get(final Class<?> klass) {

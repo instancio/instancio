@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,6 +34,15 @@ class CollectionUtilsTest {
     private static final int SAMPLE_SIZE = 100;
     private static final int EXPECTED_NUM_COMBINATIONS = 6;
     private final Random random = new DefaultRandom();
+
+    @Test
+    void isNullOrEmptyMap() {
+        assertThat(CollectionUtils.isNullOrEmpty(null)).isTrue();
+        assertThat(CollectionUtils.isNullOrEmpty(Collections.emptyMap())).isTrue();
+        assertThat(CollectionUtils.isNullOrEmpty(new HashMap<String, String>() {{
+            put("foo", "bar");
+        }})).isFalse();
+    }
 
     @Test
     void shuffleEmpty() {

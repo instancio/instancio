@@ -20,22 +20,22 @@ import org.instancio.test.support.pojo.interfaces.MultipleInterfaceImpls;
 import org.instancio.test.support.pojo.interfaces.SingleInterfaceImpl;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ImplementationResolutionTest {
+/**
+ * Out of the box, Instancio does not attempt to resolve implementations of abstract types.
+ */
+@FeatureTag(Feature.UNSUPPORTED)
+class AbstractTypeWithoutMappedImplementationTest {
 
     @Test
-    @FeatureTag(Feature.UNSUPPORTED)
-    @Disabled("Currently unsupported")
     void singleInterfaceImpl() {
         SingleInterfaceImpl.WidgetContainer widgetContainer = Instancio.create(SingleInterfaceImpl.WidgetContainer.class);
 
         assertThat(widgetContainer).isNotNull();
-        assertThat(widgetContainer.getWidget()).isNotNull();
-        assertThat(widgetContainer.getWidget().getWidgetName()).isNotNull();
+        assertThat(widgetContainer.getWidget()).isNull();
     }
 
     @Test
@@ -45,5 +45,4 @@ class ImplementationResolutionTest {
         assertThat(widgetContainer).isNotNull();
         assertThat(widgetContainer.getWidget()).isNull();
     }
-
 }

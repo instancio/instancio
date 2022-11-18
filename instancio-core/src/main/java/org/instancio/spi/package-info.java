@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Defines SPI for registering custom generators.
+ * Defines Service Provider Interfaces for providing custom implementations.
  */
 @ParametersAreNonnullByDefault
 package org.instancio.spi;
