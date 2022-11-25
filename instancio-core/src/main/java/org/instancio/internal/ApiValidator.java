@@ -108,8 +108,12 @@ public final class ApiValidator {
     }
 
     public static void validateSubtype(final Class<?> from, final Class<?> to) {
-        isTrue(from.isAssignableFrom(to), "Class '%s' is not a subtype of '%s'", to.getName(), from.getName());
-        isFalse(from.equals(to), "Invalid subtype mapping from '%s' to '%s'", to.getName(), from.getName());
+        isTrue(from.isAssignableFrom(to), () -> String.format(
+                "Class '%s' is not a subtype of '%s'", to.getTypeName(), from.getTypeName()));
+
+        isFalse(from.equals(to), () -> String.format(
+                "Invalid subtype mapping from '%s' to '%s'", to.getTypeName(), from.getTypeName()));
+
         validateConcreteClass(to);
     }
 
@@ -125,8 +129,8 @@ public final class ApiValidator {
         }
         if (value != null) {
             isTrue(key.type() == value.getClass(),
-                    "The value '%s' is of unexpected type (%s) for key '%s' (expected: %s)",
-                    value, value.getClass().getSimpleName(), key, key.type().getSimpleName());
+                    () -> String.format("The value '%s' is of unexpected type (%s) for key '%s' (expected: %s)",
+                            value, value.getClass().getSimpleName(), key, key.type().getSimpleName()));
         }
     }
 
@@ -140,31 +144,37 @@ public final class ApiValidator {
         return collection;
     }
 
-    public static void validateGeneratorUsage(Node node, Generator<?> generator) {
+    public static void validateGeneratorUsage(final Node node, final Generator<?> generator) {
         final Optional<String> name = generator.apiMethodName();
         if (!name.isPresent()) return;
         isTrue(generator.supports(node.getTargetClass()),
-                () -> "%nGenerator type mismatch:%n"
-                        + "Method '" + name.get() + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
-                        + (node.getField() == null ? "" : "%nField: " + node.getField()));
+                () -> String.format(generateMismatchErrorMessageTemplate(node, name.get())));
+    }
+
+    private static String generateMismatchErrorMessageTemplate(final Node node, final String apiMethodName) {
+        return "%nGenerator type mismatch:%n"
+                + "Method '" + apiMethodName + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
+                + (node.getField() == null ? "" : "%nField: " + node.getField());
     }
 
     public static void validateGeneratorFunction(@Nullable final Function<Generators, ?> gen) {
-        isTrue(gen != null, "%nThe second argument of 'generate()' method must not be null."
-                + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
-                + "%nFor example:"
-                + "%n\tPerson person = Instancio.of(Person.class)"
-                + "%n\t\t.supply(field(\"firstName\"), () -> null)"
-                + "%n\t\t.create()");
+        isTrue(gen != null, () ->
+                String.format("%nThe second argument of 'generate()' method must not be null."
+                        + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
+                        + "%nFor example:"
+                        + "%n\tPerson person = Instancio.of(Person.class)"
+                        + "%n\t\t.supply(field(\"firstName\"), () -> null)"
+                        + "%n\t\t.create()"));
     }
 
     public static void validateSupplierOrGenerator(@Nullable final Object obj) {
-        isTrue(obj != null, "%nThe second argument of 'supply()' method must not be null."
-                + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
-                + "%nFor example:"
-                + "%n\tPerson person = Instancio.of(Person.class)"
-                + "%n\t\t.supply(field(\"firstName\"), () -> null)"
-                + "%n\t\t.create()");
+        isTrue(obj != null, () ->
+                String.format("%nThe second argument of 'supply()' method must not be null."
+                        + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
+                        + "%nFor example:"
+                        + "%n\tPerson person = Instancio.of(Person.class)"
+                        + "%n\t\t.supply(field(\"firstName\"), () -> null)"
+                        + "%n\t\t.create()"));
     }
 
     public static int validateSize(final int size) {
@@ -182,6 +192,11 @@ public final class ApiValidator {
         return obj;
     }
 
+    public static <T> T notNull(@Nullable final T obj, final Supplier<String> supplier) {
+        if (obj == null) throw new InstancioApiException(supplier.get());
+        return obj;
+    }
+
     public static void isTrue(final boolean condition, final String message, final Object... values) {
         if (!condition) throw new InstancioApiException(String.format(message, values));
     }
@@ -190,10 +205,12 @@ public final class ApiValidator {
         if (condition) throw new InstancioApiException(String.format(message, values));
     }
 
-    // Suppressed because String.format() translates %n to platform-specific newlines
-    @SuppressWarnings("RedundantStringFormatCall")
     private static void isTrue(final boolean condition, final Supplier<String> message) {
-        if (!condition) throw new InstancioApiException(String.format(message.get()));
+        if (!condition) throw new InstancioApiException(message.get());
+    }
+
+    public static void isFalse(final boolean condition, final Supplier<String> message) {
+        if (condition) throw new InstancioApiException(message.get());
     }
 
     public static void validateField(final Class<?> declaringClass, final String fieldName, final String message) {

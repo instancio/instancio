@@ -15,10 +15,12 @@
  */
 package org.instancio.internal.context;
 
+import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.ScopelessSelector;
@@ -31,15 +33,16 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A map that supports looking up values for a given node, taking into account the node's ancestors.
@@ -47,60 +50,129 @@ import static java.util.stream.Collectors.toList;
  * The question this map answers is: given a node, which selector(s) can be applied to it?
  * Since selectors can have scopes that are specified top-down, the lookup will traverse up
  * the node tree and selector scopes to determine if a selector can be applied.
+ * <p>
+ * Although this class is named a 'Map', it also contains a List of predicate selectors.
+ * Since predicate matches can only be resolved by applying the predicate to a target,
+ * a map cannot be used like with regular selectors.
  *
  * @param <V> value type
  */
-class SelectorMap<V> {
+final class SelectorMap<V> {
     private static final boolean FIND_ONE_ONLY = true;
 
     private final Map<ScopelessSelector, List<SelectorImpl>> scopelessSelectors = new LinkedHashMap<>();
     private final Map<? super TargetSelector, V> selectors = new LinkedHashMap<>();
     private final Set<? super TargetSelector> unusedSelectors = new LinkedHashSet<>();
+    private final List<PredicateSelectorEntry<V>> predicateSelectors = new ArrayList<>();
 
-    void put(final SelectorImpl selector, final V value) {
-        final ScopelessSelector scopeless;
+    private static final class PredicateSelectorEntry<V> {
+        private final PredicateSelectorImpl predicateSelector;
+        private final V value;
+        private boolean matched;
 
-        if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
-            final Field field = ReflectionUtils.getField(selector.getTargetClass(), selector.getFieldName());
-            scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
-        } else {
-            scopeless = new ScopelessSelector(selector.getTargetClass());
+        private PredicateSelectorEntry(final PredicateSelectorImpl predicateSelector, final V value) {
+            this.predicateSelector = predicateSelector;
+            this.value = value;
         }
+    }
 
-        selectors.put(selector, value);
-        unusedSelectors.add(selector);
-        scopelessSelectors.computeIfAbsent(scopeless, selectorList -> new ArrayList<>()).add(selector);
+    void put(final TargetSelector targetSelector, final V value) {
+        if (targetSelector instanceof SelectorImpl) {
+            final SelectorImpl selector = (SelectorImpl) targetSelector;
+            final ScopelessSelector scopeless;
+
+            if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
+                final Field field = ReflectionUtils.getField(selector.getTargetClass(), selector.getFieldName());
+                scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
+            } else {
+                scopeless = new ScopelessSelector(selector.getTargetClass());
+            }
+
+            selectors.put(selector, value);
+            unusedSelectors.add(selector);
+            scopelessSelectors.computeIfAbsent(scopeless, selectorList -> new ArrayList<>()).add(selector);
+        } else if (targetSelector instanceof PredicateSelector) {
+            final PredicateSelectorImpl selector = (PredicateSelectorImpl) targetSelector;
+            predicateSelectors.add(new PredicateSelectorEntry<>(selector, value));
+        }
     }
 
     public Set<? super TargetSelector> getUnusedKeys() {
-        return unusedSelectors;
+        final Set<? super TargetSelector> unused = new HashSet<>(unusedSelectors);
+        for (PredicateSelectorEntry<?> entry : predicateSelectors) {
+            if (!entry.matched) {
+                unused.add(entry.predicateSelector);
+            }
+        }
+        return unused;
     }
 
     /**
      * Returns last value for given node (in the order values were added).
+     * <p>
+     * Regular selectors have higher precedence than predicate selectors.
+     * Therefore, if a regular selector is found, it will be returned
+     * even if there is a predicate selector that also matches the target node.
      *
      * @param node for which to look up the value
      * @return value for given node, if present
      */
     Optional<V> getValue(final Node node) {
-        return getSelectorsWithParent(node, getCandidates(node), FIND_ONE_ONLY).stream()
+        final Optional<V> value = getSelectorsWithParent(node, getCandidates(node), FIND_ONE_ONLY).stream()
                 .findFirst()
                 .map(this::markUsed)
                 .map(selectors::get);
+
+        if (value.isPresent()) {
+            return value;
+        }
+
+        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+            if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD && isPredicateMatch(node, entry)) {
+                entry.matched = true;
+                return Optional.of(entry.value);
+            }
+        }
+        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+            if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.CLASS && isPredicateMatch(node, entry)) {
+                entry.matched = true;
+                return Optional.of(entry.value);
+            }
+        }
+
+        return Optional.empty();
     }
 
     /**
-     * Returns all values for given node.
+     * Returns all values for given node, including those matched by predicate selectors.
      *
      * @param node for which to look up the values
      * @return all values for given node, or an empty list if none found
      */
     List<V> getValues(final Node node) {
-        return getSelectorsWithParent(node, getCandidates(node), !FIND_ONE_ONLY)
+        final List<V> values = getSelectorsWithParent(node, getCandidates(node), !FIND_ONE_ONLY)
                 .stream()
                 .map(this::markUsed)
                 .map(selectors::get)
-                .collect(toList());
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        final List<V> valuesMatchingPredicates = new ArrayList<>();
+
+        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+            if (isPredicateMatch(node, entry)) {
+                entry.matched = true;
+                valuesMatchingPredicates.add(entry.value);
+            }
+        }
+
+        values.addAll(valuesMatchingPredicates);
+        return values;
+    }
+
+    private static boolean isPredicateMatch(final Node node, final PredicateSelectorEntry<?> entry) {
+        return entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD
+                ? entry.predicateSelector.getFieldPredicate().test(node.getField())
+                : entry.predicateSelector.getClassPredicate().test(node.getTargetClass());
     }
 
     private SelectorImpl markUsed(final SelectorImpl selector) {

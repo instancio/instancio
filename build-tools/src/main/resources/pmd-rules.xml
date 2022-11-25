@@ -24,6 +24,7 @@
     <rule ref="category/java/bestpractices.xml">
         <exclude name="AccessorClassGeneration"/>
         <exclude name="AccessorMethodGeneration"/>
+        <exclude name="AvoidStringBufferField"/>
         <exclude name="GuardLogStatement"/>
     </rule>
 

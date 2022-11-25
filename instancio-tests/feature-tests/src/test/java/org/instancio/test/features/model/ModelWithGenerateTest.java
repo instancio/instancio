@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
+import static org.instancio.Select.fields;
 import static org.instancio.Select.scope;
 
 @FeatureTag({Feature.MODEL, Feature.GENERATE})
@@ -34,12 +35,14 @@ class ModelWithGenerateTest {
 
     @Test
     void generate() {
-        final long longValue = 111;
-        final int intValue = 222;
+        final long longValue = -111;
+        final int intValue = -222;
+        final short shortValue = -333;
 
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
-                .generate(field("primitiveLong"), gen -> gen.longs().min(longValue).max(longValue))
-                .generate(allInts(), gen -> gen.ints().min(intValue).max(intValue))
+                .generate(field("primitiveLong"), gen -> gen.longs().range(longValue, longValue))
+                .generate(allInts(), gen -> gen.ints().range(intValue, intValue))
+                .generate(fields().ofType(short.class), gen -> gen.shorts().range(shortValue, shortValue))
                 .toModel();
 
         final SupportedNumericTypes result = Instancio.create(model);
@@ -47,6 +50,8 @@ class ModelWithGenerateTest {
         assertThat(result.getIntegerWrapper()).isEqualTo(intValue);
         assertThat(result.getPrimitiveLong()).isEqualTo(longValue);
         assertThat(result.getLongWrapper()).isNotNull().isNotEqualTo(longValue);
+        assertThat(result.getPrimitiveShort()).isEqualTo(shortValue);
+        assertThat(result.getShortWrapper()).isNotNull().isNotEqualTo(shortValue);
     }
 
     @Test

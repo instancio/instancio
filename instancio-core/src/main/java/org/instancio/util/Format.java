@@ -54,6 +54,30 @@ public final class Format {
                 .collect(joining(", "));
     }
 
+    /**
+     * Returns the first stacktrace element that is not 'org.instancio' as a string.
+     * Used for reporting unused selectors.
+     */
+    public static String firstNonInstancioStackTraceLine(final Throwable throwable) {
+        for (StackTraceElement element : throwable.getStackTrace()) {
+            if (!element.getClassName().startsWith("org.instancio")) {
+                return element.toString();
+            }
+        }
+        return "<unknown location>";
+    }
+
+    public static String selectorErrorMessage(
+            final String message, final String methodName, final String invokedMethods, final Throwable t) {
+        final String template = "%n" +
+                "  %s%n" +
+                "  Method invocation: %s%n" +
+                "  at %s";
+        final String invocation = String.format("%s.%s( -> null <- )", invokedMethods, methodName);
+        final String at = Format.firstNonInstancioStackTraceLine(t);
+        return String.format(template, message, invocation, at);
+    }
+
     private Format() {
         // non-instantiable
     }

@@ -17,6 +17,10 @@ package org.instancio;
 
 /**
  * A marker for selectors that contain other selectors.
+ *
+ * @see Selector
+ * @see TargetSelector
+ * @since 1.2.0
  */
 public interface SelectorGroup extends TargetSelector {
 }

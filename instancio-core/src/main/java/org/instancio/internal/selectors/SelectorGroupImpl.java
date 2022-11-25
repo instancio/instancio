@@ -18,6 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.GroupableSelector;
 import org.instancio.Selector;
 import org.instancio.SelectorGroup;
+import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 
 import java.util.ArrayList;
@@ -42,12 +43,12 @@ public final class SelectorGroupImpl implements SelectorGroup, Flattener {
     }
 
     @Override
-    public List<SelectorImpl> flatten() {
-        final List<SelectorImpl> results = new ArrayList<>();
+    public List<TargetSelector> flatten() {
+        final List<TargetSelector> results = new ArrayList<>();
 
         for (GroupableSelector selector : selectors) {
             if (selector instanceof SelectorImpl) {
-                results.add((SelectorImpl) selector);
+                results.add(selector);
             } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
                 results.addAll(((PrimitiveAndWrapperSelectorImpl) selector).flatten());
             } else {

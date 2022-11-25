@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
+import static org.instancio.Select.types;
 
 @NonDeterministicTag
 @FeatureTag({Feature.MODEL, Feature.NULLABLE})
@@ -44,11 +45,13 @@ class ModelWithNullableTest {
                 .withNullable(field("byteWrapper"))
                 .withNullable(all(Float.class))
                 .withNullable(allInts())
+                .withNullable(types().of(Long.class))
                 .toModel();
 
         assertThat(collectResults(model, SupportedNumericTypes::getByteWrapper)).containsNull();
         assertThat(collectResults(model, SupportedNumericTypes::getFloatWrapper)).containsNull();
         assertThat(collectResults(model, SupportedNumericTypes::getIntegerWrapper)).containsNull();
+        assertThat(collectResults(model, SupportedNumericTypes::getLongWrapper)).containsNull();
     }
 
     private static Set<Object> collectResults(final Model<SupportedNumericTypes> model,

@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
-@FeatureTag({Feature.GENERATE, Feature.ARRAY_GENERATOR_TYPE})
+@FeatureTag({Feature.GENERATE, Feature.ARRAY_GENERATOR_SUBTYPE})
 @ExtendWith(InstancioExtension.class)
 class ArrayTypeTest {
 
@@ -40,7 +40,10 @@ class ArrayTypeTest {
     @Disabled
     @FeatureTag(Feature.UNSUPPORTED)
     @SuppressWarnings(Sonar.DISABLED_TEST)
-    void shouldCreateArrayOfSpecifiedType2() {
+    void shouldCreateArrayOfSpecifiedType() {
+        // field.type:        class [Lorg.instancio.test.support.pojo.interfaces.ItemInterface;
+        // field.genericType: org.instancio.test.support.pojo.interfaces.ItemInterface<java.lang.String>[]
+
         final TwoArraysOfItemInterfaceString result = Instancio.of(TwoArraysOfItemInterfaceString.class)
                 .generate(all(ItemInterface[].class), gen -> gen.array().subtype(Item[].class))
                 .create();

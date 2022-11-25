@@ -15,9 +15,11 @@
  */
 package org.instancio.test.support.pojo.person;
 
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -25,10 +27,11 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
+@Pojo
 public class Person {
     private static final String STATIC_FINAL_FIELD = "a static final field";
 
@@ -38,6 +41,7 @@ public class Person {
     private final String finalField = "a final field";
 
     private UUID uuid;
+    @PersonName
     private String name;
     private Address address;
     private Gender gender;

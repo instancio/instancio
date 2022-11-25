@@ -15,6 +15,8 @@
  */
 package org.instancio.util;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public final class ObjectUtils {
@@ -22,11 +24,12 @@ public final class ObjectUtils {
         //non-instantiable
     }
 
-    public static <T> T defaultIfNull(final T value, final T defaultValue) {
+    @Nonnull
+    public static <T> T defaultIfNull(@Nullable final T value, final T defaultValue) {
         return value == null ? defaultValue : value;
     }
 
-    public static <T> T defaultIfNull(final T value, final Supplier<T> defaultValue) {
+    public static <T> T defaultIfNull(@Nullable final T value, final Supplier<T> defaultValue) {
         return value == null ? defaultValue.get() : value;
     }
 }

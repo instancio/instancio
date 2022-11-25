@@ -150,7 +150,7 @@ class SelectTest {
 
     @Test
     void coreTypeSelectorWithScope() {
-        final List<SelectorImpl> selectors = assertSelector(Select.allChars()
+        final List<TargetSelector> selectors = assertSelector(Select.allChars()
                 .within(
                         Select.scope(Foo.class),
                         Select.scope(Bar.class, "barValue")))
@@ -161,11 +161,11 @@ class SelectTest {
         assertThat(selectors).isNotEmpty().allSatisfy(selector -> {
             assertSelector(selector).hasScopeSize(2);
 
-            assertScope(selector.getScopes().get(0))
+            assertScope(((SelectorImpl) selector).getScopes().get(0))
                     .hasTargetClass(Foo.class)
                     .hasNullField();
 
-            assertScope(selector.getScopes().get(1))
+            assertScope(((SelectorImpl) selector).getScopes().get(1))
                     .hasTargetClass(Bar.class)
                     .hasFieldName("barValue");
         });

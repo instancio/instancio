@@ -21,6 +21,8 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.AddressExtension;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.types;
 
 @FeatureTag({Feature.MODEL, Feature.SUBTYPE})
 class ModelWithSubtypeTest {
@@ -38,6 +41,7 @@ class ModelWithSubtypeTest {
     void subtypeWithClassSelector() {
         final Model<Person> model = Instancio.of(Person.class)
                 .subtype(all(Address.class), AddressExtension.class)
+                .subtype(types().of(Phone.class), PhoneWithType.class)
                 .toModel();
 
         assertSubtype(model);
@@ -46,7 +50,9 @@ class ModelWithSubtypeTest {
     @Test
     void subtypeViaSettings() {
         final Model<Person> model = Instancio.of(Person.class)
-                .withSettings(Settings.create().mapType(Address.class, AddressExtension.class))
+                .withSettings(Settings.create()
+                        .mapType(Address.class, AddressExtension.class)
+                        .mapType(Phone.class, PhoneWithType.class))
                 .toModel();
 
         assertSubtype(model);
@@ -67,6 +73,8 @@ class ModelWithSubtypeTest {
     private static void assertSubtype(final Model<Person> model) {
         final Person result = Instancio.create(model);
         assertThat(result.getAddress()).isExactlyInstanceOf(AddressExtension.class);
+        assertThat(result.getAddress().getPhoneNumbers()).hasOnlyElementsOfType(PhoneWithType.class)
+                .allSatisfy(phone -> assertThat(((PhoneWithType) phone).getPhoneType()).isNotNull());
         assertThat(((AddressExtension) result.getAddress()).getAdditionalInfo()).isNotBlank();
     }
 }

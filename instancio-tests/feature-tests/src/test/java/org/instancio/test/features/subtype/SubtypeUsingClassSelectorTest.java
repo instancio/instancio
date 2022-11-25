@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.scope;
 
-@FeatureTag(Feature.SUBTYPE)
+@FeatureTag({Feature.SCOPE, Feature.SUBTYPE})
 @ExtendWith(InstancioExtension.class)
 class SubtypeUsingClassSelectorTest {
 
@@ -111,7 +111,6 @@ class SubtypeUsingClassSelectorTest {
                 .hasOnlyElementsOfType(StringBuilder.class)
                 .allSatisfy(elem -> assertThat(elem).isNotBlank());
     }
-
 
     @Nested
     class ValidationTest {

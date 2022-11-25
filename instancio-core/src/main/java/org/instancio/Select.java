@@ -15,29 +15,147 @@
  */
 package org.instancio;
 
+import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.selectors.FieldSelectorBuilderImpl;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.SelectorTargetKind;
+import org.instancio.internal.selectors.TypeSelectorBuilderImpl;
+
+import java.lang.reflect.Field;
+import java.util.function.Predicate;
 
 /**
- * A collection of static factory methods selecting fields and classes.
- * <p>
- * Examples:
+ * A collection of static factory methods for creating selectors.
+ * Selectors are used for targeting fields and classes.
+ * Instancio supports two types of selectors: regular and predicate-based.
+ *
+ * <p>Regular selectors allow matching by exact class (not including subtypes)
+ * and exact field names:</p>
+ *
  * <ul>
- *   <li>{@code field(Example.class, "someField")} - select some field of Example class</li>
- *   <li>{@code all(Example.class)} - select all instances of Example class</li>
- *   <li>{@code all(GroupableSelector...)} - convenience method for combining multiple selectors</li>
- *   <li>{@code allStrings()} - select all Strings</li>
- *   <li>{@code allInts()} - select all {@code Integer} objects and {@code int} primitives</li>
+ *   <li>{@link #field(String)}</li>
+ *   <li>{@link #field(Class, String)}</li>
+ *   <li>{@link #all(Class)}</li>
  * </ul>
+ *
+ * <p>Predicate selectors are more flexible as they use {@link Predicate Predicates} for matching:
+ *
+ * <ul>
+ *   <li>{@link #fields()}</li>
+ *   <li>{@link #types()}</li>
+ *   <li>{@link #fields(Predicate)}</li>
+ *   <li>{@link #types(Predicate)}</li>
+ * </ul>
+ *
+ * <p>The first two allow constructing predicates using convenience builder methods.
+ * If the builder methods are not sufficient, then the last two methods
+ * can be used instead with arbitrary predicates.</p>
+ *
+ * @see Selector
+ * @see SelectorGroup
+ * @see PredicateSelector
+ * @see TargetSelector
+ * @see GroupableSelector
+ * @since 1.2.0
  */
 public final class Select {
 
     /**
-     * Select all instances of the given type, not including subtypes.
+     * Provides a builder for selecting fields based on {@link Predicate Predicates}.
+     * This method can be used for selecting multiple fields in different classes.
+     * The returned builder offers convenience methods for constructing the predicate.
+     *
+     * <p>The following example will match all fields named {@code lastModified}
+     * declared in the {@code Person} and other classes referenced from {@code Person}.</p>
+     *
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *         .supply(fields().named("lastModified"), () -> LocalDateTime.now())
+     *         .create();
+     * }</pre>
+     *
+     * <p>Specifying only {@code fields()} (without further predicates)
+     * will match all fields declared across the class tree.</p>
+     *
+     * <p>The alternative method {@link #fields(Predicate)} can be used to specify
+     * a predicate directly.</p>
+     *
+     * @return predicate selector builder for matching fields
+     * @see #fields(Predicate)
+     * @see #types(Predicate)
+     * @see #types()
+     * @since 1.6.0
+     */
+    public static FieldSelectorBuilder fields() {
+        return new FieldSelectorBuilderImpl();
+    }
+
+    /**
+     * Provides a builder for selecting types based on {@link Predicate Predicates}.
+     * This method can be used for selecting multiple types.
+     * The returned builder offers convenience methods for constructing the predicate.
+     *
+     * <p>The following example will match all types annotated {@code @Embeddable}.</p>
+     *
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *         .set(types().annotated(Embeddable.class), null)
+     *         .create();
+     * }</pre>
+     *
+     * <p>Specifying only {@code types()} (without further predicates)
+     * will match all types referenced in the class tree.</p>
+     *
+     * <p>The alternative method {@link #types(Predicate)} can be used to specify
+     * a predicate directly.</p>
+     *
+     * @return predicate selector builder for matching types
+     * @see #types(Predicate)
+     * @see #fields(Predicate)
+     * @see #fields()
+     * @since 1.6.0
+     */
+    public static TypeSelectorBuilder types() {
+        return new TypeSelectorBuilderImpl();
+    }
+
+    /**
+     * Select all fields matching the specified predicate.
+     *
+     * @param predicate for matching fields
+     * @return a predicate selector
+     * @see #fields()
+     * @see #types()
+     * @see #types(Predicate)
+     * @since 1.6.0
+     */
+    public static TargetSelector fields(final Predicate<Field> predicate) {
+        ApiValidator.notNull(predicate, "Field predicate must not be null");
+        return new PredicateSelectorImpl(SelectorTargetKind.FIELD, predicate, null, null);
+    }
+
+    /**
+     * Select all types matching the specified predicate.
+     *
+     * @param predicate for matching types
+     * @return a predicate selector
+     * @see #types()
+     * @see #fields()
+     * @see #fields(Predicate)
+     * @since 1.6.0
+     */
+    public static TargetSelector types(final Predicate<Class<?>> predicate) {
+        ApiValidator.notNull(predicate, "Type predicate must not be null");
+        return new PredicateSelectorImpl(SelectorTargetKind.CLASS, null, predicate, null);
+    }
+
+    /**
+     * Select all instances of the given type, <b>not including</b> subtypes.
      * <p>
      * If the type is a primitive or wrapper, this method only selects the specified type. For example:
      * <ul>
@@ -49,6 +167,7 @@ public final class Select {
      *
      * @param type to select
      * @return a selector for given class
+     * @since 1.2.0
      */
     public static Selector all(final Class<?> type) {
         ApiValidator.notNull(type, "Class must not be null");
@@ -57,9 +176,31 @@ public final class Select {
 
     /**
      * A convenience method for combining multiple selectors.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *         .withNullable(all(
+     *             all(Gender.class),
+     *             all(Phone.class),
+     *             field(Person.class, "dateOfBirth")
+     *         ))
+     *         .create()
+     * }</pre>
+     *
+     * <p><b>Note:</b> this method only accepts regular selectors.
+     * Predicate selectors, listed below, are not groupable:</p>
+     *
+     * <ul>
+     *   <li>{@link #types()}</li>
+     *   <li>{@link #fields()}</li>
+     *   <li>{@link #types(Predicate)}</li>
+     *   <li>{@link #fields(Predicate)}</li>
+     * </ul>
      *
      * @param selectors to combine
      * @return a group containing given selectors
+     * @since 1.3.0
      */
     public static SelectorGroup all(final GroupableSelector... selectors) {
         ApiValidator.notEmpty(selectors, "Selector group must contain at least one selector");
@@ -67,11 +208,16 @@ public final class Select {
     }
 
     /**
-     * Selects a field of the specified class.
+     * Selects a field by name in the specified class. The name must match exactly.
      *
      * @param declaringClass class declaring the field
      * @param fieldName      field name to select
      * @return a selector for given field
+     * @throws InstancioApiException if the class has no field with the specified name
+     * @see #field(String)
+     * @see #fields()
+     * @see #fields(Predicate)
+     * @since 1.2.0
      */
     public static Selector field(final Class<?> declaringClass, final String fieldName) {
         //noinspection ConstantConditions
@@ -83,7 +229,7 @@ public final class Select {
     }
 
     /**
-     * Selects a field that belongs to the class being created.
+     * Selects a field by name declared in the class being created.
      * <p>
      * Example
      * <pre>{@code
@@ -91,9 +237,15 @@ public final class Select {
      *             .ignore(field("fullName")) // Person.fullName
      *             .create();
      * }</pre>
+     * <p>
      *
      * @param fieldName field name to select
      * @return a selector for given field
+     * @throws InstancioApiException if the class being created has no field with the specified name
+     * @see #field(Class, String)
+     * @see #fields()
+     * @see #fields(Predicate)
+     * @since 1.2.0
      */
     public static Selector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "Field name must not be null");
@@ -104,6 +256,7 @@ public final class Select {
      * Shorthand for {@code all(String.class)}.
      *
      * @return selector for all Strings
+     * @since 1.2.0
      */
     public static Selector allStrings() {
         return all(String.class);
@@ -113,6 +266,7 @@ public final class Select {
      * Selects all bytes, primitive and wrapper.
      *
      * @return selector for all bytes
+     * @since 1.2.0
      */
     public static Selector allBytes() {
         return new PrimitiveAndWrapperSelectorImpl(byte.class, Byte.class);
@@ -122,6 +276,7 @@ public final class Select {
      * Selects all floats, primitive and wrapper.
      *
      * @return selector for all floats
+     * @since 1.2.0
      */
     public static Selector allFloats() {
         return new PrimitiveAndWrapperSelectorImpl(float.class, Float.class);
@@ -131,6 +286,7 @@ public final class Select {
      * Selects all shorts, primitive and wrapper.
      *
      * @return selector for all shorts
+     * @since 1.2.0
      */
     public static Selector allShorts() {
         return new PrimitiveAndWrapperSelectorImpl(short.class, Short.class);
@@ -140,6 +296,7 @@ public final class Select {
      * Selects all integers, primitive and wrapper.
      *
      * @return selector for all integers
+     * @since 1.2.0
      */
     public static Selector allInts() {
         return new PrimitiveAndWrapperSelectorImpl(int.class, Integer.class);
@@ -149,6 +306,7 @@ public final class Select {
      * Selects all longs, primitive and wrapper.
      *
      * @return selector for all longs
+     * @since 1.2.0
      */
     public static Selector allLongs() {
         return new PrimitiveAndWrapperSelectorImpl(long.class, Long.class);
@@ -158,6 +316,7 @@ public final class Select {
      * Selects all doubles, primitive and wrapper.
      *
      * @return selector for all doubles
+     * @since 1.2.0
      */
     public static Selector allDoubles() {
         return new PrimitiveAndWrapperSelectorImpl(double.class, Double.class);
@@ -167,6 +326,7 @@ public final class Select {
      * Selects all booleans, primitive and wrapper.
      *
      * @return selector for all booleans
+     * @since 1.2.0
      */
     public static Selector allBooleans() {
         return new PrimitiveAndWrapperSelectorImpl(boolean.class, Boolean.class);
@@ -176,6 +336,7 @@ public final class Select {
      * Selects all characters, primitive and wrapper.
      *
      * @return selector for all characters
+     * @since 1.2.0
      */
     public static Selector allChars() {
         return new PrimitiveAndWrapperSelectorImpl(char.class, Character.class);
@@ -217,6 +378,16 @@ public final class Select {
      *         .set(allBooleans().within(scope(CustomerConsent.class)), true)
      *         .create();
      * }</pre>
+     *
+     * <p><b>Note:</b> scopes can only be applied to regular selectors.
+     * Predicate selectors, listed below, cannot be scoped.
+     *
+     * <ul>
+     *   <li>{@link #types()}</li>
+     *   <li>{@link #fields()}</li>
+     *   <li>{@link #types(Predicate)}</li>
+     *   <li>{@link #fields(Predicate)}</li>
+     * </ul>
      *
      * @param targetClass of the scope
      * @return a scope for fine-tuning a selector

@@ -21,7 +21,6 @@ import org.instancio.test.support.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -33,12 +32,13 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
-import static org.instancio.Select.all;
-import static org.instancio.Select.allInts;
-import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
-@FeatureTag(Feature.GENERATE)
+@FeatureTag({
+        Feature.SELECTOR,
+        Feature.SET,
+        Feature.GENERATE,
+        Feature.SUPPLY})
 class UserSuppliedFieldGeneratorsTest {
 
     @Test
@@ -81,35 +81,4 @@ class UserSuppliedFieldGeneratorsTest {
                 .isNull();
     }
 
-    @Test
-    @DisplayName("Values provided via supply() should take precedence over generate()")
-    void supplyShouldTakePrecedenceOverGenerate() {
-        final String expectedName = "test name";
-        final int expectedAge = 99;
-        final Person result = Instancio.of(Person.class)
-                .supply(field("name"), () -> expectedName)
-                .supply(allInts(), () -> expectedAge)
-                .generate(field("name"), gen -> gen.string().minLength(100))
-                .generate(allInts(), gen -> gen.ints().min(expectedAge + 1))
-                .create();
-
-        assertThat(result.getName()).isEqualTo(expectedName);
-        assertThat(result.getAge()).isEqualTo(expectedAge);
-    }
-
-    @Test
-    @DisplayName("Values provided via supply() using a field selector should take precedence over class selector")
-    void supplyUsingFieldSelectorShouldTakePrecedenceOverClassSelector() {
-        final Person result = Instancio.of(Person.class)
-                .lenient()
-                .supply(field("address"), () -> null)
-                .supply(all(Address.class), Address::new)
-                .set(allStrings(), "foo")
-                .set(field("name"), "bar")
-                .create();
-
-        assertThat(result.getAddress()).isNull();
-        assertThat(result.getName()).isEqualTo("bar");
-        assertThat(result.getPets()).extracting(Pet::getName).containsOnly("foo");
-    }
 }

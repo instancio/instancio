@@ -19,6 +19,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.instancio.Select;
 import org.instancio.Selector;
+import org.instancio.TargetSelector;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.testsupport.asserts.SelectorAssert;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,8 @@ class PrimitiveAndWrapperSelectorImplTest {
 
         SelectorAssert.assertSelector(selector).isCoreTypeSelectorWithoutScope(int.class, Integer.class);
         SelectorAssert.assertSelector(scopedSelector).isCoreTypeSelector(int.class, Integer.class);
-        assertThat(scopedSelector.flatten().get(0).getScopes()).containsExactly(scope(IntegerHolder.class));
-        assertThat(scopedSelector.flatten().get(1).getScopes()).containsExactly(scope(IntegerHolder.class));
+        assertThat(((SelectorImpl) scopedSelector.flatten().get(0)).getScopes()).containsExactly(scope(IntegerHolder.class));
+        assertThat(((SelectorImpl) scopedSelector.flatten().get(1)).getScopes()).containsExactly(scope(IntegerHolder.class));
     }
 
     @Test
@@ -68,7 +69,7 @@ class PrimitiveAndWrapperSelectorImplTest {
     @Test
     void flatten() {
         final Selector selector = Select.allBooleans();
-        final List<SelectorImpl> results = ((Flattener) selector).flatten();
+        final List<TargetSelector> results = ((Flattener) selector).flatten();
         assertThat(results).hasSize(2);
         SelectorAssert.assertSelector(results.get(0)).isClassSelectorWithNoScope().hasTargetClass(boolean.class);
         SelectorAssert.assertSelector(results.get(1)).isClassSelectorWithNoScope().hasTargetClass(Boolean.class);

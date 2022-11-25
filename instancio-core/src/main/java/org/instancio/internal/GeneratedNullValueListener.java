@@ -58,6 +58,8 @@ class GeneratedNullValueListener implements GenerationListener {
             final Node current = queue.poll();
 
             // mark as "used"
+            context.isIgnored(current);
+            context.isNullable(current);
             context.getGenerator(current);
             context.getCallbacks(current);
             context.getSubtypeMap().getSubtype(current);

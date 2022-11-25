@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("UnusedReturnValue")
 public class UnusedSelectorsAssert extends StringAssert {
+    // NOTE: this assert is for regular (non-predicate) selectors.
     private static final Pattern UNUSED_SELECTOR = Pattern.compile("all\\w*\\(|field\\(");
 
     private UnusedSelectorsAssert(String actual) {

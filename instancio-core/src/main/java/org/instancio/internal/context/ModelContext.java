@@ -50,8 +50,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static org.instancio.internal.context.ModelContextHelper.applyRootClass;
 import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap;
+import static org.instancio.internal.context.ModelContextHelper.preProcess;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class ModelContext<T> {
@@ -94,7 +94,7 @@ public final class ModelContext<T> {
                 builder.generatorSelectors,
                 builder.generatorSpecSelectors);
 
-        subtypeSelectorMap.putAll(generatorSelectorMap.getClassSubtypeMap());
+        subtypeSelectorMap.putAll(generatorSelectorMap.getGeneratorSubtypeMap());
     }
 
     private static Settings createSettings(final Builder<?> builder) {
@@ -230,38 +230,38 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> withSubtype(final TargetSelector selector, final Class<?> subtype) {
-            this.subtypeSelectors.put(applyRootClass(selector, rootClass),
+            this.subtypeSelectors.put(preProcess(selector, rootClass),
                     ApiValidator.notNull(subtype, "Subtype must not be null"));
             return this;
         }
 
         public Builder<T> withGenerator(final TargetSelector selector, final Generator<?> generator) {
-            this.generatorSelectors.put(applyRootClass(selector, rootClass), generator);
+            this.generatorSelectors.put(preProcess(selector, rootClass), generator);
             return this;
         }
 
         public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
-            this.generatorSelectors.put(applyRootClass(selector, rootClass), random -> supplier.get());
+            this.generatorSelectors.put(preProcess(selector, rootClass), rand -> supplier.get());
             return this;
         }
 
         public Builder<T> withGeneratorSpec(final TargetSelector selector, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
-            this.generatorSpecSelectors.put(applyRootClass(selector, rootClass), spec);
+            this.generatorSpecSelectors.put(preProcess(selector, rootClass), spec);
             return this;
         }
 
         public Builder<T> withOnCompleteCallback(final TargetSelector selector, final OnCompleteCallback<?> callback) {
-            this.onCompleteCallbacks.put(applyRootClass(selector, rootClass), callback);
+            this.onCompleteCallbacks.put(preProcess(selector, rootClass), callback);
             return this;
         }
 
         public Builder<T> withIgnored(final TargetSelector selector) {
-            this.ignoredTargets.add(applyRootClass(selector, rootClass));
+            this.ignoredTargets.add(preProcess(selector, rootClass));
             return this;
         }
 
         public Builder<T> withNullable(final TargetSelector selector) {
-            this.nullableTargets.add(applyRootClass(selector, rootClass));
+            this.nullableTargets.add(preProcess(selector, rootClass));
             return this;
         }
 

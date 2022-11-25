@@ -19,12 +19,14 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.instancio.Select;
 import org.instancio.Selector;
+import org.instancio.TargetSelector;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.testsupport.asserts.ScopeAssert;
+import org.instancio.testsupport.fixtures.Throwables;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -33,6 +35,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.scope;
 
 class SelectorImplTest {
+
+    @Test
+    void getDescription() {
+        final Throwable throwable = Throwables.mockThrowable(Throwable.class,
+                "org.instancio.Foo:1",
+                "org.example.ExpectedClass:2",
+                "org.instancio.Bar:3");
+
+        final SelectorImpl selector = new SelectorImpl(
+                SelectorTargetKind.CLASS, Foo.class, null, null, null, throwable);
+
+        assertThat(selector.getDescription()).isEqualTo(
+                String.format("all(Foo)%n" +
+                        "    at org.example.ExpectedClass:2"));
+    }
 
     @Test
     void verifyEqualsAndHashcode() {
@@ -45,8 +62,8 @@ class SelectorImplTest {
     @Test
     void flatten() {
         final Selector selector = Select.field("foo");
-        final List<SelectorImpl> results = ((Flattener) selector).flatten();
-        assertThat(results).containsExactly((SelectorImpl) selector);
+        final List<TargetSelector> results = ((Flattener) selector).flatten();
+        assertThat(results).containsExactly(selector);
     }
 
     @Test

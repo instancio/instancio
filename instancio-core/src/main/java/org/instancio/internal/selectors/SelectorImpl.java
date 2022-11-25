@@ -18,6 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.Selector;
+import org.instancio.TargetSelector;
 import org.instancio.util.Format;
 
 import javax.annotation.Nullable;
@@ -26,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class SelectorImpl implements Selector, GroupableSelector, Flattener {
+public class SelectorImpl implements Selector, GroupableSelector, Flattener, UnusedSelectorDescription {
 
     private final SelectorTargetKind selectorTargetKind;
     private final Class<?> targetClass;
@@ -79,19 +80,9 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener {
         return stackTraceHolder;
     }
 
-    /**
-     * Returns the line where this selector was declared in client code.
-     * Used for reporting unused selectors.
-     *
-     * @return the first non-Instancio stacktrace element as a string.
-     */
-    public String getStackTraceLine() {
-        for (StackTraceElement element : stackTraceHolder.getStackTrace()) {
-            if (!element.getClassName().startsWith("org.instancio")) {
-                return element.toString();
-            }
-        }
-        return "<unknown location>";
+    @Override
+    public String getDescription() {
+        return String.format("%s%n    at %s", this, Format.firstNonInstancioStackTraceLine(stackTraceHolder));
     }
 
     @Override
@@ -105,7 +96,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener {
     }
 
     @Override
-    public List<SelectorImpl> flatten() {
+    public List<TargetSelector> flatten() {
         return Collections.singletonList(this);
     }
 
@@ -159,10 +150,8 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener {
     public String toString() {
         final StringBuilder sb = new StringBuilder();
 
-        if (getParent() instanceof PrimitiveAndWrapperSelectorImpl) {
-            if (targetClass.isPrimitive()) {
-                sb.append(getParent());
-            }
+        if (parent instanceof PrimitiveAndWrapperSelectorImpl) {
+            sb.append(parent);
         } else {
             sb.append(selectorTargetKind == SelectorTargetKind.CLASS ? "all(" : "field(");
 

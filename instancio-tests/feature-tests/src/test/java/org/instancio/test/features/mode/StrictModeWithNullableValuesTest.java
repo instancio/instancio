@@ -47,7 +47,10 @@ import static org.instancio.Select.allStrings;
 
 /**
  * If null is generated for a nullable and some selector(s) are not used as a result,
- * then the unused selector(s) should not trigger "unused selector" error.
+ * then the unused selector(s) should <b>not</b> trigger "unused selector" error.
+ * <p>
+ * This test verifies the above scenario, therefore some test methods do not have
+ * assertions. The fact that "unused selector" error is not thrown means the test passes.
  */
 @FeatureTag({
         Feature.MODE,

@@ -30,29 +30,31 @@ import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObje
 
 class ReflectionAssertTest {
 
+    private static final String FOO = "foo";
+
     @Test
     void hasAllFieldsOfTypeSetToNull() {
         final Person person = new Person();
         person.setUuid(UUID.randomUUID());
         assertThatObject(person).hasAllFieldsOfTypeSetToNull(String.class);
 
-        person.setName("foo");
+        person.setName(FOO);
         assertThatThrownBy(() -> assertThatObject(person).hasAllFieldsOfTypeSetToNull(String.class))
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining("Expected 'Person.name' to be null, but was: 'foo'");
     }
 
     @Test
-    void hasAllFieldsOfTypeEqualTo() {
-        final Address address = new Address();
-        address.setAddress("foo");
-        address.setCity("foo");
-        address.setCountry("foo");
+    void hasAllFieldsOfTypeEqualToFoo() {
+        assertThatObject(createAddressFilledWithFoo()).hasAllFieldsOfTypeEqualTo(String.class, FOO);
+    }
 
-        assertThatObject(address).hasAllFieldsOfTypeEqualTo(String.class, "foo");
-
+    @Test
+    void hasAllFieldsOfTypeEqualToWithBar() {
+        final Address address = createAddressFilledWithFoo();
         address.setCity("bar");
-        assertThatThrownBy(() -> assertThatObject(address).hasAllFieldsOfTypeEqualTo(String.class, "foo"))
+
+        assertThatThrownBy(() -> assertThatObject(address).hasAllFieldsOfTypeEqualTo(String.class, FOO))
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining("Expected 'Address.city' to be equal to 'foo', but was: 'bar'");
     }
@@ -60,21 +62,16 @@ class ReflectionAssertTest {
     @Test
     void hasAllFieldsOfTypeNotEqualTo() {
         final Address address = new Address();
+        address.setCity(FOO);
 
-        assertThatObject(address).hasAllFieldsOfTypeNotEqualTo(String.class, "foo");
-
-        address.setCity("foo");
-        assertThatThrownBy(() -> assertThatObject(address).hasAllFieldsOfTypeNotEqualTo(String.class, "foo"))
+        assertThatThrownBy(() -> assertThatObject(address).doesNotHaveAllFieldsOfTypeEqualTo(String.class, FOO))
                 .isInstanceOf(AssertionError.class)
-                .hasMessageContaining("Expected 'Address.city' to NOT be equal to 'foo', but was: 'foo'");
+                .hasMessageContaining("Expected 'Address.city' to NOT be equal to 'foo'");
     }
 
     @Test
     void isFullyPopulatedWithEmptyList() {
-        final Address address = new Address();
-        address.setAddress("foo");
-        address.setCity("foo");
-        address.setCountry("foo");
+        final Address address = createAddressFilledWithFoo();
         address.setPhoneNumbers(Collections.emptyList());
 
         assertThatThrownBy(() -> assertThatObject(address).isFullyPopulated())
@@ -85,10 +82,7 @@ class ReflectionAssertTest {
 
     @Test
     void isFullyPopulatedWithNullObject() {
-        final Address address = new Address();
-        address.setAddress("foo");
-        address.setCity("foo");
-        address.setCountry("foo");
+        final Address address = createAddressFilledWithFoo();
 
         address.setPhoneNumbers(Arrays.asList(
                 new Phone("+1", "123"),
@@ -105,5 +99,16 @@ class ReflectionAssertTest {
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining("Expected size to be between: 2 and 6 but was: 0");
 
+    }
+
+    private static Address createAddressFilledWithFoo() {
+        return Address.builder()
+                .address(FOO)
+                .city(FOO)
+                .country(FOO)
+                .phoneNumbers(Arrays.asList(
+                        new Phone(FOO, FOO),
+                        new Phone(FOO, FOO)))
+                .build();
     }
 }
