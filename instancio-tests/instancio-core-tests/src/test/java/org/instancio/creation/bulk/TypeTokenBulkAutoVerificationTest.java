@@ -27,8 +27,11 @@ import org.instancio.test.support.pojo.generics.basic.Triplet;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.instancio.test.support.tags.CreateTag;
 import org.instancio.util.Format;
 import org.junit.jupiter.api.Named;
@@ -64,6 +67,9 @@ class TypeTokenBulkAutoVerificationTest {
     }
 
     private static final List<TypeToken<?>> TYPES = Arrays.asList(
+            // TODO Field 'EntityWithId.id' is null
+            // new TypeToken<GenericTypesWithInheritance.ItemHolder<PhoneWithType, Item<PhoneWithType>>>() {},
+            // new TypeToken<GenericTypesWithInheritance.PhoneHolder<Phone>>() {},
             new TypeToken<Foo<Bar<Baz<Foo<Bar<Baz<String>>>>>>>() {},
             new TypeToken<Foo<Foo<Foo<Baz<Baz<Baz<Foo<Short>>>>>>>>() {},
             new TypeToken<Integer[]>() {},

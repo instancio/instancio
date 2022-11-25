@@ -301,17 +301,17 @@ public interface InstancioApi<T> {
     InstancioApi<T> withSettings(Settings settings);
 
     /**
-     * Set the seed value for the random number generator. If seed is not specified,
-     * a random seed will be used. Specifying a seed is useful for reproducing test results.
+     * Sets the seed value for the random number generator. If the seed is not specified,
+     * a random seed will be used. Specifying the seed is useful for reproducing test results.
      * By specifying the seed value, the same random data will be generated again.
      *
      * <p>
      * Example:
      * <pre>{@code
      *     // Generates a different UUID each time
-     *     UUID result = Instancio.of(UUID.class).create();
+     *     UUID result = Instancio.create(UUID.class);
      *
-     *     // Generates the same UUID
+     *     // Generates the same UUID each time
      *     UUID result = Instancio.of(UUID.class)
      *             .withSeed(1234)
      *             .create();

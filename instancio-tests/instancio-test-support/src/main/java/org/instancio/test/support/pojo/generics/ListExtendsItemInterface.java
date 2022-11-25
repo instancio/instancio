@@ -13,19 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.instancio.util;
+package org.instancio.test.support.pojo.generics;
 
-import java.security.SecureRandom;
+import lombok.Getter;
+import lombok.ToString;
+import org.instancio.test.support.pojo.interfaces.ItemInterface;
 
-public final class SeedUtil {
+import java.util.List;
 
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+@Getter
+@ToString
+public class ListExtendsItemInterface {
 
-    private SeedUtil() {
-        // non-instantiable
-    }
-
-    public static long randomSeed() {
-        return SECURE_RANDOM.nextLong();
-    }
+    private List<? extends ItemInterface<String>> list;
 }

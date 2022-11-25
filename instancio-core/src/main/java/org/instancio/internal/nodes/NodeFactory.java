@@ -23,7 +23,6 @@ import org.instancio.internal.reflection.FieldCollector;
 import org.instancio.spi.TypeResolver;
 import org.instancio.util.Format;
 import org.instancio.util.ObjectUtils;
-import org.instancio.util.ServiceLoaders;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -51,17 +50,16 @@ import static java.util.stream.Collectors.toList;
 /**
  * Class for creating a node hierarchy for a given {@link Type}.
  */
-@SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
 public final class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
     private final NodeContext nodeContext;
-    private final List<TypeResolver> typeResolvers;
+    private final TypeResolverFacade typeResolverFacade;
 
     public NodeFactory(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
-        this.typeResolvers = ServiceLoaders.loadAll(TypeResolver.class);
+        this.typeResolverFacade = new TypeResolverFacade();
     }
 
     public Node createRootNode(final Type type) {
@@ -129,18 +127,7 @@ public final class NodeFactory {
             return target;
         }
 
-        final Class<?> typeToResolve = node.getRawType();
-
-        for (TypeResolver resolver : typeResolvers) {
-            final Optional<Class<?>> resolved = resolver.resolve(typeToResolve);
-            if (resolved.isPresent()) {
-                LOG.debug("Using subtype provided via '{}': {} -> {}",
-                        resolver.getClass().getName(), node.getRawType().getName(), resolved.get().getName());
-                return resolved;
-            }
-        }
-
-        return Optional.empty();
+        return typeResolverFacade.resolve(node.getRawType());
     }
 
     private Node createNodeWithSubtypeMapping(final Type type, @Nullable final Field field, @Nullable final Node parent) {

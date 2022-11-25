@@ -20,9 +20,9 @@ import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.random.DefaultRandom;
+import org.instancio.internal.random.Seeds;
 import org.instancio.settings.Settings;
 import org.instancio.util.ReflectionUtils;
-import org.instancio.util.SeedUtil;
 import org.instancio.util.Sonar;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
@@ -61,7 +61,7 @@ final class ExtensionSupport {
             } else if (ModelContext.getGlobalRandom() != null) {
                 seed = ModelContext.getGlobalRandom().getSeed();
             } else {
-                seed = SeedUtil.randomSeed();
+                seed = Seeds.randomSeed();
             }
 
             // each test method gets a new instance of random to avoid

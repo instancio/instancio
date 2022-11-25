@@ -18,11 +18,16 @@ package org.instancio.test.features.selector;
 import org.instancio.Instancio;
 import org.instancio.TargetSelector;
 import org.instancio.TypeToken;
+import org.instancio.test.support.pojo.generics.ListExtendsItemInterface;
 import org.instancio.test.support.pojo.generics.ListExtendsNumber;
+import org.instancio.test.support.pojo.generics.ListExtendsPair;
 import org.instancio.test.support.pojo.generics.MiscFields;
+import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.FooBarBazContainer;
+import org.instancio.test.support.pojo.interfaces.ItemInterface;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.GenericsTag;
@@ -79,8 +84,8 @@ class SelectWithGenericFieldsTest {
     }
 
     @Test
-    @DisplayName("Selecting wildcard extends")
-    void selectingWildcardExtends() {
+    @DisplayName("Selecting wildcard extends non-generic type")
+    void selectingWildcardExtendsNumber() {
         // Given declared field: List<? extends Number> list
         final double expectedValue = 1.234;
         final ListExtendsNumber result = Instancio.of(ListExtendsNumber.class)
@@ -91,6 +96,39 @@ class SelectWithGenericFieldsTest {
                 .as("All numbers in the list should have expected value")
                 .isNotEmpty()
                 .allSatisfy(it -> assertThat(it).isEqualTo(expectedValue));
+    }
+
+    @Test
+    @DisplayName("Selecting wildcard extends generic concrete type")
+    void selectingWildcardExtendsPair() {
+        // Given declared field: List<? extends Pair<Long, String>> list
+        final String expectedValue = "foo";
+        final ListExtendsPair result = Instancio.of(ListExtendsPair.class)
+                .set(allStrings(), expectedValue)
+                .create();
+
+        assertThat(result.getList())
+                .as("All pairs in the list should have expected value")
+                .isNotEmpty()
+                .hasOnlyElementsOfTypes(Pair.class)
+                .allSatisfy(it -> assertThat(it.getRight()).isEqualTo(expectedValue));
+    }
+
+    @Test
+    @DisplayName("Selecting wildcard extends generic abstract type")
+    void selectingWildcardExtendsItemInterface() {
+        // Given declared field: List<? extends ItemInterface<String>> list
+        final String expectedValue = "foo";
+        final ListExtendsItemInterface result = Instancio.of(ListExtendsItemInterface.class)
+                .subtype(types().of(ItemInterface.class), Item.class)
+                .set(allStrings(), expectedValue)
+                .create();
+
+        assertThat(result.getList())
+                .as("All pairs in the list should have expected value")
+                .isNotEmpty()
+                .hasOnlyElementsOfTypes(Item.class)
+                .allSatisfy(it -> assertThat(it.getValue()).isEqualTo(expectedValue));
     }
 
     @ParameterizedTest

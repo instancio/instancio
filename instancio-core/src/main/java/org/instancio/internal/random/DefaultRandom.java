@@ -16,7 +16,6 @@
 package org.instancio.internal.random;
 
 import org.instancio.Random;
-import org.instancio.util.SeedUtil;
 import org.instancio.util.Verify;
 
 import java.util.Collection;
@@ -30,7 +29,7 @@ public class DefaultRandom implements Random {
      * Create an instance with a random seed value.
      */
     public DefaultRandom() {
-        this(SeedUtil.randomSeed());
+        this(Seeds.randomSeed());
     }
 
     /**
