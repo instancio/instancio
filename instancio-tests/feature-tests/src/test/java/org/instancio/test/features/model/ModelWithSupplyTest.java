@@ -25,18 +25,21 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
+import static org.instancio.Select.fields;
 
 @FeatureTag({Feature.MODEL, Feature.SUPPLY})
 class ModelWithSupplyTest {
 
     @Test
     void supply() {
-        final long longValue = 111;
-        final int intValue = 222;
+        final long longValue = -111;
+        final int intValue = -222;
+        final short shortValue = -333;
 
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
                 .supply(field("primitiveLong"), () -> longValue)
                 .supply(allInts(), () -> intValue)
+                .supply(fields().ofType(short.class), () -> shortValue)
                 .toModel();
 
         final SupportedNumericTypes result = Instancio.create(model);
@@ -44,5 +47,7 @@ class ModelWithSupplyTest {
         assertThat(result.getIntegerWrapper()).isEqualTo(intValue);
         assertThat(result.getPrimitiveLong()).isEqualTo(longValue);
         assertThat(result.getLongWrapper()).isNotNull().isNotEqualTo(longValue);
+        assertThat(result.getPrimitiveShort()).isEqualTo(shortValue);
+        assertThat(result.getShortWrapper()).isNotNull().isNotEqualTo(shortValue);
     }
 }

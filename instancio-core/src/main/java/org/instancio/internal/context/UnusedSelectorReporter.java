@@ -17,9 +17,8 @@ package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
-import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.UnusedSelectorDescription;
 
-import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
@@ -92,14 +91,15 @@ final class UnusedSelectorReporter {
     }
 
     private static String formatSelectors(final Set<? super TargetSelector> selectors) {
-        int[] count = {1};
+        final int[] count = {1};
         return selectors.stream()
-                .map(SelectorImpl.class::cast)
-                .map(it -> {
-                    final String str = it.toString();
-                    return "".equals(str) ? null : String.format(" %s: %s%n    at %s", count[0]++, str, it.getStackTraceLine());
-                })
-                .filter(Objects::nonNull)
+                .map(UnusedSelectorDescription.class::cast)
+                .map(UnusedSelectorDescription::getDescription)
+                // when selectors are flattened, PrimitiveAndWrapperSelector results in two entries,
+                // one for primitive and one for wrapper. Using distinct to prevent duplicate entries.
+                .distinct()
+                .sorted()
+                .map(it -> String.format(" %s: %s", count[0]++, it))
                 .collect(joining(NL));
     }
 

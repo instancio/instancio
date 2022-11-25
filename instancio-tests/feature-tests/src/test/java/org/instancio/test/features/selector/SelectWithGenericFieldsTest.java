@@ -16,6 +16,7 @@
 package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
+import org.instancio.TargetSelector;
 import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.generics.ListExtendsNumber;
 import org.instancio.test.support.pojo.generics.MiscFields;
@@ -27,14 +28,19 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.GenericsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allLongs;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.types;
 
 @GenericsTag
 @FeatureTag(Feature.SELECTOR)
@@ -48,9 +54,9 @@ class SelectWithGenericFieldsTest {
         final UUID expectedUUID = UUID.randomUUID();
 
         final MiscFields<String, Long, UUID> result = Instancio.of(new TypeToken<MiscFields<String, Long, UUID>>() {})
-                .supply(allStrings(), () -> expectedString)
-                .supply(allLongs(), () -> expectedLongValue)
-                .supply(all(UUID.class), () -> expectedUUID)
+                .set(allStrings(), expectedString)
+                .set(allLongs(), expectedLongValue)
+                .set(all(UUID.class), expectedUUID)
                 .create();
 
         // verify String
@@ -78,7 +84,7 @@ class SelectWithGenericFieldsTest {
         // Given declared field: List<? extends Number> list
         final double expectedValue = 1.234;
         final ListExtendsNumber result = Instancio.of(ListExtendsNumber.class)
-                .supply(all(Number.class), () -> expectedValue)
+                .set(all(Number.class), expectedValue)
                 .create();
 
         assertThat(result.getList())
@@ -87,15 +93,16 @@ class SelectWithGenericFieldsTest {
                 .allSatisfy(it -> assertThat(it).isEqualTo(expectedValue));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("selectAllBars")
     @DisplayName("Selecting parameterized class with matching type argument")
-    void selectingParameterizedClassWithMatchingTypeArgument() {
+    void selectingParameterizedClassWithMatchingTypeArgument(final TargetSelector selector) {
         // Given declared field: Foo<Bar<Baz<String>>> item
         // and supplied value:       Bar<Baz<String>>
         final Bar<Baz<String>> expectedBar = Instancio.create(new TypeToken<Bar<Baz<String>>>() {});
 
         final FooBarBazContainer result = Instancio.of(FooBarBazContainer.class)
-                .supply(all(Bar.class), () -> expectedBar)
+                .supply(selector, () -> expectedBar)
                 .create();
 
         // Supplied value should be same as actual
@@ -104,19 +111,20 @@ class SelectWithGenericFieldsTest {
                 .isEqualTo(expectedBar.getBarValue().getBazValue());
     }
 
-    @Test
-    @SuppressWarnings("AssertBetweenInconvertibleTypes")
+    @ParameterizedTest
+    @MethodSource("selectAllBars")
     @DisplayName("Selecting parameterized type with incorrect type argument")
-    void selectingParameterizedClassWithIncorrectTypeArgument() {
+    void selectingParameterizedClassWithIncorrectTypeArgument(final TargetSelector selector) {
         // Given declared field: Foo<Bar<Baz<String>>> item
         // and supplied value:       Bar<Baz<Integer>>
         final Bar<Baz<Integer>> expectedBar = Instancio.create(new TypeToken<Bar<Baz<Integer>>>() {});
 
         final FooBarBazContainer result = Instancio.of(FooBarBazContainer.class)
-                .supply(all(Bar.class), () -> expectedBar)
+                .supply(selector, () -> expectedBar)
                 .create();
 
         // Supplied value is same as actual
+        //noinspection AssertBetweenInconvertibleTypes
         assertThat(result.getItem().getFooValue()).isSameAs(expectedBar);
 
         // Class cast is thrown when accessing the value
@@ -131,4 +139,9 @@ class SelectWithGenericFieldsTest {
                 .isInstanceOf(ClassCastException.class);
     }
 
+    private static Stream<Arguments> selectAllBars() {
+        return Stream.of(
+                Arguments.of(all(Bar.class)),
+                Arguments.of(types().of(Bar.class)));
+    }
 }

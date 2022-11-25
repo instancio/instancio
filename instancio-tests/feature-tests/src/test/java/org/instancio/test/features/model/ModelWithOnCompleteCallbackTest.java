@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.types;
 
 @FeatureTag({Feature.MODEL, Feature.ON_COMPLETE})
 class ModelWithOnCompleteCallbackTest {
@@ -38,7 +39,18 @@ class ModelWithOnCompleteCallbackTest {
                 .onComplete(all(Phone.class), phone -> count.incrementAndGet())
                 .toModel();
 
-        Instancio.create(model);
-        assertThat(count.get()).isGreaterThan(1);
+        final Person person = Instancio.create(model);
+        assertThat(count.get()).isNotZero().isEqualTo(person.getAddress().getPhoneNumbers().size());
+    }
+
+    @Test
+    void callbackWithPredicateSelector() {
+        final AtomicInteger count = new AtomicInteger();
+        final Model<Person> model = Instancio.of(Person.class)
+                .onComplete(types().of(Phone.class), phone -> count.incrementAndGet())
+                .toModel();
+
+        final Person person = Instancio.create(model);
+        assertThat(count.get()).isNotZero().isEqualTo(person.getAddress().getPhoneNumbers().size());
     }
 }

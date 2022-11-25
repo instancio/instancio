@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +54,15 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
-@FeatureTag(Feature.GENERATE)
+@FeatureTag({
+        Feature.GENERATE,
+        Feature.COLLECTION_GENERATOR_SUBTYPE,
+        Feature.COLLECTION_GENERATOR_MIN_SIZE,
+        Feature.COLLECTION_GENERATOR_SIZE,
+        Feature.COLLECTION_GENERATOR_WITH_ELEMENTS,
+        Feature.MAP_GENERATOR_SUBTYPE,
+        Feature.MAP_GENERATOR_SIZE,
+})
 @NonDeterministicTag("Set/Map size assertions may fail if same value is generated more than once")
 class BuiltInCollectionGeneratorTest {
     private static final int EXPECTED_SIZE = RandomUtils.nextInt(90, 100);
@@ -224,27 +233,34 @@ class BuiltInCollectionGeneratorTest {
         }
 
         @Test
-        @DisplayName("Nested maps should have expected size and be fully populated")
-        void nestedMapShouldHaveExpectedSize() {
+        @DisplayName("Nested maps should have expected size, subtype, and be fully populated")
+        void nestedMapShouldHaveExpectedSizeAndSubtype() {
             final Map<String, Map<String, Integer>> result = Instancio.of(new TypeToken<Map<String, Map<String, Integer>>>() {})
-                    .generate(all(Map.class), gen -> gen.map().size(EXPECTED_SIZE))
+                    .generate(all(Map.class), gen -> gen.map()
+                            .size(EXPECTED_SIZE)
+                            .subtype(TreeMap.class))
                     .create();
 
-            assertThat(result).hasSize(EXPECTED_SIZE).allSatisfy((k, v) ->
-                    assertThat(v)
+            assertThat(result).hasSize(EXPECTED_SIZE).isExactlyInstanceOf(TreeMap.class)
+                    .allSatisfy((k, v) -> assertThat(v)
                             .as("Nested map should have expected size")
-                            .hasSize(EXPECTED_SIZE));
+                            .hasSize(EXPECTED_SIZE)
+                            .isExactlyInstanceOf(TreeMap.class));
         }
 
         @Test
-        @DisplayName("All maps should have expected size and be fully populated")
-        void allMapsShouldHaveExpectedSize() {
+        @DisplayName("All maps should have expected size, subtype, and be fully populated")
+        void allMapsShouldHaveExpectedSizeAndSubtype() {
             final TwoMapsOfIntegerItemString result = Instancio.of(TwoMapsOfIntegerItemString.class)
-                    .generate(all(Map.class), gen -> gen.map().size(EXPECTED_SIZE))
+                    .generate(all(Map.class), gen -> gen.map()
+                            .size(EXPECTED_SIZE)
+                            .subtype(TreeMap.class))
                     .create();
 
             assertEntries(result.getMap1(), EXPECTED_SIZE, EXPECTED_SIZE);
             assertEntries(result.getMap2(), EXPECTED_SIZE, EXPECTED_SIZE);
+            assertThat(result.getMap1()).isExactlyInstanceOf(TreeMap.class);
+            assertThat(result.getMap2()).isExactlyInstanceOf(TreeMap.class);
         }
 
         private void assertEntries(final Map<Integer, Item<String>> map, final int minSize, final int maxSize) {

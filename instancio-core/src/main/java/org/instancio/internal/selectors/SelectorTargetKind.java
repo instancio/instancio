@@ -21,12 +21,12 @@ package org.instancio.internal.selectors;
 public enum SelectorTargetKind {
 
     /**
-     * Class target.
-     */
-    CLASS,
-
-    /**
      * Field target.
      */
-    FIELD
+    FIELD,
+
+    /**
+     * Class target.
+     */
+    CLASS
 }

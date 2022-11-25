@@ -36,7 +36,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
-@FeatureTag({Feature.SETTINGS, Feature.SUBTYPE})
+@FeatureTag({
+        Feature.COLLECTION_GENERATOR_SUBTYPE,
+        Feature.SUBTYPE,
+        Feature.SETTINGS,
+        Feature.WITH_SETTINGS_ANNOTATION
+})
 @ExtendWith(InstancioExtension.class)
 class SubtypeMappingSettingsTest {
 

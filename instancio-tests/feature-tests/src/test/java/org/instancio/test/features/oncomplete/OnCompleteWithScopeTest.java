@@ -93,7 +93,7 @@ class OnCompleteWithScopeTest {
 
         assertThat(result.getPhoneNumbers()).extracting(Phone::getCountryCode).containsOnly(FOO);
         assertThat(result.getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
-        assertThatObject(result).hasAllFieldsOfTypeNotEqualTo(String.class, FOO);
+        assertThatObject(result).doesNotHaveAllFieldsOfTypeEqualTo(String.class, FOO);
         assertThat(callbacksCount.get()).isEqualTo(EXPECTED_NUM_CALLBACKS);
     }
 
@@ -109,7 +109,7 @@ class OnCompleteWithScopeTest {
 
         assertThat(result.getPhoneNumbers()).extracting(Phone::getCountryCode).containsOnly(FOO);
         assertThat(result.getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(FOO);
-        assertThatObject(result).hasAllFieldsOfTypeNotEqualTo(String.class, FOO);
+        assertThatObject(result).doesNotHaveAllFieldsOfTypeEqualTo(String.class, FOO);
         assertThat(callbacksCount.get()).isEqualTo(EXPECTED_NUM_CALLBACKS);
     }
 }

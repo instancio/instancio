@@ -18,7 +18,6 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
-import org.instancio.internal.selectors.SelectorImpl;
 
 import java.util.Collections;
 import java.util.Set;
@@ -47,7 +46,7 @@ class BooleanSelectorMap {
 
     private void putAll(final Set<TargetSelector> targetSelectors) {
         for (TargetSelector targetSelector : targetSelectors) {
-            for (SelectorImpl target : ((Flattener) targetSelector).flatten()) {
+            for (TargetSelector target : ((Flattener) targetSelector).flatten()) {
                 selectorMap.put(target, true);
             }
         }

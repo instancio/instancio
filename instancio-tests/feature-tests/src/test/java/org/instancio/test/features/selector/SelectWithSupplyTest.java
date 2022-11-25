@@ -74,8 +74,8 @@ class SelectWithSupplyTest {
     }
 
     @Test
-    @DisplayName("Composite select group with compatible types")
-    void compositeSelectorGroup() {
+    @DisplayName("Selector group with compatible types")
+    void selectorGroup() {
         final String expectedString = "foo";
 
         final Person result = Instancio.of(Person.class)
@@ -91,15 +91,14 @@ class SelectWithSupplyTest {
     }
 
     @Test
-    @DisplayName("Composite selector group with non-compatible types")
-    void compositeSelectorGroupWithNonCompatibleTypes() {
+    @DisplayName("Selector group with incompatible types")
+    void selectorGroupWithIncompatibleTypes() {
         assertThatThrownBy(() -> Instancio.of(Person.class)
                 .supply(Select.all(allInts(), allStrings()), () -> "some value")
                 .create())
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("Caused by: Can not set int field", "to java.lang.String");
     }
-
 
     @Test
     @DisplayName("Supply with custom Generator")

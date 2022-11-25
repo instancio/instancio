@@ -35,7 +35,7 @@ import static org.instancio.Select.all;
 
 // Casts added to suppress "non-varargs call of varargs" during the build
 @SuppressWarnings("RedundantCast")
-@FeatureTag({Feature.GENERATE, Feature.COLLECTION_GENERATOR_WITH})
+@FeatureTag({Feature.GENERATE, Feature.COLLECTION_GENERATOR_WITH_ELEMENTS})
 @ExtendWith(InstancioExtension.class)
 class CollectionGeneratorWithElementTest {
     private static final Long[] EXPECTED_LONGS = {1L, 2L, 3L};

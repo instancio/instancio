@@ -15,13 +15,15 @@
  */
 package org.instancio.internal.context;
 
-import org.instancio.Select;
+import org.instancio.GroupableSelector;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.MetamodelSelector;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
+import org.instancio.internal.selectors.SelectorBuilder;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.util.TypeUtils;
@@ -38,61 +40,79 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.instancio.util.ExceptionHandler.conditionalFailOnError;
-import static org.instancio.util.ObjectUtils.defaultIfNull;
-
 final class ModelContextHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContextHelper.class);
 
     /**
-     * Add root class to every field selector if class is null.
+     * Pre-processes selectors based on their type.
      *
-     * @param selector to preprocess
+     * @param selector to pre-process
      * @return a processed selector
      */
-    static TargetSelector applyRootClass(final TargetSelector selector, final Class<?> rootClass) {
-        conditionalFailOnError(() -> Verify.notNull(selector, "null selector"));
+    static TargetSelector preProcess(final TargetSelector selector, final Class<?> rootClass) {
+        Verify.notNull(selector, "Selector must not be null");
 
         if (selector instanceof MetamodelSelector) {
             return ((MetamodelSelector) selector).copyWithNewStackTraceHolder();
         } else if (selector instanceof SelectorGroupImpl) {
-            final List<Selector> selectors = ((SelectorGroupImpl) selector).getSelectors();
-            final List<TargetSelector> results = new ArrayList<>();
 
-            for (Selector groupMember : selectors) {
-                if (groupMember instanceof MetamodelSelector) {
-                    results.add(((MetamodelSelector) groupMember).copyWithNewStackTraceHolder());
-                } else if (groupMember instanceof SelectorImpl) {
-                    final SelectorImpl source = (SelectorImpl) groupMember;
-                    final Class<?> targetClass = defaultIfNull(source.getTargetClass(), rootClass);
-                    final SelectorImpl selectorWithClass = new SelectorImpl(
-                            source.getSelectorTargetKind(), targetClass, source.getFieldName(), source.getScopes(), source.getParent(), source.getStackTraceHolder());
-
-                    results.add(selectorWithClass);
-                } else if (groupMember instanceof PrimitiveAndWrapperSelectorImpl) {
-                    results.addAll(((PrimitiveAndWrapperSelectorImpl) groupMember).flatten());
-                } else {
-                    conditionalFailOnError(() -> {
-                        throw new InstancioException("Unhandled selector type: " + groupMember.getClass());
-                    });
-                }
-            }
-            return Select.all(results.toArray(new Selector[0]));
+            final List<TargetSelector> results = flattenSelectorGroup((SelectorGroupImpl) selector, rootClass);
+            return new SelectorGroupImpl(results.toArray(new GroupableSelector[0]));
         } else if (selector instanceof SelectorImpl) {
-            final SelectorImpl source = (SelectorImpl) selector;
-            return source.getTargetClass() == null
-                    ? new SelectorImpl(source.getSelectorTargetKind(), rootClass, source.getFieldName(), source.getScopes(), source.getParent(), source.getStackTraceHolder())
-                    : source;
-
+            return applyRootClass((SelectorImpl) selector, rootClass);
         } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
             return selector;
+        } else if (selector instanceof PredicateSelectorImpl) {
+            // No pre-processing of predicate selectors.
+            // They can potentially match anything, so don't need to apply root class.
+            return selector;
+        } else if (selector instanceof SelectorBuilder) {
+            return ((SelectorBuilder) selector).build();
         }
 
-        conditionalFailOnError(() -> {
-            throw new InstancioException("Unhandled selector type: " + selector.getClass());
-        });
+        // should not be reachable
+        throw new InstancioException("Unhandled selector type: " + selector.getClass());
+    }
 
-        return selector;
+    /**
+     * Handles field selectors created using only the field's name: {@code field("name")}.
+     * This means the field belongs to the root class. However, since no class was specified,
+     * the selector's target class will be null, so we must set the root class here
+     * (creating a new selector from the original and specifying the root class).
+     */
+    private static SelectorImpl applyRootClass(final SelectorImpl source, final Class<?> rootClass) {
+        if (source.getTargetClass() == null) {
+            return recreateWithRootClass(rootClass, source);
+        }
+        return source;
+    }
+
+    private static SelectorImpl recreateWithRootClass(final Class<?> rootClass, final SelectorImpl source) {
+        return new SelectorImpl(
+                source.getSelectorTargetKind(),
+                rootClass,
+                source.getFieldName(),
+                source.getScopes(),
+                source.getParent(),
+                source.getStackTraceHolder());
+    }
+
+    private static List<TargetSelector> flattenSelectorGroup(final SelectorGroupImpl selectorGroup, final Class<?> rootClass) {
+        final List<TargetSelector> results = new ArrayList<>();
+
+        for (Selector groupMember : selectorGroup.getSelectors()) {
+            if (groupMember instanceof MetamodelSelector) {
+                results.add(((MetamodelSelector) groupMember).copyWithNewStackTraceHolder());
+            } else if (groupMember instanceof SelectorImpl) {
+                final SelectorImpl selector = applyRootClass((SelectorImpl) groupMember, rootClass);
+                results.add(selector);
+            } else if (groupMember instanceof PrimitiveAndWrapperSelectorImpl) {
+                results.addAll(((PrimitiveAndWrapperSelectorImpl) groupMember).flatten());
+            } else {
+                throw new InstancioException("Unhandled selector type: " + groupMember.getClass());
+            }
+        }
+        return results;
     }
 
     static Map<TypeVariable<?>, Class<?>> buildRootTypeMap(

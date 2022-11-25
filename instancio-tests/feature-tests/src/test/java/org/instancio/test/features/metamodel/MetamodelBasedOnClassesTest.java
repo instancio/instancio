@@ -134,7 +134,7 @@ class MetamodelBasedOnClassesTest {
         assertThat(((SelectorImpl) Phone_.number).getScopes()).isEmpty();
         assertThat(((SelectorImpl) allStrings()).getScopes()).isEmpty();
         assertThat(((PrimitiveAndWrapperSelectorImpl) allInts()).flatten()).allSatisfy(selector ->
-                assertThat(selector.getScopes()).isEmpty());
+                assertThat(((SelectorImpl) selector).getScopes()).isEmpty());
 
         assertThat(result.getAddress().getPhoneNumbers()).extracting(Phone::getNumber).containsOnly(foo);
         assertThat(result.getAddress().getPhoneNumbers()).extracting(Phone::getCountryCode).containsOnly(bar);

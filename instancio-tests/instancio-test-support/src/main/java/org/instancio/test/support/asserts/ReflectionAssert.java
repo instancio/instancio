@@ -50,6 +50,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
 
     /**
      * Verifies that all fields with the given type declared by object's class are null.
+     * This method does not verify nested objects, collections, etc.
      *
      * @return this reflection assert instance
      */
@@ -63,6 +64,12 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         return this;
     }
 
+    /**
+     * Verifies that this object has all fields with the given type set to the specified value.
+     * This method does not verify nested objects, collections, etc.
+     *
+     * @return this reflection assert instance
+     */
     public ReflectionAssert hasAllFieldsOfTypeEqualTo(final Class<?> fieldType, final String value) {
         collectDeclaredFieldsOfType(fieldType).forEach(field -> {
             final Object fieldValue = getFieldValue(field, actual);
@@ -73,11 +80,17 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         return this;
     }
 
-    public ReflectionAssert hasAllFieldsOfTypeNotEqualTo(final Class<?> fieldType, final String value) {
+    /**
+     * Verifies that this object does NOT have all fields with the given type set to the specified value.
+     * This method does not verify nested objects, collections, etc.
+     *
+     * @return this reflection assert instance
+     */
+    public ReflectionAssert doesNotHaveAllFieldsOfTypeEqualTo(final Class<?> fieldType, final String value) {
         collectDeclaredFieldsOfType(fieldType).forEach(field -> {
             final Object fieldValue = getFieldValue(field, actual);
             assertThat(fieldValue)
-                    .as(String.format("Expected '%s' to NOT be equal to '%s', but was: '%s'", format(field), value, fieldValue))
+                    .as(String.format("Expected '%s' to NOT be equal to '%s''", format(field), value))
                     .isNotEqualTo(value);
         });
         return this;

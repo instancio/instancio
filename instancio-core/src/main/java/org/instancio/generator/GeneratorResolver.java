@@ -72,6 +72,7 @@ import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -121,6 +122,7 @@ public class GeneratorResolver {
 
         // java.lang
         generators.put(Number.class, new IntegerGenerator(context));
+        generators.put(CharSequence.class, new StringGenerator(context));  // default CharSequence
         generators.put(StringBuilder.class, new StringBuilderGenerator(context));
 
         // java.math
@@ -134,6 +136,7 @@ public class GeneratorResolver {
         generators.put(LocalTime.class, new LocalTimeGenerator(context));
         generators.put(Duration.class, new DurationGenerator());
         generators.put(Period.class, new PeriodGenerator());
+        generators.put(Temporal.class, new LocalDateGenerator(context)); // default Temporal
         generators.put(Year.class, new YearGenerator(context));
         generators.put(YearMonth.class, new YearMonthGenerator(context));
         generators.put(ZonedDateTime.class, new ZonedDateTimeGenerator(context));

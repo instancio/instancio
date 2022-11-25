@@ -18,12 +18,17 @@ package org.instancio.creation.basic;
 import org.instancio.test.support.pojo.basic.SupportedTemporalTypes;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SupportedTemporalTypesCreationTest extends CreationTestTemplate<SupportedTemporalTypes> {
 
     @Override
     protected void verify(final SupportedTemporalTypes result) {
+        assertThat(result.getTemporal())
+                .as("Default temporal implementation")
+                .isExactlyInstanceOf(LocalDate.class);
         assertThat(result.getInstant()).isNotNull();
         assertThat(result.getLocalTime()).isNotNull();
         assertThat(result.getLocalDate()).isNotNull();

@@ -15,11 +15,9 @@
  */
 package org.instancio.internal.context;
 
-import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
-import org.instancio.internal.selectors.SelectorImpl;
 
 import java.util.Collections;
 import java.util.Map;
@@ -71,14 +69,13 @@ public final class SubtypeSelectorMap {
         return Optional.ofNullable(subtypeMappingFromSettings.get(node.getRawType()));
     }
 
-
-    void putAll(final Map<Class<?>, Class<?>> subtypeMapping) {
-        subtypeMapping.forEach((k, v) -> selectorMap.put((SelectorImpl) Select.all(k), v));
+    void putAll(final Map<TargetSelector, Class<?>> subtypeMapping) {
+        subtypeMapping.forEach(selectorMap::put);
     }
 
     private void putAdditional(final Map<TargetSelector, Class<?>> subtypes) {
         subtypes.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
-            for (SelectorImpl selector : ((Flattener) targetSelector).flatten()) {
+            for (TargetSelector selector : ((Flattener) targetSelector).flatten()) {
                 selectorMap.put(selector, subtype);
             }
         });

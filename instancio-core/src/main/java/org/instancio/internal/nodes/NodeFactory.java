@@ -20,10 +20,10 @@ import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
 import org.instancio.internal.reflection.FieldCollector;
-import org.instancio.util.ServiceLoaders;
 import org.instancio.spi.TypeResolver;
 import org.instancio.util.Format;
 import org.instancio.util.ObjectUtils;
+import org.instancio.util.ServiceLoaders;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 import org.slf4j.Logger;
@@ -130,13 +130,6 @@ public final class NodeFactory {
         }
 
         final Class<?> typeToResolve = node.getRawType();
-
-        // Do not resolve subtypes via SPI for collection classes
-        if (Collection.class.isAssignableFrom(typeToResolve) || Map.class.isAssignableFrom(typeToResolve)) {
-            return Optional.empty();
-        }
-
-        LOG.debug("Resolving subtype via SPI for type '{}'", typeToResolve.getTypeName());
 
         for (TypeResolver resolver : typeResolvers) {
             final Optional<Class<?>> resolved = resolver.resolve(typeToResolve);

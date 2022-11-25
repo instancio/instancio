@@ -37,9 +37,10 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for things that should not be allowed using selector APIs.
+ * Tests for things that should not be allowed using selector public APIs.
+ * <p>
  * These are to ensure that certain methods are not inadvertently exposed,
- * for example when refactoring.
+ * for example when refactoring, or introducing new classes or functionality.
  */
 class SelectorApiContractTest {
 
@@ -116,6 +117,76 @@ class SelectorApiContractTest {
         assertCompilationError("NonCompilable_CannotChainWithinMethods.java",
                 "cannot find symbol",
                 "location: ", "interface org.instancio.GroupableSelector");
+    }
+
+    @Test
+    @DisplayName("Cannot group predicate field selectors")
+    void cannotGroupPredicateFieldSelectors() throws Exception {
+        assertCompilationError("NonCompilable_GroupWithPredicateFieldSelector.java",
+                "no suitable method found for all(org.instancio.TargetSelector)");
+    }
+
+    @Test
+    @DisplayName("Cannot group predicate type selectors")
+    void cannotGroupPredicateTypeSelectors() throws Exception {
+        assertCompilationError("NonCompilable_GroupWithPredicateTypeSelector.java",
+                "no suitable method found for all(org.instancio.TargetSelector)");
+    }
+
+    @Test
+    @DisplayName("Cannot group predicate builder for fields")
+    void cannotGroupFieldPredicateBuilder() throws Exception {
+        assertCompilationError("NonCompilable_GroupWithFieldsPredicateBuilder.java",
+                "no suitable method found for all(org.instancio.FieldSelectorBuilder)");
+    }
+
+    @Test
+    @DisplayName("Cannot group predicate builder for types")
+    void cannotGroupTypePredicateBuilder() throws Exception {
+        assertCompilationError("NonCompilable_GroupWithTypesPredicateBuilder.java",
+                "no suitable method found for all(org.instancio.TypeSelectorBuilder)");
+    }
+
+    @Test
+    @DisplayName("Fields predicate builder cannot be converted to scope")
+    void fieldsPredicateBuilderCannotBeConvertedToScope() throws Exception {
+        assertCompilationError("NonCompilable_FieldsPredicateBuilderToScope.java",
+                "cannot find symbol", "method toScope()");
+    }
+
+    @Test
+    @DisplayName("Types predicate builder cannot be converted to scope")
+    void typesPredicateBuilderCannotBeConvertedToScope() throws Exception {
+        assertCompilationError("NonCompilable_TypesPredicateBuilderToScope.java",
+                "cannot find symbol", "method toScope()");
+    }
+
+    @Test
+    @DisplayName("Fields predicate selector cannot be converted to scope")
+    void fieldsPredicateSelectorCannotBeConvertedToScope() throws Exception {
+        assertCompilationError("NonCompilable_FieldsPredicateSelectorToScope.java",
+                "cannot find symbol", "method toScope()");
+    }
+
+    @Test
+    @DisplayName("Types predicate selector cannot be converted to scope")
+    void typesPredicateSelectorCannotBeConvertedToScope() throws Exception {
+        assertCompilationError("NonCompilable_TypesPredicateSelectorToScope.java",
+                "cannot find symbol", "method toScope()");
+    }
+
+    @Test
+    @DisplayName("Fields predicate builder should not expose build() method")
+    void fieldsPredicateBuilderShouldNotExposeBuildMethod() throws Exception {
+        assertCompilationError("NonCompilable_FieldsPredicateBuilderBuildMethod.java",
+                "cannot find symbol", "method build()");
+    }
+
+    @Test
+    @DisplayName("Types predicate builder should not expose build() method")
+    void typesPredicateBuilderShouldNotExposeBuildMethod() throws Exception {
+        assertCompilationError("NonCompilable_TypesPredicateBuilderBuildMethod.java",
+                "cannot find symbol", "method build()");
     }
 
     private static void assertCompilationError(final String sourceFile, final String... expectedErrorMsg) throws Exception {

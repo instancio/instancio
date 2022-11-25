@@ -60,7 +60,8 @@ class UnusedSelectorFullErrorMessageTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(UnusedSelectorException.class)
-                .hasMessageContaining(String.format("Found unused selectors referenced in the following methods:%n" +
+                .hasMessageContaining(String.format("%n" +
+                        "Found unused selectors referenced in the following methods:%n" +
                         "%n" +
                         " -> Unused selectors in ignore():%n" +
                         " 1: all(YearMonth)%n" +
@@ -75,18 +76,18 @@ class UnusedSelectorFullErrorMessageTest {
                         "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:54)%n" +
                         "%n" +
                         " -> Unused selectors in generate(), set(), or supply():%n" +
-                        " 1: field(StringHolder, \"value\")%n" +
-                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:57)%n" +
-                        " 2: all(Year)%n" +
+                        " 1: all(Year)%n" +
                         "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:55)%n" +
-                        " 3: field(Baz, \"bazValue\")%n" +
+                        " 2: field(Baz, \"bazValue\")%n" +
                         "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:56)%n" +
+                        " 3: field(StringHolder, \"value\")%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:57)%n" +
                         "%n" +
                         " -> Unused selectors in onComplete():%n" +
-                        " 1: field(IntegerHolder, \"primitive\")%n" +
-                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:58)%n" +
-                        " 2: all(ZonedDateTime)%n" +
+                        " 1: all(ZonedDateTime)%n" +
                         "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:59)%n" +
+                        " 2: field(IntegerHolder, \"primitive\")%n" +
+                        "    at org.other.test.features.mode.UnusedSelectorFullErrorMessageTest.verifyFullErrorMessage(UnusedSelectorFullErrorMessageTest.java:58)%n" +
                         "%n" +
                         "This error aims to highlight potential problems and help maintain clean test code:%n" +
                         "- You might be selecting a field or class that does not exist within this object.%n" +
@@ -98,8 +99,7 @@ class UnusedSelectorFullErrorMessageTest {
                         "          // snip...%n" +
                         "          .create();%n" +
                         "%n" +
-                        "For more information see: https://www.instancio.org/user-guide/"
-                ));
+                        "For more information see: https://www.instancio.org/user-guide/"));
     }
 
     private <V> V failIfCalled() {

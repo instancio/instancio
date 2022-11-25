@@ -15,9 +15,24 @@
  */
 package org.instancio.internal.selectors;
 
+import org.instancio.TargetSelector;
+
 import java.util.List;
 
+/**
+ * Flattens selectors into a list, similar to {@code stream().flatMap()}.
+ * <p>
+ * This interface is an internal interface, not part of the public API.
+ *
+ * @since 1.3.0
+ */
 public interface Flattener {
 
-    List<SelectorImpl> flatten();
+    /**
+     * Flattens selectors into a list.
+     *
+     * @return flat list of selectors
+     * @since 1.3.0
+     */
+    List<TargetSelector> flatten();
 }

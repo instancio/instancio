@@ -17,31 +17,35 @@ package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
-import org.instancio.test.support.pojo.basic.SupportedMathTypes;
+import org.instancio.test.support.pojo.basic.SupportedTemporalTypes;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
+import static org.instancio.Select.fields;
 
 @FeatureTag({Feature.MODEL, Feature.IGNORE})
 class ModelWithIgnoredTest {
 
     @Test
     void verifyIgnored() {
-        final Model<SupportedMathTypes> model = Instancio.of(SupportedMathTypes.class)
-                .ignore(field("bigInteger"))
-                .ignore(all(BigDecimal.class))
+        final Model<SupportedTemporalTypes> model = Instancio.of(SupportedTemporalTypes.class)
+                .ignore(field("instant"))
+                .ignore(all(LocalDate.class))
+                .ignore(fields().ofType(LocalDateTime.class))
                 .toModel();
 
-        final SupportedMathTypes result = Instancio.create(model);
+        final SupportedTemporalTypes result = Instancio.create(model);
 
-        assertThat(result.getBigInteger()).isNull();
-        assertThat(result.getBigDecimal()).isNull();
+        assertThat(result.getInstant()).isNull();
+        assertThat(result.getLocalDate()).isNull();
+        assertThat(result.getLocalDateTime()).isNull();
     }
 
 }

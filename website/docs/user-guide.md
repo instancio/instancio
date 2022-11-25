@@ -19,6 +19,7 @@ And it aims to do so with as little code as possible in order to keep the tests 
 Another goal of Instancio is to make the tests more dynamic.
 Since each test run is against random values, the tests become alive.
 They cover a wider range of inputs, which might help uncover bugs that may have gone unnoticed with static data.
+In many cases, the random nature of the data also removes the need for parameterising test methods.
 
 Finally, Instancio aims to provide reproducible data.
 It uses a consistent seed value for each object graph it generates.
@@ -36,15 +37,15 @@ It provides the following shorthand methods for creating objects.
 These can be used when defaults suffice and generated values do not need to be customised.
 
 ``` java linenums="1" title="Shorthand methods"
-Instancio.create(Class<T> klass)
+Instancio.create(Class<T> type)
 Instancio.create(TypeTokenSupplier<T> supplier)
-Instancio.create(Model<T>)
+Instancio.create(Model<T> model)
 ```
 
 The following builder methods allow chaining additional method calls in order to customise generated values, ignore certain fields, provide custom settings, and so on.
 
 ``` java linenums="1" title="Builder API"
-Instancio.of(Class<T> klass).create()
+Instancio.of(Class<T> type).create()
 Instancio.of(TypeTokenSupplier<T> supplier).create()
 Instancio.of(Model<T> model).create()
 ```
@@ -102,14 +103,14 @@ The `stream()` methods return an infinite stream of distinct fully-populated ins
 Similarly to the `create()` methods, these have a shorthand form if no customisations are needed:
 
 ``` java linenums="1" title="Shorthand methods"
-Instancio.stream(Class<T> klass)
+Instancio.stream(Class<T> type)
 Instancio.stream(TypeTokenSupplier<T> supplier)
 ```
 
 as well as the builder API that allows customising generated values:
 
 ``` java linenums="1" title="Stream Builder API"
-Instancio.of(Class<T> klass).stream()
+Instancio.of(Class<T> type).stream()
 Instancio.of(TypeTokenSupplier<T> supplier).stream()
 ```
 
@@ -135,64 +136,104 @@ Map<UUID, Person> personMap = Instancio.of(new TypeToken<Person>() {})
 Selectors are used to target fields and classes, for example in order to customise generated values.
 Selectors are provided by the {{Select}} class which contains the following methods:
 
-``` java linenums="1" title="Static methods for targeting fields and classes"
-Select.field(String field)
-Select.field(Class<?> declaringClass, String field)
+``` java linenums="1" title="Regular selectors"
+Select.field(String fieldName)
+Select.field(Class<?> declaringClass, String fieldName)
 Select.all(Class<?> type)
+```
+!!! attention ""
+    <lnum>1</lnum> Selects field by name, declared in the class being created.<br/>
+    <lnum>2</lnum> Selects field by name, declared in the specified class.<br/>
+    <lnum>3</lnum> Selects the specified class, including fields and collection elements of this type.<br/>
+
+Regular selectors are for precise matching: they can only match a single field or type.
+Fields are matched based on exact field name. If a field with the specified name does not exist, an error will be thrown.
+Types are matched exactly using `Class` equality, therefore matching does not include subtypes.
+
+``` java linenums="1" title="Predicate selectors"
+Select.fields(Predicate<Field> fieldPredicate)
+Select.types(Predicate<Class<?>> classPredicate)
+```
+!!! attention ""
+    <lnum>1</lnum> Selects all fields matching the predicate.<br/>
+    <lnum>2</lnum> Selects all types matching the predicate.<br/>
+
+Predicate selectors allow for greater flexibility in matching fields and classes.
+These use a plural naming convention: `fields()` and `types()`.
+Unlike regular selectors, these can match multiple fields or types.
+For example, they can be used to match all fields declared by a class, or all classes within a package.
+They can also be used to match a certain type, including its subtypes.
+
+``` java linenums="1" title="Convenience selectors"
 Select.all(GroupableSelector... selectors)
 Select.allStrings()
 Select.allInts()
+Select.fields()
+Select.types()
 ```
-
 !!! attention ""
-    <lnum>1</lnum> Selects the specified field of the class being created<br/>
-    <lnum>2</lnum> Selects the specified field of the given class<br/>
-    <lnum>3</lnum> Selects all fields of the given type<br/>
-    <lnum>4</lnum> Convenience method for combining multiple selectors<br/>
-    <lnum>5</lnum> Convenience method equivalent to `all(String.class)`<br/>
-    <lnum>6</lnum> Convenience method equivalent to `all(all(int.class), all(Integer.class))`
+    <lnum>1</lnum> For combining multiple regular selectors.<br/>
+    <lnum>2</lnum> Equivalent to `all(String.class)`.<br/>
+    <lnum>3</lnum> Equivalent to `all(all(int.class), all(Integer.class))`.<br/>
+    <lnum>4</lnum> Builder for constructing `Predicate<Field>` selectors.<br/>
+    <lnum>5</lnum> Builder for constructing `Predicate<Class<?>>` selectors.<br/>
 
 !!! info "The `allXxx()` methods such as `allInts()`, are available for all core types."
 
-The above methods return either an instance of {{Selector}} or {{SelectorGroup}} type. The latter is a container combining multiple {{Selector}}s.
-For example, to ignore certain values, we can specify them individually as follows:
+Finally, convenience selectors provide syntactic sugar built on top of regular and predicate selectors.
 
-``` java linenums="1" title="Examples of using selectors"
-Person person = Instancio.of(Person.class)
-    .ignore(field("name"))
-    .ignore(field(Address.class, "street"))
-    .ignore(all(Phone.class))
-    .create();
+For example, the following predicate that matches `Long` fields annotated with `@Id`
+
+``` java
+Select.fields(f -> f.getType() == Long.class && f.getDeclaredAnnotation(Id.class) != null)
 ```
 
-or alternatively, we can combine the selectors into a single group:
+can also be expressed using the `fields()` predicate builder:
 
-``` java linenums="1" title="Examples of using a selector group"
-Person person = Instancio.of(Person.class)
-    .ignore(all(
-            field("name"),
-            field(Address.class, "street"),
-            all(Phone.class)))
-    .create();
+``` java
+Select.fields().ofType(Long.class).annotated(Id.class)
+```
+
+The selector `Select.all(GroupableSelector... selectors)` can be used for grouping regular selectors, allowing for more concise code
+as shown below. However, only regular selectors are groupable using `all()`. Predicate selectors are not groupable.
+
+``` java
+all(field("name"),
+    field(Address.class, "street"),
+    all(Phone.class))
 ```
 
 ### Selector Precedence
 
-Field selectors have higher precedence than class selectors. Consider the following example:
+Selector precedence rules apply when multiple selectors match a field or class:
+
+- Regular selectors have higher precedence than predicate selectors.
+- Field selectors have higher precedence than type selectors.
+
+Consider the following example:
 
 ``` java linenums="1" title="Selector precedence example"
-Person person = Instancio.of(Person.class)
+Address address = Instancio.of(Address.class)
     .set(allStrings(), "foo")
-    .set(field("name"), "bar")
+    .set(field("city"), "bar")
     .create();
 ```
 
-This will produce a person object with all strings set to "foo". However, since field selectors
-have higher precedence, person's name will be set to "bar".
+This will produce an address object with all strings set to "foo". However, since field selectors
+have higher precedence, the city will be set to "bar". Similarly, in the following example,
+the city will also be set to "bar" because the predicate selector created by the `fields()`
+method has lower precedence than the regular `field()` selector:
+
+``` java linenums="1" title="Selector precedence example"
+Address address = Instancio.of(Address.class)
+    .set(fields().named("city"), "foo")
+    .set(field("city"), "bar")
+    .create();
+```
 
 ### Selector Scopes
 
-Selectors also offer the `within(Scope... scopes)` method for fine-tuning which targets they should be applied to.
+Regular selectors also offer the `within(Scope... scopes)` method for fine-tuning which targets they should be applied to.
 The method accepts one or more `Scope` objects that can be created using static methods in the `Select` class.
 
 ``` java linenums="1" title="Static methods for specifying selector scopes"
@@ -319,20 +360,6 @@ Without being aware of this detail, it is easy to make this kind of error and fa
 even with a simple class like above. It gets trickier when generating more complex classes.
 Strict mode helps reduce this type of error.
 
-Consider another example where the problem may not be immediately obvious:
-
-``` java title="Generate phone numbers"
-Person person = Instancio.of(Person.class)
-    .ignore(all(Address.class))
-    .generate(field(Phone.class, "number"), gen -> gen.text().pattern("#d#d#d-#d#d-#d#d"))
-    .create();
-```
-
-Since `List<Phone>` is contained within the `Address` class, the `generate()` method is redundant
-(see [`Person` class structure](#person-class-structure) outlined at the beginning of this section).
-All addresses will be null, therefore no phone instances will be created.
-Strict mode will trigger an error highlighting this problem.
-
 ##### Simplify fixing tests after refactoring
 
 Somewhat related to the above is refactoring. Refactoring always causes test failures to some degree.
@@ -343,7 +370,7 @@ data setup caused by refactoring.
 ##### Keep test code clean and maintainable
 
 Last but not least, it is important to keep tests clean and maintainable. Test code should be treated
-with as much care as production code. Keeping the tests concise makes them easier to maintain.
+with as much care as production code. Keeping the tests clean and concise makes them easier to maintain.
 
 #### Lenient Mode
 

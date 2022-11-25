@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
 import org.instancio.Selector;
+import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.util.Format;
 
@@ -45,7 +46,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     }
 
     @Override
-    public List<SelectorImpl> flatten() {
+    public List<TargetSelector> flatten() {
         return Arrays.asList(primitive, wrapper);
     }
 

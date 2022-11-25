@@ -28,6 +28,7 @@ import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -35,6 +36,7 @@ import java.util.Date;
 @ToString
 public class SupportedTemporalTypes {
 
+    private Temporal temporal;
     private Instant instant;
     private LocalTime localTime;
     private LocalDate localDate;
