@@ -102,11 +102,11 @@ class GeneratorSelectorMap {
     private void putGenerator(final TargetSelector targetSelector, final Generator<?> generator) {
         selectorMap.put(targetSelector, generator);
 
+        final Optional<Class<?>> generatorTargetClass = generator.targetClass();
+        generatorTargetClass.ifPresent(aClass -> generatorSubtypeMap.put(targetSelector, aClass));
+
         if (targetSelector instanceof SelectorImpl) {
             final SelectorImpl selector = (SelectorImpl) targetSelector;
-            final Optional<Class<?>> generatorTargetClass = generator.targetClass();
-
-            generatorTargetClass.ifPresent(aClass -> generatorSubtypeMap.put(selector, aClass));
 
             if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
                 final Field field = getField(selector.getTargetClass(), selector.getFieldName());
