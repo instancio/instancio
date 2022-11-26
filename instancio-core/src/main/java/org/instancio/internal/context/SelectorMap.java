@@ -127,17 +127,30 @@ final class SelectorMap<V> {
             return value;
         }
 
+        return getPredicateSelectorMatch(node);
+    }
+
+    private Optional<V> getPredicateSelectorMatch(final Node node) {
+        PredicateSelectorEntry<V> classPredicate = null;
+
+        // If there's a field predicate anywhere in the list, then return the first one found.
+        // Otherwise, return the first class predicate.
         for (PredicateSelectorEntry<V> entry : predicateSelectors) {
-            if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD && isPredicateMatch(node, entry)) {
-                entry.matched = true;
-                return Optional.of(entry.value);
+            if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
+                if (isPredicateMatch(node, entry)) {
+                    entry.matched = true;
+                    return Optional.of(entry.value);
+                }
+            } else if (classPredicate == null // we want to return the first one that matches
+                    && entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.CLASS
+                    && isPredicateMatch(node, entry)) {
+                classPredicate = entry;
             }
         }
-        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
-            if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.CLASS && isPredicateMatch(node, entry)) {
-                entry.matched = true;
-                return Optional.of(entry.value);
-            }
+
+        if (classPredicate != null) {
+            classPredicate.matched = true;
+            return Optional.of(classPredicate.value);
         }
 
         return Optional.empty();
