@@ -40,11 +40,11 @@ class EnumGeneratorTest {
 
     @Test
     @DisplayName("Should generate a nullable value, excluding all values except one")
-    void enumOfWithExcludeAndNullable() {
+    void enumOfWithExcludesAndNullable() {
         final Set<Gender> results = IntStream.range(0, 100)
                 .mapToObj(i -> Instancio.of(Person.class)
                         .generate(field("gender"), gen -> gen.enumOf(Gender.class)
-                                .exclude(Gender.MALE, Gender.FEMALE)
+                                .excluding(Gender.MALE, Gender.FEMALE)
                                 .nullable())
                         .create().getGender())
                 .collect(Collectors.toSet());

@@ -32,7 +32,8 @@ public interface EnumGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<E> {
      * @return spec builder
      * @since 1.6.0
      */
-    EnumGeneratorSpec<E> exclude(E... values);
+    @SuppressWarnings("unchecked")
+    EnumGeneratorSpec<E> excluding(E... values);
 
     /**
      * Indicates that {@code null} value can be generated.

@@ -38,8 +38,8 @@ public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, G
 
     @Override
     @SafeVarargs
-    public final EnumGeneratorSpec<E> exclude(final E... values) {
-        ApiValidator.notNull(values, "Excluded values must not be null: exclude()");
+    public final EnumGeneratorSpec<E> excluding(final E... values) {
+        ApiValidator.notNull(values, "Excluded values must not be null: excluding()");
 
         // Allow passing empty array, meaning 'no exclusions'
         if (values.length > 0) {
