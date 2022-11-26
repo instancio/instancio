@@ -16,11 +16,15 @@
 package org.instancio.test.features.generator.array;
 
 import org.instancio.Instancio;
+import org.instancio.TargetSelector;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayCharSequence;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemInterfaceString;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.interfaces.ArrayOfStringHolderInterface;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
+import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.util.Sonar;
@@ -28,13 +32,21 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.field;
+import static org.instancio.Select.fields;
+import static org.instancio.Select.types;
 
 @FeatureTag({Feature.GENERATE, Feature.ARRAY_GENERATOR_SUBTYPE})
 @ExtendWith(InstancioExtension.class)
-class ArrayTypeTest {
+class ArrayGeneratorSubtypeTest {
 
     @Test
     @Disabled
@@ -68,5 +80,34 @@ class ArrayTypeTest {
         assertThat(result.getArray())
                 .isNotEmpty()
                 .allSatisfy(it -> assertThat(it).isNotBlank());
+    }
+
+    @ParameterizedTest
+    @MethodSource("arraySelectors")
+    void arrayGeneratorSubtypeBug_Fails(final TargetSelector selector) {
+        final ArrayOfStringHolderInterface result = Instancio.of(ArrayOfStringHolderInterface.class)
+                .generate(selector, gen -> gen.array().subtype(StringHolder[].class))
+                .create();
+
+        assertThat(result.getArray()).hasOnlyElementsOfType(StringHolder.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("arraySelectors")
+    void arraySubtype_Passes(final TargetSelector selector) {
+        final ArrayOfStringHolderInterface result = Instancio.of(ArrayOfStringHolderInterface.class)
+                .subtype(selector, StringHolder[].class)
+                .create();
+
+        assertThat(result.getArray()).hasOnlyElementsOfType(StringHolder.class);
+    }
+
+    private static Stream<Arguments> arraySelectors() {
+        return Stream.of(
+                Arguments.of(all(StringHolderInterface[].class)),
+                Arguments.of(field("array")),
+                Arguments.of(types().of(StringHolderInterface[].class)),
+                Arguments.of(fields().ofType(StringHolderInterface[].class))
+        );
     }
 }
