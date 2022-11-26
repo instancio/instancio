@@ -21,6 +21,8 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 
+import java.util.Optional;
+
 public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArrayGeneratorSpec<T> {
 
     private T[] values;
@@ -39,5 +41,10 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     @Override
     public T generate(final Random random) {
         return random.oneOf(values);
+    }
+
+    @Override
+    public Optional<Class<?>> targetClass() {
+        return Optional.of(values.getClass().getComponentType());
     }
 }

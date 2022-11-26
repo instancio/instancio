@@ -22,6 +22,7 @@ import org.instancio.internal.ApiValidator;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Optional;
 
 public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, Generator<E> {
 
@@ -68,5 +69,10 @@ public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, G
     @Override
     public boolean supports(final Class<?> type) {
         return enumClass.isAssignableFrom(type);
+    }
+
+    @Override
+    public Optional<Class<?>> targetClass() {
+        return Optional.of(enumClass);
     }
 }
