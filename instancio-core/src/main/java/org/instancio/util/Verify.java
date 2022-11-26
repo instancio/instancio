@@ -22,10 +22,6 @@ import java.util.Objects;
 
 public final class Verify {
 
-    public static <T> T notNull(@Nullable final T object) {
-        return Objects.requireNonNull(object);
-    }
-
     public static <T> T notNull(@Nullable final T object, final String message, final Object... values) {
         return Objects.requireNonNull(object, () -> String.format(message, values));
     }

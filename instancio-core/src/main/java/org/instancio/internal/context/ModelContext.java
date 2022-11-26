@@ -28,9 +28,9 @@ import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.DefaultRandom;
+import org.instancio.internal.random.Seeds;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.util.SeedUtil;
 import org.instancio.util.TypeUtils;
 import org.instancio.util.Verify;
 
@@ -142,7 +142,7 @@ public final class ModelContext<T> {
             return getGlobalRandom();
         }
 
-        return new DefaultRandom(SeedUtil.randomSeed());
+        return new DefaultRandom(Seeds.randomSeed());
     }
 
     public Type getRootType() {
