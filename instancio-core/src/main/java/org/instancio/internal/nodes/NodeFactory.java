@@ -50,6 +50,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Class for creating a node hierarchy for a given {@link Type}.
  */
+@SuppressWarnings("PMD.GodClass")
 public final class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
@@ -141,10 +142,9 @@ public final class NodeFactory {
                 .parent(parent)
                 .build();
 
-        final Optional<Class<?>> target = resolveSubtype(node);
+        final Class<?> targetClass = resolveSubtype(node).orElse(rawType);
 
-        if (target.isPresent()) {
-            final Class<?> targetClass = target.get();
+        if (!rawType.isPrimitive() && rawType != targetClass) {
             ApiValidator.validateSubtype(rawType, targetClass);
 
             if (LOG.isDebugEnabled()) {

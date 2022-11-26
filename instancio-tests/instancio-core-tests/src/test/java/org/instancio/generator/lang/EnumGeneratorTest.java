@@ -83,6 +83,13 @@ class EnumGeneratorTest {
     }
 
     @Test
+    void supports() {
+        final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
+        assertThat(generator.supports(Gender.class)).isTrue();
+        assertThat(generator.supports(SingleValueEnum.class)).isFalse();
+    }
+
+    @Test
     void validation() {
         final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
         assertThatThrownBy(() -> generator.excluding(null))

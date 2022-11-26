@@ -30,10 +30,10 @@ import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +43,17 @@ import static org.instancio.Select.field;
 @FeatureTag(Feature.SUBTYPE)
 @ExtendWith(InstancioExtension.class)
 class SubtypeUsingFieldSelectorTest {
+
+    @Test
+    void subtypeMappingSameClass() {
+        final ListInteger result = Instancio.of(ListInteger.class)
+                .subtype(field("list"), List.class)
+                .create();
+
+        assertThat(result.getList()).isExactlyInstanceOf(ArrayList.class)
+                .isNotEmpty()
+                .doesNotContainNull();
+    }
 
     @Test
     @DisplayName("Map non-generic field type to non-generic subtype")
@@ -74,26 +85,13 @@ class SubtypeUsingFieldSelectorTest {
         assertThat(result.getItemInterfaceString().getValue()).isNotBlank();
     }
 
-    @Nested
-    class ValidationTest {
-        @Test
-        void invalidSubtypeMappingArrayListToList() {
-            final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
-                    .subtype(field("list"), String.class);
+    @Test
+    void invalidSubtypeMappingArrayListToList() {
+        final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
+                .subtype(field("list"), String.class);
 
-            assertThatThrownBy(api::create)
-                    .isInstanceOf(InstancioApiException.class)
-                    .hasMessage("Class '%s' is not a subtype of '%s'", String.class.getName(), List.class.getName());
-        }
-
-        @Test
-        void invalidSubtypeMappingListToList() {
-            final InstancioApi<ListInteger> api = Instancio.of(ListInteger.class)
-                    .subtype(field("list"), List.class);
-
-            assertThatThrownBy(api::create)
-                    .isInstanceOf(InstancioApiException.class)
-                    .hasMessage("Invalid subtype mapping from '%s' to '%s'", List.class.getName(), List.class.getName());
-        }
+        assertThatThrownBy(api::create)
+                .isInstanceOf(InstancioApiException.class)
+                .hasMessage("Class '%s' is not a subtype of '%s'", String.class.getName(), List.class.getName());
     }
 }
