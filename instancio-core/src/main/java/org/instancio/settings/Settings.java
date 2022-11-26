@@ -31,7 +31,8 @@ import static org.instancio.internal.ApiValidator.validateSubtype;
 
 /**
  * This class provides an API for updating settings programmatically.
- * An instance of this class can be created using one of the following static methods:
+ * An instance of this class can be created using one of the static methods
+ * below. Instances of this class can be shared when creating different objects.
  *
  * <ul>
  *   <li>{@link #create()} - returns a new instance of blank settings</li>
@@ -75,7 +76,7 @@ public final class Settings {
     }
 
     /**
-     * Create a new instance of empty settings.
+     * Creates a new instance of empty settings.
      *
      * @return empty settings
      */
@@ -84,7 +85,7 @@ public final class Settings {
     }
 
     /**
-     * Create default settings.
+     * Creates a new instance containing default settings.
      *
      * @return settings containing defaults
      */
@@ -184,9 +185,9 @@ public final class Settings {
      * Set the setting with the given key to the specified value.
      * <p>
      * If {@code autoAdjust} parameter is {@code true}, then updating
-     * a range setting (such numeric range) will automatically adjust the
-     * opposite bound (for example, min is set to higher than max, then
-     * max will be auto-adjusted).
+     * range settings (such as a numeric range) will automatically adjust the
+     * opposite bound (for example, if {@code min} is set higher than max, then
+     * the {@code max} will be auto-adjusted to a higher value).
      *
      * @param key        to set
      * @param value      to set
