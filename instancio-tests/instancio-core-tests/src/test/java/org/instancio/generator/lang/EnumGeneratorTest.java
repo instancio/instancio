@@ -60,16 +60,16 @@ class EnumGeneratorTest {
     }
 
     @RepeatedTest(3)
-    void exclude() {
+    void excluding() {
         final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
-        generator.exclude(Gender.MALE, Gender.FEMALE);
+        generator.excluding(Gender.MALE, Gender.FEMALE);
         assertThat(generator.generate(random)).isEqualTo(Gender.OTHER);
     }
 
     @Test
-    void excludeWithEmptyArgs() {
+    void excludingWithEmptyArgs() {
         final EnumGenerator<SingleValueEnum> generator = new EnumGenerator<>(SingleValueEnum.class);
-        generator.exclude();
+        generator.excluding();
         assertThat(generator.generate(random)).isEqualTo(SingleValueEnum.ONLY);
     }
 
@@ -85,9 +85,9 @@ class EnumGeneratorTest {
     @Test
     void validation() {
         final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
-        assertThatThrownBy(() -> generator.exclude(null))
+        assertThatThrownBy(() -> generator.excluding(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Excluded values must not be null: exclude()");
+                .hasMessage("Excluded values must not be null: excluding()");
 
         assertThatThrownBy(() -> new EnumGenerator<>(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
