@@ -17,6 +17,7 @@ package org.instancio;
 
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
 import javax.annotation.Nullable;
@@ -291,11 +292,14 @@ public interface InstancioApi<T> {
     InstancioApi<T> subtype(TargetSelector selector, Class<?> subtype);
 
     /**
-     * Override default settings for generated values.
-     * Settings include collection sizes, string lengths, numeric ranges, etc.
+     * Override default {@link Settings} for generating values.
+     * The {@link Settings} class supports various parameters, such as
+     * collection sizes, string lengths, numeric ranges, and so on.
+     * For a list of overridable settings, refer to the {@link Keys} class.
      *
      * @param settings to use
      * @return API builder reference
+     * @see Keys
      * @since 1.0.1
      */
     InstancioApi<T> withSettings(Settings settings);

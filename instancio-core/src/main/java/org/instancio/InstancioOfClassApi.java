@@ -27,13 +27,33 @@ public interface InstancioOfClassApi<T> extends InstancioApi<T> {
      * <p>
      * Example:
      * <pre>{@code
-     *     List<Address> addresses = Instancio.of(List.class)
-     *             .withTypeParameters(Address.class)
-     *             .create();
+     *   List<Address> addresses = Instancio.of(List.class)
+     *           .withTypeParameters(Address.class)
+     *           .create();
      * }</pre>
      *
-     * @param type one or more types
+     * <p>This method can be used when the type parameters need
+     * to be supplied dynamically at runtime, however it also
+     * has a couple of limitations:</p>
+     *
+     * <ul>
+     *   <li>its usage produces an unchecked assignment warning</li>
+     *   <li>it cannot be used for nested generics, such as
+     *       {@code Map<String, List<Integer>> }</li>
+     * </ul>
+     *
+     * <p>The recommended approach for instantiating generic classes
+     * is using {@link TypeToken TypeTokens}:
+     *
+     * <pre>{@code
+     *   List<Address> addresses = Instancio.create(new TypeToken<List<Address>>() {});
+     * }</pre>
+     *
+     * @param types one or more type arguments
      * @return API builder reference
+     * @see Instancio#create(TypeTokenSupplier)
+     * @see Instancio#of(TypeTokenSupplier)
+     * @since 1.0.1
      */
-    InstancioApi<T> withTypeParameters(Class<?>... type);
+    InstancioApi<T> withTypeParameters(Class<?>... types);
 }

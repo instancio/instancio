@@ -15,19 +15,37 @@
  */
 package org.instancio;
 
+import org.instancio.exception.UnusedSelectorException;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
+
 /**
- * The mode is used to specify strictness level, either {@link #STRICT} or {@link #LENIENT},
- * an idea borrowed from the Mockito library.
- * <p>
- * In strict mode, which is enabled by default, unused selectors will trigger an exception.
- * This is done in order to keep tests concise and clean.
+ * The mode is used to specify strictness level, either {@link #STRICT}
+ * or {@link #LENIENT}, an idea borrowed from the Mockito library.
  *
+ * <p>In strict mode, which is enabled by default, unused selectors will trigger
+ * the {@link UnusedSelectorException}. The error notifies the user of which
+ * selectors are redundant, with the goal of keeping tests clean and concise.</p>
+ *
+ * <p>Strict mode can be disabled as follows:
+ *
+ * <ul>
+ *   <li>per object, {@link InstancioApi#lenient()} method</li>
+ *   <li>via {@link Settings}, by setting {@link Keys#MODE} to {@link #LENIENT}</li>
+ *   <li>or globally using {@code instancio.properties}</li>
+ * </ul>
+ *
+ * @see InstancioApi#lenient()
+ * @see Settings
+ * @see Keys#MODE
  * @since 1.3.3
  */
 public enum Mode {
 
     /**
-     * Triggers an exception if at least one selector was not used.
+     * Triggers an exception if at least one selector was not used
+     * during object construction.
+     * <p>
      * This mode is enabled by default.
      *
      * @since 1.3.3
@@ -35,7 +53,7 @@ public enum Mode {
     STRICT,
 
     /**
-     * No exception is triggered on unused selectors.
+     * In lenient mode, unused selectors are ignored and no exception is triggered.
      *
      * @since 1.3.3
      */
