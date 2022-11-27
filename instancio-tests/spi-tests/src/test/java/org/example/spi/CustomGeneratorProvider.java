@@ -32,6 +32,8 @@ public class CustomGeneratorProvider implements GeneratorProvider {
         final Map<Class<?>, Generator<?>> map = new HashMap<>();
         map.put(String.class, random -> STRING_GENERATOR_VALUE);
         map.put(Pattern.class, random -> PATTERN_GENERATOR_VALUE);
+        map.put(int.class, new CustomIntegerGenerator());
+        map.put(Integer.class, new CustomIntegerGenerator());
         return map;
     }
 }
