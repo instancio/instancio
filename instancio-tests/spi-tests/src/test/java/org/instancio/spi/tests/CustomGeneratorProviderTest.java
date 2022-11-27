@@ -16,23 +16,63 @@
 package org.instancio.spi.tests;
 
 import org.example.spi.CustomGeneratorProvider;
+import org.example.spi.CustomIntegerGenerator;
 import org.instancio.Instancio;
+import org.instancio.TypeToken;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.all;
+import static org.instancio.Select.allInts;
 
 class CustomGeneratorProviderTest {
 
     @Test
     void overrideBuiltInGenerator() {
-        assertThat(Instancio.create(String.class)).isEqualTo(CustomGeneratorProvider.STRING_GENERATOR_VALUE);
+        assertThat(Instancio.create(String.class))
+                .isEqualTo(CustomGeneratorProvider.STRING_GENERATOR_VALUE);
     }
 
     @Test
     void defineNewGenerator() {
-        assertThat(Instancio.create(Pattern.class)).isSameAs(CustomGeneratorProvider.PATTERN_GENERATOR_VALUE);
+        assertThat(Instancio.create(Pattern.class))
+                .isSameAs(CustomGeneratorProvider.PATTERN_GENERATOR_VALUE);
+    }
 
+    @Test
+    void shouldUseCustomIntegerGenerator() {
+        assertThat(Instancio.create(int.class))
+                .isBetween(CustomIntegerGenerator.MIN, CustomIntegerGenerator.MAX);
+    }
+
+    @Test
+    @DisplayName("Having overridden int generator, should still be able to use built-in generators, if needed")
+    void builtInGeneratorStillAvailableAfterOverride() {
+        final int result = Instancio.of(int.class)
+                .generate(allInts(), gen -> gen.ints().range(100, 105))
+                .create();
+
+        assertThat(result).isBetween(100, 105);
+    }
+
+    @Test
+    void customGeneratorTakesPrecedenceOverBuiltInt() {
+        final int expectedSize = 1000;
+        final List<Integer> result = Instancio.of(new TypeToken<List<Integer>>() {})
+                .supply(allInts(), new CustomIntegerGenerator().evenNumbers())
+                // should be ignored, custom has higher precedence
+                .generate(allInts(), gen -> gen.ints().range(100, 105))
+                .generate(all(List.class), gen -> gen.collection().size(expectedSize))
+                .create();
+
+        assertThat(result)
+                .hasSize(expectedSize)
+                .allSatisfy(n -> assertThat(n)
+                        .isEven()
+                        .isBetween(CustomIntegerGenerator.MIN, CustomIntegerGenerator.MAX));
     }
 }
