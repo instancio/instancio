@@ -16,11 +16,14 @@
 package org.instancio.generator.util;
 
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
-import org.instancio.generator.GeneratedHints;
+import org.instancio.generator.DataStructureHint;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.GeneratorHint;
 import org.instancio.settings.Keys;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
@@ -33,14 +36,15 @@ import java.util.Map;
 
 public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
     private static final Logger LOG = LoggerFactory.getLogger(MapGenerator.class);
+    private static final Class<?> DEFAULT_MAP_TYPE = HashMap.class; // NOPMD
 
     protected int minSize;
     protected int maxSize;
     protected boolean nullable;
     protected boolean nullableKeys;
     protected boolean nullableValues;
-    @SuppressWarnings("PMD.LooseCoupling")
-    protected Class<?> type = HashMap.class; // default map type
+    protected Class<?> mapType;
+    protected boolean isDelegating;
 
     public MapGenerator(final GeneratorContext context) {
         super(context);
@@ -49,11 +53,12 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
         this.nullable = context.getSettings().get(Keys.MAP_NULLABLE);
         this.nullableKeys = context.getSettings().get(Keys.MAP_KEYS_NULLABLE);
         this.nullableValues = context.getSettings().get(Keys.MAP_VALUES_NULLABLE);
+        this.mapType = DEFAULT_MAP_TYPE;
     }
 
     @Override
     public MapGeneratorSpec<K, V> subtype(final Class<?> type) {
-        this.type = ApiValidator.notNull(type, "Type must not be null");
+        this.mapType = ApiValidator.notNull(type, "Type must not be null");
         return this;
     }
 
@@ -100,21 +105,26 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Map<K, V> generate(final Random random) {
         try {
-            return random.diceRoll(nullable) ? null : (Map<K, V>) type.getDeclaredConstructor().newInstance();
+            return random.diceRoll(nullable) ? null : (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            LOG.debug("Error creating instance of: {}", type, ex);
+            LOG.debug("Error creating instance of: {}", mapType, ex);
             return null; // NOPMD
         }
     }
 
     @Override
-    public GeneratedHints getHints() {
-        return GeneratedHints.builder()
-                .dataStructureSize(getContext().random().intRange(minSize, maxSize))
-                .ignoreChildren(false)
-                .nullableResult(nullable)
-                .nullableKeys(nullableKeys)
-                .nullableValues(nullableValues)
+    public Hints hints() {
+        return Hints.builder()
+                .populateAction(PopulateAction.ALL)
+                .hint(DataStructureHint.builder()
+                        .dataStructureSize(getContext().random().intRange(minSize, maxSize))
+                        .nullableMapKeys(nullableKeys)
+                        .nullableMapValues(nullableValues)
+                        .build())
+                .hint(GeneratorHint.builder()
+                        .targetClass(mapType)
+                        .delegating(isDelegating)
+                        .build())
                 .build();
     }
 }

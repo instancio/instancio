@@ -15,43 +15,24 @@
  */
 package org.instancio.generator.util;
 
-import org.instancio.Generator;
 import org.instancio.Random;
+import org.instancio.exception.InstancioException;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.util.Verify;
 
 import java.util.Map;
-import java.util.Optional;
 
 public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
 
-    private Generator<?> delegate;
-
     public MapGeneratorSpecImpl(final GeneratorContext context) {
         super(context);
-        // must be either supplied by user, or obtained from the field declaration
-        this.type = null; //NOPMD: overwrite default type
+        super.isDelegating = true;
+        // Type is either resolved from the field or specified explicitly
+        // by the user via generator.subtype() method
+        super.mapType = null; // NOPMD
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<K, V> generate(final Random random) {
-        Verify.notNull(delegate, "null delegate");
-        return (Map<K, V>) delegate.generate(random);
-    }
-
-    @Override
-    public boolean isDelegating() {
-        return true;
-    }
-
-    @Override
-    public void setDelegate(final Generator<?> delegate) {
-        this.delegate = delegate;
-    }
-
-    @Override
-    public Optional<Class<?>> targetClass() {
-        return Optional.ofNullable(type);
+        throw new InstancioException(getClass() + " should delegate to another generator");
     }
 }

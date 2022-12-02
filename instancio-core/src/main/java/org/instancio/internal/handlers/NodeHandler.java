@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.generator.GeneratorResult;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 
 import java.util.Optional;

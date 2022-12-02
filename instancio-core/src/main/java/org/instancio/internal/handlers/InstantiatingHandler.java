@@ -15,7 +15,9 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.generator.GeneratorResult;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.util.ReflectionUtils;
@@ -33,8 +35,14 @@ public class InstantiatingHandler implements NodeHandler {
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         final Class<?> targetClass = node.getTargetClass();
+
         if (ReflectionUtils.isArrayOrConcrete(targetClass)) {
-            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(targetClass));
+            final Hints hints = Hints.builder()
+                    .populateAction(PopulateAction.ALL)
+                    .build();
+
+            final Object object = instantiator.instantiate(targetClass);
+            final GeneratorResult result = GeneratorResult.create(object, hints);
             return Optional.of(result);
         }
         return Optional.empty();

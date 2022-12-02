@@ -15,10 +15,18 @@
  */
 package org.instancio.generator;
 
+import org.instancio.Generator;
 import org.instancio.Random;
 import org.instancio.settings.Settings;
 
-public class GeneratorContext {
+/**
+ * Provides additional information, such as settings and a random
+ * instance to generators that require it.
+ *
+ * @see Generator
+ * @since 1.0.3
+ */
+public final class GeneratorContext {
 
     private final Settings settings;
     private final Random random;
@@ -28,10 +36,31 @@ public class GeneratorContext {
         this.random = random;
     }
 
+    /**
+     * Returns a read-only instance of the settings used by Instancio.
+     * <p>
+     * The returned settings includes overrides specified using
+     *
+     * <ul>
+     *   <li>{@link org.instancio.InstancioApi#withSettings(Settings)}</li>
+     *   <li>{@code @WithSettings} annotation used with {@code InstancioExtension} for JUnit 5</li>
+     * </ul>
+     *
+     * @return the settings
+     * @since 1.0.3
+     */
     public Settings getSettings() {
         return settings;
     }
 
+    /**
+     * Returns the random instance used by Instancio to generate data.
+     * <p>
+     * Using this instance ensures that data will be reproducible.
+     *
+     * @return the random instance
+     * @since 1.0.3
+     */
     public Random random() {
         return random;
     }

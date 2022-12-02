@@ -17,12 +17,14 @@ package org.instancio.generator.lang;
 
 import org.instancio.Generator;
 import org.instancio.Random;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.GeneratorHint;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Optional;
 
 public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, Generator<E> {
 
@@ -67,12 +69,12 @@ public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, G
     }
 
     @Override
-    public boolean supports(final Class<?> type) {
-        return enumClass.isAssignableFrom(type);
-    }
-
-    @Override
-    public Optional<Class<?>> targetClass() {
-        return Optional.of(enumClass);
+    public Hints hints() {
+        return Hints.builder()
+                .populateAction(PopulateAction.APPLY_SELECTORS)
+                .hint(GeneratorHint.builder()
+                        .targetClass(enumClass)
+                        .build())
+                .build();
     }
 }

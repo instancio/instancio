@@ -15,12 +15,14 @@
  */
 package org.instancio.test.support.pojo.misc;
 
-import lombok.Value;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Value
+@Data
+@SuperBuilder
 public class StringFields {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Two {}

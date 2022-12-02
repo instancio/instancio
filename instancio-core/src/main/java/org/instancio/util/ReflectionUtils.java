@@ -46,7 +46,7 @@ public final class ReflectionUtils {
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    public static void setField(@Nullable final Object target, final Field field, final Object value) {
+    public static void setField(@Nullable final Object target, final Field field, @Nullable final Object value) {
         if (target == null) {
             return;
         }
@@ -78,6 +78,43 @@ public final class ReflectionUtils {
             throw new InstancioApiException("Invalid field '" + fieldName + "' for " + klass, ex);
         } catch (SecurityException ex) {
             throw new InstancioApiException("Unable to access '" + fieldName + "' of " + klass, ex);
+        }
+    }
+
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    public static boolean hasNonNullValue(final Field field, final Object object) {
+        try {
+            if (field.getType().isPrimitive()) {
+                return true; // primitives are never "null"
+            }
+            field.setAccessible(true);
+            return field.get(object) != null;
+        } catch (IllegalAccessException ex) {
+            throw new InstancioException("Unable to get value from: " + field, ex);
+        }
+    }
+
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    public static boolean hasNonNullOrNonDefaultPrimitiveValue(final Field field, final Object object) {
+        try {
+            field.setAccessible(true);
+            final Object fieldValue = field.get(object);
+
+            if (field.getType().isPrimitive()) {
+
+                if (fieldValue instanceof Number) {
+                    return Double.compare(((Number) fieldValue).doubleValue(), 0.0) != 0;
+                }
+                if (fieldValue instanceof Character) {
+                    return (Character) fieldValue != 0;
+                }
+                if (fieldValue instanceof Boolean) {
+                    return (Boolean) fieldValue;
+                }
+            }
+            return fieldValue != null;
+        } catch (IllegalAccessException ex) {
+            throw new InstancioException("Unable to get value from: " + field, ex);
         }
     }
 

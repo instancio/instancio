@@ -25,7 +25,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.testsupport.asserts.GeneratedHintsAssert;
+import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -79,9 +79,8 @@ class NumberGeneratorTest {
             }
 
             assertThat(results).containsNull().hasSize(MAX - MIN + 2);
-            GeneratedHintsAssert.assertHints(generator.getHints())
-                    .nullableResult(true)
-                    .ignoreChildren(true);
+            HintsAssert.assertHints(generator.hints())
+                    .populateActionIsApplySelectors();
         }
     }
 
@@ -102,9 +101,8 @@ class NumberGeneratorTest {
                     .as("Expecting at least half of sample size of unique fractional numbers")
                     .hasSizeGreaterThan(SAMPLE_SIZE / 2);
 
-            GeneratedHintsAssert.assertHints(generator.getHints())
-                    .nullableResult(true)
-                    .ignoreChildren(true);
+            HintsAssert.assertHints(generator.hints())
+                    .populateActionIsApplySelectors();
         }
     }
 

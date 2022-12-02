@@ -134,7 +134,16 @@ Map<UUID, Person> personMap = Instancio.of(new TypeToken<Person>() {})
 ## Selectors
 
 Selectors are used to target fields and classes, for example in order to customise generated values.
-Selectors are provided by the {{Select}} class which contains the following methods:
+Instancio supports different types of selectors, all of which implement the {{TargetSelector}} interface.
+These types are:
+
+- regular selectors
+- predicate selectors
+- selector groups
+- convenience selectors
+
+All of the above are provided by the {{Select}} class which contains the following static methods
+for creating them:
 
 ``` java linenums="1" title="Regular selectors"
 Select.field(String fieldName)
@@ -382,6 +391,7 @@ Person person = Instancio.of(Person.class)
     .lenient()
     // snip...
     .create();
+```
 
 Lenient mode can also be enabled via `Settings`. In fact, the `lenient()` method above is a shorthand for the following:
 
@@ -439,80 +449,62 @@ Using the collection generator, this can be overridden by specifying the type ex
 
 ``` java linenums="1" title="Example: customising a collection"
 Person person = Instancio.of(Person.class)
-    // Use LinkedList as List implementation
     .generate(field("phoneNumbers"), gen -> gen.collection().minSize(3).subtype(LinkedList.class))
-    // Use random country codes from given choices
     .generate(field(Phone.class, "countryCode"), gen -> gen.oneOf("+33", "+39", "+44", "+49"))
     .create();
 ```
 
+
 ### Using `set()`
 
-The `set()` method is self-explanatory.
-It can be used to set a static value to selected fields or classes, for example:
+The `set()` method can be used for setting a static value to selected targets,
+just like a regular setter method:
 
-``` java linenums="1" title="Example of using set()" hl_lines="2 3"
+``` java linenums="1"
 Person person = Instancio.of(Person.class)
     .set(field(Phone.class, "countryCode"), "+1")
     .set(all(LocalDateTime.class), LocalDateTime.now())
     .create();
 ```
 
-!!! attention ""
-    <lnum>2</lnum> Set `countryCode` to "+1" on _all_ generated instances of `Phone` class.<br/>
-    <lnum>3</lnum> Set all `LocalDateTime` values to `now`.
+However, unlike a regular set method that can only be invoked on a single object,
+the above will set `countryCode` to "+1" on _all_ generated instances of `Phone` class.
+Assuming the `Person` class contains a `List<Phone>`, they will all have the specified country code.
+Similarly, all `LocalDateTime` values will be set to the same instance of `now()`.
+
 
 ### Using `supply()`
 
 The `supply()` method has two variants:
 
 ``` java linenums="1"
-supply(SelectorGroup selectors, Supplier<V> supplier)
-supply(SelectorGroup selectors, Generator<V> generator)
+supply(TargetSelector selector, Supplier<V> supplier)
+supply(TargetSelector selector, Generator<V> generator)
 ```
 
-!!! attention ""
-    <lnum>1</lnum> For supplying *non-random* values using a `java.util.function.Supplier`.<br/>
-    <lnum>2</lnum> For supplying *random* values using custom {{Generator}} implementations.
+The first accepts a `java.util.function.Supplier` and is for supplying *non-random* values.
+The second accepts an Instancio {{Generator}} (a functional interface) and can be used for supplying *random* values.
 
 #### Using supply() to provide *non-random* values
 
-The first variant can be used where random values are not appropriate and the generated object needs to have a meaningful state.
+The following is another example of setting all `LocalDateTime` instances to `now()`.
 
-``` java linenums="1" title="Example" hl_lines="2 3"
+``` java linenums="1"
 Person person = Instancio.of(Person.class)
-    .supply(field(Phone.class, "countryCode"), () -> "+1")
     .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
     .create();
 ```
 
-!!! attention ""
-    <lnum>2</lnum> Set `countryCode` to "+1" for all instances of `Phone`.<br/>
-    <lnum>3</lnum> All `LocalDateTime` instances will be distinct objects with the value `now()`.
+Unlike the earlier example using `set()`, this will assign a new instance for each `LocalDateTime`:
 
-There is some overlap between the `set()` and `supply()` methods.
-For instance, the following two lines will produce identical results:
-
-``` java linenums="1" title="Example"
-set(field(Phone.class, "countryCode"), "+1")
-supply(field(Phone.class, "countryCode"), () -> "+1")
+``` java linenums="1"
+set(all(LocalDateTime.class), LocalDateTime.now())        // reuse the same instance for all dates
+supply(all(LocalDatime.class), () -> LocalDateTime.now()) // create a new instance for each date
 ```
-
-In fact, `set()` is just a convenience method to avoid using `supply()` when the value is constant.
-However, the `supply()` method can be used to provide a new instance each time it is called.
-For example, the following methods are _not_ identical:
-
-``` java linenums="1" title="Example"
-set(all(LocalDateTime.class), LocalDateTime.now())
-supply(all(LocalDatime.class), () -> LocalDateTime.now())
-```
-
-If the `Person` class has multiple `LocalDateTime` fields, using `set()` will set them all to the same instance, while using `supply()` will set them all to distinct instances.
-This difference is even more important if supplying a `Collection`, since sharing a collection instance among multiple objects is usually not desired.
 
 #### Using supply() to provide *random* values
 
-The second variant of the `supply()` method can be used to generate random objects.
+The second variant of the `supply()` method can be used for supplying random values and objects.
 This method takes a {{Generator}} as an argument, which is a functional interface with the following signature:
 
 ``` java linenums="1"
@@ -523,78 +515,24 @@ interface Generator<T> {
 }
 ```
 
-Using the provided {{Random}} instance ensures that Instancio will be able to reproduce the generated object when needed.
-The {{Random}} implementation uses a `java.util.Random` internally, but offers a more user-friendly interface and convenience methods not available in the JDK class.
-
-``` java linenums="1" title="Creating a custom Generator"
-import org.instancio.Generator;
-import org.instancio.Random;
-
-class PhoneGenerator implements Generator<Phone> {
-
-    public Phone generate(Random random) {
-        String countryCode = random.oneOf("+1", "+52");
-        String number = random.digits(7);
-        return new Phone(countryCode, number);
-    }
-}
-```
-
-The custom `PhoneGenerator` can now be passed into the `supply()` method:
+Using the provided {{Random}} instance ensures that generated objects are reproducible.
+Since `Generator` is a functional interface it can be specified as a lambda expression:
 
 ``` java linenums="1"
 Person person = Instancio.of(Person.class)
-    .supply(all(Phone.class), new PhoneGenerator())
-    .create();
+        .supply(all(Phone.class), random -> Phone.builder()
+                .countryCode(random.oneOf("+1", "+52"))
+                .number(random.digits(7))
+                .build())
+        .create();
 ```
 
-It is important to note that objects created by a custom generator cannot be modified using `set()`, `supply()`, or `generate()` methods.
-This is shown in the following example:
-
-``` java linenums="1" hl_lines="3"
-Person person = Instancio.of(Person.class)
-    .supply(all(Phone.class), new PhoneGenerator())
-    .set(field(Phone.class, "number"), "1234567") // will not be invoked!
-    .create();
-```
-
-Since an entire `Phone` instance is created by the custom `PhoneGenerator`, Instancio will not populate its fields.
-Therefore, the `set()` method will not be invoked, which will result in the following error:
-
-```
--> Unused selectors in generate(), set(), or supply():
- 1: field(Phone, "number")
-```
-
-In short, Instancio does not modify objects returned by custom generators.
-If you need to modify an object created by a custom generator, the best option would be to use an [`onComplete() callback`](#using-oncomplete).
-
-
-#### `supply()` anti-pattern
-
-Since the `supply()` method provides an instance of {{Random}}, the method can also be used for customising values of core type, such as strings and numbers.
-However, the `generate()` method should be preferred in such cases if possible as it provides a better abstraction and would result in more readable code.
-
-``` java linenums="1" title="generate() vs supply()" hl_lines="3 4 9"
-Person bad = Instancio.of(Person.class)
-    .supply(field("password"), random -> {
-        int length = random.intRange(8, 21);
-        return random.alphaNumeric(length);
-    })
-    .create();
-
-Person person = Instancio.of(Person.class)
-    .generate(field("password"), gen -> gen.string().alphaNumeric().length(8, 20))
-    .create();
-```
-
-!!! attention ""
-    <lnum>3-4</lnum> Not recommended: using `random` to generate a `String`.<br/>
-    <lnum>9</lnum> Better approach: using the built-in string generator.
+Generators can be used for generating simple value types as well as building complex objects.
+They are described in more detail in the [Custom Generators](#custom-generators) section.
 
 ### Using `onComplete()`
 
-Generated objects can also be customised using the {{OnCompleteCallback}}, a functional interface with the following signature:
+Another option for customising generated data is using the {{OnCompleteCallback}}, a functional interface with the following signature:
 
 ``` java linenums="1"
 interface OnCompleteCallback<T> {
@@ -602,7 +540,8 @@ interface OnCompleteCallback<T> {
 }
 ```
 
-While the [`supply()`](#using-supply) and [`generate()`](#using-generate) methods allow specifying values during object construction, the `OnCompleteCallback` is used to modify the generated object _after_ it has been fully populated.
+The [`supply()`](#using-supply) and [`generate()`](#using-generate) methods populate values during object construction.
+The `OnCompleteCallback` is invoked *after* the generated object has been fully populated.
 
 The following example shows how the `Address` can be modified using a callback.
 If the `Person` has a `List<Address>`, the callback will be invoked for every instance of the `Address` class that was generated.
@@ -617,10 +556,10 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-The advantage of callbacks is that they can be used to update multiple fields at once.
-The disadvantage, however, is that they can only be used to update mutable types.
+If the object is mutable, callbacks allow modifying multiple fields at once.
+However, callbacks cannot be used to immutable types.
 
-It should also be noted that callbacks are only invoked on non-null values.
+Another property of callbacks is that they are only invoked on non-null objects.
 In the following example, all address instances are nullable.
 Therefore, a generated address instance may either be `null` or a fully-populated object.
 However, if a `null` was generated, the callback will not invoked.
@@ -662,8 +601,6 @@ Person person = Instancio.of(Person.class)
     .supply(field("lastModified"), () -> LocalDateTime.now())
     .create();
 ```
-
-
 
 ### Nullable Values
 
@@ -729,7 +666,7 @@ The mapping can be specified using the `subtype` method:
 
 
 ``` java linenums="1"
-subtype(SelectorGroup selectors, Class<?> subtype)
+subtype(TargetSelector selector, Class<?> subtype)
 ```
 
 All the types represented by the selectors must be supertypes of the given `subtype` parameter.
@@ -781,6 +718,359 @@ Model<Person> modelWithNewPet = Instancio.of(simpsonsModel)
                 new Pet(PetType.CAT, "Snowball"),
                 new Pet(PetType.DOG, "Santa's Little Helper"))
     .toModel();
+```
+
+## Custom Generators
+
+Every type of object Instancio generates is through an implementation of the `Generator` interface.
+For users of the library, creating custom `Generators` offers a powerful mechanism for generating objects.
+Combining generators with the concept of [models](#using-models) offers a flexible
+framework for generating random POJOs and creating reusable data generation libraries
+that can be shared across projects.
+
+This section will cover the following topics:
+
+- Implementing custom generators
+- Generator composition
+- Providing `Hints` to the Instancio engine
+- Generator `init()` and `GeneratorContext`
+- Implementing stateful generators
+- Registering generators using `GeneratorProvider` SPI
+
+
+Examples in this section assume the following domain:
+
+```java linenums="1"
+class Person {
+    private String name;
+    private Address address;
+}
+
+class Address {
+    private String street;
+    private String city;
+    private List<Phone> phoneNumbers;
+}
+
+class Phone {
+    private String countryCode;
+    private String number;
+}
+```
+
+
+### Implementing custom Generators
+
+Using the `Phone` and `Address` class as the starting point, their generators can be implemented as follows:
+
+```java linenums="1"
+class PhoneGenerator implements Generator<Phone> {
+
+    @Override
+    public Phone generate(Random random) {
+        return Phone.builder()
+                .countryCode("+" + random.digits(2))
+                .number(random.digits(7))
+                .build();
+    }
+}
+
+class AddressGenerator implements Generator<Address> {
+
+    @Override
+    public Address generate(Random random) {
+        return Address.builder()
+                .city(random.oneOf("London", "Tokyo", "New York"))
+                .build();
+    }
+}
+```
+
+Notice the address generator did not initialise the `street` and `phoneNumbers` fields.
+We will use this fact to demonstrate a couple of concepts.
+For now, using the phone and address generators, a `Person` class can be created by passing
+the generators to the `supply()` method:
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+        .supply(all(Phone.class), new PhoneGenerator())
+        .supply(all(Address.class), new AddressGenerator())
+        .lenient()
+        .create();
+```
+
+Running this snippet will produce an output similar to similar to below (object is printed as JSON for better readability):
+
+``` json
+{
+  "name" : "MTBHAHNL",
+  "address" : {
+    "street" : null,
+    "city" : "New York",
+    "phoneNumbers" : null
+  }
+}
+```
+
+`street` is `null` as its value was not set in the generator.
+`phoneNumbers` is `null` because even though we have a `PhoneGenerator`, Instancio will not automatically create a list to hold those phones.
+Since the list is `null`, no phones were generated. This also explains the reason why `lenient()` mode was enabled.
+In strict mode, Instancio would generate an error notifying that the generator is redundant
+
+```
+-> Unused selectors in generate(), set(), or supply():
+ 1: all(Phone)
+    at org.example.PersonTest.createPerson(PersonTest.java:123)
+```
+
+### Providing Hints from generators to the Instancio engine
+
+After a generator creates an object, it gets passed to the Instancio engine. The engine will determine
+
+- where to assign the created object, and
+- whether the created object should be populated further.
+
+The second aspect is controlled by the `Hints` a generator provides to the engine via the following method in the `Generator` interface:
+
+```java
+default Hints hints() {
+    return Hints.builder()
+            .populateAction(PopulateAction.APPLY_SELECTORS)
+            .build();
+}
+```
+
+The `PopulateAction` enum defines the following values:
+
+- **`NONE`**
+  
+    Object should not be populated by the engine.
+
+- **`APPLY_SELECTORS`** (default behaviour)
+
+    Object should not be populate by the engine,
+    however any selectors specified using `set()`, `supply()`, `generate()` methods
+    should be executed.
+
+- **`NULLS`**
+
+    Same as `APPLY_SELECTORS`.
+    In addition, engine should populate `null` fields.
+
+- **`NULLS_AND_DEFAULT_PRIMITIVES`**
+
+    Same as `NULLS`.
+    In addition, engine should populate primitive fields with default values (`0`, `false`, `'\u0000'`).
+
+- **`ALL`**
+
+    Object should be fully-populated.
+    Any existing values will be overwritten.
+    Selectors will also be applied, if any.
+    This is the default mode the engine operates in when using internal generators.
+
+
+By overriding the `hints()` method in the `AddressGenerator` as follows:
+
+```java
+class AddressGenerator implements Generator<Address> {
+
+    // remaining code unchanged
+
+    @Override
+    public Hints getHints() {
+        return Hints.withPopulateAction(PopulateAction.NULLS);
+    }
+}
+```
+
+and re-running the example (this time `lenient()` is not needed):
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+        .supply(all(Phone.class), new PhoneGenerator())
+        .supply(all(Address.class), new AddressGenerator())
+        .create();
+```
+
+produces:
+
+```json
+{
+  "name" : "UQZQVFGAXZ",
+  "address" : {
+    "street" : "DQHHIU",
+    "city" : "London",
+    "phoneNumbers" : [ {
+      "countryCode" : "+82",
+      "number" : "4867592"
+    }, {
+      "countryCode" : "+40",
+      "number" : "3754717"
+    }, {
+      "countryCode" : "+78",
+      "number" : "7945421"
+    } ]
+  }
+}
+```
+
+The `AddressGenerator` and the `PhoneGenerator` classes are unaware of each other,
+yet they can still be combined together to produce this output.
+
+In addition, the generated object can still be customised further using selectors:
+
+```java
+Person person = Instancio.of(Person.class)
+        .supply(all(Phone.class), new PhoneGenerator())
+        .supply(all(Address.class), new AddressGenerator())
+        .set(field(Address.class, "street"), "123 Main St")
+        .generate(all(List.class), gen -> gen.collection().size(1))
+        .create();
+```
+
+will produce an output similar to:
+
+```json
+{
+  "name" : "HDFU",
+  "address" : {
+    "street" : "123 Main St",
+    "city" : "London",
+    "phoneNumbers" : [ {
+      "countryCode" : "+13",
+      "number" : "0862050"
+    } ]
+  }
+}
+```
+
+### Generator initialisation and `GeneratorContext`
+
+In the previous examples the generators were stateless and had no need for initialisation.
+In certain cases, generators may need to have state.
+Most built-in generators provided by Instancio have state in order to support method chaining:
+
+```java
+generate(allStrings(), gen -> gen.string().prefix("foo-").mixedCase().minLength(10))
+```
+
+In addition, some generators may require access to certain configuration parameters.
+To support this use case, the `Generator` interface provides the `init()` method:
+
+```java
+default void init(GeneratorContext context) {
+    // no-op by default
+}
+```
+
+The {{GeneratorContext}} parameter contains an instance of {{Settings}} and {{Random}}.
+
+The settings contain all of the configuration, including any custom overrides.
+The `Random` instance can be used if randomness is required in the `init()` method itself,
+for instance reading data from a random set of files. In addition, it allows assigning random
+to a field making it available in other generator methods if needed.
+
+
+### Implementing stateful generators
+
+To demonstrate a stateful generator, we will implement an arithmetic sequence. The sequence will start
+from a random number and have a random step size:
+
+```java linenums="1"
+class ArithmeticSequenceGenerator implements Generator<Integer> {
+
+    private int current;
+    private int step;
+
+    @Override
+    public void init(final GeneratorContext context) {
+        current = context.random().intRange(0, 100);
+        step = context.random().oneOf(1, 2, 3, 5, 10);
+    }
+
+    @Override
+    public Integer generate(final Random random) {
+        current = current + step;
+        return current;
+    }
+}
+```
+
+The sequence generator, can be applied to any integer field (for example `id` field of a database entity),
+or to simply generate a list of numbers:
+
+```java
+List<Integer> sequence = Instancio.of(new TypeToken<List<Integer>>() {})
+        .supply(allInts(), new ArithmeticSequenceGenerator())
+        .generate(all(List.class), gen -> gen.collection().size(10))
+        .create();
+```
+
+Sample outputs:
+
+```
+[11, 21, 31, 41, 51, 61, 71, 81, 91, 101]
+[98, 101, 104, 107, 110, 113, 116, 119, 122, 125]
+etc.
+```
+
+### Registering generators using `GeneratorProvider` SPI
+
+In the previous examples generators were manually specified using target selectors.
+Instancio also offers {{GeneratorProvider}} service provider interface for registering custom generators
+(or overriding built-in generators). The provider interface is defined as:
+
+```java linenums="1"
+interface GeneratorProvider {
+    Map<Class<?>, Generator<?>> getGenerators();
+}
+```
+
+A sample implementation using the address and phone generators implemented earlier would be:
+
+```java linenums="1"
+public class CustomGeneratorProvider implements GeneratorProvider {
+    @Override
+    public Map<Class<?>, Generator<?>> getGenerators() {
+        Map<Class<?>, Generator<?>> generators = new HashMap<>();
+        generators.put(Address.class, new AddressGenerator());
+        generators.put(Phone.class, new PhoneGenerator());
+        return generators;
+    }
+}
+```
+
+The service provider can be registered by creating a file named `org.instancio.spi.GeneratorProvider`
+under `/META-INF/services/`, and containing the fully-qualified name of the provider implementation:
+
+``` title="/META-INF/services/org.instancio.spi.GeneratorProvider"
+org.example.CustomGeneratorProvider
+```
+
+With the file in place, Instancio will automatically use the specified generators. For example,
+
+```java
+Person person = Instancio.create(Person.class);
+```
+
+will produce an output similar to:
+
+```json
+{
+  "name" : "FYUGB",
+  "address" : {
+    "street" : "SOO",
+    "city" : "New York",
+    "phoneNumbers" : [ {
+      "countryCode" : "+35",
+      "number" : "3508762"
+    }, {
+      "countryCode" : "+66",
+      "number" : "4483261"
+    } ]
+  }
+}
 ```
 
 ## Seed

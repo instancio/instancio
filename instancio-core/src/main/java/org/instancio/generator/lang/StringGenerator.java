@@ -16,11 +16,10 @@
 package org.instancio.generator.lang;
 
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
-import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.util.Constants;
@@ -154,13 +153,5 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         }
 
         throw new IllegalStateException("Unknown StringType: " + stringType); // unreachable
-    }
-
-    @Override
-    public GeneratedHints getHints() {
-        return GeneratedHints.builder()
-                .nullableResult(nullable)
-                .ignoreChildren(true)
-                .build();
     }
 }

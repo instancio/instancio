@@ -16,6 +16,7 @@
 package org.instancio.util;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
@@ -66,6 +67,44 @@ class ReflectionUtilsTest {
         assertThatThrownBy(() -> ReflectionUtils.getField(Person.class, "foo"))
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Invalid field 'foo' for class org.instancio.test.support.pojo.person.Person");
+    }
+
+    @Test
+    void isNonNullFieldValue() {
+        final Field nameField = ReflectionUtils.getField(Person.class, "name");
+        assertThat(ReflectionUtils.hasNonNullValue(nameField, new Person())).isFalse();
+        assertThat(ReflectionUtils.hasNonNullValue(nameField, Person.builder().name("foo").build())).isTrue();
+    }
+
+    @Test
+    void isNonNullOrPrimitiveFieldWithDefaultValue() {
+        final Field nameField = ReflectionUtils.getField(Person.class, "name");
+        assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(nameField, new Person())).isFalse();
+        assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(nameField, Person.builder().name("foo").build())).isTrue();
+    }
+
+    @ValueSource(strings = {"byteValue", "shortValue", "intValue", "longValue",
+            "floatValue", "doubleValue", "booleanValue", "charValue",})
+    @ParameterizedTest
+    void isNonNullOrPrimitiveFieldWithDefaultValue_WithDefaultValues(final String fieldName) {
+        final PrimitiveFields blank = new PrimitiveFields();
+        final PrimitiveFields initialised = PrimitiveFields.builder()
+                .byteValue((byte) 1)
+                .shortValue((short) 1)
+                .intValue(1)
+                .longValue(1)
+                .floatValue(0.000000001f)
+                .doubleValue(0.000000000001)
+                .booleanValue(true)
+                .charValue('0')
+                .build();
+
+
+        assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(
+                ReflectionUtils.getField(PrimitiveFields.class, fieldName), blank)).isFalse();
+
+        assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(
+                ReflectionUtils.getField(PrimitiveFields.class, fieldName), initialised)).isTrue();
     }
 
     @Test

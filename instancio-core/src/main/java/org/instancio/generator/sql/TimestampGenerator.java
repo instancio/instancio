@@ -16,10 +16,10 @@
 package org.instancio.generator.sql;
 
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.generator.time.InstantGenerator;
+import org.instancio.internal.generator.AbstractGenerator;
 
 import java.sql.Timestamp;
 

@@ -1,21 +1,22 @@
 /*
- *  Copyright 2022 the original author or authors.
+ * Copyright 2022 the original author or authors.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       https://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.instancio.generator;
+package org.instancio.internal.generator;
 
 import org.instancio.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.array.ArrayGenerator;
 import org.instancio.generator.lang.BooleanGenerator;
 import org.instancio.generator.lang.ByteGenerator;
@@ -55,10 +56,7 @@ import org.instancio.generator.util.concurrent.atomic.AtomicIntegerGenerator;
 import org.instancio.generator.util.concurrent.atomic.AtomicLongGenerator;
 import org.instancio.generator.xml.XMLGregorianCalendarGenerator;
 import org.instancio.spi.GeneratorProvider;
-import org.instancio.util.CollectionUtils;
 import org.instancio.util.ServiceLoaders;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
@@ -75,7 +73,9 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -85,7 +85,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -93,13 +92,20 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class GeneratorResolver {
-    private static final Logger LOG = LoggerFactory.getLogger(GeneratorResolver.class);
 
-    private final Map<Class<?>, Generator<?>> generators = new ConcurrentHashMap<>();
+    private static final List<GeneratorProvider> PROVIDERS = ServiceLoaders.loadAll(GeneratorProvider.class);
+    private final Map<Class<?>, Generator<?>> generators;
     private final GeneratorContext context;
+    private final GeneratorProviderFacade generatorProviderFacade;
 
     public GeneratorResolver(final GeneratorContext context) {
         this.context = context;
+        this.generators = Collections.unmodifiableMap(initGeneratorMap(context));
+        this.generatorProviderFacade = new GeneratorProviderFacade(context, PROVIDERS);
+    }
+
+    private static Map<Class<?>, Generator<?>> initGeneratorMap(final GeneratorContext context) {
+        final Map<Class<?>, Generator<?>> generators = new HashMap<>();
 
         // Core types
         generators.put(byte.class, new ByteGenerator(context));
@@ -169,18 +175,15 @@ public class GeneratorResolver {
         // javax.xml.datatype
         generators.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(context));
 
-        for (GeneratorProvider provider : ServiceLoaders.loadAll(GeneratorProvider.class)) {
-            final Map<Class<?>, Generator<?>> providers = provider.getGenerators();
-            if (CollectionUtils.isNullOrEmpty(providers)) {
-                LOG.warn("No generators loaded from '{}' - provided map is null or empty", provider.getClass().getName());
-            } else {
-                generators.putAll(providers);
-            }
-        }
+        return generators;
     }
 
+    @SuppressWarnings("all")
     public Optional<Generator<?>> get(final Class<?> klass) {
-        Generator<?> generator = generators.get(klass);
+        // Generators provided by SPI take precedence over built-in generators
+        Generator<?> generator = generatorProviderFacade.getGenerator(klass)
+                .orElse(generators.get(klass));
+
         if (generator == null) {
             if (klass.isArray()) {
                 generator = new ArrayGenerator<>(context, klass);

@@ -24,7 +24,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.testsupport.asserts.GeneratedHintsAssert;
+import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -52,14 +52,7 @@ class BooleanGeneratorTest {
                 .as("true, false, and null")
                 .hasSize(3);
 
-        GeneratedHintsAssert.assertHints(generator.getHints())
-                .nullableResult(true)
-                .ignoreChildren(true);
-    }
-
-    @Test
-    void supports() {
-        assertThat(generator.supports(boolean.class)).isTrue();
-        assertThat(generator.supports(Boolean.class)).isTrue();
+        HintsAssert.assertHints(generator.hints())
+                .populateActionIsApplySelectors();
     }
 }

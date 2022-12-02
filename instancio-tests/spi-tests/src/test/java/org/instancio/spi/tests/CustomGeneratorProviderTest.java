@@ -16,7 +16,7 @@
 package org.instancio.spi.tests;
 
 import org.example.spi.CustomGeneratorProvider;
-import org.example.spi.CustomIntegerGenerator;
+import org.example.generator.CustomIntegerGenerator;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.junit.jupiter.api.DisplayName;

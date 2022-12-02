@@ -15,18 +15,16 @@
  */
 package org.instancio.generator.misc;
 
+import org.instancio.Generator;
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 
-public class InstantiatingGenerator extends AbstractGenerator<Object> {
+public class InstantiatingGenerator implements Generator<Object> {
 
     private final Instantiator instantiator;
     private final Class<?> targetType;
 
-    public InstantiatingGenerator(final GeneratorContext context, final Instantiator instantiator, final Class<?> targetType) {
-        super(context);
+    public InstantiatingGenerator(final Instantiator instantiator, final Class<?> targetType) {
         this.targetType = targetType;
         this.instantiator = instantiator;
     }

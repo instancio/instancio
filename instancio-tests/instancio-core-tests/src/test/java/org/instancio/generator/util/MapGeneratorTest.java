@@ -17,13 +17,14 @@ package org.instancio.generator.util;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.PopulateAction;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.testsupport.asserts.GeneratedHintsAssert;
+import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -74,19 +75,11 @@ class MapGeneratorTest {
                 .as("Expecting 5/6 of results to be non-null")
                 .isCloseTo((5 * SAMPLE_SIZE) / 6, withPercentage(PERCENTAGE_THRESHOLD));
 
-        GeneratedHintsAssert.assertHints(generator.getHints())
+        HintsAssert.assertHints(generator.hints())
                 .dataStructureSizeBetween(MIN_SIZE, MAX_SIZE)
-                .nullableResult(true)
                 .nullableMapKeys(true)
                 .nullableMapValues(true)
-                .ignoreChildren(false)
+                .populateAction(PopulateAction.ALL)
                 .nullableElements(false);
-    }
-
-    @Test
-    void supports() {
-        assertThat(generator.supports(Map.class)).isTrue();
-        assertThat(generator.supports(HashMap.class)).isTrue();
-        assertThat(generator.supports(Object.class)).isFalse();
     }
 }

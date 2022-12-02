@@ -16,11 +16,10 @@
 package org.instancio.generator.lang;
 
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
-import org.instancio.generator.GeneratedHints;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         extends AbstractGenerator<T> implements NumberGeneratorSpec<T> {
@@ -76,13 +75,5 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     @Override
     public final T generate(final Random random) {
         return random.diceRoll(nullable) ? null : generateNonNullValue(random);
-    }
-
-    @Override
-    public GeneratedHints getHints() {
-        return GeneratedHints.builder()
-                .nullableResult(nullable)
-                .ignoreChildren(true)
-                .build();
     }
 }

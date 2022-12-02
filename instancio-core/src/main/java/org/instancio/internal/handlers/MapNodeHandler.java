@@ -16,9 +16,11 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Random;
-import org.instancio.generator.GeneratedHints;
-import org.instancio.generator.GeneratorResult;
+import org.instancio.generator.DataStructureHint;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Keys;
@@ -40,7 +42,13 @@ public class MapNodeHandler implements NodeHandler {
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         if (Map.class.isAssignableFrom(node.getTargetClass())) {
-            final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(randomSize()).build();
+            final Hints hints = Hints.builder()
+                    .populateAction(PopulateAction.ALL)
+                    .hint(DataStructureHint.builder()
+                            .dataStructureSize(randomSize())
+                            .build())
+                    .build();
+
             final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(node.getTargetClass()), hints);
             return Optional.of(result);
         }
