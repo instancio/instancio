@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.example.spi;
+package org.example.generator;
 
 import org.instancio.Generator;
 import org.instancio.Random;

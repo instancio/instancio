@@ -16,8 +16,8 @@
 package org.instancio.generator.lang;
 
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 

@@ -70,7 +70,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
      *
      * @return this reflection assert instance
      */
-    public ReflectionAssert hasAllFieldsOfTypeEqualTo(final Class<?> fieldType, final String value) {
+    public ReflectionAssert hasAllFieldsOfTypeEqualTo(final Class<?> fieldType, final Object value) {
         collectDeclaredFieldsOfType(fieldType).forEach(field -> {
             final Object fieldValue = getFieldValue(field, actual);
             assertThat(fieldValue)

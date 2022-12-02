@@ -21,6 +21,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.array.ArrayGenerator;
 import org.instancio.generators.Generators;
+import org.instancio.internal.generator.GeneratorHint;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
@@ -102,7 +103,10 @@ class GeneratorSelectorMap {
     private void putGenerator(final TargetSelector targetSelector, final Generator<?> generator) {
         selectorMap.put(targetSelector, generator);
 
-        final Optional<Class<?>> generatorTargetClass = generator.targetClass();
+        final GeneratorHint hints = generator.hints().get(GeneratorHint.class);
+        final Optional<Class<?>> generatorTargetClass = Optional.ofNullable(hints)
+                .map(GeneratorHint::targetClass);
+
         generatorTargetClass.ifPresent(aClass -> generatorSubtypeMap.put(targetSelector, aClass));
 
         if (targetSelector instanceof SelectorImpl) {

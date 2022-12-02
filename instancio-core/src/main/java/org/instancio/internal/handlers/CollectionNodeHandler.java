@@ -16,10 +16,12 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Random;
-import org.instancio.generator.GeneratedHints;
-import org.instancio.generator.GeneratorResult;
+import org.instancio.generator.DataStructureHint;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
 import org.instancio.generator.util.EnumSetGenerator;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Keys;
@@ -49,8 +51,15 @@ public class CollectionNodeHandler implements NodeHandler {
                 return generateEnumSet(node);
             }
 
-            final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(randomSize()).build();
-            final GeneratorResult result = GeneratorResult.create(instantiator.instantiate(node.getTargetClass()), hints);
+            final Hints hints = Hints.builder()
+                    .hint(DataStructureHint.builder()
+                            .dataStructureSize(randomSize())
+                            .build())
+                    .populateAction(PopulateAction.ALL)
+                    .build();
+
+            final Object collection = instantiator.instantiate(node.getTargetClass());
+            final GeneratorResult result = GeneratorResult.create(collection, hints);
             return Optional.of(result);
         }
         return Optional.empty();
@@ -62,7 +71,12 @@ public class CollectionNodeHandler implements NodeHandler {
         // TODO refactor
         final Enum<?>[] enumValues = ReflectionUtils.getEnumValues(enumClass);
         final int enumSetSize = Math.min(randomSize(), enumValues.length);
-        final GeneratedHints hints = GeneratedHints.builder().dataStructureSize(enumSetSize).build();
+        final Hints hints = Hints.builder()
+                .populateAction(PopulateAction.ALL)
+                .hint(DataStructureHint.builder()
+                        .dataStructureSize(enumSetSize)
+                        .build())
+                .build();
         final EnumSetGenerator<?> generator = new EnumSetGenerator<>(enumClass);
         return Optional.of(GeneratorResult.create(generator.generate(context.getRandom()), hints));
     }

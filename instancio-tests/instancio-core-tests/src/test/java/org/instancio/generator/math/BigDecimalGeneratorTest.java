@@ -24,8 +24,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,14 +34,6 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
     @Override
     protected AbstractRandomNumberGeneratorSpec<BigDecimal> createGenerator() {
         return new BigDecimalGenerator(context);
-    }
-
-    @Override
-    protected Map<Class<?>, Boolean> verifySupported() {
-        return new HashMap<Class<?>, Boolean>() {{
-            put(BigDecimal.class, true);
-            put(BigDecimal[].class, false);
-        }};
     }
 
     @CsvSource({

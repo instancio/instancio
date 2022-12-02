@@ -16,11 +16,14 @@
 package org.instancio.generator.util;
 
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
-import org.instancio.generator.GeneratedHints;
+import org.instancio.generator.DataStructureHint;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.GeneratorHint;
 import org.instancio.settings.Keys;
 import org.instancio.util.Constants;
 import org.instancio.util.NumberUtils;
@@ -35,14 +38,15 @@ import java.util.List;
 
 public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
     private static final Logger LOG = LoggerFactory.getLogger(CollectionGenerator.class);
+    private static final Class<?> DEFAULT_COLLECTION_TYPE = ArrayList.class; // NOPMD
 
     protected int minSize;
     protected int maxSize;
     protected boolean nullable;
     protected boolean nullableElements;
-    @SuppressWarnings("PMD.LooseCoupling")
-    protected Class<?> type = ArrayList.class; // default collection type
     protected List<Object> withElements;
+    protected Class<?> collectionType;
+    protected boolean isDelegating;
 
     public CollectionGenerator(final GeneratorContext context) {
         super(context);
@@ -50,6 +54,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         this.maxSize = context.getSettings().get(Keys.COLLECTION_MAX_SIZE);
         this.nullable = context.getSettings().get(Keys.COLLECTION_NULLABLE);
         this.nullableElements = context.getSettings().get(Keys.COLLECTION_ELEMENTS_NULLABLE);
+        this.collectionType = DEFAULT_COLLECTION_TYPE;
     }
 
     @Override
@@ -87,7 +92,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     public CollectionGeneratorSpec<T> subtype(final Class<?> type) {
-        this.type = ApiValidator.notNull(type, "Type must not be null");
+        this.collectionType = ApiValidator.notNull(type, "Type must not be null");
         return this;
     }
 
@@ -106,21 +111,26 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Collection<T> generate(final Random random) {
         try {
-            return random.diceRoll(nullable) ? null : (Collection<T>) type.getDeclaredConstructor().newInstance();
+            return random.diceRoll(nullable) ? null : (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            LOG.debug("Error creating instance of: {}", type, ex);
+            LOG.debug("Error creating instance of: {}", collectionType, ex);
             return null; // NOPMD
         }
     }
 
     @Override
-    public GeneratedHints getHints() {
-        return GeneratedHints.builder()
-                .dataStructureSize(getContext().random().intRange(minSize, maxSize))
-                .ignoreChildren(false)
-                .nullableResult(nullable)
-                .nullableElements(nullableElements)
-                .withElements(withElements)
+    public Hints hints() {
+        return Hints.builder()
+                .populateAction(PopulateAction.ALL)
+                .hint(DataStructureHint.builder()
+                        .dataStructureSize(getContext().random().intRange(minSize, maxSize))
+                        .nullableElements(nullableElements)
+                        .withElements(withElements)
+                        .build())
+                .hint(GeneratorHint.builder()
+                        .targetClass(collectionType)
+                        .delegating(isDelegating)
+                        .build())
                 .build();
     }
 }

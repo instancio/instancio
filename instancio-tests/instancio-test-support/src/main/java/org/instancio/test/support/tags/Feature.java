@@ -36,7 +36,8 @@ public enum Feature {
     COLLECTION_GENERATOR_WITH_ELEMENTS,
     CYCLIC,
     ENUM_GENERATOR,
-    GENERATE,
+    GENERATE,  // API generate() method
+    GENERATOR, // custom generator implementations and behaviour
     GLOBAL_SEED,
     IGNORE,
     INHERITANCE,
@@ -56,6 +57,7 @@ public enum Feature {
     ONE_OF_ARRAY_GENERATOR,
     ONE_OF_COLLECTION_GENERATOR,
     ON_COMPLETE,
+    POPULATE_ACTION,
     SCOPE,
     SELECTOR,
     PREDICATE_SELECTOR,

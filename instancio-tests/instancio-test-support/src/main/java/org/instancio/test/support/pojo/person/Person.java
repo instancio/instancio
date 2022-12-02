@@ -50,6 +50,11 @@ public class Person {
     private Date date;
     private Pet[] pets;
 
+    public Person(final String name, final int age) {
+        this.name = name;
+        this.age = age;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);

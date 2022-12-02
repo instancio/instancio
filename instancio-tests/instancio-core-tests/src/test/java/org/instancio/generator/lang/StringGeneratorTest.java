@@ -23,7 +23,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.testsupport.asserts.GeneratedHintsAssert;
+import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -59,9 +59,8 @@ class StringGeneratorTest {
                 .containsOnlyOnce("")
                 .contains(upperCaseLettersAtoZ());
 
-        GeneratedHintsAssert.assertHints(generator.getHints())
-                .nullableResult(true)
-                .ignoreChildren(true);
+        HintsAssert.assertHints(generator.hints())
+                .populateActionIsApplySelectors();
     }
 
     @Test
@@ -89,11 +88,5 @@ class StringGeneratorTest {
             expected[i] = String.valueOf((char) ('A' + i));
         }
         return expected;
-    }
-
-    @Test
-    void supports() {
-        assertThat(generator.supports(String.class)).isTrue();
-        assertThat(generator.supports(CharSequence.class)).isFalse();
     }
 }

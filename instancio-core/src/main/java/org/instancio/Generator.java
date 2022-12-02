@@ -15,18 +15,12 @@
  */
 package org.instancio;
 
-import org.instancio.generator.GeneratedHints;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.specs.ArrayGeneratorSpec;
-import org.instancio.generator.specs.CollectionGeneratorSpec;
-import org.instancio.generator.specs.MapGeneratorSpec;
-import org.instancio.generators.Generators;
-import org.instancio.internal.PrimitiveWrapperBiLookup;
-import org.instancio.util.TypeUtils;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import org.instancio.generator.Hint;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
+import org.instancio.settings.Settings;
 
 /**
  * A generator of values of a specific type.
@@ -36,6 +30,30 @@ import java.util.Optional;
  */
 @FunctionalInterface
 public interface Generator<T> extends GeneratorSpec<T> {
+
+    /**
+     * An optional method for generators that need to initialise state before
+     * generating values. This method is guaranteed to be called:
+     *
+     * <ul>
+     *   <li>before {@link #generate(Random)} is invoked</li>
+     *   <li>exactly once per {@code Instancio.of()} invocation</li>
+     * </ul>
+     *
+     * <p>If the same instance of a generator is shared across multiple
+     * invocations of {@code Instancio.of()}, then this method will be called
+     * exactly once per each invocation, resetting the generator's state.</p>
+     *
+     * <p>An instance of {@link Random} provided in the generator context can be
+     * used if the initial state needs to be randomised. The context also contains
+     * {@link Settings} which includes all settings overrides.</p>
+     *
+     * @param context generator context
+     * @since 1.7.0
+     */
+    default void init(GeneratorContext context) {
+        // no-op by default
+    }
 
     /**
      * Returns a generated value.
@@ -51,86 +69,20 @@ public interface Generator<T> extends GeneratorSpec<T> {
     T generate(Random random);
 
     /**
-     * If {@code true}, then this generator delegate object instantiation
-     * to another generator supplied via {@link #setDelegate(Generator)}.
-     * <p>
-     * A generator is delegating when it does not know the type it needs
-     * to generate. For example, the collection generator could generate
-     * an {@code ArrayList}, a {@code HashSet}, or some other collection type.
+     * Hints provided by the generator to the engine.
      *
-     * @return {@code true} if this is a delegating generator
-     */
-    default boolean isDelegating() {
-        return false;
-    }
-
-    /**
-     * Set a delegate that will be responsible for instantiating an object
-     * on behalf of this generator.
+     * <p>The most important hint is {@link Hints#populateAction()}.
+     * This indicates whether the object created by this generator should be
+     * populated further by the engine.</p>
      *
-     * @param delegate that will create the target object
-     */
-    default void setDelegate(Generator<?> delegate) {
-        // no-op by default
-    }
-
-    /**
-     * Returns the public API method name of this generator.
-     * Will return an empty result if this instance is a lambda.
+     * <p>Default action is {@link PopulateAction#APPLY_SELECTORS}.</p>
      *
-     * @return spec name, if defined
+     * @return hints from this generator to the engine
+     * @see Hint
+     * @see PopulateAction
+     * @since 1.7.0
      */
-    default Optional<String> apiMethodName() {
-        return Optional.ofNullable(Generators.getApiMethod(getClass()));
-    }
-
-    /**
-     * Target class to generate.
-     * <p>
-     * If {@link Optional#empty()} is returned, it will default to the field type
-     * for fields, and element type for collection and array elements.
-     * <p>
-     * If the type is an interface, such as {@link java.util.Set}, will generate a default
-     * implementation class such as {@link java.util.HashSet}.
-     *
-     * @return target class
-     */
-    default Optional<Class<?>> targetClass() {
-        return Optional.empty();
-    }
-
-    /**
-     * Checks whether this generator can generate given type.
-     *
-     * @param type to check
-     * @return {@code true} if generator can
-     */
-    default boolean supports(Class<?> type) {
-        if (type.isArray()) {
-            return this instanceof ArrayGeneratorSpec;
-        }
-        if (Collection.class.isAssignableFrom(type)) {
-            return this instanceof CollectionGeneratorSpec;
-        }
-        if (Map.class.isAssignableFrom(type)) {
-            return this instanceof MapGeneratorSpec;
-        }
-        final Class<?> typeArg = TypeUtils.getGeneratorTypeArgument(getClass());
-        return typeArg == null // couldn't determine type arg ('this' is probably a lambda)
-                || typeArg.isAssignableFrom(type)
-                || PrimitiveWrapperBiLookup.findEquivalent(typeArg)
-                .filter(type::isAssignableFrom)
-                .isPresent();
-    }
-
-    /**
-     * Returns hints, including collection sizes and whether values are nullable.
-     *
-     * @return generated hints
-     */
-    default GeneratedHints getHints() {
-        // ignore children by default to ensure values created
-        // from user-supplied generators are not modified
-        return GeneratedHints.createIgnoreChildrenHint();
+    default Hints hints() {
+        return Hints.defaultHints();
     }
 }

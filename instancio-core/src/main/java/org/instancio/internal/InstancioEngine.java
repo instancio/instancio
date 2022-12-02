@@ -17,8 +17,10 @@ package org.instancio.internal;
 
 import org.instancio.Generator;
 import org.instancio.exception.InstancioException;
-import org.instancio.generator.GeneratorResult;
+import org.instancio.generator.DataStructureHint;
+import org.instancio.generator.PopulateAction;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.reflection.RecordHelper;
@@ -114,17 +116,20 @@ class InstancioEngine {
     private Optional<GeneratorResult> generateMap(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
-        if (!nodeResult.isPresent() || nodeResult.get().isNull() || node.getChildren().size() != 2) {
+        if (!nodeResult.isPresent()
+                || nodeResult.get().requiresNoAction()
+                || node.getChildren().size() != 2) {
             return nodeResult;
         }
 
         final GeneratorResult generatorResult = nodeResult.get();
         final Map<Object, Object> map = (Map<Object, Object>) generatorResult.getValue();
-        final int size = generatorResult.getHints().getDataStructureSize();
+        final DataStructureHint dsHint = generatorResult.getHints().get(DataStructureHint.class);
+        final int size = dsHint.dataStructureSize();
+        final boolean nullableKey = dsHint.nullableMapKeys();
+        final boolean nullableValue = dsHint.nullableMapValues();
 
         for (int i = 0; i < size; i++) {
-            final boolean nullableKey = generatorResult.getHints().nullableMapKeys();
-            final boolean nullableValue = generatorResult.getHints().nullableMapValues();
 
             final Object mapKey = createObject(node.getChildren().get(0), nullableKey);
             final Object mapValue = createObject(node.getChildren().get(1), nullableValue);
@@ -176,15 +181,19 @@ class InstancioEngine {
     private Optional<GeneratorResult> generatePojo(final Node node, final List<Node> children) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
-        if (!nodeResult.isPresent() || nodeResult.get().isNull() || nodeResult.get().ignoreChildren()) {
-            return nodeResult;
+        if (!nodeResult.isPresent()) {
+            return Optional.empty();
         }
 
-        final Object value = nodeResult.get().getValue();
+        final GeneratorResult generatorResult = nodeResult.get();
+        final Object value = generatorResult.getValue();
 
         for (final Node child : children) {
-            final Optional<GeneratorResult> optResult = createObject(child);
+            if (shouldSkipNode(child, generatorResult)) {
+                continue;
+            }
 
+            final Optional<GeneratorResult> optResult = createObject(child);
             if (optResult.isPresent()) {
                 final Object arg = optResult.get().getValue();
                 final Field field = child.getField();
@@ -199,19 +208,47 @@ class InstancioEngine {
         return nodeResult;
     }
 
+    private boolean shouldSkipNode(final Node node, final GeneratorResult result) {
+        final PopulateAction action = result.getHints().populateAction();
+
+        if (action == PopulateAction.NONE) {
+            return true;
+        }
+        if (action == PopulateAction.ALL) {
+            return false;
+        }
+
+        // For APPLY_SELECTORS and remaining actions, if there is at least
+        // one matching selector for this node, then it should not be skipped
+        if (context.getGenerator(node).isPresent()) {
+            return false;
+        }
+        if (action == PopulateAction.NULLS) {
+            return ReflectionUtils.hasNonNullValue(node.getField(), result.getValue());
+        }
+        if (action == PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES) {
+            return ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(
+                    node.getField(), result.getValue());
+        }
+        return true; // skip if action is null
+    }
+
     private Optional<GeneratorResult> generateCollection(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
-        if (!nodeResult.isPresent() || nodeResult.get().isNull() || node.getChildren().size() != 1) {
+        if (!nodeResult.isPresent()
+                || nodeResult.get().requiresNoAction()
+                || node.getChildren().size() != 1) {
             return nodeResult;
         }
 
         final GeneratorResult generatorResult = nodeResult.get();
         final Collection<Object> collection = (Collection<Object>) generatorResult.getValue();
-        final int size = generatorResult.getHints().getDataStructureSize();
+        final DataStructureHint dsHint = generatorResult.getHints().get(DataStructureHint.class);
+        final int size = dsHint.dataStructureSize();
+        final boolean nullableElement = dsHint.nullableElements();
 
         for (int i = 0; i < size; i++) {
-            final boolean nullableElement = generatorResult.getHints().nullableElements();
             final Object elementValue = createObject(node.getOnlyChild(), nullableElement);
 
             if (elementValue != null || nullableElement) {
@@ -219,8 +256,8 @@ class InstancioEngine {
             }
         }
 
-        if (!generatorResult.getHints().getWithElements().isEmpty()) {
-            collection.addAll(generatorResult.getHints().getWithElements());
+        if (!dsHint.withElements().isEmpty()) {
+            collection.addAll(dsHint.withElements());
             CollectionUtils.shuffle(collection, context.getRandom());
         }
 
@@ -230,18 +267,21 @@ class InstancioEngine {
     private Optional<GeneratorResult> generateArray(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
-        if (!nodeResult.isPresent() || nodeResult.get().isNull() || node.getChildren().size() != 1) {
+        if (!nodeResult.isPresent()
+                || nodeResult.get().requiresNoAction()
+                || node.getChildren().size() != 1) {
             return nodeResult;
         }
 
         final GeneratorResult generatorResult = nodeResult.get();
         final Object arrayObj = generatorResult.getValue();
         final Node elementNode = node.getOnlyChild();
-        final List<?> withElements = generatorResult.getHints().getWithElements();
+        final DataStructureHint dsHint = generatorResult.getHints().get(DataStructureHint.class);
+        final List<?> withElements = dsHint.withElements();
         int index = 0;
 
         for (int len = Array.getLength(arrayObj) - withElements.size(); index < len; index++) {
-            final Object elementValue = createObject(elementNode, generatorResult.getHints().nullableElements());
+            final Object elementValue = createObject(elementNode, dsHint.nullableElements());
 
             if (elementValue != null) {
                 Array.set(arrayObj, index, elementValue);

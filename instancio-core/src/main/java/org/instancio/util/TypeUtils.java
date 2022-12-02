@@ -15,6 +15,8 @@
  */
 package org.instancio.util;
 
+import org.instancio.exception.InstancioException;
+
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -66,7 +68,10 @@ public final class TypeUtils {
             final Type genericComponentType = ((GenericArrayType) type).getGenericComponentType();
             return getRawType(genericComponentType);
         }
-        throw new UnsupportedOperationException("Unhandled type: " + type.getClass().getSimpleName());
+        ExceptionHandler.conditionalFailOnError(() -> {
+            throw new InstancioException("Unhandled type: " + type.getClass().getSimpleName());
+        });
+        return null;
     }
 
     // NOTE: the implementation could be improved (see unit test describing the unhandled case)

@@ -16,10 +16,10 @@
 package org.instancio.generator.util;
 
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
 
 import java.util.Collection;
 

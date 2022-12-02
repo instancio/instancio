@@ -15,42 +15,24 @@
  */
 package org.instancio.generator.util;
 
-import org.instancio.Generator;
 import org.instancio.Random;
+import org.instancio.exception.InstancioException;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.util.Verify;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
 
-    private Generator<?> delegate;
-
     public CollectionGeneratorSpecImpl(final GeneratorContext context) {
         super(context);
-        this.type = null; //NOPMD: must be either supplied by user, or obtained from the field declaration
+        super.isDelegating = true;
+        // Type is either resolved from the field or specified explicitly
+        // by the user via generator.subtype() method
+        super.collectionType = null; // NOPMD
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Collection<T> generate(final Random random) {
-        Verify.notNull(delegate, "null delegate");
-        return (Collection<T>) delegate.generate(random);
-    }
-
-    @Override
-    public boolean isDelegating() {
-        return true;
-    }
-
-    @Override
-    public void setDelegate(final Generator<?> delegate) {
-        this.delegate = delegate;
-    }
-
-    @Override
-    public Optional<Class<?>> targetClass() {
-        return Optional.ofNullable(type);
+        throw new InstancioException(getClass() + " should delegate to another generator");
     }
 }

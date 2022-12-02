@@ -17,13 +17,14 @@ package org.instancio.generator.array;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.PopulateAction;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.testsupport.asserts.GeneratedHintsAssert;
+import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,11 +67,10 @@ class ArrayGeneratorTest {
                 .as("Expecting 5/6 of results to be non-null")
                 .isCloseTo((5 * SAMPLE_SIZE) / 6, withPercentage(PERCENTAGE_THRESHOLD));
 
-        GeneratedHintsAssert.assertHints(generator.getHints())
+        HintsAssert.assertHints(generator.hints())
                 .dataStructureSize(0) // does not set this hint
-                .nullableResult(true)
                 .nullableElements(true)
-                .ignoreChildren(false)
+                .populateAction(PopulateAction.ALL)
                 .nullableMapKeys(false)
                 .nullableMapValues(false);
     }

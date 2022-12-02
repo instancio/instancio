@@ -17,9 +17,9 @@ package org.instancio.generator.xml;
 
 import org.instancio.Generator;
 import org.instancio.Random;
-import org.instancio.generator.AbstractGenerator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.time.LocalDateTimeGenerator;
+import org.instancio.internal.generator.AbstractGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,9 +16,9 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Generator;
-import org.instancio.generator.GeneratorResolver;
-import org.instancio.generator.GeneratorResult;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.GeneratorResolver;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 
 import java.util.Optional;
@@ -40,7 +40,7 @@ public class ArrayNodeHandler implements NodeHandler {
                     () -> new IllegalStateException("Unable to get array generator for node: " + node));
 
             final Object arrayObject = generator.generate(context.getRandom());
-            final GeneratorResult result = GeneratorResult.create(arrayObject, generator.getHints());
+            final GeneratorResult result = GeneratorResult.create(arrayObject, generator.hints());
             return Optional.of(result);
         }
         return Optional.empty();

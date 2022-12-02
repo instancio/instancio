@@ -145,9 +145,9 @@ public final class ApiValidator {
     }
 
     public static void validateGeneratorUsage(final Node node, final Generator<?> generator) {
-        final Optional<String> name = generator.apiMethodName();
+        final Optional<String> name = GeneratorSupport.apiMethodName(generator.getClass());
         if (!name.isPresent()) return;
-        isTrue(generator.supports(node.getTargetClass()),
+        isTrue(GeneratorSupport.supports(generator, node.getTargetClass()),
                 () -> String.format(generateMismatchErrorMessageTemplate(node, name.get())));
     }
 

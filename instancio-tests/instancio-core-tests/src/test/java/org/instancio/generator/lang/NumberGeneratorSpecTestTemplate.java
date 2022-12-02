@@ -26,7 +26,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,11 +50,6 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
      * @return generator under test
      */
     protected abstract AbstractRandomNumberGeneratorSpec<T> createGenerator();
-
-    /**
-     * @return map indicating whether given types are supported by the generator
-     */
-    protected abstract Map<Class<?>, Boolean> verifySupported();
 
     @BeforeEach
     final void initTemplate() {
@@ -162,15 +156,6 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
         assertThatThrownBy(() -> generator.range(min, max))
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Invalid 'range(%s)': lower bound must be less than or equal to upper bound", errorRange);
-    }
-
-    @Test
-    void supports() {
-        verifySupported().forEach((clazz, isSupported) -> {
-            assertThat(generator.supports(clazz))
-                    .as("Wrong result for class: %s", clazz.getName())
-                    .isEqualTo(isSupported);
-        });
     }
 
     @Test

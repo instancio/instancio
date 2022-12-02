@@ -17,15 +17,22 @@ package org.instancio.internal.handlers;
 
 import org.instancio.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.GeneratorResolver;
-import org.instancio.generator.GeneratorResult;
+import org.instancio.generator.misc.GeneratorDecorator;
 import org.instancio.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.GeneratorHint;
+import org.instancio.internal.generator.GeneratorResolver;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Optional;
+import java.util.Set;
+
+import static org.instancio.util.ObjectUtils.defaultIfNull;
 
 public class UserSuppliedGeneratorHandler implements NodeHandler {
 
@@ -33,6 +40,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     private final GeneratorContext generatorContext;
     private final GeneratorResolver generatorResolver;
     private final Instantiator instantiator;
+    private final Set<Generator<?>> initialised = Collections.newSetFromMap(new IdentityHashMap<>());
 
     public UserSuppliedGeneratorHandler(final ModelContext<?> modelContext,
                                         final GeneratorContext generatorContext,
@@ -52,7 +60,11 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     public Optional<GeneratorResult> getResult(final Node node) {
         return getUserSuppliedGenerator(node).map(g -> {
             ApiValidator.validateGeneratorUsage(node, g);
-            return GeneratorResult.create(g.generate(modelContext.getRandom()), g.getHints());
+            if (!initialised.contains(g)) {
+                g.init(generatorContext);
+                initialised.add(g);
+            }
+            return GeneratorResult.create(g.generate(modelContext.getRandom()), g.hints());
         });
     }
 
@@ -61,15 +73,17 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
 
         if (generatorOpt.isPresent()) {
             final Generator<?> generator = generatorOpt.get();
-            if (generator.isDelegating()) {
-                final Class<?> targetClass = generator.targetClass().orElse(node.getTargetClass());
-                final Generator<?> delegate = generatorResolver.get(targetClass).orElseGet(
-                        () -> new InstantiatingGenerator(generatorContext, instantiator, targetClass));
+            final GeneratorHint hints = generator.hints().get(GeneratorHint.class);
 
-                generator.setDelegate(delegate);
+            if (hints != null && hints.isDelegating()) {
+                final Class<?> forClass = defaultIfNull(hints.targetClass(), node.getTargetClass());
+                final Generator<?> generatingDelegate = generatorResolver
+                        .get(forClass)
+                        .orElseGet(() -> new InstantiatingGenerator(instantiator, forClass));
+
+                return Optional.of(new GeneratorDecorator(generatingDelegate, generator));
             }
         }
         return generatorOpt;
     }
-
 }
