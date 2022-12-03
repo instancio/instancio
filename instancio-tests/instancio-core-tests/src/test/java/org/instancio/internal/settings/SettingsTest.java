@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.settings;
+package org.instancio.internal.settings;
 
+import org.instancio.Instancio;
 import org.instancio.Mode;
+import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.util.Constants;
+import org.instancio.settings.Keys;
+import org.instancio.settings.SettingKey;
+import org.instancio.settings.Settings;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,6 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -207,10 +215,18 @@ class SettingsTest {
         final int minLength = 1000;
         final int newMaxLength = 100;
         final Settings settings = Settings.defaults()
-                .set(Keys.ARRAY_MIN_LENGTH, minLength)
-                .set(Keys.ARRAY_MAX_LENGTH, newMaxLength, AUTO_ADJUST_DISABLED);
+                .set(Keys.ARRAY_MIN_LENGTH, minLength);
+
+        ((InternalSettings) settings).set(Keys.ARRAY_MAX_LENGTH, newMaxLength, AUTO_ADJUST_DISABLED);
 
         final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
         assertThat(newMin).isEqualTo(minLength);
+    }
+
+    @Test
+    @DisplayName("Should use subtypes specified in instancio.properties")
+    void subtypeMappingFromInstancioProperties() {
+        assertThat(Instancio.create(new TypeToken<SortedMap<String, Integer>>() {}))
+                .isExactlyInstanceOf(ConcurrentSkipListMap.class);
     }
 }

@@ -15,21 +15,11 @@
  */
 package org.instancio.settings;
 
-import org.instancio.internal.settings.ValueOfFunctions;
+import org.instancio.internal.settings.InternalSettings;
 import org.instancio.internal.util.Constants;
-import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.Verify;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.Function;
-
-import static java.util.stream.Collectors.joining;
-import static org.instancio.internal.ApiValidator.validateKeyValue;
-import static org.instancio.internal.ApiValidator.validateSubtype;
 
 /**
  * This class provides an API for updating settings programmatically.
@@ -64,26 +54,15 @@ import static org.instancio.internal.ApiValidator.validateSubtype;
  * @see SettingKey
  * @since 1.0.1
  */
-public final class Settings {
-    private static final String TYPE_MAPPING_PREFIX = "subtype.";
-    private static final boolean AUTO_ADJUST_ENABLED = true;
-
-    private boolean isLockedForModifications;
-    private Map<SettingKey, Object> settingsMap;
-    private Map<Class<?>, Class<?>> subtypeMap;
-
-    private Settings() {
-        this.settingsMap = new HashMap<>();
-        this.subtypeMap = new HashMap<>();
-    }
+public interface Settings {
 
     /**
      * Creates a new instance of empty settings.
      *
      * @return empty settings
      */
-    public static Settings create() {
-        return new Settings();
+    static Settings create() {
+        return InternalSettings.create();
     }
 
     /**
@@ -91,12 +70,8 @@ public final class Settings {
      *
      * @return settings containing defaults
      */
-    public static Settings defaults() {
-        Settings settings = new Settings();
-        for (SettingKey setting : Keys.all()) {
-            settings.set(setting, setting.defaultValue());
-        }
-        return settings;
+    static Settings defaults() {
+        return InternalSettings.defaults();
     }
 
     /**
@@ -105,23 +80,8 @@ public final class Settings {
      * @param map to create settings from
      * @return settings
      */
-    public static Settings from(final Map<Object, Object> map) {
-        final Settings settings = new Settings();
-
-        map.forEach((k, v) -> {
-            final String key = k.toString();
-            if (key.startsWith(TYPE_MAPPING_PREFIX)) {
-                final String fromClass = key.replace(TYPE_MAPPING_PREFIX, "");
-                settings.mapType(ReflectionUtils.getClass(fromClass), ReflectionUtils.getClass(v.toString()));
-            } else {
-                final SettingKey settingKey = Keys.get(key);
-                final Function<String, Object> fn = ValueOfFunctions.getFunction(settingKey.type());
-                final Object val = fn.apply(v.toString());
-                settings.set(settingKey, val);
-            }
-        });
-
-        return settings;
+    static Settings from(Map<Object, Object> map) {
+        return InternalSettings.from(map);
     }
 
     /**
@@ -130,11 +90,8 @@ public final class Settings {
      * @param other settings to create settings from
      * @return a new instance of settings
      */
-    public static Settings from(final Settings other) {
-        final Settings settings = new Settings();
-        settings.settingsMap.putAll(other.settingsMap);
-        settings.subtypeMap.putAll(other.subtypeMap);
-        return settings;
+    static Settings from(Settings other) {
+        return InternalSettings.from(other);
     }
 
     /**
@@ -143,17 +100,7 @@ public final class Settings {
      * @param other settings to merge
      * @return new instance of merged settings
      */
-    public Settings merge(@Nullable final Settings other) {
-        final Settings merged = Settings.create();
-        merged.settingsMap.putAll(settingsMap);
-        merged.subtypeMap.putAll(subtypeMap);
-
-        if (other != null) {
-            merged.settingsMap.putAll(other.settingsMap);
-            merged.subtypeMap.putAll(other.subtypeMap);
-        }
-        return merged;
-    }
+    Settings merge(@Nullable Settings other);
 
     /**
      * Get setting value for given key.
@@ -162,10 +109,7 @@ public final class Settings {
      * @param <T> setting value type
      * @return value for given key, or {@code null} if none.
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(final SettingKey key) {
-        return (T) settingsMap.get(Verify.notNull(key, "Key must not be null"));
-    }
+    <T> T get(SettingKey key);
 
     /**
      * Set the setting with the given key to the specified value.
@@ -179,35 +123,7 @@ public final class Settings {
      * @param value to set
      * @return updated settings
      */
-    public Settings set(final SettingKey key, @Nullable final Object value) {
-        return set(key, value, AUTO_ADJUST_ENABLED);
-    }
-
-    /**
-     * Set the setting with the given key to the specified value.
-     * <p>
-     * If {@code autoAdjust} parameter is {@code true}, then updating
-     * range settings (such as a numeric range) will automatically adjust the
-     * opposite bound (for example, if {@code min} is set higher than max, then
-     * the {@code max} will be auto-adjusted to a higher value).
-     *
-     * @param key        to set
-     * @param value      to set
-     * @param autoAdjust whether to auto-adjust related
-     * @return updated setting
-     */
-    Settings set(final SettingKey key, @Nullable final Object value, boolean autoAdjust) {
-        checkLockedForModifications();
-        validateKeyValue(key, value);
-        settingsMap.put(key, value);
-
-        if (autoAdjust) {
-            //noinspection ConstantConditions
-            Keys.getAutoAdjustable(key).ifPresent(k -> k.autoAdjust(this, new NumberCaster<>().cast(value)));
-        }
-
-        return this;
-    }
+    Settings set(SettingKey key, @Nullable Object value);
 
     /**
      * Map 'from' supertype to 'to' subtype.
@@ -216,21 +132,14 @@ public final class Settings {
      * @param to   subtype class
      * @return updated settings
      */
-    public Settings mapType(final Class<?> from, final Class<?> to) {
-        checkLockedForModifications();
-        validateSubtype(from, to);
-        subtypeMap.put(from, to);
-        return this;
-    }
+    Settings mapType(Class<?> from, Class<?> to);
 
     /**
      * Returns a read-only view of the subtype map.
      *
      * @return subtype map
      */
-    public Map<Class<?>, Class<?>> getSubtypeMap() {
-        return Collections.unmodifiableMap(subtypeMap);
-    }
+    Map<Class<?>, Class<?>> getSubtypeMap();
 
     /**
      * Locks these settings for further modifications,
@@ -238,42 +147,6 @@ public final class Settings {
      *
      * @return read-only settings
      */
-    public Settings lock() {
-        if (!isLockedForModifications) {
-            settingsMap = Collections.unmodifiableMap(settingsMap);
-            subtypeMap = Collections.unmodifiableMap(subtypeMap);
-            isLockedForModifications = true;
-        }
-        return this;
-    }
+    Settings lock();
 
-    private void checkLockedForModifications() {
-        if (isLockedForModifications) {
-            throw new UnsupportedOperationException("This instance of Settings has been locked and is read-only");
-        }
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Settings[%nisLockedForModifications: %s" +
-                        "%nsettingsMap:%s" +
-                        "%nsubtypeMap:%s",
-                isLockedForModifications,
-                mapToString(new TreeMap<>(settingsMap)), mapToString(subtypeMap));
-    }
-
-    private static String mapToString(final Map<?, ?> map) {
-        if (map.isEmpty()) return " {}";
-        return "\n" + map.entrySet().stream()
-                .map(e -> String.format("\t'%s': %s", e.getKey(), e.getValue()))
-                .collect(joining("\n"));
-    }
-
-    // a hack to workaround generics... we know the type is valid since it's a numeric settings
-    private static class NumberCaster<T extends Number & Comparable<T>> {
-        @SuppressWarnings("unchecked")
-        private T cast(final Object obj) {
-            return (T) obj;
-        }
-    }
 }

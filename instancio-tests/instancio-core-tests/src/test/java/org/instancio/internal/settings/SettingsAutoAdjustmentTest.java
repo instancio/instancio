@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.settings;
+package org.instancio.internal.settings;
 
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.settings.Keys;
+import org.instancio.settings.SettingKey;
+import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -141,7 +144,7 @@ class SettingsAutoAdjustmentTest {
         @MethodSource("minSettingKeys")
         @DisplayName("newMin > max: verify each settings updates its max to: newMin + PERCENTAGE")
         void newMinIsGreaterThanMax(SettingKey minSetting) {
-            final Optional<SettingKey> maxSetting = Keys.getAutoAdjustable(minSetting);
+            final Optional<SettingKey> maxSetting = SettingsSupport.getAutoAdjustable(minSetting);
             assertThat(maxSetting).isPresent();
 
             final Number max = NumberUtils.getToLongConverter(minSetting.type()).apply(50L);
@@ -159,7 +162,7 @@ class SettingsAutoAdjustmentTest {
         @MethodSource("maxSettingKeys")
         @DisplayName("newMax < min: verify each settings updates its min to: newMax - PERCENTAGE")
         void newMaxIsLessThanMin(SettingKey maxSetting) {
-            final Optional<SettingKey> minSetting = Keys.getAutoAdjustable(maxSetting);
+            final Optional<SettingKey> minSetting = SettingsSupport.getAutoAdjustable(maxSetting);
             assertThat(minSetting).isPresent();
 
             final Number min = NumberUtils.getToLongConverter(maxSetting.type()).apply(120L);
