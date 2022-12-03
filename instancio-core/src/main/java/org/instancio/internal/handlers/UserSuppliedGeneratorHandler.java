@@ -15,15 +15,15 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.misc.GeneratorDecorator;
-import org.instancio.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorHint;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.instancio.internal.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 
@@ -32,7 +32,7 @@ import java.util.IdentityHashMap;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.instancio.util.ObjectUtils.defaultIfNull;
+import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 public class UserSuppliedGeneratorHandler implements NodeHandler {
 

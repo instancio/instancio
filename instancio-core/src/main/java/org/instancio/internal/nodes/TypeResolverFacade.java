@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.spi.TypeResolver;
-import org.instancio.util.ServiceLoaders;
 
 import java.util.List;
 import java.util.Optional;

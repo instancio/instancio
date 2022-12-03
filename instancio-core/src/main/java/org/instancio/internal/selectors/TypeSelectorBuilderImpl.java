@@ -18,7 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.PredicateSelector;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.internal.ApiValidator;
-import org.instancio.util.Format;
+import org.instancio.internal.util.Format;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;

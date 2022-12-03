@@ -20,6 +20,7 @@ import org.instancio.InstancioMetamodel;
 import org.instancio.TypeToken;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -39,7 +40,6 @@ import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.Phone_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

@@ -17,7 +17,7 @@ package org.instancio.settings;
 
 import org.instancio.Mode;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.util.Constants;
+import org.instancio.internal.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

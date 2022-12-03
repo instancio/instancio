@@ -15,7 +15,7 @@
  */
 package org.instancio.test.java17.generator;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.generator.Hints;

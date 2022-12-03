@@ -15,7 +15,7 @@
  */
 package org.instancio;
 
-import org.instancio.util.Verify;
+import org.instancio.internal.util.Verify;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

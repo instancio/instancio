@@ -15,13 +15,13 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.generators.Generators;
-import org.instancio.util.TypeUtils;
+import org.instancio.internal.util.TypeUtils;
 
 import java.util.Collection;
 import java.util.Map;

@@ -15,14 +15,14 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Generator;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.Generator;
 import org.instancio.generators.Generators;
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.util.Format;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.SettingKey;
-import org.instancio.util.Format;
-import org.instancio.util.ReflectionUtils;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;

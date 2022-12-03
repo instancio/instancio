@@ -20,11 +20,11 @@ import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
 import org.instancio.internal.reflection.FieldCollector;
+import org.instancio.internal.util.Format;
+import org.instancio.internal.util.ObjectUtils;
+import org.instancio.internal.util.TypeUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.spi.TypeResolver;
-import org.instancio.util.Format;
-import org.instancio.util.ObjectUtils;
-import org.instancio.util.TypeUtils;
-import org.instancio.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

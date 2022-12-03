@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.internal.ThreadLocalRandom;
-import org.instancio.util.Sonar;
+import org.instancio.internal.util.Sonar;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;

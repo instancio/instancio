@@ -15,8 +15,10 @@
  */
 package org.instancio.settings;
 
-import org.instancio.util.ReflectionUtils;
-import org.instancio.util.Verify;
+import org.instancio.internal.settings.ValueOfFunctions;
+import org.instancio.internal.util.Constants;
+import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Verify;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -170,7 +172,7 @@ public final class Settings {
      * <p>
      * Note: when updating range settings (such as {@link Keys#COLLECTION_MIN_SIZE}
      * and {@link Keys#COLLECTION_MAX_SIZE}), range bounds are auto-adjusted by
-     * {@link org.instancio.util.Constants#RANGE_ADJUSTMENT_PERCENTAGE} if the new minimum
+     * {@link Constants#RANGE_ADJUSTMENT_PERCENTAGE} if the new minimum
      * is higher than the current maximum, and vice versa.
      *
      * @param key   to set

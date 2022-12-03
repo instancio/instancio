@@ -16,11 +16,11 @@
 package org.instancio.test.features.generator.seed;
 
 import org.instancio.Instancio;
+import org.instancio.internal.util.Sonar;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.util.Sonar;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

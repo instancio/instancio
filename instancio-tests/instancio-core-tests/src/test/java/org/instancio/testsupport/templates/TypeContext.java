@@ -15,7 +15,7 @@
  */
 package org.instancio.testsupport.templates;
 
-import org.instancio.util.TypeUtils;
+import org.instancio.internal.util.TypeUtils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

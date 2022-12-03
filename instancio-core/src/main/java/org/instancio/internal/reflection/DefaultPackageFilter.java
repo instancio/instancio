@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.reflection;
 
-import org.instancio.util.StringUtils;
+import org.instancio.internal.util.StringUtils;
 
 import javax.annotation.Nullable;
 

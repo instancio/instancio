@@ -15,7 +15,6 @@
  */
 package org.instancio.generator;
 
-import org.instancio.Generator;
 import org.instancio.Random;
 import org.instancio.settings.Settings;
 

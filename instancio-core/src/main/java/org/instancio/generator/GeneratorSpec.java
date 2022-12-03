@@ -15,8 +15,6 @@
  */
 package org.instancio.generator;
 
-import org.instancio.Generator;
-
 /**
  * Marker interface for configurable {@link Generator}s.
  *

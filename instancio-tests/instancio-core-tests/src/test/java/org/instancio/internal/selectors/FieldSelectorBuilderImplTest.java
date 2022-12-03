@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.util.ReflectionUtils.getField;
+import static org.instancio.internal.util.ReflectionUtils.getField;
 
 class FieldSelectorBuilderImplTest {
 

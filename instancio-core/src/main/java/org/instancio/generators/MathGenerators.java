@@ -17,10 +17,10 @@
 package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.math.BigDecimalGenerator;
-import org.instancio.generator.math.BigIntegerGenerator;
 import org.instancio.generator.specs.BigDecimalGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
+import org.instancio.internal.generator.math.BigDecimalGenerator;
+import org.instancio.internal.generator.math.BigIntegerGenerator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

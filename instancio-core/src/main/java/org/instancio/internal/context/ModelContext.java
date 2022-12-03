@@ -15,11 +15,11 @@
  */
 package org.instancio.internal.context;
 
-import org.instancio.Generator;
 import org.instancio.Mode;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
 import org.instancio.TargetSelector;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
@@ -29,10 +29,10 @@ import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.random.Seeds;
+import org.instancio.internal.util.TypeUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.util.TypeUtils;
-import org.instancio.util.Verify;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.GenericArrayType;

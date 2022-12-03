@@ -15,7 +15,7 @@
  */
 package org.example.generator;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.Random;
 
 public class CustomIntegerGenerator implements Generator<Integer> {

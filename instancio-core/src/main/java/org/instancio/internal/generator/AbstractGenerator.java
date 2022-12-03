@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.generator;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 
 /**

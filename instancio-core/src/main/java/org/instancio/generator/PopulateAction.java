@@ -19,7 +19,7 @@ import org.instancio.OnCompleteCallback;
 
 /**
  * An action to be performed by the engine after an object
- * has been created by a {@link org.instancio.Generator}.
+ * has been created by a {@link Generator}.
  *
  * @see Hints
  * @since 1.7.0

@@ -15,14 +15,14 @@
  */
 package org.instancio.test.features.errorhandling;
 
-import org.instancio.Generator;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.Generator;
+import org.instancio.internal.util.SystemProperties;
 import org.instancio.test.support.pojo.generics.container.ItemContainer;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.util.SystemProperties;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;

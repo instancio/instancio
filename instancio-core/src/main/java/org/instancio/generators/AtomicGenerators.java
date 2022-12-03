@@ -18,8 +18,8 @@ package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.NumberGeneratorSpec;
-import org.instancio.generator.util.concurrent.atomic.AtomicIntegerGenerator;
-import org.instancio.generator.util.concurrent.atomic.AtomicLongGenerator;
+import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
+import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator;
 
 import java.util.HashMap;
 import java.util.Map;

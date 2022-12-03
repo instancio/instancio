@@ -15,9 +15,9 @@
  */
 package org.instancio.test.features.generator.custom;
 
-import org.instancio.Generator;
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;

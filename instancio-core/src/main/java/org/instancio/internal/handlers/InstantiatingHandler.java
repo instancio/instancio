@@ -20,7 +20,7 @@ import org.instancio.generator.PopulateAction;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.util.ReflectionUtils;
+import org.instancio.internal.util.ReflectionUtils;
 
 import java.util.Optional;
 

@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.reflection;
 
-import org.instancio.util.Verify;
+import org.instancio.internal.util.Verify;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;

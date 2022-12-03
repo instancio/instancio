@@ -15,10 +15,10 @@
  */
 package org.instancio.test.features.generator.custom;
 
-import org.instancio.Generator;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Random;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;

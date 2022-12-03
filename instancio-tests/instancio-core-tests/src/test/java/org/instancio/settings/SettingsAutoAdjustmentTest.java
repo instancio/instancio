@@ -15,8 +15,8 @@
  */
 package org.instancio.settings;
 
-import org.instancio.util.Constants;
-import org.instancio.util.NumberUtils;
+import org.instancio.internal.util.Constants;
+import org.instancio.internal.util.NumberUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

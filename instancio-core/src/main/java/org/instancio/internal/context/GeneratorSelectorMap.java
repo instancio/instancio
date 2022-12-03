@@ -15,13 +15,13 @@
  */
 package org.instancio.internal.context;
 
-import org.instancio.Generator;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.array.ArrayGenerator;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.GeneratorHint;
+import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static org.instancio.util.ReflectionUtils.getField;
+import static org.instancio.internal.util.ReflectionUtils.getField;
 
 class GeneratorSelectorMap {
 

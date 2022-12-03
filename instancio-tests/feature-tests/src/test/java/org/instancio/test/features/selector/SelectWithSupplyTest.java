@@ -15,10 +15,10 @@
  */
 package org.instancio.test.features.selector;
 
-import org.instancio.Generator;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.Generator;
 import org.instancio.test.support.pojo.basic.LongHolder;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;

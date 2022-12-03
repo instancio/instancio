@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.nodes;
 
-import org.instancio.util.ObjectUtils;
-import org.instancio.util.TypeUtils;
+import org.instancio.internal.util.ObjectUtils;
+import org.instancio.internal.util.TypeUtils;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;

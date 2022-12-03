@@ -19,9 +19,9 @@ package org.instancio.generators;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.generator.specs.UUIDStringGeneratorSpec;
-import org.instancio.generator.text.LoremIpsumGenerator;
-import org.instancio.generator.text.TextPatternGenerator;
-import org.instancio.generator.text.UUIDStringGenerator;
+import org.instancio.internal.generator.text.LoremIpsumGenerator;
+import org.instancio.internal.generator.text.TextPatternGenerator;
+import org.instancio.internal.generator.text.UUIDStringGenerator;
 
 import java.util.HashMap;
 import java.util.Map;

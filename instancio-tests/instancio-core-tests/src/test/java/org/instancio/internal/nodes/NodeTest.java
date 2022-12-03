@@ -17,6 +17,7 @@ package org.instancio.internal.nodes;
 
 import org.instancio.TypeToken;
 import org.instancio.internal.context.SubtypeSelectorMap;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.basic.Pair;
@@ -27,7 +28,6 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.test.support.tags.NodeTag;
 import org.instancio.testsupport.fixtures.Types;
-import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

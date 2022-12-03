@@ -15,10 +15,10 @@
  */
 package org.instancio.internal.generator;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.util.Sonar;
 import org.instancio.spi.GeneratorProvider;
-import org.instancio.util.Sonar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

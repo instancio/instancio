@@ -15,8 +15,8 @@
  */
 package org.instancio.test.features.generator.custom;
 
-import org.instancio.Generator;
 import org.instancio.Instancio;
+import org.instancio.generator.Generator;
 import org.instancio.test.support.pojo.immutable.FooBarBazInterface;
 import org.instancio.test.support.pojo.immutable.ImmutableFooBarBaz;
 import org.instancio.test.support.pojo.immutable.ImmutableLombokFooBarBaz;

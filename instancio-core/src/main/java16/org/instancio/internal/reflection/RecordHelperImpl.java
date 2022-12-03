@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.reflection;
 
-import org.instancio.util.Verify;
+import org.instancio.internal.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,7 +15,7 @@
  */
 package org.instancio.exception;
 
-import org.instancio.util.Sonar;
+import org.instancio.internal.util.Sonar;
 
 /**
  * Exception triggered as a result of unused selectors.

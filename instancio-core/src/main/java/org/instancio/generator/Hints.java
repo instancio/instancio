@@ -15,7 +15,6 @@
  */
 package org.instancio.generator;
 
-import org.instancio.Generator;
 import org.instancio.internal.ApiValidator;
 
 import java.util.Collections;
@@ -23,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import static org.instancio.util.ObjectUtils.defaultIfNull;
+import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 /**
  * Hints are provided by {@link Generator} implementations to the engine to
