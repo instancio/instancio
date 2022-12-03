@@ -42,8 +42,8 @@ public final class Hints {
     private final Map<Class<?>, Object> hintMap;
 
     private Hints(final Builder builder) {
-        populateAction = defaultIfNull(builder.populateAction, PopulateAction.APPLY_SELECTORS);
-        hintMap = Collections.unmodifiableMap(new HashMap<>(builder.hintMap));
+        populateAction = builder.populateAction;
+        hintMap = defaultIfNull(builder.hintMap, Collections.emptyMap());
     }
 
     /**
@@ -68,6 +68,13 @@ public final class Hints {
      */
     public static Hints withPopulateAction(final PopulateAction populateAction) {
         return Hints.builder().populateAction(populateAction).build();
+    }
+
+    public static Builder builder(final Hints copy) {
+        Builder builder = new Builder();
+        builder.populateAction = copy.populateAction;
+        builder.hintMap = copy.hintMap;
+        return builder;
     }
 
     /**
@@ -108,9 +115,13 @@ public final class Hints {
      */
     public static final class Builder {
         private PopulateAction populateAction;
-        private final Map<Class<?>, Object> hintMap = new HashMap<>();
+        private Map<Class<?>, Object> hintMap;
 
         private Builder() {
+        }
+
+        public static Builder builder() {
+            return new Builder();
         }
 
         /**
@@ -128,6 +139,9 @@ public final class Hints {
          */
         public <T extends Hint<T>> Builder hint(final T hint) {
             ApiValidator.notNull(hint, "Hint must not be null");
+            if (hintMap == null) {
+                hintMap = new HashMap<>();
+            }
             hintMap.put(hint.type(), hint);
             return this;
         }
@@ -160,6 +174,11 @@ public final class Hints {
         public Builder populateAction(final PopulateAction populateAction) {
             this.populateAction = ApiValidator.notNull(
                     populateAction, "Populate action must not be null");
+            return this;
+        }
+
+        public Builder hintMap(final Map<Class<?>, Object> hintMap) {
+            this.hintMap = hintMap;
             return this;
         }
 

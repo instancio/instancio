@@ -48,15 +48,18 @@ class HintsTest {
     void defaultHintActionIsApplySelectors() {
         assertHints(Hints.defaultHints())
                 .populateActionIsApplySelectors();
+    }
 
+    @Test
+    void emptyHintsShouldHaveNullPopulateAction() {
         assertHints(Hints.builder().build())
-                .populateActionIsApplySelectors();
+                .populateAction(null);
     }
 
     @Test
     void verifyToString() {
         assertThat(Hints.builder().build())
-                .hasToString("Hints[populateAction=APPLY_SELECTORS, hints={}]");
+                .hasToString("Hints[populateAction=null, hints={}]");
 
         assertThat(Hints.builder()
                 .populateAction(PopulateAction.ALL)
@@ -66,7 +69,7 @@ class HintsTest {
         assertThat(Hints.builder()
                 .hint(new FooHint())
                 .build())
-                .hasToString("Hints[populateAction=APPLY_SELECTORS," +
+                .hasToString("Hints[populateAction=null," +
                         " hints={class org.instancio.generator.HintsTest$FooHint=FooHint}]");
     }
 }

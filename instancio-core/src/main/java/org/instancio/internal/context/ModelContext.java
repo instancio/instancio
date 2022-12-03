@@ -92,7 +92,8 @@ public final class ModelContext<T> {
         generatorSelectorMap = new GeneratorSelectorMap(
                 new Generators(new GeneratorContext(settings, random)),
                 builder.generatorSelectors,
-                builder.generatorSpecSelectors);
+                builder.generatorSpecSelectors,
+                settings.get(Keys.POPULATE_ACTION));
 
         subtypeSelectorMap.putAll(generatorSelectorMap.getGeneratorSubtypeMap());
     }
