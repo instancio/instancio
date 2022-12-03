@@ -17,10 +17,10 @@ package org.instancio.test.features.generator.custom;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.instancio.Generator;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.generator.DataStructureHint;
+import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
 import org.instancio.test.support.pojo.generics.basic.Pair;

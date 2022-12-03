@@ -17,7 +17,7 @@ package org.example.spi;
 
 import org.example.generator.CustomIntegerGenerator;
 import org.example.generator.LongSequenceGenerator;
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.spi.GeneratorProvider;
 
 import java.util.HashMap;

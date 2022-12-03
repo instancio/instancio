@@ -17,6 +17,7 @@ package org.instancio.nodes;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.instancio.internal.nodes.TypeMap;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.test.support.pojo.generics.PairAPairIntegerString;
 import org.instancio.test.support.pojo.generics.PairLongPairIntegerString;
 import org.instancio.test.support.pojo.generics.TripletAFooBarBazStringListOfB;
@@ -25,7 +26,6 @@ import org.instancio.test.support.pojo.generics.basic.Triplet;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.utils.TypeMapBuilder;
-import org.instancio.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;

@@ -17,7 +17,7 @@ package org.instancio.processor;
 
 import org.instancio.InstancioMetamodel;
 import org.instancio.processor.util.Logger;
-import org.instancio.util.Sonar;
+import org.instancio.internal.util.Sonar;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;

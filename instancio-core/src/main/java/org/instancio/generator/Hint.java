@@ -15,8 +15,6 @@
  */
 package org.instancio.generator;
 
-import org.instancio.Generator;
-
 /**
  * A hint that can be passed from a generator to the engine.
  *

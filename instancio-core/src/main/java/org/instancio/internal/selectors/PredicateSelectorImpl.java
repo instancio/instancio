@@ -18,8 +18,8 @@ package org.instancio.internal.selectors;
 import org.instancio.PredicateSelector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
-import org.instancio.util.Format;
-import org.instancio.util.ObjectUtils;
+import org.instancio.internal.util.Format;
+import org.instancio.internal.util.ObjectUtils;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;

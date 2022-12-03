@@ -19,7 +19,7 @@ import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
-import org.instancio.util.Format;
+import org.instancio.internal.util.Format;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

@@ -22,8 +22,8 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.random.Seeds;
 import org.instancio.settings.Settings;
-import org.instancio.util.ReflectionUtils;
-import org.instancio.util.Sonar;
+import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Sonar;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.lang.reflect.Field;

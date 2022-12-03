@@ -19,7 +19,7 @@ import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.util.Format;
+import org.instancio.internal.util.Format;
 
 import java.util.Arrays;
 import java.util.Collections;

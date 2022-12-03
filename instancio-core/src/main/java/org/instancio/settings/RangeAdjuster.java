@@ -15,7 +15,7 @@
  */
 package org.instancio.settings;
 
-import org.instancio.util.NumberUtils;
+import org.instancio.internal.util.NumberUtils;
 
 /**
  * Provides support for auto-adjusting 'range' settings that have a min and a max value.

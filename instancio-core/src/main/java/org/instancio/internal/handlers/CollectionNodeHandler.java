@@ -19,15 +19,15 @@ import org.instancio.Random;
 import org.instancio.generator.DataStructureHint;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
-import org.instancio.generator.util.EnumSetGenerator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
+import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.util.ReflectionUtils;
-import org.instancio.util.Sonar;
 
 import java.util.Collection;
 import java.util.EnumSet;

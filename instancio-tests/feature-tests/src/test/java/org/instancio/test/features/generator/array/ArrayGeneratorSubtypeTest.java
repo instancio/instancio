@@ -17,6 +17,7 @@ package org.instancio.test.features.generator.array;
 
 import org.instancio.Instancio;
 import org.instancio.TargetSelector;
+import org.instancio.internal.util.Sonar;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayCharSequence;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemInterfaceString;
@@ -27,7 +28,6 @@ import org.instancio.test.support.pojo.interfaces.ItemInterface;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.util.Sonar;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

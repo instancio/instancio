@@ -15,9 +15,9 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Generator;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.DataStructureHint;
+import org.instancio.generator.Generator;
 import org.instancio.generator.PopulateAction;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
@@ -25,9 +25,9 @@ import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.reflection.RecordHelper;
 import org.instancio.internal.reflection.RecordHelperImpl;
-import org.instancio.util.ArrayUtils;
-import org.instancio.util.CollectionUtils;
-import org.instancio.util.ReflectionUtils;
+import org.instancio.internal.util.ArrayUtils;
+import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.instancio.util.ExceptionHandler.conditionalFailOnError;
+import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
 
 /**
  * Entry point for generating an object.

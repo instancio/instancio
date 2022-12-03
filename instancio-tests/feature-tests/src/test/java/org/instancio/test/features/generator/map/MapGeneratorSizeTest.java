@@ -17,6 +17,7 @@ package org.instancio.test.features.generator.map;
 
 import org.instancio.Instancio;
 import org.instancio.generator.specs.MapGeneratorSpec;
+import org.instancio.internal.util.Constants;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -24,7 +25,6 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

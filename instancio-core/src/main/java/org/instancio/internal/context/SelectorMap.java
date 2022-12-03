@@ -26,7 +26,7 @@ import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.ScopelessSelector;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.SelectorTargetKind;
-import org.instancio.util.ReflectionUtils;
+import org.instancio.internal.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;

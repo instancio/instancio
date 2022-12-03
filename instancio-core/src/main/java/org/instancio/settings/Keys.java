@@ -17,7 +17,8 @@ package org.instancio.settings;
 
 import org.instancio.Mode;
 import org.instancio.internal.ApiValidator;
-import org.instancio.util.Constants;
+import org.instancio.internal.settings.InternalKey;
+import org.instancio.internal.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -277,7 +278,7 @@ public final class Keys {
                                        @Nullable final RangeAdjuster rangeAdjuster,
                                        final boolean allowsNullValue) {
 
-        final SettingKey settingKey = new Key(propertyKey, type, defaultValue, rangeAdjuster, allowsNullValue);
+        final SettingKey settingKey = new InternalKey(propertyKey, type, defaultValue, rangeAdjuster, allowsNullValue);
         ALL_KEYS.add(settingKey);
         return settingKey;
     }

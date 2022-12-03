@@ -16,9 +16,9 @@
 package org.instancio.test.features.generator.custom;
 
 import org.assertj.core.api.Condition;
-import org.instancio.Generator;
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
 import org.instancio.test.support.pojo.basic.StringHolder;

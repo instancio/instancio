@@ -16,7 +16,7 @@
 package org.instancio.internal.reflection.instantiation;
 
 
-import org.instancio.util.Sonar;
+import org.instancio.internal.util.Sonar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -26,8 +26,8 @@ import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorBuilder;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.util.TypeUtils;
-import org.instancio.util.Verify;
+import org.instancio.internal.util.TypeUtils;
+import org.instancio.internal.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

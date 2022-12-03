@@ -16,7 +16,7 @@
  */
 package org.instancio.internal.random;
 
-import org.instancio.util.Verify;
+import org.instancio.internal.util.Verify;
 
 import java.util.Random;
 

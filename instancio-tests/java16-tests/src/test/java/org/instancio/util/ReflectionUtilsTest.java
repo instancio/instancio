@@ -15,6 +15,7 @@
  */
 package org.instancio.util;
 
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.test.support.java16.record.PersonRecord;
 import org.junit.jupiter.api.Test;
 

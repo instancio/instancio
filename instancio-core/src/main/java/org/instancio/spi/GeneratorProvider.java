@@ -15,7 +15,7 @@
  */
 package org.instancio.spi;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 
 import java.util.Map;
 

@@ -19,7 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.util.Sonar;
+import org.instancio.internal.util.Sonar;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

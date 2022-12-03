@@ -15,14 +15,14 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.lang.BooleanGenerator;
-import org.instancio.generator.lang.EnumGenerator;
-import org.instancio.generator.lang.IntegerGenerator;
-import org.instancio.generator.lang.StringGenerator;
-import org.instancio.generator.util.CollectionGenerator;
-import org.instancio.generator.util.MapGenerator;
+import org.instancio.internal.generator.lang.BooleanGenerator;
+import org.instancio.internal.generator.lang.EnumGenerator;
+import org.instancio.internal.generator.lang.IntegerGenerator;
+import org.instancio.internal.generator.lang.StringGenerator;
+import org.instancio.internal.generator.util.CollectionGenerator;
+import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Gender;

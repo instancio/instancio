@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.Generator;
+import org.instancio.generator.Generator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
