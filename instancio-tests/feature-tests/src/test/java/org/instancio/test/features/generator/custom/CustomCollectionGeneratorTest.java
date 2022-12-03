@@ -17,10 +17,10 @@ package org.instancio.test.features.generator.custom;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
-import org.instancio.generator.DataStructureHint;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
+import org.instancio.generator.hints.DataStructureHint;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;

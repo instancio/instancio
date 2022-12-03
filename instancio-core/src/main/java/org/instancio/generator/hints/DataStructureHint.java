@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator;
+package org.instancio.generator.hints;
 
+import org.instancio.generator.Hint;
 import org.instancio.internal.ApiValidator;
 
 import java.util.Collections;

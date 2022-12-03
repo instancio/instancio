@@ -16,9 +16,9 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.generator.DataStructureHint;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
+import org.instancio.generator.hints.DataStructureHint;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -16,9 +16,9 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Random;
-import org.instancio.generator.DataStructureHint;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
+import org.instancio.generator.hints.DataStructureHint;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.util.EnumSetGenerator;
