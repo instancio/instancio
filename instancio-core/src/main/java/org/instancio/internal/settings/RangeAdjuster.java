@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.settings;
+package org.instancio.internal.settings;
 
+import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.settings.SettingKey;
+import org.instancio.settings.Settings;
 
 /**
  * Provides support for auto-adjusting 'range' settings that have a min and a max value.
@@ -23,6 +26,9 @@ import org.instancio.internal.util.NumberUtils;
  * @since 1.1.10
  */
 public interface RangeAdjuster {
+
+    RangeAdjuster MIN_ADJUSTER = new RangeAdjuster.ForMin(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+    RangeAdjuster MAX_ADJUSTER = new RangeAdjuster.ForMax(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
 
     /**
      * Adjust given {@code key} based on {@code otherValue}.
@@ -53,7 +59,7 @@ public interface RangeAdjuster {
 
             final T curMin = settings.get(minSetting);
             final Number newMin = NumberUtils.calculateNewMin(curMin, newMax, percentage);
-            settings.set(minSetting, newMin, false);
+            ((InternalSettings) settings).set(minSetting, newMin, false);
         }
     }
 
@@ -73,7 +79,7 @@ public interface RangeAdjuster {
 
             final T curMax = settings.get(maxSetting);
             final Number newMax = NumberUtils.calculateNewMax(curMax, newMin, percentage);
-            settings.set(maxSetting, newMax, false);
+            ((InternalSettings) settings).set(maxSetting, newMax, false);
         }
     }
 }

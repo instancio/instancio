@@ -18,7 +18,7 @@ package org.instancio.settings;
 import org.instancio.Mode;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.settings.InternalKey;
-import org.instancio.internal.util.Constants;
+import org.instancio.internal.settings.RangeAdjuster;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Defines all keys supported by Instancio.
@@ -39,8 +38,8 @@ public final class Keys {
     private static final int MAX_SIZE = 6;
     private static final int NUMERIC_MAX = 10_000;
 
-    private static final RangeAdjuster MIN_ADJUSTER = new RangeAdjuster.ForMin(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
-    private static final RangeAdjuster MAX_ADJUSTER = new RangeAdjuster.ForMax(Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+    private static final RangeAdjuster MIN_ADJUSTER = RangeAdjuster.MIN_ADJUSTER;
+    private static final RangeAdjuster MAX_ADJUSTER = RangeAdjuster.MAX_ADJUSTER;
     private static final List<SettingKey> ALL_KEYS = new ArrayList<>();
 
     /**
@@ -245,7 +244,6 @@ public final class Keys {
 
     // Note: keys must be collected after all keys have been initialised
     private static final Map<String, SettingKey> SETTING_KEY_MAP = Collections.unmodifiableMap(settingKeyMap());
-    private static final Map<SettingKey, SettingKey> AUTO_ADJUSTABLE_MAP = Collections.unmodifiableMap(getAutoAdjustableKeys());
 
     /**
      * Returns all keys supported by Instancio.
@@ -268,9 +266,6 @@ public final class Keys {
         return settingKey;
     }
 
-    static Optional<SettingKey> getAutoAdjustable(final SettingKey key) {
-        return Optional.ofNullable(AUTO_ADJUSTABLE_MAP.get(key));
-    }
 
     private static SettingKey register(final String propertyKey,
                                        final Class<?> type,
@@ -307,30 +302,6 @@ public final class Keys {
         return map;
     }
 
-    private static Map<SettingKey, SettingKey> getAutoAdjustableKeys() {
-        final Map<SettingKey, SettingKey> map = new HashMap<>();
-        map.put(Keys.ARRAY_MAX_LENGTH, Keys.ARRAY_MIN_LENGTH);
-        map.put(Keys.ARRAY_MIN_LENGTH, Keys.ARRAY_MAX_LENGTH);
-        map.put(Keys.BYTE_MAX, Keys.BYTE_MIN);
-        map.put(Keys.BYTE_MIN, Keys.BYTE_MAX);
-        map.put(Keys.COLLECTION_MAX_SIZE, Keys.COLLECTION_MIN_SIZE);
-        map.put(Keys.COLLECTION_MIN_SIZE, Keys.COLLECTION_MAX_SIZE);
-        map.put(Keys.DOUBLE_MAX, Keys.DOUBLE_MIN);
-        map.put(Keys.DOUBLE_MIN, Keys.DOUBLE_MAX);
-        map.put(Keys.FLOAT_MAX, Keys.FLOAT_MIN);
-        map.put(Keys.FLOAT_MIN, Keys.FLOAT_MAX);
-        map.put(Keys.INTEGER_MAX, Keys.INTEGER_MIN);
-        map.put(Keys.INTEGER_MIN, Keys.INTEGER_MAX);
-        map.put(Keys.LONG_MAX, Keys.LONG_MIN);
-        map.put(Keys.LONG_MIN, Keys.LONG_MAX);
-        map.put(Keys.MAP_MAX_SIZE, Keys.MAP_MIN_SIZE);
-        map.put(Keys.MAP_MIN_SIZE, Keys.MAP_MAX_SIZE);
-        map.put(Keys.SHORT_MAX, Keys.SHORT_MIN);
-        map.put(Keys.SHORT_MIN, Keys.SHORT_MAX);
-        map.put(Keys.STRING_MAX_LENGTH, Keys.STRING_MIN_LENGTH);
-        map.put(Keys.STRING_MIN_LENGTH, Keys.STRING_MAX_LENGTH);
-        return map;
-    }
 
     private Keys() {
         // non-instantiable

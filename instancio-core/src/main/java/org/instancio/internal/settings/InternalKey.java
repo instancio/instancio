@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.settings;
 
-import org.instancio.settings.RangeAdjuster;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
