@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio;
-
 /**
- * An interface for selectors that can be converted to a {@link Scope}.
- *
- * @since 1.3.0
+ * Contains {@link org.instancio.generator.Hint} implementations.
  */
-public interface ToScopeConvertible {
-
-    /**
-     * Scope representation of a selector.
-     *
-     * @return scope
-     * @since 1.3.0
-     */
-    Scope toScope();
-}
+package org.instancio.generator.hints;

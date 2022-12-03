@@ -16,7 +16,4 @@
 /**
  * Defines generator specs.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.generator.specs;
-
-import javax.annotation.ParametersAreNonnullByDefault;

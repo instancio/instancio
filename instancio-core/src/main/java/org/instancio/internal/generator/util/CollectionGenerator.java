@@ -16,10 +16,10 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
-import org.instancio.generator.DataStructureHint;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
+import org.instancio.generator.hints.DataStructureHint;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;

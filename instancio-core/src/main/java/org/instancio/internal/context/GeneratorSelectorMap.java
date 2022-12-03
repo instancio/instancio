@@ -29,6 +29,7 @@ import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.SelectorTargetKind;
+import org.instancio.internal.util.Sonar;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -39,6 +40,7 @@ import java.util.function.Function;
 
 import static org.instancio.internal.util.ReflectionUtils.getField;
 
+@SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 class GeneratorSelectorMap {
 
     private final Generators generators;

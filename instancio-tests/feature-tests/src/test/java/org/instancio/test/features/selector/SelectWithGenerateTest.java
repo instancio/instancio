@@ -16,6 +16,7 @@
 package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.Select;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generators.Generators;
@@ -92,9 +93,10 @@ class SelectWithGenerateTest {
     @Test
     @DisplayName("Composite selector group with non-compatible types")
     void compositeSelectorGroupWithNonCompatibleTypes() {
-        assertThatThrownBy(() -> Instancio.of(Person.class)
-                .generate(Select.all(allInts(), allStrings()), Generators::ints)
-                .create())
+        final InstancioApi<Person> api = Instancio.of(Person.class)
+                .generate(all(allInts(), allStrings()), Generators::ints);
+
+        assertThatThrownBy(api::create)
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Method 'ints()' cannot be used for type: java.lang.String");
     }

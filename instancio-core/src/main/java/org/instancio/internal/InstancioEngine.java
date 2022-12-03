@@ -16,9 +16,9 @@
 package org.instancio.internal;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.generator.DataStructureHint;
 import org.instancio.generator.Generator;
 import org.instancio.generator.PopulateAction;
+import org.instancio.generator.hints.DataStructureHint;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;

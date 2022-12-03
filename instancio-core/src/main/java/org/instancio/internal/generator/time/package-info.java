@@ -16,7 +16,4 @@
 /**
  * Provides generators for {@code java.time.*} types.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.time;
-
-import javax.annotation.ParametersAreNonnullByDefault;

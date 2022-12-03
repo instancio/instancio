@@ -16,7 +16,4 @@
 /**
  * Provides array generators.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.array;
-
-import javax.annotation.ParametersAreNonnullByDefault;

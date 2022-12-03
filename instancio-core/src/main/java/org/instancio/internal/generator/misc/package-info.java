@@ -16,7 +16,4 @@
 /**
  * Miscellaneous generators.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.misc;
-
-import javax.annotation.ParametersAreNonnullByDefault;

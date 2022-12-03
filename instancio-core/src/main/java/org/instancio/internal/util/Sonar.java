@@ -21,11 +21,12 @@ public final class Sonar {
     public static final String ADD_ASSERTION = "java:S2699";
     public static final String CATCH_EXCEPTION_INSTEAD_OF_THROWABLE = "java:S1181";
     public static final String DISABLED_TEST = "java:S1607";
-    public static final String GENERIC_WILDCARD_TYPES_SHOULD_NOT_BE_USED_IN_RETURN_TYPES = "java:S1452";
+    public static final String GENERIC_WILDCARD_IN_RETURN = "java:S1452";
     public static final String METHODS_RETURNS_SHOULD_NOT_BE_INVARIANT = "java:S3516";
     public static final String NUMBER_OF_PARENTS = "java:S110";
     public static final String RAW_USE_OF_PARAMETERIZED_CLASS = "java:S3740";
     public static final String RETURN_EMPTY_COLLECTION = "java:S1168";
+    public static final String ONE_METHOD_WHEN_TESTING_EXCEPTIONS = "java:S5778";
 
     private Sonar() {
         // non-instantiable

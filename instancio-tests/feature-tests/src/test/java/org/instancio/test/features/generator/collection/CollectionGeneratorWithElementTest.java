@@ -16,6 +16,7 @@
 package org.instancio.test.features.generator.collection;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
@@ -83,9 +84,10 @@ class CollectionGeneratorWithElementTest {
     }
 
     private void assertValidation(final Object... arg) {
-        assertThatThrownBy(() -> Instancio.of(ListLong.class)
-                .generate(all(List.class), gen -> gen.collection().with(arg))
-                .create())
+        final InstancioApi<ListLong> api = Instancio.of(ListLong.class)
+                .generate(all(List.class), gen -> gen.collection().with(arg));
+
+        assertThatThrownBy(api::create)
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("'collection().with(...)' must contain at least one element");
     }

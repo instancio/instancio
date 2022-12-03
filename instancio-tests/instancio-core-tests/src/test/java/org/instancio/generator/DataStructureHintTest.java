@@ -15,6 +15,7 @@
  */
 package org.instancio.generator;
 
+import org.instancio.generator.hints.DataStructureHint;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

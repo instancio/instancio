@@ -16,7 +16,4 @@
 /**
  * Provides generators for {@code java.lang.*} types.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.lang;
-
-import javax.annotation.ParametersAreNonnullByDefault;

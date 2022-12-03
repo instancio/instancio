@@ -16,7 +16,4 @@
 /**
  * Provides generators for {@code java.math.*} types.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.math;
-
-import javax.annotation.ParametersAreNonnullByDefault;

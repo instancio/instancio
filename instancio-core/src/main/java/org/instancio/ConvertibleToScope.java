@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.instancio;
+
 /**
- * Provides generators for {@code java.sql.*} types.
+ * An interface for selectors that can be converted to a {@link Scope}.
+ *
+ * @since 1.3.0
  */
-package org.instancio.internal.generator.sql;
+public interface ConvertibleToScope {
+
+    /**
+     * Scope representation of a selector.
+     *
+     * @return scope
+     * @since 1.3.0
+     */
+    Scope toScope();
+}

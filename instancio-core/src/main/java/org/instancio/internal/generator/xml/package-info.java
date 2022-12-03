@@ -16,7 +16,4 @@
 /**
  * Provides generators for {@code javax.xml.*} types.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.xml;
-
-import javax.annotation.ParametersAreNonnullByDefault;
