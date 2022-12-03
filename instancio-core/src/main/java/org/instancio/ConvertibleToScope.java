@@ -20,7 +20,7 @@ package org.instancio;
  *
  * @since 1.3.0
  */
-public interface ToScopeConvertible {
+public interface ConvertibleToScope {
 
     /**
      * Scope representation of a selector.
