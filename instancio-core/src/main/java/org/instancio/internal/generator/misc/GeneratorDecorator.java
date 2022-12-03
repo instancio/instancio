@@ -21,24 +21,22 @@ import org.instancio.generator.Hints;
 
 public final class GeneratorDecorator implements Generator<Object> {
 
-    private final Generator<?> generateDelegate;
-    private final Generator<?> hintsDelegate;
+    private final Generator<?> delegate;
+    private final Hints hints;
 
-    public GeneratorDecorator(final Generator<?> generateDelegate,
-                              final Generator<?> hintsDelegate) {
-
-        this.generateDelegate = generateDelegate;
-        this.hintsDelegate = hintsDelegate;
+    public GeneratorDecorator(final Generator<?> delegate, final Hints hints) {
+        this.delegate = delegate;
+        this.hints = hints;
     }
 
     @Override
     public Object generate(final Random random) {
-        return generateDelegate.generate(random);
+        return delegate.generate(random);
     }
 
     @Override
     public Hints hints() {
-        return hintsDelegate.hints();
+        return hints;
     }
 
 }

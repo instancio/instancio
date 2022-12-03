@@ -16,6 +16,7 @@
 package org.instancio.settings;
 
 import org.instancio.Mode;
+import org.instancio.generator.PopulateAction;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
@@ -199,6 +200,12 @@ public final class Keys {
      * @since 1.3.3
      */
     public static final SettingKey MODE = register("mode", Mode.class, Mode.STRICT);
+    /**
+     * Specifies the {@link PopulateAction}.
+     *
+     * @since 1.7.0
+     */
+    public static final SettingKey POPULATE_ACTION = register("populate.action", PopulateAction.class, PopulateAction.APPLY_SELECTORS);
     /**
      * Specifies the seed value;
      * default is {@code null}; property name {@code seed}.

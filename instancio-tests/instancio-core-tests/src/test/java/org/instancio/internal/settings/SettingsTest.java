@@ -134,7 +134,8 @@ class SettingsTest {
 
     @Test
     void mapTypeThrowsErrorIfGivenInvalidSubtype() {
-        assertThatThrownBy(() -> Settings.create().mapType(List.class, HashSet.class))
+        final Settings settings = Settings.create();
+        assertThatThrownBy(() -> settings.mapType(List.class, HashSet.class))
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Class 'java.util.HashSet' is not a subtype of 'java.util.List'");
     }

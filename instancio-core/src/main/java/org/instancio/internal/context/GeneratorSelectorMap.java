@@ -19,9 +19,12 @@ import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.GeneratorHint;
 import org.instancio.internal.generator.array.ArrayGenerator;
+import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
@@ -43,15 +46,18 @@ class GeneratorSelectorMap {
     private final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors;
     private final SelectorMap<Generator<?>> selectorMap = new SelectorMap<>();
     private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
+    private final PopulateAction defaultPopulateAction;
 
     GeneratorSelectorMap(
             final Generators generators,
             final Map<TargetSelector, Generator<?>> generatorSelectors,
-            final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors) {
+            final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors,
+            final PopulateAction defaultPopulateAction) {
 
         this.generators = generators;
         this.generatorSelectors = Collections.unmodifiableMap(generatorSelectors);
         this.generatorSpecSelectors = Collections.unmodifiableMap(generatorSpecSelectors);
+        this.defaultPopulateAction = defaultPopulateAction;
         putAllGeneratorSpecs(generatorSpecSelectors);
         putAllGenerators(generatorSelectors);
     }
@@ -100,11 +106,25 @@ class GeneratorSelectorMap {
         }
     }
 
-    private void putGenerator(final TargetSelector targetSelector, final Generator<?> generator) {
+    private Generator<?> decorateWithHints(final Generator<?> generator) {
+        final Hints originalHints = generator.hints();
+        if (originalHints != null && originalHints.populateAction() != null) {
+            return generator;
+        }
+
+        final Hints newHints = originalHints == null
+                ? Hints.withPopulateAction(defaultPopulateAction)
+                : Hints.builder(originalHints).populateAction(defaultPopulateAction).build();
+
+        return new GeneratorDecorator(generator, newHints);
+    }
+
+    private void putGenerator(final TargetSelector targetSelector, final Generator<?> originalGenerator) {
+        final Generator<?> generator = decorateWithHints(originalGenerator);
         selectorMap.put(targetSelector, generator);
 
-        final GeneratorHint hints = generator.hints().get(GeneratorHint.class);
-        final Optional<Class<?>> generatorTargetClass = Optional.ofNullable(hints)
+        final GeneratorHint generatorHint = generator.hints().get(GeneratorHint.class);
+        final Optional<Class<?>> generatorTargetClass = Optional.ofNullable(generatorHint)
                 .map(GeneratorHint::targetClass);
 
         generatorTargetClass.ifPresent(aClass -> generatorSubtypeMap.put(targetSelector, aClass));
