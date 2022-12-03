@@ -29,6 +29,7 @@ import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.random.Seeds;
+import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
@@ -158,10 +159,12 @@ public final class ModelContext<T> {
         return nullableSelectorMap.isTrue(node);
     }
 
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public Optional<Generator<?>> getGenerator(final Node node) {
         return generatorSelectorMap.getGenerator(node);
     }
 
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public List<OnCompleteCallback<?>> getCallbacks(final Node node) {
         return onCompleteCallbackSelectorMap.getCallbacks(node);
     }
@@ -170,6 +173,7 @@ public final class ModelContext<T> {
         return subtypeSelectorMap;
     }
 
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
         return rootTypeMap;
     }

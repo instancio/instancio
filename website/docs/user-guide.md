@@ -971,6 +971,10 @@ The `Random` instance can be used if randomness is required in the `init()` meth
 for instance reading data from a random set of files. In addition, it allows assigning random
 to a field making it available in other generator methods if needed.
 
+The `init()` method of a `Generator` instance will be executed exactly once per `Instancio.of()`
+invocation, even if the same generator is applied to multiple selectors.
+If the same generator instance is passed to multiple `Instancio.of()` invocations, then
+the `init()` will be called once per each `Instancio.of()` invocation.
 
 ### Implementing stateful generators
 

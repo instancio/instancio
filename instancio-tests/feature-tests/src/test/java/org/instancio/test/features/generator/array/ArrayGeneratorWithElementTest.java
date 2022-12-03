@@ -16,6 +16,7 @@
 package org.instancio.test.features.generator.array;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
@@ -71,9 +72,10 @@ class ArrayGeneratorWithElementTest {
     }
 
     private void assertValidation(final Object... arg) {
-        assertThatThrownBy(() -> Instancio.of(ArrayLong.class)
-                .generate(all(long[].class), gen -> gen.array().with(arg))
-                .create())
+        final InstancioApi<ArrayLong> api = Instancio.of(ArrayLong.class)
+                .generate(all(long[].class), gen -> gen.array().with(arg));
+
+        assertThatThrownBy(api::create)
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("'array().with(...)' must contain at least one element");
     }

@@ -16,7 +16,4 @@
 /**
  * Provides generators for {@code java.sql.*} types.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.sql;
-
-import javax.annotation.ParametersAreNonnullByDefault;

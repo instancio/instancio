@@ -18,6 +18,7 @@ package org.instancio.test.features.selector;
 import org.instancio.Instancio;
 import org.instancio.TargetSelector;
 import org.instancio.TypeToken;
+import org.instancio.internal.util.Sonar;
 import org.instancio.test.support.pojo.generics.ListExtendsItemInterface;
 import org.instancio.test.support.pojo.generics.ListExtendsNumber;
 import org.instancio.test.support.pojo.generics.ListExtendsPair;
@@ -152,6 +153,7 @@ class SelectWithGenericFieldsTest {
     @ParameterizedTest
     @MethodSource("selectAllBars")
     @DisplayName("Selecting parameterized type with incorrect type argument")
+    @SuppressWarnings(Sonar.ONE_METHOD_WHEN_TESTING_EXCEPTIONS)
     void selectingParameterizedClassWithIncorrectTypeArgument(final TargetSelector selector) {
         // Given declared field: Foo<Bar<Baz<String>>> item
         // and supplied value:       Bar<Baz<Integer>>

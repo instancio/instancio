@@ -16,7 +16,4 @@
 /**
  * Defines classes that provide access to built-in generators.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.generators;
-
-import javax.annotation.ParametersAreNonnullByDefault;

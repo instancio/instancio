@@ -16,7 +16,4 @@
 /**
  * Defines Service Provider Interfaces for providing custom implementations.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.spi;
-
-import javax.annotation.ParametersAreNonnullByDefault;

@@ -16,7 +16,4 @@
 /**
  * Provides classes for overriding settings at runtime.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.settings;
-
-import javax.annotation.ParametersAreNonnullByDefault;

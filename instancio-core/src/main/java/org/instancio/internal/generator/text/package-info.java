@@ -16,7 +16,4 @@
 /**
  * Provides text generators.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.text;
-
-import javax.annotation.ParametersAreNonnullByDefault;

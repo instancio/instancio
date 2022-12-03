@@ -19,7 +19,4 @@
  * @see org.instancio.Instancio
  * @see org.instancio.InstancioApi
  */
-@ParametersAreNonnullByDefault
 package org.instancio;
-
-import javax.annotation.ParametersAreNonnullByDefault;

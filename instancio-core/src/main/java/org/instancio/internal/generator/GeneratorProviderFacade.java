@@ -40,7 +40,7 @@ class GeneratorProviderFacade {
         this.generatorProviders = generatorProviders;
     }
 
-    @SuppressWarnings(Sonar.GENERIC_WILDCARD_TYPES_SHOULD_NOT_BE_USED_IN_RETURN_TYPES)
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     Optional<Generator<?>> getGenerator(final Class<?> forClass) {
         if (cache.containsKey(forClass)) {
             return Optional.of(cache.get(forClass));

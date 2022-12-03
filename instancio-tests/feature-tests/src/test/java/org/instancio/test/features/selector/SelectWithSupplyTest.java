@@ -16,6 +16,7 @@
 package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.Select;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
@@ -93,9 +94,10 @@ class SelectWithSupplyTest {
     @Test
     @DisplayName("Selector group with incompatible types")
     void selectorGroupWithIncompatibleTypes() {
-        assertThatThrownBy(() -> Instancio.of(Person.class)
-                .supply(Select.all(allInts(), allStrings()), () -> "some value")
-                .create())
+        final InstancioApi<Person> api = Instancio.of(Person.class)
+                .supply(all(allInts(), allStrings()), () -> "some value");
+
+        assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("Caused by: Can not set int field", "to java.lang.String");
     }
@@ -119,9 +121,10 @@ class SelectWithSupplyTest {
     @DisplayName("Supply with custom Generator, targeting wrong class")
     void supplyWithCustomerGeneratorWithWrongType() {
         final Generator<String> generator = random -> "some value";
-        assertThatThrownBy(() -> Instancio.of(Person.class)
-                .supply(allInts(), generator)
-                .create())
+        final InstancioApi<Person> api = Instancio.of(Person.class)
+                .supply(allInts(), generator);
+
+        assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("Caused by: Can not set int field", " to java.lang.String");
     }
