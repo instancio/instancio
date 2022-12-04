@@ -101,7 +101,9 @@ class CustomGeneratorFrameworkTest {
                     .isUpperCase();
         });
 
-        assertThat(generator.initInvocationCount).isEqualTo(numberOfResults);
+        assertThat(generator.initInvocationCount)
+                .as("Generator should be initialised exactly once")
+                .isOne();
     }
 
     @Test

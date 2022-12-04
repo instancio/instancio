@@ -16,7 +16,9 @@
 package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
+import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +27,8 @@ class UUIDStringGeneratorTest {
 
     private static final Random random = new DefaultRandom();
 
-    private final UUIDStringGenerator generator = new UUIDStringGenerator();
+    private final UUIDStringGenerator generator = new UUIDStringGenerator(
+            new GeneratorContext(Settings.defaults(), random));
 
     @Test
     void defaultUUIDString() {

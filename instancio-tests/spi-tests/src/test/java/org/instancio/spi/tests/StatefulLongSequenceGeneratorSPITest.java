@@ -21,9 +21,12 @@ import org.instancio.TypeToken;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfLong;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,6 +43,25 @@ class StatefulLongSequenceGeneratorSPITest {
                             LongSequenceGenerator.START_FROM, LongSequenceGenerator.START_FROM + seqLength)
                     .isEqualTo(LongSequenceGenerator.START_FROM + i);
         }
+    }
+
+    /**
+     * For <b>generators loaded via SPI</b>, each generator is re-initialised
+     * for each stream element. This is an implementation detail due to the fact
+     * that {@code GeneratorProviderFacade} is instantiated within the engine.
+     * <p>
+     * TODO: this should probably be refactored so that the model context the providers
+     *  (both, generator and type resolver)
+     */
+    @Test
+    @DisplayName("Stream results are independent of each other")
+    void stream() {
+        final Set<Long> results = Instancio.of(Long.class)
+                .stream()
+                .limit(10)
+                .collect(Collectors.toSet());
+
+        assertThat(results).containsOnly(LongSequenceGenerator.START_FROM);
     }
 
     @Test

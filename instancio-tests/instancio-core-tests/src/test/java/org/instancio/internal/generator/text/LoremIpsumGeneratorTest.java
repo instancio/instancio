@@ -17,8 +17,10 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.internal.random.DefaultRandom;
+import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -32,7 +34,8 @@ class LoremIpsumGeneratorTest {
     private static final String PARAGRAPH_SEPARATOR = System.lineSeparator() + System.lineSeparator();
     private static final Random random = new DefaultRandom();
 
-    private final LoremIpsumGenerator generator = new LoremIpsumGenerator();
+    private final LoremIpsumGenerator generator = new LoremIpsumGenerator(
+            new GeneratorContext(Settings.defaults(), random));
 
     @Test
     void defaultLoremIpsum() {

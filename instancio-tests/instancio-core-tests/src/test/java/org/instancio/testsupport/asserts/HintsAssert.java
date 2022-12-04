@@ -27,7 +27,6 @@ public class HintsAssert extends AbstractAssert<HintsAssert, Hints> {
 
     private HintsAssert(Hints actual) {
         super(actual, HintsAssert.class);
-        assertThat(actual).isNotNull();
     }
 
     public static HintsAssert assertHints(Hints actual) {
@@ -49,8 +48,8 @@ public class HintsAssert extends AbstractAssert<HintsAssert, Hints> {
         return this;
     }
 
-    public HintsAssert populateActionIsApplySelectors() {
-        return populateAction(PopulateAction.APPLY_SELECTORS);
+    public HintsAssert populateActionIsNone() {
+        return populateAction(PopulateAction.NONE);
     }
 
     public HintsAssert nullableElements(boolean expected) {

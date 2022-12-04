@@ -140,8 +140,8 @@ public class GeneratorResolver {
         generators.put(LocalDate.class, new LocalDateGenerator(context));
         generators.put(LocalDateTime.class, new LocalDateTimeGenerator(context));
         generators.put(LocalTime.class, new LocalTimeGenerator(context));
-        generators.put(Duration.class, new DurationGenerator());
-        generators.put(Period.class, new PeriodGenerator());
+        generators.put(Duration.class, new DurationGenerator(context));
+        generators.put(Period.class, new PeriodGenerator(context));
         generators.put(Temporal.class, new LocalDateGenerator(context)); // default Temporal
         generators.put(Year.class, new YearGenerator(context));
         generators.put(YearMonth.class, new YearMonthGenerator(context));
@@ -154,7 +154,7 @@ public class GeneratorResolver {
         // java.util
         generators.put(Calendar.class, new CalendarGenerator(context));
         generators.put(Date.class, new DateGenerator(context));
-        generators.put(UUID.class, new UUIDGenerator());
+        generators.put(UUID.class, new UUIDGenerator(context));
 
         // java.util collections
         generators.put(Collection.class, new CollectionGenerator<>(context));

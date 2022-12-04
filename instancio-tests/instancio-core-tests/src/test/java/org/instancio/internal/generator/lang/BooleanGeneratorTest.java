@@ -52,7 +52,6 @@ class BooleanGeneratorTest {
                 .as("true, false, and null")
                 .hasSize(3);
 
-        HintsAssert.assertHints(generator.hints())
-                .populateActionIsApplySelectors();
+        HintsAssert.assertHints(generator.hints()).populateActionIsNone();
     }
 }

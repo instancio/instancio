@@ -34,28 +34,12 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  */
 public final class Hints {
 
-    private static final Hints DEFAULT_HINTS = Hints.builder()
-            .populateAction(PopulateAction.APPLY_SELECTORS)
-            .build();
-
     private final PopulateAction populateAction;
     private final Map<Class<?>, Object> hintMap;
 
     private Hints(final Builder builder) {
         populateAction = builder.populateAction;
         hintMap = defaultIfNull(builder.hintMap, Collections.emptyMap());
-    }
-
-    /**
-     * Returns an instance of default hints that contain {@link #populateAction}
-     * set to {@link PopulateAction#APPLY_SELECTORS}.
-     *
-     * @return an instance containing a single hint {@link PopulateAction#APPLY_SELECTORS}
-     * @see PopulateAction
-     * @since 1.7.0
-     */
-    public static Hints defaultHints() {
-        return DEFAULT_HINTS;
     }
 
     /**

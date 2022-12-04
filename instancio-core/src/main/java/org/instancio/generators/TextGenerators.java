@@ -16,6 +16,7 @@
 
 package org.instancio.generators;
 
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.generator.specs.UUIDStringGeneratorSpec;
@@ -33,6 +34,12 @@ import java.util.Map;
  */
 public class TextGenerators {
 
+    private final GeneratorContext context;
+
+    public TextGenerators(final GeneratorContext context) {
+        this.context = context;
+    }
+
     static Map<Class<?>, String> getApiMethods() {
         Map<Class<?>, String> map = new HashMap<>();
         map.put(LoremIpsumGenerator.class, "loremIpsum()");
@@ -48,7 +55,7 @@ public class TextGenerators {
      * @since 1.5.3
      */
     public LoremIpsumGeneratorSpec loremIpsum() {
-        return new LoremIpsumGenerator();
+        return new LoremIpsumGenerator(context);
     }
 
 
@@ -77,7 +84,7 @@ public class TextGenerators {
      * @since 1.1.9
      */
     public GeneratorSpec<String> pattern(final String pattern) {
-        return new TextPatternGenerator(pattern);
+        return new TextPatternGenerator(context, pattern);
     }
 
     /**
@@ -88,6 +95,6 @@ public class TextGenerators {
      * @since 1.5.0
      */
     public UUIDStringGeneratorSpec uuid() {
-        return new UUIDStringGenerator();
+        return new UUIDStringGenerator(context);
     }
 }

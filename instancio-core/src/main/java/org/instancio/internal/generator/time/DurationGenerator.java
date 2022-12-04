@@ -16,15 +16,16 @@
 package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
-import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.DurationGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 
-public class DurationGenerator implements Generator<Duration>, DurationGeneratorSpec {
+public class DurationGenerator extends AbstractGenerator<Duration> implements DurationGeneratorSpec {
 
     private static final long DEFAULT_MIN_AMOUNT = 1;
     private static final long DEFAULT_MAX_AMOUNT = 1_000_000_000_000_000L;
@@ -34,6 +35,10 @@ public class DurationGenerator implements Generator<Duration>, DurationGenerator
     private long maxAmount = DEFAULT_MAX_AMOUNT;
     private TemporalUnit unit = DEFAULT_UNIT;
     private boolean allowZero;
+
+    public DurationGenerator(final GeneratorContext context) {
+        super(context);
+    }
 
     @Override
     public DurationGeneratorSpec of(final long minAmount, final long maxAmount, final TemporalUnit unit) {

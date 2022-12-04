@@ -67,11 +67,23 @@ public interface Generator<T> extends GeneratorSpec<T> {
     /**
      * Hints provided by the generator to the engine.
      *
-     * <p>The most important hint is {@link Hints#populateAction()}.
-     * This indicates whether the object created by this generator should be
-     * populated further by the engine.</p>
+     * <p>The most important hint for custom generators is the {@link PopulateAction}.
+     * This hint indicates whether the object created by this generator should
+     * be populated further by the engine.</p>
      *
-     * <p>Default action is {@link PopulateAction#APPLY_SELECTORS}.</p>
+     * <p>For example, setting the hint to {@code PopulateAction.NULLS}
+     * will cause Instancio to populate {@code null} fields on the object
+     * returned by this generator:
+     *
+     * <pre>{@code
+     *   @Override
+     *   public Hints hints() {
+     *       return Hints.withPopulateAction(PopulateAction.NULLS);
+     *   }
+     * }</pre>
+     *
+     * <p>If the action is not specified, default behaviour is
+     * {@link PopulateAction#APPLY_SELECTORS}.</p>
      *
      * @return hints from this generator to the engine
      * @see Hint
@@ -79,6 +91,6 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * @since 1.7.0
      */
     default Hints hints() {
-        return Hints.defaultHints();
+        return null;
     }
 }

@@ -18,8 +18,8 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.GeneratorHint;
@@ -30,6 +30,7 @@ import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.SelectorTargetKind;
 import org.instancio.internal.util.Sonar;
+import org.instancio.settings.Keys;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -43,23 +44,22 @@ import static org.instancio.internal.util.ReflectionUtils.getField;
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 class GeneratorSelectorMap {
 
-    private final Generators generators;
     private final Map<TargetSelector, Generator<?>> generatorSelectors;
     private final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors;
     private final SelectorMap<Generator<?>> selectorMap = new SelectorMap<>();
     private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
     private final PopulateAction defaultPopulateAction;
+    private final GeneratorContext context;
 
     GeneratorSelectorMap(
-            final Generators generators,
+            final GeneratorContext context,
             final Map<TargetSelector, Generator<?>> generatorSelectors,
-            final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors,
-            final PopulateAction defaultPopulateAction) {
+            final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors) {
 
-        this.generators = generators;
+        this.context = context;
         this.generatorSelectors = Collections.unmodifiableMap(generatorSelectors);
         this.generatorSpecSelectors = Collections.unmodifiableMap(generatorSpecSelectors);
-        this.defaultPopulateAction = defaultPopulateAction;
+        this.defaultPopulateAction = context.getSettings().get(Keys.GENERATOR_HINT_POPULATE_ACTION);
         putAllGeneratorSpecs(generatorSpecSelectors);
         putAllGenerators(generatorSelectors);
     }
@@ -95,6 +95,8 @@ class GeneratorSelectorMap {
     }
 
     private void putAllGeneratorSpecs(final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> specs) {
+        final Generators generators = new Generators(context);
+
         for (Map.Entry<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> entry : specs.entrySet()) {
             final TargetSelector targetSelector = entry.getKey();
             final Function<Generators, ?> genFn = entry.getValue();
@@ -108,21 +110,10 @@ class GeneratorSelectorMap {
         }
     }
 
-    private Generator<?> decorateWithHints(final Generator<?> generator) {
-        final Hints originalHints = generator.hints();
-        if (originalHints != null && originalHints.populateAction() != null) {
-            return generator;
-        }
+    private void putGenerator(final TargetSelector targetSelector, final Generator<?> g) {
+        final Generator<?> generator = GeneratorDecorator.decorateActionless(g, defaultPopulateAction);
+        generator.init(context);
 
-        final Hints newHints = originalHints == null
-                ? Hints.withPopulateAction(defaultPopulateAction)
-                : Hints.builder(originalHints).populateAction(defaultPopulateAction).build();
-
-        return new GeneratorDecorator(generator, newHints);
-    }
-
-    private void putGenerator(final TargetSelector targetSelector, final Generator<?> originalGenerator) {
-        final Generator<?> generator = decorateWithHints(originalGenerator);
         selectorMap.put(targetSelector, generator);
 
         final GeneratorHint generatorHint = generator.hints().get(GeneratorHint.class);

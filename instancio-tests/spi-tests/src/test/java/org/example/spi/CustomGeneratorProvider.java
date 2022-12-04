@@ -16,9 +16,11 @@
 package org.example.spi;
 
 import org.example.generator.CustomIntegerGenerator;
+import org.example.generator.CustomPersonGenerator;
 import org.example.generator.LongSequenceGenerator;
 import org.instancio.generator.Generator;
 import org.instancio.spi.GeneratorProvider;
+import org.instancio.test.support.pojo.person.Person;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +36,7 @@ public class CustomGeneratorProvider implements GeneratorProvider {
         final Map<Class<?>, Generator<?>> map = new HashMap<>();
         map.put(String.class, random -> STRING_GENERATOR_VALUE);
         map.put(Pattern.class, random -> PATTERN_GENERATOR_VALUE);
+        map.put(Person.class, new CustomPersonGenerator());
         map.put(int.class, new CustomIntegerGenerator());
         map.put(Integer.class, new CustomIntegerGenerator());
         map.put(Long.class, new LongSequenceGenerator()); // primitive using default generator

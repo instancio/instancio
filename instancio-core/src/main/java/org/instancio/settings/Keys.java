@@ -201,11 +201,13 @@ public final class Keys {
      */
     public static final SettingKey MODE = register("mode", Mode.class, Mode.STRICT);
     /**
-     * Specifies the {@link PopulateAction}.
+     * Specifies the default value of the {@link PopulateAction} hint
+     * supplied from custom generators to the engine.
      *
      * @since 1.7.0
      */
-    public static final SettingKey POPULATE_ACTION = register("populate.action", PopulateAction.class, PopulateAction.APPLY_SELECTORS);
+    public static final SettingKey GENERATOR_HINT_POPULATE_ACTION = register(
+            "generator.hint.populate.action", PopulateAction.class, PopulateAction.APPLY_SELECTORS);
     /**
      * Specifies the seed value;
      * default is {@code null}; property name {@code seed}.

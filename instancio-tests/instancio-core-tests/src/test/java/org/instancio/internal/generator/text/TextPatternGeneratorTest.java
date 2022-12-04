@@ -17,8 +17,10 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.util.StringUtils;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -105,7 +107,8 @@ class TextPatternGeneratorTest {
     }
 
     private String generate(final String pattern) {
-        TextPatternGenerator generator = new TextPatternGenerator(pattern);
+        final GeneratorContext context = new GeneratorContext(Settings.defaults(), random);
+        TextPatternGenerator generator = new TextPatternGenerator(context, pattern);
         return generator.generate(random);
     }
 }

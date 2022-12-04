@@ -16,13 +16,14 @@
 package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
-import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.PeriodGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
 
 import java.time.Period;
 
-public class PeriodGenerator implements Generator<Period>, PeriodGeneratorSpec {
+public class PeriodGenerator extends AbstractGenerator<Period> implements PeriodGeneratorSpec {
 
     private static final int DEFAULT_MIN_DAYS = 1;
     private static final int DEFAULT_MAX_DAYS = 365;
@@ -34,6 +35,9 @@ public class PeriodGenerator implements Generator<Period>, PeriodGeneratorSpec {
     private int minYears;
     private int maxYears;
 
+    public PeriodGenerator(final GeneratorContext context) {
+        super(context);
+    }
 
     @Override
     public PeriodGeneratorSpec days(final int min, final int max) {

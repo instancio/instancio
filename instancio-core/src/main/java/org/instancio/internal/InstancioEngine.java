@@ -17,6 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
+import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.DataStructureHint;
 import org.instancio.internal.context.ModelContext;
@@ -28,6 +29,7 @@ import org.instancio.internal.reflection.RecordHelperImpl;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +37,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +58,7 @@ class InstancioEngine {
     private final ModelContext<?> context;
     private final Node rootNode;
     private final CallbackHandler callbackHandler;
-    private final List<GenerationListener> listeners = new ArrayList<>();
+    private final List<GenerationListener> listeners;
     private final RecordHelper recordHelper = new RecordHelperImpl();
 
     InstancioEngine(InternalModel<?> model) {
@@ -64,8 +66,7 @@ class InstancioEngine {
         rootNode = model.getRootNode();
         callbackHandler = new CallbackHandler(context);
         generatorFacade = new GeneratorFacade(context);
-        listeners.add(callbackHandler);
-        listeners.add(new GeneratedNullValueListener(context));
+        listeners = Arrays.asList(callbackHandler, new GeneratedNullValueListener(context));
     }
 
     @SuppressWarnings("unchecked")
@@ -106,7 +107,7 @@ class InstancioEngine {
         final Optional<GeneratorResult> generatorResult = createObject(node.getOnlyChild());
         if (generatorResult.isPresent()) {
             final Object value = generatorResult.get().getValue();
-            final GeneratorResult optResult = GeneratorResult.create(Optional.ofNullable(value));
+            final GeneratorResult optResult = createGeneratorResult(Optional.ofNullable(value));
             return Optional.of(optResult);
         }
 
@@ -168,7 +169,7 @@ class InstancioEngine {
                 ctor.setAccessible(true); // NOSONAR
                 final Object result = ctor.newInstance(args);
                 notifyListeners(node, result);
-                return Optional.of(GeneratorResult.create(result));
+                return Optional.of(createGeneratorResult(result));
             }
         } catch (Exception ex) {
             conditionalFailOnError(() -> {
@@ -176,6 +177,11 @@ class InstancioEngine {
             });
         }
         return Optional.empty();
+    }
+
+    private GeneratorResult createGeneratorResult(final Object value) {
+        final PopulateAction defaultAction = context.getSettings().get(Keys.GENERATOR_HINT_POPULATE_ACTION);
+        return GeneratorResult.create(value, Hints.withPopulateAction(defaultAction));
     }
 
     private Optional<GeneratorResult> generatePojo(final Node node, final List<Node> children) {

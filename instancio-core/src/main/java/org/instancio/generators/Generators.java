@@ -255,6 +255,6 @@ public class Generators {
      * @return built-in text generators
      */
     public TextGenerators text() {
-        return new TextGenerators();
+        return new TextGenerators(context);
     }
 }

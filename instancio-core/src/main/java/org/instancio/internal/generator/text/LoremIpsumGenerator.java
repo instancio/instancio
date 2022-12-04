@@ -16,13 +16,14 @@
 package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
-import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
 
 import static org.instancio.internal.util.StringUtils.capitalise;
 
-public class LoremIpsumGenerator implements Generator<String>, LoremIpsumGeneratorSpec {
+public class LoremIpsumGenerator extends AbstractGenerator<String> implements LoremIpsumGeneratorSpec {
 
     private static final String[] WORD_BANK = {
             "ad", "adipiscing", "aliqua", "aliquip", "amet", "anim", "aute", "cillum", "commodo",
@@ -38,6 +39,10 @@ public class LoremIpsumGenerator implements Generator<String>, LoremIpsumGenerat
 
     private int words = DEFAULT_WORDS;
     private int paragraphs = DEFAULT_PARAGRAPHS;
+
+    public LoremIpsumGenerator(final GeneratorContext context) {
+        super(context);
+    }
 
     @Override
     public LoremIpsumGeneratorSpec words(final int words) {

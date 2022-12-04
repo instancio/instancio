@@ -59,8 +59,7 @@ class StringGeneratorTest {
                 .containsOnlyOnce("")
                 .contains(upperCaseLettersAtoZ());
 
-        HintsAssert.assertHints(generator.hints())
-                .populateActionIsApplySelectors();
+        HintsAssert.assertHints(generator.hints()).populateActionIsNone();
     }
 
     @Test

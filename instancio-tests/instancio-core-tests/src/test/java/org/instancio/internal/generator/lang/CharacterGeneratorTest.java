@@ -52,7 +52,6 @@ class CharacterGeneratorTest {
                 .as("26 letters + null")
                 .hasSize(27);
 
-        HintsAssert.assertHints(generator.hints())
-                .populateActionIsApplySelectors();
+        HintsAssert.assertHints(generator.hints()).populateActionIsNone();
     }
 }

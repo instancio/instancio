@@ -46,12 +46,13 @@ class GeneratorFacade {
         this.context = context;
         this.random = context.getRandom();
 
-        final GeneratorContext generatorContext = new GeneratorContext(context.getSettings(), random);
-        final GeneratorResolver generatorResolver = new GeneratorResolver(generatorContext);
+        final GeneratorResolver generatorResolver = new GeneratorResolver(
+                new GeneratorContext(context.getSettings(), random));
+
         final Instantiator instantiator = new Instantiator();
 
         this.nodeHandlers = new NodeHandler[]{
-                new UserSuppliedGeneratorHandler(context, generatorContext, generatorResolver, instantiator),
+                new UserSuppliedGeneratorHandler(context, generatorResolver, instantiator),
                 new ArrayNodeHandler(context, generatorResolver),
                 new UsingGeneratorResolverHandler(context, generatorResolver),
                 new CollectionNodeHandler(context, instantiator),

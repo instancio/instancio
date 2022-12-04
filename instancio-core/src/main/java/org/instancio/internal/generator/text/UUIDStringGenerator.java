@@ -16,17 +16,23 @@
 package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
-import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.UUIDStringGeneratorSpec;
+import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
 
 import java.util.Locale;
 
-public class UUIDStringGenerator implements Generator<String>, UUIDStringGeneratorSpec {
+public class UUIDStringGenerator extends AbstractGenerator<String> implements UUIDStringGeneratorSpec {
     private boolean isUpperCase;
     private boolean isWithoutDashes;
 
-    private final UUIDGenerator delegate = new UUIDGenerator();
+    private final UUIDGenerator delegate;
+
+    public UUIDStringGenerator(final GeneratorContext context) {
+        super(context);
+        delegate = new UUIDGenerator(context);
+    }
 
     @Override
     public UUIDStringGeneratorSpec upperCase() {
