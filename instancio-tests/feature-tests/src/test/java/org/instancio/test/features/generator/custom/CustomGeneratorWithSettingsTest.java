@@ -83,7 +83,7 @@ class CustomGeneratorWithSettingsTest {
                     .supply(all(StringFields.class), GENERATOR_WITH_NULL_HINTS)
                     .set(fields().annotated(StringFields.Two.class), OVERRIDE_TWO)
                     .withSettings(Settings.create()
-                            .set(Keys.POPULATE_ACTION, PopulateAction.NULLS))
+                            .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NULLS))
                     .create();
 
             assertThat(result.getOne()).isEqualTo(ONE);
@@ -99,7 +99,7 @@ class CustomGeneratorWithSettingsTest {
                     .supply(all(StringFields.class), GENERATOR_WITH_NULL_HINTS)
                     .set(fields().annotated(StringFields.Two.class), OVERRIDE_TWO)
                     .withSettings(Settings.create()
-                            .set(Keys.POPULATE_ACTION, PopulateAction.NONE))
+                            .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NONE))
                     .lenient()
                     .create();
 
@@ -126,7 +126,7 @@ class CustomGeneratorWithSettingsTest {
                     .supply(all(StringFields.class), generator)
                     .set(fields().annotated(StringFields.Two.class), OVERRIDE_TWO)
                     .withSettings(Settings.create()
-                            .set(Keys.POPULATE_ACTION, PopulateAction.NONE))
+                            .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NONE))
                     .create();
 
             assertThat(result.getOne()).isEqualTo(ONE);

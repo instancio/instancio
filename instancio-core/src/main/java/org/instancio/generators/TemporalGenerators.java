@@ -145,7 +145,7 @@ public class TemporalGenerators {
      * @return customised generator
      */
     public DurationGeneratorSpec duration() {
-        return new DurationGenerator();
+        return new DurationGenerator(context);
     }
 
     /**
@@ -154,7 +154,7 @@ public class TemporalGenerators {
      * @return customised generator
      */
     public PeriodGeneratorSpec period() {
-        return new PeriodGenerator();
+        return new PeriodGenerator(context);
     }
 
     /**

@@ -107,7 +107,7 @@ class CustomCollectionGeneratorTest {
                 .supply(types().of(List.class), new CustomListGenerator() {
                     @Override
                     public Hints hints() {
-                        return Hints.defaultHints();
+                        return Hints.withPopulateAction(PopulateAction.APPLY_SELECTORS);
                     }
                 })
                 .create();

@@ -16,7 +16,6 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
@@ -28,27 +27,20 @@ import org.instancio.internal.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 public class UserSuppliedGeneratorHandler implements NodeHandler {
 
     private final ModelContext<?> modelContext;
-    private final GeneratorContext generatorContext;
     private final GeneratorResolver generatorResolver;
     private final Instantiator instantiator;
-    private final Set<Generator<?>> initialised = Collections.newSetFromMap(new IdentityHashMap<>());
 
     public UserSuppliedGeneratorHandler(final ModelContext<?> modelContext,
-                                        final GeneratorContext generatorContext,
                                         final GeneratorResolver generatorResolver,
                                         final Instantiator instantiator) {
         this.modelContext = modelContext;
-        this.generatorContext = generatorContext;
         this.generatorResolver = generatorResolver;
         this.instantiator = instantiator;
     }
@@ -61,10 +53,6 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     public Optional<GeneratorResult> getResult(final Node node) {
         return getUserSuppliedGenerator(node).map(g -> {
             ApiValidator.validateGeneratorUsage(node, g);
-            if (!initialised.contains(g)) {
-                g.init(generatorContext);
-                initialised.add(g);
-            }
             return GeneratorResult.create(g.generate(modelContext.getRandom()), g.hints());
         });
     }

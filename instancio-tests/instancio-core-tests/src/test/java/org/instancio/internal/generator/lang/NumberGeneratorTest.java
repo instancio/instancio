@@ -79,8 +79,7 @@ class NumberGeneratorTest {
             }
 
             assertThat(results).containsNull().hasSize(MAX - MIN + 2);
-            HintsAssert.assertHints(generator.hints())
-                    .populateActionIsApplySelectors();
+            HintsAssert.assertHints(generator.hints()).populateActionIsNone();
         }
     }
 
@@ -101,8 +100,8 @@ class NumberGeneratorTest {
                     .as("Expecting at least half of sample size of unique fractional numbers")
                     .hasSizeGreaterThan(SAMPLE_SIZE / 2);
 
-            HintsAssert.assertHints(generator.hints())
-                    .populateActionIsApplySelectors();
+//            HintsAssert.assertHints(generator.hints())
+//                    .populateActionIsApplySelectors();
         }
     }
 

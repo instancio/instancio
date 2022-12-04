@@ -91,10 +91,9 @@ public final class ModelContext<T> {
         onCompleteCallbackSelectorMap = new OnCompleteCallbackSelectorMap(builder.onCompleteCallbacks);
         subtypeSelectorMap = new SubtypeSelectorMap(settings.getSubtypeMap(), builder.subtypeSelectors);
         generatorSelectorMap = new GeneratorSelectorMap(
-                new Generators(new GeneratorContext(settings, random)),
+                new GeneratorContext(settings, random),
                 builder.generatorSelectors,
-                builder.generatorSpecSelectors,
-                settings.get(Keys.POPULATE_ACTION));
+                builder.generatorSpecSelectors);
 
         subtypeSelectorMap.putAll(generatorSelectorMap.getGeneratorSubtypeMap());
     }

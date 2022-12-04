@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 
-public class InstantiatingGenerator implements Generator<Object> {
+public final class InstantiatingGenerator implements Generator<Object> {
 
     private final Instantiator instantiator;
     private final Class<?> targetType;

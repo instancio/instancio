@@ -17,10 +17,11 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
 
-public class TextPatternGenerator implements Generator<String> {
+public class TextPatternGenerator extends AbstractGenerator<String> {
     private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
             + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
             + "%n\t#c - lower case character [a-z]"
@@ -35,7 +36,8 @@ public class TextPatternGenerator implements Generator<String> {
     private static final char HASH = '#';
     private final String pattern;
 
-    public TextPatternGenerator(final String pattern) {
+    public TextPatternGenerator(GeneratorContext context, final String pattern) {
+        super(context);
         this.pattern = ApiValidator.notNull(pattern, "Text pattern must not be null");
     }
 

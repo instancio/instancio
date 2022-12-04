@@ -24,9 +24,12 @@ import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.generators.Generators;
+import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
@@ -120,15 +123,32 @@ class ModelContextTest {
     @Test
     void withGenerators() {
         final Generator<String> stringGenerator = random -> "some string";
-        final Generator<Address> addressGenerator = random -> new Address();
+        final Generator<Address> addressGenerator = new Generator<Address>() {
+            @Override
+            public Address generate(final Random random) {
+                return new Address();
+            }
+
+            @Override
+            public Hints hints() {
+                return Hints.withPopulateAction(PopulateAction.NULLS);
+            }
+        };
 
         ModelContext<?> ctx = ModelContext.builder(Person.class)
                 .withGenerator(field(ADDRESS_FIELD.getName()), addressGenerator)
                 .withGenerator(all(String.class), stringGenerator)
                 .build();
 
-        assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD))).containsSame(addressGenerator);
-        assertThat(ctx.getGenerator(mockNode(String.class))).containsSame(stringGenerator);
+        assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD)))
+                .as("Should NOT be decorated since it has PopulateAction hint")
+                .containsSame(addressGenerator);
+
+        assertThat(ctx.getGenerator(mockNode(String.class))).isPresent().get()
+                .as("Should be decorated since its Hints are null")
+                .isNotSameAs(stringGenerator)
+                .isExactlyInstanceOf(GeneratorDecorator.class);
+
     }
 
     @Test
@@ -222,9 +242,9 @@ class ModelContextTest {
 
         final ModelContext<?> actual = ctx.toBuilder().build();
 
-        assertThat(actual.getGenerator(mockNode(String.class))).containsSame(allStringsGenerator);
-        assertThat(actual.getGenerator(mockNode(Person.class, ADDRESS_CITY_FIELD))).containsSame(addressCityGenerator);
-        assertThat(actual.getGenerator(mockNode(Person.class, PETS_FIELD))).containsSame(petsGenerator);
+        assertThat(actual.getGenerator(mockNode(String.class))).get().isExactlyInstanceOf(GeneratorDecorator.class);
+        assertThat(actual.getGenerator(mockNode(Person.class, ADDRESS_CITY_FIELD))).get().isExactlyInstanceOf(GeneratorDecorator.class);
+        assertThat(actual.getGenerator(mockNode(Person.class, PETS_FIELD))).get().isExactlyInstanceOf(GeneratorDecorator.class);
         assertThat(actual.isIgnored(mockNode(Person.class, NAME_FIELD))).isTrue();
         assertThat(actual.isIgnored(mockNode(ignoredClass))).isTrue();
         assertThat(actual.isNullable(mockNode(nullableClass))).isTrue();

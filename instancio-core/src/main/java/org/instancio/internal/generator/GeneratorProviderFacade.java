@@ -17,7 +17,9 @@ package org.instancio.internal.generator;
 
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.util.Sonar;
+import org.instancio.settings.Keys;
 import org.instancio.spi.GeneratorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,10 +51,13 @@ class GeneratorProviderFacade {
         for (GeneratorProvider provider : generatorProviders) {
             final Generator<?> generator = provider.getGenerators().get(forClass);
             if (generator != null) {
+                final Generator<?> decorated = GeneratorDecorator.decorateActionless(
+                        generator, context.getSettings().get(Keys.GENERATOR_HINT_POPULATE_ACTION));
+
                 LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), forClass);
-                generator.init(context);
-                cache.put(forClass, generator);
-                return Optional.of(generator);
+                decorated.init(context);
+                cache.put(forClass, decorated);
+                return Optional.of(decorated);
             }
         }
         return Optional.empty();

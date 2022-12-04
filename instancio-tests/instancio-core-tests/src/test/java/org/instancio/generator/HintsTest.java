@@ -45,12 +45,6 @@ class HintsTest {
     }
 
     @Test
-    void defaultHintActionIsApplySelectors() {
-        assertHints(Hints.defaultHints())
-                .populateActionIsApplySelectors();
-    }
-
-    @Test
     void emptyHintsShouldHaveNullPopulateAction() {
         assertHints(Hints.builder().build())
                 .populateAction(null);

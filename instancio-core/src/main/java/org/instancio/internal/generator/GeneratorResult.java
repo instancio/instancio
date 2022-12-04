@@ -23,7 +23,7 @@ import java.util.StringJoiner;
 
 public final class GeneratorResult {
     private static final GeneratorResult NULL_RESULT = new GeneratorResult(
-            null, Hints.defaultHints());
+            null, Hints.withPopulateAction(PopulateAction.NONE));
 
     private final Object value;
     private final Hints hints;
@@ -45,10 +45,6 @@ public final class GeneratorResult {
      */
     public static GeneratorResult nullResult() {
         return NULL_RESULT;
-    }
-
-    public static GeneratorResult create(@Nullable final Object value) {
-        return new GeneratorResult(value, Hints.defaultHints());
     }
 
     public static GeneratorResult create(@Nullable final Object value, final Hints hints) {

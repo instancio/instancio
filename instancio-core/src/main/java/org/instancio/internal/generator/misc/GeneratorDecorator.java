@@ -17,7 +17,10 @@ package org.instancio.internal.generator.misc;
 
 import org.instancio.Random;
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
+import org.instancio.generator.PopulateAction;
+import org.instancio.internal.util.Sonar;
 
 public final class GeneratorDecorator implements Generator<Object> {
 
@@ -27,6 +30,28 @@ public final class GeneratorDecorator implements Generator<Object> {
     public GeneratorDecorator(final Generator<?> delegate, final Hints hints) {
         this.delegate = delegate;
         this.hints = hints;
+    }
+
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
+    public static Generator<?> decorateActionless(
+            final Generator<?> generator,
+            final PopulateAction populateAction) {
+
+        final Hints originalHints = generator.hints();
+        if (originalHints != null && originalHints.populateAction() != null) {
+            return generator;
+        }
+
+        final Hints newHints = originalHints == null
+                ? Hints.withPopulateAction(populateAction)
+                : Hints.builder(originalHints).populateAction(populateAction).build();
+
+        return new GeneratorDecorator(generator, newHints);
+    }
+
+    @Override
+    public void init(final GeneratorContext context) {
+        delegate.init(context);
     }
 
     @Override
