@@ -33,7 +33,6 @@ import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -167,9 +166,10 @@ class InstancioEngine {
             if (optCtor.isPresent()) {
                 final Constructor<?> ctor = optCtor.get();
                 ctor.setAccessible(true); // NOSONAR
-                final Object result = ctor.newInstance(args);
-                notifyListeners(node, result);
-                return Optional.of(createGeneratorResult(result));
+                final Object obj = ctor.newInstance(args);
+                final GeneratorResult generatorResult = createGeneratorResult(obj);
+                notifyListeners(node, generatorResult);
+                return Optional.of(generatorResult);
             }
         } catch (Exception ex) {
             conditionalFailOnError(() -> {
@@ -305,7 +305,7 @@ class InstancioEngine {
 
     private Object createObject(final Node node, final boolean isNullable) {
         if (context.getRandom().diceRoll(isNullable)) {
-            notifyListeners(node, null);
+            notifyListeners(node, GeneratorResult.nullResult());
             return null;
         }
         return createObject(node).map(GeneratorResult::getValue).orElse(null);
@@ -313,13 +313,13 @@ class InstancioEngine {
 
     private Optional<GeneratorResult> generateValue(final Node node) {
         final Optional<GeneratorResult> generatorResult = generatorFacade.generateNodeValue(node);
-        notifyListeners(node, generatorResult.map(GeneratorResult::getValue).orElse(null));
+        notifyListeners(node, generatorResult.orElse(GeneratorResult.nullResult()));
         return generatorResult;
     }
 
-    private void notifyListeners(final Node node, @Nullable final Object generatedObject) {
+    private void notifyListeners(final Node node, final GeneratorResult result) {
         for (GenerationListener listener : listeners) {
-            listener.objectCreated(node, generatedObject);
+            listener.objectCreated(node, result);
         }
     }
 }

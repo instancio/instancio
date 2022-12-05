@@ -16,6 +16,7 @@
 package org.instancio.generator;
 
 import org.instancio.Random;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
 /**
@@ -71,7 +72,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * This hint indicates whether the object created by this generator should
      * be populated further by the engine.</p>
      *
-     * <p>For example, setting the hint to {@code PopulateAction.NULLS}
+     * <p>For example, setting the hint to {@link PopulateAction#NULLS}
      * will cause Instancio to populate {@code null} fields on the object
      * returned by this generator:
      *
@@ -82,8 +83,9 @@ public interface Generator<T> extends GeneratorSpec<T> {
      *   }
      * }</pre>
      *
-     * <p>If the action is not specified, default behaviour is
-     * {@link PopulateAction#APPLY_SELECTORS}.</p>
+     * <p>If the action is not specified, default behaviour will be based
+     * on the action configured via {@link Settings} using the key
+     * {@link Keys#GENERATOR_HINT_POPULATE_ACTION}.</p>
      *
      * @return hints from this generator to the engine
      * @see Hint

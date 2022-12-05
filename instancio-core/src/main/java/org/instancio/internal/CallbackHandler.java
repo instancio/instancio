@@ -17,11 +17,12 @@ package org.instancio.internal;
 
 import org.instancio.OnCompleteCallback;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.InternalHint;
 import org.instancio.internal.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -38,7 +39,16 @@ public class CallbackHandler implements GenerationListener {
     }
 
     @Override
-    public void objectCreated(final Node node, @Nullable final Object instance) {
+    public void objectCreated(final Node node, final GeneratorResult result) {
+        if (result.getValue() == null) {
+            return;
+        }
+        final InternalHint internalHint = result.getHints().get(InternalHint.class);
+        if (internalHint != null && internalHint.excludeFromCallbacks()) {
+            return;
+        }
+
+        final Object instance = result.getValue();
         if (!getCallbacks(node).isEmpty()) {
             resultsForCallbacks.computeIfAbsent(node, res -> new ArrayList<>()).add(instance);
         }

@@ -28,15 +28,19 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 
-@FeatureTag({Feature.ON_COMPLETE, Feature.STREAM})
+@FeatureTag({
+        Feature.GENERATOR,
+        Feature.ON_COMPLETE,
+        Feature.STREAM
+})
 class OnCompleteStreamTest {
 
     private final AtomicInteger callbacksCount = new AtomicInteger();
 
     @Test
-    void setThenOnComplete() {
+    void supplyThenOnComplete() {
         final List<StringHolder> result = Instancio.of(StringHolder.class)
-                .set(allStrings(), "foo")
+                .supply(allStrings(), random -> "foo")
                 .onComplete(allStrings(), (String s) -> {
                     callbacksCount.incrementAndGet();
                     assertThat(s).isEqualTo("foo");

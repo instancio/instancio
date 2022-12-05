@@ -21,7 +21,7 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.generator.GeneratorHint;
+import org.instancio.internal.generator.InternalHint;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -72,7 +72,7 @@ public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, G
     public Hints hints() {
         return Hints.builder()
                 .populateAction(PopulateAction.APPLY_SELECTORS)
-                .hint(GeneratorHint.builder()
+                .hint(InternalHint.builder()
                         .targetClass(enumClass)
                         .build())
                 .build();

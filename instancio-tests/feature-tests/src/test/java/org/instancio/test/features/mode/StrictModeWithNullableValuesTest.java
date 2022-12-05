@@ -89,7 +89,7 @@ class StrictModeWithNullableValuesTest {
                 // nullable strings
                 .withNullable(allStrings())
                 // and string fields
-                .set(Person_.name, "foo")
+                .supply(Person_.name, random -> "foo")
                 .generate(Address_.city, gen -> gen.text().pattern("bar"))
                 .onComplete(Person_.name, name -> assertThat(name).isEqualTo("foo"))
                 .create();
@@ -103,7 +103,7 @@ class StrictModeWithNullableValuesTest {
                     // nullable address
                     .withNullable(all(Address.class))
                     // and address fields
-                    .set(Address_.country, "foo")
+                    .supply(Address_.country, random -> "foo")
                     .generate(Address_.city, gen -> gen.text().pattern("bar"))
                     .onComplete(Address_.country, name -> assertThat(name).isEqualTo("foo"))
                     .create();

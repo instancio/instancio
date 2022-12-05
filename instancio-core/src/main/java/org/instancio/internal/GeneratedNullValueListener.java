@@ -17,10 +17,10 @@ package org.instancio.internal;
 
 import org.instancio.Mode;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.Keys;
 
-import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -39,8 +39,8 @@ class GeneratedNullValueListener implements GenerationListener {
     }
 
     @Override
-    public void objectCreated(final Node node, @Nullable final Object instance) {
-        if (isLenientMode || instance != null) {
+    public void objectCreated(final Node node, final GeneratorResult result) {
+        if (isLenientMode || result.getValue() != null) {
             return;
         }
 

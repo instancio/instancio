@@ -19,9 +19,9 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.generator.GeneratorHint;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.InternalHint;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.nodes.Node;
@@ -63,10 +63,10 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
         if (generatorOpt.isPresent()) {
             final Generator<?> generator = generatorOpt.get();
             final Hints hints = generator.hints();
-            final GeneratorHint generatorHint = hints.get(GeneratorHint.class);
+            final InternalHint internalHint = hints.get(InternalHint.class);
 
-            if (generatorHint != null && generatorHint.isDelegating()) {
-                final Class<?> forClass = defaultIfNull(generatorHint.targetClass(), node.getTargetClass());
+            if (internalHint != null && internalHint.isDelegating()) {
+                final Class<?> forClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
                 final Generator<?> generatingDelegate = generatorResolver
                         .get(forClass)
                         .orElseGet(() -> new InstantiatingGenerator(instantiator, forClass));

@@ -16,75 +16,77 @@
 package org.instancio.test.features.oncomplete;
 
 import org.instancio.Instancio;
-import org.instancio.TypeToken;
+import org.instancio.InstancioApi;
+import org.instancio.exception.UnusedSelectorException;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.all;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.allStrings;
 
-@FeatureTag({Feature.GENERATOR, Feature.ON_COMPLETE})
-class OnCompleteTest {
+@FeatureTag({
+        Feature.ON_COMPLETE,
+        Feature.SET,
+        Feature.SUPPLY
+})
+class OnCompleteWithSupplierTest {
 
     private final AtomicInteger callbacksCount = new AtomicInteger();
 
     @Test
-    @DisplayName("One callback for each generated String")
-    void onComplete() {
-        Instancio.of(new TypeToken<List<String>>() {})
-                .generate(all(List.class), gen -> gen.collection().size(100))
-                .onComplete(allStrings(), (String s) -> callbacksCount.incrementAndGet())
-                .create();
-
-        assertThat(callbacksCount.get()).isEqualTo(100);
-    }
-
-    @Test
-    void supplyThenOnComplete() {
+    @DisplayName("onComplete should not be called on objects from supply(Supplier) (lenient mode)")
+    void supplyAndOnCompleteLenientMode() {
         final StringHolder result = Instancio.of(StringHolder.class)
-                .supply(allStrings(), random -> "foo")
+                .supply(allStrings(), () -> "foo")
                 .onComplete(allStrings(), (String s) -> {
                     callbacksCount.incrementAndGet();
                     assertThat(s).isEqualTo("foo");
                 })
-                .create();
-
-        assertThat(result.getValue()).isEqualTo("foo");
-        assertThat(callbacksCount.get()).isEqualTo(1);
-    }
-
-    @Test
-    void onCompleteThenSupply() {
-        final StringHolder result = Instancio.of(StringHolder.class)
-                .onComplete(allStrings(), (String s) -> {
-                    callbacksCount.incrementAndGet();
-                    assertThat(s).isEqualTo("foo");
-                })
-                .supply(allStrings(), random -> "foo")
-                .create();
-
-        assertThat(result.getValue()).isEqualTo("foo");
-        assertThat(callbacksCount.get()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("Ignore has higher precedence than other methods")
-    void supplyAndOnCompleteWithIgnore() {
-        final StringHolder result = Instancio.of(StringHolder.class)
                 .lenient()
-                .ignore(allStrings())
-                .supply(allStrings(), random -> "foo")
-                .onComplete(allStrings(), (String s) -> callbacksCount.incrementAndGet())
                 .create();
 
-        assertThat(result.getValue()).isNull();
+        assertThat(result.getValue()).isEqualTo("foo");
+        assertThat(callbacksCount.get()).isZero();
+    }
+
+    @Test
+    @DisplayName("onComplete should not be called on objects from supply(Supplier) (strict mode)")
+    void supplyAndOnCompleteStrictMode() {
+        final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
+                .supply(allStrings(), () -> "foo")
+                .onComplete(allStrings(), (String s) -> {
+                    callbacksCount.incrementAndGet();
+                    assertThat(s).isEqualTo("foo");
+                });
+
+
+        assertThatThrownBy(api::create)
+                .isExactlyInstanceOf(UnusedSelectorException.class)
+                .hasMessageContaining("Unused selectors in onComplete()")
+                .hasMessageContaining("all(String)");
+
+        assertThat(callbacksCount.get()).isZero();
+    }
+
+    @Test
+    @DisplayName("onComplete should not be called on objects from set(Object)")
+    void setAndOnCompleteLenientMode() {
+        final StringHolder result = Instancio.of(StringHolder.class)
+                .set(allStrings(), "foo")
+                .onComplete(allStrings(), (String s) -> {
+                    callbacksCount.incrementAndGet();
+                    assertThat(s).isEqualTo("foo");
+                })
+                .lenient()
+                .create();
+
+        assertThat(result.getValue()).isEqualTo("foo");
         assertThat(callbacksCount.get()).isZero();
     }
 }
