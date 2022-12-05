@@ -30,13 +30,15 @@ import java.util.StringJoiner;
  * @see Generator
  * @since 1.7.0
  */
-public final class GeneratorHint implements Hint<GeneratorHint> {
+public final class InternalHint implements Hint<InternalHint> {
     private final Class<?> targetClass;
     private final boolean isDelegating;
+    private final boolean excludeFromCallbacks;
 
-    private GeneratorHint(final Builder builder) {
+    private InternalHint(final Builder builder) {
         targetClass = builder.targetClass;
         isDelegating = builder.isDelegating;
+        excludeFromCallbacks = builder.excludeFromCallbacks;
     }
 
     /**
@@ -47,6 +49,7 @@ public final class GeneratorHint implements Hint<GeneratorHint> {
      * {@code subtype()} method.
      *
      * @return target class
+     * @since 1.7.0
      */
     public Class<?> targetClass() {
         return targetClass;
@@ -58,9 +61,21 @@ public final class GeneratorHint implements Hint<GeneratorHint> {
      * have enough information to determine which type to instantiate.
      *
      * @return {@code true} a generator is delegating, {@code false} otherwise
+     * @since 1.7.0
      */
     public boolean isDelegating() {
         return isDelegating;
+    }
+
+    /**
+     * A hint indicating whether the generated object should be excluded
+     * from {@code onComplete} callbacks.
+     *
+     * @return {@code true} if callbacks should not be invoked on generated object
+     * @since 1.7.0
+     */
+    public boolean excludeFromCallbacks() {
+        return excludeFromCallbacks;
     }
 
     @Override
@@ -68,6 +83,7 @@ public final class GeneratorHint implements Hint<GeneratorHint> {
         return new StringJoiner(", ", "GeneratorHint[", "]")
                 .add("targetClass=" + (targetClass == null ? null : targetClass.getTypeName()))
                 .add("isDelegating=" + isDelegating)
+                .add("excludeFromCallbacks=" + excludeFromCallbacks)
                 .toString();
     }
 
@@ -78,6 +94,7 @@ public final class GeneratorHint implements Hint<GeneratorHint> {
     public static final class Builder {
         private Class<?> targetClass;
         private boolean isDelegating;
+        private boolean excludeFromCallbacks;
 
         private Builder() {
         }
@@ -96,13 +113,19 @@ public final class GeneratorHint implements Hint<GeneratorHint> {
             return this;
         }
 
+        public Builder excludeFromCallbacks(final boolean excludeFromCallbacks) {
+            this.excludeFromCallbacks = excludeFromCallbacks;
+            return this;
+        }
+
+
         /**
          * Builds the object.
          *
          * @return the built instance.
          */
-        public GeneratorHint build() {
-            return new GeneratorHint(this);
+        public InternalHint build() {
+            return new InternalHint(this);
         }
     }
 }

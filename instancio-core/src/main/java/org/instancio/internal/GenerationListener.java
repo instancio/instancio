@@ -15,9 +15,8 @@
  */
 package org.instancio.internal;
 
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
-
-import javax.annotation.Nullable;
 
 /**
  * Listener interface for classes interested in when an object has been created.
@@ -30,12 +29,13 @@ interface GenerationListener {
      * Invoked when an object has been instantiated.
      * The object may not yet be fully-populated.
      *
-     * @param node     for which the object has been created
-     * @param instance that was created, could be {@code null} if
-     *                 value is 'nullable' or could not be generated.
+     * @param node   for which the object has been created
+     * @param result containing either the object that was created, or
+     *               {@code null} if value is 'nullable' or could not
+     *               be generated.
      * @since 1.3.3
      */
-    default void objectCreated(Node node, @Nullable Object instance) {
+    default void objectCreated(Node node, GeneratorResult result) {
         // no-op
     }
 }

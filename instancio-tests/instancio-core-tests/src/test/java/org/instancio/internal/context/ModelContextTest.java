@@ -30,6 +30,7 @@ import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.instancio.internal.generator.misc.SupplierDecorator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
@@ -49,6 +50,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -148,7 +150,18 @@ class ModelContextTest {
                 .as("Should be decorated since its Hints are null")
                 .isNotSameAs(stringGenerator)
                 .isExactlyInstanceOf(GeneratorDecorator.class);
+    }
 
+    @Test
+    void withSuppliers() {
+        final Supplier<Address> addressSupplier = Address::new;
+        ModelContext<?> ctx = ModelContext.builder(Person.class)
+                .withSupplier(field(ADDRESS_FIELD.getName()), addressSupplier)
+                .build();
+
+        assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD))).get()
+                .as("Should NOT be decorated since it has PopulateAction hint")
+                .isExactlyInstanceOf(SupplierDecorator.class);
     }
 
     @Test

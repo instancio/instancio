@@ -44,7 +44,6 @@ import static org.instancio.Select.types;
         Feature.POPULATE_ACTION,
         Feature.SUBTYPE
 })
-@Disabled("TODO - currently arrays are not supported for all Action types")
 class CustomArrayGeneratorTest {
 
     private static final int SIZE_HINT = 3;
@@ -93,8 +92,11 @@ class CustomArrayGeneratorTest {
         assertThat(result[POPULATED_INDEX].getValue()).isNotEqualTo(ORIGINAL_VALUE);
     }
 
+    // TODO
+    @Disabled("TODO - currently arrays are not supported for all Action types")
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE, names = {"NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
+    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE,
+            names = {"NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
     @DisplayName("Engine should populate null indices only; occupied index should retain original value")
     void customArrayGeneratorWithSubtype(final PopulateAction populateAction) {
         final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
@@ -122,6 +124,7 @@ class CustomArrayGeneratorTest {
 
         assertThat(result[POPULATED_INDEX].getValue()).isEqualTo(ORIGINAL_VALUE);
 
+        // other indices should have nulls
         for (int i = 0; i < result.length; i++) {
             if (i != POPULATED_INDEX) {
                 assertThat(result[i]).isNull();

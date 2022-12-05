@@ -39,6 +39,7 @@ import static org.instancio.Select.scope;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 @FeatureTag({
+        Feature.GENERATOR,
         Feature.ON_COMPLETE,
         Feature.SCOPE,
         Feature.SELECTOR
@@ -58,7 +59,7 @@ class OnCompleteWithScopeNumberOfCallbackInvocationsTest {
             .set(Keys.COLLECTION_MAX_SIZE, COLLECTION_SIZE);
 
     @Test
-    void onCompleteThenSet() {
+    void onCompleteThenSupply() {
         final AtomicInteger callback1Count = new AtomicInteger();
         final AtomicInteger callback2Count = new AtomicInteger();
 
@@ -74,9 +75,9 @@ class OnCompleteWithScopeNumberOfCallbackInvocationsTest {
                     callback2Count.incrementAndGet();
                     assertThat(s).isEqualTo(FOO);
                 })
-                .set(allStrings(), null)
-                .set(allStrings().within(scope1), FOO)
-                .set(allStrings().within(scope2), FOO)
+                .supply(allStrings(), random -> null)
+                .supply(allStrings().within(scope1), random -> FOO)
+                .supply(allStrings().within(scope2), random -> FOO)
                 .create();
 
         assertThat(callback1Count.get()).isEqualTo(EXPECTED_CALLBACKS_FOR_ONE_PHONE_INSTANCE);
@@ -85,7 +86,7 @@ class OnCompleteWithScopeNumberOfCallbackInvocationsTest {
     }
 
     @Test
-    void setThenOnComplete() {
+    void supplyThenOnComplete() {
         final AtomicInteger callback1Count = new AtomicInteger();
         final AtomicInteger callback2Count = new AtomicInteger();
 
@@ -93,9 +94,9 @@ class OnCompleteWithScopeNumberOfCallbackInvocationsTest {
         final Scope[] scope2 = {scope(RichPerson.class, "address1"), scope(Phone.class)};
 
         final PersonHolder result = Instancio.of(PersonHolder.class)
-                .set(allStrings(), null)
-                .set(allStrings().within(scope1), FOO)
-                .set(allStrings().within(scope2), FOO)
+                .supply(allStrings(), random -> null)
+                .supply(allStrings().within(scope1), random -> FOO)
+                .supply(allStrings().within(scope2), random -> FOO)
                 .onComplete(allStrings().within(scope1), (String s) -> {
                     callback1Count.incrementAndGet();
                     assertThat(s).isEqualTo(FOO);
@@ -112,16 +113,16 @@ class OnCompleteWithScopeNumberOfCallbackInvocationsTest {
     }
 
     @Test
-    void setThenOnCompleteWithGroup() {
+    void supplyThenOnCompleteWithGroup() {
         final AtomicInteger callbackCount = new AtomicInteger();
         final Scope[] scope1 = {scope(RichPerson.class, "phone")};
         final Scope[] scope2 = {scope(RichPerson.class, "address1"), scope(Phone.class)};
 
         final PersonHolder result = Instancio.of(PersonHolder.class)
-                .set(allStrings(), null)
-                .set(all(
+                .supply(allStrings(), random -> null)
+                .supply(all(
                         allStrings().within(scope1),
-                        allStrings().within(scope2)), FOO)
+                        allStrings().within(scope2)), random -> FOO)
                 .onComplete(all(
                         allStrings().within(scope1),
                         allStrings().within(scope2)), (String s) -> {

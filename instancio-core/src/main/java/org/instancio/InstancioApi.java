@@ -17,6 +17,7 @@ package org.instancio;
 
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.PopulateAction;
 import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -140,7 +141,7 @@ public interface InstancioApi<T> {
     InstancioApi<T> withNullable(TargetSelector selector);
 
     /**
-     * Sets a value for a field or class.
+     * Sets a value to matching selector targets.
      * <p>
      * Example: if a {@code Person} has a {@code List<PhoneNumber>}, the following
      * will set all generated phone numbers' country codes to "+1".
@@ -161,7 +162,7 @@ public interface InstancioApi<T> {
     <V> InstancioApi<T> set(TargetSelector selector, @Nullable V value);
 
     /**
-     * Supplies a <b>non-random</b> value for a field or class using a {@link Supplier}.
+     * Supplies an object using a {@link Supplier} to matching selector targets.
      * <p>
      * Example:
      * <pre>{@code
@@ -173,11 +174,31 @@ public interface InstancioApi<T> {
      *                 new PhoneNumber("+1", "345-67-89")))
      *             .create();
      * }</pre>
+     * <p>Note: Instancio <b>will not</b></p>
+     * <ul>
+     *   <li>populate or modify objects supplied by this method</li>
+     *   <li>apply other {@code set()}, {@code supply()}, or {@code generate()}}
+     *       methods with matching selectors to the supplied object</li>
+     * </ul>
      * <p>
-     * Note: Instancio will not modify the supplied instance in any way. If the {@code PhoneNumber} class
-     * has other fields, they will be ignored.
+     * For example, if a supplied object contains fields that are {@code null},
+     * they will not be populated:
+     *
+     * <pre>{@code
+     *     Person person = Instancio.of(Person.class)
+     *             .supply(field("address"), () -> new Address())
+     *             .set(field(Address.class, "city"), "Berlin")   // will be ignored
+     *             .withSettings(Settings.create()
+     *                     .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NULLS))
+     *             .lenient()
+     *             .create();
+     *
+     *     // all Address fields are null, including the city
+     *     assertThat(person.getAddress().getCity()).isNull();
+     * }</pre>
      * <p>
-     * For supplying random values, see {@link #supply(TargetSelector, Generator)}.
+     * If you require the supplied object to be populated and/or selectors to be applied,
+     * use the {@link #supply(TargetSelector, Generator)} method.
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param supplier providing the value for given selector
@@ -188,7 +209,7 @@ public interface InstancioApi<T> {
     <V> InstancioApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
-     * Supplies a randomised value for a field or class using a custom {@link Generator}.
+     * Supplies an object using a {@link Generator} to matching selector targets.
      * <p>
      * Example:
      * <pre>{@code
@@ -200,13 +221,18 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      * <p>
-     * Note: Instancio will not modify the supplied instance in any way. If the {@code PhoneNumber} class
-     * has other fields, they will be ignored.
+     * Instancio may or may not further populate the generated object,
+     * for example filling in {@code null} fields. This behaviour is controlled
+     * by the {@link PopulateAction} hint specified by {@link Generator#hints()}.
+     * Refer to the {@link Generator#hints()} Javadoc for details.
      *
      * @param selector  for fields and/or classes this method should be applied to
      * @param generator that will provide the values
      * @param <V>       type of the value to generate
      * @return API builder reference
+     * @see Generator
+     * @see PopulateAction
+     * @see Keys#GENERATOR_HINT_POPULATE_ACTION
      */
     <V> InstancioApi<T> supply(TargetSelector selector, Generator<V> generator);
 

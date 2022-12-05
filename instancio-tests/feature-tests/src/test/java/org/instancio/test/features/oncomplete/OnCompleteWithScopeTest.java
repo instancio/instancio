@@ -37,6 +37,7 @@ import static org.instancio.Select.scope;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 @FeatureTag({
+        Feature.GENERATOR,
         Feature.ON_COMPLETE,
         Feature.SCOPE,
         Feature.SELECTOR
@@ -84,7 +85,7 @@ class OnCompleteWithScopeTest {
     @Test
     void setThenOnComplete() {
         final Address result = Instancio.of(Address.class)
-                .set(allStrings().within(scope(Address.class), scope(Phone.class)), FOO)
+                .supply(allStrings().within(scope(Address.class), scope(Phone.class)), random -> FOO)
                 .onComplete(allStrings().within(scope(Address.class), scope(Phone.class)), (String s) -> {
                     callbacksCount.incrementAndGet();
                     assertThat(s).isEqualTo(FOO);
@@ -104,7 +105,7 @@ class OnCompleteWithScopeTest {
                     callbacksCount.incrementAndGet();
                     assertThat(s).isEqualTo(FOO);
                 })
-                .set(allStrings().within(scope(Address.class), scope(Phone.class)), FOO)
+                .supply(allStrings().within(scope(Address.class), scope(Phone.class)), random -> FOO)
                 .create();
 
         assertThat(result.getPhoneNumbers()).extracting(Phone::getCountryCode).containsOnly(FOO);

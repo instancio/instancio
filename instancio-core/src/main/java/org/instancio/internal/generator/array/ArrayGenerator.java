@@ -23,7 +23,7 @@ import org.instancio.generator.hints.DataStructureHint;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.GeneratorHint;
+import org.instancio.internal.generator.InternalHint;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.Keys;
@@ -130,7 +130,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
                         .nullableElements(nullableElements)
                         .withElements(withElements)
                         .build())
-                .hint(GeneratorHint.builder()
+                .hint(InternalHint.builder()
                         .targetClass(arrayType)
                         .build())
                 .build();

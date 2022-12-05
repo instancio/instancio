@@ -26,6 +26,7 @@ import org.instancio.generators.Generators;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
+import org.instancio.internal.generator.misc.SupplierDecorator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.random.Seeds;
@@ -245,7 +246,7 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
-            this.generatorSelectors.put(preProcess(selector, rootClass), rand -> supplier.get());
+            this.generatorSelectors.put(preProcess(selector, rootClass), new SupplierDecorator(supplier));
             return this;
         }
 

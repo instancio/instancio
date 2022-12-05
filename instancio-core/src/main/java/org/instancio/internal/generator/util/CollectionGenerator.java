@@ -23,7 +23,7 @@ import org.instancio.generator.hints.DataStructureHint;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.GeneratorHint;
+import org.instancio.internal.generator.InternalHint;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Sonar;
@@ -127,7 +127,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
                         .nullableElements(nullableElements)
                         .withElements(withElements)
                         .build())
-                .hint(GeneratorHint.builder()
+                .hint(InternalHint.builder()
                         .targetClass(collectionType)
                         .delegating(isDelegating)
                         .build())

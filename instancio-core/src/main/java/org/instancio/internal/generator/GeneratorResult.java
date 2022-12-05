@@ -56,7 +56,9 @@ public final class GeneratorResult {
     }
 
     public boolean requiresNoAction() {
-        return value == null || hints.populateAction() == PopulateAction.APPLY_SELECTORS;
+        return value == null
+                || hints.populateAction() == PopulateAction.NONE
+                || hints.populateAction() == PopulateAction.APPLY_SELECTORS;
     }
 
     public Hints getHints() {

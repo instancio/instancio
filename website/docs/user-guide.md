@@ -540,8 +540,17 @@ interface OnCompleteCallback<T> {
 }
 ```
 
-The [`supply()`](#using-supply) and [`generate()`](#using-generate) methods populate values during object construction.
 The `OnCompleteCallback` is invoked *after* the generated object has been fully populated.
+Callbacks can only be invoked on objects:
+
+- created internally by the engine
+- created by custom generators via `supply(TargetSelector, Generator)` or generators registered via {{GeneratorProvider}}
+- created by internal generators using `generate(TargetSelector, Function)`
+
+Callbacks are *never* invoked on objects provided using:
+
+  - `supply(TargetSelector, Supplier)`
+  - `set(TargetSelector, Object)`
 
 The following example shows how the `Address` can be modified using a callback.
 If the `Person` has a `List<Address>`, the callback will be invoked for every instance of the `Address` class that was generated.

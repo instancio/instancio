@@ -21,17 +21,18 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GeneratorHintTest {
+class InternalHintTest {
 
     @Test
     void verifyToString() {
-        assertThat(GeneratorHint.builder().build())
-                .hasToString("GeneratorHint[targetClass=null, isDelegating=false]");
+        assertThat(InternalHint.builder().build())
+                .hasToString("GeneratorHint[targetClass=null, isDelegating=false, excludeFromCallbacks=false]");
 
-        assertThat(GeneratorHint.builder()
+        assertThat(InternalHint.builder()
                 .targetClass(Map.class)
                 .delegating(true)
+                .excludeFromCallbacks(true)
                 .build())
-                .hasToString("GeneratorHint[targetClass=java.util.Map, isDelegating=true]");
+                .hasToString("GeneratorHint[targetClass=java.util.Map, isDelegating=true, excludeFromCallbacks=true]");
     }
 }
