@@ -25,6 +25,8 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.stream.LongStream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
@@ -58,11 +60,17 @@ class ArrayGeneratorWithElementTest {
 
     @Test
     void withElementsAndMaxLengthOfZero() {
+        final Long[] sorted = LongStream.range(1, 100).boxed().toArray(Long[]::new);
+
         final ArrayLong result = Instancio.of(ArrayLong.class)
-                .generate(all(long[].class), gen -> gen.array().maxLength(0).with((Object[]) EXPECTED_LONGS))
+                .generate(all(all(long[].class), all(Long[].class)), gen -> gen.array().maxLength(0).with(sorted))
                 .create();
 
-        assertThat(result.getPrimitive()).containsOnly(EXPECTED_LONGS);
+        assertThat(result.getPrimitive()).containsOnly(sorted);
+        assertThat(result.getWrapper())
+                .as("Result should be shuffled")
+                .containsOnly(sorted)
+                .isNotEqualTo(sorted);
     }
 
     @Test

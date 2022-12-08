@@ -177,7 +177,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
 
     @SuppressWarnings("unchecked")
     private T asT(final long value) {
-        final Class<?> numberType = TypeUtils.getGeneratorTypeArgument(getClass());
+        final Class<?> numberType = TypeUtils.getGenericSuperclassTypeArgument(getClass());
         assertThat(numberType).isNotNull();
         return (T) NumberUtils.getToLongConverter(numberType).apply(value);
     }

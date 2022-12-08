@@ -84,9 +84,6 @@ public final class ReflectionUtils {
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public static boolean hasNonNullValue(final Field field, final Object object) {
         try {
-            if (field.getType().isPrimitive()) {
-                return true; // primitives are never "null"
-            }
             field.setAccessible(true);
             return field.get(object) != null;
         } catch (IllegalAccessException ex) {
@@ -99,20 +96,7 @@ public final class ReflectionUtils {
         try {
             field.setAccessible(true);
             final Object fieldValue = field.get(object);
-
-            if (field.getType().isPrimitive()) {
-
-                if (fieldValue instanceof Number) {
-                    return Double.compare(((Number) fieldValue).doubleValue(), 0.0) != 0;
-                }
-                if (fieldValue instanceof Character) {
-                    return (Character) fieldValue != 0;
-                }
-                if (fieldValue instanceof Boolean) {
-                    return (Boolean) fieldValue;
-                }
-            }
-            return fieldValue != null;
+            return neitherNullNorPrimitiveWithDefaultValue(field.getType(), fieldValue);
         } catch (IllegalAccessException ex) {
             throw new InstancioException("Unable to get value from: " + field, ex);
         }
@@ -120,6 +104,25 @@ public final class ReflectionUtils {
 
     public static boolean isArrayOrConcrete(final Class<?> klass) {
         return klass.isArray() || (!klass.isInterface() && !Modifier.isAbstract(klass.getModifiers()));
+    }
+
+    public static boolean neitherNullNorPrimitiveWithDefaultValue(final Class<?> type, @Nullable final Object value) {
+        if (value == null) {
+            return false;
+        }
+
+        if (type.isPrimitive()) {
+            if (value instanceof Number) {
+                return Double.compare(((Number) value).doubleValue(), 0.0) != 0;
+            }
+            if (value instanceof Boolean) {
+                return (Boolean) value;
+            }
+            if (value instanceof Character) {
+                return (Character) value != 0;
+            }
+        }
+        return true;
     }
 
     public static Class<?> getClass(final String name) {

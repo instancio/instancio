@@ -18,6 +18,7 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.PopulateAction;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -52,6 +53,6 @@ class CharacterGeneratorTest {
                 .as("26 letters + null")
                 .hasSize(27);
 
-        HintsAssert.assertHints(generator.hints()).populateActionIsNone();
+        HintsAssert.assertHints(generator.hints()).populateAction(PopulateAction.NONE);
     }
 }

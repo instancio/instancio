@@ -20,6 +20,7 @@ import org.instancio.InstancioApi;
 import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.StringHolder;
@@ -27,6 +28,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.stream.Stream;
 
@@ -35,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 
 @FeatureTag({Feature.GENERATOR, Feature.SETTINGS})
+@ExtendWith(InstancioExtension.class)
 class CustomGeneratorFrameworkTest {
 
     private static final int STRING_LENGTH = 100;

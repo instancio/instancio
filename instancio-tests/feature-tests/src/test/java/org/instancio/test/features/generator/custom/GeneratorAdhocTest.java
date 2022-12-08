@@ -21,6 +21,7 @@ import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.basic.StringHolderAlternativeImpl;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
@@ -30,6 +31,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +50,7 @@ import static org.instancio.Select.fields;
         Feature.SUBTYPE
 })
 @NonDeterministicTag
+@ExtendWith(InstancioExtension.class)
 class GeneratorAdhocTest {
 
     private static final int COLLECTION_SIZE = 250;

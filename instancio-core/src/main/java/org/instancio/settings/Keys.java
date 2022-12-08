@@ -202,12 +202,22 @@ public final class Keys {
     public static final SettingKey MODE = register("mode", Mode.class, Mode.STRICT);
     /**
      * Specifies the default value of the {@link PopulateAction} hint
-     * supplied from custom generators to the engine.
+     * supplied from custom generators to the engine;
+     * default is {@link PopulateAction#APPLY_SELECTORS};
+     * property name {@code generator.hint.populate.action}.
      *
-     * @since 1.7.0
+     * @since 2.0.0
      */
     public static final SettingKey GENERATOR_HINT_POPULATE_ACTION = register(
             "generator.hint.populate.action", PopulateAction.class, PopulateAction.APPLY_SELECTORS);
+    /**
+     * Specifies whether initialised fields are allowed to be overwritten;
+     * default is {@code true}; property name {@code overwrite.existing.values}.
+     *
+     * @since 2.0.0
+     */
+    public static final SettingKey OVERWRITE_EXISTING_VALUES = register(
+            "overwrite.existing.values", Boolean.class, true);
     /**
      * Specifies the seed value;
      * default is {@code null}; property name {@code seed}.

@@ -15,76 +15,94 @@
  */
 package org.instancio.generator;
 
+import org.instancio.InstancioApi;
 import org.instancio.OnCompleteCallback;
+import org.instancio.TargetSelector;
+
+import java.util.function.Function;
 
 /**
- * An action to be performed by the engine after an object
- * has been created by a {@link Generator}.
+ * An action hint that is passed from a generator to the engine
+ * via the {@link Generator#hints()} method.
+ * <p>
+ * This hint indicates to the engine what action, if any, should
+ * be applied to the object(s) created by the generator.
  *
  * @see Hints
- * @since 1.7.0
+ * @since 2.0.0
  */
 public enum PopulateAction {
 
     /**
-     * Indicates that an object created by a generator should not be modified
-     * by the engine. This is true even if there are other suppliers or
-     * generators with matching selectors present. Therefore, the engine will
-     * <b>not</b> apply the following methods on the generated object:
+     * Indicates that an object created by the generator should not be modified.
+     * The engine will treat the object as read-only and assign it to the target field as is.
+     * <p>
+     * The following methods with matching selectors will not be applied to the object:
      *
      * <ul>
-     *   <li>{@code set()}</li>
-     *   <li>{@code supply()}</li>
-     *   <li>{@code generate()}</li>
+     *   <li>{@link InstancioApi#set(TargetSelector, Object)}</li>
+     *   <li>{@link InstancioApi#supply(TargetSelector, Generator)} </li>
+     *   <li>{@link InstancioApi#generate(TargetSelector, Function)} </li>
      * </ul>
      *
      * <p><b>Note:</b> {@link OnCompleteCallback callbacks} provided via the
      * {@code onComplete()} method <b>will</b> still be executed.</p>
      *
-     * @since 1.7.0
+     * @since 2.0.0
      */
     NONE,
 
     /**
-     * Indicates that an object created by a generator should not be modified
-     * by the engine unless there other suppliers or generators with matching
-     * selectors present. This action allows customising objects created by
-     * custom generators using {@code supply()} and {@code generate()} methods.
+     * Indicates that an object created by the generator can be modified using
+     * any of the following methods:
      *
-     * @since 1.7.0
+     * <ul>
+     *   <li>{@link InstancioApi#set(TargetSelector, Object)}</li>
+     *   <li>{@link InstancioApi#supply(TargetSelector, Generator)} </li>
+     *   <li>{@link InstancioApi#generate(TargetSelector, Function)} </li>
+     * </ul>
+     *
+     * @since 2.0.0
      */
     APPLY_SELECTORS,
 
     /**
-     * Indicates that only {@code null} fields should be populated.
-     * Primitive and non-null fields will not be populated unless
-     * there are matching {@code supply} or {@code generate()} selectors present.
+     * Indicates that {@code null} fields declared by an object that was
+     * created by the generator should be populated by the engine. In addition,
+     * the object can be also be modified as described by {@link #APPLY_SELECTORS}.
      *
-     * @since 1.7.0
+     * @since 2.0.0
      */
     NULLS,
 
     /**
-     * Indicates that only {@code null} fields and primitive fields
-     * with default values should be populated. Default values for
-     * primitive fields are:
+     * Indicates that primitive fields with default values declared by an object
+     * that was created by the generator should be populated by the engine.
+     * In addition, the behaviour described by {@link #NULLS} applies as well.
+     * <p>
+     * Default values for primitive fields are defined as:
      *
      * <ul>
      *   <li>Zero for all numeric types</li>
      *   <li>{@code false} for {@code boolean}</li>
      *   <li>{@code '\u0000'} null character for {@code char}</li>
      * </ul>
+     * <p>
+     * For instance, if a {@code boolean} field was initialised to {@code true},
+     * it will not be "populated". However, if it is {@code false}, then
+     * it will be randomised to either {@code true} or {@code false}.
      *
-     * @since 1.7.0
+     * @since 2.0.0
      */
     NULLS_AND_DEFAULT_PRIMITIVES,
 
     /**
-     * A hint to populate all fields, whether {@code null} or not.
-     * If a field had a previously assigned value, the value will
-     * be overwritten with a new value.
+     * A hint to populate all fields, regardless of their initial values.
+     * This action will cause all the values to be overwritten with random data.
+     * <p>
+     * This is the default mode of internal generators.
      *
-     * @since 1.7.0
+     * @since 2.0.0
      */
     ALL
 }

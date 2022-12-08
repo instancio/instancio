@@ -35,8 +35,8 @@ class HintsTest {
         final FooHint two = new FooHint();
 
         final Hints hints = Hints.builder()
-                .hint(one)
-                .hint(two)
+                .with(one)
+                .with(two)
                 .build();
 
         assertThat(hints.get(FooHint.class))
@@ -61,7 +61,7 @@ class HintsTest {
                 .hasToString("Hints[populateAction=ALL, hints={}]");
 
         assertThat(Hints.builder()
-                .hint(new FooHint())
+                .with(new FooHint())
                 .build())
                 .hasToString("Hints[populateAction=null," +
                         " hints={class org.instancio.generator.HintsTest$FooHint=FooHint}]");

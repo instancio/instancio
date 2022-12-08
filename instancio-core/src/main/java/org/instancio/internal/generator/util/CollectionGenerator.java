@@ -19,11 +19,12 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
-import org.instancio.generator.hints.DataStructureHint;
+import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalHint;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Sonar;
@@ -122,12 +123,13 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     public Hints hints() {
         return Hints.builder()
                 .populateAction(PopulateAction.ALL)
-                .hint(DataStructureHint.builder()
-                        .dataStructureSize(getContext().random().intRange(minSize, maxSize))
+                .with(CollectionHint.builder()
+                        .generateElements(getContext().random().intRange(minSize, maxSize))
                         .nullableElements(nullableElements)
                         .withElements(withElements)
+                        .shuffle(!CollectionUtils.isNullOrEmpty(withElements))
                         .build())
-                .hint(InternalHint.builder()
+                .with(InternalHint.builder()
                         .targetClass(collectionType)
                         .delegating(isDelegating)
                         .build())

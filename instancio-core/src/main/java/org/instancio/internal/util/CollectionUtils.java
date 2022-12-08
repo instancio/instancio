@@ -28,6 +28,10 @@ public final class CollectionUtils {
         // non-instantiable
     }
 
+    public static boolean isNullOrEmpty(@Nullable final Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
     public static boolean isNullOrEmpty(@Nullable final Map<?, ?> map) {
         return map == null || map.isEmpty();
     }

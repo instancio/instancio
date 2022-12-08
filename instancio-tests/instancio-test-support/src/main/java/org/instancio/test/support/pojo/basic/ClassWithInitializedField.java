@@ -21,7 +21,7 @@ import lombok.Getter;
 @SuppressWarnings("FieldMayBeFinal")
 public class ClassWithInitializedField {
     public static final String DEFAULT_STRING_FIELD_VALUE = "some value";
-    public static final int DEFAULT_INT_FIELD_VALUE = 3;
+    public static final int DEFAULT_INT_FIELD_VALUE = -123;
 
     private String stringValue = DEFAULT_STRING_FIELD_VALUE;
 

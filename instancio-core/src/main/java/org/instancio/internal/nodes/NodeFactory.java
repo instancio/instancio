@@ -124,7 +124,9 @@ public final class NodeFactory {
         // User supplied subtype via API or generator
         final Optional<Class<?>> target = nodeContext.getUserSuppliedSubtype(node);
         if (target.isPresent()) {
-            LOG.debug("Using subtype provided via API: {} -> {}", node.getRawType().getName(), target.get().getName());
+            // TODO the log statement not always true. e.g. run MiscFieldsCreationTest
+            //  disabling for now as it will be confusing for users
+            // LOG.debug("Using subtype provided via API: {} -> {}", node.getRawType().getName(), target.get().getName());
             return target;
         }
 
@@ -169,7 +171,16 @@ public final class NodeFactory {
         final Class<?> targetClass = node.getTargetClass();
 
         if (isContainerClass(targetClass)) {
-            final Type[] types = targetClass.isArray() ? new Type[]{targetClass.getComponentType()} : targetClass.getTypeParameters();
+            Type[] types = targetClass.isArray()
+                    ? new Type[]{targetClass.getComponentType()}
+                    : targetClass.getTypeParameters();
+
+            // e.g. CustomMap extends HashMap<String, Long> - type parameters are empty
+            // and need to be resolved from superclass
+            if (types.length == 0) {
+                types = TypeUtils.getGenericSuperclassTypeArguments(targetClass);
+            }
+
             final List<Node> children = createContainerNodeChildren(Arrays.stream(types), node);
             node.setChildren(children);
         } else {

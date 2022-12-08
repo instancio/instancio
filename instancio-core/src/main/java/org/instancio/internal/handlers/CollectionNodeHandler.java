@@ -18,7 +18,7 @@ package org.instancio.internal.handlers;
 import org.instancio.Random;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
-import org.instancio.generator.hints.DataStructureHint;
+import org.instancio.generator.hints.CollectionHint;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.util.EnumSetGenerator;
@@ -52,8 +52,8 @@ public class CollectionNodeHandler implements NodeHandler {
             }
 
             final Hints hints = Hints.builder()
-                    .hint(DataStructureHint.builder()
-                            .dataStructureSize(randomSize())
+                    .with(CollectionHint.builder()
+                            .generateElements(randomSize())
                             .build())
                     .populateAction(PopulateAction.ALL)
                     .build();
@@ -73,8 +73,8 @@ public class CollectionNodeHandler implements NodeHandler {
         final int enumSetSize = Math.min(randomSize(), enumValues.length);
         final Hints hints = Hints.builder()
                 .populateAction(PopulateAction.ALL)
-                .hint(DataStructureHint.builder()
-                        .dataStructureSize(enumSetSize)
+                .with(CollectionHint.builder()
+                        .generateElements(enumSetSize)
                         .build())
                 .build();
         final EnumSetGenerator<?> generator = new EnumSetGenerator<>(enumClass);

@@ -24,20 +24,16 @@ import org.instancio.internal.generator.InternalHint;
 
 import java.util.function.Supplier;
 
-/**
- * Objects created via {@link Supplier} should not be modified
- * and callbacks should never be called on returned objects.
- */
-public final class SupplierDecorator implements Generator<Object> {
+public final class SupplierAdapter implements Generator<Object> {
 
     private static final Hints HINT_POPULATE_ACTION_NONE = Hints.builder()
             .populateAction(PopulateAction.NONE)
-            .hint(InternalHint.builder().excludeFromCallbacks(true).build())
+            .with(InternalHint.builder().excludeFromCallbacks(true).build())
             .build();
 
     private final Supplier<?> supplier;
 
-    public SupplierDecorator(final Supplier<?> supplier) {
+    public SupplierAdapter(final Supplier<?> supplier) {
         this.supplier = supplier;
     }
 
@@ -52,6 +48,12 @@ public final class SupplierDecorator implements Generator<Object> {
         return supplier.get();
     }
 
+    /**
+     * Objects created via {@link Supplier} should not be modified
+     * and callbacks should never be called on returned objects.
+     *
+     * @return hint to not modify the object
+     */
     @Override
     public Hints hints() {
         return HINT_POPULATE_ACTION_NONE;

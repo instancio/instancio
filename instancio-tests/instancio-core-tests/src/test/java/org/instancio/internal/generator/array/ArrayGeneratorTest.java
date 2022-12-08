@@ -68,10 +68,7 @@ class ArrayGeneratorTest {
                 .isCloseTo((5 * SAMPLE_SIZE) / 6, withPercentage(PERCENTAGE_THRESHOLD));
 
         HintsAssert.assertHints(generator.hints())
-                .dataStructureSize(0) // does not set this hint
-                .nullableElements(true)
                 .populateAction(PopulateAction.ALL)
-                .nullableMapKeys(false)
-                .nullableMapValues(false);
+                .nullableArrayElements(true);
     }
 }

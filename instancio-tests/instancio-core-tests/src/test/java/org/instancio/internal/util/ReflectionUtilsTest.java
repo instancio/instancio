@@ -70,14 +70,14 @@ class ReflectionUtilsTest {
     }
 
     @Test
-    void isNonNullFieldValue() {
+    void hasNonNullValue() {
         final Field nameField = ReflectionUtils.getField(Person.class, "name");
         assertThat(ReflectionUtils.hasNonNullValue(nameField, new Person())).isFalse();
         assertThat(ReflectionUtils.hasNonNullValue(nameField, Person.builder().name("foo").build())).isTrue();
     }
 
     @Test
-    void isNonNullOrPrimitiveFieldWithDefaultValue() {
+    void hasNonNullOrNonDefaultPrimitiveValue() {
         final Field nameField = ReflectionUtils.getField(Person.class, "name");
         assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(nameField, new Person())).isFalse();
         assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(nameField, Person.builder().name("foo").build())).isTrue();
@@ -86,7 +86,7 @@ class ReflectionUtilsTest {
     @ValueSource(strings = {"byteValue", "shortValue", "intValue", "longValue",
             "floatValue", "doubleValue", "booleanValue", "charValue",})
     @ParameterizedTest
-    void isNonNullOrPrimitiveFieldWithDefaultValue_WithDefaultValues(final String fieldName) {
+    void hasNonNullOrNonDefaultPrimitiveValue_WithDefaultValues(final String fieldName) {
         final PrimitiveFields blank = new PrimitiveFields();
         final PrimitiveFields initialised = PrimitiveFields.builder()
                 .byteValue((byte) 1)

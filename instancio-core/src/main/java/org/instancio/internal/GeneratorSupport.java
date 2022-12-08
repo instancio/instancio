@@ -52,7 +52,7 @@ final class GeneratorSupport {
         if (type.isEnum()) {
             return generator instanceof EnumGeneratorSpec;
         }
-        final Class<?> typeArg = TypeUtils.getGeneratorTypeArgument(generator.getClass());
+        final Class<?> typeArg = TypeUtils.getGenericSuperclassTypeArgument(generator.getClass());
         if (typeArg != null) {
             return typeArg.isAssignableFrom(type)
                     || PrimitiveWrapperBiLookup.findEquivalent(typeArg)

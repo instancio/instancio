@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,8 +37,17 @@ class CollectionUtilsTest {
     private final Random random = new DefaultRandom();
 
     @Test
+    void isNullOrEmptyCollection() {
+        //noinspection ConstantConditions
+        assertThat(CollectionUtils.isNullOrEmpty((Collection<?>) null)).isTrue();
+        assertThat(CollectionUtils.isNullOrEmpty(Collections.emptyList())).isTrue();
+        assertThat(CollectionUtils.isNullOrEmpty(Collections.singleton("foo"))).isFalse();
+    }
+
+    @Test
     void isNullOrEmptyMap() {
-        assertThat(CollectionUtils.isNullOrEmpty(null)).isTrue();
+        //noinspection ConstantConditions
+        assertThat(CollectionUtils.isNullOrEmpty((Map<?, ?>) null)).isTrue();
         assertThat(CollectionUtils.isNullOrEmpty(Collections.emptyMap())).isTrue();
         assertThat(CollectionUtils.isNullOrEmpty(new HashMap<String, String>() {{
             put("foo", "bar");

@@ -28,7 +28,7 @@ import java.util.StringJoiner;
  *
  * @see Hints
  * @see Generator
- * @since 1.7.0
+ * @since 2.0.0
  */
 public final class InternalHint implements Hint<InternalHint> {
     private final Class<?> targetClass;
@@ -49,7 +49,7 @@ public final class InternalHint implements Hint<InternalHint> {
      * {@code subtype()} method.
      *
      * @return target class
-     * @since 1.7.0
+     * @since 2.0.0
      */
     public Class<?> targetClass() {
         return targetClass;
@@ -61,7 +61,7 @@ public final class InternalHint implements Hint<InternalHint> {
      * have enough information to determine which type to instantiate.
      *
      * @return {@code true} a generator is delegating, {@code false} otherwise
-     * @since 1.7.0
+     * @since 2.0.0
      */
     public boolean isDelegating() {
         return isDelegating;
@@ -72,7 +72,7 @@ public final class InternalHint implements Hint<InternalHint> {
      * from {@code onComplete} callbacks.
      *
      * @return {@code true} if callbacks should not be invoked on generated object
-     * @since 1.7.0
+     * @since 2.0.0
      */
     public boolean excludeFromCallbacks() {
         return excludeFromCallbacks;

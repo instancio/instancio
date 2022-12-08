@@ -82,4 +82,13 @@ public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
      */
     MapGeneratorSpec<K, V> subtype(Class<?> type);
 
+    /**
+     * Adds given key/value pair to the generated map.
+     *
+     * @param key   to add
+     * @param value to add
+     * @return spec builder
+     * @since 2.0.0
+     */
+    MapGeneratorSpec<K, V> with(K key, V value);
 }

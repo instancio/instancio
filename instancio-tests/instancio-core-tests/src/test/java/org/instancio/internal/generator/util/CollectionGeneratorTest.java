@@ -74,10 +74,8 @@ class CollectionGeneratorTest {
                 .isCloseTo((5 * SAMPLE_SIZE) / 6, withPercentage(PERCENTAGE_THRESHOLD));
 
         HintsAssert.assertHints(generator.hints())
-                .dataStructureSizeBetween(MIN_SIZE, MAX_SIZE)
-                .nullableElements(true)
-                .populateAction(PopulateAction.ALL)
-                .nullableMapKeys(false)
-                .nullableMapValues(false);
+                .generateElementsIsBetween(MIN_SIZE, MAX_SIZE)
+                .nullableCollectionElements(true)
+                .populateAction(PopulateAction.ALL);
     }
 }
