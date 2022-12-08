@@ -21,6 +21,7 @@ import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
@@ -29,6 +30,7 @@ import org.instancio.test.support.pojo.person.Phone_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -44,6 +46,7 @@ import static org.instancio.Select.all;
         Feature.POPULATE_ACTION,
         Feature.SET,
 })
+@ExtendWith(InstancioExtension.class)
 class GeneratorCompositionTest {
 
     private static final String PERSON_NAME = "John Doe";
@@ -87,6 +90,15 @@ class GeneratorCompositionTest {
         }
     }
 
+    private static Model<Person> createModel(final PopulateAction action) {
+        return Instancio.of(Person.class)
+                .supply(all(Person.class), new PersonGenerator().withAction(action))
+                .supply(all(Address.class), new AddressGenerator().withAction(action))
+                .supply(all(Phone.class), new PhoneGenerator().withAction(action))
+                .generate(Phone_.number, gen -> gen.string().digits())
+                .toModel();
+    }
+
     @ParameterizedTest
     @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE,
             names = {"NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
@@ -94,16 +106,11 @@ class GeneratorCompositionTest {
     void composeGenerators(final PopulateAction action) {
         final int age = 25;
         final int listSize = 3;
-        final Model<Person> personModel = Instancio.of(Person.class)
-                .supply(all(Person.class), new PersonGenerator().withAction(action))
-                .supply(all(Address.class), new AddressGenerator().withAction(action))
-                .supply(all(Phone.class), new PhoneGenerator().withAction(action))
-                .generate(all(List.class), gen -> gen.collection().size(listSize))
-                .generate(Phone_.number, gen -> gen.string().digits())
-                .set(Person_.age, age)
-                .toModel();
 
-        final Person person = Instancio.create(personModel);
+        final Person person = Instancio.of(createModel(action))
+                .generate(all(List.class), gen -> gen.collection().size(listSize))
+                .set(Person_.age, age)
+                .create();
 
         assertThat(person.getName()).isEqualTo(PERSON_NAME);
         assertThat(person.getAge()).isEqualTo(age);

@@ -17,6 +17,7 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.PopulateAction;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.math.BigIntegerGenerator;
 import org.instancio.internal.random.DefaultRandom;
@@ -79,7 +80,7 @@ class NumberGeneratorTest {
             }
 
             assertThat(results).containsNull().hasSize(MAX - MIN + 2);
-            HintsAssert.assertHints(generator.hints()).populateActionIsNone();
+            HintsAssert.assertHints(generator.hints()).populateAction(PopulateAction.NONE);
         }
     }
 

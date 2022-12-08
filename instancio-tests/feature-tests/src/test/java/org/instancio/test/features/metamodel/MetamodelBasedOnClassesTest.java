@@ -16,7 +16,6 @@
 package org.instancio.test.features.metamodel;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioMetamodel;
 import org.instancio.TypeToken;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorImpl;
@@ -25,14 +24,12 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.generics.MiscFields;
 import org.instancio.test.support.pojo.generics.MiscFields_;
 import org.instancio.test.support.pojo.nested.InnerClass_;
 import org.instancio.test.support.pojo.nested.InnerStaticClass_;
 import org.instancio.test.support.pojo.nested.InnermostStaticClass_;
 import org.instancio.test.support.pojo.nested.OuterClass;
-import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Address_;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Person_;
@@ -52,17 +49,6 @@ import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.scope;
 
-@InstancioMetamodel(classes = {
-        Address.class,
-        Phone.class,
-        MiscFields.class,
-        Person.class,
-        SupportedNumericTypes.class,
-        OuterClass.class,
-        OuterClass.InnerClass.class,
-        OuterClass.InnerStaticClass.class,
-        OuterClass.InnerStaticClass.InnermostStaticClass.class
-})
 @FeatureTag(Feature.METAMODEL)
 @ExtendWith(InstancioExtension.class)
 class MetamodelBasedOnClassesTest {

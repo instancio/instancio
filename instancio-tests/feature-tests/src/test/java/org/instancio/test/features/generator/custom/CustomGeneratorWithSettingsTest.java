@@ -20,6 +20,7 @@ import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.misc.StringFields;
@@ -28,12 +29,14 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.fields;
 
 @FeatureTag({Feature.GENERATOR, Feature.SETTINGS})
+@ExtendWith(InstancioExtension.class)
 class CustomGeneratorWithSettingsTest {
 
     private static final String OVERRIDE_TWO = "override-two";

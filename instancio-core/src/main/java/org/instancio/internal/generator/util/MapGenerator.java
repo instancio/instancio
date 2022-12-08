@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
-import org.instancio.generator.hints.DataStructureHint;
+import org.instancio.generator.hints.MapHint;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
@@ -45,6 +45,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     protected boolean nullableValues;
     protected Class<?> mapType;
     protected boolean isDelegating;
+    private Map<K, V> withEntries;
 
     public MapGenerator(final GeneratorContext context) {
         super(context);
@@ -102,6 +103,15 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     }
 
     @Override
+    public MapGeneratorSpec<K, V> with(final K key, final V value) {
+        if (withEntries == null) {
+            withEntries = new HashMap<>();
+        }
+        withEntries.put(key, value);
+        return this;
+    }
+
+    @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Map<K, V> generate(final Random random) {
         try {
@@ -116,12 +126,13 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     public Hints hints() {
         return Hints.builder()
                 .populateAction(PopulateAction.ALL)
-                .hint(DataStructureHint.builder()
-                        .dataStructureSize(getContext().random().intRange(minSize, maxSize))
+                .with(MapHint.builder()
+                        .generateEntries(getContext().random().intRange(minSize, maxSize))
                         .nullableMapKeys(nullableKeys)
                         .nullableMapValues(nullableValues)
+                        .withEntries(withEntries)
                         .build())
-                .hint(InternalHint.builder()
+                .with(InternalHint.builder()
                         .targetClass(mapType)
                         .delegating(isDelegating)
                         .build())

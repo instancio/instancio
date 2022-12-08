@@ -20,6 +20,7 @@ import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.PopulateAction;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Address;
@@ -29,6 +30,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -48,6 +50,7 @@ import static org.instancio.Select.field;
  * </ul>
  */
 @FeatureTag({Feature.GENERATOR, Feature.SUPPLY})
+@ExtendWith(InstancioExtension.class)
 class CustomGeneratorAndSupplierTest {
 
     @ParameterizedTest

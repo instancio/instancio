@@ -48,7 +48,7 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     public Hints hints() {
         return Hints.builder()
                 .populateAction(PopulateAction.ALL)
-                .hint(InternalHint.builder()
+                .with(InternalHint.builder()
                         .targetClass(values.getClass().getComponentType())
                         .build())
                 .build();

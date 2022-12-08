@@ -72,7 +72,7 @@ public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, G
     public Hints hints() {
         return Hints.builder()
                 .populateAction(PopulateAction.APPLY_SELECTORS)
-                .hint(InternalHint.builder()
+                .with(InternalHint.builder()
                         .targetClass(enumClass)
                         .build())
                 .build();

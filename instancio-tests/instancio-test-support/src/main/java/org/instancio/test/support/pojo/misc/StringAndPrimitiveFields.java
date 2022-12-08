@@ -18,6 +18,8 @@ package org.instancio.test.support.pojo.misc;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Data
 @SuperBuilder
@@ -30,4 +32,8 @@ public class StringAndPrimitiveFields extends StringFields {
     int intThree;
     int intFour;
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

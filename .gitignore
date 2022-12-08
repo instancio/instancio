@@ -4,6 +4,7 @@
 *.attach_pid*
 TEMP_*
 NOTES.md
+.~lock*
 
 .settings/
 .idea/

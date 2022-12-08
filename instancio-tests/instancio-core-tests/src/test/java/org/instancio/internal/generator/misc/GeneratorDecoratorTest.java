@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
-import org.instancio.generator.hints.DataStructureHint;
+import org.instancio.internal.generator.InternalHint;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,10 +58,10 @@ class GeneratorDecoratorTest {
 
     @Test
     void otherHintsArePreserved() {
-        final DataStructureHint dsHint = DataStructureHint.builder().build();
+        final InternalHint hint = InternalHint.builder().build();
 
         final Generator<?> original = new DummyGenerator(Hints.builder()
-                .hint(dsHint)
+                .with(hint)
                 .build());
 
         final Generator<?> decorated = GeneratorDecorator.decorateActionless(original, ACTION_TO_SET);
@@ -69,9 +69,9 @@ class GeneratorDecoratorTest {
         assertThat(decorated).isNotSameAs(original)
                 .isExactlyInstanceOf(GeneratorDecorator.class)
                 .extracting(Generator::hints)
-                .satisfies(hints -> assertThat(hints.get(DataStructureHint.class))
+                .satisfies(hints -> assertThat(hints.get(InternalHint.class))
                         .as("Other hints should be preserved")
-                        .isSameAs(dsHint))
+                        .isSameAs(hint))
                 .extracting(Hints::populateAction)
                 .isEqualTo(ACTION_TO_SET);
     }

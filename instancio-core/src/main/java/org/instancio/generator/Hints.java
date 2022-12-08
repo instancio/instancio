@@ -30,7 +30,7 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  *
  * @see Generator
  * @see PopulateAction
- * @since 1.7.0
+ * @since 2.0.0
  */
 public final class Hints {
 
@@ -48,7 +48,7 @@ public final class Hints {
      * @param populateAction the populate action
      * @return an instance containing a single hint {@link PopulateAction#NULLS}
      * @see PopulateAction
-     * @since 1.7.0
+     * @since 2.0.0
      */
     public static Hints withPopulateAction(final PopulateAction populateAction) {
         return Hints.builder().populateAction(populateAction).build();
@@ -66,7 +66,7 @@ public final class Hints {
      *
      * @return populate action to perform
      * @see PopulateAction
-     * @since 1.7.0
+     * @since 2.0.0
      */
     public PopulateAction populateAction() {
         return populateAction;
@@ -78,7 +78,7 @@ public final class Hints {
      * @param hintType type of the hint
      * @param <T>      hint type
      * @return hint with the specified type, or {@code null} if none found
-     * @since 1.7.0
+     * @since 2.0.0
      */
     public <T extends Hint<T>> T get(final Class<T> hintType) {
         ApiValidator.notNull(hintType, "Hint type must not be null");
@@ -119,9 +119,9 @@ public final class Hints {
          * @param <T>  hint type
          * @return builder instance
          * @see Hint
-         * @since 1.7.0
+         * @since 2.0.0
          */
-        public <T extends Hint<T>> Builder hint(final T hint) {
+        public <T extends Hint<T>> Builder with(final T hint) {
             ApiValidator.notNull(hint, "Hint must not be null");
             if (hintMap == null) {
                 hintMap = new HashMap<>();
@@ -153,16 +153,11 @@ public final class Hints {
          *                       object has been created by the generator
          * @return builder instance
          * @see PopulateAction
-         * @since 1.7.0
+         * @since 2.0.0
          */
         public Builder populateAction(final PopulateAction populateAction) {
             this.populateAction = ApiValidator.notNull(
                     populateAction, "Populate action must not be null");
-            return this;
-        }
-
-        public Builder hintMap(final Map<Class<?>, Object> hintMap) {
-            this.hintMap = hintMap;
             return this;
         }
 

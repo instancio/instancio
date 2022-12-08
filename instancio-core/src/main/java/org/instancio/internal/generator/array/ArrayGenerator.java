@@ -19,11 +19,12 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
-import org.instancio.generator.hints.DataStructureHint;
+import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalHint;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.Keys;
@@ -126,11 +127,12 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     public Hints hints() {
         return Hints.builder()
                 .populateAction(PopulateAction.ALL)
-                .hint(DataStructureHint.builder()
+                .with(ArrayHint.builder()
                         .nullableElements(nullableElements)
                         .withElements(withElements)
+                        .shuffle(!CollectionUtils.isNullOrEmpty(withElements))
                         .build())
-                .hint(InternalHint.builder()
+                .with(InternalHint.builder()
                         .targetClass(arrayType)
                         .build())
                 .build();

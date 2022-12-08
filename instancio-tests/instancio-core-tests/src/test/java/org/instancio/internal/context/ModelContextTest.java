@@ -30,7 +30,7 @@ import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
-import org.instancio.internal.generator.misc.SupplierDecorator;
+import org.instancio.internal.generator.misc.SupplierAdapter;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
@@ -161,7 +161,7 @@ class ModelContextTest {
 
         assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD))).get()
                 .as("Should NOT be decorated since it has PopulateAction hint")
-                .isExactlyInstanceOf(SupplierDecorator.class);
+                .isExactlyInstanceOf(SupplierAdapter.class);
     }
 
     @Test

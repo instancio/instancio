@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.generator.custom;
+package org.instancio.test.features.generator.custom.array;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
@@ -21,12 +21,11 @@ import org.instancio.TypeToken;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
-import org.instancio.generator.hints.DataStructureHint;
+import org.instancio.generator.hints.ArrayHint;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,9 +43,9 @@ import static org.instancio.Select.types;
         Feature.POPULATE_ACTION,
         Feature.SUBTYPE
 })
-class CustomArrayGeneratorTest {
+class CustomArrayOfObjectsGeneratorTest {
 
-    private static final int SIZE_HINT = 3;
+    private static final int ARRAY_SIZE = 3;
     private static final int POPULATED_INDEX = 1;
     private static final String ORIGINAL_VALUE = "original-value";
 
@@ -59,7 +58,7 @@ class CustomArrayGeneratorTest {
 
         @Override
         public ItemInterface<String>[] generate(final Random random) {
-            final ItemInterface<String>[] array = new ItemInterface[SIZE_HINT];
+            final ItemInterface<String>[] array = new ItemInterface[ARRAY_SIZE];
             array[POPULATED_INDEX] = new Item<>(ORIGINAL_VALUE);
             return array;
         }
@@ -68,15 +67,13 @@ class CustomArrayGeneratorTest {
         public Hints hints() {
             return Hints.builder()
                     .populateAction(populateAction)
-                    .hint(DataStructureHint.builder()
-                            .dataStructureSize(SIZE_HINT)
-                            .build())
+                    .with(ArrayHint.builder().build())
                     .build();
         }
     }
 
     @Test
-    @DisplayName("ALL: engine should populate all indices, include the one with an existing value")
+    @DisplayName("ALL: engine should populate all indices, including the one with an existing value")
     void actionAll() {
         final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
                 .supply(types().of(ItemInterface[].class), new ArrayGenerator(PopulateAction.ALL))
@@ -84,7 +81,7 @@ class CustomArrayGeneratorTest {
                 .create();
 
         assertThat(result)
-                .hasSize(SIZE_HINT)
+                .hasSize(ARRAY_SIZE)
                 .doesNotContainNull()
                 .hasOnlyElementsOfType(Item.class)
                 .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
@@ -92,8 +89,6 @@ class CustomArrayGeneratorTest {
         assertThat(result[POPULATED_INDEX].getValue()).isNotEqualTo(ORIGINAL_VALUE);
     }
 
-    // TODO
-    @Disabled("TODO - currently arrays are not supported for all Action types")
     @ParameterizedTest
     @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE,
             names = {"NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
@@ -105,7 +100,7 @@ class CustomArrayGeneratorTest {
                 .create();
 
         assertThat(result)
-                .hasSize(SIZE_HINT)
+                .hasSize(ARRAY_SIZE)
                 .doesNotContainNull()
                 .hasOnlyElementsOfType(Item.class)
                 .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
@@ -113,9 +108,9 @@ class CustomArrayGeneratorTest {
         assertThat(result[POPULATED_INDEX].getValue()).isEqualTo(ORIGINAL_VALUE);
     }
 
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE, names = {"NONE", "APPLY_SELECTORS"})
     @ParameterizedTest
-    @DisplayName("Engine should not populate null elements in the array; populated index should retain original value")
+    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE, names = {"NONE", "APPLY_SELECTORS"})
+    @DisplayName("Should populate empty indices; existing value should not be modified")
     void customArrayGeneratorWithApplySelectorsAction(final PopulateAction populateAction) {
         final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
                 .supply(types().of(ItemInterface[].class), new ArrayGenerator(populateAction))
@@ -124,10 +119,9 @@ class CustomArrayGeneratorTest {
 
         assertThat(result[POPULATED_INDEX].getValue()).isEqualTo(ORIGINAL_VALUE);
 
-        // other indices should have nulls
         for (int i = 0; i < result.length; i++) {
             if (i != POPULATED_INDEX) {
-                assertThat(result[i]).isNull();
+                assertThat(result[i]).isNotNull();
             }
         }
     }

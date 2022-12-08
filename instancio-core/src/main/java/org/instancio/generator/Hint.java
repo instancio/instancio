@@ -17,11 +17,14 @@ package org.instancio.generator;
 
 /**
  * A hint that can be passed from a generator to the engine.
+ * Hints can be used to fine-tune the behaviour of the engine with respect to
+ * objects created by the generator (see {@link Generator#hints()}).
  *
  * @param <T> hint type
  * @see Generator
  * @see Hints
- * @since 1.7.0
+ * @see PopulateAction
+ * @since 2.0.0
  */
 public interface Hint<T extends Hint<T>> {
 
@@ -29,7 +32,7 @@ public interface Hint<T extends Hint<T>> {
      * Returns the type of this hint.
      *
      * @return hint's type
-     * @since 1.7.0
+     * @since 2.0.0
      */
     @SuppressWarnings("unchecked")
     default Class<T> type() {

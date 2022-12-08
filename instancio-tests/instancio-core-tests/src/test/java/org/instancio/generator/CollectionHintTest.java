@@ -15,31 +15,32 @@
  */
 package org.instancio.generator;
 
-import org.instancio.generator.hints.DataStructureHint;
+import org.instancio.generator.hints.CollectionHint;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DataStructureHintTest {
+class CollectionHintTest {
 
     @Test
     void verifyToString() {
-        assertThat(DataStructureHint.builder().build())
-                .hasToString("DataStructureHint[dataStructureSize=0," +
-                        " nullableElements=false, nullableMapKeys=false," +
-                        " nullableMapValues=false, withElements=[]]");
+        assertThat(CollectionHint.builder().build())
+                .hasToString("CollectionHint[generateElements=0," +
+                        " nullableElements=false," +
+                        " shuffle=false," +
+                        " withElements=[]]");
 
-        assertThat(DataStructureHint.builder()
-                .dataStructureSize(3)
+        assertThat(CollectionHint.builder()
+                .generateElements(3)
                 .nullableElements(true)
-                .nullableMapKeys(true)
-                .nullableMapValues(true)
+                .shuffle(true)
                 .withElements(Arrays.asList("foo", "bar"))
                 .build())
-                .hasToString("DataStructureHint[dataStructureSize=3," +
-                        " nullableElements=true, nullableMapKeys=true," +
-                        " nullableMapValues=true, withElements=[foo, bar]]");
+                .hasToString("CollectionHint[generateElements=3," +
+                        " nullableElements=true," +
+                        " shuffle=true," +
+                        " withElements=[foo, bar]]");
     }
 }

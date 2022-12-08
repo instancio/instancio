@@ -16,6 +16,9 @@
 package org.instancio.generator;
 
 import org.instancio.Random;
+import org.instancio.generator.hints.ArrayHint;
+import org.instancio.generator.hints.CollectionHint;
+import org.instancio.generator.hints.MapHint;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
@@ -46,7 +49,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * {@link Settings} which includes all settings overrides.</p>
      *
      * @param context generator context
-     * @since 1.7.0
+     * @since 2.0.0
      */
     default void init(GeneratorContext context) {
         // no-op by default
@@ -68,9 +71,13 @@ public interface Generator<T> extends GeneratorSpec<T> {
     /**
      * Hints provided by the generator to the engine.
      *
-     * <p>The most important hint for custom generators is the {@link PopulateAction}.
-     * This hint indicates whether the object created by this generator should
-     * be populated further by the engine.</p>
+     * <p>The most important hint for custom generators is {@link PopulateAction}.
+     * This hint indicates whether the object created by this generator:
+     *
+     * <ul>
+     *   <li>should be populated (for example, if it has {@code null} fields)</li>
+     *   <li>can be modified using selectors</li>
+     * </ul>
      *
      * <p>For example, setting the hint to {@link PopulateAction#NULLS}
      * will cause Instancio to populate {@code null} fields on the object
@@ -86,11 +93,20 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * <p>If the action is not specified, default behaviour will be based
      * on the action configured via {@link Settings} using the key
      * {@link Keys#GENERATOR_HINT_POPULATE_ACTION}.</p>
+     * <p>
+     * In addition, the following hints can be provided for populating
+     * data structures:
+     *
+     * <ul>
+     *   <li>{@link ArrayHint}</li>
+     *   <li>{@link CollectionHint}</li>
+     *   <li>{@link MapHint}</li>
+     * </ul>
      *
      * @return hints from this generator to the engine
      * @see Hint
      * @see PopulateAction
-     * @since 1.7.0
+     * @since 2.0.0
      */
     default Hints hints() {
         return null;

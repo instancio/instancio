@@ -76,10 +76,9 @@ class MapGeneratorTest {
                 .isCloseTo((5 * SAMPLE_SIZE) / 6, withPercentage(PERCENTAGE_THRESHOLD));
 
         HintsAssert.assertHints(generator.hints())
-                .dataStructureSizeBetween(MIN_SIZE, MAX_SIZE)
+                .generateEntriesIsBetween(MIN_SIZE, MAX_SIZE)
                 .nullableMapKeys(true)
                 .nullableMapValues(true)
-                .populateAction(PopulateAction.ALL)
-                .nullableElements(false);
+                .populateAction(PopulateAction.ALL);
     }
 }

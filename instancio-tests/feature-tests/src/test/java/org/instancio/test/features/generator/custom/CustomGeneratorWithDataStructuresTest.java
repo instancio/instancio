@@ -22,13 +22,14 @@ import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.PopulateAction;
-import org.instancio.generator.hints.DataStructureHint;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObje
         Feature.POPULATE_ACTION,
         Feature.SELECTOR
 })
+@ExtendWith(InstancioExtension.class)
 class CustomGeneratorWithDataStructuresTest {
 
     private static final int INITIAL_BLANK_ARRAY_SIZE = 3;
@@ -83,9 +85,6 @@ class CustomGeneratorWithDataStructuresTest {
         public Hints hints() {
             return Hints.builder()
                     .populateAction(populateAction)
-                    .hint(DataStructureHint.builder()
-                            .dataStructureSize(INITIAL_BLANK_ARRAY_SIZE)
-                            .build())
                     .build();
         }
     }

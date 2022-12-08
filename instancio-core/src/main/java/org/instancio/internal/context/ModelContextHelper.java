@@ -140,7 +140,10 @@ final class ModelContextHelper {
         return typeMap;
     }
 
-    private static void populateTypeMapFromGenericSuperclass(@Nullable final Class<?> rootClass, final Map<TypeVariable<?>, Class<?>> typeMap) {
+    private static void populateTypeMapFromGenericSuperclass(
+            @Nullable final Class<?> rootClass,
+            final Map<TypeVariable<?>, Class<?>> typeMap) {
+
         if (rootClass == null) {
             return;
         }
@@ -148,10 +151,15 @@ final class ModelContextHelper {
         final Type gsClass = rootClass.getGenericSuperclass();
         if (gsClass instanceof ParameterizedType) {
             final ParameterizedType genericSuperclass = (ParameterizedType) gsClass;
-            final TypeVariable<?>[] typeParameters = TypeUtils.getRawType(genericSuperclass.getRawType()).getTypeParameters();
+            final Class<?> rawType = TypeUtils.getRawType(genericSuperclass.getRawType());
+            final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+
             final Type[] actualTypeArguments = genericSuperclass.getActualTypeArguments();
 
             for (int i = 0; i < typeParameters.length; i++) {
+                if (actualTypeArguments[i] instanceof TypeVariable) {
+                    continue; // leave resolving the type to NodeFactory
+                }
                 final TypeVariable<?> typeVariable = typeParameters[i];
                 final Class<?> actualType = TypeUtils.getRawType(actualTypeArguments[i]);
                 LOG.trace("Mapping type variable '{}' to '{}'", typeVariable, actualType);

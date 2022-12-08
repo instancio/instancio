@@ -75,7 +75,7 @@ public final class TypeUtils {
     }
 
     // NOTE: the implementation could be improved (see unit test describing the unhandled case)
-    public static Class<?> getGeneratorTypeArgument(final Class<?> klass) {
+    public static Class<?> getGenericSuperclassTypeArgument(final Class<?> klass) {
         if (klass.getGenericSuperclass() instanceof ParameterizedType) {
             final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
             final Type genericType = genericSuperclass.getActualTypeArguments()[0];
@@ -89,5 +89,13 @@ public final class TypeUtils {
             }
         }
         return null;
+    }
+
+    public static Type[] getGenericSuperclassTypeArguments(final Class<?> klass) {
+        if (klass.getGenericSuperclass() instanceof ParameterizedType) {
+            final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
+            return genericSuperclass.getActualTypeArguments();
+        }
+        return new Type[0];
     }
 }

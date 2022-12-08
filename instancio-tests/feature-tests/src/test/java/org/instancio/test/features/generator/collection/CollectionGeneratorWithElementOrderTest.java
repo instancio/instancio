@@ -17,42 +17,37 @@ package org.instancio.test.features.generator.collection;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.Seed;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.LinkedHashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
-// Casts added to suppress "non-varargs call of varargs" during the build
-@SuppressWarnings("RedundantCast")
 @FeatureTag({Feature.GENERATE, Feature.COLLECTION_GENERATOR_WITH_ELEMENTS})
 @ExtendWith(InstancioExtension.class)
 class CollectionGeneratorWithElementOrderTest {
-    private static final Long[] EXPECTED_LONGS = {1L, 2L, 3L};
 
-    private static final Set<List<Long>> RESULTS = new LinkedHashSet<>();
-
-    @Seed(-12345)
-    @RepeatedTest(5)
+    @Test
     void shuffledElementShouldBeInTheSameOrderForAGivenSeed() {
+        final Long[] elements = LongStream.range(1, 100).boxed().toArray(Long[]::new);
         final ListLong result = Instancio.of(ListLong.class)
-                .generate(all(List.class), gen -> gen.collection().maxSize(5).with((Object[]) EXPECTED_LONGS))
+                .generate(all(List.class), gen -> gen.collection().maxSize(5).with(elements))
                 .create();
 
-        RESULTS.add(result.getList());
+        final List<Long> sorted = Arrays.asList(elements);
 
-        assertThat(RESULTS)
-                .as("Same shuffled sequence should be generated each time")
-                .hasSize(1);
+        assertThat(result.getList())
+                .as("Should be shuffled")
+                .contains(elements)
+                .isNotEqualTo(sorted);
+
     }
-
 
 }
