@@ -21,7 +21,7 @@
         <version.equalsverifier>3.12.1</version.equalsverifier>
         <version.junit.pioneer>1.9.1</version.junit.pioneer>
         <version.junit.platform>1.9.1</version.junit.platform>
-        <version.logback>1.2.11</version.logback>
+        <version.logback>1.4.5</version.logback>
         <version.lombok>1.18.24</version.lombok>
         <version.mockito>4.8.0</version.mockito>
     </properties>
