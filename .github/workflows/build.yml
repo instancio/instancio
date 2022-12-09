@@ -31,7 +31,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: "Build and analyse with JDK 17"
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
       - run: mvn -v && mvn -B clean install sonar:sonar -Dsonar.projectKey=instancio_instancio
