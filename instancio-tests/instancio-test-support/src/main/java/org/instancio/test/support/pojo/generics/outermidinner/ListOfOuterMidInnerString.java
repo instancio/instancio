@@ -15,17 +15,19 @@
  */
 package org.instancio.test.support.pojo.generics.outermidinner;
 
-import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 public class ListOfOuterMidInnerString {
 
     private List<Outer<Mid<Inner<String>>>> rootList = new ArrayList<>();
+
+    public List<Outer<Mid<Inner<String>>>> getRootList() {
+        return rootList;
+    }
 
     @Override
     public String toString() {

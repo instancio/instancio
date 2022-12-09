@@ -70,9 +70,9 @@ class CustomGeneratorAndSupplierTest {
     @Test
     @DisplayName("Combine supply(Supplier) and supply(Generator)")
     void combineSupplierAndGeneratorTest() {
-        final Address addressFromSupplier = new Address();
+        final Address addressFromSupplier = Address.builder().build();
         final Supplier<Address> addressSupplier = () -> addressFromSupplier;
-        final Generator<Address> addressGenerator = random -> new Address();
+        final Generator<Address> addressGenerator = random -> Address.builder().build();
 
         final int[] callbackCount = new int[1];
 

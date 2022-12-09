@@ -15,14 +15,22 @@
  */
 package org.instancio.test.support.pojo.generics.outermidinner;
 
-import lombok.Getter;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@ToString
+@SuppressWarnings("FieldMayBeFinal")
 public class Inner<T> {
     private List<T> innerList = new ArrayList<>();
+
+    public List<T> getInnerList() {
+        return innerList;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

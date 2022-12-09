@@ -66,7 +66,7 @@ class CustomGeneratorWithSettingsTest {
     @Nested
     class GeneratorWithNullHintsTest {
         @Test
-        @DisplayName("Default settings: populate action should default to APPLY_SELECTORS")
+        @DisplayName("Default settings: populate action should default to NULLS_AND_DEFAULT_PRIMITIVES")
         void withDefaultSettings() {
             final StringFields result = Instancio.of(StringFields.class)
                     .supply(all(StringFields.class), GENERATOR_WITH_NULL_HINTS)
@@ -75,8 +75,8 @@ class CustomGeneratorWithSettingsTest {
 
             assertThat(result.getOne()).isEqualTo(ONE);
             assertThat(result.getTwo()).isEqualTo(OVERRIDE_TWO);
-            assertThat(result.getThree()).isNull();
-            assertThat(result.getFour()).isNull();
+            assertThat(result.getThree()).isNotNull();
+            assertThat(result.getFour()).isNotNull();
         }
 
         @Test

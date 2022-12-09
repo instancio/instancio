@@ -167,7 +167,7 @@ public final class Instancio {
      * <p>
      * Example: {@code List<Person> persons = Instancio.of(new TypeToken<List<Person>>(){}).create()}
      *
-     * @param typeToken containing type to create
+     * @param typeToken specifying the type to create
      * @param <T>       type
      * @return a fully-populated instance
      */
@@ -185,7 +185,7 @@ public final class Instancio {
      *         .collect(Collectors.toList());
      * }</pre>
      *
-     * @param typeToken containing type to create
+     * @param typeToken specifying the type to create
      * @param <T>       type
      * @return an infinite stream of distinct, fully populated instances
      * @since 1.1.9
@@ -242,7 +242,7 @@ public final class Instancio {
      *         .create();
      * }</pre>
      *
-     * @param typeToken specifying details of type being created
+     * @param typeToken specifying the type to create
      * @param <T>       type
      * @return API builder reference
      */

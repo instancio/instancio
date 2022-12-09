@@ -15,17 +15,13 @@
  */
 package org.instancio.test.support.pojo.basic;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Builder
-@ToString
 public class PrimitiveFields {
     byte byteValue;
     short shortValue;
@@ -35,4 +31,9 @@ public class PrimitiveFields {
     double doubleValue;
     boolean booleanValue;
     char charValue;
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

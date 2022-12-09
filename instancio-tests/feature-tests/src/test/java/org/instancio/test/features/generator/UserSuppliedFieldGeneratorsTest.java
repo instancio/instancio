@@ -45,7 +45,7 @@ class UserSuppliedFieldGeneratorsTest {
     @DisplayName("Field values should be created using user-supplied generators")
     void generatePersonWithCustomFieldGenerators() {
         final Integer[] ageOptions = {20, 30, 40, 50, 60, 70, 80};
-        final Address customAddress = new Address();
+        final Address customAddress = Address.builder().build();
 
         Person person = Instancio.of(Person.class)
                 .generate(field("name"), gen -> gen.string().prefix("first-name-").length(10))

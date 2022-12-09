@@ -16,16 +16,20 @@
 package org.instancio.test.support.pojo.basic;
 
 import lombok.Getter;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Getter
-@ToString
 public class SupportedAtomicTypes {
 
     private AtomicInteger atomicInteger;
     private AtomicLong atomicLong;
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

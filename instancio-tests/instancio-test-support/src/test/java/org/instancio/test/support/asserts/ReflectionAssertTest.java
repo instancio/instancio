@@ -61,7 +61,7 @@ class ReflectionAssertTest {
 
     @Test
     void hasAllFieldsOfTypeNotEqualTo() {
-        final Address address = new Address();
+        final Address address = Address.builder().build();
         address.setCity(FOO);
 
         assertThatThrownBy(() -> assertThatObject(address).doesNotHaveAllFieldsOfTypeEqualTo(String.class, FOO))

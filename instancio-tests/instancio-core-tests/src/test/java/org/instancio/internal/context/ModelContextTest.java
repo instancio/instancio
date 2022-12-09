@@ -128,7 +128,7 @@ class ModelContextTest {
         final Generator<Address> addressGenerator = new Generator<Address>() {
             @Override
             public Address generate(final Random random) {
-                return new Address();
+                return Address.builder().build();
             }
 
             @Override
