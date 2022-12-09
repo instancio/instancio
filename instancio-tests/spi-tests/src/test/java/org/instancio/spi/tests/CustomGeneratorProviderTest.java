@@ -22,6 +22,9 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.PopulateAction;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,7 +66,11 @@ class CustomGeneratorProviderTest {
     @Test
     @DisplayName("Verifies that Generator.init() method is called exactly once")
     void verifyInitMethodCalledOnlyOnce() {
-        final Person person = Instancio.create(Person.class);
+        final Person person = Instancio.of(Person.class)
+                .withSettings(Settings.create()
+                        .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.APPLY_SELECTORS))
+                .create();
+
         assertThat(person.getName()).isEqualTo(CustomPersonGenerator.PERSON_NAME);
 
         // Remaining fields should be null

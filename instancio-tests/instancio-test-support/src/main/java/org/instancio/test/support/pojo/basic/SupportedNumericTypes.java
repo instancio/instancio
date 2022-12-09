@@ -16,12 +16,12 @@
 package org.instancio.test.support.pojo.basic;
 
 import lombok.Getter;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Objects;
 
 @Getter
-@ToString
 public class SupportedNumericTypes {
     private byte primitiveByte;
     private short primitiveShort;
@@ -63,5 +63,10 @@ public class SupportedNumericTypes {
                 getPrimitiveDouble(), getByteWrapper(), getShortWrapper(),
                 getIntegerWrapper(), getLongWrapper(), getFloatWrapper(),
                 getDoubleWrapper());
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

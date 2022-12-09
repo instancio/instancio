@@ -87,7 +87,7 @@ class ReflectionUtilsTest {
             "floatValue", "doubleValue", "booleanValue", "charValue",})
     @ParameterizedTest
     void hasNonNullOrNonDefaultPrimitiveValue_WithDefaultValues(final String fieldName) {
-        final PrimitiveFields blank = new PrimitiveFields();
+        final PrimitiveFields blank = PrimitiveFields.builder().build();
         final PrimitiveFields initialised = PrimitiveFields.builder()
                 .byteValue((byte) 1)
                 .shortValue((short) 1)

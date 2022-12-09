@@ -57,7 +57,7 @@ class CustomGeneratorWithImmutableObjectTest {
 
         assertThat(result.getFoo()).isEqualTo("FOO");
         assertThat(result.getBar()).isEqualTo("BAR");
-        assertThat(result.getBaz()).isNull();
+        assertThat(result.getBaz()).isNotNull();
     }
 
 }

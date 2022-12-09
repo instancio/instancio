@@ -203,13 +203,13 @@ public final class Keys {
     /**
      * Specifies the default value of the {@link PopulateAction} hint
      * supplied from custom generators to the engine;
-     * default is {@link PopulateAction#APPLY_SELECTORS};
+     * default is {@link PopulateAction#NULLS_AND_DEFAULT_PRIMITIVES};
      * property name {@code generator.hint.populate.action}.
      *
      * @since 2.0.0
      */
     public static final SettingKey GENERATOR_HINT_POPULATE_ACTION = register(
-            "generator.hint.populate.action", PopulateAction.class, PopulateAction.APPLY_SELECTORS);
+            "generator.hint.populate.action", PopulateAction.class, PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
     /**
      * Specifies whether initialised fields are allowed to be overwritten;
      * default is {@code true}; property name {@code overwrite.existing.values}.

@@ -56,7 +56,7 @@ class CustomGeneratorWithPrimitiveFieldsTest {
 
         @Override
         public PrimitiveFields generate(final Random random) {
-            return new PrimitiveFields();
+            return PrimitiveFields.builder().build();
         }
 
         @Override
