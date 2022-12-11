@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
@@ -27,6 +28,7 @@ class ArrayLongNodeTest extends NodeTestTemplate<ArrayLong> {
     @Override
     protected void verify(Node rootNode) {
         final Node primitiveArray = assertNode(NodeUtils.getChildNode(rootNode, "primitive"))
+                .isOfKind(NodeKind.ARRAY)
                 .hasTargetClass(long[].class)
                 .hasChildrenOfSize(1)
                 .get();

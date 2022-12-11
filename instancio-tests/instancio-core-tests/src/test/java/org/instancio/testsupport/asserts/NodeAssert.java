@@ -17,6 +17,7 @@ package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.TypeMap;
 
 import java.lang.reflect.Type;
@@ -136,6 +137,12 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
     public NodeAssert hasNoChildren() {
         isNotNull();
         assertThat(actual.getChildren()).isEmpty();
+        return this;
+    }
+
+    public NodeAssert isOfKind(final NodeKind expected) {
+        isNotNull();
+        assertThat(actual.getNodeKind()).isEqualTo(expected);
         return this;
     }
 }
