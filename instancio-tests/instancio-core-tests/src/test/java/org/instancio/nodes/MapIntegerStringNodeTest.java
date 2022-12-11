@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
@@ -35,6 +36,7 @@ class MapIntegerStringNodeTest extends NodeTestTemplate<MapIntegerString> {
         final Node map = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
                 .hasFieldName("map")
+                .isOfKind(NodeKind.MAP)
                 .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", String.class)

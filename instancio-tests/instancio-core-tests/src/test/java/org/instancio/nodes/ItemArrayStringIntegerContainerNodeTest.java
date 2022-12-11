@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.container.ItemArrayContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -29,6 +30,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
     protected void verify(Node rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(ItemArrayContainer.class)
+                .isOfKind(NodeKind.DEFAULT)
                 .hasChildrenOfSize(2);
 
         // Item<X>[] itemArrayX

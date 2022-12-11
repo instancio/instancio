@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerListString;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -37,6 +38,7 @@ class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString
         final Node map = assertNode(getOnlyElement(rootNode.getChildren()))
                 .hasParent(rootNode)
                 .hasFieldName("map")
+                .isOfKind(NodeKind.MAP)
                 .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", Types.LIST_STRING.get())
@@ -52,6 +54,7 @@ class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString
         final Node list = assertNode(map.getChildren().get(1))
                 .hasParent(map)
                 .hasNullField()
+                .isOfKind(NodeKind.COLLECTION)
                 .hasTargetClass(List.class)
                 .hasTypeMappedTo(List.class, "E", String.class)
                 .hasChildrenOfSize(1)
