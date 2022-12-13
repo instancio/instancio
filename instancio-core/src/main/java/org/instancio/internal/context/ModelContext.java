@@ -30,6 +30,8 @@ import org.instancio.internal.generator.misc.SupplierAdapter;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.random.Seeds;
+import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
@@ -63,6 +65,8 @@ public final class ModelContext<T> {
 
     private static final Random GLOBAL_RANDOM = PROPERTIES_FILE_SETTINGS.get(Keys.SEED) == null
             ? null : new DefaultRandom(PROPERTIES_FILE_SETTINGS.get(Keys.SEED));
+
+    private static final List<InternalContainerFactoryProvider> CONTAINER_FACTORIES = ServiceLoaders.loadAll(InternalContainerFactoryProvider.class);
 
     private final Type rootType;
     private final List<Class<?>> rootTypeParameters;
@@ -109,6 +113,10 @@ public final class ModelContext<T> {
             settings.set(Keys.MODE, Mode.LENIENT);
         }
         return settings.lock();
+    }
+
+    public List<InternalContainerFactoryProvider> getContainerFactories() {
+        return CONTAINER_FACTORIES;
     }
 
     public void reportUnusedSelectorWarnings() {

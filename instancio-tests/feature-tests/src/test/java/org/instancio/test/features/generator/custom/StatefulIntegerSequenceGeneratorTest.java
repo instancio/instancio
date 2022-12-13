@@ -31,6 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.allInts;
 import static org.instancio.Select.scope;
 
 @FeatureTag(Feature.GENERATOR)
@@ -45,28 +46,42 @@ class StatefulIntegerSequenceGeneratorTest {
 
     private static final int START_FROM = 10;
 
-    private final Generator<Integer> incrementingGenerator = new Generator<Integer>() {
+    private static Generator<Integer> incrementingGenerator() {
+        return new Generator<Integer>() {
 
-        private int current;
+            private int current;
 
-        @Override
-        public void init(final GeneratorContext context) {
-            current = START_FROM; // reset on each call to initialise()
-        }
+            @Override
+            public void init(final GeneratorContext context) {
+                current = START_FROM; // reset on each call to initialise()
+            }
 
-        @Override
-        public Integer generate(final Random random) {
-            return current++;
-        }
-    };
+            @Override
+            public Integer generate(final Random random) {
+                return current++;
+            }
+        };
+    }
+
+    @Test
+    void statefulGeneratorSharedBetweenTwoSelectorTargets() {
+        final TwoListsOfInteger result = Instancio.of(TwoListsOfInteger.class)
+                .supply(allInts(), incrementingGenerator())
+                .create();
+
+        assertThat(result.getList1()).containsExactly(START_FROM, START_FROM + 1);
+        assertThat(result.getList2())
+                .as("Generator sequence should continue if used with multiple fields")
+                .containsExactly(START_FROM + 2, START_FROM + 3);
+    }
 
     @Test
     void statefulGenerator() {
-        assertSequence(incrementingGenerator, START_FROM);
+        assertSequence(incrementingGenerator(), START_FROM);
 
         // when the generator is passed to another invocation of Instancio.of(),
         // init should be called again, resetting the sequence
-        assertSequence(incrementingGenerator, START_FROM);
+        assertSequence(incrementingGenerator(), START_FROM);
     }
 
     private static void assertSequence(final Generator<?> generator, final int startingValue) {

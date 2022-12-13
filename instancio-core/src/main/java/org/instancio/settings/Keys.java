@@ -28,6 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.instancio.internal.util.Constants.MAX_SIZE;
+import static org.instancio.internal.util.Constants.MIN_SIZE;
+import static org.instancio.internal.util.Constants.NUMERIC_MAX;
+import static org.instancio.internal.util.Constants.NUMERIC_MIN;
+
 /**
  * Defines all keys supported by Instancio.
  *
@@ -35,9 +40,6 @@ import java.util.Map;
  * @see Settings
  */
 public final class Keys {
-    private static final int MIN_SIZE = 2;
-    private static final int MAX_SIZE = 6;
-    private static final int NUMERIC_MAX = 10_000;
 
     private static final RangeAdjuster MIN_ADJUSTER = RangeAdjuster.MIN_ADJUSTER;
     private static final RangeAdjuster MAX_ADJUSTER = RangeAdjuster.MAX_ADJUSTER;
@@ -77,7 +79,7 @@ public final class Keys {
      * Specifies minimum value for bytes;
      * default is 1; property name {@code byte.min}.
      */
-    public static final SettingKey BYTE_MIN = register("byte.min", Byte.class, (byte) 1, MIN_ADJUSTER);
+    public static final SettingKey BYTE_MIN = register("byte.min", Byte.class, (byte) NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Byte type;
      * default is {@code false}; property name {@code byte.nullable}.
@@ -117,7 +119,7 @@ public final class Keys {
      * Specifies minimum value for doubles;
      * default is 1; property name {@code double.min}.
      */
-    public static final SettingKey DOUBLE_MIN = register("double.min", Double.class, 1d, MIN_ADJUSTER);
+    public static final SettingKey DOUBLE_MIN = register("double.min", Double.class, (double) NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Double type;
      * default is {@code false}; property name {@code double.nullable}.
@@ -132,7 +134,7 @@ public final class Keys {
      * Specifies minimum value for floats;
      * default is 1; property name {@code float.min}.
      */
-    public static final SettingKey FLOAT_MIN = register("float.min", Float.class, 1f, MIN_ADJUSTER);
+    public static final SettingKey FLOAT_MIN = register("float.min", Float.class, (float) NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Float type;
      * default is {@code false}; property name {@code float.nullable}.
@@ -147,7 +149,7 @@ public final class Keys {
      * Specifies minimum value for integers;
      * default is 1; property name {@code integer.min}.
      */
-    public static final SettingKey INTEGER_MIN = register("integer.min", Integer.class, 1, MIN_ADJUSTER);
+    public static final SettingKey INTEGER_MIN = register("integer.min", Integer.class, NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Integer type;
      * default is {@code false}; property name {@code integer.nullable}.
@@ -162,7 +164,7 @@ public final class Keys {
      * Specifies minimum value for longs;
      * default is 1; property name {@code long.min}.
      */
-    public static final SettingKey LONG_MIN = register("long.min", Long.class, 1L, MIN_ADJUSTER);
+    public static final SettingKey LONG_MIN = register("long.min", Long.class, (long) NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Long type;
      * default is {@code false}; property name {@code long.nullable}.

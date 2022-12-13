@@ -23,7 +23,9 @@ import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.ContainerAddFunction;
 import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.reflection.RecordHelper;
@@ -42,6 +44,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
@@ -52,7 +55,7 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  * <p>
  * A new instance of this class should be created for each object generated via {@link #createRootObject()}.
  */
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.GodClass", "PMD.CyclomaticComplexity", "PMD.ExcessiveImports"})
 class InstancioEngine {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioEngine.class);
 
@@ -96,10 +99,10 @@ class InstancioEngine {
             return generateMap(node);
         } else if (node.is(NodeKind.RECORD)) {
             return generateRecord(node);
-        } else if (node.is(NodeKind.OPTIONAL)) {
-            return generateOptional(node);
+        } else if (node.is(NodeKind.CONTAINER)) {
+            return generateContainer(node);
         } else if (node.is(NodeKind.DEFAULT)) {
-            return generatePojo(node, node.getChildren());
+            return generatePojo(node);
         }
 
         conditionalFailOnError(() -> {
@@ -109,9 +112,78 @@ class InstancioEngine {
         return Optional.empty();
     }
 
-    private Optional<GeneratorResult> generatePojo(final Node node, final List<Node> children) {
+    private Optional<GeneratorResult> generateContainer(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
-        nodeResult.ifPresent(generatorResult -> populateChildren(children, generatorResult));
+
+        // Note: GeneratorResult is allowed to contain null.
+        // This means an instance needs to be created by the supplied createFunction()
+        if (!nodeResult.isPresent()) {
+            return nodeResult;
+        }
+
+        GeneratorResult generatorResult = nodeResult.get();
+
+        final InternalContainerHint hint = defaultIfNull(
+                generatorResult.getHints().get(InternalContainerHint.class),
+                InternalContainerHint.empty());
+
+        final List<Node> children = node.getChildren();
+
+        // Creation delegated to the engine
+        if (generatorResult.isNullResult() && hint.createFunction() != null) {
+            final Object[] args = new Object[children.size()];
+            for (int j = 0; j < children.size(); j++) {
+                args[j] = createObject(children.get(j)).map(GeneratorResult::getValue).orElse(null);
+            }
+            final Object result = hint.createFunction().create(args);
+
+            generatorResult = GeneratorResult.create(result, generatorResult.getHints());
+        }
+
+        final ContainerAddFunction<Object> addFunction = hint.addFunction();
+
+        if (addFunction != null) {
+            for (int i = 0; i < hint.generateEntries(); i++) {
+                final Object[] args = new Object[children.size()];
+
+                for (int j = 0; j < children.size(); j++) {
+                    args[j] = createObject(children.get(j)).map(GeneratorResult::getValue).orElse(null);
+                }
+
+                addFunction.addTo(generatorResult.getValue(), args);
+            }
+        }
+
+        if (hint.buildFunction() != null) {
+            final Object builtContainer = hint.buildFunction().build(generatorResult.getValue());
+            return Optional.of(GeneratorResult.create(builtContainer, generatorResult.getHints()));
+        }
+
+
+        final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
+        return spiResult.isPresent() ? spiResult : Optional.of(generatorResult);
+    }
+
+    /**
+     * Replaces the 3original result with another type. For example, converts
+     * a Map to ImmutableMap using {@code ImmutableMap.copyOf(Map)}).
+     */
+    private Optional<GeneratorResult> substituteResult(
+            final Node node,
+            final GeneratorResult generatorResult) {
+
+        return context.getContainerFactories()
+                .stream()
+                .map(it -> it.createFromOtherFunction(node.getTargetClass()))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .map(fn -> fn.apply(generatorResult.getValue()))
+                .map(replacedValue -> GeneratorResult.create(replacedValue, generatorResult.getHints()));
+    }
+
+    private Optional<GeneratorResult> generatePojo(final Node node) {
+        final Optional<GeneratorResult> nodeResult = generateValue(node);
+        nodeResult.ifPresent(generatorResult -> populateChildren(node.getChildren(), generatorResult));
         return nodeResult;
     }
 
@@ -120,8 +192,7 @@ class InstancioEngine {
 
         if (!nodeResult.isPresent()
                 || nodeResult.get().isNullResult()
-                || node.getChildren().size() < 2
-        ) {
+                || node.getChildren().size() < 2) {
             return nodeResult;
         }
 
@@ -156,7 +227,9 @@ class InstancioEngine {
 
         map.putAll(hint.withEntries());
 
-        return nodeResult;
+        final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
+        return spiResult.isPresent() ? spiResult : nodeResult;
+
     }
 
     @SuppressWarnings({
@@ -236,6 +309,7 @@ class InstancioEngine {
         return nodeResult;
     }
 
+    @SuppressWarnings("PMD.NPathComplexity")
     private Optional<GeneratorResult> generateCollection(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
@@ -275,7 +349,8 @@ class InstancioEngine {
             CollectionUtils.shuffle(collection, context.getRandom());
         }
 
-        return nodeResult;
+        final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
+        return spiResult.isPresent() ? spiResult : nodeResult;
     }
 
     private Optional<GeneratorResult> generateRecord(final Node node) {
@@ -339,17 +414,6 @@ class InstancioEngine {
                 }
             }
         }
-    }
-
-    private Optional<GeneratorResult> generateOptional(final Node node) {
-        final Optional<GeneratorResult> generatorResult = createObject(node.getOnlyChild());
-        if (generatorResult.isPresent()) {
-            final Object value = generatorResult.get().getValue();
-            final GeneratorResult optResult = createGeneratorResult(Optional.ofNullable(value));
-            return Optional.of(optResult);
-        }
-
-        return generatorResult;
     }
 
     private GeneratorResult createGeneratorResult(final Object value) {

@@ -36,6 +36,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,25 +63,25 @@ class CustomMapGeneratorPopulateActionAndSelectorsTest {
     private static final int INITIAL_SIZE = 1;
     private static final int GENERATE_ENTRIES_HINT = 5;
 
-    private static final int EXISTING_INT_ONE = 1;
-    private static final int INT_ONE_OVERRIDE = -1;
-    private static final int INT_TWO_OVERRIDE = -2;
+    private static final int EXISTING_INT_ONE = -1;
+    private static final int INT_ONE_OVERRIDE = -100;
+    private static final int INT_TWO_OVERRIDE = -200;
 
     private static final String EXISTING_STR_ONE = "one-original";
     private static final String STR_ONE_OVERRIDE = "one-override";
     private static final String STR_TWO_OVERRIDE = "two-override";
 
-    private static final Long EXISTING_KEY = -1000L;
+    private static final UUID EXISTING_KEY = UUID.randomUUID();
 
     private final StringAndPrimitiveFields existingEntry = StringAndPrimitiveFields.builder()
             .one(EXISTING_STR_ONE)
             .intOne(EXISTING_INT_ONE)
             .build();
 
-    private final Predicate<Map.Entry<Long, StringAndPrimitiveFields>> ENTRY_CREATED_BY_USER = e -> e.getValue() == existingEntry;
-    private final Predicate<Map.Entry<Long, StringAndPrimitiveFields>> ENTRY_GENERATED_BY_ENGINE = ENTRY_CREATED_BY_USER.negate();
+    private final Predicate<Map.Entry<UUID, StringAndPrimitiveFields>> ENTRY_CREATED_BY_USER = e -> e.getValue() == existingEntry;
+    private final Predicate<Map.Entry<UUID, StringAndPrimitiveFields>> ENTRY_GENERATED_BY_ENGINE = ENTRY_CREATED_BY_USER.negate();
 
-    private class CustomMapGenerator implements Generator<Map<Long, StringAndPrimitiveFields>> {
+    private class CustomMapGenerator implements Generator<Map<UUID, StringAndPrimitiveFields>> {
         private final Hints hints;
 
         private CustomMapGenerator(final Hints hints) {
@@ -88,8 +89,8 @@ class CustomMapGeneratorPopulateActionAndSelectorsTest {
         }
 
         @Override
-        public Map<Long, StringAndPrimitiveFields> generate(final Random random) {
-            final Map<Long, StringAndPrimitiveFields> map = new HashMap<>();
+        public Map<UUID, StringAndPrimitiveFields> generate(final Random random) {
+            final Map<UUID, StringAndPrimitiveFields> map = new HashMap<>();
             map.put(EXISTING_KEY, existingEntry);
             return map;
         }

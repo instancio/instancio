@@ -22,7 +22,7 @@ import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.InternalHint;
+import org.instancio.internal.generator.InternalGeneratorHint;
 
 public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArrayGeneratorSpec<T> {
 
@@ -48,7 +48,7 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     public Hints hints() {
         return Hints.builder()
                 .populateAction(PopulateAction.ALL)
-                .with(InternalHint.builder()
+                .with(InternalGeneratorHint.builder()
                         .targetClass(values.getClass().getComponentType())
                         .build())
                 .build();

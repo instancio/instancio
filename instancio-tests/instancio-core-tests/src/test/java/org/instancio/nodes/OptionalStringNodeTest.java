@@ -37,7 +37,7 @@ class OptionalStringNodeTest extends NodeTestTemplate<OptionalString> {
         final Node optionalNode = assertNode(NodeUtils.getChildNode(rootNode, "optional"))
                 .hasParent(rootNode)
                 .hasFieldName("optional")
-                .isOfKind(NodeKind.OPTIONAL)
+                .isOfKind(NodeKind.CONTAINER)
                 .hasTargetClass(Optional.class)
                 .hasTypeMappedTo(Optional.class, "T", String.class)
                 .hasChildrenOfSize(1)

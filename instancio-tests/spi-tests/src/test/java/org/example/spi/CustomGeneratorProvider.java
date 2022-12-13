@@ -19,6 +19,7 @@ import org.example.generator.CustomIntegerGenerator;
 import org.example.generator.CustomPersonGenerator;
 import org.example.generator.LongSequenceGenerator;
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.spi.GeneratorProvider;
 import org.instancio.test.support.pojo.person.Person;
 
@@ -32,7 +33,7 @@ public class CustomGeneratorProvider implements GeneratorProvider {
     public static final Pattern PATTERN_GENERATOR_VALUE = Pattern.compile("foo");
 
     @Override
-    public Map<Class<?>, Generator<?>> getGenerators() {
+    public Map<Class<?>, Generator<?>> getGenerators(final GeneratorContext context) {
         final Map<Class<?>, Generator<?>> map = new HashMap<>();
         map.put(String.class, random -> STRING_GENERATOR_VALUE);
         map.put(Pattern.class, random -> PATTERN_GENERATOR_VALUE);

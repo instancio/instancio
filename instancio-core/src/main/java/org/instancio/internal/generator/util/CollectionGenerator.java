@@ -23,7 +23,7 @@ import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.InternalHint;
+import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
@@ -129,7 +129,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
                         .withElements(withElements)
                         .shuffle(!CollectionUtils.isNullOrEmpty(withElements))
                         .build())
-                .with(InternalHint.builder()
+                .with(InternalGeneratorHint.builder()
                         .targetClass(collectionType)
                         .delegating(isDelegating)
                         .build())

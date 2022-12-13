@@ -19,6 +19,7 @@ import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.NodeKindResolver;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Optional;
 
 public class NodeKindCollectionResolver implements NodeKindResolver {
@@ -26,6 +27,7 @@ public class NodeKindCollectionResolver implements NodeKindResolver {
     @Override
     public Optional<NodeKind> resolve(final Class<?> targetClass) {
         return Collection.class.isAssignableFrom(targetClass)
+                && targetClass != EnumSet.class // EnumSet is classified as NodeKind.CONTAINER
                 ? Optional.of(NodeKind.COLLECTION)
                 : Optional.empty();
     }

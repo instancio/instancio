@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.nodes.resolvers;
+package org.instancio.test.spi;
 
-import org.instancio.internal.nodes.NodeKind;
-import org.instancio.internal.nodes.NodeKindResolver;
+import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.test.support.pojo.containers.BuildableList;
+import org.instancio.test.support.pojo.containers.OptionalLike;
 
-import java.util.Optional;
+import java.util.function.Function;
 
-public class NodeKindOptionalResolver implements NodeKindResolver {
+public class FeatureTestsContainerFactoryProvider implements InternalContainerFactoryProvider {
 
     @Override
-    public Optional<NodeKind> resolve(final Class<?> targetClass) {
-        return Optional.class == targetClass
-                ? Optional.of(NodeKind.OPTIONAL)
-                : Optional.empty();
+    public <T, R> Function<T, R> createFromOtherFunction(final Class<R> type) {
+        return null; // none yet
+    }
+
+    @Override
+    public boolean isContainerClass(final Class<?> type) {
+        return type == BuildableList.class || type == OptionalLike.class;
     }
 }

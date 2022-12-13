@@ -16,6 +16,7 @@
 package org.instancio.spi;
 
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 
 import java.util.Map;
 
@@ -62,8 +63,9 @@ public interface GeneratorProvider {
     /**
      * Provides a map of generators to register.
      *
+     * @param context generator context
      * @return class to generator mapping
      * @since 1.2.0
      */
-    Map<Class<?>, Generator<?>> getGenerators();
+    Map<Class<?>, Generator<?>> getGenerators(GeneratorContext context);
 }

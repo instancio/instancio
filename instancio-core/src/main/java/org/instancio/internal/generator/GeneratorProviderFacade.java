@@ -49,13 +49,13 @@ class GeneratorProviderFacade {
         }
 
         for (GeneratorProvider provider : generatorProviders) {
-            final Generator<?> generator = provider.getGenerators().get(forClass);
+            final Generator<?> generator = provider.getGenerators(context).get(forClass);
             if (generator != null) {
-                final Generator<?> decorated = GeneratorDecorator.decorateActionless(
-                        generator, context.getSettings().get(Keys.GENERATOR_HINT_POPULATE_ACTION));
-
                 LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), forClass);
-                decorated.init(context);
+
+                final Generator<?> decorated = GeneratorDecorator.decorateActionless(
+                        generator, context.getSettings().get(Keys.GENERATOR_HINT_POPULATE_ACTION), context);
+
                 cache.put(forClass, decorated);
                 return Optional.of(decorated);
             }
