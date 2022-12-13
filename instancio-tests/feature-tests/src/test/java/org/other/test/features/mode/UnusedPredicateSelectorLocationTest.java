@@ -66,15 +66,14 @@ class UnusedPredicateSelectorLocationTest {
                                 " 3: types().of(Timestamp)%n" +
                                 "    at org.other.test.features.mode.UnusedPredicateSelectorLocationTest.unused(UnusedPredicateSelectorLocationTest.java:44)%n" +
                                 "%n" +
-                                "This error aims to highlight potential problems and help maintain clean test code:%n" +
-                                "- You might be selecting a field or class that does not exist within this object.%n" +
-                                "- The target or its parent might be ignored using the ignore() method.%n" +
+                                "This error aims to highlight potential problems and help maintain clean test code.%n" +
+                                "You are most likely selecting a field or class that does not exist within this object.%n" +
                                 "%n" +
                                 "This error can be suppressed by switching to lenient mode, for example:%n" +
                                 "%n" +
-                                "      Example example = Instancio.of(Example.class).lenient()%n" +
+                                "      Example example = Instancio.of(Example.class)%n" +
                                 "          // snip...%n" +
-                                "          .create();%n" +
+                                "          .lenient().create();%n" +
                                 "%n" +
                                 "For more information see: https://www.instancio.org/user-guide/%n"
                 )));
