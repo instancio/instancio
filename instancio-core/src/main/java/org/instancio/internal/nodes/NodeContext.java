@@ -18,9 +18,10 @@ package org.instancio.internal.nodes;
 import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.nodes.resolvers.NodeKindArrayResolver;
 import org.instancio.internal.nodes.resolvers.NodeKindCollectionResolver;
+import org.instancio.internal.nodes.resolvers.NodeKindContainerResolver;
 import org.instancio.internal.nodes.resolvers.NodeKindMapResolver;
-import org.instancio.internal.nodes.resolvers.NodeKindOptionalResolver;
 import org.instancio.internal.nodes.resolvers.NodeKindRecordResolver;
+import org.instancio.internal.spi.InternalContainerFactoryProvider;
 
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
@@ -37,7 +38,8 @@ public final class NodeContext {
 
     public NodeContext(
             final Map<TypeVariable<?>, Class<?>> rootTypeMap,
-            final SubtypeSelectorMap subtypeSelectorMap) {
+            final SubtypeSelectorMap subtypeSelectorMap,
+            final List<InternalContainerFactoryProvider> containerFactories) {
 
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
         this.subtypeSelectorMap = subtypeSelectorMap;
@@ -45,8 +47,8 @@ public final class NodeContext {
                 new NodeKindCollectionResolver(),
                 new NodeKindMapResolver(),
                 new NodeKindArrayResolver(),
-                new NodeKindOptionalResolver(),
-                new NodeKindRecordResolver());
+                new NodeKindRecordResolver(),
+                new NodeKindContainerResolver(Collections.unmodifiableList(containerFactories)));
     }
 
     public List<NodeKindResolver> getNodeKindResolvers() {

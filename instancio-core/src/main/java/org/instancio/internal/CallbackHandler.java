@@ -18,7 +18,7 @@ package org.instancio.internal;
 import org.instancio.OnCompleteCallback;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.generator.InternalHint;
+import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class CallbackHandler implements GenerationListener {
         if (result.getValue() == null) {
             return;
         }
-        final InternalHint internalHint = result.getHints().get(InternalHint.class);
+        final InternalGeneratorHint internalHint = result.getHints().get(InternalGeneratorHint.class);
         if (internalHint != null && internalHint.excludeFromCallbacks()) {
             return;
         }

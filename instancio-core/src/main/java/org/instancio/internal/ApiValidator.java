@@ -113,13 +113,6 @@ public final class ApiValidator {
 
         isFalse(from.equals(to), () -> String.format(
                 "Invalid subtype mapping from '%s' to '%s'", to.getTypeName(), from.getTypeName()));
-
-        validateConcreteClass(to);
-    }
-
-    public static void validateConcreteClass(final Class<?> klass) {
-        isTrue(ReflectionUtils.isArrayOrConcrete(klass),
-                "Class must not be an interface or abstract class: '%s'", klass.getName());
     }
 
     public static void validateKeyValue(@Nullable final SettingKey key, @Nullable final Object value) {

@@ -22,6 +22,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,14 +70,10 @@ class NodeKindResolverTest {
         assertThat(new NodeKindMapResolver().resolve(String.class)).isEmpty();
     }
 
-    @ValueSource(classes = {Optional.class})
+    @ValueSource(classes = {EnumSet.class, Optional.class})
     @ParameterizedTest
     void optional(Class<?> klass) {
-        assertThat(new NodeKindOptionalResolver().resolve(klass)).contains(NodeKind.OPTIONAL);
-    }
-
-    @Test
-    void optional() {
-        assertThat(new NodeKindOptionalResolver().resolve(String.class)).isEmpty();
+        assertThat(new NodeKindContainerResolver(Collections.emptyList()).resolve(klass))
+                .contains(NodeKind.CONTAINER);
     }
 }

@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.random.DefaultRandom;
+import org.instancio.test.support.pojo.basic.EmptyEnum;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -36,8 +37,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class EnumGeneratorTest {
 
     private static final Random random = new DefaultRandom();
-
-    enum EmptyEnum {}
 
     enum SingleValueEnum {ONLY}
 
@@ -85,7 +84,8 @@ class EnumGeneratorTest {
     @Test
     void validation() {
         final EnumGenerator<Gender> generator = new EnumGenerator<>(Gender.class);
-        assertThatThrownBy(() -> generator.excluding(null))
+
+        assertThatThrownBy(() -> generator.excluding((Gender[]) null))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessage("Excluded values must not be null: excluding()");
 

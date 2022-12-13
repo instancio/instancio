@@ -21,16 +21,12 @@ import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Optional;
 
 public class CollectionNodeHandler implements NodeHandler {
@@ -47,10 +43,6 @@ public class CollectionNodeHandler implements NodeHandler {
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         if (Collection.class.isAssignableFrom(node.getTargetClass())) {
-            if (EnumSet.class.isAssignableFrom(node.getTargetClass())) {
-                return generateEnumSet(node);
-            }
-
             final Hints hints = Hints.builder()
                     .with(CollectionHint.builder()
                             .generateElements(randomSize())
@@ -63,22 +55,6 @@ public class CollectionNodeHandler implements NodeHandler {
             return Optional.of(result);
         }
         return Optional.empty();
-    }
-
-    @SuppressWarnings({"unchecked", Sonar.RAW_USE_OF_PARAMETERIZED_CLASS})
-    private Optional<GeneratorResult> generateEnumSet(final Node collectionNode) {
-        final Class<Enum> enumClass = (Class<Enum>) collectionNode.getOnlyChild().getTargetClass();
-        // TODO refactor
-        final Enum<?>[] enumValues = ReflectionUtils.getEnumValues(enumClass);
-        final int enumSetSize = Math.min(randomSize(), enumValues.length);
-        final Hints hints = Hints.builder()
-                .populateAction(PopulateAction.ALL)
-                .with(CollectionHint.builder()
-                        .generateElements(enumSetSize)
-                        .build())
-                .build();
-        final EnumSetGenerator<?> generator = new EnumSetGenerator<>(enumClass);
-        return Optional.of(GeneratorResult.create(generator.generate(context.getRandom()), hints));
     }
 
     private int randomSize() {

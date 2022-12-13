@@ -23,7 +23,7 @@ import org.instancio.generator.hints.MapHint;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.InternalHint;
+import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Sonar;
@@ -132,7 +132,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
                         .nullableMapValues(nullableValues)
                         .withEntries(withEntries)
                         .build())
-                .with(InternalHint.builder()
+                .with(InternalGeneratorHint.builder()
                         .targetClass(mapType)
                         .delegating(isDelegating)
                         .build())

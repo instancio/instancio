@@ -23,6 +23,7 @@ public final class Sonar {
     public static final String DISABLED_TEST = "java:S1607";
     public static final String GENERIC_WILDCARD_IN_RETURN = "java:S1452";
     public static final String METHODS_RETURNS_SHOULD_NOT_BE_INVARIANT = "java:S3516";
+    public static final String NULL_OPTIONAL = "java:S2789";
     public static final String NUMBER_OF_PARENTS = "java:S110";
     public static final String RAW_USE_OF_PARAMETERIZED_CLASS = "java:S3740";
     public static final String RETURN_EMPTY_COLLECTION = "java:S1168";

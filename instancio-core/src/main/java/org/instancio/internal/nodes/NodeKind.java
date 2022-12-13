@@ -43,12 +43,15 @@ public enum NodeKind {
     MAP,
 
     /**
-     * {@code java.util.Optional}
-     */
-    OPTIONAL,
-
-    /**
      * {@code java.lang.Record}
      */
-    RECORD
+    RECORD,
+
+    /**
+     * Represents a data structure whose child nodes are not fields,
+     * but type arguments.
+     *
+     * @since 2.0.0
+     */
+    CONTAINER
 }

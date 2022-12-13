@@ -44,7 +44,7 @@ public abstract class NodeTestTemplate<T> {
     @Test
     protected final void verifyingModelFromTypeToken() {
         final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap(Collections.emptyMap(), Collections.emptyMap());
-        final NodeContext nodeContext = new NodeContext(Collections.emptyMap(), subtypeSelectorMap);
+        final NodeContext nodeContext = new NodeContext(Collections.emptyMap(), subtypeSelectorMap, Collections.emptyList());
         final NodeFactory nodeFactory = new NodeFactory(nodeContext);
         final TypeTokenSupplier<Type> typeSupplier = typeContext::getGenericType;
         final Node rootNode = nodeFactory.createRootNode(typeSupplier.get());

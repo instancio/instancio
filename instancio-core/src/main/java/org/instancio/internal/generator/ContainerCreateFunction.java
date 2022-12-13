@@ -15,24 +15,22 @@
  */
 package org.instancio.internal.generator;
 
-import org.junit.jupiter.api.Test;
+/**
+ * Creates an instances of a container, or container's builder.
+ *
+ * @param <T> type of container (or builder)
+ * @see ContainerAddFunction
+ * @see ContainerBuildFunction
+ * @see InternalContainerHint
+ * @since 2.0.0
+ */
+public interface ContainerCreateFunction<T> {
 
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-class InternalHintTest {
-
-    @Test
-    void verifyToString() {
-        assertThat(InternalHint.builder().build())
-                .hasToString("GeneratorHint[targetClass=null, isDelegating=false, excludeFromCallbacks=false]");
-
-        assertThat(InternalHint.builder()
-                .targetClass(Map.class)
-                .delegating(true)
-                .excludeFromCallbacks(true)
-                .build())
-                .hasToString("GeneratorHint[targetClass=java.util.Map, isDelegating=true, excludeFromCallbacks=true]");
-    }
+    /**
+     * Returns an instance of a container or its builder.
+     *
+     * @param arguments if any, required to instantiate an instance
+     * @return container (or its builder) instance
+     */
+    T create(Object... arguments);
 }

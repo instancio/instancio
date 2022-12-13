@@ -30,12 +30,12 @@ import java.util.StringJoiner;
  * @see Generator
  * @since 2.0.0
  */
-public final class InternalHint implements Hint<InternalHint> {
+public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> {
     private final Class<?> targetClass;
     private final boolean isDelegating;
     private final boolean excludeFromCallbacks;
 
-    private InternalHint(final Builder builder) {
+    private InternalGeneratorHint(final Builder builder) {
         targetClass = builder.targetClass;
         isDelegating = builder.isDelegating;
         excludeFromCallbacks = builder.excludeFromCallbacks;
@@ -124,8 +124,8 @@ public final class InternalHint implements Hint<InternalHint> {
          *
          * @return the built instance.
          */
-        public InternalHint build() {
-            return new InternalHint(this);
+        public InternalGeneratorHint build() {
+            return new InternalGeneratorHint(this);
         }
     }
 }

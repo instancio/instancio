@@ -19,9 +19,10 @@ import lombok.Data;
 import org.instancio.test.support.pojo.misc.StringAndPrimitiveFields;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Data
 public class MapOfStringAndPrimitiveFields {
 
-    private Map<Long, StringAndPrimitiveFields> map;
+    private Map<UUID, StringAndPrimitiveFields> map;
 }

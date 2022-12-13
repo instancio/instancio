@@ -142,6 +142,7 @@ public final class NodeFactory {
                 .targetClass(rawType)
                 .field(field)
                 .parent(parent)
+                .nodeKind(getNodeKind(rawType))
                 .build();
 
         final Class<?> targetClass = resolveSubtype(node).orElse(rawType);
@@ -153,8 +154,10 @@ public final class NodeFactory {
                 LOG.debug("Subtype mapping '{}' to '{}'", Format.withoutPackage(rawType), Format.withoutPackage(targetClass));
             }
 
+            // Re-evaluate node kind and type map
             return node.toBuilder()
                     .targetClass(targetClass)
+                    .nodeKind(getNodeKind(targetClass))
                     .additionalTypeMap(createTypeMapForSubtype(rawType, targetClass))
                     .build();
         }
@@ -170,7 +173,7 @@ public final class NodeFactory {
 
         final Class<?> targetClass = node.getTargetClass();
 
-        if (isContainerClass(targetClass)) {
+        if (isContainer(node)) {
             Type[] types = targetClass.isArray()
                     ? new Type[]{targetClass.getComponentType()}
                     : targetClass.getTypeParameters();
@@ -190,16 +193,24 @@ public final class NodeFactory {
         return node;
     }
 
+    private NodeKind getNodeKind(final Class<?> rawType) {
+        return nodeContext.getNodeKindResolvers().stream()
+                .map(resolver -> resolver.resolve(rawType))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findAny()
+                .orElse(NodeKind.DEFAULT);
+    }
+
     private Node fromParameterizedType(final ParameterizedType type, @Nullable final Field field, @Nullable final Node parent) {
         final Node node = createNodeWithSubtypeMapping(type, field, parent);
         if (node.hasAncestorEqualToSelf()) {
             return null;
         }
 
-        final Class<?> targetClass = node.getTargetClass();
-        final List<Node> children = isContainerClass(targetClass)
+        final List<Node> children = isContainer(node)
                 ? createContainerNodeChildren(Arrays.stream(type.getActualTypeArguments()), node)
-                : createChildrenFromFields(targetClass, node);
+                : createChildrenFromFields(node.getTargetClass(), node);
 
         node.setChildren(children);
         return node;
@@ -220,6 +231,7 @@ public final class NodeFactory {
                 .rawType(rawType)
                 .field(field)
                 .parent(parent)
+                .nodeKind(getNodeKind(rawType))
                 .build();
 
         final List<Node> children = createContainerNodeChildren(Stream.of(gcType), node);
@@ -251,11 +263,11 @@ public final class NodeFactory {
                 .collect(toList());
     }
 
-    private static boolean isContainerClass(final Class<?> targetClass) {
-        return targetClass.isArray()
-                || targetClass == Optional.class
-                || Collection.class.isAssignableFrom(targetClass)
-                || Map.class.isAssignableFrom(targetClass);
+    private static boolean isContainer(final Node node) {
+        return node.is(NodeKind.COLLECTION)
+                || node.is(NodeKind.MAP)
+                || node.is(NodeKind.ARRAY)
+                || node.is(NodeKind.CONTAINER);
     }
 
     private Type resolveTypeVariable(final TypeVariable<?> typeVar, @Nullable final Node parent) {

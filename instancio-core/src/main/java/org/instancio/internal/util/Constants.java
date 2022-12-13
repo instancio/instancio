@@ -22,6 +22,26 @@ public final class Constants {
      */
     public static final int RANGE_ADJUSTMENT_PERCENTAGE = 50;
 
+    /**
+     * Default min array/collection size.
+     */
+    public static final int MIN_SIZE = 2;
+
+    /**
+     * Default max array/collection size.
+     */
+    public static final int MAX_SIZE = 6;
+
+    /**
+     * Default min for numeric types.
+     */
+    public static final int NUMERIC_MIN = 1;
+
+    /**
+     * Default max for numeric types.
+     */
+    public static final int NUMERIC_MAX = 10_000;
+
     private Constants() {
         // non-instantiable
     }

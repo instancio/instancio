@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.util;
+package org.instancio.nodes;
 
+import org.instancio.internal.nodes.Node;
 import org.instancio.test.support.pojo.person.Gender;
-import org.junit.jupiter.api.Test;
+import org.instancio.testsupport.templates.NodeTestTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.EnumSet;
 
-class EnumSetGeneratorTest {
+import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
-    @Test
-    void generate() {
-        final EnumSetGenerator<Gender> generator = new EnumSetGenerator<>(Gender.class);
-        assertThat(generator.generate(/* random = */ null))
-                .as("Expected an empty EnumSet")
-                .isEmpty();
+class EnumSetOfGenderNodeTest extends NodeTestTemplate<EnumSet<Gender>> {
+
+    @Override
+    protected void verify(Node rootNode) {
+        assertNode(rootNode)
+                .hasTargetClass(EnumSet.class)
+                .hasChildrenOfSize(1);
+
+        assertNode(rootNode.getOnlyChild())
+                .hasParent(rootNode)
+                .hasNullField()
+                .hasTargetClass(Gender.class)
+                .hasNoChildren();
     }
 }

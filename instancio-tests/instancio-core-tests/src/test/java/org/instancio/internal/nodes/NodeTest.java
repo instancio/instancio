@@ -45,7 +45,9 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 @NodeTag
 class NodeTest {
     private static final NodeContext NODE_CONTEXT = new NodeContext(
-            Collections.emptyMap(), new SubtypeSelectorMap(Collections.emptyMap(), Collections.emptyMap()));
+            Collections.emptyMap(),
+            new SubtypeSelectorMap(Collections.emptyMap(), Collections.emptyMap()),
+            Collections.emptyList());
 
     private static final NodeFactory NODE_FACTORY = new NodeFactory(NODE_CONTEXT);
 
@@ -67,7 +69,7 @@ class NodeTest {
         assertThat(NODE_FACTORY.createRootNode(Person[].class).getNodeKind()).isEqualTo(NodeKind.ARRAY);
         assertThat(NODE_FACTORY.createRootNode(Types.LIST_STRING.get()).getNodeKind()).isEqualTo(NodeKind.COLLECTION);
         assertThat(NODE_FACTORY.createRootNode(Types.MAP_INTEGER_STRING.get()).getNodeKind()).isEqualTo(NodeKind.MAP);
-        assertThat(NODE_FACTORY.createRootNode(new TypeToken<Optional<Integer>>() {}.get()).getNodeKind()).isEqualTo(NodeKind.OPTIONAL);
+        assertThat(NODE_FACTORY.createRootNode(new TypeToken<Optional<Integer>>() {}.get()).getNodeKind()).isEqualTo(NodeKind.CONTAINER);
     }
 
     @Test
@@ -79,6 +81,7 @@ class NodeTest {
                 .type(Types.LIST_STRING.get())
                 .rawType(List.class)
                 .targetClass(List.class)
+                .nodeKind(NodeKind.COLLECTION)
                 .field(ReflectionUtils.getField(ListString.class, "list"))
                 .parent(parent)
                 .nodeContext(NODE_CONTEXT)
@@ -96,7 +99,7 @@ class NodeTest {
         assertThat(copy.getTypeMap()).isEqualTo(node.getTypeMap());
         assertThat(copy.getOnlyChild()).isEqualTo(node.getOnlyChild());
         assertThat(copy.getChildren()).isEqualTo(node.getChildren());
-        assertThat(copy.getNodeKind()).isNotNull().isEqualTo(node.getNodeKind());
+        assertThat(copy.getNodeKind()).isEqualTo(node.getNodeKind());
     }
 
     @Nested
@@ -109,7 +112,7 @@ class NodeTest {
 
             Node bazInteger = createNode(List.class, rootTypeMap, typeBazInteger);
             Node bazString = createNode(List.class, rootTypeMap, typeBazString);
-            NodeContext nodeContext = new NodeContext(rootTypeMap, null);
+            NodeContext nodeContext = new NodeContext(rootTypeMap, null, Collections.emptyList());
             Node bazIntegerClassNode = Node.builder()
                     .nodeContext(nodeContext)
                     .type(typeBazInteger.get())
@@ -220,7 +223,7 @@ class NodeTest {
     }
 
     private static Node createNode(Class<?> klass, Map<TypeVariable<?>, Class<?>> rootTypeMap, TypeToken<?> type) {
-        final NodeContext nodeContext = new NodeContext(rootTypeMap, null);
+        final NodeContext nodeContext = new NodeContext(rootTypeMap, null, Collections.emptyList());
         return Node.builder()
                 .nodeContext(nodeContext)
                 .type(type.get())
