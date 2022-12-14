@@ -19,9 +19,9 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
 import org.instancio.TypeToken;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -45,12 +45,12 @@ import static org.instancio.test.support.pojo.basic.LongHolderWithDefaults.WRAPP
  * Tests for POJO with initialised fields.
  * <p>
  * Verifies OVERWRITE_EXISTING_VALUES enabled|disabled
- * with all populate actions + ignored() fields.
+ * with all AfterGenerate values + ignored() fields.
  */
 @FeatureTag({
         Feature.GENERATOR,
         Feature.IGNORE,
-        Feature.POPULATE_ACTION,
+        Feature.AFTER_GENERATE,
         Feature.OVERWRITE_EXISTING_VALUES,
         Feature.SET
 })
@@ -61,7 +61,7 @@ class CustomGeneratorWithInitialisedFieldsTest {
     private static final Settings OVERWRITES_DISABLED = Settings.create()
             .set(Keys.OVERWRITE_EXISTING_VALUES, false);
 
-    private static Generator<?> generator(final PopulateAction action) {
+    private static Generator<?> generator(final AfterGenerate afterGenerate) {
         return new Generator<Object>() {
             @Override
             public Object generate(final Random random) {
@@ -70,14 +70,14 @@ class CustomGeneratorWithInitialisedFieldsTest {
 
             @Override
             public Hints hints() {
-                return Hints.withPopulateAction(action);
+                return Hints.afterGenerate(afterGenerate);
             }
         };
     }
 
-    private static Model<Item<LongHolderWithDefaults>> baseModel(final PopulateAction action) {
+    private static Model<Item<LongHolderWithDefaults>> baseModel(final AfterGenerate afterGenerate) {
         return Instancio.of(new TypeToken<Item<LongHolderWithDefaults>>() {})
-                .supply(all(LongHolderWithDefaults.class), generator(action))
+                .supply(all(LongHolderWithDefaults.class), generator(afterGenerate))
                 .toModel();
     }
 
@@ -85,37 +85,37 @@ class CustomGeneratorWithInitialisedFieldsTest {
     class WithOverwriteExistingValuesEnabledTest {
 
         @EnumSource(
-                value = PopulateAction.class,
-                names = {"NONE", "APPLY_SELECTORS", "NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
+                value = AfterGenerate.class,
+                names = {"DO_NOT_MODIFY", "APPLY_SELECTORS", "POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"})
         @ParameterizedTest
-        void initialisedFieldShouldNotBeModified(final PopulateAction action) {
-            assertInitialisedFieldsNotModified(Instancio.create(baseModel(action)));
+        void initialisedFieldShouldNotBeModified(final AfterGenerate afterGenerate) {
+            assertInitialisedFieldsNotModified(Instancio.create(baseModel(afterGenerate)));
         }
 
         @EnumSource(
-                value = PopulateAction.class,
-                names = "ALL")
+                value = AfterGenerate.class,
+                names = "POPULATE_ALL")
         @ParameterizedTest
-        void initialisedFieldShouldBeOverwritten(final PopulateAction action) {
-            assertInitialisedFieldsOverwritten(Instancio.create(baseModel(action)));
+        void initialisedFieldShouldBeOverwritten(final AfterGenerate afterGenerate) {
+            assertInitialisedFieldsOverwritten(Instancio.create(baseModel(afterGenerate)));
         }
 
         @EnumSource(
-                value = PopulateAction.class,
-                names = {"APPLY_SELECTORS", "NULLS", "NULLS_AND_DEFAULT_PRIMITIVES", "ALL"})
+                value = AfterGenerate.class,
+                names = {"APPLY_SELECTORS", "POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES", "POPULATE_ALL"})
         @ParameterizedTest
-        void initialisedFieldShouldBeOverwrittenBySetSelector(final PopulateAction action) {
-            assertSelectorOverrideValues(Instancio.of(baseModel(action))
+        void initialisedFieldShouldBeOverwrittenBySetSelector(final AfterGenerate afterGenerate) {
+            assertSelectorOverrideValues(Instancio.of(baseModel(afterGenerate))
                     .set(allLongs(), SELECTOR_OVERRIDE)
                     .create());
         }
 
         @EnumSource(
-                value = PopulateAction.class,
-                names = {"APPLY_SELECTORS", "NULLS", "NULLS_AND_DEFAULT_PRIMITIVES", "ALL"})
+                value = AfterGenerate.class,
+                names = {"APPLY_SELECTORS", "POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES", "POPULATE_ALL"})
         @ParameterizedTest
-        void initialisedFieldShouldBeNotOverwrittenBySetSelectorIfIgnoreIsSpecified(final PopulateAction action) {
-            assertInitialisedFieldsNotModified(Instancio.of(baseModel(action))
+        void initialisedFieldShouldBeNotOverwrittenBySetSelectorIfIgnoreIsSpecified(final AfterGenerate afterGenerate) {
+            assertInitialisedFieldsNotModified(Instancio.of(baseModel(afterGenerate))
                     .ignore(field(LongHolderWithDefaults.class, "primitive"))
                     .ignore(field(LongHolderWithDefaults.class, "wrapper"))
                     .set(allLongs(), SELECTOR_OVERRIDE)
@@ -123,11 +123,11 @@ class CustomGeneratorWithInitialisedFieldsTest {
         }
 
         @EnumSource(
-                value = PopulateAction.class,
-                names = "NONE")
+                value = AfterGenerate.class,
+                names = "DO_NOT_MODIFY")
         @ParameterizedTest
-        void initialisedFieldShouldNotBeOverwrittenBySetSelector(final PopulateAction action) {
-            assertInitialisedFieldsNotModified(Instancio.of(baseModel(action))
+        void initialisedFieldShouldNotBeOverwrittenBySetSelector(final AfterGenerate afterGenerate) {
+            assertInitialisedFieldsNotModified(Instancio.of(baseModel(afterGenerate))
                     .set(allLongs(), SELECTOR_OVERRIDE)
                     .lenient()
                     .create());
@@ -136,24 +136,24 @@ class CustomGeneratorWithInitialisedFieldsTest {
 
     /**
      * If OVERWRITE_EXISTING_VALUES is disabled, initialised fields should NOT be
-     * overwritten by the engine or via selectors, regardless of populate action.
+     * overwritten by the engine or via selectors, regardless of AfterGenerate value.
      */
     @Nested
     @ExtendWith(InstancioExtension.class)
     class WithOverwriteExistingValuesDisabledTest {
 
-        @EnumSource(value = PopulateAction.class)
+        @EnumSource(value = AfterGenerate.class)
         @ParameterizedTest
-        void initialisedFieldShouldBeModified(final PopulateAction action) {
-            assertInitialisedFieldsNotModified(Instancio.of(baseModel(action))
+        void initialisedFieldShouldBeModified(final AfterGenerate afterGenerate) {
+            assertInitialisedFieldsNotModified(Instancio.of(baseModel(afterGenerate))
                     .withSettings(OVERWRITES_DISABLED)
                     .create());
         }
 
-        @EnumSource(value = PopulateAction.class)
+        @EnumSource(value = AfterGenerate.class)
         @ParameterizedTest
-        void initialisedFieldShouldBeOverwrittenBySetSelector(final PopulateAction action) {
-            assertInitialisedFieldsNotModified(Instancio.of(baseModel(action))
+        void initialisedFieldShouldBeOverwrittenBySetSelector(final AfterGenerate afterGenerate) {
+            assertInitialisedFieldsNotModified(Instancio.of(baseModel(afterGenerate))
                     .withSettings(OVERWRITES_DISABLED)
                     .set(allLongs(), SELECTOR_OVERRIDE)
                     .lenient()

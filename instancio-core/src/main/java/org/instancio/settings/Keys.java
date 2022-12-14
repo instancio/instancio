@@ -16,7 +16,7 @@
 package org.instancio.settings;
 
 import org.instancio.Mode;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
@@ -203,15 +203,15 @@ public final class Keys {
      */
     public static final SettingKey MODE = register("mode", Mode.class, Mode.STRICT);
     /**
-     * Specifies the default value of the {@link PopulateAction} hint
+     * Specifies the default value of the {@link AfterGenerate} hint
      * supplied from custom generators to the engine;
-     * default is {@link PopulateAction#NULLS_AND_DEFAULT_PRIMITIVES};
-     * property name {@code generator.hint.populate.action}.
+     * default is {@link AfterGenerate#POPULATE_NULLS_AND_DEFAULT_PRIMITIVES};
+     * property name {@code hint.after.generate}.
      *
      * @since 2.0.0
      */
-    public static final SettingKey GENERATOR_HINT_POPULATE_ACTION = register(
-            "generator.hint.populate.action", PopulateAction.class, PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+    public static final SettingKey AFTER_GENERATE_HINT = register(
+            "hint.after.generate", AfterGenerate.class, AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
     /**
      * Specifies whether initialised fields are allowed to be overwritten;
      * default is {@code true}; property name {@code overwrite.existing.values}.

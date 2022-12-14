@@ -19,7 +19,7 @@ import org.instancio.generator.Generator;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.java16.record.PersonRecord;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ import static org.instancio.Select.all;
 class CustomRecordGeneratorTest {
 
     @Test
-    @DisplayName("NULLS should be ignored for records")
+    @DisplayName("POPULATE_NULLS does not apply records since they are read-only")
     void customRecordGenerator() {
         final String name = "John";
         final int age = 25;
@@ -50,7 +50,7 @@ class CustomRecordGeneratorTest {
 
                     @Override
                     public Hints hints() {
-                        return Hints.withPopulateAction(PopulateAction.NULLS);
+                        return Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
                     }
                 })
                 .create();

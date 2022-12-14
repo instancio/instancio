@@ -29,47 +29,47 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  * support more flexibility in how objects are populated.
  *
  * @see Generator
- * @see PopulateAction
+ * @see AfterGenerate
  * @since 2.0.0
  */
 public final class Hints {
 
-    private final PopulateAction populateAction;
+    private final AfterGenerate afterGenerate;
     private final Map<Class<?>, Object> hintMap;
 
     private Hints(final Builder builder) {
-        populateAction = builder.populateAction;
+        afterGenerate = builder.afterGenerate;
         hintMap = defaultIfNull(builder.hintMap, Collections.emptyMap());
     }
 
     /**
-     * Returns an instance of hints containing the specified action.
+     * Returns an instance of hints containing the specified {@link AfterGenerate} value.
      *
-     * @param populateAction the populate action
-     * @return an instance containing a single hint {@link PopulateAction#NULLS}
-     * @see PopulateAction
+     * @param afterGenerate the action to be performed after generate
+     * @return an instance containing a single hint {@link AfterGenerate#POPULATE_NULLS}
+     * @see AfterGenerate
      * @since 2.0.0
      */
-    public static Hints withPopulateAction(final PopulateAction populateAction) {
-        return Hints.builder().populateAction(populateAction).build();
+    public static Hints afterGenerate(final AfterGenerate afterGenerate) {
+        return Hints.builder().afterGenerate(afterGenerate).build();
     }
 
     public static Builder builder(final Hints copy) {
         Builder builder = new Builder();
-        builder.populateAction = copy.populateAction;
+        builder.afterGenerate = copy.afterGenerate;
         builder.hintMap = copy.hintMap;
         return builder;
     }
 
     /**
-     * Returns the action to be performed by the engine.
+     * Returns the after generate action to be performed by the engine.
      *
-     * @return populate action to perform
-     * @see PopulateAction
+     * @return after generate action to perform
+     * @see AfterGenerate
      * @since 2.0.0
      */
-    public PopulateAction populateAction() {
-        return populateAction;
+    public AfterGenerate afterGenerate() {
+        return afterGenerate;
     }
 
     /**
@@ -98,7 +98,7 @@ public final class Hints {
      * Builder for constructing {@link Hints}.
      */
     public static final class Builder {
-        private PopulateAction populateAction;
+        private AfterGenerate afterGenerate;
         private Map<Class<?>, Object> hintMap;
 
         private Builder() {
@@ -133,31 +133,31 @@ public final class Hints {
         /**
          * A hint indicating what should be done with the object created by the
          * generator. If not specified, the default action is
-         * {@link PopulateAction#APPLY_SELECTORS}, which implies the engine
+         * {@link AfterGenerate#APPLY_SELECTORS}, which implies the engine
          * will not modify the created instance.
          *
          * <p>For most common use cases, custom generators
          * will use one of the following:</p>
          *
          * <ul>
-         *   <li>{@link PopulateAction#APPLY_SELECTORS}</li>
-         *   <li>{@link PopulateAction#NULLS}</li>
-         *   <li>{@link PopulateAction#NULLS_AND_DEFAULT_PRIMITIVES}</li>
+         *   <li>{@link AfterGenerate#APPLY_SELECTORS}</li>
+         *   <li>{@link AfterGenerate#POPULATE_NULLS}</li>
+         *   <li>{@link AfterGenerate#POPULATE_NULLS_AND_DEFAULT_PRIMITIVES}</li>
          * </ul>
          *
          * <p><b>Note:</b> the populate action hint is not applicable to
          * generators that produce {@code java.lang.Record} objects. Since records
          * are immutable, they cannot be modified after instantiation.</p>
          *
-         * @param populateAction action to be taken by the engine after
-         *                       object has been created by the generator
+         * @param afterGenerate action to be taken by the engine after
+         *                      object has been created by the generator
          * @return builder instance
-         * @see PopulateAction
+         * @see AfterGenerate
          * @since 2.0.0
          */
-        public Builder populateAction(final PopulateAction populateAction) {
-            this.populateAction = ApiValidator.notNull(
-                    populateAction, "Populate action must not be null");
+        public Builder afterGenerate(final AfterGenerate afterGenerate) {
+            this.afterGenerate = ApiValidator.notNull(
+                    afterGenerate, "AfterGenerate must not be null");
             return this;
         }
 
@@ -174,7 +174,7 @@ public final class Hints {
     @Override
     public String toString() {
         return new StringJoiner(", ", "Hints[", "]")
-                .add("populateAction=" + populateAction)
+                .add("afterGenerate=" + afterGenerate)
                 .add("hints=" + hintMap)
                 .toString();
     }

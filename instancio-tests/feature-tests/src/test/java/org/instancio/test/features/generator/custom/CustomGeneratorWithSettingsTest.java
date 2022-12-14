@@ -17,9 +17,9 @@ package org.instancio.test.features.generator.custom;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -65,8 +65,9 @@ class CustomGeneratorWithSettingsTest {
 
     @Nested
     class GeneratorWithNullHintsTest {
+
         @Test
-        @DisplayName("Default settings: populate action should default to NULLS_AND_DEFAULT_PRIMITIVES")
+        @DisplayName("Default settings: AfterGenerate should default to NULLS_AND_DEFAULT_PRIMITIVES")
         void withDefaultSettings() {
             final StringFields result = Instancio.of(StringFields.class)
                     .supply(all(StringFields.class), GENERATOR_WITH_NULL_HINTS)
@@ -80,13 +81,13 @@ class CustomGeneratorWithSettingsTest {
         }
 
         @Test
-        @DisplayName("Settings action: NULLS")
-        void settingsActionPopulateNulls() {
+        @DisplayName("Settings: POPULATE_NULLS")
+        void settingIsPopulateNulls() {
             final StringFields result = Instancio.of(StringFields.class)
                     .supply(all(StringFields.class), GENERATOR_WITH_NULL_HINTS)
                     .set(fields().annotated(StringFields.Two.class), OVERRIDE_TWO)
                     .withSettings(Settings.create()
-                            .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NULLS))
+                            .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.POPULATE_NULLS))
                     .create();
 
             assertThat(result.getOne()).isEqualTo(ONE);
@@ -96,13 +97,13 @@ class CustomGeneratorWithSettingsTest {
         }
 
         @Test
-        @DisplayName("Settings action: NONE")
-        void settingsActionPopulateNone() {
+        @DisplayName("Settings: DO_NOT_MODIFY")
+        void settingIsDoNotModify() {
             final StringFields result = Instancio.of(StringFields.class)
                     .supply(all(StringFields.class), GENERATOR_WITH_NULL_HINTS)
                     .set(fields().annotated(StringFields.Two.class), OVERRIDE_TWO)
                     .withSettings(Settings.create()
-                            .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NONE))
+                            .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.DO_NOT_MODIFY))
                     .lenient()
                     .create();
 
@@ -114,22 +115,19 @@ class CustomGeneratorWithSettingsTest {
     }
 
     @Nested
-    class GeneratorWithActionPopulateNullsTest {
+    class GeneratorWithPopulateNullsHintTest {
 
         @Test
-        @DisplayName("Populate action from Generator.hints() take precedence over Settings")
-        void settingsActionPopulateNulls() {
-
+        @DisplayName("AfterGenerate from Generator.hints() take precedence over Settings")
+        void settingsIsPopulateNulls() {
             final Generator<?> generator = new StringFieldsGenerator(
-                    Hints.withPopulateAction(PopulateAction.NULLS));
+                    Hints.afterGenerate(AfterGenerate.POPULATE_NULLS));
 
-            // Generator.hints() action is PopulateAction.NULLS
-            // Settings action is PopulateAction.NONE
             final StringFields result = Instancio.of(StringFields.class)
                     .supply(all(StringFields.class), generator)
                     .set(fields().annotated(StringFields.Two.class), OVERRIDE_TWO)
                     .withSettings(Settings.create()
-                            .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NONE))
+                            .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.DO_NOT_MODIFY))
                     .create();
 
             assertThat(result.getOne()).isEqualTo(ONE);

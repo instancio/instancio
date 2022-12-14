@@ -17,10 +17,10 @@ package org.instancio.internal.generator.misc;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioException;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.internal.util.Sonar;
 
 import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
@@ -36,9 +36,9 @@ public final class GeneratorDecorator implements Generator<Object> {
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    public static Generator<?> decorateActionless(
+    public static Generator<?> decorate(
             final Generator<?> generator,
-            final PopulateAction populateAction,
+            final AfterGenerate afterGenerate,
             final GeneratorContext context) {
 
         // must init() first because decorate method copies Hints,
@@ -46,13 +46,13 @@ public final class GeneratorDecorator implements Generator<Object> {
         generator.init(context);
 
         final Hints originalHints = generator.hints();
-        if (originalHints != null && originalHints.populateAction() != null) {
+        if (originalHints != null && originalHints.afterGenerate() != null) {
             return generator;
         }
 
         final Hints newHints = originalHints == null
-                ? Hints.withPopulateAction(populateAction)
-                : Hints.builder(originalHints).populateAction(populateAction).build();
+                ? Hints.afterGenerate(afterGenerate)
+                : Hints.builder(originalHints).afterGenerate(afterGenerate).build();
 
         return new GeneratorDecorator(generator, newHints);
     }

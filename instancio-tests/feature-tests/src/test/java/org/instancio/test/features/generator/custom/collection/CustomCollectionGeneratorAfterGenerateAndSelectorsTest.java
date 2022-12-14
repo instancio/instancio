@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom.collection;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.test.support.pojo.collections.lists.ListOfStringAndPrimitiveFields;
 import org.instancio.test.support.pojo.misc.StringAndPrimitiveFields;
@@ -45,14 +45,14 @@ import static org.instancio.test.support.asserts.Asserts.assertNoNulls;
 import static org.instancio.test.support.asserts.Asserts.assertNoZeroes;
 
 @FeatureTag({
+        Feature.AFTER_GENERATE,
         Feature.GENERATE,
         Feature.GENERATOR,
         Feature.METAMODEL,
         Feature.MODEL,
-        Feature.POPULATE_ACTION,
         Feature.SELECTOR
 })
-class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
+class CustomCollectionGeneratorAfterGenerateAndSelectorsTest {
     private static final int INITIAL_SIZE = 1;
     private static final int GENERATE_ELEMENTS_HINT = 5;
 
@@ -98,16 +98,16 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
                 .toModel();
     }
 
-    private ListOfStringAndPrimitiveFields createWith(final PopulateAction action) {
-        final Hints hints = Hints.builder().populateAction(action)
+    private ListOfStringAndPrimitiveFields createWith(final AfterGenerate afterGenerate) {
+        final Hints hints = Hints.builder().afterGenerate(afterGenerate)
                 .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS_HINT).build())
                 .build();
 
         return Instancio.create(createBaseModelWith(hints));
     }
 
-    private ListOfStringAndPrimitiveFields createWithHintsAndSelectors(final PopulateAction action) {
-        final Hints hints = Hints.builder().populateAction(action)
+    private ListOfStringAndPrimitiveFields createWithHintsAndSelectors(final AfterGenerate afterGenerate) {
+        final Hints hints = Hints.builder().afterGenerate(afterGenerate)
                 .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS_HINT).build())
                 .build();
 
@@ -116,7 +116,7 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
                 .set(StringFields_.two, STR_TWO_OVERRIDE)
                 .set(StringAndPrimitiveFields_.intOne, INT_ONE_OVERRIDE)
                 .set(StringAndPrimitiveFields_.intTwo, INT_TWO_OVERRIDE)
-                .lenient() // only needed for testing selectors when action is NONE
+                .lenient() // only needed for testing selectors when AfterGenerate is DO_NOT_MODIFY
                 .create();
     }
 
@@ -124,24 +124,24 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
     class WithoutSelectorsTest {
 
         @Test
-        @DisplayName("Action: NONE")
-        void populateActionNone() {
-            final ListOfStringAndPrimitiveFields result = createWith(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY")
+        void doNotModify() {
+            final ListOfStringAndPrimitiveFields result = createWith(AfterGenerate.DO_NOT_MODIFY);
 
             assertThat(result.getList())
                     .doesNotContainNull()
                     .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS_HINT)
                     .contains(existingElement)
                     .filteredOn(ELEMENT_CREATED_BY_USER)
-                    .allSatisfy(CustomCollectionGeneratorPopulateActionAndSelectorsTest::assertExistingElementWasNotModified);
+                    .allSatisfy(CustomCollectionGeneratorAfterGenerateAndSelectorsTest::assertExistingElementWasNotModified);
 
             assertEngineGeneratedElementsAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: APPLY_SELECTORS")
-        void populateActionApplySelectors() {
-            final ListOfStringAndPrimitiveFields result = createWith(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS")
+        void applySelectors() {
+            final ListOfStringAndPrimitiveFields result = createWith(AfterGenerate.APPLY_SELECTORS);
 
             assertThat(result.getList())
                     .doesNotContainNull()
@@ -150,15 +150,15 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
 
             assertThat(result.getList())
                     .filteredOn(ELEMENT_CREATED_BY_USER)
-                    .allSatisfy(CustomCollectionGeneratorPopulateActionAndSelectorsTest::assertExistingElementWasNotModified);
+                    .allSatisfy(CustomCollectionGeneratorAfterGenerateAndSelectorsTest::assertExistingElementWasNotModified);
 
             assertEngineGeneratedElementsAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: NULLS")
-        void populateActionNulls() {
-            final ListOfStringAndPrimitiveFields result = createWith(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS")
+        void populateNulls() {
+            final ListOfStringAndPrimitiveFields result = createWith(AfterGenerate.POPULATE_NULLS);
 
             assertThat(result.getList())
                     .doesNotContainNull()
@@ -178,9 +178,9 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
         }
 
         @Test
-        @DisplayName("Action: NULLS_AND_DEFAULT_PRIMITIVES")
-        void populateActionNullsAndDefaultPrimitives() {
-            final ListOfStringAndPrimitiveFields result = createWith(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES")
+        void populateNullsAndDefaultPrimitives() {
+            final ListOfStringAndPrimitiveFields result = createWith(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
             assertThat(result.getList())
                     .doesNotContainNull()
@@ -200,9 +200,9 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
         }
 
         @Test
-        @DisplayName("Action: ALL")
-        void populateActionAll() {
-            final ListOfStringAndPrimitiveFields result = createWith(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL")
+        void populateAll() {
+            final ListOfStringAndPrimitiveFields result = createWith(AfterGenerate.POPULATE_ALL);
 
             assertThat(result.getList())
                     .doesNotContainNull()
@@ -222,9 +222,9 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
     @Nested
     class WithSelectorsTest {
         @Test
-        @DisplayName("Action: NONE")
-        void populateActionNone() {
-            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY")
+        void doNotModify() {
+            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.DO_NOT_MODIFY);
 
             assertThat(result.getList())
                     .doesNotContainNull()
@@ -236,7 +236,7 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
             assertThat(result.getList())
                     .filteredOn(ELEMENT_CREATED_BY_USER)
                     .hasSize(1)
-                    .allSatisfy(CustomCollectionGeneratorPopulateActionAndSelectorsTest::assertExistingElementWasNotModified);
+                    .allSatisfy(CustomCollectionGeneratorAfterGenerateAndSelectorsTest::assertExistingElementWasNotModified);
 
             assertEngineGeneratedElementsAreFullyPopulated(result);
         }
@@ -245,9 +245,9 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
          * Selectors should be applied to user-created AND engine-created objects.
          */
         @Test
-        @DisplayName("Action: APPLY_SELECTORS")
-        void populateActionApplySelectors() {
-            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS")
+        void applySelectors() {
+            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.APPLY_SELECTORS);
 
             assertThat(result.getList())
                     .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS_HINT)
@@ -266,15 +266,15 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
             assertThat(result.getList())
                     .filteredOn(ELEMENT_GENERATED_BY_ENGINE)
                     .hasSize(GENERATE_ELEMENTS_HINT)
-                    .allSatisfy(CustomCollectionGeneratorPopulateActionAndSelectorsTest::assertSelectorOverrides);
+                    .allSatisfy(CustomCollectionGeneratorAfterGenerateAndSelectorsTest::assertSelectorOverrides);
 
             assertEngineGeneratedElementsAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: NULLS")
-        void populateActionNulls() {
-            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS")
+        void populateNulls() {
+            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.POPULATE_NULLS);
 
             assertThat(result.getList())
                     .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS_HINT)
@@ -293,15 +293,15 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
             assertThat(result.getList())
                     .filteredOn(ELEMENT_GENERATED_BY_ENGINE)
                     .hasSize(GENERATE_ELEMENTS_HINT)
-                    .allSatisfy(CustomCollectionGeneratorPopulateActionAndSelectorsTest::assertSelectorOverrides);
+                    .allSatisfy(CustomCollectionGeneratorAfterGenerateAndSelectorsTest::assertSelectorOverrides);
 
             assertEngineGeneratedElementsAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: NULLS_AND_DEFAULT_PRIMITIVES")
-        void populateActionNullsAndDefaultPrimitives() {
-            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        @DisplayName("NULLS_AND_DEFAULT_PRIMITIVES")
+        void populateNullsAndDefaultPrimitives() {
+            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
             assertThat(result.getList())
                     .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS_HINT)
@@ -320,15 +320,15 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
             assertThat(result.getList())
                     .filteredOn(ELEMENT_GENERATED_BY_ENGINE)
                     .hasSize(GENERATE_ELEMENTS_HINT)
-                    .allSatisfy(CustomCollectionGeneratorPopulateActionAndSelectorsTest::assertSelectorOverrides);
+                    .allSatisfy(CustomCollectionGeneratorAfterGenerateAndSelectorsTest::assertSelectorOverrides);
 
             assertEngineGeneratedElementsAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: ALL")
-        void populateActionAll() {
-            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL")
+        void populateAll() {
+            final ListOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.POPULATE_ALL);
 
             assertThat(result.getList())
                     .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS_HINT)
@@ -347,7 +347,7 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
             assertThat(result.getList())
                     .filteredOn(ELEMENT_GENERATED_BY_ENGINE)
                     .hasSize(GENERATE_ELEMENTS_HINT)
-                    .allSatisfy(CustomCollectionGeneratorPopulateActionAndSelectorsTest::assertSelectorOverrides);
+                    .allSatisfy(CustomCollectionGeneratorAfterGenerateAndSelectorsTest::assertSelectorOverrides);
 
             assertEngineGeneratedElementsAreFullyPopulated(result);
         }
@@ -369,7 +369,7 @@ class CustomCollectionGeneratorPopulateActionAndSelectorsTest {
 
     private void assertEngineGeneratedElementsAreFullyPopulated(final ListOfStringAndPrimitiveFields result) {
         // Elements that were created and added to the collection by the engine
-        // are always fully-populated (regardless of the PopulateAction)
+        // are always fully-populated (regardless of the AfterGenerate value)
         assertThat(result.getList())
                 .filteredOn(ELEMENT_GENERATED_BY_ENGINE) // exclude user-created object
                 .hasSize(GENERATE_ELEMENTS_HINT)

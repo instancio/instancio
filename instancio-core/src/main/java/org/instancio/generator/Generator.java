@@ -71,7 +71,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
     /**
      * Hints provided by the generator to the engine.
      *
-     * <p>The most important hint for custom generators is {@link PopulateAction}.
+     * <p>The most important hint for custom generators is {@link AfterGenerate}.
      * This hint indicates whether the object created by this generator:
      *
      * <ul>
@@ -79,20 +79,20 @@ public interface Generator<T> extends GeneratorSpec<T> {
      *   <li>can be modified using selectors</li>
      * </ul>
      *
-     * <p>For example, setting the hint to {@link PopulateAction#NULLS}
+     * <p>For example, setting the hint to {@link AfterGenerate#POPULATE_NULLS}
      * will cause Instancio to populate {@code null} fields on the object
      * returned by this generator:
      *
      * <pre>{@code
      *   @Override
      *   public Hints hints() {
-     *       return Hints.withPopulateAction(PopulateAction.NULLS);
+     *       return Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
      *   }
      * }</pre>
      *
-     * <p>If the action is not specified, default behaviour will be based
-     * on the action configured via {@link Settings} using the key
-     * {@link Keys#GENERATOR_HINT_POPULATE_ACTION}.</p>
+     * <p>If the action is not specified, default behaviour will be based on
+     * the {@code AfterGenerate} value configured via {@link Settings}
+     * using the key {@link Keys#AFTER_GENERATE_HINT}.</p>
      * <p>
      * In addition, the following hints can be provided for populating
      * data structures:
@@ -105,7 +105,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      *
      * @return hints from this generator to the engine
      * @see Hint
-     * @see PopulateAction
+     * @see AfterGenerate
      * @since 2.0.0
      */
     default Hints hints() {

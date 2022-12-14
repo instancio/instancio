@@ -17,9 +17,9 @@ package org.instancio.test.features.generator.custom.array;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -43,7 +43,7 @@ import static org.instancio.Select.all;
         Feature.ARRAY_GENERATOR_WITH,
         Feature.ARRAY_GENERATOR_LENGTH,
         Feature.GENERATOR,
-        Feature.POPULATE_ACTION
+        Feature.AFTER_GENERATE
 })
 class CustomArrayGeneratorWithElementsTest {
 
@@ -71,12 +71,12 @@ class CustomArrayGeneratorWithElementsTest {
         }
     }
 
-    @Test
-    @DisplayName("Action NONE: withElements() included; all empty indices populated ")
-    void actionNoneWithElementsShouldNotBeSet() {
+    @ParameterizedTest
+    @EnumSource(AfterGenerate.class)
+    void shouldIncludeWithElements(final AfterGenerate afterGenerate) {
         final List<String> withElements = Arrays.asList("foo", "bar");
         final WithStringArray result = createArray(Hints.builder()
-                .populateAction(PopulateAction.NONE)
+                .afterGenerate(afterGenerate)
                 .with(ArrayHint.builder()
                         .withElements(withElements)
                         .build())
@@ -84,16 +84,21 @@ class CustomArrayGeneratorWithElementsTest {
 
         assertThat(result.getValues())
                 .contains(EXISTING_ELEMENT)
-                .containsAll(withElements)
-                .doesNotContainNull();
+                .containsAll(withElements);
+
+        if (afterGenerate == AfterGenerate.DO_NOT_MODIFY || afterGenerate == AfterGenerate.APPLY_SELECTORS) {
+            assertThat(result.getValues()).containsNull();
+        } else {
+            assertThat(result.getValues()).doesNotContainNull();
+        }
     }
 
     @Test
-    @DisplayName("Action APPLY_SELECTORS: withElements() included; empty indices populated")
-    void actionApplySelectorsWithElements() {
+    @DisplayName("APPLY_SELECTORS: withElements() included; empty indices not populated")
+    void applySelectors() {
         final List<String> withElements = Arrays.asList("foo", "bar");
         final Hints hints = Hints.builder()
-                .populateAction(PopulateAction.APPLY_SELECTORS)
+                .afterGenerate(AfterGenerate.APPLY_SELECTORS)
                 .with(ArrayHint.builder()
                         .withElements(withElements)
                         .build())
@@ -102,17 +107,16 @@ class CustomArrayGeneratorWithElementsTest {
         assertThat(createArray(hints).getValues())
                 .contains(EXISTING_ELEMENT)
                 .containsAll(withElements)
-                .doesNotContainNull();
+                .containsNull();
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE,
-            names = {"NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
-    @DisplayName("Actions NULLS and NULLS_AND_DEFAULT_PRIMITIVES: withElements() included; nulls populated ")
-    void withElementsShouldBeSet(final PopulateAction action) {
+    @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE,
+            names = {"POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"})
+    void withElementsShouldBeSet(final AfterGenerate afterGenerate) {
         final List<String> withElements = Arrays.asList("foo", "bar");
         final WithStringArray result = createArray(Hints.builder()
-                .populateAction(action)
+                .afterGenerate(afterGenerate)
                 .with(ArrayHint.builder()
                         .withElements(withElements)
                         .build())
@@ -123,7 +127,6 @@ class CustomArrayGeneratorWithElementsTest {
                 .containsAll(withElements)
                 .doesNotContainNull();
     }
-
 
     @Nested
     class BoundaryTest {
@@ -162,7 +165,6 @@ class CustomArrayGeneratorWithElementsTest {
     class MissingHintsTest {
 
         @Test
-        @DisplayName("Hints are null")
         void nullHints() {
             assertThat(createArray(null).getValues())
                     .contains(EXISTING_ELEMENT)
@@ -170,21 +172,30 @@ class CustomArrayGeneratorWithElementsTest {
         }
 
         @Test
-        @DisplayName("PopulateAction is null")
-        void nullPopulateAction() {
+        void nullAfterGenerate() {
             final Hints hints = Hints.builder().build();
-            assertThat(hints.populateAction()).isNull();
+            assertThat(hints.afterGenerate()).isNull();
             assertThat(createArray(hints).getValues())
                     .contains(EXISTING_ELEMENT)
                     .doesNotContainNull();
         }
 
         @ParameterizedTest
-        @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE,
-                names = {"NONE", "APPLY_SELECTORS", "NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
-        @DisplayName("ArrayHint is null")
-        void nullArrayHint_shouldPopulateArray(final PopulateAction action) {
-            final Hints hints = Hints.withPopulateAction(action);
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE,
+                names = {"DO_NOT_MODIFY", "APPLY_SELECTORS"})
+        void nullArrayHint_shouldNotPopulateArray(final AfterGenerate afterGenerate) {
+            final Hints hints = Hints.afterGenerate(afterGenerate);
+            assertThat(hints.get(ArrayHint.class)).isNull();
+            assertThat(createArray(hints).getValues())
+                    .contains(EXISTING_ELEMENT) // not overwritten
+                    .containsNull();
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE,
+                names = {"POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"})
+        void nullArrayHint_shouldPopulateArray(final AfterGenerate afterGenerate) {
+            final Hints hints = Hints.afterGenerate(afterGenerate);
             assertThat(hints.get(ArrayHint.class)).isNull();
             assertThat(createArray(hints).getValues())
                     .contains(EXISTING_ELEMENT) // not overwritten
@@ -192,10 +203,9 @@ class CustomArrayGeneratorWithElementsTest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE, names = "ALL")
-        @DisplayName("ArrayHint is null")
-        void nullArrayHint_actionAll(final PopulateAction action) {
-            final Hints hints = Hints.withPopulateAction(action);
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE, names = "POPULATE_ALL")
+        void nullArrayHint_populateAll(final AfterGenerate afterGenerate) {
+            final Hints hints = Hints.afterGenerate(afterGenerate);
             assertThat(hints.get(ArrayHint.class)).isNull();
             assertThat(createArray(hints).getValues())
                     .doesNotContain(EXISTING_ELEMENT) // overwritten
@@ -204,8 +214,7 @@ class CustomArrayGeneratorWithElementsTest {
     }
 
     @Test
-    @DisplayName("PopulateAction is set to NULLS via Settings")
-    void populateActionIsNullsViaSettings() {
+    void settingIsPopulateNulls() {
         assertArrayIsPopulated(null);
 
         assertArrayIsPopulated(Hints.builder()
@@ -217,7 +226,7 @@ class CustomArrayGeneratorWithElementsTest {
         final WithStringArray result = Instancio.of(WithStringArray.class)
                 .supply(all(String[].class), new ArrayGenerator(hints))
                 .withSettings(Settings.create()
-                        .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NULLS))
+                        .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.POPULATE_NULLS))
                 .create();
 
         assertThat(result.getValues())

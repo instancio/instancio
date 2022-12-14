@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom.collection;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.TypeToken;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfList;
 import org.instancio.test.support.tags.Feature;
@@ -48,7 +48,7 @@ class CustomCollectionWithNonGenericSubclassTest {
         @Override
         public Hints hints() {
             return Hints.builder()
-                    .populateAction(PopulateAction.APPLY_SELECTORS)
+                    .afterGenerate(AfterGenerate.APPLY_SELECTORS)
                     .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS).build())
                     .build();
         }

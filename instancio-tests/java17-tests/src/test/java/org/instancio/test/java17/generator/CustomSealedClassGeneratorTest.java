@@ -19,7 +19,7 @@ import org.instancio.generator.Generator;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.java17.sealed.FooRecord;
 import org.instancio.test.support.java17.sealed.SealedFooSubclass;
@@ -46,7 +46,7 @@ class CustomSealedClassGeneratorTest {
 
         @Override
         public Hints hints() {
-            return Hints.withPopulateAction(PopulateAction.NULLS);
+            return Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
         }
     };
 

@@ -16,10 +16,10 @@
 package org.instancio.internal.generator.misc;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
@@ -31,7 +31,7 @@ class GeneratorDecoratorTest {
 
     private static final GeneratorContext CONTEXT = new GeneratorContext(Settings.defaults(), new DefaultRandom());
 
-    private static final PopulateAction ACTION_TO_SET = PopulateAction.APPLY_SELECTORS;
+    private static final AfterGenerate AFTER_GENERATE = AfterGenerate.APPLY_SELECTORS;
 
     private static class DummyGenerator implements Generator<Object> {
         private final Hints hints;
@@ -52,12 +52,12 @@ class GeneratorDecoratorTest {
     }
 
     @Test
-    void decorateGeneratorWithAction() {
-        final Generator<?> original = new DummyGenerator(Hints.withPopulateAction(PopulateAction.NONE));
-        final Generator<?> decorated = GeneratorDecorator.decorateActionless(original, PopulateAction.ALL, CONTEXT);
+    void decorateGeneratorWithAfterGenerate() {
+        final Generator<?> original = new DummyGenerator(Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY));
+        final Generator<?> decorated = GeneratorDecorator.decorate(original, AfterGenerate.POPULATE_ALL, CONTEXT);
 
         assertThat(decorated)
-                .as("Generator should not be decorated if it has PopulateAction hint")
+                .as("Generator should not be decorated if it has AfterGenerate hint")
                 .isSameAs(original);
     }
 
@@ -69,7 +69,7 @@ class GeneratorDecoratorTest {
                 .with(hint)
                 .build());
 
-        final Generator<?> decorated = GeneratorDecorator.decorateActionless(original, ACTION_TO_SET, CONTEXT);
+        final Generator<?> decorated = GeneratorDecorator.decorate(original, AFTER_GENERATE, CONTEXT);
 
         assertThat(decorated).isNotSameAs(original)
                 .isExactlyInstanceOf(GeneratorDecorator.class)
@@ -77,23 +77,23 @@ class GeneratorDecoratorTest {
                 .satisfies(hints -> assertThat(hints.get(InternalGeneratorHint.class))
                         .as("Other hints should be preserved")
                         .isSameAs(hint))
-                .extracting(Hints::populateAction)
-                .isEqualTo(ACTION_TO_SET);
+                .extracting(Hints::afterGenerate)
+                .isEqualTo(AFTER_GENERATE);
     }
 
     @Test
-    void decorateGeneratorWithoutPopulateAction() {
+    void decorateGeneratorWithoutAfterGenerate() {
         assertDecorated(new DummyGenerator(null));
         assertDecorated(new DummyGenerator(Hints.builder().build()));
     }
 
     private static void assertDecorated(final Generator<?> original) {
-        final Generator<?> decorated = GeneratorDecorator.decorateActionless(original, ACTION_TO_SET, CONTEXT);
+        final Generator<?> decorated = GeneratorDecorator.decorate(original, AFTER_GENERATE, CONTEXT);
 
         assertThat(decorated).isNotSameAs(original)
                 .isExactlyInstanceOf(GeneratorDecorator.class)
                 .extracting(Generator::hints)
-                .extracting(Hints::populateAction)
-                .isEqualTo(ACTION_TO_SET);
+                .extracting(Hints::afterGenerate)
+                .isEqualTo(AFTER_GENERATE);
     }
 }

@@ -16,9 +16,9 @@
 package org.instancio.internal.generator.array;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
@@ -47,7 +47,7 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     @Override
     public Hints hints() {
         return Hints.builder()
-                .populateAction(PopulateAction.ALL)
+                .afterGenerate(AfterGenerate.POPULATE_ALL)
                 .with(InternalGeneratorHint.builder()
                         .targetClass(values.getClass().getComponentType())
                         .build())

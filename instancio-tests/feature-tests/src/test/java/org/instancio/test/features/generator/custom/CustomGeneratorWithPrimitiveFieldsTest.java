@@ -17,9 +17,9 @@ package org.instancio.test.features.generator.custom;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.tags.Feature;
@@ -38,7 +38,7 @@ import static org.instancio.Select.all;
         Feature.GENERATE,
         Feature.GENERATOR,
         Feature.ON_COMPLETE,
-        Feature.POPULATE_ACTION,
+        Feature.AFTER_GENERATE,
         Feature.SELECTOR,
         Feature.SET
 })
@@ -47,26 +47,19 @@ class CustomGeneratorWithPrimitiveFieldsTest {
 
     private static final int SAMPLE_SIZE = 250;
 
-    private static class PrimitiveFieldsGenerator implements Generator<PrimitiveFields> {
-        private final PopulateAction populateAction;
+    private static Generator<PrimitiveFields> generator(final AfterGenerate afterGenerate) {
+        return new Generator<PrimitiveFields>() {
+            @Override
+            public PrimitiveFields generate(final Random random) {
+                return PrimitiveFields.builder().build();
+            }
 
-        private PrimitiveFieldsGenerator(final PopulateAction populateAction) {
-            this.populateAction = populateAction;
-        }
-
-        @Override
-        public PrimitiveFields generate(final Random random) {
-            return PrimitiveFields.builder().build();
-        }
-
-        @Override
-        public Hints hints() {
-            return Hints.withPopulateAction(populateAction);
-        }
+            @Override
+            public Hints hints() {
+                return Hints.afterGenerate(afterGenerate);
+            }
+        };
     }
-
-    private final Generator<?> generatorActionPopulateNulls = new PrimitiveFieldsGenerator(PopulateAction.NULLS);
-    private final Generator<?> generatorActionPopulateNullsAndPrimitives = new PrimitiveFieldsGenerator(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
 
     private List<PrimitiveFields> create(final Generator<?> generator, final int size) {
         return Instancio.of(PrimitiveFields.class)
@@ -77,12 +70,9 @@ class CustomGeneratorWithPrimitiveFieldsTest {
     }
 
     @Test
-    @DisplayName("Action NULLS: nothing should be populated since all fields are primitive")
-    void populateNullsAction() {
-        final PrimitiveFields result = create(generatorActionPopulateNulls, 1).get(0);
-
-        assertThat(generatorActionPopulateNulls.hints().populateAction())
-                .isEqualTo(PopulateAction.NULLS);
+    @DisplayName("POPULATE_NULLS: nothing should be populated since all fields are primitive")
+    void populateNulls() {
+        final PrimitiveFields result = create(generator(AfterGenerate.POPULATE_NULLS), 1).get(0);
 
         assertThat(result.getByteValue()).isZero();
         assertThat(result.getShortValue()).isZero();
@@ -95,12 +85,9 @@ class CustomGeneratorWithPrimitiveFieldsTest {
     }
 
     @Test
-    @DisplayName("Action NULLS_AND_PRIMITIVES: all should be populated")
-    void populateNullsAndPrimitivesAction() {
-        final List<PrimitiveFields> results = create(generatorActionPopulateNullsAndPrimitives, SAMPLE_SIZE);
-
-        assertThat(generatorActionPopulateNullsAndPrimitives.hints().populateAction())
-                .isEqualTo(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+    @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: all should be populated")
+    void populateNullsAndDefaultPrimitives() {
+        final List<PrimitiveFields> results = create(generator(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES), SAMPLE_SIZE);
 
         assertThat(results).allSatisfy(result -> {
             assertThat(result.getByteValue()).isNotZero();

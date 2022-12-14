@@ -23,7 +23,7 @@ package org.instancio.generator;
  * @param <T> hint type
  * @see Generator
  * @see Hints
- * @see PopulateAction
+ * @see AfterGenerate
  * @since 2.0.0
  */
 public interface Hint<T extends Hint<T>> {

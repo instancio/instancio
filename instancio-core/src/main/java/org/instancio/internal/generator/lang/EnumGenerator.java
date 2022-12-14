@@ -16,9 +16,9 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.InternalGeneratorHint;
@@ -71,7 +71,7 @@ public class EnumGenerator<E extends Enum<E>> implements EnumGeneratorSpec<E>, G
     @Override
     public Hints hints() {
         return Hints.builder()
-                .populateAction(PopulateAction.APPLY_SELECTORS)
+                .afterGenerate(AfterGenerate.APPLY_SELECTORS)
                 .with(InternalGeneratorHint.builder()
                         .targetClass(enumClass)
                         .build())

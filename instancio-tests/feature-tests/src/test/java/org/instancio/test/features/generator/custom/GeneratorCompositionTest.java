@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
@@ -43,7 +43,7 @@ import static org.instancio.Select.all;
         Feature.GENERATE,
         Feature.GENERATOR,
         Feature.MODEL,
-        Feature.POPULATE_ACTION,
+        Feature.AFTER_GENERATE,
         Feature.SET,
 })
 @ExtendWith(InstancioExtension.class)
@@ -55,17 +55,17 @@ class GeneratorCompositionTest {
     private static final String COUNTRY_CODE = "+1";
 
     private abstract static class BaseGenerator<T> implements Generator<T> {
-        private PopulateAction populateAction;
+        private AfterGenerate afterGenerate;
 
-        BaseGenerator<T> withAction(final PopulateAction populateAction) {
-            this.populateAction = populateAction;
+        BaseGenerator<T> afterGenerate(final AfterGenerate afterGenerate) {
+            this.afterGenerate = afterGenerate;
             return this;
         }
 
         @Override
         public Hints hints() {
-            assertThat(populateAction).as("action was not set!").isNotNull();
-            return Hints.withPopulateAction(populateAction);
+            assertThat(afterGenerate).as("AfterGenerate was not set!").isNotNull();
+            return Hints.afterGenerate(afterGenerate);
         }
     }
 
@@ -90,24 +90,24 @@ class GeneratorCompositionTest {
         }
     }
 
-    private static Model<Person> createModel(final PopulateAction action) {
+    private static Model<Person> createModel(final AfterGenerate afterGenerate) {
         return Instancio.of(Person.class)
-                .supply(all(Person.class), new PersonGenerator().withAction(action))
-                .supply(all(Address.class), new AddressGenerator().withAction(action))
-                .supply(all(Phone.class), new PhoneGenerator().withAction(action))
+                .supply(all(Person.class), new PersonGenerator().afterGenerate(afterGenerate))
+                .supply(all(Address.class), new AddressGenerator().afterGenerate(afterGenerate))
+                .supply(all(Phone.class), new PhoneGenerator().afterGenerate(afterGenerate))
                 .generate(Phone_.number, gen -> gen.string().digits())
                 .toModel();
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE,
-            names = {"NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
+    @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE,
+            names = {"POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"})
     @DisplayName("Should be able to compose multiple generators and override values as needed")
-    void composeGenerators(final PopulateAction action) {
+    void composeGenerators(final AfterGenerate afterGenerate) {
         final int age = 25;
         final int listSize = 3;
 
-        final Person person = Instancio.of(createModel(action))
+        final Person person = Instancio.of(createModel(afterGenerate))
                 .generate(all(List.class), gen -> gen.collection().size(listSize))
                 .set(Person_.age, age)
                 .create();

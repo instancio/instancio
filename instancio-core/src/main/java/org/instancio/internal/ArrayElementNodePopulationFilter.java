@@ -15,7 +15,7 @@
  */
 package org.instancio.internal;
 
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.ReflectionUtils;
@@ -32,21 +32,30 @@ class ArrayElementNodePopulationFilter implements NodePopulationFilter {
 
     @Override
     public boolean shouldSkip(final Node elementNode,
-                              final PopulateAction action,
+                              final AfterGenerate afterGenerate,
                               @Nullable final Object currentElementValue) {
 
-        if (currentElementValue == null || action == PopulateAction.ALL) {
+        if (afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
+            return true;
+        }
+        if (afterGenerate == AfterGenerate.POPULATE_ALL) {
             return false;
         }
 
-        // For APPLY_SELECTORS and remaining actions, if there is at least
+        // For APPLY_SELECTORS and remaining values, if there is at least
         // one matching selector for this node, then it should not be skipped
         if (context.getGenerator(elementNode).isPresent()) {
             return false;
         }
 
-        if (action == PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES) {
-            return ReflectionUtils.neitherNullNorPrimitiveWithDefaultValue(elementNode.getRawType(), currentElementValue);
+        if (afterGenerate == AfterGenerate.POPULATE_NULLS) {
+            return elementNode.getRawType().isPrimitive() || currentElementValue != null;
+        }
+
+        if (afterGenerate == AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES) {
+            return ReflectionUtils.neitherNullNorPrimitiveWithDefaultValue(
+                    elementNode.getRawType(),
+                    currentElementValue);
         }
         return true;
     }

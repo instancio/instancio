@@ -17,7 +17,7 @@ package org.instancio.internal.generator.array;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -68,7 +68,7 @@ class ArrayGeneratorTest {
                 .isCloseTo((5 * SAMPLE_SIZE) / 6, withPercentage(PERCENTAGE_THRESHOLD));
 
         HintsAssert.assertHints(generator.hints())
-                .populateAction(PopulateAction.ALL)
+                .afterGenerate(AfterGenerate.POPULATE_ALL)
                 .nullableArrayElements(true);
     }
 }

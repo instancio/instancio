@@ -19,9 +19,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.tags.Feature;
@@ -45,7 +45,7 @@ import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObje
         Feature.GENERATE,
         Feature.GENERATOR,
         Feature.ON_COMPLETE,
-        Feature.POPULATE_ACTION,
+        Feature.AFTER_GENERATE,
         Feature.SELECTOR
 })
 @ExtendWith(InstancioExtension.class)
@@ -68,35 +68,22 @@ class CustomGeneratorWithDataStructuresTest {
         }
     }
 
-    private static class ContainerGenerator implements Generator<Container> {
+    private static Generator<Container> generator(final AfterGenerate afterGenerate) {
+        return new Generator<Container>() {
+            @Override
+            public Container generate(final Random random) {
+                return new Container();
+            }
 
-        private final PopulateAction populateAction;
-
-        private ContainerGenerator(final PopulateAction populateAction) {
-            this.populateAction = populateAction;
-        }
-
-        @Override
-        public Container generate(final Random random) {
-            return new Container();
-        }
-
-        @Override
-        public Hints hints() {
-            return Hints.builder()
-                    .populateAction(populateAction)
-                    .build();
-        }
+            @Override
+            public Hints hints() {
+                return Hints.builder().afterGenerate(afterGenerate).build();
+            }
+        };
     }
 
-    private final Generator<?> generatorActionApplySelectors = new ContainerGenerator(PopulateAction.APPLY_SELECTORS);
-    private final Generator<?> generatorActionPopulateNone = new ContainerGenerator(PopulateAction.NONE);
-    private final Generator<?> generatorActionPopulateNulls = new ContainerGenerator(PopulateAction.NULLS);
-    private final Generator<?> generatorActionPopulateNullsAndPrimitives = new ContainerGenerator(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
-    private final Generator<?> generatorActionPopulateAll = new ContainerGenerator(PopulateAction.ALL);
-
     @Nested
-    class PopulateActionTest {
+    class AfterGenerateTest {
         private Container create(final Generator<?> generator) {
             return Instancio.of(Container.class)
                     .supply(all(Container.class), generator)
@@ -104,12 +91,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action NONE: object created by the generator is not modified")
-        void noneAction() {
-            final Container result = create(generatorActionApplySelectors);
-
-            assertThat(generatorActionPopulateNone.hints().populateAction())
-                    .isEqualTo(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY: object created by the generator is not modified")
+        void doNotModify() {
+            final Container result = create(generator(AfterGenerate.DO_NOT_MODIFY));
 
             assertThat(result.list).isNull();
             assertThat(result.map).isNull();
@@ -121,12 +105,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action APPLY_SELECTORS: object created by the generator is not modified")
-        void applySelectorsAction() {
-            final Container result = create(generatorActionApplySelectors);
-
-            assertThat(generatorActionApplySelectors.hints().populateAction())
-                    .isEqualTo(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS: object created by the generator is not modified")
+        void applySelectors() {
+            final Container result = create(generator(AfterGenerate.APPLY_SELECTORS));
 
             assertThat(result.list).isNull();
             assertThat(result.map).isNull();
@@ -138,12 +119,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action NULLS: only null fields should be populated; non-null fields should not be modified")
-        void populateNullsAction() {
-            final Container result = create(generatorActionPopulateNulls);
-
-            assertThat(generatorActionPopulateNulls.hints().populateAction())
-                    .isEqualTo(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS only null fields should be populated; non-null fields should not be modified")
+        void populateNulls() {
+            final Container result = create(generator(AfterGenerate.POPULATE_NULLS));
 
             assertThatObject(result.list).isFullyPopulated();
             assertThatObject(result.map).isFullyPopulated();
@@ -155,13 +133,10 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action NULLS_AND_PRIMITIVES: only null fields and primitives with default values " +
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: only null fields and primitives with default values " +
                 "should be populated; non-null fields and non-default primitives should not be modified")
-        void populateNullsAndPrimitivesAction() {
-            final Container result = create(generatorActionPopulateNullsAndPrimitives);
-
-            assertThat(generatorActionPopulateNullsAndPrimitives.hints().populateAction())
-                    .isEqualTo(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        void populateNullsAndDefaultPrimitives() {
+            final Container result = create(generator(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES));
 
             assertThatObject(result.list).isFullyPopulated();
             assertThatObject(result.map).isFullyPopulated();
@@ -173,12 +148,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action POPULATE: all fields will be populated; all fields will be overwritten")
-        void populateAction() {
-            final Container result = create(generatorActionPopulateAll);
-
-            assertThat(generatorActionPopulateAll.hints().populateAction())
-                    .isEqualTo(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL: all fields will be populated; all fields will be overwritten")
+        void populateAll() {
+            final Container result = create(generator(AfterGenerate.POPULATE_ALL));
 
             assertThatObject(result.list).isFullyPopulated();
             assertThatObject(result.map).isFullyPopulated();
@@ -219,9 +191,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action NONE: object created by the generator cannot be customised")
-        void noneAction() {
-            final Container result = create(generatorActionPopulateNone);
+        @DisplayName("DO_NOT_MODIFY: object created by the generator cannot be customised")
+        void doNotModify() {
+            final Container result = create(generator(AfterGenerate.DO_NOT_MODIFY));
 
             assertThat(result.list).isNull();
             assertThat(result.map).isNull();
@@ -235,9 +207,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action APPLY_SELECTORS: object created by the generator can be customised")
-        void applySelectorsAction() {
-            final Container result = create(generatorActionApplySelectors);
+        @DisplayName("APPLY_SELECTORS: object created by the generator can be customised")
+        void applySelectors() {
+            final Container result = create(generator(AfterGenerate.APPLY_SELECTORS));
 
             assertThat(result.list).hasSize(NEW_SIZE);
             assertThat(result.map).as("since no selectors were applied").isNull();
@@ -251,9 +223,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action NULLS: object created by the generator can be customised")
-        void populateNullsAction() {
-            final Container result = create(generatorActionPopulateNulls);
+        @DisplayName("POPULATE_NULLS object created by the generator can be customised")
+        void populateNulls() {
+            final Container result = create(generator(AfterGenerate.POPULATE_NULLS));
 
             assertThat(result.list).hasSize(NEW_SIZE);
             assertThat(result.map)
@@ -269,9 +241,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action NULLS_AND_PRIMITIVES: object created by the generator can be customised")
-        void populateNullsAndPrimitivesAction() {
-            final Container result = create(generatorActionPopulateNullsAndPrimitives);
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: object created by the generator can be customised")
+        void populateNullsAndDefaultPrimitives() {
+            final Container result = create(generator(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES));
 
             assertThat(result.list).hasSize(NEW_SIZE);
             assertThat(result.map)
@@ -287,9 +259,9 @@ class CustomGeneratorWithDataStructuresTest {
         }
 
         @Test
-        @DisplayName("Action POPULATE: object created by the generator can be customised")
-        void populateAction() {
-            final Container result = create(generatorActionPopulateAll);
+        @DisplayName("POPULATE_ALL: object created by the generator can be customised")
+        void populateAll() {
+            final Container result = create(generator(AfterGenerate.POPULATE_ALL));
 
             assertThat(result.list).hasSize(NEW_SIZE);
             assertThat(result.map)
@@ -305,5 +277,4 @@ class CustomGeneratorWithDataStructuresTest {
             assertThat(result.blankArray).hasSize(NEW_SIZE);
         }
     }
-
 }

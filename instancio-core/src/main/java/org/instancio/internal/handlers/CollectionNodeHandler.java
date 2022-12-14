@@ -16,8 +16,8 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
@@ -47,7 +47,7 @@ public class CollectionNodeHandler implements NodeHandler {
                     .with(CollectionHint.builder()
                             .generateElements(randomSize())
                             .build())
-                    .populateAction(PopulateAction.ALL)
+                    .afterGenerate(AfterGenerate.POPULATE_ALL)
                     .build();
 
             final Object collection = instantiator.instantiate(node.getTargetClass());

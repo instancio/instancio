@@ -16,18 +16,18 @@
 package org.instancio.internal.generator.misc;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.internal.generator.InternalGeneratorHint;
 
 import java.util.function.Supplier;
 
 public final class SupplierAdapter implements Generator<Object> {
 
-    private static final Hints HINT_POPULATE_ACTION_NONE = Hints.builder()
-            .populateAction(PopulateAction.NONE)
+    private static final Hints HINT_READ_ONLY_NO_CALLBACKS = Hints.builder()
+            .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
             .with(InternalGeneratorHint.builder().excludeFromCallbacks(true).build())
             .build();
 
@@ -56,7 +56,7 @@ public final class SupplierAdapter implements Generator<Object> {
      */
     @Override
     public Hints hints() {
-        return HINT_POPULATE_ACTION_NONE;
+        return HINT_READ_ONLY_NO_CALLBACKS;
     }
 
 }

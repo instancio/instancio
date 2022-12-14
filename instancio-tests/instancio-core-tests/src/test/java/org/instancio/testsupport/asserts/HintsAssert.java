@@ -17,7 +17,7 @@ package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
@@ -35,8 +35,8 @@ public class HintsAssert extends AbstractAssert<HintsAssert, Hints> {
         return new HintsAssert(actual);
     }
 
-    public HintsAssert populateAction(PopulateAction expected) {
-        assertThat(actual.populateAction()).isEqualTo(expected);
+    public HintsAssert afterGenerate(AfterGenerate expected) {
+        assertThat(actual.afterGenerate()).isEqualTo(expected);
         return this;
     }
 

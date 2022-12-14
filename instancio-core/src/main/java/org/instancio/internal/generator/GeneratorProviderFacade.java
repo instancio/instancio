@@ -53,8 +53,8 @@ class GeneratorProviderFacade {
             if (generator != null) {
                 LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), forClass);
 
-                final Generator<?> decorated = GeneratorDecorator.decorateActionless(
-                        generator, context.getSettings().get(Keys.GENERATOR_HINT_POPULATE_ACTION), context);
+                final Generator<?> decorated = GeneratorDecorator.decorate(
+                        generator, context.getSettings().get(Keys.AFTER_GENERATE_HINT), context);
 
                 cache.put(forClass, decorated);
                 return Optional.of(decorated);

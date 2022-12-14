@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.misc.StringFields;
@@ -28,24 +28,24 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.fields;
 
 @ExtendWith(InstancioExtension.class)
-class InstancioExtensionWithSettingsPopulateActionTest {
+class InstancioExtensionWithSettingsAfterGenerateTest {
 
     @WithSettings
     private static final Settings settings = Settings.create()
-            .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NULLS);
+            .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.POPULATE_NULLS);
 
     @Test
-    void generatorShouldUsePopulateActionFromSettings() {
+    void generatorShouldUseValueFromSettings() {
         final StringFields result = Instancio.of(StringFields.class)
                 .supply(all(StringFields.class), random -> StringFields.builder().one("one").build())
                 .set(fields().annotated(StringFields.Two.class), "two")
                 .withSettings(Settings.create()
-                        .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NULLS))
+                        .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.POPULATE_NULLS))
                 .create();
 
         assertThat(result.getOne()).isEqualTo("one");
         assertThat(result.getTwo()).isEqualTo("two");
-        // Should populate NULLS
+        // Should populate nulls
         assertThat(result.getThree()).isNotBlank();
         assertThat(result.getFour()).isNotBlank();
     }

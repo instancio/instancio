@@ -16,9 +16,9 @@
 package org.instancio.internal.generator.array;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.internal.ApiValidator;
@@ -126,7 +126,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     @Override
     public Hints hints() {
         return Hints.builder()
-                .populateAction(PopulateAction.ALL)
+                .afterGenerate(AfterGenerate.POPULATE_ALL)
                 .with(ArrayHint.builder()
                         .nullableElements(nullableElements)
                         .withElements(withElements)
