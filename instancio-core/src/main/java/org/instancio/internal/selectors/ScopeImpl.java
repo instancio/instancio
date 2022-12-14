@@ -17,8 +17,8 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
 import org.instancio.internal.util.ReflectionUtils;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Objects;
 

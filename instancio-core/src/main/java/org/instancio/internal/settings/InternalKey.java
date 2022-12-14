@@ -17,8 +17,9 @@ package org.instancio.internal.settings;
 
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 public final class InternalKey implements SettingKey {
@@ -65,7 +66,10 @@ public final class InternalKey implements SettingKey {
     }
 
     @Override
-    public <T extends Number & Comparable<T>> void autoAdjust(final Settings settings, final T otherValue) {
+    public <T extends Number & Comparable<T>> void autoAdjust(
+            @NotNull final Settings settings,
+            @NotNull final T otherValue) {
+
         if (rangeAdjuster != null) {
             rangeAdjuster.adjustRange(settings, this, otherValue);
         }

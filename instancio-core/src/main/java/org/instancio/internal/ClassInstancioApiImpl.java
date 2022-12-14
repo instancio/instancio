@@ -17,15 +17,16 @@ package org.instancio.internal;
 
 import org.instancio.InstancioApi;
 import org.instancio.InstancioOfClassApi;
+import org.jetbrains.annotations.NotNull;
 
 public class ClassInstancioApiImpl<T> extends InstancioApiImpl<T> implements InstancioOfClassApi<T> {
 
-    public ClassInstancioApiImpl(Class<T> klass) {
+    public ClassInstancioApiImpl(@NotNull final Class<T> klass) {
         super(klass);
     }
 
     @Override
-    public InstancioApi<T> withTypeParameters(Class<?>... type) {
+    public InstancioApi<T> withTypeParameters(@NotNull final Class<?>... type) {
         super.addTypeParameters(type);
         return this;
     }

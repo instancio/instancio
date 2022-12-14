@@ -16,7 +16,4 @@
 /**
  * Provides generators for {@code java.util.concurrent.*} types.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.util.concurrent;
-
-import javax.annotation.ParametersAreNonnullByDefault;

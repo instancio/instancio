@@ -17,6 +17,7 @@ package org.instancio;
 
 import org.instancio.internal.ClassInstancioApiImpl;
 import org.instancio.internal.InstancioApiImpl;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
@@ -138,7 +139,7 @@ public final class Instancio {
      * @return a fully-populated instance
      * @since 1.0.1
      */
-    public static <T> T create(final Class<T> klass) {
+    public static <T> T create(@NotNull final Class<T> klass) {
         return of(klass).create();
     }
 
@@ -157,7 +158,8 @@ public final class Instancio {
      * @return an infinite stream of distinct, fully populated instances
      * @since 1.1.9
      */
-    public static <T> Stream<T> stream(final Class<T> klass) {
+    @NotNull
+    public static <T> Stream<T> stream(@NotNull final Class<T> klass) {
         return of(klass).stream();
     }
 
@@ -171,7 +173,7 @@ public final class Instancio {
      * @param <T>       type
      * @return a fully-populated instance
      */
-    public static <T> T create(final TypeTokenSupplier<T> typeToken) {
+    public static <T> T create(@NotNull final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).create();
     }
 
@@ -190,7 +192,8 @@ public final class Instancio {
      * @return an infinite stream of distinct, fully populated instances
      * @since 1.1.9
      */
-    public static <T> Stream<T> stream(final TypeTokenSupplier<T> typeToken) {
+    @NotNull
+    public static <T> Stream<T> stream(@NotNull final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).stream();
     }
 
@@ -204,7 +207,7 @@ public final class Instancio {
      * @return a populated instance
      * @see Model
      */
-    public static <T> T create(final Model<T> model) {
+    public static <T> T create(@NotNull final Model<T> model) {
         return of(model).create();
     }
 
@@ -225,7 +228,7 @@ public final class Instancio {
      * @param <T>   type
      * @return API builder reference
      */
-    public static <T> InstancioOfClassApi<T> of(final Class<T> klass) {
+    public static <T> InstancioOfClassApi<T> of(@NotNull final Class<T> klass) {
         return new ClassInstancioApiImpl<>(klass);
     }
 
@@ -246,7 +249,7 @@ public final class Instancio {
      * @param <T>       type
      * @return API builder reference
      */
-    public static <T> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
+    public static <T> InstancioApi<T> of(@NotNull final TypeTokenSupplier<T> typeToken) {
         return new InstancioApiImpl<>(typeToken);
     }
 
@@ -273,7 +276,7 @@ public final class Instancio {
      * @param <T>   type
      * @return API builder reference
      */
-    public static <T> InstancioApi<T> of(final Model<T> model) {
+    public static <T> InstancioApi<T> of(@NotNull final Model<T> model) {
         return new InstancioApiImpl<>(model);
     }
 }

@@ -21,6 +21,7 @@ import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A generator of values of a specific type.
@@ -64,8 +65,10 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * the seed value.
      *
      * @param random provider for generating random values
-     * @return generated value
+     * @return generated value or {@code null} if value is nullable,
+     * could not be generated, or generation is delegated to the engine
      */
+    @Nullable
     T generate(Random random);
 
     /**
@@ -108,6 +111,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * @see AfterGenerate
      * @since 2.0.0
      */
+    @Nullable
     default Hints hints() {
         return null;
     }

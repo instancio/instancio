@@ -19,8 +19,7 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.ReflectionUtils;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 class ArrayElementNodePopulationFilter implements NodePopulationFilter {
 

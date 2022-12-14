@@ -17,7 +17,9 @@ package org.instancio.internal;
 
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.nodes.Node;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 interface NodePopulationFilter {
 
     /**

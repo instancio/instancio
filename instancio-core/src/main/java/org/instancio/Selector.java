@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * A selector that can be:
  *
@@ -58,5 +60,5 @@ public interface Selector extends GroupableSelector, ConvertibleToScope {
      * @return a selector with the specified scope
      * @since 1.3.0
      */
-    GroupableSelector within(Scope... scopes);
+    GroupableSelector within(@NotNull Scope... scopes);
 }

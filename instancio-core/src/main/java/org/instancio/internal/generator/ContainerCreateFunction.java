@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.generator;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * Creates an instances of a container, or container's builder.
  *
@@ -24,6 +26,7 @@ package org.instancio.internal.generator;
  * @see InternalContainerHint
  * @since 2.0.0
  */
+@ApiStatus.Internal
 public interface ContainerCreateFunction<T> {
 
     /**

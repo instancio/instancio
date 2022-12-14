@@ -19,6 +19,7 @@ import org.instancio.PredicateSelector;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class TypeSelectorBuilderImpl implements TypeSelectorBuilder, SelectorBui
     private final StringBuilder description = new StringBuilder("types()");
 
     @Override
-    public TypeSelectorBuilder of(final Class<?> type) {
+    public TypeSelectorBuilder of(@NotNull final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
                 "Type must not be null.",
                 "of", description.toString(), new Throwable()));
@@ -44,7 +45,7 @@ public class TypeSelectorBuilderImpl implements TypeSelectorBuilder, SelectorBui
     }
 
     @Override
-    public <A extends Annotation> TypeSelectorBuilder annotated(final Class<? extends A> annotation) {
+    public <A extends Annotation> TypeSelectorBuilder annotated(@NotNull final Class<? extends A> annotation) {
         ApiValidator.notNull(annotation, () -> Format.selectorErrorMessage(
                 "Type's declared annotation must not be null.",
                 "annotated", description.toString(), new Throwable()));
@@ -55,7 +56,7 @@ public class TypeSelectorBuilderImpl implements TypeSelectorBuilder, SelectorBui
     }
 
     @Override
-    public TypeSelectorBuilder excluding(final Class<?> type) {
+    public TypeSelectorBuilder excluding(@NotNull final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
                 "Excluded type must not be null.",
                 "excluding", description.toString(), new Throwable()));

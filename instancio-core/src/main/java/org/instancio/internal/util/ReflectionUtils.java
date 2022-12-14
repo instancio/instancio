@@ -17,8 +17,8 @@ package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

@@ -17,8 +17,9 @@ package org.instancio.internal.generator;
 
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.StringJoiner;
 
 public final class GeneratorResult {
@@ -28,7 +29,7 @@ public final class GeneratorResult {
     private final Object value;
     private final Hints hints;
 
-    private GeneratorResult(@Nullable final Object value, final Hints hints) {
+    private GeneratorResult(@Nullable final Object value, @NotNull final Hints hints) {
         this.value = value;
         this.hints = hints;
     }

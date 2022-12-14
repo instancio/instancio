@@ -13,7 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.processor;
-
-import javax.annotation.ParametersAreNonnullByDefault;

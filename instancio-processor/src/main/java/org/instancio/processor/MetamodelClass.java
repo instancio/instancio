@@ -16,8 +16,8 @@
 package org.instancio.processor;
 
 import org.instancio.internal.util.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;

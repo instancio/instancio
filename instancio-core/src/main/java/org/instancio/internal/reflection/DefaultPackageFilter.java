@@ -16,8 +16,7 @@
 package org.instancio.internal.reflection;
 
 import org.instancio.internal.util.StringUtils;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class DefaultPackageFilter implements PackageFilter {
 

@@ -17,8 +17,8 @@ package org.instancio.internal.nodes;
 
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collections;

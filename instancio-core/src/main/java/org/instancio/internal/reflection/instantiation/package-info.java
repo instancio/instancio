@@ -16,7 +16,4 @@
 /**
  * Implementation classes providing support for instantiation.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.reflection.instantiation;
-
-import javax.annotation.ParametersAreNonnullByDefault;

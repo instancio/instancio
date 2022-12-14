@@ -15,7 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;

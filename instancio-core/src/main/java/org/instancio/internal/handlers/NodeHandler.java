@@ -17,9 +17,11 @@ package org.instancio.internal.handlers;
 
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Optional;
 
+@ApiStatus.Internal
 public interface NodeHandler {
 
     Optional<GeneratorResult> getResult(Node node);

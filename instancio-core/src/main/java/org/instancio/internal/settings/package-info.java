@@ -18,7 +18,4 @@
  *
  * <p><b>Classes within this package are not part of the public API.</b></p>
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.settings;
-
-import javax.annotation.ParametersAreNonnullByDefault;

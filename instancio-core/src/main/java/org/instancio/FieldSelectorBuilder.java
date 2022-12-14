@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.TypeVariable;
 
@@ -45,7 +47,7 @@ public interface FieldSelectorBuilder extends TargetSelector {
      * @return selector builder
      * @since 1.6.0
      */
-    FieldSelectorBuilder named(String fieldName);
+    FieldSelectorBuilder named(@NotNull String fieldName);
 
     /**
      * Matches fields against the specified type, including subtypes.
@@ -74,7 +76,7 @@ public interface FieldSelectorBuilder extends TargetSelector {
      * @return selector builder
      * @since 1.6.0
      */
-    FieldSelectorBuilder ofType(Class<?> fieldType);
+    FieldSelectorBuilder ofType(@NotNull Class<?> fieldType);
 
     /**
      * Matches fields declared in the specified class.
@@ -83,7 +85,7 @@ public interface FieldSelectorBuilder extends TargetSelector {
      * @return selector builder
      * @since 1.6.0
      */
-    FieldSelectorBuilder declaredIn(Class<?> type);
+    FieldSelectorBuilder declaredIn(@NotNull Class<?> type);
 
     /**
      * Matches fields annotated with the specified annotation,
@@ -96,5 +98,5 @@ public interface FieldSelectorBuilder extends TargetSelector {
      * @return selector builder
      * @since 1.6.0
      */
-    <A extends Annotation> FieldSelectorBuilder annotated(Class<? extends A> annotation);
+    <A extends Annotation> FieldSelectorBuilder annotated(@NotNull Class<? extends A> annotation);
 }

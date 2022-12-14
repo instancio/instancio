@@ -19,6 +19,7 @@ import org.instancio.FieldSelectorBuilder;
 import org.instancio.PredicateSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -34,7 +35,7 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     private final StringBuilder description = new StringBuilder("fields()");
 
     @Override
-    public FieldSelectorBuilder named(final String fieldName) {
+    public FieldSelectorBuilder named(@NotNull final String fieldName) {
         ApiValidator.notNull(fieldName, () -> Format.selectorErrorMessage(
                 "Field name must not be null.",
                 "named", description.toString(), new Throwable()));
@@ -45,7 +46,7 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     }
 
     @Override
-    public FieldSelectorBuilder ofType(final Class<?> fieldType) {
+    public FieldSelectorBuilder ofType(@NotNull final Class<?> fieldType) {
         ApiValidator.notNull(fieldType, () -> Format.selectorErrorMessage(
                 "Field type must not be null.",
                 "ofType", description.toString(), new Throwable()));
@@ -56,7 +57,7 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     }
 
     @Override
-    public FieldSelectorBuilder declaredIn(final Class<?> type) {
+    public FieldSelectorBuilder declaredIn(@NotNull final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
                 "Declaring type must not be null.",
                 "declaredIn", description.toString(), new Throwable()));
@@ -67,7 +68,7 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     }
 
     @Override
-    public <A extends Annotation> FieldSelectorBuilder annotated(final Class<? extends A> annotation) {
+    public <A extends Annotation> FieldSelectorBuilder annotated(@NotNull final Class<? extends A> annotation) {
         ApiValidator.notNull(annotation, () -> Format.selectorErrorMessage(
                 "Field's declared annotation must not be null.",
                 "annotated", description.toString(), new Throwable()));
