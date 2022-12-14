@@ -17,7 +17,7 @@ package org.instancio.test.features.generator.array;
 
 import org.instancio.Instancio;
 import org.instancio.TargetSelector;
-import org.instancio.internal.util.Sonar;
+import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayCharSequence;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemInterfaceString;
@@ -28,7 +28,6 @@ import org.instancio.test.support.pojo.interfaces.ItemInterface;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,15 +48,10 @@ import static org.instancio.Select.types;
 class ArrayGeneratorSubtypeTest {
 
     @Test
-    @Disabled
-    @FeatureTag(Feature.UNSUPPORTED)
-    @SuppressWarnings(Sonar.DISABLED_TEST)
     void shouldCreateArrayOfSpecifiedType() {
-        // field.type:        class [Lorg.instancio.test.support.pojo.interfaces.ItemInterface;
-        // field.genericType: org.instancio.test.support.pojo.interfaces.ItemInterface<java.lang.String>[]
-
         final TwoArraysOfItemInterfaceString result = Instancio.of(TwoArraysOfItemInterfaceString.class)
                 .generate(all(ItemInterface[].class), gen -> gen.array().subtype(Item[].class))
+                .lenient()
                 .create();
 
         assertThat(result.getArray1()).isNotEmpty().allSatisfy(it -> {
@@ -65,6 +59,42 @@ class ArrayGeneratorSubtypeTest {
             assertThat(it.getValue()).isNotBlank();
         });
         assertThat(result.getArray2()).isNotEmpty().allSatisfy(it -> {
+            assertThat(it).isNotNull();
+            assertThat(it.getValue()).isNotBlank();
+        });
+    }
+
+    @Test
+    void usingArraySubtype() {
+        final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
+                .subtype(all(ItemInterface[].class), Item[].class)
+                .create();
+
+        assertThat(result).isNotEmpty().allSatisfy(it -> {
+            assertThat(it).isNotNull();
+            assertThat(it.getValue()).isNotBlank();
+        });
+    }
+
+    @Test
+    void usingArrayGeneratorSubtype() {
+        final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
+                .generate(all(ItemInterface[].class), gen -> gen.array().subtype(Item[].class))
+                .create();
+
+        assertThat(result).isNotEmpty().allSatisfy(it -> {
+            assertThat(it).isNotNull();
+            assertThat(it.getValue()).isNotBlank();
+        });
+    }
+
+    @Test
+    void usingComponentSubtype() {
+        final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
+                .subtype(all(ItemInterface.class), Item.class)
+                .create();
+
+        assertThat(result).isNotEmpty().allSatisfy(it -> {
             assertThat(it).isNotNull();
             assertThat(it.getValue()).isNotBlank();
         });

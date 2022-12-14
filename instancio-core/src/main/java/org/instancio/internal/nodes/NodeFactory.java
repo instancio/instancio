@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.nodes;
 
-import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
@@ -24,7 +23,6 @@ import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
-import org.instancio.spi.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,28 +107,32 @@ public final class NodeFactory {
         return createNode(resolvedType, field, parent);
     }
 
-    /**
-     * Checks if there is a user-supplied type provided via
-     * {@link org.instancio.InstancioApi#subtype(TargetSelector, Class)}}
-     * method or via generator {@code gen.collection().subtype(Class)}.
-     * <p>
-     * If above is not present, then checks if subtype is available using
-     * {@link TypeResolver} SPI.
-     *
-     * @param node whose type to resolve
-     * @return resolved class or an empty result if unresolved
-     */
     private Optional<Class<?>> resolveSubtype(final Node node) {
-        // User supplied subtype via API or generator
-        final Optional<Class<?>> target = nodeContext.getUserSuppliedSubtype(node);
-        if (target.isPresent()) {
-            // TODO the log statement not always true. e.g. run MiscFieldsCreationTest
-            //  disabling for now as it will be confusing for users
-            // LOG.debug("Using subtype provided via API: {} -> {}", node.getRawType().getName(), target.get().getName());
-            return target;
+        final Optional<Class<?>> subtype = nodeContext.getSubtype(node);
+
+        if (subtype.isPresent()) {
+            LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getName());
+            return subtype;
+        }
+
+        final Class<?> subtypeFromAncestors = resolveSubtypeFromAncestors(node);
+        if (subtypeFromAncestors != null) {
+            return Optional.of(subtypeFromAncestors);
         }
 
         return typeResolverFacade.resolve(node.getRawType());
+    }
+
+    private static Class<?> resolveSubtypeFromAncestors(final Node node) {
+        Node next = node;
+        while (next != null) {
+            final Type actualType = next.getTypeMap().getActualType(node.getRawType());
+            if (actualType != null) {
+                return TypeUtils.getRawType(actualType);
+            }
+            next = next.getParent();
+        }
+        return null;
     }
 
     private Node createNodeWithSubtypeMapping(final Type type, @Nullable final Field field, @Nullable final Node parent) {
@@ -218,24 +220,57 @@ public final class NodeFactory {
 
     private Node fromGenericArrayNode(final GenericArrayType type, @Nullable final Field field, @Nullable final Node parent) {
         Type gcType = type.getGenericComponentType();
-
         if (gcType instanceof TypeVariable) {
             gcType = resolveTypeVariable((TypeVariable<?>) gcType, parent);
         }
 
-        final Class<?> rawType = TypeUtils.getArrayClass(gcType);
-        final Node node = Node.builder()
-                .nodeContext(nodeContext)
-                .type(type)
-                .targetClass(rawType)
-                .rawType(rawType)
-                .field(field)
-                .parent(parent)
-                .nodeKind(getNodeKind(rawType))
-                .build();
-
+        final Node node = createArrayNodeWithSubtypeMapping(type, gcType, field, parent);
         final List<Node> children = createContainerNodeChildren(Stream.of(gcType), node);
         node.setChildren(children);
+        return node;
+    }
+
+    private Node createArrayNodeWithSubtypeMapping(
+            final Type arrayType,
+            final Type genericComponentType,
+            @Nullable final Field field,
+            @Nullable final Node parent) {
+
+        final Class<?> rawComponentType = TypeUtils.getRawType(genericComponentType);
+        final Node node = Node.builder()
+                .nodeContext(nodeContext)
+                .type(arrayType)
+                .rawType(TypeUtils.getArrayClass(rawComponentType))
+                .targetClass(TypeUtils.getArrayClass(rawComponentType))
+                .field(field)
+                .parent(parent)
+                .nodeKind(NodeKind.ARRAY)
+                .build();
+
+        final Class<?> targetClass = resolveSubtype(node).orElse(rawComponentType);
+        final Class<?> targetClassComponentType = targetClass.getComponentType();
+
+        if (!rawComponentType.isPrimitive()
+                && targetClassComponentType != null
+                && rawComponentType != targetClassComponentType) {
+
+            ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Subtype mapping '{}' to '{}'", Format.withoutPackage(rawComponentType), Format.withoutPackage(targetClass));
+            }
+
+            final Map<Type, Type> typeMapForSubtype = createTypeMapForSubtype(rawComponentType, targetClassComponentType);
+
+            // Map component type to match array subtype
+            typeMapForSubtype.put(rawComponentType, targetClassComponentType);
+
+            return node.toBuilder()
+                    .targetClass(targetClass)
+                    .additionalTypeMap(typeMapForSubtype)
+                    .build();
+        }
+
         return node;
     }
 

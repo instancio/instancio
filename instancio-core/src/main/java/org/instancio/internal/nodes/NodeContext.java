@@ -59,7 +59,18 @@ public final class NodeContext {
         return rootTypeMap;
     }
 
-    Optional<Class<?>> getUserSuppliedSubtype(final Node node) {
+    /**
+     * Returns subtype for the given node, if one is available.
+     * The subtype can be supplied using:
+     *
+     * <ul>
+     *   <li>the API {@code subtype()} method</li>
+     *   <li>a generator's {@code subtype()} method</li>
+     *   <li>{@code instancio.properties}</li>
+     *   <li>{@link org.instancio.settings.Settings}</li>
+     * </ul>
+     */
+    Optional<Class<?>> getSubtype(final Node node) {
         return subtypeSelectorMap.getSubtype(node);
     }
 }
