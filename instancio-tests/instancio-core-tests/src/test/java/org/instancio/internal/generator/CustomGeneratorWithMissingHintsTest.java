@@ -30,9 +30,9 @@ import static org.instancio.Select.allStrings;
 class CustomGeneratorWithMissingHintsTest {
 
     @Test
-    @DisplayName("Should generate expected value if hints or PopulateAction are null")
+    @DisplayName("Should generate expected value if hints or AfterGenerate are null")
     void nullHints() {
-        final Hints mockHints = Mockito.mock(Hints.class); // populateAction() is null
+        final Hints mockHints = Mockito.mock(Hints.class);
         assertGeneratedValueWithHints(mockHints);
         assertGeneratedValueWithHints(null);
     }

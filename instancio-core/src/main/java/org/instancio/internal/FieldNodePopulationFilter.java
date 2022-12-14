@@ -15,7 +15,7 @@
  */
 package org.instancio.internal;
 
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.ReflectionUtils;
@@ -30,13 +30,13 @@ class FieldNodePopulationFilter implements NodePopulationFilter {
 
     @Override
     public boolean shouldSkip(final Node fieldNode,
-                              final PopulateAction action,
+                              final AfterGenerate afterGenerate,
                               final Object objectContainingField) {
 
-        if (action == PopulateAction.NONE) {
+        if (afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
             return true;
         }
-        if (action == PopulateAction.ALL) {
+        if (afterGenerate == AfterGenerate.POPULATE_ALL) {
             return false;
         }
 
@@ -45,10 +45,10 @@ class FieldNodePopulationFilter implements NodePopulationFilter {
         if (context.getGenerator(fieldNode).isPresent()) {
             return false;
         }
-        if (action == PopulateAction.NULLS) {
+        if (afterGenerate == AfterGenerate.POPULATE_NULLS) {
             return ReflectionUtils.hasNonNullValue(fieldNode.getField(), objectContainingField);
         }
-        if (action == PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES) {
+        if (afterGenerate == AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES) {
             return ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(
                     fieldNode.getField(), objectContainingField);
         }

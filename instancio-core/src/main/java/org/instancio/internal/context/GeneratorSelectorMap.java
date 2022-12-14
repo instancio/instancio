@@ -17,10 +17,10 @@ package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.array.ArrayGenerator;
@@ -48,7 +48,7 @@ class GeneratorSelectorMap {
     private final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors;
     private final SelectorMap<Generator<?>> selectorMap = new SelectorMap<>();
     private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
-    private final PopulateAction defaultPopulateAction;
+    private final AfterGenerate defaultAfterGenerate;
     private final GeneratorContext context;
 
     GeneratorSelectorMap(
@@ -59,7 +59,7 @@ class GeneratorSelectorMap {
         this.context = context;
         this.generatorSelectors = Collections.unmodifiableMap(generatorSelectors);
         this.generatorSpecSelectors = Collections.unmodifiableMap(generatorSpecSelectors);
-        this.defaultPopulateAction = context.getSettings().get(Keys.GENERATOR_HINT_POPULATE_ACTION);
+        this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         putAllGeneratorSpecs(generatorSpecSelectors);
         putAllGenerators(generatorSelectors);
     }
@@ -111,7 +111,7 @@ class GeneratorSelectorMap {
     }
 
     private void putGenerator(final TargetSelector targetSelector, final Generator<?> g) {
-        final Generator<?> generator = GeneratorDecorator.decorateActionless(g, defaultPopulateAction, context);
+        final Generator<?> generator = GeneratorDecorator.decorate(g, defaultAfterGenerate, context);
         selectorMap.put(targetSelector, generator);
 
         final InternalGeneratorHint internalHint = generator.hints().get(InternalGeneratorHint.class);

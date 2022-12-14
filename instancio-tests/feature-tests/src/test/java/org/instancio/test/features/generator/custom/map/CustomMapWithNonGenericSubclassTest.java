@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom.map;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.TypeToken;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfMap;
@@ -50,7 +50,7 @@ class CustomMapWithNonGenericSubclassTest {
         @Override
         public Hints hints() {
             return Hints.builder()
-                    .populateAction(PopulateAction.APPLY_SELECTORS)
+                    .afterGenerate(AfterGenerate.APPLY_SELECTORS)
                     .with(MapHint.builder().generateEntries(GENERATE_ENTRIES).build())
                     .build();
         }

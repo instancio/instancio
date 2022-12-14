@@ -17,11 +17,14 @@ package org.instancio.test.features.generator.custom.map;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerItemOfString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.tags.Feature;
@@ -47,16 +50,22 @@ import static org.instancio.Select.types;
         Feature.MAP_GENERATOR_SIZE,
         Feature.GENERATE,
         Feature.GENERATOR,
-        Feature.POPULATE_ACTION
+        Feature.AFTER_GENERATE
 })
 @NonDeterministicTag("Small chance of generating duplicate keys, which might fail some of the tests")
 @ExtendWith(InstancioExtension.class)
 class CustomMapGeneratorTest {
 
-    private static final int EXISTING_KEY = -12345;
+    private static final int EXISTING_KEY = Integer.MIN_VALUE;
     private static final String EXISTING_VALUE = "foo";
     private static final int INITIAL_SIZE = 1;
     private static final int GENERATE_ENTRIES = 3;
+
+    @WithSettings
+    private static final Settings SETTINGS = Settings.create()
+            .set(Keys.INTEGER_MIN, EXISTING_KEY + 1)
+            .set(Keys.INTEGER_MAX, Integer.MAX_VALUE)
+            .lock();
 
     static class CustomMap<K, V> extends HashMap<K, V> {}
 
@@ -81,10 +90,10 @@ class CustomMapGeneratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
+    @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.EXCLUDE, names = "DO_NOT_MODIFY")
     @DisplayName("Should use map instance from generator and generate entries")
-    void customMapSpecifiedAsSubtype(final PopulateAction action) {
-        final Hints hints = Hints.builder().populateAction(action)
+    void customMapSpecifiedAsSubtype(final AfterGenerate afterGenerate) {
+        final Hints hints = Hints.builder().afterGenerate(afterGenerate)
                 .with(MapHint.builder().generateEntries(GENERATE_ENTRIES).build())
                 .build();
 
@@ -117,13 +126,17 @@ class CustomMapGeneratorTest {
     }
 
     @Nested
+    @ExtendWith(InstancioExtension.class)
     class WithAppliedSelector {
 
+        @WithSettings
+        private final Settings settings = SETTINGS;
+
         @ParameterizedTest
-        @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.EXCLUDE, names = "DO_NOT_MODIFY")
         @DisplayName("Should create custom map with specified number of entries and apply selector")
-        void withAppliedSelector(final PopulateAction action) {
-            final Hints hints = Hints.builder().populateAction(action)
+        void withAppliedSelector(final AfterGenerate afterGenerate) {
+            final Hints hints = Hints.builder().afterGenerate(afterGenerate)
                     .with(MapHint.builder().generateEntries(GENERATE_ENTRIES).build())
                     .build();
 
@@ -146,13 +159,12 @@ class CustomMapGeneratorTest {
                     .filteredOn(key -> key != EXISTING_KEY)
                     .hasSize(GENERATE_ENTRIES)
                     .allSatisfy(key -> assertThat(key).isBetween(minKeyValue, maxKeyValue));
-
         }
 
         @Test
-        @DisplayName("Action NONE: should ignore matching selector")
-        void populateActionNone() {
-            final Hints hints = Hints.builder().populateAction(PopulateAction.NONE)
+        @DisplayName("DO_NOT_MODIFY: should ignore matching selector")
+        void doNotModify() {
+            final Hints hints = Hints.builder().afterGenerate(AfterGenerate.DO_NOT_MODIFY)
                     .with(MapHint.builder().generateEntries(GENERATE_ENTRIES).build())
                     .build();
 

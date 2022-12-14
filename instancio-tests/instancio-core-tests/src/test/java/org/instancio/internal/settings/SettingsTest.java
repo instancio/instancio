@@ -19,7 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.Mode;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.util.Constants;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
@@ -112,8 +112,8 @@ class SettingsTest {
 
     @Test
     void name() {
-        assertThat((PopulateAction) DEFAULTS.get(Keys.GENERATOR_HINT_POPULATE_ACTION))
-                .isEqualTo(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        assertThat((AfterGenerate) DEFAULTS.get(Keys.AFTER_GENERATE_HINT))
+                .isEqualTo(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
     }
 
     @Test

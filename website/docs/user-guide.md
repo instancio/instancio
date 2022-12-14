@@ -596,14 +596,16 @@ The behaviour of these methods cannot be customised.
 - callbacks are *not* invoked on objects provided by these methods
  
 **Method** `supply(TargetSelector, Generator)` is for creating objects using custom `Generator` implementations.
-This method offers configurable behaviour via the `PopulateAction` hint.
-By default, the hint is set to `APPLY_SELECTORS` (the default value can be overridden using `instancio.properties` and/or {{Settings}}).
-The `APPLY_SELECTORS` action implies:
+This method offers configurable behaviour via the `AfterGenerate` hint.
+By default, the hint is set to `POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`, which implies:
 
 - matching selectors will be applied
-- engine will not modify or populate the object
+- engine will populate `null` fields and primitive fields containing default values
 
-In addition, callbacks are *always* invoked on objects created by generators, regardless of the populate action's value.
+The default value can be overridden using `instancio.properties` and {{Settings}}.
+
+!!! info
+    Callbacks are always invoked on objects created by generators regardless of `AfterGenerate` value.
 
 **Method** `generate(TargetSelector, Function)` is for customising objects created by internal generators.
 Such objects include value types (numbers, strings, dates) and data structures (collections, arrays).
@@ -831,7 +833,7 @@ class AddressGenerator implements Generator<Address> {
 ```
 
 Notice that the `AddressGenerator` and `PhoneGenerator` classes are unaware of each other.
-In addion, address generator did not initialise the `street` and `phoneNumbers` fields.
+In addition, address generator did not initialise the `street` and `phoneNumbers` fields.
 We will use these fact to demonstrate a couple of concepts.
 For now, using the phone and address generators, a `Person` class can be created by passing
 the generators to the `supply()` method:
@@ -840,101 +842,12 @@ the generators to the `supply()` method:
 Person person = Instancio.of(Person.class)
         .supply(all(Phone.class), new PhoneGenerator())
         .supply(all(Address.class), new AddressGenerator())
-        .lenient()
         .create();
 ```
 
-Running this snippet will produce an output similar to similar to below (object is printed as JSON for better readability):
+Running this snippet will produce an output similar to below (object is printed as JSON for better readability):
 
 ``` json
-{
-  "name" : "MTBHAHNL",
-  "address" : {
-    "street" : null,
-    "city" : "New York",
-    "phoneNumbers" : null
-  }
-}
-```
-
-`street` is `null` as its value was not set in the generator.
-`phoneNumbers` is `null` because even though we have a `PhoneGenerator`, Instancio will not automatically create a list to hold those phones.
-Since the list is `null`, no phones were generated. This also explains the reason why `lenient()` mode was enabled.
-In strict mode, Instancio would generate an error notifying that the generator is redundant
-
-```
--> Unused selectors in generate(), set(), or supply():
- 1: all(Phone)
-    at org.example.PersonTest.createPerson(PersonTest.java:123)
-```
-
-### Providing Hints from generators to the Instancio engine
-
-After a generator creates an object, it gets passed to the Instancio engine.
-The engine determines what should be done with the created object based on the `Hints`
-(if any) it receives from the generator. Using the address generator as an example,
-hints can be passed as follows:
-
-
-```java linenums="1"
-class AddressGenerator implements Generator<Address> {
-
-    // generate() method unchanged
-
-    @Override
-    public Hints hints() {
-        return Hints.withPopulateAction(PopulateAction.NULLS);
-    }
-}
-```
-
-The `PopulateAction` enum determines whether the engine:
-
-- should populate uninitialised fields
-- should modify the object by applying matching selectors (if any)
-
-
-The `PopulateAction` enum defines the following values:
-
-- **`NONE`**
-  
-    Indicates that the object created by the generator should not be modified.
-    The engine will treat the object as read-only and assign it to the target field as is.
-    Matching selectors will not be applied.
-
-- **`APPLY_SELECTORS`** (default behaviour)
-
-    Indicates that the object can be modified using matching selectors
-    via `set()`, `supply()`, `generate()` methods.
-
-- **`NULLS`**
-
-    Indicates that `null` fields declared by the object should be populated.
-    In addition, the object can be modifiable using selectors as described
-    by above by `APPLY_SELECTORS`.
-
-
-- **`NULLS_AND_DEFAULT_PRIMITIVES`**
-
-    Indicates that primitive fields with default values declared by the object
-    should be populated. In addition, the behaviour described by the `NULLS` action applies as well.
-    Default primitives are defined as:
-
-    - `0` for all numeric types
-    - `false` for `boolean`
-    - `'\u0000'` for `char`
-
-- **`ALL`**
-
-    Indicates that all fields should be populated, regardless of their initial values.
-    This action will cause all the values to be overwritten with random data.
-    This is the default mode the engine operates in when using internal generators.
-
-
-Since the `hints()` method in the `AddressGenerator` was overridden, generating an address
-will produce different output:
-
-```json
 {
   "name" : "UQZQVFGAXZ",
   "address" : {
@@ -954,17 +867,92 @@ will produce different output:
 }
 ```
 
-The `street` and `phoneNumbers` that were previously `null` are now populated as a result
-of specifying the `PopulateAction.NULLS` hint. Although the `AddressGenerator` and `PhoneGenerator`
-classes are unaware of each other, objects returned by them are combined into the final output
+The `street` and `phoneNumbers` fields that were not initialised by the generator were populated by the engine.
+Although the `AddressGenerator` and `PhoneGenerator` classes are unaware of each other,
+objects returned by them were combined into the final output. The following section describes how to override
+the default behaviour to prevent the engine from populating null fields.
 
-Lastly, generated objects can still be customised further using selectors.
+### Providing Hints from generators to the Instancio engine
 
-This allows the same generator implementations to be re-used across different tests.
-Test methods can override certain values required for verifying a particular scenario.
+After a generator creates an object, it gets passed to the Instancio engine.
+The engine determines what should be done with the created object based on the `Hints`
+(if any) it receives from the generator. Using the address generator as an example,
+hints can be passed as follows:
+
+
+```java linenums="1"
+class AddressGenerator implements Generator<Address> {
+
+    // generate() method unchanged
+
+    @Override
+    public Hints hints() {
+        return Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS);
+    }
+}
+```
+
+The `AfterGenerate` enum determines whether the engine:
+
+- should populate uninitialised fields
+- should modify the object by applying matching selectors (if any)
+
+
+The `AfterGenerate` enum defines the following values:
+
+- **`DO_NOT_MODIFY`**
+  
+    Indicates that the object created by the generator should not be modified.
+    The engine will treat the object as read-only and assign it to the target field as is.
+    Matching selectors will not be applied.
+
+- **`APPLY_SELECTORS`**
+
+    Indicates that the object can be modified using matching selectors
+    via `set()`, `supply()`, `generate()` methods.
+
+- **`POPULATE_NULLS`**
+
+    Indicates that `null` fields declared by the object should be populated.
+    In addition, the object can be modifiable using selectors as described
+    by above by `APPLY_SELECTORS`.
+
+
+- **`POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`** (default behaviour)
+
+    Indicates that primitive fields with default values declared by the object
+    should be populated. In addition, the behaviour described by `POPULATE_NULLS`
+    applies as well. Default primitives are defined as:
+
+    - `0` for all numeric types
+    - `false` for `boolean`
+    - `'\u0000'` for `char`
+
+- **`POPULATE_ALL`**
+
+    Indicates that all fields should be populated, regardless of their initial values.
+    This action will cause all the values to be overwritten with random data.
+    This is the default mode the engine operates in when using internal generators.
+
+
+Since the `hints()` method in the `AddressGenerator` was overridden with `APPLY_SELECTORS`,
+generating an address will produce different output:
+
+```json
+{
+  "name" : "MTBHAHNL",
+  "address" : {
+    "street" : null,
+    "city" : "New York",
+    "phoneNumbers" : null
+  }
+}
+```
+
+This time the `street` and `phoneNumbers` fields remain `null`, as returned by the generator.
+The `APPLY_SELECTORS` hint implies that generated objects can be customised using selectors.
 For instance, it is possible to override the `street` value and specify how many `Phone` objects
-should be generated:
-
+should be generated via the API:
 
 ```java
 Person person = Instancio.of(Person.class)
@@ -990,6 +978,9 @@ will produce an output similar to:
   }
 }
 ```
+
+The ability to customise generated objects allows a custom generator to be re-used across different tests.
+Test methods can override certain values required for verifying a particular scenario.
 
 ### Generator initialisation and `GeneratorContext`
 
@@ -1430,7 +1421,7 @@ map.max.size=6
 map.min.size=2
 map.nullable=false
 mode=STRICT
-generator.hint.populate.action=APPLY_SELECTORS
+hint.after.generate=POPULATE_NULLS_AND_DEFAULT_PRIMITIVES
 overwrite.existing.values=true
 seed=12345
 short.max=10000

@@ -31,7 +31,7 @@ import java.util.function.Function;
  * @see Hints
  * @since 2.0.0
  */
-public enum PopulateAction {
+public enum AfterGenerate {
 
     /**
      * Indicates that an object created by the generator should not be modified.
@@ -50,7 +50,7 @@ public enum PopulateAction {
      *
      * @since 2.0.0
      */
-    NONE,
+    DO_NOT_MODIFY,
 
     /**
      * Indicates that an object created by the generator can be modified using
@@ -73,12 +73,12 @@ public enum PopulateAction {
      *
      * @since 2.0.0
      */
-    NULLS,
+    POPULATE_NULLS,
 
     /**
      * Indicates that primitive fields with default values declared by an object
      * that was created by the generator should be populated by the engine.
-     * In addition, the behaviour described by {@link #NULLS} applies as well.
+     * In addition, the behaviour described by {@link #POPULATE_NULLS} applies as well.
      * <p>
      * Default values for primitive fields are defined as:
      *
@@ -94,7 +94,7 @@ public enum PopulateAction {
      *
      * @since 2.0.0
      */
-    NULLS_AND_DEFAULT_PRIMITIVES,
+    POPULATE_NULLS_AND_DEFAULT_PRIMITIVES,
 
     /**
      * A hint to populate all fields, regardless of their initial values.
@@ -104,5 +104,5 @@ public enum PopulateAction {
      *
      * @since 2.0.0
      */
-    ALL
+    POPULATE_ALL
 }

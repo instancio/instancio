@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.handlers;
 
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
@@ -38,7 +38,7 @@ public class InstantiatingHandler implements NodeHandler {
 
         if (ReflectionUtils.isArrayOrConcrete(targetClass)) {
             final Hints hints = Hints.builder()
-                    .populateAction(PopulateAction.ALL)
+                    .afterGenerate(AfterGenerate.POPULATE_ALL)
                     .build();
 
             final Object object = instantiator.instantiate(targetClass);

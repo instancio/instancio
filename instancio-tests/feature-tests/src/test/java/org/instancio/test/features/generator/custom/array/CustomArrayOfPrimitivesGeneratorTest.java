@@ -17,9 +17,9 @@ package org.instancio.test.features.generator.custom.array;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -33,10 +33,10 @@ import static org.instancio.Select.allInts;
 import static org.instancio.Select.types;
 
 @FeatureTag({
+        Feature.AFTER_GENERATE,
         Feature.ARRAY_GENERATOR_LENGTH,
         Feature.GENERATE,
         Feature.GENERATOR,
-        Feature.POPULATE_ACTION,
         Feature.SUBTYPE
 })
 class CustomArrayOfPrimitivesGeneratorTest {
@@ -46,10 +46,10 @@ class CustomArrayOfPrimitivesGeneratorTest {
     private static final int ORIGINAL_VALUE = -1;
 
     private static class ArrayGenerator implements Generator<int[]> {
-        private final PopulateAction populateAction;
+        private final AfterGenerate afterGenerate;
 
-        private ArrayGenerator(final PopulateAction populateAction) {
-            this.populateAction = populateAction;
+        private ArrayGenerator(final AfterGenerate afterGenerate) {
+            this.afterGenerate = afterGenerate;
         }
 
         @Override
@@ -62,17 +62,17 @@ class CustomArrayOfPrimitivesGeneratorTest {
         @Override
         public Hints hints() {
             return Hints.builder()
-                    .populateAction(populateAction)
+                    .afterGenerate(afterGenerate)
                     .with(ArrayHint.builder().build())
                     .build();
         }
     }
 
     @Test
-    @DisplayName("ALL: engine should populate all indices, including the one with an existing value")
-    void actionAll() {
+    @DisplayName("Should populate all indices, including the one with an existing value")
+    void populateAll() {
         final int[] result = Instancio.of(int[].class)
-                .supply(types().of(int[].class), new ArrayGenerator(PopulateAction.ALL))
+                .supply(types().of(int[].class), new ArrayGenerator(AfterGenerate.POPULATE_ALL))
                 .create();
 
         assertThat(result)
@@ -83,11 +83,11 @@ class CustomArrayOfPrimitivesGeneratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE, names = "NULLS_AND_DEFAULT_PRIMITIVES")
+    @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE, names = "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES")
     @DisplayName("Engine should only populate indices containing default value (0); occupied index should retain original value")
-    void customArrayGeneratorWithSubtype(final PopulateAction populateAction) {
+    void customArrayGeneratorWithSubtype(final AfterGenerate afterGenerate) {
         final int[] result = Instancio.of(int[].class)
-                .supply(types().of(int[].class), new ArrayGenerator(populateAction))
+                .supply(types().of(int[].class), new ArrayGenerator(afterGenerate))
                 .create();
 
         assertThat(result)
@@ -98,11 +98,11 @@ class CustomArrayOfPrimitivesGeneratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE, names = {"NONE", "NULLS", "APPLY_SELECTORS"})
+    @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE, names = {"DO_NOT_MODIFY", "POPULATE_NULLS", "APPLY_SELECTORS"})
     @DisplayName("Engine should not populate zeroes in the array; populated index should retain original value")
-    void customArrayGeneratorWithApplySelectorsAction(final PopulateAction populateAction) {
+    void customArrayGeneratorWithApplySelectors(final AfterGenerate afterGenerate) {
         final int[] result = Instancio.of(int[].class)
-                .supply(types().of(int[].class), new ArrayGenerator(populateAction))
+                .supply(types().of(int[].class), new ArrayGenerator(afterGenerate))
                 .create();
 
         assertThat(result[POPULATED_INDEX]).isEqualTo(ORIGINAL_VALUE);
@@ -116,14 +116,14 @@ class CustomArrayOfPrimitivesGeneratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.INCLUDE,
-            names = {"APPLY_SELECTORS", "NULLS", "NULLS_AND_DEFAULT_PRIMITIVES"})
+    @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE,
+            names = {"APPLY_SELECTORS", "POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"})
     @DisplayName("Engine should apply selector, overwriting existing values")
-    void applySelectors(final PopulateAction populateAction) {
+    void applySelectors(final AfterGenerate afterGenerate) {
         final int min = 100;
         final int max = 101;
         final int[] result = Instancio.of(int[].class)
-                .supply(types().of(int[].class), new ArrayGenerator(populateAction))
+                .supply(types().of(int[].class), new ArrayGenerator(afterGenerate))
                 .generate(allInts(), gen -> gen.ints().range(min, max))
                 .create();
 

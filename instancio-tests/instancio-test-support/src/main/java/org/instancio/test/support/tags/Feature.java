@@ -19,6 +19,7 @@ package org.instancio.test.support.tags;
  * An enum for the {@link FeatureTag}. Used for tracking (untested) features.
  */
 public enum Feature {
+    AFTER_GENERATE,
     ARRAY_GENERATOR_LENGTH,
     ARRAY_GENERATOR_MAX_LENGTH,
     ARRAY_GENERATOR_MIN_LENGTH,
@@ -62,7 +63,6 @@ public enum Feature {
     ONE_OF_COLLECTION_GENERATOR,
     ON_COMPLETE,
     OVERWRITE_EXISTING_VALUES,
-    POPULATE_ACTION,
     PREDICATE_SELECTOR,
     SCOPE,
     SELECTOR,

@@ -22,7 +22,7 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Person;
@@ -68,7 +68,7 @@ class CustomGeneratorProviderTest {
     void verifyInitMethodCalledOnlyOnce() {
         final Person person = Instancio.of(Person.class)
                 .withSettings(Settings.create()
-                        .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.APPLY_SELECTORS))
+                        .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.APPLY_SELECTORS))
                 .create();
 
         assertThat(person.getName()).isEqualTo(CustomPersonGenerator.PERSON_NAME);

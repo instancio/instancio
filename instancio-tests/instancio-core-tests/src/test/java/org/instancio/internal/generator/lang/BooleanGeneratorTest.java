@@ -18,7 +18,7 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -53,6 +53,6 @@ class BooleanGeneratorTest {
                 .as("true, false, and null")
                 .hasSize(3);
 
-        HintsAssert.assertHints(generator.hints()).populateAction(PopulateAction.NONE);
+        HintsAssert.assertHints(generator.hints()).afterGenerate(AfterGenerate.DO_NOT_MODIFY);
     }
 }

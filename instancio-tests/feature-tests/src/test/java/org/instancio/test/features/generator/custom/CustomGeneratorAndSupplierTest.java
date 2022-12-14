@@ -18,8 +18,8 @@ package org.instancio.test.features.generator.custom;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
-import org.instancio.generator.PopulateAction;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -54,13 +54,13 @@ import static org.instancio.Select.field;
 class CustomGeneratorAndSupplierTest {
 
     @ParameterizedTest
-    @EnumSource(PopulateAction.class)
-    @DisplayName("Objects returned by supply() should never be populated regardless of the PopulateAction")
-    void objectsReturnBySupplyShouldNeverBePopulated(final PopulateAction populateAction) {
+    @EnumSource(AfterGenerate.class)
+    @DisplayName("Objects returned by supply(Supplier) should NEVER be populated regardless of AfterGenerate")
+    void objectsReturnBySupplyShouldNeverBePopulated(final AfterGenerate afterGenerate) {
         final Person result = Instancio.of(Person.class)
                 .supply(all(Person.class), () -> Person.builder().build())
                 .withSettings(Settings.create()
-                        .set(Keys.GENERATOR_HINT_POPULATE_ACTION, populateAction))
+                        .set(Keys.AFTER_GENERATE_HINT, afterGenerate))
                 .create();
 
         assertThatObject(result).hasAllNullFieldsOrPropertiesExcept("age", "finalField");
@@ -86,7 +86,7 @@ class CustomGeneratorAndSupplierTest {
                     callbackCount[0]++;
                 })
                 .withSettings(Settings.create()
-                        .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NULLS))
+                        .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.POPULATE_NULLS))
                 .create();
 
         assertThat(callbackCount[0])

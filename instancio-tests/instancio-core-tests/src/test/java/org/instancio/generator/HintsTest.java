@@ -45,25 +45,25 @@ class HintsTest {
     }
 
     @Test
-    void emptyHintsShouldHaveNullPopulateAction() {
+    void emptyHintsShouldHaveNullAfterGenerate() {
         assertHints(Hints.builder().build())
-                .populateAction(null);
+                .afterGenerate(null);
     }
 
     @Test
     void verifyToString() {
         assertThat(Hints.builder().build())
-                .hasToString("Hints[populateAction=null, hints={}]");
+                .hasToString("Hints[afterGenerate=null, hints={}]");
 
         assertThat(Hints.builder()
-                .populateAction(PopulateAction.ALL)
+                .afterGenerate(AfterGenerate.POPULATE_ALL)
                 .build())
-                .hasToString("Hints[populateAction=ALL, hints={}]");
+                .hasToString("Hints[afterGenerate=POPULATE_ALL, hints={}]");
 
         assertThat(Hints.builder()
                 .with(new FooHint())
                 .build())
-                .hasToString("Hints[populateAction=null," +
+                .hasToString("Hints[afterGenerate=null," +
                         " hints={class org.instancio.generator.HintsTest$FooHint=FooHint}]");
     }
 }

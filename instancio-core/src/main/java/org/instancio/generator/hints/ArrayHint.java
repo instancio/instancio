@@ -18,7 +18,6 @@ package org.instancio.generator.hints;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hint;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +34,9 @@ import java.util.StringJoiner;
  * <p><b>Sample use case</b></p>
  *
  * <p>The goal is to set up an array with a couple of <i>expected</i> objects
- * and let the engine populate the rest of the array with random data.</p>
+ * and let the engine populate the rest of the array with random data.
+ * Once populated, the expected elements the array should be shuffled
+ * to randomise the position of expected elements.</p>
  * <p>
  * This can be achieved as follows:
  *
@@ -54,8 +55,6 @@ import java.util.StringJoiner;
  *     @Override
  *     public Hints hints() {
  *         return Hints.builder()
- *                  // tells the engine to populate null fields in the objects created manually in the generate() method
- *                 .populateAction(PopulateAction.NULLS)
  *                 .with(ArrayHint.builder()
  *                         .shuffle(true) // shuffle the array once populated
  *                         .build())
@@ -79,8 +78,7 @@ import java.util.StringJoiner;
  * Summary of results:
  * <ul>
  *   <li>The generated array contains our custom objects as well as generated phone objects.</li>
- *   <li>The {@code phoneType} field of "111-444-5555" has been populated since
- *       the {@link PopulateAction#NULLS} was specified.</li>
+ *   <li>The {@code phoneType} field of "111-444-5555" has been populated.</li>
  *   <li>The array has been shuffled since the {@link ArrayHint#shuffle()} was specified.</li>
  * </ul>
  *

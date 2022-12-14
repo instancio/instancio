@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom;
 import org.assertj.core.api.Condition;
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.basic.StringHolderAlternativeImpl;
@@ -45,7 +45,7 @@ import static org.instancio.Select.fields;
         Feature.GENERATOR,
         Feature.IGNORE,
         Feature.NULLABLE,
-        Feature.POPULATE_ACTION,
+        Feature.AFTER_GENERATE,
         Feature.STREAM,
         Feature.SUBTYPE
 })
@@ -64,7 +64,7 @@ class GeneratorAdhocTest {
 
         @Override
         public Hints hints() {
-            return Hints.withPopulateAction(PopulateAction.NULLS);
+            return Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
         }
     };
 
@@ -136,7 +136,7 @@ class GeneratorAdhocTest {
 
                     @Override
                     public Hints hints() {
-                        return Hints.withPopulateAction(PopulateAction.NULLS);
+                        return Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
                     }
                 })
                 .create();

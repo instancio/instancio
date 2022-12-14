@@ -16,9 +16,9 @@
 package org.instancio.internal;
 
 import org.instancio.exception.InstancioException;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
@@ -64,7 +64,7 @@ class InstancioEngine {
     private final Node rootNode;
     private final CallbackHandler callbackHandler;
     private final List<GenerationListener> listeners;
-    private final PopulateAction defaultPopulateAction;
+    private final AfterGenerate defaultAfterGenerate;
     private final boolean overwriteExistingValues;
     private final RecordHelper recordHelper = new RecordHelperImpl();
 
@@ -73,7 +73,7 @@ class InstancioEngine {
         rootNode = model.getRootNode();
         callbackHandler = new CallbackHandler(context);
         generatorFacade = new GeneratorFacade(context);
-        defaultPopulateAction = context.getSettings().get(Keys.GENERATOR_HINT_POPULATE_ACTION);
+        defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
         listeners = Arrays.asList(callbackHandler, new GeneratedNullValueListener(context));
     }
@@ -256,6 +256,7 @@ class InstancioEngine {
         final Node elementNode = node.getOnlyChild();
         int lastIndex = 0;
 
+        // Fill-in withElements first (if any)
         for (int i = 0, j = 0; i < arrayLength && j < withElements.size(); i++) {
             final Object elementValue = Array.get(arrayObj, i);
 
@@ -276,7 +277,7 @@ class InstancioEngine {
             lastIndex = i + 1;
         }
 
-        final PopulateAction action = hints.populateAction();
+        final AfterGenerate action = hints.afterGenerate();
         final boolean isPrimitiveArray = elementNode.getRawType().isPrimitive();
         final NodePopulationFilter filter = new ArrayElementNodePopulationFilter(context);
 
@@ -392,7 +393,7 @@ class InstancioEngine {
 
     private void populateChildren(final List<Node> children, final GeneratorResult generatorResult) {
         final Object value = generatorResult.getValue();
-        final PopulateAction action = generatorResult.getHints().populateAction();
+        final AfterGenerate action = generatorResult.getHints().afterGenerate();
         final NodePopulationFilter filter = new FieldNodePopulationFilter(context);
 
         for (final Node child : children) {
@@ -417,7 +418,7 @@ class InstancioEngine {
     }
 
     private GeneratorResult createGeneratorResult(final Object value) {
-        return GeneratorResult.create(value, Hints.withPopulateAction(defaultPopulateAction));
+        return GeneratorResult.create(value, Hints.afterGenerate(defaultAfterGenerate));
     }
 
     private Object createObject(final Node node, final boolean isNullable) {

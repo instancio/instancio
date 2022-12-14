@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom.collection;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.TypeToken;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -73,11 +73,11 @@ class CustomCollectionGeneratorSizeTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class)
+    @EnumSource(value = AfterGenerate.class)
     @DisplayName("If generateElements is zero, collection should remain unchanged")
-    void generateElementsIsZero(final PopulateAction action) {
+    void generateElementsIsZero(final AfterGenerate afterGenerate) {
         final Hints hints = Hints.builder()
-                .populateAction(action)
+                .afterGenerate(afterGenerate)
                 .with(CollectionHint.builder()
                         .generateElements(0) // no elements should be generated
                         .build())
@@ -87,14 +87,13 @@ class CustomCollectionGeneratorSizeTest {
     }
 
     @Nested
-    class PopulateActionTest {
+    class AfterGenerateTest {
 
         @ParameterizedTest
-        @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
-        @DisplayName("Should generate elements if action is not NONE")
-        void shouldGenerateElementsIfActionIsNotNone(final PopulateAction action) {
+        @EnumSource(value = AfterGenerate.class)
+        void shouldGenerateElements(final AfterGenerate afterGenerate) {
             final Hints hints = Hints.builder()
-                    .populateAction(action)
+                    .afterGenerate(afterGenerate)
                     .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS).build())
                     .build();
 
@@ -104,58 +103,40 @@ class CustomCollectionGeneratorSizeTest {
                     .doesNotContainNull()
                     .contains(EXISTING_ELEMENT);
         }
-
-        @Test
-        @DisplayName("Should generate elements if action is NONE")
-        void shouldNotGenerateElementsIfActionIsNone() {
-            final Hints hints = Hints.builder()
-                    .populateAction(PopulateAction.NONE)
-                    .with(CollectionHint.builder()
-                            .generateElements(GENERATE_ELEMENTS)
-                            .build())
-                    .build();
-
-            assertThat(createList(hints))
-                    .contains(EXISTING_ELEMENT)
-                    .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS);
-        }
     }
 
     @Nested
-    @DisplayName("If generateElements is not specified (i.e. zero) collection remains unchanged regardless of action")
+    @DisplayName("If generateElements is not specified (i.e. zero) collection remains unchanged regardless of AfterGenerate")
     class MissingHintsTest {
 
         @Test
-        @DisplayName("Hints are null")
         void nullHints() {
             assertThat(createList(null)).containsOnly(EXISTING_ELEMENT);
         }
 
         @Test
-        @DisplayName("PopulateAction is null")
-        void nullPopulateAction() {
+        void nullAfterGenerate() {
             final Hints hints = Hints.builder().build();
-            assertThat(hints.populateAction()).isNull();
+            assertThat(hints.afterGenerate()).isNull();
             assertThat(createList(hints)).containsOnly(EXISTING_ELEMENT);
         }
 
         @ParameterizedTest
-        @EnumSource(PopulateAction.class)
-        @DisplayName("CollectionHint is null")
-        void nullCollectionHint(final PopulateAction action) {
-            final Hints hints = Hints.withPopulateAction(action);
+        @EnumSource(AfterGenerate.class)
+        void nullCollectionHint(final AfterGenerate afterGenerate) {
+            final Hints hints = Hints.afterGenerate(afterGenerate);
             assertThat(hints.get(CollectionHint.class)).isNull();
             assertThat(createList(hints)).containsOnly(EXISTING_ELEMENT);
         }
 
         @Test
-        @DisplayName("PopulateAction is null but generateElements is specified")
-        void nullPopulateActionButWithGenerateElements() {
+        @DisplayName("AfterGenerate is null but generateElements is specified")
+        void withGenerateElementsAndNullAfterGenerate() {
             final Hints hints = Hints.builder()
                     .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS).build())
                     .build();
 
-            assertThat(hints.populateAction()).isNull();
+            assertThat(hints.afterGenerate()).isNull();
             assertThat(createList(hints))
                     .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS)
                     .contains(EXISTING_ELEMENT);
@@ -166,13 +147,12 @@ class CustomCollectionGeneratorSizeTest {
     class WithElementsTest {
 
         @ParameterizedTest
-        @DisplayName("withElements() included if action is NOT NONE")
-        @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
-        void withElementsWhenActionIsNotNone(final PopulateAction action) {
+        @EnumSource(value = AfterGenerate.class)
+        void shouldIncludeWithElements(final AfterGenerate afterGenerate) {
             final List<String> withElements = Arrays.asList("foo", "bar", "baz");
 
             final Hints hints = Hints.builder()
-                    .populateAction(action)
+                    .afterGenerate(afterGenerate)
                     .with(CollectionHint.builder()
                             .generateElements(GENERATE_ELEMENTS)
                             .withElements(withElements)
@@ -186,42 +166,22 @@ class CustomCollectionGeneratorSizeTest {
                     .doesNotContainNull()
                     .contains(EXISTING_ELEMENT, "foo", "bar", "baz");
         }
-
-        @Test
-        @DisplayName("withElements() included if action is NONE")
-        void withElementsWhenActionIsNone() {
-            final List<String> withElements = Arrays.asList("foo", "bar", "baz");
-
-            final Hints hints = Hints.builder()
-                    .populateAction(PopulateAction.NONE)
-                    .with(CollectionHint.builder()
-                            .generateElements(GENERATE_ELEMENTS)
-                            .withElements(withElements)
-                            .build())
-                    .build();
-
-            final int expectedSize = INITIAL_SIZE + GENERATE_ELEMENTS + withElements.size();
-            assertThat(createList(hints))
-                    .contains(EXISTING_ELEMENT)
-                    .doesNotContainNull()
-                    .hasSize(expectedSize);
-        }
     }
 
     @Test
-    @DisplayName("generateElements is specified, but PopulateAction is set to NONE via Settings")
-    void populateActionIsNoneViaSettings() {
+    @DisplayName("generateElements is specified, but AfterGenerate is set to DO_NOT_MODIFY via Settings")
+    void settingIsDoNotModify() {
         final Hints hints = Hints.builder()
                 .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS).build())
                 .build();
 
-        assertThat(hints.populateAction())
-                .as("Should fallback to action specified via Settings")
+        assertThat(hints.afterGenerate())
+                .as("Should fallback to value specified via Settings")
                 .isNull();
 
         final CustomList<String> result = Instancio.of(new TypeToken<CustomList<String>>() {})
                 .supply(types().of(List.class), new CustomListOfStringGenerator(hints))
-                .withSettings(Settings.create().set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NONE))
+                .withSettings(Settings.create().set(Keys.AFTER_GENERATE_HINT, AfterGenerate.DO_NOT_MODIFY))
                 .create();
 
         assertThat(result)

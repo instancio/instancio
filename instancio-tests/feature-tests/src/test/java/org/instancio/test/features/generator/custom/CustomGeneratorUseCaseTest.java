@@ -17,9 +17,9 @@ package org.instancio.test.features.generator.custom;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
@@ -82,7 +82,7 @@ class CustomGeneratorUseCaseTest {
     private static final String COUNTRY_CODE_OVERRIDE = "+9";
     private static final String ALL_STRINGS_OVERRIDE = "SELECTOR-OVERRIDE";
 
-    private static Generator<List<Phone>> getGenerator(final PopulateAction action) {
+    private static Generator<List<Phone>> getGenerator(final AfterGenerate afterGenerate) {
         return new Generator<List<Phone>>() {
             @Override
             public List<Phone> generate(final Random random) {
@@ -94,7 +94,7 @@ class CustomGeneratorUseCaseTest {
 
             @Override
             public Hints hints() {
-                return Hints.builder().populateAction(action)
+                return Hints.builder().afterGenerate(afterGenerate)
                         .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS).build())
                         .build();
             }
@@ -110,7 +110,7 @@ class CustomGeneratorUseCaseTest {
      */
     @Test
     void case1() {
-        final Generator<?> generator = getGenerator(PopulateAction.NONE);
+        final Generator<?> generator = getGenerator(AfterGenerate.DO_NOT_MODIFY);
 
         final Person person = Instancio.of(Person.class)
                 .supply(field(Address.class, "phoneNumbers"), generator)
@@ -138,7 +138,7 @@ class CustomGeneratorUseCaseTest {
      */
     @Test
     void case2() {
-        final Generator<?> generator = getGenerator(PopulateAction.APPLY_SELECTORS);
+        final Generator<?> generator = getGenerator(AfterGenerate.APPLY_SELECTORS);
 
         final Person person = Instancio.of(Person.class)
                 .supply(field(Address.class, "phoneNumbers"), generator)
@@ -163,7 +163,7 @@ class CustomGeneratorUseCaseTest {
      */
     @Test
     void case3() {
-        final Generator<?> generator = getGenerator(PopulateAction.NULLS);
+        final Generator<?> generator = getGenerator(AfterGenerate.POPULATE_NULLS);
 
         final Person person = Instancio.of(Person.class)
                 .supply(field(Address.class, "phoneNumbers"), generator)
@@ -193,7 +193,7 @@ class CustomGeneratorUseCaseTest {
      */
     @Test
     void case4() {
-        final Generator<?> generator = getGenerator(PopulateAction.NULLS);
+        final Generator<?> generator = getGenerator(AfterGenerate.POPULATE_NULLS);
 
         final Person person = Instancio.of(Person.class)
                 .supply(field(Address.class, "phoneNumbers"), generator)

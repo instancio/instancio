@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -44,14 +44,14 @@ import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObje
         Feature.GENERATE,
         Feature.GENERATOR,
         Feature.ON_COMPLETE,
-        Feature.POPULATE_ACTION,
+        Feature.AFTER_GENERATE,
         Feature.PREDICATE_SELECTOR,
         Feature.SELECTOR,
         Feature.SET,
         Feature.SUPPLY
 })
 @ExtendWith(InstancioExtension.class)
-class GeneratorPopulateActionTest {
+class AfterGenerateTest {
 
     // Initial values
     private static final String ONE = "one";
@@ -73,10 +73,10 @@ class GeneratorPopulateActionTest {
             .lock();
 
     private static class StringAndPrimitiveFieldsGenerator implements Generator<StringAndPrimitiveFields> {
-        private final PopulateAction populateAction;
+        private final AfterGenerate afterGenerate;
 
-        private StringAndPrimitiveFieldsGenerator(final PopulateAction populateAction) {
-            this.populateAction = populateAction;
+        private StringAndPrimitiveFieldsGenerator(final AfterGenerate afterGenerate) {
+            this.afterGenerate = afterGenerate;
         }
 
         @Override
@@ -90,13 +90,13 @@ class GeneratorPopulateActionTest {
 
         @Override
         public Hints hints() {
-            return Hints.withPopulateAction(populateAction);
+            return Hints.afterGenerate(afterGenerate);
         }
     }
 
-    private Model<StringAndPrimitiveFields> createModelWithSelectors(final PopulateAction action) {
+    private Model<StringAndPrimitiveFields> createModelWithSelectors(final AfterGenerate afterGenerate) {
         return Instancio.of(StringAndPrimitiveFields.class)
-                .supply(all(StringAndPrimitiveFields.class), new StringAndPrimitiveFieldsGenerator(action))
+                .supply(all(StringAndPrimitiveFields.class), new StringAndPrimitiveFieldsGenerator(afterGenerate))
                 .generate(field(StringFields.class, "one"), gen -> gen.text().pattern(OVERRIDE_ONE))
                 .generate(field("intOne"), gen -> gen.ints().range(OVERRIDE_INT_ONE, OVERRIDE_INT_ONE))
                 .onComplete(all(StringAndPrimitiveFields.class), (StringAndPrimitiveFields result) -> {
@@ -107,20 +107,19 @@ class GeneratorPopulateActionTest {
                 .toModel();
     }
 
-    private static StringAndPrimitiveFields create(final PopulateAction action) {
+    private static StringAndPrimitiveFields create(final AfterGenerate afterGenerate) {
         return Instancio.of(StringAndPrimitiveFields.class)
-                .supply(all(StringAndPrimitiveFields.class), new StringAndPrimitiveFieldsGenerator(action))
+                .supply(all(StringAndPrimitiveFields.class), new StringAndPrimitiveFieldsGenerator(afterGenerate))
                 .create();
     }
 
     @Nested
-    class PopulateActionTest {
-
+    class WithoutSelectorsTest {
 
         @Test
-        @DisplayName("Action NONE: object created by the generator is not modified")
-        void noneAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY: object created by the generator is not modified")
+        void doNotModify() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.DO_NOT_MODIFY);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).isNull();
@@ -128,9 +127,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action APPLY_SELECTORS: object created by the generator is not modified")
-        void applySelectorsAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS: object created by the generator is not modified")
+        void applySelectors() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.APPLY_SELECTORS);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).isNull();
@@ -138,9 +137,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action NULLS: only null fields should be populated; non-null fields should not be modified")
-        void populateNullsAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS: only null fields should be populated; non-null fields should not be modified")
+        void populateNulls() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).as("should be populated").isNotNull();
@@ -148,10 +147,10 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action NULLS_AND_PRIMITIVES: only null fields and primitives with default values " +
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: only null fields and primitives with default values " +
                 "should be populated; non-null fields and non-default primitives should not be modified")
-        void populateNullsAndPrimitivesAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        void populateNullsAndDefaultPrimitives() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).as("should be populated").isNotNull();
@@ -159,9 +158,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action ALL: all fields will be populated; all fields will be overwritten")
-        void populateAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL: all fields will be populated; all fields will be overwritten")
+        void populateAll() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_ALL);
 
             assertThat(result.getOne()).isNotEqualTo(ONE);
             assertThat(result.getTwo()).isNotEqualTo(TWO);
@@ -176,16 +175,16 @@ class GeneratorPopulateActionTest {
     }
 
     @Nested
-    class CustomisingObjectsReturnedByGeneratorTest {
+    class WithSelectorsTest {
 
-        private StringAndPrimitiveFields create(final PopulateAction action) {
-            return Instancio.create(createModelWithSelectors(action));
+        private StringAndPrimitiveFields create(final AfterGenerate afterGenerate) {
+            return Instancio.create(createModelWithSelectors(afterGenerate));
         }
 
         @Test
-        @DisplayName("Action NONE: object created by the generator cannot be customised")
-        void noneAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY: object created by the generator cannot be customised")
+        void doNotModify() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.DO_NOT_MODIFY);
 
             assertThat(result.getOne()).isEqualTo(ONE);
             assertThat(result.getTwo())
@@ -203,9 +202,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action APPLY_SELECTORS: object created by the generator can be customised")
-        void applySelectorsAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS: object created by the generator can be customised")
+        void applySelectors() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.APPLY_SELECTORS);
 
             assertThat(result.getOne()).isEqualTo(OVERRIDE_ONE);
             assertThat(result.getTwo()).isEqualTo(OVERRIDE_TWO_VIA_CALLBACK);
@@ -219,9 +218,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action NULLS: object created by the generator can be customised")
-        void populateNullsAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS: object created by the generator can be customised")
+        void populateNulls() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS);
 
             assertThat(result.getOne()).isEqualTo(OVERRIDE_ONE);
             assertThat(result.getTwo()).isEqualTo(OVERRIDE_TWO_VIA_CALLBACK);
@@ -235,9 +234,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action NULLS_AND_PRIMITIVES: object created by the generator can be customised")
-        void populateNullsAndPrimitivesAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: object created by the generator can be customised")
+        void populateNullsAndPrimitives() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
             assertThat(result.getOne()).isEqualTo(OVERRIDE_ONE);
             assertThat(result.getTwo()).isEqualTo(OVERRIDE_TWO_VIA_CALLBACK);
@@ -251,9 +250,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action ALL: object created by the generator can be customised")
-        void populateAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL: object created by the generator can be customised")
+        void populateAll() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_ALL);
 
             assertThat(result.getOne()).isEqualTo(OVERRIDE_ONE);
             assertThat(result.getTwo()).isEqualTo(OVERRIDE_TWO_VIA_CALLBACK);
@@ -268,15 +267,15 @@ class GeneratorPopulateActionTest {
     }
 
     @Nested
-    class PopulateActionWithOverwriteExistingValuesDisabledTest {
+    class WithoutSelectorsAndWithOverwriteExistingValuesDisabledTest {
 
         @WithSettings
         private final Settings settings = DISABLE_OVERWRITES;
 
         @Test
-        @DisplayName("Action NONE: object created by the generator is not modified")
-        void noneAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY: object created by the generator is not modified")
+        void none() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.DO_NOT_MODIFY);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).isNull();
@@ -284,9 +283,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action APPLY_SELECTORS: object created by the generator is not modified")
-        void applySelectorsAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS: object created by the generator is not modified")
+        void applySelectors() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.APPLY_SELECTORS);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).isNull();
@@ -294,9 +293,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action NULLS: only null fields should be populated; non-null fields should not be modified")
-        void populateNullsAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS: only null fields should be populated; non-null fields should not be modified")
+        void populateNulls() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).as("should be populated").isNotNull();
@@ -304,10 +303,10 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action NULLS_AND_PRIMITIVES: only null fields and primitives with default values " +
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: only null fields and primitives with default values " +
                 "should be populated; non-null fields and non-default primitives should not be modified")
-        void populateNullsAndPrimitivesAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        void populateNullsAndPrimitives() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).as("should be populated").isNotNull();
@@ -315,9 +314,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action ALL: all fields will be populated but existing values will NOT be overwritten")
-        void populateAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL: all fields will be populated but existing values will NOT be overwritten")
+        void populateAll() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_ALL);
 
             assertCustomValuesNotModified(result);
             assertThat(result.getFour()).isNotNull();
@@ -326,19 +325,19 @@ class GeneratorPopulateActionTest {
     }
 
     @Nested
-    class CustomisingObjectsReturnedByGeneratorWithOverwriteExistingValuesDisabledTest {
+    class WithSelectorsAndOverwriteExistingValuesDisabledTest {
 
         @WithSettings
         private final Settings settings = DISABLE_OVERWRITES;
 
-        private StringAndPrimitiveFields create(final PopulateAction action) {
-            return Instancio.create(createModelWithSelectors(action));
+        private StringAndPrimitiveFields create(final AfterGenerate afterGenerate) {
+            return Instancio.create(createModelWithSelectors(afterGenerate));
         }
 
         @Test
-        @DisplayName("Action NONE: object created by the generator cannot be customised")
-        void noneAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY: object created by the generator cannot be customised")
+        void doNotModify() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.DO_NOT_MODIFY);
 
             assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
             assertThat(result.getFour()).isNull();
@@ -346,9 +345,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action APPLY_SELECTORS: generated values can be customised, but custom values not overwritten")
-        void applySelectorsAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS: generated values can be customised, but custom values not overwritten")
+        void applySelectors() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.APPLY_SELECTORS);
 
             assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
             assertThat(result.getFour()).isNull();
@@ -356,9 +355,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action NULLS: generated values can be customised, but custom values not overwritten")
-        void populateNullsAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS: generated values can be customised, but custom values not overwritten")
+        void populateNulls() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS);
 
             assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
             assertThat(result.getFour()).isNotNull();
@@ -366,9 +365,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action NULLS_AND_PRIMITIVES: generated values can be customised, but custom values not overwritten")
-        void populateNullsAndPrimitivesAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: generated values can be customised, but custom values not overwritten")
+        void populateNullsAndDefaultPrimitives() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
             assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
             assertThat(result.getFour()).isNotNull();
@@ -376,9 +375,9 @@ class GeneratorPopulateActionTest {
         }
 
         @Test
-        @DisplayName("Action ALL: generated values can be customised, but custom values not overwritten")
-        void populateAction() {
-            final StringAndPrimitiveFields result = create(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL: generated values can be customised, but custom values not overwritten")
+        void populateAll() {
+            final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_ALL);
 
             assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
             assertThat(result.getFour()).isNotNull();
@@ -391,7 +390,7 @@ class GeneratorPopulateActionTest {
 
         private final Model<StringAndPrimitiveFields> model = Instancio.of(StringAndPrimitiveFields.class)
                 .supply(all(StringAndPrimitiveFields.class),
-                        new StringAndPrimitiveFieldsGenerator(PopulateAction.APPLY_SELECTORS))
+                        new StringAndPrimitiveFieldsGenerator(AfterGenerate.APPLY_SELECTORS))
                 .set(fields().ofType(String.class), "override")
                 .set(fields().ofType(int.class), -1)
                 .toModel();
@@ -437,6 +436,4 @@ class GeneratorPopulateActionTest {
                 .isEqualTo(OVERRIDE_INT_TWO_VIA_CALLBACK);
         assertThat(result.getIntThree()).isEqualTo(INT_THREE);
     }
-
-
 }

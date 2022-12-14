@@ -21,11 +21,11 @@ import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.UnusedSelectorException;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.generators.Generators;
@@ -133,7 +133,7 @@ class ModelContextTest {
 
             @Override
             public Hints hints() {
-                return Hints.withPopulateAction(PopulateAction.NULLS);
+                return Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
             }
         };
 
@@ -143,7 +143,7 @@ class ModelContextTest {
                 .build();
 
         assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD)))
-                .as("Should NOT be decorated since it has PopulateAction hint")
+                .as("Should NOT be decorated since it has AfterGenerate hint")
                 .containsSame(addressGenerator);
 
         assertThat(ctx.getGenerator(mockNode(String.class))).isPresent().get()
@@ -160,7 +160,7 @@ class ModelContextTest {
                 .build();
 
         assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD))).get()
-                .as("Should NOT be decorated since it has PopulateAction hint")
+                .as("Should NOT be decorated since it has AfterGenerate hint")
                 .isExactlyInstanceOf(SupplierAdapter.class);
     }
 

@@ -16,9 +16,9 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
@@ -122,7 +122,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     @Override
     public Hints hints() {
         return Hints.builder()
-                .populateAction(PopulateAction.ALL)
+                .afterGenerate(AfterGenerate.POPULATE_ALL)
                 .with(CollectionHint.builder()
                         .generateElements(getContext().random().intRange(minSize, maxSize))
                         .nullableElements(nullableElements)

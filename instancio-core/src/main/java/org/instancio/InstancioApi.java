@@ -15,9 +15,9 @@
  */
 package org.instancio;
 
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -181,22 +181,6 @@ public interface InstancioApi<T> {
      *       methods with matching selectors to the supplied object</li>
      * </ul>
      * <p>
-     * For example, if a supplied object contains fields that are {@code null},
-     * they will not be populated:
-     *
-     * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .supply(field("address"), () -> new Address())
-     *             .set(field(Address.class, "city"), "Berlin")   // will be ignored
-     *             .withSettings(Settings.create()
-     *                     .set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NULLS))
-     *             .lenient()
-     *             .create();
-     *
-     *     // all Address fields are null, including the city
-     *     assertThat(person.getAddress().getCity()).isNull();
-     * }</pre>
-     * <p>
      * If you require the supplied object to be populated and/or selectors to be applied,
      * use the {@link #supply(TargetSelector, Generator)} method.
      *
@@ -223,7 +207,7 @@ public interface InstancioApi<T> {
      * <p>
      * Instancio may or may not further populate the generated object,
      * for example filling in {@code null} fields. This behaviour is controlled
-     * by the {@link PopulateAction} hint specified by {@link Generator#hints()}.
+     * by the {@link AfterGenerate} hint specified by {@link Generator#hints()}.
      * Refer to the {@link Generator#hints()} Javadoc for details.
      *
      * @param selector  for fields and/or classes this method should be applied to
@@ -231,8 +215,8 @@ public interface InstancioApi<T> {
      * @param <V>       type of the value to generate
      * @return API builder reference
      * @see Generator
-     * @see PopulateAction
-     * @see Keys#GENERATOR_HINT_POPULATE_ACTION
+     * @see AfterGenerate
+     * @see Keys#AFTER_GENERATE_HINT
      */
     <V> InstancioApi<T> supply(TargetSelector selector, Generator<V> generator);
 

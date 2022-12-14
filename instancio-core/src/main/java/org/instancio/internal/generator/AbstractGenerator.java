@@ -15,10 +15,10 @@
  */
 package org.instancio.internal.generator;
 
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 
 /**
  * Base class for all internal generators.
@@ -39,8 +39,8 @@ public abstract class AbstractGenerator<T> implements Generator<T> {
 
     @Override
     public Hints hints() {
-        // Default to NONE for internal generators since most generated types
+        // Default for internal generators since most generated types
         // are "value types" that don't have fields that need to be populated.
-        return Hints.withPopulateAction(PopulateAction.NONE);
+        return Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
     }
 }

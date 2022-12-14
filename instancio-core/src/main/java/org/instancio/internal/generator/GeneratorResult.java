@@ -15,15 +15,15 @@
  */
 package org.instancio.internal.generator;
 
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 
 import javax.annotation.Nullable;
 import java.util.StringJoiner;
 
 public final class GeneratorResult {
     private static final GeneratorResult NULL_RESULT = new GeneratorResult(
-            null, Hints.withPopulateAction(PopulateAction.NONE));
+            null, Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY));
 
     private final Object value;
     private final Hints hints;

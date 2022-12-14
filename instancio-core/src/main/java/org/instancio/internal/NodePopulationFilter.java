@@ -15,7 +15,7 @@
  */
 package org.instancio.internal;
 
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.nodes.Node;
 
 interface NodePopulationFilter {
@@ -23,11 +23,11 @@ interface NodePopulationFilter {
     /**
      * Determines whether given node should be populated or skipped.
      *
-     * @param node   to evaluate
-     * @param action value of the populate action
-     * @param obj    what the object is varies depending on filter implementation
+     * @param node          to evaluate
+     * @param afterGenerate hint specifying action to take for the given object
+     * @param obj           what the object is varies depending on filter implementation
      * @return {@code true} if node should be skipped, {@code false} otherwise
      */
-    boolean shouldSkip(Node node, PopulateAction action, Object obj);
+    boolean shouldSkip(Node node, AfterGenerate afterGenerate, Object obj);
 
 }

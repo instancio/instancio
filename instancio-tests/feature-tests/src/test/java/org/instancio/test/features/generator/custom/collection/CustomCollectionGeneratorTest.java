@@ -17,9 +17,9 @@ package org.instancio.test.features.generator.custom.collection;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.tags.Feature;
@@ -43,7 +43,7 @@ import static org.instancio.Select.types;
         Feature.COLLECTION_GENERATOR_WITH_ELEMENTS,
         Feature.GENERATE,
         Feature.GENERATOR,
-        Feature.POPULATE_ACTION
+        Feature.AFTER_GENERATE
 })
 class CustomCollectionGeneratorTest {
 
@@ -74,10 +74,10 @@ class CustomCollectionGeneratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
+    @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.EXCLUDE, names = "DO_NOT_MODIFY")
     @DisplayName("Should use collection instance from generator and generate elements")
-    void customListSpecifiedAsSubtype(final PopulateAction action) {
-        final Hints hints = Hints.builder().populateAction(action)
+    void customListSpecifiedAsSubtype(final AfterGenerate afterGenerate) {
+        final Hints hints = Hints.builder().afterGenerate(afterGenerate)
                 .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS).build())
                 .build();
 
@@ -113,10 +113,10 @@ class CustomCollectionGeneratorTest {
     class WithAppliedSelector {
 
         @ParameterizedTest
-        @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.EXCLUDE, names = "DO_NOT_MODIFY")
         @DisplayName("Should generate specified number of elements and apply selector")
-        void withAppliedSelector(final PopulateAction action) {
-            final Hints hints = Hints.builder().populateAction(action)
+        void withAppliedSelector(final AfterGenerate afterGenerate) {
+            final Hints hints = Hints.builder().afterGenerate(afterGenerate)
                     .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS).build())
                     .build();
 
@@ -133,9 +133,9 @@ class CustomCollectionGeneratorTest {
         }
 
         @Test
-        @DisplayName("Action NONE: should generate elements and ignore matching selector on user-supplied values")
-        void populateActionNone() {
-            final Hints hints = Hints.builder().populateAction(PopulateAction.NONE)
+        @DisplayName("DO_NOT_MODIFY: should generate elements and ignore matching selector on user-supplied values")
+        void doNotModify() {
+            final Hints hints = Hints.builder().afterGenerate(AfterGenerate.DO_NOT_MODIFY)
                     .with(CollectionHint.builder().generateElements(GENERATE_ELEMENTS).build())
                     .build();
 

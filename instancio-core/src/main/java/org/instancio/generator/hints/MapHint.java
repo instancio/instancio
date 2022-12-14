@@ -15,10 +15,10 @@
  */
 package org.instancio.generator.hints;
 
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hint;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.internal.ApiValidator;
 
 import java.util.Collections;
@@ -54,8 +54,8 @@ import java.util.StringJoiner;
  *     @Override
  *     public Hints hints() {
  *         return Hints.builder()
- *                  // tells the engine to populate null fields in the objects created manually in the generate() method
- *                 .populateAction(PopulateAction.NULLS)
+ *                  // tells the engine to populate null fields in the objects created in the generate() method
+ *                 .afterGenerate(AfterGenerate.POPULATE_NULLS)
  *                 .with(MapHint.builder()
  *                          // number of additional entries to be generated and added to the map by the engine
  *                         .generateEntries(3)
@@ -85,7 +85,7 @@ import java.util.StringJoiner;
  * <ul>
  *   <li>The generated map contains our custom objects as well as generated phone objects.</li>
  *   <li>The {@code phoneType} field of "111-444-5555" has been populated since
- *       the {@link PopulateAction#NULLS} was specified.</li>
+ *       the {@link AfterGenerate#POPULATE_NULLS} was specified.</li>
  * </ul>
  *
  * @see Generator#hints()

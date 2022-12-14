@@ -16,9 +16,9 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.ApiValidator;
@@ -125,7 +125,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     @Override
     public Hints hints() {
         return Hints.builder()
-                .populateAction(PopulateAction.ALL)
+                .afterGenerate(AfterGenerate.POPULATE_ALL)
                 .with(MapHint.builder()
                         .generateEntries(getContext().random().intRange(minSize, maxSize))
                         .nullableMapKeys(nullableKeys)

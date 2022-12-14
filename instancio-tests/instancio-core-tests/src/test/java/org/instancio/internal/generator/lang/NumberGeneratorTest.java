@@ -16,8 +16,8 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.PopulateAction;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.math.BigIntegerGenerator;
 import org.instancio.internal.random.DefaultRandom;
@@ -80,7 +80,7 @@ class NumberGeneratorTest {
             }
 
             assertThat(results).containsNull().hasSize(MAX - MIN + 2);
-            HintsAssert.assertHints(generator.hints()).populateAction(PopulateAction.NONE);
+            HintsAssert.assertHints(generator.hints()).afterGenerate(AfterGenerate.DO_NOT_MODIFY);
         }
     }
 
@@ -101,8 +101,8 @@ class NumberGeneratorTest {
                     .as("Expecting at least half of sample size of unique fractional numbers")
                     .hasSizeGreaterThan(SAMPLE_SIZE / 2);
 
-//            HintsAssert.assertHints(generator.hints())
-//                    .populateActionIsApplySelectors();
+            HintsAssert.assertHints(generator.hints())
+                    .afterGenerate(AfterGenerate.DO_NOT_MODIFY);
         }
     }
 

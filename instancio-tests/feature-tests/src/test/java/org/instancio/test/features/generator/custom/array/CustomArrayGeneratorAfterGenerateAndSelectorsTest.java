@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom.array;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.test.support.pojo.arrays.ArrayOfStringAndPrimitiveFields;
 import org.instancio.test.support.pojo.misc.StringAndPrimitiveFields;
@@ -43,14 +43,14 @@ import static org.instancio.test.support.asserts.Asserts.assertNoNulls;
 import static org.instancio.test.support.asserts.Asserts.assertNoZeroes;
 
 @FeatureTag({
+        Feature.AFTER_GENERATE,
         Feature.GENERATE,
         Feature.GENERATOR,
         Feature.METAMODEL,
         Feature.MODEL,
-        Feature.POPULATE_ACTION,
         Feature.SELECTOR
 })
-class CustomArrayGeneratorPopulateActionAndSelectorsTest {
+class CustomArrayGeneratorAfterGenerateAndSelectorsTest {
     private static final int INITIAL_SIZE = 5;
     private static final int OCCUPIED_INDEX = 2;
 
@@ -96,16 +96,16 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
                 .toModel();
     }
 
-    private ArrayOfStringAndPrimitiveFields createWith(final PopulateAction action) {
-        final Hints hints = Hints.builder().populateAction(action)
+    private ArrayOfStringAndPrimitiveFields createWith(final AfterGenerate afterGenerate) {
+        final Hints hints = Hints.builder().afterGenerate(afterGenerate)
                 .with(ArrayHint.builder().build())
                 .build();
 
         return Instancio.create(createBaseModelWith(hints));
     }
 
-    private ArrayOfStringAndPrimitiveFields createWithHintsAndSelectors(final PopulateAction action) {
-        final Hints hints = Hints.builder().populateAction(action)
+    private ArrayOfStringAndPrimitiveFields createWithHintsAndSelectors(final AfterGenerate afterGenerate) {
+        final Hints hints = Hints.builder().afterGenerate(afterGenerate)
                 .with(ArrayHint.builder().build())
                 .build();
 
@@ -114,7 +114,7 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
                 .set(StringFields_.two, STR_TWO_OVERRIDE)
                 .set(StringAndPrimitiveFields_.intOne, INT_ONE_OVERRIDE)
                 .set(StringAndPrimitiveFields_.intTwo, INT_TWO_OVERRIDE)
-                .lenient() // only needed for testing selectors when action is NONE
+                .lenient() // only needed for testing selectors when AfterGenerate is DO_NOT_MODIFY
                 .create();
     }
 
@@ -122,29 +122,29 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
     class WithoutSelectorsTest {
 
         @Test
-        @DisplayName("Action: NONE")
-        void populateActionNone() {
-            final ArrayOfStringAndPrimitiveFields result = createWith(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY")
+        void doNotModify() {
+            final ArrayOfStringAndPrimitiveFields result = createWith(AfterGenerate.DO_NOT_MODIFY);
 
             assertThat(result.getArray()).contains(existingElement);
             assertExistingElementWasNotModified(result.getArray());
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreNotPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: APPLY_SELECTORS")
-        void populateActionApplySelectors() {
-            final ArrayOfStringAndPrimitiveFields result = createWith(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS")
+        void applySelectors() {
+            final ArrayOfStringAndPrimitiveFields result = createWith(AfterGenerate.APPLY_SELECTORS);
 
             assertThat(result.getArray()).contains(existingElement);
             assertExistingElementWasNotModified(result.getArray());
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreNotPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: NULLS")
-        void populateActionNulls() {
-            final ArrayOfStringAndPrimitiveFields result = createWith(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS")
+        void populateNulls() {
+            final ArrayOfStringAndPrimitiveFields result = createWith(AfterGenerate.POPULATE_NULLS);
 
             assertThat(result.getArray()).contains(existingElement);
 
@@ -154,13 +154,13 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
             assertNoNulls(existing.getTwo(), existing.getThree(), existing.getFour());
             assertAllZeroes(existing.getIntTwo(), existing.getIntThree(), existing.getIntFour());
 
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: NULLS_AND_DEFAULT_PRIMITIVES")
-        void populateActionNullsAndDefaultPrimitives() {
-            final ArrayOfStringAndPrimitiveFields result = createWith(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES")
+        void populateNullsAndDefaultPrimitives() {
+            final ArrayOfStringAndPrimitiveFields result = createWith(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
             assertThat(result.getArray()).contains(existingElement);
 
@@ -170,13 +170,13 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
             assertNoNulls(existing.getTwo(), existing.getThree(), existing.getFour());
             assertNoZeroes(existing.getIntTwo(), existing.getIntThree(), existing.getIntFour());
 
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: ALL")
-        void populateActionAll() {
-            final ArrayOfStringAndPrimitiveFields result = createWith(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL")
+        void populateAll() {
+            final ArrayOfStringAndPrimitiveFields result = createWith(AfterGenerate.POPULATE_ALL);
 
             assertThat(result.getArray())
                     .as("Object replaced with a new instance (!?)")
@@ -188,26 +188,27 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
             assertNoNulls(existing.getTwo(), existing.getThree(), existing.getFour());
             assertNoZeroes(existing.getIntTwo(), existing.getIntThree(), existing.getIntFour());
 
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreFullyPopulated(result);
         }
     }
 
     @Nested
     class WithSelectorsTest {
+
         @Test
-        @DisplayName("Action: NONE")
-        void populateActionNone() {
-            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.NONE);
+        @DisplayName("DO_NOT_MODIFY")
+        void doNotModify() {
+            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.DO_NOT_MODIFY);
 
             assertThat(result.getArray()).contains(existingElement);
             assertExistingElementWasNotModified(result.getArray());
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreNotPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: APPLY_SELECTORS")
-        void populateActionApplySelectors() {
-            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.APPLY_SELECTORS);
+        @DisplayName("APPLY_SELECTORS")
+        void applySelectors() {
+            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.APPLY_SELECTORS);
 
             assertThat(result.getArray())
                     .contains(existingElement)
@@ -216,17 +217,17 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
                     .noneMatch(e -> e.getIntOne() == EXISTING_INT_ONE);
 
             assertSelectorOverrides(existingElement);
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreNotPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: NULLS")
-        void populateActionNulls() {
-            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.NULLS);
+        @DisplayName("POPULATE_NULLS")
+        void populateNulls() {
+            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.POPULATE_NULLS);
 
             assertThat(result.getArray())
                     .contains(existingElement)
-                    .allSatisfy(CustomArrayGeneratorPopulateActionAndSelectorsTest::assertSelectorOverrides);
+                    .allSatisfy(CustomArrayGeneratorAfterGenerateAndSelectorsTest::assertSelectorOverrides);
 
             assertThat(result.getArray())
                     .filteredOn(ELEMENT_CREATED_BY_USER)
@@ -238,15 +239,15 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
 
             assertThat(result.getArray())
                     .filteredOn(ELEMENT_TO_BE_GENERATED_BY_ENGINE)
-                    .allSatisfy(CustomArrayGeneratorPopulateActionAndSelectorsTest::assertSelectorOverrides);
+                    .allSatisfy(CustomArrayGeneratorAfterGenerateAndSelectorsTest::assertSelectorOverrides);
 
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: NULLS_AND_DEFAULT_PRIMITIVES")
-        void populateActionNullsAndDefaultPrimitives() {
-            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.NULLS_AND_DEFAULT_PRIMITIVES);
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES")
+        void populateNullsAndDefaultPrimitives() {
+            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
             assertThat(result.getArray())
                     .contains(existingElement)
@@ -263,15 +264,15 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
 
             assertThat(result.getArray())
                     .filteredOn(ELEMENT_TO_BE_GENERATED_BY_ENGINE)
-                    .allSatisfy(CustomArrayGeneratorPopulateActionAndSelectorsTest::assertSelectorOverrides);
+                    .allSatisfy(CustomArrayGeneratorAfterGenerateAndSelectorsTest::assertSelectorOverrides);
 
-            assertEngineGeneratedElementsAreFullyPopulated(result);
+            assertEmptyIndexesAreFullyPopulated(result);
         }
 
         @Test
-        @DisplayName("Action: ALL")
-        void populateActionAll() {
-            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(PopulateAction.ALL);
+        @DisplayName("POPULATE_ALL")
+        void populateAll() {
+            final ArrayOfStringAndPrimitiveFields result = createWithHintsAndSelectors(AfterGenerate.POPULATE_ALL);
 
             assertThat(result.getArray())
                     .doesNotContain(existingElement)
@@ -288,17 +289,9 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
 
             assertThat(result.getArray())
                     .filteredOn(ELEMENT_TO_BE_GENERATED_BY_ENGINE)
-                    .allSatisfy(CustomArrayGeneratorPopulateActionAndSelectorsTest::assertSelectorOverrides);
+                    .allSatisfy(CustomArrayGeneratorAfterGenerateAndSelectorsTest::assertSelectorOverrides);
 
-            assertEngineGeneratedElementsAreFullyPopulated(result);
-        }
-    }
-
-    private void assertNullIndicesNotPopulated(final StringAndPrimitiveFields[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (i != OCCUPIED_INDEX) {
-                assertThat(array[i]).as("Expected index %s to contain null", i).isNull();
-            }
+            assertEmptyIndexesAreFullyPopulated(result);
         }
     }
 
@@ -317,23 +310,27 @@ class CustomArrayGeneratorPopulateActionAndSelectorsTest {
         assertThat(obj.getIntTwo()).isEqualTo(INT_TWO_OVERRIDE);
     }
 
-    // Elements that were created and added to the array by the engine
-    // are always fully-populated (regardless of the PopulateAction)
-    private static void assertEngineGeneratedElementsAreFullyPopulated(final ArrayOfStringAndPrimitiveFields result) {
+    private static void assertEmptyIndexesAreNotPopulated(final ArrayOfStringAndPrimitiveFields result) {
+        final StringAndPrimitiveFields[] array = result.getArray();
+        for (int i = 0; i < array.length; i++) {
+            if (i != OCCUPIED_INDEX) {
+                assertThatObject(array[i]).isNull();
+            }
+        }
+    }
+
+    private static void assertEmptyIndexesAreFullyPopulated(final ArrayOfStringAndPrimitiveFields result) {
         final StringAndPrimitiveFields[] array = result.getArray();
         for (int i = 0; i < array.length; i++) {
             if (i != OCCUPIED_INDEX) {
                 final StringAndPrimitiveFields e = array[i];
-                assertThatObject(e)
-                        .as("String fields should not be null")
-                        .hasNoNullFieldsOrProperties();
+                assertThatObject(e).hasNoNullFieldsOrProperties();
 
                 assertNoZeroes(
                         e.getIntOne(),
                         e.getIntTwo(),
                         e.getIntThree(),
                         e.getIntFour());
-
             }
         }
     }

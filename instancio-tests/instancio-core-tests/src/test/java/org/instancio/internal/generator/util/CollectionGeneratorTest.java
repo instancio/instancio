@@ -17,7 +17,7 @@ package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.PopulateAction;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -76,6 +76,6 @@ class CollectionGeneratorTest {
         HintsAssert.assertHints(generator.hints())
                 .generateElementsIsBetween(MIN_SIZE, MAX_SIZE)
                 .nullableCollectionElements(true)
-                .populateAction(PopulateAction.ALL);
+                .afterGenerate(AfterGenerate.POPULATE_ALL);
     }
 }

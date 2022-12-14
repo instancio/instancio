@@ -18,9 +18,9 @@ package org.instancio.test.features.generator.custom.map;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.TypeToken;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.generator.PopulateAction;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
@@ -80,11 +80,11 @@ class CustomMapGeneratorSizeTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = PopulateAction.class)
+    @EnumSource(value = AfterGenerate.class)
     @DisplayName("If generateEntries is zero, map should remain unchanged")
-    void generateEntriesIsZero(final PopulateAction action) {
+    void generateEntriesIsZero(final AfterGenerate afterGenerate) {
         final Hints hints = Hints.builder()
-                .populateAction(action)
+                .afterGenerate(afterGenerate)
                 .with(MapHint.builder()
                         .generateEntries(0) // no entries should be generated
                         .build())
@@ -94,14 +94,13 @@ class CustomMapGeneratorSizeTest {
     }
 
     @Nested
-    class PopulateActionTest {
+    class AfterGenerateTest {
 
         @ParameterizedTest
-        @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
-        @DisplayName("Should generate entries if action is not NONE")
-        void shouldGenerateEntriesIfActionIsNotNone(final PopulateAction action) {
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.EXCLUDE, names = "DO_NOT_MODIFY")
+        void shouldGenerateEntries(final AfterGenerate afterGenerate) {
             final Hints hints = Hints.builder()
-                    .populateAction(action)
+                    .afterGenerate(afterGenerate)
                     .with(MapHint.builder().generateEntries(GENERATE_ENTRIES).build())
                     .build();
 
@@ -113,10 +112,9 @@ class CustomMapGeneratorSizeTest {
         }
 
         @Test
-        @DisplayName("Should generate entries if action is NONE")
-        void shouldNotGenerateEntriesIfActionIsNone() {
+        void shouldNotGenerateEntries() {
             final Hints hints = Hints.builder()
-                    .populateAction(PopulateAction.NONE)
+                    .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
                     .with(MapHint.builder()
                             .generateEntries(GENERATE_ENTRIES)
                             .build())
@@ -129,40 +127,37 @@ class CustomMapGeneratorSizeTest {
     }
 
     @Nested
-    @DisplayName("If generateEntries is not specified (i.e. zero) map remains unchanged regardless of action")
+    @DisplayName("If generateEntries is not specified (i.e. zero) map remains unchanged regardless of AfterGenerate")
     class MissingHintsTest {
 
         @Test
-        @DisplayName("Hints are null")
         void nullHints() {
             assertThat(createMap(null)).containsOnlyKeys(EXISTING_KEY);
         }
 
         @Test
-        @DisplayName("PopulateAction is null")
-        void nullPopulateAction() {
+        void nullAfterGenerate() {
             final Hints hints = Hints.builder().build();
-            assertThat(hints.populateAction()).isNull();
+            assertThat(hints.afterGenerate()).isNull();
             assertThat(createMap(hints)).containsOnlyKeys(EXISTING_KEY);
         }
 
         @ParameterizedTest
-        @EnumSource(PopulateAction.class)
-        @DisplayName("MapHint is null")
-        void nullMapHint(final PopulateAction action) {
-            final Hints hints = Hints.withPopulateAction(action);
+        @EnumSource(AfterGenerate.class)
+        void nullMapHint(final AfterGenerate afterGenerate) {
+            final Hints hints = Hints.afterGenerate(afterGenerate);
             assertThat(hints.get(MapHint.class)).isNull();
             assertThat(createMap(hints)).containsOnlyKeys(EXISTING_KEY);
         }
 
         @Test
-        @DisplayName("PopulateAction is null but generateEntries is specified")
-        void nullPopulateActionButWithGenerateEntries() {
+        @DisplayName("AfterGenerate is null but generateEntries is specified")
+        void generateEntriesWithNullAfterGenerate() {
             final Hints hints = Hints.builder()
                     .with(MapHint.builder().generateEntries(GENERATE_ENTRIES).build())
                     .build();
 
-            assertThat(hints.populateAction()).isNull();
+            assertThat(hints.afterGenerate()).isNull();
             assertThat(createMap(hints))
                     .hasSize(INITIAL_SIZE + GENERATE_ENTRIES)
                     .containsKey(EXISTING_KEY)
@@ -174,11 +169,10 @@ class CustomMapGeneratorSizeTest {
     class WithEntriesTest {
 
         @ParameterizedTest
-        @DisplayName("withEntries() included if action is NOT NONE")
-        @EnumSource(value = PopulateAction.class, mode = EnumSource.Mode.EXCLUDE, names = "NONE")
-        void withEntriesWhenActionIsNotNone(final PopulateAction action) {
+        @EnumSource(value = AfterGenerate.class)
+        void shouldIncludeWithEntries(final AfterGenerate afterGenerate) {
             final Hints hints = Hints.builder()
-                    .populateAction(action)
+                    .afterGenerate(afterGenerate)
                     .with(MapHint.builder()
                             .generateEntries(GENERATE_ENTRIES)
                             .withEntries(WITH_ENTRIES)
@@ -194,38 +188,22 @@ class CustomMapGeneratorSizeTest {
                     .containsKeys("foo", "bar", "baz");
         }
 
-        @Test
-        @DisplayName("withEntries() should be included if action is NONE")
-        void withEntriesWhenActionIsNone() {
-            final Hints hints = Hints.builder()
-                    .populateAction(PopulateAction.NONE)
-                    .with(MapHint.builder()
-                            .generateEntries(GENERATE_ENTRIES)
-                            .withEntries(WITH_ENTRIES)
-                            .build())
-                    .build();
-
-            final int expectedSize = INITIAL_SIZE + GENERATE_ENTRIES + WITH_ENTRIES.size();
-            assertThat(createMap(hints))
-                    .containsKey(EXISTING_KEY)
-                    .hasSize(expectedSize);
-        }
     }
 
     @Test
-    @DisplayName("generateEntries is specified, but PopulateAction is set to NONE via Settings")
-    void populateActionIsNoneViaSettings() {
+    @DisplayName("generateEntries is specified, but AfterGenerate is set to DO_NOT_MODIFY via Settings")
+    void settingIsDoNotModify() {
         final Hints hints = Hints.builder()
                 .with(MapHint.builder().generateEntries(GENERATE_ENTRIES).build())
                 .build();
 
-        assertThat(hints.populateAction())
-                .as("Should fallback to action specified via Settings")
+        assertThat(hints.afterGenerate())
+                .as("Should fallback to value specified via Settings")
                 .isNull();
 
         final CustomMap<String, Integer> result = Instancio.of(new TypeToken<CustomMap<String, Integer>>() {})
                 .supply(types().of(Map.class), new CustomMapGenerator(hints))
-                .withSettings(Settings.create().set(Keys.GENERATOR_HINT_POPULATE_ACTION, PopulateAction.NONE))
+                .withSettings(Settings.create().set(Keys.AFTER_GENERATE_HINT, AfterGenerate.DO_NOT_MODIFY))
                 .create();
 
         assertThat(result)
