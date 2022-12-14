@@ -16,7 +16,4 @@
 /**
  * Contains node type resolvers.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.nodes.resolvers;
-
-import javax.annotation.ParametersAreNonnullByDefault;

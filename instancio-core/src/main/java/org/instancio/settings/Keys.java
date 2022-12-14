@@ -20,8 +20,9 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -281,37 +282,46 @@ public final class Keys {
      * @param key to lookup
      * @return the setting key; an exception is thrown if the key is not found
      */
-    public static SettingKey get(final String key) {
+    public static SettingKey get(@NotNull final String key) {
         final SettingKey settingKey = SETTING_KEY_MAP.get(key);
         ApiValidator.isTrue(settingKey != null, "Invalid instancio property key: '%s'", key);
         return settingKey;
     }
 
 
-    private static SettingKey register(final String propertyKey,
-                                       final Class<?> type,
-                                       @Nullable final Object defaultValue,
-                                       @Nullable final RangeAdjuster rangeAdjuster,
-                                       final boolean allowsNullValue) {
+    private static SettingKey register(
+            @NotNull final String propertyKey,
+            @NotNull final Class<?> type,
+            @Nullable final Object defaultValue,
+            @Nullable final RangeAdjuster rangeAdjuster,
+            final boolean allowsNullValue) {
 
         final SettingKey settingKey = new InternalKey(propertyKey, type, defaultValue, rangeAdjuster, allowsNullValue);
         ALL_KEYS.add(settingKey);
         return settingKey;
     }
 
-    private static SettingKey register(final String propertyKey,
-                                       final Class<?> type,
-                                       @Nullable final Object defaultValue,
-                                       @Nullable final RangeAdjuster rangeAdjuster) {
+    private static SettingKey register(
+            @NotNull final String propertyKey,
+            @NotNull final Class<?> type,
+            @Nullable final Object defaultValue,
+            @Nullable final RangeAdjuster rangeAdjuster) {
 
         return register(propertyKey, type, defaultValue, rangeAdjuster, false);
     }
 
-    private static SettingKey register(final String key, final Class<?> type, final Object defaultValue) {
+    private static SettingKey register(
+            @NotNull final String key,
+            @NotNull final Class<?> type,
+            @NotNull final Object defaultValue) {
+
         return register(key, type, defaultValue, null, false);
     }
 
-    private static SettingKey registerWithNullDefault(final String key, final Class<?> type) {
+    private static SettingKey registerWithNullDefault(
+            @NotNull final String key,
+            @NotNull final Class<?> type) {
+
         return register(key, type, null, null, true);
     }
 

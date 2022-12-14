@@ -23,8 +23,8 @@ import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.SettingKey;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;

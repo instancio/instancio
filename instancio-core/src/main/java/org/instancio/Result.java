@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * A result containing a created object and seed that was used for populating its values.
  *
@@ -25,7 +27,7 @@ public final class Result<T> {
     private final T object;
     private final long seed;
 
-    public Result(final T object, final long seed) {
+    public Result(@Nullable final T object, final long seed) {
         this.object = object;
         this.seed = seed;
     }

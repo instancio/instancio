@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.annotation.Annotation;
 
 /**
@@ -47,7 +49,7 @@ public interface TypeSelectorBuilder extends TargetSelector {
      * @return selector builder
      * @since 1.6.0
      */
-    TypeSelectorBuilder of(Class<?> type);
+    TypeSelectorBuilder of(@NotNull Class<?> type);
 
     /**
      * Matches types annotated with the specified annotation,
@@ -64,7 +66,7 @@ public interface TypeSelectorBuilder extends TargetSelector {
      * @return selector builder
      * @since 1.6.0
      */
-    <A extends Annotation> TypeSelectorBuilder annotated(Class<? extends A> annotation);
+    <A extends Annotation> TypeSelectorBuilder annotated(@NotNull Class<? extends A> annotation);
 
     /**
      * Excludes specified class from matching.
@@ -75,6 +77,6 @@ public interface TypeSelectorBuilder extends TargetSelector {
      * @return selector builder
      * @since 1.6.0
      */
-    TypeSelectorBuilder excluding(Class<?> type);
+    TypeSelectorBuilder excluding(@NotNull Class<?> type);
 
 }

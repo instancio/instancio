@@ -17,8 +17,9 @@ package org.instancio.settings;
 
 import org.instancio.internal.settings.InternalSettings;
 import org.instancio.internal.util.Constants;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -80,7 +81,7 @@ public interface Settings {
      * @param map to create settings from
      * @return settings
      */
-    static Settings from(Map<Object, Object> map) {
+    static Settings from(@NotNull Map<Object, Object> map) {
         return InternalSettings.from(map);
     }
 
@@ -90,7 +91,7 @@ public interface Settings {
      * @param other settings to create settings from
      * @return a new instance of settings
      */
-    static Settings from(Settings other) {
+    static Settings from(@NotNull Settings other) {
         return InternalSettings.from(other);
     }
 
@@ -100,7 +101,7 @@ public interface Settings {
      * @param other settings to merge
      * @return new instance of merged settings
      */
-    Settings merge(@Nullable Settings other);
+    Settings merge(@NotNull Settings other);
 
     /**
      * Get setting value for given key.
@@ -109,7 +110,7 @@ public interface Settings {
      * @param <T> setting value type
      * @return value for given key, or {@code null} if none.
      */
-    <T> T get(SettingKey key);
+    <T> T get(@NotNull SettingKey key);
 
     /**
      * Set the setting with the given key to the specified value.
@@ -123,7 +124,7 @@ public interface Settings {
      * @param value to set
      * @return updated settings
      */
-    Settings set(SettingKey key, @Nullable Object value);
+    Settings set(@NotNull SettingKey key, @Nullable Object value);
 
     /**
      * Map 'from' supertype to 'to' subtype.
@@ -132,7 +133,7 @@ public interface Settings {
      * @param to   subtype class
      * @return updated settings
      */
-    Settings mapType(Class<?> from, Class<?> to);
+    Settings mapType(@NotNull Class<?> from, @NotNull Class<?> to);
 
     /**
      * Returns a read-only view of the subtype map.

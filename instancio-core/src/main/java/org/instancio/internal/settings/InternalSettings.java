@@ -20,8 +20,9 @@ import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,12 +99,12 @@ public final class InternalSettings implements Settings {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(final SettingKey key) {
+    public <T> T get(@NotNull final SettingKey key) {
         return (T) settingsMap.get(Verify.notNull(key, "Key must not be null"));
     }
 
     @Override
-    public InternalSettings set(final SettingKey key, @Nullable final Object value) {
+    public InternalSettings set(@NotNull final SettingKey key, @Nullable final Object value) {
         return set(key, value, AUTO_ADJUST_ENABLED);
     }
 
@@ -120,14 +121,12 @@ public final class InternalSettings implements Settings {
      * @param autoAdjust whether to auto-adjust related
      * @return updated setting
      */
-    InternalSettings set(final SettingKey key, @Nullable final Object value, final boolean autoAdjust) {
+    InternalSettings set(@NotNull final SettingKey key, @Nullable final Object value, final boolean autoAdjust) {
         checkLockedForModifications();
         validateKeyValue(key, value);
         settingsMap.put(key, value);
 
         if (autoAdjust) {
-            // `value` has been validated based on whether it's nullable
-            //noinspection ConstantConditions
             SettingsSupport.getAutoAdjustable(key)
                     .ifPresent(k -> k.autoAdjust(this, new NumberCaster<>().cast(value)));
         }
@@ -136,7 +135,7 @@ public final class InternalSettings implements Settings {
     }
 
     @Override
-    public InternalSettings mapType(final Class<?> from, final Class<?> to) {
+    public InternalSettings mapType(@NotNull final Class<?> from, @NotNull final Class<?> to) {
         checkLockedForModifications();
         validateSubtype(from, to);
         subtypeMap.put(from, to);

@@ -19,12 +19,14 @@ import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Provides support for auto-adjusting 'range' settings that have a min and a max value.
  *
  * @since 1.1.10
  */
+@ApiStatus.Internal
 public interface RangeAdjuster {
 
     RangeAdjuster MIN_ADJUSTER = new RangeAdjuster.ForMin(Constants.RANGE_ADJUSTMENT_PERCENTAGE);

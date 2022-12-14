@@ -16,8 +16,8 @@
 package org.instancio.internal.util;
 
 import org.instancio.Random;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

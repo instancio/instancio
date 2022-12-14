@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.nodes;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.Optional;
 
 /**
@@ -22,6 +24,7 @@ import java.util.Optional;
  *
  * @since 1.5.0
  */
+@ApiStatus.Internal
 public interface NodeKindResolver {
 
     /**

@@ -16,7 +16,4 @@
 /**
  * Provides generators for {@code java.util.concurrent.atomic.*} types.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.generator.util.concurrent.atomic;
-
-import javax.annotation.ParametersAreNonnullByDefault;

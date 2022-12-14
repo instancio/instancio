@@ -37,8 +37,8 @@ import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

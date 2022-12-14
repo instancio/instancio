@@ -16,8 +16,8 @@
 package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioException;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;

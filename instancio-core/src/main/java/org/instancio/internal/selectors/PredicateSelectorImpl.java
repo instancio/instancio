@@ -20,8 +20,8 @@ import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;

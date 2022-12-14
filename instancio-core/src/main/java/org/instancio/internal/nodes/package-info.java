@@ -16,7 +16,4 @@
 /**
  * Implementation classes for converting types to node hierarchies.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.nodes;
-
-import javax.annotation.ParametersAreNonnullByDefault;

@@ -16,7 +16,5 @@
 /**
  * Contains exception classes thrown by Instancio.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.exception;
 
-import javax.annotation.ParametersAreNonnullByDefault;

@@ -15,7 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;

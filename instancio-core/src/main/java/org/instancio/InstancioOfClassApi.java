@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Instancio API for defining type parameters for generic classes.
  *
@@ -55,5 +57,5 @@ public interface InstancioOfClassApi<T> extends InstancioApi<T> {
      * @see Instancio#of(TypeTokenSupplier)
      * @since 1.0.1
      */
-    InstancioApi<T> withTypeParameters(Class<?>... types);
+    InstancioApi<T> withTypeParameters(@NotNull Class<?>... types);
 }

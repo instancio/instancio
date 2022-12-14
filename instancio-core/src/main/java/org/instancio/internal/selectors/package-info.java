@@ -16,7 +16,4 @@
 /**
  * Provides selector API implementation.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.selectors;
-
-import javax.annotation.ParametersAreNonnullByDefault;

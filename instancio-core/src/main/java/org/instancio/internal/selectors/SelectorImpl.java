@@ -20,8 +20,9 @@ import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.util.Format;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +87,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
     }
 
     @Override
-    public Selector within(final Scope... scopes) {
+    public Selector within(@NotNull final Scope... scopes) {
         return new SelectorImpl(selectorTargetKind, targetClass, fieldName, Arrays.asList(scopes), parent, stackTraceHolder);
     }
 

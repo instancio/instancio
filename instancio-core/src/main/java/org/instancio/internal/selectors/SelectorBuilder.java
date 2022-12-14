@@ -16,12 +16,14 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.TargetSelector;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * An internal builder for constructing selectors.
  *
  * @since 1.6.0
  */
+@ApiStatus.Internal
 public interface SelectorBuilder {
 
     /**

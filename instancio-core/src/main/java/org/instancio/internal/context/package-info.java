@@ -16,7 +16,4 @@
 /**
  * Contains context-related implementation classes.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.context;
-
-import javax.annotation.ParametersAreNonnullByDefault;

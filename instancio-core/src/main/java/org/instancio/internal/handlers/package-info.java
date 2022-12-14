@@ -16,7 +16,4 @@
 /**
  * Contains internal classes for handling nodes.
  */
-@ParametersAreNonnullByDefault
 package org.instancio.internal.handlers;
-
-import javax.annotation.ParametersAreNonnullByDefault;

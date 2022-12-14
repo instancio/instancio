@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.generator;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * A function for adding objects to a container.
  *
@@ -24,6 +26,7 @@ package org.instancio.internal.generator;
  * @see InternalContainerHint
  * @since 2.0.0
  */
+@ApiStatus.Internal
 public interface ContainerAddFunction<T> {
 
     /**
