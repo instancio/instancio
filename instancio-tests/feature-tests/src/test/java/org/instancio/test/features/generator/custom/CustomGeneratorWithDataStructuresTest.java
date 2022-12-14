@@ -83,7 +83,7 @@ class CustomGeneratorWithDataStructuresTest {
     }
 
     @Nested
-    class AfterGenerateTest {
+    class WithoutSelectorsTest {
         private Container create(final Generator<?> generator) {
             return Instancio.of(Container.class)
                     .supply(all(Container.class), generator)
@@ -166,7 +166,7 @@ class CustomGeneratorWithDataStructuresTest {
      * Customising objects returned by custom generator using generate()/onComplete().
      */
     @Nested
-    class CustomisingObjectsReturnedByGeneratorTest {
+    class WithSelectorsTest {
 
         // Anything bigger than default to ensure tests don't pass by luck
         private final int NEW_SIZE = 15;
