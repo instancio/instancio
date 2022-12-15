@@ -54,12 +54,14 @@ nav:
 
 extra:
   # Core
+  AfterGenerate:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/AfterGenerate.html" target="_blank">AfterGenerate</a>'
   Instancio:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Instancio.html" target="_blank">Instancio</a>'
   InstancioApi:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html" target="_blank">InstancioApi</a>'
-  Generator:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Generator.html" target="_blank">Generator</a>'
+  Generator:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/Generator.html" target="_blank">Generator</a>'
   GeneratorContext:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/GeneratorContext.html" target="_blank">GeneratorContext</a>'
   GeneratorProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/GeneratorProvider.html" target="_blank">GeneratorProvider</a>'
-  Generators:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Generators.html" target="_blank">Generators</a>'
+  Generators:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generators/Generators.html" target="_blank">Generators</a>'
+  Hints:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/Hints.html" target="_blank">Hints</a>'
   Model:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Model.html" target="_blank">Model</a>'
   OnCompleteCallback:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/OnCompleteCallback.html" target="_blank">OnCompleteCallback</a>'
   Random:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Random.html" target="_blank">Random</a>'

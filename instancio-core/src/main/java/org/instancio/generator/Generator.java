@@ -24,7 +24,7 @@ import org.instancio.settings.Settings;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A generator of values of a specific type.
+ * A class for generating values of a specific type.
  *
  * @param <T> type to generate
  * @since 1.0.1
@@ -37,13 +37,13 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * generating values. This method is guaranteed to be called:
      *
      * <ul>
-     *   <li>before {@link #generate(Random)} is invoked</li>
+     *   <li>before {@link #generate(Random)} and {@link #hints()} are invoked</li>
      *   <li>exactly once per {@code Instancio.of()} invocation</li>
      * </ul>
      *
      * <p>If the same instance of a generator is shared across multiple
      * invocations of {@code Instancio.of()}, then this method will be called
-     * exactly once per each invocation, resetting the generator's state.</p>
+     * once per each invocation, resetting the generator's state.</p>
      *
      * <p>An instance of {@link Random} provided in the generator context can be
      * used if the initial state needs to be randomised. The context also contains
@@ -59,10 +59,9 @@ public interface Generator<T> extends GeneratorSpec<T> {
     /**
      * Returns a generated value.
      * <p>
-     * If the generated value is random, it needs to be generated using the given
-     * {@link Random} instance. This ensures the data is generated with
-     * the same seed value and allows random data to be reproduced by specifying
-     * the seed value.
+     * If this method produces random data, the data needs to be generated
+     * using the provided {@link Random} instance. This ensures generated
+     * values are reproducible for a given seed value.
      *
      * @param random provider for generating random values
      * @return generated value or {@code null} if value is nullable,
@@ -94,7 +93,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * }</pre>
      *
      * <p>If the action is not specified, default behaviour will be based on
-     * the {@code AfterGenerate} value configured via {@link Settings}
+     * the {@link AfterGenerate} value configured in the {@link Settings}
      * using the key {@link Keys#AFTER_GENERATE_HINT}.</p>
      * <p>
      * In addition, the following hints can be provided for populating
@@ -108,6 +107,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      *
      * @return hints from this generator to the engine
      * @see Hint
+     * @see Hints
      * @see AfterGenerate
      * @since 2.0.0
      */
