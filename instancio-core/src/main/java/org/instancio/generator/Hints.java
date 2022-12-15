@@ -30,8 +30,9 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  * Hints are provided by {@link Generator} implementations to the engine to
  * support more flexibility in how objects are populated.
  *
- * @see Generator
  * @see AfterGenerate
+ * @see Generator
+ * @see Hint
  * @since 2.0.0
  */
 public final class Hints {

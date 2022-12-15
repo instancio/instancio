@@ -765,138 +765,49 @@ Model<Person> modelWithNewPet = Instancio.of(simpsonsModel)
 ## Custom Generators
 
 Every type of object Instancio generates is through an implementation of the `Generator` interface.
-For users of the library, implementing the `Generator` interface supports the following use cases:
+A number of internal generators are included out of the box for creating strings, numeric types, dates, collections, and so on.
+Custom generators can also be defined to satisfy certain use cases:
 
-- Generating types not supported out of the box (for example Joda-Money).
-- Partially constructing domain objects in valid states and delegating population to the engine.
-- Packaging custom generators as a library that can be shared across projects.
+- For generating types not supported out of the box, for example from third-party libraries such as Guava.
 
-Combining custom generators with [models](#using-models) provides a flexible framework for generating
-large domain POJOs with concise syntax.
+- For creating pre-initialised domain objects. Some domain objects require to be constructed in a certain state to be valid.
+To avoid duplicating the construction logic across different tests, it can be encapsulated by a custom generator that can be re-used across the project.
 
-This section will cover the following topics:
-
-- Implementing custom generators
-- Generator composition
-- Providing `Hints` to the Instancio engine
-- Generator `init()` and `GeneratorContext`
-- Implementing stateful generators
-- Registering generators using `GeneratorProvider` SPI
+- For distributing generators as a library that can be shared across projects.
 
 
-Examples in this section assume the following domain:
+`Generator` is a functional interface with a single abstract method `generate(Random)`:
+
 
 ```java linenums="1"
-class Person {
-    private String name;
-    private Address address;
-}
+@FunctionalInterface
+interface Generator<T> {
 
-class Address {
-    private String street;
-    private String city;
-    private List<Phone> phoneNumbers;
-}
+    T generate(Random random);
 
-class Phone {
-    private String countryCode;
-    private String number;
-}
-```
-
-
-### Implementing custom Generators
-
-Using the `Phone` and `Address` class as the starting point, their generators can be implemented as follows:
-
-```java linenums="1"
-class PhoneGenerator implements Generator<Phone> {
-
-    @Override
-    public Phone generate(Random random) {
-        return Phone.builder()
-                .countryCode("+" + random.digits(2))
-                .number(random.digits(7))
-                .build();
+    default void init(GeneratorContext context) {
     }
-}
 
-class AddressGenerator implements Generator<Address> {
-
-    @Override
-    public Address generate(Random random) {
-        return Address.builder()
-                .city(random.oneOf("London", "Tokyo", "New York"))
-                .build();
+    default Hints hints() {
+        return null;
     }
 }
 ```
 
-Notice that the `AddressGenerator` and `PhoneGenerator` classes are unaware of each other.
-In addition, address generator did not initialise the `street` and `phoneNumbers` fields.
-We will use these fact to demonstrate a couple of concepts.
-For now, using the phone and address generators, a `Person` class can be created by passing
-the generators to the `supply()` method:
+If a generator produces random data, it must use the provided {{Random}} instance to guarantee that the created object can be reproduced for a given seed value.
+The `init(GeneratorContext)` method can be used by generators that require initialisation logic. The context argument provides a copy of the current {{Settings}}
+as well as the {{Random}} instance.
+The `hints()` method is for passing additional instructions to the engine. The most important hint is the {{AfterGenerate}} action which determines whether the engine should:
 
-```java linenums="1"
-Person person = Instancio.of(Person.class)
-        .supply(all(Phone.class), new PhoneGenerator())
-        .supply(all(Address.class), new AddressGenerator())
-        .create();
-```
+- populate uninitialised fields
+- modify the object by applying matching selectors (if any)
 
-Running this snippet will produce an output similar to below (object is printed as JSON for better readability):
-
-``` json
-{
-  "name" : "UQZQVFGAXZ",
-  "address" : {
-    "street" : "DQHHIU",
-    "city" : "London",
-    "phoneNumbers" : [ {
-      "countryCode" : "+82",
-      "number" : "4867592"
-    }, {
-      "countryCode" : "+40",
-      "number" : "3754717"
-    }, {
-      "countryCode" : "+78",
-      "number" : "7945421"
-    } ]
-  }
+```java linenums="1" title="An example of specifying hints"
+@Override
+public Hints hints() {
+    return Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS);
 }
 ```
-
-The `street` and `phoneNumbers` fields that were not initialised by the generator were populated by the engine.
-Although the `AddressGenerator` and `PhoneGenerator` classes are unaware of each other,
-objects returned by them were combined into the final output. The following section describes how to override
-the default behaviour to prevent the engine from populating null fields.
-
-### Providing Hints from generators to the Instancio engine
-
-After a generator creates an object, it gets passed to the Instancio engine.
-The engine determines what should be done with the created object based on the `Hints`
-(if any) it receives from the generator. Using the address generator as an example,
-hints can be passed as follows:
-
-
-```java linenums="1"
-class AddressGenerator implements Generator<Address> {
-
-    // generate() method unchanged
-
-    @Override
-    public Hints hints() {
-        return Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS);
-    }
-}
-```
-
-The `AfterGenerate` enum determines whether the engine:
-
-- should populate uninitialised fields
-- should modify the object by applying matching selectors (if any)
-
 
 The `AfterGenerate` enum defines the following values:
 
@@ -908,8 +819,8 @@ The `AfterGenerate` enum defines the following values:
 
 - **`APPLY_SELECTORS`**
 
-    Indicates that the object can be modified using matching selectors
-    via `set()`, `supply()`, `generate()` methods.
+    Indicates that the object can only be modified via matching selectors
+    using `set()`, `supply()`, and `generate()` methods.
 
 - **`POPULATE_NULLS`**
 
@@ -918,7 +829,7 @@ The `AfterGenerate` enum defines the following values:
     by above by `APPLY_SELECTORS`.
 
 
-- **`POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`** (default behaviour)
+- **`POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`** **(default behaviour)**
 
     Indicates that primitive fields with default values declared by the object
     should be populated. In addition, the behaviour described by `POPULATE_NULLS`
@@ -935,151 +846,20 @@ The `AfterGenerate` enum defines the following values:
     This is the default mode the engine operates in when using internal generators.
 
 
-Since the `hints()` method in the `AddressGenerator` was overridden with `APPLY_SELECTORS`,
-generating an address will produce different output:
-
-```json
-{
-  "name" : "MTBHAHNL",
-  "address" : {
-    "street" : null,
-    "city" : "New York",
-    "phoneNumbers" : null
-  }
-}
-```
-
-This time the `street` and `phoneNumbers` fields remain `null`, as returned by the generator.
-The `APPLY_SELECTORS` hint implies that generated objects can be customised using selectors.
-For instance, it is possible to override the `street` value and specify how many `Phone` objects
-should be generated via the API:
-
-```java
-Person person = Instancio.of(Person.class)
-        .supply(all(Phone.class), new PhoneGenerator())
-        .supply(all(Address.class), new AddressGenerator())
-        .set(field(Address.class, "street"), "123 Main St")
-        .generate(field(Address.class, "phoneNumbers"), gen -> gen.collection().size(1))
-        .create();
-```
-
-will produce an output similar to:
-
-```json
-{
-  "name" : "HDFU",
-  "address" : {
-    "street" : "123 Main St",
-    "city" : "London",
-    "phoneNumbers" : [ {
-      "countryCode" : "+13",
-      "number" : "0862050"
-    } ]
-  }
-}
-```
-
-The ability to customise generated objects allows a custom generator to be re-used across different tests.
-Test methods can override certain values required for verifying a particular scenario.
-
-### Generator initialisation and `GeneratorContext`
-
-In the previous examples the generators were stateless and had no need for initialisation.
-In certain cases, generators may need to have state.
-Most built-in generators provided by Instancio have state in order to support method chaining:
-
-```java
-generate(allStrings(), gen -> gen.string().prefix("foo-").mixedCase().minLength(10))
-```
-
-In addition, some generators may require access to certain configuration parameters.
-To support this use case, the `Generator` interface provides the `init()` method:
-
-```java
-default void init(GeneratorContext context) {
-    // no-op by default
-}
-```
-
-The {{GeneratorContext}} parameter contains an instance of {{Settings}} and {{Random}}.
-
-The settings contain all of the configuration, including any custom overrides.
-The `Random` instance can be used if randomness is required in the `init()` method itself,
-for instance reading data from a random set of files. In addition, it allows assigning random
-to a field making it available in other generator methods if needed.
-
-The `init()` method of a `Generator` instance will be executed exactly once per `Instancio.of()`
-invocation, even if the same generator is applied to multiple selectors.
-If the same generator instance is passed to multiple `Instancio.of()` invocations, then
-the `init()` will be called once per each `Instancio.of()` invocation.
-
-### Implementing stateful generators
-
-To demonstrate a stateful generator, we will implement an arithmetic sequence. The sequence will start
-from a random number and have a random step size:
-
-```java linenums="1"
-class ArithmeticSequenceGenerator implements Generator<Integer> {
-
-    private int current;
-    private int step;
-
-    @Override
-    public void init(final GeneratorContext context) {
-        current = context.random().intRange(0, 100);
-        step = context.random().oneOf(1, 2, 3, 5, 10);
-    }
-
-    @Override
-    public Integer generate(final Random random) {
-        current = current + step;
-        return current;
-    }
-}
-```
-
-The sequence generator, can be applied to any integer field (for example `id` field of a database entity),
-or to simply generate a list of numbers:
-
-```java
-List<Integer> sequence = Instancio.of(new TypeToken<List<Integer>>() {})
-        .supply(allInts(), new ArithmeticSequenceGenerator())
-        .generate(all(List.class), gen -> gen.collection().size(10))
-        .create();
-```
-
-Sample outputs:
-
-```
-[11, 21, 31, 41, 51, 61, 71, 81, 91, 101]
-[98, 101, 104, 107, 110, 113, 116, 119, 122, 125]
-etc.
-```
+In summary, a generator can instantiate an object and instruct the engine
+what should be done with the object after `generate()` method returns using
+the `AfterGenerate` hint.
 
 
 ### Registering generators using `GeneratorProvider` SPI
 
-In the previous examples generators were manually specified using target selectors.
-Instancio also offers {{GeneratorProvider}} service provider interface for registering custom generators
-(or overriding built-in generators). The provider interface is defined as:
+Instancio offers {{GeneratorProvider}} service provider interface for registering custom generators
+(or overriding built-in generators) using the `ServiceLoader` mechanism.
+The provider interface is defined as:
 
 ```java linenums="1"
 interface GeneratorProvider {
     Map<Class<?>, Generator<?>> getGenerators();
-}
-```
-
-A sample implementation using the address and phone generators implemented earlier would be:
-
-```java linenums="1"
-public class CustomGeneratorProvider implements GeneratorProvider {
-    @Override
-    public Map<Class<?>, Generator<?>> getGenerators() {
-        Map<Class<?>, Generator<?>> generators = new HashMap<>();
-        generators.put(Address.class, new AddressGenerator());
-        generators.put(Phone.class, new PhoneGenerator());
-        return generators;
-    }
 }
 ```
 
@@ -1090,30 +870,59 @@ under `/META-INF/services/`, and containing the fully-qualified name of the prov
 org.example.CustomGeneratorProvider
 ```
 
-With the file in place, Instancio will automatically use the specified generators. For example,
+### Modifying `overwrite.existing.values` setting
 
-```java
-Person person = Instancio.create(Person.class);
-```
+Instancio configuration has a property `overwrite.existing.values` which by default is set to `true`.
+This results in the following behaviour.
 
-will produce an output similar to:
-
-```json
-{
-  "name" : "FYUGB",
-  "address" : {
-    "street" : "SOO",
-    "city" : "New York",
-    "phoneNumbers" : [ {
-      "countryCode" : "+35",
-      "number" : "3508762"
-    }, {
-      "countryCode" : "+66",
-      "number" : "4483261"
-    } ]
-  }
+```java linenums="1" hl_lines="2 7" title="Example 1: field overwritten when creating an object"
+class Address {
+    private String country = "USA"; // default
+    // snip...
 }
+
+Person person = Instancio.create(Person.class);
+assertThat(person.getAddress().getCountry()).isNotEqualTo("USA"); // overwritten!
 ```
+!!! attention ""
+    <lnum>7</lnum> the country is no longer "USA" as it was overwritten with a random value.<br/>
+
+
+```java linenums="1" hl_lines="4 10 13" title="Example 2: field overwritten by applying a selector"
+class AddressGenerator implements Generator<Address> {
+    @Override
+    public Address generate(Random random) {
+        return Address.builder().country("USA").build();
+    }
+}
+
+Person person = Instancio.of(Person.class)
+    .supply(all(Address.class), new AddressGenerator())
+    .set(field(Address.class, "country"), "Canada")
+    .create();
+
+assertThat(person.getAddress().getCountry()).isEqualTo("Canada"); // overwritten!
+```
+!!! attention ""
+    <lnum>13</lnum> The country was overwritten via the applied selector.<br/>
+
+
+To disallow overwriting of initialised fields, the `overwrite.existing.values` setting can be set to `false`.
+Using the last example to illustrate:
+
+```java linenums="1" hl_lines="4" title="Example 2: field overwritten by applying a selector"
+Person person = Instancio.of(Person.class)
+    .supply(all(Address.class), new AddressGenerator())
+    .set(field(Address.class, "country"), "Canada")
+    .withSettings(Settings.create().set(Keys.OVERWRITE_EXISTING_VALUES, false))
+    .create();
+
+assertThat(person.getAddress().getCountry()).isEqualTo("USA"); // not overwritten!
+```
+
+
+
+
 
 ## Seed
 
