@@ -94,7 +94,7 @@ public final class ModelContext<T> {
         ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
         nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
         onCompleteCallbackSelectorMap = new OnCompleteCallbackSelectorMap(builder.onCompleteCallbacks);
-        subtypeSelectorMap = new SubtypeSelectorMap(settings.getSubtypeMap(), builder.subtypeSelectors);
+        subtypeSelectorMap = new SubtypeSelectorMap(builder.subtypeSelectors);
         generatorSelectorMap = new GeneratorSelectorMap(
                 new GeneratorContext(settings, random),
                 builder.generatorSelectors,
@@ -177,7 +177,7 @@ public final class ModelContext<T> {
         return onCompleteCallbackSelectorMap.getCallbacks(node);
     }
 
-    public SubtypeSelectorMap getSubtypeMap() {
+    public SubtypeSelectorMap getSubtypeSelectorMap() {
         return subtypeSelectorMap;
     }
 

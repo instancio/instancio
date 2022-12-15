@@ -54,11 +54,9 @@ public final class NodeFactory {
 
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
     private final NodeContext nodeContext;
-    private final TypeResolverFacade typeResolverFacade;
 
     public NodeFactory(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
-        this.typeResolverFacade = new TypeResolverFacade();
     }
 
     public Node createRootNode(final Type type) {
@@ -111,16 +109,13 @@ public final class NodeFactory {
         final Optional<Class<?>> subtype = nodeContext.getSubtype(node);
 
         if (subtype.isPresent()) {
-            LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getName());
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getName());
+            }
             return subtype;
         }
 
-        final Class<?> subtypeFromAncestors = resolveSubtypeFromAncestors(node);
-        if (subtypeFromAncestors != null) {
-            return Optional.of(subtypeFromAncestors);
-        }
-
-        return typeResolverFacade.resolve(node.getRawType());
+        return Optional.ofNullable(resolveSubtypeFromAncestors(node));
     }
 
     private static Class<?> resolveSubtypeFromAncestors(final Node node) {

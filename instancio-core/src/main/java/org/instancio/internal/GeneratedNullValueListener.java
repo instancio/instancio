@@ -62,7 +62,7 @@ class GeneratedNullValueListener implements GenerationListener {
             context.isNullable(current);
             context.getGenerator(current);
             context.getCallbacks(current);
-            context.getSubtypeMap().getSubtype(current);
+            context.getSubtypeSelectorMap().getSubtype(current);
 
             queue.addAll(current.getChildren());
         }
