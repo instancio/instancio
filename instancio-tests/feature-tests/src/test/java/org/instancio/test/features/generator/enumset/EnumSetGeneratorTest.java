@@ -161,5 +161,15 @@ class EnumSetGeneratorTest {
                                 .doesNotContain(Letter.D, Letter.E, Letter.F, Letter.G);
                     });
         }
+
+        @Test
+        void requestedSizeIsGreaterThanTheNumberOfEnumValues() {
+            final int numOfEnumValues = Letter.values().length;
+            final EnumSet<Letter> result = Instancio.of(ENUM_SET_LETTER)
+                    .generate(all(EnumSet.class), gen -> gen.enumSet(Letter.class).minSize(numOfEnumValues * 2))
+                    .create();
+
+            assertThat(result).hasSize(numOfEnumValues);
+        }
     }
 }
