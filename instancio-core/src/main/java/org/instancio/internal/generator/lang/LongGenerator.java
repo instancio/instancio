@@ -30,6 +30,6 @@ public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<L
 
     @Override
     protected Long generateNonNullValue(final Random random) {
-        return random.longRange(min, max);
+        return random.longRange(getMin(), getMax());
     }
 }

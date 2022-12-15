@@ -39,7 +39,7 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
     @Override
     public NumberGeneratorSpec<T> min(final T min) {
         super.min(min);
-        super.max(NumberUtils.calculateNewMax(max, min, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
+        super.max(NumberUtils.calculateNewMax(getMax(), min, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
         return this;
     }
 
@@ -52,7 +52,7 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
     @Override
     public NumberGeneratorSpec<T> max(final T max) {
         super.max(max);
-        super.min(NumberUtils.calculateNewMin(min, max, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
+        super.min(NumberUtils.calculateNewMin(getMin(), max, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
         return this;
     }
 

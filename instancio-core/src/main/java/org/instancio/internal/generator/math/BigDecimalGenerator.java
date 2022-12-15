@@ -66,13 +66,13 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
 
     @Override
     public BigDecimalGeneratorSpec nullable() {
-        this.nullable = true;
+        super.nullable();
         return this;
     }
 
     @Override
     protected BigDecimal generateNonNullValue(final Random random) {
-        final double val = random.doubleRange(min.doubleValue(), max.doubleValue());
+        final double val = random.doubleRange(getMin().doubleValue(), getMax().doubleValue());
         return BigDecimal.valueOf(val).setScale(scale, RoundingMode.HALF_UP);
     }
 }

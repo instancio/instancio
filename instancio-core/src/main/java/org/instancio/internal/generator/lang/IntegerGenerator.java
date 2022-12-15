@@ -30,7 +30,7 @@ public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpe
 
     @Override
     protected Integer generateNonNullValue(final Random random) {
-        return random.intRange(min, max);
+        return random.intRange(getMin(), getMax());
     }
 
 }
