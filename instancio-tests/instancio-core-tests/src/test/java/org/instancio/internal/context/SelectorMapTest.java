@@ -48,10 +48,9 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
 class SelectorMapTest {
-    private final NodeContext nodeContext = new NodeContext(
-            Collections.emptyMap(),
-            new SubtypeSelectorMap(Collections.emptyMap(), Collections.emptyMap()),
-            Collections.emptyList());
+    private final NodeContext nodeContext = NodeContext.builder()
+            .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
+            .build();
 
     private final NodeFactory nodeFactory = new NodeFactory(nodeContext);
 

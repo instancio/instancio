@@ -189,8 +189,8 @@ class ModelContextTest {
                 .withSubtype(all(List.class), LinkedList.class)
                 .build();
 
-        assertThat(ctx.getSubtypeMap().getSubtype(mockNode(Collection.class))).contains(HashSet.class);
-        assertThat(ctx.getSubtypeMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
+        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(Collection.class))).contains(HashSet.class);
+        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
     }
 
     @Test
@@ -265,7 +265,7 @@ class ModelContextTest {
         assertThat(actual.getRandom().getSeed()).isEqualTo(seed);
         assertThat((int) actual.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
         assertThat((Mode) actual.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
-        assertThat(ctx.getSubtypeMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
+        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
 
         assertThatThrownBy(() -> actual.getSettings().set(Keys.STRING_MIN_LENGTH, 5))
                 .as("Settings should be locked")
