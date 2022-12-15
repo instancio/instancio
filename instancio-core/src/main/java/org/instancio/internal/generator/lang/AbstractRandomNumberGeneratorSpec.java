@@ -24,9 +24,9 @@ import org.instancio.internal.generator.AbstractGenerator;
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         extends AbstractGenerator<T> implements NumberGeneratorSpec<T> {
 
-    protected T min;
-    protected T max;
-    protected boolean nullable;
+    private T min;
+    private T max;
+    private boolean nullable;
 
     protected AbstractRandomNumberGeneratorSpec(
             final GeneratorContext context, final T min, final T max, final boolean nullable) {

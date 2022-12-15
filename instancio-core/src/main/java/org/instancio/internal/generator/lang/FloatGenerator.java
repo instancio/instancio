@@ -30,6 +30,6 @@ public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<
 
     @Override
     protected Float generateNonNullValue(final Random random) {
-        return random.floatRange(min, max);
+        return random.floatRange(getMin(), getMax());
     }
 }

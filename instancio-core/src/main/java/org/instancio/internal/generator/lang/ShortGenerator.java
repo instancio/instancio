@@ -30,6 +30,6 @@ public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<
 
     @Override
     protected Short generateNonNullValue(final Random random) {
-        return random.shortRange(min, max);
+        return random.shortRange(getMin(), getMax());
     }
 }

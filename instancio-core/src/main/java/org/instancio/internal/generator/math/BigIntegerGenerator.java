@@ -38,19 +38,7 @@ public class BigIntegerGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
-    public NumberGeneratorSpec<BigInteger> min(final BigInteger min) {
-        super.min(min);
-        return this;
-    }
-
-    @Override
-    public NumberGeneratorSpec<BigInteger> max(final BigInteger max) {
-        super.max(max);
-        return this;
-    }
-
-    @Override
     protected BigInteger generateNonNullValue(final Random random) {
-        return BigInteger.valueOf(random.longRange(min.longValue(), max.longValue()));
+        return BigInteger.valueOf(random.longRange(getMin().longValue(), getMax().longValue()));
     }
 }
