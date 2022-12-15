@@ -19,7 +19,6 @@
         <version.apache.commons>3.12.0</version.apache.commons>
         <version.assertj>3.23.1</version.assertj>
         <version.equalsverifier>3.12.3</version.equalsverifier>
-        <version.guava>31.1-jre</version.guava>
         <version.junit.pioneer>1.9.1</version.junit.pioneer>
         <version.junit.platform>1.9.1</version.junit.platform>
         <version.logback>1.2.11</version.logback>
@@ -83,12 +82,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${version.apache.commons}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${version.guava}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
