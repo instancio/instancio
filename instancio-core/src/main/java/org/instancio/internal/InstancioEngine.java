@@ -80,10 +80,12 @@ class InstancioEngine {
 
     @SuppressWarnings("unchecked")
     <T> T createRootObject() {
-        final T rootResult = (T) createObject(rootNode).map(GeneratorResult::getValue).orElse(null);
-        callbackHandler.invokeCallbacks();
-        context.reportUnusedSelectorWarnings();
-        return rootResult;
+        return conditionalFailOnError(() -> {
+            final T rootResult = (T) createObject(rootNode).map(GeneratorResult::getValue).orElse(null);
+            callbackHandler.invokeCallbacks();
+            context.reportUnusedSelectorWarnings();
+            return rootResult;
+        }).orElse(null);
     }
 
     private Optional<GeneratorResult> createObject(final Node node) {

@@ -35,7 +35,7 @@ public final class ExceptionHandler {
 
     public static <T> Optional<T> conditionalFailOnError(final Supplier<T> supplier) {
         try {
-            return Optional.of(supplier.get());
+            return Optional.ofNullable(supplier.get());
         } catch (InstancioApiException ex) {
             throw ex;
         } catch (InstancioException ex) {
