@@ -15,14 +15,14 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.AsStringGeneratorSpec;
 
 /**
  * Generator spec for booleans.
  *
  * @since 2.0.0
  */
-public interface BooleanGeneratorSpec extends GeneratorSpec<Boolean> {
+public interface BooleanGeneratorSpec extends AsStringGeneratorSpec<Boolean> {
 
     /**
      * Indicates that {@code null} value can be generated.
