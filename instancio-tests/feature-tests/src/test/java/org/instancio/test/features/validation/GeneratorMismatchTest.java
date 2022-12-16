@@ -23,8 +23,8 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
 import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
 import org.instancio.test.support.pojo.arrays.primitive.WithIntArray;
-import org.instancio.test.support.pojo.basic.BooleanHolder;
 import org.instancio.test.support.pojo.basic.CharacterHolder;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.basic.SupportedAtomicTypes;
 import org.instancio.test.support.pojo.basic.SupportedMathTypes;
@@ -121,8 +121,7 @@ class GeneratorMismatchTest {
 
     @Test
     void assertBoolean() {
-        // Note: there's no GeneratorSpec for booleans
-        assertMessageContains(BooleanHolder.class, boolean.class, "ints()", Generators::ints);
+        assertMessageContains(IntegerHolder.class, int.class, "booleans()", Generators::booleans);
     }
 
     @Test
