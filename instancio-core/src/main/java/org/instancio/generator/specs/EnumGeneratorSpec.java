@@ -15,14 +15,14 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.AsStringGeneratorSpec;
 
 /**
  * Generator spec for {@link Enum Enums}.
  *
  * @since 1.6.0
  */
-public interface EnumGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<E> {
+public interface EnumGeneratorSpec<E extends Enum<E>> extends AsStringGeneratorSpec<E> {
 
     /**
      * Generate an enum while excluding the specified values.

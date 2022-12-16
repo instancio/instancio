@@ -28,6 +28,7 @@ public enum Feature {
     ARRAY_GENERATOR_SHUFFLE,
     ARRAY_GENERATOR_SUBTYPE,
     ARRAY_GENERATOR_WITH,
+    AS_STRING_GENERATOR_SPEC,
     ATOMIC_GENERATOR,
     COLLECTION_GENERATOR_MAX_SIZE,
     COLLECTION_GENERATOR_MIN_SIZE,
@@ -41,7 +42,7 @@ public enum Feature {
     CYCLIC,
     ENUM_GENERATOR,
     GENERATE,  // API generate() method
-    GENERATOR, // custom generator implementations and behaviour
+    GENERATOR,
     GLOBAL_SEED,
     IGNORE,
     INHERITANCE,

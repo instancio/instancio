@@ -15,7 +15,7 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.AsStringGeneratorSpec;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ import java.time.temporal.Temporal;
 /**
  * Generator spec for {@link Temporal} types.
  */
-public interface TemporalGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface TemporalGeneratorSpec<T> extends AsStringGeneratorSpec<T> {
 
     ZoneOffset ZONE_OFFSET = OffsetDateTime.now().getOffset();
     Instant DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(ZONE_OFFSET);
