@@ -64,6 +64,12 @@ class ExceptionHandlerTest {
     }
 
     @Test
+    @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
+    void shouldNotThrowErrorIfSupplierReturnsNull() {
+        assertThat(conditionalFailOnError(() -> null)).isEmpty();
+    }
+
+    @Test
     @DisplayName("Verify errors are suppressed by default when 'fail on error' property is not set")
     void doesNotFailOnErrorWithSupplier() {
         // no return value - just verify no exception is raised
