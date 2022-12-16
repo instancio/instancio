@@ -17,16 +17,23 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.CharacterGeneratorSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 
-public class CharacterGenerator extends AbstractGenerator<Character> {
+public class CharacterGenerator extends AbstractGenerator<Character> implements CharacterGeneratorSpec {
 
-    private final boolean nullable;
+    private boolean nullable;
 
     public CharacterGenerator(final GeneratorContext context) {
         super(context);
         this.nullable = context.getSettings().get(Keys.CHARACTER_NULLABLE);
+    }
+
+    @Override
+    public CharacterGeneratorSpec nullable() {
+        this.nullable = true;
+        return this;
     }
 
     @Override
