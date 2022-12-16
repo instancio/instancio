@@ -426,7 +426,8 @@ methods defined in the {{InstancioApi}} class.
 
 The `generate()` method provides access to built-in generators for core types from the JDK, such strings, numeric types, dates, arrays, collections, and so on.
 It allows modifying generation parameters for these types in order to fine-tune the data.
-The usage is shown in the following example, where the `gen` parameter (of type {{Generators}}) exposes the available generators to simplify their discovery using IDE auto-completion.
+The usage is shown in the following example, where the `gen` parameter (of type {{Generators}})
+exposes the available generators to simplify their discovery using IDE auto-completion.
 
 ``` java linenums="1" title="Example of using generate()"
 Person person = Instancio.of(Person.class)
@@ -435,13 +436,6 @@ Person person = Instancio.of(Person.class)
     .generate(field(Phone.class, "number"), gen -> gen.text().pattern("#d#d#d-#d#d-#d#d"))
     .create();
 ```
-
-Each generator provides methods applicable to the type it generates, for example:
-
-- `gen.string().minLength(3).allowEmpty()`
-- `gen.collection().size(5).nullableElements()`
-- `gen.temporal().localDate().future()`
-- `gen.longs().min(Long.MIN_VALUE)`
 
 Below is another example of customising a `Person`.
 For instance, if the  `Person` class has a field `List<Phone>`, by default Instancio would use `ArrayList` as the implementation.
@@ -452,6 +446,81 @@ Person person = Instancio.of(Person.class)
     .generate(field("phoneNumbers"), gen -> gen.collection().minSize(3).subtype(LinkedList.class))
     .generate(field(Phone.class, "countryCode"), gen -> gen.oneOf("+33", "+39", "+44", "+49"))
     .create();
+```
+
+Each generator provides methods applicable to the type it generates, for example:
+
+- `gen.string().minLength(3).allowEmpty().nullable()`
+- `gen.map().size(5).nullableValues().subtype(TreeMap.class)`
+- `gen.temporal().localDate().future()`
+- `gen.longs().min(Long.MIN_VALUE)`
+- `gen.enumOf(MyEnum).min(Long.MIN_VALUE)`
+
+In addition, most generators can also return generated values as Strings, for example:
+
+``` java linenums="1"
+class Foo {
+    String dateString;
+    String enumString;
+}
+
+Instancio.of(Foo.class)
+    .generate(field("dateString"), gen -> gen.temporal().localDate().past().asString())
+    .generate(field("enumString"), gen -> gen.enumOf(MyEnum.class).asString(e -> e.name().toUpperCase()))
+    .create();
+```
+
+The complete list of built-in generators:
+
+```css
+Generators
+|
+├── booleans()
+├── chars()
+├── bytes()
+├── shorts()
+├── ints()
+├── longs()
+├── floats()
+├── doubles()
+├── string()
+|
+├── array()
+├── collection()
+├── map()
+├── enumOf(Class<E>)
+├── enumSetOf(Class<E>)
+|
+├── oneOf(Collection<T>)
+├── oneOf(T...)
+|
+├── math()
+│   └── bigInteger()
+│   └── bigDecimal()
+|
+├── atomic()
+│   ├── atomicInteger()
+│   └── atomicLong()
+|
+├── temporal()
+│   └── instant()
+│   └── localDate()
+│   └── localDateTime()
+│   └── zonedDateTime()
+│   └── localTime()
+│   └── year()
+│   └── yearMonth()
+│   └── duration()
+│   └── period()
+│   └── date()
+│   └── sqlDate()
+│   └── timestamp()
+│   └── calendar()
+|
+└── text()
+    └── loremIpsum()
+    └── pattern(String)
+    └── uuid()
 ```
 
 
