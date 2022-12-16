@@ -18,6 +18,7 @@ package org.instancio.generators;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.BooleanGeneratorSpec;
+import org.instancio.generator.specs.CharacterGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.EnumSetGeneratorSpec;
@@ -116,6 +117,16 @@ public class Generators {
      */
     public BooleanGeneratorSpec booleans() {
         return new BooleanGenerator(context);
+    }
+
+    /**
+     * Customises generated {@link char} values.
+     *
+     * @return customised generator
+     * @since 2.0.0
+     */
+    public CharacterGeneratorSpec chars() {
+        return new CharacterGenerator(context);
     }
 
     /**

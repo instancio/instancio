@@ -126,8 +126,7 @@ class GeneratorMismatchTest {
 
     @Test
     void assertCharacter() {
-        // Note: there's no GeneratorSpec for chars
-        assertMessageContains(CharacterHolder.class, char.class, "ints()", Generators::ints);
+        assertMessageContains(IntegerHolder.class, int.class, "chars()", Generators::chars);
     }
 
     @Test

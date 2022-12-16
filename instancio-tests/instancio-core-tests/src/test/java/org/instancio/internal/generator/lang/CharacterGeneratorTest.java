@@ -15,10 +15,11 @@
  */
 package org.instancio.internal.generator.lang;
 
+import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -30,8 +31,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.allChars;
 
 @NonDeterministicTag
 @FeatureTag(Feature.SETTINGS)
@@ -54,5 +57,15 @@ class CharacterGeneratorTest {
                 .hasSize(27);
 
         HintsAssert.assertHints(generator.hints()).afterGenerate(AfterGenerate.DO_NOT_MODIFY);
+    }
+
+    @Test
+    void nullableViaGeneratorSpec() {
+        final Stream<Character> results = Instancio.of(Character.class)
+                .generate(allChars(), gen -> gen.chars().nullable())
+                .stream()
+                .limit(SAMPLE_SIZE);
+
+        assertThat(results).containsNull();
     }
 }
