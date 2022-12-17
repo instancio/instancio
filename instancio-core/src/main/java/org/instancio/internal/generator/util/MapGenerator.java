@@ -31,7 +31,10 @@ import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
@@ -46,6 +49,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     protected Class<?> mapType;
     protected boolean isDelegating;
     private Map<K, V> withEntries;
+    private List<K> withKeys;
 
     public MapGenerator(final GeneratorContext context) {
         super(context);
@@ -111,6 +115,17 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
         return this;
     }
 
+    @SafeVarargs
+    @Override
+    public final MapGeneratorSpec<K, V> withKeys(final K... keys) {
+        ApiValidator.notEmpty(keys, "'map().withKeys(...)' must contain at least one key");
+        if (withKeys == null) {
+            withKeys = new ArrayList<>();
+        }
+        withKeys.addAll(Arrays.asList(keys));
+        return this;
+    }
+
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Map<K, V> generate(final Random random) {
@@ -131,6 +146,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
                         .nullableMapKeys(nullableKeys)
                         .nullableMapValues(nullableValues)
                         .withEntries(withEntries)
+                        .withKeys(withKeys)
                         .build())
                 .with(InternalGeneratorHint.builder()
                         .targetClass(mapType)
