@@ -21,8 +21,10 @@ import org.instancio.generator.Hint;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
@@ -99,6 +101,7 @@ public final class MapHint implements Hint<MapHint> {
     private final boolean nullableMapKeys;
     private final boolean nullableMapValues;
     private final Map<?, ?> withEntries;
+    private final List<?> withKeys;
 
     private MapHint(final Builder builder) {
         generateEntries = builder.generateEntries;
@@ -107,6 +110,9 @@ public final class MapHint implements Hint<MapHint> {
         withEntries = builder.withEntries == null
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(builder.withEntries);
+        withKeys = builder.withKeys == null
+                ? Collections.emptyList()
+                : Collections.unmodifiableList(builder.withKeys);
     }
 
     /**
@@ -156,12 +162,25 @@ public final class MapHint implements Hint<MapHint> {
      *
      * @param <K> key type
      * @param <V> value type
-     * @return specific entries to be inserted into a map
+     * @return specific entries to be inserted into the map
      * @since 2.0.0
      */
     @SuppressWarnings("unchecked")
     public <K, V> Map<K, V> withEntries() {
         return (Map<K, V>) withEntries;
+    }
+
+    /**
+     * Returns keys provided by the generator to the engine that are
+     * to be inserted into the map.
+     *
+     * @param <K> key type
+     * @return keys to be inserted into the map
+     * @since 2.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public <K> List<K> withKeys() {
+        return (List<K>) withKeys;
     }
 
     @Override
@@ -183,6 +202,7 @@ public final class MapHint implements Hint<MapHint> {
         private boolean nullableMapKeys;
         private boolean nullableMapValues;
         private Map<Object, Object> withEntries;
+        private List<Object> withKeys;
 
         private Builder() {
         }
@@ -249,6 +269,26 @@ public final class MapHint implements Hint<MapHint> {
                 withEntries = new HashMap<>();
             }
             this.withEntries.putAll(entries);
+            return this;
+        }
+
+        /**
+         * The specified keys will be inserted into the map by the engine
+         * during the population process. This method can be invoked more than once.
+         *
+         * @param keys to add
+         * @param <K>  key type
+         * @return builder instance
+         * @since 2.0.0
+         */
+        public <K> Builder withKeys(final List<? extends K> keys) {
+            if (keys == null) {
+                return this;
+            }
+            if (withKeys == null) {
+                withKeys = new ArrayList<>();
+            }
+            this.withKeys.addAll(keys);
             return this;
         }
 

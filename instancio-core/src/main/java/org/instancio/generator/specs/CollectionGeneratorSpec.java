@@ -75,6 +75,13 @@ public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>>
 
     /**
      * Adds given elements to the generated collection at random positions.
+     * Note that the elements are added after the collection has been generated.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *  // will generate a collection of size 5
+     *  generate(field("someList"), gen -> gen.collection().size(3).with("element1", "element2")
+     * }</pre>
      *
      * @param elements to add
      * @return spec builder

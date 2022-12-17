@@ -42,6 +42,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -216,10 +217,14 @@ class InstancioEngine {
 
         final boolean nullableKey = hint.nullableMapKeys();
         final boolean nullableValue = hint.nullableMapValues();
+        final Iterator<Object> withKeysIterator = hint.withKeys().iterator();
 
         for (int i = 0; i < hint.generateEntries(); i++) {
 
-            final Object mapKey = createObject(node.getChildren().get(0), nullableKey);
+            final Object mapKey = withKeysIterator.hasNext()
+                    ? withKeysIterator.next()
+                    : createObject(node.getChildren().get(0), nullableKey);
+
             final Object mapValue = createObject(node.getChildren().get(1), nullableValue);
 
             if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {

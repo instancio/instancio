@@ -84,11 +84,50 @@ public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
 
     /**
      * Adds given key/value pair to the generated map.
+     * Note that the entry is added after the map has been generated.
+     * <p>
+     * Example:
+     *
+     * <pre>{@code
+     *  // will generate a map of size 5
+     *  generate(field("someMap"), gen -> gen.map()
+     *          .size(3)
+     *          .with("key1", "value1")
+     *          .with("key2", "value2")
+     * }</pre>
      *
      * @param key   to add
      * @param value to add
      * @return spec builder
+     * @see #withKeys(Object[])
      * @since 2.0.0
      */
     MapGeneratorSpec<K, V> with(K key, V value);
+
+    /**
+     * Adds given keys to the map  in the order they are provided.
+     * <p>
+     * If the resulting map size is equal to the number of specified keys, then
+     * the map will contain only the specified keys and no randomly generated keys.
+     * <p>
+     * Examples:
+     *
+     * <pre>{@code
+     *  // will generate a map of size 1 containing only "key1"
+     *  generate(field("someMap"), gen -> gen.map().size(1).withKeys("key1", "key2")
+     *
+     *  // will generate a map of size 2 containing "key1" and "key2"
+     *  generate(field("someMap"), gen -> gen.map().size(2).withKeys("key1", "key2")
+     *
+     *  // will generate a map of size 5 containing "key1", "key2", and 3 randomly generated keys
+     *  generate(field("someMap"), gen -> gen.map().size(5).withKeys("key1", "key2")
+     * }</pre>
+     *
+     * @param keys to add
+     * @return spec builder
+     * @see #with(Object, Object)
+     * @since 2.0.0
+     */
+    @SuppressWarnings("unchecked")
+    MapGeneratorSpec<K, V> withKeys(K... keys);
 }
