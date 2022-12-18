@@ -151,6 +151,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
                 .with(InternalGeneratorHint.builder()
                         .targetClass(mapType)
                         .delegating(isDelegating)
+                        .nullableResult(nullable)
                         .build())
                 .build();
     }

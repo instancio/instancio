@@ -21,7 +21,6 @@ import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -39,7 +38,6 @@ class MapGeneratorNullableTest {
     private static final int SAMPLE_SIZE = 500;
 
     @Test
-    @Disabled("TODO broken")
     void nullableMap() {
         final Set<Map<Integer, String>> results = Instancio.of(MapIntegerString.class)
                 .generate(all(Map.class), gen -> gen.map().nullable())

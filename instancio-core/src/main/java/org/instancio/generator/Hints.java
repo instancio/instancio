@@ -16,8 +16,6 @@
 package org.instancio.generator;
 
 import org.instancio.internal.ApiValidator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,7 +51,7 @@ public final class Hints {
      * @see AfterGenerate
      * @since 2.0.0
      */
-    public static Hints afterGenerate(@NotNull final AfterGenerate afterGenerate) {
+    public static Hints afterGenerate(final AfterGenerate afterGenerate) {
         return Hints.builder().afterGenerate(afterGenerate).build();
     }
 
@@ -83,8 +81,7 @@ public final class Hints {
      * @return hint with the specified type, or {@code null} if none found
      * @since 2.0.0
      */
-    @Nullable
-    public <T extends Hint<T>> T get(@NotNull final Class<T> hintType) {
+    public <T extends Hint<T>> T get(final Class<T> hintType) {
         ApiValidator.notNull(hintType, "Hint type must not be null");
         return hintType.cast(hintMap.get(hintType));
     }
