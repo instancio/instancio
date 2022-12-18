@@ -15,10 +15,14 @@
  */
 package org.instancio;
 
-import org.instancio.internal.ClassInstancioApiImpl;
 import org.instancio.internal.InstancioApiImpl;
-import org.jetbrains.annotations.NotNull;
+import org.instancio.internal.InstancioOfClassApiImpl;
+import org.instancio.internal.InstancioOfCollectionApiImpl;
+import org.instancio.internal.InstancioOfMapApiImpl;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -134,13 +138,13 @@ public final class Instancio {
     /**
      * Creates a fully-populated instance of given class.
      *
-     * @param klass to create
-     * @param <T>   type
+     * @param type to create
+     * @param <T>  type
      * @return a fully-populated instance
      * @since 1.0.1
      */
-    public static <T> T create(@NotNull final Class<T> klass) {
-        return of(klass).create();
+    public static <T> T create(final Class<T> type) {
+        return of(type).create();
     }
 
     /**
@@ -153,14 +157,13 @@ public final class Instancio {
      *         .collect(Collectors.toList());
      * }</pre>
      *
-     * @param klass to create
-     * @param <T>   type
+     * @param type to create
+     * @param <T>  type
      * @return an infinite stream of distinct, fully populated instances
      * @since 1.1.9
      */
-    @NotNull
-    public static <T> Stream<T> stream(@NotNull final Class<T> klass) {
-        return of(klass).stream();
+    public static <T> Stream<T> stream(final Class<T> type) {
+        return of(type).stream();
     }
 
     /**
@@ -173,7 +176,7 @@ public final class Instancio {
      * @param <T>       type
      * @return a fully-populated instance
      */
-    public static <T> T create(@NotNull final TypeTokenSupplier<T> typeToken) {
+    public static <T> T create(final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).create();
     }
 
@@ -192,8 +195,7 @@ public final class Instancio {
      * @return an infinite stream of distinct, fully populated instances
      * @since 1.1.9
      */
-    @NotNull
-    public static <T> Stream<T> stream(@NotNull final TypeTokenSupplier<T> typeToken) {
+    public static <T> Stream<T> stream(final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).stream();
     }
 
@@ -207,7 +209,7 @@ public final class Instancio {
      * @return a populated instance
      * @see Model
      */
-    public static <T> T create(@NotNull final Model<T> model) {
+    public static <T> T create(final Model<T> model) {
         return of(model).create();
     }
 
@@ -224,12 +226,12 @@ public final class Instancio {
      *         .create();
      * }</pre>
      *
-     * @param klass to create
-     * @param <T>   type
+     * @param type to create
+     * @param <T>  type
      * @return API builder reference
      */
-    public static <T> InstancioOfClassApi<T> of(@NotNull final Class<T> klass) {
-        return new ClassInstancioApiImpl<>(klass);
+    public static <T> InstancioOfClassApi<T> of(final Class<T> type) {
+        return new InstancioOfClassApiImpl<>(type);
     }
 
     /**
@@ -249,7 +251,7 @@ public final class Instancio {
      * @param <T>       type
      * @return API builder reference
      */
-    public static <T> InstancioApi<T> of(@NotNull final TypeTokenSupplier<T> typeToken) {
+    public static <T> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
         return new InstancioApiImpl<>(typeToken);
     }
 
@@ -276,7 +278,51 @@ public final class Instancio {
      * @param <T>   type
      * @return API builder reference
      */
-    public static <T> InstancioApi<T> of(@NotNull final Model<T> model) {
+    public static <T> InstancioApi<T> of(final Model<T> model) {
         return new InstancioApiImpl<>(model);
+    }
+
+    /**
+     * Builder API for generating a {@link List} that allows customisation of generated values.
+     *
+     * @param elementType class to generate as list elements
+     * @param <T>         element type
+     * @return API builder reference
+     * @since 2.0.0
+     */
+    @SuppressWarnings("all")
+    public static <T> InstancioOfCollectionApi<List<T>> ofList(final Class<T> elementType) {
+        return new InstancioOfCollectionApiImpl(List.class, elementType);
+    }
+
+    /**
+     * Builder API for generating a {@link Set} that allows customisation of generated values.
+     *
+     * @param elementType class to generate as set elements
+     * @param <T>         element type
+     * @return API builder reference
+     * @since 2.0.0
+     */
+    @SuppressWarnings("all")
+    public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final Class<T> elementType) {
+        return new InstancioOfCollectionApiImpl(Set.class, elementType);
+    }
+
+    /**
+     * Builder API for generating a {@link Map} that allowss customisation of generated values.
+     *
+     * @param keyType   class to generate as map keys
+     * @param valueType class to generate as map values
+     * @param <K>       key type
+     * @param <V>       value type
+     * @return API builder reference
+     * @since 2.0.0
+     */
+    @SuppressWarnings("all")
+    public static <K, V> InstancioOfCollectionApi<Map<K, V>> ofMap(
+            final Class<K> keyType,
+            final Class<V> valueType) {
+
+        return new InstancioOfMapApiImpl(Map.class, keyType, valueType);
     }
 }

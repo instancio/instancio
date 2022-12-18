@@ -24,11 +24,14 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.AddressExtension;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Pet;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -47,25 +50,87 @@ class InstancioApiTest {
     private static final String HOMER = "Homer";
     private static final String SPRINGFIELD = "Springfield";
 
-    @Test
-    void createFromClass() {
-        final Person homer = Instancio.of(Person.class)
-                .supply(field("name"), () -> HOMER)
-                .supply(field(Person.class, "age"), () -> HOMER_AGE)
-                .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
-                .withNullable(field("date"))
-                .withNullable(field(Person.class, "pets"))
-                .withNullable(all(Gender.class))
-                .subtype(all(Address.class), AddressExtension.class)
-                .create();
+    @Nested
+    class CollectionApiDefaultTypes {
+        @Test
+        void ofList() {
+            assertThat(Instancio.ofList(String.class).create())
+                    .isExactlyInstanceOf(ArrayList.class);
+        }
 
-        assertThat(homer).isNotNull();
-        assertThat(homer.getName()).isEqualTo(HOMER);
-        assertThat(homer.getAge()).isEqualTo(HOMER_AGE);
-        assertThat(homer.getLastModified()).isCloseTo(LocalDateTime.now(), within(3, ChronoUnit.SECONDS));
-        assertThat(homer.getAddress())
-                .isExactlyInstanceOf(AddressExtension.class)
-                .satisfies(it -> assertThat(((AddressExtension) it).getAdditionalInfo()).isNotBlank());
+        @Test
+        void ofSet() {
+            assertThat(Instancio.ofSet(String.class).create())
+                    .isExactlyInstanceOf(HashSet.class);
+        }
+
+        @Test
+        void ofMap() {
+            assertThat(Instancio.ofMap(String.class, Long.class).create())
+                    .isExactlyInstanceOf(HashMap.class);
+        }
+    }
+
+    @Nested
+    class HomerSimpsonTest {
+        @Test
+        void createFromModel() {
+            final Model<Person> homerModel = Instancio.of(Person.class)
+                    .supply(field("name"), () -> HOMER)
+                    .supply(field(Person.class, "age"), () -> HOMER_AGE)
+                    .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
+                    .supply(field(Address.class, "city"), () -> SPRINGFIELD)
+                    .ignore(field(Person.class, "date"))
+                    .ignore(all(Gender.class))
+                    .subtype(all(Address.class), AddressExtension.class)
+                    .toModel();
+
+            final Person homer = Instancio.of(homerModel).create();
+
+            assertHomer(homer);
+        }
+
+        @Test
+        void createFromClass() {
+            final Person homer = Instancio.of(Person.class)
+                    .supply(field("name"), () -> HOMER)
+                    .supply(field(Person.class, "age"), () -> HOMER_AGE)
+                    .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
+                    .withNullable(field("date"))
+                    .withNullable(field(Person.class, "pets"))
+                    .withNullable(all(Gender.class))
+                    .subtype(all(Address.class), AddressExtension.class)
+                    .create();
+
+            assertHomer(homer);
+        }
+
+        @Test
+        void createList() {
+            final List<Person> homers = Instancio.ofList(Person.class)
+                    .supply(field(Person.class, "name"), () -> HOMER)
+                    .supply(field(Person.class, "age"), () -> HOMER_AGE)
+                    .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
+                    .withNullable(field(Person.class, "date"))
+                    .withNullable(field(Person.class, "pets"))
+                    .withNullable(all(Gender.class))
+                    .subtype(all(Address.class), AddressExtension.class)
+                    .create();
+
+            assertThat(homers)
+                    .isNotEmpty()
+                    .allSatisfy(this::assertHomer);
+        }
+
+        private void assertHomer(final Person homer) {
+            assertThat(homer).isNotNull();
+            assertThat(homer.getName()).isEqualTo(HOMER);
+            assertThat(homer.getAge()).isEqualTo(HOMER_AGE);
+            assertThat(homer.getLastModified()).isCloseTo(LocalDateTime.now(), within(3, ChronoUnit.SECONDS));
+            assertThat(homer.getAddress())
+                    .isExactlyInstanceOf(AddressExtension.class)
+                    .satisfies(it -> assertThat(((AddressExtension) it).getAdditionalInfo()).isNotBlank());
+        }
     }
 
     @Test
@@ -92,30 +157,6 @@ class InstancioApiTest {
         assertThat(triplet.getLeft()).isInstanceOf(String.class);
         assertThat(triplet.getMid()).isInstanceOf(Long.class);
         assertThat(triplet.getRight()).isInstanceOf(Boolean.class);
-    }
-
-    @Test
-    void createFromModel() {
-        final Model<Person> homerModel = Instancio.of(Person.class)
-                .supply(field("name"), () -> HOMER)
-                .supply(field(Person.class, "age"), () -> HOMER_AGE)
-                .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
-                .supply(field(Address.class, "city"), () -> SPRINGFIELD)
-                .ignore(field(Person.class, "date"))
-                .ignore(all(Gender.class))
-                .toModel();
-
-        final Person homer = Instancio.of(homerModel).create();
-
-        assertThat(homer.getName()).isEqualTo(HOMER);
-        assertThat(homer.getAge()).isEqualTo(HOMER_AGE);
-        assertThat(homer.getLastModified()).isCloseTo(LocalDateTime.now(), within(3, ChronoUnit.SECONDS));
-        assertThat(homer.getAddress().getCity()).isEqualTo(SPRINGFIELD);
-        assertThat(homer.getDate()).isNull();
-        assertThat(homer.getGender()).isNull();
-        assertThat(homer.getPets())
-                .isNotEmpty()
-                .hasOnlyElementsOfType(Pet.class);
     }
 
     @Test

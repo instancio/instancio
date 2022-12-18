@@ -21,8 +21,6 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -31,7 +29,7 @@ import java.util.stream.Stream;
 /**
  * Instancio API for generating instances of a class populated with random data.
  *
- * @param <T> type being created
+ * @param <T> type to create
  * @since 1.0.1
  */
 public interface InstancioApi<T> {
@@ -76,7 +74,6 @@ public interface InstancioApi<T> {
      * @return an infinite stream of distinct, populated objects
      * @since 1.1.9
      */
-    @NotNull
     Stream<T> stream();
 
     /**
@@ -102,7 +99,6 @@ public interface InstancioApi<T> {
      * @return a model containing all the details
      * @since 1.0.1
      */
-    @NotNull
     Model<T> toModel();
 
     /**
@@ -123,7 +119,7 @@ public interface InstancioApi<T> {
      * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
      */
-    InstancioApi<T> ignore(@NotNull TargetSelector selector);
+    InstancioApi<T> ignore(TargetSelector selector);
 
     /**
      * Specifies that a field or class is nullable. By default, Instancio assigns
@@ -141,7 +137,7 @@ public interface InstancioApi<T> {
      * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
      */
-    InstancioApi<T> withNullable(@NotNull TargetSelector selector);
+    InstancioApi<T> withNullable(TargetSelector selector);
 
     /**
      * Sets a value to matching selector targets.
@@ -162,7 +158,7 @@ public interface InstancioApi<T> {
      * @return API builder reference
      * @see #supply(TargetSelector, Supplier)
      */
-    <V> InstancioApi<T> set(@NotNull TargetSelector selector, @Nullable V value);
+    <V> InstancioApi<T> set(TargetSelector selector, V value);
 
     /**
      * Supplies an object using a {@link Supplier} to matching selector targets.
@@ -193,7 +189,7 @@ public interface InstancioApi<T> {
      * @return API builder reference
      * @see #supply(TargetSelector, Generator)
      */
-    <V> InstancioApi<T> supply(@NotNull TargetSelector selector, @NotNull Supplier<V> supplier);
+    <V> InstancioApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
      * Supplies an object using a {@link Generator} to matching selector targets.
@@ -221,7 +217,7 @@ public interface InstancioApi<T> {
      * @see AfterGenerate
      * @see Keys#AFTER_GENERATE_HINT
      */
-    <V> InstancioApi<T> supply(@NotNull TargetSelector selector, @NotNull Generator<V> generator);
+    <V> InstancioApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
      * Generates a random value for a field or class using a built-in generator.
@@ -242,7 +238,7 @@ public interface InstancioApi<T> {
      * @param <S>      generator spec type
      * @return API builder reference
      */
-    <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(@NotNull TargetSelector selector, @NotNull Function<Generators, S> gen);
+    <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(TargetSelector selector, Function<Generators, S> gen);
 
     /**
      * A callback that gets invoked after an object has been fully populated.
@@ -261,7 +257,7 @@ public interface InstancioApi<T> {
      * @return API builder reference
      * @since 1.0.4
      */
-    <V> InstancioApi<T> onComplete(@NotNull TargetSelector selector, @NotNull OnCompleteCallback<V> callback);
+    <V> InstancioApi<T> onComplete(TargetSelector selector, OnCompleteCallback<V> callback);
 
     /**
      * Maps target field or class to the given subtype. This can be used
@@ -303,7 +299,7 @@ public interface InstancioApi<T> {
      * @return API builder reference
      * @since 1.4.0
      */
-    InstancioApi<T> subtype(@NotNull TargetSelector selector, @NotNull Class<?> subtype);
+    InstancioApi<T> subtype(TargetSelector selector, Class<?> subtype);
 
     /**
      * Override default {@link Settings} for generating values.
@@ -316,7 +312,7 @@ public interface InstancioApi<T> {
      * @see Keys
      * @since 1.0.1
      */
-    InstancioApi<T> withSettings(@NotNull Settings settings);
+    InstancioApi<T> withSettings(Settings settings);
 
     /**
      * Sets the seed value for the random number generator. If the seed is not specified,

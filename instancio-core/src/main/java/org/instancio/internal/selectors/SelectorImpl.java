@@ -29,6 +29,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class SelectorImpl implements Selector, GroupableSelector, Flattener, UnusedSelectorDescription {
+    // dummy class for the root selector
+    private enum Root {}
+
+    private static final SelectorImpl ROOT = new SelectorImpl(SelectorTargetKind.CLASS, Root.class, null) {
+        @Override
+        public String toString() {
+            return "root()";
+        }
+    };
 
     private final SelectorTargetKind selectorTargetKind;
     private final Class<?> targetClass;
@@ -75,6 +84,10 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
                         @Nullable final String fieldName) {
 
         this(selectorTargetKind, targetClass, fieldName, Collections.emptyList(), null);
+    }
+
+    public static SelectorImpl root() {
+        return ROOT;
     }
 
     public Throwable getStackTraceHolder() {

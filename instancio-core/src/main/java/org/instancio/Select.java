@@ -25,7 +25,6 @@ import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.SelectorTargetKind;
 import org.instancio.internal.selectors.TypeSelectorBuilderImpl;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.function.Predicate;
@@ -135,7 +134,7 @@ public final class Select {
      * @see #types(Predicate)
      * @since 1.6.0
      */
-    public static TargetSelector fields(@NotNull final Predicate<Field> predicate) {
+    public static TargetSelector fields(final Predicate<Field> predicate) {
         ApiValidator.notNull(predicate, "Field predicate must not be null");
         return new PredicateSelectorImpl(SelectorTargetKind.FIELD, predicate, null, null);
     }
@@ -150,7 +149,7 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.6.0
      */
-    public static TargetSelector types(@NotNull final Predicate<Class<?>> predicate) {
+    public static TargetSelector types(final Predicate<Class<?>> predicate) {
         ApiValidator.notNull(predicate, "Type predicate must not be null");
         return new PredicateSelectorImpl(SelectorTargetKind.CLASS, null, predicate, null);
     }
@@ -170,7 +169,7 @@ public final class Select {
      * @return a selector for given class
      * @since 1.2.0
      */
-    public static Selector all(@NotNull final Class<?> type) {
+    public static Selector all(final Class<?> type) {
         ApiValidator.notNull(type, "Class must not be null");
         return new SelectorImpl(SelectorTargetKind.CLASS, type, null);
     }
@@ -203,7 +202,7 @@ public final class Select {
      * @return a group containing given selectors
      * @since 1.3.0
      */
-    public static SelectorGroup all(@NotNull final GroupableSelector... selectors) {
+    public static SelectorGroup all(final GroupableSelector... selectors) {
         ApiValidator.notEmpty(selectors, "Selector group must contain at least one selector");
         return new SelectorGroupImpl(selectors);
     }
@@ -220,7 +219,7 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.2.0
      */
-    public static Selector field(@NotNull final Class<?> declaringClass, @NotNull final String fieldName) {
+    public static Selector field(final Class<?> declaringClass, final String fieldName) {
         //noinspection ConstantConditions
         final String className = declaringClass == null ? null : declaringClass.getCanonicalName(); // NOSONAR
         ApiValidator.validateField(declaringClass, fieldName,
@@ -248,9 +247,19 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.2.0
      */
-    public static Selector field(@NotNull final String fieldName) {
+    public static Selector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "Field name must not be null");
         return new SelectorImpl(SelectorTargetKind.FIELD, null, fieldName);
+    }
+
+    /**
+     * Selects the root object.
+     *
+     * @return the selector for the root object
+     * @since 2.0.0
+     */
+    public static TargetSelector root() {
+        return SelectorImpl.root();
     }
 
     /**
@@ -359,8 +368,7 @@ public final class Select {
      * @return a scope for fine-tuning a selector
      * @since 1.3.0
      */
-    public static Scope scope(@NotNull final Class<?> targetClass, @NotNull final String fieldName) {
-        //noinspection ConstantConditions
+    public static Scope scope(final Class<?> targetClass, final String fieldName) {
         final String className = targetClass == null ? null : targetClass.getCanonicalName(); // NOSONAR
         ApiValidator.validateField(targetClass, fieldName,
                 String.format("Invalid scope: (%s, %s)", className, fieldName));
@@ -394,7 +402,7 @@ public final class Select {
      * @return a scope for fine-tuning a selector
      * @since 1.3.0
      */
-    public static Scope scope(@NotNull final Class<?> targetClass) {
+    public static Scope scope(final Class<?> targetClass) {
         ApiValidator.notNull(targetClass, "Scope class must not be null");
         return new ScopeImpl(targetClass, null);
     }
