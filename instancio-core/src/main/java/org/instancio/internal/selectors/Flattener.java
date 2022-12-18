@@ -16,7 +16,7 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.TargetSelector;
-import org.jetbrains.annotations.ApiStatus;
+import org.instancio.documentation.InternalApi;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @since 1.3.0
  */
-@ApiStatus.Internal
+@InternalApi
 public interface Flattener {
 
     /**

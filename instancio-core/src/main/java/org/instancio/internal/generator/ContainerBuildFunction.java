@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.generator;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.instancio.documentation.InternalApi;
 
 /**
  * A function for building a container.
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.ApiStatus;
  * @see InternalContainerHint
  * @since 2.0.0
  */
-@ApiStatus.Internal
+@InternalApi
 public interface ContainerBuildFunction<B, C> {
 
     /**

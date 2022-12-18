@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.selectors;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.instancio.documentation.InternalApi;
 
 /**
  * Provides selector description in the "unused selectors" error message.
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
  *
  * @since 1.6.0
  */
-@ApiStatus.Internal
+@InternalApi
 public interface UnusedSelectorDescription {
 
     /**
