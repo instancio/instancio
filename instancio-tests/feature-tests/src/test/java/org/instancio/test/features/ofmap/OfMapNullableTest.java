@@ -18,7 +18,6 @@ package org.instancio.test.features.ofmap;
 import org.instancio.Instancio;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -47,7 +46,6 @@ class OfMapNullableTest {
     }
 
     @Test
-    @Disabled("TODO broken")
     void withNullableViaGenerator() {
         final Set<Map<UUID, String>> results = Instancio.ofMap(UUID.class, String.class)
                 .generate(all(Map.class), gen -> gen.map().nullable())

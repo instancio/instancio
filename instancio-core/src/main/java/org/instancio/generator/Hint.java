@@ -15,8 +15,6 @@
  */
 package org.instancio.generator;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A hint that can be passed from a generator to the engine.
  * Hints can be used to fine-tune the behaviour of the engine with respect to
@@ -36,7 +34,6 @@ public interface Hint<T extends Hint<T>> {
      * @return hint's type
      * @since 2.0.0
      */
-    @NotNull
     @SuppressWarnings("unchecked")
     default Class<T> type() {
         return (Class<T>) getClass();

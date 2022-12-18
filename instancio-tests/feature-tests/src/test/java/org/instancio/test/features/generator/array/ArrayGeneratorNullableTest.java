@@ -13,41 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.oflist;
+package org.instancio.test.features.generator.array;
 
 import org.instancio.Instancio;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
-import static org.instancio.Select.root;
 
-@FeatureTag({Feature.OF_LIST, Feature.NULLABLE})
-class OfListNullableTest {
+@FeatureTag({Feature.ARRAY_GENERATOR_NULLABLE, Feature.GENERATE})
+class ArrayGeneratorNullableTest {
 
     private static final int SAMPLE_SIZE = 500;
 
     @Test
-    void withNullableRoot() {
-        final Set<List<String>> results = Instancio.ofList(String.class)
-                .withNullable(root())
-                .stream()
-                .limit(SAMPLE_SIZE)
-                .collect(Collectors.toSet());
-
-        assertThat(results).containsNull();
-    }
-
-    @Test
-    void withNullableViaGenerator() {
-        final Set<List<String>> results = Instancio.ofList(String.class)
-                .generate(all(List.class), gen -> gen.collection().nullable())
+    void nullableArray() {
+        final Set<String[]> results = Instancio.of(String[].class)
+                .generate(all(String[].class), gen -> gen.array().nullable())
                 .stream()
                 .limit(SAMPLE_SIZE)
                 .collect(Collectors.toSet());

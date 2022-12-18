@@ -21,7 +21,6 @@ import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -38,9 +37,7 @@ import static org.instancio.Select.all;
 class CollectionGeneratorNullableTest {
     private static final int SAMPLE_SIZE = 500;
 
-    // TODO same for Map
     @Test
-    @Disabled("TODO broken")
     void nullableCollection() {
         final Set<List<Long>> results = Instancio.of(ListLong.class)
                 .generate(all(List.class), gen -> gen.collection().nullable())

@@ -36,11 +36,13 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
     private final Class<?> targetClass;
     private final boolean isDelegating;
     private final boolean excludeFromCallbacks;
+    private final boolean nullableResult;
 
     private InternalGeneratorHint(final Builder builder) {
         targetClass = builder.targetClass;
         isDelegating = builder.isDelegating;
         excludeFromCallbacks = builder.excludeFromCallbacks;
+        nullableResult = builder.nullableResult;
     }
 
     /**
@@ -80,6 +82,16 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
         return excludeFromCallbacks;
     }
 
+    /**
+     * Indicates whether the value to generate is nullable.
+     *
+     * @return {@code true} if null is allowed to be generated
+     * @since 2.0.0
+     */
+    public boolean nullableResult() {
+        return nullableResult;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", "GeneratorHint[", "]")
@@ -97,6 +109,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
         private Class<?> targetClass;
         private boolean isDelegating;
         private boolean excludeFromCallbacks;
+        private boolean nullableResult;
 
         private Builder() {
         }
@@ -120,6 +133,10 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
             return this;
         }
 
+        public Builder nullableResult(final boolean nullableResult) {
+            this.nullableResult = nullableResult;
+            return this;
+        }
 
         /**
          * Builds the object.
