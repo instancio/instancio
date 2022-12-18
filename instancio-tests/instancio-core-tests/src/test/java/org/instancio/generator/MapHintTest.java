@@ -15,14 +15,65 @@
  */
 package org.instancio.generator;
 
+import org.instancio.Instancio;
 import org.instancio.generator.hints.MapHint;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MapHintTest {
+
+    @Test
+    void emptyHint() {
+        final MapHint empty = MapHint.empty();
+        assertThat(empty.generateEntries()).isZero();
+        assertThat(empty.nullableMapKeys()).isFalse();
+        assertThat(empty.nullableMapValues()).isFalse();
+        assertThat(empty.withKeys()).isEmpty();
+        assertThat(empty.withEntries()).isEmpty();
+    }
+
+    @Test
+    void withEntries() {
+        final Map<String, String> entries1 = Instancio.ofMap(String.class, String.class).create();
+        final Map<String, String> entries2 = Instancio.ofMap(String.class, String.class).create();
+
+        final MapHint hint = MapHint.builder()
+                .withEntries(entries1)
+                .withEntries(null)
+                .withEntries(Collections.emptyMap())
+                .withEntries(entries2)
+                .build();
+
+        assertThat(hint.withEntries())
+                .containsAllEntriesOf(entries1)
+                .containsAllEntriesOf(entries2)
+                .doesNotContainKey(null)
+                .doesNotContainValue(null);
+    }
+
+    @Test
+    void withEKeys() {
+        final List<String> keys1 = Instancio.ofList(String.class).create();
+        final List<String> keys2 = Instancio.ofList(String.class).create();
+
+        final MapHint hint = MapHint.builder()
+                .withKeys(keys1)
+                .withKeys(null)
+                .withKeys(Collections.emptyList())
+                .withKeys(keys2)
+                .build();
+
+        assertThat(hint.withKeys())
+                .containsAll(keys1)
+                .containsAll(keys2)
+                .doesNotContainNull();
+    }
 
     @Test
     void verifyToString() {
