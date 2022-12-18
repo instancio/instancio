@@ -59,6 +59,7 @@ import static java.util.stream.Collectors.joining;
  */
 final class SelectorMap<V> {
     private static final boolean FIND_ONE_ONLY = true;
+    private static final ScopelessSelector SCOPELESS_ROOT = new ScopelessSelector(SelectorImpl.root().getTargetClass());
 
     private final Map<ScopelessSelector, List<SelectorImpl>> scopelessSelectors = new LinkedHashMap<>();
     private final Map<? super TargetSelector, V> selectors = new LinkedHashMap<>();
@@ -213,6 +214,10 @@ final class SelectorMap<V> {
      * @return list of selectors
      */
     private List<SelectorImpl> getCandidates(final Node node) {
+        if (node.getParent() == null && scopelessSelectors.containsKey(SCOPELESS_ROOT)) {
+            return Collections.singletonList(SelectorImpl.root());
+        }
+
         final List<SelectorImpl> candidates = new ArrayList<>(
                 scopelessSelectors.getOrDefault(new ScopelessSelector(node.getRawType()), Collections.emptyList()));
 

@@ -189,6 +189,27 @@ class SelectorApiContractTest {
                 "cannot find symbol", "method build()");
     }
 
+    @Test
+    @DisplayName("ofList() should not expose withTypeParameters() method")
+    void ofListWithTypeParametersNotAllowed() throws Exception {
+        assertCompilationError("NonCompilable_OfListWithTypeParameters.java",
+                "cannot find symbol", "method withTypeParameters");
+    }
+
+    @Test
+    @DisplayName("ofSet() should not expose withTypeParameters() method")
+    void ofSetWithTypeParametersNotAllowed() throws Exception {
+        assertCompilationError("NonCompilable_OfSetWithTypeParameters.java",
+                "cannot find symbol", "method withTypeParameters");
+    }
+
+    @Test
+    @DisplayName("ofMap() should not expose withTypeParameters() method")
+    void ofMapWithTypeParametersNotAllowed() throws Exception {
+        assertCompilationError("NonCompilable_OfMapWithTypeParameters.java",
+                "cannot find symbol", "method withTypeParameters");
+    }
+
     private static void assertCompilationError(final String sourceFile, final String... expectedErrorMsg) throws Exception {
         final DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
 

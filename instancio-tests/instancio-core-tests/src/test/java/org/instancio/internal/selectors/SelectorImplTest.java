@@ -37,6 +37,17 @@ import static org.instancio.Select.scope;
 class SelectorImplTest {
 
     @Test
+    void root() {
+        assertThat(SelectorImpl.root())
+                .isSameAs(SelectorImpl.root())
+                .extracting(SelectorImpl::getSelectorTargetKind)
+                .isEqualTo(SelectorTargetKind.CLASS);
+
+        assertThat(SelectorImpl.root().getTargetClass().getSimpleName())
+                .isEqualTo("Root");
+    }
+
+    @Test
     void getDescription() {
         final Throwable throwable = Throwables.mockThrowable(Throwable.class,
                 "org.instancio.Foo:1",
@@ -96,6 +107,8 @@ class SelectorImplTest {
 
     @Test
     void verifyToString() {
+        assertThat(Select.root()).hasToString("root()");
+
         assertThat(Select.field("foo"))
                 .hasToString("field(\"foo\")");
 

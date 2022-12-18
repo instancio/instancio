@@ -65,6 +65,7 @@
                                            QUESTION, RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN"/>
             <property name="allowEmptyConstructors" value="false"/>
             <property name="allowEmptyMethods" value="false"/>
+            <property name="allowEmptyTypes" value="true"/>
         </module>
     </module>
     <module name="FileTabCharacter"/>
