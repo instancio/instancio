@@ -19,10 +19,31 @@ import org.instancio.generator.hints.ArrayHint;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ArrayHintTest {
+
+    @Test
+    void emptyHint() {
+        final ArrayHint empty = ArrayHint.empty();
+        assertThat(empty.nullableElements()).isFalse();
+        assertThat(empty.shuffle()).isFalse();
+        assertThat(empty.withElements()).isEmpty();
+    }
+
+    @Test
+    void withElements() {
+        final ArrayHint hint = ArrayHint.builder()
+                .withElements(Arrays.asList("a", "b"))
+                .withElements(null)
+                .withElements(Collections.emptyList())
+                .withElements(Arrays.asList("c", "d"))
+                .build();
+
+        assertThat(hint.withElements()).containsExactly("a", "b", "c", "d");
+    }
 
     @Test
     void verifyToString() {
