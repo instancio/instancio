@@ -15,12 +15,12 @@
  */
 package org.instancio.internal.reflection;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.instancio.documentation.InternalApi;
 
 /**
  * A filter for checking whether a {@link Package} should be excluded from processing.
  */
-@ApiStatus.Internal
+@InternalApi
 public interface PackageFilter {
 
     /**

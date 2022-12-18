@@ -15,11 +15,11 @@
  */
 package org.instancio.internal;
 
+import org.instancio.documentation.InternalApi;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.nodes.Node;
-import org.jetbrains.annotations.ApiStatus;
 
-@ApiStatus.Internal
+@InternalApi
 interface NodePopulationFilter {
 
     /**

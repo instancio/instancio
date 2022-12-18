@@ -15,9 +15,9 @@
  */
 package org.instancio.internal.reflection.instantiation;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.instancio.documentation.InternalApi;
 
-@ApiStatus.Internal
+@InternalApi
 public interface InstantiationStrategy {
 
     <T> T createInstance(Class<T> klass);

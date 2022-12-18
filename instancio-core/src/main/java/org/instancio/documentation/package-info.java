@@ -13,27 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator;
-
-import org.instancio.documentation.InternalApi;
-
 /**
- * Creates an instances of a container, or container's builder.
- *
- * @param <T> type of container (or builder)
- * @see ContainerAddFunction
- * @see ContainerBuildFunction
- * @see InternalContainerHint
- * @since 2.0.0
+ * API documentation classes.
  */
-@InternalApi
-public interface ContainerCreateFunction<T> {
-
-    /**
-     * Returns an instance of a container or its builder.
-     *
-     * @param arguments if any, required to instantiate an instance
-     * @return container (or its builder) instance
-     */
-    T create(Object... arguments);
-}
+package org.instancio.documentation;

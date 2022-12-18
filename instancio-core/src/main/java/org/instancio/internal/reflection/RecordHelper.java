@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.reflection;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.instancio.documentation.InternalApi;
 
 import java.lang.reflect.Constructor;
 import java.util.Optional;
@@ -26,7 +26,7 @@ import java.util.Optional;
  *
  * @since 1.5.0
  */
-@ApiStatus.Internal
+@InternalApi
 public interface RecordHelper {
 
     /**

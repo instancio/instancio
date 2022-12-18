@@ -18,4 +18,7 @@
  *
  * <p><b>Classes within this package are not part of the public API.</b></p>
  */
+@InternalApi
 package org.instancio.internal;
+
+import org.instancio.documentation.InternalApi;

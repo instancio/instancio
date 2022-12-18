@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.generator;
 
+import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Hint;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Hint containing details on how to build a container. Container represents
@@ -37,7 +37,7 @@ import org.jetbrains.annotations.ApiStatus;
  * @see ContainerBuildFunction
  * @since 2.0.0
  */
-@ApiStatus.Internal
+@InternalApi
 public final class InternalContainerHint implements Hint<InternalContainerHint> {
     private static final InternalContainerHint EMPTY_HINT = builder().build();
 

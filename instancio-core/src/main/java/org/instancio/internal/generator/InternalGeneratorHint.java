@@ -15,10 +15,10 @@
  */
 package org.instancio.internal.generator;
 
+import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hint;
 import org.instancio.generator.Hints;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.StringJoiner;
 
@@ -31,7 +31,7 @@ import java.util.StringJoiner;
  * @see Generator
  * @since 2.0.0
  */
-@ApiStatus.Internal
+@InternalApi
 public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> {
     private final Class<?> targetClass;
     private final boolean isDelegating;

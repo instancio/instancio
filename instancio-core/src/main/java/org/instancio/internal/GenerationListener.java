@@ -15,16 +15,16 @@
  */
 package org.instancio.internal;
 
+import org.instancio.documentation.InternalApi;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Listener interface for classes interested in when an object has been created.
  *
  * @since 1.3.3
  */
-@ApiStatus.Internal
+@InternalApi
 interface GenerationListener {
 
     /**

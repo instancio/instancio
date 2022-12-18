@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.spi;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.instancio.documentation.InternalApi;
 
 import java.util.function.Function;
 
@@ -25,7 +25,7 @@ import java.util.function.Function;
  *
  * @since 2.0.0
  */
-@ApiStatus.Internal
+@InternalApi
 public interface InternalContainerFactoryProvider {
 
     <T, R> Function<T, R> createFromOtherFunction(Class<R> type);
