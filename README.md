@@ -65,6 +65,10 @@ Person person = Instancio.of(Person.class)
 - [Sample projects](https://github.com/instancio/instancio-samples)
 - [An introductory article](https://medium.com/@armandino/instancio-random-test-data-generator-for-java-a7b283dd258d) on Medium.
 
+# Latest Major Release
+
+Version `2.0.0` is out with several [new features](https://github.com/instancio/instancio/discussions/291#discussioncomment-4446255).
+
 # Getting Started
 
 If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
@@ -73,7 +77,7 @@ If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>1.6.0</version>
+        <version>2.0.0</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -84,7 +88,7 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>1.6.0</version>
+        <version>2.0.0</version>
         <scope>test</scope>
     </dependency>
 ```
