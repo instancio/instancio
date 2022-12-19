@@ -54,7 +54,7 @@ class GeneratorProviderFacade {
                 LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), forClass);
 
                 final Generator<?> decorated = GeneratorDecorator.decorate(
-                        generator, context.getSettings().get(Keys.AFTER_GENERATE_HINT), context);
+                        generator, context.getSettings().get(Keys.AFTER_GENERATE_HINT));
 
                 cache.put(forClass, decorated);
                 return Optional.of(decorated);

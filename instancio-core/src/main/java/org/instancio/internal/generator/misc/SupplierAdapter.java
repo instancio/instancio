@@ -18,7 +18,6 @@ package org.instancio.internal.generator.misc;
 import org.instancio.Random;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.InternalGeneratorHint;
 
@@ -35,12 +34,6 @@ public final class SupplierAdapter implements Generator<Object> {
 
     public SupplierAdapter(final Supplier<?> supplier) {
         this.supplier = supplier;
-    }
-
-
-    @Override
-    public void init(final GeneratorContext context) {
-        // always no-op
     }
 
     @Override

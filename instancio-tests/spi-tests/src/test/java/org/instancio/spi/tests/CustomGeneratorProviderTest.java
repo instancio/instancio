@@ -16,16 +16,9 @@
 package org.instancio.spi.tests;
 
 import org.example.generator.CustomIntegerGenerator;
-import org.example.generator.CustomPersonGenerator;
 import org.example.spi.CustomGeneratorProvider;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
-import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.AfterGenerate;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
-import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -54,28 +47,6 @@ class CustomGeneratorProviderTest {
     void shouldUseCustomIntegerGenerator() {
         assertThat(Instancio.create(int.class))
                 .isBetween(CustomIntegerGenerator.MIN, CustomIntegerGenerator.MAX);
-    }
-
-    /**
-     * Verifies that custom Generator loaded via SPI has its
-     * {@link Generator#init(GeneratorContext)} method invoked exactly once.
-     * <p>
-     * The actual verification is done within {@link CustomPersonGenerator}
-     * since we have no access to it here.
-     */
-    @Test
-    @DisplayName("Verifies that Generator.init() method is called exactly once")
-    void verifyInitMethodCalledOnlyOnce() {
-        final Person person = Instancio.of(Person.class)
-                .withSettings(Settings.create()
-                        .set(Keys.AFTER_GENERATE_HINT, AfterGenerate.APPLY_SELECTORS))
-                .create();
-
-        assertThat(person.getName()).isEqualTo(CustomPersonGenerator.PERSON_NAME);
-
-        // Remaining fields should be null
-        assertThat(person.getGender()).isNull();
-        assertThat(person.getAddress()).isNull();
     }
 
     @Test

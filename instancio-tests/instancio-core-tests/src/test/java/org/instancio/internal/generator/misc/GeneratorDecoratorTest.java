@@ -18,19 +18,13 @@ package org.instancio.internal.generator.misc;
 import org.instancio.Random;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.InternalGeneratorHint;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class GeneratorDecoratorTest {
-
-    private static final GeneratorContext CONTEXT = new GeneratorContext(Settings.defaults(), new DefaultRandom());
-
     private static final AfterGenerate AFTER_GENERATE = AfterGenerate.APPLY_SELECTORS;
 
     private static class DummyGenerator implements Generator<Object> {
@@ -54,7 +48,7 @@ class GeneratorDecoratorTest {
     @Test
     void decorateGeneratorWithAfterGenerate() {
         final Generator<?> original = new DummyGenerator(Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY));
-        final Generator<?> decorated = GeneratorDecorator.decorate(original, AfterGenerate.POPULATE_ALL, CONTEXT);
+        final Generator<?> decorated = GeneratorDecorator.decorate(original, AfterGenerate.POPULATE_ALL);
 
         assertThat(decorated)
                 .as("Generator should not be decorated if it has AfterGenerate hint")
@@ -69,7 +63,7 @@ class GeneratorDecoratorTest {
                 .with(hint)
                 .build());
 
-        final Generator<?> decorated = GeneratorDecorator.decorate(original, AFTER_GENERATE, CONTEXT);
+        final Generator<?> decorated = GeneratorDecorator.decorate(original, AFTER_GENERATE);
 
         assertThat(decorated).isNotSameAs(original)
                 .isExactlyInstanceOf(GeneratorDecorator.class)
@@ -88,7 +82,7 @@ class GeneratorDecoratorTest {
     }
 
     private static void assertDecorated(final Generator<?> original) {
-        final Generator<?> decorated = GeneratorDecorator.decorate(original, AFTER_GENERATE, CONTEXT);
+        final Generator<?> decorated = GeneratorDecorator.decorate(original, AFTER_GENERATE);
 
         assertThat(decorated).isNotSameAs(original)
                 .isExactlyInstanceOf(GeneratorDecorator.class)

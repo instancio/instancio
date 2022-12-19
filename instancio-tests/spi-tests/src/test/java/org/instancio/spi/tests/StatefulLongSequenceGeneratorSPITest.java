@@ -46,7 +46,7 @@ class StatefulLongSequenceGeneratorSPITest {
     }
 
     /**
-     * For <b>generators loaded via SPI</b>, each generator is re-initialised
+     * For <b>generators loaded via SPI</b>, a new generator is instantiated
      * for each stream element. This is an implementation detail due to the fact
      * that {@code GeneratorProviderFacade} is instantiated within the engine.
      * <p>
@@ -65,11 +65,10 @@ class StatefulLongSequenceGeneratorSPITest {
     }
 
     @Test
-    void sequenceIsResetAfterGeneratorIsInitialised() {
+    void sequenceShouldBeReset() {
         assertSequence(LongSequenceGenerator.START_FROM);
 
-        // when the generator is passed to another invocation of Instancio.of(),
-        // its init() method should be called again, resetting the sequence
+        // generator should be instantiated again, resetting the sequence
         assertSequence(LongSequenceGenerator.START_FROM);
     }
 

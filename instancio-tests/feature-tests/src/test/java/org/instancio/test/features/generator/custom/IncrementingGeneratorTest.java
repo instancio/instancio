@@ -18,7 +18,6 @@ package org.instancio.test.features.generator.custom;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -36,7 +35,7 @@ import static org.instancio.Select.scope;
 
 @FeatureTag(Feature.GENERATOR)
 @ExtendWith(InstancioExtension.class)
-class StatefulIntegerSequenceGeneratorTest {
+class IncrementingGeneratorTest {
 
     @WithSettings
     private static final Settings settings = Settings.create()
@@ -49,12 +48,7 @@ class StatefulIntegerSequenceGeneratorTest {
     private static Generator<Integer> incrementingGenerator() {
         return new Generator<Integer>() {
 
-            private int current;
-
-            @Override
-            public void init(final GeneratorContext context) {
-                current = START_FROM; // reset on each call to initialise()
-            }
+            private int current = START_FROM;
 
             @Override
             public Integer generate(final Random random) {
@@ -64,23 +58,18 @@ class StatefulIntegerSequenceGeneratorTest {
     }
 
     @Test
-    void statefulGeneratorSharedBetweenTwoSelectorTargets() {
+    void generatorSharedBetweenTwoSelectorTargets() {
         final TwoListsOfInteger result = Instancio.of(TwoListsOfInteger.class)
                 .supply(allInts(), incrementingGenerator())
                 .create();
 
         assertThat(result.getList1()).containsExactly(START_FROM, START_FROM + 1);
-        assertThat(result.getList2())
-                .as("Generator sequence should continue if used with multiple fields")
-                .containsExactly(START_FROM + 2, START_FROM + 3);
+        assertThat(result.getList2()).containsExactly(START_FROM + 2, START_FROM + 3);
     }
 
     @Test
-    void statefulGenerator() {
+    void sequenceShouldBeReset() {
         assertSequence(incrementingGenerator(), START_FROM);
-
-        // when the generator is passed to another invocation of Instancio.of(),
-        // init should be called again, resetting the sequence
         assertSequence(incrementingGenerator(), START_FROM);
     }
 
@@ -91,8 +80,6 @@ class StatefulIntegerSequenceGeneratorTest {
                 .create();
 
         assertThat(result.getList1()).containsExactly(startingValue, startingValue + 1);
-        assertThat(result.getList2())
-                .as("Generator sequence should continue if used with multiple fields")
-                .containsExactly(startingValue + 2, startingValue + 3);
+        assertThat(result.getList2()).containsExactly(startingValue + 2, startingValue + 3);
     }
 }
