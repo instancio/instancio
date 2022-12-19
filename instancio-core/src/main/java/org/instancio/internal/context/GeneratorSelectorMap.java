@@ -111,7 +111,7 @@ class GeneratorSelectorMap {
     }
 
     private void putGenerator(final TargetSelector targetSelector, final Generator<?> g) {
-        final Generator<?> generator = GeneratorDecorator.decorate(g, defaultAfterGenerate, context);
+        final Generator<?> generator = GeneratorDecorator.decorate(g, defaultAfterGenerate);
         selectorMap.put(targetSelector, generator);
 
         final InternalGeneratorHint internalHint = generator.hints().get(InternalGeneratorHint.class);

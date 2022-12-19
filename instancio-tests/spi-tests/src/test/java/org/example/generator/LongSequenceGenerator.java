@@ -15,28 +15,13 @@
  */
 package org.example.generator;
 
-import org.instancio.generator.Generator;
 import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-
-import static org.assertj.core.api.Fail.fail;
+import org.instancio.generator.Generator;
 
 public class LongSequenceGenerator implements Generator<Long> {
 
     public static final long START_FROM = 10;
-    private long current;
-    private boolean initialised;
-
-    @Override
-    public void init(final GeneratorContext context) {
-        current = START_FROM;
-        if (initialised) {
-            // All generators, including those from SPI, should be initialised exactly
-            // once per Instancio.of() invocation.
-            fail("%s should not be initialised more than once!", getClass().getName());
-        }
-        initialised = true;
-    }
+    private long current = START_FROM;
 
     @Override
     public Long generate(final Random random) {

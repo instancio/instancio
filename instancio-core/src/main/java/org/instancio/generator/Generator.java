@@ -33,30 +33,6 @@ import org.jetbrains.annotations.Nullable;
 public interface Generator<T> extends GeneratorSpec<T> {
 
     /**
-     * An optional method for generators that need to initialise state before
-     * generating values. This method is guaranteed to be called:
-     *
-     * <ul>
-     *   <li>before {@link #generate(Random)} and {@link #hints()} are invoked</li>
-     *   <li>exactly once per {@code Instancio.of()} invocation</li>
-     * </ul>
-     *
-     * <p>If the same instance of a generator is shared across multiple
-     * invocations of {@code Instancio.of()}, then this method will be called
-     * once per each invocation, resetting the generator's state.</p>
-     *
-     * <p>An instance of {@link Random} provided in the generator context can be
-     * used if the initial state needs to be randomised. The context also contains
-     * {@link Settings} which includes all settings overrides.</p>
-     *
-     * @param context generator context
-     * @since 2.0.0
-     */
-    default void init(GeneratorContext context) {
-        // no-op by default
-    }
-
-    /**
      * Returns a generated value.
      * <p>
      * If this method produces random data, the data needs to be generated
