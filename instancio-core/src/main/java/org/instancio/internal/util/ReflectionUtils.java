@@ -18,6 +18,8 @@ package org.instancio.internal.util;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -29,9 +31,19 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public final class ReflectionUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
     private ReflectionUtils() {
         // non-instantiable
+    }
+
+    public static Class<?> loadClass(final String fullyQualifiedName) {
+        try {
+            return Class.forName(fullyQualifiedName);
+        } catch (Exception ex) {
+            LOG.trace("Could not load class: '{}'", fullyQualifiedName, ex);
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -31,8 +31,6 @@ import org.instancio.internal.generator.lang.StringBuilderGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.math.BigIntegerGenerator;
-import org.instancio.internal.generator.sql.SqlDateGenerator;
-import org.instancio.internal.generator.sql.TimestampGenerator;
 import org.instancio.internal.generator.time.DurationGenerator;
 import org.instancio.internal.generator.time.InstantGenerator;
 import org.instancio.internal.generator.time.LocalDateGenerator;
@@ -56,11 +54,13 @@ import org.instancio.internal.generator.util.concurrent.ConcurrentHashMapGenerat
 import org.instancio.internal.generator.util.concurrent.ConcurrentSkipListMapGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator;
-import org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.spi.GeneratorProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.xml.datatype.XMLGregorianCalendar;
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
@@ -95,6 +95,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class GeneratorResolver {
+    private static final Logger LOG = LoggerFactory.getLogger(GeneratorResolver.class);
 
     private static final List<GeneratorProvider> PROVIDERS = ServiceLoaders.loadAll(GeneratorProvider.class);
     private final Map<Class<?>, Generator<?>> generators;
@@ -150,10 +151,6 @@ public class GeneratorResolver {
         generators.put(YearMonth.class, new YearMonthGenerator(context));
         generators.put(ZonedDateTime.class, new ZonedDateTimeGenerator(context));
 
-        // java.sql
-        generators.put(java.sql.Date.class, new SqlDateGenerator(context));
-        generators.put(java.sql.Timestamp.class, new TimestampGenerator(context));
-
         // java.util
         generators.put(Calendar.class, new CalendarGenerator(context));
         generators.put(Date.class, new DateGenerator(context));
@@ -177,10 +174,42 @@ public class GeneratorResolver {
         generators.put(AtomicInteger.class, new AtomicIntegerGenerator(context));
         generators.put(AtomicLong.class, new AtomicLongGenerator(context));
 
-        // javax.xml.datatype
-        generators.put(XMLGregorianCalendar.class, new XMLGregorianCalendarGenerator(context));
+        // Java modules will not have these legacy classes unless explicitly
+        // imported via e.g. "requires java.sql". In case the classes are not
+        // available, load them by name to avoid class not found error
+        loadByClassName(context, generators,
+                "java.sql.Date",
+                "org.instancio.internal.generator.sql.SqlDateGenerator");
+        loadByClassName(context, generators,
+                "java.sql.Timestamp",
+                "org.instancio.internal.generator.sql.TimestampGenerator");
+        loadByClassName(context, generators,
+                "javax.xml.datatype.XMLGregorianCalendar",
+                "org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator");
 
         return generators;
+    }
+
+    private static void loadByClassName(
+            final GeneratorContext context,
+            final Map<Class<?>, Generator<?>> generators,
+            final String generateTypeClassName,
+            final String generatorClassName) {
+
+        final Class<?> targetClass = ReflectionUtils.loadClass(generateTypeClassName);
+        final Class<?> generatorClass = ReflectionUtils.loadClass(generatorClassName);
+
+        if (targetClass == null || generatorClass == null) {
+            return;
+        }
+
+        try {
+            final Constructor<?> constructor = generatorClass.getConstructor(GeneratorContext.class);
+            final Generator<?> generator = (Generator<?>) constructor.newInstance(context);
+            generators.put(targetClass, generator);
+        } catch (Exception ex) {
+            LOG.trace("Failed loading generator class: '{}'", generatorClassName, ex);
+        }
     }
 
     @SuppressWarnings("all")

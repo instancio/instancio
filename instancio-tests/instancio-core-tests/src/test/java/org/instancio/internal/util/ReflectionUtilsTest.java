@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.pojo.basic.StringHolder;
@@ -34,6 +35,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ReflectionUtilsTest {
+
+    @Test
+    void loadClass() {
+        assertThat(ReflectionUtils.loadClass("foo")).isNull();
+        assertThat(ReflectionUtils.loadClass("org.instancio.Instancio"))
+                .isEqualTo(Instancio.class);
+    }
 
     @ValueSource(classes = {String.class, String[].class, List[].class})
     @ParameterizedTest
