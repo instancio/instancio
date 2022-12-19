@@ -854,9 +854,6 @@ interface Generator<T> {
 
     T generate(Random random);
 
-    default void init(GeneratorContext context) {
-    }
-
     default Hints hints() {
         return null;
     }
@@ -864,8 +861,6 @@ interface Generator<T> {
 ```
 
 If a generator produces random data, it must use the provided {{Random}} instance to guarantee that the created object can be reproduced for a given seed value.
-The `init(GeneratorContext)` method can be used by generators that require initialisation logic. The context argument provides a copy of the current {{Settings}}
-as well as the {{Random}} instance.
 The `hints()` method is for passing additional instructions to the engine. The most important hint is the {{AfterGenerate}} action which determines whether the engine should:
 
 - populate uninitialised fields
