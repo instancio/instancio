@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Verify;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -24,19 +25,28 @@ import java.util.Objects;
 
 public final class ScopeImpl implements Scope {
     private final Class<?> targetClass;
-    private final Field field;
+    private final String fieldName;
 
     public ScopeImpl(final Class<?> targetClass, @Nullable final String fieldName) {
         this.targetClass = targetClass;
-        this.field = fieldName == null ? null : ReflectionUtils.getField(targetClass, fieldName);
+        this.fieldName = fieldName;
     }
 
     public Class<?> getTargetClass() {
         return targetClass;
     }
 
-    public Field getField() {
-        return field;
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public boolean isFieldScope() {
+        return fieldName != null;
+    }
+
+    public Field resolveField() {
+        Verify.state(isFieldScope(), "Invalid call to resolve field on Class scope: %s", this);
+        return ReflectionUtils.getField(targetClass, fieldName);
     }
 
     @Override
@@ -44,19 +54,20 @@ public final class ScopeImpl implements Scope {
         if (this == o) return true;
         if (!(o instanceof ScopeImpl)) return false;
         final ScopeImpl scope = (ScopeImpl) o;
-        return Objects.equals(getTargetClass(), scope.getTargetClass()) && Objects.equals(getField(), scope.getField());
+        return Objects.equals(targetClass, scope.targetClass)
+                && Objects.equals(fieldName, scope.fieldName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTargetClass(), getField());
+        return Objects.hash(targetClass, fieldName);
     }
 
     @Override
     public String toString() {
-        if (field == null) {
+        if (fieldName == null) {
             return String.format("scope(%s)", targetClass.getSimpleName());
         }
-        return String.format("scope(%s, \"%s\")", getTargetClass().getSimpleName(), field.getName());
+        return String.format("scope(%s, \"%s\")", getTargetClass().getSimpleName(), fieldName);
     }
 }

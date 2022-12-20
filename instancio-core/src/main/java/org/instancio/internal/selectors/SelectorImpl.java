@@ -32,14 +32,13 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
     // dummy class for the root selector
     private enum Root {}
 
-    private static final SelectorImpl ROOT = new SelectorImpl(SelectorTargetKind.CLASS, Root.class, null) {
+    private static final SelectorImpl ROOT = new SelectorImpl(Root.class, null) {
         @Override
         public String toString() {
             return "root()";
         }
     };
 
-    private final SelectorTargetKind selectorTargetKind;
     private final Class<?> targetClass;
     private final String fieldName;
     private final List<Scope> scopes;
@@ -49,20 +48,18 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
     /**
      * Constructor.
      *
-     * @param selectorTargetKind selector target's kind
-     * @param targetClass        target class
-     * @param fieldName          field name, applicable to field selectors only
-     * @param scopes             scopes specified top-down, from outermost to innermost
-     * @param parent             required only for {@link PrimitiveAndWrapperSelectorImpl} for checking unused selectors
+     * @param targetClass      target class
+     * @param fieldName        field name, applicable to field selectors only
+     * @param scopes           scopes specified top-down, from outermost to innermost
+     * @param parent           required only for {@link PrimitiveAndWrapperSelectorImpl} for checking unused selectors
+     * @param stackTraceHolder stacktrace for reporting locations of unused selectors
      */
-    public SelectorImpl(final SelectorTargetKind selectorTargetKind,
-                        @Nullable final Class<?> targetClass,
-                        @Nullable final String fieldName,
-                        @Nullable final List<Scope> scopes,
-                        @Nullable final Selector parent,
-                        @Nullable final Throwable stackTraceHolder) {
+    private SelectorImpl(@Nullable final Class<?> targetClass,
+                         @Nullable final String fieldName,
+                         @Nullable final List<Scope> scopes,
+                         @Nullable final Selector parent,
+                         @Nullable final Throwable stackTraceHolder) {
 
-        this.selectorTargetKind = selectorTargetKind;
         this.targetClass = targetClass;
         this.fieldName = fieldName;
         this.scopes = scopes == null ? Collections.emptyList() : Collections.unmodifiableList(scopes);
@@ -70,20 +67,30 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         this.stackTraceHolder = stackTraceHolder;
     }
 
-    public SelectorImpl(final SelectorTargetKind selectorTargetKind,
-                        @Nullable final Class<?> targetClass,
-                        @Nullable final String fieldName,
-                        @Nullable final List<Scope> scopes,
-                        @Nullable final Selector parent) {
+    SelectorImpl(@Nullable final Class<?> targetClass,
+                 @Nullable final String fieldName) {
 
-        this(selectorTargetKind, targetClass, fieldName, scopes, parent, new Throwable());
+        this(targetClass, fieldName, Collections.emptyList(), null, new Throwable());
     }
 
-    public SelectorImpl(final SelectorTargetKind selectorTargetKind,
-                        @Nullable final Class<?> targetClass,
-                        @Nullable final String fieldName) {
+    private SelectorImpl(final Builder builder) {
+        targetClass = builder.targetClass;
+        fieldName = builder.fieldName;
+        scopes = builder.scopes == null
+                ? Collections.emptyList()
+                : Collections.unmodifiableList(builder.scopes);
+        parent = builder.parent;
+        stackTraceHolder = builder.stackTraceHolder == null ? new Throwable() : builder.stackTraceHolder;
+    }
 
-        this(selectorTargetKind, targetClass, fieldName, Collections.emptyList(), null);
+    public static Builder builder(final SelectorImpl copy) {
+        Builder builder = new Builder();
+        builder.targetClass = copy.getTargetClass();
+        builder.fieldName = copy.getFieldName();
+        builder.scopes = copy.getScopes();
+        builder.parent = copy.getParent();
+        builder.stackTraceHolder = copy.getStackTraceHolder();
+        return builder;
     }
 
     public static SelectorImpl root() {
@@ -101,7 +108,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
 
     @Override
     public Selector within(@NotNull final Scope... scopes) {
-        return new SelectorImpl(selectorTargetKind, targetClass, fieldName, Arrays.asList(scopes), parent, stackTraceHolder);
+        return builder(this).scopes(Arrays.asList(scopes)).build();
     }
 
     @Override
@@ -122,8 +129,8 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         return scopes;
     }
 
-    public SelectorTargetKind getSelectorTargetKind() {
-        return selectorTargetKind;
+    public boolean isFieldSelector() {
+        return fieldName != null;
     }
 
     public Class<?> getTargetClass() {
@@ -144,8 +151,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         if (this == o) return true;
         if (!(o instanceof SelectorImpl)) return false;
         final SelectorImpl that = (SelectorImpl) o;
-        return selectorTargetKind == that.selectorTargetKind
-                && Objects.equals(targetClass, that.targetClass)
+        return Objects.equals(targetClass, that.targetClass)
                 && Objects.equals(fieldName, that.fieldName)
                 && Objects.equals(scopes, that.scopes);
     }
@@ -157,7 +163,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
      */
     @Override
     public final int hashCode() {
-        return Objects.hash(selectorTargetKind, targetClass, fieldName, scopes);
+        return Objects.hash(targetClass, fieldName, scopes);
     }
 
     @Override
@@ -167,7 +173,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         if (parent instanceof PrimitiveAndWrapperSelectorImpl) {
             sb.append(parent);
         } else {
-            sb.append(selectorTargetKind == SelectorTargetKind.CLASS ? "all(" : "field(");
+            sb.append(isFieldSelector() ? "field(" : "all(");
 
             if (targetClass != null) {
                 sb.append(targetClass.getSimpleName());
@@ -185,5 +191,49 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
             }
         }
         return sb.toString();
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private Class<?> targetClass;
+        private String fieldName;
+        private List<Scope> scopes;
+        private Selector parent;
+        private Throwable stackTraceHolder;
+
+        private Builder() {
+        }
+
+        public Builder targetClass(final Class<?> targetClass) {
+            this.targetClass = targetClass;
+            return this;
+        }
+
+        public Builder fieldName(final String fieldName) {
+            this.fieldName = fieldName;
+            return this;
+        }
+
+        public Builder scopes(final List<Scope> scopes) {
+            this.scopes = scopes;
+            return this;
+        }
+
+        public Builder parent(final Selector parent) {
+            this.parent = parent;
+            return this;
+        }
+
+        public Builder stackTraceHolder(final Throwable stackTraceHolder) {
+            this.stackTraceHolder = stackTraceHolder;
+            return this;
+        }
+
+        public SelectorImpl build() {
+            return new SelectorImpl(this);
+        }
     }
 }

@@ -65,9 +65,14 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
         return this;
     }
 
-    public SelectorAssert hasSelectorType(final SelectorTargetKind expected) {
-        assertThat(getAs(SelectorImpl.class).getSelectorTargetKind()).isEqualTo(expected);
+    public SelectorAssert isFieldSelector() {
+        assertThat(getAs(SelectorImpl.class).isFieldSelector()).isTrue();
         return this;
+    }
+
+    public SelectorAssert isClassSelector() {
+        assertThat(getAs(SelectorImpl.class).isFieldSelector()).isFalse();
+        return hasNullField();
     }
 
     public SelectorAssert hasScopeSize(final int expected) {
@@ -87,11 +92,6 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     public SelectorAssert isClassSelectorWithNoScope() {
         assertThat(getAs(SelectorImpl.class).getScopes()).isEmpty();
         return isClassSelector();
-    }
-
-    public SelectorAssert isClassSelector() {
-        hasSelectorType(SelectorTargetKind.CLASS);
-        return hasNullField();
     }
 
     public SelectorAssert isCoreTypeSelector(final Class<?> primitive, final Class<?> wrapper) {

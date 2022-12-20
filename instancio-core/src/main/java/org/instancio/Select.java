@@ -171,7 +171,7 @@ public final class Select {
      */
     public static Selector all(final Class<?> type) {
         ApiValidator.notNull(type, "Class must not be null");
-        return new SelectorImpl(SelectorTargetKind.CLASS, type, null);
+        return SelectorImpl.builder().targetClass(type).build();
     }
 
     /**
@@ -220,12 +220,14 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector field(final Class<?> declaringClass, final String fieldName) {
-        //noinspection ConstantConditions
         final String className = declaringClass == null ? null : declaringClass.getCanonicalName(); // NOSONAR
         ApiValidator.validateField(declaringClass, fieldName,
                 String.format("Invalid field selector: (%s, %s)", className, fieldName));
 
-        return new SelectorImpl(SelectorTargetKind.FIELD, declaringClass, fieldName);
+        return SelectorImpl.builder()
+                .targetClass(declaringClass)
+                .fieldName(fieldName)
+                .build();
     }
 
     /**
@@ -249,7 +251,8 @@ public final class Select {
      */
     public static Selector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "Field name must not be null");
-        return new SelectorImpl(SelectorTargetKind.FIELD, null, fieldName);
+        return SelectorImpl.builder().fieldName(fieldName).build();
+
     }
 
     /**

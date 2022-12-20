@@ -16,7 +16,6 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
-import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
@@ -28,7 +27,6 @@ import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetKind;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 
@@ -123,22 +121,19 @@ class GeneratorSelectorMap {
         if (targetSelector instanceof SelectorImpl) {
             final SelectorImpl selector = (SelectorImpl) targetSelector;
 
-            if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
+            if (selector.isFieldSelector()) {
                 final Field field = getField(selector.getTargetClass(), selector.getFieldName());
                 final Class<?> userSpecifiedClass = generatorTargetClass.orElse(field.getType());
 
                 if (generator instanceof ArrayGenerator) {
                     ((ArrayGenerator<?>) generator).subtype(userSpecifiedClass);
                 }
-            } else if (selector.getSelectorTargetKind() == SelectorTargetKind.CLASS) {
+            } else {
                 final Class<?> userSpecifiedClass = generatorTargetClass.orElse(selector.getTargetClass());
 
                 if (generator instanceof ArrayGenerator) {
                     ((ArrayGenerator<?>) generator).subtype(userSpecifiedClass);
                 }
-            } else {
-                // should not be reachable
-                throw new InstancioException("Unknown selector kind: " + selector.getSelectorTargetKind());
             }
         }
     }

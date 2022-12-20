@@ -38,13 +38,10 @@ class SelectorImplTest {
 
     @Test
     void root() {
-        assertThat(SelectorImpl.root())
-                .isSameAs(SelectorImpl.root())
-                .extracting(SelectorImpl::getSelectorTargetKind)
-                .isEqualTo(SelectorTargetKind.CLASS);
-
-        assertThat(SelectorImpl.root().getTargetClass().getSimpleName())
-                .isEqualTo("Root");
+        final SelectorImpl root = SelectorImpl.root();
+        assertThat(root.getTargetClass().getSimpleName()).isEqualTo("Root");
+        assertThat(root.getScopes()).isEmpty();
+        assertThat(root.getParent()).isNull();
     }
 
     @Test
@@ -54,8 +51,10 @@ class SelectorImplTest {
                 "org.example.ExpectedClass:2",
                 "org.instancio.Bar:3");
 
-        final SelectorImpl selector = new SelectorImpl(
-                SelectorTargetKind.CLASS, Foo.class, null, null, null, throwable);
+        final SelectorImpl selector = SelectorImpl.builder()
+                .targetClass(Foo.class)
+                .stackTraceHolder(throwable)
+                .build();
 
         assertThat(selector.getDescription()).isEqualTo(
                 String.format("all(Foo)%n" +
@@ -90,7 +89,10 @@ class SelectorImplTest {
 
     @Test
     void withinReturnsANewSelectorInstance() {
-        final SelectorImpl selector = new SelectorImpl(SelectorTargetKind.CLASS, String.class, null);
+        final SelectorImpl selector = SelectorImpl.builder()
+                .targetClass(String.class)
+                .build();
+
         final SelectorImpl scopedSelector = (SelectorImpl) selector.within(scope(StringHolder.class));
 
         assertThat(selector)

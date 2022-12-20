@@ -29,7 +29,7 @@ class MetamodelSelectorTest {
         final MetamodelSelector selector = (MetamodelSelector) MetamodelSelector.of(StringHolder.class, "value");
         assertThat(selector.getTargetClass()).isEqualTo(StringHolder.class);
         assertThat(selector.getFieldName()).isEqualTo("value");
-        assertThat(selector.getSelectorTargetKind()).isEqualTo(SelectorTargetKind.FIELD);
+        assertThat(selector.isFieldSelector()).isTrue();
         assertThat(selector.getScopes()).isEmpty();
         assertThat(selector.getParent()).isNull();
     }

@@ -37,13 +37,32 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     private final SelectorImpl wrapper;
 
     public PrimitiveAndWrapperSelectorImpl(final Class<?> primitiveType, final Class<?> wrapperType) {
-        this.primitive = new SelectorImpl(SelectorTargetKind.CLASS, primitiveType, null, Collections.emptyList(), this);
-        this.wrapper = new SelectorImpl(SelectorTargetKind.CLASS, wrapperType, null, Collections.emptyList(), this);
+        this.primitive = SelectorImpl.builder()
+                .targetClass(primitiveType)
+                .parent(this)
+                .build();
+
+        this.wrapper = SelectorImpl.builder()
+                .targetClass(wrapperType)
+                .parent(this)
+                .build();
     }
 
-    private PrimitiveAndWrapperSelectorImpl(final SelectorImpl primitive, SelectorImpl wrapper) {
+    public PrimitiveAndWrapperSelectorImpl(final SelectorImpl primitive, SelectorImpl wrapper) {
         this.primitive = primitive;
         this.wrapper = wrapper;
+    }
+
+    public boolean isScoped() {
+        return !primitive.getScopes().isEmpty();
+    }
+
+    public SelectorImpl getPrimitive() {
+        return primitive;
+    }
+
+    public SelectorImpl getWrapper() {
+        return wrapper;
     }
 
     @Override
@@ -55,14 +74,13 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     public Selector within(@NotNull final Scope... scopes) {
         final List<Scope> scopeList = Arrays.asList(scopes);
         return new PrimitiveAndWrapperSelectorImpl(
-                new SelectorImpl(SelectorTargetKind.CLASS, primitive.getTargetClass(), null, scopeList, this),
-                new SelectorImpl(SelectorTargetKind.CLASS, wrapper.getTargetClass(), null, scopeList, this));
+                SelectorImpl.builder(primitive).scopes(scopeList).build(),
+                SelectorImpl.builder(wrapper).scopes(scopeList).build());
     }
 
     @Override
     public Scope toScope() {
-        throw new InstancioApiException(String.format("toScope() is not supported for this selector (%s, %s)",
-                primitive.getTargetClass(), wrapper.getTargetClass()));
+        throw new InstancioApiException(String.format("Method 'toScope()' is not supported for selector '%s'", this));
     }
 
     @Override
