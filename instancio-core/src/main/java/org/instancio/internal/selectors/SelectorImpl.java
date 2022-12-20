@@ -93,7 +93,9 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         return builder;
     }
 
-    public static SelectorImpl root() {
+    // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
+    // which can be confused with the public API method 'Selector.root()'
+    public static SelectorImpl getRootSelector() {
         return ROOT;
     }
 
