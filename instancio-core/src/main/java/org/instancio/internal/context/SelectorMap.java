@@ -82,7 +82,7 @@ final class SelectorMap<V> {
             final SelectorImpl selector = (SelectorImpl) targetSelector;
             final ScopelessSelector scopeless;
 
-            if (selector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
+            if (selector.isFieldSelector()) {
                 final Field field = ReflectionUtils.getField(selector.getTargetClass(), selector.getFieldName());
                 scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
             } else {
@@ -194,12 +194,9 @@ final class SelectorMap<V> {
         // which contains all(Integer.class) and all(int.class). If we only
         // match one, consider the equivalent to be matched as well.
         if (selector.getParent() instanceof PrimitiveAndWrapperSelectorImpl) {
-            final SelectorImpl equivalent = new SelectorImpl(
-                    selector.getSelectorTargetKind(),
-                    PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass()),
-                    selector.getFieldName(),
-                    selector.getScopes(),
-                    selector.getParent());
+            final SelectorImpl equivalent = SelectorImpl.builder(selector)
+                    .targetClass(PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass()))
+                    .build();
 
             unusedSelectors.remove(equivalent);
         }
@@ -265,8 +262,8 @@ final class SelectorMap<V> {
         Node node = targetNode;
 
         while (node != null) {
-            if (scope.getField() != null) {
-                if (scope.getField().equals(node.getField())) {
+            if (scope.isFieldScope()) {
+                if (scope.resolveField().equals(node.getField())) {
                     scope = (ScopeImpl) deq.pollLast();
                 }
             } else if (node.getRawType().equals(scope.getTargetClass())) {

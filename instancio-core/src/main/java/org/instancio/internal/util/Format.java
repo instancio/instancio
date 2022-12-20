@@ -36,9 +36,9 @@ public final class Format {
     public static String scopes(final List<Scope> scopes) {
         return scopes.stream()
                 .map(ScopeImpl.class::cast)
-                .map(s -> s.getField() == null
+                .map(s -> s.getFieldName() == null
                         ? String.format("scope(%s)", s.getTargetClass().getSimpleName())
-                        : String.format("scope(%s, \"%s\")", s.getTargetClass().getSimpleName(), s.getField().getName()))
+                        : String.format("scope(%s, \"%s\")", s.getTargetClass().getSimpleName(), s.getFieldName()))
                 .collect(joining(", "));
     }
 

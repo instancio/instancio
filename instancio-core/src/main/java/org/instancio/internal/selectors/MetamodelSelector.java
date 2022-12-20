@@ -17,15 +17,13 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Selector;
 
-import java.util.Collections;
-
 /**
  * Selector for use in generated metamodel classes only.
  */
 public final class MetamodelSelector extends SelectorImpl {
 
     private MetamodelSelector(final Class<?> targetClass, final String fieldName) {
-        super(SelectorTargetKind.FIELD, targetClass, fieldName, Collections.emptyList(), null, null);
+        super(targetClass, fieldName);
     }
 
     public static Selector of(final Class<?> targetClass, final String fieldName) {
@@ -41,7 +39,6 @@ public final class MetamodelSelector extends SelectorImpl {
      * @return a copy of this selector containing a new {@code stackTraceHolder}
      */
     public Selector copyWithNewStackTraceHolder() {
-        return new SelectorImpl(getSelectorTargetKind(),
-                getTargetClass(), getFieldName(), getScopes(), getParent(), new Throwable());
+        return SelectorImpl.builder(this).stackTraceHolder(new Throwable()).build();
     }
 }

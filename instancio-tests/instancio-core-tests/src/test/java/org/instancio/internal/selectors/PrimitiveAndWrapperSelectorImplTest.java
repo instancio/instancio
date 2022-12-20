@@ -20,6 +20,7 @@ import nl.jqno.equalsverifier.Warning;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.testsupport.asserts.SelectorAssert;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.scope;
 
 class PrimitiveAndWrapperSelectorImplTest {
@@ -73,5 +75,13 @@ class PrimitiveAndWrapperSelectorImplTest {
         assertThat(results).hasSize(2);
         SelectorAssert.assertSelector(results.get(0)).isClassSelectorWithNoScope().hasTargetClass(boolean.class);
         SelectorAssert.assertSelector(results.get(1)).isClassSelectorWithNoScope().hasTargetClass(Boolean.class);
+    }
+
+    @Test
+    void toScope() {
+        final Selector selector = Select.allInts();
+        assertThatThrownBy(selector::toScope)
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Method 'toScope()' is not supported for selector 'allInts()'");
     }
 }

@@ -44,12 +44,12 @@ public class ScopeAssert extends AbstractAssert<ScopeAssert, Scope> {
     }
 
     public ScopeAssert hasNullField() {
-        assertThat(getAs(ScopeImpl.class).getField()).isNull();
+        assertThat(getAs(ScopeImpl.class).getFieldName()).isNull();
         return this;
     }
 
     public ScopeAssert hasFieldName(final String expected) {
-        assertThat(getAs(ScopeImpl.class).getField().getName()).isEqualTo(expected);
+        assertThat(getAs(ScopeImpl.class).getFieldName()).isEqualTo(expected);
         return this;
     }
 }

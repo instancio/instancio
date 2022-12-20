@@ -16,6 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.GroupableSelector;
+import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
@@ -23,6 +24,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.MetamodelSelector;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
+import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.SelectorBuilder;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
@@ -61,6 +63,15 @@ final class ModelContextHelper {
         } else if (selector instanceof SelectorImpl) {
             return applyRootClass((SelectorImpl) selector, rootClass);
         } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
+            final PrimitiveAndWrapperSelectorImpl ps = (PrimitiveAndWrapperSelectorImpl) selector;
+            if (ps.isScoped()) {
+                final List<Scope> scopes = recreateWithRootClass(rootClass, ps.getPrimitive().getScopes());
+
+                return new PrimitiveAndWrapperSelectorImpl(
+                        SelectorImpl.builder(ps.getPrimitive()).scopes(scopes).build(),
+                        SelectorImpl.builder(ps.getWrapper()).scopes(scopes).build());
+            }
+
             return selector;
         } else if (selector instanceof PredicateSelectorImpl) {
             // No pre-processing of predicate selectors.
@@ -82,19 +93,29 @@ final class ModelContextHelper {
      */
     private static SelectorImpl applyRootClass(final SelectorImpl source, final Class<?> rootClass) {
         if (source.getTargetClass() == null) {
-            return recreateWithRootClass(rootClass, source);
+            return SelectorImpl.builder(source)
+                    .targetClass(rootClass)
+                    .scopes(recreateWithRootClass(rootClass, source.getScopes()))
+                    .build();
+        } else if (!source.getScopes().isEmpty()) {
+            return SelectorImpl.builder(source)
+                    .scopes(recreateWithRootClass(rootClass, source.getScopes()))
+                    .build();
         }
         return source;
     }
 
-    private static SelectorImpl recreateWithRootClass(final Class<?> rootClass, final SelectorImpl source) {
-        return new SelectorImpl(
-                source.getSelectorTargetKind(),
-                rootClass,
-                source.getFieldName(),
-                source.getScopes(),
-                source.getParent(),
-                source.getStackTraceHolder());
+    private static List<Scope> recreateWithRootClass(final Class<?> rootClass, final List<Scope> scopes) {
+        final List<Scope> results = new ArrayList<>(scopes.size());
+        for (Scope scope : scopes) {
+            ScopeImpl s = (ScopeImpl) scope;
+            if (s.getTargetClass() == null) {
+                results.add(new ScopeImpl(rootClass, s.getFieldName()));
+            } else {
+                results.add(scope);
+            }
+        }
+        return results;
     }
 
     private static List<TargetSelector> flattenSelectorGroup(final SelectorGroupImpl selectorGroup, final Class<?> rootClass) {
