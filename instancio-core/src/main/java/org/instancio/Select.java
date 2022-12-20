@@ -262,7 +262,7 @@ public final class Select {
      * @since 2.0.0
      */
     public static TargetSelector root() {
-        return SelectorImpl.root();
+        return SelectorImpl.getRootSelector();
     }
 
     /**

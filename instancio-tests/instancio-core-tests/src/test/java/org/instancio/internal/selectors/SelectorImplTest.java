@@ -38,7 +38,7 @@ class SelectorImplTest {
 
     @Test
     void root() {
-        final SelectorImpl root = SelectorImpl.root();
+        final SelectorImpl root = SelectorImpl.getRootSelector();
         assertThat(root.getTargetClass().getSimpleName()).isEqualTo("Root");
         assertThat(root.getScopes()).isEmpty();
         assertThat(root.getParent()).isNull();
