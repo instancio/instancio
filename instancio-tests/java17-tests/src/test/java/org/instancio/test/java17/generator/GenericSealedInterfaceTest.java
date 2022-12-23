@@ -30,10 +30,22 @@ class GenericSealedInterfaceTest {
     private static class Holder<S, T extends BaseSealedInterface<S>> {
         private S valueOne;
         private T valueTwo;
+
+        private void setValueOne(final S valueOne) {
+            this.valueOne = valueOne;
+        }
+
+        private void setValueTwo(final T valueTwo) {
+            this.valueTwo = valueTwo;
+        }
     }
 
     private static class Foo implements BaseNonSealedInterface<String> {
         private String fooValue;
+
+        private void setFooValue(final String fooValue) {
+            this.fooValue = fooValue;
+        }
     }
 
     @Test

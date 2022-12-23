@@ -15,7 +15,7 @@
  */
 package org.instancio.test.support.pojo.interfaces;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 public class SingleInterfaceImpl {
@@ -24,13 +24,13 @@ public class SingleInterfaceImpl {
     }
 
     @ToString
-    @Getter
+    @Data
     public static class WidgetImpl implements Widget {
         private String widgetName;
     }
 
     @ToString
-    @Getter
+    @Data
     public static class WidgetContainer {
         private Widget widget;
     }

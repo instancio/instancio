@@ -15,12 +15,12 @@
  */
 package org.instancio.test.support.pojo.generics.foobarbaz;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 
-@Getter
+@Data
 public class PairAFooBarB<A, B> {
 
     private Pair<A, Foo<Bar<B>>> pairAFooBarB;

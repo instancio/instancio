@@ -15,14 +15,14 @@
  */
 package org.instancio.test.support.pojo.basic;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Getter
+@Data
 public class SupportedAtomicTypes {
 
     private AtomicInteger atomicInteger;

@@ -15,28 +15,28 @@
  */
 package org.instancio.test.support.pojo.cyclic;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 public class IndirectCircularRef {
 
     private A startA;
 
-    @Getter
+    @Data
     @ToString
     public static class A {
         private B b;
     }
 
-    @Getter
+    @Data
     @ToString
     public static class B {
         private C c;
     }
 
-    @Getter
+    @Data
     @ToString
     public static class C {
         private A endA;

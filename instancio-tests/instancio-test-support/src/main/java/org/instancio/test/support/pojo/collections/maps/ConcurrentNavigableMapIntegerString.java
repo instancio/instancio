@@ -15,12 +15,12 @@
  */
 package org.instancio.test.support.pojo.collections.maps;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.util.concurrent.ConcurrentNavigableMap;
 
-@Getter
+@Data
 @ToString
 public class ConcurrentNavigableMapIntegerString {
 

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.support.pojo.misc;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.util.UUID;
@@ -28,18 +28,18 @@ import java.util.UUID;
 //       ID  B D ID
 //           |  \
 //           ID  ID
-@Getter
+@Data
 public class MultipleClassesWithId {
 
     private A a;
 
-    @Getter
+    @Data
     @ToString
     public static class ID {
         private UUID id;
     }
 
-    @Getter
+    @Data
     @ToString
     public static class A {
         private ID id;
@@ -47,13 +47,13 @@ public class MultipleClassesWithId {
         private C c;
     }
 
-    @Getter
+    @Data
     @ToString
     public static class B {
         private ID id;
     }
 
-    @Getter
+    @Data
     @ToString
     public static class C {
         private ID id;
@@ -61,7 +61,7 @@ public class MultipleClassesWithId {
         private D d;
     }
 
-    @Getter
+    @Data
     @ToString
     public static class D {
         private ID id;

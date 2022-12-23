@@ -15,13 +15,13 @@
  */
 package org.instancio.test.support.pojo.basic;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Objects;
 
-@Getter
+@Data
 public class SupportedNumericTypes {
     private byte primitiveByte;
     private short primitiveShort;

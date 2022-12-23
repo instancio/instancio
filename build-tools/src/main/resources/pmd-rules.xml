@@ -83,6 +83,14 @@
         <exclude name="BeanMembersShouldSerialize"/>
         <exclude name="MissingSerialVersionUID"/>
     </rule>
+    <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
+        <properties>
+            <property name="separator" value=","/>
+            <property name="maxDuplicateLiterals" value="8"/>
+            <property name="minimumLength" value="3"/>
+            <property name="skipAnnotations" value="false"/>
+        </properties>
+    </rule>
     <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
         <priority>5</priority>
     </rule>

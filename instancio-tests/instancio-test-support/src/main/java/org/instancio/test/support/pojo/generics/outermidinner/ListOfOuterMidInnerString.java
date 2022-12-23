@@ -29,6 +29,10 @@ public class ListOfOuterMidInnerString {
         return rootList;
     }
 
+    public void setRootList(final List<Outer<Mid<Inner<String>>>> rootList) {
+        this.rootList = rootList;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);

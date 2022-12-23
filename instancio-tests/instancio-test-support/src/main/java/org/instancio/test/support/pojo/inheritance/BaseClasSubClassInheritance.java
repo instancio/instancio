@@ -15,18 +15,18 @@
  */
 package org.instancio.test.support.pojo.inheritance;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
+@Data
 @Setter
 @ToString
 public class BaseClasSubClassInheritance {
 
     private SubClass subClass;
 
-    @Getter
+    @Data
     @Setter
     @ToString
     public static class BaseClass {
@@ -34,7 +34,7 @@ public class BaseClasSubClassInheritance {
         protected String protectedBaseClassField;
     }
 
-    @Getter
+    @Data
     @Setter
     @ToString
     public static class SubClass extends BaseClass {

@@ -15,19 +15,19 @@
  */
 package org.instancio.test.support.pojo.cyclic;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 public class BidirectionalOneToOne {
 
-    @Getter
+    @Data
     @ToString
     public static class Parent {
         private String parentName;
         private Child child;
     }
 
-    @Getter
+    @Data
     @ToString
     public static class Child {
         private String childName;

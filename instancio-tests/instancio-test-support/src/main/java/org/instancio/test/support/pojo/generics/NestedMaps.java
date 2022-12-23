@@ -15,13 +15,13 @@
  */
 package org.instancio.test.support.pojo.generics;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Map;
 
-@Getter
+@Data
 public class NestedMaps<OKEY, IKEY> {
 
     private Map<Long, Map<String, Boolean>> map1;

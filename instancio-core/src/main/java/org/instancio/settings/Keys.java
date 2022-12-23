@@ -16,6 +16,12 @@
 package org.instancio.settings;
 
 import org.instancio.Mode;
+import org.instancio.assignment.AssignmentType;
+import org.instancio.assignment.OnSetFieldError;
+import org.instancio.assignment.OnSetMethodError;
+import org.instancio.assignment.OnSetMethodNotFound;
+import org.instancio.assignment.SetterStyle;
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.settings.InternalKey;
@@ -39,6 +45,7 @@ import static org.instancio.internal.util.Constants.NUMERIC_MIN;
  *
  * @see SettingKey
  * @see Settings
+ * @since 1.1.10
  */
 public final class Keys {
 
@@ -50,156 +57,187 @@ public final class Keys {
      * Specifies whether a {@code null} can be generated for array elements;
      * default is {@code false}; property name {@code array.elements.nullable}.
      */
-    public static final SettingKey ARRAY_ELEMENTS_NULLABLE = register("array.elements.nullable", Boolean.class, false);
+    public static final SettingKey ARRAY_ELEMENTS_NULLABLE = register(
+            "array.elements.nullable", Boolean.class, false);
     /**
      * Specifies maximum length for arrays;
      * default is 6; property name {@code array.max.length}.
      */
-    public static final SettingKey ARRAY_MAX_LENGTH = register("array.max.length", Integer.class, MAX_SIZE, MAX_ADJUSTER);
+    public static final SettingKey ARRAY_MAX_LENGTH = register(
+            "array.max.length", Integer.class, MAX_SIZE, MAX_ADJUSTER);
     /**
      * Specifies minimum length for arrays;
      * default is 2; property name {@code array.min.length}.
      */
-    public static final SettingKey ARRAY_MIN_LENGTH = register("array.min.length", Integer.class, MIN_SIZE, MIN_ADJUSTER);
+    public static final SettingKey ARRAY_MIN_LENGTH = register(
+            "array.min.length", Integer.class, MIN_SIZE, MIN_ADJUSTER);
     /**
      * Specifies whether a null can be generated for arrays;
      * default is {@code false}; property name {@code array.nullable}.
      */
-    public static final SettingKey ARRAY_NULLABLE = register("array.nullable", Boolean.class, false);
+    public static final SettingKey ARRAY_NULLABLE = register(
+            "array.nullable", Boolean.class, false);
     /**
      * Specifies whether a {@code null} can be generated for Boolean type;
      * default is {@code false}; property name {@code boolean.nullable}.
      */
-    public static final SettingKey BOOLEAN_NULLABLE = register("boolean.nullable", Boolean.class, false);
+    public static final SettingKey BOOLEAN_NULLABLE = register(
+            "boolean.nullable", Boolean.class, false);
     /**
      * Specifies maximum value for bytes;
      * default is 127; property name {@code byte.max}.
      */
-    public static final SettingKey BYTE_MAX = register("byte.max", Byte.class, (byte) 127, MAX_ADJUSTER);
+    public static final SettingKey BYTE_MAX = register(
+            "byte.max", Byte.class, (byte) 127, MAX_ADJUSTER);
     /**
      * Specifies minimum value for bytes;
      * default is 1; property name {@code byte.min}.
      */
-    public static final SettingKey BYTE_MIN = register("byte.min", Byte.class, (byte) NUMERIC_MIN, MIN_ADJUSTER);
+    public static final SettingKey BYTE_MIN = register(
+            "byte.min", Byte.class, (byte) NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Byte type;
      * default is {@code false}; property name {@code byte.nullable}.
      */
-    public static final SettingKey BYTE_NULLABLE = register("byte.nullable", Boolean.class, false);
+    public static final SettingKey BYTE_NULLABLE = register(
+            "byte.nullable", Boolean.class, false);
     /**
      * Specifies whether a {@code null} can be generated for Character type;
      * default is {@code false}; property name {@code character.nullable}.
      */
-    public static final SettingKey CHARACTER_NULLABLE = register("character.nullable", Boolean.class, false);
+    public static final SettingKey CHARACTER_NULLABLE = register(
+            "character.nullable", Boolean.class, false);
     /**
      * Specifies whether a {@code null} can be generated for collection elements;
      * default is {@code false}; property name {@code collection.elements.nullable}.
      */
-    public static final SettingKey COLLECTION_ELEMENTS_NULLABLE = register("collection.elements.nullable", Boolean.class, false);
+    public static final SettingKey COLLECTION_ELEMENTS_NULLABLE = register(
+            "collection.elements.nullable", Boolean.class, false);
     /**
      * Specifies maximum size for collections;
      * default is 6; property name {@code collection.max.size}.
      */
-    public static final SettingKey COLLECTION_MAX_SIZE = register("collection.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER);
+    public static final SettingKey COLLECTION_MAX_SIZE = register(
+            "collection.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER);
     /**
      * Specifies minimum size for collections;
      * default is 2; property name {@code collection.min.size}.
      */
-    public static final SettingKey COLLECTION_MIN_SIZE = register("collection.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER);
+    public static final SettingKey COLLECTION_MIN_SIZE = register(
+            "collection.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for collections;
      * default is {@code false}; property name {@code collection.nullable}.
      */
-    public static final SettingKey COLLECTION_NULLABLE = register("collection.nullable", Boolean.class, false);
+    public static final SettingKey COLLECTION_NULLABLE = register(
+            "collection.nullable", Boolean.class, false);
     /**
      * Specifies maximum value for doubles;
      * default is 10000; property name {@code double.max}.
      */
-    public static final SettingKey DOUBLE_MAX = register("double.max", Double.class, (double) NUMERIC_MAX, MAX_ADJUSTER);
+    public static final SettingKey DOUBLE_MAX = register(
+            "double.max", Double.class, (double) NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for doubles;
      * default is 1; property name {@code double.min}.
      */
-    public static final SettingKey DOUBLE_MIN = register("double.min", Double.class, (double) NUMERIC_MIN, MIN_ADJUSTER);
+    public static final SettingKey DOUBLE_MIN = register(
+            "double.min", Double.class, (double) NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Double type;
      * default is {@code false}; property name {@code double.nullable}.
      */
-    public static final SettingKey DOUBLE_NULLABLE = register("double.nullable", Boolean.class, false);
+    public static final SettingKey DOUBLE_NULLABLE = register(
+            "double.nullable", Boolean.class, false);
     /**
      * Specifies maximum value for floats;
      * default is 10000; property name {@code float.max}.
      */
-    public static final SettingKey FLOAT_MAX = register("float.max", Float.class, (float) NUMERIC_MAX, MAX_ADJUSTER);
+    public static final SettingKey FLOAT_MAX = register(
+            "float.max", Float.class, (float) NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for floats;
      * default is 1; property name {@code float.min}.
      */
-    public static final SettingKey FLOAT_MIN = register("float.min", Float.class, (float) NUMERIC_MIN, MIN_ADJUSTER);
+    public static final SettingKey FLOAT_MIN = register(
+            "float.min", Float.class, (float) NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Float type;
      * default is {@code false}; property name {@code float.nullable}.
      */
-    public static final SettingKey FLOAT_NULLABLE = register("float.nullable", Boolean.class, false);
+    public static final SettingKey FLOAT_NULLABLE = register(
+            "float.nullable", Boolean.class, false);
     /**
      * Specifies maximum value for integers;
      * default is 10000; property name {@code integer.max}.
      */
-    public static final SettingKey INTEGER_MAX = register("integer.max", Integer.class, NUMERIC_MAX, MAX_ADJUSTER);
+    public static final SettingKey INTEGER_MAX = register(
+            "integer.max", Integer.class, NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for integers;
      * default is 1; property name {@code integer.min}.
      */
-    public static final SettingKey INTEGER_MIN = register("integer.min", Integer.class, NUMERIC_MIN, MIN_ADJUSTER);
+    public static final SettingKey INTEGER_MIN = register(
+            "integer.min", Integer.class, NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Integer type;
      * default is {@code false}; property name {@code integer.nullable}.
      */
-    public static final SettingKey INTEGER_NULLABLE = register("integer.nullable", Boolean.class, false);
+    public static final SettingKey INTEGER_NULLABLE = register(
+            "integer.nullable", Boolean.class, false);
     /**
      * Specifies maximum value for longs;
      * default is 10000; property name {@code long.max}.
      */
-    public static final SettingKey LONG_MAX = register("long.max", Long.class, (long) NUMERIC_MAX, MAX_ADJUSTER);
+    public static final SettingKey LONG_MAX = register(
+            "long.max", Long.class, (long) NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for longs;
      * default is 1; property name {@code long.min}.
      */
-    public static final SettingKey LONG_MIN = register("long.min", Long.class, (long) NUMERIC_MIN, MIN_ADJUSTER);
+    public static final SettingKey LONG_MIN = register(
+            "long.min", Long.class, (long) NUMERIC_MIN, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Long type;
      * default is {@code false}; property name {@code long.nullable}.
      */
-    public static final SettingKey LONG_NULLABLE = register("long.nullable", Boolean.class, false);
+    public static final SettingKey LONG_NULLABLE = register(
+            "long.nullable", Boolean.class, false);
     /**
      * Specifies whether a {@code null} can be generated for map keys;
      * default is {@code false}; property name {@code map.keys.nullable}.
      */
-    public static final SettingKey MAP_KEYS_NULLABLE = register("map.keys.nullable", Boolean.class, false);
+    public static final SettingKey MAP_KEYS_NULLABLE = register(
+            "map.keys.nullable", Boolean.class, false);
     /**
      * Specifies maximum size for maps;
      * default is 6; property name {@code map.max.size}.
      */
-    public static final SettingKey MAP_MAX_SIZE = register("map.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER);
+    public static final SettingKey MAP_MAX_SIZE = register(
+            "map.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER);
     /**
      * Specifies minimum size for maps;
      * default is 2; property name {@code map.min.size}.
      */
-    public static final SettingKey MAP_MIN_SIZE = register("map.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER);
+    public static final SettingKey MAP_MIN_SIZE = register(
+            "map.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for maps;
      * default is {@code false}; property name {@code map.nullable}.
      */
-    public static final SettingKey MAP_NULLABLE = register("map.nullable", Boolean.class, false);
+    public static final SettingKey MAP_NULLABLE = register(
+            "map.nullable", Boolean.class, false);
     /**
      * Specifies whether a {@code null} can be generated for map values;
      * default is {@code false}; property name {@code map.values.nullable}.
      */
-    public static final SettingKey MAP_VALUES_NULLABLE = register("map.values.nullable", Boolean.class, false);
+    public static final SettingKey MAP_VALUES_NULLABLE = register(
+            "map.values.nullable", Boolean.class, false);
     /**
      * Specifies the mode: strict (unused selectors will trigger an exception) or lenient;
-     * default is strict; property name {@code mode}.
+     * default is {@link Mode#STRICT}; property name {@code mode}.
      *
+     * @see Mode
      * @since 1.3.3
      */
     public static final SettingKey MODE = register("mode", Mode.class, Mode.STRICT);
@@ -209,6 +247,7 @@ public final class Keys {
      * default is {@link AfterGenerate#POPULATE_NULLS_AND_DEFAULT_PRIMITIVES};
      * property name {@code hint.after.generate}.
      *
+     * @see AfterGenerate
      * @since 2.0.0
      */
     public static final SettingKey AFTER_GENERATE_HINT = register(
@@ -222,6 +261,56 @@ public final class Keys {
     public static final SettingKey OVERWRITE_EXISTING_VALUES = register(
             "overwrite.existing.values", Boolean.class, true);
     /**
+     * Specifies how to assign values via reflection, using fields or methods;
+     * default is {@link AssignmentType#FIELD}; property name {@code assignment.type}.
+     *
+     * @see AssignmentType
+     * @since 2.1.0
+     */
+    @ExperimentalApi
+    public static final SettingKey ASSIGNMENT_TYPE = register(
+            "assignment.type", AssignmentType.class, AssignmentType.FIELD);
+    /**
+     * Specifies what should happen if an error occurs setting a field's value;
+     * default is {@link OnSetFieldError#IGNORE}; property name {@code on.set.field.error}.
+     *
+     * @see OnSetFieldError
+     * @since 2.1.0
+     */
+    @ExperimentalApi
+    public static final SettingKey ON_SET_FIELD_ERROR = register(
+            "on.set.field.error", OnSetFieldError.class, OnSetFieldError.IGNORE);
+    /**
+     * Specifies what should happen if an error occurs invoking a setter;
+     * default is {@link OnSetMethodError#ASSIGN_FIELD}; property name {@code on.set.method.error}.
+     *
+     * @see OnSetMethodError
+     * @since 2.1.0
+     */
+    @ExperimentalApi
+    public static final SettingKey ON_SET_METHOD_ERROR = register(
+            "on.set.method.error", OnSetMethodError.class, OnSetMethodError.ASSIGN_FIELD);
+    /**
+     * Specifies what should happen if a setter method for a field cannot be resolved;
+     * default is {@link OnSetMethodNotFound#ASSIGN_FIELD}; property name {@code on.set.method.not.found}.
+     *
+     * @see OnSetMethodNotFound
+     * @since 2.1.0
+     */
+    @ExperimentalApi
+    public static final SettingKey ON_SET_METHOD_NOT_FOUND = register(
+            "on.set.method.not.found", OnSetMethodNotFound.class, OnSetMethodNotFound.ASSIGN_FIELD);
+    /**
+     * Indicates the naming convention of setter methods to use;
+     * default is {@link SetterStyle#SET}; property name {@code setter.style}.
+     *
+     * @see SetterStyle
+     * @since 2.1.0
+     */
+    @ExperimentalApi
+    public static final SettingKey SETTER_STYLE = register(
+            "setter.style", SetterStyle.class, SetterStyle.SET);
+    /**
      * Specifies the seed value;
      * default is {@code null}; property name {@code seed}.
      *
@@ -232,37 +321,44 @@ public final class Keys {
      * Specifies maximum value for shorts;
      * default is 10000; property name {@code short.max}.
      */
-    public static final SettingKey SHORT_MAX = register("short.max", Short.class, (short) NUMERIC_MAX, MAX_ADJUSTER);
+    public static final SettingKey SHORT_MAX = register(
+            "short.max", Short.class, (short) NUMERIC_MAX, MAX_ADJUSTER);
     /**
      * Specifies minimum value for shorts;
      * default is 1; property name {@code short.min}.
      */
-    public static final SettingKey SHORT_MIN = register("short.min", Short.class, (short) 1, MIN_ADJUSTER);
+    public static final SettingKey SHORT_MIN = register(
+            "short.min", Short.class, (short) 1, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for Short type;
      * default is {@code false}; property name {@code short.nullable}.
      */
-    public static final SettingKey SHORT_NULLABLE = register("short.nullable", Boolean.class, false);
+    public static final SettingKey SHORT_NULLABLE = register(
+            "short.nullable", Boolean.class, false);
     /**
      * Specifies whether an empty string can be generated;
      * default is {@code false}; property name {@code string.allow.empty}.
      */
-    public static final SettingKey STRING_ALLOW_EMPTY = register("string.allow.empty", Boolean.class, false);
+    public static final SettingKey STRING_ALLOW_EMPTY = register(
+            "string.allow.empty", Boolean.class, false);
     /**
      * Specifies maximum length of strings;
      * default is 10; property name {@code string.max.length}.
      */
-    public static final SettingKey STRING_MAX_LENGTH = register("string.max.length", Integer.class, 10, MAX_ADJUSTER);
+    public static final SettingKey STRING_MAX_LENGTH = register(
+            "string.max.length", Integer.class, 10, MAX_ADJUSTER);
     /**
      * Specifies minimum length of strings;
      * default is 3; property name {@code string.min.length}.
      */
-    public static final SettingKey STRING_MIN_LENGTH = register("string.min.length", Integer.class, 3, MIN_ADJUSTER);
+    public static final SettingKey STRING_MIN_LENGTH = register(
+            "string.min.length", Integer.class, 3, MIN_ADJUSTER);
     /**
      * Specifies whether a {@code null} can be generated for String type;
      * default is {@code false}; property name {@code string.nullable}.
      */
-    public static final SettingKey STRING_NULLABLE = register("string.nullable", Boolean.class, false);
+    public static final SettingKey STRING_NULLABLE = register(
+            "string.nullable", Boolean.class, false);
 
     // Note: keys must be collected after all keys have been initialised
     private static final Map<String, SettingKey> SETTING_KEY_MAP = Collections.unmodifiableMap(settingKeyMap());
@@ -287,7 +383,6 @@ public final class Keys {
         ApiValidator.isTrue(settingKey != null, "Invalid instancio property key: '%s'", key);
         return settingKey;
     }
-
 
     private static SettingKey register(
             @NotNull final String propertyKey,
@@ -332,7 +427,6 @@ public final class Keys {
         }
         return map;
     }
-
 
     private Keys() {
         // non-instantiable

@@ -15,9 +15,9 @@
  */
 package org.instancio.test.support.pojo.cyclic;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class ListNode<T> {
 
     private T value;

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.support.pojo.basic;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.sql.Timestamp;
@@ -32,7 +32,7 @@ import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 
-@Getter
+@Data
 @ToString
 public class SupportedTemporalTypes {
 

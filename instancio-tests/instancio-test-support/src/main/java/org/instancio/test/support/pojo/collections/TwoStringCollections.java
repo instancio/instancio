@@ -15,12 +15,12 @@
  */
 package org.instancio.test.support.pojo.collections;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.util.Collection;
 
-@Getter
+@Data
 @ToString
 public class TwoStringCollections {
 

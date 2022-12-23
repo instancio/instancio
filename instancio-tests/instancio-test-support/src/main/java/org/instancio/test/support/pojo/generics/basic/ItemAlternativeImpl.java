@@ -15,12 +15,12 @@
  */
 package org.instancio.test.support.pojo.generics.basic;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 
-@Getter
+@Data
 public class ItemAlternativeImpl<K> implements ItemInterface<K> {
     private K value;
 

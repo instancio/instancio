@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.test.support.pojo.person.Gender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -60,5 +61,10 @@ class StringUtilsTest {
         assertThat(StringUtils.capitalise("a")).isEqualTo("A");
         assertThat(StringUtils.capitalise("aa")).isEqualTo("Aa");
         assertThat(StringUtils.capitalise(".")).isEqualTo(".");
+    }
+
+    @Test
+    void enumToString() {
+        assertThat(StringUtils.enumToString(Gender.OTHER)).isEqualTo("Gender.OTHER");
     }
 }

@@ -16,13 +16,13 @@
 package org.instancio.test.support.pojo.generics.basic;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item<K> implements ItemInterface<K> {

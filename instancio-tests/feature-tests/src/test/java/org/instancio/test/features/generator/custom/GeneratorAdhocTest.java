@@ -118,6 +118,14 @@ class GeneratorAdhocTest {
         class Container {
             StringHolderInterface holderOne;
             StringHolderInterface holderTwo;
+
+            void setHolderOne(final StringHolderInterface holderOne) {
+                this.holderOne = holderOne;
+            }
+
+            void setHolderTwo(final StringHolderInterface holderTwo) {
+                this.holderTwo = holderTwo;
+            }
         }
 
         final String expectedHolderOneValue = "one";

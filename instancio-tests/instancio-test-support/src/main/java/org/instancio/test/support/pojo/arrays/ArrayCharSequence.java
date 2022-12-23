@@ -15,10 +15,10 @@
  */
 package org.instancio.test.support.pojo.arrays;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 public class ArrayCharSequence {
 

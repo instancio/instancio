@@ -15,11 +15,11 @@
  */
 package org.instancio.test.support.pojo.generics.foobarbaz;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
+@Data
 @Setter
 @ToString
 public class FooBarBazContainer {

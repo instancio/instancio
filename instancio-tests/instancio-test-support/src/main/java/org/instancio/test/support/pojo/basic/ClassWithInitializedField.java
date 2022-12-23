@@ -16,7 +16,6 @@
 package org.instancio.test.support.pojo.basic;
 
 // Don't use lombok with initialised fields
-@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public class ClassWithInitializedField {
     public static final String DEFAULT_STRING_FIELD_VALUE = "some value";
     public static final int DEFAULT_INT_FIELD_VALUE = -123;
@@ -29,7 +28,15 @@ public class ClassWithInitializedField {
         return stringValue;
     }
 
+    public void setStringValue(final String stringValue) {
+        this.stringValue = stringValue;
+    }
+
     public int getIntValue() {
         return intValue;
+    }
+
+    public void setIntValue(final int intValue) {
+        this.intValue = intValue;
     }
 }

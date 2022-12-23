@@ -15,6 +15,7 @@
  */
 package org.instancio.test.support.pojo.cyclic;
 
+import lombok.Data;
 import lombok.Getter;
 
 public class HierarchyWithMultipleInterfaceImpls {
@@ -40,7 +41,7 @@ public class HierarchyWithMultipleInterfaceImpls {
         ID id;
     }
 
-    @Getter
+    @Data
     public static class ID {
         private String id;
         private Identifiable owner;

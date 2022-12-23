@@ -15,10 +15,10 @@
  */
 package org.instancio.test.support.pojo.basic;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 public class IntegerHolderWithPrivateDefaultConstructor {
 

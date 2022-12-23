@@ -15,11 +15,11 @@
  */
 package org.instancio.test.support.pojo.generics.container;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 
-@Getter
+@Data
 @ToString
 public class OneItemContainer<T> {
 

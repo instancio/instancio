@@ -15,7 +15,7 @@
  */
 package org.instancio.test.support.pojo.performance;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@Getter
+@Data
 @SuppressWarnings("unused")
 public class LargeClass {
 

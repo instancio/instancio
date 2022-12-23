@@ -15,9 +15,14 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.assignment.AssignmentType;
+import org.instancio.documentation.InternalApi;
+
+@InternalApi
 public final class SystemProperties {
 
     public static final String FAIL_ON_ERROR = "instancio.failOnError";
+    public static final String ASSIGNMENT_TYPE = "instancio.assignmentType";
 
     private SystemProperties() {
         // non-instantiable
@@ -29,5 +34,10 @@ public final class SystemProperties {
 
     private static boolean isEnabled(final String key) {
         return Boolean.TRUE.toString().equals(System.getProperty(key));
+    }
+
+    public static AssignmentType getAssignmentType() {
+        final String type = System.getProperty(ASSIGNMENT_TYPE);
+        return type == null ? null : AssignmentType.valueOf(type);
     }
 }

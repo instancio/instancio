@@ -15,12 +15,12 @@
  */
 package org.instancio.test.support.pojo.misc;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.util.Optional;
 
-@Getter
+@Data
 @ToString
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class OptionalString {

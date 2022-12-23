@@ -28,6 +28,7 @@ public final class Sonar {
     public static final String RAW_USE_OF_PARAMETERIZED_CLASS = "java:S3740";
     public static final String RETURN_EMPTY_COLLECTION = "java:S1168";
     public static final String ONE_METHOD_WHEN_TESTING_EXCEPTIONS = "java:S5778";
+    public static final String STRING_LITERALS_DUPLICATED = "java:S1192";
 
     private Sonar() {
         // non-instantiable

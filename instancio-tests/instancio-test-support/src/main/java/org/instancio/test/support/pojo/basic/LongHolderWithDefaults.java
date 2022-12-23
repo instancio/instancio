@@ -18,7 +18,6 @@ package org.instancio.test.support.pojo.basic;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@SuppressWarnings("FieldMayBeFinal")
 public class LongHolderWithDefaults {
     public static final int PRIMITIVE = -111;
     public static final long WRAPPER = -222L;
@@ -35,8 +34,16 @@ public class LongHolderWithDefaults {
         return primitive;
     }
 
+    public void setPrimitive(final long primitive) {
+        this.primitive = primitive;
+    }
+
     public Long getWrapper() {
         return wrapper;
+    }
+
+    public void setWrapper(final Long wrapper) {
+        this.wrapper = wrapper;
     }
 
     @Override

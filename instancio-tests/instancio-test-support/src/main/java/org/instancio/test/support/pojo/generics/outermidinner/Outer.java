@@ -21,12 +21,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("FieldMayBeFinal")
 public class Outer<T> {
     private List<T> outerList = new ArrayList<>();
 
     public List<T> getOuterList() {
         return outerList;
+    }
+
+    public void setOuterList(final List<T> outerList) {
+        this.outerList = outerList;
     }
 
     @Override

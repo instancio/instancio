@@ -99,7 +99,7 @@ class SelectWithSupplyTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContainingAll("Caused by: Can not set int field", "to java.lang.String");
+                .hasMessageContainingAll("Can not set int field", "to java.lang.String");
     }
 
     @Test
@@ -126,6 +126,6 @@ class SelectWithSupplyTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContainingAll("Caused by: Can not set int field", " to java.lang.String");
+                .hasMessageContainingAll("Can not set int field", " to java.lang.String");
     }
 }

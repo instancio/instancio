@@ -62,6 +62,30 @@ class CustomGeneratorWithDataStructuresTest {
         Map<String, Long> blankMap = new HashMap<>();
         Pair<String, Long>[] blankArray = new Pair[INITIAL_BLANK_ARRAY_SIZE];
 
+        public void setList(final List<String> list) {
+            this.list = list;
+        }
+
+        public void setMap(final Map<String, Long> map) {
+            this.map = map;
+        }
+
+        public void setArray(final Pair<String, Long>[] array) {
+            this.array = array;
+        }
+
+        public void setBlankList(final List<String> blankList) {
+            this.blankList = blankList;
+        }
+
+        public void setBlankMap(final Map<String, Long> blankMap) {
+            this.blankMap = blankMap;
+        }
+
+        public void setBlankArray(final Pair<String, Long>[] blankArray) {
+            this.blankArray = blankArray;
+        }
+
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

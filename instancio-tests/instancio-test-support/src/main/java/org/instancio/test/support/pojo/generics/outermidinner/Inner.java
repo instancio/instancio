@@ -21,12 +21,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("FieldMayBeFinal")
 public class Inner<T> {
     private List<T> innerList = new ArrayList<>();
 
     public List<T> getInnerList() {
         return innerList;
+    }
+
+    public void setInnerList(final List<T> innerList) {
+        this.innerList = innerList;
     }
 
     @Override

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.support.pojo.generics;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.test.support.pojo.generics.basic.Pair;
@@ -25,7 +25,7 @@ import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 
 import java.util.List;
 
-@Getter
+@Data
 public class MiscFields<A, B, C> {
 
     private A fieldA;

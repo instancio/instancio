@@ -15,11 +15,11 @@
  */
 package org.instancio.test.support.pojo.generics.basic;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 
-@Getter
+@Data
 @ToString
 public class ItemInterfaceHolder<X> {
 

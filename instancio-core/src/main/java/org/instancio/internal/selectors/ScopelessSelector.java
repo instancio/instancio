@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.selectors;
 
-import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,10 +40,6 @@ public final class ScopelessSelector implements TargetSelector {
 
     public Field getField() {
         return field;
-    }
-
-    public TargetSelector asSelector() {
-        return field == null ? Select.all(targetClass) : Select.field(field.getDeclaringClass(), field.getName());
     }
 
     @Override

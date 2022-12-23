@@ -73,31 +73,26 @@ class SettingsTest {
 
     @Test
     void merge() {
-        verifyMergeSuccessful(Settings.defaults());
-    }
+        final long originalLongMax = -1;
 
-    @Test
-    void mergeWithLockedSettings() {
-        verifyMergeSuccessful(Settings.defaults().lock());
-    }
-
-    private void verifyMergeSuccessful(final Settings defaults) {
-        final Long originalLongMax = defaults.get(Keys.LONG_MAX);
+        final Settings original = Settings.defaults()
+                .set(Keys.LONG_MAX, originalLongMax)
+                .lock();
 
         final Settings overrides = Settings.create()
                 .set(Keys.BYTE_MIN, (byte) 99)
                 .set(Keys.ARRAY_NULLABLE, true)
                 .lock();
 
-        final Settings result = defaults.merge(overrides);
+        final Settings merged = original.merge(overrides);
 
-        assertThat((Byte) result.get(Keys.BYTE_MIN)).isEqualTo((byte) 99);
-        assertThat((Boolean) result.get(Keys.ARRAY_NULLABLE)).isTrue();
-        assertThat((Long) result.get(Keys.LONG_MAX))
+        assertThat((Byte) merged.get(Keys.BYTE_MIN)).isEqualTo((byte) 99);
+        assertThat((Boolean) merged.get(Keys.ARRAY_NULLABLE)).isTrue();
+        assertThat((Long) merged.get(Keys.LONG_MAX))
                 .as("Properties that were not overridden should retain their value")
                 .isEqualTo(originalLongMax);
 
-        assertThat(result).as("Expecting a new instance of settings to be created").isNotSameAs(defaults);
+        assertThat(merged).as("Expecting a new instance of settings to be created").isNotSameAs(original);
     }
 
     @Test

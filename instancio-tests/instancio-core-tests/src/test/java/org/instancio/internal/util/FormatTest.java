@@ -16,6 +16,7 @@
 package org.instancio.internal.util;
 
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.person.Person;
 import org.instancio.testsupport.fixtures.Types;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 class FormatTest {
 
     private static class Nested1 {
-        private static class Nested2 {}
+        @SuppressWarnings("all")
+        private static class Nested2 {
+            private String nested;
+
+            public void setNested(final String nested) {
+                this.nested = nested;
+            }
+        }
+    }
+
+    @Test
+    void field() {
+        assertThat(Format.field(ReflectionUtils.getField(Person.class, "name")))
+                .isEqualTo("String Person.name");
+
+        assertThat(Format.field(ReflectionUtils.getField(Nested1.Nested2.class, "nested")))
+                .isEqualTo("String FormatTest$Nested1$Nested2.nested");
+    }
+
+    @Test
+    void method() throws NoSuchMethodException {
+        assertThat(Format.method(Person.class.getMethod("setName", String.class)))
+                .isEqualTo("Person.setName(String)");
+
+        assertThat(Format.method(Nested1.Nested2.class.getMethod("setNested", String.class)))
+                .isEqualTo("FormatTest$Nested1$Nested2.setNested(String)");
     }
 
     @Test

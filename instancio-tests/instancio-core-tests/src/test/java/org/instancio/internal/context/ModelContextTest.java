@@ -229,6 +229,33 @@ class ModelContextTest {
     }
 
     @Test
+    void withSettings() {
+        int min = -100;
+        int max = -50;
+
+        Settings settings1 = Settings.create()
+                .set(Keys.LONG_MIN, (long) min)
+                .set(Keys.LONG_MAX, (long) max);
+
+        Settings settings2 = Settings.create()
+                .set(Keys.INTEGER_MIN, min)
+                .set(Keys.INTEGER_MAX, max);
+
+        final ModelContext<?> ctx = ModelContext.builder(Person.class)
+                .withSettings(settings1)
+                .withSettings(Settings.create())
+                .withSettings(settings2)
+                .withSettings(Settings.create())
+                .build();
+
+        final Settings result = ctx.getSettings();
+        assertThat((long) result.get(Keys.LONG_MIN)).isEqualTo(min);
+        assertThat((long) result.get(Keys.LONG_MAX)).isEqualTo(max);
+        assertThat((int) result.get(Keys.INTEGER_MIN)).isEqualTo(min);
+        assertThat((int) result.get(Keys.INTEGER_MAX)).isEqualTo(max);
+    }
+
+    @Test
     void toBuilder() {
         final Generator<?> allStringsGenerator = random -> "foo";
         final Generator<?> addressCityGenerator = random -> "bar";
