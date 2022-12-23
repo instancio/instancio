@@ -61,9 +61,8 @@ Person person = Instancio.of(Person.class)
 
 ## Documentation
 
-- The official [user guide](https://www.instancio.org/user-guide) 
+- [User guide](https://www.instancio.org/user-guide)
 - [Sample projects](https://github.com/instancio/instancio-samples)
-- [An introductory article](https://medium.com/@armandino/instancio-random-test-data-generator-for-java-a7b283dd258d) on Medium.
 
 # Latest Major Release
 
