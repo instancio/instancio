@@ -984,9 +984,40 @@ Person person = Instancio.of(Person.class)
 assertThat(person.getAddress().getCountry()).isEqualTo("USA"); // not overwritten!
 ```
 
+## Assignment Settings
+
+Assignment settings control whether values are assigned directly to fields (default behaviour)
+or via setter methods. There are a few {{Settings}} keys with enum values that control the behaviour.
 
 
+| `Keys` constant           | Enum class            |
+|---------------------------|-----------------------|
+| `ASSIGNMENT_TYPE`         | `AssignmentType`      |
+| `SETTER_STYLE`            | `SetterStyle`         |
+| `ON_SET_FIELD_ERROR`      | `OnSetFieldError`     |
+| `ON_SET_METHOD_ERROR`     | `OnSetMethodError`    |
+| `ON_SET_METHOD_NOT_FOUND` | `OnSetMethodNotFound` |
 
+To enable assignment via methods, `Keys.ASSIGNMENT_TYPE` can be set to `AssignmentType.METHOD`.
+When enabled, Instancio will attempt to resolve setter names from field names using `SETTER_STYLE` setting.
+This key's value is the `SetterStyle` enum that supports three naming conventions:
+
+- `SET` - standard setter prefix, for example `setFoo("value")`
+- `WITH` - for example `withFoo("value")`
+- `PROPERTY` - no prefix, for example `foo("value")`
+
+The remaining `ON_SET_*` keys are used to control error handling behaviour:
+
+| Key                       | Possible causes                                                                               |
+|---------------------------|-----------------------------------------------------------------------------------------------|
+| `ON_SET_FIELD_ERROR`      | type mismatch, unmodifiable field, access exception                                           |
+| `ON_SET_METHOD_ERROR`     | type mismatch, exception thrown by setter (e.g. due to validation)                            |
+| `ON_SET_METHOD_NOT_FOUND` | method does not exist, or name does not conform to naming convention defined by `SetterStyle` |
+
+All of the above can be set to ignore errors or fail fast by raising an exception.
+In addition, both `ON_SET_METHOD_*` settings can be configured to fall back to field assignment in case of an error.
+All the settings can be configured globally using properties file or per object at runtime using {{Settings}}.
+See [Configuration](#configuration) for details.
 
 ## Seed
 
@@ -1262,7 +1293,7 @@ Using these property keys, configuration values can also be overridden using a p
 Default settings can be overridden using `instancio.properties`. Instancio will automatically load this file from the root of the classpath. The following listing shows all the property keys that can be configured.
 
 
-``` java linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 34 42"
+``` java linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 39 47"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -1296,6 +1327,11 @@ map.nullable=false
 mode=STRICT
 hint.after.generate=POPULATE_NULLS_AND_DEFAULT_PRIMITIVES
 overwrite.existing.values=true
+assignment.type=FIELD
+on.set.field.error=IGNORE
+on.set.method.error=ASSIGN_FIELD
+on.set.method.not.found=ASSIGN_FIELD
+setter.style=SET
 seed=12345
 short.max=10000
 short.min=1
@@ -1314,8 +1350,8 @@ subtype.java.util.SortedMap=java.util.TreeMap
     <lnum>1,10,26-27</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
     <lnum>31</lnum> Specifies the mode, either `STRICT` or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
-    <lnum>34</lnum> Specifies a global seed value.<br/>
-    <lnum>42</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>35</lnum> Specifies a global seed value.<br/>
+    <lnum>47</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 
