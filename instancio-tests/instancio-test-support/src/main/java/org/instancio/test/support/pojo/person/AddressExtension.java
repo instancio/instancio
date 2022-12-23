@@ -15,9 +15,9 @@
  */
 package org.instancio.test.support.pojo.person;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class AddressExtension extends Address {
     private String additionalInfo;
 }

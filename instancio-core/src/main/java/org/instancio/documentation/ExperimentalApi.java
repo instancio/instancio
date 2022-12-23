@@ -22,6 +22,7 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PACKAGE;
 import static java.lang.annotation.ElementType.TYPE;
@@ -35,5 +36,5 @@ import static java.lang.annotation.ElementType.TYPE;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ANNOTATION_TYPE, CONSTRUCTOR, METHOD, PACKAGE, TYPE})
+@Target({ANNOTATION_TYPE, CONSTRUCTOR, FIELD, METHOD, PACKAGE, TYPE})
 public @interface ExperimentalApi {}

@@ -278,8 +278,14 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withSettings(final Settings settings) {
-            this.settings = settings;
+        public Builder<T> withSettings(final Settings arg) {
+            ApiValidator.notNull(arg, "Null Settings provided to withSettings() method");
+
+            if (settings == null) {
+                settings = Settings.from(arg);
+            } else {
+                settings = settings.merge(arg);
+            }
             return this;
         }
 

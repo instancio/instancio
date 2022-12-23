@@ -16,6 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioOfClassApi;
 import org.instancio.Random;
 import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
@@ -71,8 +72,11 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
         final Map<Class<?>, Queue<Object>> resultsByType = new LinkedHashMap<>();
 
         counts.forEach((type, count) -> {
-            final Queue<Object> results = Instancio.of(type)
-                    .withSettings(settings)
+            final InstancioOfClassApi<?> api = Instancio.of(type);
+            if (settings != null) {
+                api.withSettings(settings);
+            }
+            final Queue<Object> results = api
                     .withSeed(random.getSeed())
                     .stream()
                     .limit(count)

@@ -17,7 +17,6 @@ package org.instancio.test.support.pojo.generics.inheritance;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 import lombok.Value;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -36,7 +35,6 @@ public class GenericTypesWithInheritance {
     }
 
     @Data
-    @Getter
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = false)
     public static class PhoneHolder<T extends Phone> extends EntityWithId<Long> {
@@ -44,7 +42,6 @@ public class GenericTypesWithInheritance {
     }
 
     @Data
-    @Getter
     public static class EntityWithId<T extends Serializable> {
         T id;
     }

@@ -57,15 +57,15 @@ class AfterGenerateTest {
     private static final String ONE = "one";
     private static final String TWO = "two";
     private static final String THREE = "three";
-    private static final int INT_ONE = 1;
-    private static final int INT_TWO = 2;
-    private static final int INT_THREE = 3;
+    private static final int INT_ONE = -1;
+    private static final int INT_TWO = -2;
+    private static final int INT_THREE = -3;
 
     // Overrides
     private static final String OVERRIDE_ONE = "override-one";
     private static final String OVERRIDE_TWO_VIA_CALLBACK = "override-two";
-    private static final int OVERRIDE_INT_ONE = -1;
-    private static final int OVERRIDE_INT_TWO_VIA_CALLBACK = -2;
+    private static final int OVERRIDE_INT_ONE = -111;
+    private static final int OVERRIDE_INT_TWO_VIA_CALLBACK = -222;
 
     // Half of the tests verify with overwrites enabled, the other half with overwrites disabled
     private static final Settings DISABLE_OVERWRITES = Settings.create()
@@ -254,6 +254,7 @@ class AfterGenerateTest {
         void populateAll() {
             final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_ALL);
 
+            System.out.println(result);
             assertThat(result.getOne()).isEqualTo(OVERRIDE_ONE);
             assertThat(result.getTwo()).isEqualTo(OVERRIDE_TWO_VIA_CALLBACK);
             assertThat(result.getThree()).isNotEqualTo(THREE);

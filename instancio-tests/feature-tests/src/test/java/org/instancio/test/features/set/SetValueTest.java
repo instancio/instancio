@@ -16,6 +16,7 @@
 package org.instancio.test.features.set;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
@@ -44,12 +45,27 @@ class SetValueTest {
 
     @Test
     void typeMismatch() {
-        final String expectedMessage = String.format("Could not set value to the field: "
-                + "private java.lang.String org.instancio.test.support.pojo.person.Person.name."
-                + "%nCaused by: Can not set java.lang.String field org.instancio.test.support.pojo.person.Person.name "
-                + "to java.lang.Integer");
+        final int badValue = 123;
+        final String expectedMessage = String.format("%n" +
+                "Throwing exception because:%n" +
+                " -> Keys.ON_SET_FIELD_ERROR = OnSetFieldError.FAIL%n" +
+                "%n" +
+                "Error assigning value to field:%n" +
+                " -> Field: String Person.name%n" +
+                " -> Argument type:  Integer%n" +
+                " -> Argument value: " + badValue + "%n" +
+                "%n" +
+                "Root cause: %n" +
+                " -> java.lang.IllegalArgumentException: Can not set java.lang.String field org.instancio.test.support.pojo.person.Person.name to java.lang.Integer%n" +
+                "%n" +
+                "To resolve the error, consider one of the following:%n" +
+                " -> Update Keys.ON_SET_FIELD_ERROR setting to%n" +
+                "    -> OnSetFieldError.IGNORE to leave value uninitialised%n");
 
-        assertThatThrownBy(() -> Instancio.of(Person.class).set(field("name"), 123).create())
+        final InstancioApi<Person> api = Instancio.of(Person.class)
+                .set(field("name"), badValue);
+
+        assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessage(expectedMessage);
     }

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.support.pojo.generics.container;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -23,7 +23,7 @@ import org.instancio.test.support.pojo.generics.basic.Item;
 
 import java.util.List;
 
-@Getter
+@Data
 @Setter
 public class ItemListContainer<X, Y> {
     private List<Item<X>> itemListX;

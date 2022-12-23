@@ -15,11 +15,11 @@
  */
 package org.instancio.test.support.pojo.basic;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 @EqualsAndHashCode
 public class IntegerHolder {

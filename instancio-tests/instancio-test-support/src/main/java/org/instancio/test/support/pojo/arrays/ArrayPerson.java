@@ -15,11 +15,11 @@
  */
 package org.instancio.test.support.pojo.arrays;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 import org.instancio.test.support.pojo.person.Person;
 
-@Getter
+@Data
 @ToString
 public class ArrayPerson {
 

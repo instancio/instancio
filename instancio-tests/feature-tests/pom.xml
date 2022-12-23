@@ -18,16 +18,40 @@
                 <version>2.22.2</version>
                 <executions>
                     <execution>
+                        <id>field-assignment</id>
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <instancio.assignmentType>FIELD</instancio.assignmentType>
+                            </systemPropertyVariables>
+                            <summaryFile>target/failsafe-reports/failsafe-summary-assignment-field.xml</summaryFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>method-assignment</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <instancio.assignmentType>METHOD</instancio.assignmentType>
+                            </systemPropertyVariables>
+                            <summaryFile>target/failsafe-reports/failsafe-summary-assignment-method.xml</summaryFile>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>verify</id>
-                        <phase>verify</phase>
                         <goals>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+                            <summaryFiles>
+                                <summaryFile>target/failsafe-reports/failsafe-summary-assignment-field.xml</summaryFile>
+                                <summaryFile>target/failsafe-reports/failsafe-summary-assignment-method.xml</summaryFile>
+                            </summaryFiles>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>

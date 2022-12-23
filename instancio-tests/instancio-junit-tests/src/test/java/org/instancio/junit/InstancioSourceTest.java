@@ -44,9 +44,17 @@ class InstancioSourceTest {
 
     static class First {
         String foo;
+
+        void setFoo(final String foo) {
+            this.foo = foo;
+        }
     }
 
     static class Second {
         String bar;
+
+        void setBar(final String bar) {
+            this.bar = bar;
+        }
     }
 }

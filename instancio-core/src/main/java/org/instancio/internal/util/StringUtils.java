@@ -61,4 +61,7 @@ public final class StringUtils {
         return s.length() == 1 ? first : first + s.substring(1);
     }
 
+    public static <E extends Enum<E>> String enumToString(E val) {
+        return val.getClass().getSimpleName() + "." + val.name();
+    }
 }

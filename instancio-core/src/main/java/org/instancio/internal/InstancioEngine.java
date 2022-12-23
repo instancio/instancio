@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.assignment.AssignmentType;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
@@ -22,6 +23,9 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
+import org.instancio.internal.assigners.Assigner;
+import org.instancio.internal.assigners.FieldAssigner;
+import org.instancio.internal.assigners.MethodAssigner;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.ContainerAddFunction;
 import org.instancio.internal.generator.GeneratorResult;
@@ -33,7 +37,9 @@ import org.instancio.internal.reflection.RecordHelperImpl;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +74,7 @@ class InstancioEngine {
     private final AfterGenerate defaultAfterGenerate;
     private final boolean overwriteExistingValues;
     private final RecordHelper recordHelper = new RecordHelperImpl();
+    private final Assigner assigner;
 
     InstancioEngine(InternalModel<?> model) {
         context = model.getModelContext();
@@ -77,6 +84,22 @@ class InstancioEngine {
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
         listeners = Arrays.asList(callbackHandler, new GeneratedNullValueListener(context));
+        assigner = getAssigner();
+    }
+
+    private Assigner getAssigner() {
+        final Settings settings = context.getSettings();
+        final AssignmentType defaultAssignment = settings.get(Keys.ASSIGNMENT_TYPE);
+
+        // The system property is used for running the feature test suite using both assignment types
+        final AssignmentType assignment = defaultIfNull(SystemProperties.getAssignmentType(), defaultAssignment);
+
+        if (assignment == AssignmentType.FIELD) {
+            return new FieldAssigner(settings);
+        } else if (assignment == AssignmentType.METHOD) {
+            return new MethodAssigner(settings);
+        }
+        throw new InstancioException("Invalid assignment type: " + assignment); // unreachable
     }
 
     @SuppressWarnings("unchecked")
@@ -240,7 +263,6 @@ class InstancioEngine {
     }
 
     @SuppressWarnings({
-            "PMD.CyclomaticComplexity",
             "PMD.NPathComplexity",
             "PMD.ForLoopVariableCount",
             "PMD.AvoidReassigningLoopVariables"})
@@ -414,11 +436,7 @@ class InstancioEngine {
                 final Field field = child.getField();
 
                 if (overwriteExistingValues || !ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(field, value)) {
-                    if (arg != null) {
-                        conditionalFailOnError(() -> ReflectionUtils.setField(value, field, arg));
-                    } else if (!field.getType().isPrimitive()) {
-                        conditionalFailOnError(() -> ReflectionUtils.setField(value, field, null));
-                    }
+                    assigner.assign(child, value, arg);
                 }
             }
         }

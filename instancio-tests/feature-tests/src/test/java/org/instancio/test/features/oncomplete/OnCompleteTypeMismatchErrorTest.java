@@ -33,7 +33,8 @@ class OnCompleteTypeMismatchErrorTest {
     @Test
     void mismatchedClassSelector() {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
-                .onComplete(allStrings(), (Integer wrongType) -> {});
+                .onComplete(allStrings(), (Integer wrongType) -> {
+                });
 
         assertError(api);
     }
@@ -41,7 +42,8 @@ class OnCompleteTypeMismatchErrorTest {
     @Test
     void mismatchedFieldSelector() {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
-                .onComplete(field("value"), (Integer wrongType) -> {});
+                .onComplete(field("value"), (Integer wrongType) -> {
+                });
 
         assertError(api);
     }

@@ -15,10 +15,10 @@
  */
 package org.instancio.test.support.pojo.misc;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 public class UninstantiableArrayElementType {
 

@@ -15,12 +15,12 @@
  */
 package org.instancio.test.support.pojo.generics.container;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.util.List;
 
-@Getter
+@Data
 @ToString
 public class GenericContainer<T> {
     private T value;

@@ -15,13 +15,13 @@
  */
 package org.instancio.test.support.pojo.collections.maps;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 import org.instancio.test.support.pojo.person.Person;
 
 import java.util.Map;
 
-@Getter
+@Data
 @ToString
 public class MapStringPerson {
 

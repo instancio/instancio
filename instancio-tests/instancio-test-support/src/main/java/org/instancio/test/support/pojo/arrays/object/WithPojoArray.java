@@ -15,16 +15,16 @@
  */
 package org.instancio.test.support.pojo.arrays.object;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 public class WithPojoArray {
     private PojoItem[] values;
 
-    @Getter
+    @Data
     @ToString
     @EqualsAndHashCode
     public static class PojoItem {

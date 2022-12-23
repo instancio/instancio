@@ -15,12 +15,12 @@
  */
 package org.instancio.test.support.pojo.collections.sets;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.util.TreeSet;
 
-@Getter
+@Data
 @ToString
 public class TreeSetLong {
 

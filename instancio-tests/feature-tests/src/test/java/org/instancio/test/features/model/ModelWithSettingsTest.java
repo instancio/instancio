@@ -45,8 +45,11 @@ class ModelWithSettingsTest {
 
     @Test
     void verifyModelSettingsOverride() {
+        final long expectedLong = -123L;
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
                 .withSettings(Settings.create()
+                        .set(Keys.LONG_MIN, expectedLong)
+                        .set(Keys.LONG_MAX, expectedLong)
                         .set(Keys.INTEGER_MIN, INT_MIN)
                         .set(Keys.INTEGER_MAX, INT_MAX))
                 .toModel();
@@ -59,6 +62,8 @@ class ModelWithSettingsTest {
                         .set(Keys.INTEGER_MAX, newIntMax))
                 .create();
 
+        assertThat(result.getLongWrapper()).isEqualTo(expectedLong);
+        assertThat(result.getPrimitiveLong()).isEqualTo(expectedLong);
         assertThat(result.getPrimitiveInt()).isBetween(newIntMin, newIntMax);
     }
 }

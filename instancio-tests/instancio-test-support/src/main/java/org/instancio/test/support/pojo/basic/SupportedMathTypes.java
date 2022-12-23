@@ -15,14 +15,14 @@
  */
 package org.instancio.test.support.pojo.basic;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-@Getter
+@Data
 public class SupportedMathTypes {
 
     private BigInteger bigInteger;

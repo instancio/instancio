@@ -76,8 +76,12 @@ class StrictModeTest {
     @Nested
     class UnusedSelectorsPrimitiveAndWrappersTest {
         class IntHolder {
-            @SuppressWarnings("unused")
+            @SuppressWarnings("FieldCanBeLocal")
             private int value;
+
+            public void setValue(final int value) {
+                this.value = value;
+            }
         }
 
         @Test

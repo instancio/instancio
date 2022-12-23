@@ -15,25 +15,25 @@
  */
 package org.instancio.test.support.pojo.nested;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class OuterClass {
     private InnerClass innerClass;
     private InnerStaticClass innerStaticClass;
     private InnerStaticClass.InnermostStaticClass innermostStaticClass;
 
-    @Getter
+    @Data
     public static class InnerStaticClass {
         private String value;
 
-        @Getter
+        @Data
         public static class InnermostStaticClass {
             private String value;
         }
     }
 
-    @Getter
+    @Data
     @SuppressWarnings("InnerClassMayBeStatic")
     public class InnerClass { // intentionally not static
         private String value;

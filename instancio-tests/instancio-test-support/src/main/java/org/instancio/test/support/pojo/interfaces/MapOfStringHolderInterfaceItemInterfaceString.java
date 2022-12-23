@@ -15,12 +15,12 @@
  */
 package org.instancio.test.support.pojo.interfaces;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.util.Map;
 
-@Getter
+@Data
 @ToString
 public class MapOfStringHolderInterfaceItemInterfaceString {
 

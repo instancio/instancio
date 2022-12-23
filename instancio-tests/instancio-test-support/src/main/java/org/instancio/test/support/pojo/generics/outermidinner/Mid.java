@@ -21,12 +21,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("FieldMayBeFinal")
 public class Mid<T> {
     private List<T> midList = new ArrayList<>();
 
     public List<T> getMidList() {
         return midList;
+    }
+
+    public void setMidList(final List<T> midList) {
+        this.midList = midList;
     }
 
     @Override

@@ -57,23 +57,6 @@ public final class ReflectionUtils {
         }
     }
 
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    public static void setField(@Nullable final Object target, final Field field, @Nullable final Object value) {
-        if (target == null) {
-            return;
-        }
-        try {
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (IllegalArgumentException ex) {
-            throw new InstancioApiException(String.format("Could not set value to the field: %s.%nCaused by: %s",
-                    field, ex.getMessage()), ex);
-        } catch (Exception ex) {
-            throw new InstancioException(String.format("Could not set value to the field: %s.%nCaused by: %s",
-                    field, ex.getMessage()), ex);
-        }
-    }
-
     public static boolean isValidField(final Class<?> klass, final String fieldName) {
         try {
             klass.getDeclaredField(fieldName);

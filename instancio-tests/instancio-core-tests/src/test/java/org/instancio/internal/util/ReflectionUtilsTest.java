@@ -135,7 +135,7 @@ class ReflectionUtilsTest {
     @Retention(RetentionPolicy.RUNTIME)
     private @interface AnnotationY {}
 
-    @SuppressWarnings({"unused", "NotNullFieldNotInitialized", "NullableProblems"})
+    @SuppressWarnings("all")
     private static class WithAnnotatedField {
         @AnnotationX
         private String foo;

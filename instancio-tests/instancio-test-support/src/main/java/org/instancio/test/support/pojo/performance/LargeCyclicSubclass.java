@@ -15,11 +15,11 @@
  */
 package org.instancio.test.support.pojo.performance;
 
-import lombok.Getter;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Getter
+@Data
 @SuppressWarnings("unused")
 public class LargeCyclicSubclass extends LargeClass {
 

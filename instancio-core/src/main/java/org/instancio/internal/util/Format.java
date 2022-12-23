@@ -18,6 +18,8 @@ package org.instancio.internal.util;
 import org.instancio.Scope;
 import org.instancio.internal.selectors.ScopeImpl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
@@ -28,6 +30,20 @@ import static java.util.stream.Collectors.joining;
 
 public final class Format {
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
+
+    public static String field(final Field field) {
+        return String.format("%s %s.%s",
+                withoutPackage(field.getType()),
+                withoutPackage(field.getDeclaringClass()),
+                field.getName());
+    }
+
+    public static String method(final Method method) {
+        return String.format("%s.%s(%s)",
+                withoutPackage(method.getDeclaringClass()),
+                method.getName(),
+                withoutPackage(method.getParameterTypes()[0]));
+    }
 
     public static String withoutPackage(final Type type) {
         return PACKAGE_PATTERN.matcher(type.getTypeName()).replaceAll("");

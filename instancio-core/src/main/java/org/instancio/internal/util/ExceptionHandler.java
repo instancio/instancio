@@ -29,6 +29,9 @@ import static org.instancio.internal.util.SystemProperties.isFailOnError;
 public final class ExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
 
+    private static final String ERROR_MSG = String.format(
+            "Suppressed error because system property '%s' is disabled", SystemProperties.FAIL_ON_ERROR);
+
     private ExceptionHandler() {
         // non-instantiable
     }
@@ -72,7 +75,10 @@ public final class ExceptionHandler {
     }
 
     private static void logSuppressed(final Throwable t) {
-        LOG.debug("Suppressed error because '{}' system property is disabled",
-                SystemProperties.FAIL_ON_ERROR, t);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(ERROR_MSG, t);
+        } else {
+            LOG.debug("{}: {}", ERROR_MSG, t.getMessage());
+        }
     }
 }

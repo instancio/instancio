@@ -16,14 +16,14 @@
 package org.instancio.test.support.pojo.person;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Getter
+@Data
 @Setter
 @SuperBuilder
 @AllArgsConstructor
