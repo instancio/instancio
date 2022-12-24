@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -102,22 +103,7 @@ public final class ReflectionUtils {
     }
 
     public static boolean neitherNullNorPrimitiveWithDefaultValue(final Class<?> type, @Nullable final Object value) {
-        if (value == null) {
-            return false;
-        }
-
-        if (type.isPrimitive()) {
-            if (value instanceof Number) {
-                return Double.compare(((Number) value).doubleValue(), 0.0) != 0;
-            }
-            if (value instanceof Boolean) {
-                return (Boolean) value;
-            }
-            if (value instanceof Character) {
-                return (Character) value != 0;
-            }
-        }
-        return true;
+        return !Objects.equals(ObjectUtils.defaultValue(type), value);
     }
 
     public static Class<?> getClass(final String name) {

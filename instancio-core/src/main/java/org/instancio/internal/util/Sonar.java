@@ -20,6 +20,7 @@ public final class Sonar {
     public static final String ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED = "java:S3011";
     public static final String ADD_ASSERTION = "java:S2699";
     public static final String CATCH_EXCEPTION_INSTEAD_OF_THROWABLE = "java:S1181";
+    public static final String COGNITIVE_COMPLEXITY_OF_METHOD = "java:S3776";
     public static final String DISABLED_TEST = "java:S1607";
     public static final String GENERIC_WILDCARD_IN_RETURN = "java:S1452";
     public static final String METHODS_RETURNS_SHOULD_NOT_BE_INVARIANT = "java:S3516";

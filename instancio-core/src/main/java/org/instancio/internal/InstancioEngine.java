@@ -36,6 +36,7 @@ import org.instancio.internal.reflection.RecordHelper;
 import org.instancio.internal.reflection.RecordHelperImpl;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
@@ -398,7 +399,14 @@ class InstancioEngine {
             final Optional<GeneratorResult> optResult = createObject(children.get(i));
 
             if (optResult.isPresent()) {
-                args[i] = optResult.get().getValue();
+                final GeneratorResult result = optResult.get();
+                if (result.isNullResult() && children.get(i).getRawType().isPrimitive()) {
+                    args[i] = ObjectUtils.defaultValue(children.get(i).getRawType());
+                } else {
+                    args[i] = result.getValue();
+                }
+            } else {
+                args[i] = ObjectUtils.defaultValue(children.get(i).getRawType());
             }
         }
 

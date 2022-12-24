@@ -17,6 +17,7 @@ package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -40,6 +41,15 @@ class PredicateSelectorWithIgnoreTest {
                 .create();
 
         assertThat(result).hasAllNullFieldsOrPropertiesExcept("age", "finalField");
+    }
+
+    @Test
+    void ignoreFieldsNamed() {
+        final Person result = Instancio.of(Person.class)
+                .ignore(fields().named("phoneNumbers").declaredIn(Address.class))
+                .create();
+
+        assertThat(result.getAddress().getPhoneNumbers()).isNull();
     }
 
     @Test
