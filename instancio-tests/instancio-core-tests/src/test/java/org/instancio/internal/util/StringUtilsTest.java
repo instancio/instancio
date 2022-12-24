@@ -55,6 +55,13 @@ class StringUtilsTest {
     }
 
     @Test
+    void concatNonNull() {
+        assertThat(StringUtils.concatNonNull((String) null)).isEmpty();
+        assertThat(StringUtils.concatNonNull((String[]) null)).isEmpty();
+        assertThat(StringUtils.concatNonNull(null, "foo", null, "bar", null)).isEqualTo("foobar");
+    }
+
+    @Test
     void capitalise() {
         assertThat(StringUtils.capitalise(null)).isNull();
         assertThat(StringUtils.capitalise("")).isEmpty();

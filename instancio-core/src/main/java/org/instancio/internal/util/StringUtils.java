@@ -53,6 +53,18 @@ public final class StringUtils {
         return false;
     }
 
+    public static String concatNonNull(final String... values) {
+        final StringBuilder sb = new StringBuilder();
+        if (values != null) {
+            for (String val : values) {
+                if (val != null) {
+                    sb.append(val);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
     public static String capitalise(@Nullable final String s) {
         if (s == null || s.equals("")) {
             return s;

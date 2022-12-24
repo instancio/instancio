@@ -19,7 +19,9 @@ import org.instancio.Random;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +36,11 @@ public final class CollectionUtils {
 
     public static boolean isNullOrEmpty(@Nullable final Map<?, ?> map) {
         return map == null || map.isEmpty();
+    }
+
+    @SafeVarargs
+    public static <T> List<T> asList(final T... values) {
+        return values == null ? Collections.emptyList() : Arrays.asList(values);
     }
 
     public static void shuffle(final Collection<Object> collection, final Random random) {
