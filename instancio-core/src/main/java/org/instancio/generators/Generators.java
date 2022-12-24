@@ -97,6 +97,7 @@ public class Generators {
         map.putAll(MathGenerators.getApiMethods());
         map.putAll(TemporalGenerators.getApiMethods());
         map.putAll(TextGenerators.getApiMethods());
+        map.putAll(NioGenerators.getApiMethods());
         return map;
     }
 
@@ -276,6 +277,16 @@ public class Generators {
      */
     public AtomicGenerators atomic() {
         return new AtomicGenerators(context);
+    }
+
+    /**
+     * Provides access to NIO generators.
+     *
+     * @return built-in NIO generators
+     * @since 2.1.0
+     */
+    public NioGenerators nio() {
+        return new NioGenerators(context);
     }
 
     /**

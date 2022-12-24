@@ -31,6 +31,7 @@ import org.instancio.internal.generator.lang.StringBuilderGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.math.BigIntegerGenerator;
+import org.instancio.internal.generator.nio.file.PathGenerator;
 import org.instancio.internal.generator.time.DurationGenerator;
 import org.instancio.internal.generator.time.InstantGenerator;
 import org.instancio.internal.generator.time.LocalDateGenerator;
@@ -63,6 +64,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -138,6 +140,9 @@ public class GeneratorResolver {
         // java.math
         generators.put(BigDecimal.class, new BigDecimalGenerator(context));
         generators.put(BigInteger.class, new BigIntegerGenerator(context));
+
+        // java.nio
+        generators.put(Path.class, new PathGenerator(context));
 
         // java.time
         generators.put(Instant.class, new InstantGenerator(context));

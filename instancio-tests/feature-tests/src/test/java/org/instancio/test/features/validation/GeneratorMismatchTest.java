@@ -91,6 +91,11 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertNioTypes() {
+        assertMessageContains(Person.class, String.class, "path()", gen -> gen.nio().path());
+    }
+
+    @Test
     void assertTemporalTypes() {
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "instant()", gen -> gen.temporal().instant());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "localTime()", gen -> gen.temporal().localTime());

@@ -55,6 +55,12 @@ class CollectionUtilsTest {
     }
 
     @Test
+    void asList() {
+        assertThat(CollectionUtils.asList(null)).isEmpty();
+        assertThat(CollectionUtils.asList("foo", "bar")).containsExactly("foo", "bar");
+    }
+
+    @Test
     void shuffleEmpty() {
         final Collection<Object> collection = new ArrayList<>();
         CollectionUtils.shuffle(collection, random);

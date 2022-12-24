@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.test.support.pojo.basic;
 
-import org.instancio.generator.GeneratorSpec;
+import lombok.Data;
 
-import java.util.Collection;
+import java.nio.file.Path;
 
-/**
- * Generator spec for selecting a random value from collection.
- *
- * @param <T> type of value
- * @since 1.0.1
- */
-public interface OneOfCollectionGeneratorSpec<T> extends GeneratorSpec<T> {
+@Data
+public class SupportedNioTypes {
 
-    /**
-     * Selects a random value from the given choices.
-     *
-     * @param values from which a random value will be selected
-     * @return completed spec with no further methods
-     * @since 1.0.1
-     */
-    GeneratorSpec<T> oneOf(Collection<T> values);
+    private Path path;
 }
