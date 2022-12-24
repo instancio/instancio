@@ -15,8 +15,6 @@
  */
 package org.instancio;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A callback that gets invoked after an object has been fully populated.
  *
@@ -48,5 +46,5 @@ public interface OnCompleteCallback<T> {
      * @param object fully populated instance to call the callback on
      * @since 1.0.4
      */
-    void onComplete(@NotNull T object);
+    void onComplete(T object);
 }
