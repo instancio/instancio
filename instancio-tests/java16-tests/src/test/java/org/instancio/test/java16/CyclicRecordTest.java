@@ -15,39 +15,41 @@
  */
 package org.instancio.test.java16;
 
+import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.java16.record.GenericPairRecord;
-import org.instancio.test.support.tags.GenericsTag;
+import org.instancio.test.support.java16.record.cyclic.NodeRecord;
+import org.instancio.test.support.java16.record.cyclic.ParentRecord;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * NOTE: this test fails in IntelliJ, run it using Maven
  */
-@GenericsTag
+@FeatureTag(Feature.CYCLIC)
 @ExtendWith(InstancioExtension.class)
-class GenericPairRecordTest {
+class CyclicRecordTest {
 
     @Test
-    void createGenericRecord() {
-        final GenericPairRecord<String, Integer> result = Instancio.create(new TypeToken<>() {});
-        assertThat(result.left()).isNotBlank().isExactlyInstanceOf(String.class);
-        assertThat(result.right()).isExactlyInstanceOf(Integer.class);
+    void cyclicGenericRecord() {
+        final NodeRecord<String> result = Instancio.create(new TypeToken<>() {});
+
+        assertThat(result.next()).isNull();
+        assertThat(result.prev()).isNull();
+        assertThat(result.value()).isNotBlank();
     }
 
     @Test
-    void genericRecordAsCollectionElement() {
-        final List<GenericPairRecord<String, Integer>> results = Instancio.create(new TypeToken<>() {});
+    void cyclicParentChild() {
+        final ParentRecord parent = Instancio.create(ParentRecord.class);
 
-        assertThat(results).isNotEmpty().allSatisfy(result -> {
-            assertThat(result.left()).isNotBlank().isExactlyInstanceOf(String.class);
-            assertThat(result.right()).isExactlyInstanceOf(Integer.class);
-        });
+        assertThat(parent.name()).isNotBlank();
+        assertThat(parent.children()).isNotEmpty()
+                .allSatisfy(child -> Assertions.assertThat(child.parent()).isNull());
     }
 }

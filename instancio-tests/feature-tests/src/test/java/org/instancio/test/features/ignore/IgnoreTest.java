@@ -18,6 +18,7 @@ package org.instancio.test.features.ignore;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
+import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.pojo.person.Address;
@@ -26,7 +27,6 @@ import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +35,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.allShorts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
+import static org.instancio.Select.fields;
 import static org.instancio.Select.scope;
 
 @FeatureTag(Feature.IGNORE)
@@ -42,7 +43,6 @@ class IgnoreTest {
 
     @Test
     @DisplayName("Ignored field should retain the original value")
-    @NonDeterministicTag("Asserts generated primitive is not zero")
     void fieldIsIgnored() {
         final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
                 .ignore(field("stringValue"))
@@ -54,7 +54,22 @@ class IgnoreTest {
     }
 
     @Test
-    @NonDeterministicTag("Asserts generated primitive is not zero")
+    void ignoreAllPrimitives() {
+        final PrimitiveFields result = Instancio.of(PrimitiveFields.class)
+                .ignore(fields())
+                .create();
+
+        assertThat(result.isBooleanValue()).isFalse();
+        assertThat(result.getByteValue()).isZero();
+        assertThat(result.getShortValue()).isZero();
+        assertThat(result.getCharValue()).isEqualTo('\u0000');
+        assertThat(result.getIntValue()).isZero();
+        assertThat(result.getLongValue()).isZero();
+        assertThat(result.getFloatValue()).isZero();
+        assertThat(result.getDoubleValue()).isZero();
+    }
+
+    @Test
     void primitiveAndWrapperTypes() {
         final Model<SupportedNumericTypes> model = Instancio.of(SupportedNumericTypes.class)
                 .ignore(field("primitiveFloat"))

@@ -17,9 +17,12 @@ package org.instancio.test.java16;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.java16.record.AddressRecord;
 import org.instancio.test.support.java16.record.PersonRecord;
 import org.instancio.test.support.java16.record.PhoneRecord;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -27,12 +30,21 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
+import static org.instancio.Select.fields;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 /**
  * NOTE: this test fails in IntelliJ, run it using Maven
  */
+@FeatureTag({
+        Feature.IGNORE,
+        Feature.GENERATE,
+        Feature.ON_COMPLETE,
+        Feature.SET,
+        Feature.SUPPLY
+})
 @ExtendWith(InstancioExtension.class)
 class PersonRecordTest {
 
@@ -61,6 +73,25 @@ class PersonRecordTest {
                 .isNotEmpty()
                 .extracting(PhoneRecord::number)
                 .allSatisfy(number -> assertThat(number).hasSize(7).containsOnlyDigits());
+    }
+
+    @Test
+    void ignore() {
+        final PersonRecord result = Instancio.of(PersonRecord.class)
+                .ignore(all(
+                        allStrings(),
+                        field("age")))
+                .ignore(fields().named("phoneNumbers").declaredIn(AddressRecord.class))
+                .create();
+
+        assertThat(result.age()).isZero();
+
+        final AddressRecord address = result.address();
+        Asserts.assertAllNulls(
+                result.name(),
+                address.city(),
+                address.street(),
+                address.phoneNumbers());
     }
 
     @Test
