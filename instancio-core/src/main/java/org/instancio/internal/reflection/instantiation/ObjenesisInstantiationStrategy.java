@@ -22,6 +22,10 @@ import org.objenesis.instantiator.ObjectInstantiator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Delegates instantiation to Objenesis to instantiate a class without invoking
+ * constructors. This handles cases where a class does not have a default constructor.
+ */
 public class ObjenesisInstantiationStrategy implements InstantiationStrategy {
 
     private final Objenesis objenesis = new ObjenesisStd();

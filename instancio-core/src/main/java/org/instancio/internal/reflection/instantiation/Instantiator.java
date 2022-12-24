@@ -20,18 +20,13 @@ import org.instancio.internal.util.Sonar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Instantiator {
     private static final Logger LOG = LoggerFactory.getLogger(Instantiator.class);
 
-    private final List<InstantiationStrategy> strategies = new ArrayList<>();
-
-    public Instantiator() {
-        strategies.add(new NoArgumentConstructorInstantiationStrategy());
-        strategies.add(new ObjenesisInstantiationStrategy());
-    }
+    private final InstantiationStrategy[] strategies = {
+            new NoArgumentConstructorInstantiationStrategy(),
+            new ObjenesisInstantiationStrategy()
+    };
 
     public <T> T instantiate(Class<T> klass) {
         for (InstantiationStrategy strategy : strategies) {
@@ -49,8 +44,9 @@ public class Instantiator {
     private <T> T createInstance(final Class<T> klass, final InstantiationStrategy strategy) {
         try {
             return strategy.createInstance(klass);
-        } catch (Throwable ex) { //NOPMD
-            LOG.trace("'{}' failed instantiating class '{}'", strategy.getClass().getSimpleName(), klass.getName(), ex);
+        } catch (Throwable ex) { //NOPMD catches java.lang.InstantiationError
+            LOG.trace("'{}' failed instantiating class '{}'",
+                    strategy.getClass().getSimpleName(), klass.getName(), ex);
         }
         return null;
     }
