@@ -21,6 +21,7 @@ import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 
 /**
@@ -29,6 +30,41 @@ import java.nio.file.Path;
  * @since 2.1.0
  */
 public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
+
+    /**
+     * Generator for the file or directory name.
+     * <p>
+     * Generated path names are formed using the following elements:
+     *
+     * <pre>
+     *     [prefix][name][suffix]
+     * </pre>
+     *
+     * <ul>
+     *   <li>Prefix and suffix are optional and are {@code null} by default.</li>
+     *   <li>If no generator is supplied using this method, a random 16-character
+     *       lowercase name will be generated.</li>
+     *   <li>The concatenation of prefix, name, and suffix must not be blank.</li>
+     * </ul>
+     * <p>
+     * Example:
+     *
+     * <pre>{@code
+     * List<Path> paths = Instancio.ofList(Path.class)
+     *         .generate(all(Path.class), gen -> gen.nio().path()
+     *                 .prefix("queued_")
+     *                 .name(random -> random.alphanumeric(8))
+     *                 .suffix(".csv"))
+     *         .create();
+     *
+     * // Sample paths: queued_t5LG4AUw.csv, queued_o0nBWkej.csv, etc
+     * }</pre>
+     *
+     * @param nameGenerator for generating the name
+     * @return spec builder
+     * @since 2.1.0
+     */
+    PathGeneratorSpec name(Generator<String> nameGenerator);
 
     /**
      * File or directory name prefix.
@@ -51,39 +87,58 @@ public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
     PathGeneratorSpec suffix(String suffix);
 
     /**
-     * Generator for the file or directory name.
-     * If no generator is specified, a random 16-character lowercase file name
-     * will be generated.
+     * Generate path with {@code java.io.tmpdir} as the parent directory.
      *
-     * @param nameGenerator for generating the file or directory name
      * @return spec builder
      * @since 2.1.0
      */
-    PathGeneratorSpec name(Generator<String> nameGenerator);
+    PathGeneratorSpec tmp();
 
     /**
-     * Indicates that the generated path, including parent directories (if any),
-     * should be created as a file in the file system.
+     * Terminal method to indicate that the generated path, including parent
+     * directories (if any), should be created as a directory in the file system.
+     * <p>
+     * If the directory already exists, then no action will be taken.
+     *
+     * @return completed spec with no further methods
+     * @throws InstancioApiException if an error occurs creating the path
+     * @see #createFile()
+     * @see #createFile(InputStream)
+     * @since 2.1.0
+     */
+    @ExperimentalApi
+    GeneratorSpec<Path> createDirectory();
+
+    /**
+     * Terminal method to indicate that the generated path, including parent
+     * directories (if any), should be created as a file in the file system.
      * <p>
      * If the file already exists, then no action will be taken.
      *
      * @return completed spec with no further methods
      * @throws InstancioApiException if an error occurs creating the path
+     * @see #createFile(InputStream)
+     * @see #createDirectory()
      * @since 2.1.0
      */
     @ExperimentalApi
     GeneratorSpec<Path> createFile();
 
     /**
-     * Indicates that the generated path, including parent directories (if any),
-     * should be created as a directory in the file system.
+     * Terminal method to indicate that the generated path, including parent
+     * directories (if any), should be created as a file in the file system
+     * and content provided by the input stream written to the file.
      * <p>
-     * If the directory already exists, then no action will be taken.
+     * If the file already exists, then no action will be taken.
      *
+     * @param content to write to the file
      * @return completed spec with no further methods
      * @throws InstancioApiException if an error occurs creating the path
+     *                               or writing content to the file
+     * @see #createFile()
+     * @see #createDirectory()
      * @since 2.1.0
      */
     @ExperimentalApi
-    GeneratorSpec<Path> createDirectory();
+    GeneratorSpec<Path> createFile(InputStream content);
 }

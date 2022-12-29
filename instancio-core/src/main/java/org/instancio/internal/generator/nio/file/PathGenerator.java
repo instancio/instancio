@@ -21,11 +21,14 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.PathGeneratorSpec;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.IOUtils;
 import org.instancio.internal.util.StringUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,25 +44,23 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
         FILE, DIRECTORY
     }
 
-    private final boolean isTemp;
     private final List<String> directories;
+    private boolean isTemp;
     private String prefix;
     private String suffix;
     private Generator<String> nameGenerator;
     private CreatePathType createPathType;
+    private InputStream inputStream;
 
-    public PathGenerator(final GeneratorContext context) {
-        this(context, false);
+    public PathGenerator(final GeneratorContext context, final String... directories) {
+        super(context);
+        this.directories = CollectionUtils.asList(directories);
     }
 
-    public PathGenerator(
-            final GeneratorContext context,
-            final boolean isTemp,
-            final String... directories) {
-
-        super(context);
-        this.isTemp = isTemp;
-        this.directories = CollectionUtils.asList(directories);
+    @Override
+    public PathGeneratorSpec tmp() {
+        this.isTemp = true;
+        return this;
     }
 
     @Override
@@ -77,6 +78,13 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
     @Override
     public PathGeneratorSpec name(final Generator<String> nameGenerator) {
         this.nameGenerator = nameGenerator;
+        return this;
+    }
+
+    @Override
+    public PathGeneratorSpec createFile(final InputStream content) {
+        this.inputStream = content;
+        this.createPathType = CreatePathType.FILE;
         return this;
     }
 
@@ -108,12 +116,12 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
             return createPath(directoryPath, completePath);
         } catch (IOException ex) {
             throw new InstancioApiException(String.format(
-                    "Error creating %s: %s",
+                    "Error generating %s: %s",
                     createPathType.name().toLowerCase(Locale.ENGLISH), completePath), ex);
         }
     }
 
-    Path createPath(final Path directoryPath, final Path completePath) throws IOException {
+    private Path createPath(final Path directoryPath, final Path completePath) throws IOException {
         if (createPathType == null) {
             return completePath;
         }
@@ -123,7 +131,11 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
         }
         if (!Files.exists(completePath)) {
             if (createPathType == CreatePathType.FILE) {
-                return Files.createFile(completePath);
+                final Path file = Files.createFile(completePath);
+                if (inputStream != null) {
+                    IOUtils.writeTo(file, inputStream);
+                }
+                return file;
             } else if (createPathType == CreatePathType.DIRECTORY) {
                 return Files.createDirectory(completePath);
             }
@@ -136,7 +148,9 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
                 ? random.lowerCaseAlphabetic(DEFAULT_NAME_LENGTH)
                 : nameGenerator.generate(random);
 
-        return Paths.get(StringUtils.concatNonNull(prefix, name, suffix));
+        final String pathName = StringUtils.concatNonNull(prefix, name, suffix);
+        ApiValidator.isFalse(StringUtils.isBlank(pathName), "Generated path name must not be blank");
+        return Paths.get(pathName);
     }
 
     private Path getDirectoryPath() {
@@ -163,7 +177,9 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
     private Deque<String> getDirectories() {
         final Deque<String> path = new ArrayDeque<>(directories);
         if (isTemp) {
-            path.addFirst(System.getProperty("java.io.tmpdir"));
+            final String tmpDir = ApiValidator.notNull(System.getProperty("java.io.tmpdir"),
+                    "Cannot resolve temporary directory: 'java.io.tmpdir' system property is null");
+            path.addFirst(tmpDir);
         }
         return path;
     }

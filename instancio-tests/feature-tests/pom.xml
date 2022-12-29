@@ -55,6 +55,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <forkCount>2</forkCount>
                     <properties>
                         <configurationParameters>
                             junit.jupiter.execution.parallel.enabled = true

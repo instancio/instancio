@@ -20,12 +20,9 @@ import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.test.support.pojo.generics.container.ItemContainer;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ClearSystemProperty;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -35,8 +32,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
 
-@SuppressWarnings("ConstantConditions")
-@ClearSystemProperty(key = SystemProperties.FAIL_ON_ERROR)
 class ErrorMessagesTest {
 
     private static final Class<InstancioApiException> API_EXCEPTION = InstancioApiException.class;
@@ -155,7 +150,6 @@ class ErrorMessagesTest {
     }
 
     @Test
-    @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
     void invalidTypeCreatedByGeneratorWithFailOnErrorTrue() {
         final InstancioApi<Person> api = Instancio.of(Person.class)
                 .supply(field("name"), () -> 123);

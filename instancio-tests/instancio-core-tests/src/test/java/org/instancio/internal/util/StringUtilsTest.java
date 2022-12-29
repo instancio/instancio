@@ -57,6 +57,7 @@ class StringUtilsTest {
     @Test
     void concatNonNull() {
         assertThat(StringUtils.concatNonNull((String) null)).isEmpty();
+        assertThat(StringUtils.concatNonNull(null, null, null)).isEmpty();
         assertThat(StringUtils.concatNonNull((String[]) null)).isEmpty();
         assertThat(StringUtils.concatNonNull(null, "foo", null, "bar", null)).isEqualTo("foobar");
     }
