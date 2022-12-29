@@ -16,28 +16,27 @@
 package org.instancio.test.features.generator.nio.path;
 
 import org.instancio.Instancio;
-import org.instancio.internal.util.SystemProperties;
+import org.instancio.InstancioApi;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.SetSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.root;
-
 
 @FeatureTag(Feature.PATH_GENERATOR)
 @ExtendWith(InstancioExtension.class)
-@SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
-@SetSystemProperty(key = "java.io.tmpdir", value = PathGeneratorTest.TMP_DIR)
 class PathGeneratorTest {
-
-    static final String TMP_DIR = "tmp-override";
 
     @Test
     void defaultPath() {
@@ -53,6 +52,18 @@ class PathGeneratorTest {
                 .create();
 
         assertThat(result).isEqualTo("foo");
+    }
+
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "\t"})
+    @ParameterizedTest
+    void nameValidation(final String name) {
+        final InstancioApi<Path> api = Instancio.of(Path.class)
+                .generate(root(), gen -> gen.nio().path().name(random -> name));
+
+        assertThatThrownBy(api::create)
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Generated path name must not be blank");
     }
 
     @Nested
@@ -129,77 +140,4 @@ class PathGeneratorTest {
         }
     }
 
-    @Nested
-    class TmpPathTest {
-        @Test
-        void prefixAndName() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().tmp()
-                            .prefix("prefix-")
-                            .name(random -> "foo"))
-                    .create();
-
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^" + TMP_DIR + ".prefix-foo$");
-        }
-
-        @Test
-        void suffix() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().tmp().suffix(".foo"))
-                    .create();
-
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^" + TMP_DIR + ".[a-z]{16}\\.foo$");
-        }
-
-        @Test
-        void prefixAndSuffix() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().tmp()
-                            .prefix("prefix-")
-                            .suffix("-suffix"))
-                    .create();
-
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^" + TMP_DIR + ".prefix-[a-z]{16}-suffix$");
-        }
-
-        @Test
-        void prefixSuffixAndName() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().tmp()
-                            .prefix("prefix-")
-                            .name(random -> random.digits(3))
-                            .suffix("-suffix"))
-                    .create();
-
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^" + TMP_DIR + ".prefix-[0-9]{3}-suffix$");
-        }
-
-        @Test
-        void directory() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().tmp("foo"))
-                    .create();
-
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^" + TMP_DIR + ".foo.[a-z]{16}$");
-        }
-
-        @Test
-        void directoriesPrefixNameAndSuffix() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio()
-                            .tmp("foo", "bar")
-                            .prefix("prefix-")
-                            .name(random -> "name")
-                            .suffix("-suffix"))
-                    .create();
-
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^" + TMP_DIR + ".foo.bar.prefix-name-suffix$");
-        }
-    }
 }

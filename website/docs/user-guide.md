@@ -474,7 +474,7 @@ The complete list of built-in generators:
 
 ```css
 Generators
-|
+│
 ├── booleans()
 ├── chars()
 ├── bytes()
@@ -484,24 +484,27 @@ Generators
 ├── floats()
 ├── doubles()
 ├── string()
-|
+│
 ├── array()
 ├── collection()
 ├── map()
 ├── enumOf(Class<E>)
 ├── enumSetOf(Class<E>)
-|
+│
 ├── oneOf(Collection<T>)
 ├── oneOf(T...)
-|
+│
 ├── math()
-│   └── bigInteger()
+│   └── bigInteger()
 │   └── bigDecimal()
-|
+│
+├── nio()
+│   └── path()
+│
 ├── atomic()
 │   ├── atomicInteger()
 │   └── atomicLong()
-|
+│
 ├── temporal()
 │   └── instant()
 │   └── localDate()
@@ -516,7 +519,7 @@ Generators
 │   └── sqlDate()
 │   └── timestamp()
 │   └── calendar()
-|
+│
 └── text()
     └── loremIpsum()
     └── pattern(String)

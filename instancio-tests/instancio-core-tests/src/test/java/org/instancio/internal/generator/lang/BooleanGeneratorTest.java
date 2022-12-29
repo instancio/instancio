@@ -39,7 +39,7 @@ import static org.instancio.Select.allBooleans;
 @NonDeterministicTag
 @FeatureTag(Feature.SETTINGS)
 class BooleanGeneratorTest {
-    private static final int SAMPLE_SIZE = 50;
+    private static final int SAMPLE_SIZE = 500;
     private static final Settings settings = Settings.defaults().set(Keys.BOOLEAN_NULLABLE, true);
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);

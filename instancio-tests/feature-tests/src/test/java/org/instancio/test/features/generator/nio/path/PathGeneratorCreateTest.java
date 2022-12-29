@@ -16,45 +16,75 @@
 package org.instancio.test.features.generator.nio.path;
 
 import org.instancio.Instancio;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.root;
 
+/**
+ * Tests verifying creation of temporary files/directories.
+ */
 @FeatureTag(Feature.PATH_GENERATOR)
 @ExtendWith(InstancioExtension.class)
-@SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
 class PathGeneratorCreateTest {
 
+    private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
+
+    private static String pattern(final String name) {
+        return ".*[\\\\|/]{1}" + name + "[\\\\|/]{1}[a-z]{16}";
+    }
+
     @Test
-    void createTmpFile() {
+    void createTemporaryDirectory() {
+        final String expectedName = "a-temp-dir";
         final Path path = Instancio.of(Path.class)
-                .generate(root(), gen -> gen.nio()
-                        .tmp("test")
+                .generate(root(), gen -> gen.nio().path(expectedName)
+                        .tmp()
+                        .createDirectory())
+                .create();
+
+        assertThat(path).isNotNull().isDirectory();
+        assertThat(path.toString()).startsWith(TMP_DIR).matches(pattern(expectedName));
+    }
+
+    @Test
+    void createTemporaryFile() {
+        final String expectedName = "a-temp-file";
+        final Path path = Instancio.of(Path.class)
+                .generate(root(), gen -> gen.nio().path(expectedName)
+                        .tmp()
                         .createFile())
                 .create();
 
-        assertThat(path.toString()).matches(".tmp.test.[a-z]{16}");
+        assertThat(path.toString()).startsWith(TMP_DIR).matches(pattern(expectedName));
         assertThat(path).isEmptyFile();
     }
 
     @Test
-    void createTmpDirectory() {
+    void createTemporaryFileWithContent() {
+        final String content = "hello world";
+        final AtomicBoolean wasClosed = new AtomicBoolean();
+        final InputStream in = new ByteArrayInputStream(content.getBytes()) {
+            @Override
+            public void close() {
+                wasClosed.set(true);
+            }
+        };
         final Path path = Instancio.of(Path.class)
-                .generate(root(), gen -> gen.nio()
-                        .tmp("test")
-                        .createDirectory())
+                .generate(root(), gen -> gen.nio().path().tmp().createFile(in))
                 .create();
 
-        assertThat(path.toString()).matches(".tmp.test.[a-z]{16}");
-        assertThat(path).isDirectory();
+        assertThat(path).hasContent(content);
+        assertThat(in).isEmpty();
+        assertThat(wasClosed).isTrue();
     }
 }

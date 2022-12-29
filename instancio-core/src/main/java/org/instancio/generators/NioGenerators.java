@@ -19,6 +19,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.PathGeneratorSpec;
 import org.instancio.internal.generator.nio.file.PathGenerator;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,6 @@ import java.util.Map;
  * @since 2.1.0
  */
 public class NioGenerators {
-    private static final boolean IS_TEMP = true;
 
     private final GeneratorContext context;
 
@@ -46,40 +46,20 @@ public class NioGenerators {
     /**
      * Generator for {@link Path} objects.
      * <p>
-     * Note that no files or directories will be created in the file system
-     * unless explicitly specified via one of the following methods:
+     * Note that files or directories will <b>not</b> be created in the file
+     * system unless one of the following methods is invoked:
      *
      * <ul>
      *   <li>{@link PathGeneratorSpec#createFile()}</li>
+     *   <li>{@link PathGeneratorSpec#createFile(InputStream)}</li>
      *   <li>{@link PathGeneratorSpec#createDirectory()}</li>
      * </ul>
      *
-     * @param directories zero or more directories that will form the path
+     * @param subdirectories zero or more directories that will form the path
      * @return generator spec for paths
      * @since 2.1.0
      */
-    public PathGeneratorSpec path(final String... directories) {
-        return new PathGenerator(context, !IS_TEMP, directories);
-    }
-
-    /**
-     * Generator for {@link Path} objects with {@code java.io.tmpdir}
-     * as the parent directory.
-     * <p>
-     * Note that no files or directories will be created in the file system
-     * unless explicitly specified via one of the following methods:
-     *
-     * <ul>
-     *   <li>{@link PathGeneratorSpec#createFile()}</li>
-     *   <li>{@link PathGeneratorSpec#createDirectory()}</li>
-     * </ul>
-     *
-     * @param directories zero or more subdirectories of the temporary
-     *                    directory that will form the path
-     * @return generator spec for paths
-     * @since 2.1.0
-     */
-    public PathGeneratorSpec tmp(final String... directories) {
-        return new PathGenerator(context, IS_TEMP, directories);
+    public PathGeneratorSpec path(final String... subdirectories) {
+        return new PathGenerator(context, subdirectories);
     }
 }
