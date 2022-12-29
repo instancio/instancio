@@ -33,8 +33,10 @@ public interface Assigner {
      * Assigns given value to the target object's field.
      * The assignment itself can be performed by:
      *
-     * <li>assigning the argument directly to the {@link Field}</li>
-     * <li>setting the argument via a setter {@link Method}</li>
+     * <ul>
+     *   <li>assigning the argument directly to the {@link Field}</li>
+     *   <li>setting the argument via a setter {@link Method}</li>
+     * </ul>
      *
      * @param node   contains information about the target field.
      * @param target that has the field to be assigned.
