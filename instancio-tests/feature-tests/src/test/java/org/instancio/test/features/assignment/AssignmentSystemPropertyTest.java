@@ -33,7 +33,7 @@ class AssignmentSystemPropertyTest {
     @SetSystemProperty(key = SystemProperties.ASSIGNMENT_TYPE, value = "METHOD")
     void methodAssignment() {
         final SetterStylePojo result = Instancio.of(SetterStyleSet.class)
-                .ignore(fields(f -> f.getName().startsWith("viaSetter")))
+                .ignore(fields().matching("viaSetter.*"))
                 .create();
 
         assertThat(result.isViaSetter_integerWrapper()).isTrue();

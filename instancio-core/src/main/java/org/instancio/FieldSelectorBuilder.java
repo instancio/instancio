@@ -41,11 +41,22 @@ public interface FieldSelectorBuilder extends TargetSelector {
     /**
      * Matches fields with the specified name.
      *
-     * @param fieldName field name to match
+     * @param fieldName exact field name to match
      * @return selector builder
+     * @see #matching(String)
      * @since 1.6.0
      */
     FieldSelectorBuilder named(String fieldName);
+
+    /**
+     * Matches field names using the specified regular expression.
+     *
+     * @param regex for matching field names
+     * @return selector builder
+     * @see #named(String)
+     * @since 2.2.0
+     */
+    FieldSelectorBuilder matching(String regex);
 
     /**
      * Matches fields against the specified type, including subtypes.

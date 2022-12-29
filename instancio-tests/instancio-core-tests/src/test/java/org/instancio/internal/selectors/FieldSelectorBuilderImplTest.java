@@ -47,6 +47,16 @@ class FieldSelectorBuilderImplTest {
     }
 
     @Test
+    void matching() {
+        selectorBuilder.matching("^ge.*|.*ge$");
+        assertThat(build(selectorBuilder)).acceptsAll(Arrays.asList(
+                getField(Person.class, "age"),
+                getField(Person.class, "gender")));
+
+        assertThat(build(selectorBuilder)).rejects(getField(Address.class, "city"));
+    }
+
+    @Test
     void ofType() {
         selectorBuilder.ofType(String.class);
         assertThat(build(selectorBuilder)).accepts(getField(Person.class, "name"));
@@ -85,6 +95,11 @@ class FieldSelectorBuilderImplTest {
                 .hasMessageContaining("Field name must not be null.")
                 .hasMessageContaining("Method invocation: fields().named( -> null <- )");
 
+        assertThatThrownBy(() -> selectorBuilder.matching(null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("Regex must not be null.")
+                .hasMessageContaining("Method invocation: fields().matching( -> null <- )");
+
         assertThatThrownBy(() -> selectorBuilder.ofType(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Field type must not be null.")
@@ -105,13 +120,14 @@ class FieldSelectorBuilderImplTest {
     void verifyToString() {
         final String result = selectorBuilder
                 .named("name")
+                .matching("regex")
                 .ofType(String.class)
                 .declaredIn(Person.class)
                 .annotated(Pojo.class)
                 .annotated(PersonName.class)
                 .toString();
 
-        assertThat(result).isEqualTo("fields().named(\"name\").ofType(String)" +
+        assertThat(result).isEqualTo("fields().named(\"name\").matching(\"regex\").ofType(String)" +
                 ".declaredIn(Person).annotated(Pojo).annotated(PersonName)");
     }
 
