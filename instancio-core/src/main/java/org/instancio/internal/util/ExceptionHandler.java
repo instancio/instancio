@@ -19,6 +19,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -80,5 +81,30 @@ public final class ExceptionHandler {
         } else {
             LOG.debug("{}: {}", ERROR_MSG, t.getMessage());
         }
+    }
+
+    /**
+     * Logs exception stacktrace if trace is enabled,
+     * otherwise log exception class name and message.
+     *
+     * @param msg  log message
+     * @param ex   exception to log
+     * @param args message arguments
+     */
+    public static void logException(final String msg, final Exception ex, final Object... args) {
+        final String formatted = MessageFormatter.arrayFormat(msg, args).getMessage();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(formatted, ex);
+        } else {
+            LOG.debug("{} [caused by {}]", formatted, getCausedBy(ex));
+        }
+    }
+
+    private static String getCausedBy(final Exception ex) {
+        String causedBy = ex.getClass().getSimpleName();
+        if (ex.getMessage() != null) {
+            causedBy += ": " + ex.getMessage();
+        }
+        return causedBy;
     }
 }

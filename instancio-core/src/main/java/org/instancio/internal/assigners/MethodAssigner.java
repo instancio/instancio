@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Optional;
 
-import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
+import static org.instancio.internal.util.ExceptionHandler.logException;
 
 public class MethodAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(MethodAssigner.class);
@@ -116,12 +116,12 @@ public class MethodAssigner implements Assigner {
         }
 
         if (onSetMethodError == OnSetMethodError.ASSIGN_FIELD) {
-            LOG.debug("Error invoking method {}, assigning value using field: {}",
-                    method, node.getField(), ex);
+            logException("Error invoking method {}, assigning value using field: {}",
+                    ex, method, node.getField());
 
             fieldAssigner.assign(node, target, arg);
         } else if (onSetMethodError == OnSetMethodError.IGNORE) {
-            LOG.debug("{}: error invoking method: {}", OnSetMethodError.IGNORE, method, ex);
+            logException("{}: error invoking method: {}", ex, OnSetMethodError.IGNORE, method);
         }
     }
 
@@ -146,16 +146,13 @@ public class MethodAssigner implements Assigner {
     }
 
     private Optional<Method> resolveSetterMethod(final String methodName, final Field field) {
-        try {
-            if (methodName != null) {
+        if (methodName != null) {
+            try {
                 final Class<?> klass = field.getDeclaringClass();
                 return Optional.of(klass.getDeclaredMethod(methodName, field.getType()));
+            } catch (NoSuchMethodException ex) {
+                logException("Resolved setter method '%s' for field '%s' does not exist", ex, methodName, Format.field(field));
             }
-        } catch (NoSuchMethodException ex) {
-            final String msg = String.format("Unable to resolve method for field: '%s'", Format.field(field));
-            conditionalFailOnError(() -> {
-                throw new InstancioException(msg, ex);
-            });
         }
         return Optional.empty();
     }

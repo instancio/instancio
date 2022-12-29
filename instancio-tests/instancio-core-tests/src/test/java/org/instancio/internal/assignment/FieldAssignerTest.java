@@ -25,7 +25,6 @@ import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InaccessibleObjectException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class FieldAssignerTest {
-    private static final InaccessibleObjectException EXPECTED_ERROR = new InaccessibleObjectException("expected error");
+    private static final Exception EXPECTED_ERROR = new RuntimeException("expected error");
 
     private static Node getMockNode() {
         final Field mockField = mock(Field.class);
@@ -81,7 +80,7 @@ class FieldAssignerTest {
                         " -> Argument value: any-value%n" +
                         "%n" +
                         "Root cause: %n" +
-                        " -> java.lang.reflect.InaccessibleObjectException: expected error%n" +
+                        " -> java.lang.RuntimeException: expected error%n" +
                         "%n" +
                         "To resolve the error, consider one of the following:%n" +
                         " -> Update Keys.ON_SET_FIELD_ERROR setting to%n" +
