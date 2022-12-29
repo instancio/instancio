@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
+import static org.instancio.internal.util.ExceptionHandler.logException;
+
 public class FieldAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(FieldAssigner.class);
 
@@ -76,7 +78,7 @@ public class FieldAssigner implements Assigner {
         }
 
         if (onSetFieldError == OnSetFieldError.IGNORE) {
-            LOG.debug("{}: error assigning value to field: {}", OnSetFieldError.IGNORE, field, ex);
+            logException("{}: error assigning value to field: {}", ex, OnSetFieldError.IGNORE, field);
         }
     }
 }
