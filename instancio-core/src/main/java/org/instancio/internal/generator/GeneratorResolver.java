@@ -40,6 +40,8 @@ import org.instancio.internal.generator.time.LocalTimeGenerator;
 import org.instancio.internal.generator.time.PeriodGenerator;
 import org.instancio.internal.generator.time.YearGenerator;
 import org.instancio.internal.generator.time.YearMonthGenerator;
+import org.instancio.internal.generator.time.ZoneIdGenerator;
+import org.instancio.internal.generator.time.ZoneOffsetGenerator;
 import org.instancio.internal.generator.time.ZonedDateTimeGenerator;
 import org.instancio.internal.generator.util.CalendarGenerator;
 import org.instancio.internal.generator.util.CollectionGenerator;
@@ -73,6 +75,8 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
@@ -155,6 +159,8 @@ public class GeneratorResolver {
         generators.put(Year.class, new YearGenerator(context));
         generators.put(YearMonth.class, new YearMonthGenerator(context));
         generators.put(ZonedDateTime.class, new ZonedDateTimeGenerator(context));
+        generators.put(ZoneId.class, new ZoneIdGenerator(context));
+        generators.put(ZoneOffset.class, new ZoneOffsetGenerator(context));
 
         // java.util
         generators.put(Calendar.class, new CalendarGenerator(context));
