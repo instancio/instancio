@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.context;
 
+import org.instancio.GeneratorSpecProvider;
 import org.instancio.Mode;
 import org.instancio.Random;
 import org.instancio.Select;
@@ -27,7 +28,6 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.Hints;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
-import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.SupplierAdapter;
@@ -49,12 +49,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
+import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -171,11 +171,11 @@ class ModelContextTest {
 
         final ArrayGeneratorSpec<Object> petsSpec = generators.array().subtype(Pet[].class).length(3);
 
-        final StringGeneratorSpec stringSpec = generators.string().minLength(5).allowEmpty();
+        final GeneratorSpec<String> stringSpec = generators.string().minLength(5).allowEmpty();
 
         ModelContext<?> ctx = ModelContext.builder(Person.class)
                 .withGeneratorSpec(field("pets"), gens -> petsSpec)
-                .withGeneratorSpec(all(String.class), gen -> stringSpec)
+                .withGeneratorSpec(allStrings(), gen -> stringSpec)
                 .build();
 
         assertThat(ctx.getGenerator(mockNode(Person.class, PETS_FIELD))).isPresent().get().isSameAs(petsSpec);
@@ -257,10 +257,10 @@ class ModelContextTest {
 
     @Test
     void toBuilder() {
-        final Generator<?> allStringsGenerator = random -> "foo";
-        final Generator<?> addressCityGenerator = random -> "bar";
-        final Generator<?> petsGenerator = random -> new Pet[0];
-        final Function<Generators, ? extends GeneratorSpec<?>> petsGeneratorFn = (gen) -> petsGenerator;
+        final Generator<String> allStringsGenerator = random -> "foo";
+        final Generator<String> addressCityGenerator = random -> "bar";
+        final Generator<Pet[]> petsGenerator = random -> new Pet[0];
+        final GeneratorSpecProvider<Pet[]> petsGeneratorFn = (gen) -> petsGenerator;
         final Class<UUID> ignoredClass = UUID.class;
         final Class<Date> nullableClass = Date.class;
         final long seed = 37635;

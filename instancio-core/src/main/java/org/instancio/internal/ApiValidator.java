@@ -15,10 +15,10 @@
  */
 package org.instancio.internal;
 
+import org.instancio.GeneratorSpecProvider;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
-import org.instancio.generators.Generators;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class ApiValidator {
@@ -150,7 +149,7 @@ public final class ApiValidator {
                 + (node.getField() == null ? "" : "%nField: " + node.getField());
     }
 
-    public static void validateGeneratorFunction(@Nullable final Function<Generators, ?> gen) {
+    public static void validateGeneratorFunction(final GeneratorSpecProvider<?> gen) {
         isTrue(gen != null, () ->
                 String.format("%nThe second argument of 'generate()' method must not be null."
                         + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
