@@ -48,6 +48,7 @@ import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.DateGenerator;
 import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.generator.util.HashSetGenerator;
+import org.instancio.internal.generator.util.LocaleGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.generator.util.OptionalGenerator;
 import org.instancio.internal.generator.util.TreeMapGenerator;
@@ -86,6 +87,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
@@ -165,6 +167,7 @@ public class GeneratorResolver {
         // java.util
         generators.put(Calendar.class, new CalendarGenerator(context));
         generators.put(Date.class, new DateGenerator(context));
+        generators.put(Locale.class, new LocaleGenerator(context));
         generators.put(Optional.class, new OptionalGenerator<>(context));
         generators.put(UUID.class, new UUIDGenerator(context));
 
