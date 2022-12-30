@@ -17,12 +17,9 @@ package org.instancio;
 
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorSpec;
-import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -233,12 +230,11 @@ public interface InstancioApi<T> {
      * }</pre>
      *
      * @param selector for fields and/or classes this method should be applied to
-     * @param gen      provider of built-in generators
-     * @param <V>      type of the value to generate
-     * @param <S>      generator spec type
+     * @param gen      provider of customisable built-in generators (also known as specs)
+     * @param <V>      type of object to generate
      * @return API builder reference
      */
-    <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(TargetSelector selector, Function<Generators, S> gen);
+    <V> InstancioApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
 
     /**
      * A callback that gets invoked after an object has been fully populated.

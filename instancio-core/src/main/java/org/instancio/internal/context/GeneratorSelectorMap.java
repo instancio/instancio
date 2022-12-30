@@ -15,11 +15,11 @@
  */
 package org.instancio.internal.context;
 
+import org.instancio.GeneratorSpecProvider;
 import org.instancio.TargetSelector;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.array.ArrayGenerator;
@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static org.instancio.internal.util.ReflectionUtils.getField;
 
@@ -43,7 +42,7 @@ import static org.instancio.internal.util.ReflectionUtils.getField;
 class GeneratorSelectorMap {
 
     private final Map<TargetSelector, Generator<?>> generatorSelectors;
-    private final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors;
+    private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors;
     private final SelectorMap<Generator<?>> selectorMap = new SelectorMap<>();
     private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
     private final AfterGenerate defaultAfterGenerate;
@@ -52,7 +51,7 @@ class GeneratorSelectorMap {
     GeneratorSelectorMap(
             final GeneratorContext context,
             final Map<TargetSelector, Generator<?>> generatorSelectors,
-            final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors) {
+            final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors) {
 
         this.context = context;
         this.generatorSelectors = Collections.unmodifiableMap(generatorSelectors);
@@ -70,7 +69,7 @@ class GeneratorSelectorMap {
         return generatorSelectors;
     }
 
-    Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> getGeneratorSpecSelectors() {
+    Map<TargetSelector, GeneratorSpecProvider<?>> getGeneratorSpecSelectors() {
         return generatorSpecSelectors;
     }
 
@@ -92,17 +91,17 @@ class GeneratorSelectorMap {
         }
     }
 
-    private void putAllGeneratorSpecs(final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> specs) {
+    private void putAllGeneratorSpecs(final Map<TargetSelector, GeneratorSpecProvider<?>> specs) {
         final Generators generators = new Generators(context);
 
-        for (Map.Entry<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> entry : specs.entrySet()) {
+        for (Map.Entry<TargetSelector, GeneratorSpecProvider<?>> entry : specs.entrySet()) {
             final TargetSelector targetSelector = entry.getKey();
-            final Function<Generators, ?> genFn = entry.getValue();
+            final GeneratorSpecProvider<?> genFn = entry.getValue();
             for (TargetSelector selector : ((Flattener) targetSelector).flatten()) {
                 // Do not share generator instances between different selectors.
                 // For example, array generators are created for each component type.
                 // Therefore, using 'gen.array().length(10)' would fail when selectors are different for array types.
-                final Generator<?> generator = (Generator<?>) genFn.apply(generators);
+                final Generator<?> generator = (Generator<?>) genFn.getSpec(generators);
                 putGenerator(selector, generator);
             }
         }

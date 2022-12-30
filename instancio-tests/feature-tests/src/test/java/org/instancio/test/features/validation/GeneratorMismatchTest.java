@@ -15,9 +15,9 @@
  */
 package org.instancio.test.features.validation;
 
+import org.instancio.GeneratorSpecProvider;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
@@ -46,7 +46,6 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
@@ -149,7 +148,7 @@ class GeneratorMismatchTest {
     private static <T> void assertMessageContains(final Class<?> typeToCreate,
                                                   final Class<?> selectedType,
                                                   final String expectedGeneratorMethod,
-                                                  final Function<Generators, GeneratorSpec<T>> genFn) {
+                                                  final GeneratorSpecProvider<T> genFn) {
 
         assertThatThrownBy(() -> Instancio.of(typeToCreate)
                 .generate(all(selectedType), genFn)

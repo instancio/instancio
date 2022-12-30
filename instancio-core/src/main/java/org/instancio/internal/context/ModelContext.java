@@ -15,14 +15,13 @@
  */
 package org.instancio.internal.context;
 
+import org.instancio.GeneratorSpecProvider;
 import org.instancio.Mode;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
 import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.GeneratorSpec;
-import org.instancio.generators.Generators;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
@@ -51,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap;
@@ -222,7 +220,7 @@ public final class ModelContext<T> {
         private final Class<T> rootClass;
         private final List<Class<?>> rootTypeParameters = new ArrayList<>();
         private final Map<TargetSelector, Class<?>> subtypeSelectors = new LinkedHashMap<>();
-        private final Map<TargetSelector, Function<Generators, ? extends GeneratorSpec<?>>> generatorSpecSelectors = new LinkedHashMap<>();
+        private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, Generator<?>> generatorSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks = new LinkedHashMap<>();
         private final Set<TargetSelector> ignoredTargets = new LinkedHashSet<>();
@@ -258,7 +256,7 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withGeneratorSpec(final TargetSelector selector, final Function<Generators, ? extends GeneratorSpec<?>> spec) {
+        public <V> Builder<T> withGeneratorSpec(final TargetSelector selector, final GeneratorSpecProvider<V> spec) {
             this.generatorSpecSelectors.put(preProcess(selector, rootClass), spec);
             return this;
         }

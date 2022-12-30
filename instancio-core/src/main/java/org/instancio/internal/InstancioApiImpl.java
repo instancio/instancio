@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.GeneratorSpecProvider;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
@@ -22,13 +23,10 @@ import org.instancio.Result;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorSpec;
-import org.instancio.generators.Generators;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.settings.Settings;
 
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -62,15 +60,11 @@ public class InstancioApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public <V, S extends GeneratorSpec<V>> InstancioApi<T> generate(
-            final TargetSelector selector,
-            final Function<Generators, S> gen) {
-
+    public <V> InstancioApi<T> generate(final TargetSelector selector, final GeneratorSpecProvider<V> gen) {
         ApiValidator.validateGeneratorFunction(gen);
         modelContextBuilder.withGeneratorSpec(selector, gen);
         return this;
     }
-
 
     @Override
     public <V> InstancioApi<T> onComplete(
