@@ -33,9 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.lang.reflect.Field;
-import java.util.function.Predicate;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
 import static org.instancio.Select.fields;
@@ -46,12 +43,10 @@ import static org.instancio.Select.fields;
 class MethodAssignmentTest {
 
     private static <T extends SetterStylePojo> Model<T> pojoModel(Class<T> pojoClass) {
-        // These are used for verification; we don't want to generate values for these flags
-        final Predicate<Field> viaSetterFlags = field -> field.getName().startsWith("viaSetter");
-
         return Instancio.of(pojoClass)
-                .ignore(fields(viaSetterFlags))
                 .withSettings(Settings.create().set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD))
+                // These are used for verification; we don't want to generate values for these flags
+                .ignore(fields().matching("viaSetter.*"))
                 .toModel();
     }
 

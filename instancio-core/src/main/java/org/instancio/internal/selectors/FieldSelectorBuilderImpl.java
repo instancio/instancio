@@ -45,6 +45,17 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     }
 
     @Override
+    public FieldSelectorBuilder matching(final String regex) {
+        ApiValidator.notNull(regex, () -> Format.selectorErrorMessage(
+                "Regex must not be null.",
+                "matching", description.toString(), new Throwable()));
+
+        fieldPredicates.add(field -> field.getName().matches(regex));
+        description.append(".matching(\"").append(regex).append("\")");
+        return this;
+    }
+
+    @Override
     public FieldSelectorBuilder ofType(final Class<?> fieldType) {
         ApiValidator.notNull(fieldType, () -> Format.selectorErrorMessage(
                 "Field type must not be null.",

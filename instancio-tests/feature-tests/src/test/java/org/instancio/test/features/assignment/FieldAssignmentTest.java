@@ -27,9 +27,6 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
-import java.lang.reflect.Field;
-import java.util.function.Predicate;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
 import static org.instancio.Select.fields;
@@ -40,12 +37,10 @@ class FieldAssignmentTest {
 
     @Test
     void fieldAssignmentShouldNotUseSetters() {
-        // These are used for verification; we don't want to generate values for these flags
-        final Predicate<Field> viaSetterFlags = field -> field.getName().startsWith("viaSetter");
-
         final SetterStyleSet result = Instancio.of(SetterStyleSet.class)
                 .withSettings(Settings.create().set(Keys.ASSIGNMENT_TYPE, AssignmentType.FIELD))
-                .ignore(fields(viaSetterFlags))
+                // These are used for verification; we don't want to generate values for these flags
+                .ignore(fields().matching("viaSetter.*"))
                 .create();
 
         assertResult(result);
