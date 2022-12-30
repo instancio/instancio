@@ -151,7 +151,7 @@ public class MethodAssigner implements Assigner {
                 final Class<?> klass = field.getDeclaringClass();
                 return Optional.of(klass.getDeclaredMethod(methodName, field.getType()));
             } catch (NoSuchMethodException ex) {
-                logException("Resolved setter method '%s' for field '%s' does not exist", ex, methodName, Format.field(field));
+                logException("Resolved setter method '{}' for field '{}' does not exist", ex, methodName, Format.field(field));
             }
         }
         return Optional.empty();
