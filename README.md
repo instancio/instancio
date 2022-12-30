@@ -80,10 +80,6 @@ Map<UUID, Person> personMap = Instancio.of(Person.class)
 - [User guide](https://www.instancio.org/user-guide)
 - [Sample projects](https://github.com/instancio/instancio-samples)
 
-# Latest Major Release
-
-Version `2.0.0` is out with several [new features](https://github.com/instancio/instancio/discussions/291#discussioncomment-4446255).
-
 # Getting Started
 
 If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
