@@ -87,6 +87,29 @@ Pair<String, Long> pair = Instancio.of(Pair.class)
 
 However, this approach has a couple of drawbacks: it does not supported nested generics, and its usage will produce an "unchecked assignment" warning.
 
+### Creating collections
+
+The builder API also supports creating collections using the following methods:
+
+``` java linenums="1" title="Collections API"
+Instancio.ofList(Class<T> elementType).create()
+Instancio.ofSet(Class<T> elementType).create()
+Instancio.ofMap(Class<K> keyType, Class<V> valueType).create()
+```
+
+Examples:
+
+```java linenums="1"
+List<Person> list = Instancio.ofList(Person.class).size(10).create();
+
+Map<UUID, Address> map = Instancio.ofMap(UUID.class, Address.class).size(3)
+    .set(field(Address.class, "city"), "Vancouver")
+    .create();
+```
+
+Specifying collection's size is optional.
+If no size is specified, a collection of random size (between 2 and 6 inclusive) will be generated.
+
 ### Creating `record` and `sealed` Classes
 
 Instancio version `1.5.0` introduced support for creating

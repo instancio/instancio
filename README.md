@@ -34,21 +34,37 @@ Person person = Instancio.create(Person.class);
 
 This one-liner returns a fully-populated person, including nested objects and collections.
 The object is populated with random data that can be reproduced in case of test failure.
-
-If you require specific values, generated data can be customised using the builder API.
-The following example is a little over the top just to show some of the API capabilities.
+If you require specific values, generated data can be customised using the builder API:
 
 ```java
 Person person = Instancio.of(Person.class)
-    .generate(field("age"), gen -> gen.ints().range(18, 65))
     .generate(field(Phone.class, "areaCode"), gen -> gen.oneOf("604", "778"))
     .generate(field(Phone.class, "number"), gen -> gen.text().pattern("#d#d#d-#d#d-#d#d"))
-    .generate(all(List.class).within(scope(Address.class)), gen -> gen.collection().size(4))
-    .set(field(Address.class, "city"), "Vancouver")
-    .ignore(field(Address.class, "postalCode"))
+    .subtype(all(AbstractAddress.class), AddressImpl.class)
     .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
     .onComplete(all(Person.class), (Person p) -> p.setName(p.getGender() == Gender.MALE ? "John" : "Jane"))
     .create();
+```
+
+Collections can be generated using `ofList()`, `ofSet()`, and `ofMap()` APIs:
+
+```java
+List<Person> personList = Instancio.ofList(Person.class).size(10)
+    .generate(field(Person.class, "age"), gen -> gen.ints().range(20, 60))
+    .withNullable(all(Gender.class))
+    .create();
+```
+
+Alternatively, using `java.util.stream.Stream`:
+
+```java
+Map<UUID, Person> personMap = Instancio.of(Person.class)
+    .set(field(Address.class, "city"), "Vancouver")
+    .generate(all(List.class).within(scope(Address.class)), gen -> gen.collection().size(4))
+    .ignore(field(Address.class, "postalCode"))
+    .stream()
+    .limit(5)
+    .collect(Collectors.toMap(Person::getUuid, Function.identity()));
 ```
 
 ## Main Features
