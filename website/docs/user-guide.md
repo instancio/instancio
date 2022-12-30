@@ -1019,7 +1019,42 @@ The remaining `ON_SET_*` keys are used to control error handling behaviour:
 
 All of the above can be set to ignore errors or fail fast by raising an exception.
 In addition, both `ON_SET_METHOD_*` settings can be configured to fall back to field assignment in case of an error.
-All the settings can be configured globally using properties file or per object at runtime using {{Settings}}.
+
+The following snippet illustrates how to create an object populated via setters.
+In this example, `SetterStyle.PROPERTY` is used since the `Phone` class has setters without the *set* prefix:
+
+```java linenums="1" title="Populating via setters"
+class Phone {
+    private String areaCode;
+    private String number;
+
+    void areaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    void number(String number) {
+        this.number = number;
+    }
+}
+
+Settings settings = Settings.create()
+        .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+        .set(Keys.SETTER_STYLE, SetterStyle.PROPERTY)
+        .set(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.IGNORE);
+
+Phone phone = Instancio.of(Phone.class)
+        .withSettings(settings)
+        .create();
+```
+
+{{Settings}} can be specified per object, as shown above, or globally using a properties file:
+
+```properties
+assignment.type=METHOD
+setter.style=PROPERTY
+on.set.method.error=IGNORE
+```
+
 See [Configuration](#configuration) for details.
 
 ## Seed
@@ -1296,7 +1331,7 @@ Using these property keys, configuration values can also be overridden using a p
 Default settings can be overridden using `instancio.properties`. Instancio will automatically load this file from the root of the classpath. The following listing shows all the property keys that can be configured.
 
 
-``` java linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 39 47"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 39 47"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
