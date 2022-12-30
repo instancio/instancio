@@ -27,6 +27,8 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
@@ -45,6 +47,8 @@ public class SupportedTemporalTypes {
     private YearMonth yearMonth;
     private Duration duration;
     private Period period;
+    private ZoneId zoneId;
+    private ZoneOffset zoneOffset;
     private Year year;
     private Date date;
     private java.sql.Date sqlDate;
