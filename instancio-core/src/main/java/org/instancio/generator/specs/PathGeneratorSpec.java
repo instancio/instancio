@@ -21,15 +21,16 @@ import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 
 /**
- * Generator spec for customising {@link Path Paths}.
+ * Generator spec for customising {@link File Files} and {@link Path Paths}.
  *
  * @since 2.1.0
  */
-public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
+public interface PathGeneratorSpec<T> extends AsStringGeneratorSpec<T> {
 
     /**
      * Generator for the file or directory name.
@@ -64,7 +65,7 @@ public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
      * @return spec builder
      * @since 2.1.0
      */
-    PathGeneratorSpec name(Generator<String> nameGenerator);
+    PathGeneratorSpec<T> name(Generator<String> nameGenerator);
 
     /**
      * File or directory name prefix.
@@ -74,7 +75,7 @@ public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
      * @return spec builder
      * @since 2.1.0
      */
-    PathGeneratorSpec prefix(String prefix);
+    PathGeneratorSpec<T> prefix(String prefix);
 
     /**
      * File or directory name suffix.
@@ -84,7 +85,7 @@ public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
      * @return spec builder
      * @since 2.1.0
      */
-    PathGeneratorSpec suffix(String suffix);
+    PathGeneratorSpec<T> suffix(String suffix);
 
     /**
      * Generate path with {@code java.io.tmpdir} as the parent directory.
@@ -92,7 +93,7 @@ public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
      * @return spec builder
      * @since 2.1.0
      */
-    PathGeneratorSpec tmp();
+    PathGeneratorSpec<T> tmp();
 
     /**
      * Terminal method to indicate that the generated path, including parent
@@ -107,7 +108,7 @@ public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
      * @since 2.1.0
      */
     @ExperimentalApi
-    GeneratorSpec<Path> createDirectory();
+    GeneratorSpec<T> createDirectory();
 
     /**
      * Terminal method to indicate that the generated path, including parent
@@ -122,7 +123,7 @@ public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
      * @since 2.1.0
      */
     @ExperimentalApi
-    GeneratorSpec<Path> createFile();
+    GeneratorSpec<T> createFile();
 
     /**
      * Terminal method to indicate that the generated path, including parent
@@ -140,5 +141,5 @@ public interface PathGeneratorSpec extends AsStringGeneratorSpec<Path> {
      * @since 2.1.0
      */
     @ExperimentalApi
-    GeneratorSpec<Path> createFile(InputStream content);
+    GeneratorSpec<T> createFile(InputStream content);
 }

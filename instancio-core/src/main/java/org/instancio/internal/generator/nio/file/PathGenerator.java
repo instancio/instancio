@@ -37,7 +37,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 
-public class PathGenerator extends AbstractGenerator<Path> implements PathGeneratorSpec {
+public class PathGenerator extends AbstractGenerator<Path> implements PathGeneratorSpec<Path> {
     private static final int DEFAULT_NAME_LENGTH = 16;
 
     private enum CreatePathType {
@@ -58,31 +58,31 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
     }
 
     @Override
-    public PathGeneratorSpec tmp() {
+    public PathGeneratorSpec<Path> tmp() {
         this.isTemp = true;
         return this;
     }
 
     @Override
-    public PathGeneratorSpec prefix(final String prefix) {
+    public PathGeneratorSpec<Path> prefix(final String prefix) {
         this.prefix = prefix;
         return this;
     }
 
     @Override
-    public PathGeneratorSpec suffix(final String suffix) {
+    public PathGeneratorSpec<Path> suffix(final String suffix) {
         this.suffix = suffix;
         return this;
     }
 
     @Override
-    public PathGeneratorSpec name(final Generator<String> nameGenerator) {
+    public PathGeneratorSpec<Path> name(final Generator<String> nameGenerator) {
         this.nameGenerator = nameGenerator;
         return this;
     }
 
     @Override
-    public PathGeneratorSpec createFile(final InputStream content) {
+    public PathGeneratorSpec<Path> createFile(final InputStream content) {
         this.inputStream = content;
         this.createPathType = CreatePathType.FILE;
         return this;
@@ -149,7 +149,7 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
                 : nameGenerator.generate(random);
 
         final String pathName = StringUtils.concatNonNull(prefix, name, suffix);
-        ApiValidator.isFalse(StringUtils.isBlank(pathName), "Generated path name must not be blank");
+        ApiValidator.isFalse(StringUtils.isBlank(pathName), "Generated name must not be blank");
         return Paths.get(pathName);
     }
 

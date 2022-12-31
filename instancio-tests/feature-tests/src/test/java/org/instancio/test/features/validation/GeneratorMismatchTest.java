@@ -90,6 +90,11 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertIoTypes() {
+        assertMessageContains(Person.class, String.class, "file()", gen -> gen.io().file());
+    }
+
+    @Test
     void assertNioTypes() {
         assertMessageContains(Person.class, String.class, "path()", gen -> gen.nio().path());
     }
