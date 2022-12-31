@@ -17,34 +17,34 @@ package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.PathGeneratorSpec;
-import org.instancio.internal.generator.nio.file.PathGenerator;
+import org.instancio.internal.generator.io.FileGenerator;
 
+import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Contains built-in generators for {@code java.nio} classes.
+ * Contains built-in generators for {@code java.io} classes.
  *
- * @since 2.1.0
+ * @since 2.2.0
  */
-public class NioGenerators {
+public class IoGenerators {
 
     private final GeneratorContext context;
 
-    public NioGenerators(final GeneratorContext context) {
+    public IoGenerators(final GeneratorContext context) {
         this.context = context;
     }
 
     static Map<Class<?>, String> getApiMethods() {
         Map<Class<?>, String> map = new HashMap<>();
-        map.put(PathGenerator.class, "path()");
+        map.put(FileGenerator.class, "file()");
         return map;
     }
 
     /**
-     * Generator for {@link Path} objects.
+     * Generator for {@link File} objects.
      * <p>
      * Note that files or directories will <b>not</b> be created in the file
      * system unless one of the following methods is invoked:
@@ -55,11 +55,11 @@ public class NioGenerators {
      *   <li>{@link PathGeneratorSpec#createDirectory()}</li>
      * </ul>
      *
-     * @param subdirectories zero or more directories that will form the path
-     * @return generator spec for paths
-     * @since 2.1.0
+     * @param subdirectories zero or more directories that will form the file path
+     * @return generator spec for files
+     * @since 2.2.0
      */
-    public PathGeneratorSpec<Path> path(final String... subdirectories) {
-        return new PathGenerator(context, subdirectories);
+    public PathGeneratorSpec<File> file(final String... subdirectories) {
+        return new FileGenerator(context, subdirectories);
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.generator.nio.path;
+package org.instancio.test.features.generator.io;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
@@ -28,27 +28,27 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.root;
 
-@FeatureTag(Feature.PATH_GENERATOR)
+@FeatureTag(Feature.FILE_GENERATOR)
 @ExtendWith(InstancioExtension.class)
-class PathGeneratorTest {
+class FileGeneratorTest {
 
     @Test
-    void defaultPath() {
-        final Path path = Instancio.create(Path.class);
-        assertThat(path.toString()).matches("^[a-z]{16}$");
-        assertThat(path).doesNotExist();
+    void defaultFile() {
+        final File file = Instancio.create(File.class);
+        assertThat(file.toString()).matches("^[a-z]{16}$");
+        assertThat(file).doesNotExist();
     }
 
     @Test
     void asString() {
         final String result = Instancio.of(String.class)
-                .generate(root(), gen -> gen.nio().path().name(random -> "foo").asString())
+                .generate(root(), gen -> gen.io().file().name(random -> "foo").asString())
                 .create();
 
         assertThat(result).isEqualTo("foo");
@@ -58,8 +58,8 @@ class PathGeneratorTest {
     @ValueSource(strings = {" ", "\t"})
     @ParameterizedTest
     void nameValidation(final String name) {
-        final InstancioApi<Path> api = Instancio.of(Path.class)
-                .generate(root(), gen -> gen.nio().path().name(random -> name));
+        final InstancioApi<File> api = Instancio.of(File.class)
+                .generate(root(), gen -> gen.io().file().name(random -> name));
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -67,76 +67,76 @@ class PathGeneratorTest {
     }
 
     @Nested
-    class PathTest {
+    class FileTest {
         @Test
         void prefixAndName() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().path()
+            final File file = Instancio.of(File.class)
+                    .generate(root(), gen -> gen.io().file()
                             .prefix("prefix-")
                             .name(random -> "foo"))
                     .create();
 
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^prefix-foo$");
+            assertThat(file).doesNotExist();
+            assertThat(file.toString()).matches("^prefix-foo$");
         }
 
         @Test
         void suffix() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().path().suffix(".foo"))
+            final File file = Instancio.of(File.class)
+                    .generate(root(), gen -> gen.io().file().suffix(".foo"))
                     .create();
 
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^[a-z]{16}\\.foo$");
+            assertThat(file).doesNotExist();
+            assertThat(file.toString()).matches("^[a-z]{16}\\.foo$");
         }
 
         @Test
         void prefixAndSuffix() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().path()
+            final File file = Instancio.of(File.class)
+                    .generate(root(), gen -> gen.io().file()
                             .prefix("prefix-")
                             .suffix("-suffix"))
                     .create();
 
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^prefix-[a-z]{16}-suffix$");
+            assertThat(file).doesNotExist();
+            assertThat(file.toString()).matches("^prefix-[a-z]{16}-suffix$");
         }
 
         @Test
         void prefixSuffixAndName() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().path()
+            final File file = Instancio.of(File.class)
+                    .generate(root(), gen -> gen.io().file()
                             .prefix("prefix-")
                             .name(random -> random.digits(3))
                             .suffix("-suffix"))
                     .create();
 
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^prefix-[0-9]{3}-suffix$");
+            assertThat(file).doesNotExist();
+            assertThat(file.toString()).matches("^prefix-[0-9]{3}-suffix$");
         }
 
         @Test
         void directory() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio().path("foo"))
+            final File file = Instancio.of(File.class)
+                    .generate(root(), gen -> gen.io().file("foo"))
                     .create();
 
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^foo.[a-z]{16}$");
+            assertThat(file).doesNotExist();
+            assertThat(file.toString()).matches("^foo.[a-z]{16}$");
         }
 
         @Test
         void directoriesPrefixNameAndSuffix() {
-            final Path path = Instancio.of(Path.class)
-                    .generate(root(), gen -> gen.nio()
-                            .path("foo", "bar")
+            final File file = Instancio.of(File.class)
+                    .generate(root(), gen -> gen.io()
+                            .file("foo", "bar")
                             .prefix("prefix-")
                             .name(random -> "name")
                             .suffix("-suffix"))
                     .create();
 
-            assertThat(path).doesNotExist();
-            assertThat(path.toString()).matches("^foo.bar.prefix-name-suffix$");
+            assertThat(file).doesNotExist();
+            assertThat(file.toString()).matches("^foo.bar.prefix-name-suffix$");
         }
     }
 }

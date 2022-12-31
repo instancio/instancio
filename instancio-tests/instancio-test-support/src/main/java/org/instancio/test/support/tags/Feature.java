@@ -42,6 +42,7 @@ public enum Feature {
     CONTAINER_GENERATOR,
     CYCLIC,
     ENUM_GENERATOR,
+    FILE_GENERATOR,
     GENERATE,  // API generate() method
     GENERATOR,
     GLOBAL_SEED,

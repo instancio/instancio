@@ -95,9 +95,10 @@ public class Generators {
         map.put(MapGeneratorSpecImpl.class, "map()");
         map.putAll(AtomicGenerators.getApiMethods());
         map.putAll(MathGenerators.getApiMethods());
+        map.putAll(IoGenerators.getApiMethods());
+        map.putAll(NioGenerators.getApiMethods());
         map.putAll(TemporalGenerators.getApiMethods());
         map.putAll(TextGenerators.getApiMethods());
-        map.putAll(NioGenerators.getApiMethods());
         return map;
     }
 
@@ -277,6 +278,16 @@ public class Generators {
      */
     public AtomicGenerators atomic() {
         return new AtomicGenerators(context);
+    }
+
+    /**
+     * Provides access to IO generators.
+     *
+     * @return built-in IO generators
+     * @since 2.2.0
+     */
+    public IoGenerators io() {
+        return new IoGenerators(context);
     }
 
     /**

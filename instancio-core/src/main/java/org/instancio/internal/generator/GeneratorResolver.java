@@ -18,6 +18,7 @@ package org.instancio.internal.generator;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.array.ArrayGenerator;
+import org.instancio.internal.generator.io.FileGenerator;
 import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.ByteGenerator;
 import org.instancio.internal.generator.lang.CharacterGenerator;
@@ -64,6 +65,7 @@ import org.instancio.spi.GeneratorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -105,6 +107,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class GeneratorResolver {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorResolver.class);
 
+    private static final int GENERATOR_MAP_CAPACITY = 64;
     private static final List<GeneratorProvider> PROVIDERS = ServiceLoaders.loadAll(GeneratorProvider.class);
     private final Map<Class<?>, Generator<?>> generators;
     private final GeneratorContext context;
@@ -116,8 +119,9 @@ public class GeneratorResolver {
         this.generatorProviderFacade = new GeneratorProviderFacade(context, PROVIDERS);
     }
 
+    @SuppressWarnings("PMD.NcssCount")
     private static Map<Class<?>, Generator<?>> initGeneratorMap(final GeneratorContext context) {
-        final Map<Class<?>, Generator<?>> generators = new HashMap<>();
+        final Map<Class<?>, Generator<?>> generators = new HashMap<>(GENERATOR_MAP_CAPACITY);
 
         // Core types
         generators.put(byte.class, new ByteGenerator(context));
@@ -146,6 +150,9 @@ public class GeneratorResolver {
         // java.math
         generators.put(BigDecimal.class, new BigDecimalGenerator(context));
         generators.put(BigInteger.class, new BigIntegerGenerator(context));
+
+        // java.io
+        generators.put(File.class, new FileGenerator(context));
 
         // java.nio
         generators.put(Path.class, new PathGenerator(context));
