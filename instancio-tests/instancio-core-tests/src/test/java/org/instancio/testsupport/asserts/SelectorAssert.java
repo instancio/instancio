@@ -22,7 +22,6 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetKind;
 
 import java.util.List;
 

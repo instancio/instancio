@@ -59,6 +59,11 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     }
 
     @Override
+    public String apiMethod() {
+        return "collection()";
+    }
+
+    @Override
     public CollectionGeneratorSpec<T> size(final int size) {
         this.minSize = ApiValidator.validateSize(size);
         this.maxSize = size;

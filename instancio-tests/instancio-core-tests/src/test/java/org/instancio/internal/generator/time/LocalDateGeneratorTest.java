@@ -38,6 +38,11 @@ class LocalDateGeneratorTest {
     private final LocalDateGenerator generator = new LocalDateGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("localDate()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         generator.range(START, START);
         assertThat(generator.generate(random)).isEqualTo(START);

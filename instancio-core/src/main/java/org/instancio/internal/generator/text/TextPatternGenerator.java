@@ -42,6 +42,11 @@ public class TextPatternGenerator extends AbstractGenerator<String> {
     }
 
     @Override
+    public String apiMethod() {
+        return "pattern()";
+    }
+
+    @Override
     public String generate(final Random random) {
         final StringBuilder res = new StringBuilder(pattern.length());
         final char[] p = pattern.toCharArray();

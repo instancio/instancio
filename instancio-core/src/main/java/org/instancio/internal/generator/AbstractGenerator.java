@@ -29,11 +29,21 @@ import org.instancio.generator.Hints;
 @InternalApi
 public abstract class AbstractGenerator<T> implements Generator<T> {
 
+    private static final Hints DO_NOT_MODIFY_HINT = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
+
     private final GeneratorContext context;
 
     protected AbstractGenerator(final GeneratorContext context) {
         this.context = context;
     }
+
+    /**
+     * Returns the public API method name of the generator spec.
+     * The returned name is used for reporting validation errors.
+     *
+     * @return spec name if defined, or {@code null} otherwise
+     */
+    public abstract String apiMethod();
 
     public GeneratorContext getContext() {
         return context;
@@ -43,6 +53,6 @@ public abstract class AbstractGenerator<T> implements Generator<T> {
     public Hints hints() {
         // Default for internal generators since most generated types
         // are "value types" that don't have fields that need to be populated.
-        return Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
+        return DO_NOT_MODIFY_HINT;
     }
 }

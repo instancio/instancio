@@ -39,6 +39,11 @@ class InstantGeneratorTest {
     private final InstantGenerator generator = new InstantGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("instant()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         generator.range(START, START);
         assertThat(generator.generate(random)).isEqualTo(START);

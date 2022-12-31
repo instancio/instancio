@@ -29,6 +29,11 @@ public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec
     }
 
     @Override
+    public String apiMethod() {
+        return "doubles()";
+    }
+
+    @Override
     protected Double generateNonNullValue(final Random random) {
         return random.doubleRange(getMin(), getMax());
     }

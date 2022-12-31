@@ -31,6 +31,11 @@ public class BooleanGenerator extends AbstractGenerator<Boolean> implements Bool
     }
 
     @Override
+    public String apiMethod() {
+        return "booleans()";
+    }
+
+    @Override
     public BooleanGeneratorSpec nullable() {
         this.nullable = true;
         return this;

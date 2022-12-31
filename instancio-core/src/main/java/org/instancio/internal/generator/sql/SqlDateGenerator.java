@@ -33,6 +33,11 @@ public class SqlDateGenerator extends AbstractGenerator<Date> implements Tempora
     }
 
     @Override
+    public String apiMethod() {
+        return "sqlDate()";
+    }
+
+    @Override
     public TemporalGeneratorSpec<Date> past() {
         delegate.past();
         return this;

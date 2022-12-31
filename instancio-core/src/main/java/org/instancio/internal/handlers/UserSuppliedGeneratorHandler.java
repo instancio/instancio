@@ -52,15 +52,13 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     @Override
     public Optional<GeneratorResult> getResult(final Node node) {
         return getUserSuppliedGenerator(node).map(g -> {
-            ApiValidator.validateGeneratorUsage(node, g);
-
             final Hints hints = g.hints();
             final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
             final boolean nullable = internalHint != null && internalHint.nullableResult();
+
             if (modelContext.getRandom().diceRoll(nullable)) {
                 return GeneratorResult.nullResult();
             }
-
             return GeneratorResult.create(g.generate(modelContext.getRandom()), hints);
         });
     }
@@ -70,6 +68,8 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
 
         if (generatorOpt.isPresent()) {
             final Generator<?> generator = generatorOpt.get();
+            ApiValidator.validateGeneratorUsage(node, generator);
+
             final Hints hints = generator.hints();
             final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
 

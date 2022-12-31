@@ -16,8 +16,8 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.generator.Hints;
 import org.instancio.generator.AfterGenerate;
+import org.instancio.generator.Hints;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;

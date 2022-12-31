@@ -35,6 +35,11 @@ public class CalendarGenerator extends AbstractGenerator<Calendar> implements Te
     }
 
     @Override
+    public String apiMethod() {
+        return "calendar()";
+    }
+
+    @Override
     public TemporalGeneratorSpec<Calendar> past() {
         delegate.past();
         return this;

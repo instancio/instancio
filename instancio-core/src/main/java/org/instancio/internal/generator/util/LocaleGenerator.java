@@ -28,6 +28,11 @@ public class LocaleGenerator extends AbstractGenerator<Locale> {
     }
 
     @Override
+    public String apiMethod() {
+        return null;
+    }
+
+    @Override
     public Locale generate(final Random random) {
         return random.oneOf(Locale.getAvailableLocales());
     }

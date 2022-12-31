@@ -45,9 +45,6 @@ import org.instancio.internal.generator.util.MapGeneratorSpecImpl;
 import org.instancio.internal.generator.util.OneOfCollectionGenerator;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class provides access to built-in generators.
@@ -60,46 +57,10 @@ import java.util.Map;
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 public class Generators {
 
-    private static final Map<Class<?>, String> API_METHODS = Collections.unmodifiableMap(getApiMethods());
-
     private final GeneratorContext context;
 
     public Generators(final GeneratorContext context) {
         this.context = context;
-    }
-
-    /**
-     * Returns the public API method for the given generator spec class.
-     *
-     * @param generatorSpec whose API method to return
-     * @return the public API method, for example {@code array()} for the array generator
-     */
-    public static String getApiMethod(final Class<?> generatorSpec) {
-        return API_METHODS.get(generatorSpec);
-    }
-
-    private static Map<Class<?>, String> getApiMethods() {
-        final Map<Class<?>, String> map = new HashMap<>();
-        map.put(ByteGenerator.class, "bytes()");
-        map.put(ShortGenerator.class, "shorts()");
-        map.put(IntegerGenerator.class, "ints()");
-        map.put(LongGenerator.class, "longs()");
-        map.put(FloatGenerator.class, "floats()");
-        map.put(DoubleGenerator.class, "doubles()");
-        map.put(CharacterGenerator.class, "chars()");
-        map.put(BooleanGenerator.class, "booleans()");
-        map.put(StringGenerator.class, "string()");
-        map.put(EnumGenerator.class, "enumOf()");
-        map.put(ArrayGenerator.class, "array()");
-        map.put(CollectionGeneratorSpecImpl.class, "collection()");
-        map.put(MapGeneratorSpecImpl.class, "map()");
-        map.putAll(AtomicGenerators.getApiMethods());
-        map.putAll(MathGenerators.getApiMethods());
-        map.putAll(IoGenerators.getApiMethods());
-        map.putAll(NioGenerators.getApiMethods());
-        map.putAll(TemporalGenerators.getApiMethods());
-        map.putAll(TextGenerators.getApiMethods());
-        return map;
     }
 
     /**
@@ -193,7 +154,7 @@ public class Generators {
      * @return customised generator
      */
     public <E extends Enum<E>> EnumGeneratorSpec<E> enumOf(final Class<E> enumClass) {
-        return new EnumGenerator<>(enumClass);
+        return new EnumGenerator<>(context, enumClass);
     }
 
     /**

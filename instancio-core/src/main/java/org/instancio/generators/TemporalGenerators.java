@@ -44,8 +44,6 @@ import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Contains built-in temporal generators.
@@ -56,24 +54,6 @@ public class TemporalGenerators {
 
     TemporalGenerators(final GeneratorContext context) {
         this.context = context;
-    }
-
-    static Map<Class<?>, String> getApiMethods() {
-        Map<Class<?>, String> map = new HashMap<>();
-        map.put(InstantGenerator.class, "instant()");
-        map.put(LocalDateGenerator.class, "localDate()");
-        map.put(LocalDateTimeGenerator.class, "localDateTime()");
-        map.put(ZonedDateTimeGenerator.class, "zonedDateTime()");
-        map.put(LocalTimeGenerator.class, "localTime()");
-        map.put(YearGenerator.class, "year()");
-        map.put(YearMonthGenerator.class, "yearMonth()");
-        map.put(DurationGenerator.class, "duration()");
-        map.put(PeriodGenerator.class, "period()");
-        map.put(DateGenerator.class, "date()");
-        map.put(SqlDateGenerator.class, "sqlDate()");
-        map.put(TimestampGenerator.class, "timestamp()");
-        map.put(CalendarGenerator.class, "calendar()");
-        return map;
     }
 
     /**

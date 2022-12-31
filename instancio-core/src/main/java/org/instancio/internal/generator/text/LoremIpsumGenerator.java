@@ -45,6 +45,11 @@ public class LoremIpsumGenerator extends AbstractGenerator<String> implements Lo
     }
 
     @Override
+    public String apiMethod() {
+        return "loremIpsum()";
+    }
+
+    @Override
     public LoremIpsumGeneratorSpec words(final int words) {
         ApiValidator.isTrue(words > 0, "Number of words must be greater than zero: %s", words);
         this.words = words;

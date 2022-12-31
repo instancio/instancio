@@ -33,6 +33,11 @@ public class TimestampGenerator extends AbstractGenerator<Timestamp> implements 
     }
 
     @Override
+    public String apiMethod() {
+        return "timestamp()";
+    }
+
+    @Override
     public TemporalGeneratorSpec<Timestamp> past() {
         delegate.past();
         return this;

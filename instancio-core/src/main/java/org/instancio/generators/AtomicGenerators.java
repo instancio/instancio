@@ -21,8 +21,6 @@ import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -35,13 +33,6 @@ public class AtomicGenerators {
 
     AtomicGenerators(final GeneratorContext context) {
         this.context = context;
-    }
-
-    static Map<Class<?>, String> getApiMethods() {
-        Map<Class<?>, String> map = new HashMap<>();
-        map.put(AtomicIntegerGenerator.class, "atomicInteger()");
-        map.put(AtomicLongGenerator.class, "atomicLong()");
-        return map;
     }
 
     /**

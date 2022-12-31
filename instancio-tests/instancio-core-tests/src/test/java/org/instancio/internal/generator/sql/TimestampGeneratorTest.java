@@ -38,6 +38,11 @@ class TimestampGeneratorTest {
     private final TimestampGenerator generator = new TimestampGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("timestamp()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         final Timestamp start = Timestamp.valueOf(START);
         generator.range(start, start);

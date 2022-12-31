@@ -34,6 +34,11 @@ class PeriodGeneratorTest {
             new GeneratorContext(Settings.defaults(), random));
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("period()");
+    }
+
+    @Test
     void defaultPeriodSpec() {
         final Period result = generator.generate(random);
         assertThat(result.getDays()).isBetween(1, 365);

@@ -29,6 +29,11 @@ public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     }
 
     @Override
+    public String apiMethod() {
+        return "shorts()";
+    }
+
+    @Override
     protected Short generateNonNullValue(final Random random) {
         return random.shortRange(getMin(), getMax());
     }

@@ -20,17 +20,12 @@ import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generators.Generators;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
-import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
-import org.instancio.test.support.pojo.arrays.primitive.WithIntArray;
 import org.instancio.test.support.pojo.basic.CharacterHolder;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
-import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.basic.SupportedAtomicTypes;
 import org.instancio.test.support.pojo.basic.SupportedMathTypes;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.basic.SupportedTemporalTypes;
-import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
@@ -65,6 +60,13 @@ class GeneratorMismatchTest {
                         "Generator type mismatch:",
                         "Method 'doubles()' cannot be used for type: int",
                         "Field: private int org.instancio.test.support.pojo.basic.SupportedNumericTypes.primitiveInt");
+    }
+
+    @Test
+    void assertCollectionTypes() {
+        assertMessageContains(Person.class, Address.class, "collection()", Generators::collection);
+        assertMessageContains(Person.class, Address.class, "map()", Generators::map);
+        assertMessageContains(Person.class, Address.class, "enumSet()", gen -> gen.enumSet(Gender.class));
     }
 
     @Test
@@ -118,7 +120,7 @@ class GeneratorMismatchTest {
 
     @Test
     void assertString() {
-        assertMessageContains(StringHolder.class, String.class, "ints()", Generators::ints);
+        assertMessageContains(IntegerHolder.class, int.class, "string()", Generators::string);
     }
 
     @Test
@@ -141,13 +143,6 @@ class GeneratorMismatchTest {
     @Test
     void assertEnum() {
         assertMessageContains(CharacterHolder.class, char.class, "enumOf()", gen -> gen.enumOf(Gender.class));
-    }
-
-    @Test
-    void assertArrays() {
-        assertMessageContains(WithIntArray.class, int[].class, "string()", Generators::string);
-        assertMessageContains(WithIntegerArray.class, Integer[].class, "string()", Generators::string);
-        assertMessageContains(TwoArraysOfItemString.class, Item[].class, "string()", Generators::string);
     }
 
     private static <T> void assertMessageContains(final Class<?> typeToCreate,

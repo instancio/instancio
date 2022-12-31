@@ -36,6 +36,11 @@ class YearGeneratorTest {
     private final YearGenerator generator = new YearGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("year()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         generator.range(Year.of(2000), Year.of(2000));
         assertThat(generator.generate(random)).isEqualTo(Year.of(2000));

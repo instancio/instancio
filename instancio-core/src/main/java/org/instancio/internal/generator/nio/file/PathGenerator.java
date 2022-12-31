@@ -58,6 +58,11 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
     }
 
     @Override
+    public String apiMethod() {
+        return "path()";
+    }
+
+    @Override
     public PathGeneratorSpec<Path> tmp() {
         this.isTemp = true;
         return this;

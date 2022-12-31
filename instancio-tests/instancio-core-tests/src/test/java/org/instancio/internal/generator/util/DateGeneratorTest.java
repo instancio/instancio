@@ -41,6 +41,11 @@ class DateGeneratorTest {
     private final DateGenerator generator = new DateGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("date()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         final Date time = Date.from(START);
         generator.range(time, time);

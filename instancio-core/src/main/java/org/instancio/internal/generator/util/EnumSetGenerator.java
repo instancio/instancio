@@ -47,6 +47,11 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumS
         this.generateEntriesHint = 0;
     }
 
+    @Override
+    public String apiMethod() {
+        return "enumSet()";
+    }
+
     public EnumSetGenerator(final GeneratorContext context) {
         super(context);
         this.enumClass = null; // NOPMD

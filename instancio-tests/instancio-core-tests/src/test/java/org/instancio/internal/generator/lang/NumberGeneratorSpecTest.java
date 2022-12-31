@@ -32,6 +32,11 @@ class NumberGeneratorSpecTest {
         protected AbstractRandomNumberGeneratorSpec<Byte> createGenerator() {
             return new ByteGenerator(context);
         }
+
+        @Override
+        protected String apiMethod() {
+            return "bytes()";
+        }
     }
 
     @Nested
@@ -39,6 +44,11 @@ class NumberGeneratorSpecTest {
         @Override
         protected AbstractRandomNumberGeneratorSpec<Short> createGenerator() {
             return new ShortGenerator(context);
+        }
+
+        @Override
+        protected String apiMethod() {
+            return "shorts()";
         }
     }
 
@@ -48,6 +58,11 @@ class NumberGeneratorSpecTest {
         protected AbstractRandomNumberGeneratorSpec<Integer> createGenerator() {
             return new IntegerGenerator(context);
         }
+
+        @Override
+        protected String apiMethod() {
+            return "ints()";
+        }
     }
 
     @Nested
@@ -56,6 +71,11 @@ class NumberGeneratorSpecTest {
         protected AbstractRandomNumberGeneratorSpec<Long> createGenerator() {
             return new LongGenerator(context);
         }
+
+        @Override
+        protected String apiMethod() {
+            return "longs()";
+        }
     }
 
     @Nested
@@ -63,6 +83,11 @@ class NumberGeneratorSpecTest {
         @Override
         protected AbstractRandomNumberGeneratorSpec<Float> createGenerator() {
             return new FloatGenerator(context);
+        }
+
+        @Override
+        protected String apiMethod() {
+            return "floats()";
         }
 
         @Test
@@ -80,6 +105,11 @@ class NumberGeneratorSpecTest {
         @Override
         protected AbstractRandomNumberGeneratorSpec<Double> createGenerator() {
             return new DoubleGenerator(context);
+        }
+
+        @Override
+        protected String apiMethod() {
+            return "doubles()";
         }
 
         @Test

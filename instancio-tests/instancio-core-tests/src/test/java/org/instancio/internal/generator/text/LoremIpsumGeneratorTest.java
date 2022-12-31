@@ -38,6 +38,11 @@ class LoremIpsumGeneratorTest {
             new GeneratorContext(Settings.defaults(), random));
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("loremIpsum()");
+    }
+
+    @Test
     void defaultLoremIpsum() {
         final String result = generator.generate(random);
         assertWords(result, LoremIpsumGeneratorSpec.DEFAULT_WORDS);

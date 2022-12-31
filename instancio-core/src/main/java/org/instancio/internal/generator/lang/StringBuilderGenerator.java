@@ -35,6 +35,11 @@ public class StringBuilderGenerator extends AbstractGenerator<StringBuilder> {
     }
 
     @Override
+    public String apiMethod() {
+        return null;
+    }
+
+    @Override
     public StringBuilder generate(final Random random) {
         final int length = random.intRange(minLength, maxLength + 1);
         return new StringBuilder(random.upperCaseAlphabetic(length));

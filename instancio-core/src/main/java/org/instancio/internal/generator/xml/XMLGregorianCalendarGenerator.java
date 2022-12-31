@@ -20,8 +20,6 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.time.LocalDateTimeGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -29,14 +27,20 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static org.instancio.internal.util.ExceptionHandler.logException;
+
 public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregorianCalendar> {
-    private static final Logger LOG = LoggerFactory.getLogger(XMLGregorianCalendarGenerator.class);
 
     private final Generator<LocalDateTime> localDateTimeGenerator;
 
     public XMLGregorianCalendarGenerator(final GeneratorContext context) {
         super(context);
         this.localDateTimeGenerator = new LocalDateTimeGenerator(context);
+    }
+
+    @Override
+    public String apiMethod() {
+        return null;
     }
 
     @Override
@@ -47,7 +51,7 @@ public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregoria
                     localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
         } catch (DatatypeConfigurationException ex) {
-            LOG.debug("Error generating XMLGregorianCalendar; returning a null", ex);
+            logException("Error generating XMLGregorianCalendar; returning a null", ex);
             return null;
         }
     }

@@ -45,6 +45,11 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
+    public String apiMethod() {
+        return "string()";
+    }
+
+    @Override
     public StringGeneratorSpec prefix(final String prefix) {
         this.prefix = prefix;
         return this;

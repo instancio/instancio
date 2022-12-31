@@ -30,6 +30,11 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant> {
     }
 
     @Override
+    public String apiMethod() {
+        return "instant()";
+    }
+
+    @Override
     Instant getLatestPast() {
         return Instant.now().minusSeconds(1);
     }

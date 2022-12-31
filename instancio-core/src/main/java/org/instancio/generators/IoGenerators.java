@@ -21,8 +21,6 @@ import org.instancio.internal.generator.io.FileGenerator;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Contains built-in generators for {@code java.io} classes.
@@ -35,12 +33,6 @@ public class IoGenerators {
 
     public IoGenerators(final GeneratorContext context) {
         this.context = context;
-    }
-
-    static Map<Class<?>, String> getApiMethods() {
-        Map<Class<?>, String> map = new HashMap<>();
-        map.put(FileGenerator.class, "file()");
-        return map;
     }
 
     /**

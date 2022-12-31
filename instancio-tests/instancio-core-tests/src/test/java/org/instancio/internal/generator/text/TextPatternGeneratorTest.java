@@ -38,6 +38,13 @@ class TextPatternGeneratorTest {
             + "%n\t## - hash symbol escape%n");
 
     private static final Random random = new DefaultRandom();
+    private final GeneratorContext context = new GeneratorContext(Settings.create(), random);
+
+    @Test
+    void apiMethod() {
+        TextPatternGenerator generator = new TextPatternGenerator(context, "any");
+        assertThat(generator.apiMethod()).isEqualTo("pattern()");
+    }
 
     @ValueSource(strings = {"", " \n \t \r\n ", "abc", "123", "a1b2", "`~!@$%^&*()_-+={[}]|\\:;\"'<,>.?/"})
     @ParameterizedTest
@@ -107,7 +114,6 @@ class TextPatternGeneratorTest {
     }
 
     private String generate(final String pattern) {
-        final GeneratorContext context = new GeneratorContext(Settings.defaults(), random);
         TextPatternGenerator generator = new TextPatternGenerator(context, pattern);
         return generator.generate(random);
     }

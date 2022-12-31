@@ -38,6 +38,11 @@ public class BigIntegerGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
+    public String apiMethod() {
+        return "bigInteger()";
+    }
+
+    @Override
     protected BigInteger generateNonNullValue(final Random random) {
         return BigInteger.valueOf(random.longRange(getMin().longValue(), getMax().longValue()));
     }

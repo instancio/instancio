@@ -41,6 +41,11 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
+    public String apiMethod() {
+        return "bigDecimal()";
+    }
+
+    @Override
     public BigDecimalGeneratorSpec scale(final int scale) {
         this.scale = scale;
         return this;

@@ -16,8 +16,8 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.AfterGenerate;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -45,6 +45,11 @@ class StringGeneratorTest {
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
     private final StringGenerator generator = new StringGenerator(context);
+
+    @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("string()");
+    }
 
     @Test
     void generate() {
