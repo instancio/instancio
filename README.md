@@ -88,7 +88,7 @@ If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>2.1.0</version>
+        <version>2.2.0</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -99,7 +99,7 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>2.1.0</version>
+        <version>2.2.0</version>
         <scope>test</scope>
     </dependency>
 ```
