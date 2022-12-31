@@ -15,11 +15,10 @@
  */
 package org.instancio.generator;
 
+import org.instancio.GeneratorSpecProvider;
 import org.instancio.InstancioApi;
 import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
-
-import java.util.function.Function;
 
 /**
  * An action hint that is passed from a generator to the engine
@@ -41,8 +40,8 @@ public enum AfterGenerate {
      *
      * <ul>
      *   <li>{@link InstancioApi#set(TargetSelector, Object)}</li>
-     *   <li>{@link InstancioApi#supply(TargetSelector, Generator)} </li>
-     *   <li>{@link InstancioApi#generate(TargetSelector, Function)} </li>
+     *   <li>{@link InstancioApi#supply(TargetSelector, Generator)}</li>
+     *   <li>{@link InstancioApi#generate(TargetSelector, GeneratorSpecProvider)}</li>
      * </ul>
      *
      * <p><b>Note:</b> {@link OnCompleteCallback callbacks} provided via the
@@ -58,8 +57,8 @@ public enum AfterGenerate {
      *
      * <ul>
      *   <li>{@link InstancioApi#set(TargetSelector, Object)}</li>
-     *   <li>{@link InstancioApi#supply(TargetSelector, Generator)} </li>
-     *   <li>{@link InstancioApi#generate(TargetSelector, Function)} </li>
+     *   <li>{@link InstancioApi#supply(TargetSelector, Generator)}</li>
+     *   <li>{@link InstancioApi#generate(TargetSelector, GeneratorSpecProvider)}</li>
      * </ul>
      *
      * @since 2.0.0
