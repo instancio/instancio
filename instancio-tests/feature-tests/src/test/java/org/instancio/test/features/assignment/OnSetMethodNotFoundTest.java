@@ -112,7 +112,7 @@ class OnSetMethodNotFoundTest {
                         "%n" +
                         "To resolve the error, consider one of the following:%n" +
                         " -> Add the expected setter method%n" +
-                        " -> Update Keys.ON_SET_METHOD_NOT_FOUND setting to%n" +
+                        " -> Update Keys.ON_SET_METHOD_NOT_FOUND setting to:%n" +
                         "    -> OnSetMethodNotFound.ASSIGN_FIELD to assign value via field%n" +
                         "    -> OnSetMethodNotFound.IGNORE to leave value uninitialised" +
                         "%n"));
