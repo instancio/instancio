@@ -77,13 +77,12 @@ class FieldAssignerTest {
                         "Error assigning value to field:%n" +
                         " -> Field: String Person.name%n" +
                         " -> Argument type:  String%n" +
-                        " -> Argument value: any-value%n" +
+                        " -> Argument value: \"any-value\"%n" +
                         "%n" +
                         "Root cause: %n" +
                         " -> java.lang.RuntimeException: expected error%n" +
                         "%n" +
-                        "To resolve the error, consider one of the following:%n" +
-                        " -> Update Keys.ON_SET_FIELD_ERROR setting to%n" +
-                        "    -> OnSetFieldError.IGNORE to leave value uninitialised%n"));
+                        "To ignore the error and leave the field uninitialised%n" +
+                        " -> Update Keys.ON_SET_FIELD_ERROR setting to: OnSetFieldError.IGNORE%n"));
     }
 }

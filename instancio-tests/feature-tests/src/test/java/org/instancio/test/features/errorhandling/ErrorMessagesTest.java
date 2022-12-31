@@ -168,9 +168,8 @@ class ErrorMessagesTest {
                         "Root cause: %n" +
                         " -> java.lang.IllegalArgumentException: Can not set java.lang.String field org.instancio.test.support.pojo.person.Person.name to java.lang.Integer%n" +
                         "%n" +
-                        "To resolve the error, consider one of the following:%n" +
-                        " -> Update Keys.ON_SET_FIELD_ERROR setting to%n" +
-                        "    -> OnSetFieldError.IGNORE to leave value uninitialised%n"));
+                        "To ignore the error and leave the field uninitialised%n" +
+                        " -> Update Keys.ON_SET_FIELD_ERROR setting to: OnSetFieldError.IGNORE%n"));
     }
 
     @Test

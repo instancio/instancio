@@ -76,4 +76,13 @@ public final class StringUtils {
     public static <E extends Enum<E>> String enumToString(E val) {
         return val.getClass().getSimpleName() + "." + val.name();
     }
+
+    public static String quoteToString(final Object value) {
+        if (value == null) return null;
+        final String str = value.toString();
+        if (value instanceof String) {
+            return '"' + str + '"';
+        }
+        return str;
+    }
 }

@@ -75,4 +75,12 @@ class StringUtilsTest {
     void enumToString() {
         assertThat(StringUtils.enumToString(Gender.OTHER)).isEqualTo("Gender.OTHER");
     }
+
+    @Test
+    void quoteToString() {
+        assertThat(StringUtils.quoteToString(null)).isNull();
+        assertThat(StringUtils.quoteToString("")).isEqualTo("\"\"");
+        assertThat(StringUtils.quoteToString("123")).isEqualTo("\"123\"");
+        assertThat(StringUtils.quoteToString(123)).isEqualTo("123");
+    }
 }

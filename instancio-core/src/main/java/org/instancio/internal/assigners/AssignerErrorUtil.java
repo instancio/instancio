@@ -22,6 +22,7 @@ import org.instancio.assignment.OnSetMethodNotFound;
 import org.instancio.assignment.SetterStyle;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
+import org.instancio.internal.util.StringUtils;
 
 @SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
 final class AssignerErrorUtil {
@@ -46,14 +47,13 @@ final class AssignerErrorUtil {
                 .append("Error assigning value to field:").append(NL)
                 .append(" -> Field: ").append(fieldName).append(NL)
                 .append(" -> Argument type:  ").append(Format.withoutPackage(value.getClass())).append(NL)
-                .append(" -> Argument value: ").append(value).append(NL)
+                .append(" -> Argument value: ").append(StringUtils.quoteToString(value)).append(NL)
                 .append(NL)
                 .append("Root cause: ").append(NL)
                 .append(" -> ").append(getRootCause(cause)).append(NL)
                 .append(NL)
-                .append("To resolve the error, consider one of the following:").append(NL)
-                .append(" -> Update Keys.ON_SET_FIELD_ERROR setting to").append(NL)
-                .append("    -> ").append(OnSetFieldError.IGNORE).append(" to leave value uninitialised").append(NL)
+                .append("To ignore the error and leave the field uninitialised").append(NL)
+                .append(" -> Update Keys.ON_SET_FIELD_ERROR setting to: ").append(OnSetFieldError.IGNORE).append(NL)
                 .toString();
     }
 
@@ -78,7 +78,7 @@ final class AssignerErrorUtil {
                 .append(NL)
                 .append("To resolve the error, consider one of the following:").append(NL)
                 .append(" -> Add the expected setter method").append(NL)
-                .append(" -> Update Keys.ON_SET_METHOD_NOT_FOUND setting to").append(NL)
+                .append(" -> Update Keys.ON_SET_METHOD_NOT_FOUND setting to:").append(NL)
                 .append("    -> ").append(OnSetMethodNotFound.ASSIGN_FIELD).append(" to assign value via field").append(NL)
                 .append("    -> ").append(OnSetMethodNotFound.IGNORE).append(" to leave value uninitialised").append(NL)
                 .toString();
@@ -100,7 +100,7 @@ final class AssignerErrorUtil {
                 .append("Method invocation failed:").append(NL)
                 .append(" -> Method: ").append(method).append(NL)
                 .append(" -> Argument type:  ").append(Format.withoutPackage(value.getClass())).append(NL)
-                .append(" -> Argument value: ").append(value).append(NL)
+                .append(" -> Argument value: ").append(StringUtils.quoteToString(value)).append(NL)
                 .append(NL)
                 .append("Root cause: ").append(NL)
                 .append(" -> ").append(getRootCause(cause)).append(NL)
