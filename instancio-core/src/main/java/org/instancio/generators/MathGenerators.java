@@ -24,8 +24,6 @@ import org.instancio.internal.generator.math.BigIntegerGenerator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Contains built-in generators for {@code java.math} classes.
@@ -36,13 +34,6 @@ public class MathGenerators {
 
     MathGenerators(final GeneratorContext context) {
         this.context = context;
-    }
-
-    static Map<Class<?>, String> getApiMethods() {
-        Map<Class<?>, String> map = new HashMap<>();
-        map.put(BigIntegerGenerator.class, "bigInteger()");
-        map.put(BigDecimalGenerator.class, "bigDecimal()");
-        return map;
     }
 
     /**

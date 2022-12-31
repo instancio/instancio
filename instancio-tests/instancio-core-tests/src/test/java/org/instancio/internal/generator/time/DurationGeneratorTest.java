@@ -38,6 +38,11 @@ class DurationGeneratorTest {
             new GeneratorContext(Settings.defaults(), random));
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("duration()");
+    }
+
+    @Test
     void defaultDurationSpec() {
         final Duration duration = generator.generate(random);
         assertThat(duration.get(ChronoUnit.NANOS)).isBetween(1L, 1_000_000_000_000_000L);

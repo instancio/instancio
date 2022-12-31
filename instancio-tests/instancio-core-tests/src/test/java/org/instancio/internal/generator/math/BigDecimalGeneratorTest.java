@@ -36,6 +36,11 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
         return new BigDecimalGenerator(context);
     }
 
+    @Override
+    protected String apiMethod() {
+        return "bigDecimal()";
+    }
+
     @CsvSource({
             "-10.0012, -10.0011",
             "0.00015, 0.00019",

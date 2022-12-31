@@ -29,6 +29,11 @@ public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpe
     }
 
     @Override
+    public String apiMethod() {
+        return "ints()";
+    }
+
+    @Override
     protected Integer generateNonNullValue(final Random random) {
         return random.intRange(getMin(), getMax());
     }

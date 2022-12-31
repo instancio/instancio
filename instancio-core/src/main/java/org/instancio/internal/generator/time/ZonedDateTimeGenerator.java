@@ -36,6 +36,11 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     }
 
     @Override
+    public String apiMethod() {
+        return "zonedDateTime()";
+    }
+
+    @Override
     ZonedDateTime getLatestPast() {
         return ZonedDateTime.now().minusSeconds(1);
     }

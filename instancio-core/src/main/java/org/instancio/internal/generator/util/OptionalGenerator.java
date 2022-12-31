@@ -31,6 +31,11 @@ public class OptionalGenerator<T> extends AbstractGenerator<Optional<T>> {
     }
 
     @Override
+    public String apiMethod() {
+        return null;
+    }
+
+    @Override
     @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL})
     public Optional<T> generate(final Random random) {
         return null; // must be null to delegate creation to the engine

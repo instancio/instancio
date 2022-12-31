@@ -51,6 +51,8 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
      */
     protected abstract AbstractRandomNumberGeneratorSpec<T> createGenerator();
 
+    protected abstract String apiMethod();
+
     @BeforeEach
     final void initTemplate() {
         initialMin = asT(INITIAL_MIN);
@@ -61,6 +63,11 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
 
     protected final AbstractRandomNumberGeneratorSpec<T> getGenerator() {
         return generator;
+    }
+
+    @Test
+    void verifyApiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo(apiMethod());
     }
 
     @Test

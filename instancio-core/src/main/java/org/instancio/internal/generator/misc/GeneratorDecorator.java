@@ -48,6 +48,10 @@ public final class GeneratorDecorator implements Generator<Object> {
         return new GeneratorDecorator(generator, newHints);
     }
 
+    public Generator<?> getDelegate() {
+        return delegate;
+    }
+
     @Override
     public Object generate(final Random random) {
         return delegate.generate(random);
@@ -57,5 +61,4 @@ public final class GeneratorDecorator implements Generator<Object> {
     public Hints hints() {
         return hints;
     }
-
 }

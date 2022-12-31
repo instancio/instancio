@@ -39,6 +39,11 @@ class SqlDateGeneratorTest {
     private final SqlDateGenerator generator = new SqlDateGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("sqlDate()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         final Date start = Date.valueOf(START);
         generator.range(start, start);

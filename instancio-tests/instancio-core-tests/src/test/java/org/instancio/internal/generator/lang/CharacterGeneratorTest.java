@@ -18,7 +18,6 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.generator.AfterGenerate;
-import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
@@ -43,7 +42,12 @@ class CharacterGeneratorTest {
     private static final Settings settings = Settings.defaults().set(Keys.CHARACTER_NULLABLE, true);
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private final Generator<Character> generator = new CharacterGenerator(context);
+    private final CharacterGenerator generator = new CharacterGenerator(context);
+
+    @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("chars()");
+    }
 
     @Test
     void generate() {

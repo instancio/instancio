@@ -29,6 +29,11 @@ public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<L
     }
 
     @Override
+    public String apiMethod() {
+        return "longs()";
+    }
+
+    @Override
     protected Long generateNonNullValue(final Random random) {
         return random.longRange(getMin(), getMax());
     }

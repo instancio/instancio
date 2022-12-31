@@ -29,6 +29,11 @@ public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     }
 
     @Override
+    public String apiMethod() {
+        return "floats()";
+    }
+
+    @Override
     protected Float generateNonNullValue(final Random random) {
         return random.floatRange(getMin(), getMax());
     }

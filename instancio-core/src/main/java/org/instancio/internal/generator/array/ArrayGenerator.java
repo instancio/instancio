@@ -51,6 +51,11 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
         this.nullableElements = context.getSettings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
     }
 
+    @Override
+    public String apiMethod() {
+        return "array()";
+    }
+
     public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {
         this(context);
         this.arrayType = ApiValidator.notNull(arrayType, "Type must not be null");

@@ -56,9 +56,9 @@ class CustomCollectionGeneratorAfterGenerateAndSelectorsTest {
     private static final int INITIAL_SIZE = 1;
     private static final int GENERATE_ELEMENTS_HINT = 5;
 
-    private static final int EXISTING_INT_ONE = 1;
-    private static final int INT_ONE_OVERRIDE = -1;
-    private static final int INT_TWO_OVERRIDE = -2;
+    private static final int EXISTING_INT_ONE = -1;
+    private static final int INT_ONE_OVERRIDE = -100;
+    private static final int INT_TWO_OVERRIDE = -200;
 
     private static final String EXISTING_STR_ONE = "one-original";
     private static final String STR_ONE_OVERRIDE = "one-override";

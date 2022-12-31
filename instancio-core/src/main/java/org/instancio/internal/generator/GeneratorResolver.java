@@ -107,7 +107,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class GeneratorResolver {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorResolver.class);
 
-    private static final int GENERATOR_MAP_CAPACITY = 64;
     private static final List<GeneratorProvider> PROVIDERS = ServiceLoaders.loadAll(GeneratorProvider.class);
     private final Map<Class<?>, Generator<?>> generators;
     private final GeneratorContext context;
@@ -121,7 +120,7 @@ public class GeneratorResolver {
 
     @SuppressWarnings("PMD.NcssCount")
     private static Map<Class<?>, Generator<?>> initGeneratorMap(final GeneratorContext context) {
-        final Map<Class<?>, Generator<?>> generators = new HashMap<>(GENERATOR_MAP_CAPACITY);
+        final Map<Class<?>, Generator<?>> generators = new HashMap<>(64);
 
         // Core types
         generators.put(byte.class, new ByteGenerator(context));
@@ -243,7 +242,7 @@ public class GeneratorResolver {
             if (klass.isArray()) {
                 generator = new ArrayGenerator<>(context, klass);
             } else if (klass.isEnum()) {
-                generator = new EnumGenerator(klass);
+                generator = new EnumGenerator(context, klass);
             }
         }
         return Optional.ofNullable(generator);

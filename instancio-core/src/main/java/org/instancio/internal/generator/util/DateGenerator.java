@@ -33,6 +33,11 @@ public class DateGenerator extends AbstractGenerator<Date> implements TemporalGe
     }
 
     @Override
+    public String apiMethod() {
+        return "date()";
+    }
+
+    @Override
     public TemporalGeneratorSpec<Date> past() {
         delegate.past();
         return this;

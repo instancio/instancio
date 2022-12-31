@@ -19,13 +19,15 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.EnumGeneratorSpec;
+import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
-import org.instancio.generators.Generators;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.util.TypeUtils;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Map;
-import java.util.Optional;
 
 final class GeneratorSupport {
 
@@ -40,17 +42,20 @@ final class GeneratorSupport {
      * @return {@code true} if generator can
      */
     static boolean supports(Generator<?> generator, Class<?> type) {
-        if (type.isArray()) {
-            return generator instanceof ArrayGeneratorSpec;
+        if (generator instanceof ArrayGeneratorSpec) {
+            return type.isArray();
         }
-        if (Collection.class.isAssignableFrom(type)) {
-            return generator instanceof CollectionGeneratorSpec;
+        if (generator instanceof EnumSetGeneratorSpec) {
+            return EnumSet.class.isAssignableFrom(type);
         }
-        if (Map.class.isAssignableFrom(type)) {
-            return generator instanceof MapGeneratorSpec;
+        if (generator instanceof CollectionGeneratorSpec) {
+            return Collection.class.isAssignableFrom(type);
         }
-        if (type.isEnum()) {
-            return generator instanceof EnumGeneratorSpec;
+        if (generator instanceof MapGeneratorSpec) {
+            return Map.class.isAssignableFrom(type);
+        }
+        if (generator instanceof EnumGeneratorSpec) {
+            return type.isEnum();
         }
         final Class<?> typeArg = TypeUtils.getGenericSuperclassTypeArgument(generator.getClass());
         if (typeArg != null) {
@@ -63,13 +68,16 @@ final class GeneratorSupport {
         return false;
     }
 
-    /**
-     * Returns the public API method name of the generator.
-     * Will return an empty result if the class represents a lambda.
-     *
-     * @return spec name, if defined
-     */
-    static Optional<String> apiMethodName(final Class<?> generatorClass) {
-        return Optional.ofNullable(Generators.getApiMethod(generatorClass));
+    static AbstractGenerator<?> unpackGenerator(final Generator<?> generator) {
+        if (generator instanceof AbstractGenerator) {
+            return (AbstractGenerator<?>) generator;
+        }
+        if (generator instanceof GeneratorDecorator) {
+            final Generator<?> delegate = ((GeneratorDecorator) generator).getDelegate();
+            if (delegate instanceof AbstractGenerator) {
+                return (AbstractGenerator<?>) delegate;
+            }
+        }
+        return null;
     }
 }

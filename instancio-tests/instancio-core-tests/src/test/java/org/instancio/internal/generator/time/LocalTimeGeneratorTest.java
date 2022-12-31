@@ -37,6 +37,11 @@ class LocalTimeGeneratorTest {
     private final LocalTimeGenerator generator = new LocalTimeGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("localTime()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         generator.range(START, START);
         assertThat(generator.generate(random)).isEqualTo(START);

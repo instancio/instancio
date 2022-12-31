@@ -29,6 +29,11 @@ public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<B
     }
 
     @Override
+    public String apiMethod() {
+        return "bytes()";
+    }
+
+    @Override
     protected Byte generateNonNullValue(final Random random) {
         return random.byteRange(getMin(), getMax());
     }

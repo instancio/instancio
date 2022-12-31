@@ -31,6 +31,11 @@ public class ZoneOffsetGenerator extends AbstractGenerator<ZoneOffset> {
     }
 
     @Override
+    public String apiMethod() {
+        return null;
+    }
+
+    @Override
     public ZoneOffset generate(final Random random) {
         final int hours = random.intRange(MIN_HOURS, MAX_HOURS);
 

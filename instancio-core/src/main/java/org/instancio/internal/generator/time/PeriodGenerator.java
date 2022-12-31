@@ -40,6 +40,11 @@ public class PeriodGenerator extends AbstractGenerator<Period> implements Period
     }
 
     @Override
+    public String apiMethod() {
+        return "period()";
+    }
+
+    @Override
     public PeriodGeneratorSpec days(final int min, final int max) {
         ApiValidator.isTrue(min <= max, "Period days 'min' must be less than or equal 'max': days(%s, %s)", min, max);
         this.minDays = min;

@@ -41,6 +41,11 @@ public class DurationGenerator extends AbstractGenerator<Duration> implements Du
     }
 
     @Override
+    public String apiMethod() {
+        return "duration()";
+    }
+
+    @Override
     public DurationGeneratorSpec of(final long minAmount, final long maxAmount, final TemporalUnit unit) {
         ApiValidator.notNull(unit, "Unit must not be null");
         ApiValidator.isTrue(minAmount <= maxAmount,

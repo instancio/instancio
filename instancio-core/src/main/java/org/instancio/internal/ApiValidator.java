@@ -19,6 +19,7 @@ import org.instancio.GeneratorSpecProvider;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
+import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
@@ -29,7 +30,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public final class ApiValidator {
@@ -137,10 +137,14 @@ public final class ApiValidator {
     }
 
     public static void validateGeneratorUsage(final Node node, final Generator<?> generator) {
-        final Optional<String> name = GeneratorSupport.apiMethodName(generator.getClass());
-        if (!name.isPresent()) return;
-        isTrue(GeneratorSupport.supports(generator, node.getTargetClass()),
-                () -> String.format(generateMismatchErrorMessageTemplate(node, name.get())));
+        final AbstractGenerator<?> absGen = GeneratorSupport.unpackGenerator(generator);
+        if (absGen == null) return;
+
+        final String name = absGen.apiMethod();
+        if (name != null) {
+            isTrue(GeneratorSupport.supports(absGen, node.getTargetClass()),
+                    () -> String.format(generateMismatchErrorMessageTemplate(node, name)));
+        }
     }
 
     private static String generateMismatchErrorMessageTemplate(final Node node, final String apiMethodName) {

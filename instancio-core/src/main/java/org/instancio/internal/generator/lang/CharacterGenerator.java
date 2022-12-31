@@ -31,6 +31,11 @@ public class CharacterGenerator extends AbstractGenerator<Character> implements 
     }
 
     @Override
+    public String apiMethod() {
+        return "chars()";
+    }
+
+    @Override
     public CharacterGeneratorSpec nullable() {
         this.nullable = true;
         return this;

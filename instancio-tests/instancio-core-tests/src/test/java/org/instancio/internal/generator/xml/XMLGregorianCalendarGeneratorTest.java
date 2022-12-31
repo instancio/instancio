@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.text;
+package org.instancio.internal.generator.xml;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
@@ -23,38 +23,20 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UUIDStringGeneratorTest {
+class XMLGregorianCalendarGeneratorTest {
 
     private static final Random random = new DefaultRandom();
+    private static final GeneratorContext context = new GeneratorContext(Settings.create(), random);
 
-    private final UUIDStringGenerator generator = new UUIDStringGenerator(
-            new GeneratorContext(Settings.create(), random));
+    private final XMLGregorianCalendarGenerator generator = new XMLGregorianCalendarGenerator(context);
 
     @Test
     void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("uuid()");
+        assertThat(generator.apiMethod()).isNull();
     }
 
     @Test
-    void defaultUUIDString() {
-        assertThat(generator.generate(random)).matches("^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$");
-    }
-
-    @Test
-    void upperCase() {
-        generator.upperCase();
-        assertThat(generator.generate(random)).matches("^[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}$");
-    }
-
-    @Test
-    void noDashes() {
-        generator.withoutDashes();
-        assertThat(generator.generate(random)).matches("^[a-f0-9]{32}$");
-    }
-
-    @Test
-    void upperCaseNoDashes() {
-        generator.upperCase().withoutDashes();
-        assertThat(generator.generate(random)).matches("^[A-F0-9]{32}$");
+    void generate() {
+        assertThat(generator.generate(random)).isNotNull();
     }
 }

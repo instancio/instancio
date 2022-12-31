@@ -35,6 +35,11 @@ public class UUIDStringGenerator extends AbstractGenerator<String> implements UU
     }
 
     @Override
+    public String apiMethod() {
+        return "uuid()";
+    }
+
+    @Override
     public UUIDStringGeneratorSpec upperCase() {
         isUpperCase = true;
         return this;

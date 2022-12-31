@@ -32,6 +32,11 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
     }
 
     @Override
+    public String apiMethod() {
+        return null;
+    }
+
+    @Override
     public OneOfCollectionGeneratorSpec<T> oneOf(final Collection<T> values) {
         this.values = ApiValidator.notEmpty(values, "Collection must have at least one element");
         return this;

@@ -21,8 +21,6 @@ import org.instancio.internal.generator.nio.file.PathGenerator;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Contains built-in generators for {@code java.nio} classes.
@@ -35,12 +33,6 @@ public class NioGenerators {
 
     public NioGenerators(final GeneratorContext context) {
         this.context = context;
-    }
-
-    static Map<Class<?>, String> getApiMethods() {
-        Map<Class<?>, String> map = new HashMap<>();
-        map.put(PathGenerator.class, "path()");
-        return map;
     }
 
     /**

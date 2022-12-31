@@ -30,6 +30,11 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime> {
     }
 
     @Override
+    public String apiMethod() {
+        return "localTime()";
+    }
+
+    @Override
     LocalTime getLatestPast() {
         return LocalTime.now().minusSeconds(1);
     }

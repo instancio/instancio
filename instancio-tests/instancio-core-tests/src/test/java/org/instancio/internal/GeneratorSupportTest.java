@@ -22,13 +22,16 @@ import org.instancio.internal.generator.lang.EnumGenerator;
 import org.instancio.internal.generator.lang.IntegerGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.util.CollectionGenerator;
+import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Gender;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +50,8 @@ class GeneratorSupportTest {
     private final Generator<?> booleanGenerator = new BooleanGenerator(context);
     private final Generator<?> integerGenerator = new IntegerGenerator(context);
     private final Generator<?> stringGenerator = new StringGenerator(context);
-    private final Generator<?> enumGenerator = new EnumGenerator<>(Gender.class);
+    private final Generator<?> enumGenerator = new EnumGenerator<>(context, Gender.class);
+    private final Generator<?> enumSetGenerator = new EnumSetGenerator<>(context, Gender.class);
     private final Generator<?> collectionGenerator = new CollectionGenerator<>(context);
     private final MapGenerator<?, ?> mapGenerator = new MapGenerator<>(context);
 
@@ -56,6 +60,7 @@ class GeneratorSupportTest {
         assertSupportsAll(booleanGenerator, boolean.class, Boolean.class);
         assertSupportsAll(integerGenerator, int.class, Integer.class);
         assertSupportsAll(enumGenerator, Gender.class);
+        assertSupportsAll(enumSetGenerator, EnumSet.class);
         assertSupportsAll(collectionGenerator, Collection.class, List.class, Set.class, SortedSet.class, HashSet.class);
         assertSupportsAll(mapGenerator, Map.class, TreeMap.class, HashMap.class);
         assertSupportsAll(stringGenerator, String.class);
@@ -67,6 +72,7 @@ class GeneratorSupportTest {
         assertSupportsNone(integerGenerator, long.class, Number.class);
         assertSupportsNone(enumGenerator, Object.class);
         assertSupportsNone(collectionGenerator, Object.class, Map.class);
+        assertSupportsNone(enumSetGenerator, Object.class, Foo.class, Gender.class, Collection.class);
         assertSupportsNone(mapGenerator, Object.class, Collection.class);
         assertSupportsNone(stringGenerator, CharSequence.class, StringBuilder.class);
     }

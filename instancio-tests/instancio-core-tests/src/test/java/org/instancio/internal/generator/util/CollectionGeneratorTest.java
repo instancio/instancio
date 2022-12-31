@@ -16,8 +16,8 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.AfterGenerate;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -52,6 +52,11 @@ class CollectionGeneratorTest {
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
     private final CollectionGenerator<?> generator = new CollectionGenerator<>(context);
+
+    @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("collection()");
+    }
 
     @Test
     @DisplayName("Should generate either an empty collection or null")

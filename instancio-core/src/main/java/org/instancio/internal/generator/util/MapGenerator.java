@@ -62,6 +62,11 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     }
 
     @Override
+    public String apiMethod() {
+        return "map()";
+    }
+
+    @Override
     public MapGeneratorSpec<K, V> subtype(final Class<?> type) {
         this.mapType = ApiValidator.notNull(type, "Type must not be null");
         return this;

@@ -36,6 +36,11 @@ public class FileGenerator extends AbstractGenerator<File> implements PathGenera
     }
 
     @Override
+    public String apiMethod() {
+        return "file()";
+    }
+
+    @Override
     public PathGeneratorSpec<File> tmp() {
         delegate.tmp();
         return this;

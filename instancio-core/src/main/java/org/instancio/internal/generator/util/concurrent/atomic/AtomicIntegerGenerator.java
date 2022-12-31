@@ -36,6 +36,11 @@ public class AtomicIntegerGenerator extends AbstractRandomNumberGeneratorSpec<At
     }
 
     @Override
+    public String apiMethod() {
+        return "atomicInteger()";
+    }
+
+    @Override
     protected AtomicInteger generateNonNullValue(final Random random) {
         return new AtomicInteger(random.intRange(getMin().intValue(), getMax().intValue()));
     }

@@ -43,6 +43,11 @@ class YearMonthGeneratorTest {
     private final YearMonthGenerator generator = new YearMonthGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("yearMonth()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         generator.range(YearMonth.of(2000, 1), YearMonth.of(2000, 1));
         assertThat(generator.generate(random)).isEqualTo(YearMonth.of(2000, 1));

@@ -30,6 +30,11 @@ public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth> {
     }
 
     @Override
+    public String apiMethod() {
+        return "yearMonth()";
+    }
+
+    @Override
     YearMonth getLatestPast() {
         return YearMonth.now().minusMonths(1);
     }

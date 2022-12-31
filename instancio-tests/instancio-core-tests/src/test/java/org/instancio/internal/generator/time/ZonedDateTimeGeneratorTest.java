@@ -41,6 +41,11 @@ class ZonedDateTimeGeneratorTest {
     private final ZonedDateTimeGenerator generator = new ZonedDateTimeGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("zonedDateTime()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         generator.range(START, START);
         assertThat(generator.generate(random)).isEqualTo(START);

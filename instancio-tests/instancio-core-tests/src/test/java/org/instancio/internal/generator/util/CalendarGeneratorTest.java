@@ -44,6 +44,11 @@ class CalendarGeneratorTest {
     private final CalendarGenerator generator = new CalendarGenerator(context);
 
     @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("calendar()");
+    }
+
+    @Test
     void smallestAllowedRange() {
         final GregorianCalendar calendar = GregorianCalendar.from(START);
         generator.range(calendar, calendar);

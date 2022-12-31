@@ -24,9 +24,6 @@ import org.instancio.internal.generator.text.LoremIpsumGenerator;
 import org.instancio.internal.generator.text.TextPatternGenerator;
 import org.instancio.internal.generator.text.UUIDStringGenerator;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Contains built-in text generators.
  *
@@ -40,14 +37,6 @@ public class TextGenerators {
         this.context = context;
     }
 
-    static Map<Class<?>, String> getApiMethods() {
-        Map<Class<?>, String> map = new HashMap<>();
-        map.put(LoremIpsumGenerator.class, "loremIpsum()");
-        map.put(TextPatternGenerator.class, "pattern()");
-        map.put(UUIDStringGenerator.class, "uuid()");
-        return map;
-    }
-
     /**
      * Generates "Lorem ipsum" text.
      *
@@ -57,7 +46,6 @@ public class TextGenerators {
     public LoremIpsumGeneratorSpec loremIpsum() {
         return new LoremIpsumGenerator(context);
     }
-
 
     /**
      * Generates a random string based on the specified pattern template.

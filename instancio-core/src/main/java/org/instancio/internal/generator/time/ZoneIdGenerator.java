@@ -28,6 +28,11 @@ public class ZoneIdGenerator extends AbstractGenerator<ZoneId> {
     }
 
     @Override
+    public String apiMethod() {
+        return null;
+    }
+
+    @Override
     public ZoneId generate(final Random random) {
         return ZoneId.of(random.oneOf(ZoneId.getAvailableZoneIds()));
     }

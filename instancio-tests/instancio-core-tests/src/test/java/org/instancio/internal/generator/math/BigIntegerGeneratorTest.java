@@ -36,6 +36,11 @@ class BigIntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<BigInteger
         return new BigIntegerGenerator(context);
     }
 
+    @Override
+    protected String apiMethod() {
+        return "bigInteger()";
+    }
+
     @CsvSource({
             "-10000000000001, -10000000000000",
             "0, 1",

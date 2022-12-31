@@ -16,8 +16,8 @@
 package org.instancio.internal.generator.array;
 
 import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.AfterGenerate;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -49,9 +49,15 @@ class ArrayGeneratorTest {
     private static final Random random = new DefaultRandom();
     private static final GeneratorContext context = new GeneratorContext(settings, random);
 
+    private final ArrayGenerator<?> generator = new ArrayGenerator<>(context, String[].class);
+
+    @Test
+    void apiMethod() {
+        assertThat(generator.apiMethod()).isEqualTo("array()");
+    }
+
     @Test
     void generate() {
-        final ArrayGenerator<?> generator = new ArrayGenerator<>(context, String[].class);
         final int[] counts = new int[2];
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
