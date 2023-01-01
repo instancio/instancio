@@ -48,15 +48,10 @@ import org.instancio.internal.generator.util.CalendarGenerator;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.DateGenerator;
 import org.instancio.internal.generator.util.EnumSetGenerator;
-import org.instancio.internal.generator.util.HashSetGenerator;
 import org.instancio.internal.generator.util.LocaleGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.generator.util.OptionalGenerator;
-import org.instancio.internal.generator.util.TreeMapGenerator;
-import org.instancio.internal.generator.util.TreeSetGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
-import org.instancio.internal.generator.util.concurrent.ConcurrentHashMapGenerator;
-import org.instancio.internal.generator.util.concurrent.ConcurrentSkipListMapGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator;
 import org.instancio.internal.util.ReflectionUtils;
@@ -82,24 +77,37 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -108,20 +116,18 @@ public class GeneratorResolver {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorResolver.class);
 
     private static final List<GeneratorProvider> PROVIDERS = ServiceLoaders.loadAll(GeneratorProvider.class);
-    private final Map<Class<?>, Generator<?>> generators;
+    private final Map<Class<?>, Generator<?>> generators = new HashMap<>();
     private final GeneratorContext context;
     private final GeneratorProviderFacade generatorProviderFacade;
 
     public GeneratorResolver(final GeneratorContext context) {
         this.context = context;
-        this.generators = Collections.unmodifiableMap(initGeneratorMap(context));
         this.generatorProviderFacade = new GeneratorProviderFacade(context, PROVIDERS);
+        initGeneratorMap();
     }
 
-    @SuppressWarnings("PMD.NcssCount")
-    private static Map<Class<?>, Generator<?>> initGeneratorMap(final GeneratorContext context) {
-        final Map<Class<?>, Generator<?>> generators = new HashMap<>(64);
-
+    @SuppressWarnings({"PMD.NcssCount", "PMD.LooseCoupling", "PMD.ExcessiveMethodLength"})
+    private void initGeneratorMap() {
         // Core types
         generators.put(byte.class, new ByteGenerator(context));
         generators.put(short.class, new ShortGenerator(context));
@@ -179,16 +185,21 @@ public class GeneratorResolver {
 
         // java.util collections
         generators.put(Collection.class, new CollectionGenerator<>(context));
-        generators.put(ConcurrentMap.class, new ConcurrentHashMapGenerator<>(context));
-        generators.put(ConcurrentNavigableMap.class, new ConcurrentSkipListMapGenerator<>(context));
         generators.put(EnumSet.class, new EnumSetGenerator<>(context));
         generators.put(List.class, new CollectionGenerator<>(context));
         generators.put(Map.class, new MapGenerator<>(context));
-        generators.put(NavigableMap.class, new TreeMapGenerator<>(context));
-        generators.put(NavigableSet.class, new TreeSetGenerator<>(context));
-        generators.put(Set.class, new HashSetGenerator<>(context));
-        generators.put(SortedMap.class, new TreeMapGenerator<>(context));
-        generators.put(SortedSet.class, new TreeSetGenerator<>(context));
+        mapCollection(BlockingDeque.class, LinkedBlockingDeque.class);
+        mapCollection(BlockingQueue.class, LinkedBlockingQueue.class);
+        mapCollection(Deque.class, ArrayDeque.class);
+        mapCollection(NavigableSet.class, TreeSet.class);
+        mapCollection(Set.class, HashSet.class);
+        mapCollection(SortedSet.class, TreeSet.class);
+        mapCollection(TransferQueue.class, LinkedTransferQueue.class);
+        mapCollection(Queue.class, ArrayDeque.class);
+        mapMap(ConcurrentMap.class, ConcurrentHashMap.class);
+        mapMap(ConcurrentNavigableMap.class, ConcurrentSkipListMap.class);
+        mapMap(NavigableMap.class, TreeMap.class);
+        mapMap(SortedMap.class, TreeMap.class);
 
         // java.util.concurrent
         generators.put(AtomicInteger.class, new AtomicIntegerGenerator(context));
@@ -197,20 +208,30 @@ public class GeneratorResolver {
         // Java modules will not have these legacy classes unless explicitly
         // imported via e.g. "requires java.sql". In case the classes are not
         // available, load them by name to avoid class not found error
-        loadByClassName(context, generators,
+        mapByClassName(context, generators,
                 "java.sql.Date",
                 "org.instancio.internal.generator.sql.SqlDateGenerator");
-        loadByClassName(context, generators,
+        mapByClassName(context, generators,
                 "java.sql.Timestamp",
                 "org.instancio.internal.generator.sql.TimestampGenerator");
-        loadByClassName(context, generators,
+        mapByClassName(context, generators,
                 "javax.xml.datatype.XMLGregorianCalendar",
                 "org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator");
-
-        return generators;
     }
 
-    private static void loadByClassName(
+    private void mapCollection(final Class<?> type, final Class<?> subtype) {
+        final CollectionGenerator<?> generator = new CollectionGenerator<>(context);
+        generator.subtype(subtype);
+        generators.put(type, generator);
+    }
+
+    private void mapMap(final Class<?> type, final Class<?> subtype) {
+        final MapGenerator<?, ?> generator = new MapGenerator<>(context);
+        generator.subtype(subtype);
+        generators.put(type, generator);
+    }
+
+    private static void mapByClassName(
             final GeneratorContext context,
             final Map<Class<?>, Generator<?>> generators,
             final String generateTypeClassName,
