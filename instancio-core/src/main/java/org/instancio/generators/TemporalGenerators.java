@@ -18,6 +18,7 @@ package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.DurationGeneratorSpec;
+import org.instancio.generator.specs.MonthDayGeneratorSpec;
 import org.instancio.generator.specs.PeriodGeneratorSpec;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.internal.generator.sql.SqlDateGenerator;
@@ -27,6 +28,7 @@ import org.instancio.internal.generator.time.InstantGenerator;
 import org.instancio.internal.generator.time.LocalDateGenerator;
 import org.instancio.internal.generator.time.LocalDateTimeGenerator;
 import org.instancio.internal.generator.time.LocalTimeGenerator;
+import org.instancio.internal.generator.time.MonthDayGenerator;
 import org.instancio.internal.generator.time.PeriodGenerator;
 import org.instancio.internal.generator.time.YearGenerator;
 import org.instancio.internal.generator.time.YearMonthGenerator;
@@ -39,15 +41,20 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.MonthDay;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
+
 /**
  * Contains built-in temporal generators.
+ *
+ * @since 1.4.0
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public class TemporalGenerators {
 
     private final GeneratorContext context;
@@ -90,6 +97,16 @@ public class TemporalGenerators {
      */
     public TemporalGeneratorSpec<LocalDateTime> localDateTime() {
         return new LocalDateTimeGenerator(context);
+    }
+
+    /**
+     * Customises generated {@link MonthDay} values.
+     *
+     * @return customised generator
+     * @since 2.3.0
+     */
+    public MonthDayGeneratorSpec monthDay() {
+        return new MonthDayGenerator(context);
     }
 
     /**
