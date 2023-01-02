@@ -82,6 +82,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Deque;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -198,6 +199,8 @@ public class GeneratorResolver {
         mapCollection(Queue.class, ArrayDeque.class);
         mapMap(ConcurrentMap.class, ConcurrentHashMap.class);
         mapMap(ConcurrentNavigableMap.class, ConcurrentSkipListMap.class);
+        // EnumMap is created from HashMap using InternalContainerFactoryProvider
+        mapMap(EnumMap.class, HashMap.class);
         mapMap(NavigableMap.class, TreeMap.class);
         mapMap(SortedMap.class, TreeMap.class);
 

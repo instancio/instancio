@@ -131,12 +131,8 @@ class InstancioEngine {
         } else if (node.is(NodeKind.DEFAULT)) {
             return generatePojo(node);
         }
-
-        conditionalFailOnError(() -> {
-            throw new InstancioException(String.format("Unhandled node kind '%s' for %s", node.getNodeKind(), node));
-        });
-
-        return Optional.empty();
+        // unreachable
+        throw new InstancioException(String.format("Unhandled node kind '%s' for %s", node.getNodeKind(), node));
     }
 
     private Optional<GeneratorResult> generateContainer(final Node node) {

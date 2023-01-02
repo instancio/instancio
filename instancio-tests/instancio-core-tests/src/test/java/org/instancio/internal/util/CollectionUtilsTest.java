@@ -61,6 +61,13 @@ class CollectionUtilsTest {
     }
 
     @Test
+    void combine() {
+        assertThat(CollectionUtils.combine(Arrays.asList(1, 2), 3)).containsExactly(1, 2, 3);
+        assertThat(CollectionUtils.combine(Arrays.asList(1, 2))).containsExactly(1, 2);
+        assertThat(CollectionUtils.combine(Collections.emptyList())).isEmpty();
+    }
+
+    @Test
     void shuffleEmpty() {
         final Collection<Object> collection = new ArrayList<>();
         CollectionUtils.shuffle(collection, random);

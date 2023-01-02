@@ -43,6 +43,13 @@ public final class CollectionUtils {
         return values == null ? Collections.emptyList() : Arrays.asList(values);
     }
 
+    @SafeVarargs
+    public static <T> List<T> combine(final List<T> list, final T... values) {
+        final List<T> result = new ArrayList<>(list);
+        Collections.addAll(result, values);
+        return Collections.unmodifiableList(result);
+    }
+
     public static void shuffle(final Collection<Object> collection, final Random random) {
         if (collection.isEmpty()) {
             return;
