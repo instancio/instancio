@@ -107,6 +107,7 @@ class GeneratorMismatchTest {
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "localTime()", gen -> gen.temporal().localTime());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "localDate()", gen -> gen.temporal().localDate());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "localDateTime()", gen -> gen.temporal().localDateTime());
+        assertMessageContains(SupportedTemporalTypes.class, Year.class, "monthDay()", gen -> gen.temporal().monthDay());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "zonedDateTime()", gen -> gen.temporal().zonedDateTime());
         assertMessageContains(SupportedTemporalTypes.class, Year.class, "yearMonth()", gen -> gen.temporal().yearMonth());
         assertMessageContains(SupportedTemporalTypes.class, YearMonth.class, "year()", gen -> gen.temporal().year());

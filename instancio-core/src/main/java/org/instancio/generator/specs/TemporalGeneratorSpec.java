@@ -22,10 +22,12 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 
 /**
- * Generator spec for {@link Temporal} types.
+ * Generator spec for {@link java.time.temporal.Temporal} types.
+ *
+ * @param <T> temporal type
+ * @since 1.1.2
  */
 public interface TemporalGeneratorSpec<T> extends AsStringGeneratorSpec<T> {
 

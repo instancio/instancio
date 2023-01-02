@@ -91,6 +91,6 @@ class YearMonthGeneratorTest {
                 args.add(Arguments.of(start, end));
             }
         }
-        return Stream.of(args.toArray(new Arguments[0]));
+        return args.stream();
     }
 }
