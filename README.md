@@ -78,9 +78,18 @@ Map<UUID, Person> personMap = Instancio.of(Person.class)
 ## Documentation
 
 - [User guide](https://www.instancio.org/user-guide)
-- [Sample projects](https://github.com/instancio/instancio-samples)
+- [Javadocs](https://javadoc.io/doc/org.instancio/instancio-core/latest/)
 
-# Getting Started
+## Quickstart
+
+[Instancio Quickstart](https://github.com/instancio/instancio-quickstart) is the best way to get started.
+It is a sample (Maven) project that provides an overview of all the main features.
+
+```sh
+git clone https://github.com/instancio/instancio-quickstart.git
+```
+
+# Maven coordinates
 
 If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
 
