@@ -34,7 +34,28 @@ Person person = Instancio.create(Person.class);
 
 This one-liner returns a fully-populated person, including nested objects and collections.
 The object is populated with random data that can be reproduced in case of test failure.
-If you require specific values, generated data can be customised using the builder API:
+
+### What else can Instancio do?
+
+1. Create collections of objects:
+
+```java
+List<Person> persons = Instancio.ofList(Person.class).size(10).create();
+```
+
+2. Create streams of objects:
+
+```java
+Stream<Person> persons = Instancio.stream(Person.class);
+```
+
+3. Create generic types:
+
+```java
+Pair<List<Foo>, List<Bar>> pairOfLists = Instancio.create(new TypeToken<Pair<List<Foo>, List<Bar>>>() {});
+```
+
+4. Customise generated values:
 
 ```java
 Person person = Instancio.of(Person.class)
@@ -46,26 +67,27 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-Collections can be generated using `ofList()`, `ofSet()`, and `ofMap()` APIs:
+5. Create reusable templates (Models) of objects:
 
 ```java
-List<Person> personList = Instancio.ofList(Person.class).size(10)
-    .generate(field(Person.class, "age"), gen -> gen.ints().range(20, 60))
-    .withNullable(all(Gender.class))
+Model<Person> simpsons = Instancio.of(Person.class)
+    .set(field("lastName"), "Simpson")
+    .set(field(Address.class, "city"), "Springfield")
+    .generate(field("age"), gen -> gen.ints().range(40, 50))
+    .toModel();
+
+Person homer = Instancio.of(simpsons)
+    .set(field("firstName"), "Homer")
+    .set(all(Gender.class), Gender.MALE)
+    .create();
+
+Person marge = Instancio.of(simpsons)
+    .set(field("firstName"), "Marge")
+    .set(all(Gender.class), Gender.FEMALE)
     .create();
 ```
 
-Alternatively, using `java.util.stream.Stream`:
 
-```java
-Map<UUID, Person> personMap = Instancio.of(Person.class)
-    .set(field(Address.class, "city"), "Vancouver")
-    .generate(all(List.class).within(scope(Address.class)), gen -> gen.collection().size(4))
-    .ignore(field(Address.class, "postalCode"))
-    .stream()
-    .limit(5)
-    .collect(Collectors.toMap(Person::getUuid, Function.identity()));
-```
 
 ## Main Features
 
@@ -94,23 +116,23 @@ git clone https://github.com/instancio/instancio-quickstart.git
 If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
 
 ```xml
-    <dependency>
-        <groupId>org.instancio</groupId>
-        <artifactId>instancio-junit</artifactId>
-        <version>2.2.0</version>
-        <scope>test</scope>
-    </dependency>
+<dependency>
+    <groupId>org.instancio</groupId>
+    <artifactId>instancio-junit</artifactId>
+    <version>2.2.0</version>
+    <scope>test</scope>
+</dependency>
 ```
 
 To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
 
 ```xml
-    <dependency>
-        <groupId>org.instancio</groupId>
-        <artifactId>instancio-core</artifactId>
-        <version>2.2.0</version>
-        <scope>test</scope>
-    </dependency>
+<dependency>
+    <groupId>org.instancio</groupId>
+    <artifactId>instancio-core</artifactId>
+    <version>2.2.0</version>
+    <scope>test</scope>
+</dependency>
 ```
 
 # Feedback
