@@ -59,6 +59,7 @@ Pair<List<Foo>, List<Bar>> pairOfLists = Instancio.create(new TypeToken<Pair<Lis
 
 ```java
 Person person = Instancio.of(Person.class)
+    .generate(field("dateOfBirth"), gen -> gen.temporal().localDate().past())
     .generate(field(Phone.class, "areaCode"), gen -> gen.oneOf("604", "778"))
     .generate(field(Phone.class, "number"), gen -> gen.text().pattern("#d#d#d-#d#d-#d#d"))
     .subtype(all(AbstractAddress.class), AddressImpl.class)
@@ -86,8 +87,6 @@ Person marge = Instancio.of(simpsons)
     .set(all(Gender.class), Gender.FEMALE)
     .create();
 ```
-
-
 
 ## Main Features
 
