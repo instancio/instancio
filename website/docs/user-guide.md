@@ -512,7 +512,7 @@ Generators
 ├── collection()
 ├── map()
 ├── enumOf(Class<E>)
-├── enumSetOf(Class<E>)
+├── enumSet(Class<E>)
 │
 ├── oneOf(Collection<T>)
 ├── oneOf(T...)
