@@ -16,22 +16,29 @@
 package org.instancio.test.features.generator.collection;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
+import org.instancio.exception.InstancioException;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.util.Constants;
+import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.CollectionLong;
+import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 
 @FeatureTag({
@@ -70,18 +77,37 @@ class CollectionGeneratorSizeTest {
         assertSizeBetween(spec -> spec.minSize(EXPECTED_SIZE).maxSize(EXPECTED_SIZE), EXPECTED_SIZE, EXPECTED_SIZE);
     }
 
-    /**
-     * What should happen when the requested set size is not possible?
-     */
     @Test
-    @Disabled("Impossible to generate a Set<Boolean> of size 5")
-    void impossibleSetSize() {
-        final int expectedSize = 5;
-        final Set<Boolean> result = Instancio.of(new TypeToken<Set<Boolean>>() {})
-                .generate(all(Set.class), gen -> gen.collection().size(expectedSize))
-                .create();
+    @DisplayName("Should create a set containing all enum values()")
+    void setSizeWithHighProbabilityOfDuplicates() {
+        final int size = Gender.values().length;
+        final Set<Gender> result = Instancio.ofSet(Gender.class).size(size).create();
+        assertThat(result).hasSize(size);
+    }
 
-        assertThat(result).hasSize(expectedSize);
+    @Nested
+    class ImpossibleSetSizeTest {
+        @Test
+        @DisplayName("Requesting a large size of Set<Boolean> should return a set of size 2")
+        void impossibleSetSize() {
+            final Set<Boolean> result = Instancio.of(new TypeToken<Set<Boolean>>() {})
+                    .generate(all(Set.class), gen -> gen.collection().size(1000))
+                    .create();
+
+            assertThat(result).hasSize(2); // can only generate true and false
+        }
+
+        @Test
+        @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
+        void impossibleSetSizeWithFailOnErrorEnabled() {
+            final int size = 1000;
+            final InstancioApi<Set<Boolean>> api = Instancio.of(new TypeToken<Set<Boolean>>() {})
+                    .generate(all(Set.class), gen -> gen.collection().size(size));
+
+            assertThatThrownBy(api::create)
+                    .isExactlyInstanceOf(InstancioException.class)
+                    .hasMessage("Unable to populate Set<Boolean> with requested number of elements: " + size);
+        }
     }
 
     private void assertSize(Function<CollectionGeneratorSpec<?>, CollectionGeneratorSpec<?>> fn, int expectedSize) {

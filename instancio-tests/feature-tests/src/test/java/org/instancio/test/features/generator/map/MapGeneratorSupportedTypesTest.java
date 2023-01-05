@@ -24,11 +24,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -46,9 +48,11 @@ class MapGeneratorSupportedTypesTest {
                 Arguments.of(new TypeToken<ConcurrentHashMap<UUID, String>>() {}, ConcurrentHashMap.class),
                 Arguments.of(new TypeToken<ConcurrentMap<UUID, String>>() {}, ConcurrentHashMap.class),
                 Arguments.of(new TypeToken<ConcurrentNavigableMap<UUID, String>>() {}, ConcurrentSkipListMap.class),
+                Arguments.of(new TypeToken<Hashtable<UUID, String>>() {}, Hashtable.class),
                 Arguments.of(new TypeToken<Map<UUID, String>>() {}, HashMap.class),
                 Arguments.of(new TypeToken<NavigableMap<UUID, String>>() {}, TreeMap.class),
-                Arguments.of(new TypeToken<SortedMap<UUID, String>>() {}, TreeMap.class)
+                Arguments.of(new TypeToken<SortedMap<UUID, String>>() {}, TreeMap.class),
+                Arguments.of(new TypeToken<WeakHashMap<UUID, String>>() {}, WeakHashMap.class)
         );
     }
 

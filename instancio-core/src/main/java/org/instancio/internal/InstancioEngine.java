@@ -36,6 +36,8 @@ import org.instancio.internal.reflection.RecordHelper;
 import org.instancio.internal.reflection.RecordHelperImpl;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.Constants;
+import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.SystemProperties;
@@ -138,8 +140,6 @@ class InstancioEngine {
     private Optional<GeneratorResult> generateContainer(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
-        // Note: GeneratorResult is allowed to contain null.
-        // This means an instance needs to be created by the supplied createFunction()
         if (!nodeResult.isPresent()) {
             return nodeResult;
         }
@@ -188,7 +188,7 @@ class InstancioEngine {
     }
 
     /**
-     * Replaces the 3original result with another type. For example, converts
+     * Replaces the original result with another type. For example, converts
      * a Map to ImmutableMap using {@code ImmutableMap.copyOf(Map)}).
      */
     private Optional<GeneratorResult> substituteResult(
@@ -210,6 +210,7 @@ class InstancioEngine {
         return nodeResult;
     }
 
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private Optional<GeneratorResult> generateMap(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
@@ -239,7 +240,10 @@ class InstancioEngine {
         final boolean nullableValue = hint.nullableMapValues();
         final Iterator<Object> withKeysIterator = hint.withKeys().iterator();
 
-        for (int i = 0; i < hint.generateEntries(); i++) {
+        int entriesToGenerate = hint.generateEntries();
+        int failedAdditions = 0;
+
+        while (entriesToGenerate > 0) {
 
             final Object mapKey = withKeysIterator.hasNext()
                     ? withKeysIterator.next()
@@ -248,7 +252,22 @@ class InstancioEngine {
             final Object mapValue = createObject(node.getChildren().get(1), nullableValue);
 
             if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
-                map.put(mapKey, mapValue);
+                if (!map.containsKey(mapKey)) {
+                    map.put(mapKey, mapValue);
+                    entriesToGenerate--;
+                } else {
+                    failedAdditions++;
+                    if (failedAdditions > Constants.FAILED_COLLECTION_ADD_THRESHOLD) {
+                        conditionalFailOnError(() -> {
+                            throw new InstancioException(
+                                    "Unable to populate " + Format.withoutPackage(node.getType())
+                                            + " with requested number of entries: " + hint.generateEntries());
+                        });
+                        break;
+                    }
+                }
+            } else {
+                entriesToGenerate--;
             }
         }
 
@@ -256,7 +275,6 @@ class InstancioEngine {
 
         final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
         return spiResult.isPresent() ? spiResult : nodeResult;
-
     }
 
     @SuppressWarnings({
@@ -268,7 +286,7 @@ class InstancioEngine {
 
         if (!nodeResult.isPresent()
                 || nodeResult.get().isNullResult()
-                || node.getChildren().size() < 1) {
+                || node.getChildren().isEmpty()) {
             return nodeResult;
         }
 
@@ -336,13 +354,13 @@ class InstancioEngine {
         return nodeResult;
     }
 
-    @SuppressWarnings("PMD.NPathComplexity")
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private Optional<GeneratorResult> generateCollection(final Node node) {
         final Optional<GeneratorResult> nodeResult = generateValue(node);
 
         if (!nodeResult.isPresent()
                 || nodeResult.get().isNullResult()
-                || node.getChildren().size() < 1) {
+                || node.getChildren().isEmpty()) {
             return nodeResult;
         }
 
@@ -361,11 +379,32 @@ class InstancioEngine {
 
         final boolean nullableElement = hint.nullableElements();
 
-        for (int i = 0; i < hint.generateElements(); i++) {
+        int elementsToGenerate = hint.generateElements();
+        int failedAdditions = 0;
+
+        while (elementsToGenerate > 0) {
             final Object elementValue = createObject(node.getOnlyChild(), nullableElement);
 
             if (elementValue != null || nullableElement) {
-                collection.add(elementValue);
+                if (collection.add(elementValue)) {
+                    elementsToGenerate--;
+                } else {
+                    // Special case for hash based collections.
+                    // If requested size is impossible (e.g. a Set<Boolean> of size 5)
+                    // then abandon populating it after the threshold is reached
+                    failedAdditions++;
+                    if (failedAdditions > Constants.FAILED_COLLECTION_ADD_THRESHOLD) {
+                        conditionalFailOnError(() -> {
+                            throw new InstancioException(
+                                    "Unable to populate " + Format.withoutPackage(node.getType())
+                                            + " with requested number of elements: " + hint.generateElements());
+                        });
+                        break;
+                    }
+                }
+            } else {
+                // Avoid infinite loop (e.g. if value couldn't be generated)
+                elementsToGenerate--;
             }
         }
 

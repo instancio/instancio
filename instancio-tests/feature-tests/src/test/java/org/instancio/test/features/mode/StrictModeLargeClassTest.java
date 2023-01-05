@@ -27,6 +27,7 @@ import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.performance.LargeClass;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -50,6 +51,7 @@ class StrictModeLargeClassTest {
             .set(Keys.COLLECTION_MIN_SIZE, 1000);
 
     @Test
+    @NonDeterministicTag("Callback counts are approximate")
     @FeatureTag({Feature.ON_COMPLETE, Feature.SCOPE})
     void largeClassWithScopedSelectors() {
         final AtomicInteger callbackCount = new AtomicInteger();
@@ -84,6 +86,6 @@ class StrictModeLargeClassTest {
                 .create();
 
         // Verify roughly the expected number of callbacks
-        assertThat(callbackCount.get()).isBetween(200_000, 250_000);
+        assertThat(callbackCount.get()).isBetween(200_000, 300_000);
     }
 }

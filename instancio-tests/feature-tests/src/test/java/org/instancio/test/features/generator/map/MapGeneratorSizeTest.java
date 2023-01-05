@@ -16,22 +16,31 @@
 package org.instancio.test.features.generator.map;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
+import org.instancio.TypeToken;
+import org.instancio.exception.InstancioException;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.util.Constants;
+import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
+import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.Map;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 
 @FeatureTag({
@@ -77,6 +86,40 @@ class MapGeneratorSizeTest {
     void minSizeEqualToMaxSize() {
         assertSizeBetween(spec -> spec.minSize(EXPECTED_SIZE).maxSize(EXPECTED_SIZE), EXPECTED_SIZE, EXPECTED_SIZE);
     }
+
+    @Test
+    @DisplayName("Should create a map containing all enum values() as keys")
+    void mapSizeWithHighProbabilityOfDuplicateKeys() {
+        final int size = Gender.values().length;
+        final Map<Gender, String> result = Instancio.ofMap(Gender.class, String.class).size(size).create();
+        assertThat(result).hasSize(size);
+    }
+
+    @Nested
+    class ImpossibleMapSizeTest {
+        @Test
+        @DisplayName("Requesting a large size of Map<Boolean, String> should return a map of size 2")
+        void impossibleMapSize() {
+            final Map<Boolean, String> result = Instancio.of(new TypeToken<Map<Boolean, String>>() {})
+                    .generate(all(Map.class), gen -> gen.map().size(1000))
+                    .create();
+
+            assertThat(result).hasSize(2); // can only generate true and false
+        }
+
+        @Test
+        @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
+        void impossibleMapSizeWithFailOnErrorEnabled() {
+            final int size = 1000;
+            final InstancioApi<Map<Boolean, String>> api = Instancio.of(new TypeToken<Map<Boolean, String>>() {})
+                    .generate(all(Map.class), gen -> gen.map().size(size));
+
+            assertThatThrownBy(api::create)
+                    .isExactlyInstanceOf(InstancioException.class)
+                    .hasMessage("Unable to populate Map<Boolean, String> with requested number of entries: " + size);
+        }
+    }
+
 
     private void assertSize(Function<MapGeneratorSpec<?, ?>, MapGeneratorSpec<?, ?>> fn, int expectedSize) {
         assertSizeBetween(fn, expectedSize, expectedSize);
