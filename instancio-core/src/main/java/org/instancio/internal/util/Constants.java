@@ -15,12 +15,21 @@
  */
 package org.instancio.internal.util;
 
+import java.util.Collection;
+import java.util.Map;
+
 public final class Constants {
 
     /**
      * Percentage by which to adjust a min/max range if min is set higher than max, or vice versa.
      */
     public static final int RANGE_ADJUSTMENT_PERCENTAGE = 50;
+
+    /**
+     * Number of times {@link Collection#add(Object)} or {@link Map#put(Object, Object)}
+     * can be unsuccessful before population is aborted.
+     */
+    public static final int FAILED_COLLECTION_ADD_THRESHOLD = 1000;
 
     /**
      * Default min array/collection size.

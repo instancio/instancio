@@ -33,13 +33,18 @@ import java.util.NavigableSet;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.Stack;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.stream.Stream;
 
@@ -55,11 +60,16 @@ class CollectionGeneratorSupportedTypesTest {
                 Arguments.of(new TypeToken<BlockingDeque<UUID>>() {}, LinkedBlockingDeque.class),
                 Arguments.of(new TypeToken<BlockingQueue<UUID>>() {}, LinkedBlockingQueue.class),
                 Arguments.of(new TypeToken<Collection<UUID>>() {}, ArrayList.class),
+                Arguments.of(new TypeToken<ConcurrentLinkedQueue<UUID>>() {}, ConcurrentLinkedQueue.class),
+                Arguments.of(new TypeToken<CopyOnWriteArrayList<UUID>>() {}, CopyOnWriteArrayList.class),
+                Arguments.of(new TypeToken<CopyOnWriteArraySet<UUID>>() {}, CopyOnWriteArraySet.class),
                 Arguments.of(new TypeToken<Deque<UUID>>() {}, ArrayDeque.class),
                 Arguments.of(new TypeToken<List<UUID>>() {}, ArrayList.class),
                 Arguments.of(new TypeToken<NavigableSet<UUID>>() {}, TreeSet.class),
+                Arguments.of(new TypeToken<PriorityBlockingQueue<UUID>>() {}, PriorityBlockingQueue.class),
                 Arguments.of(new TypeToken<Set<UUID>>() {}, HashSet.class),
                 Arguments.of(new TypeToken<SortedSet<UUID>>() {}, TreeSet.class),
+                Arguments.of(new TypeToken<Stack<UUID>>() {}, Stack.class),
                 Arguments.of(new TypeToken<TransferQueue<UUID>>() {}, LinkedTransferQueue.class),
                 Arguments.of(new TypeToken<Queue<UUID>>() {}, ArrayDeque.class)
         );

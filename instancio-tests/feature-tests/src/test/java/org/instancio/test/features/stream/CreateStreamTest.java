@@ -72,7 +72,7 @@ class CreateStreamTest {
 
         assertThat(results)
                 .hasSize(EXPECTED_SIZE)
-                .allSatisfy(s -> assertThat(s.length()).isEqualTo(overriddenLength));
+                .allSatisfy(s -> assertThat(s).hasSize(overriddenLength));
     }
 
     @Test
@@ -85,7 +85,7 @@ class CreateStreamTest {
 
         assertThat(results)
                 .hasSize(EXPECTED_SIZE)
-                .allSatisfy(s -> assertThat(s.length()).isEqualTo(overriddenLength));
+                .allSatisfy(s -> assertThat(s).hasSize(overriddenLength));
     }
 
     @Test
