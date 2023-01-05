@@ -477,7 +477,7 @@ Each generator provides methods applicable to the type it generates, for example
 - `gen.map().size(5).nullableValues().subtype(TreeMap.class)`
 - `gen.temporal().localDate().future()`
 - `gen.longs().min(Long.MIN_VALUE)`
-- `gen.enumOf(MyEnum).min(Long.MIN_VALUE)`
+- `gen.enumOf(MyEnum.class).excluding(MyEnum.FOO, MyEnum.BAR)`
 
 In addition, most generators can also return generated values as Strings, for example:
 
