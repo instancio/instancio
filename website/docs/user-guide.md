@@ -521,6 +521,9 @@ Generators
 │   └── bigInteger()
 │   └── bigDecimal()
 │
+├── io()
+│   └── file()
+│
 ├── nio()
 │   └── path()
 │
