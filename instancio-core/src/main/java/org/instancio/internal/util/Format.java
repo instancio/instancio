@@ -31,14 +31,14 @@ import static java.util.stream.Collectors.joining;
 public final class Format {
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
 
-    public static String field(final Field field) {
+    public static String formatField(final Field field) {
         return String.format("%s %s.%s",
                 withoutPackage(field.getType()),
                 withoutPackage(field.getDeclaringClass()),
                 field.getName());
     }
 
-    public static String method(final Method method) {
+    public static String formatMethod(final Method method) {
         return String.format("%s.%s(%s)",
                 withoutPackage(method.getDeclaringClass()),
                 method.getName(),
@@ -49,7 +49,7 @@ public final class Format {
         return PACKAGE_PATTERN.matcher(type.getTypeName()).replaceAll("");
     }
 
-    public static String scopes(final List<Scope> scopes) {
+    public static String formatScopes(final List<Scope> scopes) {
         return scopes.stream()
                 .map(ScopeImpl.class::cast)
                 .map(s -> s.getFieldName() == null

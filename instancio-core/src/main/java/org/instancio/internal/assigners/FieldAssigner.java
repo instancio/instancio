@@ -61,7 +61,7 @@ public class FieldAssigner implements Assigner {
             // Wrong type is being assigned to a field.
             // Always propagate type mismatch errors as it's either a bug or user error.
             final String msg = AssignerErrorUtil.getFieldAssignmentErrorMessage(
-                    value, Format.field(field), ex);
+                    value, Format.formatField(field), ex);
 
             throw new InstancioApiException(msg, ex);
         } catch (Exception ex) {
@@ -72,7 +72,7 @@ public class FieldAssigner implements Assigner {
     private void handleError(final Field field, final Object value, final Exception ex) {
         if (onSetFieldError == OnSetFieldError.FAIL) {
             final String msg = AssignerErrorUtil.getFieldAssignmentErrorMessage(
-                    value, Format.field(field), ex);
+                    value, Format.formatField(field), ex);
 
             throw new InstancioApiException(msg, ex);
         }

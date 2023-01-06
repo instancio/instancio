@@ -112,7 +112,7 @@ public class MethodAssigner implements Assigner {
 
         if (onSetMethodError == OnSetMethodError.FAIL) {
             throw new InstancioApiException(AssignerErrorUtil.getSetterInvocationErrorMessage(
-                    arg, onSetMethodError, Format.method(method), ex), ex);
+                    arg, onSetMethodError, Format.formatMethod(method), ex), ex);
         }
 
         if (onSetMethodError == OnSetMethodError.ASSIGN_FIELD) {
@@ -133,7 +133,7 @@ public class MethodAssigner implements Assigner {
 
         if (onSetMethodNotFound == OnSetMethodNotFound.FAIL) {
             throw new InstancioApiException(AssignerErrorUtil.getSetterNotFoundMessage(
-                    Format.field(node.getField()), methodName, setterStyle));
+                    Format.formatField(node.getField()), methodName, setterStyle));
         }
 
         if (onSetMethodNotFound == OnSetMethodNotFound.ASSIGN_FIELD) {
@@ -151,7 +151,7 @@ public class MethodAssigner implements Assigner {
                 final Class<?> klass = field.getDeclaringClass();
                 return Optional.of(klass.getDeclaredMethod(methodName, field.getType()));
             } catch (NoSuchMethodException ex) {
-                logException("Resolved setter method '{}' for field '{}' does not exist", ex, methodName, Format.field(field));
+                logException("Resolved setter method '{}' for field '{}' does not exist", ex, methodName, Format.formatField(field));
             }
         }
         return Optional.empty();
