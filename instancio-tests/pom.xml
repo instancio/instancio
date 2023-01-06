@@ -17,7 +17,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <gpg.skip>true</gpg.skip>
         <version.apache.commons>3.12.0</version.apache.commons>
-        <version.assertj>3.23.1</version.assertj>
+        <version.assertj>3.24.0</version.assertj>
         <version.equalsverifier>3.12.3</version.equalsverifier>
         <version.junit.pioneer>1.9.1</version.junit.pioneer>
         <version.junit.platform>1.9.1</version.junit.platform>
