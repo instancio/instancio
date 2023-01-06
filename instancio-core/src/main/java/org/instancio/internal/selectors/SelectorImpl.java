@@ -189,7 +189,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
             sb.append(')');
 
             if (!scopes.isEmpty()) {
-                sb.append(", ").append(Format.scopes(scopes));
+                sb.append(", ").append(Format.formatScopes(scopes));
             }
         }
         return sb.toString();

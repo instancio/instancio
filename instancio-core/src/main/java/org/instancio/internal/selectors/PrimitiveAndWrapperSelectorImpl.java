@@ -100,7 +100,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     public String toString() {
         String str = API_METHOD_NAMES.get(primitive.getTargetClass());
         if (!primitive.getScopes().isEmpty()) {
-            str += ", " + Format.scopes(primitive.getScopes());
+            str += ", " + Format.formatScopes(primitive.getScopes());
         }
         return str;
     }

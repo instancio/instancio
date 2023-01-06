@@ -16,6 +16,7 @@
 package org.instancio.internal.util;
 
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.testsupport.fixtures.Types;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.scope;
 
 class FormatTest {
 
@@ -41,21 +43,32 @@ class FormatTest {
     }
 
     @Test
-    void field() {
-        assertThat(Format.field(ReflectionUtils.getField(Person.class, "name")))
+    void formatField() {
+        assertThat(Format.formatField(ReflectionUtils.getField(Person.class, "name")))
                 .isEqualTo("String Person.name");
 
-        assertThat(Format.field(ReflectionUtils.getField(Nested1.Nested2.class, "nested")))
+        assertThat(Format.formatField(ReflectionUtils.getField(Nested1.Nested2.class, "nested")))
                 .isEqualTo("String FormatTest$Nested1$Nested2.nested");
     }
 
     @Test
-    void method() throws NoSuchMethodException {
-        assertThat(Format.method(Person.class.getMethod("setName", String.class)))
+    void formatMethod() throws NoSuchMethodException {
+        assertThat(Format.formatMethod(Person.class.getMethod("setName", String.class)))
                 .isEqualTo("Person.setName(String)");
 
-        assertThat(Format.method(Nested1.Nested2.class.getMethod("setNested", String.class)))
+        assertThat(Format.formatMethod(Nested1.Nested2.class.getMethod("setNested", String.class)))
                 .isEqualTo("FormatTest$Nested1$Nested2.setNested(String)");
+    }
+
+    @Test
+    void formatScopes() {
+        assertThat(Format.formatScopes(Collections.emptyList())).isEmpty();
+
+        assertThat(Format.formatScopes(Collections.singletonList(scope(Person.class))))
+                .isEqualTo("scope(Person)");
+
+        assertThat(Format.formatScopes(Arrays.asList(scope(Person.class), scope(Address.class, "city"))))
+                .isEqualTo("scope(Person), scope(Address, \"city\")");
     }
 
     @Test
