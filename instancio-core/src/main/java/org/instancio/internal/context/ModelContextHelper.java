@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.context;
 
+import org.instancio.GetMethodSelector;
 import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.Selector;
@@ -22,6 +23,7 @@ import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.MetamodelSelector;
+import org.instancio.internal.selectors.MethodReferenceHelper;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
@@ -57,9 +59,10 @@ final class ModelContextHelper {
         if (selector instanceof MetamodelSelector) {
             return ((MetamodelSelector) selector).copyWithNewStackTraceHolder();
         } else if (selector instanceof SelectorGroupImpl) {
-
             final List<TargetSelector> results = flattenSelectorGroup((SelectorGroupImpl) selector, rootClass);
             return new SelectorGroupImpl(results.toArray(new GroupableSelector[0]));
+        } else if (selector instanceof GetMethodSelector<?, ?>) {
+            return MethodReferenceHelper.createSelector((GetMethodSelector<?, ?>) selector);
         } else if (selector instanceof SelectorImpl) {
             return applyRootClass((SelectorImpl) selector, rootClass);
         } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {

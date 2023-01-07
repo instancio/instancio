@@ -15,9 +15,11 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.FieldSelectorBuilderImpl;
+import org.instancio.internal.selectors.MethodReferenceHelper;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
@@ -252,7 +254,62 @@ public final class Select {
     public static Selector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "Field name must not be null");
         return SelectorImpl.builder().fieldName(fieldName).build();
+    }
 
+    /**
+     * Selects a field based on the given method reference.
+     * <p>
+     * Internally, the method reference is mapped to a regular field selector
+     * as returned by {@link #field(Class, String)}. Therefore, this
+     * method only works for classes with expected field and method naming
+     * conventions:
+     *
+     * <ul>
+     *   <li>Java beans convention with "get" and "is" prefixes.</li>
+     *   <li>Java records convention where method names match property names.</li>
+     * </ul>
+     * <p>
+     * <b>Examples:</b>
+     *
+     * <pre>{@code
+     *   // Java beans naming convention
+     *   field(Person::getName)  -> field(Person.class, "name")
+     *   field(Person::isActive) -> field(Person.class, "active")
+     *
+     *   // Property-style naming convention (e.g. Java records)
+     *   field(Person::name)     -> field(Person.class, "name")
+     *   field(Person::isActive) -> field(Person.class, "isActive")
+     * }</pre>
+     * <p>
+     * <b>Note:</b> for a method reference with a generic return type,
+     * the type must be specified explicitly, for example by assigning
+     * the method reference to a variable:
+     * <p>
+     *
+     * <pre>{@code
+     * class Item<T> {
+     *     private T value;
+     *
+     *     T getValue() { // generic return type
+     *         return value;
+     *     }
+     * }
+     *
+     * GetMethodSelector<Item<String>, String> getterSelector = Item::getValue;
+     * Select.field(getterSelector)
+     * }</pre>
+     *
+     * @param methodReference method reference from which field name will be resolved
+     * @param <T>             type declaring the method
+     * @param <R>             return type of the method
+     * @return a field selector matching the given method reference
+     * @see #field(Class, String)
+     * @since 2.3.0
+     */
+    @ExperimentalApi
+    public static <T, R> Selector field(final GetMethodSelector<T, R> methodReference) {
+        ApiValidator.notNull(methodReference, "Method reference must not be null");
+        return MethodReferenceHelper.createSelector(methodReference);
     }
 
     /**

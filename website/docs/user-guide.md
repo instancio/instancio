@@ -161,14 +161,18 @@ Instancio supports different types of selectors, all of which implement the {{Ta
 These types are:
 
 - regular selectors
+- method reference selector
 - predicate selectors
 - selector groups
 - convenience selectors
 
-All of the above are provided by the {{Select}} class which contains the following static methods
-for creating them:
+All of the above can be created using static methods in the {{Select}} class.
 
-``` java linenums="1" title="Regular selectors"
+#### Regular selectors
+
+Regular selectors are for precise matching: they can only match a single field or a single type.
+
+``` java linenums="1"
 Select.field(String fieldName)
 Select.field(Class<?> declaringClass, String fieldName)
 Select.all(Class<?> type)
@@ -178,11 +182,43 @@ Select.all(Class<?> type)
     <lnum>2</lnum> Selects field by name, declared in the specified class.<br/>
     <lnum>3</lnum> Selects the specified class, including fields and collection elements of this type.<br/>
 
-Regular selectors are for precise matching: they can only match a single field or type.
 Fields are matched based on exact field name. If a field with the specified name does not exist, an error will be thrown.
 Types are matched exactly using `Class` equality, therefore matching does not include subtypes.
 
-``` java linenums="1" title="Predicate selectors"
+#### Method reference selector
+
+This selector uses method references to match fields.
+
+``` java linenums="1"
+Select.field(GetMethodSelector<T, R> methodReference)
+```
+
+Internally, method reference is converted to a regular field selector, equivalent to `Select.field(Class<?> declaringClass, String fieldName)`.
+This is done by mapping method name to the corresponding field name. The mapping logic supports the following naming conventions:
+
+ - Java beans - where getters are prefixed with `get` and, in case of booleans, `is`.
+ - Java record - where method names match field names exactly.
+
+For example, all the following combinations of field and method names are supported:
+
+|Method name  |Field name  |Example|
+|-------------|------------|-------|
+|`getName()`  | `name`     |`field(Person::getName)`  -&gt; `field(Person.class, "name")`|
+|`name()`     | `name`     |`field(Person::name)`  -&gt; `field(Person.class, "name")`|
+|`isActive()` | `active`   |`field(Person::isActive)`  -&gt; `field(Person.class, "active")`|
+|`isActive()` | `isActive` |`field(Person::isActive)`  -&gt; `field(Person.class, "isActive")`|
+
+For methods that follow other naming conventions, or situations where no method is available, regular field selectors can be used instead.
+
+!!! info "Regular selector definition"
+    From here on, the definition of *regular selectors* also includes method reference selectors.
+
+#### Predicate selectors
+
+Predicate selectors allow for greater flexibility in matching fields and classes.
+These use a plural naming convention: `fields()` and `types()`.
+
+``` java linenums="1"
 Select.fields(Predicate<Field> fieldPredicate)
 Select.types(Predicate<Class<?>> classPredicate)
 ```
@@ -190,13 +226,15 @@ Select.types(Predicate<Class<?>> classPredicate)
     <lnum>1</lnum> Selects all fields matching the predicate.<br/>
     <lnum>2</lnum> Selects all types matching the predicate.<br/>
 
-Predicate selectors allow for greater flexibility in matching fields and classes.
-These use a plural naming convention: `fields()` and `types()`.
 Unlike regular selectors, these can match multiple fields or types.
 For example, they can be used to match all fields declared by a class, or all classes within a package.
 They can also be used to match a certain type, including its subtypes.
 
-``` java linenums="1" title="Convenience selectors"
+#### Convenience selectors
+
+Convenience selectors provide syntactic sugar built on top of regular and predicate selectors.
+
+``` java linenums="1"
 Select.all(GroupableSelector... selectors)
 Select.allStrings()
 Select.allInts()
@@ -211,8 +249,6 @@ Select.types()
     <lnum>5</lnum> Builder for constructing `Predicate<Class<?>>` selectors.<br/>
 
 !!! info "The `allXxx()` methods such as `allInts()`, are available for all core types."
-
-Finally, convenience selectors provide syntactic sugar built on top of regular and predicate selectors.
 
 For example, the following predicate that matches `Long` fields annotated with `@Id`
 
@@ -244,7 +280,7 @@ Selector precedence rules apply when multiple selectors match a field or class:
 
 Consider the following example:
 
-``` java linenums="1" title="Selector precedence example"
+``` java linenums="1"
 Address address = Instancio.of(Address.class)
     .set(allStrings(), "foo")
     .set(field("city"), "bar")
@@ -256,7 +292,7 @@ have higher precedence, the city will be set to "bar". Similarly, in the followi
 the city will also be set to "bar" because the predicate selector created by the `fields()`
 method has lower precedence than the regular `field()` selector:
 
-``` java linenums="1" title="Selector precedence example"
+``` java linenums="1"
 Address address = Instancio.of(Address.class)
     .set(fields().named("city"), "foo")
     .set(field("city"), "bar")
@@ -266,15 +302,24 @@ Address address = Instancio.of(Address.class)
 ### Selector Scopes
 
 Regular selectors also offer the `within(Scope... scopes)` method for fine-tuning which targets they should be applied to.
-The method accepts one or more `Scope` objects that can be created using static methods in the `Select` class.
+The method accepts one or more `Scope` objects that can be created using
 
-``` java linenums="1" title="Static methods for specifying selector scopes"
+ - static methods in the `Select` class
+ - using `toScope()` method provided by regular selectors
+
+``` java linenums="1" title="Creating scopes"
 Select.scope(Class<?> targetClass, String field)
+Select.field(Class<T> targetClass, String field).toScope()
+
 Select.scope(Class<?> targetClass)
+Select.all(Class<T> targetClass).toScope()
+
+Select.field(GetMethodSelector<T, R> methodReference)
 ```
 !!! attention ""
-    <lnum>1</lnum> Scope a selector to the specified field of the target class<br/>
-    <lnum>2</lnum> Scope a selector to the specified class<br/>
+    <lnum>1-2</lnum> Scope a selector to the specified field of the target class<br/>
+    <lnum>4-5</lnum> Scope a selector to the specified class<br/>
+    <lnum>7</lnum> Scope a selector to the field matching the method reference<br/>
 
 
 To illustrate how scopes work we will assume the following structure for the `Person` class.
@@ -336,6 +381,23 @@ set(allStrings().within(scope(Person.class, "work"), scope(Phone.class)), "foo")
 
 The `Person.work` address object contains a list of phones, therefore `Person.work` is the outermost scope and is specified first.
 `Phone` class is the innermost scope and is specified last.
+
+The final examples illustrate creation of scope objects from regular selectors. All of the following are equivalent to each other.
+
+``` java title="Equivalent ways of creating scopes based on field"
+set(allStrings().within(scope(Person.class, "home")), "foo")
+
+set(allStrings().within(field(Person.class, "home").toScope()), "foo")
+
+set(allStrings().within(field(Person::getHome).toScope()), "foo")
+```
+
+``` java title="Equivalent ways of creating scopes based on class"
+set(allStrings().within(scope(Person.class)), "foo")
+
+set(allStrings().within(all(Person.class).toScope()), "foo")
+```
+
 
 ### Selector Strictness
 
@@ -560,7 +622,7 @@ just like a regular setter method:
 
 ``` java linenums="1"
 Person person = Instancio.of(Person.class)
-    .set(field(Phone.class, "countryCode"), "+1")
+    .set(field(Phone::getCountryCode), "+1")
     .set(all(LocalDateTime.class), LocalDateTime.now())
     .create();
 ```
@@ -721,13 +783,15 @@ The `ignore` method can be used where this is not desirable:
 
 ``` java linenums="1" title="Example: ignoring certain fields and classes"
 Person person = Instancio.of(Person.class)
-    .ignore(field("pets"))
+    .ignore(field(Person::getPets))
     .ignore(all(LocalDateTime.class))
     .create();
 
 // Or combining the selectors
 Person person = Instancio.of(Person.class)
-    .ignore(all(field("pets"), all(LocalDateTime.class)))
+    .ignore(all(
+        field(Person::getPets),
+        all(LocalDateTime.class)))
     .create();
 ```
 
@@ -738,7 +802,7 @@ will actually generate a `lastModified` with a `null` value.
 ``` java linenums="1" title="ignore() has higher precedence than other methods"
 Person person = Instancio.of(Person.class)
     .ignore(all(LocalDateTime.class))
-    .supply(field("lastModified"), () -> LocalDateTime.now())
+    .supply(field(Person::getLastModified), () -> LocalDateTime.now())
     .create();
 ```
 
@@ -757,7 +821,7 @@ To specify that something is nullable using the builder API can be done as follo
 
 ``` java linenums="1" title="Example: specifying nullability using the builder API"
 Person person = Instancio.of(Person.class)
-    .withNullable(field("address"))
+    .withNullable(field(Person::getAddress))
     .withNullable(allStrings())
     .create();
 ```
