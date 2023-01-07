@@ -37,6 +37,7 @@ class ModelWithIgnoredTest {
     void verifyIgnored() {
         final Model<SupportedTemporalTypes> model = Instancio.of(SupportedTemporalTypes.class)
                 .ignore(field("instant"))
+                .ignore(field(SupportedTemporalTypes::getMonthDay))
                 .ignore(all(LocalDate.class))
                 .ignore(fields().ofType(LocalDateTime.class))
                 .toModel();
@@ -44,6 +45,7 @@ class ModelWithIgnoredTest {
         final SupportedTemporalTypes result = Instancio.create(model);
 
         assertThat(result.getInstant()).isNull();
+        assertThat(result.getMonthDay()).isNull();
         assertThat(result.getLocalDate()).isNull();
         assertThat(result.getLocalDateTime()).isNull();
     }

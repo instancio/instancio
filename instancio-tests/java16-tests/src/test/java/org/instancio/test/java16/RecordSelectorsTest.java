@@ -27,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 import static org.instancio.Select.root;
 import static org.instancio.Select.types;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
@@ -62,6 +63,17 @@ class RecordSelectorsTest {
 
         assertThat(result.address().phoneNumbers())
                 .isNotEmpty().containsOnly(expected);
+    }
+
+    @Test
+    void methodReferenceSelectors() {
+        final PhoneRecord expected = Instancio.create(PhoneRecord.class);
+        final PhoneRecord result = Instancio.of(PhoneRecord.class)
+                .set(field(PhoneRecord::countryCode), expected.countryCode())
+                .set(field(PhoneRecord::number), expected.number())
+                .create();
+
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test

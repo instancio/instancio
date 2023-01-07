@@ -16,8 +16,10 @@
 package org.instancio.test.kotlin
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.instancio.Instancio
 import org.instancio.Select.*
+import org.instancio.exception.InstancioApiException
 import org.instancio.junit.InstancioExtension
 import org.instancio.test.kotlin.pojo.person.KPerson
 import org.instancio.test.kotlin.pojo.person.KPhone
@@ -55,6 +57,22 @@ internal class KSelectorsTest {
 
         assertThat(result.address?.phoneNumbers)
             .isNotEmpty.containsOnly(expected)
+    }
+
+    /**
+     * Kotlin's method reference is of type {@code KProperty1}
+     * which does not work with field selector.
+     * Unsupported for now; will need to investigate possible solutions.
+     */
+    @Test
+    @FeatureTag(Feature.UNSUPPORTED)
+    fun methodReference() {
+        val api = Instancio.of(KPhone::class.java)
+
+        assertThatThrownBy {
+            api.set(field(KPhone::number), "foo")
+        }.isExactlyInstanceOf(InstancioApiException::class.java)
+            .hasMessage("Unable to resolve method name from field selector")
     }
 
     @Test
