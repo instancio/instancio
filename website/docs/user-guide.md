@@ -182,8 +182,13 @@ Select.all(Class<?> type)
     <lnum>2</lnum> Selects field by name, declared in the specified class.<br/>
     <lnum>3</lnum> Selects the specified class, including fields and collection elements of this type.<br/>
 
-Fields are matched based on exact field name. If a field with the specified name does not exist, an error will be thrown.
-Types are matched exactly using `Class` equality, therefore matching does not include subtypes.
+```java title="Examples"
+Select.field(Person.class, "name") // Person.name
+Select.all(Set.class)
+```
+
+`Select.field()` is matched based on exact field name. If a field with the specified name does not exist, an error will be thrown.
+`Select.all()` is matched using `Class` equality, therefore matching does not include subtypes.
 
 #### Method reference selector
 
@@ -191,6 +196,10 @@ This selector uses method references to match fields.
 
 ``` java linenums="1"
 Select.field(GetMethodSelector<T, R> methodReference)
+```
+
+```java title="Example"
+Select.field(Person::getName)
 ```
 
 Internally, method reference is converted to a regular field selector, equivalent to `Select.field(Class<?> declaringClass, String fieldName)`.
@@ -222,9 +231,15 @@ These use a plural naming convention: `fields()` and `types()`.
 Select.fields(Predicate<Field> fieldPredicate)
 Select.types(Predicate<Class<?>> classPredicate)
 ```
+
 !!! attention ""
     <lnum>1</lnum> Selects all fields matching the predicate.<br/>
     <lnum>2</lnum> Selects all types matching the predicate.<br/>
+
+``` java title="Examples"
+Select.fields(field -> field.getName().contains("date"))
+Select.types(klass -> Collection.class.isAssignableFrom(klass))
+```
 
 Unlike regular selectors, these can match multiple fields or types.
 For example, they can be used to match all fields declared by a class, or all classes within a package.
@@ -308,19 +323,16 @@ The method accepts one or more `Scope` objects that can be created using
  - using `toScope()` method provided by regular selectors
 
 ``` java linenums="1" title="Creating scopes"
-Select.scope(Class<?> targetClass, String field)
-Select.field(Class<T> targetClass, String field).toScope()
-
 Select.scope(Class<?> targetClass)
+Select.scope(Class<?> targetClass, String field)
+
 Select.all(Class<T> targetClass).toScope()
-
-Select.field(GetMethodSelector<T, R> methodReference)
+Select.field(Class<T> targetClass, String field).toScope()
+Select.field(GetMethodSelector<T, R> methodReference).toScope()
 ```
-!!! attention ""
-    <lnum>1-2</lnum> Scope a selector to the specified field of the target class<br/>
-    <lnum>4-5</lnum> Scope a selector to the specified class<br/>
-    <lnum>7</lnum> Scope a selector to the field matching the method reference<br/>
 
+Field-level scope narrows down a selector to the specified field of the target class.
+Class-level scope narrows a selector to the specified class.
 
 To illustrate how scopes work we will assume the following structure for the `Person` class.
 
@@ -328,8 +340,8 @@ To illustrate how scopes work we will assume the following structure for the `Pe
 ``` java linenums="1" title="Sample POJOs with getters and setters omitted"
 class Person {
     private String name;
-    private Address home;
-    private Address work;
+    private Address homeAddress;
+    private Address workAddress;
 }
 
 class Address {
@@ -343,6 +355,27 @@ class Phone {
     private String number;
 }
 ```
+
+Note that the `Person` class has two `Address` fields.
+Selecting `field(Address::getCity)` would target both addresses, `homeAddress` and `workAddress`.
+Without scopes, it would not be possible to set the two cities to different values.
+Using scopes solves this problem:
+
+``` java title="Creating scope using toScope() method"
+set(field(Address::getCity).within(field(Person::getHomeAddress).toScope()), "Surrey")
+set(field(Address::getCity).within(field(Person::getWorkAddress).toScope()), "Vancouver")
+```
+
+An equivalent way to specify the scope is using `Select.scope()` method:
+
+``` java title="Creating scope using toScope() method"
+set(field(Address::getCity).within(scope(Person.class, "homeAddress")), "Surrey")
+set(field(Address::getCity).within(scope(Person.class, "workAddress")), "Vancouver")
+```
+
+The following section provides more examples of using scopes.
+
+#### Examples of using Scope
 
 To start off, without using scopes we can set all strings to the same value.
 For example, the following snippet will set each string field of each class to "foo".
@@ -365,31 +398,27 @@ set(allStrings().within(scope(Address.class)), "foo")
 set(allStrings().within(scope(List.class)), "foo")
 ```
 
-``` java title="Set all strings in Person.home address object"
-set(allStrings().within(scope(Person.class, "home")), "foo")
-```
-
-``` java title="Set Address.city of the Person.home field"
-set(field(Address.class, "city").within(scope(Person.class, "home")), "foo")
+``` java title="Set all strings in Person.homeAddress address object"
+set(allStrings().within(scope(Person.class, "homeAddress")), "foo")
 ```
 
 Using `within()` also allows specifying multiple scopes. Scopes must be specified top-down, starting from the outermost to the innermost.
 
-``` java title="Set all strings of all Phone instances contained within Person.work address field"
-set(allStrings().within(scope(Person.class, "work"), scope(Phone.class)), "foo")
+``` java title="Set all strings of all Phone instances contained within Person.workAddress field"
+set(allStrings().within(scope(Person.class, "workAddress"), scope(Phone.class)), "foo")
 ```
 
-The `Person.work` address object contains a list of phones, therefore `Person.work` is the outermost scope and is specified first.
+The `Person.workAddress` object contains a list of phones, therefore `Person.workAddress` is the outermost scope and is specified first.
 `Phone` class is the innermost scope and is specified last.
 
 The final examples illustrate creation of scope objects from regular selectors. All of the following are equivalent to each other.
 
 ``` java title="Equivalent ways of creating scopes based on field"
-set(allStrings().within(scope(Person.class, "home")), "foo")
+set(allStrings().within(scope(Person.class, "homeAddress")), "foo")
 
-set(allStrings().within(field(Person.class, "home").toScope()), "foo")
+set(allStrings().within(field(Person.class, "homeAddress").toScope()), "foo")
 
-set(allStrings().within(field(Person::getHome).toScope()), "foo")
+set(allStrings().within(field(Person::getHomeAddress).toScope()), "foo")
 ```
 
 ``` java title="Equivalent ways of creating scopes based on class"

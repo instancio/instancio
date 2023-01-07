@@ -62,7 +62,7 @@ final class ModelContextHelper {
             final List<TargetSelector> results = flattenSelectorGroup((SelectorGroupImpl) selector, rootClass);
             return new SelectorGroupImpl(results.toArray(new GroupableSelector[0]));
         } else if (selector instanceof GetMethodSelector<?, ?>) {
-            return MethodReferenceHelper.createSelector((GetMethodSelector<?, ?>) selector);
+            return MethodReferenceHelper.resolve((GetMethodSelector<?, ?>) selector);
         } else if (selector instanceof SelectorImpl) {
             return applyRootClass((SelectorImpl) selector, rootClass);
         } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {

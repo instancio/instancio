@@ -309,7 +309,7 @@ public final class Select {
     @ExperimentalApi
     public static <T, R> Selector field(final GetMethodSelector<T, R> methodReference) {
         ApiValidator.notNull(methodReference, "Method reference must not be null");
-        return MethodReferenceHelper.createSelector(methodReference);
+        return MethodReferenceHelper.resolve(methodReference);
     }
 
     /**

@@ -22,9 +22,9 @@ import org.instancio.internal.selectors.UnusedSelectorDescription;
 import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
+import static org.instancio.internal.util.Constants.NL;
 
 final class UnusedSelectorReporter {
-    private static final String NL = System.lineSeparator();
     private final Set<? super TargetSelector> ignored;
     private final Set<? super TargetSelector> nullable;
     private final Set<? super TargetSelector> generators;

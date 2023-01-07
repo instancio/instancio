@@ -18,15 +18,13 @@ package org.instancio.test.features.selector;
 import org.instancio.GetMethodSelector;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.InstancioOfClassApi;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.basic.Pair;
-import org.instancio.test.support.pojo.inheritance.BaseClasSubClassInheritance.BaseClass;
-import org.instancio.test.support.pojo.inheritance.BaseClasSubClassInheritance.SubClass;
+import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance.BaseClass;
+import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance.SubClass;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 import org.instancio.test.support.pojo.misc.getters.PropertyStylePojo;
 import org.instancio.test.support.pojo.person.Address;
@@ -155,17 +153,6 @@ class GetMethodSelectorTest {
         assertThat(result.getAddress2().getCity()).isEqualTo("bar");
     }
 
-    @Test
-    @FeatureTag(Feature.UNSUPPORTED)
-    @SuppressWarnings("Convert2MethodRef")
-    void arbitraryLambdaFunctionsAreNotSupported() {
-        final InstancioOfClassApi<StringHolder> api = Instancio.of(StringHolder.class);
-
-        assertThatThrownBy(() -> api.set(field((StringHolder holder) -> holder.getValue()), "foo"))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Unable to resolve method name from field selector");
-    }
-
     @Nested
     class InheritanceTest {
         @Test
@@ -212,7 +199,9 @@ class GetMethodSelectorTest {
 
             assertThatThrownBy(() -> api.set(field(getValueMethod), "foo"))
                     .isExactlyInstanceOf(InstancioApiException.class)
-                    .hasMessage("Unable to resolve method name from field selector");
+                    .hasMessageContaining(String.format(
+                            "Unable to resolve field from method reference:%n" +
+                                    "-> ItemInterface::getValue"));
         }
 
         @Test

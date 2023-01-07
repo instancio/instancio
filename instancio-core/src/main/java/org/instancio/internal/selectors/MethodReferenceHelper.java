@@ -19,11 +19,16 @@ import org.instancio.GetMethodSelector;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import static org.instancio.internal.util.Constants.NL;
 
 public final class MethodReferenceHelper {
 
@@ -35,21 +40,54 @@ public final class MethodReferenceHelper {
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    public static <T, R> Selector createSelector(final GetMethodSelector<T, R> methodRef) {
+    public static <T, R> Selector resolve(final GetMethodSelector<T, R> methodRef) {
         try {
             final Method replaceMethod = methodRef.getClass().getDeclaredMethod("writeReplace");
             replaceMethod.setAccessible(true);
             final SerializedLambda lambda = (SerializedLambda) replaceMethod.invoke(methodRef);
             final String className = lambda.getImplClass().replace('/', '.');
             final Class<?> targetClass = Class.forName(className);
-            final String fieldName = getPropertyName(targetClass, lambda.getImplMethodName());
+            final String fieldName = getFieldNameDeclaredInClass(targetClass, lambda.getImplMethodName());
+
+            if (fieldName == null) {
+                throw new InstancioApiException(getErrorMessage(lambda, targetClass));
+            }
+
             return Select.field(targetClass, fieldName);
-        } catch (Exception ex) {
+        } catch (NoSuchMethodException
+                 | IllegalAccessException
+                 | InvocationTargetException
+                 | ClassNotFoundException ex) {
             throw new InstancioApiException("Unable to resolve method name from field selector", ex);
         }
     }
 
-    static String getPropertyName(final Class<?> targetClass, final String methodName) {
+    @SuppressWarnings("StringBufferReplaceableByString")
+    private static String getErrorMessage(final SerializedLambda lambda, final Class<?> targetClass) {
+        final String at = Format.firstNonInstancioStackTraceLine(new Throwable());
+        return new StringBuilder(1024).append(NL).append(NL)
+                .append("Unable to resolve field from method reference:").append(NL)
+                .append("-> ").append(Format.withoutPackage(targetClass)).append("::").append(lambda.getImplMethodName()).append(NL)
+                .append("   at ").append(at).append(NL)
+                .append(NL)
+                .append("Potential causes:").append(NL)
+                .append("-> The method and the corresponding field do not follow expected naming conventions").append(NL)
+                .append("   See: https://www.instancio.org/user-guide/#method-reference-selector").append(NL)
+                .append("-> The method is abstract, declared in a superclass, and the field is declared in a subclass").append(NL)
+                .append("-> The method reference is expressed as a lambda function").append(NL)
+                .append("   Example:     field((SamplePojo pojo) -> pojo.getValue())").append(NL)
+                .append("   Instead of:  field(SamplePojo::getValue)").append(NL)
+                .append("-> You are using Kotlin and passing a method reference of a Kotlin class").append(NL)
+                .append(NL)
+                .append("Possible solutions:").append(NL)
+                .append("-> Resolve the above issues, if applicable").append(NL)
+                .append("-> Specify the field name explicitly, e.g.").append(NL)
+                .append("   field(Example.class, \"someField\")")
+                .toString();
+    }
+
+    @Nullable
+    static String getFieldNameDeclaredInClass(final Class<?> targetClass, final String methodName) {
         if (hasPrefix(GET_PREFIX, methodName)) {
             final String filedName = getFieldNameByRemovingPrefix(targetClass, methodName, GET_PREFIX.length());
             if (filedName != null) return filedName;
@@ -58,9 +96,13 @@ public final class MethodReferenceHelper {
             if (filedName != null) return filedName;
         }
         // class could be using property-style getters (e.g. java record)
-        return methodName;
+        if (ReflectionUtils.isValidField(targetClass, methodName)) {
+            return methodName;
+        }
+        return null;
     }
 
+    @Nullable
     private static String getFieldNameByRemovingPrefix(
             final Class<?> targetClass,
             final String methodName,

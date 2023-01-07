@@ -22,7 +22,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BaseClasSubClassInheritance {
+public class BaseClassSubClassInheritance {
 
     private SubClass subClass;
 

@@ -24,6 +24,7 @@ import org.instancio.junit.InstancioExtension
 import org.instancio.test.kotlin.pojo.person.KPerson
 import org.instancio.test.kotlin.pojo.person.KPhone
 import org.instancio.test.support.asserts.ReflectionAssert.assertThatObject
+import org.instancio.test.support.pojo.person.Phone
 import org.instancio.test.support.tags.Feature
 import org.instancio.test.support.tags.FeatureTag
 import org.junit.jupiter.api.Test
@@ -66,13 +67,25 @@ internal class KSelectorsTest {
      */
     @Test
     @FeatureTag(Feature.UNSUPPORTED)
-    fun methodReference() {
+    fun methodReferenceFromKotlinClass() {
         val api = Instancio.of(KPhone::class.java)
 
         assertThatThrownBy {
-            api.set(field(KPhone::number), "foo")
+            api.ignore(field(KPhone::number))
         }.isExactlyInstanceOf(InstancioApiException::class.java)
-            .hasMessage("Unable to resolve method name from field selector")
+            .hasMessageContainingAll(
+                "Unable to resolve field from method reference",
+                "You are using Kotlin and passing a method reference of a Kotlin class"
+            )
+    }
+
+    @Test
+    fun methodReferenceFromJavaClass() {
+        val result = Instancio.of(Phone::class.java)
+            .set(field(Phone::getNumber), "foo")
+            .create();
+
+        assertThat(result.number).isEqualTo("foo");
     }
 
     @Test

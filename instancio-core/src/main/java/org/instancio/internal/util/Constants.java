@@ -20,6 +20,8 @@ import java.util.Map;
 
 public final class Constants {
 
+    public static final String NL = System.lineSeparator();
+
     /**
      * Percentage by which to adjust a min/max range if min is set higher than max, or vice versa.
      */
