@@ -108,9 +108,15 @@ class ErrorMessagesTest {
     void withTypeParametersGreaterThanRequired() {
         assertThatThrownBy(() -> Instancio.of(Map.class).withTypeParameters(String.class, Integer.class, Long.class))
                 .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessageContainingAll(
-                        "Class 'java.util.Map' has 2 type parameters: [K, V].",
-                        "Specify the required type parameters using 'withTypeParameters(Class... types)`");
+                .hasMessage(String.format("%n" +
+                        "Class 'java.util.Map' has 2 type parameters: [K, V].%n" +
+                        "You can specify the required type parameters using 'withTypeParameters(Class... types)` method%n" +
+                        "%n" +
+                        "Example:%n" +
+                        "%n" +
+                        "Instancio.of(Map.class).%n" +
+                        "    .withTypeParameters(...)%n" +
+                        "    .create();%n"));
     }
 
     @Test
@@ -138,15 +144,27 @@ class ErrorMessagesTest {
     void unboundTypeVariablesErrorMessage() {
         assertThatThrownBy(() -> Instancio.of(ItemContainer.class).create())
                 .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessageContainingAll(
-                        "Class 'org.instancio.test.support.pojo.generics.container.ItemContainer' has 2 type parameters: [X, Y].",
-                        "Specify the required type parameters using 'withTypeParameters(Class... types)`");
+                .hasMessage(String.format("%n" +
+                        "Class 'org.instancio.test.support.pojo.generics.container.ItemContainer' has 2 type parameters: [X, Y].%n" +
+                        "You can specify the required type parameters using 'withTypeParameters(Class... types)` method%n" +
+                        "%n" +
+                        "Example:%n" +
+                        "%n" +
+                        "Instancio.of(ItemContainer.class).%n" +
+                        "    .withTypeParameters(...)%n" +
+                        "    .create();%n"));
 
         assertThatThrownBy(() -> Instancio.of(List.class).create())
                 .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessageContainingAll(
-                        "Class 'java.util.List' has 1 type parameters: [E].",
-                        "Specify the required type parameters using 'withTypeParameters(Class... types)`");
+                .hasMessage(String.format("%n" +
+                        "Class 'java.util.List' has 1 type parameters: [E].%n" +
+                        "You can specify the required type parameters using 'withTypeParameters(Class... types)` method%n" +
+                        "%n" +
+                        "Example:%n" +
+                        "%n" +
+                        "Instancio.of(List.class).%n" +
+                        "    .withTypeParameters(...)%n" +
+                        "    .create();%n"));
     }
 
     @Test

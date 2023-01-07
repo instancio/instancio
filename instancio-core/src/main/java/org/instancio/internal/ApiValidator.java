@@ -85,7 +85,12 @@ public final class ApiValidator {
 
         isTrue(typeVarsLength == rootTypeParameters.size(),
                 "%nClass '%s' has %s type parameters: %s."
-                        + "%nSpecify the required type parameters using 'withTypeParameters(Class... types)`",
+                        + "%nYou can specify the required type parameters using 'withTypeParameters(Class... types)` method"
+                        + "%n%nExample:"
+                        + "%n%nInstancio.of(" + rootClass.getSimpleName() + ".class)."
+                        + "%n    .withTypeParameters(...)"
+                        + "%n    .create();"
+                        + "%n",
                 rootClass.getName(),
                 rootClass.getTypeParameters().length,
                 Arrays.toString(rootClass.getTypeParameters()));
