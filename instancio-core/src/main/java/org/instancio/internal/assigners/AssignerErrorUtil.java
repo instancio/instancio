@@ -24,10 +24,11 @@ import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.StringUtils;
 
+import static org.instancio.internal.util.Constants.NL;
+
 @SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
 final class AssignerErrorUtil {
     private static final int INITIAL_SB_SIZE = 1024;
-    private static final String NL = System.getProperty("line.separator");
 
     private AssignerErrorUtil() {
         // non-instantiable

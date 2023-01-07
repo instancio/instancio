@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.reflection;
 
-import org.instancio.test.support.pojo.inheritance.BaseClasSubClassInheritance;
+import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,7 +34,7 @@ class DeclaredAndInheritedFieldsCollectorTest {
 
     @Test
     void getFields() {
-        final List<Field> results = fieldsCollector.getFields(BaseClasSubClassInheritance.SubClass.class);
+        final List<Field> results = fieldsCollector.getFields(BaseClassSubClassInheritance.SubClass.class);
         assertThat(results)
                 .extracting(Field::getName)
                 .containsExactlyInAnyOrder(

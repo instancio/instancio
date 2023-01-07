@@ -26,8 +26,8 @@ import static org.instancio.testsupport.asserts.SelectorAssert.assertSelector;
 class MethodReferenceHelperTest {
 
     @Test
-    void createSelector() {
-        assertSelector(MethodReferenceHelper.createSelector(Person::getAge))
+    void resolve() {
+        assertSelector(MethodReferenceHelper.resolve(Person::getAge))
                 .hasTargetClass(Person.class)
                 .hasFieldName("age")
                 .hasNoScope();
@@ -36,15 +36,15 @@ class MethodReferenceHelperTest {
     @Test
     void getPropertyName() {
         // java beans style
-        assertThat(MethodReferenceHelper.getPropertyName(BeanStylePojo.class, "getFoo")).isEqualTo("foo");
-        assertThat(MethodReferenceHelper.getPropertyName(BeanStylePojo.class, "isBar")).isEqualTo("bar");
+        assertThat(MethodReferenceHelper.getFieldNameDeclaredInClass(BeanStylePojo.class, "getFoo")).isEqualTo("foo");
+        assertThat(MethodReferenceHelper.getFieldNameDeclaredInClass(BeanStylePojo.class, "isBar")).isEqualTo("bar");
 
         // property style getters (e.g. java records)
-        assertThat(MethodReferenceHelper.getPropertyName(PropertyStylePojo.class, "foo")).isEqualTo("foo");
-        assertThat(MethodReferenceHelper.getPropertyName(PropertyStylePojo.class, "bar")).isEqualTo("bar");
-        assertThat(MethodReferenceHelper.getPropertyName(PropertyStylePojo.class, "isBaz")).isEqualTo("isBaz");
-        assertThat(MethodReferenceHelper.getPropertyName(PropertyStylePojo.class, "haz")).isEqualTo("haz");
-        assertThat(MethodReferenceHelper.getPropertyName(PropertyStylePojo.class, "hazGaz")).isEqualTo("hazGaz");
+        assertThat(MethodReferenceHelper.getFieldNameDeclaredInClass(PropertyStylePojo.class, "foo")).isEqualTo("foo");
+        assertThat(MethodReferenceHelper.getFieldNameDeclaredInClass(PropertyStylePojo.class, "bar")).isEqualTo("bar");
+        assertThat(MethodReferenceHelper.getFieldNameDeclaredInClass(PropertyStylePojo.class, "isBaz")).isEqualTo("isBaz");
+        assertThat(MethodReferenceHelper.getFieldNameDeclaredInClass(PropertyStylePojo.class, "haz")).isEqualTo("haz");
+        assertThat(MethodReferenceHelper.getFieldNameDeclaredInClass(PropertyStylePojo.class, "hasGaz")).isEqualTo("hasGaz");
     }
 
 }

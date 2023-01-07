@@ -15,16 +15,16 @@
  */
 package org.instancio.creation.inheritance;
 
-import org.instancio.test.support.pojo.inheritance.BaseClasSubClassInheritance;
+import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BaseClasSubClassInheritanceCreationTest extends CreationTestTemplate<BaseClasSubClassInheritance> {
+public class BaseClasSubClassInheritanceCreationTest extends CreationTestTemplate<BaseClassSubClassInheritance> {
 
     @Override
-    protected void verify(BaseClasSubClassInheritance result) {
-        final BaseClasSubClassInheritance.SubClass subClass = result.getSubClass();
+    protected void verify(BaseClassSubClassInheritance result) {
+        final BaseClassSubClassInheritance.SubClass subClass = result.getSubClass();
 
         assertThat(subClass).isNotNull();
         assertThat(subClass.getSubClassField()).isInstanceOf(String.class);
