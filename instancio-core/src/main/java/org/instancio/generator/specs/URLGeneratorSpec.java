@@ -15,6 +15,7 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 
@@ -25,14 +26,13 @@ import java.net.URL;
  *
  * @since 2.3.0
  */
-public interface URLGeneratorSpec extends GeneratorSpec<URL> {
+public interface URLGeneratorSpec extends GeneratorSpec<URL>, AsStringGeneratorSpec<URL> {
 
     /**
-     * Specifies the protocols to use.
-     * A random protocol will be selected from the specified options.
+     * Generate a random protocol from the given choices.
      * If not specified, the default is HTTP.
      *
-     * @param protocols one or more protocol choices from which
+     * @param protocols one or more values from which
      *                  a random protocol will be selected
      * @return spec builder
      * @since 2.3.0
@@ -41,13 +41,22 @@ public interface URLGeneratorSpec extends GeneratorSpec<URL> {
 
     /**
      * Specifies the port number.
-     * If not specified, a random port between 1 and 65535 will be used.
+     * If not specified, default port {@code -1} will be used.
      *
      * @param port port number to use
      * @return spec builder
      * @since 2.3.0
      */
     URLGeneratorSpec port(int port);
+
+    /**
+     * Specifies that a random port number between
+     * 1 and 65535 (inclusive) should be generated.
+     *
+     * @return spec builder
+     * @since 2.3.0
+     */
+    URLGeneratorSpec randomPort();
 
     /**
      * Specifies a generator for the host name.
@@ -58,4 +67,14 @@ public interface URLGeneratorSpec extends GeneratorSpec<URL> {
      * @since 2.3.0
      */
     URLGeneratorSpec host(Generator<String> hostGenerator);
+
+    /**
+     * Specifies a generator for the file name.
+     * If not specified, blank file name will be used.
+     *
+     * @param fileGenerator generator for the file
+     * @return spec builder
+     * @since 2.3.0
+     */
+    URLGeneratorSpec file(Generator<String> fileGenerator);
 }

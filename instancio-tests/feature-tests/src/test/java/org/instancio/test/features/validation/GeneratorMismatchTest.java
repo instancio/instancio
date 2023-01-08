@@ -87,6 +87,7 @@ class GeneratorMismatchTest {
 
     @Test
     void assertNetTypes() {
+        assertMessageContains(SupportedMathTypes.class, BigDecimal.class, "uri()", gen -> gen.net().uri());
         assertMessageContains(SupportedMathTypes.class, BigDecimal.class, "url()", gen -> gen.net().url());
     }
 

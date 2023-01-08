@@ -32,6 +32,7 @@ import org.instancio.internal.generator.lang.StringBuilderGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.math.BigIntegerGenerator;
+import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.nio.file.PathGenerator;
 import org.instancio.internal.generator.time.DurationGenerator;
@@ -66,6 +67,7 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -162,6 +164,7 @@ public class GeneratorResolver {
         generators.put(BigInteger.class, new BigIntegerGenerator(context));
 
         // java.net
+        generators.put(URI.class, new URIGenerator(context));
         generators.put(URL.class, new URLGenerator(context));
 
         // java.io
