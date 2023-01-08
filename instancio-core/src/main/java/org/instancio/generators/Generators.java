@@ -167,6 +167,16 @@ public class Generators {
     }
 
     /**
+     * Returns generators for {@code java.net} classes.
+     *
+     * @return built-in generators for {@code java.net} classes.
+     * @since 2.3.0
+     */
+    public NetGenerators net() {
+        return new NetGenerators(context);
+    }
+
+    /**
      * Picks a random value from the given choices.
      *
      * @param choices to choose from

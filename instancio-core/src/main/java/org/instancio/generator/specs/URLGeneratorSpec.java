@@ -1,0 +1,61 @@
+/*
+ * Copyright 2022-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.instancio.generator.specs;
+
+import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorSpec;
+
+import java.net.URL;
+
+/**
+ * Generator spec for {@link URL}.
+ *
+ * @since 2.3.0
+ */
+public interface URLGeneratorSpec extends GeneratorSpec<URL> {
+
+    /**
+     * Specifies the protocols to use.
+     * A random protocol will be selected from the specified options.
+     * If not specified, the default is HTTP.
+     *
+     * @param protocols one or more protocol choices from which
+     *                  a random protocol will be selected
+     * @return spec builder
+     * @since 2.3.0
+     */
+    URLGeneratorSpec protocol(String... protocols);
+
+    /**
+     * Specifies the port number.
+     * If not specified, a random port between 1 and 65535 will be used.
+     *
+     * @param port port number to use
+     * @return spec builder
+     * @since 2.3.0
+     */
+    URLGeneratorSpec port(int port);
+
+    /**
+     * Specifies a generator for the host name.
+     * If not specified, a random host name will be generated.
+     *
+     * @param hostGenerator generator for the host name
+     * @return spec builder
+     * @since 2.3.0
+     */
+    URLGeneratorSpec host(Generator<String> hostGenerator);
+}

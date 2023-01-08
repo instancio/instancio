@@ -612,6 +612,9 @@ Generators
 │   └── bigInteger()
 │   └── bigDecimal()
 │
+├── net()
+│   └── url()
+│
 ├── io()
 │   └── file()
 │
