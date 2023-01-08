@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 abstract class AbstractURIGenerator<T> extends AbstractGenerator<T> {
+    private static final int DEFAULT_PORT = -1;
     private static final int WITH_RANDOM_PORT = -2;
     private static final int PORT_MIN = 1;
     private static final int PORT_MAX = 65_535;
@@ -34,7 +35,7 @@ abstract class AbstractURIGenerator<T> extends AbstractGenerator<T> {
 
     private List<String> schemes = Collections.emptyList();
     private Generator<String> hostGenerator;
-    private int port = -1;
+    private int port = DEFAULT_PORT;
     private Generator<String> pathGenerator;
 
     AbstractURIGenerator(final GeneratorContext context) {
