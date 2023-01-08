@@ -86,6 +86,11 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertNetTypes() {
+        assertMessageContains(SupportedMathTypes.class, BigDecimal.class, "url()", gen -> gen.net().url());
+    }
+
+    @Test
     void assertAtomicTypes() {
         assertMessageContains(SupportedAtomicTypes.class, AtomicLong.class, "atomicInteger()", gen -> gen.atomic().atomicInteger());
         assertMessageContains(SupportedAtomicTypes.class, AtomicInteger.class, "atomicLong()", gen -> gen.atomic().atomicLong());
