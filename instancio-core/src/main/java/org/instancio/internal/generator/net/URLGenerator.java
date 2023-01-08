@@ -20,25 +20,13 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.URLGeneratorSpec;
-import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.util.CollectionUtils;
-import org.instancio.internal.util.ObjectUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
 
-public class URLGenerator extends AbstractGenerator<URL> implements URLGeneratorSpec {
-    private static final int PORT_MIN = 1;
-    private static final int PORT_MAX = 65_535;
-    private static final int HOST_MIN_LENGTH = 3;
-    private static final int HOST_MAX_LENGTH = 12;
-    private static final String DEFAULT_PROTOCOL = "http";
+import static org.instancio.internal.util.StringUtils.singleQuote;
 
-    private List<String> protocols = Collections.emptyList();
-    private Integer port;
-    private Generator<String> hostGenerator;
+public class URLGenerator extends AbstractURIGenerator<URL> implements URLGeneratorSpec {
 
     public URLGenerator(final GeneratorContext context) {
         super(context);
@@ -51,50 +39,54 @@ public class URLGenerator extends AbstractGenerator<URL> implements URLGenerator
 
     @Override
     public URLGeneratorSpec protocol(final String... protocols) {
-        this.protocols = CollectionUtils.asList(protocols);
+        withScheme(protocols);
         return this;
     }
 
     @Override
     public URLGeneratorSpec port(final int port) {
-        this.port = port;
+        withPort(port);
+        return this;
+    }
+
+    @Override
+    public URLGeneratorSpec randomPort() {
+        withRandomPort();
         return this;
     }
 
     @Override
     public URLGeneratorSpec host(final Generator<String> hostGenerator) {
-        this.hostGenerator = hostGenerator;
+        withHost(hostGenerator);
+        return this;
+    }
+
+    @Override
+    public URLGeneratorSpec file(final Generator<String> fileGenerator) {
+        withPath(fileGenerator);
         return this;
     }
 
     @Override
     public URL generate(final Random random) {
-        final String protocol = getProtocol(random);
+        final String protocol = getScheme(random);
         final String host = getHost(random);
-        final int portNumber = getPortNumber(random);
+        final int portNumber = getPort(random);
+        final String file = getPath(random, "");
 
         try {
-            return new URL(protocol, host, portNumber, /* file = */ "");
+            return new URL(protocol, host, portNumber, file);
         } catch (MalformedURLException ex) {
-            final String params = String.format("%n  protocol: '%s'"
-                    + "%n  host: '%s'"
-                    + "%n  port: %s", protocol, host, portNumber);
+            final String params = String.format("%n  protocol: %s"
+                            + "%n  host: %s"
+                            + "%n  port: %s"
+                            + "%n  file: %s",
+                    singleQuote(protocol),
+                    singleQuote(host),
+                    portNumber,
+                    singleQuote(file));
 
             throw new InstancioApiException("Error generating a URL using parameters: " + params, ex);
         }
-    }
-
-    private int getPortNumber(final Random random) {
-        return ObjectUtils.defaultIfNull(port, random.intRange(PORT_MIN, PORT_MAX));
-    }
-
-    private String getHost(final Random random) {
-        return hostGenerator == null
-                ? random.lowerCaseAlphabetic(random.intRange(HOST_MIN_LENGTH, HOST_MAX_LENGTH))
-                : hostGenerator.generate(random);
-    }
-
-    private String getProtocol(final Random random) {
-        return protocols.isEmpty() ? DEFAULT_PROTOCOL : random.oneOf(protocols);
     }
 }

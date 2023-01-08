@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -28,8 +29,14 @@ public final class StringUtils {
         return s == null || "".equals(s.trim());
     }
 
+    @NotNull
     public static String trimToEmpty(@Nullable final String s) {
         return s == null ? "" : s.trim();
+    }
+
+    @Nullable
+    public static String singleQuote(@Nullable final String s) {
+        return s == null ? null : "'" + s + "'";
     }
 
     public static String repeat(final String s, final int times) {

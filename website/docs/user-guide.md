@@ -613,6 +613,7 @@ Generators
 │   └── bigDecimal()
 │
 ├── net()
+│   └── uri()
 │   └── url()
 │
 ├── io()

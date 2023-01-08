@@ -16,9 +16,12 @@
 package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.URIGeneratorSpec;
 import org.instancio.generator.specs.URLGeneratorSpec;
+import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -32,6 +35,16 @@ public class NetGenerators {
 
     public NetGenerators(final GeneratorContext context) {
         this.context = context;
+    }
+
+    /**
+     * Customises generated {@link URI} objects.
+     *
+     * @return generator spec
+     * @since 2.3.0
+     */
+    public URIGeneratorSpec uri() {
+        return new URIGenerator(context);
     }
 
     /**

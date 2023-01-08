@@ -22,7 +22,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,91 +31,107 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.data.Percentage.withPercentage;
 import static org.instancio.Select.root;
 
-@FeatureTag(Feature.URL_GENERATOR)
-class URLGeneratorTest {
+@FeatureTag(Feature.URI_GENERATOR)
+class URIGeneratorTest {
     private static final int SAMPLE_SIZE = 200;
 
     @Test
     void create() {
-        final URL result = Instancio.create(URL.class);
+        final URI result = Instancio.create(URI.class);
 
         assertThat(result.getHost()).hasSizeBetween(3, 12);
         assertThat(result)
-                .hasProtocol("http")
-                .hasNoPath()
-                .hasPort(-1);
+                .hasScheme("http")
+                .hasNoUserInfo()
+                .hasPort(-1)
+                .hasPath("")
+                .hasNoQuery()
+                .hasNoFragment();
     }
 
     @Test
     void createFull() {
-        final URL result = Instancio.of(URL.class)
-                .generate(root(), gen -> gen.net().url()
-                        .protocol("ftp")
+        final URI result = Instancio.of(URI.class)
+                .generate(root(), gen -> gen.net().uri()
+                        .scheme("scheme")
+                        .userInfo("userInfo")
                         .host(random -> "host")
                         .port(1234)
-                        .file(random -> "/filename"))
+                        .path(random -> "/path")
+                        .query(random -> "query")
+                        .fragment(random -> "fragment"))
                 .create();
 
         assertThat(result)
-                .hasProtocol("ftp")
+                .hasScheme("scheme")
+                .hasUserInfo("userInfo")
                 .hasHost("host")
                 .hasPort(1234)
-                .hasPath("/filename");
+                .hasPath("/path")
+                .hasQuery("query")
+                .hasFragment("fragment");
     }
 
     @Test
     void withRandomPort() {
-        final Set<Integer> results = Instancio.of(URL.class)
-                .generate(root(), gen -> gen.net().url().randomPort())
+        final Set<Integer> results = Instancio.of(URI.class)
+                .generate(root(), gen -> gen.net().uri().randomPort())
                 .stream()
                 .limit(SAMPLE_SIZE)
-                .map(URL::getPort)
+                .map(URI::getPort)
                 .collect(Collectors.toSet());
 
         assertThat(results.size()).isCloseTo(SAMPLE_SIZE, withPercentage(5));
     }
 
     @Test
-    void withProtocols() {
-        final String[] expected = {"ftp", "file", "https"};
-        final Set<String> results = Instancio.of(URL.class)
-                .generate(root(), gen -> gen.net().url().protocol(expected))
+    void withSchemes() {
+        final String[] schemes = {"foo", "bar", "baz"};
+        final Set<String> result = Instancio.of(URI.class)
+                .generate(root(), gen -> gen.net().uri().scheme(schemes))
                 .stream()
                 .limit(SAMPLE_SIZE)
-                .map(URL::getProtocol)
+                .map(URI::getScheme)
                 .collect(Collectors.toSet());
 
-        assertThat(results).containsExactlyInAnyOrder(expected);
+        assertThat(result).containsExactlyInAnyOrder(schemes);
     }
 
     @Test
-    void invalidProtocol() {
-        final InstancioApi<URL> api = Instancio.of(URL.class)
-                .generate(root(), gen -> gen.net().url()
+    void invalidScheme() {
+        final String invalidScheme = "foo!";
+        final InstancioApi<URI> api = Instancio.of(URI.class)
+                .generate(root(), gen -> gen.net().uri()
                         .port(123)
                         .host(random -> "example.com")
-                        .protocol("xyz"));
+                        .scheme(invalidScheme));
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage(String.format("Error generating a URL using parameters: %n" +
-                        "  protocol: 'xyz'%n" +
+                .hasMessage(String.format("Error generating a URI using parameters: %n" +
+                        "  scheme: 'foo!'%n" +
+                        "  userInfo: null%n" +
                         "  host: 'example.com'%n" +
                         "  port: 123%n" +
-                        "  file: ''"));
+                        "  path: null%n" +
+                        "  query: null%n" +
+                        "  fragment: null"));
     }
 
     @Test
     void asString() {
         final String result = Instancio.of(String.class)
-                .generate(root(), gen -> gen.net().url()
-                        .protocol("ftp")
+                .generate(root(), gen -> gen.net().uri()
+                        .scheme("scheme")
+                        .userInfo("userInfo")
                         .host(random -> "host")
                         .port(1234)
-                        .file(random -> "/filename")
+                        .path(random -> "/path")
+                        .query(random -> "query")
+                        .fragment(random -> "fragment")
                         .asString())
                 .create();
 
-        assertThat(result).isEqualTo("ftp://host:1234/filename");
+        assertThat(result).isEqualTo("scheme://userInfo@host:1234/path?query#fragment");
     }
 }

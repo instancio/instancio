@@ -46,6 +46,13 @@ class StringUtilsTest {
     }
 
     @Test
+    void singleQuote() {
+        assertThat(StringUtils.singleQuote(null)).isNull();
+        assertThat(StringUtils.singleQuote("")).isEqualTo("''");
+        assertThat(StringUtils.singleQuote("foo")).isEqualTo("'foo'");
+    }
+
+    @Test
     void repeat() {
         assertThat(StringUtils.repeat("a", 0)).isEqualTo("");
         assertThat(StringUtils.repeat("a", 1)).isEqualTo("a");
