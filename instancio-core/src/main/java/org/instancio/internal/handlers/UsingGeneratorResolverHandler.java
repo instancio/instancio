@@ -20,6 +20,7 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
+import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +31,13 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
 
     private final ModelContext<?> context;
     private final GeneratorResolver generatorResolver;
+    private final GeneratedValuePostProcessor stringPostProcessor;
 
     public UsingGeneratorResolverHandler(final ModelContext<?> context, final GeneratorResolver generatorResolver) {
         this.context = context;
         this.generatorResolver = generatorResolver;
+        this.stringPostProcessor = new StringPrefixingPostProcessor(
+                context.getSettings().get(Keys.STRING_FIELD_PREFIX_ENABLED));
     }
 
     @Override
@@ -44,9 +48,9 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
         return generatorOpt.map(generator -> {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), targetClass.getName());
 
-            final GeneratorResult result = GeneratorResult.create(
-                    generator.generate(context.getRandom()),
-                    generator.hints());
+            final Object value = generator.generate(context.getRandom());
+            final Object processed = stringPostProcessor.process(value, node, generator);
+            final GeneratorResult result = GeneratorResult.create(processed, generator.hints());
 
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
             return result;

@@ -16,21 +16,17 @@
 package org.instancio.test.features.generator;
 
 import org.instancio.Instancio;
-import org.instancio.test.support.pojo.collections.maps.MapByteDouble;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
-import static org.instancio.Select.allBytes;
 import static org.instancio.Select.allDoubles;
 import static org.instancio.Select.allLongs;
 
@@ -44,7 +40,7 @@ class BuiltInNumberGeneratorTest {
     void nullableNumberInCollection() {
         final SetLong result = Instancio.of(SetLong.class)
                 .generate(allLongs(), gen -> gen.longs().nullable())
-                .generate(all(Set.class), gen -> gen.collection().minSize(SAMPLE_SIZE).subtype(HashSet.class))
+                .generate(all(Set.class), gen -> gen.collection().minSize(SAMPLE_SIZE))
                 .create();
 
         assertThat(result.getSet()).doesNotContainNull();
@@ -53,23 +49,22 @@ class BuiltInNumberGeneratorTest {
     @Test
     @DisplayName("Nullable number should not be null when it is a map key")
     void nullableNumberAsMapKey() {
-        final MapByteDouble result = Instancio.of(MapByteDouble.class)
-                .generate(allBytes(), gen -> gen.bytes().nullable())
-                .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE).subtype(HashMap.class))
+        final Map<Long, Double> result = Instancio.ofMap(Long.class, Double.class)
+                .generate(allLongs(), gen -> gen.longs().nullable())
+                .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE))
                 .create();
 
-        assertThat(result.getMap().keySet()).doesNotContainNull();
+        assertThat(result.keySet()).doesNotContainNull();
     }
 
     @Test
     @DisplayName("Nullable number should not be null when it is a map value")
     void nullableNumberAsMapValue() {
-        final MapByteDouble result = Instancio.of(MapByteDouble.class)
+        final Map<Long, Double> result = Instancio.ofMap(Long.class, Double.class)
                 .generate(allDoubles(), gen -> gen.doubles().nullable())
-                .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE).subtype(HashMap.class))
+                .generate(all(Map.class), gen -> gen.map().minSize(SAMPLE_SIZE))
                 .create();
 
-        assertThat(result.getMap().values()).doesNotContainNull();
+        assertThat(result.values()).doesNotContainNull();
     }
-
 }

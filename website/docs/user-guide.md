@@ -316,43 +316,31 @@ Address address = Instancio.of(Address.class)
 
 ### Selector Scopes
 
-Regular selectors also offer the `within(Scope... scopes)` method for fine-tuning which targets they should be applied to.
-The method accepts one or more `Scope` objects that can be created using
+Regular selectors provide the `within(Scope... scopes)` method for fine-tuning the targets selectors should be applied to.
+Instancio supports two types of scope:
 
- - static methods in the `Select` class
- - using `toScope()` method provided by regular selectors
+- Class-level scope: narrows down a selector to the specified class.
+- Field-level scope: narrows down a selector to the specified field of the target class.
 
-``` java linenums="1" title="Creating scopes"
-Select.scope(Class<?> targetClass)
-Select.scope(Class<?> targetClass, String field)
+To illustrate how scopes work we will assume the following structure for the `Person` class
+(getters and setters omitted).
 
-Select.all(Class<T> targetClass).toScope()
-Select.field(Class<T> targetClass, String field).toScope()
-Select.field(GetMethodSelector<T, R> methodReference).toScope()
-```
-
-Field-level scope narrows down a selector to the specified field of the target class.
-Class-level scope narrows a selector to the specified class.
-
-To illustrate how scopes work we will assume the following structure for the `Person` class.
-
-#### Person class structure
-``` java linenums="1" title="Sample POJOs with getters and setters omitted"
+``` java
 class Person {
-    private String name;
-    private Address homeAddress;
-    private Address workAddress;
+    String name;
+    Address homeAddress;
+    Address workAddress;
 }
 
 class Address {
-    private String street;
-    private String city;
-    private List<Phone> phoneNumbers;
+    String street;
+    String city;
+    List<Phone> phoneNumbers;
 }
 
 class Phone {
-    private String areaCode;
-    private String number;
+    String areaCode;
+    String number;
 }
 ```
 
@@ -361,21 +349,55 @@ Selecting `field(Address::getCity)` would target both addresses, `homeAddress` a
 Without scopes, it would not be possible to set the two cities to different values.
 Using scopes solves this problem:
 
-``` java title="Creating scope using toScope() method"
-set(field(Address::getCity).within(field(Person::getHomeAddress).toScope()), "Surrey")
-set(field(Address::getCity).within(field(Person::getWorkAddress).toScope()), "Vancouver")
+``` java linenums="1" title="Creating scope using toScope() method"
+Scope homeAddress = field(Person::getHomeAddress).toScope();
+Scope workAddress = field(Person::getWorkAddress).toScope();
+
+Person person = Instancio.of(Person.class)
+    .set(field(Address::getCity).within(homeAddress), "foo")
+    .set(field(Address::getCity).within(workAddress), "bar")
+    .create();
 ```
 
-An equivalent way to specify the scope is using `Select.scope()` method:
+For more complex class structures, multiple scopes can be specified using `within(Scope...)` method.
+When specifying multiple scopes, the order is important: from outermost to innermost scope.
+Additional examples will be provided below.
 
-``` java title="Creating scope using toScope() method"
-set(field(Address::getCity).within(scope(Person.class, "homeAddress")), "Surrey")
-set(field(Address::getCity).within(scope(Person.class, "workAddress")), "Vancouver")
+#### Creating scopes
+
+Scopes can be creating using:
+
+- `Select.scope()` static methods in the {{Select}} class
+- `Selector.toScope()` method provided by regular selectors
+
+The first approach requires specifying the target class and, for field-level scopes, the name of the field:
+
+``` java linenums="1"
+Select.scope(Class<?> targetClass)
+Select.scope(Class<?> targetClass, String field)
 ```
 
-The following section provides more examples of using scopes.
+``` java title="Examples"
+Select.scope(Phone.class);
+Select.scope(Person.class, "homeAddress");
+```
 
-#### Examples of using Scope
+The second approach is to create scopes from selectors using the `toScope()` method.
+This method is only available for regular (non-predicate) selectors.
+
+``` java linenums="1"
+Select.all(Class<T> targetClass).toScope()
+Select.field(Class<T> targetClass, String field).toScope()
+Select.field(GetMethodSelector<T, R> methodReference).toScope()
+```
+
+``` java title="Examples"
+Select.all(Phone.class).toScope();
+Select.field(Person.class, "homeAddress").toScope();
+Select.field(Person::getHomeAddress).toScope();
+```
+
+#### Examples of using scopes
 
 To start off, without using scopes we can set all strings to the same value.
 For example, the following snippet will set each string field of each class to "foo".
@@ -1451,10 +1473,11 @@ Using these property keys, configuration values can also be overridden using a p
 
 ## Overriding Settings Using a Properties File
 
-Default settings can be overridden using `instancio.properties`. Instancio will automatically load this file from the root of the classpath. The following listing shows all the property keys that can be configured.
+Default settings can be overridden using `instancio.properties`.
+Instancio will automatically load this file from the root of the classpath.
+The following listing shows all the property keys that can be configured.
 
-
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 39 47"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 31 39 48"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -1498,6 +1521,7 @@ short.max=10000
 short.min=1
 short.nullable=false
 string.allow.empty=false
+string.field.prefix.enabled=false
 string.max.length=10
 string.min.length=3
 string.nullable=false
@@ -1512,7 +1536,7 @@ subtype.java.util.SortedMap=java.util.TreeMap
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
     <lnum>31</lnum> Specifies the mode, either `STRICT` or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
     <lnum>35</lnum> Specifies a global seed value.<br/>
-    <lnum>47</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>48</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 

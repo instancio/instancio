@@ -13,6 +13,8 @@ theme:
     primary: green
     accent: deep orange
   features:
+    - content.code.annotate
+    - content.code.copy
     - navigation.instant
     - navigation.tracking
     - navigation.tabs

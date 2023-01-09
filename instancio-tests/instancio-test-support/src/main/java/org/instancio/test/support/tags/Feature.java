@@ -80,6 +80,7 @@ public enum Feature {
     SET,
     SETTINGS,
     STREAM,
+    STRING_FIELD_PREFIX,
     STRING_GENERATOR,
     SUBTYPE,
     SUPPLY,

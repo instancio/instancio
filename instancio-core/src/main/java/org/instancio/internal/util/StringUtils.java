@@ -22,7 +22,8 @@ import java.util.Locale;
 
 public final class StringUtils {
 
-    private StringUtils() {
+    public static boolean isEmpty(@Nullable final String s) {
+        return s == null || "".equals(s);
     }
 
     public static boolean isBlank(@Nullable final String s) {
@@ -91,5 +92,9 @@ public final class StringUtils {
             return '"' + str + '"';
         }
         return str;
+    }
+
+    private StringUtils() {
+        // non-instantiable
     }
 }

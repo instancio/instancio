@@ -359,6 +359,14 @@ public final class Keys {
      */
     public static final SettingKey STRING_NULLABLE = register(
             "string.nullable", Boolean.class, false);
+    /**
+     * Specifies whether generated Strings should be prefixed with field names;
+     * default is {@code false}; property name {@code string.field.prefix.enabled}.
+     *
+     * @since 2.4.0
+     */
+    public static final SettingKey STRING_FIELD_PREFIX_ENABLED = register(
+            "string.field.prefix.enabled", Boolean.class, false);
 
     // Note: keys must be collected after all keys have been initialised
     private static final Map<String, SettingKey> SETTING_KEY_MAP = Collections.unmodifiableMap(settingKeyMap());
