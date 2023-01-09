@@ -39,6 +39,13 @@ class StringUtilsTest {
     }
 
     @Test
+    void isEmpty() {
+        assertThat(StringUtils.isEmpty(null)).isTrue();
+        assertThat(StringUtils.isEmpty("")).isTrue();
+        assertThat(StringUtils.isEmpty(" ")).isFalse();
+    }
+
+    @Test
     void trimToEmpty() {
         assertThat(StringUtils.trimToEmpty(null)).isEmpty();
         assertThat(StringUtils.trimToEmpty(" ")).isEmpty();

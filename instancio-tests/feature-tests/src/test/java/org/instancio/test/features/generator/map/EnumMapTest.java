@@ -18,6 +18,9 @@ package org.instancio.test.features.generator.map;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Gender;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -33,6 +36,11 @@ import static org.instancio.Select.root;
 class EnumMapTest {
 
     private static final TypeToken<EnumMap<Gender, String>> ENUM_MAP = new TypeToken<EnumMap<Gender, String>>() {};
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+            .set(Keys.MAP_MIN_SIZE, 1)
+            .set(Keys.MAP_MAX_SIZE, Gender.values().length);
 
     @Test
     void create() {

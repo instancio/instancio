@@ -19,6 +19,8 @@ import org.instancio.generator.GeneratorSpec;
 
 /**
  * Generator spec for Strings.
+ *
+ * @since 1.0.1
  */
 public interface StringGeneratorSpec extends GeneratorSpec<String> {
 

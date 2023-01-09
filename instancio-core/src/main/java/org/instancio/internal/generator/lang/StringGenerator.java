@@ -27,11 +27,15 @@ import org.instancio.settings.Settings;
 
 public class StringGenerator extends AbstractGenerator<String> implements StringGeneratorSpec {
 
+    private enum StringType {
+        LOWER_CASE, UPPER_CASE, MIXED_CASE, ALPHANUMERIC, DIGITS
+    }
+
     protected int minLength;
     protected int maxLength;
     private boolean nullable;
     private boolean allowEmpty;
-    private String prefix = "";
+    private String prefix;
     private StringType stringType;
 
     public StringGenerator(final GeneratorContext context) {
@@ -137,7 +141,8 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         }
 
         final int length = random.intRange(minLength, maxLength);
-        return prefix + generateString(random, length);
+        final String result = generateString(random, length);
+        return prefix == null ? result : prefix + result;
     }
 
     private String generateString(final Random random, final int length) {

@@ -15,6 +15,8 @@
  */
 package org.instancio.test.support.asserts;
 
+import org.assertj.core.api.AbstractCharSequenceAssert;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public final class Asserts {
@@ -37,5 +39,19 @@ public final class Asserts {
 
     public static void assertAllZeroes(final int... nums) {
         assertThat(nums).containsOnly(0);
+    }
+
+    public static AbstractCharSequenceAssert<?, String> assertHasFieldPrefix(
+            final String prefix, final String actual) {
+
+        return assertThat(actual)
+                .startsWith(prefix)
+                .hasSizeGreaterThan(prefix.length());
+    }
+
+    public static AbstractCharSequenceAssert<?, String> assertDoesNotHaveFieldPrefix(
+            final String prefix, final String actual) {
+
+        return assertThat(actual).isNotBlank().doesNotContain(prefix);
     }
 }
