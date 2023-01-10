@@ -817,7 +817,7 @@ By default, the hint is set to `POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`, which im
 - matching selectors will be applied
 - engine will populate `null` fields and primitive fields containing default values
 
-The default value can be overridden using `instancio.properties` and {{Settings}}.
+The default value of the `AfterGenerate` hint can be overridden using `instancio.properties` and {{Settings}}.
 
 !!! info
     Callbacks are always invoked on objects created by generators regardless of `AfterGenerate` value.
@@ -946,38 +946,51 @@ Person person = Instancio.of(Person.class)
 
 ## Using Models
 
-A {{Model}} is a template for creating objects which encapsulates all the generation parameters specified using the builder API.
-For example, the following model of the Simpson's household can be used to create individual Simpson characters.
+A {{Model}} is a template for creating objects.
+It encapsulates all the parameters specified using the builder API.
+Once a model is defined, it can be used to create objects without duplicating the common properties.
 
-``` java linenums="1" title="Example: using a model as a template for creating objects"
+``` java linenums="1" title="Example: creating objects from a Model" hl_lines="1 6"
 Model<Person> simpsonsModel = Instancio.of(Person.class)
-        .supply(field("address"), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
-        .supply(field("pets"), () -> List.of(
-                     new Pet(PetType.CAT, "Snowball"),
-                     new Pet(PetType.DOG, "Santa's Little Helper"))
-        .toModel();
+    .ignore(field(Person::getId))
+    .set(field(Person::getLastName), "Simpson")
+    .set(field(Address::getCity), "Springfield")
+    .generate(field(Person::getAge), gen -> gen.ints().range(40, 50))
+    .toModel();
 
 Person homer = Instancio.of(simpsonsModel)
-    .supply(field("name"), () -> "Homer")
+    .set(field(Person::getFirstName), "Homer")
     .create();
 
 Person marge = Instancio.of(simpsonsModel)
-    .supply(field("name"), () -> "Marge")
+    .set(field(Person::getFirstName), "Marge")
     .create();
 ```
+!!! attention ""
+    <lnum>1</lnum> The `Model` class itself does not expose any public methods, and its instances are effectively immutable.
 
-The `Model` class does not expose any public methods, and its instances are effectively immutable.
-However, a model can be used as template for creating other models.
-The next example creates a new model that includes a new `Pet`:
+A model can also be used as a template for creating other models.
+Using the previous example, we can define a new model with additional data:
 
-``` java linenums="1" title="Example: using a model as a template for creating other models"
-Model<Person> modelWithNewPet = Instancio.of(simpsonsModel)
-    .supply(field("pets"), () -> List.of(
-                new Pet(PetType.PIG, "Plopper"),
+``` java linenums="1"
+Model<Person> simpsonsModelWithPets = Instancio.of(simpsonsModel)
+    .supply(field(Person::getPets), () -> List.of(
                 new Pet(PetType.CAT, "Snowball"),
                 new Pet(PetType.DOG, "Santa's Little Helper"))
     .toModel();
 ```
+
+Having a common model allows test methods to create custom objects by overriding the model's properties via selectors
+(including properties of nested objects). This also works for immutable objects, such as Java records.
+
+``` java linenums="1"
+Person withNewAddress = Instancio.of(simpsonsModel)
+    .set(field(Address:getCity), "Springograd")
+    .create();
+```
+
+This approach reduces duplication and simplifies data setup, especially for complex classes with many fields and relationships. More details on benefits of using models, including a sample project, are provided in the article
+[Creating object templates using Models](/articles/creating-object-templates-using-models/).
 
 ## Custom Generators
 

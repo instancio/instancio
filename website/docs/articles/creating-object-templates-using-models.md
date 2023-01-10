@@ -8,9 +8,14 @@ hide:
 
 ## Introduction
 
-In this article we will look at what a Model is and how it can be used in your unit tests.
-GitHub link to the sample project is provided at the end of the article.
-The samples are using [JUnit 5](https://junit.org/junit5/) and [AssertJ](https://assertj.github.io/doc/) for assertions.
+One of the challenges of setting up data for different test cases is creating objects in different states.
+Test classes will often have helper methods with arguments for creating objects.
+Even worse, common setup code will sometimes be duplicated across test methods.
+Manual data setup can get quite complicated as classes get bigger and more complex.
+This is especially true for classes with many relationships.
+In this article we will show how Models can be used to solve these challenges.
+
+!!! note "GitHub link to the sample project is provided at the end of the article."
 
 ## Testing background
 
