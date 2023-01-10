@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
@@ -197,7 +198,12 @@ class InstancioEngine {
 
         return context.getContainerFactories()
                 .stream()
-                .map(it -> it.createFromOtherFunction(node.getTargetClass()))
+                .map(it -> it.createFromOtherFunction(
+                        node.getTargetClass(),
+                        node.getChildren()
+                                .stream()
+                                .map(Node::getTargetClass)
+                                .collect(Collectors.toList())))
                 .filter(Objects::nonNull)
                 .findFirst()
                 .map(fn -> fn.apply(generatorResult.getValue()))

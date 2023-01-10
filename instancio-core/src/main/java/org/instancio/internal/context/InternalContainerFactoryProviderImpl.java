@@ -18,6 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -25,14 +26,22 @@ class InternalContainerFactoryProviderImpl implements InternalContainerFactoryPr
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public <T, R> Function<T, R> createFromOtherFunction(final Class<R> type) {
+    public <S, T> Function<S, T> createFromOtherFunction(
+            final Class<T> targetType,
+            final List<Class<?>> typeArguments) {
+
         Function<?, ?> result = null;
 
-        if (type == EnumMap.class) {
-            result = (Function<Map<?, ?>, EnumMap<?, ?>>) other -> new EnumMap(other);
+        if (targetType == EnumMap.class) {
+            result = (Function<Map<?, ?>, EnumMap<?, ?>>) other -> {
+                if (other.isEmpty()) {
+                    return new EnumMap(typeArguments.iterator().next());
+                }
+                return new EnumMap(other);
+            };
         }
 
-        return (Function<T, R>) result;
+        return (Function<S, T>) result;
     }
 
     @Override
