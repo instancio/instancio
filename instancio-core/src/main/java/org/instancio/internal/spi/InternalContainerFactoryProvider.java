@@ -17,6 +17,7 @@ package org.instancio.internal.spi;
 
 import org.instancio.documentation.InternalApi;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -28,7 +29,18 @@ import java.util.function.Function;
 @InternalApi
 public interface InternalContainerFactoryProvider {
 
-    <T, R> Function<T, R> createFromOtherFunction(Class<R> type);
+    /**
+     * Returns a function that converts a source object of type
+     * {@code S} to the target type {@code T}.
+     *
+     * @param targetType    the type to be created
+     * @param typeArguments type arguments of the source object, or an empty list
+     *                      if the source object is not generic
+     * @param <S>           source type
+     * @param <T>           target type
+     * @return conversion function
+     */
+    <S, T> Function<S, T> createFromOtherFunction(Class<T> targetType, List<Class<?>> typeArguments);
 
     boolean isContainerClass(Class<?> type);
 }

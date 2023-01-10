@@ -19,12 +19,13 @@ import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.test.support.pojo.containers.BuildableList;
 import org.instancio.test.support.pojo.containers.OptionalLike;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class FeatureTestsContainerFactoryProvider implements InternalContainerFactoryProvider {
 
     @Override
-    public <T, R> Function<T, R> createFromOtherFunction(final Class<R> type) {
+    public <T, R> Function<T, R> createFromOtherFunction(final Class<R> type, final List<Class<?>> typeArguments) {
         return null; // none yet
     }
 

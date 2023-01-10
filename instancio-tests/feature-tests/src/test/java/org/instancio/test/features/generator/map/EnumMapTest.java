@@ -49,6 +49,15 @@ class EnumMapTest {
                 .isExactlyInstanceOf(EnumMap.class);
     }
 
+    @Test
+    void createEmpty() {
+        final EnumMap<Gender, String> result = Instancio.of(ENUM_MAP)
+                .generate(root(), gen -> gen.map().size(0))
+                .create();
+
+        assertThat(result).isEmpty();
+    }
+
     @RepeatedTest(10)
     void with() {
         final EnumMap<Gender, String> result = Instancio.of(ENUM_MAP)
