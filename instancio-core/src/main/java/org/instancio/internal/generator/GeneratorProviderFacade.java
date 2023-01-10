@@ -25,15 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 class GeneratorProviderFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorProviderFacade.class);
 
-    private final Map<Class<?>, Generator<?>> cache = new ConcurrentHashMap<>();
     private final GeneratorContext context;
     private final List<GeneratorProvider> generatorProviders;
 
@@ -44,10 +41,6 @@ class GeneratorProviderFacade {
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     Optional<Generator<?>> getGenerator(final Class<?> forClass) {
-        if (cache.containsKey(forClass)) {
-            return Optional.of(cache.get(forClass));
-        }
-
         for (GeneratorProvider provider : generatorProviders) {
             final Generator<?> generator = provider.getGenerators(context).get(forClass);
             if (generator != null) {
@@ -56,7 +49,6 @@ class GeneratorProviderFacade {
                 final Generator<?> decorated = GeneratorDecorator.decorate(
                         generator, context.getSettings().get(Keys.AFTER_GENERATE_HINT));
 
-                cache.put(forClass, decorated);
                 return Optional.of(decorated);
             }
         }
