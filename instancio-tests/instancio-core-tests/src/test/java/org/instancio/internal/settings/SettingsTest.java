@@ -25,6 +25,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -183,47 +184,69 @@ class SettingsTest {
         );
     }
 
-    @Test
-    void setAutoAdjustsRangeBounds() {
-        final int minLength = 1000;
-        final int newMaxLength = 100;
-        final Settings settings = Settings.defaults()
-                .set(Keys.ARRAY_MIN_LENGTH, minLength)
-                .set(Keys.ARRAY_MAX_LENGTH, newMaxLength);
+    /**
+     * Bounds auto-adjusted based on {@link Constants#RANGE_ADJUSTMENT_PERCENTAGE}.
+     */
+    @Nested
+    class AutoAdjustmentTest {
+        @Test
+        void setAutoAdjustsRangeBounds() {
+            final int minLength = 1000;
+            final int newMaxLength = 100;
+            final Settings settings = Settings.defaults()
+                    .set(Keys.ARRAY_MIN_LENGTH, minLength)
+                    .set(Keys.ARRAY_MAX_LENGTH, newMaxLength);
 
-        final int expected = newMaxLength - newMaxLength * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
-        final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
-        assertThat(newMin).isEqualTo(expected);
-    }
+            final int expected = newMaxLength - newMaxLength * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
+            final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
+            assertThat(newMin).isEqualTo(expected);
+        }
 
-    @Test
-    void setAutoAdjustEqualBounds() {
-        final Settings settings = Settings.defaults()
-                .set(Keys.COLLECTION_MIN_SIZE, 2)
-                .set(Keys.COLLECTION_MAX_SIZE, 2)
-                .set(Keys.FLOAT_MIN, 3f)
-                .set(Keys.FLOAT_MAX, 3f);
+        @Test
+        void setAutoAdjustEqualBounds() {
+            final Settings settings = Settings.defaults()
+                    .set(Keys.COLLECTION_MIN_SIZE, 2)
+                    .set(Keys.COLLECTION_MAX_SIZE, 2)
+                    .set(Keys.FLOAT_MIN, 3f)
+                    .set(Keys.FLOAT_MAX, 3f);
 
-        assertThat((int) settings.get(Keys.COLLECTION_MIN_SIZE))
-                .isEqualTo(settings.get(Keys.COLLECTION_MIN_SIZE))
-                .isEqualTo(2);
+            assertThat((int) settings.get(Keys.COLLECTION_MIN_SIZE))
+                    .isEqualTo(settings.get(Keys.COLLECTION_MIN_SIZE))
+                    .isEqualTo(2);
 
-        assertThat((float) settings.get(Keys.FLOAT_MIN))
-                .isEqualTo(settings.get(Keys.FLOAT_MAX))
-                .isEqualTo(3f);
-    }
+            assertThat((float) settings.get(Keys.FLOAT_MIN))
+                    .isEqualTo(settings.get(Keys.FLOAT_MAX))
+                    .isEqualTo(3f);
+        }
 
-    @Test
-    void setWithoutAutoAdjust() {
-        final int minLength = 1000;
-        final int newMaxLength = 100;
-        final Settings settings = Settings.defaults()
-                .set(Keys.ARRAY_MIN_LENGTH, minLength);
+        @Test
+        void autoAdjustWithMerge() {
+            final Settings settings1 = Settings.create()
+                    .set(Keys.LONG_MIN, 10L); // min/max = [10, 15]
 
-        ((InternalSettings) settings).set(Keys.ARRAY_MAX_LENGTH, newMaxLength, AUTO_ADJUST_DISABLED);
+            final Settings settings2 = Settings.create()
+                    .set(Keys.LONG_MAX, 11L); // min/max = [6, 11]
 
-        final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
-        assertThat(newMin).isEqualTo(minLength);
+            final Settings result = Settings.defaults()
+                    .merge(settings1)
+                    .merge(settings2);
+
+            assertThat((Long) result.get(Keys.LONG_MIN)).isEqualTo(6);
+            assertThat((Long) result.get(Keys.LONG_MAX)).isEqualTo(11);
+        }
+
+        @Test
+        void setWithoutAutoAdjust() {
+            final int minLength = 1000;
+            final int newMaxLength = 100;
+            final Settings settings = Settings.defaults()
+                    .set(Keys.ARRAY_MIN_LENGTH, minLength);
+
+            ((InternalSettings) settings).set(Keys.ARRAY_MAX_LENGTH, newMaxLength, AUTO_ADJUST_DISABLED);
+
+            final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
+            assertThat(newMin).isEqualTo(minLength);
+        }
     }
 
     @Test
