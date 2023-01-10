@@ -19,10 +19,15 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,5 +70,38 @@ class ModelWithSettingsTest {
         assertThat(result.getLongWrapper()).isEqualTo(expectedLong);
         assertThat(result.getPrimitiveLong()).isEqualTo(expectedLong);
         assertThat(result.getPrimitiveInt()).isBetween(newIntMin, newIntMax);
+    }
+
+    @Test
+    void verifyModelSettingsMerge() {
+        final int stringLength = 10;
+        final Settings settings1 = Settings.create()
+                .set(Keys.STRING_NULLABLE, true);
+
+        final Settings settings2 = Settings.create()
+                .set(Keys.STRING_ALLOW_EMPTY, true);
+
+        final Settings settings3 = Settings.create()
+                .set(Keys.STRING_MIN_LENGTH, stringLength)
+                .set(Keys.STRING_MAX_LENGTH, stringLength);
+
+        final Model<StringHolder> model = Instancio.of(StringHolder.class)
+                .withSettings(settings1)
+                .withSettings(settings2)
+                .withSettings(settings3)
+                .toModel();
+
+        final Set<String> results = Instancio.of(model)
+                .withSettings(Settings.create().set(Keys.STRING_MAX_LENGTH, stringLength + 1))
+                .stream()
+                .limit(500)
+                .map(StringHolder::getValue)
+                .collect(Collectors.toSet());
+
+        assertThat(results)
+                .contains("", null)
+                .filteredOn(Objects::nonNull)
+                .anyMatch(s -> s.length() == stringLength)
+                .anyMatch(s -> s.length() == stringLength + 1);
     }
 }

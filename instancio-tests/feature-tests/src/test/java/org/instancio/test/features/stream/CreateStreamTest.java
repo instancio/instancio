@@ -16,11 +16,13 @@
 package org.instancio.test.features.stream;
 
 import org.instancio.Instancio;
+import org.instancio.Model;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -30,11 +32,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 
 @NonDeterministicTag("Assumes no String collisions")
 @FeatureTag(Feature.STREAM)
@@ -47,7 +51,7 @@ class CreateStreamTest {
     @WithSettings
     private static final Settings settings = Settings.create()
             .set(Keys.STRING_MIN_LENGTH, STRING_LENGTH)
-            .set(Keys.STRING_MAX_LENGTH, STRING_LENGTH + 1)
+            .set(Keys.STRING_MAX_LENGTH, STRING_LENGTH)
             .lock();
 
     @Test
@@ -60,6 +64,26 @@ class CreateStreamTest {
     void streamOfTypeToken() {
         final Set<String> results = Instancio.stream(new TypeToken<String>() {}).limit(EXPECTED_SIZE).collect(toSet());
         assertThat(results).hasSize(EXPECTED_SIZE);
+    }
+
+    @Test
+    void streamOfModel() {
+        final Model<Phone> model = Instancio.of(Phone.class)
+                .set(field(Phone::getCountryCode), "+1")
+                .toModel();
+
+        final List<Phone> result = Instancio.of(model)
+                .generate(field(Phone::getNumber), gen -> gen.string().digits())
+                .stream()
+                .limit(5)
+                .collect(Collectors.toList());
+
+        assertThat(result)
+                .hasSize(5)
+                .allSatisfy(phone -> {
+                    assertThat(phone.getCountryCode()).isEqualTo("+1");
+                    assertThat(phone.getNumber()).containsOnlyDigits().hasSize(STRING_LENGTH);
+                });
     }
 
     @Test
