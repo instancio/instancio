@@ -1050,7 +1050,7 @@ The `AfterGenerate` enum defines the following values:
 - **`POPULATE_NULLS`**
 
     Indicates that `null` fields declared by the object should be populated.
-    In addition, the object can be modifiable using selectors as described
+    In addition, the object will be modifiable using selectors as described
     by above by `APPLY_SELECTORS`.
 
 
