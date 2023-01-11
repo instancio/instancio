@@ -59,7 +59,7 @@
         <version.objenesis>3.3</version.objenesis>
         <version.jetbrains.annotations>23.1.0</version.jetbrains.annotations>
         <version.slf4j>1.7.36</version.slf4j>
-        <version.junit>5.9.1</version.junit>
+        <version.junit>5.9.2</version.junit>
     </properties>
 
     <issueManagement>
