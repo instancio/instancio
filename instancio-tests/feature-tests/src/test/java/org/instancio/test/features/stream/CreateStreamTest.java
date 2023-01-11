@@ -19,97 +19,115 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.WithSettings;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.NonDeterministicTag;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
-@NonDeterministicTag("Assumes no String collisions")
 @FeatureTag(Feature.STREAM)
 @ExtendWith(InstancioExtension.class)
 class CreateStreamTest {
 
-    private static final int STRING_LENGTH = 50;
-    private static final int EXPECTED_SIZE = 100;
+    private static final int LIMIT = 100;
 
-    @WithSettings
-    private static final Settings settings = Settings.create()
-            .set(Keys.STRING_MIN_LENGTH, STRING_LENGTH)
-            .set(Keys.STRING_MAX_LENGTH, STRING_LENGTH)
-            .lock();
+    /**
+     * Tests for {@code Instancio.stream(...)} methods.
+     */
+    @Nested
+    class InstancioStreamTest {
+        @Test
+        void streamClass() {
+            final Stream<String> results = Instancio.stream(String.class).limit(LIMIT);
+            assertThat(results).hasSize(LIMIT);
+        }
 
-    @Test
-    void streamOfClass() {
-        final Set<String> results = Instancio.stream(String.class).limit(EXPECTED_SIZE).collect(toSet());
-        assertThat(results).hasSize(EXPECTED_SIZE);
+        @Test
+        void streamTypeToken() {
+            final Stream<String> results = Instancio.stream(new TypeToken<String>() {}).limit(LIMIT);
+            assertThat(results).hasSize(LIMIT);
+        }
+
+        @Test
+        void streamModel() {
+            final Model<Phone> model = Instancio.of(Phone.class)
+                    .set(field(Phone::getCountryCode), "+1")
+                    .generate(field(Phone::getNumber), gen -> gen.string().digits())
+                    .toModel();
+
+            // Method under test
+            final Stream<Phone> result = Instancio.stream(model).limit(LIMIT);
+
+            assertThat(result)
+                    .hasSize(LIMIT)
+                    .allSatisfy(phone -> {
+                        assertThat(phone.getCountryCode()).isEqualTo("+1");
+                        assertThat(phone.getNumber()).containsOnlyDigits();
+                    });
+        }
     }
 
-    @Test
-    void streamOfTypeToken() {
-        final Set<String> results = Instancio.stream(new TypeToken<String>() {}).limit(EXPECTED_SIZE).collect(toSet());
-        assertThat(results).hasSize(EXPECTED_SIZE);
-    }
+    /**
+     * Tests for {@code Instancio.of(...).stream()} methods.
+     */
+    @Nested
+    class InstancioOfStreamTest {
+        @Test
+        void ofModelStream() {
+            final Model<Phone> model = Instancio.of(Phone.class)
+                    .set(field(Phone::getCountryCode), "+1")
+                    .toModel();
 
-    @Test
-    void streamOfModel() {
-        final Model<Phone> model = Instancio.of(Phone.class)
-                .set(field(Phone::getCountryCode), "+1")
-                .toModel();
+            // Method under test
+            final Stream<Phone> results = Instancio.of(model)
+                    .generate(field(Phone::getNumber), gen -> gen.string().digits())
+                    .stream()
+                    .limit(LIMIT);
 
-        final List<Phone> result = Instancio.of(model)
-                .generate(field(Phone::getNumber), gen -> gen.string().digits())
-                .stream()
-                .limit(5)
-                .collect(Collectors.toList());
+            assertThat(results)
+                    .hasSize(LIMIT)
+                    .allSatisfy(phone -> {
+                        assertThat(phone.getCountryCode()).isEqualTo("+1");
+                        assertThat(phone.getNumber()).containsOnlyDigits();
+                    });
+        }
 
-        assertThat(result)
-                .hasSize(5)
-                .allSatisfy(phone -> {
-                    assertThat(phone.getCountryCode()).isEqualTo("+1");
-                    assertThat(phone.getNumber()).containsOnlyDigits().hasSize(STRING_LENGTH);
-                });
-    }
+        @Test
+        void ofClassStream() {
+            final int stringLength = 20;
+            final Stream<String> results = Instancio.of(String.class)
+                    .generate(allStrings(), gen -> gen.string().length(stringLength))
+                    .stream()
+                    .limit(LIMIT);
 
-    @Test
-    void streamOfClassBuilderAPI() {
-        final int overriddenLength = STRING_LENGTH * 2;
-        final Set<String> results = Instancio.of(String.class)
-                .generate(allStrings(), gen -> gen.string().length(overriddenLength))
-                .stream()
-                .limit(EXPECTED_SIZE).collect(toSet());
+            assertThat(results)
+                    .hasSize(LIMIT)
+                    .allSatisfy(s -> assertThat(s).hasSize(stringLength));
+        }
 
-        assertThat(results)
-                .hasSize(EXPECTED_SIZE)
-                .allSatisfy(s -> assertThat(s).hasSize(overriddenLength));
-    }
+        @Test
+        void ofTypeTokenStream() {
+            final int stringLength = 20;
 
-    @Test
-    void streamOfTypeTokenBuilderAPI() {
-        final int overriddenLength = STRING_LENGTH * 2;
-        final Set<String> results = Instancio.of(new TypeToken<String>() {})
-                .generate(allStrings(), gen -> gen.string().length(overriddenLength))
-                .stream()
-                .limit(EXPECTED_SIZE).collect(toSet());
+            final Stream<String> results = Instancio.of(new TypeToken<String>() {})
+                    .generate(allStrings(), gen -> gen.string().length(stringLength))
+                    .stream()
+                    .limit(LIMIT);
 
-        assertThat(results)
-                .hasSize(EXPECTED_SIZE)
-                .allSatisfy(s -> assertThat(s).hasSize(overriddenLength));
+            assertThat(results)
+                    .hasSize(LIMIT)
+                    .allSatisfy(s -> assertThat(s).hasSize(stringLength));
+        }
     }
 
     @Test
@@ -119,15 +137,15 @@ class CreateStreamTest {
         final List<UUID> list1 = Instancio.of(UUID.class)
                 .withSeed(seed)
                 .stream()
-                .limit(EXPECTED_SIZE)
+                .limit(LIMIT)
                 .collect(toList());
 
         final List<UUID> list2 = Instancio.of(UUID.class)
                 .withSeed(seed)
                 .stream()
-                .limit(EXPECTED_SIZE)
+                .limit(LIMIT)
                 .collect(toList());
 
-        assertThat(list1).hasSize(EXPECTED_SIZE).isEqualTo(list2);
+        assertThat(list1).isEqualTo(list2).hasSize(LIMIT);
     }
 }

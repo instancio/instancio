@@ -16,28 +16,14 @@
 package org.instancio;
 
 /**
- * A model containing all the information for populating a class that
- * can be obtained using the {@code 'toModel()'} method:
- * <p>
- * Models can be useful when class population needs to be customised
- * and the customisations re-used in different parts of the code.
- * <p>
- * Example:
- * <pre>{@code
- *     Model<Person> personModel = Instancio.of(Person.class)
- *         .supply(field("fullName"), () -> "Jane Doe")
- *         .generate(field("age"), gen -> gen.ints().min(18).max(65))
- *         .toModel();
+ * A model is a template for creating objects and contains all
+ * the parameters for populating a class specified using Instancio API.
  *
- *     // Re-use the model to create instances of Person class
- *     // without duplicating model's details
- *     Person person = Instancio.create(personModel);
- * }</pre>
- * <p>
- * Since the internal data of the model is not part of the public API,
- * this interface does not contain any methods.
+ * <p>A model can be created using the {@link InstancioApi#toModel()} method.
+ * An instance of a model can then be used for creating and customising objects
+ * and other models.
  *
- * @param <T> type to be created by this model
+ * @param <T> the type of object encapsulated by this model
  * @since 1.0.1
  */
 @SuppressWarnings("unused")

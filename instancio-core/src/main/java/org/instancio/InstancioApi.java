@@ -17,6 +17,7 @@ package org.instancio;
 
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
+import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
@@ -78,22 +79,27 @@ public interface InstancioApi<T> {
      * <p>
      * The model can be useful when class population needs to be customised
      * and the customisations need to be re-used in different parts of the code.
-     * <p>
-     * Example:
+     *
+     * <p>Example:
      * <pre>{@code
-     *     Model<Person> personModel = Instancio.of(Person.class)
-     *             .supply(field("fullName"), () -> "Jane Doe")
-     *             .toModel();
+     *   Model<Person> simpsons = Instancio.of(Person.class)
+     *       .set(field(Person::getLastName), "Simpson")
+     *       .set(field(Address::getCity), "Springfield")
+     *       .generate(field(Person::getAge), gen -> gen.ints().range(40, 50))
+     *       .toModel();
      *
-     *     // Re-use the model to create instances of Person class
-     *     // without duplicating the model's details
-     *     Person person = Instancio.of(personModel).create();
+     *   Person homer = Instancio.of(simpsons)
+     *       .set(field(Person::getFirstName), "Homer")
+     *       .set(all(Gender.class), Gender.MALE)
+     *       .create();
+     *
+     *   Person marge = Instancio.of(simpsons)
+     *       .set(field(Person::getFirstName), "Marge")
+     *       .set(all(Gender.class), Gender.FEMALE)
+     *       .create();
      * }</pre>
-     * <p>
-     * Since the internal data of the model is not part of the public API,
-     * the {@link Model} interface does not contain any methods.
      *
-     * @return a model containing all the details
+     * @return a model that can be used as a template for creating objects
      * @since 1.0.1
      */
     Model<T> toModel();
@@ -103,11 +109,11 @@ public interface InstancioApi<T> {
      * <p>
      * Example:
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .ignore(field("pets"))  // Person.pets field
-     *             .ignore(field(Address.class, "phoneNumbers")) // Address.phoneNumbers field
-     *             .ignore(allStrings())
-     *             .create();
+     *   Person person = Instancio.of(Person.class)
+     *       .ignore(field(Person::getPets))
+     *       .ignore(field(Address::getPhoneNumbers))
+     *       .ignore(allStrings())
+     *       .create();
      * }</pre>
      * <p>
      * will create a fully populated person, but will ignore the {@code address} field
@@ -120,14 +126,15 @@ public interface InstancioApi<T> {
 
     /**
      * Specifies that a field or class is nullable. By default, Instancio assigns
-     * non-null values. If marked as nullable, Instancio will randomly assign either
-     * a null or non-null value to fields of this type.
-     * <p>
-     * Example:
+     * non-null values. If marked as nullable, Instancio will generate either
+     * a null or non-null value.
+     *
+     * <p>Example:
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
      *             .withNullable(allStrings())
-     *             .withNullable(field(Address.class))
+     *             .withNullable(field(Person::getAddress))
+     *             .withNullable(fields().named("lastModified"))
      *             .create();
      * }</pre>
      *
@@ -138,16 +145,14 @@ public interface InstancioApi<T> {
 
     /**
      * Sets a value to matching selector targets.
-     * <p>
-     * Example: if a {@code Person} has a {@code List<PhoneNumber>}, the following
-     * will set all generated phone numbers' country codes to "+1".
+     *
+     * <p>Example: if {@code Person} class contains a {@code List<Phone>}, the following
+     * snippet will set all the country code of all phone instances to "+1".
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *             .supply(field(PhoneNumber.class, "phoneNumbers"), "+1")
+     *             .set(field(Phone::getCountryCode), "+1")
      *             .create();
      * }</pre>
-     * <p>
-     * For supplying random values, see {@link #supply(TargetSelector, Generator)}.
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param value    value to set
@@ -158,14 +163,13 @@ public interface InstancioApi<T> {
     <V> InstancioApi<T> set(TargetSelector selector, V value);
 
     /**
-     * Supplies an object using a {@link Supplier} to matching selector targets.
-     * <p>
-     * Example:
+     * Supplies an object using a {@link Supplier}.
+     *
+     * <p>Example:
      * <pre>{@code
      *     Person person = Instancio.of(Person.class)
-     *             .supply(all(LocalDateTime.class), () -> LocalDateTime.now()) // set all dates to current time
-     *             .supply(field("fullName"), () -> "Homer Simpson") // set Person.fullName
-     *             .supply(field(Address.class, "phoneNumbers"), () -> List.of( // set Address.phoneNumbers
+     *             .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
+     *             .supply(field(Address::getPhoneNumbers), () -> List.of(
      *                 new PhoneNumber("+1", "123-45-67"),
      *                 new PhoneNumber("+1", "345-67-89")))
      *             .create();
@@ -176,9 +180,9 @@ public interface InstancioApi<T> {
      *   <li>apply other {@code set()}, {@code supply()}, or {@code generate()}}
      *       methods with matching selectors to the supplied object</li>
      * </ul>
-     * <p>
-     * If you require the supplied object to be populated and/or selectors to be applied,
-     * use the {@link #supply(TargetSelector, Generator)} method.
+     *
+     * <p>If you require the supplied object to be populated and/or selectors
+     * to be applied, use the {@link #supply(TargetSelector, Generator)} method instead.
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param supplier providing the value for given selector
@@ -190,21 +194,40 @@ public interface InstancioApi<T> {
 
     /**
      * Supplies an object using a {@link Generator} to matching selector targets.
-     * <p>
-     * Example:
+     * By default, Instancio will populate uninitialised fields of the supplied
+     * object. This includes fields with {@code null} or default primitive values.
+     *
+     * <p>This method supports the following use cases.
+     *
+     * <h4>Generate random objects</h4>
+     *
+     * <p>This method provides an instance of {@link Random} that can be used
+     * to randomise generated objects. For example, if Instancio did not support
+     * creation of {@code java.time.Year}, it could be generated as follows:
+     *
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .supply(field(Address.class, "phoneNumbers"), random -> List.of(
-     *                     // Generate phone numbers with a random country code, either US or Mexico
-     *                     new PhoneNumber(random.from("+1", "+52"), "123-55-66"),
-     *                     new PhoneNumber(random.from("+1", "+52"), "123-77-88")))
-     *             .create();
+     *   List<Year> years = Instancio.ofList(Year.class)
+     *         .supply(all(Year.class), random -> Year.of(random.intRange(1900, 2000)))
+     *         .create();
      * }</pre>
-     * <p>
-     * Instancio may or may not further populate the generated object,
-     * for example filling in {@code null} fields. This behaviour is controlled
-     * by the {@link AfterGenerate} hint specified by {@link Generator#hints()}.
-     * Refer to the {@link Generator#hints()} Javadoc for details.
+     *
+     * <h4>Provide a partially initialised instance</h4>
+     *
+     * <p>In some cases, an object may need to be created in a certain state or
+     * instantiated using a specific constructor to be in a valid state.
+     * A partially initialised instance can be supplied using this method, and
+     * Instancio will populate remaining fields that are {@code null}:
+     *
+     * <pre>{@code
+     *   Person person = Instancio.of(Person.class)
+     *       .supply(field(Person::getAddress), random -> new Address("Springfield", "USA"))
+     *       .create();
+     * }</pre>
+     *
+     * <p>This behaviour is controlled by the {@link AfterGenerate} hint specified
+     * by {@link Generator#hints()}. Refer to the {@link Generator#hints()} Javadoc
+     * for details, or <a href="https://www.instancio.org/user-guide/#custom-generators">
+     * Custom Generators</a> section of the user guide.
      *
      * @param selector  for fields and/or classes this method should be applied to
      * @param generator that will provide the values
@@ -217,22 +240,24 @@ public interface InstancioApi<T> {
     <V> InstancioApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
-     * Generates a random value for a field or class using a built-in generator.
-     * <p>
-     * Example:
+     * Customises values using built-in generators provided by the {@code gen}
+     * parameter, of type {@link Generators}.
+     *
+     * <p>Example:
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .generate(field("age"), gen -> gen.ints().min(18).max(100))
-     *             .generate(field("name"), gen -> gen.string().min(5).allowEmpty())
-     *             .generate(field(Address.class, "phoneNumbers"), gen -> gen.collection().minSize(5))
-     *             .generate(field(Address.class, "city"), gen -> gen.oneOf("Burnaby", "Vancouver", "Richmond"))
-     *             .create();
+     *   Person person = Instancio.of(Person.class)
+     *       .generate(field(Person::getAge), gen -> gen.ints().range(18, 100))
+     *       .generate(all(LocalDate.class), gen -> gen.temporal().localDate().past())
+     *       .generate(field(Address::getPhoneNumbers), gen -> gen.collection().size(5))
+     *       .generate(field(Address::getCity), gen -> gen.oneOf("Burnaby", "Vancouver", "Richmond"))
+     *       .create();
      * }</pre>
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param gen      provider of customisable built-in generators (also known as specs)
      * @param <V>      type of object to generate
      * @return API builder reference
+     * @see Generators
      */
     <V> InstancioApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
 
