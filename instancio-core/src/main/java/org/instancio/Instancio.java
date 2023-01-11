@@ -42,21 +42,21 @@ import java.util.stream.Stream;
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .set(field("fullName"), "Homer Simpson") // Person.fullName
+ *             .set(field(Person::getFullName), "Homer Simpson")
  *             .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
- *             .generate(field(Phone.class, "number"), gen -> gen.text().pattern("(#d#d#d) #d#d#d-#d#d#d#d"))
+ *             .generate(field(Phone::getNumber), gen -> gen.text().pattern("(#d#d#d) #d#d#d-#d#d#d#d"))
  *             .create();
  * }</pre>
  *
  * <h3>Allow {@code null} values to be generated</h3>
- * Default behaviour is to populate every field with a non-null, random value.
- * Specifying nullable will randomly generate either {@code null} or an actual value.
+ * Default behaviour is to populate every field with a non-null value.
+ * Specifying nullable will randomly generate either {@code null} or non-null value.
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .withNullable(field("gender")) // Person.gender is nullable
- *             .withNullable(field(Address.class, "street")) // Address.street is nullable
- *             .withNullable(all(Date.class)) // all dates are nullable
+ *             .withNullable(field(Person::getDateOfBirth))
+ *             .withNullable(all(Gender.class))
+ *             .withNullable(allStrings())
  *             .create();
  * }</pre>
  *
@@ -66,64 +66,67 @@ import java.util.stream.Stream;
  *
  * <pre>{@code
  *     Person person = Instancio.of(Person.class)
- *             .ignore(field("age"))
- *             .ignore(field(Address.class, "city"))
- *             .ignore(all(Date.class))
+ *             .ignore(fields().named("id"))  // Person.id, Address.id, etc.
+ *             .ignore(all(LocalDateTime.class))
  *             .create();
  * }</pre>
  *
  * <h3>Creating instances of a class from a {@code Model}</h3>
- * Class specifications can also be saved as a {@code Model} using the {@code toModel()} method.
- * Then instances of a class can be generated from the model. Models can be useful for:
+ * Instancio builder API parameters can be saved as a {@link Model} object using
+ * the {@link InstancioApi#toModel()} method. Objects can then be generated based
+ * on the model. Models can be useful:
  *
  * <ul>
- *   <li>reducing code duplication by re-using the same model in different parts of the code</li>
- *   <li>acting as a prototype for creating specialised instances of a class
- *       by overriding model specifications</li>
+ *   <li>as a prototype for creating customised instances of a class
+ *       by overriding model parameters</li>
+ *   <li>reducing code duplication by re-using the same model in different
+ *       parts of the code</li>
  * </ul>
  *
  * <pre>{@code
  *     // Create a model
  *     Model<Person> simpsons = Instancio.of(Person.class)
  *             .supply(all(Address.class), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
- *             .supply(field("pets"), () -> List.of(
+ *             .supply(field(Person::getPets), () -> List.of(
  *                          new Pet(PetType.CAT, "Snowball"),
  *                          new Pet(PetType.DOG, "Santa's Little Helper"))
  *             //... other specs
  *             .toModel();
  *
  *     // Use the above model as is
- *     Person person = Instancio.of(simpsons).create();
+ *     Person person = Instancio.create(simpsons);
  *
  *     // Use the model but override the name
- *     Person homer = Instancio.of(simpsons).set(field("name"), "Homer").create();
- *     Person marge = Instancio.of(simpsons).set(field("name"), "Marge").create();
+ *     Person homer = Instancio.of(simpsons).set(field(Person::getName), "Homer").create();
+ *     Person marge = Instancio.of(simpsons).set(field(Person::getName), "Marge").create();
  *
  *     // A model can also used to create another model.
  *     // This snippet creates a new model from the original model to include a new pet.
  *     Model<Person> withNewPet = Instancio.of(simpsons)
- *             .supply(field("pets"), () -> List.of(
+ *             .supply(field(Person::getPets), () -> List.of(
  *                          new Pet(PetType.PIG, "Plopper"),
  *                          new Pet(PetType.CAT, "Snowball"),
  *                          new Pet(PetType.DOG, "Santa's Little Helper"))
  *             .toModel();
- *
  * }</pre>
  *
  * <h3>Creating generic classes</h3>
- * There are two ways to create generic class instances.
+ * There are two options for creating instances of a generic type.
  *
  * <h4>Option 1: using a {@link TypeToken}</h4>
  * <pre>{@code
- *     List<Person> person = Instancio.create(new TypeToken<List<Person>>() {}); // note the empty '{}' braces
+ *     Pair<Apple, Banana> pairOfFruits = Instancio.create(new TypeToken<Pair<Apple, Banana>>() {}); // note the empty '{}' braces
  * }</pre>
  *
- * <h4>Option 2: using {@code withTypeParameters} to specify generic type arguments</h4>
+ * <h4>Option 2: using {@code withTypeParameters} to specify the type arguments</h4>
  * <pre>{@code
- *     List<Person> person = Instancio.of(List.class).withTypeParameters(Person.class).create();
+ *     Pair<Apple, Banana> pairOfFruits = Instancio.of(Pair.class)
+ *             .withTypeParameters(Apple.class, Banana.class)
+ *             .create();
  * }</pre>
  * <p>
- * Note: the second approach will produce an "unchecked assignment" warning.
+ * The second approach allows specifying arbitrary type parameters at runtime,
+ * however using this method will produce an "unchecked assignment" warning.
  *
  * @see InstancioApi
  * @see Select
@@ -136,11 +139,11 @@ public final class Instancio {
     }
 
     /**
-     * Creates a fully-populated instance of given class.
+     * Creates an instance of the specified class.
      *
      * @param type to create
-     * @param <T>  type
-     * @return a fully-populated instance
+     * @param <T>  the type of object
+     * @return an object of the specified type
      * @since 1.0.1
      */
     public static <T> T create(final Class<T> type) {
@@ -148,7 +151,7 @@ public final class Instancio {
     }
 
     /**
-     * Creates an infinite stream of distinct, fully populated instances of given class.
+     * Creates an infinite stream of instances of the specified class.
      * <p>
      * Example:
      * <pre>{@code
@@ -158,8 +161,8 @@ public final class Instancio {
      * }</pre>
      *
      * @param type to create
-     * @param <T>  type
-     * @return an infinite stream of distinct, fully populated instances
+     * @param <T>  the type of object
+     * @return an infinite stream of objects of the specified type
      * @since 1.1.9
      */
     public static <T> Stream<T> stream(final Class<T> type) {
@@ -167,32 +170,36 @@ public final class Instancio {
     }
 
     /**
-     * Creates a fully-populated instance of type specified in the type token.
-     * This method can be used to create generic classes.
+     * Creates an object of type specified by the type token.
+     * This method can be used for creating instances of generic types.
      * <p>
-     * Example: {@code List<Person> persons = Instancio.of(new TypeToken<List<Person>>(){}).create()}
+     * Example:
+     * <pre>{@code
+     *   Pair<UUID, Person> pair = Instancio.create(new TypeToken<Pair<UUID, Person>>(){});
+     * }</pre>
      *
      * @param typeToken specifying the type to create
-     * @param <T>       type
-     * @return a fully-populated instance
+     * @param <T>       the type of object
+     * @return an object of the specified type
      */
     public static <T> T create(final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).create();
     }
 
     /**
-     * Creates an infinite stream of distinct, fully populated instances of type specified in the type token.
+     * Creates an infinite stream of objects of type specified by the type token.
+     * This method can be used for creating streams of generic types.
      * <p>
      * Example:
      * <pre>{@code
-     *     List<Pair<Integer, String>> pairs = Instancio.stream(new TypeToken<Pair<Integer, String>>() {})
-     *         .limit(5)
-     *         .collect(Collectors.toList());
+     *   List<Pair<Integer, String>> pairs = Instancio.stream(new TypeToken<Pair<Integer, String>>() {})
+     *       .limit(5)
+     *       .collect(Collectors.toList());
      * }</pre>
      *
      * @param typeToken specifying the type to create
-     * @param <T>       type
-     * @return an infinite stream of distinct, fully populated instances
+     * @param <T>       the type of object
+     * @return an infinite stream of objects of the specified type
      * @since 1.1.9
      */
     public static <T> Stream<T> stream(final TypeTokenSupplier<T> typeToken) {
@@ -200,17 +207,46 @@ public final class Instancio {
     }
 
     /**
-     * Creates a populated instance of a class represented by the given model.
+     * Creates an object populated using the given model.
+     * If the object needs to be customised, use the {@link #of(Model)} method.
      * <p>
-     * See the {@link Model} class on how to create models.
+     * For an example of how to create a model, see {@link InstancioApi#toModel()}.
      *
-     * @param model specifying generation parameters of the object to create
-     * @param <T>   type
-     * @return a populated instance
-     * @see Model
+     * @param model a model that will be used as a template for creating the object
+     * @param <T>   the type of object
+     * @return an object created based on the model
+     * @see InstancioApi#toModel()
+     * @see #of(Model)
+     * @see #stream(Model)
      */
     public static <T> T create(final Model<T> model) {
         return of(model).create();
+    }
+
+    /**
+     * Creates an infinite stream of objects populated using the given model.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *     Model<Person> model = Instancio.of(Person.class)
+     *         .ignore(field(Person::getId))
+     *         .generate(field(Person::dateOfBirth), gen -> gen.temporal().localDate().past())
+     *         .toModel();
+     *
+     *     List<Person> persons = Instancio.stream(model)
+     *         .limit(5)
+     *         .collect(Collectors.toList());
+     * }</pre>
+     *
+     * @param model that will be used to generate the objects
+     * @param <T>   the type of object
+     * @return an infinite stream of objects created based on the model
+     * @see #create(Model)
+     * @see #of(Model)
+     * @since 2.4.0
+     */
+    public static <T> Stream<T> stream(final Model<T> model) {
+        return of(model).stream();
     }
 
     /**
@@ -227,7 +263,7 @@ public final class Instancio {
      * }</pre>
      *
      * @param type to create
-     * @param <T>  type
+     * @param <T>  the type of object
      * @return API builder reference
      */
     public static <T> InstancioOfClassApi<T> of(final Class<T> type) {
@@ -248,7 +284,7 @@ public final class Instancio {
      * }</pre>
      *
      * @param typeToken specifying the type to create
-     * @param <T>       type
+     * @param <T>       the type of object
      * @return API builder reference
      */
     public static <T> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
@@ -275,7 +311,7 @@ public final class Instancio {
      * }</pre>
      *
      * @param model specifying generation parameters of the object to create
-     * @param <T>   type
+     * @param <T>   the type of object
      * @return API builder reference
      */
     public static <T> InstancioApi<T> of(final Model<T> model) {
