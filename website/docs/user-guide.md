@@ -255,6 +255,7 @@ Select.allStrings()
 Select.allInts()
 Select.fields()
 Select.types()
+Select.root()
 ```
 !!! attention ""
     <lnum>1</lnum> For combining multiple regular selectors.<br/>
@@ -262,9 +263,24 @@ Select.types()
     <lnum>3</lnum> Equivalent to `all(all(int.class), all(Integer.class))`.<br/>
     <lnum>4</lnum> Builder for constructing `Predicate<Field>` selectors.<br/>
     <lnum>5</lnum> Builder for constructing `Predicate<Class<?>>` selectors.<br/>
+    <lnum>6</lnum> Selects the root, that is, the object being created.<br/>
 
 !!! info "The `allXxx()` methods such as `allInts()`, are available for all core types."
 
+- **`Select.all(GroupableSelector... selectors)`**
+
+This method can be used for grouping multiple selectors, allowing for more concise code
+as shown below. However, only regular selectors are groupable using `all()`. Predicate selectors are not groupable.
+
+``` java
+all(field(Address::getCity),
+    field(Address.class, "postalCode"),
+    all(Phone.class))
+```
+
+- **`Select.fields()`** and **`Select.types()`**
+
+These selectors provide a builder API for constructing predicate selectors. 
 For example, the following predicate that matches `Long` fields annotated with `@Id`
 
 ``` java
@@ -276,15 +292,21 @@ can also be expressed using the `fields()` predicate builder:
 ``` java
 Select.fields().ofType(Long.class).annotated(Id.class)
 ```
+- **`Select.root()`**
 
-The selector `Select.all(GroupableSelector... selectors)` can be used for grouping regular selectors, allowing for more concise code
-as shown below. However, only regular selectors are groupable using `all()`. Predicate selectors are not groupable.
+This method selects the root object. The following snippet creates nested lists,
+where the outer list and inner lists have different sizes.
+`Select.root()` and *only* `all(List.class)` selector, allows differentiating
+between the outer and inner lists:
 
-``` java
-all(field("name"),
-    field(Address.class, "street"),
-    all(Phone.class))
+``` java linenums="1" hl_lines="2"
+List<List<String>> result = Instancio.of(new TypeToken<List<List<String>>>() {})
+    .generate(root(), gen -> gen.collection().size(outerListSize))
+    .generate(all(List.class), gen -> gen.collection().size(innerListSize))
+    .create();
 ```
+Although the `all(List.class)` selector matches all the lists,
+the root selector has higher precedence than other selectors.
 
 ### Selector Precedence
 

@@ -31,7 +31,7 @@ package org.instancio;
 public interface Selector extends GroupableSelector, ConvertibleToScope {
 
     /**
-     * Specifies the scope for this selector in order to narrow down the selector target.
+     * Specifies the scope for this selector in order to narrow down its target.
      * <p>
      * For example, if the {@code Person} class has two {@code Phone} fields:
      * <p>
@@ -42,17 +42,23 @@ public interface Selector extends GroupableSelector, ConvertibleToScope {
      *         // snip...
      *     }
      * }</pre>
-     * <p>
-     * and we want to set only the {@code cell} phone to a specific value, we can narrow
+     *
+     * <p>and we want to set only the {@code cell} phone to a specific value, we can narrow
      * down the selector as follows:
      *
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *         .set(field(Phone.class, "number").within(scope(Person.class, "cell")), "123-45-67")
-     *         .create();
+     *   // Scope can be created using:
+     *   Scope cellPhone = scope(Person.class, "cell");
+     *   // or selector toScope() method
+     *   Scope cellPhone = field(Person::getCell).toScope();
+     *
+     *   Person person = Instancio.of(Person.class)
+     *       .set(field(Phone.class, "number").within(cellPhone), "123-45-67")
+     *       .create();
      * }</pre>
-     * <p>
-     * Multiple scopes can be specified top-down, that is starting from the outermost class.
+     *
+     * <p>See <a href="http://localhost:8000/user-guide/#selector-scopes">Selector Scopes</a>
+     * section of the user guide for details.
      *
      * @param scopes one or more scopes to apply
      * @return a selector with the specified scope
