@@ -55,14 +55,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <forkCount>2</forkCount>
-                    <properties>
-                        <configurationParameters>
-                            junit.jupiter.execution.parallel.enabled = true
-                            junit.jupiter.execution.parallel.mode.default = concurrent
-                            junit.jupiter.execution.parallel.mode.classes.default = concurrent
-                        </configurationParameters>
-                    </properties>
                     <testSourceDirectory>${basedir}/src/test/</testSourceDirectory>
                     <includes>
                         <include>**/*Test.java</include>
