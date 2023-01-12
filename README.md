@@ -112,8 +112,8 @@ git clone https://github.com/instancio/instancio-quickstart.git
 
 ## Latest Release
 
-Version `2.3.0` is now available.
-A summary of new features is available in the [release notes](https://github.com/instancio/instancio/discussions/331).
+Version `2.4.0` is now available.
+A summary of new features is available in the [release notes](https://github.com/instancio/instancio/discussions/347).
 
 # Maven coordinates
 
@@ -123,7 +123,7 @@ If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
 <dependency>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-junit</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -134,7 +134,7 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
 <dependency>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-core</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
