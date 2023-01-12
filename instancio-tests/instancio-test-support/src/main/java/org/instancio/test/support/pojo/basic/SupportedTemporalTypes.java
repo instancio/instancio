@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
@@ -46,6 +47,7 @@ public class SupportedTemporalTypes {
     private LocalDate localDate;
     private LocalDateTime localDateTime;
     private MonthDay monthDay;
+    private OffsetTime offsetTime;
     private OffsetDateTime offsetDateTime;
     private ZonedDateTime zonedDateTime;
     private YearMonth yearMonth;
