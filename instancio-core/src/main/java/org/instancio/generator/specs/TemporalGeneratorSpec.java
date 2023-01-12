@@ -17,12 +17,6 @@ package org.instancio.generator.specs;
 
 import org.instancio.generator.AsStringGeneratorSpec;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-
 /**
  * Generator spec for {@link java.time.temporal.Temporal} types.
  *
@@ -30,10 +24,6 @@ import java.time.temporal.ChronoUnit;
  * @since 1.1.2
  */
 public interface TemporalGeneratorSpec<T> extends AsStringGeneratorSpec<T> {
-
-    ZoneOffset ZONE_OFFSET = OffsetDateTime.now().getOffset();
-    Instant DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(ZONE_OFFSET);
-    Instant DEFAULT_MAX = LocalDateTime.now().plusYears(50).truncatedTo(ChronoUnit.DAYS).toInstant(ZONE_OFFSET);
 
     /**
      * Generate a temporal value in the past.

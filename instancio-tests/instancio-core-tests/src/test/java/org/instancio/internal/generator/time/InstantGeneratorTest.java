@@ -28,78 +28,63 @@ import java.time.Instant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class InstantGeneratorTest {
-    private static final int SAMPLE_SIZE = 1000;
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
+class InstantGeneratorTest extends TemporalGeneratorSpecTestTemplate<Instant> {
+
     private static final Instant START = Instant.ofEpochSecond(1652369346, 1111111111);
-    private static final int FIFTY_YERARS_IN_SECONDS = 60 * 60 * 24 * 365 * 50;
+    private static final int FIFTY_YEARS_IN_SECONDS = 60 * 60 * 24 * 365 * 50;
 
     private final InstantGenerator generator = new InstantGenerator(context);
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("instant()");
+    @Override
+    JavaTimeTemporalGenerator<Instant> getGenerator() {
+        return generator;
     }
 
-    @Test
-    void smallestAllowedRange() {
-        generator.range(START, START);
-        assertThat(generator.generate(random)).isEqualTo(START);
+    @Override
+    String getApiMethod() {
+        return "instant()";
     }
 
-    @Test
-    void past() {
-        generator.past();
-        assertThat(generator.generate(random)).isBefore(Instant.now());
+    @Override
+    Instant getNow() {
+        return Instant.now();
     }
 
-    @Test
-    void future() {
-        generator.future();
-        assertThat(generator.generate(random)).isAfter(Instant.now());
+    @Override
+    Instant getTemporalMin() {
+        return Instant.MIN;
     }
 
-    @Test
-    void validateRange() {
-        assertThatThrownBy(() -> generator.range(START, START.minusNanos(1)))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 2022-05-12T15:29:07.111111111Z, 2022-05-12T15:29:07.111111110Z");
+    @Override
+    Instant getTemporalMax() {
+        return Instant.MAX;
     }
 
-    @Test
-    void range() {
-        final Instant min = Instant.ofEpochSecond(1652369346, 1111111111);
-        final Instant max = min.plusNanos(1999999999);
-        generator.range(min, max);
-        assertThat(generator.generate(random)).isBetween(min, max);
+    @Override
+    Instant getStart() {
+        return START;
     }
 
-    @Test
-    void smallRange() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertResult(START, START.plusSeconds(61));
-        }
+    @Override
+    Instant getStartMinusSmallestIncrement() {
+        return START.minusNanos(1);
     }
 
-    @Test
-    void bigRange() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertResult(START, START.plusSeconds(FIFTY_YERARS_IN_SECONDS));
-        }
+    @Override
+    Instant getStartPlusRandomSmallIncrement() {
+        return START.plusNanos(random.intRange(1, 1000));
+    }
+
+    @Override
+    Instant getStartPlusRandomLargeIncrement() {
+        return START.plusSeconds(random.intRange(1, FIFTY_YEARS_IN_SECONDS));
     }
 
     @Test
     void randomStart() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final Instant start = Instancio.create(Instant.class);
-            assertResult(start, start.plusSeconds(random.intRange(1, Integer.MAX_VALUE)));
+            assertGeneratedValueIsWithinRange(start, start.plusSeconds(random.intRange(1, Integer.MAX_VALUE)));
         }
-    }
-
-    private void assertResult(final Instant start, final Instant end) {
-        generator.range(start, end);
-        assertThat(generator.generate(random)).isBetween(start, end);
     }
 }

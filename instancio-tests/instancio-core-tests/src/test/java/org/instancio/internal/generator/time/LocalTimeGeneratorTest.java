@@ -15,61 +15,57 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Settings;
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+class LocalTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<LocalTime> {
 
-class LocalTimeGeneratorTest {
-
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final LocalTime START = LocalTime.of(1, 1, 2);
 
     private final LocalTimeGenerator generator = new LocalTimeGenerator(context);
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("localTime()");
+    @Override
+    JavaTimeTemporalGenerator<LocalTime> getGenerator() {
+        return generator;
     }
 
-    @Test
-    void smallestAllowedRange() {
-        generator.range(START, START);
-        assertThat(generator.generate(random)).isEqualTo(START);
+    @Override
+    String getApiMethod() {
+        return "localTime()";
     }
 
-    @Test
-    void past() {
-        generator.past();
-        assertThat(generator.generate(random)).isBefore(LocalTime.now());
+    @Override
+    LocalTime getNow() {
+        return LocalTime.now();
     }
 
-    @Test
-    void future() {
-        generator.future();
-        assertThat(generator.generate(random)).isAfter(LocalTime.now());
+    @Override
+    LocalTime getTemporalMin() {
+        return LocalTime.MIN;
     }
 
-    @Test
-    void validateRange() {
-        assertThatThrownBy(() -> generator.range(START, START.minusSeconds(1)))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 01:01:02, 01:01:01");
+    @Override
+    LocalTime getTemporalMax() {
+        return LocalTime.MAX;
     }
 
-    @Test
-    void range() {
-        final LocalTime max = START.plusMinutes(1);
-        generator.range(START, max);
-        assertThat(generator.generate(random)).isBetween(START, max);
+    @Override
+    LocalTime getStart() {
+        return START;
+    }
+
+    @Override
+    LocalTime getStartMinusSmallestIncrement() {
+        return START.minusNanos(1);
+    }
+
+    @Override
+    LocalTime getStartPlusRandomSmallIncrement() {
+        return START.plusNanos(random.intRange(1, 1000));
+    }
+
+    @Override
+    LocalTime getStartPlusRandomLargeIncrement() {
+        // (start + increment) should not cross over the 24-hour mark
+        return START.plusHours(random.intRange(1, 22));
     }
 }

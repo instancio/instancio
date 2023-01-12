@@ -15,6 +15,10 @@
  */
 package org.instancio.internal.util;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Map;
 
@@ -52,6 +56,10 @@ public final class Constants {
      * Default max for numeric types.
      */
     public static final int NUMERIC_MAX = 10_000;
+
+    public static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
+    public static final Instant DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0).toInstant(ZONE_OFFSET);
+    public static final Instant DEFAULT_MAX = LocalDateTime.now().plusYears(50).truncatedTo(ChronoUnit.DAYS).toInstant(ZONE_OFFSET);
 
     private Constants() {
         // non-instantiable

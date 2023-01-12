@@ -15,57 +15,53 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class OffsetTimeGeneratorTest {
+class OffsetTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<OffsetTime> {
 
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final OffsetTime START = OffsetTime.of(1, 1, 2, 0, ZoneOffset.UTC);
 
     private final OffsetTimeGenerator generator = new OffsetTimeGenerator(context);
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("offsetTime()");
+    @Override
+    JavaTimeTemporalGenerator<OffsetTime> getGenerator() {
+        return generator;
     }
 
-    @Test
-    void smallestAllowedRange() {
-        generator.range(START, START);
-        assertThat(generator.generate(random)).isEqualTo(START);
+    @Override
+    String getApiMethod() {
+        return "offsetTime()";
     }
 
-    @Test
-    void past() {
-        generator.past();
-        assertThat(generator.generate(random)).isBefore(OffsetTime.now());
+    @Override
+    OffsetTime getNow() {
+        return OffsetTime.now(ZoneOffset.UTC);
     }
 
-    @Test
-    void future() {
-        generator.future();
-        assertThat(generator.generate(random)).isAfter(OffsetTime.now());
+    @Override
+    OffsetTime getStart() {
+        return START;
     }
 
-    @Test
-    void validateRange() {
-        final OffsetTime end = START.minusSeconds(1);
-        assertThatThrownBy(() -> generator.range(START, end))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 01:01:02Z, 01:01:01Z");
+    @Override
+    OffsetTime getStartMinusSmallestIncrement() {
+        return START.minusNanos(1);
+    }
+
+    @Override
+    OffsetTime getStartPlusRandomSmallIncrement() {
+        return START.plusNanos(random.intRange(1, 1000));
+    }
+
+    @Override
+    OffsetTime getStartPlusRandomLargeIncrement() {
+        // (start + increment) should not cross over the 24-hour mark
+        return START.plusHours(random.intRange(1, 22));
     }
 
     @Test

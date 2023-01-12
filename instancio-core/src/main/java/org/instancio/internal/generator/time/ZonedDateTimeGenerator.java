@@ -19,18 +19,20 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
+import static org.instancio.internal.util.Constants.DEFAULT_MAX;
+import static org.instancio.internal.util.Constants.DEFAULT_MIN;
+import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateTime> {
 
-    private static final ZoneId ZONE_ID = ZoneId.systemDefault();
     private final InstantGenerator delegate;
 
     public ZonedDateTimeGenerator(final GeneratorContext context) {
         super(context,
-                ZonedDateTime.ofInstant(DEFAULT_MIN, ZONE_ID),
-                ZonedDateTime.ofInstant(DEFAULT_MAX, ZONE_ID));
+                ZonedDateTime.ofInstant(DEFAULT_MIN, ZONE_OFFSET),
+                ZonedDateTime.ofInstant(DEFAULT_MAX, ZONE_OFFSET));
 
         delegate = new InstantGenerator(context);
     }
@@ -42,12 +44,12 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
 
     @Override
     ZonedDateTime getLatestPast() {
-        return ZonedDateTime.now().minusSeconds(1);
+        return ZonedDateTime.now(ZONE_OFFSET).minusSeconds(1);
     }
 
     @Override
     ZonedDateTime getEarliestFuture() {
-        return ZonedDateTime.now().plusMinutes(1);
+        return ZonedDateTime.now(ZONE_OFFSET).plusMinutes(1);
     }
 
     @Override
@@ -58,6 +60,6 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     @Override
     public ZonedDateTime generate(final Random random) {
         delegate.range(min.toInstant(), max.toInstant());
-        return ZonedDateTime.ofInstant(delegate.generate(random), ZONE_ID);
+        return ZonedDateTime.ofInstant(delegate.generate(random), ZONE_OFFSET);
     }
 }
