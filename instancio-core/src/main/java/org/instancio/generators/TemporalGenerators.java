@@ -30,6 +30,7 @@ import org.instancio.internal.generator.time.LocalDateTimeGenerator;
 import org.instancio.internal.generator.time.LocalTimeGenerator;
 import org.instancio.internal.generator.time.MonthDayGenerator;
 import org.instancio.internal.generator.time.OffsetDateTimeGenerator;
+import org.instancio.internal.generator.time.OffsetTimeGenerator;
 import org.instancio.internal.generator.time.PeriodGenerator;
 import org.instancio.internal.generator.time.YearGenerator;
 import org.instancio.internal.generator.time.YearMonthGenerator;
@@ -44,6 +45,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
@@ -109,6 +111,16 @@ public class TemporalGenerators {
      */
     public MonthDayGeneratorSpec monthDay() {
         return new MonthDayGenerator(context);
+    }
+
+    /**
+     * Customises generated {@link OffsetTime} values.
+     *
+     * @return customised generator
+     * @since 2.4.0
+     */
+    public TemporalGeneratorSpec<OffsetTime> offsetTime() {
+        return new OffsetTimeGenerator(context);
     }
 
     /**
