@@ -41,6 +41,7 @@ import org.instancio.internal.generator.time.LocalDateGenerator;
 import org.instancio.internal.generator.time.LocalDateTimeGenerator;
 import org.instancio.internal.generator.time.LocalTimeGenerator;
 import org.instancio.internal.generator.time.MonthDayGenerator;
+import org.instancio.internal.generator.time.OffsetDateTimeGenerator;
 import org.instancio.internal.generator.time.PeriodGenerator;
 import org.instancio.internal.generator.time.YearGenerator;
 import org.instancio.internal.generator.time.YearMonthGenerator;
@@ -76,6 +77,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
+import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
@@ -180,6 +182,7 @@ public class GeneratorResolver {
         generators.put(LocalTime.class, new LocalTimeGenerator(context));
         generators.put(Duration.class, new DurationGenerator(context));
         generators.put(MonthDay.class, new MonthDayGenerator(context));
+        generators.put(OffsetDateTime.class, new OffsetDateTimeGenerator(context));
         generators.put(Period.class, new PeriodGenerator(context));
         generators.put(Temporal.class, new LocalDateGenerator(context)); // default Temporal
         generators.put(Year.class, new YearGenerator(context));

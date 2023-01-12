@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
@@ -51,6 +52,7 @@ class TemporalGeneratorsTest {
         final LocalTime localTime = LocalTime.now();
         final LocalDate localDate = LocalDate.now();
         final LocalDateTime localDateTime = LocalDateTime.now();
+        final OffsetDateTime offsetDateTime = OffsetDateTime.now();
         final ZonedDateTime zonedDateTime = ZonedDateTime.now();
         final YearMonth yearMonth = YearMonth.now();
         final Year year = Year.now();
@@ -66,6 +68,7 @@ class TemporalGeneratorsTest {
                 .generate(all(LocalTime.class), gen -> gen.temporal().localTime().range(localTime, localTime))
                 .generate(all(LocalDate.class), gen -> gen.temporal().localDate().range(localDate, localDate))
                 .generate(all(LocalDateTime.class), gen -> gen.temporal().localDateTime().range(localDateTime, localDateTime))
+                .generate(all(OffsetDateTime.class), gen -> gen.temporal().offsetDateTime().range(offsetDateTime, offsetDateTime))
                 .generate(all(ZonedDateTime.class), gen -> gen.temporal().zonedDateTime().range(zonedDateTime, zonedDateTime))
                 .generate(all(YearMonth.class), gen -> gen.temporal().yearMonth().range(yearMonth, yearMonth))
                 .generate(all(Year.class), gen -> gen.temporal().year().range(year, year))
