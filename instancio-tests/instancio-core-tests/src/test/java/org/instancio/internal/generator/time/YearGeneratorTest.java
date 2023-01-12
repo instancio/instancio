@@ -15,63 +15,60 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import java.time.Year;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class YearGeneratorTest {
+class YearGeneratorTest extends TemporalGeneratorSpecTestTemplate<Year> {
 
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private static final Year START = Year.of(1970);
 
     private final YearGenerator generator = new YearGenerator(context);
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("year()");
+    @Override
+    JavaTimeTemporalGenerator<Year> getGenerator() {
+        return generator;
     }
 
-    @Test
-    void smallestAllowedRange() {
-        generator.range(Year.of(2000), Year.of(2000));
-        assertThat(generator.generate(random)).isEqualTo(Year.of(2000));
+    @Override
+    String getApiMethod() {
+        return "year()";
     }
 
-    @Test
-    void past() {
-        generator.past();
-        assertThat(generator.generate(random).isBefore(Year.now())).isTrue();
+    @Override
+    Year getNow() {
+        return Year.now();
     }
 
-    @Test
-    void future() {
-        generator.future();
-        assertThat(generator.generate(random).isAfter(Year.now())).isTrue();
+    @Override
+    Year getTemporalMin() {
+        return Year.of(Year.MIN_VALUE);
     }
 
-    @Test
-    void validateRange() {
-        final Year year = Year.of(1970);
-
-        assertThatThrownBy(() -> generator.range(year.plusYears(1), year))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 1971, 1970");
+    @Override
+    Year getTemporalMax() {
+        return Year.of(Year.MAX_VALUE);
     }
 
-    @Test
-    void range() {
-        final Year min = Year.now().plusYears(5);
-        final Year max = min.plusYears(1);
-        generator.range(min, max);
-        assertThat(generator.generate(random)).isBetween(min, max);
+    @Override
+    Year getStart() {
+        return START;
+    }
+
+    @Override
+    Year getStartMinusSmallestIncrement() {
+        return START.minusYears(1);
+    }
+
+    @Override
+    Year getStartPlusRandomSmallIncrement() {
+        return START.plusYears(random.intRange(1, 10));
+    }
+
+    @Override
+    Year getStartPlusRandomLargeIncrement() {
+        return START.plusYears(random.intRange(1, 10_000));
     }
 }

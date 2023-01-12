@@ -16,84 +16,59 @@
 package org.instancio.internal.generator.time;
 
 import org.instancio.Instancio;
-import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+class ZonedDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<ZonedDateTime> {
 
-class ZonedDateTimeGeneratorTest {
-    private static final int SAMPLE_SIZE = 1000;
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final ZonedDateTime START = ZonedDateTime.of(LocalDateTime.of(
-            1970, 1, 1, 0, 0, 1, 999999999), ZoneId.systemDefault());
+            1970, 1, 1, 0, 0, 1, 999999999), ZoneOffset.UTC);
 
     private final ZonedDateTimeGenerator generator = new ZonedDateTimeGenerator(context);
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("zonedDateTime()");
+    @Override
+    JavaTimeTemporalGenerator<ZonedDateTime> getGenerator() {
+        return generator;
     }
 
-    @Test
-    void smallestAllowedRange() {
-        generator.range(START, START);
-        assertThat(generator.generate(random)).isEqualTo(START);
+    @Override
+    String getApiMethod() {
+        return "zonedDateTime()";
     }
 
-    @Test
-    void past() {
-        generator.past();
-        assertThat(generator.generate(random)).isBefore(ZonedDateTime.now());
+    @Override
+    ZonedDateTime getNow() {
+        return ZonedDateTime.now();
     }
 
-    @Test
-    void future() {
-        generator.future();
-        assertThat(generator.generate(random)).isAfter(ZonedDateTime.now());
+    @Override
+    ZonedDateTime getStart() {
+        return START;
     }
 
-    @Test
-    void validateRange() {
-        assertThatThrownBy(() -> generator.range(START, START.minusNanos(1)))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Start must not exceed end");
+    @Override
+    ZonedDateTime getStartMinusSmallestIncrement() {
+        return START.minusNanos(1);
     }
 
-    @Test
-    void smallRange() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertResult(START, START.plusDays(8));
-        }
+    @Override
+    ZonedDateTime getStartPlusRandomSmallIncrement() {
+        return START.plusNanos(random.intRange(1, 1000));
     }
 
-    @Test
-    void bigRange() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertResult(START, START.plusYears(10));
-        }
+    @Override
+    ZonedDateTime getStartPlusRandomLargeIncrement() {
+        return START.plusYears(random.intRange(1, 10));
     }
 
     @Test
     void randomStart() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final ZonedDateTime start = Instancio.create(ZonedDateTime.class);
-            assertResult(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
+            assertGeneratedValueIsWithinRange(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
         }
-    }
-
-    private void assertResult(final ZonedDateTime start, final ZonedDateTime end) {
-        generator.range(start, end);
-        assertThat(generator.generate(random)).isBetween(START, end);
     }
 }

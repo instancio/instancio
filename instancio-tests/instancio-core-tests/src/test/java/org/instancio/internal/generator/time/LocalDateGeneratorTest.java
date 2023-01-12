@@ -16,81 +16,66 @@
 package org.instancio.internal.generator.time;
 
 import org.instancio.Instancio;
-import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+class LocalDateGeneratorTest extends TemporalGeneratorSpecTestTemplate<LocalDate> {
 
-class LocalDateGeneratorTest {
-    private static final int SAMPLE_SIZE = 1000;
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final LocalDate START = LocalDate.of(2000, 1, 1);
 
     private final LocalDateGenerator generator = new LocalDateGenerator(context);
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("localDate()");
+    @Override
+    JavaTimeTemporalGenerator<LocalDate> getGenerator() {
+        return generator;
     }
 
-    @Test
-    void smallestAllowedRange() {
-        generator.range(START, START);
-        assertThat(generator.generate(random)).isEqualTo(START);
+    @Override
+    String getApiMethod() {
+        return "localDate()";
     }
 
-    @Test
-    void past() {
-        generator.past();
-        assertThat(generator.generate(random)).isBefore(LocalDate.now());
+    @Override
+    LocalDate getNow() {
+        return LocalDate.now();
     }
 
-    @Test
-    void future() {
-        generator.future();
-        assertThat(generator.generate(random)).isAfter(LocalDate.now());
+    @Override
+    LocalDate getTemporalMin() {
+        return LocalDate.MIN;
     }
 
-    @Test
-    void validateRange() {
-        assertThatThrownBy(() -> generator.range(START.plusDays(1), START))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 2000-01-02, 2000-01-01");
+    @Override
+    LocalDate getTemporalMax() {
+        return LocalDate.MAX;
     }
 
-    @Test
-    void smallRange() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertResult(START, START.plusDays(8));
-        }
+    @Override
+    LocalDate getStart() {
+        return START;
     }
 
-    @Test
-    void bigRange() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertResult(START, START.plusYears(10));
-        }
+    @Override
+    LocalDate getStartMinusSmallestIncrement() {
+        return START.minusDays(1);
+    }
+
+    @Override
+    LocalDate getStartPlusRandomSmallIncrement() {
+        return START.plusDays(random.intRange(1, 100));
+    }
+
+    @Override
+    LocalDate getStartPlusRandomLargeIncrement() {
+        return START.plusYears(random.intRange(1, 1000));
     }
 
     @Test
     void randomStart() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final LocalDate start = Instancio.create(LocalDate.class);
-            assertResult(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
+            assertGeneratedValueIsWithinRange(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
         }
-    }
-
-    private void assertResult(final LocalDate start, final LocalDate end) {
-        generator.range(start, end);
-        assertThat(generator.generate(random)).isBetween(start, end);
     }
 }

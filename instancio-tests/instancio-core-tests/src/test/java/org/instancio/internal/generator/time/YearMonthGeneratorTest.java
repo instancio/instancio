@@ -15,54 +15,57 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Settings;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.Month;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class YearMonthGeneratorTest {
+class YearMonthGeneratorTest extends TemporalGeneratorSpecTestTemplate<YearMonth> {
 
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
+    private static final YearMonth START = YearMonth.of(1970, Month.JANUARY);
 
     private final YearMonthGenerator generator = new YearMonthGenerator(context);
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("yearMonth()");
+    @Override
+    JavaTimeTemporalGenerator<YearMonth> getGenerator() {
+        return generator;
     }
 
-    @Test
-    void smallestAllowedRange() {
-        generator.range(YearMonth.of(2000, 1), YearMonth.of(2000, 1));
-        assertThat(generator.generate(random)).isEqualTo(YearMonth.of(2000, 1));
+    @Override
+    String getApiMethod() {
+        return "yearMonth()";
     }
 
-    @RepeatedTest(100)
-    void past() {
-        generator.past();
-        assertThat(generator.generate(random).isBefore(YearMonth.now())).isTrue();
+    @Override
+    YearMonth getNow() {
+        return YearMonth.now();
     }
 
-    @RepeatedTest(100)
-    void future() {
-        generator.future();
-        assertThat(generator.generate(random).isAfter(YearMonth.now())).isTrue();
+    @Override
+    YearMonth getStart() {
+        return START;
+    }
+
+    @Override
+    YearMonth getStartMinusSmallestIncrement() {
+        return START.minusMonths(1);
+    }
+
+    @Override
+    YearMonth getStartPlusRandomSmallIncrement() {
+        return START.plusMonths(random.intRange(1, 10));
+    }
+
+    @Override
+    YearMonth getStartPlusRandomLargeIncrement() {
+        return START.plusYears(random.intRange(1, 10));
     }
 
     @MethodSource("temporalRanges")
@@ -70,16 +73,6 @@ class YearMonthGeneratorTest {
     void range(final YearMonth min, final YearMonth max) {
         generator.range(min, max);
         assertThat(generator.generate(random)).isBetween(min, max);
-    }
-
-    @Test
-    void validateRange() {
-        final YearMonth yearMonth = YearMonth.of(1970, 1);
-
-        assertThatThrownBy(() -> generator.range(yearMonth.plusMonths(1), yearMonth))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 1970-02, 1970-01");
-
     }
 
     private static Stream<Arguments> temporalRanges() {

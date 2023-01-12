@@ -21,6 +21,9 @@ import org.instancio.internal.ApiValidator;
 
 import java.time.Instant;
 
+import static org.instancio.internal.util.Constants.DEFAULT_MAX;
+import static org.instancio.internal.util.Constants.DEFAULT_MIN;
+
 public class InstantGenerator extends JavaTimeTemporalGenerator<Instant> {
 
     private static final int MAX_NANO = 999_999_999;

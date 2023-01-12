@@ -23,6 +23,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
+import static org.instancio.internal.util.Constants.DEFAULT_MAX;
+import static org.instancio.internal.util.Constants.DEFAULT_MIN;
+
 public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDateTime> {
 
     private static final ZoneId ZONE_ID = ZoneId.systemDefault();

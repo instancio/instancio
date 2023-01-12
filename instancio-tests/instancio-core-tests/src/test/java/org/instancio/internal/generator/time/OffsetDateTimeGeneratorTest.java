@@ -16,85 +16,59 @@
 package org.instancio.internal.generator.time;
 
 import org.instancio.Instancio;
-import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+class OffsetDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<OffsetDateTime> {
 
-class OffsetDateTimeGeneratorTest {
-    private static final int SAMPLE_SIZE = 1000;
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final OffsetDateTime START = OffsetDateTime.of(LocalDateTime.of(
             1970, 1, 1, 0, 0, 1, 999999999), ZoneOffset.UTC);
 
     private final OffsetDateTimeGenerator generator = new OffsetDateTimeGenerator(context);
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("offsetDateTime()");
+    @Override
+    JavaTimeTemporalGenerator<OffsetDateTime> getGenerator() {
+        return generator;
     }
 
-    @Test
-    void smallestAllowedRange() {
-        generator.range(START, START);
-        assertThat(generator.generate(random)).isEqualTo(START);
+    @Override
+    String getApiMethod() {
+        return "offsetDateTime()";
     }
 
-    @Test
-    void past() {
-        generator.past();
-        assertThat(generator.generate(random)).isBefore(OffsetDateTime.now());
+    @Override
+    OffsetDateTime getNow() {
+        return OffsetDateTime.now(ZoneOffset.UTC);
     }
 
-    @Test
-    void future() {
-        generator.future();
-        assertThat(generator.generate(random)).isAfter(OffsetDateTime.now());
+    @Override
+    OffsetDateTime getStart() {
+        return START;
     }
 
-    @Test
-    void validateRange() {
-        final OffsetDateTime end = START.minusNanos(1);
-        assertThatThrownBy(() -> generator.range(START, end))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Start must not exceed end");
+    @Override
+    OffsetDateTime getStartMinusSmallestIncrement() {
+        return START.minusNanos(1);
     }
 
-    @Test
-    void smallRange() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertResult(START, START.plusDays(8));
-        }
+    @Override
+    OffsetDateTime getStartPlusRandomSmallIncrement() {
+        return START.plusNanos(random.intRange(1, 1000));
     }
 
-    @Test
-    void bigRange() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertResult(START, START.plusYears(10));
-        }
+    @Override
+    OffsetDateTime getStartPlusRandomLargeIncrement() {
+        return START.plusYears(random.intRange(1, 10));
     }
 
     @Test
     void randomStart() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final OffsetDateTime start = Instancio.create(OffsetDateTime.class);
-            assertResult(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
+            assertGeneratedValueIsWithinRange(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
         }
-    }
-
-    private void assertResult(final OffsetDateTime start, final OffsetDateTime end) {
-        generator.range(start, end);
-        assertThat(generator.generate(random)).isBetween(START, end);
     }
 }
