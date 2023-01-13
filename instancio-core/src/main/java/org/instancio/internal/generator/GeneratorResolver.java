@@ -204,6 +204,7 @@ public class GeneratorResolver {
         // java.util collections
         generators.put(Collection.class, new CollectionGenerator<>(context));
         generators.put(EnumSet.class, new EnumSetGenerator<>(context));
+        generators.put(Iterable.class, new CollectionGenerator<>(context));
         generators.put(List.class, new CollectionGenerator<>(context));
         generators.put(Map.class, new MapGenerator<>(context));
         mapCollection(BlockingDeque.class, LinkedBlockingDeque.class);

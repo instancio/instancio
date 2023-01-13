@@ -39,7 +39,7 @@ final class GeneratorSupport {
      * Checks whether this generator can generate given type.
      *
      * @param type to check
-     * @return {@code true} if generator can
+     * @return {@code true} if given generator supports the specified type
      */
     static boolean supports(Generator<?> generator, Class<?> type) {
         if (generator instanceof ArrayGeneratorSpec) {
@@ -49,7 +49,7 @@ final class GeneratorSupport {
             return EnumSet.class.isAssignableFrom(type);
         }
         if (generator instanceof CollectionGeneratorSpec) {
-            return Collection.class.isAssignableFrom(type);
+            return Collection.class.isAssignableFrom(type) || type == Iterable.class;
         }
         if (generator instanceof MapGeneratorSpec) {
             return Map.class.isAssignableFrom(type);
