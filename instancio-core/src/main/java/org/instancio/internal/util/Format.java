@@ -32,14 +32,14 @@ public final class Format {
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
 
     public static String formatField(final Field field) {
-        return String.format("%s %s.%s",
+        return field == null ? null : String.format("%s %s.%s",
                 withoutPackage(field.getType()),
                 withoutPackage(field.getDeclaringClass()),
                 field.getName());
     }
 
     public static String formatMethod(final Method method) {
-        return String.format("%s.%s(%s)",
+        return method == null ? null : String.format("%s.%s(%s)",
                 withoutPackage(method.getDeclaringClass()),
                 method.getName(),
                 withoutPackage(method.getParameterTypes()[0]));

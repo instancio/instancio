@@ -49,6 +49,8 @@ class FormatTest {
 
         assertThat(Format.formatField(ReflectionUtils.getField(Nested1.Nested2.class, "nested")))
                 .isEqualTo("String FormatTest$Nested1$Nested2.nested");
+
+        assertThat(Format.formatField(null)).isNull();
     }
 
     @Test
@@ -58,6 +60,8 @@ class FormatTest {
 
         assertThat(Format.formatMethod(Nested1.Nested2.class.getMethod("setNested", String.class)))
                 .isEqualTo("FormatTest$Nested1$Nested2.setNested(String)");
+
+        assertThat(Format.formatMethod(null)).isNull();
     }
 
     @Test

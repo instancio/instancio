@@ -26,8 +26,11 @@ public class NodeKindCollectionResolver implements NodeKindResolver {
 
     @Override
     public Optional<NodeKind> resolve(final Class<?> targetClass) {
-        return Collection.class.isAssignableFrom(targetClass)
-                && targetClass != EnumSet.class // EnumSet is classified as NodeKind.CONTAINER
+        // If something is declared as an Iterable, also treat it as a collection
+        return (Collection.class.isAssignableFrom(targetClass) || targetClass == Iterable.class)
+                // EnumSet is classified as NodeKind.CONTAINER because it
+                // does not provide a default constructor
+                && targetClass != EnumSet.class
                 ? Optional.of(NodeKind.COLLECTION)
                 : Optional.empty();
     }
