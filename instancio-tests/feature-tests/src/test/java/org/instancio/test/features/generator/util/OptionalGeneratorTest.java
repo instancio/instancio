@@ -17,7 +17,7 @@ package org.instancio.test.features.generator.util;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
-import org.instancio.test.support.pojo.basic.EmptyEnum;
+import org.instancio.test.support.pojo.empty.EmptyEnum;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;

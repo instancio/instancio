@@ -15,9 +15,9 @@
  */
 package org.other.test.features.mode;
 
+import org.instancio.GetMethodSelector;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.GetMethodSelector;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generators.Generators;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
