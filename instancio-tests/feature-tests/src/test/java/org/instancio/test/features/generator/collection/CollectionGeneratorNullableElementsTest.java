@@ -18,51 +18,58 @@ package org.instancio.test.features.generator.collection;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
-import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.allInts;
+import static org.instancio.Select.root;
 
-@NonDeterministicTag
 @FeatureTag({Feature.GENERATE, Feature.COLLECTION_GENERATOR_NULLABLE_ELEMENT})
 @ExtendWith(InstancioExtension.class)
 class CollectionGeneratorNullableElementsTest {
-    private static final int COLLECTION_SIZE = 1000;
 
     @Test
+    @NonDeterministicTag
     void listWithNullableElements() {
+        final int collectionSize = 1000;
         final ListLong result = Instancio.of(ListLong.class)
-                .generate(all(List.class), gen -> gen.collection().size(COLLECTION_SIZE).nullableElements())
+                .generate(all(List.class), gen -> gen.collection().size(collectionSize).nullableElements())
                 .create();
 
-        assertThat(result.getList()).hasSize(COLLECTION_SIZE).containsNull();
-        assertThat(new HashSet<>(result.getList())).hasSizeGreaterThan(COLLECTION_SIZE / 2);
+        assertThat(result.getList()).hasSize(collectionSize).containsNull();
+        assertThat(new HashSet<>(result.getList())).hasSizeGreaterThan(collectionSize / 2);
     }
 
     /**
-     * Since some generated elements might be null, generated set might be of smaller size than requested.
-     * In some cases it may not even be possible to generate a set of requested size.
-     *
-     * @see CollectionGeneratorSizeTest#impossibleSetSize()
+     * Tests generating a Set of requested size where randomly generated elements
+     * have a high probability of collisions.
      */
     @Test
-    @Disabled("Requesting a set of size 10 with nullable elements may not produce a set of the requested size")
     void setWithNullableElements() {
-        final int expectedSize = 10;
-        final SetLong result = Instancio.of(SetLong.class)
-                .generate(all(Set.class), gen -> gen.collection().size(expectedSize).nullableElements())
-                .create();
+        final int collectionSize = 10;
+        final int sampleSize = 500;
 
-        assertThat(result.getSet()).hasSize(expectedSize).containsNull();
+        // generate a Set of size 10 containing integers between [0..10], with null values allowed
+        final List<Set<Integer>> results = Instancio.ofSet(Integer.class)
+                .generate(allInts(), gen -> gen.ints().range(0, 10))
+                .generate(root(), gen -> gen.collection().size(collectionSize).nullableElements())
+                .stream()
+                .limit(sampleSize)
+                .collect(Collectors.toList());
+
+        assertThat(results)
+                .hasSize(sampleSize)
+                .allMatch(set -> set.size() == collectionSize)
+                .anyMatch(set -> set.contains(null));
     }
 }

@@ -295,9 +295,7 @@ Select.fields().ofType(Long.class).annotated(Id.class)
 - **`Select.root()`**
 
 This method selects the root object. The following snippet creates nested lists,
-where the outer list and inner lists have different sizes.
-`Select.root()` and *only* `all(List.class)` selector, allows differentiating
-between the outer and inner lists:
+where the outer list and inner lists have different sizes:
 
 ``` java linenums="1" hl_lines="2"
 List<List<String>> result = Instancio.of(new TypeToken<List<List<String>>>() {})
@@ -305,8 +303,9 @@ List<List<String>> result = Instancio.of(new TypeToken<List<List<String>>>() {})
     .generate(all(List.class), gen -> gen.collection().size(innerListSize))
     .create();
 ```
-Although the `all(List.class)` selector matches all the lists,
-the root selector has higher precedence than other selectors.
+
+In this case, `all(List.class)` matches all lists except the outer list,
+because `root()` selector has higher precedence than other selectors.
 
 ### Selector Precedence
 
