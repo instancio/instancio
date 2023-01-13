@@ -15,11 +15,7 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.junit.jupiter.api.Test;
-
 import java.time.Year;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class YearGeneratorTest extends TemporalGeneratorSpecTestTemplate<Year> {
 

@@ -21,7 +21,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
-import org.instancio.test.support.pojo.basic.EmptyEnum;
+import org.instancio.test.support.pojo.empty.EmptyEnum;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;

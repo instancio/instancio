@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.pojo.basic;
+package org.instancio.test.support.pojo.empty;
 
-public enum EmptyEnum {
+public class EmptyGenericInterfaceImpl1<T> implements EmptyGenericInterface<T> {
 }

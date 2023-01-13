@@ -35,8 +35,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.allStrings;
-import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.Asserts.assertDoesNotHaveFieldPrefix;
 
 /**
