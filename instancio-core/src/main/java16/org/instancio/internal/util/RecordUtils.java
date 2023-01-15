@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection;
+package org.instancio.internal.util;
 
+import org.instancio.exception.InstancioException;
 import org.instancio.internal.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,29 +23,38 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.RecordComponent;
 import java.util.Arrays;
-import java.util.Optional;
 
-public class RecordHelperImpl implements RecordHelper {
-    private static final Logger LOG = LoggerFactory.getLogger(RecordHelperImpl.class);
+public final class RecordUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(RecordUtils.class);
 
-    @Override
-    public boolean isRecord(final Class<?> klass) {
-        return klass.isRecord();
-    }
-
-    @Override
-    public Optional<Constructor<?>> getCanonicalConstructor(final Class<?> recordClass) {
+    public static <T> T instantiate(final Class<T> recordClass, final Object... args) {
         Verify.isTrue(recordClass.isRecord(), "Class '%s' is not a record!", recordClass.getName());
 
+        try {
+            final Constructor<?> ctor = getCanonicalConstructor(recordClass);
+            if (ctor == null) {
+                return null;
+            }
+            ctor.setAccessible(true); // NOSONAR
+            return (T) ctor.newInstance(args);
+        } catch (Exception ex) {
+            throw new InstancioException("Error creating a record: " + recordClass, ex);
+        }
+    }
+
+    private static Constructor<?> getCanonicalConstructor(final Class<?> recordClass) {
         final Class<?>[] componentTypes = Arrays.stream(recordClass.getRecordComponents())
                 .map(RecordComponent::getType)
                 .toArray(Class<?>[]::new);
         try {
-            return Optional.of(recordClass.getDeclaredConstructor(componentTypes));
+            return recordClass.getDeclaredConstructor(componentTypes);
         } catch (NoSuchMethodException ex) {
             LOG.debug("Unable to resolve canonical constructor for record class '{}'", recordClass.getName());
-            return Optional.empty();
+            return null;
         }
     }
 
+    private RecordUtils() {
+        // non-instantiable
+    }
 }

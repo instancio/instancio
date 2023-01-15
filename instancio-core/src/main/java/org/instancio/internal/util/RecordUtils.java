@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection;
+package org.instancio.internal.util;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+/**
+ * Helper class for working with {@code java.lang.Record} classes.
+ * This class has different implementations depending on Java version.
+ */
+public final class RecordUtils {
 
-import java.util.List;
-import java.util.Optional;
+    private RecordUtils() {
+        // non-instantiable
+    }
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-class DefaultClassFilterTest {
-
-    private final ClassFilter classFilter = new DefaultClassFilter();
-
-    @ValueSource(classes = {List.class, String.class, Object.class, Optional.class})
-    @ParameterizedTest
-    void excluded(final Class<?> klass) {
-        assertThat(classFilter.isExcluded(klass)).isTrue();
+    @SuppressWarnings("unused")
+    public static <T> T instantiate(final Class<T> recordClass, final Object... args) {
+        // no-op implementation until java 16
+        return null;
     }
 }

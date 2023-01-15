@@ -17,19 +17,13 @@ package org.instancio.internal.nodes.resolvers;
 
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.NodeKindResolver;
-import org.instancio.internal.reflection.RecordHelper;
-import org.instancio.internal.reflection.RecordHelperImpl;
 
 import java.util.Optional;
 
 public class NodeKindRecordResolver implements NodeKindResolver {
 
-    private final RecordHelper recordHelper = new RecordHelperImpl();
-
     @Override
     public Optional<NodeKind> resolve(final Class<?> targetClass) {
-        return recordHelper.isRecord(targetClass)
-                ? Optional.of(NodeKind.RECORD)
-                : Optional.empty();
+        return Optional.empty();
     }
 }

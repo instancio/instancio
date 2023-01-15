@@ -15,32 +15,31 @@
  */
 package org.instancio.internal.reflection;
 
-import org.instancio.test.support.java16.record.AddressRecord;
-import org.instancio.test.support.java16.record.PersonRecord;
+import org.instancio.internal.util.RecordUtils;
 import org.instancio.test.support.java16.record.PhoneRecord;
+import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class RecordHelperImplTest {
-
-    private final RecordHelperImpl recordHelper = new RecordHelperImpl();
+class RecordUtilsTest {
 
     @Test
-    void isRecord() {
-        assertThat(recordHelper.isRecord(PhoneRecord.class)).isTrue();
-        assertThat(recordHelper.isRecord(String.class)).isFalse();
+    void instantiate() {
+        final PhoneRecord result = RecordUtils.instantiate(PhoneRecord.class, "foo", "bar");
+
+        assertThat(result).isNotNull();
+        assertThat(result.countryCode()).isEqualTo("foo");
+        assertThat(result.number()).isEqualTo("bar");
     }
 
     @Test
-    void getCanonicalConstructor() {
-        assertThat(recordHelper.getCanonicalConstructor(PersonRecord.class))
-                .isPresent().get()
-                .satisfies(it -> assertThat(it.getParameterTypes()).containsExactly(String.class, int.class, AddressRecord.class));
-
-        assertThatThrownBy(() -> recordHelper.getCanonicalConstructor(String.class))
+    void instantiateNonRecordClass() {
+        final Class<?> nonRecordClass = IntegerHolderWithoutDefaultConstructor.class;
+        assertThatThrownBy(() ->
+                RecordUtils.instantiate(nonRecordClass, 123, 345))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Class 'java.lang.String' is not a record!");
+                .hasMessage("Class '%s' is not a record!", nonRecordClass.getName());
     }
 }

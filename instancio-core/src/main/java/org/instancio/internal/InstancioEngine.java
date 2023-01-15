@@ -32,13 +32,12 @@ import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeKind;
-import org.instancio.internal.reflection.RecordHelper;
-import org.instancio.internal.reflection.RecordHelperImpl;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
+import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
@@ -47,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,7 +75,6 @@ class InstancioEngine {
     private final List<GenerationListener> listeners;
     private final AfterGenerate defaultAfterGenerate;
     private final boolean overwriteExistingValues;
-    private final RecordHelper recordHelper = new RecordHelperImpl();
     private final Assigner assigner;
 
     InstancioEngine(InternalModel<?> model) {
@@ -452,15 +449,10 @@ class InstancioEngine {
         }
 
         try {
-            final Optional<Constructor<?>> optCtor = recordHelper.getCanonicalConstructor(node.getTargetClass());
-            if (optCtor.isPresent()) {
-                final Constructor<?> ctor = optCtor.get();
-                ctor.setAccessible(true); // NOSONAR
-                final Object obj = ctor.newInstance(args);
-                final GeneratorResult generatorResult = createGeneratorResult(obj);
-                notifyListeners(node, generatorResult);
-                return Optional.of(generatorResult);
-            }
+            final Object obj = RecordUtils.instantiate(node.getTargetClass(), args);
+            final GeneratorResult generatorResult = createGeneratorResult(obj);
+            notifyListeners(node, generatorResult);
+            return Optional.of(generatorResult);
         } catch (Exception ex) {
             conditionalFailOnError(() -> {
                 throw new InstancioException("Failed creating a record for: " + node, ex);
