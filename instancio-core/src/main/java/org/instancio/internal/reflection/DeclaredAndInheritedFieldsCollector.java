@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class DeclaredAndInheritedFieldsCollector implements FieldCollector {
 
-    private static final ClassFilter CLASS_FILTER = new DefaultClassFilter();
+    private final PackageFilter packageFilter = new DefaultPackageFilter();
 
     @Override
     public List<Field> getFields(final Class<?> klass) {
@@ -47,11 +47,11 @@ public class DeclaredAndInheritedFieldsCollector implements FieldCollector {
         return collected;
     }
 
-    private boolean shouldCollectFrom(@Nullable final Class<?> next) {
-        if (next == null || next.isInterface() || next.isArray() || next == Object.class) {
-            return false;
-        }
-
-        return !CLASS_FILTER.isExcluded(next);
+    private boolean shouldCollectFrom(@Nullable final Class<?> c) {
+        return c != null
+                && !c.isInterface()
+                && !c.isArray()
+                && c != Object.class
+                && !packageFilter.isExcluded(c.getPackage());
     }
 }

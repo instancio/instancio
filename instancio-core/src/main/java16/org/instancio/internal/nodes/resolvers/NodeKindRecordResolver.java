@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection;
+package org.instancio.internal.nodes.resolvers;
 
-import java.lang.reflect.Constructor;
+import org.instancio.internal.nodes.NodeKind;
+import org.instancio.internal.nodes.NodeKindResolver;
+
 import java.util.Optional;
 
-public class RecordHelperImpl implements RecordHelper {
+public class NodeKindRecordResolver implements NodeKindResolver {
 
     @Override
-    public boolean isRecord(final Class<?> klass) {
-        return false;
-    }
-
-    @Override
-    public Optional<Constructor<?>> getCanonicalConstructor(final Class<?> recordClass) {
-        return Optional.empty();
+    public Optional<NodeKind> resolve(final Class<?> targetClass) {
+        return targetClass.isRecord()
+                ? Optional.of(NodeKind.RECORD)
+                : Optional.empty();
     }
 }
