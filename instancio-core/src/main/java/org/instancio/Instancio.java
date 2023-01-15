@@ -20,6 +20,7 @@ import org.instancio.internal.InstancioOfClassApiImpl;
 import org.instancio.internal.InstancioOfCollectionApiImpl;
 import org.instancio.internal.InstancioOfMapApiImpl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -332,6 +333,18 @@ public final class Instancio {
     }
 
     /**
+     * Builder API for generating a {@link List} using the specified model for list elements.
+     *
+     * @param elementModel a model for creating list elements
+     * @param <T>          element type
+     * @return API builder reference
+     * @since 2.5.0
+     */
+    public static <T> InstancioOfCollectionApi<List<T>> ofList(final Model<T> elementModel) {
+        return InstancioOfCollectionApiImpl.fromElementModel(cast(List.class), elementModel);
+    }
+
+    /**
      * Builder API for generating a {@link Set} that allows customisation of generated values.
      *
      * @param elementType class to generate as set elements
@@ -342,6 +355,18 @@ public final class Instancio {
     @SuppressWarnings("all")
     public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final Class<T> elementType) {
         return new InstancioOfCollectionApiImpl(Set.class, elementType);
+    }
+
+    /**
+     * Builder API for generating a {@link Set} using the specified model for list elements.
+     *
+     * @param elementModel a model for creating set elements
+     * @param <T>          element type
+     * @return API builder reference
+     * @since 2.5.0
+     */
+    public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final Model<T> elementModel) {
+        return InstancioOfCollectionApiImpl.fromElementModel(cast(Set.class), elementModel);
     }
 
     /**
@@ -360,5 +385,10 @@ public final class Instancio {
             final Class<V> valueType) {
 
         return new InstancioOfMapApiImpl(Map.class, keyType, valueType);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T, C extends Collection<T>> Class<C> cast(final Class<?> collectionClass) {
+        return (Class<C>) collectionClass;
     }
 }

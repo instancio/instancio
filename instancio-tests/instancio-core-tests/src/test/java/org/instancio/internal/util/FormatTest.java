@@ -93,15 +93,4 @@ class FormatTest {
         assertThat(Format.getTypeVariablesCsv(List.class)).isEqualTo("E");
         assertThat(Format.getTypeVariablesCsv(Map.class)).isEqualTo("K, V");
     }
-
-    @Test
-    void paramsToCsv() {
-        assertThat(Format.paramsToCsv(Collections.emptyList())).isEmpty();
-
-        assertThat(Format.paramsToCsv(Collections.singletonList(String.class)))
-                .isEqualTo("String.class");
-
-        assertThat(Format.paramsToCsv(Arrays.asList(String.class, Integer.class)))
-                .isEqualTo("String.class, Integer.class");
-    }
 }

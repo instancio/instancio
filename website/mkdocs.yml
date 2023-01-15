@@ -64,6 +64,7 @@ extra:
   GeneratorProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/GeneratorProvider.html" target="_blank">GeneratorProvider</a>'
   Generators:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generators/Generators.html" target="_blank">Generators</a>'
   Hints:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/Hints.html" target="_blank">Hints</a>'
+  Mode:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Mode.html" target="_blank">Mode</a>'
   Model:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Model.html" target="_blank">Model</a>'
   OnCompleteCallback:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/OnCompleteCallback.html" target="_blank">OnCompleteCallback</a>'
   Random:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Random.html" target="_blank">Random</a>'

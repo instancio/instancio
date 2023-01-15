@@ -17,11 +17,15 @@ package org.instancio.test.features.errorhandling;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.InstancioOfClassApi;
+import org.instancio.Selector;
 import org.instancio.TypeToken;
+import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.test.support.pojo.generics.container.ItemContainer;
 import org.instancio.test.support.pojo.person.Person;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -62,7 +66,8 @@ class ErrorMessagesTest {
 
     @Test
     void nullTypeSuppliedByTypeTokenSupplier() {
-        assertThatThrownBy(() -> Instancio.create(() -> null))
+        final TypeTokenSupplier<Object> nullSupplier = () -> null;
+        assertThatThrownBy(() -> Instancio.create(nullSupplier))
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(
                         "Type token supplier must not return a null Type.",
@@ -74,7 +79,9 @@ class ErrorMessagesTest {
 
     @Test
     void nullGeneratorPassedToGenerate() {
-        assertThatThrownBy(() -> Instancio.of(Person.class).generate(allInts(), null))
+        final InstancioOfClassApi<Person> api = Instancio.of(Person.class);
+        final Selector selector = allInts();
+        assertThatThrownBy(() -> api.generate(selector, null))
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(
                         "The second argument of 'generate()' method must not be null.",
@@ -95,76 +102,126 @@ class ErrorMessagesTest {
                 "\t\t.supply(field(\"firstName\"), () -> null)",
                 "\t\t.create()"
         };
-        assertThatThrownBy(() -> Instancio.of(Person.class).supply(allInts(), (Generator<?>) null))
+        final InstancioOfClassApi<Person> api = Instancio.of(Person.class);
+        assertThatThrownBy(() -> api.supply(allInts(), (Generator<?>) null))
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(expectedErrorMsg);
 
-        assertThatThrownBy(() -> Instancio.of(Person.class).supply(allInts(), (Supplier<?>) null))
+        assertThatThrownBy(() -> api.supply(allInts(), (Supplier<?>) null))
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(expectedErrorMsg);
     }
 
-    @Test
-    void withTypeParametersGreaterThanRequired() {
-        assertThatThrownBy(() -> Instancio.of(Map.class).withTypeParameters(String.class, Integer.class, Long.class))
-                .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessage(String.format("%n" +
-                        "Class 'java.util.Map' has 2 type parameters: [K, V].%n" +
-                        "You can specify the required type parameters using 'withTypeParameters(Class... types)` method%n" +
-                        "%n" +
-                        "Example:%n" +
-                        "%n" +
-                        "Instancio.of(Map.class).%n" +
-                        "    .withTypeParameters(...)%n" +
-                        "    .create();%n"));
-    }
+    @Nested
+    class WithTypeParametersValidationTest {
+        @Test
+        void unnecessaryTypeParameters() {
+            final InstancioOfClassApi<Person> api = Instancio.of(Person.class);
+            assertThatThrownBy(() -> api.withTypeParameters(Long.class))
+                    .isExactlyInstanceOf(API_EXCEPTION)
+                    .hasMessage(String.format("%nInvalid usage of withTypeParameters() method:%n" +
+                            "%n -> Class Person is not generic and does not require type parameters%n"));
+        }
 
-    @Test
-    void withUnnecessaryTypeParameters() {
-        assertThatThrownBy(() -> Instancio.of(Person.class).withTypeParameters(Long.class))
-                .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessageContainingAll(
-                        "Class 'org.instancio.test.support.pojo.person.Person' is not generic.",
-                        "Specifying type parameters 'withTypeParameters(Long.class)` is not valid for this class.");
-    }
+        @Test
+        void nestedGenerics() {
+            final InstancioOfClassApi<?> api = Instancio.of(Map.class);
+            assertThatThrownBy(() -> api.withTypeParameters(String.class, List.class))
+                    .isExactlyInstanceOf(API_EXCEPTION)
+                    .hasMessage(String.format("%n" +
+                            "Invalid usage of withTypeParameters() method:%n" +
+                            "%n" +
+                            "  -> The argument List<E> is a generic class and also requires type parameter(s),%n" +
+                            "     but this method does not support nested generics.%n" +
+                            "%n" +
+                            "To resolve this error:%n" +
+                            "%n" +
+                            " -> Use a type token, e.g:%n" +
+                            "%n" +
+                            "    Map<String, List<Integer>> map = Instancio.create(new TypeToken<Map<String, List<Integer>>>(){});%n" +
+                            "%n" +
+                            "    or the builder version:%n" +
+                            "%n" +
+                            "    Map<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();"));
+        }
 
-    @Test
-    void withGenericTypeParameter() {
-        assertThatThrownBy(() -> Instancio.of(Map.class).withTypeParameters(String.class, List.class))
-                .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessageContainingAll(
-                        "'withTypeParameters(String.class, List.class)` contains a generic class: List<E>'",
-                        "For nested generics use the type token API, for example:",
-                        "Map<String, List<Integer>> map = Instancio.create(new TypeToken<Map<String, List<Integer>>>(){});",
-                        "or the builder version:",
-                        "Map<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();");
-    }
+        @Test
+        void oneRequiredZeroProvided() {
+            final InstancioOfClassApi<?> api = Instancio.of(List.class);
 
-    @Test
-    void unboundTypeVariablesErrorMessage() {
-        assertThatThrownBy(() -> Instancio.of(ItemContainer.class).create())
-                .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessage(String.format("%n" +
-                        "Class 'org.instancio.test.support.pojo.generics.container.ItemContainer' has 2 type parameters: [X, Y].%n" +
-                        "You can specify the required type parameters using 'withTypeParameters(Class... types)` method%n" +
-                        "%n" +
-                        "Example:%n" +
-                        "%n" +
-                        "Instancio.of(ItemContainer.class).%n" +
-                        "    .withTypeParameters(...)%n" +
-                        "    .create();%n"));
+            assertThatThrownBy(api::create)
+                    .isExactlyInstanceOf(API_EXCEPTION)
+                    .hasMessage(String.format("%n" +
+                            "Invalid usage of withTypeParameters() method:%n" +
+                            "%n" +
+                            " -> Class java.util.List requires 1 type parameter(s): [E]%n" +
+                            " -> The number of parameters provided was 0%n" +
+                            "%n" +
+                            "To resolve this error:%n" +
+                            "%n" +
+                            " -> Specify the correct number of parameters, e.g.%n" +
+                            "%n" +
+                            "    Instancio.of(Map.class).%n" +
+                            "        .withTypeParameters(UUID.class, Person.class)%n" +
+                            "        .create();%n" +
+                            "%n" +
+                            " -> Or use a type token:%n" +
+                            "%n" +
+                            "    Instancio.create(new TypeToken<Map<UUID, Person>>() {});%n" +
+                            "%n"));
+        }
 
-        assertThatThrownBy(() -> Instancio.of(List.class).create())
-                .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessage(String.format("%n" +
-                        "Class 'java.util.List' has 1 type parameters: [E].%n" +
-                        "You can specify the required type parameters using 'withTypeParameters(Class... types)` method%n" +
-                        "%n" +
-                        "Example:%n" +
-                        "%n" +
-                        "Instancio.of(List.class).%n" +
-                        "    .withTypeParameters(...)%n" +
-                        "    .create();%n"));
+        @Test
+        void twoRequiredZeroProvided() {
+            final InstancioOfClassApi<?> api = Instancio.of(ItemContainer.class);
+
+            assertThatThrownBy(api::create)
+                    .isExactlyInstanceOf(API_EXCEPTION)
+                    .hasMessage(String.format("%n" +
+                            "Invalid usage of withTypeParameters() method:%n" +
+                            "%n" +
+                            " -> Class org.instancio.test.support.pojo.generics.container.ItemContainer requires 2 type parameter(s): [X, Y]%n" +
+                            " -> The number of parameters provided was 0%n" +
+                            "%n" +
+                            "To resolve this error:%n" +
+                            "%n" +
+                            " -> Specify the correct number of parameters, e.g.%n" +
+                            "%n" +
+                            "    Instancio.of(Map.class).%n" +
+                            "        .withTypeParameters(UUID.class, Person.class)%n" +
+                            "        .create();%n" +
+                            "%n" +
+                            " -> Or use a type token:%n" +
+                            "%n" +
+                            "    Instancio.create(new TypeToken<Map<UUID, Person>>() {});%n" +
+                            "%n"));
+        }
+
+        @Test
+        void twoRequiredThreeProvided() {
+            final InstancioOfClassApi<?> api = Instancio.of(Map.class);
+
+            assertThatThrownBy(() -> api.withTypeParameters(String.class, Integer.class, Long.class))
+                    .isExactlyInstanceOf(API_EXCEPTION)
+                    .hasMessage(String.format("%n" +
+                            "Invalid usage of withTypeParameters() method:%n" +
+                            "%n" +
+                            " -> Class java.util.Map requires 2 type parameter(s): [K, V]%n" +
+                            " -> The number of parameters provided was 3: [String, Integer, Long]%n" +
+                            "%n" +
+                            "To resolve this error:%n" +
+                            "%n" +
+                            " -> Specify the correct number of parameters, e.g.%n" +
+                            "%n" +
+                            "    Instancio.of(Map.class).%n" +
+                            "        .withTypeParameters(UUID.class, Person.class)%n" +
+                            "        .create();%n" +
+                            "%n" +
+                            " -> Or use a type token:%n" +
+                            "%n" +
+                            "    Instancio.create(new TypeToken<Map<UUID, Person>>() {});%n" +
+                            "%n"));
+        }
     }
 
     @Test

@@ -64,12 +64,6 @@ public final class Format {
                 .collect(joining(", "));
     }
 
-    public static String paramsToCsv(final List<Class<?>> rootTypeParameters) {
-        return rootTypeParameters.stream()
-                .map(klass -> klass.getSimpleName() + ".class")
-                .collect(joining(", "));
-    }
-
     /**
      * Returns the first stacktrace element that is not 'org.instancio' as a string.
      * Used for reporting unused selectors.

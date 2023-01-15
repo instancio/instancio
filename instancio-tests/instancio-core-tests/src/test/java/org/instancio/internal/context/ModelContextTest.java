@@ -299,10 +299,39 @@ class ModelContextTest {
                 .isInstanceOf(UnsupportedOperationException.class);
     }
 
+    @Test
+    void useModelAsTypeArgument() {
+        final long seed = 37635;
+        final int integerMinValue = 26546;
+
+        final ModelContext<?> elementModel = ModelContext.builder(Person.class)
+                .withSeed(seed)
+                .withSettings(Settings.defaults().set(Keys.INTEGER_MIN, integerMinValue))
+                .withSubtype(all(List.class), LinkedList.class)
+                .build();
+
+        ModelContext<?> ctx = ModelContext.builder(List.class)
+                .useModelAsTypeArgument(elementModel)
+                .build();
+
+        assertThat(ctx.getRootType()).isEqualTo(List.class);
+        assertThat(ctx.getRootTypeMap())
+                .as("Model type should be added as a type parameter")
+                .hasSize(1)
+                .containsValue(Person.class);
+
+        assertThat(ctx.getContainerFactories()).isEqualTo(elementModel.getContainerFactories());
+        assertThat(ctx.getSubtypeSelectorMap().getSubtypeSelectors())
+                .isNotEmpty()
+                .isEqualTo(elementModel.getSubtypeSelectorMap().getSubtypeSelectors());
+
+        assertThat((Integer) ctx.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
+        assertThat(ctx.getRandom().getSeed()).isEqualTo(seed);
+    }
+
     private static TargetSelector toFieldSelector(final Field field) {
         return field(field.getDeclaringClass(), field.getName());
     }
-
 
     private static Node mockNode(Class<?> targetClass, Field field) {
         final Node node = mock(Node.class);

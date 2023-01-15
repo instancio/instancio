@@ -16,7 +16,9 @@
 package org.instancio.internal;
 
 import org.instancio.InstancioOfCollectionApi;
+import org.instancio.Model;
 import org.instancio.Select;
+import org.instancio.internal.context.ModelContext;
 
 import java.util.Collection;
 
@@ -30,6 +32,22 @@ public final class InstancioOfCollectionApiImpl<T, C extends Collection<T>>
 
         super(collectionType);
         withTypeParameters(elementType);
+    }
+
+    private InstancioOfCollectionApiImpl(final Model<C> collectionModel) {
+        super(collectionModel);
+    }
+
+    public static <T, C extends Collection<T>> InstancioOfCollectionApiImpl<T, C> fromElementModel(
+            final Class<C> collectionType,
+            final Model<T> elementModel) {
+
+        final InternalModel<T> model = (InternalModel<T>) elementModel;
+        final ModelContext<C> context = ModelContext.<C>builder(collectionType)
+                .useModelAsTypeArgument(model.getModelContext())
+                .build();
+
+        return new InstancioOfCollectionApiImpl<>(new InternalModel<>(context));
     }
 
     @Override
