@@ -19,13 +19,13 @@ import org.instancio.InstancioApi;
 import org.instancio.InstancioOfClassApi;
 import org.instancio.Model;
 
-public class InstancioOfClassApiImpl<T> extends InstancioApiImpl<T> implements InstancioOfClassApi<T> {
+public class OfClassApiImpl<T> extends ApiImpl<T> implements InstancioOfClassApi<T> {
 
-    public InstancioOfClassApiImpl(final Class<T> klass) {
+    public OfClassApiImpl(final Class<T> klass) {
         super(klass);
     }
 
-    InstancioOfClassApiImpl(final Model<T> model) {
+    OfClassApiImpl(final Model<T> model) {
         super(model);
     }
 

@@ -30,19 +30,19 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class InstancioApiImpl<T> implements InstancioApi<T> {
+public class ApiImpl<T> implements InstancioApi<T> {
 
     private final ModelContext.Builder<T> modelContextBuilder;
 
-    public InstancioApiImpl(final Class<T> klass) {
+    public ApiImpl(final Class<T> klass) {
         this.modelContextBuilder = ModelContext.builder(ApiValidator.validateRootClass(klass));
     }
 
-    public InstancioApiImpl(final TypeTokenSupplier<T> typeToken) {
+    public ApiImpl(final TypeTokenSupplier<T> typeToken) {
         this.modelContextBuilder = ModelContext.builder(ApiValidator.validateTypeToken(typeToken));
     }
 
-    public InstancioApiImpl(final Model<T> model) {
+    public ApiImpl(final Model<T> model) {
         final InternalModel<T> suppliedModel = (InternalModel<T>) model;
         final ModelContext<T> suppliedContext = suppliedModel.getModelContext();
         // copy context data to allow overriding
