@@ -85,6 +85,7 @@ public final class ModelContext<T> {
     private ModelContext(final Builder<T> builder) {
         rootType = builder.rootType;
         rootTypeParameters = Collections.unmodifiableList(builder.rootTypeParameters);
+
         rootTypeMap = rootType instanceof ParameterizedType || rootType instanceof GenericArrayType
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(buildRootTypeMap(builder.rootType, builder.rootTypeParameters));
@@ -222,6 +223,7 @@ public final class ModelContext<T> {
     public static final class Builder<T> {
         private final Type rootType;
         private final Class<T> rootClass;
+
         private final List<Class<?>> rootTypeParameters = new ArrayList<>();
         private final Map<TargetSelector, Class<?>> subtypeSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors = new LinkedHashMap<>();
@@ -298,6 +300,19 @@ public final class ModelContext<T> {
 
         public Builder<T> lenient() {
             this.lenient = true;
+            return this;
+        }
+
+        public Builder<T> useModelAsTypeArgument(final ModelContext<?> otherContext) {
+            rootTypeParameters.add(TypeUtils.getRawType(otherContext.getRootType()));
+            seed = otherContext.seed;
+            settings = otherContext.settings;
+            nullableTargets.addAll(otherContext.nullableSelectorMap.getTargetSelectors());
+            ignoredTargets.addAll(otherContext.ignoredSelectorMap.getTargetSelectors());
+            generatorSelectors.putAll(otherContext.generatorSelectorMap.getGeneratorSelectors());
+            generatorSpecSelectors.putAll(otherContext.generatorSelectorMap.getGeneratorSpecSelectors());
+            subtypeSelectors.putAll(otherContext.subtypeSelectorMap.getSubtypeSelectors());
+            onCompleteCallbacks.putAll(otherContext.onCompleteCallbackSelectorMap.getOnCompleteCallbackSelectors());
             return this;
         }
 

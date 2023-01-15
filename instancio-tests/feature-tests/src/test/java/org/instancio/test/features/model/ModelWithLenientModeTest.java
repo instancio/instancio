@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,10 +29,11 @@ import static org.instancio.Select.allStrings;
 class ModelWithLenientModeTest {
 
     @Test
+    @DisplayName("Object created from a lenient model should not trigger unused selector error")
     void lenientModel() {
         final Model<Integer> model = Instancio.of(Integer.class)
                 .lenient()
-                .ignore(allStrings()) // unused selector - no error should be thrown
+                .ignore(allStrings()) // unused selector
                 .toModel();
 
         final Integer result = Instancio.create(model);

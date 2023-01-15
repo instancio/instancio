@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.oflist;
+package org.instancio.test.features.ofmap;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
@@ -23,24 +23,25 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@FeatureTag({Feature.OF_LIST, Feature.MODEL})
-class OfListModelTest {
+@FeatureTag({Feature.OF_MAP, Feature.MODEL})
+class OfMapToModelTest {
 
     @Test
     void model() {
         final int expectedSize = 3;
-        final Model<List<Phone>> model = Instancio.ofList(Phone.class)
+        final Model<Map<UUID, Phone>> model = Instancio.ofMap(UUID.class, Phone.class)
                 .size(expectedSize)
                 .set(Phone_.countryCode, "+1")
                 .toModel();
 
-        final List<Phone> results = Instancio.create(model);
+        final Map<UUID, Phone> results = Instancio.create(model);
 
-        assertThat(results)
+        assertThat(results.values())
                 .hasSize(expectedSize)
                 .extracting(Phone::getCountryCode)
                 .containsOnly("+1");

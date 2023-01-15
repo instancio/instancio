@@ -17,11 +17,16 @@ package org.instancio.internal;
 
 import org.instancio.InstancioApi;
 import org.instancio.InstancioOfClassApi;
+import org.instancio.Model;
 
 public class InstancioOfClassApiImpl<T> extends InstancioApiImpl<T> implements InstancioOfClassApi<T> {
 
     public InstancioOfClassApiImpl(final Class<T> klass) {
         super(klass);
+    }
+
+    InstancioOfClassApiImpl(final Model<T> model) {
+        super(model);
     }
 
     @Override
