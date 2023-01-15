@@ -15,10 +15,10 @@
  */
 package org.instancio;
 
-import org.instancio.internal.InstancioApiImpl;
-import org.instancio.internal.InstancioOfClassApiImpl;
-import org.instancio.internal.InstancioOfCollectionApiImpl;
-import org.instancio.internal.InstancioOfMapApiImpl;
+import org.instancio.internal.ApiImpl;
+import org.instancio.internal.OfClassApiImpl;
+import org.instancio.internal.OfCollectionApiImpl;
+import org.instancio.internal.OfMapApiImpl;
 
 import java.util.Collection;
 import java.util.List;
@@ -268,7 +268,7 @@ public final class Instancio {
      * @return API builder reference
      */
     public static <T> InstancioOfClassApi<T> of(final Class<T> type) {
-        return new InstancioOfClassApiImpl<>(type);
+        return new OfClassApiImpl<>(type);
     }
 
     /**
@@ -289,7 +289,7 @@ public final class Instancio {
      * @return API builder reference
      */
     public static <T> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
-        return new InstancioApiImpl<>(typeToken);
+        return new ApiImpl<>(typeToken);
     }
 
     /**
@@ -316,7 +316,7 @@ public final class Instancio {
      * @return API builder reference
      */
     public static <T> InstancioApi<T> of(final Model<T> model) {
-        return new InstancioApiImpl<>(model);
+        return new ApiImpl<>(model);
     }
 
     /**
@@ -329,7 +329,7 @@ public final class Instancio {
      */
     @SuppressWarnings("all")
     public static <T> InstancioOfCollectionApi<List<T>> ofList(final Class<T> elementType) {
-        return new InstancioOfCollectionApiImpl(List.class, elementType);
+        return new OfCollectionApiImpl(List.class, elementType);
     }
 
     /**
@@ -341,7 +341,7 @@ public final class Instancio {
      * @since 2.5.0
      */
     public static <T> InstancioOfCollectionApi<List<T>> ofList(final Model<T> elementModel) {
-        return InstancioOfCollectionApiImpl.fromElementModel(cast(List.class), elementModel);
+        return OfCollectionApiImpl.fromElementModel(cast(List.class), elementModel);
     }
 
     /**
@@ -354,7 +354,7 @@ public final class Instancio {
      */
     @SuppressWarnings("all")
     public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final Class<T> elementType) {
-        return new InstancioOfCollectionApiImpl(Set.class, elementType);
+        return new OfCollectionApiImpl(Set.class, elementType);
     }
 
     /**
@@ -366,7 +366,7 @@ public final class Instancio {
      * @since 2.5.0
      */
     public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final Model<T> elementModel) {
-        return InstancioOfCollectionApiImpl.fromElementModel(cast(Set.class), elementModel);
+        return OfCollectionApiImpl.fromElementModel(cast(Set.class), elementModel);
     }
 
     /**
@@ -384,7 +384,7 @@ public final class Instancio {
             final Class<K> keyType,
             final Class<V> valueType) {
 
-        return new InstancioOfMapApiImpl(Map.class, keyType, valueType);
+        return new OfMapApiImpl(Map.class, keyType, valueType);
     }
 
     @SuppressWarnings("unchecked")

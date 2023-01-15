@@ -20,11 +20,11 @@ import org.instancio.Select;
 
 import java.util.Map;
 
-public final class InstancioOfMapApiImpl<K, V, M extends Map<K, V>>
-        extends InstancioOfClassApiImpl<M>
+public final class OfMapApiImpl<K, V, M extends Map<K, V>>
+        extends OfClassApiImpl<M>
         implements InstancioOfCollectionApi<M> {
 
-    public InstancioOfMapApiImpl(
+    public OfMapApiImpl(
             final Class<M> mapType,
             final Class<K> keyType,
             final Class<V> valueType) {

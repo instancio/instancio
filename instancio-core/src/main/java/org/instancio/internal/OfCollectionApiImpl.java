@@ -22,11 +22,11 @@ import org.instancio.internal.context.ModelContext;
 
 import java.util.Collection;
 
-public final class InstancioOfCollectionApiImpl<T, C extends Collection<T>>
-        extends InstancioOfClassApiImpl<C>
+public final class OfCollectionApiImpl<T, C extends Collection<T>>
+        extends OfClassApiImpl<C>
         implements InstancioOfCollectionApi<C> {
 
-    public InstancioOfCollectionApiImpl(
+    public OfCollectionApiImpl(
             final Class<C> collectionType,
             final Class<T> elementType) {
 
@@ -34,11 +34,11 @@ public final class InstancioOfCollectionApiImpl<T, C extends Collection<T>>
         withTypeParameters(elementType);
     }
 
-    private InstancioOfCollectionApiImpl(final Model<C> collectionModel) {
+    private OfCollectionApiImpl(final Model<C> collectionModel) {
         super(collectionModel);
     }
 
-    public static <T, C extends Collection<T>> InstancioOfCollectionApiImpl<T, C> fromElementModel(
+    public static <T, C extends Collection<T>> OfCollectionApiImpl<T, C> fromElementModel(
             final Class<C> collectionType,
             final Model<T> elementModel) {
 
@@ -47,7 +47,7 @@ public final class InstancioOfCollectionApiImpl<T, C extends Collection<T>>
                 .useModelAsTypeArgument(model.getModelContext())
                 .build();
 
-        return new InstancioOfCollectionApiImpl<>(new InternalModel<>(context));
+        return new OfCollectionApiImpl<>(new InternalModel<>(context));
     }
 
     @Override
