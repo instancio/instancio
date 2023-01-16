@@ -13,43 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.other.test.features.mode;
+package org.other.test.features.mode.usecases;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.TargetSelector;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.fail;
+import static org.instancio.Select.all;
 import static org.instancio.Select.field;
-import static org.instancio.Select.scope;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
 
-@FeatureTag({Feature.MODE, Feature.SELECTOR})
-class UnusedSelectorLocationRootFieldTest {
+@FeatureTag(Feature.MODE)
+class DuplicateSelectorsTest {
 
     @Test
-    void unused() {
-        // Root field, specified without the class
-        final TargetSelector rootClassFieldSelector = field("address").within(scope(byte.class));
-
-        // The above selector gets processed to include the root class,
-        // therefore when asserting for unused selectors, we must use the processed selector
-        final TargetSelector expected = field(Person.class, "address").within(scope(byte.class));
-
+    @DisplayName("Since field selector takes precedence over class selector, the latter remains unused")
+    void sameTargetUsingFieldAndClassSelectors() {
         final InstancioApi<Person> api = Instancio.of(Person.class)
-                .supply(rootClassFieldSelector, () -> fail("not called"));
+                .supply(field("address"), () -> null)
+                .supply(all(Address.class), Address::new);
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .unusedGeneratorSelectorAt(expected, line(37));
-    }
-
-    private static String line(final int line) {
-        return String.format("at org.other.test.features.mode.UnusedSelectorLocationRootFieldTest" +
-                ".unused(UnusedSelectorLocationRootFieldTest.java:%s)", line);
+                .unusedGeneratorSelectorAt(all(Address.class), "DuplicateSelectorsTest.java:39");
     }
 }

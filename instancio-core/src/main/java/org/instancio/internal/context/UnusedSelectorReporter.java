@@ -48,7 +48,7 @@ final class UnusedSelectorReporter {
             return;
         }
 
-        final StringBuilder sb = new StringBuilder(1024)
+        final StringBuilder sb = new StringBuilder(1500)
                 .append(NL)
                 .append("Found unused selectors referenced in the following methods:")
                 .append(NL);
@@ -61,14 +61,45 @@ final class UnusedSelectorReporter {
 
         sb.append(NL)
                 .append("This error aims to highlight potential problems and help maintain clean test code.").append(NL)
-                .append("You are most likely selecting a field or class that does not exist within this object.").append(NL).append(NL)
-                .append("This error can be suppressed by switching to lenient mode, for example:").append(NL).append(NL)
-                .append("      Example example = Instancio.of(Example.class)").append(NL)
-                .append("          // snip...").append(NL)
-                .append("          .lenient().create();").append(NL).append(NL)
-                .append("For more information see: https://www.instancio.org/user-guide/").append(NL);
+                .append(NL)
+                .append("Possible causes:").append(NL)
+                .append(NL)
+                .append(" -> Selector did not match any field or class within this object.").append(NL)
+                .append(" -> Selector was not applied because another matching selector was already applied.").append(NL)
+                .append(" -> Selector targets a field or class in an object that was provided by:").append(NL)
+                .append("    -> set(TargetSelector, Object)").append(NL)
+                .append("    -> supply(TargetSelector, Supplier)").append(NL)
+                .append(NL)
+                .append("    // Example").append(NL)
+                .append("    Supplier<Address> addressSupplier = () -> new Address(...);").append(NL)
+                .append("    Person person = Instancio.of(Person.class)").append(NL)
+                .append("        .supply(all(Address.class), () -> addressSupplier)").append(NL)
+                .append("        .set(field(Address::getCity), \"London\")").append(NL)
+                .append("        .create();").append(NL)
+                .append(NL)
+                .append("    Instancio does not modify instances provided by a Supplier,").append(NL)
+                .append("    therefore, field(Address::getCity) will trigger unused selector error.").append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Remove the selector(s) causing the error, if applicable.").append(NL)
+                .append(" -> Suppress the error by enabling 'lenient()' mode:").append(NL)
+                .append(NL)
+                .append("    Example example = Instancio.of(Example.class)").append(NL)
+                .append("        .lenient()").append(NL)
+                .append("        .create();").append(NL)
+                .append(NL)
+                .append("    // Or via Settings").append(NL)
+                .append("    Settings settings = Settings.create()").append(NL)
+                .append("        .set(Keys.MODE, Mode.LENIENT);").append(NL)
+                .append(NL)
+                .append("    Example example = Instancio.of(Example.class)").append(NL)
+                .append("        .withSettings(settings)").append(NL)
+                .append("        .create();").append(NL)
+                .append(NL)
+                .append("For more information see: https://www.instancio.org/user-guide/#selector-strictness");
 
-        throw new UnusedSelectorException(sb.toString());
+        throw new UnusedSelectorException(sb.toString(), ignored, nullable, generators, callbacks, subtypes);
     }
 
     private static void append(
@@ -86,7 +117,11 @@ final class UnusedSelectorReporter {
     }
 
     private boolean hasNoUnusedSelectors() {
-        return ignored.isEmpty() && nullable.isEmpty() && generators.isEmpty() && callbacks.isEmpty() && subtypes.isEmpty();
+        return ignored.isEmpty()
+                && nullable.isEmpty()
+                && generators.isEmpty()
+                && callbacks.isEmpty()
+                && subtypes.isEmpty();
     }
 
     private static String formatSelectors(final Set<? super TargetSelector> selectors) {
