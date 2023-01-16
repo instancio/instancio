@@ -21,6 +21,7 @@ import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.settings.Keys;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +41,9 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
                 context.getSettings().get(Keys.STRING_FIELD_PREFIX_ENABLED));
     }
 
+    @NotNull
     @Override
-    public Optional<GeneratorResult> getResult(final Node node) {
+    public GeneratorResult getResult(@NotNull final Node node) {
         final Class<?> targetClass = node.getTargetClass();
         final Optional<Generator<?>> generatorOpt = generatorResolver.get(targetClass);
 
@@ -54,6 +56,6 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
 
             LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
             return result;
-        });
+        }).orElse(GeneratorResult.emptyResult());
     }
 }

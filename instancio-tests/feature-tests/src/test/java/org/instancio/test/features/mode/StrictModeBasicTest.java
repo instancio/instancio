@@ -39,7 +39,7 @@ class StrictModeBasicTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .unusedIgnoreSelector(all(List.class));
+                .ignoreSelector(all(List.class));
     }
 
     @Test
@@ -49,7 +49,7 @@ class StrictModeBasicTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .unusedWithNullableSelector(all(List.class));
+                .withNullableSelector(all(List.class));
     }
 
     @Test
@@ -59,7 +59,7 @@ class StrictModeBasicTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .unusedGeneratorSelector(all(List.class));
+                .generatorSelector(all(List.class));
     }
 
     @Test
@@ -69,7 +69,7 @@ class StrictModeBasicTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .unusedGeneratorSelector(all(List.class));
+                .generatorSelector(all(List.class));
     }
 
     @Test
@@ -79,6 +79,6 @@ class StrictModeBasicTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .unusedOnCompleteSelector(all(List.class));
+                .onCompleteSelector(all(List.class));
     }
 }

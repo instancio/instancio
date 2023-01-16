@@ -26,6 +26,7 @@ import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -49,8 +50,9 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
      * If the context has enough information to generate a value for the field, then do so.
      * If not, return an empty {@link Optional} and proceed with the main generation flow.
      */
+    @NotNull
     @Override
-    public Optional<GeneratorResult> getResult(final Node node) {
+    public GeneratorResult getResult(@NotNull final Node node) {
         return getUserSuppliedGenerator(node).map(generator -> {
             final Hints hints = generator.hints();
             final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
@@ -62,7 +64,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
 
             final Object value = generator.generate(modelContext.getRandom());
             return GeneratorResult.create(value, hints);
-        });
+        }).orElse(GeneratorResult.emptyResult());
     }
 
     private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {

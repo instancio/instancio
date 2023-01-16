@@ -13,40 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.other.test.features.mode;
+package org.other.test.features.mode.usecases;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.TargetSelector;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.fail;
-import static org.instancio.Select.field;
-import static org.instancio.Select.scope;
+import static org.instancio.Select.all;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
 import static org.instancio.test.support.UnusedSelectorsAssert.line;
 
-@FeatureTag({Feature.MODE, Feature.SELECTOR})
-class UnusedSelectorLocationRootFieldTest {
+@FeatureTag(Feature.MODE)
+class IgnoreChildOfIgnoredTargetTest {
 
     @Test
-    void unused() {
-        // Root field, specified without the class
-        final TargetSelector rootClassFieldSelector = field("address").within(scope(byte.class));
-
-        // The above selector gets processed to include the root class,
-        // therefore when asserting for unused selectors, we must use the processed selector
-        final TargetSelector expected = field(Person.class, "address").within(scope(byte.class));
-
+    void ignoreChildOfIgnoredTarget() {
         final InstancioApi<Person> api = Instancio.of(Person.class)
-                .supply(rootClassFieldSelector, () -> fail("not called"));
+                .ignore(all(Address.class))
+                .ignore(all(Phone.class));
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(expected, line(getClass(), 38));
+                .ignoreSelector(all(Phone.class), line(getClass(), 38));
     }
-
 }

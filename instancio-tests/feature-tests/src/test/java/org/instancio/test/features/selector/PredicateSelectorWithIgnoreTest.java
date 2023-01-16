@@ -38,6 +38,7 @@ class PredicateSelectorWithIgnoreTest {
         final Person result = Instancio.of(Person.class)
                 .ignore(fields())
                 .set(field("name"), "foo") // since all fields are ignored, this is ignored
+                .lenient()
                 .create();
 
         assertThat(result).hasAllNullFieldsOrPropertiesExcept("age", "finalField");
@@ -57,6 +58,7 @@ class PredicateSelectorWithIgnoreTest {
         final Person result = Instancio.of(Person.class)
                 .ignore(types().excluding(Person.class))
                 .set(field("name"), "foo") // since all types are ignored, this is ignored
+                .lenient()
                 .create();
 
         assertThat(result).hasAllNullFieldsOrPropertiesExcept("age", "finalField");

@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Select.fields;
 import static org.instancio.Select.types;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
+import static org.instancio.test.support.UnusedSelectorsAssert.line;
 
 @FeatureTag({Feature.MODE, Feature.PREDICATE_SELECTOR})
 class UnusedSelectorLocationWithPredicateTest {
@@ -45,17 +46,13 @@ class UnusedSelectorLocationWithPredicateTest {
                 .ignore(types(klass -> false))
                 .supply(fields(field -> false), () -> fail("not called"));
 
+        int l = 43;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(5)
-                .unusedGeneratorSelectorAt(timestampSelector, line(42))
-                .unusedIgnoreSelectorAt(types().annotated(Pojo.class).annotated(PersonName.class), line(43))
-                .unusedGeneratorSelectorAt(fields().named("foo"), line(44))
-                .unusedIgnoreSelectorAt(types(klass -> false), line(45))
-                .unusedGeneratorSelectorAt(fields(field -> false), line(46));
-    }
-
-    private static String line(final int line) {
-        return String.format("at org.other.test.features.mode.UnusedSelectorLocationWithPredicateTest" +
-                ".unused(UnusedSelectorLocationWithPredicateTest.java:%s)", line);
+                .generatorSelector(timestampSelector, line(getClass(), l++))
+                .ignoreSelector(types().annotated(Pojo.class).annotated(PersonName.class), line(getClass(), l++))
+                .generatorSelector(fields().named("foo"), line(getClass(), l++))
+                .ignoreSelector(types(klass -> false), line(getClass(), l++))
+                .generatorSelector(fields(field -> false), line(getClass(), l++));
     }
 }

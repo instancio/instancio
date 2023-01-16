@@ -64,24 +64,27 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
         return this;
     }
 
+    public static String line(final Class<?> klass, final int line) {
+        return klass.getSimpleName() + ".java:" + line;
+    }
 
-    public UnusedSelectorsAssert unusedIgnoreSelectorAt(final TargetSelector selector, final String stackTraceLine) {
+    public UnusedSelectorsAssert ignoreSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector, stackTraceLine, actual.getIgnored());
     }
 
-    public UnusedSelectorsAssert unusedWithNullableSelectorAt(final TargetSelector selector, final String stackTraceLine) {
+    public UnusedSelectorsAssert withNullableSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector, stackTraceLine, actual.getNullable());
     }
 
-    public UnusedSelectorsAssert unusedGeneratorSelectorAt(final TargetSelector selector, final String stackTraceLine) {
+    public UnusedSelectorsAssert generatorSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector, stackTraceLine, actual.getGenerators());
     }
 
-    public UnusedSelectorsAssert unusedOnCompleteSelectorAt(final TargetSelector selector, final String stackTraceLine) {
+    public UnusedSelectorsAssert onCompleteSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector, stackTraceLine, actual.getCallbacks());
     }
 
-    public UnusedSelectorsAssert unusedSubtypeSelectorAt(final TargetSelector selector, final String stackTraceLine) {
+    public UnusedSelectorsAssert subtypeSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector, stackTraceLine, actual.getSubtypes());
     }
 
@@ -89,25 +92,25 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
     // asserts without stacktrace line
     //
 
-    public UnusedSelectorsAssert unusedIgnoreSelector(final TargetSelector selector) {
+    public UnusedSelectorsAssert ignoreSelector(final TargetSelector selector) {
         return assertUnused(selector, actual.getIgnored());
     }
 
-    public UnusedSelectorsAssert unusedWithNullableSelector(final TargetSelector selector) {
+    public UnusedSelectorsAssert withNullableSelector(final TargetSelector selector) {
         return assertUnused(selector, actual.getNullable());
     }
 
-    public UnusedSelectorsAssert unusedGeneratorSelector(final TargetSelector selector) {
+    public UnusedSelectorsAssert generatorSelector(final TargetSelector selector) {
         return assertUnused(selector, actual.getGenerators());
     }
 
 
-    public UnusedSelectorsAssert unusedOnCompleteSelector(final TargetSelector selector) {
+    public UnusedSelectorsAssert onCompleteSelector(final TargetSelector selector) {
         return assertUnused(selector, actual.getCallbacks());
     }
 
 
-    public UnusedSelectorsAssert unusedSubtypeSelector(final TargetSelector selector) {
+    public UnusedSelectorsAssert subtypeSelector(final TargetSelector selector) {
         return assertUnused(selector, actual.getSubtypes());
     }
 

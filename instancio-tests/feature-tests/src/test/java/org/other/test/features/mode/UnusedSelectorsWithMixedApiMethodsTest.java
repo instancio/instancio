@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.other.test.features.mode.usecases;
+package org.other.test.features.mode;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
@@ -34,6 +34,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
+import static org.instancio.test.support.UnusedSelectorsAssert.line;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -53,20 +54,16 @@ class UnusedSelectorsWithMixedApiMethodsTest {
                 .withNullable(all(SortedSet.class))
                 .subtype(all(CharSequence.class), String.class);
 
-        int l = 48;
+        int l = 49;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(7)
-                .unusedIgnoreSelectorAt(field(Foo.class, "fooValue"), line(l++))
-                .unusedGeneratorSelectorAt(field(Bar.class, "barValue"), line(l++))
-                .unusedGeneratorSelectorAt(field(Baz.class, "bazValue"), line(l++))
-                .unusedGeneratorSelectorAt(allStrings().within(Person_.age.toScope()), line(l++))
-                .unusedOnCompleteSelectorAt(all(LinkedList.class), line(l++))
-                .unusedWithNullableSelectorAt(all(SortedSet.class), line(l++))
-                .unusedSubtypeSelectorAt(all(CharSequence.class), line(l));
-    }
-
-    private static String line(final int line) {
-        return UnusedSelectorsWithMixedApiMethodsTest.class.getSimpleName() + ".java:" + line;
+                .ignoreSelector(field(Foo.class, "fooValue"), line(getClass(), l++))
+                .generatorSelector(field(Bar.class, "barValue"), line(getClass(), l++))
+                .generatorSelector(field(Baz.class, "bazValue"), line(getClass(), l++))
+                .generatorSelector(allStrings().within(Person_.age.toScope()), line(getClass(), l++))
+                .onCompleteSelector(all(LinkedList.class), line(getClass(), l++))
+                .withNullableSelector(all(SortedSet.class), line(getClass(), l++))
+                .subtypeSelector(all(CharSequence.class), line(getClass(), l));
     }
 
     private static <V> V failIfCalled() {

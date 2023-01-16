@@ -114,11 +114,12 @@ class CustomGeneratorWithInitialisedFieldsTest {
                 value = AfterGenerate.class,
                 names = {"APPLY_SELECTORS", "POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES", "POPULATE_ALL"})
         @ParameterizedTest
-        void initialisedFieldShouldBeNotOverwrittenBySetSelectorIfIgnoreIsSpecified(final AfterGenerate afterGenerate) {
+        void initialisedFieldShouldNotBeOverwrittenBySetSelectorIfIgnoreIsSpecified(final AfterGenerate afterGenerate) {
             assertInitialisedFieldsNotModified(Instancio.of(baseModel(afterGenerate))
                     .ignore(field(LongHolderWithDefaults.class, "primitive"))
                     .ignore(field(LongHolderWithDefaults.class, "wrapper"))
                     .set(allLongs(), SELECTOR_OVERRIDE)
+                    .lenient()
                     .create());
         }
 

@@ -21,8 +21,7 @@ import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.internal.util.ReflectionUtils;
-
-import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 public class InstantiatingHandler implements NodeHandler {
 
@@ -32,8 +31,9 @@ public class InstantiatingHandler implements NodeHandler {
         this.instantiator = instantiator;
     }
 
+    @NotNull
     @Override
-    public Optional<GeneratorResult> getResult(final Node node) {
+    public GeneratorResult getResult(@NotNull final Node node) {
         final Class<?> targetClass = node.getTargetClass();
 
         if (ReflectionUtils.isArrayOrConcrete(targetClass)) {
@@ -42,10 +42,9 @@ public class InstantiatingHandler implements NodeHandler {
                     .build();
 
             final Object object = instantiator.instantiate(targetClass);
-            final GeneratorResult result = GeneratorResult.create(object, hints);
-            return Optional.of(result);
+            return GeneratorResult.create(object, hints);
         }
-        return Optional.empty();
+        return GeneratorResult.emptyResult();
     }
 
 

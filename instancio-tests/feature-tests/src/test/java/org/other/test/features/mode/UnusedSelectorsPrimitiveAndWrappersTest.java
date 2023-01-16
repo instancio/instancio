@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.other.test.features.mode.usecases;
+package org.other.test.features.mode;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
@@ -38,7 +38,7 @@ class UnusedSelectorsPrimitiveAndWrappersTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .unusedIgnoreSelectorAt(all(Integer.class),
+                .ignoreSelector(all(Integer.class),
                         "UnusedSelectorsPrimitiveAndWrappersTest.java:37");
     }
 

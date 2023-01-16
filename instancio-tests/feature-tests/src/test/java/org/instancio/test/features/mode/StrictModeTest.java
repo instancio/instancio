@@ -18,26 +18,19 @@ package org.instancio.test.features.mode;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.generators.Generators;
-import org.instancio.internal.util.Sonar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
-import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.SortedSet;
 
 import static org.instancio.Select.all;
-import static org.instancio.Select.allInts;
-import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -68,10 +61,10 @@ class StrictModeTest {
 
             assertThrowsUnusedSelectorException(api)
                     .hasUnusedSelectorCount(4)
-                    .unusedWithNullableSelector(field(Foo.class, "fooValue"))
-                    .unusedWithNullableSelector(field(Bar.class, "barValue"))
-                    .unusedWithNullableSelector(field(Baz.class, "bazValue"))
-                    .unusedWithNullableSelector(all(SortedSet.class));
+                    .withNullableSelector(field(Foo.class, "fooValue"))
+                    .withNullableSelector(field(Bar.class, "barValue"))
+                    .withNullableSelector(field(Baz.class, "bazValue"))
+                    .withNullableSelector(all(SortedSet.class));
         }
 
         @Test
@@ -85,10 +78,10 @@ class StrictModeTest {
 
             assertThrowsUnusedSelectorException(api)
                     .hasUnusedSelectorCount(4)
-                    .unusedIgnoreSelector(field(Foo.class, "fooValue"))
-                    .unusedIgnoreSelector(field(Bar.class, "barValue"))
-                    .unusedIgnoreSelector(field(Baz.class, "bazValue"))
-                    .unusedIgnoreSelector(all(SortedSet.class));
+                    .ignoreSelector(field(Foo.class, "fooValue"))
+                    .ignoreSelector(field(Bar.class, "barValue"))
+                    .ignoreSelector(field(Baz.class, "bazValue"))
+                    .ignoreSelector(all(SortedSet.class));
         }
 
         @Test
@@ -102,10 +95,10 @@ class StrictModeTest {
 
             assertThrowsUnusedSelectorException(api)
                     .hasUnusedSelectorCount(4)
-                    .unusedGeneratorSelector(field(Foo.class, "fooValue"))
-                    .unusedGeneratorSelector(field(Bar.class, "barValue"))
-                    .unusedGeneratorSelector(field(Baz.class, "bazValue"))
-                    .unusedGeneratorSelector(all(SortedSet.class));
+                    .generatorSelector(field(Foo.class, "fooValue"))
+                    .generatorSelector(field(Bar.class, "barValue"))
+                    .generatorSelector(field(Baz.class, "bazValue"))
+                    .generatorSelector(all(SortedSet.class));
         }
 
         @Test
@@ -119,10 +112,10 @@ class StrictModeTest {
 
             assertThrowsUnusedSelectorException(api)
                     .hasUnusedSelectorCount(4)
-                    .unusedGeneratorSelector(field(Foo.class, "fooValue"))
-                    .unusedGeneratorSelector(field(Bar.class, "barValue"))
-                    .unusedGeneratorSelector(field(Baz.class, "bazValue"))
-                    .unusedGeneratorSelector(all(SortedSet.class));
+                    .generatorSelector(field(Foo.class, "fooValue"))
+                    .generatorSelector(field(Bar.class, "barValue"))
+                    .generatorSelector(field(Baz.class, "bazValue"))
+                    .generatorSelector(all(SortedSet.class));
         }
 
         @Test
@@ -136,10 +129,10 @@ class StrictModeTest {
 
             assertThrowsUnusedSelectorException(api)
                     .hasUnusedSelectorCount(4)
-                    .unusedOnCompleteSelector(field(Foo.class, "fooValue"))
-                    .unusedOnCompleteSelector(field(Bar.class, "barValue"))
-                    .unusedOnCompleteSelector(field(Baz.class, "bazValue"))
-                    .unusedOnCompleteSelector(all(SortedSet.class));
+                    .onCompleteSelector(field(Foo.class, "fooValue"))
+                    .onCompleteSelector(field(Bar.class, "barValue"))
+                    .onCompleteSelector(field(Baz.class, "bazValue"))
+                    .onCompleteSelector(all(SortedSet.class));
         }
 
         @Test
@@ -153,10 +146,10 @@ class StrictModeTest {
 
             assertThrowsUnusedSelectorException(api)
                     .hasUnusedSelectorCount(4)
-                    .unusedSubtypeSelector(field(Foo.class, "fooValue"))
-                    .unusedSubtypeSelector(field(Bar.class, "barValue"))
-                    .unusedSubtypeSelector(field(Baz.class, "bazValue"))
-                    .unusedSubtypeSelector(all(SortedSet.class));
+                    .subtypeSelector(field(Foo.class, "fooValue"))
+                    .subtypeSelector(field(Bar.class, "barValue"))
+                    .subtypeSelector(field(Baz.class, "bazValue"))
+                    .subtypeSelector(all(SortedSet.class));
         }
     }
 
