@@ -17,7 +17,6 @@ package org.instancio.test.features.mode;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.exception.UnusedSelectorException;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -26,10 +25,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Fail.fail;
 import static org.instancio.Select.all;
-import static org.instancio.test.support.asserts.UnusedSelectorsAssert.assertUnusedSelectorMessage;
+import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
 
 @FeatureTag(Feature.MODE)
 class StrictModeBasicTest {
@@ -39,7 +37,9 @@ class StrictModeBasicTest {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
                 .ignore(all(List.class));
 
-        assertUnusedSelectors(api);
+        assertThrowsUnusedSelectorException(api)
+                .hasUnusedSelectorCount(1)
+                .unusedIgnoreSelector(all(List.class));
     }
 
     @Test
@@ -47,7 +47,9 @@ class StrictModeBasicTest {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
                 .withNullable(all(List.class));
 
-        assertUnusedSelectors(api);
+        assertThrowsUnusedSelectorException(api)
+                .hasUnusedSelectorCount(1)
+                .unusedWithNullableSelector(all(List.class));
     }
 
     @Test
@@ -55,7 +57,9 @@ class StrictModeBasicTest {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
                 .supply(all(List.class), Collections::emptyList);
 
-        assertUnusedSelectors(api);
+        assertThrowsUnusedSelectorException(api)
+                .hasUnusedSelectorCount(1)
+                .unusedGeneratorSelector(all(List.class));
     }
 
     @Test
@@ -63,7 +67,9 @@ class StrictModeBasicTest {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
                 .generate(all(List.class), gen -> gen.collection().size(0));
 
-        assertUnusedSelectors(api);
+        assertThrowsUnusedSelectorException(api)
+                .hasUnusedSelectorCount(1)
+                .unusedGeneratorSelector(all(List.class));
     }
 
     @Test
@@ -71,14 +77,8 @@ class StrictModeBasicTest {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
                 .onComplete(all(List.class), (List<?> list) -> fail("should not be invoked"));
 
-        assertUnusedSelectors(api);
-    }
-
-    private static void assertUnusedSelectors(final InstancioApi<StringHolder> api) {
-        assertThatThrownBy(api::create)
-                .isInstanceOf(UnusedSelectorException.class)
-                .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
-                        .hasUnusedSelectorCount(1)
-                        .containsUnusedSelector(List.class));
+        assertThrowsUnusedSelectorException(api)
+                .hasUnusedSelectorCount(1)
+                .unusedOnCompleteSelector(all(List.class));
     }
 }

@@ -17,17 +17,14 @@ package org.other.test.features.mode;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.exception.UnusedSelectorException;
-import org.instancio.test.support.asserts.UnusedSelectorsAssert.ApiMethod;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Fail.fail;
 import static org.instancio.Select.all;
-import static org.instancio.test.support.asserts.UnusedSelectorsAssert.assertUnusedSelectorMessage;
+import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
 
 @FeatureTag({Feature.MODE, Feature.SELECTOR})
 class UnusedSelectorLocationWithMetamodelFromOtherPackageTest {
@@ -40,14 +37,11 @@ class UnusedSelectorLocationWithMetamodelFromOtherPackageTest {
                         OtherPojo_.bar,
                         OtherPojo_.baz));
 
-        assertThatThrownBy(api::create)
-                .isInstanceOf(UnusedSelectorException.class)
-                .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
-                        .hasUnusedSelectorCount(3)
-                        .containsOnly(ApiMethod.GENERATE_SET_SUPPLY, ApiMethod.IGNORE)
-                        .containsUnusedSelectorAt(OtherPojo.class, "foo", line(38))
-                        .containsUnusedSelectorAt(OtherPojo.class, "bar", line(39))
-                        .containsUnusedSelectorAt(OtherPojo.class, "baz", line(39)));
+        assertThrowsUnusedSelectorException(api)
+                .hasUnusedSelectorCount(3)
+                .unusedGeneratorSelectorAt(OtherPojo_.foo, line(35))
+                .unusedIgnoreSelectorAt(OtherPojo_.bar, line(36))
+                .unusedIgnoreSelectorAt(OtherPojo_.baz, line(36));
     }
 
     private static String line(final int line) {

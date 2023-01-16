@@ -17,10 +17,8 @@ package org.instancio.test.features.mode;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generators.Generators;
 import org.instancio.internal.util.Sonar;
-import org.instancio.test.support.asserts.UnusedSelectorsAssert.ApiMethod;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
@@ -37,12 +35,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.SortedSet;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
-import static org.instancio.test.support.asserts.UnusedSelectorsAssert.assertUnusedSelectorMessage;
+import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @FeatureTag({
@@ -54,101 +51,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 })
 class StrictModeTest {
 
-    @Nested
-    class DuplicateSelectorsTest {
-
-        @Test
-        @DisplayName("Since field selector takes precedence over class selector, the latter remains unused")
-        void sameTargetUsingFieldAndClassSelectors() {
-            final InstancioApi<Person> api = Instancio.of(Person.class)
-                    .supply(field("address"), () -> null)
-                    .supply(all(Address.class), Address::new);
-
-            assertThatThrownBy(api::create)
-                    .isExactlyInstanceOf(UnusedSelectorException.class)
-                    .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
-                            .hasUnusedSelectorCount(1)
-                            .containsOnly(ApiMethod.GENERATE_SET_SUPPLY)
-                            .containsUnusedSelector(Address.class));
-        }
-    }
-
-    @Nested
-    class UnusedSelectorsPrimitiveAndWrappersTest {
-        class IntHolder {
-            @SuppressWarnings("FieldCanBeLocal")
-            private int value;
-
-            public void setValue(final int value) {
-                this.value = value;
-            }
-        }
-
-        @Test
-        @DisplayName("No error with allInts() even though class has no Integer field")
-        @SuppressWarnings(Sonar.ADD_ASSERTION)
-        void allIntsWithClassContainingOnlyPrimitiveUsed() {
-            Instancio.of(IntHolder.class).ignore(allInts()).create();
-            Instancio.of(IntHolder.class).ignore(all(int.class)).create();
-        }
-
-        @Test
-        @DisplayName("Error selecting Integer when only primitive int is present")
-        void allIntegersWithClassContainingOnlyPrimitiveUsed() {
-            final InstancioApi<IntHolder> api = Instancio.of(IntHolder.class)
-                    .ignore(all(Integer.class));
-
-            assertThatThrownBy(api::create)
-                    .isInstanceOf(UnusedSelectorException.class)
-                    .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
-                            .hasUnusedSelectorCount(1)
-                            .containsOnly(ApiMethod.IGNORE)
-                            .containsUnusedSelector(Integer.class));
-        }
-    }
-
     /**
-     * Verify unused selectors by using various combinations of ignore(), withNullable(), set(), generate().
-     *
-     * @see UnusedSelectorsWithIndividualApiMethodsTest
-     */
-    @Nested
-    class UnusedSelectorsWithMixedApiMethodsTest {
-        @Test
-        void unusedWithAllMethods() {
-            final InstancioApi<Person> api = Instancio.of(Person.class)
-                    .ignore(field(Foo.class, "fooValue"))
-                    .set(field(Bar.class, "barValue"), "barrr")
-                    .generate(field(Baz.class, "bazValue"), Generators::string)
-                    .supply(allStrings().within(Person_.age.toScope()), StrictModeTest::failIfCalled)
-                    .onComplete(all(LinkedList.class), list -> failIfCalled())
-                    .withNullable(all(SortedSet.class))
-                    .subtype(all(CharSequence.class), String.class);
-
-            assertThatThrownBy(api::create)
-                    .isInstanceOf(UnusedSelectorException.class)
-                    .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
-                            .hasUnusedSelectorCount(7)
-                            .containsOnly(
-                                    ApiMethod.IGNORE,
-                                    ApiMethod.GENERATE_SET_SUPPLY,
-                                    ApiMethod.ON_COMPLETE,
-                                    ApiMethod.WITH_NULLABLE,
-                                    ApiMethod.SUBTYPE)
-                            .containsUnusedSelector(LinkedList.class)
-                            .containsUnusedSelector(SortedSet.class)
-                            .containsUnusedSelector(String.class) // TODO assert scope in reported message
-                            .containsUnusedSelector(Foo.class, "fooValue")
-                            .containsUnusedSelector(Bar.class, "barValue")
-                            .containsUnusedSelector(Baz.class, "bazValue")
-                            .containsUnusedSelector(CharSequence.class));
-        }
-    }
-
-    /**
-     * Verify unused selectors with individual methods: ignore(), withNullable(), set(), generate().
-     *
-     * @see UnusedSelectorsWithMixedApiMethodsTest
+     * Verify unused selectors with individual methods:
+     * ignore(), withNullable(), set(), generate().
      */
     @Nested
     class UnusedSelectorsWithIndividualApiMethodsTest {
@@ -161,7 +66,12 @@ class StrictModeTest {
                             field(Baz.class, "bazValue")))
                     .withNullable(all(SortedSet.class));
 
-            assertUnusedSelectorsForMethod(api, ApiMethod.WITH_NULLABLE);
+            assertThrowsUnusedSelectorException(api)
+                    .hasUnusedSelectorCount(4)
+                    .unusedWithNullableSelector(field(Foo.class, "fooValue"))
+                    .unusedWithNullableSelector(field(Bar.class, "barValue"))
+                    .unusedWithNullableSelector(field(Baz.class, "bazValue"))
+                    .unusedWithNullableSelector(all(SortedSet.class));
         }
 
         @Test
@@ -173,7 +83,12 @@ class StrictModeTest {
                             field(Baz.class, "bazValue")))
                     .ignore(all(SortedSet.class));
 
-            assertUnusedSelectorsForMethod(api, ApiMethod.IGNORE);
+            assertThrowsUnusedSelectorException(api)
+                    .hasUnusedSelectorCount(4)
+                    .unusedIgnoreSelector(field(Foo.class, "fooValue"))
+                    .unusedIgnoreSelector(field(Bar.class, "barValue"))
+                    .unusedIgnoreSelector(field(Baz.class, "bazValue"))
+                    .unusedIgnoreSelector(all(SortedSet.class));
         }
 
         @Test
@@ -185,7 +100,12 @@ class StrictModeTest {
                             field(Baz.class, "bazValue")), "jaz")
                     .set(all(SortedSet.class), Collections.emptySet());
 
-            assertUnusedSelectorsForMethod(api, ApiMethod.GENERATE_SET_SUPPLY);
+            assertThrowsUnusedSelectorException(api)
+                    .hasUnusedSelectorCount(4)
+                    .unusedGeneratorSelector(field(Foo.class, "fooValue"))
+                    .unusedGeneratorSelector(field(Bar.class, "barValue"))
+                    .unusedGeneratorSelector(field(Baz.class, "bazValue"))
+                    .unusedGeneratorSelector(all(SortedSet.class));
         }
 
         @Test
@@ -197,7 +117,12 @@ class StrictModeTest {
                             field(Baz.class, "bazValue")), Generators::string)
                     .generate(all(SortedSet.class), Generators::collection);
 
-            assertUnusedSelectorsForMethod(api, ApiMethod.GENERATE_SET_SUPPLY);
+            assertThrowsUnusedSelectorException(api)
+                    .hasUnusedSelectorCount(4)
+                    .unusedGeneratorSelector(field(Foo.class, "fooValue"))
+                    .unusedGeneratorSelector(field(Bar.class, "barValue"))
+                    .unusedGeneratorSelector(field(Baz.class, "bazValue"))
+                    .unusedGeneratorSelector(all(SortedSet.class));
         }
 
         @Test
@@ -209,7 +134,12 @@ class StrictModeTest {
                             field(Baz.class, "bazValue")), obj -> failIfCalled())
                     .onComplete(all(SortedSet.class), obj -> failIfCalled());
 
-            assertUnusedSelectorsForMethod(api, ApiMethod.ON_COMPLETE);
+            assertThrowsUnusedSelectorException(api)
+                    .hasUnusedSelectorCount(4)
+                    .unusedOnCompleteSelector(field(Foo.class, "fooValue"))
+                    .unusedOnCompleteSelector(field(Bar.class, "barValue"))
+                    .unusedOnCompleteSelector(field(Baz.class, "bazValue"))
+                    .unusedOnCompleteSelector(all(SortedSet.class));
         }
 
         @Test
@@ -221,19 +151,12 @@ class StrictModeTest {
                             field(Baz.class, "bazValue")), Object.class)
                     .subtype(all(SortedSet.class), Object.class);
 
-            assertUnusedSelectorsForMethod(api, ApiMethod.SUBTYPE);
-        }
-
-        private void assertUnusedSelectorsForMethod(final InstancioApi<?> api, final ApiMethod apiMethod) {
-            assertThatThrownBy(api::create)
-                    .isInstanceOf(UnusedSelectorException.class)
-                    .satisfies(ex -> assertUnusedSelectorMessage(ex.getMessage())
-                            .hasUnusedSelectorCount(4)
-                            .containsOnly(apiMethod)
-                            .containsUnusedSelector(SortedSet.class)
-                            .containsUnusedSelector(Foo.class, "fooValue")
-                            .containsUnusedSelector(Bar.class, "barValue")
-                            .containsUnusedSelector(Baz.class, "bazValue"));
+            assertThrowsUnusedSelectorException(api)
+                    .hasUnusedSelectorCount(4)
+                    .unusedSubtypeSelector(field(Foo.class, "fooValue"))
+                    .unusedSubtypeSelector(field(Bar.class, "barValue"))
+                    .unusedSubtypeSelector(field(Baz.class, "bazValue"))
+                    .unusedSubtypeSelector(all(SortedSet.class));
         }
     }
 
