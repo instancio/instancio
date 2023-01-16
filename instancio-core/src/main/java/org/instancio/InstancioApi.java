@@ -106,18 +106,48 @@ public interface InstancioApi<T> {
 
     /**
      * Specifies that a class or field should be ignored.
-     * <p>
-     * Example:
+     *
+     * <p>Example:
      * <pre>{@code
      *   Person person = Instancio.of(Person.class)
-     *       .ignore(field(Person::getPets))
-     *       .ignore(field(Address::getPhoneNumbers))
+     *       .ignore(field(Phone::getPhoneNumber))
      *       .ignore(allStrings())
      *       .create();
      * }</pre>
-     * <p>
-     * will create a fully populated person, but will ignore the {@code address} field
-     * and all string fields.
+     *
+     * <p>will create a fully populated person, but will ignore the
+     * {@code getPhoneNumber} field, and all strings.
+     *
+     * <h4>Precedence</h4>
+     *
+     * <p>This method has higher precedence than other API methods.
+     * Once a target is ignored, no other selectors will apply.
+     * For example, the following snippet will trigger an unused selector error
+     * because {@code field(Phone::getNumber)} is redundant:
+     *
+     * <pre>{@code
+     *   Person person = Instancio.of(Person.class)
+     *       .ignore(all(Phone.class))
+     *       .set(field(Phone::getNumber), "123-45-56")
+     *       .create();
+     * }</pre>
+     *
+     * <h4>Usage with Java records</h4>
+     *
+     * <p>If {@code ignore()} targets one of the required arguments of a record
+     * constructor, then a default value for the ignored type will be generated.
+     *
+     * <p>Example:
+     * <pre>{@code
+     *   record PersonRecord(String name, int age) {}
+     *
+     *   PersonRecord person = Instancio.of(PersonRecord.class)
+     *       .ignore(allInts())
+     *       .ignore(allStrings())
+     *       .create();
+     *
+     *   // will produce: PersonRecord[name=null, age=0]
+     * }</pre>
      *
      * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
