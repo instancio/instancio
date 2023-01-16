@@ -15,16 +15,17 @@
  */
 package org.instancio.internal.generator;
 
+import org.instancio.TargetSelector;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.StringJoiner;
-
 public final class GeneratorResult {
-    private static final GeneratorResult NULL_RESULT = new GeneratorResult(
-            null, Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY));
+    private static final Hints EMPTY_HINTS = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
+    private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS);
+    private static final GeneratorResult EMPTY_RESULT = new GeneratorResult(null, EMPTY_HINTS);
+    private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS);
 
     private final Object value;
     private final Hints hints;
@@ -32,20 +33,6 @@ public final class GeneratorResult {
     private GeneratorResult(@Nullable final Object value, @NotNull final Hints hints) {
         this.value = value;
         this.hints = hints;
-    }
-
-    /**
-     * This result indicates that a null was generated, therefore the target's value should
-     * be set to null. If the target is a field with a pre-initialised default value, it will be
-     * overwritten with a null value.
-     * <p>
-     * An actual {@code null} {@code GeneratorResult} means that the target field will be ignored
-     * (it would retain its default value, if any).
-     *
-     * @return null result
-     */
-    public static GeneratorResult nullResult() {
-        return NULL_RESULT;
     }
 
     public static GeneratorResult create(@Nullable final Object value, final Hints hints) {
@@ -56,19 +43,55 @@ public final class GeneratorResult {
         return value;
     }
 
-    public boolean isNullResult() {
-        return value == null;
-    }
-
     public Hints getHints() {
         return hints;
     }
 
+    /**
+     * A null was generated, therefore the target's value should be set to null.
+     * If the target is a field with a pre-initialised default value, it will be
+     * overwritten with null.
+     *
+     * @return null result
+     */
+    public static GeneratorResult nullResult() {
+        return NULL_RESULT;
+    }
+
+    /**
+     * An empty result implies that a value could not be generated.
+     * This could be due to an error.
+     *
+     * @return empty result
+     */
+    public static GeneratorResult emptyResult() {
+        return EMPTY_RESULT;
+    }
+
+    /**
+     * An ignored result indicates that the target was marked with
+     * {@link org.instancio.InstancioApi#ignore(TargetSelector)}.
+     *
+     * @return ignored result
+     */
+    public static GeneratorResult ignoredResult() {
+        return IGNORED_RESULT;
+    }
+
+    public boolean containsNull() {
+        return value == null;
+    }
+
+    public boolean isEmpty() {
+        return this == EMPTY_RESULT;
+    }
+
+    public boolean isIgnored() {
+        return this == IGNORED_RESULT;
+    }
+
     @Override
     public String toString() {
-        return new StringJoiner(", ", GeneratorResult.class.getSimpleName() + "[", "]")
-                .add("value=" + value)
-                .add("hints=" + hints)
-                .toString();
+        return String.format("GeneratorResult[value=%s, hints=%s]", value, hints);
     }
 }

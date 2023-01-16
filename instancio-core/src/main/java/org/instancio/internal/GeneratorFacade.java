@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Modifier;
-import java.util.Optional;
 
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
@@ -65,19 +64,19 @@ class GeneratorFacade {
         return context.isIgnored(node) || (node.getField() != null && Modifier.isStatic(node.getField().getModifiers()));
     }
 
-    Optional<GeneratorResult> generateNodeValue(final Node node) {
+    GeneratorResult generateNodeValue(final Node node) {
         if (isIgnored(node)) {
-            return Optional.empty();
+            return GeneratorResult.ignoredResult();
         }
 
         if (shouldReturnNullForNullable(node)) {
-            return Optional.of(GeneratorResult.nullResult());
+            return GeneratorResult.nullResult();
         }
 
-        Optional<GeneratorResult> generatorResult = Optional.empty();
+        GeneratorResult generatorResult = GeneratorResult.emptyResult();
         for (NodeHandler handler : nodeHandlers) {
             generatorResult = handler.getResult(node);
-            if (generatorResult.isPresent()) {
+            if (!generatorResult.isEmpty()) {
                 LOG.trace("{} generated using '{}'", node, handler.getClass().getName());
                 break;
             }

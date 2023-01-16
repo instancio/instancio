@@ -18,28 +18,28 @@ package org.other.test.features.mode.usecases;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.test.support.pojo.person.Address;
-import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
+import static org.instancio.test.support.UnusedSelectorsAssert.line;
 
 @FeatureTag(Feature.MODE)
-class DuplicateSelectorsTest {
+class SelectFieldInIgnoredClassTest {
 
     @Test
-    @DisplayName("Since field selector takes precedence over class selector, the latter remains unused")
-    void sameTargetUsingFieldAndClassSelectors() {
-        final InstancioApi<Person> api = Instancio.of(Person.class)
-                .supply(field("address"), () -> null)
-                .supply(all(Address.class), Address::new);
+    void unusedClassSelector() {
+        final InstancioApi<Address> api = Instancio.of(Address.class)
+                .ignore(all(Phone.class))
+                .set(field(Phone::getNumber), "any");
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .unusedGeneratorSelectorAt(all(Address.class), "DuplicateSelectorsTest.java:39");
+                .generatorSelector(field(Phone::getNumber),
+                        line(getClass(), 38));
     }
 }

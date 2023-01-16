@@ -25,9 +25,9 @@ import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public class CollectionNodeHandler implements NodeHandler {
 
@@ -40,8 +40,9 @@ public class CollectionNodeHandler implements NodeHandler {
         this.instantiator = instantiator;
     }
 
+    @NotNull
     @Override
-    public Optional<GeneratorResult> getResult(final Node node) {
+    public GeneratorResult getResult(@NotNull final Node node) {
         if (Collection.class.isAssignableFrom(node.getTargetClass())) {
             final Hints hints = Hints.builder()
                     .with(CollectionHint.builder()
@@ -51,10 +52,9 @@ public class CollectionNodeHandler implements NodeHandler {
                     .build();
 
             final Object collection = instantiator.instantiate(node.getTargetClass());
-            final GeneratorResult result = GeneratorResult.create(collection, hints);
-            return Optional.of(result);
+            return GeneratorResult.create(collection, hints);
         }
-        return Optional.empty();
+        return GeneratorResult.emptyResult();
     }
 
     private int randomSize() {

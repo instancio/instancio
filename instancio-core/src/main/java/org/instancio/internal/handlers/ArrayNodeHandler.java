@@ -20,8 +20,7 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.Node;
-
-import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 public class ArrayNodeHandler implements NodeHandler {
 
@@ -33,17 +32,17 @@ public class ArrayNodeHandler implements NodeHandler {
         this.generatorResolver = generatorResolver;
     }
 
+    @NotNull
     @Override
-    public Optional<GeneratorResult> getResult(final Node node) {
+    public GeneratorResult getResult(@NotNull final Node node) {
         if (node.getTargetClass().isArray()) {
             final Generator<?> generator = generatorResolver.get(node.getTargetClass()).orElseThrow(
                     () -> new IllegalStateException("Unable to get array generator for node: " + node));
 
             final Object arrayObject = generator.generate(context.getRandom());
-            final GeneratorResult result = GeneratorResult.create(arrayObject, generator.hints());
-            return Optional.of(result);
+            return GeneratorResult.create(arrayObject, generator.hints());
         }
-        return Optional.empty();
+        return GeneratorResult.emptyResult();
     }
 
 

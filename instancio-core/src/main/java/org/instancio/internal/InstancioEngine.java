@@ -106,14 +106,15 @@ class InstancioEngine {
     @SuppressWarnings("unchecked")
     <T> T createRootObject() {
         return conditionalFailOnError(() -> {
-            final T rootResult = (T) createObject(rootNode).map(GeneratorResult::getValue).orElse(null);
+            final GeneratorResult result = createObject(rootNode);
+            final T rootResult = (T) result.getValue();
             callbackHandler.invokeCallbacks();
             context.reportUnusedSelectorWarnings();
             return rootResult;
         }).orElse(null);
     }
 
-    private Optional<GeneratorResult> createObject(final Node node) {
+    private GeneratorResult createObject(final Node node) {
         LOG.trace("Processing: {}", node);
 
         if (node.getChildren().isEmpty()) { // leaf - generate a value
@@ -135,14 +136,12 @@ class InstancioEngine {
         throw new InstancioException(String.format("Unhandled node kind '%s' for %s", node.getNodeKind(), node));
     }
 
-    private Optional<GeneratorResult> generateContainer(final Node node) {
-        final Optional<GeneratorResult> nodeResult = generateValue(node);
+    private GeneratorResult generateContainer(final Node node) {
+        GeneratorResult generatorResult = generateValue(node);
 
-        if (!nodeResult.isPresent()) {
-            return nodeResult;
+        if (generatorResult.isEmpty() || generatorResult.isIgnored()) {
+            return generatorResult;
         }
-
-        GeneratorResult generatorResult = nodeResult.get();
 
         final InternalContainerHint hint = defaultIfNull(
                 generatorResult.getHints().get(InternalContainerHint.class),
@@ -151,10 +150,11 @@ class InstancioEngine {
         final List<Node> children = node.getChildren();
 
         // Creation delegated to the engine
-        if (generatorResult.isNullResult() && hint.createFunction() != null) {
+        if (generatorResult.containsNull() && hint.createFunction() != null) {
             final Object[] args = new Object[children.size()];
             for (int j = 0; j < children.size(); j++) {
-                args[j] = createObject(children.get(j)).map(GeneratorResult::getValue).orElse(null);
+                final GeneratorResult childResult = createObject(children.get(j));
+                args[j] = childResult.getValue();
             }
             final Object result = hint.createFunction().create(args);
 
@@ -168,7 +168,8 @@ class InstancioEngine {
                 final Object[] args = new Object[children.size()];
 
                 for (int j = 0; j < children.size(); j++) {
-                    args[j] = createObject(children.get(j)).map(GeneratorResult::getValue).orElse(null);
+                    final GeneratorResult childResult = createObject(children.get(j));
+                    args[j] = childResult.getValue();
                 }
 
                 addFunction.addTo(generatorResult.getValue(), args);
@@ -177,12 +178,12 @@ class InstancioEngine {
 
         if (hint.buildFunction() != null) {
             final Object builtContainer = hint.buildFunction().build(generatorResult.getValue());
-            return Optional.of(GeneratorResult.create(builtContainer, generatorResult.getHints()));
+            return GeneratorResult.create(builtContainer, generatorResult.getHints());
         }
 
 
         final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
-        return spiResult.isPresent() ? spiResult : Optional.of(generatorResult);
+        return spiResult.orElse(generatorResult);
     }
 
     /**
@@ -207,23 +208,22 @@ class InstancioEngine {
                 .map(replacedValue -> GeneratorResult.create(replacedValue, generatorResult.getHints()));
     }
 
-    private Optional<GeneratorResult> generatePojo(final Node node) {
-        final Optional<GeneratorResult> nodeResult = generateValue(node);
-        nodeResult.ifPresent(generatorResult -> populateChildren(node.getChildren(), generatorResult));
+    private GeneratorResult generatePojo(final Node node) {
+        final GeneratorResult nodeResult = generateValue(node);
+        if (!nodeResult.containsNull()) {
+            populateChildren(node.getChildren(), nodeResult);
+        }
         return nodeResult;
     }
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
-    private Optional<GeneratorResult> generateMap(final Node node) {
-        final Optional<GeneratorResult> nodeResult = generateValue(node);
+    private GeneratorResult generateMap(final Node node) {
+        final GeneratorResult generatorResult = generateValue(node);
 
-        if (!nodeResult.isPresent()
-                || nodeResult.get().isNullResult()
-                || node.getChildren().size() < 2) {
-            return nodeResult;
+        if (generatorResult.containsNull() || node.getChildren().size() < 2) {
+            return generatorResult;
         }
 
-        final GeneratorResult generatorResult = nodeResult.get();
         final Hints hints = generatorResult.getHints();
         final MapHint hint = defaultIfNull(hints.get(MapHint.class), MapHint.empty());
 
@@ -277,23 +277,20 @@ class InstancioEngine {
         map.putAll(hint.withEntries());
 
         final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
-        return spiResult.isPresent() ? spiResult : nodeResult;
+        return spiResult.orElse(generatorResult);
     }
 
     @SuppressWarnings({
             "PMD.NPathComplexity",
             "PMD.ForLoopVariableCount",
             "PMD.AvoidReassigningLoopVariables"})
-    private Optional<GeneratorResult> generateArray(final Node node) {
-        final Optional<GeneratorResult> nodeResult = generateValue(node);
+    private GeneratorResult generateArray(final Node node) {
+        final GeneratorResult generatorResult = generateValue(node);
 
-        if (!nodeResult.isPresent()
-                || nodeResult.get().isNullResult()
-                || node.getChildren().isEmpty()) {
-            return nodeResult;
+        if (generatorResult.containsNull() || node.getChildren().isEmpty()) {
+            return generatorResult;
         }
 
-        final GeneratorResult generatorResult = nodeResult.get();
         final Object arrayObj = generatorResult.getValue();
         final Hints hints = generatorResult.getHints();
         final ArrayHint hint = defaultIfNull(hints.get(ArrayHint.class), ArrayHint.empty());
@@ -354,20 +351,17 @@ class InstancioEngine {
         if (hint.shuffle()) {
             ArrayUtils.shuffle(arrayObj, context.getRandom());
         }
-        return nodeResult;
+        return generatorResult;
     }
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
-    private Optional<GeneratorResult> generateCollection(final Node node) {
-        final Optional<GeneratorResult> nodeResult = generateValue(node);
+    private GeneratorResult generateCollection(final Node node) {
+        final GeneratorResult generatorResult = generateValue(node);
 
-        if (!nodeResult.isPresent()
-                || nodeResult.get().isNullResult()
-                || node.getChildren().isEmpty()) {
-            return nodeResult;
+        if (generatorResult.containsNull() || node.getChildren().isEmpty()) {
+            return generatorResult;
         }
 
-        final GeneratorResult generatorResult = nodeResult.get();
         final Hints hints = generatorResult.getHints();
         final CollectionHint hint = defaultIfNull(hints.get(CollectionHint.class), CollectionHint.empty());
 
@@ -419,10 +413,10 @@ class InstancioEngine {
         }
 
         final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
-        return spiResult.isPresent() ? spiResult : nodeResult;
+        return spiResult.orElse(generatorResult);
     }
 
-    private Optional<GeneratorResult> generateRecord(final Node node) {
+    private GeneratorResult generateRecord(final Node node) {
 
         // Handle the case where user supplies a generator for creating a record.
         final Optional<Generator<?>> generator = context.getGenerator(node);
@@ -434,34 +428,39 @@ class InstancioEngine {
         final Object[] args = new Object[children.size()];
 
         for (int i = 0; i < args.length; i++) {
-            final Optional<GeneratorResult> optResult = createObject(children.get(i));
+            final GeneratorResult result = createObject(children.get(i));
 
-            if (optResult.isPresent()) {
-                final GeneratorResult result = optResult.get();
-                if (result.isNullResult() && children.get(i).getRawType().isPrimitive()) {
+            if (result.containsNull()) {
+                args[i] = ObjectUtils.defaultValue(children.get(i).getRawType());
+            } else {
+                if (children.get(i).getRawType().isPrimitive()) {
                     args[i] = ObjectUtils.defaultValue(children.get(i).getRawType());
                 } else {
                     args[i] = result.getValue();
                 }
-            } else {
-                args[i] = ObjectUtils.defaultValue(children.get(i).getRawType());
             }
         }
 
         try {
             final Object obj = RecordUtils.instantiate(node.getTargetClass(), args);
-            final GeneratorResult generatorResult = createGeneratorResult(obj);
+            final GeneratorResult generatorResult = GeneratorResult.create(
+                    obj, Hints.afterGenerate(defaultAfterGenerate));
+
             notifyListeners(node, generatorResult);
-            return Optional.of(generatorResult);
+            return generatorResult;
         } catch (Exception ex) {
             conditionalFailOnError(() -> {
                 throw new InstancioException("Failed creating a record for: " + node, ex);
             });
         }
-        return Optional.empty();
+        return GeneratorResult.emptyResult();
     }
 
     private void populateChildren(final List<Node> children, final GeneratorResult generatorResult) {
+        if (generatorResult.containsNull()) {
+            return;
+        }
+
         final Object value = generatorResult.getValue();
         final AfterGenerate action = generatorResult.getHints().afterGenerate();
         final NodePopulationFilter filter = new FieldNodePopulationFilter(context);
@@ -471,9 +470,9 @@ class InstancioEngine {
                 continue;
             }
 
-            final Optional<GeneratorResult> optResult = createObject(child);
-            if (optResult.isPresent()) {
-                final Object arg = optResult.get().getValue();
+            final GeneratorResult result = createObject(child);
+            if (!result.isEmpty() && !result.isIgnored()) {
+                final Object arg = result.getValue();
                 final Field field = child.getField();
 
                 if (overwriteExistingValues || !ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(field, value)) {
@@ -483,21 +482,18 @@ class InstancioEngine {
         }
     }
 
-    private GeneratorResult createGeneratorResult(final Object value) {
-        return GeneratorResult.create(value, Hints.afterGenerate(defaultAfterGenerate));
-    }
-
     private Object createObject(final Node node, final boolean isNullable) {
         if (context.getRandom().diceRoll(isNullable)) {
             notifyListeners(node, GeneratorResult.nullResult());
             return null;
         }
-        return createObject(node).map(GeneratorResult::getValue).orElse(null);
+        final GeneratorResult result = createObject(node);
+        return result.getValue();
     }
 
-    private Optional<GeneratorResult> generateValue(final Node node) {
-        final Optional<GeneratorResult> generatorResult = generatorFacade.generateNodeValue(node);
-        notifyListeners(node, generatorResult.orElse(GeneratorResult.nullResult()));
+    private GeneratorResult generateValue(final Node node) {
+        final GeneratorResult generatorResult = generatorFacade.generateNodeValue(node);
+        notifyListeners(node, generatorResult);
         return generatorResult;
     }
 

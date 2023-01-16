@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Select.all;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
+import static org.instancio.test.support.UnusedSelectorsAssert.line;
 
 @FeatureTag({Feature.MODE, Feature.SELECTOR})
 class UnusedSelectorLocationWithMetamodelTest {
@@ -43,14 +44,9 @@ class UnusedSelectorLocationWithMetamodelTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(4)
-                .unusedGeneratorSelectorAt(Address_.city, line(38))
-                .unusedIgnoreSelectorAt(Person_.age, line(39))
-                .unusedIgnoreSelectorAt(Address_.country, line(39))
-                .unusedGeneratorSelectorAt(Phone_.number, line(42));
-    }
-
-    private static String line(final int line) {
-        return String.format("at org.other.test.features.mode.UnusedSelectorLocationWithMetamodelTest" +
-                ".unused(UnusedSelectorLocationWithMetamodelTest.java:%s)", line);
+                .generatorSelector(Address_.city, line(getClass(), 39))
+                .ignoreSelector(Person_.age, line(getClass(), 40))
+                .ignoreSelector(Address_.country, line(getClass(), 40))
+                .generatorSelector(Phone_.number, line(getClass(), 43));
     }
 }

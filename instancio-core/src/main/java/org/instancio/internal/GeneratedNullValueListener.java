@@ -40,16 +40,9 @@ class GeneratedNullValueListener implements GenerationListener {
 
     @Override
     public void objectCreated(final Node node, final GeneratorResult result) {
-        if (isLenientMode || result.getValue() != null) {
+        if (isLenientMode) {
             return;
         }
-
-        // A null value was generated for this node.
-        // There might be selectors targeting the node's descendants.
-        // However, since descendant values may not be generated,
-        // this will result in "unused selectors" error in strict mode.
-        // Therefore, manually traverse all descendants and mark them as
-        // "used" to prevent a false positive error.
 
         final Queue<Node> queue = new ArrayDeque<>();
         queue.add(node);
@@ -57,14 +50,24 @@ class GeneratedNullValueListener implements GenerationListener {
         while (!queue.isEmpty()) {
             final Node current = queue.poll();
 
-            // mark as "used"
-            context.isIgnored(current);
-            context.isNullable(current);
-            context.getGenerator(current);
-            context.getCallbacks(current);
-            context.getSubtypeSelectorMap().getSubtype(current);
-
-            queue.addAll(current.getChildren());
+            if (result.isIgnored()) {
+                context.isIgnored(current);
+            } else if (result.containsNull()) {
+                /*
+                 A null result was generated for this node.
+                 There might be selectors targeting the node's descendants.
+                 However, since descendant values may not be generated,
+                 this will result in "unused selectors" error in strict mode.
+                 Therefore, manually traverse all descendants and mark them as
+                 "used" to prevent a false positive error.
+                */
+                context.isIgnored(current);
+                context.isNullable(current);
+                context.getGenerator(current);
+                context.getCallbacks(current);
+                context.getSubtypeSelectorMap().getSubtype(current);
+                queue.addAll(current.getChildren());
+            }
         }
     }
 }
