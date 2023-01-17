@@ -120,7 +120,13 @@ class UnusedSelectorFullErrorMessageTest {
                         "Possible causes:%n" +
                         "%n" +
                         " -> Selector did not match any field or class within this object.%n" +
-                        " -> Selector was not applied because another matching selector was already applied.%n" +
+                        " -> Selector matches an ignored target, for example:%n" +
+                        "%n" +
+                        "    Person person = Instancio.of(Person.class)%n" +
+                        "        .ignore(all(Phone.class))%n" +
+                        "        .set(field(Phone::getNumber), \"555-66-77\") // unused!%n" +
+                        "        .create();%n" +
+                        "%n" +
                         " -> Selector targets a field or class in an object that was provided by:%n" +
                         "    -> set(TargetSelector, Object)%n" +
                         "    -> supply(TargetSelector, Supplier)%n" +
@@ -129,7 +135,7 @@ class UnusedSelectorFullErrorMessageTest {
                         "    Supplier<Address> addressSupplier = () -> new Address(...);%n" +
                         "    Person person = Instancio.of(Person.class)%n" +
                         "        .supply(all(Address.class), () -> addressSupplier)%n" +
-                        "        .set(field(Address::getCity), \"London\")%n" +
+                        "        .set(field(Address::getCity), \"London\") // unused!%n" +
                         "        .create();%n" +
                         "%n" +
                         "    Instancio does not modify instances provided by a Supplier,%n" +
