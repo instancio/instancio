@@ -112,8 +112,8 @@ git clone https://github.com/instancio/instancio-quickstart.git
 
 ## Latest Release
 
-Version `2.4.0` is now available.
-A summary of new features is available in the [release notes](https://github.com/instancio/instancio/discussions/347).
+Version `2.5.0` is now available.
+A summary of new features is available in the [release notes](https://github.com/instancio/instancio/discussions/360).
 
 # Maven coordinates
 
