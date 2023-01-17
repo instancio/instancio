@@ -134,9 +134,10 @@ final class SelectorMap<V> {
     private Optional<V> getPredicateSelectorMatch(final Node node) {
         PredicateSelectorEntry<V> classPredicate = null;
 
-        // If there's a field predicate anywhere in the list, then return the first one found.
-        // Otherwise, return the first class predicate.
-        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+        // If there's a field predicate anywhere in the list, then return the last one found.
+        // Otherwise, return the last class predicate.
+        for (int i = predicateSelectors.size() - 1; i >= 0; i--) {
+            final PredicateSelectorEntry<V> entry = predicateSelectors.get(i);
             if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
                 if (isPredicateMatch(node, entry)) {
                     entry.matched = true;

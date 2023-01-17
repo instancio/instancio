@@ -66,7 +66,7 @@ class SelectorPrecedenceTest {
     void verifySelectorPrecedenceUsingSet() {
         // Note: the order of set() methods in this particular test does not matter.
         // It would have mattered, if there was more than 1 selector per target,
-        // in which case the first wins and the other(s) result in "unused selectors" error.
+        // in which case the last wins and the other(s) result in "unused selectors" error.
         final StringFields result = Instancio.of(StringFields.class)
                 .set(field("four"), REGULAR_FIELD)
                 .set(types().of(String.class), PREDICATE_TYPE)
@@ -100,10 +100,10 @@ class SelectorPrecedenceTest {
     @DisplayName("supply() using a field selector should take precedence over class selector, regardless of method order")
     void supplyUsingFieldSelectorShouldTakePrecedenceOverClassSelector() {
         final Person result = Instancio.of(Person.class)
-                // field() first
+                // Target address using field first, then class
                 .supply(field("address"), () -> null)
                 .supply(all(Address.class), Address::new)
-                // all() first
+                // Target strings using class first, then field
                 .set(allStrings(), "foo")
                 .set(field("name"), "bar")
                 .lenient()
@@ -111,7 +111,10 @@ class SelectorPrecedenceTest {
 
         assertThat(result.getAddress()).isNull();
         assertThat(result.getName()).isEqualTo("bar");
-        assertThat(result.getPets()).extracting(Pet::getName).containsOnly("foo");
+        assertThat(result.getPets())
+                .as("Field selector should win")
+                .extracting(Pet::getName)
+                .containsOnly("foo");
     }
 
     @Test
