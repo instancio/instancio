@@ -48,7 +48,7 @@ final class UnusedSelectorReporter {
             return;
         }
 
-        final StringBuilder sb = new StringBuilder(1500)
+        final StringBuilder sb = new StringBuilder(2048)
                 .append(NL)
                 .append("Found unused selectors referenced in the following methods:")
                 .append(NL);
@@ -65,7 +65,13 @@ final class UnusedSelectorReporter {
                 .append("Possible causes:").append(NL)
                 .append(NL)
                 .append(" -> Selector did not match any field or class within this object.").append(NL)
-                .append(" -> Selector was not applied because another matching selector was already applied.").append(NL)
+                .append(" -> Selector matches an ignored target, for example:").append(NL)
+                .append(NL)
+                .append("    Person person = Instancio.of(Person.class)").append(NL)
+                .append("        .ignore(all(Phone.class))").append(NL)
+                .append("        .set(field(Phone::getNumber), \"555-66-77\") // unused!").append(NL)
+                .append("        .create();").append(NL)
+                .append(NL)
                 .append(" -> Selector targets a field or class in an object that was provided by:").append(NL)
                 .append("    -> set(TargetSelector, Object)").append(NL)
                 .append("    -> supply(TargetSelector, Supplier)").append(NL)
@@ -74,7 +80,7 @@ final class UnusedSelectorReporter {
                 .append("    Supplier<Address> addressSupplier = () -> new Address(...);").append(NL)
                 .append("    Person person = Instancio.of(Person.class)").append(NL)
                 .append("        .supply(all(Address.class), () -> addressSupplier)").append(NL)
-                .append("        .set(field(Address::getCity), \"London\")").append(NL)
+                .append("        .set(field(Address::getCity), \"London\") // unused!").append(NL)
                 .append("        .create();").append(NL)
                 .append(NL)
                 .append("    Instancio does not modify instances provided by a Supplier,").append(NL)
