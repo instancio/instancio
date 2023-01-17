@@ -501,14 +501,13 @@ set(allStrings().within(scope(Person.class)), "foo")
 set(allStrings().within(all(Person.class).toScope()), "foo")
 ```
 
-
 ### Selector Strictness
 
 #### Strict Mode
+
 Instancio supports two modes: strict and lenient, an idea inspired by Mockito's highly useful strict stubbing feature.
 
 In strict mode unused selectors will trigger an error. In lenient mode unused selectors are simply ignored.
-
 By default, Instancio runs in strict mode. This is done for the following reasons:
 
 - to eliminate errors in data setup
@@ -520,37 +519,27 @@ By default, Instancio runs in strict mode. This is done for the following reason
 An unused selector could indicate an error in the data setup.
 As an example, consider populating the following POJO:
 
-``` java title="Sample POJO with getters and setters omitted"
+``` java linenums="1" hl_lines="2 6"
 class SamplePojo {
-    private SortedSet<String> values;
+    SortedSet<String> values;
 }
-```
 
-If we want to create the POJO with a set of size 10, it might be tempting to do the following:
-
-``` java title="<i>BAD:</i> populating SamplePOJO" hl_lines="2"
 SamplePojo pojo = Instancio.of(SamplePojo.class)
     .generate(all(Set.class), gen -> gen.collection().size(10))
     .create();
 ```
 
-This, however, will not work. The field is declared as a `SortedSet`, but the selector is for `Set`.
-Executing the above code will produce the following error:
+At first glance, we might expect a `Set` of size 10 to be generated.
+However, since the field is declared as a `SortedSet` and the class selector
+targets `Set`, the `generate()` method will not be applied. 
+
+Since `all(Set.class)` did not match any target, Instancio produces an error:
 
 ```
 org.instancio.exception.UnusedSelectorException:
-Found unused selectors referenced in the following methods:
 
  -> Unused selectors in generate(), set(), or supply():
  1: all(Set)
-```
-
-For the selector to match, the target class must be the same as the field's:
-
-``` java title="<i>GOOD:</i> populating SamplePOJO" hl_lines="2"
-SamplePojo pojo = Instancio.of(SamplePojo.class)
-    .generate(all(SortedSet.class), gen -> gen.collection().size(10))
-    .create();
 ```
 
 Without being aware of this detail, it is easy to make this kind of error and face unexpected results
@@ -559,10 +548,9 @@ Strict mode helps reduce this type of error.
 
 ##### Simplify fixing tests after refactoring
 
-Somewhat related to the above is refactoring. Refactoring always causes test failures to some degree.
-Classes get reorganised and tests need to be updated to reflect those changes. Assuming there are existing
-tests utilising Instancio, running tests in strict mode will quickly highlight any problems in
-data setup caused by refactoring.
+Refactoring always causes tests to break to some degree. As classes and fields get reorganised and renamed,
+tests need to be updated to reflect the changes. Assuming there are existing tests utilising Instancio,
+running tests in strict mode will quickly highlight any problems in data setup caused by refactoring.
 
 ##### Keep test code clean and maintainable
 
@@ -576,12 +564,12 @@ The lenient mode can be enabled using the `lenient()` method:
 
 ``` java title="Setting lenient mode using builder API"
 Person person = Instancio.of(Person.class)
-    .lenient()
     // snip...
+    .lenient()
     .create();
 ```
 
-Lenient mode can also be enabled via `Settings`. In fact, the `lenient()` method above is a shorthand for the following:
+Lenient mode can also be enabled via `Settings`:
 
 ``` java title="Setting lenient mode using Settings"
 Settings settings = Settings.create()
