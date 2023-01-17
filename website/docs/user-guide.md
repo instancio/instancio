@@ -324,9 +324,10 @@ Address address = Instancio.of(Address.class)
 ```
 
 This will produce an address object with all strings set to "foo". However, since field selectors
-have higher precedence, the city will be set to "bar". Similarly, in the following example,
-the city will also be set to "bar" because the predicate selector created by the `fields()`
-method has lower precedence than the regular `field()` selector:
+have higher precedence, the city will be set to "bar".
+
+In the following example, the city will also be set to "bar" because predicate `fields()` selector
+has lower precedence than the regular `field()` selector:
 
 ``` java linenums="1"
 Address address = Instancio.of(Address.class)
@@ -334,6 +335,36 @@ Address address = Instancio.of(Address.class)
     .set(field("city"), "bar")
     .create();
 ```
+
+#### Multiple matching selectors
+
+When more than one selector matches a given target, then the last selector wins.
+This rule applies to both, regular and predicate selectors.
+
+In case of regular selectors, if the two are identical, the last selector simply
+replaces the first (internally, regular selectors are stored as `Map` keys).
+
+``` java linenums="1"
+Address address = Instancio.of(Address.class)
+    .set(field(Address.class, "city"), "foo")
+    .set(field(Address.class, "city"), "bar") // wins!
+    .create();
+```
+
+Predicate selectors, on the other hand, are stored as a `List` and evaluated
+sequentially starting from the last entry.
+
+``` java linenums="1"
+Address address = Instancio.of(Address.class)
+    .set(fields().named("city"), "foo")
+    .set(fields().named("city"), "bar") // wins!
+    .lenient()
+    .create();
+```
+
+In this particular example, the first entry remains unused,
+therefore  `lenient()` mode must be enabled to prevent unused selector error
+(see [Selector Strictness](#selector-strictness)).
 
 ### Selector Scopes
 
