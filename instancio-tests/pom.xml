@@ -22,7 +22,7 @@
         <version.junit.pioneer>1.9.1</version.junit.pioneer>
         <version.logback>1.2.11</version.logback>
         <version.lombok>1.18.24</version.lombok>
-        <version.mockito>5.0.0</version.mockito>
+        <version.mockito>4.8.0</version.mockito>
     </properties>
 
     <modules>
