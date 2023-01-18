@@ -40,11 +40,9 @@ import java.util.stream.Stream;
  */
 public class InstancioArgumentsProvider implements ArgumentsProvider, AnnotationConsumer<InstancioSource> {
 
-    private InstancioSource instancioSource;
-
     @Override
     public void accept(final InstancioSource instancioSource) {
-        this.instancioSource = instancioSource;
+        // no-op - don't need anything from ths annotation
     }
 
     @Override
@@ -56,8 +54,9 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
 
         final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
-        final Object[] args = createObjectsGroupingByType(instancioSource.value(), random, settings);
-        return Stream.of(Arguments.of(args));
+        final Class<?>[] paramTypes = context.getRequiredTestMethod().getParameterTypes();
+        final Object[] args = createObjectsGroupingByType(paramTypes, random, settings);
+        return args.length == 0 ? Stream.of() : Stream.of(Arguments.of(args));
     }
 
     /*

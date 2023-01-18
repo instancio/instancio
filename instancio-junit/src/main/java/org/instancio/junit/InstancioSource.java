@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * class ExampleTest {
  *
  *     &#064;ParameterizedTest
- *     <b>&#064;InstancioSource(Person.class)</b>
+ *     <b>&#064;InstancioSource</b>
  *     void someTestMethod(Person person) {
  *         // ... use supplied person
  *     }
@@ -52,6 +52,10 @@ public @interface InstancioSource {
      * represents a parameter in the {@code ParameterizedTest} method.
      *
      * @return parameter types to generate
+     * @deprecated parameter types will be resolved from method arguments,
+     * therefore specifying the types via the annotation is no longer necessary
+     * (this method will be removed in version {@code 3.0.0}).
      */
-    Class<?>[] value();
+    @Deprecated
+    Class<?>[] value() default {};
 }

@@ -21,19 +21,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class InstancioSourceTest {
 
-    @InstancioSource(String.class)
+    @InstancioSource
     @ParameterizedTest
     void oneArg(final String arg) {
         assertThat(arg).isNotBlank();
     }
 
-    @InstancioSource({String.class, String.class})
+    @InstancioSource
     @ParameterizedTest
     void twoArgsSameType(final String first, final String second) {
         assertThat(first).isNotBlank().isNotEqualTo(second);
     }
 
-    @InstancioSource({First.class, Second.class})
+    @InstancioSource
     @ParameterizedTest
     void twoArgs(final First first, final Second second) {
         assertThat(first).isNotNull();

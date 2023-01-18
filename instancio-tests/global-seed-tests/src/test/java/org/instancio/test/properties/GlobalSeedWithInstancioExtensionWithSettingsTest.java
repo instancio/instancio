@@ -88,7 +88,7 @@ class GlobalSeedWithInstancioExtensionWithSettingsTest {
     }
 
     @ParameterizedTest
-    @InstancioSource(value = {String.class, String.class})
+    @InstancioSource
     void parameterized(final String s1, final String s2) {
         assertThat(s1)
                 .as("Distinct values should be generated")

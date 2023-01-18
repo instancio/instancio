@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,24 +43,18 @@ class InstancioArgumentsProviderTest {
     }
 
     @Test
-    void provideArguments() throws Exception {
+    void typesProvidedByTheAnnotationShouldBeIgnored() throws Exception {
         final Method method = InstancioArgumentsProviderTest.class.getDeclaredMethod("dummy");
         final InstancioSource instancioSource = method.getAnnotation(InstancioSource.class);
         final ExtensionContext mockContext = mock(ExtensionContext.class);
         when(mockContext.getTestMethod()).thenReturn(Optional.of(method));
+        when(mockContext.getRequiredTestMethod()).thenReturn(method);
 
         // Methods under test
         provider.accept(instancioSource);
         final Stream<? extends Arguments> stream = provider.provideArguments(mockContext);
 
-        assertThat(stream.collect(toList()))
-                .hasSize(1)
-                .extracting(Arguments::get)
-                .allSatisfy(params -> {
-                    assertThat(params).hasSize(2);
-                    assertThat(params[0]).isInstanceOf(String.class);
-                    assertThat(params[1]).isInstanceOf(Integer.class);
-                });
+        assertThat(stream).isEmpty();
     }
 
     @MethodSource("types")
