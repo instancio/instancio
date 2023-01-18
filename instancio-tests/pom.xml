@@ -20,10 +20,9 @@
         <version.assertj>3.24.2</version.assertj>
         <version.equalsverifier>3.12.3</version.equalsverifier>
         <version.junit.pioneer>1.9.1</version.junit.pioneer>
-        <version.junit.platform>1.9.2</version.junit.platform>
         <version.logback>1.2.11</version.logback>
         <version.lombok>1.18.24</version.lombok>
-        <version.mockito>4.8.0</version.mockito>
+        <version.mockito>5.0.0</version.mockito>
     </properties>
 
     <modules>
@@ -98,28 +97,25 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
                 <version>${version.junit}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-testkit</artifactId>
-                <version>${version.junit.platform}</version>
-                <scope>test</scope>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
-                <artifactId>mockito-junit-jupiter</artifactId>
+                <artifactId>mockito-bom</artifactId>
                 <version>${version.mockito}</version>
-                <scope>test</scope>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
+                <artifactId>assertj-bom</artifactId>
                 <version>${version.assertj}</version>
-                <scope>test</scope>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
