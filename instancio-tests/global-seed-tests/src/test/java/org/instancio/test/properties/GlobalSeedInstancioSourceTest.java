@@ -34,7 +34,7 @@ class GlobalSeedInstancioSourceTest {
     private static final long ANNOTATION_SEED = -123;
 
     @ParameterizedTest
-    @InstancioSource(value = {String.class, String.class})
+    @InstancioSource
     void parameterized(final String param1, final String param2) {
         assertThat(param1)
                 .as("Distinct parameter values should be generated")
@@ -50,7 +50,7 @@ class GlobalSeedInstancioSourceTest {
 
     @Seed(ANNOTATION_SEED)
     @ParameterizedTest
-    @InstancioSource(value = {String.class, String.class})
+    @InstancioSource
     void parameterizedWithSeedAnnotation(final String param1, final String param2) {
         assertThat(param1)
                 .as("Distinct parameter values should be generated")

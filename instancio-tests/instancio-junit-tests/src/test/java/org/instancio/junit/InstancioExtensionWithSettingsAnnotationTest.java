@@ -17,9 +17,9 @@ package org.instancio.junit;
 
 import org.instancio.Instancio;
 import org.instancio.internal.ThreadLocalRandom;
+import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.internal.util.Sonar;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -83,7 +83,7 @@ class InstancioExtensionWithSettingsAnnotationTest {
         private final Settings nonStaticSettings = Settings.create();
 
         @ParameterizedTest
-        @InstancioSource(String.class)
+        @InstancioSource
         @DisplayName("Expecting the test to fail without running")
         @Disabled("Need to find a way to verify the error. JUnit's EngineTestKit swallows the exception.")
         @SuppressWarnings(Sonar.ADD_ASSERTION)

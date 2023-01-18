@@ -49,8 +49,8 @@ class WithSettingsAnnotationTest {
     @Test
     void withSettingsOverride() {
         assertThat(Instancio.of(int.class).withSettings(Settings.create()
-                        .set(Keys.INTEGER_MIN, -2)
-                        .set(Keys.INTEGER_MAX, -2))
+                .set(Keys.INTEGER_MIN, -2)
+                .set(Keys.INTEGER_MAX, -2))
                 .create())
                 .isEqualTo(-2);
     }
@@ -60,7 +60,7 @@ class WithSettingsAnnotationTest {
         assertThat(Instancio.create(int.class)).isEqualTo(-1);
     }
 
-    @InstancioSource(int.class)
+    @InstancioSource
     @ParameterizedTest
     void withSettingsWithParameterizedTest(int value) {
         assertThat(value).isEqualTo(-1);
