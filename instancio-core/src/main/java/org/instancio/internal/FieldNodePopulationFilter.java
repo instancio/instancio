@@ -36,9 +36,6 @@ class FieldNodePopulationFilter implements NodePopulationFilter {
         if (afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
             return true;
         }
-        if (afterGenerate == AfterGenerate.POPULATE_ALL) {
-            return false;
-        }
 
         // For APPLY_SELECTORS and remaining actions, if there is at least
         // one matching selector for this node, then it should not be skipped
@@ -53,7 +50,6 @@ class FieldNodePopulationFilter implements NodePopulationFilter {
                     fieldNode.getField(), objectContainingField);
         }
 
-        return true;
+        return afterGenerate != AfterGenerate.POPULATE_ALL;
     }
-
 }

@@ -78,24 +78,23 @@ public final class ReflectionUtils {
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    public static boolean hasNonNullValue(final Field field, final Object object) {
+    public static Object getFieldValue(final Field field, final Object target) {
         try {
             field.setAccessible(true);
-            return field.get(object) != null;
-        } catch (IllegalAccessException ex) {
+            return field.get(target);
+        } catch (Exception ex) {
             throw new InstancioException("Unable to get value from: " + field, ex);
         }
     }
 
+    public static boolean hasNonNullValue(final Field field, final Object object) {
+        return getFieldValue(field, object) != null;
+    }
+
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public static boolean hasNonNullOrNonDefaultPrimitiveValue(final Field field, final Object object) {
-        try {
-            field.setAccessible(true);
-            final Object fieldValue = field.get(object);
-            return neitherNullNorPrimitiveWithDefaultValue(field.getType(), fieldValue);
-        } catch (IllegalAccessException ex) {
-            throw new InstancioException("Unable to get value from: " + field, ex);
-        }
+        final Object fieldValue = getFieldValue(field, object);
+        return neitherNullNorPrimitiveWithDefaultValue(field.getType(), fieldValue);
     }
 
     public static boolean isArrayOrConcrete(final Class<?> klass) {

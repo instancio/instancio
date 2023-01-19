@@ -92,32 +92,23 @@ final class ExtensionSupport {
             // Test instance is not present for parameterized tests, in which case
             // we expect the settings annotation to be on a static field
             final Optional<Object> testInstance = context.getTestInstance();
-            final Optional<Object> settings = getFieldValue(field, testInstance.orElse(null));
+            final Object settings = ReflectionUtils.getFieldValue(field, testInstance.orElse(null));
 
-            if (testInstance.isPresent() && !settings.isPresent()) {
+            if (testInstance.isPresent() && settings == null) {
                 throw new InstancioApiException(String.format(
                         "%n@WithSettings must be annotated on a non-null field."));
             }
-            if (!settings.isPresent()) {
+            if (settings == null) {
                 throw new InstancioApiException(String.format(
                         "%n@WithSettings must be annotated on a non-null field."
                                 + "%nIf @WithSettings is used with a @ParameterizedTest, the Settings field must be static."));
             }
-            if (!(settings.get() instanceof Settings)) {
+            if (!(settings instanceof Settings)) {
                 throw new InstancioApiException(String.format(
                         "%n@WithSettings must be annotated on a Settings field."
                                 + "%n%nFound annotation on: %s", field));
             }
-            threadLocalSettings.set((Settings) settings.get());
-        }
-    }
-
-    private static Optional<Object> getFieldValue(final Field field, final Object target) {
-        try {
-            field.setAccessible(true);
-            return Optional.ofNullable(field.get(target));
-        } catch (Exception e) {
-            return Optional.empty();
+            threadLocalSettings.set((Settings) settings);
         }
     }
 
