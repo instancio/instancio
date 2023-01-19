@@ -31,7 +31,7 @@ public interface AsStringGeneratorSpec<T> extends GeneratorSpec<T> {
      * @return result as a string using the {@link Object#toString()} method
      * @since 2.0.0
      */
-    default Generator<String> asString() {
+    default GeneratorSpec<String> asString() {
         return asString(Object::toString);
     }
 
@@ -44,9 +44,10 @@ public interface AsStringGeneratorSpec<T> extends GeneratorSpec<T> {
      * @since 2.0.0
      */
     @SuppressWarnings("unchecked")
-    default Generator<String> asString(Function<T, String> toStringFunction) {
-        return random -> {
-            final T result = ((Generator<T>) this).generate(random);
+    default GeneratorSpec<String> asString(Function<T, String> toStringFunction) {
+        return (Generator<String>) random -> {
+            final Generator<T> generator = (Generator<T>) this;
+            final T result = generator.generate(random);
             return toStringFunction.apply(result);
         };
     }
