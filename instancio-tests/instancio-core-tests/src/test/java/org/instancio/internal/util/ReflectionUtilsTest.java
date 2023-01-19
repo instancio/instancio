@@ -17,6 +17,8 @@ package org.instancio.internal.util;
 
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.exception.InstancioException;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Gender;
@@ -75,6 +77,28 @@ class ReflectionUtilsTest {
         assertThatThrownBy(() -> ReflectionUtils.getField(Person.class, "foo"))
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Invalid field 'foo' for class org.instancio.test.support.pojo.person.Person");
+    }
+
+    @Test
+    void getFieldValue() {
+        final Person person = Person.builder().name("foo").build();
+
+        assertThat(
+                ReflectionUtils.getFieldValue(
+                        ReflectionUtils.getField(Person.class, "name"),
+                        person))
+                .isEqualTo("foo");
+
+        assertThat(
+                ReflectionUtils.getFieldValue(
+                        ReflectionUtils.getField(StaticFieldWithValue.class, "staticField"),
+                        null))
+                .isEqualTo("expected");
+
+        final Field fieldNotDeclaredByPerson = ReflectionUtils.getField(IntegerHolder.class, "primitive");
+        assertThatThrownBy(() -> ReflectionUtils.getFieldValue(fieldNotDeclaredByPerson, person))
+                .isExactlyInstanceOf(InstancioException.class)
+                .hasMessage("Unable to get value from: private int org.instancio.test.support.pojo.basic.IntegerHolder.primitive");
     }
 
     @Test
@@ -143,5 +167,9 @@ class ReflectionUtilsTest {
         private Integer bar;
         @AnnotationY
         private Integer baz;
+    }
+
+    private static class StaticFieldWithValue {
+        private static String staticField = "expected";
     }
 }
