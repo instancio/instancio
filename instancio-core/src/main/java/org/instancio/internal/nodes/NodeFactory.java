@@ -144,7 +144,7 @@ public final class NodeFactory {
 
         final Class<?> targetClass = resolveSubtype(node).orElse(rawType);
 
-        if (!rawType.isPrimitive() && rawType != targetClass) {
+        if (!rawType.isPrimitive() && rawType != targetClass && !targetClass.isEnum()) {
             ApiValidator.validateSubtype(rawType, targetClass);
 
             if (LOG.isDebugEnabled()) {
