@@ -17,6 +17,7 @@ package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
@@ -132,4 +133,13 @@ class SelectorPrecedenceTest {
         assertThat(result.getFour()).isEqualTo(PREDICATE_TYPE);
     }
 
+    @Test
+    void whenSameMethodWithSameSelectorSpecifiedTwiceLastOneShouldWin() {
+        final StringHolder result = Instancio.of(StringHolder.class)
+                .generate(allStrings(), gen -> gen.string().prefix("foo"))
+                .generate(allStrings(), gen -> gen.string().prefix("bar"))
+                .create();
+
+        assertThat(result.getValue()).startsWith("bar");
+    }
 }
