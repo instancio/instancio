@@ -17,9 +17,16 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.ByteSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.settings.Keys;
 
-public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<Byte> {
+public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<Byte>
+        implements ByteSpec {
+
+    public ByteGenerator() {
+        this(Global.generatorContext());
+    }
 
     public ByteGenerator(final GeneratorContext context) {
         super(context,
@@ -31,6 +38,30 @@ public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<B
     @Override
     public String apiMethod() {
         return "bytes()";
+    }
+
+    @Override
+    public ByteGenerator min(final Byte min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public ByteGenerator max(final Byte max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public ByteGenerator range(final Byte min, final Byte max) {
+        super.range(min, max);
+        return this;
+    }
+
+    @Override
+    public ByteGenerator nullable() {
+        super.nullable();
+        return this;
     }
 
     @Override

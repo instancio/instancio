@@ -17,13 +17,20 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.BooleanGeneratorSpec;
+import org.instancio.generator.specs.BooleanAsStringGeneratorSpec;
+import org.instancio.generator.specs.BooleanSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 
-public class BooleanGenerator extends AbstractGenerator<Boolean> implements BooleanGeneratorSpec {
+public class BooleanGenerator extends AbstractGenerator<Boolean>
+        implements BooleanSpec, BooleanAsStringGeneratorSpec {
 
     private boolean nullable;
+
+    public BooleanGenerator() {
+        this(Global.generatorContext());
+    }
 
     public BooleanGenerator(final GeneratorContext context) {
         super(context);
@@ -36,7 +43,7 @@ public class BooleanGenerator extends AbstractGenerator<Boolean> implements Bool
     }
 
     @Override
-    public BooleanGeneratorSpec nullable() {
+    public BooleanGenerator nullable() {
         this.nullable = true;
         return this;
     }

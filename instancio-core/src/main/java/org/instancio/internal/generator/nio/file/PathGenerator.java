@@ -19,9 +19,10 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.specs.PathGeneratorSpec;
+import org.instancio.generator.specs.PathAsStringGeneratorSpec;
+import org.instancio.generator.specs.PathSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.IOUtils;
@@ -37,7 +38,9 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 
-public class PathGenerator extends AbstractGenerator<Path> implements PathGeneratorSpec<Path> {
+public class PathGenerator extends AbstractGenerator<Path>
+        implements PathSpec, PathAsStringGeneratorSpec<Path> {
+
     private static final int DEFAULT_NAME_LENGTH = 16;
 
     private enum CreatePathType {
@@ -52,6 +55,10 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
     private CreatePathType createPathType;
     private InputStream inputStream;
 
+    public PathGenerator() {
+        this(Global.generatorContext());
+    }
+
     public PathGenerator(final GeneratorContext context, final String... directories) {
         super(context);
         this.directories = CollectionUtils.asList(directories);
@@ -63,44 +70,44 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathGenera
     }
 
     @Override
-    public PathGeneratorSpec<Path> tmp() {
+    public PathGenerator tmp() {
         this.isTemp = true;
         return this;
     }
 
     @Override
-    public PathGeneratorSpec<Path> prefix(final String prefix) {
+    public PathGenerator prefix(final String prefix) {
         this.prefix = prefix;
         return this;
     }
 
     @Override
-    public PathGeneratorSpec<Path> suffix(final String suffix) {
+    public PathGenerator suffix(final String suffix) {
         this.suffix = suffix;
         return this;
     }
 
     @Override
-    public PathGeneratorSpec<Path> name(final Generator<String> nameGenerator) {
+    public PathGenerator name(final Generator<String> nameGenerator) {
         this.nameGenerator = nameGenerator;
         return this;
     }
 
     @Override
-    public PathGeneratorSpec<Path> createFile(final InputStream content) {
+    public PathGenerator createFile(final InputStream content) {
         this.inputStream = content;
         this.createPathType = CreatePathType.FILE;
         return this;
     }
 
     @Override
-    public GeneratorSpec<Path> createFile() {
+    public PathGenerator createFile() {
         createPathType = CreatePathType.FILE;
         return this;
     }
 
     @Override
-    public GeneratorSpec<Path> createDirectory() {
+    public PathGenerator createDirectory() {
         createPathType = CreatePathType.DIRECTORY;
         return this;
     }

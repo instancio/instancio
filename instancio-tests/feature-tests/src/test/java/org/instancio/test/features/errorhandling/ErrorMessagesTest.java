@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.errorhandling;
 
+import org.instancio.GeneratorSpecProvider;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.InstancioOfClassApi;
@@ -81,32 +82,34 @@ class ErrorMessagesTest {
     void nullGeneratorPassedToGenerate() {
         final InstancioOfClassApi<Person> api = Instancio.of(Person.class);
         final Selector selector = allInts();
-        assertThatThrownBy(() -> api.generate(selector, null))
+        assertThatThrownBy(() -> api.generate(selector, (GeneratorSpecProvider<?>) null))
                 .isExactlyInstanceOf(API_EXCEPTION)
-                .hasMessageContainingAll(
-                        "The second argument of 'generate()' method must not be null.",
-                        "To generate a null value, use 'supply(SelectorGroup, () -> null)",
-                        "For example:",
-                        "\tPerson person = Instancio.of(Person.class)",
-                        "\t\t.supply(field(\"firstName\"), () -> null)",
-                        "\t\t.create()");
+                .hasMessage(String.format("%nThe second argument of 'generate()' method must not be null.%n" +
+                        "To generate a null value, use 'set(TargetSelector, null)%n" +
+                        "Example:%n" +
+                        "\tPerson person = Instancio.of(Person.class)%n" +
+                        "\t\t.set(field(\"firstName\"), null)%n" +
+                        "\t\t.create()"));
     }
 
     @Test
     void nullGeneratorPassedToSupply() {
         final CharSequence[] expectedErrorMsg = {
                 "The second argument of 'supply()' method must not be null.",
-                "To generate a null value, use 'supply(SelectorGroup, () -> null)",
-                "For example:",
+                "To generate a null value, use 'set(TargetSelector, null)",
+                "Example:",
                 "\tPerson person = Instancio.of(Person.class)",
-                "\t\t.supply(field(\"firstName\"), () -> null)",
+                "\t\t.set(field(\"firstName\"), null)",
                 "\t\t.create()"
         };
         final InstancioOfClassApi<Person> api = Instancio.of(Person.class);
+
+        // Using Generator
         assertThatThrownBy(() -> api.supply(allInts(), (Generator<?>) null))
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(expectedErrorMsg);
 
+        // Using Supplier
         assertThatThrownBy(() -> api.supply(allInts(), (Supplier<?>) null))
                 .isExactlyInstanceOf(API_EXCEPTION)
                 .hasMessageContainingAll(expectedErrorMsg);

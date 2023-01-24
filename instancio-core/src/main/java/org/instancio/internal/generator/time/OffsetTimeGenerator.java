@@ -17,15 +17,22 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
 
-public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime> {
+public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
+        implements OffsetTimeSpec {
 
     private static final int MAX_NANO = 999_999_999;
     private static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
+
+    public OffsetTimeGenerator() {
+        this(Global.generatorContext());
+    }
 
     public OffsetTimeGenerator(final GeneratorContext context) {
         super(context,
@@ -36,6 +43,24 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime> {
     @Override
     public String apiMethod() {
         return "offsetTime()";
+    }
+
+    @Override
+    public OffsetTimeGenerator past() {
+        super.past();
+        return this;
+    }
+
+    @Override
+    public OffsetTimeGenerator future() {
+        super.future();
+        return this;
+    }
+
+    @Override
+    public OffsetTimeGenerator range(final OffsetTime start, final OffsetTime end) {
+        super.range(start, end);
+        return this;
     }
 
     @Override

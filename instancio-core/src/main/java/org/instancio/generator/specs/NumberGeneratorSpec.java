@@ -15,7 +15,7 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
+import org.instancio.generator.GeneratorSpec;
 
 /**
  * Generator spec for numeric types.
@@ -23,7 +23,7 @@ import org.instancio.generator.AsStringGeneratorSpec;
  * @param <T> type of number
  * @since 1.0.1
  */
-public interface NumberGeneratorSpec<T extends Number> extends AsStringGeneratorSpec<T> {
+public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> {
 
     /**
      * Lower bound for the random number generator.

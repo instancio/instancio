@@ -16,6 +16,7 @@
 package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.PathAsStringGeneratorSpec;
 import org.instancio.generator.specs.PathGeneratorSpec;
 import org.instancio.internal.generator.io.FileGenerator;
 
@@ -51,7 +52,7 @@ public class IoGenerators {
      * @return generator spec for files
      * @since 2.2.0
      */
-    public PathGeneratorSpec<File> file(final String... subdirectories) {
+    public PathAsStringGeneratorSpec<File> file(final String... subdirectories) {
         return new FileGenerator(context, subdirectories);
     }
 }

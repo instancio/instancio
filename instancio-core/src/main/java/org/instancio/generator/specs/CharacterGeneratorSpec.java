@@ -15,14 +15,14 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
+import org.instancio.generator.GeneratorSpec;
 
 /**
  * Generator spec for characters.
  *
  * @since 2.0.0
  */
-public interface CharacterGeneratorSpec extends AsStringGeneratorSpec<Character> {
+public interface CharacterGeneratorSpec extends GeneratorSpec<Character> {
 
     /**
      * Indicates that {@code null} value can be generated.

@@ -17,13 +17,13 @@ package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
-import org.instancio.generator.specs.BooleanGeneratorSpec;
-import org.instancio.generator.specs.CharacterGeneratorSpec;
+import org.instancio.generator.specs.BooleanAsStringGeneratorSpec;
+import org.instancio.generator.specs.CharacterAsStringGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
-import org.instancio.generator.specs.NumberGeneratorSpec;
+import org.instancio.generator.specs.NumberAsStringGeneratorSpec;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
@@ -78,7 +78,7 @@ public class Generators {
      * @return customised generator
      * @since 2.0.0
      */
-    public BooleanGeneratorSpec booleans() {
+    public BooleanAsStringGeneratorSpec booleans() {
         return new BooleanGenerator(context);
     }
 
@@ -88,7 +88,7 @@ public class Generators {
      * @return customised generator
      * @since 2.0.0
      */
-    public CharacterGeneratorSpec chars() {
+    public CharacterAsStringGeneratorSpec chars() {
         return new CharacterGenerator(context);
     }
 
@@ -97,7 +97,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberGeneratorSpec<Byte> bytes() {
+    public NumberAsStringGeneratorSpec<Byte> bytes() {
         return new ByteGenerator(context);
     }
 
@@ -106,7 +106,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberGeneratorSpec<Short> shorts() {
+    public NumberAsStringGeneratorSpec<Short> shorts() {
         return new ShortGenerator(context);
     }
 
@@ -115,7 +115,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberGeneratorSpec<Integer> ints() {
+    public NumberAsStringGeneratorSpec<Integer> ints() {
         return new IntegerGenerator(context);
     }
 
@@ -124,7 +124,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberGeneratorSpec<Long> longs() {
+    public NumberAsStringGeneratorSpec<Long> longs() {
         return new LongGenerator(context);
     }
 
@@ -133,7 +133,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberGeneratorSpec<Float> floats() {
+    public NumberAsStringGeneratorSpec<Float> floats() {
         return new FloatGenerator(context);
     }
 
@@ -142,7 +142,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberGeneratorSpec<Double> doubles() {
+    public NumberAsStringGeneratorSpec<Double> doubles() {
         return new DoubleGenerator(context);
     }
 
@@ -158,7 +158,7 @@ public class Generators {
     }
 
     /**
-     * Return generators for {@code java.math} classes.
+     * Provides generators for {@code java.math} classes.
      *
      * @return built-in generators for {@code java.math} classes.
      */
@@ -167,7 +167,7 @@ public class Generators {
     }
 
     /**
-     * Returns generators for {@code java.net} classes.
+     * Provides generators for {@code java.net} classes.
      *
      * @return built-in generators for {@code java.net} classes.
      * @since 2.3.0

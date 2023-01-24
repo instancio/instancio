@@ -17,11 +17,18 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 
 import java.time.LocalTime;
 
-public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime> {
+public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
+        implements LocalTimeSpec {
+
+    public LocalTimeGenerator() {
+        this(Global.generatorContext());
+    }
 
     public LocalTimeGenerator(final GeneratorContext context) {
         super(context,
@@ -32,6 +39,24 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime> {
     @Override
     public String apiMethod() {
         return "localTime()";
+    }
+
+    @Override
+    public LocalTimeGenerator past() {
+        super.past();
+        return this;
+    }
+
+    @Override
+    public LocalTimeGenerator future() {
+        super.future();
+        return this;
+    }
+
+    @Override
+    public LocalTimeGenerator range(final LocalTime start, final LocalTime end) {
+        super.range(start, end);
+        return this;
     }
 
     @Override

@@ -163,5 +163,4 @@ class GeneratorMismatchTest {
                         String.format("%nMethod '%s' cannot be used for type: %s%n",
                                 expectedGeneratorMethod, selectedType.getCanonicalName()));
     }
-
 }
