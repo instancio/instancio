@@ -15,7 +15,7 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
+import org.instancio.generator.GeneratorSpec;
 
 /**
  * Generator spec for {@link java.time.temporal.Temporal} types.
@@ -23,27 +23,27 @@ import org.instancio.generator.AsStringGeneratorSpec;
  * @param <T> temporal type
  * @since 1.1.2
  */
-public interface TemporalGeneratorSpec<T> extends AsStringGeneratorSpec<T> {
+public interface TemporalGeneratorSpec<T> extends GeneratorSpec<T> {
 
     /**
-     * Generate a temporal value in the past.
+     * Generate a value in the past.
      *
      * @return spec builder
      */
     TemporalGeneratorSpec<T> past();
 
     /**
-     * Generate a temporal value in the future.
+     * Generate a value in the future.
      *
      * @return spec builder
      */
     TemporalGeneratorSpec<T> future();
 
     /**
-     * Generate a temporal value between the given range.
+     * Generate a value within the given range.
      *
-     * @param start start date (inclusive)
-     * @param end   end date (inclusive)
+     * @param start lower bound (inclusive)
+     * @param end   upper bound (inclusive)
      * @return spec builder
      */
     TemporalGeneratorSpec<T> range(T start, T end);

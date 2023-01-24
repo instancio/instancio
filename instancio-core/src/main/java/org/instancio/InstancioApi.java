@@ -15,8 +15,10 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -287,9 +289,32 @@ public interface InstancioApi<T> {
      * @param gen      provider of customisable built-in generators (also known as specs)
      * @param <V>      type of object to generate
      * @return API builder reference
+     * @see #generate(TargetSelector, GeneratorSpec)
      * @see Generators
      */
     <V> InstancioApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
+
+    /**
+     * Customises values using arbitrary generator specs.
+     *
+     * <p>Example:
+     * <pre>{@code
+     *   Person person = Instancio.of(Person.class)
+     *       .generate(field(Person::getAge), Instancio.ints().range(18, 100))
+     *       .generate(all(LocalDate.class),  Instancio.temporal().localDate().past())
+     *       .generate(field(Phone::getNumber),  MyCustomGenerators.phones().northAmerican())
+     *       .create();
+     * }</pre>
+     *
+     * @param selector for fields and/or classes this method should be applied to
+     * @param spec     generator spec
+     * @param <V>      type of object to generate
+     * @return API builder reference
+     * @see #generate(TargetSelector, GeneratorSpecProvider)
+     * @since 2.6.0
+     */
+    @ExperimentalApi
+    <V> InstancioApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
 
     /**
      * A callback that gets invoked after an object has been fully populated.

@@ -23,6 +23,7 @@ import org.instancio.Result;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.settings.Settings;
 
@@ -60,9 +61,22 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public <V> InstancioApi<T> generate(final TargetSelector selector, final GeneratorSpecProvider<V> gen) {
-        ApiValidator.validateGeneratorFunction(gen);
+    public <V> InstancioApi<T> generate(
+            final TargetSelector selector,
+            final GeneratorSpecProvider<V> gen) {
+
+        ApiValidator.validateGenerateSecondArgument(gen);
         modelContextBuilder.withGeneratorSpec(selector, gen);
+        return this;
+    }
+
+    @Override
+    public <V> InstancioApi<T> generate(
+            final TargetSelector selector,
+            final GeneratorSpec<V> spec) {
+
+        ApiValidator.validateGenerateSecondArgument(spec);
+        modelContextBuilder.withGenerator(selector, (Generator<T>) spec);
         return this;
     }
 

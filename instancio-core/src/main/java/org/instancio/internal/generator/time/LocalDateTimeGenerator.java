@@ -17,7 +17,9 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.LocalDateTimeSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 
 import java.time.LocalDateTime;
 
@@ -25,9 +27,14 @@ import static org.instancio.internal.util.Constants.DEFAULT_MAX;
 import static org.instancio.internal.util.Constants.DEFAULT_MIN;
 import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
-public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateTime> {
+public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateTime>
+        implements LocalDateTimeSpec {
 
     private final InstantGenerator delegate;
+
+    public LocalDateTimeGenerator() {
+        this(Global.generatorContext());
+    }
 
     public LocalDateTimeGenerator(final GeneratorContext context) {
         super(context,
@@ -40,6 +47,24 @@ public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateT
     @Override
     public String apiMethod() {
         return "localDateTime()";
+    }
+
+    @Override
+    public LocalDateTimeGenerator past() {
+        super.past();
+        return this;
+    }
+
+    @Override
+    public LocalDateTimeGenerator future() {
+        super.future();
+        return this;
+    }
+
+    @Override
+    public LocalDateTimeGenerator range(final LocalDateTime start, final LocalDateTime end) {
+        super.range(start, end);
+        return this;
     }
 
     @Override

@@ -17,6 +17,11 @@ package org.instancio.generator.specs;
 
 import org.instancio.generator.GeneratorSpec;
 
+/**
+ * Generator spec for arrays.
+ *
+ * @param <T> array type
+ */
 public interface ArrayGeneratorSpec<T> extends GeneratorSpec<T> {
 
     /**

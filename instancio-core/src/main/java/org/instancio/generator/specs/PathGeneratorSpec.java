@@ -17,7 +17,6 @@ package org.instancio.generator.specs;
 
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 
@@ -30,7 +29,7 @@ import java.nio.file.Path;
  *
  * @since 2.1.0
  */
-public interface PathGeneratorSpec<T> extends AsStringGeneratorSpec<T> {
+public interface PathGeneratorSpec<T> extends GeneratorSpec<T> {
 
     /**
      * Generator for the file or directory name.

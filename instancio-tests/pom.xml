@@ -17,6 +17,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <gpg.skip>true</gpg.skip>
         <version.apache.commons>3.12.0</version.apache.commons>
+        <version.archunit>1.0.1</version.archunit>
         <version.assertj>3.24.2</version.assertj>
         <version.equalsverifier>3.12.3</version.equalsverifier>
         <version.junit.pioneer>1.9.1</version.junit.pioneer>
@@ -82,6 +83,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${version.apache.commons}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.tngtech.archunit</groupId>
+                <artifactId>archunit</artifactId>
+                <version>${version.archunit}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

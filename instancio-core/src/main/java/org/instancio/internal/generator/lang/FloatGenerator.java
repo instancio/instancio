@@ -17,9 +17,16 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.FloatSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.settings.Keys;
 
-public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<Float> {
+public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<Float>
+        implements FloatSpec {
+
+    public FloatGenerator() {
+        this(Global.generatorContext());
+    }
 
     public FloatGenerator(final GeneratorContext context) {
         super(context,
@@ -31,6 +38,30 @@ public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     @Override
     public String apiMethod() {
         return "floats()";
+    }
+
+    @Override
+    public FloatGenerator min(final Float min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public FloatGenerator max(final Float max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public FloatGenerator range(final Float min, final Float max) {
+        super.range(min, max);
+        return this;
+    }
+
+    @Override
+    public FloatGenerator nullable() {
+        super.nullable();
+        return this;
     }
 
     @Override

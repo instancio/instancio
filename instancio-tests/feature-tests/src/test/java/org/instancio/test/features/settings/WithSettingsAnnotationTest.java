@@ -49,8 +49,8 @@ class WithSettingsAnnotationTest {
     @Test
     void withSettingsOverride() {
         assertThat(Instancio.of(int.class).withSettings(Settings.create()
-                .set(Keys.INTEGER_MIN, -2)
-                .set(Keys.INTEGER_MAX, -2))
+                        .set(Keys.INTEGER_MIN, -2)
+                        .set(Keys.INTEGER_MAX, -2))
                 .create())
                 .isEqualTo(-2);
     }

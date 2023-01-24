@@ -15,7 +15,6 @@
  */
 package org.instancio.internal;
 
-import org.instancio.GeneratorSpecProvider;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
@@ -143,23 +142,23 @@ public final class ApiValidator {
                 + (node.getField() == null ? "" : "%nField: " + node.getField());
     }
 
-    public static void validateGeneratorFunction(final GeneratorSpecProvider<?> gen) {
-        isTrue(gen != null, () ->
+    public static void validateGenerateSecondArgument(final Object arg) {
+        isFalse(arg == null, () ->
                 String.format("%nThe second argument of 'generate()' method must not be null."
-                        + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
-                        + "%nFor example:"
+                        + "%nTo generate a null value, use 'set(TargetSelector, null)"
+                        + "%nExample:"
                         + "%n\tPerson person = Instancio.of(Person.class)"
-                        + "%n\t\t.supply(field(\"firstName\"), () -> null)"
+                        + "%n\t\t.set(field(\"firstName\"), null)"
                         + "%n\t\t.create()"));
     }
 
     public static void validateSupplierOrGenerator(@Nullable final Object obj) {
-        isTrue(obj != null, () ->
+        isFalse(obj == null, () ->
                 String.format("%nThe second argument of 'supply()' method must not be null."
-                        + "%nTo generate a null value, use 'supply(SelectorGroup, () -> null)"
-                        + "%nFor example:"
+                        + "%nTo generate a null value, use 'set(TargetSelector, null)"
+                        + "%nExample:"
                         + "%n\tPerson person = Instancio.of(Person.class)"
-                        + "%n\t\t.supply(field(\"firstName\"), () -> null)"
+                        + "%n\t\t.set(field(\"firstName\"), null)"
                         + "%n\t\t.create()"));
     }
 

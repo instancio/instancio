@@ -17,7 +17,9 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -26,10 +28,15 @@ import java.time.ZoneOffset;
 import static org.instancio.internal.util.Constants.DEFAULT_MAX;
 import static org.instancio.internal.util.Constants.DEFAULT_MIN;
 
-public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDateTime> {
+public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDateTime>
+        implements OffsetDateTimeSpec {
 
     private static final ZoneId ZONE_ID = ZoneId.systemDefault();
     private final LocalDateTimeGenerator delegate;
+
+    public OffsetDateTimeGenerator() {
+        this(Global.generatorContext());
+    }
 
     public OffsetDateTimeGenerator(final GeneratorContext context) {
         super(context,
@@ -42,6 +49,24 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     @Override
     public String apiMethod() {
         return "offsetDateTime()";
+    }
+
+    @Override
+    public OffsetDateTimeGenerator past() {
+        super.past();
+        return this;
+    }
+
+    @Override
+    public OffsetDateTimeGenerator future() {
+        super.future();
+        return this;
+    }
+
+    @Override
+    public OffsetDateTimeGenerator range(final OffsetDateTime start, final OffsetDateTime end) {
+        super.range(start, end);
+        return this;
     }
 
     @Override

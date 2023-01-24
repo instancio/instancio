@@ -17,15 +17,16 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.StringGeneratorSpec;
+import org.instancio.generator.specs.StringSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
-public class StringGenerator extends AbstractGenerator<String> implements StringGeneratorSpec {
+public class StringGenerator extends AbstractGenerator<String> implements StringSpec {
 
     private enum StringType {
         LOWER_CASE, UPPER_CASE, MIXED_CASE, ALPHANUMERIC, DIGITS
@@ -37,6 +38,10 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     private boolean allowEmpty;
     private String prefix;
     private StringType stringType;
+
+    public StringGenerator() {
+        this(Global.generatorContext());
+    }
 
     public StringGenerator(final GeneratorContext context) {
         super(context);
@@ -54,32 +59,32 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
-    public StringGeneratorSpec prefix(final String prefix) {
+    public StringGenerator prefix(final String prefix) {
         this.prefix = prefix;
         return this;
     }
 
     @Override
-    public StringGeneratorSpec allowEmpty() {
+    public StringGenerator allowEmpty() {
         this.allowEmpty = true;
         return this;
     }
 
     @Override
-    public StringGeneratorSpec nullable() {
+    public StringGenerator nullable() {
         this.nullable = true;
         return this;
     }
 
     @Override
-    public StringGeneratorSpec length(final int length) {
+    public StringGenerator length(final int length) {
         this.minLength = ApiValidator.validateLength(length);
         this.maxLength = length;
         return this;
     }
 
     @Override
-    public StringGeneratorSpec length(final int minLength, final int maxLength) {
+    public StringGenerator length(final int minLength, final int maxLength) {
         this.minLength = ApiValidator.validateLength(minLength);
         this.maxLength = ApiValidator.validateLength(maxLength);
         ApiValidator.isTrue(minLength < maxLength,
@@ -88,45 +93,45 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
-    public StringGeneratorSpec minLength(final int length) {
+    public StringGenerator minLength(final int length) {
         this.minLength = ApiValidator.validateLength(length);
         this.maxLength = NumberUtils.calculateNewMax(maxLength, minLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 
     @Override
-    public StringGeneratorSpec maxLength(final int length) {
+    public StringGenerator maxLength(final int length) {
         this.maxLength = ApiValidator.validateLength(length);
         this.minLength = NumberUtils.calculateNewMin(minLength, maxLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
         return this;
     }
 
     @Override
-    public StringGeneratorSpec lowerCase() {
+    public StringGenerator lowerCase() {
         stringType = StringType.LOWER_CASE;
         return this;
     }
 
     @Override
-    public StringGeneratorSpec upperCase() {
+    public StringGenerator upperCase() {
         stringType = StringType.UPPER_CASE;
         return this;
     }
 
     @Override
-    public StringGeneratorSpec mixedCase() {
+    public StringGenerator mixedCase() {
         stringType = StringType.MIXED_CASE;
         return this;
     }
 
     @Override
-    public StringGeneratorSpec alphaNumeric() {
+    public StringGenerator alphaNumeric() {
         stringType = StringType.ALPHANUMERIC;
         return this;
     }
 
     @Override
-    public StringGeneratorSpec digits() {
+    public StringGenerator digits() {
         stringType = StringType.DIGITS;
         return this;
     }

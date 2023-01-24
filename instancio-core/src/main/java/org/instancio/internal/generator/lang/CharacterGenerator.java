@@ -17,11 +17,14 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.CharacterGeneratorSpec;
+import org.instancio.generator.specs.CharacterAsStringGeneratorSpec;
+import org.instancio.generator.specs.CharacterSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 
-public class CharacterGenerator extends AbstractGenerator<Character> implements CharacterGeneratorSpec {
+public class CharacterGenerator extends AbstractGenerator<Character>
+        implements CharacterSpec, CharacterAsStringGeneratorSpec {
 
     private boolean nullable;
 
@@ -30,13 +33,17 @@ public class CharacterGenerator extends AbstractGenerator<Character> implements 
         this.nullable = context.getSettings().get(Keys.CHARACTER_NULLABLE);
     }
 
+    public CharacterGenerator() {
+        this(Global.generatorContext());
+    }
+
     @Override
     public String apiMethod() {
         return "chars()";
     }
 
     @Override
-    public CharacterGeneratorSpec nullable() {
+    public CharacterGenerator nullable() {
         this.nullable = true;
         return this;
     }

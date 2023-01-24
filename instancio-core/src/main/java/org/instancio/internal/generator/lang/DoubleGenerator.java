@@ -17,9 +17,16 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.DoubleSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.settings.Keys;
 
-public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec<Double> {
+public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec<Double>
+        implements DoubleSpec {
+
+    public DoubleGenerator() {
+        this(Global.generatorContext());
+    }
 
     public DoubleGenerator(final GeneratorContext context) {
         super(context,
@@ -31,6 +38,30 @@ public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec
     @Override
     public String apiMethod() {
         return "doubles()";
+    }
+
+    @Override
+    public DoubleGenerator min(final Double min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public DoubleGenerator max(final Double max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public DoubleGenerator range(final Double min, final Double max) {
+        super.range(min, max);
+        return this;
+    }
+
+    @Override
+    public DoubleGenerator nullable() {
+        super.nullable();
+        return this;
     }
 
     @Override

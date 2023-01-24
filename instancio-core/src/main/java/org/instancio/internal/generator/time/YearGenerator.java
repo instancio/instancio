@@ -17,11 +17,18 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.YearSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 
 import java.time.Year;
 
-public class YearGenerator extends JavaTimeTemporalGenerator<Year> {
+public class YearGenerator extends JavaTimeTemporalGenerator<Year>
+        implements YearSpec {
+
+    public YearGenerator() {
+        this(Global.generatorContext());
+    }
 
     public YearGenerator(final GeneratorContext context) {
         super(context,
@@ -32,6 +39,24 @@ public class YearGenerator extends JavaTimeTemporalGenerator<Year> {
     @Override
     public String apiMethod() {
         return "year()";
+    }
+
+    @Override
+    public YearGenerator past() {
+        super.past();
+        return this;
+    }
+
+    @Override
+    public YearGenerator future() {
+        super.future();
+        return this;
+    }
+
+    @Override
+    public YearGenerator range(final Year start, final Year end) {
+        super.range(start, end);
+        return this;
     }
 
     @Override

@@ -17,13 +17,21 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 
 import java.time.LocalDate;
 
 import static java.time.temporal.ChronoField.EPOCH_DAY;
 
-public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate> {
+public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate>
+        implements LocalDateSpec {
+
+
+    public LocalDateGenerator() {
+        this(Global.generatorContext());
+    }
 
     public LocalDateGenerator(final GeneratorContext context) {
         super(context,
@@ -34,6 +42,24 @@ public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate> {
     @Override
     public String apiMethod() {
         return "localDate()";
+    }
+
+    @Override
+    public LocalDateGenerator past() {
+        super.past();
+        return this;
+    }
+
+    @Override
+    public LocalDateGenerator future() {
+        super.future();
+        return this;
+    }
+
+    @Override
+    public LocalDateGenerator range(final LocalDate start, final LocalDate end) {
+        super.range(start, end);
+        return this;
     }
 
     @Override

@@ -17,16 +17,21 @@ package org.instancio.internal.generator.math;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.NumberGeneratorSpec;
+import org.instancio.generator.specs.BigIntegerSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
 
 import java.math.BigInteger;
 
 public class BigIntegerGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigInteger>
-        implements NumberGeneratorSpec<BigInteger> {
+        implements BigIntegerSpec {
 
     private static final BigInteger DEFAULT_MIN = BigInteger.ONE;
     private static final BigInteger DEFAULT_MAX = BigInteger.valueOf(Long.MAX_VALUE);
+
+    public BigIntegerGenerator() {
+        this(Global.generatorContext());
+    }
 
     public BigIntegerGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX, false);
@@ -40,6 +45,30 @@ public class BigIntegerGenerator extends AbstractRandomComparableNumberGenerator
     @Override
     public String apiMethod() {
         return "bigInteger()";
+    }
+
+    @Override
+    public BigIntegerGenerator min(final BigInteger min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public BigIntegerGenerator max(final BigInteger max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public BigIntegerGenerator range(final BigInteger min, final BigInteger max) {
+        super.range(min, max);
+        return this;
+    }
+
+    @Override
+    public BigIntegerGenerator nullable() {
+        super.nullable();
+        return this;
     }
 
     @Override

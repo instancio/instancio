@@ -23,12 +23,10 @@ import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.ThreadLocalRandom;
+import org.instancio.internal.RandomHelper;
 import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.generator.misc.SupplierAdapter;
 import org.instancio.internal.nodes.Node;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.internal.random.Seeds;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ServiceLoaders;
@@ -37,7 +35,6 @@ import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -58,12 +55,6 @@ import static org.instancio.internal.context.ModelContextHelper.preProcess;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class ModelContext<T> {
-
-    private static final Settings PROPERTIES_FILE_SETTINGS =
-            Settings.from(PropertiesLoader.loadDefaultPropertiesFile()).lock();
-
-    private static final Random GLOBAL_RANDOM = PROPERTIES_FILE_SETTINGS.get(Keys.SEED) == null
-            ? null : new DefaultRandom(PROPERTIES_FILE_SETTINGS.get(Keys.SEED));
 
     private static final List<InternalContainerFactoryProvider> CONTAINER_FACTORIES =
             CollectionUtils.combine(
@@ -92,7 +83,7 @@ public final class ModelContext<T> {
 
         seed = builder.seed;
         settings = createSettings(builder);
-        random = resolveRandom(settings, builder.seed);
+        random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
 
         ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
         nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
@@ -107,8 +98,7 @@ public final class ModelContext<T> {
     }
 
     private static Settings createSettings(final Builder<?> builder) {
-        final Settings settings = Settings.defaults()
-                .merge(PROPERTIES_FILE_SETTINGS)
+        final Settings settings = Global.getPropertiesFileSettings()
                 .merge(ThreadLocalSettings.getInstance().get())
                 .merge(builder.settings);
 
@@ -134,28 +124,6 @@ public final class ModelContext<T> {
 
             reporter.report();
         }
-    }
-
-    private static Random resolveRandom(final Settings settings, @Nullable final Long userSuppliedSeed) {
-        if (userSuppliedSeed != null) {
-            return new DefaultRandom(userSuppliedSeed);
-        }
-
-        final Long settingsSeed = settings.get(Keys.SEED);
-        if (settingsSeed != null && (getGlobalRandom() == null || getGlobalRandom().getSeed() != settingsSeed)) {
-            // Use seed from settings unless it's the value from the properties file.
-            return new DefaultRandom(settingsSeed);
-        }
-
-        // If running under JUnit extension, use the Random instance supplied by the extension
-        if (ThreadLocalRandom.getInstance().get() != null) {
-            return ThreadLocalRandom.getInstance().get();
-        }
-        if (getGlobalRandom() != null) {
-            return getGlobalRandom();
-        }
-
-        return new DefaultRandom(Seeds.randomSeed());
     }
 
     public Type getRootType() {
@@ -195,10 +163,6 @@ public final class ModelContext<T> {
 
     public Random getRandom() {
         return random;
-    }
-
-    public static Random getGlobalRandom() {
-        return GLOBAL_RANDOM;
     }
 
     public Builder<T> toBuilder() {

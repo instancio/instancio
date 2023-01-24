@@ -18,17 +18,23 @@ package org.instancio.internal.generator.io;
 import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.specs.PathGeneratorSpec;
+import org.instancio.generator.specs.FileSpec;
+import org.instancio.generator.specs.PathAsStringGeneratorSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.nio.file.PathGenerator;
 
 import java.io.File;
 import java.io.InputStream;
 
-public class FileGenerator extends AbstractGenerator<File> implements PathGeneratorSpec<File> {
+public class FileGenerator extends AbstractGenerator<File>
+        implements FileSpec, PathAsStringGeneratorSpec<File> {
 
     private final PathGenerator delegate;
+
+    public FileGenerator() {
+        this(Global.generatorContext());
+    }
 
     public FileGenerator(final GeneratorContext context, final String... directories) {
         super(context);
@@ -41,43 +47,43 @@ public class FileGenerator extends AbstractGenerator<File> implements PathGenera
     }
 
     @Override
-    public PathGeneratorSpec<File> tmp() {
+    public FileGenerator tmp() {
         delegate.tmp();
         return this;
     }
 
     @Override
-    public PathGeneratorSpec<File> prefix(final String prefix) {
+    public FileGenerator prefix(final String prefix) {
         delegate.prefix(prefix);
         return this;
     }
 
     @Override
-    public PathGeneratorSpec<File> suffix(final String suffix) {
+    public FileGenerator suffix(final String suffix) {
         delegate.suffix(suffix);
         return this;
     }
 
     @Override
-    public PathGeneratorSpec<File> name(final Generator<String> nameGenerator) {
+    public FileGenerator name(final Generator<String> nameGenerator) {
         delegate.name(nameGenerator);
         return this;
     }
 
     @Override
-    public PathGeneratorSpec<File> createFile(final InputStream content) {
+    public FileGenerator createFile(final InputStream content) {
         delegate.createFile(content);
         return this;
     }
 
     @Override
-    public GeneratorSpec<File> createFile() {
+    public FileGenerator createFile() {
         delegate.createFile();
         return this;
     }
 
     @Override
-    public GeneratorSpec<File> createDirectory() {
+    public FileGenerator createDirectory() {
         delegate.createDirectory();
         return this;
     }

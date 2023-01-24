@@ -19,17 +19,25 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.URIGeneratorSpec;
+import org.instancio.generator.specs.URIAsStringGeneratorSpec;
+import org.instancio.generator.specs.URISpec;
+import org.instancio.internal.context.Global;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.instancio.internal.util.StringUtils.singleQuote;
 
-public class URIGenerator extends AbstractURIGenerator<URI> implements URIGeneratorSpec {
+public class URIGenerator extends AbstractURIGenerator<URI>
+        implements URISpec, URIAsStringGeneratorSpec {
+
     private String userInfo;
     private Generator<String> queryGenerator;
     private Generator<String> fragmentGenerator;
+
+    public URIGenerator() {
+        this(Global.generatorContext());
+    }
 
     public URIGenerator(final GeneratorContext context) {
         super(context);
@@ -41,49 +49,49 @@ public class URIGenerator extends AbstractURIGenerator<URI> implements URIGenera
     }
 
     @Override
-    public URIGeneratorSpec scheme(final String... schemes) {
+    public URIGenerator scheme(final String... schemes) {
         withScheme(schemes);
         return this;
     }
 
     @Override
-    public URIGeneratorSpec userInfo(final String userInfo) {
+    public URIGenerator userInfo(final String userInfo) {
         this.userInfo = userInfo;
         return this;
     }
 
     @Override
-    public URIGeneratorSpec host(final Generator<String> hostGenerator) {
+    public URIGenerator host(final Generator<String> hostGenerator) {
         withHost(hostGenerator);
         return this;
     }
 
     @Override
-    public URIGeneratorSpec port(final int port) {
+    public URIGenerator port(final int port) {
         withPort(port);
         return this;
     }
 
     @Override
-    public URIGeneratorSpec randomPort() {
+    public URIGenerator randomPort() {
         withRandomPort();
         return this;
     }
 
     @Override
-    public URIGeneratorSpec path(final Generator<String> path) {
+    public URIGenerator path(final Generator<String> path) {
         withPath(path);
         return this;
     }
 
     @Override
-    public URIGeneratorSpec query(final Generator<String> queryGenerator) {
+    public URIGenerator query(final Generator<String> queryGenerator) {
         this.queryGenerator = queryGenerator;
         return this;
     }
 
     @Override
-    public URIGeneratorSpec fragment(final Generator<String> fragmentGenerator) {
+    public URIGenerator fragment(final Generator<String> fragmentGenerator) {
         this.fragmentGenerator = fragmentGenerator;
         return this;
     }

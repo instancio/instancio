@@ -18,7 +18,7 @@ package org.instancio.junit;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ThreadLocalRandom;
 import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.random.Seeds;
 import org.instancio.internal.util.ReflectionUtils;
@@ -58,8 +58,8 @@ final class ExtensionSupport {
 
             if (seedAnnotation != null) {
                 seed = seedAnnotation.value();
-            } else if (ModelContext.getGlobalRandom() != null) {
-                seed = ModelContext.getGlobalRandom().getSeed();
+            } else if (Global.getConfiguredRandom() != null) {
+                seed = Global.getConfiguredRandom().getSeed();
             } else {
                 seed = Seeds.randomSeed();
             }

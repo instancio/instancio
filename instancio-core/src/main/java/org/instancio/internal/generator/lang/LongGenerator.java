@@ -17,9 +17,16 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.LongSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.settings.Keys;
 
-public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<Long> {
+public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<Long>
+        implements LongSpec {
+
+    public LongGenerator() {
+        this(Global.generatorContext());
+    }
 
     public LongGenerator(final GeneratorContext context) {
         super(context,
@@ -31,6 +38,30 @@ public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<L
     @Override
     public String apiMethod() {
         return "longs()";
+    }
+
+    @Override
+    public LongGenerator min(final Long min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public LongGenerator max(final Long max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public LongGenerator range(final Long min, final Long max) {
+        super.range(min, max);
+        return this;
+    }
+
+    @Override
+    public LongGenerator nullable() {
+        super.nullable();
+        return this;
     }
 
     @Override

@@ -17,9 +17,16 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.ShortSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.settings.Keys;
 
-public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<Short> {
+public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<Short>
+        implements ShortSpec {
+
+    public ShortGenerator() {
+        this(Global.generatorContext());
+    }
 
     public ShortGenerator(final GeneratorContext context) {
         super(context,
@@ -31,6 +38,30 @@ public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     @Override
     public String apiMethod() {
         return "shorts()";
+    }
+
+    @Override
+    public ShortGenerator min(final Short min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public ShortGenerator max(final Short max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public ShortGenerator range(final Short min, final Short max) {
+        super.range(min, max);
+        return this;
+    }
+
+    @Override
+    public ShortGenerator nullable() {
+        super.nullable();
+        return this;
     }
 
     @Override

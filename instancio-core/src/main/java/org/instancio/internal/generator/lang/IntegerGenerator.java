@@ -17,9 +17,12 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.IntegerSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.settings.Keys;
 
-public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpec<Integer> {
+public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpec<Integer>
+        implements IntegerSpec {
 
     public IntegerGenerator(final GeneratorContext context) {
         super(context,
@@ -28,9 +31,37 @@ public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpe
                 context.getSettings().get(Keys.INTEGER_NULLABLE));
     }
 
+    public IntegerGenerator() {
+        this(Global.generatorContext());
+    }
+
     @Override
     public String apiMethod() {
         return "ints()";
+    }
+
+    @Override
+    public IntegerGenerator min(final Integer min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public IntegerGenerator max(final Integer max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public IntegerGenerator range(final Integer min, final Integer max) {
+        super.range(min, max);
+        return this;
+    }
+
+    @Override
+    public IntegerGenerator nullable() {
+        super.nullable();
+        return this;
     }
 
     @Override

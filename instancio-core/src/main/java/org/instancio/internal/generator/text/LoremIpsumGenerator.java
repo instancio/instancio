@@ -17,13 +17,15 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
+import org.instancio.generator.specs.LoremIpsumSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 
 import static org.instancio.internal.util.StringUtils.capitalise;
 
-public class LoremIpsumGenerator extends AbstractGenerator<String> implements LoremIpsumGeneratorSpec {
+public class LoremIpsumGenerator extends AbstractGenerator<String>
+        implements LoremIpsumSpec {
 
     private static final String[] WORD_BANK = {
             "ad", "adipiscing", "aliqua", "aliquip", "amet", "anim", "aute", "cillum", "commodo",
@@ -40,6 +42,10 @@ public class LoremIpsumGenerator extends AbstractGenerator<String> implements Lo
     private int words = DEFAULT_WORDS;
     private int paragraphs = DEFAULT_PARAGRAPHS;
 
+    public LoremIpsumGenerator() {
+        this(Global.generatorContext());
+    }
+
     public LoremIpsumGenerator(final GeneratorContext context) {
         super(context);
     }
@@ -50,14 +56,14 @@ public class LoremIpsumGenerator extends AbstractGenerator<String> implements Lo
     }
 
     @Override
-    public LoremIpsumGeneratorSpec words(final int words) {
+    public LoremIpsumGenerator words(final int words) {
         ApiValidator.isTrue(words > 0, "Number of words must be greater than zero: %s", words);
         this.words = words;
         return this;
     }
 
     @Override
-    public LoremIpsumGeneratorSpec paragraphs(final int paragraphs) {
+    public LoremIpsumGenerator paragraphs(final int paragraphs) {
         ApiValidator.isTrue(paragraphs > 0, "Number of paragraphs must be greater than zero: %s", paragraphs);
         this.paragraphs = paragraphs;
         return this;

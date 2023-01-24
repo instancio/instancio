@@ -19,14 +19,21 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.URLGeneratorSpec;
+import org.instancio.generator.specs.URLAsStringGeneratorSpec;
+import org.instancio.generator.specs.URLSpec;
+import org.instancio.internal.context.Global;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import static org.instancio.internal.util.StringUtils.singleQuote;
 
-public class URLGenerator extends AbstractURIGenerator<URL> implements URLGeneratorSpec {
+public class URLGenerator extends AbstractURIGenerator<URL>
+        implements URLSpec, URLAsStringGeneratorSpec {
+
+    public URLGenerator() {
+        this(Global.generatorContext());
+    }
 
     public URLGenerator(final GeneratorContext context) {
         super(context);
@@ -38,31 +45,31 @@ public class URLGenerator extends AbstractURIGenerator<URL> implements URLGenera
     }
 
     @Override
-    public URLGeneratorSpec protocol(final String... protocols) {
+    public URLGenerator protocol(final String... protocols) {
         withScheme(protocols);
         return this;
     }
 
     @Override
-    public URLGeneratorSpec port(final int port) {
+    public URLGenerator port(final int port) {
         withPort(port);
         return this;
     }
 
     @Override
-    public URLGeneratorSpec randomPort() {
+    public URLGenerator randomPort() {
         withRandomPort();
         return this;
     }
 
     @Override
-    public URLGeneratorSpec host(final Generator<String> hostGenerator) {
+    public URLGenerator host(final Generator<String> hostGenerator) {
         withHost(hostGenerator);
         return this;
     }
 
     @Override
-    public URLGeneratorSpec file(final Generator<String> fileGenerator) {
+    public URLGenerator file(final Generator<String> fileGenerator) {
         withPath(fileGenerator);
         return this;
     }
