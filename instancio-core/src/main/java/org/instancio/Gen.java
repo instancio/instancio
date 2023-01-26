@@ -61,6 +61,7 @@ import java.util.Collection;
  * @since 2.6.0
  */
 @ExperimentalApi
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class Gen {
 
     /**
