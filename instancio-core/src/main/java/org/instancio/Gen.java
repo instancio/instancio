@@ -15,6 +15,7 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.generator.specs.ByteSpec;
 import org.instancio.generator.specs.CharacterSpec;
@@ -59,6 +60,7 @@ import java.util.Collection;
  *
  * @since 2.6.0
  */
+@ExperimentalApi
 public final class Gen {
 
     /**
