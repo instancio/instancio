@@ -1769,13 +1769,13 @@ This works with a single argument and multiple arguments, each class representin
 class ExampleTest {
 
     @ParameterizedTest
-    @InstancioSource(Person.class)
+    @InstancioSource
     void singleArgument(Person person) {
         // snip...
     }
 
     @ParameterizedTest
-    @InstancioSource({Foo.class, Bar.class, Baz.class})
+    @InstancioSource
     void multipleArguments(Foo foo, Bar bar, Baz baz) {
         // snip...
     }
