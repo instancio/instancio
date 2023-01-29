@@ -21,6 +21,7 @@ import org.instancio.internal.spi.InternalContainerFactoryProvider;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class NodeKindContainerResolver implements NodeKindResolver {
@@ -35,6 +36,7 @@ public class NodeKindContainerResolver implements NodeKindResolver {
     public Optional<NodeKind> resolve(final Class<?> targetClass) {
         if (targetClass == Optional.class
                 || targetClass == EnumSet.class
+                || Map.Entry.class.isAssignableFrom(targetClass)
                 || containerFactories.stream().anyMatch(p -> p.isContainerClass(targetClass))) {
             return Optional.of(NodeKind.CONTAINER);
         }

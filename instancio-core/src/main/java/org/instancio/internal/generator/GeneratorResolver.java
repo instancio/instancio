@@ -54,6 +54,7 @@ import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.DateGenerator;
 import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.generator.util.LocaleGenerator;
+import org.instancio.internal.generator.util.MapEntryGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.generator.util.OptionalGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
@@ -87,6 +88,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.AbstractMap;
 import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.Collection;
@@ -198,6 +200,8 @@ public class GeneratorResolver {
         generators.put(Calendar.class, new CalendarGenerator(context));
         generators.put(Date.class, new DateGenerator(context));
         generators.put(Locale.class, new LocaleGenerator(context));
+        generators.put(Map.Entry.class, new MapEntryGenerator<>(context));
+        generators.put(AbstractMap.SimpleEntry.class, new MapEntryGenerator<>(context));
         generators.put(Optional.class, new OptionalGenerator<>(context));
         generators.put(UUID.class, new UUIDGenerator(context));
 
