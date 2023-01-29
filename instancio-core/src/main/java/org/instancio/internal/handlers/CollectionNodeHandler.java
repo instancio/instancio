@@ -15,16 +15,11 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.Random;
-import org.instancio.generator.AfterGenerate;
-import org.instancio.generator.Hints;
-import org.instancio.generator.hints.CollectionHint;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.nodes.Node;
-import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -32,34 +27,22 @@ import java.util.Collection;
 public class CollectionNodeHandler implements NodeHandler {
 
     private final ModelContext<?> context;
-    private final Instantiator instantiator;
 
-    public CollectionNodeHandler(final ModelContext<?> context,
-                                 final Instantiator instantiator) {
+    public CollectionNodeHandler(final ModelContext<?> context) {
         this.context = context;
-        this.instantiator = instantiator;
     }
 
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final Node node) {
         if (Collection.class.isAssignableFrom(node.getTargetClass())) {
-            final Hints hints = Hints.builder()
-                    .with(CollectionHint.builder()
-                            .generateElements(randomSize())
-                            .build())
-                    .afterGenerate(AfterGenerate.POPULATE_ALL)
-                    .build();
+            final CollectionGenerator<?> generator = new CollectionGenerator<>(
+                    new GeneratorContext(context.getSettings(), context.getRandom()));
 
-            final Object collection = instantiator.instantiate(node.getTargetClass());
-            return GeneratorResult.create(collection, hints);
+            generator.subtype(node.getTargetClass());
+
+            return GeneratorResult.create(generator.generate(context.getRandom()), generator.hints());
         }
         return GeneratorResult.emptyResult();
-    }
-
-    private int randomSize() {
-        final Random random = context.getRandom();
-        final Settings settings = context.getSettings();
-        return random.intRange(settings.get(Keys.COLLECTION_MIN_SIZE), settings.get(Keys.COLLECTION_MAX_SIZE));
     }
 }

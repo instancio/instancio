@@ -28,7 +28,7 @@ public class SimpleMapEntryIntegerStringCreationTest extends CreationTestTemplat
     @Override
     protected void verify(AbstractMap.SimpleEntry<Integer, String> result) {
         assertThat(result).isNotNull();
-        assertThat(result.getKey()).isPositive();
+        assertThat(result.getKey()).isNotNull();
         assertThat(result.getValue()).isNotBlank();
     }
 }

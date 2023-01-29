@@ -15,16 +15,11 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.Random;
-import org.instancio.generator.AfterGenerate;
-import org.instancio.generator.Hints;
-import org.instancio.generator.hints.MapHint;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.nodes.Node;
-import org.instancio.internal.reflection.instantiation.Instantiator;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -32,32 +27,22 @@ import java.util.Map;
 public class MapNodeHandler implements NodeHandler {
 
     private final ModelContext<?> context;
-    private final Instantiator instantiator;
 
-    public MapNodeHandler(final ModelContext<?> context, final Instantiator instantiator) {
+    public MapNodeHandler(final ModelContext<?> context) {
         this.context = context;
-        this.instantiator = instantiator;
     }
 
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final Node node) {
         if (Map.class.isAssignableFrom(node.getTargetClass())) {
-            final Hints hints = Hints.builder()
-                    .afterGenerate(AfterGenerate.POPULATE_ALL)
-                    .with(MapHint.builder()
-                            .generateEntries(randomSize())
-                            .build())
-                    .build();
+            final MapGenerator<?, ?> generator = new MapGenerator<>(
+                    new GeneratorContext(context.getSettings(), context.getRandom()));
 
-            return GeneratorResult.create(instantiator.instantiate(node.getTargetClass()), hints);
+            generator.subtype(node.getTargetClass());
+
+            return GeneratorResult.create(generator.generate(context.getRandom()), generator.hints());
         }
         return GeneratorResult.emptyResult();
-    }
-
-    private int randomSize() {
-        final Random random = context.getRandom();
-        final Settings settings = context.getSettings();
-        return random.intRange(settings.get(Keys.MAP_MIN_SIZE), settings.get(Keys.MAP_MAX_SIZE));
     }
 }
