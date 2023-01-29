@@ -16,6 +16,8 @@
 package org.instancio.creation.array.primitive;
 
 import org.instancio.Instancio;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.util.ArrayUtils;
 import org.junit.jupiter.api.Test;
 
@@ -35,5 +37,37 @@ class DirectArrayCreationTest {
     void integerArray() {
         Integer[] results = Instancio.create(Integer[].class);
         assertThat(new HashSet<>(ArrayUtils.toList(results))).hasSizeGreaterThanOrEqualTo(1);
+    }
+
+    @Test
+    void twoDimensionalIntArray() {
+        int[][] arr1 = Instancio.of(int[][].class)
+                .withSettings(Settings.create().set(Keys.INTEGER_MIN, 1))
+                .create();
+
+        assertThat(arr1).isNotNull();
+
+        for (int[] arr2 : arr1) {
+            for (int n : arr2) {
+                assertThat(n).isPositive();
+            }
+        }
+    }
+
+    @Test
+    void threeDimensionalIntArray() {
+        int[][][] arr1 = Instancio.of(int[][][].class)
+                .withSettings(Settings.create().set(Keys.INTEGER_MIN, 1))
+                .create();
+
+        assertThat(arr1).isNotNull();
+
+        for (int[][] arr2 : arr1) {
+            for (int[] arr3 : arr2) {
+                for (int n : arr3) {
+                    assertThat(n).isPositive();
+                }
+            }
+        }
     }
 }
