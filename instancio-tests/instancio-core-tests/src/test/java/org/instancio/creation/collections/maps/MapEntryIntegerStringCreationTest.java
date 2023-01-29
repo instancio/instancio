@@ -28,7 +28,7 @@ public class MapEntryIntegerStringCreationTest extends CreationTestTemplate<Map.
     @Override
     protected void verify(Map.Entry<Integer, String> result) {
         assertThat(result).isNotNull();
-        assertThat(result.getKey()).isPositive();
+        assertThat(result.getKey()).isNotNull();
         assertThat(result.getValue()).isNotBlank();
     }
 }

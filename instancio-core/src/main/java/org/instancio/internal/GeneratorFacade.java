@@ -54,8 +54,8 @@ class GeneratorFacade {
                 new UserSuppliedGeneratorHandler(context, generatorResolver, instantiator),
                 new ArrayNodeHandler(context, generatorResolver),
                 new UsingGeneratorResolverHandler(context, generatorResolver),
-                new CollectionNodeHandler(context, instantiator),
-                new MapNodeHandler(context, instantiator),
+                new CollectionNodeHandler(context),
+                new MapNodeHandler(context),
                 new InstantiatingHandler(instantiator)
         };
     }
