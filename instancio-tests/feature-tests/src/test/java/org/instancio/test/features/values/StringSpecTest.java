@@ -64,6 +64,11 @@ class StringSpecTest {
     }
 
     @Test
+    void suffix() {
+        assertThat(string().suffix("foo").get()).endsWith("foo");
+    }
+
+    @Test
     void length() {
         assertThat(string().length(5).get()).hasSize(5);
         assertThat(string().length(5, 7).get()).hasSizeBetween(5, 7);

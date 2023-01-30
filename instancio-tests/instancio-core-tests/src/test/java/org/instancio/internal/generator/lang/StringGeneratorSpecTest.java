@@ -34,7 +34,7 @@ class StringGeneratorSpecTest {
 
     private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
 
-    private final StringGeneratorExt generator = new StringGeneratorExt(context);
+    private final TestStringGeneratorExt generator = new TestStringGeneratorExt(context);
 
     @BeforeEach
     void setUp() {
@@ -124,8 +124,8 @@ class StringGeneratorSpecTest {
     /**
      * Subclass to expose getters.
      */
-    private static class StringGeneratorExt extends StringGenerator {
-        StringGeneratorExt(final GeneratorContext context) {
+    private static class TestStringGeneratorExt extends StringGenerator {
+        TestStringGeneratorExt(final GeneratorContext context) {
             super(context);
         }
 

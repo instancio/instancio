@@ -35,6 +35,19 @@ import static org.instancio.Select.allStrings;
 class StringGeneratorTest {
 
     @Test
+    void suffix() {
+        final int length = 5;
+        final String suffix = "-foo";
+        final String result = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen.string().length(length).suffix(suffix))
+                .create();
+
+        assertThat(result)
+                .hasSize(length + suffix.length())
+                .endsWith(suffix);
+    }
+
+    @Test
     void stringType() {
         assertStringType(StringGeneratorSpec::lowerCase, "^[a-z]+$");
         assertStringType(StringGeneratorSpec::upperCase, "^[A-Z]+$");
