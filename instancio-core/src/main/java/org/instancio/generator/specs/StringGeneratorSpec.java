@@ -49,6 +49,15 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
     StringGeneratorSpec nullable();
 
     /**
+     * Indicates whether {@code null} value can be generated.
+     *
+     * @param isNullable if {@code true}, {@code null} strings can be generated
+     * @return spec builder
+     * @since 2.7.0
+     */
+    StringGeneratorSpec nullable(boolean isNullable);
+
+    /**
      * Indicates that an empty string can be generated.
      *
      * @return spec builder
