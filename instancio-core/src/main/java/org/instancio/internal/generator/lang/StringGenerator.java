@@ -37,6 +37,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     private boolean nullable;
     private boolean allowEmpty;
     private String prefix;
+    private String suffix;
     private StringType stringType;
 
     public StringGenerator() {
@@ -61,6 +62,12 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     @Override
     public StringGenerator prefix(final String prefix) {
         this.prefix = prefix;
+        return this;
+    }
+
+    @Override
+    public StringGenerator suffix(final String suffix) {
+        this.suffix = suffix;
         return this;
     }
 
@@ -146,8 +153,14 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         }
 
         final int length = random.intRange(minLength, maxLength);
-        final String result = generateString(random, length);
-        return prefix == null ? result : prefix + result;
+        String result = generateString(random, length);
+        if (prefix != null) {
+            result = prefix + result;
+        }
+        if (suffix != null) {
+            result = result + suffix;
+        }
+        return result;
     }
 
     private String generateString(final Random random, final int length) {

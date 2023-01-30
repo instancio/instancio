@@ -33,6 +33,15 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
     StringGeneratorSpec prefix(String prefix);
 
     /**
+     * Specifes a String suffix.
+     *
+     * @param suffix for generated strings
+     * @return spec builder
+     * @since 2.7.0
+     */
+    StringGeneratorSpec suffix(String suffix);
+
+    /**
      * Indicates that {@code null} value can be generated.
      *
      * @return spec builder

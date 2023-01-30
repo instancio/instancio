@@ -28,6 +28,9 @@ public interface StringSpec extends ValueSpec<String>, StringGeneratorSpec {
     StringSpec prefix(String prefix);
 
     @Override
+    StringSpec suffix(String suffix);
+
+    @Override
     StringSpec nullable();
 
     @Override
