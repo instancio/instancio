@@ -78,6 +78,12 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
+    public StringSpec allowEmpty(final boolean isAllowed) {
+        this.allowEmpty = isAllowed;
+        return this;
+    }
+
+    @Override
     public StringGenerator nullable() {
         this.nullable = true;
         return this;

@@ -37,6 +37,9 @@ public interface StringSpec extends ValueSpec<String>, StringGeneratorSpec {
     StringSpec allowEmpty();
 
     @Override
+    StringSpec allowEmpty(boolean isAllowed);
+
+    @Override
     StringSpec length(int length);
 
     @Override

@@ -56,6 +56,15 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
     StringGeneratorSpec allowEmpty();
 
     /**
+     * Indicates if empty string can be generated.
+     *
+     * @param isAllowed if {@code true}, empty strings can be generated
+     * @return spec builder
+     * @since 2.7.0
+     */
+    StringGeneratorSpec allowEmpty(boolean isAllowed);
+
+    /**
      * Length of string to generate.
      *
      * @param length exact length to generate
