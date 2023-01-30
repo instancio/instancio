@@ -15,9 +15,15 @@
  */
 package org.instancio.test.features.values;
 
+import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -91,5 +97,21 @@ class StringSpecTest {
                 .mapToObj(i -> string().allowEmpty().nullable().get());
 
         assertThat(result).contains("").containsNull();
+    }
+
+    @Nested
+    @ExtendWith(InstancioExtension.class)
+    class DisallowEmpty {
+
+        @WithSettings
+        private final Settings settings = Settings.create()
+                .set(Keys.STRING_ALLOW_EMPTY, true);
+
+        @Test
+        void disallowEmpty() {
+            final List<String> results = string().allowEmpty(false).list(500);
+
+            assertThat(results).hasSize(500).doesNotContain("");
+        }
     }
 }
