@@ -33,4 +33,7 @@ public interface IntegerSpec extends NumberSpec<Integer> {
 
     @Override
     IntegerSpec nullable();
+
+    @Override
+    IntegerSpec nullable(boolean isNullable);
 }

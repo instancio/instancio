@@ -36,6 +36,9 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
     @Override
     BigDecimalGeneratorSpec nullable();
 
+    @Override
+    BigDecimalSpec nullable(boolean isNullable);
+
     /**
      * Scale of the generated {@link BigDecimal}.
      *

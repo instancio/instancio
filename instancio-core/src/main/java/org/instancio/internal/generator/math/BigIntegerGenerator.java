@@ -72,6 +72,12 @@ public class BigIntegerGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
+    public BigIntegerGenerator nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
     protected BigInteger generateNonNullValue(final Random random) {
         return BigInteger.valueOf(random.longRange(getMin().longValue(), getMax().longValue()));
     }

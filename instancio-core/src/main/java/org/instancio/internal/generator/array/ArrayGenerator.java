@@ -89,6 +89,12 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     }
 
     @Override
+    public ArrayGeneratorSpec<T> nullable(final boolean isNullable) {
+        this.nullable = isNullable;
+        return this;
+    }
+
+    @Override
     public ArrayGeneratorSpec<T> nullableElements() {
         this.nullableElements = true;
         return this;

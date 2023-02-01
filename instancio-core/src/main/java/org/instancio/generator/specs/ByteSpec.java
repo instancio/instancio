@@ -33,4 +33,7 @@ public interface ByteSpec extends NumberSpec<Byte> {
 
     @Override
     ByteSpec nullable();
+
+    @Override
+    ByteSpec nullable(boolean isNullable);
 }

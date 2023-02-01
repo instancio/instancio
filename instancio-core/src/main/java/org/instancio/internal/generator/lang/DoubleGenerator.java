@@ -65,6 +65,12 @@ public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec
     }
 
     @Override
+    public DoubleGenerator nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
     protected Double generateNonNullValue(final Random random) {
         return random.doubleRange(getMin(), getMax());
     }

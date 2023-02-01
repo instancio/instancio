@@ -16,7 +16,9 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 import org.instancio.generator.specs.StringSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
@@ -39,6 +41,11 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     private String prefix;
     private String suffix;
     private StringType stringType;
+    private Generator<?> delegate;
+
+    public void setDelegate(final Generator<?> delegate) {
+        this.delegate = delegate;
+    }
 
     public StringGenerator() {
         this(Global.generatorContext());
@@ -86,12 +93,18 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     @Override
     public StringGenerator nullable() {
         this.nullable = true;
+        if (delegate instanceof NullableGeneratorSpec<?>) {
+            ((NullableGeneratorSpec<?>) delegate).nullable();
+        }
         return this;
     }
 
     @Override
     public StringGenerator nullable(final boolean isNullable) {
         this.nullable = isNullable;
+        if (delegate instanceof NullableGeneratorSpec<?>) {
+            ((NullableGeneratorSpec<?>) delegate).nullable(isNullable);
+        }
         return this;
     }
 
@@ -106,8 +119,8 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     public StringGenerator length(final int minLength, final int maxLength) {
         this.minLength = ApiValidator.validateLength(minLength);
         this.maxLength = ApiValidator.validateLength(maxLength);
-        ApiValidator.isTrue(minLength < maxLength,
-                "Min length must be less than max (%s, %s)", minLength, maxLength);
+        ApiValidator.isTrue(minLength <= maxLength,
+                "Min length must be less than or equal to max (%s, %s)", minLength, maxLength);
         return this;
     }
 
@@ -162,6 +175,11 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         }
         if (random.diceRoll(allowEmpty)) {
             return "";
+        }
+
+        if (delegate != null) {
+            final Object result = delegate.generate(random);
+            return result == null ? null : result.toString();
         }
 
         final int length = random.intRange(minLength, maxLength);

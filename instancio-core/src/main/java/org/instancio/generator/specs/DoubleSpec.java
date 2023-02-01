@@ -33,4 +33,7 @@ public interface DoubleSpec extends NumberSpec<Double> {
 
     @Override
     DoubleSpec nullable();
+
+    @Override
+    DoubleSpec nullable(boolean isNullable);
 }

@@ -67,6 +67,7 @@ class MapGeneratorSupportedTypesTest {
                 .create();
 
         assertThat(result)
+                .as("Failed type: %s, expected subtype: %s", type.get(), expectedSubtype)
                 .hasSize(size + 1)
                 .containsEntry(expectedKey, expectedValue)
                 .isExactlyInstanceOf(expectedSubtype);

@@ -33,4 +33,7 @@ public interface FloatSpec extends NumberSpec<Float> {
 
     @Override
     FloatSpec nullable();
+
+    @Override
+    FloatSpec nullable(boolean isNullable);
 }

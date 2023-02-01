@@ -39,5 +39,8 @@ public interface BigDecimalSpec extends ValueSpec<BigDecimal>, BigDecimalGenerat
     BigDecimalSpec nullable();
 
     @Override
+    BigDecimalSpec nullable(boolean isNullable);
+
+    @Override
     BigDecimalSpec scale(int scale);
 }

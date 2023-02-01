@@ -91,6 +91,12 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     }
 
     @Override
+    public CollectionGeneratorSpec<T> nullable(final boolean isNullable) {
+        this.nullable = isNullable;
+        return this;
+    }
+
+    @Override
     public CollectionGeneratorSpec<T> nullableElements() {
         this.nullableElements = true;
         return this;

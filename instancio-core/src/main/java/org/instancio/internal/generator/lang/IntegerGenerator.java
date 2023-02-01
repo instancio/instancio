@@ -65,6 +65,12 @@ public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpe
     }
 
     @Override
+    public IntegerGenerator nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
     protected Integer generateNonNullValue(final Random random) {
         return random.intRange(getMin(), getMax());
     }

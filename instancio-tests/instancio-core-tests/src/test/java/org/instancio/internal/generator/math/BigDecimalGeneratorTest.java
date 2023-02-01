@@ -20,6 +20,8 @@ import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.NumberGeneratorSpecTestTemplate;
 import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

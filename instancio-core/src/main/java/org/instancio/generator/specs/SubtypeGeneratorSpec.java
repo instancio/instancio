@@ -15,29 +15,22 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
+import org.instancio.generator.GeneratorSpec;
 
 /**
- * Generator spec for {@link Number} types
- * that supports {@link AsStringGeneratorSpec}.
+ * Provides a method for specifying a specific subtype that should be generated.
  *
- * @since 2.6.0
+ * @param <T> generated type
+ * @since 2.7.0
  */
-public interface NumberAsStringGeneratorSpec<T extends Number>
-        extends NumberGeneratorSpec<T>, AsStringGeneratorSpec<T> {
+public interface SubtypeGeneratorSpec<T> extends GeneratorSpec<T> {
 
-    @Override
-    NumberAsStringGeneratorSpec<T> min(T min);
-
-    @Override
-    NumberAsStringGeneratorSpec<T> max(T max);
-
-    @Override
-    NumberAsStringGeneratorSpec<T> range(T min, T max);
-
-    @Override
-    NumberAsStringGeneratorSpec<T> nullable();
-
-    @Override
-    NumberAsStringGeneratorSpec<T> nullable(boolean isNullable);
+    /**
+     * Specifies the subtype that should be generated.
+     *
+     * @param type the subtype to generate
+     * @return spec builder instance
+     * @since 2.7.0
+     */
+    SubtypeGeneratorSpec<T> subtype(Class<?> type);
 }

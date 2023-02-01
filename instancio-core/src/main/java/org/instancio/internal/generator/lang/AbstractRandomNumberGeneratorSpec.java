@@ -73,6 +73,12 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
+    public NumberAsStringGeneratorSpec<T> nullable(final boolean isNullable) {
+        this.nullable = isNullable;
+        return this;
+    }
+
+    @Override
     public final T generate(final Random random) {
         return random.diceRoll(nullable) ? null : generateNonNullValue(random);
     }

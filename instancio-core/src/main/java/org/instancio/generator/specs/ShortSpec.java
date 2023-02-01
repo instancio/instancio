@@ -33,4 +33,7 @@ public interface ShortSpec extends NumberSpec<Short> {
 
     @Override
     ShortSpec nullable();
+
+    @Override
+    ShortSpec nullable(boolean isNullable);
 }

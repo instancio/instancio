@@ -83,6 +83,12 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
+    public BigDecimalGenerator nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
     protected BigDecimal generateNonNullValue(final Random random) {
         final double val = random.doubleRange(getMin().doubleValue(), getMax().doubleValue());
         return BigDecimal.valueOf(val).setScale(scale, RoundingMode.HALF_UP);

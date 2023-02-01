@@ -33,4 +33,7 @@ public interface LongSpec extends NumberSpec<Long> {
 
     @Override
     LongSpec nullable();
+
+    @Override
+    LongSpec nullable(boolean isNullable);
 }

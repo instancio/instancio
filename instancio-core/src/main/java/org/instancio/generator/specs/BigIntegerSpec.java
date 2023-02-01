@@ -35,4 +35,7 @@ public interface BigIntegerSpec extends NumberSpec<BigInteger> {
 
     @Override
     BigIntegerSpec nullable();
+
+    @Override
+    BigIntegerSpec nullable(boolean isNullable);
 }

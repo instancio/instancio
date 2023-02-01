@@ -100,6 +100,12 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     }
 
     @Override
+    public MapGeneratorSpec<K, V> nullable(final boolean isNullable) {
+        this.nullable = isNullable;
+        return this;
+    }
+
+    @Override
     public MapGeneratorSpec<K, V> nullableKeys() {
         this.nullableKeys = true;
         return this;

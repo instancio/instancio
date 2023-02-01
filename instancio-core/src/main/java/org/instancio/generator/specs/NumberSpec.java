@@ -35,4 +35,7 @@ public interface NumberSpec<T extends Number> extends ValueSpec<T>, NumberGenera
 
     @Override
     NumberSpec<T> nullable();
+
+    @Override
+    NumberSpec<T> nullable(boolean isNullable);
 }
