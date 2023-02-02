@@ -85,7 +85,7 @@ Pair<String, Long> pair = Instancio.of(Pair.class)
     .create();
 ```
 
-However, this approach has a couple of drawbacks: it does not supported nested generics, and its usage will produce an "unchecked assignment" warning.
+However, this approach has a couple of drawbacks: it does not support nested generics, and its usage will produce an "unchecked assignment" warning.
 
 ### Creating collections
 
