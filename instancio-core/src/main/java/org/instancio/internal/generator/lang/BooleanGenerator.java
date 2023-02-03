@@ -26,15 +26,13 @@ import org.instancio.settings.Keys;
 public class BooleanGenerator extends AbstractGenerator<Boolean>
         implements BooleanSpec, BooleanAsStringGeneratorSpec {
 
-    private boolean nullable;
-
     public BooleanGenerator() {
         this(Global.generatorContext());
     }
 
     public BooleanGenerator(final GeneratorContext context) {
         super(context);
-        this.nullable = context.getSettings().get(Keys.BOOLEAN_NULLABLE);
+        super.nullable(context.getSettings().get(Keys.BOOLEAN_NULLABLE));
     }
 
     @Override
@@ -44,12 +42,12 @@ public class BooleanGenerator extends AbstractGenerator<Boolean>
 
     @Override
     public BooleanGenerator nullable() {
-        this.nullable = true;
+        super.nullable(true);
         return this;
     }
 
     @Override
     public Boolean generate(final Random random) {
-        return random.diceRoll(nullable) ? null : random.trueOrFalse();
+        return random.diceRoll(isNullable()) ? null : random.trueOrFalse();
     }
 }

@@ -25,6 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -74,16 +76,21 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     @DisplayName("newMax < min: new min should be less than newMax by PERCENTAGE")
     void newMaxIsLessThanMin() {
         T newMax = asT(initialMin.longValue() - 1);
-        generator.min(newMax);
-        assertThat(generator.getMin()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
+        generator.max(newMax);
+        assertThat(generator.getMin())
+                .as("min=%s, newMax=%s", initialMin, newMax)
+                .isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
     }
 
     @Test
     @DisplayName("newMax == min: new min should be less than newMax by PERCENTAGE")
     void newMaxIsEqualToMin() {
-        T newMax = asT(initialMin.longValue());
-        generator.min(newMax);
-        assertThat(generator.getMin()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
+        T newMax = initialMin;
+        generator.max(newMax);
+        assertThat(generator.getMin())
+                .as("min=%s, newMax=%s", initialMin, newMax)
+                // using ComparingTo to ignore BigDecimal scale
+                .isEqualByComparingTo(calculatePercentage(newMax, -PERCENTAGE));
     }
 
     @Test
@@ -178,14 +185,23 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     }
 
     private T calculatePercentage(final T initial, final int percentage) {
-        final long result = initial.longValue() + initial.longValue() * percentage / 100;
-        return asT(result);
+        final BigDecimal initialBD = new BigDecimal(initial.toString());
+        final BigDecimal tmp = initialBD.multiply(
+                new BigDecimal(percentage).divide(new BigDecimal(100), 3, RoundingMode.HALF_UP));
+
+        final BigDecimal delta = percentage > 0
+                ? initialBD.add(tmp)
+                : initialBD.subtract(tmp);
+
+        final BigDecimal deltaAbs = delta.abs();
+        final BigDecimal result = delta.signum() < 0 ? deltaAbs.negate() : deltaAbs;
+        return (T) NumberUtils.bigDecimalConverter(initial.getClass()).apply(result);
     }
 
     @SuppressWarnings("unchecked")
     private T asT(final long value) {
         final Class<?> numberType = TypeUtils.getGenericSuperclassTypeArgument(getClass());
         assertThat(numberType).isNotNull();
-        return (T) NumberUtils.getToLongConverter(numberType).apply(value);
+        return (T) NumberUtils.longConverter(numberType).apply(value);
     }
 }

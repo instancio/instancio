@@ -38,7 +38,6 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     protected int minLength;
     protected int maxLength;
-    private boolean nullable;
     private boolean nullableElements;
     private Class<?> arrayType;
     private List<Object> withElements;
@@ -47,7 +46,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
         super(context);
         this.minLength = context.getSettings().get(Keys.ARRAY_MIN_LENGTH);
         this.maxLength = context.getSettings().get(Keys.ARRAY_MAX_LENGTH);
-        this.nullable = context.getSettings().get(Keys.ARRAY_NULLABLE);
+        super.nullable(context.getSettings().get(Keys.ARRAY_NULLABLE));
         this.nullableElements = context.getSettings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
     }
 
@@ -84,7 +83,13 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     @Override
     public ArrayGeneratorSpec<T> nullable() {
-        this.nullable = true;
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    public ArrayGeneratorSpec<T> nullable(final boolean isNullable) {
+        super.nullable(isNullable);
         return this;
     }
 
@@ -118,7 +123,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     public T generate(final Random random) {
         ApiValidator.isTrue(arrayType.isArray(), "Expected an array type: %s", arrayType);
 
-        if (random.diceRoll(nullable)) {
+        if (random.diceRoll(isNullable())) {
             return null;
         }
 

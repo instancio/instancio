@@ -65,6 +65,12 @@ public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     }
 
     @Override
+    public FloatGenerator nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
     protected Float generateNonNullValue(final Random random) {
         return random.floatRange(getMin(), getMax());
     }

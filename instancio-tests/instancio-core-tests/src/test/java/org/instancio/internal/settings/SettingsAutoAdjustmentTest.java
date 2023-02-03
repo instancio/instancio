@@ -75,7 +75,7 @@ class SettingsAutoAdjustmentTest {
 
         assertThat((Object) settings.get(Keys.ARRAY_MAX_LENGTH))
                 .as("Expecting newMax value to be greater than newMin by %s%%", PERCENTAGE)
-                .isEqualTo((newMin * (100 + PERCENTAGE)) / 100);
+                .isEqualTo((int) Math.round((newMin * (100 + PERCENTAGE)) / 100d));
     }
 
     @ValueSource(ints = {Integer.MAX_VALUE - 1})
@@ -147,9 +147,9 @@ class SettingsAutoAdjustmentTest {
             final Optional<SettingKey> maxSetting = SettingsSupport.getAutoAdjustable(minSetting);
             assertThat(maxSetting).isPresent();
 
-            final Number max = NumberUtils.getToLongConverter(minSetting.type()).apply(50L);
-            final Number newMin = NumberUtils.getToLongConverter(minSetting.type()).apply(60L);
-            final Number expectedMax = NumberUtils.getToLongConverter(minSetting.type()).apply(90L);
+            final Number max = NumberUtils.longConverter(minSetting.type()).apply(50L);
+            final Number newMin = NumberUtils.longConverter(minSetting.type()).apply(60L);
+            final Number expectedMax = NumberUtils.longConverter(minSetting.type()).apply(90L);
 
             settings
                     .set(maxSetting.get(), max)
@@ -165,9 +165,9 @@ class SettingsAutoAdjustmentTest {
             final Optional<SettingKey> minSetting = SettingsSupport.getAutoAdjustable(maxSetting);
             assertThat(minSetting).isPresent();
 
-            final Number min = NumberUtils.getToLongConverter(maxSetting.type()).apply(120L);
-            final Number newMax = NumberUtils.getToLongConverter(maxSetting.type()).apply(100L);
-            final Number expectedMin = NumberUtils.getToLongConverter(maxSetting.type()).apply(50L);
+            final Number min = NumberUtils.longConverter(maxSetting.type()).apply(120L);
+            final Number newMax = NumberUtils.longConverter(maxSetting.type()).apply(100L);
+            final Number expectedMin = NumberUtils.longConverter(maxSetting.type()).apply(50L);
 
             settings
                     .set(minSetting.get(), min)

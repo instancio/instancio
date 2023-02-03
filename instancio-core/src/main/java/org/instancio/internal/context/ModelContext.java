@@ -35,6 +35,8 @@ import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -55,6 +57,7 @@ import static org.instancio.internal.context.ModelContextHelper.preProcess;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class ModelContext<T> {
+    private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
     private static final List<InternalContainerFactoryProvider> CONTAINER_FACTORIES =
             CollectionUtils.combine(
@@ -83,6 +86,7 @@ public final class ModelContext<T> {
 
         seed = builder.seed;
         settings = createSettings(builder);
+
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
 
         ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
@@ -105,6 +109,7 @@ public final class ModelContext<T> {
         if (Boolean.TRUE.equals(builder.lenient)) {
             settings.set(Keys.MODE, Mode.LENIENT);
         }
+        LOG.trace("Resolved settings: {}", settings);
         return settings.lock();
     }
 

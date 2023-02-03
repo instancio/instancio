@@ -65,6 +65,12 @@ public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<L
     }
 
     @Override
+    public LongGenerator nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
     protected Long generateNonNullValue(final Random random) {
         return random.longRange(getMin(), getMax());
     }

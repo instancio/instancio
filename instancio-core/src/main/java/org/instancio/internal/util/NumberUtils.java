@@ -15,19 +15,24 @@
  */
 package org.instancio.internal.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 public final class NumberUtils {
 
-    private static final Map<Class<?>, Number> NUMERIC_MIN_VALUES = new HashMap<>();
-    private static final Map<Class<?>, Number> NUMERIC_MAX_VALUES = new HashMap<>();
-    private static final Map<Class<?>, Function<Long, Number>> CONVERT_TO_LONG_FN_MAP = new HashMap<>();
+    private static final BigDecimal HUNDRED = new BigDecimal(100);
+
+    private static final Map<Class<?>, Number> NUMERIC_MIN_VALUES = new HashMap<>(80);
+    private static final Map<Class<?>, Number> NUMERIC_MAX_VALUES = new HashMap<>(80);
+    private static final Map<Class<?>, Function<Long, Number>> CONVERT_FROM_LONG_FN_MAP = new HashMap<>();
+    private static final Map<Class<?>, Function<BigDecimal, Number>> CONVERT_FROM_BD_FN_MAP = new HashMap<>();
 
     static {
         NUMERIC_MIN_VALUES.put(Byte.class, Byte.MIN_VALUE);
@@ -36,6 +41,12 @@ public final class NumberUtils {
         NUMERIC_MIN_VALUES.put(Long.class, Long.MIN_VALUE);
         NUMERIC_MIN_VALUES.put(Float.class, Float.MIN_VALUE);
         NUMERIC_MIN_VALUES.put(Double.class, Double.MIN_VALUE);
+        NUMERIC_MIN_VALUES.put(byte.class, Byte.MIN_VALUE);
+        NUMERIC_MIN_VALUES.put(short.class, Short.MIN_VALUE);
+        NUMERIC_MIN_VALUES.put(int.class, Integer.MIN_VALUE);
+        NUMERIC_MIN_VALUES.put(long.class, Long.MIN_VALUE);
+        NUMERIC_MIN_VALUES.put(float.class, Float.MIN_VALUE);
+        NUMERIC_MIN_VALUES.put(double.class, Double.MIN_VALUE);
         NUMERIC_MIN_VALUES.put(BigInteger.class, BigInteger.valueOf(Long.MIN_VALUE));
         NUMERIC_MIN_VALUES.put(BigDecimal.class, new BigDecimal(Long.MIN_VALUE));
 
@@ -45,17 +56,48 @@ public final class NumberUtils {
         NUMERIC_MAX_VALUES.put(Long.class, Long.MAX_VALUE);
         NUMERIC_MAX_VALUES.put(Float.class, Float.MAX_VALUE);
         NUMERIC_MAX_VALUES.put(Double.class, Double.MAX_VALUE);
+        NUMERIC_MAX_VALUES.put(byte.class, Byte.MAX_VALUE);
+        NUMERIC_MAX_VALUES.put(short.class, Short.MAX_VALUE);
+        NUMERIC_MAX_VALUES.put(int.class, Integer.MAX_VALUE);
+        NUMERIC_MAX_VALUES.put(long.class, Long.MAX_VALUE);
+        NUMERIC_MAX_VALUES.put(float.class, Float.MAX_VALUE);
+        NUMERIC_MAX_VALUES.put(double.class, Double.MAX_VALUE);
         NUMERIC_MAX_VALUES.put(BigInteger.class, BigInteger.valueOf(Long.MAX_VALUE));
         NUMERIC_MAX_VALUES.put(BigDecimal.class, new BigDecimal(Long.MAX_VALUE));
 
-        CONVERT_TO_LONG_FN_MAP.put(Byte.class, Long::byteValue);
-        CONVERT_TO_LONG_FN_MAP.put(Short.class, Long::shortValue);
-        CONVERT_TO_LONG_FN_MAP.put(Integer.class, Long::intValue);
-        CONVERT_TO_LONG_FN_MAP.put(Long.class, l -> l);
-        CONVERT_TO_LONG_FN_MAP.put(Float.class, Long::floatValue);
-        CONVERT_TO_LONG_FN_MAP.put(Double.class, Long::doubleValue);
-        CONVERT_TO_LONG_FN_MAP.put(BigDecimal.class, BigDecimal::new);
-        CONVERT_TO_LONG_FN_MAP.put(BigInteger.class, BigInteger::valueOf);
+        CONVERT_FROM_LONG_FN_MAP.put(byte.class, Long::byteValue);
+        CONVERT_FROM_LONG_FN_MAP.put(short.class, Long::shortValue);
+        CONVERT_FROM_LONG_FN_MAP.put(int.class, Long::intValue);
+        CONVERT_FROM_LONG_FN_MAP.put(long.class, l -> l);
+        CONVERT_FROM_LONG_FN_MAP.put(float.class, Long::floatValue);
+        CONVERT_FROM_LONG_FN_MAP.put(double.class, Long::doubleValue);
+        CONVERT_FROM_LONG_FN_MAP.put(Byte.class, Long::byteValue);
+        CONVERT_FROM_LONG_FN_MAP.put(Short.class, Long::shortValue);
+        CONVERT_FROM_LONG_FN_MAP.put(Integer.class, Long::intValue);
+        CONVERT_FROM_LONG_FN_MAP.put(Long.class, l -> l);
+        CONVERT_FROM_LONG_FN_MAP.put(Float.class, Long::floatValue);
+        CONVERT_FROM_LONG_FN_MAP.put(Double.class, Long::doubleValue);
+        CONVERT_FROM_LONG_FN_MAP.put(BigDecimal.class, BigDecimal::new);
+        CONVERT_FROM_LONG_FN_MAP.put(BigInteger.class, BigInteger::valueOf);
+
+        CONVERT_FROM_BD_FN_MAP.put(byte.class, b -> round(b).byteValue());
+        CONVERT_FROM_BD_FN_MAP.put(short.class, b -> round(b).shortValue());
+        CONVERT_FROM_BD_FN_MAP.put(int.class, b -> round(b).intValue());
+        CONVERT_FROM_BD_FN_MAP.put(long.class, b -> round(b).longValue());
+        CONVERT_FROM_BD_FN_MAP.put(float.class, BigDecimal::floatValue);
+        CONVERT_FROM_BD_FN_MAP.put(double.class, BigDecimal::doubleValue);
+        CONVERT_FROM_BD_FN_MAP.put(Byte.class, b -> round(b).byteValue());
+        CONVERT_FROM_BD_FN_MAP.put(Short.class, b -> round(b).shortValue());
+        CONVERT_FROM_BD_FN_MAP.put(Integer.class, b -> round(b).intValue());
+        CONVERT_FROM_BD_FN_MAP.put(Long.class, b -> round(b).longValue());
+        CONVERT_FROM_BD_FN_MAP.put(Float.class, BigDecimal::floatValue);
+        CONVERT_FROM_BD_FN_MAP.put(Double.class, BigDecimal::doubleValue);
+        CONVERT_FROM_BD_FN_MAP.put(BigDecimal.class, b -> b);
+        CONVERT_FROM_BD_FN_MAP.put(BigInteger.class, b -> round(b).toBigInteger());
+    }
+
+    private static BigDecimal round(final BigDecimal b) {
+        return b.setScale(0, RoundingMode.HALF_UP);
     }
 
     @SuppressWarnings("unchecked")
@@ -69,8 +111,13 @@ public final class NumberUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Number> Function<Long, T> getToLongConverter(final Class<?> klass) {
-        return (Function<Long, T>) CONVERT_TO_LONG_FN_MAP.get(klass);
+    public static <T extends Number> Function<Long, T> longConverter(final Class<?> klass) {
+        return (Function<Long, T>) CONVERT_FROM_LONG_FN_MAP.get(klass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Number> Function<BigDecimal, T> bigDecimalConverter(final Class<?> klass) {
+        return (Function<BigDecimal, T>) CONVERT_FROM_BD_FN_MAP.get(klass);
     }
 
     /**
@@ -87,21 +134,32 @@ public final class NumberUtils {
      * @return new minimum if current minimum is greater than the new maximum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMin(
-            @Nullable final T curMin, final T newMax, final int percentage) {
+            @Nullable final T curMin, @NotNull final T newMax, final int percentage) {
 
-        final long newMin;
-        if (curMin == null || curMin.compareTo(newMax) > 0) {
-            final long delta = (long) Math.abs((newMax.longValue() * (percentage / 100d)));
-            final T absoluteMin = NumberUtils.getMinValue(newMax.getClass());
-            newMin = absoluteMin.longValue() + delta <= newMax.longValue()
-                    ? newMax.longValue() - delta
-                    : absoluteMin.longValue();
+        final BigDecimal curMinBD = toBigDecimal(curMin);
+        final BigDecimal newMaxBD = toBigDecimal(newMax);
+
+        final BigDecimal newMinBD;
+        if (curMinBD == null || curMinBD.compareTo(newMaxBD) > 0) {
+            final BigDecimal bdPercentage = new BigDecimal(percentage);
+            final BigDecimal absDelta = newMaxBD
+                    .multiply(bdPercentage.divide(HUNDRED, 3, RoundingMode.HALF_UP))
+                    .abs();
+
+            final BigDecimal absoluteMin = toBigDecimal(NumberUtils.getMinValue(newMaxBD.getClass()));
+
+            if (absoluteMin != null && absoluteMin.add(absDelta).compareTo(newMaxBD) <= 0) {
+                newMinBD = newMaxBD.subtract(absDelta);
+            } else {
+                newMinBD = absoluteMin;
+            }
         } else {
-            newMin = curMin.longValue();
+            newMinBD = curMinBD;
         }
 
-        final Function<Long, T> fn = getToLongConverter(newMax.getClass());
-        return fn.apply(newMin);
+        @SuppressWarnings("unchecked") final Class<T> numberClass = (Class<T>) newMax.getClass();
+        final Function<BigDecimal, T> fn = bigDecimalConverter(numberClass);
+        return fn.apply(newMinBD);
     }
 
     /**
@@ -118,21 +176,37 @@ public final class NumberUtils {
      * @return new maximum if current maximum is less than the new minimum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMax(
-            @Nullable final T curMax, final T newMin, final int percentage) {
+            @Nullable final T curMax, @NotNull final T newMin, final int percentage) {
 
-        final long newMax;
-        if (curMax == null || curMax.compareTo(newMin) < 0) {
-            final long delta = (long) Math.abs((newMin.longValue() * (percentage / 100d)));
-            final T absoluteMax = NumberUtils.getMaxValue(newMin.getClass());
-            newMax = absoluteMax.longValue() - delta >= newMin.longValue()
-                    ? newMin.longValue() + delta
-                    : absoluteMax.longValue();
+        final BigDecimal curMaxBD = toBigDecimal(curMax);
+        final BigDecimal newMinBD = toBigDecimal(newMin);
+
+        final BigDecimal newMaxBD;
+
+        if (curMaxBD == null || curMaxBD.compareTo(newMinBD) < 0) {
+            final BigDecimal bdPercentage = new BigDecimal(percentage);
+            final BigDecimal absDelta = newMinBD
+                    .multiply(bdPercentage.divide(HUNDRED, 3, RoundingMode.HALF_UP))
+                    .abs();
+
+            final BigDecimal absoluteMax = toBigDecimal(NumberUtils.getMaxValue(newMin.getClass()));
+
+            if (absoluteMax != null && absoluteMax.subtract(absDelta).compareTo(newMinBD) >= 0) {
+                newMaxBD = newMinBD.add(absDelta);
+            } else {
+                newMaxBD = absoluteMax;
+            }
         } else {
-            newMax = curMax.longValue();
+            newMaxBD = curMaxBD;
         }
 
-        final Function<Long, T> fn = getToLongConverter(newMin.getClass());
-        return fn.apply(newMax);
+        @SuppressWarnings("unchecked") final Class<T> numberClass = (Class<T>) newMin.getClass();
+        final Function<BigDecimal, T> fn = bigDecimalConverter(numberClass);
+        return fn.apply(newMaxBD);
+    }
+
+    private static BigDecimal toBigDecimal(final Number n) {
+        return n == null ? null : new BigDecimal(n.toString());
     }
 
     private NumberUtils() {

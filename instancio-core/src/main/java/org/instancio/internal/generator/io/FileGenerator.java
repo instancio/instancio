@@ -36,6 +36,12 @@ public class FileGenerator extends AbstractGenerator<File>
         this(Global.generatorContext());
     }
 
+    // Required constructor to instantiating generator via reflection
+    public FileGenerator(final GeneratorContext context) {
+        super(context);
+        delegate = new PathGenerator(context);
+    }
+
     public FileGenerator(final GeneratorContext context, final String... directories) {
         super(context);
         delegate = new PathGenerator(context, directories);

@@ -65,6 +65,12 @@ public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     }
 
     @Override
+    public ShortGenerator nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
     protected Short generateNonNullValue(final Random random) {
         return random.shortRange(getMin(), getMax());
     }

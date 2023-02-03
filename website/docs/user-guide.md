@@ -1758,7 +1758,7 @@ However, if the test class contains a `@ParameterizedTest` method, then the sett
 
 ## Arguments Source
 
-Using the {{InstancioSource}} annotation it is possible to have arguments provided directly to a `@ParameterzedTest` test method.
+Using the {{InstancioSource}} annotation it is possible to have arguments provided directly to a `@ParameterizedTest` test method.
 This works with a single argument and multiple arguments, each class representing one argument.
 
 !!! warning "Using `@ParameterizedTest` requires the `junit-jupiter-params` dependency."

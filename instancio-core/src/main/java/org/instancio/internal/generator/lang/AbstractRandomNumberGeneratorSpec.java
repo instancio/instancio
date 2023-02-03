@@ -26,15 +26,14 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
 
     private T min;
     private T max;
-    private boolean nullable;
 
     protected AbstractRandomNumberGeneratorSpec(
             final GeneratorContext context, final T min, final T max, final boolean nullable) {
 
         super(context);
+        super.nullable(nullable);
         this.min = min;
         this.max = max;
-        this.nullable = nullable;
     }
 
     protected abstract T generateNonNullValue(Random random);
@@ -60,6 +59,18 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
+    public NumberAsStringGeneratorSpec<T> nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    public NumberAsStringGeneratorSpec<T> nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
     public NumberAsStringGeneratorSpec<T> range(final T min, final T max) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         this.max = ApiValidator.notNull(max, "'max' must not be null");
@@ -67,13 +78,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public NumberAsStringGeneratorSpec<T> nullable() {
-        this.nullable = true;
-        return this;
-    }
-
-    @Override
     public final T generate(final Random random) {
-        return random.diceRoll(nullable) ? null : generateNonNullValue(random);
+        return random.diceRoll(isNullable()) ? null : generateNonNullValue(random);
     }
 }
