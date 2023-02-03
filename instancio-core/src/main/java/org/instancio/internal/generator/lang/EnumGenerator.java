@@ -33,7 +33,6 @@ public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E> imple
     private final Class<E> enumClass;
     private final EnumSet<E> values;
     private EnumSet<E> valuesWithExclusions;
-    private boolean nullable;
 
     public EnumGenerator(final GeneratorContext context, final Class<E> enumClass) {
         super(context);
@@ -61,14 +60,14 @@ public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E> imple
     }
 
     @Override
-    public EnumGeneratorSpec<E> nullable() {
-        this.nullable = true;
+    public EnumGenerator<E> nullable() {
+        super.nullable();
         return this;
     }
 
     @Override
     public E generate(final Random random) {
-        if (values.isEmpty() || random.diceRoll(nullable)) {
+        if (values.isEmpty() || random.diceRoll(isNullable())) {
             return null;
         }
         return valuesWithExclusions.isEmpty()

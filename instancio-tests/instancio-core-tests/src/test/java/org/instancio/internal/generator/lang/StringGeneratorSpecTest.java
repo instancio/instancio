@@ -23,8 +23,6 @@ import org.instancio.settings.Settings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,7 +46,7 @@ class StringGeneratorSpecTest {
         generator
                 .minLength(Integer.MAX_VALUE)
                 .maxLength(newMax);
-        assertThat(generator.getMinLength()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
+        assertThat(generator._getMinLength()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
     }
 
     @Test
@@ -58,7 +56,7 @@ class StringGeneratorSpecTest {
         generator
                 .minLength(Integer.MAX_VALUE)
                 .maxLength(newMax);
-        assertThat(generator.getMinLength()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
+        assertThat(generator._getMinLength()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
     }
 
     @Test
@@ -66,7 +64,7 @@ class StringGeneratorSpecTest {
     void newMinIsGreaterThanMax() {
         final int newMin = 100;
         generator.minLength(newMin);
-        assertThat(generator.getMaxLength()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
+        assertThat(generator._getMaxLength()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
     }
 
     @Test
@@ -76,31 +74,31 @@ class StringGeneratorSpecTest {
         generator
                 .maxLength(0)
                 .minLength(newMin);
-        assertThat(generator.getMaxLength()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
+        assertThat(generator._getMaxLength()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
     }
 
     @Test
     void length() {
         final int length = 2;
         generator.length(length);
-        assertThat(generator.getMinLength()).isEqualTo(length);
-        assertThat(generator.getMaxLength()).isEqualTo(length);
+        assertThat(generator._getMinLength()).isEqualTo(length);
+        assertThat(generator._getMaxLength()).isEqualTo(length);
     }
 
     @Test
     void lengthRange() {
         generator.length(1, 2);
-        assertThat(generator.getMinLength()).isEqualTo(1);
-        assertThat(generator.getMaxLength()).isEqualTo(2);
+        assertThat(generator._getMinLength()).isEqualTo(1);
+        assertThat(generator._getMaxLength()).isEqualTo(2);
     }
 
-    @ValueSource(ints = {5, 6})
-    @ParameterizedTest
-    void lengthRangeValidation(int minLength) {
-        final int maxLength = 5;
-        assertThatThrownBy(() -> generator.length(minLength, maxLength))
+    @Test
+    void lengthRangeValidation() {
+        final int min = 6;
+        final int max = 5;
+        assertThatThrownBy(() -> generator.length(min, max))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Min length must be less than max (%s, %s)", minLength, maxLength);
+                .hasMessage("Min length must be less than or equal to max (6, 5)", min, max);
     }
 
     @Test
@@ -129,11 +127,11 @@ class StringGeneratorSpecTest {
             super(context);
         }
 
-        int getMinLength() {
+        int _getMinLength() {
             return minLength;
         }
 
-        int getMaxLength() {
+        int _getMaxLength() {
             return maxLength;
         }
     }

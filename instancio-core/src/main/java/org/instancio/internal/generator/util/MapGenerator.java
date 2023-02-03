@@ -43,7 +43,6 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     protected int minSize;
     protected int maxSize;
-    protected boolean nullable;
     protected boolean nullableKeys;
     protected boolean nullableValues;
     protected Class<?> mapType;
@@ -55,7 +54,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
         super(context);
         this.minSize = context.getSettings().get(Keys.MAP_MIN_SIZE);
         this.maxSize = context.getSettings().get(Keys.MAP_MAX_SIZE);
-        this.nullable = context.getSettings().get(Keys.MAP_NULLABLE);
+        super.nullable(context.getSettings().get(Keys.MAP_NULLABLE));
         this.nullableKeys = context.getSettings().get(Keys.MAP_KEYS_NULLABLE);
         this.nullableValues = context.getSettings().get(Keys.MAP_VALUES_NULLABLE);
         this.mapType = DEFAULT_MAP_TYPE;
@@ -95,7 +94,13 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @Override
     public MapGeneratorSpec<K, V> nullable() {
-        this.nullable = true;
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    public MapGeneratorSpec<K, V> nullable(final boolean isNullable) {
+        super.nullable(isNullable);
         return this;
     }
 
@@ -135,7 +140,9 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Map<K, V> generate(final Random random) {
         try {
-            return random.diceRoll(nullable) ? null : (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
+            return random.diceRoll(isNullable())
+                    ? null
+                    : (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             LOG.debug("Error creating instance of: {}", mapType, ex);
             return null; // NOPMD
@@ -156,7 +163,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
                 .with(InternalGeneratorHint.builder()
                         .targetClass(mapType)
                         .delegating(isDelegating)
-                        .nullableResult(nullable)
+                        .nullableResult(isNullable())
                         .build())
                 .build();
     }

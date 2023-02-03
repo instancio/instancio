@@ -26,11 +26,9 @@ import org.instancio.settings.Keys;
 public class CharacterGenerator extends AbstractGenerator<Character>
         implements CharacterSpec, CharacterAsStringGeneratorSpec {
 
-    private boolean nullable;
-
     public CharacterGenerator(final GeneratorContext context) {
         super(context);
-        this.nullable = context.getSettings().get(Keys.CHARACTER_NULLABLE);
+        super.nullable(context.getSettings().get(Keys.CHARACTER_NULLABLE));
     }
 
     public CharacterGenerator() {
@@ -44,12 +42,12 @@ public class CharacterGenerator extends AbstractGenerator<Character>
 
     @Override
     public CharacterGenerator nullable() {
-        this.nullable = true;
+        super.nullable();
         return this;
     }
 
     @Override
     public Character generate(final Random random) {
-        return random.diceRoll(nullable) ? null : random.upperCaseCharacter();
+        return random.diceRoll(isNullable()) ? null : random.upperCaseCharacter();
     }
 }

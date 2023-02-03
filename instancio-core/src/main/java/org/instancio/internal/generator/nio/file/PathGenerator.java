@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +58,12 @@ public class PathGenerator extends AbstractGenerator<Path>
 
     public PathGenerator() {
         this(Global.generatorContext());
+    }
+
+    // Required constructor to instantiating generator via reflection
+    public PathGenerator(final GeneratorContext context) {
+        super(context);
+        this.directories = Collections.emptyList();
     }
 
     public PathGenerator(final GeneratorContext context, final String... directories) {

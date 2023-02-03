@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.StringSpec;
 import org.instancio.internal.ApiValidator;
@@ -34,11 +35,18 @@ public class StringGenerator extends AbstractGenerator<String> implements String
 
     protected int minLength;
     protected int maxLength;
-    private boolean nullable;
     private boolean allowEmpty;
     private String prefix;
     private String suffix;
     private StringType stringType;
+
+    // Used internally only to generate URLs, UUIDs, etc.
+    // If delegate is set, then none of this spec's values matter.
+    private Generator<?> delegate;
+
+    public void setDelegate(final Generator<?> delegate) {
+        this.delegate = delegate;
+    }
 
     public StringGenerator() {
         this(Global.generatorContext());
@@ -50,8 +58,12 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         final Settings settings = context.getSettings();
         this.minLength = settings.get(Keys.STRING_MIN_LENGTH);
         this.maxLength = settings.get(Keys.STRING_MAX_LENGTH);
-        this.nullable = settings.get(Keys.STRING_NULLABLE);
+        super.nullable(settings.get(Keys.STRING_NULLABLE));
         this.allowEmpty = settings.get(Keys.STRING_ALLOW_EMPTY);
+    }
+
+    public final int getMinLength() {
+        return minLength;
     }
 
     @Override
@@ -85,7 +97,19 @@ public class StringGenerator extends AbstractGenerator<String> implements String
 
     @Override
     public StringGenerator nullable() {
-        this.nullable = true;
+        super.nullable();
+        if (delegate instanceof AbstractGenerator<?>) {
+            ((AbstractGenerator<?>) delegate).nullable();
+        }
+        return this;
+    }
+
+    @Override
+    public StringGenerator nullable(final boolean isNullable) {
+        super.nullable(isNullable);
+        if (delegate instanceof AbstractGenerator<?>) {
+            ((AbstractGenerator<?>) delegate).nullable(isNullable);
+        }
         return this;
     }
 
@@ -100,8 +124,8 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     public StringGenerator length(final int minLength, final int maxLength) {
         this.minLength = ApiValidator.validateLength(minLength);
         this.maxLength = ApiValidator.validateLength(maxLength);
-        ApiValidator.isTrue(minLength < maxLength,
-                "Min length must be less than max (%s, %s)", minLength, maxLength);
+        ApiValidator.isTrue(minLength <= maxLength,
+                "Min length must be less than or equal to max (%s, %s)", minLength, maxLength);
         return this;
     }
 
@@ -151,7 +175,11 @@ public class StringGenerator extends AbstractGenerator<String> implements String
 
     @Override
     public String generate(final Random random) {
-        if (random.diceRoll(nullable)) {
+        if (delegate != null) {
+            final Object result = delegate.generate(random);
+            return result == null ? null : result.toString();
+        }
+        if (random.diceRoll(isNullable())) {
             return null;
         }
         if (random.diceRoll(allowEmpty)) {

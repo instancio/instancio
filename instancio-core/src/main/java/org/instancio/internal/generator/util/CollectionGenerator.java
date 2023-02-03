@@ -43,7 +43,6 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     protected int minSize;
     protected int maxSize;
-    protected boolean nullable;
     protected boolean nullableElements;
     protected List<Object> withElements;
     protected Class<?> collectionType;
@@ -53,7 +52,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         super(context);
         this.minSize = context.getSettings().get(Keys.COLLECTION_MIN_SIZE);
         this.maxSize = context.getSettings().get(Keys.COLLECTION_MAX_SIZE);
-        this.nullable = context.getSettings().get(Keys.COLLECTION_NULLABLE);
+        super.nullable(context.getSettings().get(Keys.COLLECTION_NULLABLE));
         this.nullableElements = context.getSettings().get(Keys.COLLECTION_ELEMENTS_NULLABLE);
         this.collectionType = DEFAULT_COLLECTION_TYPE;
     }
@@ -86,7 +85,13 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     public CollectionGeneratorSpec<T> nullable() {
-        this.nullable = true;
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    public CollectionGeneratorSpec<T> nullable(final boolean isNullable) {
+        super.nullable(isNullable);
         return this;
     }
 
@@ -117,7 +122,9 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Collection<T> generate(final Random random) {
         try {
-            return random.diceRoll(nullable) ? null : (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
+            return random.diceRoll(isNullable())
+                    ? null
+                    : (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             LOG.debug("Error creating instance of: {}", collectionType, ex);
             return null; // NOPMD
@@ -137,7 +144,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
                 .with(InternalGeneratorHint.builder()
                         .targetClass(collectionType)
                         .delegating(isDelegating)
-                        .nullableResult(nullable)
+                        .nullableResult(isNullable())
                         .build())
                 .build();
     }
