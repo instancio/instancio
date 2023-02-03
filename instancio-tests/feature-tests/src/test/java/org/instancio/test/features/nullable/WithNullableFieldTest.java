@@ -45,7 +45,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
 @NonDeterministicTag
-@FeatureTag(Feature.NULLABLE)
+@FeatureTag(Feature.WITH_NULLABLE)
 class WithNullableFieldTest {
 
     private static final int SAMPLE_SIZE = 100;

@@ -90,12 +90,6 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
-    public StringGenerator nullable(final boolean isNullable) {
-        this.nullable = isNullable;
-        return this;
-    }
-
-    @Override
     public StringGenerator length(final int length) {
         this.minLength = ApiValidator.validateLength(length);
         this.maxLength = length;

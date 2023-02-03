@@ -15,14 +15,12 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * Generator spec for arrays.
  *
  * @param <T> array type
  */
-public interface ArrayGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T> {
 
     /**
      * length of array to generate.
@@ -53,6 +51,7 @@ public interface ArrayGeneratorSpec<T> extends GeneratorSpec<T> {
      *
      * @return spec builder
      */
+    @Override
     ArrayGeneratorSpec<T> nullable();
 
     /**

@@ -15,14 +15,12 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * Generator spec for Strings.
  *
  * @since 1.0.1
  */
-public interface StringGeneratorSpec extends GeneratorSpec<String> {
+public interface StringGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
      * Specifies a String prefix.
@@ -40,22 +38,6 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
      * @since 2.7.0
      */
     StringGeneratorSpec suffix(String suffix);
-
-    /**
-     * Indicates that {@code null} value can be generated.
-     *
-     * @return spec builder
-     */
-    StringGeneratorSpec nullable();
-
-    /**
-     * Indicates whether {@code null} value can be generated.
-     *
-     * @param isNullable if {@code true}, {@code null} strings can be generated
-     * @return spec builder
-     * @since 2.7.0
-     */
-    StringGeneratorSpec nullable(boolean isNullable);
 
     /**
      * Indicates that an empty string can be generated.
@@ -140,4 +122,7 @@ public interface StringGeneratorSpec extends GeneratorSpec<String> {
      * @return spec builder
      */
     StringGeneratorSpec digits();
+
+    @Override
+    StringGeneratorSpec nullable();
 }

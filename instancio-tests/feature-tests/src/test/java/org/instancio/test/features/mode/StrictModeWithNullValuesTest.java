@@ -45,11 +45,11 @@ import static org.instancio.Select.types;
  */
 @FeatureTag({
         Feature.MODE,
-        Feature.IGNORE,
-        Feature.NULLABLE,
         Feature.GENERATE,
+        Feature.IGNORE,
         Feature.ON_COMPLETE,
-        Feature.SET
+        Feature.SET,
+        Feature.WITH_NULLABLE
 })
 // assertion not need; no "unused selector" error means test passed
 @SuppressWarnings(Sonar.ADD_ASSERTION)

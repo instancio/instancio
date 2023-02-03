@@ -34,9 +34,6 @@ public interface StringSpec extends ValueSpec<String>, StringGeneratorSpec {
     StringSpec nullable();
 
     @Override
-    StringSpec nullable(boolean isNullable);
-
-    @Override
     StringSpec allowEmpty();
 
     @Override

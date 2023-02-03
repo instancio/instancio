@@ -28,7 +28,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.root;
 
-@FeatureTag({Feature.OF_LIST, Feature.NULLABLE})
+@FeatureTag({
+        Feature.OF_LIST,
+        Feature.GENERATOR_SPEC_NULLABLE,
+        Feature.WITH_NULLABLE
+})
 class OfListNullableTest {
 
     private static final int SAMPLE_SIZE = 500;

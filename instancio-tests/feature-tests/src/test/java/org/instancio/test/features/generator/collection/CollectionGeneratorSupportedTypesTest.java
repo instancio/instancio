@@ -85,6 +85,7 @@ class CollectionGeneratorSupportedTypesTest {
                 .create();
 
         assertThat(result)
+                .as("Failed type: %s, expected subtype: %s", type.get(), expectedSubtype)
                 .hasSize(size + 1)
                 .contains(expected)
                 .isExactlyInstanceOf(expectedSubtype);

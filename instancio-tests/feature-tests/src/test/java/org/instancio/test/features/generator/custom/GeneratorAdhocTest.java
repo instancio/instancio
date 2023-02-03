@@ -44,10 +44,10 @@ import static org.instancio.Select.fields;
 @FeatureTag({
         Feature.GENERATOR,
         Feature.IGNORE,
-        Feature.NULLABLE,
         Feature.AFTER_GENERATE,
         Feature.STREAM,
-        Feature.SUBTYPE
+        Feature.SUBTYPE,
+        Feature.WITH_NULLABLE
 })
 @NonDeterministicTag
 @ExtendWith(InstancioExtension.class)

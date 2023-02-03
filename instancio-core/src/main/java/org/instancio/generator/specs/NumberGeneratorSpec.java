@@ -15,15 +15,13 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * Generator spec for numeric types.
  *
  * @param <T> type of number
  * @since 1.0.1
  */
-public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> {
+public interface NumberGeneratorSpec<T extends Number> extends NullableGeneratorSpec<T> {
 
     /**
      * Lower bound for the random number generator.
@@ -59,6 +57,6 @@ public interface NumberGeneratorSpec<T extends Number> extends GeneratorSpec<T> 
      * @return spec builder
      * @since 1.0.1
      */
+    @Override
     NumberGeneratorSpec<T> nullable();
-
 }

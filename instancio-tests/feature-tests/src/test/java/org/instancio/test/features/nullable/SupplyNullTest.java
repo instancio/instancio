@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 
-@FeatureTag(Feature.NULLABLE)
-class WithNullValueFieldTest {
+@FeatureTag(Feature.SUPPLY)
+class SupplyNullTest {
 
     @Test
     @DisplayName("A null field should remain null")
