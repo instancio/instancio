@@ -32,4 +32,12 @@ public interface InstantSpec extends TemporalSpec<Instant> {
 
     @Override
     InstantSpec range(Instant start, Instant end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.7.0
+     */
+    @Override
+    InstantSpec nullable();
 }

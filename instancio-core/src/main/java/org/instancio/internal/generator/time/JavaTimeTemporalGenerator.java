@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.generator.time;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.TemporalAaStringGeneratorSpec;
 import org.instancio.internal.ApiValidator;
@@ -38,6 +39,8 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
         this.min = min;
         this.max = max;
     }
+
+    protected abstract T generateNonNullValue(Random random);
 
     abstract T getLatestPast();
 
@@ -65,5 +68,10 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
         max = ApiValidator.notNull(end, "End parameter must not be null");
         validateRange();
         return this;
+    }
+
+    @Override
+    public final T generate(final Random random) {
+        return random.diceRoll(isNullable()) ? null : generateNonNullValue(random);
     }
 }

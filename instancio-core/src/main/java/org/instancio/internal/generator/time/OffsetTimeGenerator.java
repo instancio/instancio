@@ -64,6 +64,12 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
     }
 
     @Override
+    public OffsetTimeGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     OffsetTime getLatestPast() {
         return OffsetTime.now(ZONE_OFFSET).minusSeconds(1);
     }
@@ -79,7 +85,7 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
     }
 
     @Override
-    public OffsetTime generate(final Random random) {
+    public OffsetTime generateNonNullValue(final Random random) {
         int hour = random.intRange(min.getHour(), max.getHour());
         int minute = random.intRange(min.getMinute(), max.getMinute());
         int second = random.intRange(min.getSecond(), max.getSecond());

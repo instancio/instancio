@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.temporal.Temporal;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -135,6 +136,13 @@ abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable
         assertThatThrownBy(() -> generator.range(start, slightlyBeforeStart))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Start must not exceed end");
+    }
+
+    @Test
+    final void nullable() {
+        generator.nullable();
+        assertThat(Stream.generate(() -> generator.generate(random))
+                .limit(SAMPLE_SIZE)).containsNull();
     }
 
     protected final void assertGeneratedValueIsWithinRange(final T start, final T end) {

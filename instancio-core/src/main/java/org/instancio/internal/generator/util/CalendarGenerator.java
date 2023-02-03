@@ -40,19 +40,19 @@ public class CalendarGenerator extends AbstractGenerator<Calendar> implements Te
     }
 
     @Override
-    public TemporalGeneratorSpec<Calendar> past() {
+    public CalendarGenerator past() {
         delegate.past();
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<Calendar> future() {
+    public CalendarGenerator future() {
         delegate.future();
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<Calendar> range(final Calendar start, final Calendar end) {
+    public CalendarGenerator range(final Calendar start, final Calendar end) {
         delegate.range(
                 ZonedDateTime.ofInstant(start.toInstant(), start.getTimeZone().toZoneId()),
                 ZonedDateTime.ofInstant(end.toInstant(), end.getTimeZone().toZoneId()));
@@ -60,7 +60,15 @@ public class CalendarGenerator extends AbstractGenerator<Calendar> implements Te
     }
 
     @Override
+    public CalendarGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     public Calendar generate(final Random random) {
-        return GregorianCalendar.from(delegate.generate(random));
+        return random.diceRoll(isNullable())
+                ? null
+                : GregorianCalendar.from(delegate.generateNonNullValue(random));
     }
 }

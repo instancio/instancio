@@ -63,6 +63,12 @@ public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate>
     }
 
     @Override
+    public LocalDateGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     LocalDate getLatestPast() {
         return LocalDate.now().minusDays(1);
     }
@@ -78,7 +84,7 @@ public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate>
     }
 
     @Override
-    public LocalDate generate(final Random random) {
+    public LocalDate generateNonNullValue(final Random random) {
         return LocalDate.ofEpochDay(random.longRange(
                 min.getLong(EPOCH_DAY),
                 max.getLong(EPOCH_DAY)));

@@ -32,4 +32,12 @@ public interface YearSpec extends TemporalSpec<Year> {
 
     @Override
     YearSpec range(Year start, Year end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.7.0
+     */
+    @Override
+    YearSpec nullable();
 }

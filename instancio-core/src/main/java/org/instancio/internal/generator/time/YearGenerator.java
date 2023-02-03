@@ -60,6 +60,12 @@ public class YearGenerator extends JavaTimeTemporalGenerator<Year>
     }
 
     @Override
+    public YearGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     Year getLatestPast() {
         return Year.now().minusYears(1);
     }
@@ -75,7 +81,7 @@ public class YearGenerator extends JavaTimeTemporalGenerator<Year>
     }
 
     @Override
-    public Year generate(final Random random) {
+    public Year generateNonNullValue(final Random random) {
         return Year.of(random.intRange(min.getValue(), max.getValue()));
     }
 }

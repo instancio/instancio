@@ -63,6 +63,12 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
     }
 
     @Override
+    public InstantGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     Instant getLatestPast() {
         return Instant.now().minusSeconds(1);
     }
@@ -78,7 +84,7 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
     }
 
     @Override
-    public Instant generate(final Random random) {
+    public Instant generateNonNullValue(final Random random) {
         final long sec = random.longRange(min.getEpochSecond(), max.getEpochSecond());
         final int nano;
 

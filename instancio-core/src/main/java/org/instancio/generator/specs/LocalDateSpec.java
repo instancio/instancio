@@ -32,4 +32,12 @@ public interface LocalDateSpec extends TemporalSpec<LocalDate> {
 
     @Override
     LocalDateSpec range(LocalDate start, LocalDate end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.7.0
+     */
+    @Override
+    LocalDateSpec nullable();
 }

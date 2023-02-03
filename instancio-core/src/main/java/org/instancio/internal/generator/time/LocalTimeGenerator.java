@@ -60,6 +60,12 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
     }
 
     @Override
+    public LocalTimeGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     LocalTime getLatestPast() {
         return LocalTime.now().minusSeconds(1);
     }
@@ -75,7 +81,7 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
     }
 
     @Override
-    public LocalTime generate(final Random random) {
+    public LocalTime generateNonNullValue(final Random random) {
         return LocalTime.ofNanoOfDay(random.longRange(
                 min.toNanoOfDay(),
                 max.toNanoOfDay()));

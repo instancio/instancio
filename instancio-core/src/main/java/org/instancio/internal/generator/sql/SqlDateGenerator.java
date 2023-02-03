@@ -38,25 +38,33 @@ public class SqlDateGenerator extends AbstractGenerator<Date> implements Tempora
     }
 
     @Override
-    public TemporalGeneratorSpec<Date> past() {
+    public SqlDateGenerator past() {
         delegate.past();
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<Date> future() {
+    public SqlDateGenerator future() {
         delegate.future();
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<Date> range(final Date start, final Date end) {
+    public SqlDateGenerator range(final Date start, final Date end) {
         delegate.range(start.toLocalDate(), end.toLocalDate());
         return this;
     }
 
     @Override
+    public SqlDateGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     public Date generate(final Random random) {
-        return Date.valueOf(delegate.generate(random));
+        return random.diceRoll(isNullable())
+                ? null
+                : Date.valueOf(delegate.generateNonNullValue(random));
     }
 }

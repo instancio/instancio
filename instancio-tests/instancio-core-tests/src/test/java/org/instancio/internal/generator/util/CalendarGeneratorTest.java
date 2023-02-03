@@ -28,6 +28,7 @@ import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -83,5 +84,12 @@ class CalendarGeneratorTest {
         final Calendar max = GregorianCalendar.from(START.plusSeconds(10));
         generator.range(min, max);
         assertThat(generator.generate(random)).isBetween(min, max);
+    }
+
+    @Test
+    void nullable() {
+        generator.nullable();
+        assertThat(Stream.generate(() -> generator.generate(random)).limit(500))
+                .containsNull();
     }
 }

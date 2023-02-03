@@ -38,25 +38,33 @@ public class DateGenerator extends AbstractGenerator<Date> implements TemporalGe
     }
 
     @Override
-    public TemporalGeneratorSpec<Date> past() {
+    public DateGenerator past() {
         delegate.past();
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<Date> future() {
+    public DateGenerator future() {
         delegate.future();
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<Date> range(final Date start, final Date end) {
+    public DateGenerator range(final Date start, final Date end) {
         delegate.range(start.toInstant(), end.toInstant());
         return this;
     }
 
     @Override
+    public DateGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     public Date generate(final Random random) {
-        return Date.from((delegate).generate(random));
+        return random.diceRoll(isNullable())
+                ? null
+                : Date.from((delegate).generateNonNullValue(random));
     }
 }

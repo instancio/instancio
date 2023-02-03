@@ -68,6 +68,12 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     }
 
     @Override
+    public ZonedDateTimeGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     ZonedDateTime getLatestPast() {
         return ZonedDateTime.now(ZONE_OFFSET).minusSeconds(1);
     }
@@ -83,8 +89,8 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     }
 
     @Override
-    public ZonedDateTime generate(final Random random) {
+    public ZonedDateTime generateNonNullValue(final Random random) {
         delegate.range(min.toInstant(), max.toInstant());
-        return ZonedDateTime.ofInstant(delegate.generate(random), ZONE_OFFSET);
+        return ZonedDateTime.ofInstant(delegate.generateNonNullValue(random), ZONE_OFFSET);
     }
 }

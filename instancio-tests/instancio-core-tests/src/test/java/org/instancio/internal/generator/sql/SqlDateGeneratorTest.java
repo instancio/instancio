@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -77,5 +78,12 @@ class SqlDateGeneratorTest {
         final Date end = Date.valueOf(START.plusYears(1));
         generator.range(start, end);
         assertThat(generator.generate(random)).isBetween(start, end, INCLUSIVE, INCLUSIVE);
+    }
+
+    @Test
+    void nullable() {
+        generator.nullable();
+        assertThat(Stream.generate(() -> generator.generate(random)).limit(500))
+                .containsNull();
     }
 }

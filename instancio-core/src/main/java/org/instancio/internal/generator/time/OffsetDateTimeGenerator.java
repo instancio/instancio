@@ -70,6 +70,12 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     }
 
     @Override
+    public OffsetDateTimeGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     OffsetDateTime getLatestPast() {
         return OffsetDateTime.now().minusSeconds(1);
     }
@@ -85,7 +91,7 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     }
 
     @Override
-    public OffsetDateTime generate(final Random random) {
+    public OffsetDateTime generateNonNullValue(final Random random) {
         delegate.range(min.toLocalDateTime(), max.toLocalDateTime());
         return OffsetDateTime.of(delegate.generate(random), ZoneOffset.UTC);
     }

@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Date;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -80,5 +81,12 @@ class DateGeneratorTest {
         final Date max = Date.from(START.plusSeconds(10));
         generator.range(min, max);
         assertThat(generator.generate(random)).isBetween(min, max);
+    }
+
+    @Test
+    void nullable() {
+        generator.nullable();
+        assertThat(Stream.generate(() -> generator.generate(random)).limit(500))
+                .containsNull();
     }
 }
