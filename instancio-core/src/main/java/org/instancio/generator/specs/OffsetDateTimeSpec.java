@@ -32,4 +32,12 @@ public interface OffsetDateTimeSpec extends TemporalSpec<OffsetDateTime> {
 
     @Override
     OffsetDateTimeSpec range(OffsetDateTime start, OffsetDateTime end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.7.0
+     */
+    @Override
+    OffsetDateTimeSpec nullable();
 }

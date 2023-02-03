@@ -72,6 +72,13 @@ abstract class AbstractTemporalSpecTestTemplate<T extends Temporal & Comparable<
         assertThat(actual).isBetween(range.getLeft(), range.getRight());
     }
 
+    @Test
+    void nullable() {
+        final int size = 500;
+        final List<T> actual = getSpec().nullable().list(size);
+        assertThat(actual).containsNull();
+    }
+
     private T getNow() {
         return getRangeFromNow().getLeft();
     }

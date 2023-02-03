@@ -15,15 +15,13 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * Generator spec for {@link java.time.temporal.Temporal} types.
  *
  * @param <T> temporal type
  * @since 1.1.2
  */
-public interface TemporalGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface TemporalGeneratorSpec<T> extends NullableGeneratorSpec<T> {
 
     /**
      * Generate a value in the past.
@@ -47,4 +45,12 @@ public interface TemporalGeneratorSpec<T> extends GeneratorSpec<T> {
      * @return spec builder
      */
     TemporalGeneratorSpec<T> range(T start, T end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.7.0
+     */
+    @Override
+    NullableGeneratorSpec<T> nullable();
 }

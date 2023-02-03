@@ -32,4 +32,12 @@ public interface ZonedDateTimeSpec extends TemporalSpec<ZonedDateTime> {
 
     @Override
     ZonedDateTimeSpec range(ZonedDateTime start, ZonedDateTime end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.7.0
+     */
+    @Override
+    ZonedDateTimeSpec nullable();
 }

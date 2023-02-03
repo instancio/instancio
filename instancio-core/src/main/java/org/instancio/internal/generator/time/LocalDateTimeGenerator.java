@@ -68,6 +68,12 @@ public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateT
     }
 
     @Override
+    public LocalDateTimeGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     LocalDateTime getLatestPast() {
         return LocalDateTime.now().minusSeconds(1);
     }
@@ -83,7 +89,7 @@ public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateT
     }
 
     @Override
-    public LocalDateTime generate(final Random random) {
+    public LocalDateTime generateNonNullValue(final Random random) {
         delegate.range(min.toInstant(ZONE_OFFSET), max.toInstant(ZONE_OFFSET));
         return LocalDateTime.ofInstant(delegate.generate(random), ZONE_OFFSET);
     }

@@ -38,25 +38,33 @@ public class TimestampGenerator extends AbstractGenerator<Timestamp> implements 
     }
 
     @Override
-    public TemporalGeneratorSpec<Timestamp> past() {
+    public TimestampGenerator past() {
         delegate.past();
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<Timestamp> future() {
+    public TimestampGenerator future() {
         delegate.future();
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<Timestamp> range(final Timestamp start, final Timestamp end) {
+    public TimestampGenerator range(final Timestamp start, final Timestamp end) {
         delegate.range(start.toInstant(), end.toInstant());
         return this;
     }
 
     @Override
+    public TimestampGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     public Timestamp generate(final Random random) {
-        return Timestamp.from(delegate.generate(random));
+        return random.diceRoll(isNullable())
+                ? null
+                : Timestamp.from(delegate.generateNonNullValue(random));
     }
 }

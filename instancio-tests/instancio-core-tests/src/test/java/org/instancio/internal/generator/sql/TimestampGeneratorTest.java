@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -76,5 +77,12 @@ class TimestampGeneratorTest {
         final Timestamp end = Timestamp.valueOf(START.plusYears(1));
         generator.range(start, end);
         assertThat(generator.generate(random)).isBetween(start, end, INCLUSIVE, INCLUSIVE);
+    }
+
+    @Test
+    void nullable() {
+        generator.nullable();
+        assertThat(Stream.generate(() -> generator.generate(random)).limit(500))
+                .containsNull();
     }
 }

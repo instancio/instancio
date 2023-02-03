@@ -60,6 +60,12 @@ public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth>
     }
 
     @Override
+    public YearMonthGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
     YearMonth getLatestPast() {
         return YearMonth.now().minusMonths(1);
     }
@@ -75,7 +81,7 @@ public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth>
     }
 
     @Override
-    public YearMonth generate(final Random random) {
+    public YearMonth generateNonNullValue(final Random random) {
         final int minMonth = min.getYear() * 12 + min.getMonthValue() - 1;
         final int maxMonth = max.getYear() * 12 + max.getMonthValue() - 1;
         final int result = random.intRange(minMonth, maxMonth);
