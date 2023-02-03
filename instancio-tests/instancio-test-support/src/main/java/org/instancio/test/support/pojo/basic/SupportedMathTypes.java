@@ -22,9 +22,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+
 @Data
 public class SupportedMathTypes {
-
     private BigInteger bigInteger;
     private BigDecimal bigDecimal;
 

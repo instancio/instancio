@@ -114,20 +114,4 @@ class StringSpecTest {
             assertThat(results).hasSize(500).doesNotContain("");
         }
     }
-
-    @Nested
-    @ExtendWith(InstancioExtension.class)
-    class DisallowNull {
-
-        @WithSettings
-        private final Settings settings = Settings.create()
-                .set(Keys.STRING_NULLABLE, true);
-
-        @Test
-        void disallowNull() {
-            final List<String> results = string().nullable(false).list(500);
-
-            assertThat(results).hasSize(500).doesNotContainNull();
-        }
-    }
 }

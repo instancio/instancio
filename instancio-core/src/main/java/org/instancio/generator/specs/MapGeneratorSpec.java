@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 import java.util.Map;
 
 /**
@@ -25,7 +23,8 @@ import java.util.Map;
  * @param <K> key type
  * @param <V> value type
  */
-public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
+public interface MapGeneratorSpec<K, V>
+        extends NullableGeneratorSpec<Map<K, V>>, SubtypeGeneratorSpec<Map<K, V>> {
 
     /**
      * Size of map to generate.
@@ -34,7 +33,6 @@ public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
      * @return spec builder
      */
     MapGeneratorSpec<K, V> size(int size);
-
 
     /**
      * Minimum size of map to generate.
@@ -57,6 +55,7 @@ public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
      *
      * @return spec builder
      */
+    @Override
     MapGeneratorSpec<K, V> nullable();
 
     /**
@@ -80,6 +79,7 @@ public interface MapGeneratorSpec<K, V> extends GeneratorSpec<Map<K, V>> {
      * @return spec builder
      * @since 1.4.0
      */
+    @Override
     MapGeneratorSpec<K, V> subtype(Class<?> type);
 
     /**

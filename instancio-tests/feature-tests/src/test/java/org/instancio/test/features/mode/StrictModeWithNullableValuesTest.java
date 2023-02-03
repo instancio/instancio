@@ -54,10 +54,10 @@ import static org.instancio.Select.allStrings;
  */
 @FeatureTag({
         Feature.MODE,
-        Feature.NULLABLE,
         Feature.GENERATE,
+        Feature.ON_COMPLETE,
         Feature.SET,
-        Feature.ON_COMPLETE
+        Feature.WITH_NULLABLE
 })
 @NonDeterministicTag
 class StrictModeWithNullableValuesTest {

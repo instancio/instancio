@@ -97,6 +97,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
         return new StringJoiner(", ", "GeneratorHint[", "]")
                 .add("targetClass=" + (targetClass == null ? null : targetClass.getTypeName()))
                 .add("isDelegating=" + isDelegating)
+                .add("nullableResult=" + nullableResult)
                 .add("excludeFromCallbacks=" + excludeFromCallbacks)
                 .toString();
     }

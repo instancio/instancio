@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 import java.util.Collection;
 
 /**
@@ -24,7 +22,8 @@ import java.util.Collection;
  *
  * @param <T> element type
  */
-public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>> {
+public interface CollectionGeneratorSpec<T>
+        extends NullableGeneratorSpec<Collection<T>>, SubtypeGeneratorSpec<Collection<T>> {
 
     /**
      * Size of collection to generate.
@@ -55,6 +54,7 @@ public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>>
      *
      * @return spec builder
      */
+    @Override
     CollectionGeneratorSpec<T> nullable();
 
     /**
@@ -71,6 +71,7 @@ public interface CollectionGeneratorSpec<T> extends GeneratorSpec<Collection<T>>
      * @return spec builder
      * @since 1.4.0
      */
+    @Override
     CollectionGeneratorSpec<T> subtype(Class<?> type);
 
     /**

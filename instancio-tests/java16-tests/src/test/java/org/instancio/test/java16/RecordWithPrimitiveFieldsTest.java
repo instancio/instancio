@@ -29,7 +29,7 @@ import static org.instancio.Select.fields;
 /**
  * NOTE: this test fails in IntelliJ, run it using Maven
  */
-@FeatureTag({Feature.IGNORE, Feature.NULLABLE, Feature.SET})
+@FeatureTag({Feature.IGNORE, Feature.WITH_NULLABLE, Feature.SET})
 @ExtendWith(InstancioExtension.class)
 class RecordWithPrimitiveFieldsTest {
 

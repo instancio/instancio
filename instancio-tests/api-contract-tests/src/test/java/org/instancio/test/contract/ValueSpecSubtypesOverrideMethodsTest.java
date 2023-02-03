@@ -56,6 +56,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -150,6 +151,13 @@ class ValueSpecSubtypesOverrideMethodsTest {
             final Method[] genSpecMethods = generatorSpec.getDeclaredMethods();
 
             for (Method genSpecMethod : genSpecMethods) {
+
+                if (genSpecMethod.getName().toLowerCase(Locale.ROOT).contains("jacoco")) {
+                    // Jacoco modifies classes when tests are run via Maven
+                    // Ignore any methods added by Jacoco
+                    continue;
+                }
+
                 final Method specSubtypeMethod = methods.get(toMethodKey(genSpecMethod));
 
                 assertThat(specSubtypeMethod)

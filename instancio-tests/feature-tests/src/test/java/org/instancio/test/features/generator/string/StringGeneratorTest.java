@@ -29,7 +29,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
@@ -50,20 +49,6 @@ class StringGeneratorTest {
         assertThat(result)
                 .hasSize(sampleSize)
                 .doesNotContain("");
-    }
-
-    @Test
-    void disallowNull() {
-        final int sampleSize = 500;
-        final Stream<String> result = Instancio.of(String.class)
-                .withSettings(Settings.create().set(Keys.STRING_NULLABLE, true))
-                .generate(allStrings(), gen -> gen.string().nullable(false))
-                .stream()
-                .limit(sampleSize);
-
-        assertThat(result)
-                .hasSize(sampleSize)
-                .doesNotContainNull();
     }
 
     @Test

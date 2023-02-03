@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -33,11 +34,11 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
-@FeatureTag(Feature.NULLABLE)
-class NullableTest {
+@FeatureTag(Feature.WITH_NULLABLE)
+class WithNullableTest {
 
     @Test
-    void nullableRootObject() {
+    void rootObject() {
         final Set<String> results = new HashSet<>();
         for (int i = 0; i < 100; i++) {
             results.add(Instancio.of(String.class)
@@ -48,13 +49,23 @@ class NullableTest {
     }
 
     @Test
-    void nullableGroup() {
+    void rootObjectViaStream() {
+        final Stream<String> results = Instancio.of(String.class)
+                .withNullable(allStrings())
+                .stream()
+                .limit(100);
+
+        assertThat(results).containsNull();
+    }
+
+    @Test
+    void usingSelectorGroup() {
         final List<Person> results = Instancio.of(Person.class)
                 .withNullable(all(
                         all(LocalDateTime.class),
-                        field(Person.class, "name")))
+                        field(Person::getName)))
                 .stream()
-                .limit(1000L)
+                .limit(1000)
                 .collect(toList());
 
         assertThat(results.stream().map(Person::getName).collect(toSet())).containsNull();

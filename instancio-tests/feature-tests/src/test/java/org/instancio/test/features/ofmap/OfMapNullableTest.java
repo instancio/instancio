@@ -29,7 +29,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.root;
 
-@FeatureTag({Feature.OF_MAP, Feature.NULLABLE})
+@FeatureTag({
+        Feature.OF_MAP,
+        Feature.GENERATOR_SPEC_NULLABLE,
+        Feature.WITH_NULLABLE
+})
 class OfMapNullableTest {
 
     private static final int SAMPLE_SIZE = 500;
@@ -55,5 +59,4 @@ class OfMapNullableTest {
 
         assertThat(results).containsNull();
     }
-
 }

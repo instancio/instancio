@@ -34,7 +34,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.types;
 
 @NonDeterministicTag
-@FeatureTag({Feature.MODEL, Feature.NULLABLE})
+@FeatureTag({Feature.MODEL, Feature.WITH_NULLABLE})
 class ModelWithNullableTest {
 
     private static final int SAMPLE_SIZE = 500;
