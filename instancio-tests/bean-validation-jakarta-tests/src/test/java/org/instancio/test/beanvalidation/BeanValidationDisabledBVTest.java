@@ -36,6 +36,7 @@ class BeanValidationDisabledBVTest {
     @WithSettings
     private final Settings settings = Settings.create()
             .set(Keys.BEAN_VALIDATION_ENABLED, false)
+            .set(Keys.STRING_MIN_LENGTH, 1)
             .set(Keys.STRING_ALLOW_EMPTY, false)
             .set(Keys.STRING_NULLABLE, false);
 
