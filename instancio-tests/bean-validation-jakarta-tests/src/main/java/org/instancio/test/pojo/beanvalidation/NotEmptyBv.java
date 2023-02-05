@@ -30,7 +30,7 @@ public class NotEmptyBv {
     @NotEmpty
     private String[] array;
     @NotEmpty
-    private Collection<String> collection;
+    private Collection<UUID> collection;
     @NotEmpty
-    private Map<UUID, Integer> map;
+    private Map<UUID, UUID> map;
 }
