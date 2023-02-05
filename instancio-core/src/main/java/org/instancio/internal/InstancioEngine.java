@@ -327,6 +327,9 @@ class InstancioEngine {
         final AfterGenerate action = hints.afterGenerate();
         final NodePopulationFilter filter = new ArrayElementNodePopulationFilter(context);
         final boolean isPrimitiveArray = elementNode.getRawType().isPrimitive();
+
+        // If array elements fail to generate for any reason and null is returned,
+        // terminate the loop once we reach the threshold to avoid an infinite loop.
         int failedAdditions = 0;
 
         for (int i = lastIndex; i < arrayLength; i++) {
