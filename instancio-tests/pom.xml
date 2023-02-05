@@ -27,6 +27,9 @@
     </properties>
 
     <modules>
+        <!-- TODO move down -->
+        <module>bean-validation-jakarta-tests</module>
+        <module>bean-validation-hibernate-tests</module>
         <module>instancio-test-support</module>
         <module>instancio-core-tests</module>
         <module>instancio-junit-tests</module>

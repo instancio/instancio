@@ -428,17 +428,12 @@ class InstancioEngine {
         final Object[] args = new Object[children.size()];
 
         for (int i = 0; i < args.length; i++) {
-            final GeneratorResult result = createObject(children.get(i));
+            final Node child = children.get(i);
+            final GeneratorResult result = createObject(child);
 
-            if (result.containsNull()) {
-                args[i] = ObjectUtils.defaultValue(children.get(i).getRawType());
-            } else {
-                if (children.get(i).getRawType().isPrimitive()) {
-                    args[i] = ObjectUtils.defaultValue(children.get(i).getRawType());
-                } else {
-                    args[i] = result.getValue();
-                }
-            }
+            args[i] = result.containsNull()
+                    ? ObjectUtils.defaultValue(child.getRawType())
+                    : result.getValue();
         }
 
         try {

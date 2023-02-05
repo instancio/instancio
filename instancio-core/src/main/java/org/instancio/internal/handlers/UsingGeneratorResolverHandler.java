@@ -16,6 +16,7 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.generator.Generator;
+import org.instancio.internal.GeneratorSpecProcessor;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
@@ -32,14 +33,21 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
 
     private final ModelContext<?> context;
     private final GeneratorResolver generatorResolver;
+    private final GeneratorSpecProcessor beanValidationProcessors;
     private final GeneratedValuePostProcessor stringPostProcessor;
 
-    public UsingGeneratorResolverHandler(final ModelContext<?> context, final GeneratorResolver generatorResolver) {
+    public UsingGeneratorResolverHandler(
+            final ModelContext<?> context,
+            final GeneratorResolver generatorResolver,
+            final GeneratorSpecProcessor beanValidationProcessors) {
+
         this.context = context;
         this.generatorResolver = generatorResolver;
         this.stringPostProcessor = new StringPrefixingPostProcessor(
                 context.getSettings().get(Keys.STRING_FIELD_PREFIX_ENABLED));
+        this.beanValidationProcessors = beanValidationProcessors;
     }
+
 
     @NotNull
     @Override
@@ -49,6 +57,7 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
 
         return generatorOpt.map(generator -> {
             LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), targetClass.getName());
+            beanValidationProcessors.process(generator, node.getTargetClass(), node.getField());
 
             final Object value = generator.generate(context.getRandom());
             final Object processed = stringPostProcessor.process(value, node, generator);

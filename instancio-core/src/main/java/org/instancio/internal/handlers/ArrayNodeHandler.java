@@ -16,6 +16,7 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.generator.Generator;
+import org.instancio.internal.GeneratorSpecProcessor;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
@@ -26,10 +27,16 @@ public class ArrayNodeHandler implements NodeHandler {
 
     private final GeneratorResolver generatorResolver;
     private final ModelContext<?> context;
+    private final GeneratorSpecProcessor beanValidationProcessors;
 
-    public ArrayNodeHandler(final ModelContext<?> context, final GeneratorResolver generatorResolver) {
+    public ArrayNodeHandler(
+            final ModelContext<?> context,
+            final GeneratorResolver generatorResolver,
+            final GeneratorSpecProcessor beanValidationProcessor) {
+
         this.context = context;
         this.generatorResolver = generatorResolver;
+        this.beanValidationProcessors = beanValidationProcessor;
     }
 
     @NotNull
@@ -39,6 +46,7 @@ public class ArrayNodeHandler implements NodeHandler {
             final Generator<?> generator = generatorResolver.get(node.getTargetClass()).orElseThrow(
                     () -> new IllegalStateException("Unable to get array generator for node: " + node));
 
+            beanValidationProcessors.process(generator, node.getTargetClass(), node.getField());
             final Object arrayObject = generator.generate(context.getRandom());
             return GeneratorResult.create(arrayObject, generator.hints());
         }

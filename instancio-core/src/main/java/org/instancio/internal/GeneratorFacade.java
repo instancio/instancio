@@ -17,6 +17,8 @@ package org.instancio.internal;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.beanvalidation.BeanValidationProcessor;
+import org.instancio.internal.beanvalidation.NoopBeanValidationProvider;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
@@ -29,6 +31,7 @@ import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.reflection.instantiation.Instantiator;
+import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,15 +52,22 @@ class GeneratorFacade {
                 new GeneratorContext(context.getSettings(), random));
 
         final Instantiator instantiator = new Instantiator();
+        final GeneratorSpecProcessor beanValidationProcessor = getGeneratorSpecProcessor();
 
         this.nodeHandlers = new NodeHandler[]{
                 new UserSuppliedGeneratorHandler(context, generatorResolver, instantiator),
-                new ArrayNodeHandler(context, generatorResolver),
-                new UsingGeneratorResolverHandler(context, generatorResolver),
-                new CollectionNodeHandler(context),
-                new MapNodeHandler(context),
+                new ArrayNodeHandler(context, generatorResolver, beanValidationProcessor),
+                new UsingGeneratorResolverHandler(context, generatorResolver, beanValidationProcessor),
+                new CollectionNodeHandler(context, beanValidationProcessor),
+                new MapNodeHandler(context, beanValidationProcessor),
                 new InstantiatingHandler(instantiator)
         };
+    }
+
+    private GeneratorSpecProcessor getGeneratorSpecProcessor() {
+        final boolean isEnabled = context.getSettings().get(Keys.BEAN_VALIDATION_ENABLED);
+        LOG.trace("Keys.BEAN_VALIDATION_ENABLED={}", isEnabled);
+        return isEnabled ? new BeanValidationProcessor() : new NoopBeanValidationProvider();
     }
 
     private boolean isIgnored(final Node node) {

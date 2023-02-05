@@ -56,10 +56,12 @@
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <latest.release.version>2.6.0</latest.release.version>
-        <version.objenesis>3.3</version.objenesis>
+        <version.jakarta.validation>3.0.2</version.jakarta.validation>
+        <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
         <version.jetbrains.annotations>24.0.0</version.jetbrains.annotations>
-        <version.slf4j>1.7.36</version.slf4j>
         <version.junit>5.9.2</version.junit>
+        <version.objenesis>3.3</version.objenesis>
+        <version.slf4j>1.7.36</version.slf4j>
     </properties>
 
     <issueManagement>
@@ -395,10 +397,24 @@
                 <version>${version.objenesis}</version>
             </dependency>
             <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${version.jakarta.validation}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${version.hibernate.validator}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${version.jetbrains.annotations}</version>
-                <scope>provided</scope>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
