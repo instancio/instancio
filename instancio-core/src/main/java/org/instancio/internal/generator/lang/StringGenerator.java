@@ -22,6 +22,7 @@ import org.instancio.generator.specs.StringSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.Keys;
@@ -40,8 +41,11 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     private String suffix;
     private StringType stringType;
 
-    // Used internally only to generate URLs, UUIDs, etc.
-    // If delegate is set, then none of this spec's values matter.
+    /**
+     * Delegate for internal use only. It is used to support Bean Validation.
+     * If delegate is set, then it will be used for generating the value,
+     * which is then converted {@code toString()}.
+     */
     private Generator<?> delegate;
 
     public void setDelegate(final Generator<?> delegate) {
@@ -126,6 +130,10 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         this.maxLength = ApiValidator.validateLength(maxLength);
         ApiValidator.isTrue(minLength <= maxLength,
                 "Min length must be less than or equal to max (%s, %s)", minLength, maxLength);
+
+        if (delegate instanceof InternalLengthGeneratorSpec<?>) {
+            ((InternalLengthGeneratorSpec<?>) delegate).length(minLength, maxLength);
+        }
         return this;
     }
 

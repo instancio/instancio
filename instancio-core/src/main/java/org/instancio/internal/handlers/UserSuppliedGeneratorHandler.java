@@ -19,6 +19,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
@@ -67,6 +68,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
         }).orElse(GeneratorResult.emptyResult());
     }
 
+    @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
     private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
         final Optional<Generator<?>> generatorOpt = modelContext.getGenerator(node);
 
@@ -79,11 +81,14 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
 
             if (internalHint != null && internalHint.isDelegating()) {
                 final Class<?> forClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
-                final Generator<?> generatingDelegate = generatorResolver
-                        .get(forClass)
-                        .orElseGet(() -> new InstantiatingGenerator(instantiator, forClass));
+                final Generator<?> delegate = generatorResolver.get(forClass)
+                        .orElse(new InstantiatingGenerator(instantiator, forClass));
 
-                return Optional.of(new GeneratorDecorator(generatingDelegate, hints));
+                if (delegate instanceof AbstractGenerator<?>) {
+                    final boolean nullable = ((AbstractGenerator<?>) generator).isNullable();
+                    ((AbstractGenerator<?>) delegate).nullable(nullable);
+                }
+                return Optional.of(new GeneratorDecorator(delegate, hints));
             }
         }
         return generatorOpt;

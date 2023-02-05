@@ -22,8 +22,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
 public final class CollectionUtils {
     private CollectionUtils() {
@@ -41,6 +45,27 @@ public final class CollectionUtils {
     @SafeVarargs
     public static <T> List<T> asList(final T... values) {
         return values == null ? Collections.emptyList() : Arrays.asList(values);
+    }
+
+    @SafeVarargs
+    public static <T> Set<T> asSet(final T... values) {
+        if (values == null) {
+            return Collections.emptySet();
+        }
+        final Set<T> set = new HashSet<>(values.length);
+        Collections.addAll(set, values);
+        return set;
+    }
+
+    @SafeVarargs
+    public static <K, V> Map<K, V> asLinkedHashMap(final Function<V, K> keyFn, final V... values) {
+        if (values == null) return Collections.emptyMap();
+        final Map<K, V> map = new LinkedHashMap<>(values.length);
+        for (V value : values) {
+            final K key = keyFn.apply(value);
+            map.put(key, value);
+        }
+        return map;
     }
 
     @SafeVarargs

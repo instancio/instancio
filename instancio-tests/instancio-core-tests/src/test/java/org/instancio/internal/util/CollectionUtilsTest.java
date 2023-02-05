@@ -15,8 +15,10 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.internal.random.DefaultRandom;
+import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +30,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,6 +61,28 @@ class CollectionUtilsTest {
     void asList() {
         assertThat(CollectionUtils.asList(null)).isEmpty();
         assertThat(CollectionUtils.asList("foo", "bar")).containsExactly("foo", "bar");
+    }
+
+    @Test
+    void asSet() {
+        assertThat(CollectionUtils.asSet(null)).isEmpty();
+        assertThat(CollectionUtils.asSet("foo", "bar")).containsExactlyInAnyOrder("foo", "bar");
+    }
+
+    @Test
+    void asLinkedHashMap() {
+        final Person[] persons = Instancio.create(Person[].class);
+        final Map<UUID, Person> result = CollectionUtils.asLinkedHashMap(Person::getUuid, persons);
+        assertThat(result).hasSize(persons.length);
+        for (Person person : persons) {
+            assertThat(result).containsEntry(person.getUuid(), person);
+        }
+    }
+
+    @Test
+    void asLinkedHashMapShouldReturnEmptyMapIfGivenEmptyOrNullArray() {
+        assertThat(CollectionUtils.asLinkedHashMap(Person::getUuid, (Person[]) null)).isEmpty();
+        assertThat(CollectionUtils.asLinkedHashMap(Person::getUuid)).isEmpty();
     }
 
     @Test

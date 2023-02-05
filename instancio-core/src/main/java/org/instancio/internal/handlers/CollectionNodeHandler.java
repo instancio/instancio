@@ -16,6 +16,7 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.GeneratorSpecProcessor;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.util.CollectionGenerator;
@@ -27,9 +28,14 @@ import java.util.Collection;
 public class CollectionNodeHandler implements NodeHandler {
 
     private final ModelContext<?> context;
+    private final GeneratorSpecProcessor beanValidationProcessors;
 
-    public CollectionNodeHandler(final ModelContext<?> context) {
+    public CollectionNodeHandler(
+            final ModelContext<?> context,
+            final GeneratorSpecProcessor beanValidationProcessors) {
+
         this.context = context;
+        this.beanValidationProcessors = beanValidationProcessors;
     }
 
     @NotNull
@@ -40,7 +46,7 @@ public class CollectionNodeHandler implements NodeHandler {
                     new GeneratorContext(context.getSettings(), context.getRandom()));
 
             generator.subtype(node.getTargetClass());
-
+            beanValidationProcessors.process(generator, node.getTargetClass(), node.getField());
             return GeneratorResult.create(generator.generate(context.getRandom()), generator.hints());
         }
         return GeneratorResult.emptyResult();

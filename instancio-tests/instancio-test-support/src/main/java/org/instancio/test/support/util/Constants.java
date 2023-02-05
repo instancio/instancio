@@ -22,4 +22,8 @@ public final class Constants {
 
     public static final int MIN_SIZE = 2;
     public static final int MAX_SIZE = 6;
+
+    public static final int SAMPLE_SIZE_D = 9;
+    public static final int SAMPLE_SIZE_DD = 99;
+    public static final int SAMPLE_SIZE_DDD = 999;
 }

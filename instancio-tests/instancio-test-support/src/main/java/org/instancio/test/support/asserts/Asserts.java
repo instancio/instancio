@@ -16,6 +16,9 @@
 package org.instancio.test.support.asserts;
 
 import org.assertj.core.api.AbstractCharSequenceAssert;
+import org.instancio.test.support.pojo.basic.Numbers;
+
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,6 +42,25 @@ public final class Asserts {
 
     public static void assertAllZeroes(final int... nums) {
         assertThat(nums).containsOnly(0);
+    }
+
+    public static void assertRange(final Numbers result, final BigDecimal min, final BigDecimal max) {
+        assertThat(result.getPrimitiveByte()).isBetween(min.byteValue(), max.byteValue());
+        assertThat(result.getPrimitiveShort()).isBetween(min.shortValue(), max.shortValue());
+        assertThat(result.getPrimitiveInt()).isBetween(min.intValue(), max.intValue());
+        assertThat(result.getPrimitiveLong()).isBetween(min.longValue(), max.longValue());
+        assertThat(result.getPrimitiveFloat()).isBetween(min.floatValue(), max.floatValue());
+        assertThat(result.getPrimitiveDouble()).isBetween(min.doubleValue(), max.doubleValue());
+
+        assertThat(result.getByteWrapper()).isBetween(min.byteValue(), max.byteValue());
+        assertThat(result.getShortWrapper()).isBetween(min.shortValue(), max.shortValue());
+        assertThat(result.getIntegerWrapper()).isBetween(min.intValue(), max.intValue());
+        assertThat(result.getLongWrapper()).isBetween(min.longValue(), max.longValue());
+        assertThat(result.getFloatWrapper()).isBetween(min.floatValue(), max.floatValue());
+        assertThat(result.getDoubleWrapper()).isBetween(min.doubleValue(), max.doubleValue());
+
+        assertThat(result.getBigInteger()).isBetween(min.toBigInteger(), max.toBigInteger());
+        assertThat(result.getBigDecimal()).isBetween(min, max);
     }
 
     public static AbstractCharSequenceAssert<?, String> assertHasFieldPrefix(

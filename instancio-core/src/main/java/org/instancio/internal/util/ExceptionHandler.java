@@ -79,7 +79,7 @@ public final class ExceptionHandler {
         if (LOG.isTraceEnabled()) {
             LOG.trace(ERROR_MSG, t);
         } else {
-            LOG.debug("{}: {}", ERROR_MSG, t.getMessage());
+            LOG.debug("{}. {}: {}", ERROR_MSG, t.getClass().getName(), t.getMessage());
         }
     }
 

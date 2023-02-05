@@ -311,6 +311,17 @@ public final class Keys {
     public static final SettingKey SETTER_STYLE = register(
             "setter.style", SetterStyle.class, SetterStyle.SET);
     /**
+     * Specifies whether values should be generated based on
+     * <a href="https://beanvalidation.org/3.0/">Jakarta Bean Validation 3.0</a>
+     * annotations, if present;
+     * default is {@code false}; property name {@code bean.validation.api.enabled}.
+     *
+     * @since 2.7.0
+     */
+    @ExperimentalApi
+    public static final SettingKey BEAN_VALIDATION_ENABLED = register(
+            "bean.validation.enabled", Boolean.class, false);
+    /**
      * Specifies the seed value;
      * default is {@code null}; property name {@code seed}.
      *
