@@ -34,7 +34,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.root;
 
-@FeatureTag({Feature.GENERATE, Feature.COLLECTION_GENERATOR_NULLABLE_ELEMENT})
+@FeatureTag({Feature.GENERATE, Feature.COLLECTION_GENERATOR_NULLABLE_ELEMENTS})
 @ExtendWith(InstancioExtension.class)
 class CollectionGeneratorNullableElementsTest {
 

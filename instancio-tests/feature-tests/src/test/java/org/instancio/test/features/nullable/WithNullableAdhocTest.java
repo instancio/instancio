@@ -45,28 +45,10 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
 @NonDeterministicTag
-@FeatureTag(Feature.WITH_NULLABLE)
-class WithNullableFieldTest {
+@FeatureTag({Feature.NULLABILITY, Feature.WITH_NULLABLE})
+class WithNullableAdhocTest {
 
-    private static final int SAMPLE_SIZE = 100;
-
-    @Test
-    @DisplayName("A nullable field will be randomly set to null")
-    void nullableFieldIsRandomlySetToNull() {
-        Set<Object> results = new HashSet<>();
-
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final IntegerHolder holder = Instancio.of(IntegerHolder.class)
-                    .withNullable(field("wrapper"))
-                    .create();
-
-            results.add(holder.getWrapper());
-        }
-
-        assertThat(results)
-                .hasSizeGreaterThan(5)
-                .containsNull();
-    }
+    private static final int SAMPLE_SIZE = 500;
 
     @Test
     @DisplayName("Set selector with scope as nullable")

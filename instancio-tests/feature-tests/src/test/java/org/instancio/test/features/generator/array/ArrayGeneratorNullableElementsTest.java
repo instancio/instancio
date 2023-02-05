@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
 @NonDeterministicTag
-@FeatureTag({Feature.GENERATE, Feature.ARRAY_GENERATOR_NULLABLE_ELEMENT})
+@FeatureTag({Feature.GENERATE, Feature.ARRAY_GENERATOR_NULLABLE_ELEMENTS})
 @ExtendWith(InstancioExtension.class)
 class ArrayGeneratorNullableElementsTest {
     private static final int ARRAY_LENGTH = 1000;
