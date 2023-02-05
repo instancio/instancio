@@ -15,8 +15,10 @@
  */
 package org.instancio.internal;
 
+import org.instancio.documentation.InternalApi;
 import org.instancio.settings.Settings;
 
+@InternalApi
 public final class ThreadLocalSettings {
 
     private static final ThreadLocalSettings INSTANCE = new ThreadLocalSettings();

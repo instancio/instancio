@@ -20,6 +20,7 @@ import lombok.Data;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 @Data
 public class NotEmptyBv {
@@ -31,5 +32,5 @@ public class NotEmptyBv {
     @NotEmpty
     private Collection<String> collection;
     @NotEmpty
-    private Map<String, Integer> map;
+    private Map<UUID, Integer> map;
 }

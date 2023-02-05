@@ -254,7 +254,6 @@ class AfterGenerateTest {
         void populateAll() {
             final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_ALL);
 
-            System.out.println(result);
             assertThat(result.getOne()).isEqualTo(OVERRIDE_ONE);
             assertThat(result.getTwo()).isEqualTo(OVERRIDE_TWO_VIA_CALLBACK);
             assertThat(result.getThree()).isNotEqualTo(THREE);

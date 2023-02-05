@@ -16,7 +16,9 @@
 package org.instancio.internal;
 
 import org.instancio.Random;
+import org.instancio.documentation.InternalApi;
 
+@InternalApi
 public final class ThreadLocalRandom {
 
     private static final ThreadLocalRandom INSTANCE = new ThreadLocalRandom();

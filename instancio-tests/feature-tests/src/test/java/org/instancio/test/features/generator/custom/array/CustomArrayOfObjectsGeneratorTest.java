@@ -31,8 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Arrays;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.types;
@@ -119,7 +117,6 @@ class CustomArrayOfObjectsGeneratorTest {
                 .subtype(all(ItemInterface.class), Item.class)
                 .create();
 
-        System.out.println(Arrays.toString(result));
         assertThat(result[POPULATED_INDEX].getValue()).isEqualTo(ORIGINAL_VALUE);
 
         for (int i = 0; i < result.length; i++) {
