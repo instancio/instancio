@@ -905,26 +905,64 @@ Person person = Instancio.of(Person.class)
 
 ### Nullable Values
 
-By default, Instancio generates non-null values for all fields.
+By default, Instancio generates non-null values.
 There are cases where this behaviour may need to be relaxed, for example to verify that a piece of code does not fail in the presence of certain `null` values.
-There are a few way to specify that values can be nullable.
-This can be done using:
+There are a few way to specify that values can be nullable which can broadly grouped into two categories:
 
-- `withNullable` method of the builder API
-- generator methods (if a generator supports it)
+- field nullability
+- array/collection element and map key/value nullability
+
+#### Field nullability
+
+Field declarations can be made nullable using:
+
+- {{withNullable}} method of the builder API
+- generator spec `nullable()` method (for generators that support it)
 - {{Settings}}
 
-To specify that something is nullable using the builder API can be done as follows:
+For example, the following marks `Person.address` and all `String` fields as nullable:
 
-``` java linenums="1" title="Example: specifying nullability using the builder API"
+``` java linenums="1"
 Person person = Instancio.of(Person.class)
     .withNullable(field(Person::getAddress))
     .withNullable(allStrings())
     .create();
 ```
 
-Some built-in generators also support marking values as nullable.
-In addition, Collection, Map, and Array generators allow specifying whether elements, keys or values are nullable.
+A number of built-in generators also support marking values as nullable.
+As in the previous example, this also applies only to string fields,
+and not, for example, `List<String>`:
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+    .generate(allStrings(), gen -> gen.string().nullable())
+    .create();
+```
+
+The final example, using `Settings`, follows the same principle:
+
+```java linenums="1"
+Settings settings = Settings.create()
+    .set(Keys.STRING_NULLABLE, true);
+
+Person person = Instancio.of(Person.class)
+    .withSettings(settings)
+    .create();
+```
+
+#### Element nullability
+
+Data structure elements can be made nullable using:
+
+- array generator: `nullableElements()`
+- collection generator: `nullableElements()`
+- map generator: `nullableKeys()`, `nullableValues()`
+- {{Settings}} keys
+    - `Keys.ARRAY_ELEMENTS_NULLABLE`
+    - `Keys.COLLECTION_ELEMENTS_NULLABLE`
+    - `Keys.MAP_KEYS_NULLABLE`
+    - `Keys.MAP_VALUES_NULLABLE`
+
 
 ``` java linenums="1" title="Example: specifying nullability using the collection generator" hl_lines="3 4"
 Person person = Instancio.of(Person.class)
@@ -945,13 +983,10 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-Lastly, nullability can be specified using {{Settings}}, but only for core types, such as strings and numbers:
+Lastly, element nullability can be specified using {{Settings}} as follows:
 
 ``` java linenums="1" title="Example: specifying nullability using Settings"
 Settings settings = Settings.create()
-    .set(Keys.STRING_NULLABLE, true)
-    .set(Keys.INTEGER_NULLABLE, true)
-    .set(Keys.COLLECTION_NULLABLE, true)
     .set(Keys.COLLECTION_ELEMENTS_NULLABLE, true);
 
 Person person = Instancio.of(Person.class)

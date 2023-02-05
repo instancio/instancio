@@ -35,7 +35,7 @@ public final class Constants {
      * Number of times {@link Collection#add(Object)} or {@link Map#put(Object, Object)}
      * can be unsuccessful before population is aborted.
      */
-    public static final int FAILED_COLLECTION_ADD_THRESHOLD = 1000;
+    public static final int FAILED_ADD_THRESHOLD = 1000;
 
     /**
      * Default min array/collection size.

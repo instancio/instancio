@@ -42,6 +42,7 @@ import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -260,17 +261,18 @@ class InstancioEngine {
                     entriesToGenerate--;
                 } else {
                     failedAdditions++;
-                    if (failedAdditions > Constants.FAILED_COLLECTION_ADD_THRESHOLD) {
-                        conditionalFailOnError(() -> {
-                            throw new InstancioException(
-                                    "Unable to populate " + Format.withoutPackage(node.getType())
-                                            + " with requested number of entries: " + hint.generateEntries());
-                        });
-                        break;
-                    }
                 }
             } else {
-                entriesToGenerate--;
+                failedAdditions++;
+            }
+
+            if (failedAdditions > Constants.FAILED_ADD_THRESHOLD) {
+                conditionalFailOnError(() -> {
+                    throw new InstancioException(
+                            "Unable to populate " + Format.withoutPackage(node.getType())
+                                    + " with requested number of entries: " + hint.generateEntries());
+                });
+                break;
             }
         }
 
@@ -281,6 +283,7 @@ class InstancioEngine {
     }
 
     @SuppressWarnings({
+            "PMD.CognitiveComplexity",
             "PMD.NPathComplexity",
             "PMD.ForLoopVariableCount",
             "PMD.AvoidReassigningLoopVariables"})
@@ -322,8 +325,9 @@ class InstancioEngine {
         }
 
         final AfterGenerate action = hints.afterGenerate();
-        final boolean isPrimitiveArray = elementNode.getRawType().isPrimitive();
         final NodePopulationFilter filter = new ArrayElementNodePopulationFilter(context);
+        final boolean isPrimitiveArray = elementNode.getRawType().isPrimitive();
+        int failedAdditions = 0;
 
         for (int i = lastIndex; i < arrayLength; i++) {
 
@@ -340,7 +344,17 @@ class InstancioEngine {
                 continue;
             }
 
-            final Object elementValue = createObject(elementNode, hint.nullableElements());
+            Object elementValue = createObject(elementNode, hint.nullableElements());
+
+            // If elements are not nullable, keep generating until a non-null
+            while (elementValue == null
+                    && !hint.nullableElements()
+                    && !context.isIgnored(elementNode)
+                    && failedAdditions < Constants.FAILED_ADD_THRESHOLD) {
+
+                failedAdditions++;
+                elementValue = createObject(elementNode, false);
+            }
 
             // can't assign null values to primitive arrays
             if (!isPrimitiveArray || elementValue != null) {
@@ -390,18 +404,19 @@ class InstancioEngine {
                     // If requested size is impossible (e.g. a Set<Boolean> of size 5)
                     // then abandon populating it after the threshold is reached
                     failedAdditions++;
-                    if (failedAdditions > Constants.FAILED_COLLECTION_ADD_THRESHOLD) {
-                        conditionalFailOnError(() -> {
-                            throw new InstancioException(
-                                    "Unable to populate " + Format.withoutPackage(node.getType())
-                                            + " with requested number of elements: " + hint.generateElements());
-                        });
-                        break;
-                    }
                 }
             } else {
                 // Avoid infinite loop (e.g. if value couldn't be generated)
-                elementsToGenerate--;
+                failedAdditions++;
+            }
+
+            if (failedAdditions > Constants.FAILED_ADD_THRESHOLD) {
+                conditionalFailOnError(() -> {
+                    throw new InstancioException(
+                            "Unable to populate " + Format.withoutPackage(node.getType())
+                                    + " with requested number of elements: " + hint.generateElements());
+                });
+                break;
             }
         }
 
@@ -477,6 +492,7 @@ class InstancioEngine {
         }
     }
 
+    @Nullable
     private Object createObject(final Node node, final boolean isNullable) {
         if (context.getRandom().diceRoll(isNullable)) {
             notifyListeners(node, GeneratorResult.nullResult());

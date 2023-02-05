@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 @Data
 public class NotNullBv {
@@ -44,6 +45,6 @@ public class NotNullBv {
     @NotNull private BigDecimal bigDecimal;
     @NotNull private String[] array;
     @NotNull private Collection<String> collection;
-    @NotNull private Map<String, Integer> map;
+    @NotNull private Map<UUID, Integer> map;
     //@formatter:on
 }

@@ -158,7 +158,7 @@ public interface InstancioApi<T> {
 
     /**
      * Specifies that a field or class is nullable. By default, Instancio assigns
-     * non-null values. If marked as nullable, Instancio will generate either
+     * non-null values to fields. If marked as nullable, Instancio will generate either
      * a null or non-null value.
      *
      * <p>Example:
@@ -169,6 +169,11 @@ public interface InstancioApi<T> {
      *             .withNullable(fields().named("lastModified"))
      *             .create();
      * }</pre>
+     *
+     * <b>Note:</b> a type marked as nullable using this method is only nullable
+     * when declared as a field, but <b>not</b> as a collection element,
+     * or map key/value. For example, {@code withNullable(allStrings())}
+     * will not generate nulls in a {@code List<String>}.
      *
      * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference

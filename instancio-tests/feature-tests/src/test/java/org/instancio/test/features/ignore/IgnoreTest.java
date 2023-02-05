@@ -110,7 +110,6 @@ class IgnoreTest {
         assertThat(pets).containsOnlyNulls();
     }
 
-
     @Test
     void ignoredClassNotAddedAsMapValue() {
         final MapStringPerson result = Instancio.of(MapStringPerson.class)

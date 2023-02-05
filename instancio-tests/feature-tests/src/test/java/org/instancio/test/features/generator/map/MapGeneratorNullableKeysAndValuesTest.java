@@ -33,8 +33,8 @@ import static org.instancio.Select.all;
 @NonDeterministicTag
 @FeatureTag({
         Feature.GENERATE,
-        Feature.MAP_GENERATOR_NULLABLE_KEY,
-        Feature.MAP_GENERATOR_NULLABLE_VALUE})
+        Feature.MAP_GENERATOR_NULLABLE_KEYS,
+        Feature.MAP_GENERATOR_NULLABLE_VALUES})
 @ExtendWith(InstancioExtension.class)
 class MapGeneratorNullableKeysAndValuesTest {
 
