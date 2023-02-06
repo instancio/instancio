@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 
@@ -59,12 +58,13 @@ import static java.util.stream.Collectors.joining;
  */
 final class SelectorMap<V> {
     private static final boolean FIND_ONE_ONLY = true;
-    private static final ScopelessSelector SCOPELESS_ROOT = new ScopelessSelector(SelectorImpl.getRootSelector().getTargetClass());
+    private static final ScopelessSelector SCOPELESS_ROOT = new ScopelessSelector(
+            SelectorImpl.getRootSelector().getTargetClass());
 
-    private final Map<ScopelessSelector, List<SelectorImpl>> scopelessSelectors = new LinkedHashMap<>();
-    private final Map<? super TargetSelector, V> selectors = new LinkedHashMap<>();
-    private final Set<? super TargetSelector> unusedSelectors = new LinkedHashSet<>();
-    private final List<PredicateSelectorEntry<V>> predicateSelectors = new ArrayList<>();
+    private final Map<ScopelessSelector, List<SelectorImpl>> scopelessSelectors = new LinkedHashMap<>(0);
+    private final Map<? super TargetSelector, V> selectors = new LinkedHashMap<>(0);
+    private final Set<? super TargetSelector> unusedSelectors = new LinkedHashSet<>(0);
+    private final List<PredicateSelectorEntry<V>> predicateSelectors = new ArrayList<>(0);
 
     private static final class PredicateSelectorEntry<V> {
         private final PredicateSelectorImpl predicateSelector;
@@ -91,7 +91,7 @@ final class SelectorMap<V> {
 
             selectors.put(selector, value);
             unusedSelectors.add(selector);
-            scopelessSelectors.computeIfAbsent(scopeless, selectorList -> new ArrayList<>()).add(selector);
+            scopelessSelectors.computeIfAbsent(scopeless, selectorList -> new ArrayList<>(3)).add(selector);
         } else if (targetSelector instanceof PredicateSelector) {
             final PredicateSelectorImpl selector = (PredicateSelectorImpl) targetSelector;
             predicateSelectors.add(new PredicateSelectorEntry<>(selector, value));
@@ -119,13 +119,12 @@ final class SelectorMap<V> {
      * @return value for given node, if present
      */
     Optional<V> getValue(final Node node) {
-        final Optional<V> value = getSelectorsWithParent(node, getCandidates(node), FIND_ONE_ONLY).stream()
-                .findFirst()
-                .map(this::markUsed)
-                .map(selectors::get);
+        final List<SelectorImpl> withParent = getSelectorsWithParent(node, getCandidates(node), FIND_ONE_ONLY);
 
-        if (value.isPresent()) {
-            return value;
+        if (!withParent.isEmpty()) {
+            final SelectorImpl selector = withParent.get(0);
+            markUsed(selector);
+            return Optional.of(this.selectors.get(selector));
         }
 
         return getPredicateSelectorMatch(node);
@@ -165,22 +164,21 @@ final class SelectorMap<V> {
      * @return all values for given node, or an empty list if none found
      */
     List<V> getValues(final Node node) {
-        final List<V> values = getSelectorsWithParent(node, getCandidates(node), !FIND_ONE_ONLY)
-                .stream()
-                .map(this::markUsed)
-                .map(selectors::get)
-                .collect(Collectors.toCollection(ArrayList::new));
+        final List<SelectorImpl> selectorsWithParent = getSelectorsWithParent(node, getCandidates(node), !FIND_ONE_ONLY);
+        final List<V> values = new ArrayList<>(selectorsWithParent.size() + predicateSelectors.size());
 
-        final List<V> valuesMatchingPredicates = new ArrayList<>();
+        for (SelectorImpl s : selectorsWithParent) {
+            markUsed(s);
+            values.add(this.selectors.get(s));
+        }
 
         for (PredicateSelectorEntry<V> entry : predicateSelectors) {
             if (isPredicateMatch(node, entry)) {
                 entry.matched = true;
-                valuesMatchingPredicates.add(entry.value);
+                values.add(entry.value);
             }
         }
 
-        values.addAll(valuesMatchingPredicates);
         return values;
     }
 
@@ -190,7 +188,7 @@ final class SelectorMap<V> {
                 : entry.predicateSelector.getClassPredicate().test(node.getTargetClass());
     }
 
-    private SelectorImpl markUsed(final SelectorImpl selector) {
+    private void markUsed(final SelectorImpl selector) {
         // Special treatment of convenience PrimitiveAndWrapper selectors such as Select.allInts(),
         // which contains all(Integer.class) and all(int.class). If we only
         // match one, consider the equivalent to be matched as well.
@@ -202,7 +200,6 @@ final class SelectorMap<V> {
             unusedSelectors.remove(equivalent);
         }
         unusedSelectors.remove(selector);
-        return selector;
     }
 
     /**
@@ -220,8 +217,11 @@ final class SelectorMap<V> {
                 scopelessSelectors.getOrDefault(new ScopelessSelector(node.getRawType()), Collections.emptyList()));
 
         if (node.getField() != null) {
+            final ScopelessSelector key = new ScopelessSelector(
+                    node.getField().getDeclaringClass(), node.getField());
+
             final List<SelectorImpl> fieldSelectors = scopelessSelectors.getOrDefault(
-                    new ScopelessSelector(node.getField().getDeclaringClass(), node.getField()), Collections.emptyList());
+                    key, Collections.emptyList());
 
             candidates.addAll(fieldSelectors);
         }
@@ -237,7 +237,7 @@ final class SelectorMap<V> {
             return Collections.emptyList();
         }
 
-        final List<SelectorImpl> results = new ArrayList<>();
+        final List<SelectorImpl> results = new ArrayList<>(3);
 
         // Start from the end so that in case of overlaps last selector wins
         // (only matters if a single result is requested)
@@ -284,7 +284,6 @@ final class SelectorMap<V> {
         if (selectors.isEmpty()) {
             return "SelectorMap{}";
         }
-
         return String.format("SelectorMap:{%n%s%n}", selectors.entrySet()
                 .stream()
                 .map(Object::toString)
