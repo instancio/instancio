@@ -49,15 +49,6 @@ class NodeTest {
     private static final NodeFactory NODE_FACTORY = new NodeFactory(NODE_CONTEXT);
 
     @Test
-    void getName() {
-        final Node personNode = NODE_FACTORY.createRootNode(Person.class);
-        assertThat(personNode.getNodeName()).isEqualTo("Person");
-        assertThat(getChildNode(personNode, "age").getNodeName()).isEqualTo("Person.age");
-        assertThat(getChildNode(personNode, "name").getNodeName()).isEqualTo("Person.name");
-        assertThat(getChildNode(personNode, "address").getNodeName()).isEqualTo("Person.address");
-    }
-
-    @Test
     void getNodeKind() {
         assertThat(NODE_FACTORY.createRootNode(Person.class).getNodeKind()).isEqualTo(NodeKind.DEFAULT);
         assertThat(NODE_FACTORY.createRootNode(int.class).getNodeKind()).isEqualTo(NodeKind.DEFAULT);

@@ -28,10 +28,11 @@ public class MainRecordCreationTest extends CreationTestTemplate<MainRecord> {
 
     @Override
     protected void verify(MainRecord result) {
-        assertThat(result.getDetailRecords()).isNotEmpty().allSatisfy(detail -> {
-            assertThat(detail.getMainRecord()).isNotNull();
-            assertThat(detail.getMainRecord().getId()).isNotNull();
-            assertThat(detail.getMainRecord().getDetailRecords()).isNull();
-        });
+        assertThat(result.getDetailRecords())
+                .isNotEmpty()
+                .allSatisfy(detail -> {
+                    assertThat(detail.getId()).isNotNull();
+                    assertThat(detail.getMainRecord()).isNull();
+                });
     }
 }
