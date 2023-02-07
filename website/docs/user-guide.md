@@ -1436,6 +1436,76 @@ long seed = result.getSeed(); // seed value that was used for populating the per
 // snip...
 ```
 
+
+# Bean Validation
+
+Instancio can generate valid data based on Bean Validation annotations.
+This is an experimental feature and is disabled by default.
+
+
+The feature can be enabled via {{Settings}} using `Keys.BEAN_VALIDATION_ENABLED`,
+or globally, using `instancio.properties`:
+
+```properties
+bean.validation.enabled=true
+```
+
+In addition, `jakarta.validation-api` must be present on the classpath for the feature to be activated.
+Instancio does not provide the dependency transitively:
+
+```xml
+<dependency>
+    <groupId>jakarta.validation</groupId>
+    <artifactId>jakarta.validation-api</artifactId>
+    <version>3.0.2</version>
+</dependency>
+```
+
+Optionally, Hibernate validator must be present on the classpath in order to use
+Hibernate-specific annotations:
+
+```xml
+<dependency>
+    <groupId>org.hibernate.validator</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>8.0.0.Final</version>
+</dependency>
+```
+
+## Supported Annotations
+
+The list of supported annotations is provided below.
+Anything not listed is unsupported, including `*.List` annotations.
+
+### Jakarta
+
+- `@DecimalMax`
+- `@DecimalMin`
+- `@Digits` (`fraction()` is partially supported by `BigDecimal`, but not `float` or `double`)
+- `@Email`
+- `@Future` (not supported by `MonthDay`)
+- `@FutureOrPresent` (delegates to `Future`)
+- `@Max`
+- `@Min`
+- `@Negative`
+- `@NegativeOrZero`
+- `@NotBlank` (delegates to `NotEmpty`)
+- `@NotEmpty`
+- `@NotNull`
+- `@Past` (not supported by `MonthDay`)
+- `@PastOrPresent` (delegates to `Past`)
+- `@Positive`
+- `@PositiveOrZero`
+- `@Size`
+
+### Hibernate
+
+- `@Length`
+- `@Range`
+- `@URL` (`protocol`, `host`, `port` are supported; `regexp` not supported)
+- `@UUID`
+
+
 # Metamodel
 
 This section expands on the [Selectors](#selectors) section, which described how to target fields.
