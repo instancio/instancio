@@ -38,21 +38,13 @@ class BidirectionalOneToOneNodeTest extends NodeTestTemplate<BidirectionalOneToO
                 .hasParent(rootNode)
                 .hasFieldName("child")
                 .hasTargetClass(BidirectionalOneToOne.Child.class)
-                .hasChildrenOfSize(2)
-                .get();
-
-        final Node parent = assertNode(NodeUtils.getChildNode(child, "parent"))
-                .hasDepth(2)
-                .hasParent(child)
-                .hasFieldName("parent")
-                .hasTargetClass(BidirectionalOneToOne.Parent.class)
                 .hasChildrenOfSize(1)
                 .get();
 
-        assertNode(parent.getOnlyChild())
-                .hasDepth(3)
-                .hasParent(parent)
-                .hasFieldName("parentName")
+        assertNode(child.getOnlyChild())
+                .hasDepth(2)
+                .hasParent(child)
+                .hasFieldName("childName")
                 .hasTargetClass(String.class)
                 .hasNoChildren();
     }

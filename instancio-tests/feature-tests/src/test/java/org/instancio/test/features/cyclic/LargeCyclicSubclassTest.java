@@ -20,6 +20,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.performance.LargeCyclicSubclass;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -38,16 +39,22 @@ class LargeCyclicSubclassTest {
             .set(Keys.MAX_DEPTH, Integer.MAX_VALUE);
 
     @Test
-    @Timeout(value = 40)
+    @Timeout(value = 2)
     void largeCyclicShouldBeGeneratedWithinGivenTimeout() {
         final LargeCyclicSubclass result = Instancio.create(LargeCyclicSubclass.class);
 
-        assertThat(result.getLargeCyclicClass1()).isNotNull();
-        assertThat(result.getLargeCyclicClass1().getList0()).isNotEmpty();
-        assertThat(result.getLargeCyclicClass1().getLargeCyclicClass1()).isNull();
+        assertThat(result).hasNoNullFieldsOrPropertiesExcept(
+                "largeCyclicClass1",
+                "largeCyclicClass2",
+                "largeCyclicClass3",
+                "largeCyclicClass4",
+                "largeCyclicClass5");
 
-        assertThat(result.getLargeCyclicClass2()).isNotNull();
-        assertThat(result.getLargeCyclicClass2().getList99()).isNotEmpty();
-        assertThat(result.getLargeCyclicClass2().getLargeCyclicClass2()).isNull();
+        Asserts.assertAllNulls(
+                result.getLargeCyclicClass1(),
+                result.getLargeCyclicClass2(),
+                result.getLargeCyclicClass3(),
+                result.getLargeCyclicClass4(),
+                result.getLargeCyclicClass5());
     }
 }

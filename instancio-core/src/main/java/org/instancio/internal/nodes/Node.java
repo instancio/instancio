@@ -163,11 +163,22 @@ public final class Node {
     public boolean hasAncestorEqualToSelf() {
         Node ancestor = parent;
 
-        while (ancestor != null && !ancestor.equals(this)) {
+        while (ancestor != null) {
+            if (ancestor.equals(this)) {
+                return true;
+            }
+
+            // Partial equals() check when dealing with the root:
+            // ignore the field since the root doesn't have one
+            if (ancestor.getParent() == null) {
+                return Objects.equals(ancestor.getTargetClass(), targetClass)
+                        && Objects.equals(ancestor.getType(), type);
+            }
+
             ancestor = ancestor.getParent();
         }
 
-        return ancestor != null;
+        return false;
     }
 
     public int getDepth() {
@@ -190,16 +201,15 @@ public final class Node {
         return Objects.hash(getTargetClass(), getType(), getField());
     }
 
-    public String getNodeName() {
-        return field == null
-                ? Format.withoutPackage(targetClass)
-                : Format.withoutPackage(parent.targetClass) + '.' + field.getName();
-    }
-
     @Override
     public String toString() {
+        final String nodeName = field == null
+                ? Format.withoutPackage(targetClass)
+                : Format.withoutPackage(parent.targetClass) + '.' + field.getName();
+
+        //noinspection StringBufferReplaceableByString
         return new StringBuilder().append("Node[")
-                .append(getNodeName())
+                .append(nodeName)
                 .append(", depth=").append(depth)
                 .append(", #chn=").append(children.size())
                 .append(", ").append(Format.withoutPackage(type))
