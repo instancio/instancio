@@ -14,7 +14,7 @@ While Instancio also supports this use case, this is not its goal.
 The idea behind the project is that most unit tests do not care what the actual values are.
 They just require the _presence of a value_.
 Therefore, the main goal of Instancio is simply to generate fully populated objects with random data, including arrays, collections, nested collections, generic types, and so on.
-And it aims to do so with as little code as possible in order to keep the tests concise.
+And it aims to do so with as little code as possible to keep the tests concise.
 
 Another goal of Instancio is to make the tests more dynamic.
 Since each test run is against random values, the tests become alive.
@@ -91,23 +91,36 @@ However, this approach has a couple of drawbacks: it does not support nested gen
 
 The builder API also supports creating collections using the following methods:
 
-``` java linenums="1" title="Collections API"
+``` java linenums="1" title="Collections API: using Class"
 Instancio.ofList(Class<T> elementType).create()
 Instancio.ofSet(Class<T> elementType).create()
 Instancio.ofMap(Class<K> keyType, Class<V> valueType).create()
 ```
 
-Examples:
+In addition, `ofList()` and `ofSet()` can be used to create collections
+from models:
 
-```java linenums="1"
+``` java linenums="1" title="Collections API: using Model"
+Instancio.ofList(Model<T> elementModel).create()
+Instancio.ofSet(Model<T> elementModel).create()
+```
+
+```java linenums="1" title="Examples"
 List<Person> list = Instancio.ofList(Person.class).size(10).create();
 
 Map<UUID, Address> map = Instancio.ofMap(UUID.class, Address.class).size(3)
     .set(field(Address.class, "city"), "Vancouver")
     .create();
+
+// Create from a model
+Model<Person> personModel = Instancio.of(Person.class)
+    .ignore(field("age"))
+    .toModel();
+
+Set<Person> set = Instancio.ofSet(personModel).size(5).create()
 ```
 
-Specifying collection's size is optional.
+Specifying the collection size is optional.
 If no size is specified, a collection of random size (between 2 and 6 inclusive) will be generated.
 
 ### Creating `record` and `sealed` Classes
@@ -178,8 +191,8 @@ Select.field(Class<?> declaringClass, String fieldName)
 Select.all(Class<?> type)
 ```
 !!! attention ""
-    <lnum>1</lnum> Selects field by name, declared in the class being created.<br/>
-    <lnum>2</lnum> Selects field by name, declared in the specified class.<br/>
+    <lnum>1</lnum> Selects the field by name, declared in the class being created.<br/>
+    <lnum>2</lnum> Selects the field by name, declared in the specified class.<br/>
     <lnum>3</lnum> Selects the specified class, including fields and collection elements of this type.<br/>
 
 ```java title="Examples"
@@ -187,7 +200,8 @@ Select.field(Person.class, "name") // Person.name
 Select.all(Set.class)
 ```
 
-`Select.field()` is matched based on exact field name. If a field with the specified name does not exist, an error will be thrown.
+`Select.field()` is matched based on the exact field name.
+If a field with the specified name does not exist, an error will be thrown.
 `Select.all()` is matched using `Class` equality, therefore matching does not include subtypes.
 
 #### Method reference selector
@@ -202,8 +216,10 @@ Select.field(GetMethodSelector<T, R> methodReference)
 Select.field(Person::getName)
 ```
 
-Internally, method reference is converted to a regular field selector, equivalent to `Select.field(Class<?> declaringClass, String fieldName)`.
-This is done by mapping method name to the corresponding field name. The mapping logic supports the following naming conventions:
+Internally, method reference is converted to a regular field selector,
+equivalent to `Select.field(Class<?> declaringClass, String fieldName)`.
+This is done by mapping the method name to the corresponding field name.
+The mapping logic supports the following naming conventions:
 
  - Java beans - where getters are prefixed with `get` and, in case of booleans, `is`.
  - Java record - where method names match field names exactly.
@@ -326,7 +342,7 @@ Address address = Instancio.of(Address.class)
 This will produce an address object with all strings set to "foo". However, since field selectors
 have higher precedence, the city will be set to "bar".
 
-In the following example, the city will also be set to "bar" because predicate `fields()` selector
+In the following example, the city will also be set to "bar" because the predicate `fields()` selector
 has lower precedence than the regular `field()` selector:
 
 ``` java linenums="1"
@@ -341,7 +357,7 @@ Address address = Instancio.of(Address.class)
 When more than one selector matches a given target, then the last selector wins.
 This rule applies to both, regular and predicate selectors.
 
-In case of regular selectors, if the two are identical, the last selector simply
+In the case of regular selectors, if the two are identical, the last selector simply
 replaces the first (internally, regular selectors are stored as `Map` keys).
 
 ``` java linenums="1"
@@ -417,7 +433,7 @@ Additional examples will be provided below.
 
 #### Creating scopes
 
-Scopes can be creating using:
+Scopes can be created using:
 
 - `Select.scope()` static methods in the {{Select}} class
 - `Selector.toScope()` method provided by regular selectors
@@ -485,7 +501,8 @@ set(allStrings().within(scope(Person.class, "workAddress"), scope(Phone.class)),
 The `Person.workAddress` object contains a list of phones, therefore `Person.workAddress` is the outermost scope and is specified first.
 `Phone` class is the innermost scope and is specified last.
 
-The final examples illustrate creation of scope objects from regular selectors. All of the following are equivalent to each other.
+The final examples illustrate the creation of scope objects from regular selectors.
+The following examples are equivalent to each other:
 
 ``` java title="Equivalent ways of creating scopes based on field"
 set(allStrings().within(scope(Person.class, "homeAddress")), "foo")
@@ -507,7 +524,7 @@ set(allStrings().within(all(Person.class).toScope()), "foo")
 
 Instancio supports two modes: strict and lenient, an idea inspired by Mockito's highly useful strict stubbing feature.
 
-In strict mode unused selectors will trigger an error. In lenient mode unused selectors are simply ignored.
+In strict mode, unused selectors will trigger an error. In lenient mode, unused selectors are simply ignored.
 By default, Instancio runs in strict mode. This is done for the following reasons:
 
 - to eliminate errors in data setup
@@ -543,7 +560,7 @@ org.instancio.exception.UnusedSelectorException:
 ```
 
 Without being aware of this detail, it is easy to make this kind of error and face unexpected results
-even with a simple class like above. It gets trickier when generating more complex classes.
+even with a simple class like the above. It gets trickier when generating more complex classes.
 Strict mode helps reduce this type of error.
 
 ##### Simplify fixing tests after refactoring
@@ -559,7 +576,7 @@ with as much care as production code. Keeping the tests clean and concise makes 
 
 #### Lenient Mode
 
-While strict mode is highly recommended, there is an option to switch to lenient mode.
+While the strict mode is highly recommended, there is an option to switch to lenient mode.
 The lenient mode can be enabled using the `lenient()` method:
 
 ``` java title="Setting lenient mode using builder API"
@@ -569,7 +586,7 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-Lenient mode can also be enabled via `Settings`:
+Or alternatively, it can be enabled via `Settings`:
 
 ``` java title="Setting lenient mode using Settings"
 Settings settings = Settings.create()
@@ -581,7 +598,7 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-Lenient mode can also be enabled globally using [`instancio.properties`](#overriding-settings-using-a-properties-file):
+The lenient mode can also be enabled globally using [`instancio.properties`](#overriding-settings-using-a-properties-file):
 
 ``` java title="Setting lenient mode using properties file"
 mode=LENIENT
@@ -600,7 +617,8 @@ methods defined in the {{InstancioApi}} class.
 
 ### Using `generate()`
 
-The `generate()` method provides access to built-in generators for core types from the JDK, such strings, numeric types, dates, arrays, collections, and so on.
+The `generate()` method provides access to built-in generators for core types from the JDK,
+such as strings, numeric types, dates, arrays, collections, and so on.
 It allows modifying generation parameters for these types in order to fine-tune the data.
 The usage is shown in the following example, where the `gen` parameter (of type {{Generators}})
 exposes the available generators to simplify their discovery using IDE auto-completion.
@@ -823,18 +841,18 @@ Person person = Instancio.of(Person.class)
 ```
 
 If the object is mutable, callbacks allow modifying multiple fields at once.
-However, callbacks cannot be used to immutable types.
+However, callbacks cannot be used to modify immutable types.
 
 Another property of callbacks is that they are only invoked on non-null objects.
 In the following example, all address instances are nullable.
 Therefore, a generated address instance may either be `null` or a fully-populated object.
-However, if a `null` was generated, the callback will not invoked.
+However, if a `null` was generated, the callback will not be invoked.
 
-``` java linenums="1" title="Callbacks only called on non-null values"
+``` java linenums="1" title="Callbacks are only called on non-null values"
 Person person = Instancio.of(Person.class)
     .withNullable(all(Address.class))
     .onComplete(all(Address.class), (Address address) -> {
-        // only-called if generated address is not null
+        // only-called if the generated address is not null
     })
     .create();
 ```
@@ -849,7 +867,7 @@ The provided objects are treated as read-only by the engine.
 The behaviour of these methods cannot be customised.
 
 - matching selectors will not be applied
-- engine will not modify or populate any fields of the supplied object
+- the engine will not modify or populate any fields of the supplied object
 - callbacks are *not* invoked on objects provided by these methods
  
 **Method** `supply(TargetSelector, Generator)` is for creating objects using custom `Generator` implementations.
@@ -857,7 +875,7 @@ This method offers configurable behaviour via the `AfterGenerate` hint.
 By default, the hint is set to `POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`, which implies:
 
 - matching selectors will be applied
-- engine will populate `null` fields and primitive fields containing default values
+- the engine will populate `null` fields and primitive fields containing default values
 
 The default value of the `AfterGenerate` hint can be overridden using `instancio.properties` and {{Settings}}.
 
@@ -870,7 +888,7 @@ Such objects include value types (numbers, strings, dates) and data structures (
 - matching selectors are **always** applied
 - matching callbacks are **always** invoked
 
-By default, engine generates non-null values, unless specified otherwise.
+By default, the engine generates non-null values, unless specified otherwise.
 
 
 ### Ignoring Fields or Classes
@@ -911,7 +929,7 @@ Person person = Instancio.of(Person.class)
 When `ignore()` is used to target one of the required arguments of a `record` constructor,
 then a default value for the ignored type will be generated.
 
-``` java linenums="1" title="Example: using ignore with recprds"
+``` java linenums="1" title="Example"
 record PersonRecord(String name, int age) {}
 
 PersonRecord person = Instancio.of(PersonRecord.class)
@@ -948,7 +966,7 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-A number of built-in generators also support marking values as nullable.
+Some built-in generators also support marking values as nullable using the `nullable()` method.
 As in the previous example, this also applies only to string fields,
 and not, for example, `List<String>`:
 
@@ -1087,7 +1105,8 @@ Person withNewAddress = Instancio.of(simpsonsModel)
     .create();
 ```
 
-This approach reduces duplication and simplifies data setup, especially for complex classes with many fields and relationships. More details on benefits of using models, including a sample project, are provided in the article
+This approach reduces duplication and simplifies data setup, especially for complex classes with many fields and relationships.
+More details on the benefits of using models, including a sample project, are provided in the article
 [Creating object templates using Models](/articles/creating-object-templates-using-models/).
 
 ## Custom Generators
@@ -1096,15 +1115,15 @@ Every type of object Instancio generates is through an implementation of the `Ge
 A number of internal generators are included out of the box for creating strings, numeric types, dates, collections, and so on.
 Custom generators can also be defined to satisfy certain use cases:
 
-- For generating types not supported out of the box, for example from third-party libraries such as Guava.
+- Generating types not supported out of the box, for example from third-party libraries such as Guava.
 
-- For creating pre-initialised domain objects. Some domain objects require to be constructed in a certain state to be valid.
-To avoid duplicating the construction logic across different tests, it can be encapsulated by a custom generator that can be re-used across the project.
+- Creating pre-initialised domain objects. Some domain objects require to be constructed in a certain state to be valid.
+To avoid duplicating the construction logic across different tests, it can be encapsulated by a custom generator that can be reused across the project.
 
-- For distributing generators as a library that can be shared across projects.
+- Distributing generators as a library that can be shared across projects.
 
 
-`Generator` is a functional interface with a single abstract method `generate(Random)`:
+The `Generator` is a functional interface with a single abstract method `generate(Random)`:
 
 
 ```java linenums="1"
@@ -1198,7 +1217,7 @@ org.example.CustomGeneratorProvider
 Instancio configuration has a property `overwrite.existing.values` which by default is set to `true`.
 This results in the following behaviour.
 
-```java linenums="1" hl_lines="2 7" title="Example 1: field overwritten when creating an object"
+```java linenums="1" hl_lines="2 7" title="Example 1: the field is overwritten when creating an object"
 class Address {
     private String country = "USA"; // default
     // snip...
@@ -1211,7 +1230,7 @@ assertThat(person.getAddress().getCountry()).isNotEqualTo("USA"); // overwritten
     <lnum>7</lnum> the country is no longer "USA" as it was overwritten with a random value.<br/>
 
 
-```java linenums="1" hl_lines="4 10 13" title="Example 2: field overwritten by applying a selector"
+```java linenums="1" hl_lines="4 10 13" title="Example 2: the field is overwritten by applying a selector"
 class AddressGenerator implements Generator<Address> {
     @Override
     public Address generate(Random random) {
@@ -1233,7 +1252,7 @@ assertThat(person.getAddress().getCountry()).isEqualTo("Canada"); // overwritten
 To disallow overwriting of initialised fields, the `overwrite.existing.values` setting can be set to `false`.
 Using the last example to illustrate:
 
-```java linenums="1" hl_lines="4" title="Example 2: field overwritten by applying a selector"
+```java linenums="1" hl_lines="4" title="Example 3: the initial field is preserved"
 Person person = Instancio.of(Person.class)
     .supply(all(Address.class), new AddressGenerator())
     .set(field(Address.class, "country"), "Canada")
@@ -1261,17 +1280,17 @@ To enable assignment via methods, `Keys.ASSIGNMENT_TYPE` can be set to `Assignme
 When enabled, Instancio will attempt to resolve setter names from field names using `SETTER_STYLE` setting.
 This key's value is the `SetterStyle` enum that supports three naming conventions:
 
-- `SET` - standard setter prefix, for example `setFoo("value")`
-- `WITH` - for example `withFoo("value")`
-- `PROPERTY` - no prefix, for example `foo("value")`
+- `SET` - standard setter prefix: `setFoo("value")`
+- `WITH` - for example: `withFoo("value")`
+- `PROPERTY` - no prefix: `foo("value")`
 
-The remaining `ON_SET_*` keys are used to control error handling behaviour:
+The remaining `ON_SET_*` keys are used to control error-handling behaviour:
 
-| Key                       | Possible causes                                                                               |
-|---------------------------|-----------------------------------------------------------------------------------------------|
-| `ON_SET_FIELD_ERROR`      | type mismatch, unmodifiable field, access exception                                           |
-| `ON_SET_METHOD_ERROR`     | type mismatch, exception thrown by setter (e.g. due to validation)                            |
-| `ON_SET_METHOD_NOT_FOUND` | method does not exist, or name does not conform to naming convention defined by `SetterStyle` |
+| Key                       | Possible causes                                                                                       |
+|---------------------------|-------------------------------------------------------------------------------------------------------|
+| `ON_SET_FIELD_ERROR`      | type mismatch, unmodifiable field, access exception                                                   |
+| `ON_SET_METHOD_ERROR`     | type mismatch, an exception is thrown by setter (e.g. due to validation)                              |
+| `ON_SET_METHOD_NOT_FOUND` | method does not exist, or the name does not conform to the naming convention defined by `SetterStyle` |
 
 All of the above can be set to ignore errors or fail fast by raising an exception.
 In addition, both `ON_SET_METHOD_*` settings can be configured to fall back to field assignment in case of an error.
@@ -1321,7 +1340,8 @@ Instancio ensures that the same instance of the random number generator is used 
 This means that Instancio can reproduce the same object again by using the same seed.
 This feature allows reproducing failed tests (see the section on [reproducing tests with JUnit](#reproducing-failed-tests)).
 
-In addition, Instancio takes care in generating values for classes like `UUID` and `LocalDateTime`, where a minor difference in values can cause an object equality check to fail.
+In addition, Instancio handles classes like `UUID` and `LocalDateTime`,
+where a minor difference in values can cause an object equality check to fail.
 These classes are generated in such a way, that for a given seed value, the generated values will be the same.
 To illustrate with an example, we will use the following `SamplePojo` class.
 
@@ -1404,9 +1424,9 @@ SamplePojo pojo2 = Instancio.of(SamplePojo.class)
     <lnum>4</lnum> `pojo2` generated using seed `456` since `withSeed()` has higher precedence.
 
 
-### Getting Seed Value
+### Getting the Seed Value
 
-Sometimes it is necessary to get the seed value that was used to generate the data. One such example is for reproducing failed tests. If you are using JUnit 5, seed value is reported automatically using the `InstancioExtension` (see [JUnit Jupiter integration](#junit-jupiter-integration)). If you are using JUnit 4, TestNG, or Instancio standalone, the seed value can be obtained by calling the `asResult()` method of the builder API. This returns a `Result` containing the created object and the seed value that was used to populate its values.
+Sometimes it is necessary to get the seed value that was used to generate the data. One such example is for reproducing failed tests. If you are using JUnit 5, the seed value is reported automatically using the `InstancioExtension` (see [JUnit Jupiter integration](#junit-jupiter-integration)). If you are using JUnit 4, TestNG, or Instancio standalone, the seed value can be obtained by calling the `asResult()` method of the builder API. This returns a `Result` containing the created object and the seed value that was used to populate its values.
 
 
 ``` java linenums="1" title="Example of using asResult()"
@@ -1419,10 +1439,10 @@ long seed = result.getSeed(); // seed value that was used for populating the per
 # Metamodel
 
 This section expands on the [Selectors](#selectors) section, which described how to target fields.
-Instancio uses reflection at field level to populate objects.
+Instancio uses reflection at the field level to populate objects.
 The main reason for using fields and not setters is <a hred="https://docs.oracle.com/javase/tutorial/java/generics/erasure.html" target="_blank">type erasure</a>.
 It is not possible to determine the generic type of method parameters at runtime.
-However, generic type information is available at field level:
+However, generic type information is available at the field level:
 
 
 ``` java linenums="1" hl_lines="2 4"
@@ -1439,7 +1459,7 @@ class Example {
     <lnum>4</lnum> This becomes a `List`.
 
 Without knowing the list's generic type, Instancio would not be able to populate the list.
-For this reason, it operates at field level.
+For this reason, it operates at the field level.
 Using fields, however, has one drawback: they require the use of field names.
 To circumvent this problem, Instancio includes an annotation processor that can generate metamodel classes.
 
@@ -1567,11 +1587,11 @@ Person person = Instancio.of(Person.class)
     <lnum>2</lnum> The {{Keys}} class provides static fields for all the keys supported by Instancio.<br/>
     <lnum>5</lnum> The `lock()` method makes the settings instance immutable. This is an optional method call.
     It can be used to prevent modifications if settings are shared across multiple methods or classes.<br/>
-    <lnum>8</lnum> The passed in settings instance will override default settings.
+    <lnum>8</lnum> The passed-in settings instance will override default settings.
 
 !!! attention "Range settings auto-adjust"
     When updating range settings, such as `COLLECTION_MIN_SIZE` and `COLLECTION_MAX_SIZE`,
-    range bound is auto-adjusted if the new minimum is higher than the current maximum, and vice versa.
+    the range bound is auto-adjusted if the new minimum is higher than the current maximum, and vice versa.
 
 
 The {{Keys}} class defines a _property key_ for every key object, for example:
@@ -1675,13 +1695,15 @@ The extension adds a few useful features, such as
 
 ## Reproducing Failed Tests
 
-Since using Instancio validates your code against random inputs on each test run, having the ability to reproduce a failed tests with previously generated data becomes a necessity.
+Since using Instancio validates your code against random inputs on each test run,
+having the ability to reproduce failed tests with previously generated data becomes a necessity.
 Instancio supports this use case by reporting the seed value of a failed test in the failure message using JUnit's `publishReportEntry` mechanism.
 
 ### Seed Lifecycle in a JUnit Jupiter Test
 
 Instancio initialises a seed value before each test method.
-This seed value is used for creating all objects during the test method's execution, unless another seed is specified explicitly using the {{withSeed}} method.
+This seed value is used for creating all objects during the test method's execution
+unless another seed is specified explicitly using the {{withSeed}} method.
 
 ``` java linenums="1" title="Seed Lifecycle in a JUnit Test" hl_lines="5 7 10 13 15"
 @ExtendWith(InstancioExtension.class)
@@ -1702,14 +1724,14 @@ class ExampleTest {
 }
 ```
 !!! attention ""
-    <lnum>5</lnum> Instancio initialises a random seed value, for example `8276`.<br/>
+    <lnum>5</lnum> Instancio initialises a random seed value, for example, `8276`.<br/>
     <lnum>7</lnum> Uses seed value `8276`.<br/>
     <lnum>10</lnum> Uses the supplied seed value `123`.<br/>
     <lnum>13</lnum> Uses seed value `8276`.<br/>
     <lnum>15</lnum> Seed value `8276` goes out of scope.
 
 !!! note
-    Even though `person1` and `person3` are created using the same seed value of `8276`, they are actually distinct objects, each containing different values. This is because the same instance of the random number generator is used througout the test method.
+    Even though `person1` and `person3` are created using the same seed value of `8276`, they are actually distinct objects, each containing different values. This is because the same instance of the random number generator is used throughout the test method.
 
 ### Test Failure Reporting
 
@@ -1806,7 +1828,7 @@ class ExampleTest {
 }
 ```
 !!! attention ""
-    <lnum>11</lnum> Settings passed in to the builder method take precedence over the injected settings.
+    <lnum>11</lnum> Settings passed to the builder method take precedence over the injected settings.
 
 Instancio supports `@WithSettings` placed on static and non-static fields.
 However, if the test class contains a `@ParameterizedTest` method, then the settings field *must be static*.
@@ -1837,7 +1859,7 @@ class ExampleTest {
 }
 ```
 
-It should be noted that using `@InstancioSource` has a couple of important limitations that makes it unsuitable in many situations.
+It should be noted that using `@InstancioSource` has a couple of important limitations that make it unsuitable in many situations.
 
 The biggest limitation is that the generated objects cannot be customised.
 The only option is to customise generated values using [settings injection](#settings-injection).
