@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.nodes;
+package org.instancio.test.support.pojo.performance.onetomany;
 
-import org.instancio.internal.nodes.Node;
-import org.instancio.test.support.pojo.cyclic.CyclicList;
-import org.instancio.testsupport.templates.NodeTestTemplate;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ChildE extends BaseChild {
 
-class CyclicListNodeTest extends NodeTestTemplate<CyclicList> {
+    private OneToMany parent;
 
-    @Override
-    protected void verify(Node rootNode) {
-        assertNode(rootNode)
-                .hasTargetClass(CyclicList.class)
-                .hasDepth(0)
-                .hasChildrenOfSize(1);
-    }
+    private String fieldE;
 }

@@ -32,10 +32,12 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
     protected void verify(Node rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(FooBarBazContainer.class)
+                .hasDepth(0)
                 .hasChildrenOfSize(1);
 
         final Node itemNode = CollectionUtils.getOnlyElement(rootNode.getChildren());
         assertNode(itemNode)
+                .hasDepth(1)
                 .hasTargetClass(Foo.class)
                 .hasTypeMappedTo(Foo.class, "X", "org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Bar<org.instancio.test.support.pojo.generics.foobarbaz." +
@@ -48,6 +50,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
 
         final Node fooValueNode = NodeUtils.getChildNode(itemNode, "fooValue");
         assertNode(fooValueNode)
+                .hasDepth(2)
                 .hasTargetClass(Bar.class)
                 .hasTypeMappedTo(Bar.class, "Y", "org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Baz<java.lang.String>")
@@ -57,21 +60,25 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                 .hasChildrenOfSize(2);
 
         assertNode(NodeUtils.getChildNode(itemNode, "otherFooValue"))
+                .hasDepth(2)
                 .hasTargetClass(Object.class)
                 .hasNoChildren();
 
         final Node barValueNode = NodeUtils.getChildNode(fooValueNode, "barValue");
         assertNode(barValueNode)
+                .hasDepth(3)
                 .hasTargetClass(Baz.class)
                 .hasTypeMappedTo(Baz.class, "Z", String.class)
                 .hasTypeName("org.instancio.test.support.pojo.generics.foobarbaz.Baz<java.lang.String>")
                 .hasChildrenOfSize(1);
 
         assertNode(NodeUtils.getChildNode(fooValueNode, "otherBarValue"))
+                .hasDepth(3)
                 .hasTargetClass(Object.class)
                 .hasNoChildren();
 
         assertNode(barValueNode.getOnlyChild())
+                .hasDepth(4)
                 .hasTargetClass(String.class)
                 .hasTypeName("java.lang.String")
                 .hasNoChildren();

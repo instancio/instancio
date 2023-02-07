@@ -19,6 +19,8 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.internal.util.Format;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.generics.ListWithTypeVariable;
 import org.instancio.test.support.pojo.generics.MapWithTypeVariables;
 import org.instancio.test.support.pojo.generics.MiscFields;
@@ -53,7 +55,10 @@ class TypeTokenBulkAutoVerificationTest {
     @MethodSource("typesToCreate")
     @ParameterizedTest
     void verifyFullyPopulated(final TypeToken<?> typeToken) {
-        final Object result = Instancio.create(typeToken);
+        final Object result = Instancio.of(typeToken)
+                .withSettings(Settings.create().set(Keys.MAX_DEPTH, Integer.MAX_VALUE))
+                .create();
+
         assertThatObject(result)
                 .as("Expected fully-populated object for argument '%s', but was: %s", typeToken, result)
                 .isFullyPopulated();

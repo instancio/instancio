@@ -42,7 +42,7 @@ import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +76,7 @@ class InstancioEngine {
     private final List<GenerationListener> listeners;
     private final AfterGenerate defaultAfterGenerate;
     private final boolean overwriteExistingValues;
+    private final int maxDepth;
     private final Assigner assigner;
 
     InstancioEngine(InternalModel<?> model) {
@@ -85,6 +86,7 @@ class InstancioEngine {
         generatorFacade = new GeneratorFacade(context);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
+        maxDepth = context.getSettings().get(Keys.MAX_DEPTH);
         listeners = Arrays.asList(callbackHandler, new GeneratedNullValueListener(context));
         assigner = getAssigner();
     }
@@ -117,6 +119,11 @@ class InstancioEngine {
 
     private GeneratorResult createObject(final Node node) {
         LOG.trace("Processing: {}", node);
+
+        if (node.getDepth() > maxDepth) {
+            LOG.trace("Maximum depth ({}) reached {}", maxDepth, node);
+            return GeneratorResult.maxDepthReachedResult();
+        }
 
         if (node.getChildren().isEmpty()) { // leaf - generate a value
             return generateValue(node);
@@ -249,11 +256,17 @@ class InstancioEngine {
 
         while (entriesToGenerate > 0) {
 
+            final GeneratorResult mapValueResult = createObject(node.getChildren().get(1), nullableValue);
+            if (mapValueResult.isMaxDepthReached()) {
+                break;
+            }
+
+            final Object mapValue = mapValueResult.getValue();
+
             final Object mapKey = withKeysIterator.hasNext()
                     ? withKeysIterator.next()
-                    : createObject(node.getChildren().get(0), nullableKey);
+                    : createObject(node.getChildren().get(0), nullableKey).getValue();
 
-            final Object mapValue = createObject(node.getChildren().get(1), nullableValue);
 
             if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
                 if (!map.containsKey(mapKey)) {
@@ -347,7 +360,12 @@ class InstancioEngine {
                 continue;
             }
 
-            Object elementValue = createObject(elementNode, hint.nullableElements());
+            final GeneratorResult elementResult = createObject(elementNode, hint.nullableElements());
+            if (elementResult.isMaxDepthReached()) {
+                break;
+            }
+
+            Object elementValue = elementResult.getValue();
 
             // If elements are not nullable, keep generating until a non-null
             while (elementValue == null
@@ -356,7 +374,7 @@ class InstancioEngine {
                     && failedAdditions < Constants.FAILED_ADD_THRESHOLD) {
 
                 failedAdditions++;
-                elementValue = createObject(elementNode, false);
+                elementValue = createObject(elementNode, false).getValue();
             }
 
             // can't assign null values to primitive arrays
@@ -397,7 +415,12 @@ class InstancioEngine {
         int failedAdditions = 0;
 
         while (elementsToGenerate > 0) {
-            final Object elementValue = createObject(node.getOnlyChild(), nullableElement);
+            final GeneratorResult elementResult = createObject(node.getOnlyChild(), nullableElement);
+            if (elementResult.isMaxDepthReached()) {
+                break;
+            }
+
+            final Object elementValue = elementResult.getValue();
 
             if (elementValue != null || nullableElement) {
                 if (collection.add(elementValue)) {
@@ -435,6 +458,9 @@ class InstancioEngine {
     }
 
     private GeneratorResult generateRecord(final Node node) {
+        if (node.getDepth() > maxDepth) {
+            return GeneratorResult.maxDepthReachedResult();
+        }
 
         // Handle the case where user supplies a generator for creating a record.
         final Optional<Generator<?>> generator = context.getGenerator(node);
@@ -495,14 +521,14 @@ class InstancioEngine {
         }
     }
 
-    @Nullable
-    private Object createObject(final Node node, final boolean isNullable) {
+    @NotNull
+    private GeneratorResult createObject(final Node node, final boolean isNullable) {
         if (context.getRandom().diceRoll(isNullable)) {
-            notifyListeners(node, GeneratorResult.nullResult());
-            return null;
+            final GeneratorResult nullResult = GeneratorResult.nullResult();
+            notifyListeners(node, nullResult);
+            return nullResult;
         }
-        final GeneratorResult result = createObject(node);
-        return result.getValue();
+        return createObject(node);
     }
 
     private GeneratorResult generateValue(final Node node) {
@@ -512,8 +538,10 @@ class InstancioEngine {
     }
 
     private void notifyListeners(final Node node, final GeneratorResult result) {
-        for (GenerationListener listener : listeners) {
-            listener.objectCreated(node, result);
+        if (!result.isMaxDepthReached()) {
+            for (GenerationListener listener : listeners) {
+                listener.objectCreated(node, result);
+            }
         }
     }
 }

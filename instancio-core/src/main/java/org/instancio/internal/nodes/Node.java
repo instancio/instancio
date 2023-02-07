@@ -36,6 +36,7 @@ public final class Node {
     private final Node parent;
     private final TypeMap typeMap;
     private final NodeKind nodeKind;
+    private final int depth;
     private List<Node> children;
 
     private Node(final Builder builder) {
@@ -48,6 +49,7 @@ public final class Node {
         children = builder.children == null ? Collections.emptyList() : Collections.unmodifiableList(builder.children);
         nodeKind = builder.nodeKind;
         typeMap = new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap);
+        depth = parent == null ? 0 : parent.depth + 1;
     }
 
     public NodeKind getNodeKind() {
@@ -168,6 +170,10 @@ public final class Node {
         return ancestor != null;
     }
 
+    public int getDepth() {
+        return depth;
+    }
+
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
@@ -194,6 +200,7 @@ public final class Node {
     public String toString() {
         return new StringBuilder().append("Node[")
                 .append(getNodeName())
+                .append(", depth=").append(depth)
                 .append(", #chn=").append(children.size())
                 .append(", ").append(Format.withoutPackage(type))
                 .append(']')
