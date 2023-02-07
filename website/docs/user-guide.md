@@ -892,15 +892,34 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
+#### Precedence of `ignore()`
+
 The `ignore()` method has higher precedence than other methods. For example, in the following snippet
 specifying `ignore(all(LocalDateTime.class))` but supplying a value for the `lastModified` field
 will actually generate a `lastModified` with a `null` value.
 
-``` java linenums="1" title="ignore() has higher precedence than other methods"
+
+``` java linenums="1" title="Example"
 Person person = Instancio.of(Person.class)
     .ignore(all(LocalDateTime.class))
     .supply(field(Person::getLastModified), () -> LocalDateTime.now())
     .create();
+```
+
+#### Usage of `ignore()` with Java records
+
+When `ignore()` is used to target one of the required arguments of a `record` constructor,
+then a default value for the ignored type will be generated.
+
+``` java linenums="1" title="Example: using ignore with recprds"
+record PersonRecord(String name, int age) {}
+
+PersonRecord person = Instancio.of(PersonRecord.class)
+    .ignore(allInts())
+    .ignore(allStrings())
+    .create();
+
+// will produce: PersonRecord[name=null, age=0]
 ```
 
 ### Nullable Values
