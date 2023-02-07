@@ -33,7 +33,8 @@ Person person = Instancio.create(Person.class);
 ```
 
 This one-liner returns a fully-populated person, including nested objects and collections.
-The object is populated with random data that can be reproduced in case of test failure.
+
+The object is populated with random data that can be <b>reproduced</b> in case of test failure.
 
 ### What else can Instancio do?
 
@@ -93,6 +94,7 @@ Person marge = Instancio.of(simpsons)
 - Fully reproducible data in case of test failures.
 - Support for generics, `record` and `sealed` classes.
 - Support for defining custom generators.
+- Support for generating data based on Bean Validation annotations.
 - Flexible configuration options.
 - `InstancioExtension` for Junit 5 `@ExtendWith`.
 
