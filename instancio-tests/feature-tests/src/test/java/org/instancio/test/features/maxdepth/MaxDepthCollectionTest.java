@@ -13,50 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java16;
+package org.instancio.test.features.maxdepth;
 
-import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
-import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.test.support.java16.record.cyclic.NodeRecord;
-import org.instancio.test.support.java16.record.cyclic.ParentRecord;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
-@FeatureTag(Feature.CYCLIC)
+@FeatureTag(Feature.MAX_DEPTH)
 @ExtendWith(InstancioExtension.class)
-class CyclicRecordTest {
+class MaxDepthCollectionTest {
 
-    @WithSettings
-    private final Settings settings = Settings.create()
-            .set(Keys.MAX_DEPTH, Integer.MAX_VALUE);
-
-    @Test
-    void cyclicGenericRecord() {
-        final NodeRecord<String> result = Instancio.create(new TypeToken<>() {});
-
-        assertThat(result.next()).isNull();
-        assertThat(result.prev()).isNull();
-        assertThat(result.value()).isNotBlank();
+    private static List<Phone> createWithDepth(final int depth) {
+        return Instancio.ofList(Phone.class).size(5)
+                .withSettings(Settings.create().set(Keys.MAX_DEPTH, depth))
+                .create();
     }
 
     @Test
-    void cyclicParentChild() {
-        final ParentRecord parent = Instancio.create(ParentRecord.class);
+    void withDepth0() {
+        final List<Phone> results = createWithDepth(0);
 
-        assertThat(parent.name()).isNotBlank();
-        assertThat(parent.children()).isNotEmpty()
-                .allSatisfy(child -> Assertions.assertThat(child.parent()).isNull());
+        assertThat(results).isEmpty();
+    }
+
+    @Test
+    void withDepth1() {
+        final List<Phone> results = createWithDepth(1);
+
+        assertThat(results).isNotEmpty().allSatisfy(phone ->
+                assertThat(phone).hasAllNullFieldsOrProperties()
+        );
+    }
+
+    @Test
+    void withDepth2() {
+        final List<Phone> results = createWithDepth(2);
+
+        assertThat(results).isNotEmpty().allSatisfy(phone ->
+                assertThat(phone).hasNoNullFieldsOrProperties()
+        );
     }
 }

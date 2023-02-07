@@ -29,11 +29,13 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
     @Override
     protected void verify(Node rootNode) {
         assertNode(rootNode)
+                .hasDepth(0)
                 .hasTargetClass(GenericContainer.class)
                 .hasChildrenOfSize(3);
 
         // T value
         assertNode(NodeUtils.getChildNode(rootNode, "value"))
+                .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("value")
                 .hasTargetClass(String.class)
@@ -42,6 +44,7 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
 
         // T[] array
         final Node array = assertNode(NodeUtils.getChildNode(rootNode, "array"))
+                .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("array")
                 .hasTargetClass(String[].class)
@@ -50,6 +53,7 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .get();
 
         assertNode(array.getOnlyChild())
+                .hasDepth(2)
                 .hasParent(array)
                 .hasNullField()
                 .hasTargetClass(String.class)
@@ -58,6 +62,7 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
 
         // List<T> list
         final Node list = assertNode(NodeUtils.getChildNode(rootNode, "list"))
+                .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("list")
                 .hasTargetClass(List.class)
@@ -67,6 +72,7 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .get();
 
         assertNode(list.getOnlyChild())
+                .hasDepth(2)
                 .hasParent(list)
                 .hasNullField()
                 .hasTargetClass(String.class)

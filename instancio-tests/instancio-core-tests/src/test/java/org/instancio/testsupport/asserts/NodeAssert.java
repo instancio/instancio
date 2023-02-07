@@ -145,4 +145,10 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         assertThat(actual.getNodeKind()).isEqualTo(expected);
         return this;
     }
+
+    public NodeAssert hasDepth(final int expected) {
+        isNotNull();
+        assertThat(actual.getDepth()).isEqualTo(expected);
+        return this;
+    }
 }

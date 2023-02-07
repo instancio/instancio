@@ -17,12 +17,17 @@ package org.instancio.test.features.scope;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.cyclic.ListNode;
 import org.instancio.test.support.pojo.cyclic.onetomany.DetailRecord;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allLongs;
@@ -30,7 +35,12 @@ import static org.instancio.Select.allStrings;
 import static org.instancio.Select.scope;
 
 @FeatureTag({Feature.CYCLIC, Feature.SCOPE, Feature.SELECTOR})
+@ExtendWith(InstancioExtension.class)
 class ScopeWithCyclicIObjectTest {
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+            .set(Keys.MAX_DEPTH, Integer.MAX_VALUE);
 
     @Test
     void mainRecordClass() {

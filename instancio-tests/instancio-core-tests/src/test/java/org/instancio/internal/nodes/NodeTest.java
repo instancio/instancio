@@ -206,14 +206,24 @@ class NodeTest {
         @Test
         void verifyToString() {
             final Node personNode = NODE_FACTORY.createRootNode(Person.class);
-            assertThat(personNode).hasToString("Node[Person, #chn=9, Person]");
-            assertThat(getChildNode(personNode, "age")).hasToString("Node[Person.age, #chn=0, int]");
-            assertThat(getChildNode(personNode, "name")).hasToString("Node[Person.name, #chn=0, String]");
-            assertThat(getChildNode(personNode, "address")).hasToString("Node[Person.address, #chn=4, Address]");
 
-            assertThat(NODE_FACTORY.createRootNode(String.class)).hasToString("Node[String, #chn=0, String]");
+            assertThat(personNode)
+                    .hasToString("Node[Person, depth=0, #chn=9, Person]");
+
+            assertThat(getChildNode(personNode, "age"))
+                    .hasToString("Node[Person.age, depth=1, #chn=0, int]");
+
+            assertThat(getChildNode(personNode, "name"))
+                    .hasToString("Node[Person.name, depth=1, #chn=0, String]");
+
+            assertThat(getChildNode(personNode, "address"))
+                    .hasToString("Node[Person.address, depth=1, #chn=4, Address]");
+
+            assertThat(NODE_FACTORY.createRootNode(String.class))
+                    .hasToString("Node[String, depth=0, #chn=0, String]");
+
             assertThat(NODE_FACTORY.createRootNode(new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {}.get()))
-                    .hasToString("Node[Pair, #chn=2, Pair<Item<String>, Foo<List<Integer>>>]");
+                    .hasToString("Node[Pair, depth=0, #chn=2, Pair<Item<String>, Foo<List<Integer>>>]");
         }
     }
 

@@ -29,10 +29,12 @@ class EnumSetOfGenderNodeTest extends NodeTestTemplate<EnumSet<Gender>> {
     protected void verify(Node rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(EnumSet.class)
+                .hasDepth(0)
                 .hasChildrenOfSize(1);
 
         assertNode(rootNode.getOnlyChild())
                 .hasParent(rootNode)
+                .hasDepth(1)
                 .hasNullField()
                 .hasTargetClass(Gender.class)
                 .hasNoChildren();
