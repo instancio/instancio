@@ -23,7 +23,7 @@ import org.instancio.Selector;
 public final class MetamodelSelector extends SelectorImpl {
 
     private MetamodelSelector(final Class<?> targetClass, final String fieldName) {
-        super(targetClass, fieldName);
+        super(targetClass, fieldName, false);
     }
 
     public static Selector of(final Class<?> targetClass, final String fieldName) {

@@ -39,9 +39,14 @@ class SelectorImplTest {
     @Test
     void root() {
         final SelectorImpl root = SelectorImpl.getRootSelector();
-        assertThat(root.getTargetClass().getSimpleName()).isEqualTo("Root");
+        assertThat(root).hasAllNullFieldsOrPropertiesExcept("scopes", "stackTraceHolder", "isRoot");
         assertThat(root.getScopes()).isEmpty();
-        assertThat(root.getParent()).isNull();
+    }
+
+    @Test
+    void isRoot() {
+        assertThat(SelectorImpl.getRootSelector().isRoot()).isTrue();
+        assertThat(SelectorImpl.builder().build().isRoot()).isFalse();
     }
 
     @Test

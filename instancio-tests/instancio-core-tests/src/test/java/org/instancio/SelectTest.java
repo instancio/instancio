@@ -31,6 +31,16 @@ import static org.instancio.testsupport.asserts.SelectorAssert.assertSelector;
 class SelectTest {
 
     @Test
+    void root() {
+        assertSelector(Select.root())
+                .isRootSelector()
+                .hasNullField()
+                .hasNullTargetClass()
+                .hasNoScope()
+                .hasToString("root()");
+    }
+
+    @Test
     void allClass() {
         assertSelector(Select.all(String.class))
                 .isClassSelector()

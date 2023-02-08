@@ -58,8 +58,9 @@ import static java.util.stream.Collectors.joining;
  */
 final class SelectorMap<V> {
     private static final boolean FIND_ONE_ONLY = true;
-    private static final ScopelessSelector SCOPELESS_ROOT = new ScopelessSelector(
-            SelectorImpl.getRootSelector().getTargetClass());
+
+    // Root's target class is always null
+    private static final ScopelessSelector SCOPELESS_ROOT = new ScopelessSelector(null);
 
     private final Map<ScopelessSelector, List<SelectorImpl>> scopelessSelectors = new LinkedHashMap<>(0);
     private final Map<? super TargetSelector, V> selectors = new LinkedHashMap<>(0);
@@ -80,9 +81,12 @@ final class SelectorMap<V> {
     void put(final TargetSelector targetSelector, final V value) {
         if (targetSelector instanceof SelectorImpl) {
             final SelectorImpl selector = (SelectorImpl) targetSelector;
+
             final ScopelessSelector scopeless;
 
-            if (selector.isFieldSelector()) {
+            if (selector.isRoot()) {
+                scopeless = SCOPELESS_ROOT;
+            } else if (selector.isFieldSelector()) {
                 final Field field = ReflectionUtils.getField(selector.getTargetClass(), selector.getFieldName());
                 scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
             } else {
@@ -210,7 +214,7 @@ final class SelectorMap<V> {
      */
     private List<SelectorImpl> getCandidates(final Node node) {
         if (node.getParent() == null && scopelessSelectors.containsKey(SCOPELESS_ROOT)) {
-            return Collections.singletonList(SelectorImpl.getRootSelector());
+            return Collections.singletonList(scopelessSelectors.get(SCOPELESS_ROOT).get(0));
         }
 
         final List<SelectorImpl> candidates = new ArrayList<>(

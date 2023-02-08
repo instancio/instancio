@@ -99,6 +99,7 @@ final class ModelContextHelper {
             return SelectorImpl.builder(source)
                     .targetClass(rootClass)
                     .scopes(recreateWithRootClass(rootClass, source.getScopes()))
+                    .root(source.isRoot())
                     .build();
         } else if (!source.getScopes().isEmpty()) {
             return SelectorImpl.builder(source)
