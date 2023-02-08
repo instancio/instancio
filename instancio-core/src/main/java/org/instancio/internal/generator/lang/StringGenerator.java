@@ -23,7 +23,6 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
-import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -140,14 +139,14 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     @Override
     public StringGenerator minLength(final int length) {
         this.minLength = ApiValidator.validateLength(length);
-        this.maxLength = NumberUtils.calculateNewMax(maxLength, minLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+        this.maxLength = NumberUtils.calculateNewMaxSize(maxLength, minLength);
         return this;
     }
 
     @Override
     public StringGenerator maxLength(final int length) {
         this.maxLength = ApiValidator.validateLength(length);
-        this.minLength = NumberUtils.calculateNewMin(minLength, maxLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+        this.minLength = NumberUtils.calculateNewMinSize(minLength, maxLength);
         return this;
     }
 

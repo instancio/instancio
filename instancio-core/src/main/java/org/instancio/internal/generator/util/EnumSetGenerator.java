@@ -23,7 +23,6 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.util.CollectionUtils;
-import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.Sonar;
@@ -69,14 +68,14 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumS
     @Override
     public EnumSetGeneratorSpec<E> minSize(final int size) {
         this.minSize = ApiValidator.validateSize(size);
-        this.maxSize = NumberUtils.calculateNewMax(maxSize, minSize, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+        this.maxSize = NumberUtils.calculateNewMaxSize(maxSize, minSize);
         return this;
     }
 
     @Override
     public EnumSetGeneratorSpec<E> maxSize(final int size) {
         this.maxSize = ApiValidator.validateSize(size);
-        this.minSize = NumberUtils.calculateNewMin(minSize, maxSize, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+        this.minSize = NumberUtils.calculateNewMinSize(minSize, maxSize);
         return this;
     }
 

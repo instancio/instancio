@@ -25,7 +25,6 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
-import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.Keys;
 
@@ -63,14 +62,14 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     @Override
     public ArrayGeneratorSpec<T> minLength(final int length) {
         this.minLength = ApiValidator.validateLength(length);
-        this.maxLength = NumberUtils.calculateNewMax(maxLength, minLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+        this.maxLength = NumberUtils.calculateNewMaxSize(maxLength, minLength);
         return this;
     }
 
     @Override
     public ArrayGeneratorSpec<T> maxLength(final int length) {
         this.maxLength = ApiValidator.validateLength(length);
-        this.minLength = NumberUtils.calculateNewMin(minLength, maxLength, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+        this.minLength = NumberUtils.calculateNewMinSize(minLength, maxLength);
         return this;
     }
 
