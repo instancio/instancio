@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -25,6 +26,52 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withPrecision;
 
 class NumberUtilsTest {
+
+    @Test
+    void calculateNewMin() {
+        assertNewMin(1, 0, 50, -2);
+        assertNewMin(1, -1, 50, -2);
+        assertNewMin(1, -2, 50, -3);
+        assertNewMin(6, 5, 50, 3);
+        assertNewMin(1000, 500, 100, 0);
+
+        // current min unchanged
+        assertNewMin(5, 6, 50, 5);
+
+        // equal min/max
+        assertNewMin(0, 0, 200, 0);
+        assertNewMin(10, 10, 100, 10);
+    }
+
+    @Test
+    void calculateNewMax() {
+        assertNewMax(-1, 0, 50, 2);
+        assertNewMax(-1, 1, 50, 2);
+        assertNewMax(-1, 2, 50, 3);
+        assertNewMax(5, 6, 50, 9);
+        assertNewMax(-1000, -500, 100, 0);
+
+        // current max unchanged
+        assertNewMax(5, 4, 50, 5);
+
+        // equal min/max
+        assertNewMax(0, 0, 200, 0);
+        assertNewMax(10, 10, 100, 10);
+    }
+
+    private static <T extends Number & Comparable<T>> void assertNewMin(
+            final T curMin, final T newMax, final int percentage, final T expected) {
+
+        final T newMin = NumberUtils.calculateNewMin(curMin, newMax, percentage);
+        assertThat(newMin).isEqualTo(expected);
+    }
+
+    private static <T extends Number & Comparable<T>> void assertNewMax(
+            final T curMax, final T newMin, final int percentage, final T expected) {
+
+        final T newMax = NumberUtils.calculateNewMax(curMax, newMin, percentage);
+        assertThat(newMax).isEqualTo(expected);
+    }
 
     @ValueSource(classes = {
             byte.class, short.class, int.class, long.class,

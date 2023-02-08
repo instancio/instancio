@@ -24,7 +24,6 @@ import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
-import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
@@ -81,14 +80,14 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     @Override
     public MapGeneratorSpec<K, V> minSize(final int size) {
         this.minSize = ApiValidator.validateSize(size);
-        this.maxSize = NumberUtils.calculateNewMax(maxSize, minSize, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+        this.maxSize = NumberUtils.calculateNewMaxSize(maxSize, minSize);
         return this;
     }
 
     @Override
     public MapGeneratorSpec<K, V> maxSize(final int size) {
         this.maxSize = ApiValidator.validateSize(size);
-        this.minSize = NumberUtils.calculateNewMin(minSize, maxSize, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
+        this.minSize = NumberUtils.calculateNewMinSize(minSize, maxSize);
         return this;
     }
 

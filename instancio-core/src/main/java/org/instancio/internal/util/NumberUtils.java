@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 public final class NumberUtils {
@@ -136,10 +137,19 @@ public final class NumberUtils {
     public static <T extends Number & Comparable<T>> T calculateNewMin(
             @Nullable final T curMin, @NotNull final T newMax, final int percentage) {
 
-        final BigDecimal curMinBD = toBigDecimal(curMin);
-        final BigDecimal newMaxBD = toBigDecimal(newMax);
+        if (Objects.equals(newMax, curMin)) {
+            return curMin;
+        }
 
+        BigDecimal newMaxBD = toBigDecimal(newMax);
+
+        if (newMaxBD.equals(BigDecimal.ZERO)) {
+            newMaxBD = BigDecimal.ONE.negate();
+        }
+
+        final BigDecimal curMinBD = toBigDecimal(curMin);
         final BigDecimal newMinBD;
+
         if (curMinBD == null || curMinBD.compareTo(newMaxBD) > 0) {
             final BigDecimal bdPercentage = new BigDecimal(percentage);
             final BigDecimal absDelta = newMaxBD
@@ -178,9 +188,17 @@ public final class NumberUtils {
     public static <T extends Number & Comparable<T>> T calculateNewMax(
             @Nullable final T curMax, @NotNull final T newMin, final int percentage) {
 
-        final BigDecimal curMaxBD = toBigDecimal(curMax);
-        final BigDecimal newMinBD = toBigDecimal(newMin);
+        if (Objects.equals(newMin, curMax)) {
+            return curMax;
+        }
 
+        BigDecimal newMinBD = toBigDecimal(newMin);
+
+        if (newMinBD.equals(BigDecimal.ZERO)) {
+            newMinBD = BigDecimal.ONE;
+        }
+
+        final BigDecimal curMaxBD = toBigDecimal(curMax);
         final BigDecimal newMaxBD;
 
         if (curMaxBD == null || curMaxBD.compareTo(newMinBD) < 0) {
@@ -203,6 +221,14 @@ public final class NumberUtils {
         @SuppressWarnings("unchecked") final Class<T> numberClass = (Class<T>) newMin.getClass();
         final Function<BigDecimal, T> fn = bigDecimalConverter(numberClass);
         return fn.apply(newMaxBD);
+    }
+
+    public static int calculateNewMinSize(@Nullable final Integer curMin, final Integer newMax) {
+        return Math.max(0, calculateNewMin(curMin, newMax, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
+    }
+
+    public static int calculateNewMaxSize(@Nullable final Integer curMax, final Integer newMin) {
+        return calculateNewMax(curMax, newMin, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
     }
 
     private static BigDecimal toBigDecimal(final Number n) {
