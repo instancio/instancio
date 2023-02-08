@@ -74,6 +74,20 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
         return hasNullField();
     }
 
+    public SelectorAssert isRootSelector() {
+        final SelectorImpl selector = getAs(SelectorImpl.class);
+        assertThat(selector.isRoot()).isTrue();
+        assertThat(selector.getTargetClass()).isNull();
+        assertThat(selector.getScopes()).isEmpty();
+        assertThat(selector.getStackTraceHolder()).isNotNull();
+        return hasNullField();
+    }
+
+    public SelectorAssert isNotRootSelector() {
+        assertThat(getAs(SelectorImpl.class).isRoot()).isFalse();
+        return hasNullField();
+    }
+
     public SelectorAssert hasScopeSize(final int expected) {
         assertThat(getAs(SelectorImpl.class).getScopes()).hasSize(expected);
         return this;
@@ -97,9 +111,11 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
         final PrimitiveAndWrapperSelectorImpl selector = getAs(PrimitiveAndWrapperSelectorImpl.class);
         assertThat(selector.flatten()).hasSize(2);
         assertSelector(selector.flatten().get(0))
+                .isNotRootSelector()
                 .isClassSelector()
                 .hasTargetClass(primitive);
         assertSelector(selector.flatten().get(1))
+                .isNotRootSelector()
                 .isClassSelector()
                 .hasTargetClass(wrapper);
         return this;
@@ -109,9 +125,11 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
         final PrimitiveAndWrapperSelectorImpl selector = getAs(PrimitiveAndWrapperSelectorImpl.class);
         assertThat(selector.flatten()).hasSize(2);
         assertSelector(selector.flatten().get(0))
+                .isNotRootSelector()
                 .isClassSelectorWithNoScope()
                 .hasTargetClass(primitive);
         assertSelector(selector.flatten().get(1))
+                .isNotRootSelector()
                 .isClassSelectorWithNoScope()
                 .hasTargetClass(wrapper);
         return this;

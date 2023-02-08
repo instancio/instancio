@@ -29,21 +29,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class SelectorImpl implements Selector, GroupableSelector, Flattener, UnusedSelectorDescription {
-    // dummy class for the root selector
-    private enum Root {}
-
-    private static final SelectorImpl ROOT = new SelectorImpl(Root.class, null) {
-        @Override
-        public String toString() {
-            return "root()";
-        }
-    };
 
     private final Class<?> targetClass;
     private final String fieldName;
     private final List<Scope> scopes;
     private final Selector parent;
     private final Throwable stackTraceHolder;
+    private final boolean isRoot;
 
     /**
      * Constructor.
@@ -58,19 +50,22 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
                          @Nullable final String fieldName,
                          @Nullable final List<Scope> scopes,
                          @Nullable final Selector parent,
-                         @Nullable final Throwable stackTraceHolder) {
+                         @Nullable final Throwable stackTraceHolder,
+                         final boolean isRoot) {
 
         this.targetClass = targetClass;
         this.fieldName = fieldName;
         this.scopes = scopes == null ? Collections.emptyList() : Collections.unmodifiableList(scopes);
         this.parent = parent;
         this.stackTraceHolder = stackTraceHolder;
+        this.isRoot = isRoot;
     }
 
     SelectorImpl(@Nullable final Class<?> targetClass,
-                 @Nullable final String fieldName) {
+                 @Nullable final String fieldName,
+                 final boolean isRoot) {
 
-        this(targetClass, fieldName, Collections.emptyList(), null, new Throwable());
+        this(targetClass, fieldName, Collections.emptyList(), null, new Throwable(), isRoot);
     }
 
     private SelectorImpl(final Builder builder) {
@@ -81,6 +76,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
                 : Collections.unmodifiableList(builder.scopes);
         parent = builder.parent;
         stackTraceHolder = builder.stackTraceHolder == null ? new Throwable() : builder.stackTraceHolder;
+        isRoot = builder.isRoot;
     }
 
     public static Builder builder(final SelectorImpl copy) {
@@ -96,7 +92,11 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
     // which can be confused with the public API method 'Selector.root()'
     public static SelectorImpl getRootSelector() {
-        return ROOT;
+        return new SelectorImpl(null, null, true);
+    }
+
+    public boolean isRoot() {
+        return isRoot;
     }
 
     public Throwable getStackTraceHolder() {
@@ -155,7 +155,8 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         final SelectorImpl that = (SelectorImpl) o;
         return Objects.equals(targetClass, that.targetClass)
                 && Objects.equals(fieldName, that.fieldName)
-                && Objects.equals(scopes, that.scopes);
+                && Objects.equals(scopes, that.scopes)
+                && isRoot == that.isRoot;
     }
 
     /**
@@ -165,11 +166,13 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
      */
     @Override
     public final int hashCode() {
-        return Objects.hash(targetClass, fieldName, scopes);
+        return Objects.hash(targetClass, fieldName, scopes, isRoot);
     }
 
     @Override
     public String toString() {
+        if (isRoot) return "root()";
+
         final StringBuilder sb = new StringBuilder();
 
         if (parent instanceof PrimitiveAndWrapperSelectorImpl) {
@@ -205,6 +208,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         private List<Scope> scopes;
         private Selector parent;
         private Throwable stackTraceHolder;
+        private boolean isRoot;
 
         private Builder() {
         }
@@ -231,6 +235,11 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
 
         public Builder stackTraceHolder(final Throwable stackTraceHolder) {
             this.stackTraceHolder = stackTraceHolder;
+            return this;
+        }
+
+        public Builder root(final boolean isRoot) {
+            this.isRoot = isRoot;
             return this;
         }
 

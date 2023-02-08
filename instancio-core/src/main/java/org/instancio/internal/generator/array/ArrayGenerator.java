@@ -120,7 +120,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     @Override
     @SuppressWarnings("unchecked")
     public T generate(final Random random) {
-        ApiValidator.isTrue(arrayType.isArray(), "Expected an array type: %s", arrayType);
+        ApiValidator.isTrue(arrayType != null && arrayType.isArray(), "Expected an array type: %s", arrayType);
 
         if (random.diceRoll(isNullable())) {
             return null;

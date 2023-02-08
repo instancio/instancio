@@ -22,6 +22,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
@@ -63,6 +64,25 @@ class RootSelectorTest {
         assertThat(result)
                 .hasSize(rootListSize)
                 .allSatisfy(innerList -> assertThat(innerList).hasSize(innerListSize));
+    }
+
+    @Test
+    void withArray() {
+        final int size = 10;
+        final String[] result = Instancio.of(String[].class)
+                .generate(root(), gen -> gen.array().length(size))
+                .create();
+
+        assertThat(result).hasSize(size);
+    }
+
+    @Test
+    void withIgnore() {
+        final Phone result = Instancio.of(Phone.class)
+                .ignore(root()) // makes no sense to do this, just ensure null is returned
+                .create();
+
+        assertThat(result).isNull();
     }
 
     @Nested
