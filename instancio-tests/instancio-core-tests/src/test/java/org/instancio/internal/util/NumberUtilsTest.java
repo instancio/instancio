@@ -17,6 +17,7 @@ package org.instancio.internal.util;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
@@ -71,6 +72,20 @@ class NumberUtilsTest {
 
         final T newMax = NumberUtils.calculateNewMax(curMax, newMin, percentage);
         assertThat(newMax).isEqualTo(expected);
+    }
+
+    @CsvSource({
+            "0, 0",
+            "1, 1",
+            "9, 9",
+            "10, 1",
+            "11, 2",
+            "19, 10",
+            "12345, 15",
+    })
+    @ParameterizedTest
+    void sumDigits(final int digits, final int result) {
+        assertThat(NumberUtils.sumDigits(digits)).isEqualTo(result);
     }
 
     @ValueSource(classes = {

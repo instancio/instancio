@@ -16,6 +16,7 @@
 package org.instancio.internal.beanvalidation;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
@@ -29,6 +30,7 @@ import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
+import org.instancio.internal.generator.text.LuhnGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.util.BeanValidationUtils;
 import org.instancio.internal.util.IntRange;
@@ -89,6 +91,18 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
                 urlGenerator.host(random -> url.host());
             }
             return urlGenerator;
+        }
+        if (annotationType == LuhnCheck.class) {
+            final LuhnCheck luhn = (LuhnCheck) annotation;
+
+            final LuhnGenerator generator = new LuhnGenerator(context)
+                    .startIndex(luhn.startIndex())
+                    .endIndex(luhn.endIndex());
+
+            if (luhn.checkDigitIndex() != -1) {
+                generator.checkIndex(luhn.checkDigitIndex());
+            }
+            return generator;
         }
         throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
     }

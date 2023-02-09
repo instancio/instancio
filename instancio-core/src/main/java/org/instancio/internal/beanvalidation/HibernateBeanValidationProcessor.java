@@ -15,17 +15,13 @@
  */
 package org.instancio.internal.beanvalidation;
 
+import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
-import org.instancio.internal.util.CollectionUtils;
 
 import java.lang.annotation.Annotation;
-import java.util.Set;
 
 final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvider {
-
-    private static final Set<Class<? extends Annotation>> PRIMARY_ANNOTATIONS =
-            CollectionUtils.asSet(UUID.class, URL.class);
 
     private final HibernateBeanValidationHandlerResolver resolver =
             HibernateBeanValidationHandlerResolver.getInstance();
@@ -37,6 +33,8 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
 
     @Override
     public boolean isPrimary(final Class<? extends Annotation> annotationType) {
-        return PRIMARY_ANNOTATIONS.contains(annotationType);
+        return annotationType == LuhnCheck.class
+                || annotationType == URL.class
+                || annotationType == UUID.class;
     }
 }
