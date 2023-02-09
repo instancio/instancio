@@ -231,6 +231,16 @@ public final class NumberUtils {
         return calculateNewMax(curMax, newMin, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
     }
 
+    public static int sumDigits(final int num) {
+        int sum = 0;
+        int n = num;
+        while (n > 0) {
+            sum += n % 10;
+            n /= 10;
+        }
+        return sum;
+    }
+
     private static BigDecimal toBigDecimal(final Number n) {
         return n == null ? null : new BigDecimal(n.toString());
     }

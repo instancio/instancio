@@ -42,7 +42,10 @@ interface AnnotationHandlerResolver {
 
     /**
      * Returns a generator for the given primary annotation.
-     * The generator must be mapped, or an error will be thrown.
+     * Primary annotations are determined by the implementation of
+     * {@link BeanValidationProvider#isPrimary(Class)} method.
+     * If the above method returns {@code true} for any given annotation,
+     * then this method must be able to resolve the appropriate generator.
      *
      * @param annotation the annotation for which to resolve a generator
      * @param context    the context that will be used to initialise the generator
