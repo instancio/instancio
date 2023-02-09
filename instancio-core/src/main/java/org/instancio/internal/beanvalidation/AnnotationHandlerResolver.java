@@ -16,10 +16,6 @@
 package org.instancio.internal.beanvalidation;
 
 import org.instancio.documentation.InternalApi;
-import org.instancio.exception.InstancioException;
-import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.util.Sonar;
 
 import java.lang.annotation.Annotation;
 
@@ -39,22 +35,4 @@ interface AnnotationHandlerResolver {
      * @since 2.7.0
      */
     FieldAnnotationHandler resolveHandler(Annotation annotation);
-
-    /**
-     * Returns a generator for the given primary annotation.
-     * Primary annotations are determined by the implementation of
-     * {@link BeanValidationProvider#isPrimary(Class)} method.
-     * If the above method returns {@code true} for any given annotation,
-     * then this method must be able to resolve the appropriate generator.
-     *
-     * @param annotation the annotation for which to resolve a generator
-     * @param context    the context that will be used to initialise the generator
-     * @return resolved generator
-     * @throws InstancioException if the generator could not be resolved
-     * @since 2.7.0
-     */
-    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    Generator<?> resolveGenerator(
-            Annotation annotation,
-            GeneratorContext context);
 }
