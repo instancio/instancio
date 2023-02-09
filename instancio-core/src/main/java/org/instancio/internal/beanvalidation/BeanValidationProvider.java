@@ -40,14 +40,6 @@ interface BeanValidationProvider {
     boolean isPrimary(Class<? extends Annotation> annotationType);
 
     /**
-     * Returns a resolver for annotation handlers for this provider
-     *
-     * @return resolver for annotation handlers
-     * @since 2.7.0
-     */
-    AnnotationHandlerResolver getAnnotationHandlerResolver();
-
-    /**
      * Consumes all the annotations supported by this provider from the given map,
      * starting with the primary annotation. Consumed annotations are moved
      * from the map.

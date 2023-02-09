@@ -16,26 +16,16 @@
 package org.instancio.internal.beanvalidation;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Range;
-import org.hibernate.validator.constraints.URL;
-import org.hibernate.validator.constraints.UUID;
-import org.instancio.exception.InstancioException;
-import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
-import org.instancio.internal.generator.net.URLGenerator;
-import org.instancio.internal.generator.text.LuhnGenerator;
-import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.util.BeanValidationUtils;
 import org.instancio.internal.util.IntRange;
 import org.instancio.internal.util.NumberUtils;
-import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.Keys;
 
 import java.lang.annotation.Annotation;
@@ -67,44 +57,6 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
     @Override
     public FieldAnnotationHandler resolveHandler(final Annotation annotation) {
         return handlerMap.get(annotation.annotationType());
-    }
-
-    @Override
-    public Generator<?> resolveGenerator(
-            final Annotation annotation,
-            final GeneratorContext context) {
-
-        final Class<?> annotationType = annotation.annotationType();
-
-        if (annotationType == UUID.class) {
-            return new UUIDGenerator(context);
-        }
-        if (annotationType == URL.class) {
-            final URL url = (URL) annotation;
-            final URLGenerator urlGenerator = new URLGenerator(context)
-                    .port(url.port());
-
-            if (!StringUtils.isBlank(url.protocol())) {
-                urlGenerator.protocol(url.protocol());
-            }
-            if (!StringUtils.isBlank(url.host())) {
-                urlGenerator.host(random -> url.host());
-            }
-            return urlGenerator;
-        }
-        if (annotationType == LuhnCheck.class) {
-            final LuhnCheck luhn = (LuhnCheck) annotation;
-
-            final LuhnGenerator generator = new LuhnGenerator(context)
-                    .startIndex(luhn.startIndex())
-                    .endIndex(luhn.endIndex());
-
-            if (luhn.checkDigitIndex() != -1) {
-                generator.checkIndex(luhn.checkDigitIndex());
-            }
-            return generator;
-        }
-        throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
     }
 
     // Length is only applicable to character sequences

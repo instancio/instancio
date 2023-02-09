@@ -16,6 +16,10 @@
 package org.instancio.internal.beanvalidation;
 
 import jakarta.validation.constraints.Email;
+import org.instancio.exception.InstancioException;
+import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.text.EmailAddressGenerator;
 
 import java.lang.annotation.Annotation;
 
@@ -25,12 +29,24 @@ final class JakartaBeanValidationProcessor extends AbstractBeanValidationProvide
             JakartaBeanValidationHandlerResolver.getInstance();
 
     @Override
-    public AnnotationHandlerResolver getAnnotationHandlerResolver() {
-        return resolver;
+    public boolean isPrimary(final Class<? extends Annotation> annotationType) {
+        return annotationType == Email.class;
     }
 
     @Override
-    public boolean isPrimary(final Class<? extends Annotation> annotationType) {
-        return annotationType == Email.class;
+    protected Generator<?> resolveGenerator(
+            final Annotation annotation,
+            final GeneratorContext context) {
+
+        final Class<?> annotationType = annotation.annotationType();
+        if (annotationType == Email.class) {
+            return new EmailAddressGenerator(context);
+        }
+        throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
+    }
+
+    @Override
+    protected AnnotationHandlerResolver getAnnotationHandlerResolver() {
+        return resolver;
     }
 }

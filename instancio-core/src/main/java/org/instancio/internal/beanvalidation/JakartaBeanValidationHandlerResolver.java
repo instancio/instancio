@@ -18,7 +18,6 @@ package org.instancio.internal.beanvalidation;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
@@ -34,9 +33,6 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import org.instancio.Random;
-import org.instancio.exception.InstancioException;
-import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.BigDecimalGeneratorSpec;
@@ -49,7 +45,6 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.StringGenerator;
-import org.instancio.internal.generator.text.EmailAddressGenerator;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.util.BeanValidationUtils;
@@ -104,18 +99,6 @@ final class JakartaBeanValidationHandlerResolver implements AnnotationHandlerRes
     @Override
     public FieldAnnotationHandler resolveHandler(final Annotation annotation) {
         return handlerMap.get(annotation.annotationType());
-    }
-
-    @Override
-    public Generator<?> resolveGenerator(
-            final Annotation annotation,
-            final GeneratorContext context) {
-
-        final Class<?> annotationType = annotation.annotationType();
-        if (annotationType == Email.class) {
-            return new EmailAddressGenerator(context);
-        }
-        throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
     }
 
     private static class DigitsHandler implements FieldAnnotationHandler {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Contains internal classes for handling Jakarta Bean Validation annotations.
+ * Contains internal classes for handling Bean Validation annotations.
  *
  * @since 2.7.0
  */
