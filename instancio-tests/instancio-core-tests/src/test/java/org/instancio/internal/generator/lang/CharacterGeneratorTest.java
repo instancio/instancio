@@ -17,10 +17,10 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
-import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -33,16 +33,16 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.allChars;
 
 @NonDeterministicTag
 @FeatureTag(Feature.SETTINGS)
 class CharacterGeneratorTest {
     private static final int SAMPLE_SIZE = 1000;
-    private static final Settings settings = Settings.defaults().set(Keys.CHARACTER_NULLABLE, true);
     private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private final CharacterGenerator generator = new CharacterGenerator(context);
+    private final CharacterGenerator generator = new CharacterGenerator(
+            new GeneratorContext(Settings.defaults(), random));
 
     @Test
     void apiMethod() {
@@ -51,14 +51,15 @@ class CharacterGeneratorTest {
 
     @Test
     void generate() {
-        final Set<Object> results = new HashSet<>();
+        final Set<Character> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             results.add(generator.generate(random));
         }
 
-        assertThat(results).containsNull()
-                .as("26 letters + null")
-                .hasSize(27);
+        assertThat(results)
+                .as("26 letters")
+                .hasSize(26)
+                .allSatisfy(c -> assertThat(c).isUpperCase());
 
         HintsAssert.assertHints(generator.hints()).afterGenerate(AfterGenerate.DO_NOT_MODIFY);
     }
@@ -71,5 +72,24 @@ class CharacterGeneratorTest {
                 .limit(SAMPLE_SIZE);
 
         assertThat(results).containsNull();
+    }
+
+    @Test
+    void range() {
+        generator.range('0', '1');
+
+        final Stream<Character> results = Stream.generate(() -> generator.generate(random))
+                .limit(SAMPLE_SIZE);
+
+        assertThat(results)
+                .hasSize(SAMPLE_SIZE)
+                .containsOnly('0', '1');
+    }
+
+    @Test
+    void rangeValidation() {
+        assertThatThrownBy(() -> generator.range('b', 'a'))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Invalid 'range(b, a)': lower bound must be less than or equal to upper bound");
     }
 }

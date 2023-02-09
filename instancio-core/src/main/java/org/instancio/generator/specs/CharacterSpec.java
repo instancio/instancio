@@ -25,5 +25,8 @@ import org.instancio.generator.ValueSpec;
 public interface CharacterSpec extends ValueSpec<Character>, CharacterGeneratorSpec {
 
     @Override
+    CharacterSpec range(char min, char max);
+
+    @Override
     CharacterSpec nullable();
 }

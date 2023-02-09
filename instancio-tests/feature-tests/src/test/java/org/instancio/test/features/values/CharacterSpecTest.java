@@ -48,6 +48,13 @@ class CharacterSpecTest {
     }
 
     @Test
+    void range() {
+        final int size = 1000;
+        final List<Character> result = chars().range('x', 'z').list(size);
+        assertThat(result).containsOnly('x', 'y', 'z');
+    }
+
+    @Test
     void nullable() {
         final Stream<Character> result = IntStream.range(0, 500)
                 .mapToObj(i -> chars().nullable().get());

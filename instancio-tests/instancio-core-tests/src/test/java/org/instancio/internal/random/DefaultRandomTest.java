@@ -61,6 +61,7 @@ class DefaultRandomTest {
         assertThat(random.longRange(1, 1)).isEqualTo(1);
         assertThat(random.floatRange(1, 1)).isEqualTo(1);
         assertThat(random.doubleRange(1, 1)).isEqualTo(1);
+        assertThat(random.characterRange('1', '1')).isEqualTo('1');
         assertThat(String.valueOf(random.digits(1))).hasSize(1);
         assertThat(random.lowerCaseAlphabetic(1)).hasSize(1);
         assertThat(random.upperCaseAlphabetic(1)).hasSize(1);
@@ -334,4 +335,45 @@ class DefaultRandomTest {
         }
     }
 
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    class GenerateCharacterTest {
+
+        @MethodSource("characterRanges")
+        @ParameterizedTest
+        void characterBetween(final char min, final char max) {
+            final int totalResults = (max - min) + 1;
+            final Integer[] counts = new Integer[totalResults];
+            Arrays.fill(counts, 0);
+
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                final char value = random.characterRange(min, max);
+                final int index = value + -min;
+                counts[index]++;
+                results.add(value);
+            }
+
+            assertThat(results).hasSize(totalResults);
+
+            final int expectedAvgFrequency = SAMPLE_SIZE / totalResults;
+            assertThat(counts).allSatisfy(count ->
+                    assertThat(count).isCloseTo(expectedAvgFrequency, withPercentage(PERCENTAGE_THRESHOLD))
+            );
+        }
+
+        @Test
+        void maxValue() {
+            assertThat(random.characterRange(Character.MAX_VALUE, Character.MAX_VALUE)).isEqualTo(Character.MAX_VALUE);
+        }
+
+        private Stream<Arguments> characterRanges() {
+            return Stream.of(
+                    Arguments.of(Character.MIN_VALUE, (char) (Character.MIN_VALUE + 1)),
+                    Arguments.of('a', 'c'),
+                    Arguments.of('M', 'N'),
+                    Arguments.of('t', 'y'),
+                    Arguments.of((char) (Character.MAX_VALUE - 1), Character.MAX_VALUE),
+                    Arguments.of(Character.MAX_VALUE, Character.MAX_VALUE));
+        }
+    }
 }
