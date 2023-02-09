@@ -49,7 +49,7 @@ public interface Random {
     /**
      * Returns a random {@code byte} within the given range.
      *
-     * @param min lower bound
+     * @param min lower bound (inclusive)
      * @param max upper bound (inclusive)
      * @return a random byte between the min and max, inclusive
      */
@@ -58,7 +58,7 @@ public interface Random {
     /**
      * Returns a random {@code short} within the given range.
      *
-     * @param min lower bound
+     * @param min lower bound (inclusive)
      * @param max upper bound (inclusive)
      * @return a random short between the min and max, inclusive
      */
@@ -67,7 +67,7 @@ public interface Random {
     /**
      * Returns a random {@code int} within the given range.
      *
-     * @param min lower bound
+     * @param min lower bound (inclusive)
      * @param max upper bound (inclusive)
      * @return a random int between the min and max, inclusive
      */
@@ -76,7 +76,7 @@ public interface Random {
     /**
      * Returns a random {@code long} within the given range.
      *
-     * @param min lower bound
+     * @param min lower bound (inclusive)
      * @param max upper bound (inclusive)
      * @return a random long between the min and max, inclusive
      */
@@ -85,7 +85,7 @@ public interface Random {
     /**
      * Returns a random {@code float} within the given range.
      *
-     * @param min lower bound
+     * @param min lower bound (inclusive)
      * @param max upper bound (inclusive)
      * @return a random float between the min and max, inclusive
      */
@@ -94,11 +94,21 @@ public interface Random {
     /**
      * Returns a random {@code double} within the given range.
      *
-     * @param min lower bound
+     * @param min lower bound (inclusive)
      * @param max upper bound (inclusive)
      * @return a random double between the min and max, inclusive
      */
     double doubleRange(double min, double max);
+
+    /**
+     * Returns a random {@code char} within the given range.
+     *
+     * @param min lower bound (inclusive)
+     * @param max upper bound (inclusive)
+     * @return a random character between the min and max, inclusive
+     * @since 2.8.0
+     */
+    char characterRange(char min, char max);
 
     /**
      * Returns a random alphabetic character, {@code [a-z, A-Z]}.

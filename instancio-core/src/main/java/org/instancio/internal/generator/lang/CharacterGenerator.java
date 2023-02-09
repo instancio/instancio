@@ -19,12 +19,16 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CharacterAsStringGeneratorSpec;
 import org.instancio.generator.specs.CharacterSpec;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 
 public class CharacterGenerator extends AbstractGenerator<Character>
         implements CharacterSpec, CharacterAsStringGeneratorSpec {
+
+    private char min = 'A';
+    private char max = 'Z';
 
     public CharacterGenerator(final GeneratorContext context) {
         super(context);
@@ -41,6 +45,16 @@ public class CharacterGenerator extends AbstractGenerator<Character>
     }
 
     @Override
+    public CharacterGenerator range(final char min, final char max) {
+        ApiValidator.isTrue(min <= max,
+                "Invalid 'range(%s, %s)': lower bound must be less than or equal to upper bound", min, max);
+
+        this.min = min;
+        this.max = max;
+        return this;
+    }
+
+    @Override
     public CharacterGenerator nullable() {
         super.nullable();
         return this;
@@ -48,6 +62,8 @@ public class CharacterGenerator extends AbstractGenerator<Character>
 
     @Override
     public Character generate(final Random random) {
-        return random.diceRoll(isNullable()) ? null : random.upperCaseCharacter();
+        return random.diceRoll(isNullable())
+                ? null
+                : random.characterRange(min, max);
     }
 }

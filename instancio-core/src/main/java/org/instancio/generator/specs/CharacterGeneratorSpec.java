@@ -25,6 +25,16 @@ import org.instancio.generator.GeneratorSpec;
 public interface CharacterGeneratorSpec extends GeneratorSpec<Character> {
 
     /**
+     * Range of characters to generate.
+     *
+     * @param min lower bound (inclusive)
+     * @param max upper bound (inclusive)
+     * @return spec builder
+     * @since 2.8.0
+     */
+    CharacterGeneratorSpec range(char min, char max);
+
+    /**
      * Indicates that {@code null} value can be generated.
      *
      * @return spec builder

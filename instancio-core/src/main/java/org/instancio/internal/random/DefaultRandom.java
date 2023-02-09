@@ -88,27 +88,32 @@ public class DefaultRandom implements Random {
     }
 
     @Override
+    public char characterRange(final char min, final char max) {
+        return (char) longRange(min, max);
+    }
+
+    @Override
     public char character() {
         return trueOrFalse() ? lowerCaseCharacter() : upperCaseCharacter();
     }
 
     @Override
     public char lowerCaseCharacter() {
-        return (char) (intRange(0, 25) + 'a');
+        return characterRange('a', 'z');
     }
 
     @Override
     public char upperCaseCharacter() {
-        return (char) (intRange(0, 25) + 'A');
+        return characterRange('A', 'Z');
     }
 
     @Override
     public char alphanumericCharacter() {
-        return intRange(0, 2) == 1 ? digitChar() : character();
+        return longRange(0, 2) == 1 ? digitChar() : character();
     }
 
     private char digitChar() {
-        return (char) (intRange(0, 9) + '0');
+        return characterRange('0', '9');
     }
 
     @Override

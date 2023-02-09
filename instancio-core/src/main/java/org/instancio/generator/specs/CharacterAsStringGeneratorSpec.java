@@ -27,5 +27,8 @@ public interface CharacterAsStringGeneratorSpec
         extends CharacterGeneratorSpec, AsStringGeneratorSpec<Character> {
 
     @Override
+    CharacterAsStringGeneratorSpec range(char min, char max);
+
+    @Override
     CharacterAsStringGeneratorSpec nullable();
 }
