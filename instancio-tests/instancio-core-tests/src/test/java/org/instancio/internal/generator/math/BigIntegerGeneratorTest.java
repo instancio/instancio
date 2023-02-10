@@ -44,7 +44,8 @@ class BigIntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<BigInteger
     @CsvSource({
             "-10000000000001, -10000000000000",
             "0, 1",
-            "100000000000000, 100000000000001"
+            "100000000000000, 100000000000001",
+            "111111111111111111111111111111111111111117, 111111111111111111111111111111111111111119"
     })
     @ParameterizedTest
     void bigIntegerRange(final BigInteger min, final BigInteger max) {
