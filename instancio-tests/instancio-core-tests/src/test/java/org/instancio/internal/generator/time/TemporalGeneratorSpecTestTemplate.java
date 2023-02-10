@@ -84,35 +84,45 @@ abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable
 
     @Test
     final void past() {
-        generator.past();
-        final T result = generator.generate(random);
-        assertThat(result).isLessThanOrEqualTo(getNow());
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            generator.past();
+            final T result = generator.generate(random);
+            assertThat(result).isLessThanOrEqualTo(getNow());
+        }
     }
 
     @Test
     final void future() {
-        generator.future();
-        final T result = generator.generate(random);
-        assertThat(result).isGreaterThanOrEqualTo(getNow());
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            generator.future();
+            final T result = generator.generate(random);
+            assertThat(result).isGreaterThanOrEqualTo(getNow());
+        }
     }
 
     @Test
     final void smallestAllowedRange() {
-        final T start = getStart();
-        generator.range(start, start);
-        assertThat(generator.generate(random)).isEqualTo(start);
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final T start = getStart();
+            generator.range(start, start);
+            assertThat(generator.generate(random)).isEqualTo(start);
+        }
     }
 
     @Test
     final void rangeWithTemporalMin() {
-        final T min = getTemporalMin();
-        if (min != null) assertGeneratedValueIsWithinRange(min, min);
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final T min = getTemporalMin();
+            if (min != null) assertGeneratedValueIsWithinRange(min, min);
+        }
     }
 
     @Test
     final void rangeWithTemporalMax() {
-        final T max = getTemporalMax();
-        if (max != null) assertGeneratedValueIsWithinRange(max, max);
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final T max = getTemporalMax();
+            if (max != null) assertGeneratedValueIsWithinRange(max, max);
+        }
     }
 
     @Test
