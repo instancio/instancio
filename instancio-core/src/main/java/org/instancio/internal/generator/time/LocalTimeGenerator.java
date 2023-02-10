@@ -20,20 +20,21 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.LocalTime;
 
 public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
         implements LocalTimeSpec {
 
+    private static final int CUT_OFF_BUFFER_MINUTES = 1;
+
     public LocalTimeGenerator() {
         this(Global.generatorContext());
     }
 
     public LocalTimeGenerator(final GeneratorContext context) {
-        super(context,
-                LocalTime.of(0, 0, 0),
-                LocalTime.of(23, 59, 59));
+        super(context, LocalTime.MIN, LocalTime.MAX);
     }
 
     @Override
@@ -53,6 +54,11 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
         return this;
     }
 
+    @VisibleForTesting
+    LocalTime getNow() {
+        return LocalTime.now();
+    }
+
     @Override
     public LocalTimeGenerator range(final LocalTime start, final LocalTime end) {
         super.range(start, end);
@@ -67,17 +73,26 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
 
     @Override
     LocalTime getLatestPast() {
-        return LocalTime.now().minusSeconds(1);
+        final LocalTime now = getNow();
+        final LocalTime latestPast = now.minusMinutes(CUT_OFF_BUFFER_MINUTES);
+
+        // Handle overflow into previous day
+        return latestPast.isAfter(now) ? LocalTime.MIN : latestPast;
     }
 
     @Override
     LocalTime getEarliestFuture() {
-        return LocalTime.now().plusMinutes(1);
+        final LocalTime now = getNow();
+        final LocalTime earliestFuture = now.plusMinutes(CUT_OFF_BUFFER_MINUTES);
+
+        // Handle overflow into next day
+        return earliestFuture.isBefore(now) ? LocalTime.MAX : earliestFuture;
     }
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
+        ApiValidator.isTrue(min.compareTo(max) <= 0,
+                "Start must not exceed end: %s, %s", min, max);
     }
 
     @Override
