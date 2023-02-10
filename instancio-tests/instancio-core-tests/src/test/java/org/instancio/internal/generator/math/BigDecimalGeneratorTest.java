@@ -44,7 +44,11 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
     @CsvSource({
             "-10.0012, -10.0011",
             "0.00015, 0.00019",
-            "9999999999999.555, 9999999999999.557"
+            "0.00008, 0.00009",
+            "0, 0.00001",
+            "-0.00001, 0",
+            "9999999999999.555, 9999999999999.557",
+            "9999999999999999999999999999999999999.111, 9999999999999999999999999999999999999.1111"
     })
     @ParameterizedTest
     void rangeWithFractionalValues(final BigDecimal min, final BigDecimal max) {
@@ -52,7 +56,26 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
         generator.range(min, max);
 
         final BigDecimal result = generator.generate(new DefaultRandom());
+        assertThat(result)
+                .isNotNull()
+                .isGreaterThanOrEqualTo(min)
+                .isLessThanOrEqualTo(max);
+    }
 
+    @CsvSource({
+            "-10.00000000000000000002, -10.00000000000000000001",
+            "0.00000000000000000001, 0.00000000000000000001",
+            "0, 0.00000000000000001234",
+            "-0.00000000000000001234, 0",
+            "9999999999999999999999999999999999999.00000000000000000008, 9999999999999999999999999999999999999.00000000000000000009"
+    })
+    @ParameterizedTest
+    void rangeWithLargeScale(final BigDecimal min, final BigDecimal max) {
+        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
+        generator.range(min, max);
+        generator.scale(20);
+
+        final BigDecimal result = generator.generate(new DefaultRandom());
         assertThat(result)
                 .isNotNull()
                 .isGreaterThanOrEqualTo(min)
