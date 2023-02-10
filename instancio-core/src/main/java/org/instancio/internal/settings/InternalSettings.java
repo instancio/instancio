@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.settings;
 
+import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
@@ -69,11 +70,15 @@ public final class InternalSettings implements Settings {
             } else {
                 final SettingKey settingKey = Keys.get(key);
                 final Function<String, Object> fn = SettingsSupport.getFunction(settingKey.type());
-                final Object val = fn.apply(v.toString());
+                final Object val;
+                try {
+                    val = fn.apply(v.toString());
+                } catch (NumberFormatException ex) {
+                    throw new InstancioApiException("Invalid value for setting key: " + settingKey, ex);
+                }
                 settings.set(settingKey, val);
             }
         });
-
         return settings;
     }
 

@@ -144,6 +144,17 @@ class SettingsTest {
     }
 
     @Test
+    void numericValueOutOfBounds() {
+        final Map<Object, Object> map = new HashMap<>();
+        map.put(Keys.BYTE_MAX.propertyKey(), 1000);
+
+        assertThatThrownBy(() -> Settings.from(map))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Invalid value for setting key: %s", Keys.BYTE_MAX.propertyKey())
+                .hasCauseExactlyInstanceOf(NumberFormatException.class);
+    }
+
+    @Test
     void lockSettings() {
         final Settings locked = Settings.create().lock();
 
