@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
@@ -27,7 +28,7 @@ import java.time.ZoneOffset;
 public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
         implements OffsetTimeSpec {
 
-    private static final int MAX_NANO = 999_999_999;
+    private static final int CUT_OFF_BUFFER_MINUTES = 1;
     private static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
 
     public OffsetTimeGenerator() {
@@ -35,9 +36,7 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
     }
 
     public OffsetTimeGenerator(final GeneratorContext context) {
-        super(context,
-                OffsetTime.of(0, 0, 0, 0, ZONE_OFFSET),
-                OffsetTime.of(23, 59, 59, MAX_NANO, ZONE_OFFSET));
+        super(context, OffsetTime.MIN, OffsetTime.MAX);
     }
 
     @Override
@@ -71,12 +70,25 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
 
     @Override
     OffsetTime getLatestPast() {
-        return OffsetTime.now(ZONE_OFFSET).minusSeconds(1);
+        final OffsetTime now = getNow();
+        final OffsetTime latestPast = now.minusMinutes(CUT_OFF_BUFFER_MINUTES);
+
+        // Handle overflow into previous day
+        return latestPast.isAfter(now) ? OffsetTime.MIN : latestPast;
     }
 
     @Override
     OffsetTime getEarliestFuture() {
-        return OffsetTime.now(ZONE_OFFSET).plusMinutes(1);
+        final OffsetTime now = getNow();
+        final OffsetTime earliestFuture = now.plusMinutes(CUT_OFF_BUFFER_MINUTES);
+
+        // Handle overflow into next day
+        return earliestFuture.isBefore(now) ? OffsetTime.MAX : earliestFuture;
+    }
+
+    @VisibleForTesting
+    OffsetTime getNow() {
+        return OffsetTime.now(ZoneOffset.UTC);
     }
 
     @Override

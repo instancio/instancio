@@ -54,11 +54,6 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
         return this;
     }
 
-    @VisibleForTesting
-    LocalTime getNow() {
-        return LocalTime.now();
-    }
-
     @Override
     public LocalTimeGenerator range(final LocalTime start, final LocalTime end) {
         super.range(start, end);
@@ -87,6 +82,11 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
 
         // Handle overflow into next day
         return earliestFuture.isBefore(now) ? LocalTime.MAX : earliestFuture;
+    }
+
+    @VisibleForTesting
+    LocalTime getNow() {
+        return LocalTime.now();
     }
 
     @Override
