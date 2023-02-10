@@ -15,7 +15,15 @@
  */
 package org.instancio.internal.generator.time;
 
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
+
 import java.time.LocalTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 class LocalTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<LocalTime> {
 
@@ -67,5 +75,31 @@ class LocalTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<LocalTime
     LocalTime getStartPlusRandomLargeIncrement() {
         // (start + increment) should not cross over the 24-hour mark
         return START.plusHours(random.intRange(1, 22));
+    }
+
+    @Nested
+    class OverflowTest {
+
+        @ValueSource(ints = {0, 1, 999_999_999})
+        @ParameterizedTest
+        void pastOverflow(final int nanos) {
+            final LocalTimeGenerator gen = Mockito.spy(generator);
+            when(gen.getNow()).thenReturn(LocalTime.of(0, 0, 0, nanos));
+
+            final LocalTime result = gen.past().generate(random);
+
+            assertThat(result).isEqualTo(LocalTime.MIN);
+        }
+
+        @ValueSource(ints = {0, 1, 999_999_999})
+        @ParameterizedTest
+        void futureOverflow(final int nanos) {
+            final LocalTimeGenerator gen = Mockito.spy(generator);
+            when(gen.getNow()).thenReturn(LocalTime.of(23, 59, 59, nanos));
+
+            final LocalTime result = gen.future().generate(random);
+
+            assertThat(result).isEqualTo(LocalTime.MAX);
+        }
     }
 }
