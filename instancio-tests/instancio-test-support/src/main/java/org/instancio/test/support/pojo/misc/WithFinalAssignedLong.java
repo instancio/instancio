@@ -16,10 +16,8 @@
 package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class WithFinalAssignedLong {
     public static final long ASSIGNED_VALUE = 12345;
 

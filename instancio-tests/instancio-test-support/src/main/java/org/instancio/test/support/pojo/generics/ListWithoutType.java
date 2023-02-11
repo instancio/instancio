@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.generics;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.List;
 
 @Data
-@ToString
 public class ListWithoutType {
 
     @SuppressWarnings("rawtypes")

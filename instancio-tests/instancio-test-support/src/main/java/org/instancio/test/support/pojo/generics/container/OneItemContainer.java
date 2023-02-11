@@ -16,11 +16,9 @@
 package org.instancio.test.support.pojo.generics.container;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 
 @Data
-@ToString
 public class OneItemContainer<T> {
 
     private Item<T> item;

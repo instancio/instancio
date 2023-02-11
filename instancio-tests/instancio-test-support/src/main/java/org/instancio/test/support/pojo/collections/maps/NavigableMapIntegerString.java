@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.collections.maps;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.NavigableMap;
 
 @Data
-@ToString
 public class NavigableMapIntegerString {
 
     private NavigableMap<Integer, String> map;

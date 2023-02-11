@@ -16,10 +16,8 @@
 package org.instancio.test.support.pojo.arrays.primitive;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class WithLongArray {
     private long[] values;
 }

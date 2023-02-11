@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.collections.sets;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.concurrent.ConcurrentSkipListSet;
 
 @Data
-@ToString
 public class ConcurrentSkipListSetLong {
 
     private ConcurrentSkipListSet<Long> set;

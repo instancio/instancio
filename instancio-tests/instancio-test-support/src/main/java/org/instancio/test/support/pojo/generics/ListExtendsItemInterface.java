@@ -16,13 +16,11 @@
 package org.instancio.test.support.pojo.generics;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 
 import java.util.List;
 
 @Data
-@ToString
 public class ListExtendsItemInterface {
 
     private List<? extends ItemInterface<String>> list;

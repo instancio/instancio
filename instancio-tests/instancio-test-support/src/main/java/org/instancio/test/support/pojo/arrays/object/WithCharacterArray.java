@@ -16,10 +16,8 @@
 package org.instancio.test.support.pojo.arrays.object;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class WithCharacterArray {
     private Character[] values;
 }

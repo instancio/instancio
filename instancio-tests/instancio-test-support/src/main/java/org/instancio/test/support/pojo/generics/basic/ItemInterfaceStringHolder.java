@@ -16,11 +16,9 @@
 package org.instancio.test.support.pojo.generics.basic;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 
 @Data
-@ToString
 public class ItemInterfaceStringHolder {
 
     private ItemInterface<String> itemInterfaceString;

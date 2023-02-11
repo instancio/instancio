@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.cyclic;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.Map;
 
 @Data
-@ToString
 public class CyclicKeyMap {
 
     private Map<CyclicKeyMap, String> map;

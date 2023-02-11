@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.Map;
 
 @Data
-@ToString
 public class UninstantiableMapKeyValueType {
 
     private Map<String, Class<?>> mapStringClass;

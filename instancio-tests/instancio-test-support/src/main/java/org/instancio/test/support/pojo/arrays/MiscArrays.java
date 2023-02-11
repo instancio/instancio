@@ -16,11 +16,9 @@
 package org.instancio.test.support.pojo.arrays;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 
 @Data
-@ToString
 public class MiscArrays {
 
     private long[] primitiveLongArray;

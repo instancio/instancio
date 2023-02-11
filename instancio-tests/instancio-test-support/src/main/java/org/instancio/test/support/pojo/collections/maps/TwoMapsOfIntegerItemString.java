@@ -16,13 +16,11 @@
 package org.instancio.test.support.pojo.collections.maps;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 
 import java.util.Map;
 
 @Data
-@ToString
 public class TwoMapsOfIntegerItemString {
 
     private Map<Integer, Item<String>> map1;

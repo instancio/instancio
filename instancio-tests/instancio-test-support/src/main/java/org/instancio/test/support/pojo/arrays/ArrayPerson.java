@@ -16,11 +16,9 @@
 package org.instancio.test.support.pojo.arrays;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.person.Person;
 
 @Data
-@ToString
 public class ArrayPerson {
 
     private Person[] array;

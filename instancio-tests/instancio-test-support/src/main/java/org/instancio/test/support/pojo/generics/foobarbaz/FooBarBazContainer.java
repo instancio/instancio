@@ -16,12 +16,8 @@
 package org.instancio.test.support.pojo.generics.foobarbaz;
 
 import lombok.Data;
-import lombok.Setter;
-import lombok.ToString;
 
 @Data
-@Setter
-@ToString
 public class FooBarBazContainer {
 
     private Foo<Bar<Baz<String>>> item;

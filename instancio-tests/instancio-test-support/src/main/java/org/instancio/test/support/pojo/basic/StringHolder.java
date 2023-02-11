@@ -18,13 +18,11 @@ package org.instancio.test.support.pojo.basic;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class StringHolder implements StringHolderInterface {
 
     private String value;

@@ -16,10 +16,8 @@
 package org.instancio.test.support.pojo.basic;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class CharacterHolder {
 
     private char primitive;

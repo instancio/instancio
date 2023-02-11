@@ -16,10 +16,8 @@
 package org.instancio.test.support.pojo.cyclic;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class CyclicArray {
 
     private CyclicArray[] items;

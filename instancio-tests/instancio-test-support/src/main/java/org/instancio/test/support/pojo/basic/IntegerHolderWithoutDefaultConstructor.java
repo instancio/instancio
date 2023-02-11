@@ -17,10 +17,8 @@ package org.instancio.test.support.pojo.basic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 @AllArgsConstructor
 public class IntegerHolderWithoutDefaultConstructor {
 

@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.collections.sets;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.SortedSet;
 
 @Data
-@ToString
 public class SortedSetLong {
 
     private SortedSet<Long> set;

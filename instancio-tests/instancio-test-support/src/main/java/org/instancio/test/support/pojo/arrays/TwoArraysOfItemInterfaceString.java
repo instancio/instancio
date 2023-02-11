@@ -16,11 +16,9 @@
 package org.instancio.test.support.pojo.arrays;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.interfaces.ItemInterface;
 
 @Data
-@ToString
 public class TwoArraysOfItemInterfaceString {
 
     private ItemInterface<String>[] array1;

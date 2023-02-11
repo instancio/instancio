@@ -16,13 +16,11 @@
 package org.instancio.test.support.pojo.generics.container;
 
 import lombok.Data;
-import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 
 @Data
-@Setter
 public class PairArrayContainer<X, Y> {
 
     private Pair<X, Y>[] pairArray;

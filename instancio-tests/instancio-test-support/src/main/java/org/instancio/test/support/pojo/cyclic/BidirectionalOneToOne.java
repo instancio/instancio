@@ -16,19 +16,16 @@
 package org.instancio.test.support.pojo.cyclic;
 
 import lombok.Data;
-import lombok.ToString;
 
 public class BidirectionalOneToOne {
 
     @Data
-    @ToString
     public static class Parent {
         private String parentName;
         private Child child;
     }
 
     @Data
-    @ToString
     public static class Child {
         private String childName;
         private Parent parent;

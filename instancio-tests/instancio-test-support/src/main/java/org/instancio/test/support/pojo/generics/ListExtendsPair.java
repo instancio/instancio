@@ -16,13 +16,11 @@
 package org.instancio.test.support.pojo.generics;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 
 import java.util.List;
 
 @Data
-@ToString
 public class ListExtendsPair {
 
     private List<? extends Pair<Long, String>> list;

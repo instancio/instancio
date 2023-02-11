@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.collections.maps;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.concurrent.ConcurrentMap;
 
 @Data
-@ToString
 public class ConcurrentMapIntegerString {
 
     private ConcurrentMap<Integer, String> map;

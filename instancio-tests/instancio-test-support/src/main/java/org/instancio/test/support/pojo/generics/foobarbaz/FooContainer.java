@@ -16,10 +16,8 @@
 package org.instancio.test.support.pojo.generics.foobarbaz;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class FooContainer {
 
     private Foo<String> stringFoo;

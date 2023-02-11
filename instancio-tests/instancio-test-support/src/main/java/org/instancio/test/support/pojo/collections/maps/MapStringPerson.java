@@ -16,13 +16,11 @@
 package org.instancio.test.support.pojo.collections.maps;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.person.Person;
 
 import java.util.Map;
 
 @Data
-@ToString
 public class MapStringPerson {
 
     private Map<String, Person> map;

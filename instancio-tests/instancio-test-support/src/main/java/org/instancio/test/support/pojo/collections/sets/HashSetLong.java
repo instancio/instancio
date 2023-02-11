@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.collections.sets;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.HashSet;
 
 @Data
-@ToString
 public class HashSetLong {
 
     private HashSet<Long> set;

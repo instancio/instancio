@@ -16,7 +16,6 @@
 package org.instancio.test.support.pojo.generics.container;
 
 import lombok.Data;
-import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.instancio.test.support.pojo.generics.basic.Pair;
@@ -24,7 +23,6 @@ import org.instancio.test.support.pojo.generics.basic.Pair;
 import java.util.List;
 
 @Data
-@Setter
 public class PairListContainer<X, Y> {
 
     private List<Pair<X, Y>> pairList;

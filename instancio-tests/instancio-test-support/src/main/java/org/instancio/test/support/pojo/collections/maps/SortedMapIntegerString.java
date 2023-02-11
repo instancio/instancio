@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.collections.maps;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.SortedMap;
 
 @Data
-@ToString
 public class SortedMapIntegerString {
 
     private SortedMap<Integer, String> map;

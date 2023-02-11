@@ -16,13 +16,11 @@
 package org.instancio.test.support.pojo.collections.lists;
 
 import lombok.Data;
-import lombok.ToString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 
 import java.util.List;
 
 @Data
-@ToString
 public class TwoListsOfItemString {
 
     private List<Item<String>> list1;

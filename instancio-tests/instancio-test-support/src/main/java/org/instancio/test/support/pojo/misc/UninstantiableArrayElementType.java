@@ -16,10 +16,8 @@
 package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class UninstantiableArrayElementType {
 
     private Class<?>[] array;

@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.collections;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.Collection;
 
 @Data
-@ToString
 public class CollectionLong {
 
     private Collection<Long> collection;

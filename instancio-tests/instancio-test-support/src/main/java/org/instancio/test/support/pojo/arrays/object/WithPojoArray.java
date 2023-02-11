@@ -16,17 +16,12 @@
 package org.instancio.test.support.pojo.arrays.object;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Data
-@ToString
 public class WithPojoArray {
     private PojoItem[] values;
 
     @Data
-    @ToString
-    @EqualsAndHashCode
     public static class PojoItem {
         private int id;
         private String name;

@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.generics.foobarbaz;
 
 import lombok.Data;
-import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Data
-@Setter
 public class Baz<Z> {
     private Z bazValue;
 

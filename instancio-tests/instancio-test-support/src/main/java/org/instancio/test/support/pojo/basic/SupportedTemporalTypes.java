@@ -16,7 +16,6 @@
 package org.instancio.test.support.pojo.basic;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -38,7 +37,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Data
-@ToString
 public class SupportedTemporalTypes {
 
     private Temporal temporal;

@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.Collection;
 
 @Data
-@ToString
 public class UninstantiableCollectionElementType {
 
     private Collection<Class<?>> collection;
