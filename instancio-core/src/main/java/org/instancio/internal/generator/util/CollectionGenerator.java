@@ -43,6 +43,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     protected int minSize;
     protected int maxSize;
     protected boolean nullableElements;
+    protected boolean unique;
     protected List<Object> withElements;
     protected Class<?> collectionType;
     protected boolean isDelegating;
@@ -106,6 +107,12 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         return this;
     }
 
+    @Override
+    public CollectionGeneratorSpec<T> unique() {
+        this.unique = true;
+        return this;
+    }
+
     @SafeVarargs
     @Override
     public final CollectionGeneratorSpec<T> with(final T... elements) {
@@ -138,6 +145,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
                         .generateElements(getContext().random().intRange(minSize, maxSize))
                         .nullableElements(nullableElements)
                         .withElements(withElements)
+                        .unique(unique)
                         .shuffle(!CollectionUtils.isNullOrEmpty(withElements))
                         .build())
                 .with(InternalGeneratorHint.builder()

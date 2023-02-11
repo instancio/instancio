@@ -74,6 +74,30 @@ public interface CollectionGeneratorSpec<T>
     @Override
     CollectionGeneratorSpec<T> subtype(Class<?> type);
 
+
+    /**
+     * Specifies that a collection containing unique elements should be generated.
+     *
+     * <p>Special care must be taken when using this method and
+     * {@link #size(int)}. Consider the following example where
+     * the favourite numbers field is of type {@code Set<Integer>}:
+     *
+     * <pre>{@code
+     *   Person person = Instancio.of(Person.class)
+     *       .generate(allInts(), gen -> gen.ints().range(1, 5))
+     *       .generate(field(Person::getFavouriteNumbers), gen -> gen.collection().unique().size(10))
+     *       .create();
+     * }</pre>
+     *
+     * Since the integer range is restricted to {@code 1..5}, it is impossible
+     * to generate a collection of 10 unique elements. In this case,
+     * a collection of size 5 will be generated.
+     *
+     * @return spec builder
+     * @since 2.8.0
+     */
+    CollectionGeneratorSpec<T> unique();
+
     /**
      * Adds given elements to the generated collection at random positions.
      * Note that the elements are added after the collection has been generated.

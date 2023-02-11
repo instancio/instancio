@@ -96,12 +96,14 @@ public final class CollectionHint implements Hint<CollectionHint> {
     private int generateElements;
     private final boolean nullableElements;
     private final boolean shuffle;
+    private final boolean unique;
     private final List<?> withElements;
 
     private CollectionHint(final Builder builder) {
         generateElements = builder.generateElements;
         nullableElements = builder.nullableElements;
         shuffle = builder.shuffle;
+        unique = builder.unique;
         withElements = builder.withElements == null
                 ? Collections.emptyList()
                 : Collections.unmodifiableList(builder.withElements);
@@ -158,6 +160,10 @@ public final class CollectionHint implements Hint<CollectionHint> {
         return shuffle;
     }
 
+    public boolean unique() {
+        return unique;
+    }
+
     /**
      * Returns additional elements provided by the generator to the engine that are
      * to be inserted into the collection.
@@ -189,6 +195,7 @@ public final class CollectionHint implements Hint<CollectionHint> {
         private int generateElements;
         private boolean nullableElements;
         private boolean shuffle;
+        private boolean unique;
         private List<Object> withElements;
 
         private Builder() {
@@ -235,6 +242,18 @@ public final class CollectionHint implements Hint<CollectionHint> {
          */
         public Builder shuffle(final boolean shuffle) {
             this.shuffle = shuffle;
+            return this;
+        }
+
+        /**
+         * Indicates that a collection containing unique elements should be generated.
+         *
+         * @param unique if {@code true}, unique elements will be unique
+         * @return builder instance
+         * @since 2.8.0
+         */
+        public Builder unique(final boolean unique) {
+            this.unique = unique;
             return this;
         }
 
