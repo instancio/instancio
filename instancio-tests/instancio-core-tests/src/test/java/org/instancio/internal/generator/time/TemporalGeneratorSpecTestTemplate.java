@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable<? super T>> {
-    protected final int SAMPLE_SIZE = 1000;
+    protected final int SAMPLE_SIZE = 100_000;
     protected final Random random = new DefaultRandom();
     protected final GeneratorContext context = new GeneratorContext(Settings.create(), random);
 
@@ -86,15 +86,17 @@ abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable
     final void past() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             generator.past();
+            final T now = getNow();
             final T result = generator.generate(random);
-            assertThat(result).isLessThanOrEqualTo(getNow());
+            assertThat(result).isLessThanOrEqualTo(now);
         }
     }
 
     @Test
-    final void future() {
+    void future() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             generator.future();
+            final T now = getNow();
             final T result = generator.generate(random);
             assertThat(result).isGreaterThanOrEqualTo(getNow());
         }

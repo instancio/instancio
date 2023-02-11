@@ -21,6 +21,9 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class OffsetDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<OffsetDateTime> {
 
@@ -65,10 +68,26 @@ class OffsetDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<Offs
     }
 
     @Test
+    @Override
+    void future() {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            generator.future();
+            final OffsetDateTime now = getNow();
+            final OffsetDateTime result = generator.generate(random);
+            assertThat(result).isAfter(now.toLocalDateTime().atOffset(ZoneOffset.UTC));
+        }
+    }
+
+    @Test
     void randomStart() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final OffsetDateTime start = Instancio.create(OffsetDateTime.class);
-            assertGeneratedValueIsWithinRange(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
+            final long startEpochDay = start.getLong(ChronoField.EPOCH_DAY);
+
+            // Prevent overflow when calling plusDays()
+            final long max = ChronoField.EPOCH_DAY.range().getMaximum() - startEpochDay;
+
+            assertGeneratedValueIsWithinRange(start, start.plusDays(random.longRange(1, max)));
         }
     }
 }
