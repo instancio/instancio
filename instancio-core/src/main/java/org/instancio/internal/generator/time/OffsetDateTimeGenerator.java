@@ -21,17 +21,15 @@ import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-
-import static org.instancio.internal.util.Constants.DEFAULT_MAX;
-import static org.instancio.internal.util.Constants.DEFAULT_MIN;
 
 public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDateTime>
         implements OffsetDateTimeSpec {
 
-    private static final ZoneId ZONE_ID = ZoneId.systemDefault();
+    private static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
+
     private final LocalDateTimeGenerator delegate;
 
     public OffsetDateTimeGenerator() {
@@ -39,10 +37,7 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     }
 
     public OffsetDateTimeGenerator(final GeneratorContext context) {
-        super(context,
-                OffsetDateTime.ofInstant(DEFAULT_MIN, ZONE_ID),
-                OffsetDateTime.ofInstant(DEFAULT_MAX, ZONE_ID));
-
+        super(context, OffsetDateTime.MIN, OffsetDateTime.MAX);
         delegate = new LocalDateTimeGenerator(context);
     }
 
@@ -77,12 +72,12 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
 
     @Override
     OffsetDateTime getLatestPast() {
-        return OffsetDateTime.now().minusSeconds(1);
+        return OffsetDateTime.now(ZONE_OFFSET).minusSeconds(1);
     }
 
     @Override
     OffsetDateTime getEarliestFuture() {
-        return OffsetDateTime.now().plusMinutes(1);
+        return OffsetDateTime.now(ZONE_OFFSET).plusMinutes(1);
     }
 
     @Override
@@ -93,6 +88,7 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     @Override
     public OffsetDateTime generateNonNullValue(final Random random) {
         delegate.range(min.toLocalDateTime(), max.toLocalDateTime());
-        return OffsetDateTime.of(delegate.generate(random), ZoneOffset.UTC);
+        final LocalDateTime ldt = delegate.generate(random);
+        return ldt == null ? null : OffsetDateTime.of(ldt, ZONE_OFFSET);
     }
 }
