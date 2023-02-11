@@ -50,11 +50,13 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
@@ -410,6 +412,8 @@ class InstancioEngine {
         }
 
         final boolean nullableElement = hint.nullableElements();
+        final boolean requireUnique = hint.unique();
+        final Set<Object> generated = new HashSet<>();
 
         int elementsToGenerate = hint.generateElements();
         int failedAdditions = 0;
@@ -423,8 +427,16 @@ class InstancioEngine {
             final Object elementValue = elementResult.getValue();
 
             if (elementValue != null || nullableElement) {
-                if (collection.add(elementValue)) {
+
+                boolean canAdd = !requireUnique || !generated.contains(elementValue);
+
+                if (requireUnique) {
+                    generated.add(elementValue);
+                }
+
+                if (canAdd && collection.add(elementValue)) {
                     elementsToGenerate--;
+
                 } else {
                     // Special case for hash based collections.
                     // If requested size is impossible (e.g. a Set<Boolean> of size 5)
