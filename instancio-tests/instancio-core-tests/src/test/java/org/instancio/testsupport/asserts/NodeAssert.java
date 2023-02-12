@@ -114,6 +114,20 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return this;
     }
 
+    public NodeAssert hasTypeMappedTo(final Class<?> class1, final String typeVariable1,
+                                      final Class<?> class2, final String typeVariable2) {
+        isNotNull();
+        final Type typeVar1 = getTypeVar(class1, typeVariable1);
+        final TypeMap typeMap = actual.getTypeMap();
+        final Type actualMapping = typeMap.get(typeVar1);
+
+        assertThat(actualMapping)
+                .as("Actual type map: %s", typeMap)
+                .isNotNull()
+                .isEqualTo(getTypeVar(class2, typeVariable2));
+        return this;
+    }
+
     public NodeAssert hasEmptyTypeMap() {
         isNotNull();
         assertThat(actual.getTypeMap().size())

@@ -18,7 +18,9 @@ package org.instancio.internal.nodes;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
+import org.instancio.internal.reflection.DefaultPackageFilter;
 import org.instancio.internal.reflection.FieldCollector;
+import org.instancio.internal.reflection.PackageFilter;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.TypeUtils;
@@ -53,6 +55,7 @@ public final class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
+    private final PackageFilter packageFilter = new DefaultPackageFilter();
     private final NodeContext nodeContext;
 
     public NodeFactory(final NodeContext nodeContext) {
@@ -132,7 +135,8 @@ public final class NodeFactory {
 
     private Node createNodeWithSubtypeMapping(final Type type, @Nullable final Field field, @Nullable final Node parent) {
         final Class<?> rawType = TypeUtils.getRawType(type);
-        final Node node = Node.builder()
+
+        Node node = Node.builder()
                 .nodeContext(nodeContext)
                 .type(type)
                 .rawType(rawType)
@@ -143,6 +147,17 @@ public final class NodeFactory {
                 .build();
 
         final Class<?> targetClass = resolveSubtype(node).orElse(rawType);
+
+        // Handle the case where: Child<T> extends Parent<T>
+        // If the child node inherits a TypeVariable field declaration from
+        // the parent, we need to map Parent.T -> Child.T to resolve the type variable
+        final Map<Type, Type> genericSuperclassTypeMap = createSuperclassTypeMap(targetClass);
+
+        if (!genericSuperclassTypeMap.isEmpty()) {
+            node = node.toBuilder()
+                    .additionalTypeMap(genericSuperclassTypeMap)
+                    .build();
+        }
 
         if (!rawType.isPrimitive() && rawType != targetClass && !targetClass.isEnum()) {
             ApiValidator.validateSubtype(rawType, targetClass);
@@ -155,7 +170,7 @@ public final class NodeFactory {
             return node.toBuilder()
                     .targetClass(targetClass)
                     .nodeKind(getNodeKind(targetClass))
-                    .additionalTypeMap(createTypeMapForSubtype(rawType, targetClass))
+                    .additionalTypeMap(createBridgeTypeMap(rawType, targetClass))
                     .build();
         }
 
@@ -255,7 +270,7 @@ public final class NodeFactory {
                 LOG.debug("Subtype mapping '{}' to '{}'", Format.withoutPackage(rawComponentType), Format.withoutPackage(targetClass));
             }
 
-            final Map<Type, Type> typeMapForSubtype = createTypeMapForSubtype(rawComponentType, targetClassComponentType);
+            final Map<Type, Type> typeMapForSubtype = createBridgeTypeMap(rawComponentType, targetClassComponentType);
 
             // Map component type to match array subtype
             typeMapForSubtype.put(rawComponentType, targetClassComponentType);
@@ -321,9 +336,31 @@ public final class NodeFactory {
         return mappedType == typeVar ? null : mappedType; // NOPMD
     }
 
+    private Map<Type, Type> createSuperclassTypeMap(final Class<?> targetClass) {
+        final Map<Type, Type> resultTypeMap = new HashMap<>();
+
+        Class<?> current = targetClass;
+        Type supertype = current.getGenericSuperclass();
+
+        while (supertype instanceof ParameterizedType) {
+            final Class<?> rawSuper = TypeUtils.getRawType(supertype);
+
+            if (rawSuper == null || packageFilter.isExcluded(rawSuper.getPackage())) {
+                break;
+            }
+
+            final Map<Type, Type> typeMap = createBridgeTypeMap(current, rawSuper);
+            resultTypeMap.putAll(typeMap);
+
+            current = rawSuper;
+            supertype = rawSuper.getGenericSuperclass();
+        }
+        LOG.trace("Created superclass type map: {}", resultTypeMap);
+        return resultTypeMap;
+    }
 
     /**
-     * A "subtype type map" is required for performing type substitutions of parameterized types.
+     * A "bridge type map" is required for performing type substitutions of parameterized types.
      * For example, a subtype may declare a type variable that maps to a type variable declared
      * by the super type. This method provides the "bridge" mapping that allows resolving the actual
      * type parameters.
@@ -339,18 +376,18 @@ public final class NodeFactory {
      * <p>
      * NOTE: in its current form, this method only handles the most basic use cases.
      *
-     * @param supertype base class
-     * @param subtype   of the base class
+     * @param source source type
+     * @param target target type
      * @return additional type mappings that might help resolve type variables
      */
-    private static Map<Type, Type> createTypeMapForSubtype(final Class<?> supertype, final Class<?> subtype) {
-        if (supertype.equals(subtype)) {
+    private static Map<Type, Type> createBridgeTypeMap(final Class<?> source, final Class<?> target) {
+        if (source.equals(target)) {
             return Collections.emptyMap();
         }
 
         final Map<Type, Type> typeMap = new HashMap<>();
-        final TypeVariable<?>[] subtypeParams = subtype.getTypeParameters();
-        final TypeVariable<?>[] supertypeParams = supertype.getTypeParameters();
+        final TypeVariable<?>[] subtypeParams = target.getTypeParameters();
+        final TypeVariable<?>[] supertypeParams = source.getTypeParameters();
 
         if (subtypeParams.length == supertypeParams.length) {
             for (int i = 0; i < subtypeParams.length; i++) {
@@ -359,8 +396,8 @@ public final class NodeFactory {
         }
 
         // If subtype has a generic superclass, add its type variables and type arguments to the type map
-        if (subtype.getGenericSuperclass() instanceof ParameterizedType) {
-            final ParameterizedType genericSuperclass = (ParameterizedType) subtype.getGenericSuperclass();
+        if (target.getGenericSuperclass() instanceof ParameterizedType) {
+            final ParameterizedType genericSuperclass = (ParameterizedType) target.getGenericSuperclass();
             final Class<?> rawSuperclassType = TypeUtils.getRawType(genericSuperclass);
             final TypeVariable<?>[] typeVars = rawSuperclassType.getTypeParameters();
             final Type[] typeArgs = genericSuperclass.getActualTypeArguments();
