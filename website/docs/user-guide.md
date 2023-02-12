@@ -943,8 +943,9 @@ PersonRecord person = Instancio.of(PersonRecord.class)
 ### Nullable Values
 
 By default, Instancio generates non-null values.
-There are cases where this behaviour may need to be relaxed, for example to verify that a piece of code does not fail in the presence of certain `null` values.
-There are a few way to specify that values can be nullable which can broadly grouped into two categories:
+There are cases where this behaviour may need to be relaxed, for example,
+to verify that a piece of code does not fail in the presence of certain `null` values.
+There are a few ways to specify that values can be nullable which can broadly be grouped into two categories:
 
 - field nullability
 - array/collection element and map key/value nullability
