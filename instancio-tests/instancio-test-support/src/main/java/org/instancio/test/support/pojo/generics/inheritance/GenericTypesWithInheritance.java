@@ -19,7 +19,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
-import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.interfaces.ItemInterface;
 import org.instancio.test.support.pojo.person.Phone;
 
 import java.io.Serializable;
@@ -30,19 +30,19 @@ public class GenericTypesWithInheritance {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = false)
-    public static class ItemHolder<K, T extends Item<K>> extends EntityWithId<Long> {
-        T phone;
+    public static class GenericItemHolderWithInheritance<VALUE, ITEM extends ItemInterface<VALUE>> extends EntityWithId<Long> {
+        ITEM item;
     }
 
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = false)
-    public static class PhoneHolder<T extends Phone> extends EntityWithId<Long> {
-        T phone;
+    public static class GenericPhoneHolderWithInheritance<PHONE extends Phone> extends EntityWithId<Long> {
+        PHONE phone;
     }
 
     @Data
-    public static class EntityWithId<T extends Serializable> {
-        T id;
+    public static class EntityWithId<ID extends Serializable> {
+        ID id;
     }
 }
