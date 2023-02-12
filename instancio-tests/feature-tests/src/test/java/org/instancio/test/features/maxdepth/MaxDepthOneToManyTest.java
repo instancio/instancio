@@ -22,13 +22,11 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.performance.onetomany.OneToMany;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
 @FeatureTag({Feature.CYCLIC, Feature.MAX_DEPTH})
 @ExtendWith(InstancioExtension.class)
 class MaxDepthOneToManyTest {
