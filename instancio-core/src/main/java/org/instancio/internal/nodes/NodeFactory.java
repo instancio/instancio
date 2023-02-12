@@ -18,9 +18,7 @@ package org.instancio.internal.nodes;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
-import org.instancio.internal.reflection.DefaultPackageFilter;
 import org.instancio.internal.reflection.FieldCollector;
-import org.instancio.internal.reflection.PackageFilter;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.TypeUtils;
@@ -55,7 +53,6 @@ public final class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
-    private final PackageFilter packageFilter = new DefaultPackageFilter();
     private final NodeContext nodeContext;
 
     public NodeFactory(final NodeContext nodeContext) {
@@ -336,26 +333,27 @@ public final class NodeFactory {
         return mappedType == typeVar ? null : mappedType; // NOPMD
     }
 
-    private Map<Type, Type> createSuperclassTypeMap(final Class<?> targetClass) {
-        final Map<Type, Type> resultTypeMap = new HashMap<>();
+    private static Map<Type, Type> createSuperclassTypeMap(final Class<?> targetClass) {
+        Map<Type, Type> resultTypeMap = null;
 
-        Class<?> current = targetClass;
-        Type supertype = current.getGenericSuperclass();
+        Type supertype = targetClass.getGenericSuperclass();
 
         while (supertype instanceof ParameterizedType) {
-            final Class<?> rawSuper = TypeUtils.getRawType(supertype);
-
-            if (rawSuper == null || packageFilter.isExcluded(rawSuper.getPackage())) {
-                break;
+            if (resultTypeMap == null) {
+                resultTypeMap = new HashMap<>();
             }
 
-            final Map<Type, Type> typeMap = createBridgeTypeMap(current, rawSuper);
-            resultTypeMap.putAll(typeMap);
+            addTypeParameters((ParameterizedType) supertype, resultTypeMap);
 
-            current = rawSuper;
+            final Class<?> rawSuper = TypeUtils.getRawType(supertype);
             supertype = rawSuper.getGenericSuperclass();
         }
-        LOG.trace("Created superclass type map: {}", resultTypeMap);
+
+        if (resultTypeMap == null) {
+            return Collections.emptyMap();
+        }
+
+        LOG.debug("Created superclass type map: {}", resultTypeMap);
         return resultTypeMap;
     }
 
@@ -396,19 +394,23 @@ public final class NodeFactory {
         }
 
         // If subtype has a generic superclass, add its type variables and type arguments to the type map
-        if (target.getGenericSuperclass() instanceof ParameterizedType) {
-            final ParameterizedType genericSuperclass = (ParameterizedType) target.getGenericSuperclass();
-            final Class<?> rawSuperclassType = TypeUtils.getRawType(genericSuperclass);
-            final TypeVariable<?>[] typeVars = rawSuperclassType.getTypeParameters();
-            final Type[] typeArgs = genericSuperclass.getActualTypeArguments();
-
-            if (typeVars.length == typeArgs.length) {
-                for (int i = 0; i < typeVars.length; i++) {
-                    typeMap.put(typeVars[i], typeArgs[i]);
-                }
-            }
+        final Type supertype = target.getGenericSuperclass();
+        if (supertype instanceof ParameterizedType) {
+            addTypeParameters((ParameterizedType) supertype, typeMap);
         }
 
         return typeMap;
+    }
+
+    private static void addTypeParameters(final ParameterizedType parameterizedType, final Map<Type, Type> typeMap) {
+        final Class<?> rawSuperclassType = TypeUtils.getRawType(parameterizedType);
+        final TypeVariable<?>[] typeVars = rawSuperclassType.getTypeParameters();
+        final Type[] typeArgs = parameterizedType.getActualTypeArguments();
+
+        if (typeVars.length == typeArgs.length) {
+            for (int i = 0; i < typeVars.length; i++) {
+                typeMap.put(typeVars[i], typeArgs[i]);
+            }
+        }
     }
 }
