@@ -17,15 +17,16 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.DurationGeneratorSpec;
+import org.instancio.generator.specs.DurationSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 
-public class DurationGenerator extends AbstractGenerator<Duration> implements DurationGeneratorSpec {
+public class DurationGenerator extends AbstractGenerator<Duration> implements DurationSpec {
 
     private static final long DEFAULT_MIN_AMOUNT = 1;
     private static final long DEFAULT_MAX_AMOUNT = 1_000_000_000_000_000L;
@@ -35,6 +36,10 @@ public class DurationGenerator extends AbstractGenerator<Duration> implements Du
     private long maxAmount = DEFAULT_MAX_AMOUNT;
     private TemporalUnit unit = DEFAULT_UNIT;
     private boolean allowZero;
+
+    public DurationGenerator() {
+        this(Global.generatorContext());
+    }
 
     public DurationGenerator(final GeneratorContext context) {
         super(context);
@@ -46,7 +51,7 @@ public class DurationGenerator extends AbstractGenerator<Duration> implements Du
     }
 
     @Override
-    public DurationGeneratorSpec of(final long minAmount, final long maxAmount, final TemporalUnit unit) {
+    public DurationGenerator of(final long minAmount, final long maxAmount, final TemporalUnit unit) {
         ApiValidator.notNull(unit, "Unit must not be null");
         ApiValidator.isTrue(minAmount <= maxAmount,
                 "Minimum duration amount must be less than or equal to the maximum amount: of(%s, %s, %s)",
@@ -59,7 +64,7 @@ public class DurationGenerator extends AbstractGenerator<Duration> implements Du
     }
 
     @Override
-    public DurationGeneratorSpec allowZero() {
+    public DurationGenerator allowZero() {
         this.allowZero = true;
         return this;
     }
