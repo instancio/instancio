@@ -49,6 +49,16 @@ class YearMonthGeneratorTest extends TemporalGeneratorSpecTestTemplate<YearMonth
     }
 
     @Override
+    YearMonth getDefaultMin() {
+        return YearMonthGenerator.DEFAULT_MIN;
+    }
+
+    @Override
+    YearMonth getDefaultMax() {
+        return YearMonthGenerator.DEFAULT_MAX;
+    }
+
+    @Override
     YearMonth getStart() {
         return START;
     }

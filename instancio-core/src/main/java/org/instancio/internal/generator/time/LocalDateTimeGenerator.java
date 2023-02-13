@@ -20,15 +20,17 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LocalDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
+import org.instancio.internal.util.Constants;
 
 import java.time.LocalDateTime;
 
-import static org.instancio.internal.util.Constants.DEFAULT_MAX;
-import static org.instancio.internal.util.Constants.DEFAULT_MIN;
 import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateTime>
         implements LocalDateTimeSpec {
+
+    static final LocalDateTime DEFAULT_MIN = Constants.DEFAULT_MIN;
+    static final LocalDateTime DEFAULT_MAX = Constants.DEFAULT_MAX;
 
     private final InstantGenerator delegate;
 
@@ -37,9 +39,7 @@ public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateT
     }
 
     public LocalDateTimeGenerator(final GeneratorContext context) {
-        super(context,
-                LocalDateTime.ofInstant(DEFAULT_MIN, ZONE_OFFSET),
-                LocalDateTime.ofInstant(DEFAULT_MAX, ZONE_OFFSET));
+        super(context, DEFAULT_MIN, DEFAULT_MAX);
 
         delegate = new InstantGenerator(context);
     }

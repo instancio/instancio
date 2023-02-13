@@ -43,6 +43,16 @@ class InstantGeneratorTest extends TemporalGeneratorSpecTestTemplate<Instant> {
     }
 
     @Override
+    Instant getDefaultMin() {
+        return InstantGenerator.DEFAULT_MIN;
+    }
+
+    @Override
+    Instant getDefaultMax() {
+        return InstantGenerator.DEFAULT_MAX;
+    }
+
+    @Override
     Instant getTemporalMin() {
         return Instant.MIN;
     }

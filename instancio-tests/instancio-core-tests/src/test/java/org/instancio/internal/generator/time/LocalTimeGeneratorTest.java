@@ -47,6 +47,16 @@ class LocalTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<LocalTime
     }
 
     @Override
+    LocalTime getDefaultMin() {
+        return LocalTime.MIN;
+    }
+
+    @Override
+    LocalTime getDefaultMax() {
+        return LocalTime.MAX;
+    }
+
+    @Override
     LocalTime getTemporalMin() {
         return LocalTime.MIN;
     }

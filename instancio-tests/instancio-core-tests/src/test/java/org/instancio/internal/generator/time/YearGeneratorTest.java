@@ -34,6 +34,16 @@ class YearGeneratorTest extends TemporalGeneratorSpecTestTemplate<Year> {
     }
 
     @Override
+    Year getDefaultMin() {
+        return YearGenerator.DEFAULT_MIN;
+    }
+
+    @Override
+    Year getDefaultMax() {
+        return YearGenerator.DEFAULT_MAX;
+    }
+
+    @Override
     Year getNow() {
         return Year.now();
     }

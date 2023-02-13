@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
+import org.instancio.internal.util.Constants;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.OffsetTime;
@@ -29,7 +30,7 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
         implements OffsetTimeSpec {
 
     private static final int CUT_OFF_BUFFER_MINUTES = 1;
-    private static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
+    private static final ZoneOffset ZONE_OFFSET = Constants.ZONE_OFFSET;
 
     public OffsetTimeGenerator() {
         this(Global.generatorContext());

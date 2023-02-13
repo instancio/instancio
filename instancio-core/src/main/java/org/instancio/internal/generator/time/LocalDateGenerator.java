@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
+import org.instancio.internal.util.Constants;
 
 import java.time.LocalDate;
 
@@ -28,15 +29,15 @@ import static java.time.temporal.ChronoField.EPOCH_DAY;
 public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate>
         implements LocalDateSpec {
 
+    static final LocalDate DEFAULT_MIN = Constants.DEFAULT_MIN.toLocalDate();
+    static final LocalDate DEFAULT_MAX = Constants.DEFAULT_MAX.toLocalDate();
 
     public LocalDateGenerator() {
         this(Global.generatorContext());
     }
 
     public LocalDateGenerator(final GeneratorContext context) {
-        super(context,
-                LocalDate.of(1970, 1, 1),
-                LocalDate.now().plusYears(50));
+        super(context, DEFAULT_MIN, DEFAULT_MAX);
     }
 
     @Override

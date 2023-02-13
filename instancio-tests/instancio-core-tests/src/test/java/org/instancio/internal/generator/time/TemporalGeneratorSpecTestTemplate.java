@@ -77,6 +77,16 @@ abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable
      */
     abstract T getStartPlusRandomLargeIncrement();
 
+    /**
+     * Returns the default 'min' value used by the generator.
+     */
+    abstract T getDefaultMin();
+
+    /**
+     * Returns the default 'max' value used by the generator.
+     */
+    abstract T getDefaultMax();
+
     @Test
     final void apiMethod() {
         assertThat(generator.apiMethod()).isEqualTo(getApiMethod());
@@ -138,6 +148,18 @@ abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable
     final void bigRange() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             assertGeneratedValueIsWithinRange(getStart(), getStartPlusRandomLargeIncrement());
+        }
+    }
+
+    @Test
+    final void defaultRange() {
+        final T defaultMin = getDefaultMin();
+        final T defaultMax = getDefaultMax();
+
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final T result = generator.generate(random);
+            assertThat(result).isGreaterThanOrEqualTo(defaultMin);
+            assertThat(result).isLessThanOrEqualTo(defaultMax);
         }
     }
 

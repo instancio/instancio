@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoField;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,6 +44,16 @@ class OffsetDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<Offs
     @Override
     OffsetDateTime getNow() {
         return OffsetDateTime.now(ZoneOffset.UTC);
+    }
+
+    @Override
+    OffsetDateTime getDefaultMin() {
+        return OffsetDateTimeGenerator.DEFAULT_MIN;
+    }
+
+    @Override
+    OffsetDateTime getDefaultMax() {
+        return OffsetDateTimeGenerator.DEFAULT_MAX;
     }
 
     @Override
@@ -82,12 +91,7 @@ class OffsetDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<Offs
     void randomStart() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final OffsetDateTime start = Instancio.create(OffsetDateTime.class);
-            final long startEpochDay = start.getLong(ChronoField.EPOCH_DAY);
-
-            // Prevent overflow when calling plusDays()
-            final long max = ChronoField.EPOCH_DAY.range().getMaximum() - startEpochDay;
-
-            assertGeneratedValueIsWithinRange(start, start.plusDays(random.longRange(1, max)));
+            assertGeneratedValueIsWithinRange(start, start.plusSeconds(random.intRange(1, Integer.MAX_VALUE)));
         }
     }
 }
