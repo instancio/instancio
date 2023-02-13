@@ -42,6 +42,16 @@ class LocalDateGeneratorTest extends TemporalGeneratorSpecTestTemplate<LocalDate
     }
 
     @Override
+    LocalDate getDefaultMin() {
+        return LocalDateGenerator.DEFAULT_MIN;
+    }
+
+    @Override
+    LocalDate getDefaultMax() {
+        return LocalDateGenerator.DEFAULT_MAX;
+    }
+
+    @Override
     LocalDate getTemporalMin() {
         return LocalDate.MIN;
     }

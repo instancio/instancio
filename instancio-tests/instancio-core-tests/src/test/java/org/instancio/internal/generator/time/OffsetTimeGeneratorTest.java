@@ -49,6 +49,16 @@ class OffsetTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<OffsetTi
     }
 
     @Override
+    OffsetTime getDefaultMin() {
+        return OffsetTime.MIN;
+    }
+
+    @Override
+    OffsetTime getDefaultMax() {
+        return OffsetTime.MAX;
+    }
+
+    @Override
     OffsetTime getStart() {
         return START;
     }

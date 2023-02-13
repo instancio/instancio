@@ -45,6 +45,16 @@ class ZonedDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<Zoned
     }
 
     @Override
+    ZonedDateTime getDefaultMin() {
+        return ZonedDateTimeGenerator.DEFAULT_MIN;
+    }
+
+    @Override
+    ZonedDateTime getDefaultMax() {
+        return ZonedDateTimeGenerator.DEFAULT_MAX;
+    }
+
+    @Override
     ZonedDateTime getStart() {
         return START;
     }

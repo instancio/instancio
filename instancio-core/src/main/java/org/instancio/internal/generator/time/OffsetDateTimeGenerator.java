@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
+import org.instancio.internal.util.Constants;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -28,7 +29,9 @@ import java.time.ZoneOffset;
 public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDateTime>
         implements OffsetDateTimeSpec {
 
-    private static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
+    private static final ZoneOffset ZONE_OFFSET = Constants.ZONE_OFFSET;
+    static final OffsetDateTime DEFAULT_MIN = Constants.DEFAULT_MIN.atOffset(ZONE_OFFSET);
+    static final OffsetDateTime DEFAULT_MAX = Constants.DEFAULT_MAX.atOffset(ZONE_OFFSET);
 
     private final LocalDateTimeGenerator delegate;
 
@@ -37,7 +40,7 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     }
 
     public OffsetDateTimeGenerator(final GeneratorContext context) {
-        super(context, OffsetDateTime.MIN, OffsetDateTime.MAX);
+        super(context, DEFAULT_MIN, DEFAULT_MAX);
         delegate = new LocalDateTimeGenerator(context);
     }
 

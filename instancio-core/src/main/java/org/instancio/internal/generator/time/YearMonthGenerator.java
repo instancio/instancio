@@ -20,20 +20,22 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.YearMonthSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
+import org.instancio.internal.util.Constants;
 
 import java.time.YearMonth;
 
 public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth>
         implements YearMonthSpec {
 
+    static final YearMonth DEFAULT_MIN = YearMonth.from(Constants.DEFAULT_MIN.toLocalDate());
+    static final YearMonth DEFAULT_MAX = YearMonth.from(Constants.DEFAULT_MAX.toLocalDate());
+
     public YearMonthGenerator() {
         this(Global.generatorContext());
     }
 
     public YearMonthGenerator(final GeneratorContext context) {
-        super(context,
-                YearMonth.of(1970, 1),
-                YearMonth.now().plusYears(50));
+        super(context, DEFAULT_MIN, DEFAULT_MAX);
     }
 
     @Override
