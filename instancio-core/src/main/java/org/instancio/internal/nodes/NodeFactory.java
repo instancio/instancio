@@ -353,7 +353,7 @@ public final class NodeFactory {
             return Collections.emptyMap();
         }
 
-        LOG.debug("Created superclass type map: {}", resultTypeMap);
+        LOG.trace("Created superclass type map: {}", resultTypeMap);
         return resultTypeMap;
     }
 
