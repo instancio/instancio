@@ -44,7 +44,7 @@ class DurationValueSpecTest {
 
     @Test
     void map() {
-        final Long result = temporal().duration().map(Duration::toDays);
+        final Long result = temporal().duration().map(Duration::toNanos);
         assertThat(result).isPositive();
     }
 
