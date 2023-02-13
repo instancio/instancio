@@ -22,6 +22,7 @@ import org.instancio.generator.specs.LocalDateTimeSpec;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.generator.specs.OffsetTimeSpec;
+import org.instancio.generator.specs.PeriodSpec;
 import org.instancio.generator.specs.YearMonthSpec;
 import org.instancio.generator.specs.YearSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
@@ -32,6 +33,7 @@ import org.instancio.internal.generator.time.LocalDateTimeGenerator;
 import org.instancio.internal.generator.time.LocalTimeGenerator;
 import org.instancio.internal.generator.time.OffsetDateTimeGenerator;
 import org.instancio.internal.generator.time.OffsetTimeGenerator;
+import org.instancio.internal.generator.time.PeriodGenerator;
 import org.instancio.internal.generator.time.YearGenerator;
 import org.instancio.internal.generator.time.YearMonthGenerator;
 import org.instancio.internal.generator.time.ZonedDateTimeGenerator;
@@ -43,6 +45,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
+import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
@@ -123,6 +126,16 @@ public final class TemporalSpecs {
      */
     public OffsetTimeSpec offsetTime() {
         return new OffsetTimeGenerator();
+    }
+
+    /**
+     * Generates {@link Period} values.
+     *
+     * @return API builder reference
+     * @since 2.9.0
+     */
+    public PeriodSpec period() {
+        return new PeriodGenerator();
     }
 
     /**

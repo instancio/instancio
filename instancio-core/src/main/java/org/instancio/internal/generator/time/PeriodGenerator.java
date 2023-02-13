@@ -17,13 +17,14 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.PeriodGeneratorSpec;
+import org.instancio.generator.specs.PeriodSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 
 import java.time.Period;
 
-public class PeriodGenerator extends AbstractGenerator<Period> implements PeriodGeneratorSpec {
+public class PeriodGenerator extends AbstractGenerator<Period> implements PeriodSpec {
 
     private static final int DEFAULT_MIN_DAYS = 1;
     private static final int DEFAULT_MAX_DAYS = 365;
@@ -35,6 +36,10 @@ public class PeriodGenerator extends AbstractGenerator<Period> implements Period
     private int minYears;
     private int maxYears;
 
+    public PeriodGenerator() {
+        this(Global.generatorContext());
+    }
+
     public PeriodGenerator(final GeneratorContext context) {
         super(context);
     }
@@ -45,7 +50,7 @@ public class PeriodGenerator extends AbstractGenerator<Period> implements Period
     }
 
     @Override
-    public PeriodGeneratorSpec days(final int min, final int max) {
+    public PeriodGenerator days(final int min, final int max) {
         ApiValidator.isTrue(min <= max, "Period days 'min' must be less than or equal 'max': days(%s, %s)", min, max);
         this.minDays = min;
         this.maxDays = max;
@@ -53,7 +58,7 @@ public class PeriodGenerator extends AbstractGenerator<Period> implements Period
     }
 
     @Override
-    public PeriodGeneratorSpec months(final int min, final int max) {
+    public PeriodGenerator months(final int min, final int max) {
         ApiValidator.isTrue(min <= max, "Period months 'min' must be less than or equal 'max': months(%s, %s)", min, max);
         this.minMonths = min;
         this.maxMonths = max;
@@ -61,7 +66,7 @@ public class PeriodGenerator extends AbstractGenerator<Period> implements Period
     }
 
     @Override
-    public PeriodGeneratorSpec years(final int min, final int max) {
+    public PeriodGenerator years(final int min, final int max) {
         ApiValidator.isTrue(min <= max, "Period years 'min' must be less than or equal 'max': years(%s, %s)", min, max);
         this.minYears = min;
         this.maxYears = max;
