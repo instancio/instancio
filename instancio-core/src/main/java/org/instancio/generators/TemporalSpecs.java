@@ -15,6 +15,7 @@
  */
 package org.instancio.generators;
 
+import org.instancio.generator.specs.DurationSpec;
 import org.instancio.generator.specs.InstantSpec;
 import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.generator.specs.LocalDateTimeSpec;
@@ -24,6 +25,7 @@ import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.generator.specs.YearMonthSpec;
 import org.instancio.generator.specs.YearSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
+import org.instancio.internal.generator.time.DurationGenerator;
 import org.instancio.internal.generator.time.InstantGenerator;
 import org.instancio.internal.generator.time.LocalDateGenerator;
 import org.instancio.internal.generator.time.LocalDateTimeGenerator;
@@ -34,6 +36,7 @@ import org.instancio.internal.generator.time.YearGenerator;
 import org.instancio.internal.generator.time.YearMonthGenerator;
 import org.instancio.internal.generator.time.ZonedDateTimeGenerator;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,7 +52,18 @@ import java.time.ZonedDateTime;
  *
  * @since 2.6.0
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class TemporalSpecs {
+
+    /**
+     * Generates {@link Duration} values.
+     *
+     * @return API builder reference
+     * @since 2.9.0
+     */
+    public DurationSpec duration() {
+        return new DurationGenerator();
+    }
 
     /**
      * Generates {@link Instant} values.
