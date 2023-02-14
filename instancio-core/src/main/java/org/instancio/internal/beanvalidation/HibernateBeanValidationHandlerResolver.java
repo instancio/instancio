@@ -17,7 +17,9 @@ package org.instancio.internal.beanvalidation;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
@@ -51,6 +53,7 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
         final Map<Class<?>, FieldAnnotationHandler> map = new HashMap<>();
         map.put(Length.class, new LengthHandler());
         map.put(Range.class, new RangeHandler());
+        map.put(UniqueElements.class, new UniqueElementsHandler());
         return Collections.unmodifiableMap(map);
     }
 
@@ -109,6 +112,19 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
                         .max(range.max());
 
                 stringGenerator.setDelegate(numGenerator);
+            }
+        }
+    }
+
+    private static class UniqueElementsHandler implements FieldAnnotationHandler {
+        @Override
+        public void process(final Annotation annotation,
+                            final GeneratorSpec<?> spec,
+                            final Field field,
+                            final Class<?> fieldType) {
+
+            if (spec instanceof CollectionGeneratorSpec<?>) {
+                ((CollectionGeneratorSpec<?>) spec).unique();
             }
         }
     }
