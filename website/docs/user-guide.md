@@ -1505,8 +1505,8 @@ Anything not listed is unsupported, including `*.List` annotations.
 - `@Length`
 - `@LuhnCheck` (`startIndex`, `endIndex`, `checkDigitIndex` are supported; `ignoreNonDigitCharacters` is ignored, only digits are generated)
 - `@Range`
-- `@URL` (`protocol`, `host`, `port` are supported; `regexp` not supported)
 - `@UniqueElements`
+- `@URL` (`protocol`, `host`, `port` are supported; `regexp` not supported)
 - `@UUID`
 
 
