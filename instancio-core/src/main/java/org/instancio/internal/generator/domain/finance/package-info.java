@@ -13,24 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.util;
-
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-class IntRangeTest {
-
-    @Test
-    void verifyToString() {
-        assertThat(IntRange.range(1, 2)).hasToString("Range[1, 2]");
-    }
-
-    @Test
-    void validation() {
-        assertThatThrownBy(() -> IntRange.range(2, 1))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Min must be less than or equal to max: (2, 1)");
-    }
-}
+/**
+ * Provides finance-related generators.
+ */
+package org.instancio.internal.generator.domain.finance;

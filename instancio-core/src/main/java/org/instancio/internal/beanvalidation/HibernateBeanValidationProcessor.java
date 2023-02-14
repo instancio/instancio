@@ -15,12 +15,14 @@
  */
 package org.instancio.internal.beanvalidation;
 
+import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.text.LuhnGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
@@ -36,6 +38,7 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
     @Override
     public boolean isPrimary(final Class<? extends Annotation> annotationType) {
         return annotationType == LuhnCheck.class
+                || annotationType == CreditCardNumber.class
                 || annotationType == URL.class
                 || annotationType == UUID.class;
     }
@@ -58,6 +61,9 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
                 generator.checkIndex(luhn.checkDigitIndex());
             }
             return generator;
+        }
+        if (annotationType == CreditCardNumber.class) {
+            return new CreditCardNumberGenerator(context);
         }
         if (annotationType == UUID.class) {
             return new UUIDGenerator(context);

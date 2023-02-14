@@ -63,7 +63,7 @@ public final class BeanValidationUtils {
             minSize = min;
             maxSize = max;
         }
-        return IntRange.of(minSize, maxSize);
+        return IntRange.range(minSize, maxSize);
     }
 
     private static boolean isMoreThanDouble(final int min, final int max) {

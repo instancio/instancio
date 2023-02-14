@@ -24,7 +24,16 @@ public final class IntRange {
         this.max = max;
     }
 
-    public static IntRange of(final int min, final int max) {
+    /**
+     * Range with the specified lower and upper bound.
+     *
+     * @param min lower bound
+     * @param max upper bound
+     * @return range with given bounds
+     */
+    public static IntRange range(final int min, final int max) {
+        Verify.isTrue(min <= max,
+                "Min must be less than or equal to max: (%s, %s)", min, max);
         return new IntRange(min, max);
     }
 
