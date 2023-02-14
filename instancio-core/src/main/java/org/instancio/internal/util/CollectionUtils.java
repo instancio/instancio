@@ -44,7 +44,9 @@ public final class CollectionUtils {
 
     @SafeVarargs
     public static <T> List<T> asList(final T... values) {
-        return values == null ? Collections.emptyList() : Arrays.asList(values);
+        return values == null
+                ? Collections.emptyList()
+                : Collections.unmodifiableList(Arrays.asList(values));
     }
 
     @SafeVarargs
