@@ -26,7 +26,6 @@ public final class GeneratorResult {
     private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS);
     private static final GeneratorResult EMPTY_RESULT = new GeneratorResult(null, EMPTY_HINTS);
     private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS);
-    private static final GeneratorResult MAX_DEPTH_REACHED_RESULT = new GeneratorResult(null, EMPTY_HINTS);
 
     private final Object value;
     private final Hints hints;
@@ -79,16 +78,6 @@ public final class GeneratorResult {
         return IGNORED_RESULT;
     }
 
-    /**
-     * A result indicating that no value was generated because
-     * max depth has been reached.
-     *
-     * @return result containing a {@code null} value
-     */
-    public static GeneratorResult maxDepthReachedResult() {
-        return MAX_DEPTH_REACHED_RESULT;
-    }
-
     public boolean containsNull() {
         return value == null;
     }
@@ -99,10 +88,6 @@ public final class GeneratorResult {
 
     public boolean isIgnored() {
         return this == IGNORED_RESULT;
-    }
-
-    public boolean isMaxDepthReached() {
-        return this == MAX_DEPTH_REACHED_RESULT;
     }
 
     @Override

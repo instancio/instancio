@@ -33,17 +33,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Class for creating a node hierarchy for a given {@link Type}.
@@ -65,6 +61,11 @@ public final class NodeFactory {
 
     private Node createNode(final Type type, @Nullable final Field field, @Nullable final Node parent) {
         Verify.notNull(type, "'type' is null");
+
+        if (parent != null && parent.getDepth() >= nodeContext.getMaxDepth()) {
+            LOG.trace("Maximum depth ({}) reached {}", nodeContext.getMaxDepth(), parent);
+            return null;
+        }
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("Creating node for: {}", Format.withoutPackage(type));
@@ -193,7 +194,7 @@ public final class NodeFactory {
                 types = TypeUtils.getGenericSuperclassTypeArguments(targetClass);
             }
 
-            final List<Node> children = createContainerNodeChildren(Arrays.stream(types), node);
+            final List<Node> children = createContainerNodeChildren(node, types);
             node.setChildren(children);
         } else {
             final List<Node> children = createChildrenFromFields(targetClass, node);
@@ -203,12 +204,13 @@ public final class NodeFactory {
     }
 
     private NodeKind getNodeKind(final Class<?> rawType) {
-        return nodeContext.getNodeKindResolvers().stream()
-                .map(resolver -> resolver.resolve(rawType))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findAny()
-                .orElse(NodeKind.DEFAULT);
+        for (NodeKindResolver resolver : nodeContext.getNodeKindResolvers()) {
+            Optional<NodeKind> resolve = resolver.resolve(rawType);
+            if (resolve.isPresent()) {
+                return resolve.get();
+            }
+        }
+        return NodeKind.DEFAULT;
     }
 
     private Node fromParameterizedType(final ParameterizedType type, @Nullable final Field field, @Nullable final Node parent) {
@@ -218,7 +220,7 @@ public final class NodeFactory {
         }
 
         final List<Node> children = isContainer(node)
-                ? createContainerNodeChildren(Arrays.stream(type.getActualTypeArguments()), node)
+                ? createContainerNodeChildren(node, type.getActualTypeArguments())
                 : createChildrenFromFields(node.getTargetClass(), node);
 
         node.setChildren(children);
@@ -232,7 +234,7 @@ public final class NodeFactory {
         }
 
         final Node node = createArrayNodeWithSubtypeMapping(type, gcType, field, parent);
-        final List<Node> children = createContainerNodeChildren(Stream.of(gcType), node);
+        final List<Node> children = createContainerNodeChildren(node, gcType);
         node.setChildren(children);
         return node;
     }
@@ -264,7 +266,9 @@ public final class NodeFactory {
             ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Subtype mapping '{}' to '{}'", Format.withoutPackage(rawComponentType), Format.withoutPackage(targetClass));
+                LOG.debug("Subtype mapping '{}' to '{}'",
+                        Format.withoutPackage(rawComponentType),
+                        Format.withoutPackage(targetClass));
             }
 
             final Map<Type, Type> typeMapForSubtype = createBridgeTypeMap(rawComponentType, targetClassComponentType);
@@ -287,22 +291,30 @@ public final class NodeFactory {
      * are not assigned via fields, but added via {@link Collection#add(Object)},
      * {@link Map#put(Object, Object)}, etc.
      *
-     * @param types  a stream of children's types
      * @param parent of the children
+     * @param types  children's types
      * @return a list of children, or an empty list if no children were created (e.g. to avoid cycles)
      */
-    private List<Node> createContainerNodeChildren(final Stream<Type> types, final Node parent) {
-        return types.map(type -> createNode(type, null, parent))
-                .filter(Objects::nonNull)
-                .collect(toList());
+    private List<Node> createContainerNodeChildren(final Node parent, final Type... types) {
+        final List<Node> results = new ArrayList<>(types.length);
+        for (Type type : types) {
+            final Node node = createNode(type, null, parent);
+            if (node != null) {
+                results.add(node);
+            }
+        }
+        return results;
     }
 
     private List<Node> createChildrenFromFields(final Class<?> targetClass, final Node parent) {
-        return fieldCollector.getFields(targetClass)
-                .stream()
-                .map(f -> createNode(ObjectUtils.defaultIfNull(f.getGenericType(), f.getType()), f, parent))
-                .filter(Objects::nonNull)
-                .collect(toList());
+        final List<Node> list = new ArrayList<>();
+        for (Field f : fieldCollector.getFields(targetClass)) {
+            Node node = createNode(ObjectUtils.defaultIfNull(f.getGenericType(), f.getType()), f, parent);
+            if (node != null) {
+                list.add(node);
+            }
+        }
+        return list;
     }
 
     private static boolean isContainer(final Node node) {

@@ -43,6 +43,7 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 @NodeTag
 class NodeTest {
     private static final NodeContext NODE_CONTEXT = NodeContext.builder()
+            .maxDepth(Integer.MAX_VALUE)
             .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
             .build();
 

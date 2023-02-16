@@ -323,12 +323,12 @@ public final class Keys {
             "bean.validation.enabled", Boolean.class, false);
     /**
      * Specifies the maximum depth of the generated object tree;
-     * default is {@code Integer.MAX_VALUE}; property name {@code max.depth}.
+     * default is {@code 8}; property name {@code max.depth}.
      *
      * @since 2.7.0
      */
     public static final SettingKey MAX_DEPTH = register(
-            "max.depth", Integer.class, Integer.MAX_VALUE);
+            "max.depth", Integer.class, 8);
     /**
      * Specifies the seed value;
      * default is {@code null}; property name {@code seed}.
