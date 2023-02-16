@@ -20,7 +20,6 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
-import org.instancio.settings.Keys;
 
 final class InternalModel<T> implements Model<T> {
 
@@ -42,7 +41,7 @@ final class InternalModel<T> implements Model<T> {
 
     private Node createRootNode() {
         final NodeContext nodeContext = NodeContext.builder()
-                .maxDepth(modelContext.getSettings().get(Keys.MAX_DEPTH))
+                .maxDepth(modelContext.getMaxDepth())
                 .rootTypeMap(modelContext.getRootTypeMap())
                 .subtypeSelectorMap(modelContext.getSubtypeSelectorMap())
                 .subtypeMappingFromSettings(modelContext.getSettings().getSubtypeMap())

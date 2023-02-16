@@ -18,8 +18,6 @@ package org.other.test.features.mode;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
@@ -39,11 +37,11 @@ class UnusedSelectorWithMaxDepthTest {
     @Test
     void unused() {
         final InstancioApi<Person> api = Instancio.of(Person.class)
-                .withSettings(Settings.create().set(Keys.MAX_DEPTH, 0))
+                .withMaxDepth(0)
                 .generate(field(Address::getPhoneNumbers), gen -> gen.collection().size(5))
                 .set(field(Phone::getNumber), "foo");
 
-        int l = 43;
+        int l = 41;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(2)
                 .generatorSelector(field(Address::getPhoneNumbers), line(getClass(), l++))

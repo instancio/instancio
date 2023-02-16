@@ -383,6 +383,35 @@ public interface InstancioApi<T> {
     InstancioApi<T> subtype(TargetSelector selector, Class<?> subtype);
 
     /**
+     * Specifies the maximum depth for populating an object.
+     * The root object is at depth 0. Children of the root
+     * object are at depth 1, grandchildren at depth 2, and so on.
+     *
+     * <p>Instancio will populate values up to the maximum depth.
+     * Beyond that, values will be {@code null} unless the maximum
+     * depth is set to a higher value.
+     *
+     * <p>The default maximum depth is defined by {@link Keys#MAX_DEPTH}.
+     *
+     * <p><b>Note:</b> this method is a shorthand for:
+     *
+     * <pre>{@code
+     *     int maxDepth = 5;
+     *     Person person = Instancio.of(Person.class)
+     *         .withSettings(Settings.create().set(Keys.MAX_DEPTH, maxDepth))
+     *         .create();
+     * }</pre>
+     *
+     * <p>If the maximum depth is specified using {@code Settings} <i>and</i>
+     * this method, then this method takes precedence.
+     *
+     * @param maxDepth the maximum depth, must not be negative
+     * @return API builder reference
+     * @since 2.9.0
+     */
+    InstancioApi<T> withMaxDepth(int maxDepth);
+
+    /**
      * Override default {@link Settings} for generating values.
      * The {@link Settings} class supports various parameters, such as
      * collection sizes, string lengths, numeric ranges, and so on.

@@ -132,6 +132,13 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
+    public InstancioApi<T> withMaxDepth(final int maxDepth) {
+        ApiValidator.isTrue(maxDepth >= 0, "Maximum depth must not be negative: %s", maxDepth);
+        modelContextBuilder.withMaxDepth(maxDepth);
+        return this;
+    }
+
+    @Override
     public InstancioApi<T> withNullable(final TargetSelector selector) {
         modelContextBuilder.withNullable(selector);
         return this;

@@ -17,8 +17,6 @@ package org.instancio.test.features.maxdepth;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -35,7 +33,7 @@ class MaxDepthMapTest {
 
     private static Map<String, Phone> createWithDepth(final int depth) {
         return Instancio.ofMap(String.class, Phone.class).size(5)
-                .withSettings(Settings.create().set(Keys.MAX_DEPTH, depth))
+                .withMaxDepth(depth)
                 .create();
     }
 

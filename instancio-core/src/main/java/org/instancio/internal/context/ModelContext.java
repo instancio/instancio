@@ -67,6 +67,7 @@ public final class ModelContext<T> {
     private final Type rootType;
     private final List<Class<?>> rootTypeParameters;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final Integer maxDepth;
     private final Long seed;
     private final Random random;
     private final Settings settings;
@@ -86,6 +87,7 @@ public final class ModelContext<T> {
 
         seed = builder.seed;
         settings = createSettings(builder);
+        maxDepth = getMaxDepth(builder.maxDepth, settings);
 
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
 
@@ -99,6 +101,10 @@ public final class ModelContext<T> {
                 builder.generatorSpecSelectors);
 
         subtypeSelectorMap.putAll(generatorSelectorMap.getGeneratorSubtypeMap());
+    }
+
+    private static Integer getMaxDepth(final Integer builderMaxDepth, final Settings settings) {
+        return builderMaxDepth == null ? settings.get(Keys.MAX_DEPTH) : builderMaxDepth;
     }
 
     private static Settings createSettings(final Builder<?> builder) {
@@ -133,6 +139,10 @@ public final class ModelContext<T> {
 
     public Type getRootType() {
         return rootType;
+    }
+
+    public int getMaxDepth() {
+        return maxDepth;
     }
 
     public boolean isIgnored(final Node node) {
@@ -173,6 +183,7 @@ public final class ModelContext<T> {
     public Builder<T> toBuilder() {
         final Builder<T> builder = new Builder<>(rootType);
         builder.rootTypeParameters.addAll(this.rootTypeParameters);
+        builder.maxDepth = this.maxDepth;
         builder.seed = this.seed;
         builder.settings = this.settings;
         builder.nullableTargets.addAll(this.nullableSelectorMap.getTargetSelectors());
@@ -201,6 +212,7 @@ public final class ModelContext<T> {
         private final Set<TargetSelector> ignoredTargets = new LinkedHashSet<>();
         private final Set<TargetSelector> nullableTargets = new LinkedHashSet<>();
         private Settings settings;
+        private Integer maxDepth;
         private Long seed;
         private Boolean lenient;
 
@@ -246,6 +258,11 @@ public final class ModelContext<T> {
             return this;
         }
 
+        public Builder<T> withMaxDepth(final int maxDepth) {
+            this.maxDepth = maxDepth;
+            return this;
+        }
+
         public Builder<T> withNullable(final TargetSelector selector) {
             this.nullableTargets.add(preProcess(selector, rootClass));
             return this;
@@ -274,6 +291,7 @@ public final class ModelContext<T> {
 
         public Builder<T> useModelAsTypeArgument(final ModelContext<?> otherContext) {
             rootTypeParameters.add(TypeUtils.getRawType(otherContext.getRootType()));
+            maxDepth = otherContext.maxDepth;
             seed = otherContext.seed;
             settings = otherContext.settings;
             nullableTargets.addAll(otherContext.nullableSelectorMap.getTargetSelectors());
