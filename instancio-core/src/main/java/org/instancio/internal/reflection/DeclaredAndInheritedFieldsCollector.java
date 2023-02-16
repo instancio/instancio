@@ -15,24 +15,45 @@
  */
 package org.instancio.internal.reflection;
 
-import org.instancio.internal.util.Verify;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Collects declared and super class fields, excluding static fields.
  */
 public class DeclaredAndInheritedFieldsCollector implements FieldCollector {
 
+    /**
+     * Caching fields improves performance when the same
+     * class is referenced multiple times.
+     */
+    private final Map<Class<?>, List<Field>> cache = new HashMap<>();
+
     private final PackageFilter packageFilter = new DefaultPackageFilter();
 
     @Override
     public List<Field> getFields(final Class<?> klass) {
-        Class<?> next = Verify.notNull(klass, "Class is null");
+        final List<Field> cached = cache.get(klass);
+
+        if (cached != null) {
+            return cached;
+        }
+
+        final List<Field> collected = getFieldList(klass);
+        cache.put(klass, collected);
+        return collected;
+    }
+
+    @NotNull
+    private List<Field> getFieldList(final Class<?> klass) {
+        Class<?> next = klass;
 
         final List<Field> collected = new ArrayList<>();
         while (shouldCollectFrom(next)) {
@@ -43,7 +64,6 @@ public class DeclaredAndInheritedFieldsCollector implements FieldCollector {
             }
             next = next.getSuperclass();
         }
-
         return collected;
     }
 

@@ -49,6 +49,7 @@ import static org.instancio.Select.scope;
 
 class SelectorMapTest {
     private final NodeContext nodeContext = NodeContext.builder()
+            .maxDepth(Integer.MAX_VALUE)
             .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
             .build();
 

@@ -44,6 +44,7 @@ public abstract class NodeTestTemplate<T> {
     @Test
     protected final void verifyingModelFromTypeToken() {
         final NodeContext nodeContext = NodeContext.builder()
+                .maxDepth(Integer.MAX_VALUE)
                 .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
                 .build();
         final NodeFactory nodeFactory = new NodeFactory(nodeContext);

@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public final class NodeContext {
+    private final int maxDepth;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
     private final Map<Class<?>, Class<?>> subtypeMappingFromSettings;
@@ -42,6 +43,7 @@ public final class NodeContext {
     private final List<NodeKindResolver> nodeKindResolvers;
 
     private NodeContext(final Builder builder) {
+        maxDepth = builder.maxDepth;
         rootTypeMap = builder.rootTypeMap;
         subtypeSelectorMap = builder.subtypeSelectorMap;
         subtypeMappingFromSettings = builder.subtypeMappingFromSettings;
@@ -52,6 +54,10 @@ public final class NodeContext {
                 new NodeKindArrayResolver(),
                 new NodeKindRecordResolver(),
                 new NodeKindContainerResolver(Collections.unmodifiableList(builder.containerFactories)));
+    }
+
+    public int getMaxDepth() {
+        return maxDepth;
     }
 
     public List<NodeKindResolver> getNodeKindResolvers() {
@@ -91,12 +97,18 @@ public final class NodeContext {
     }
 
     public static final class Builder {
+        private int maxDepth;
         private Map<TypeVariable<?>, Class<?>> rootTypeMap = Collections.emptyMap();
         private SubtypeSelectorMap subtypeSelectorMap;
         private Map<Class<?>, Class<?>> subtypeMappingFromSettings = Collections.emptyMap();
         private List<InternalContainerFactoryProvider> containerFactories = Collections.emptyList();
 
         private Builder() {
+        }
+
+        public Builder maxDepth(final int maxDepth) {
+            this.maxDepth = maxDepth;
+            return this;
         }
 
         public Builder rootTypeMap(final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
