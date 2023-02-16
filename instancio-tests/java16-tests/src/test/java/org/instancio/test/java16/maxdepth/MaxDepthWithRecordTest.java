@@ -17,8 +17,6 @@ package org.instancio.test.java16.maxdepth;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.java16.record.PersonRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -36,7 +34,7 @@ class MaxDepthWithRecordTest {
 
     private static PersonRecord createWithDepth(final int depth) {
         return Instancio.of(PersonRecord.class)
-                .withSettings(Settings.create().set(Keys.MAX_DEPTH, depth))
+                .withMaxDepth(depth)
                 .create();
     }
 

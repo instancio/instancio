@@ -17,48 +17,27 @@ package org.instancio.test.features.maxdepth;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-@FeatureTag(Feature.MAX_DEPTH)
+@FeatureTag({Feature.MAX_DEPTH, Feature.SETTINGS})
 @ExtendWith(InstancioExtension.class)
-class MaxDepthCollectionTest {
+class MaxDepthPrecedenceTest {
 
-    private static List<Phone> createWithDepth(final int depth) {
-        return Instancio.ofList(Phone.class).size(5)
-                .withMaxDepth(depth)
+    @Test
+    void maxDepthViaBuilderApiTakesPrecedenceOverSettings() {
+        final Address result = Instancio.of(Address.class)
+                .withMaxDepth(0)
+                .withSettings(Settings.create().set(Keys.MAX_DEPTH, Integer.MAX_VALUE))
                 .create();
-    }
 
-    @Test
-    void withDepth0() {
-        final List<Phone> results = createWithDepth(0);
-
-        assertThat(results).isEmpty();
-    }
-
-    @Test
-    void withDepth1() {
-        final List<Phone> results = createWithDepth(1);
-
-        assertThat(results).isNotEmpty().allSatisfy(phone ->
-                assertThat(phone).hasAllNullFieldsOrProperties()
-        );
-    }
-
-    @Test
-    void withDepth2() {
-        final List<Phone> results = createWithDepth(2);
-
-        assertThat(results).isNotEmpty().allSatisfy(phone ->
-                assertThat(phone).hasNoNullFieldsOrProperties()
-        );
+        assertThat(result).hasAllNullFieldsOrProperties();
     }
 }

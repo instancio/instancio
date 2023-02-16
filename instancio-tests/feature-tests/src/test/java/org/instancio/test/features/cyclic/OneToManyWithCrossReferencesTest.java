@@ -18,7 +18,6 @@ package org.instancio.test.features.cyclic;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.cyclic.onetomany.OneToManyWithCrossReferences.ObjectA;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -66,7 +65,7 @@ class OneToManyWithCrossReferencesTest {
     @Test
     void maxDepthObject() {
         final ObjectA objectA = Instancio.of(ObjectA.class)
-                .withSettings(Settings.create().set(Keys.MAX_DEPTH, 4))
+                .withMaxDepth(4)
                 .create();
 
         final Object maxDepthObject = objectA // 0

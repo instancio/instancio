@@ -263,6 +263,7 @@ class ModelContextTest {
         final GeneratorSpecProvider<Pet[]> petsGeneratorFn = (gen) -> petsGenerator;
         final Class<UUID> ignoredClass = UUID.class;
         final Class<Date> nullableClass = Date.class;
+        final int maxDepth = 754534;
         final long seed = 37635;
         final int integerMinValue = 26546;
 
@@ -275,6 +276,7 @@ class ModelContextTest {
                 .withIgnored(toFieldSelector(NAME_FIELD))
                 .withNullable(all(nullableClass))
                 .withNullable(toFieldSelector(ADDRESS_FIELD))
+                .withMaxDepth(maxDepth)
                 .withSeed(seed)
                 .withSettings(Settings.create().set(Keys.INTEGER_MIN, integerMinValue))
                 .withSubtype(all(List.class), LinkedList.class)
@@ -289,6 +291,7 @@ class ModelContextTest {
         assertThat(actual.isIgnored(mockNode(ignoredClass))).isTrue();
         assertThat(actual.isNullable(mockNode(nullableClass))).isTrue();
         assertThat(actual.isNullable(mockNode(Person.class, ADDRESS_FIELD))).isTrue();
+        assertThat(actual.getMaxDepth()).isEqualTo(maxDepth);
         assertThat(actual.getRandom().getSeed()).isEqualTo(seed);
         assertThat((int) actual.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
         assertThat((Mode) actual.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);

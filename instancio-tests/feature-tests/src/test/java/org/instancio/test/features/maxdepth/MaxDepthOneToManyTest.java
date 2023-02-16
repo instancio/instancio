@@ -17,8 +17,6 @@ package org.instancio.test.features.maxdepth;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.performance.onetomany.OneToMany;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -33,7 +31,7 @@ class MaxDepthOneToManyTest {
 
     private static OneToMany createWithDepth(final int depth) {
         return Instancio.of(OneToMany.class)
-                .withSettings(Settings.create().set(Keys.MAX_DEPTH, depth))
+                .withMaxDepth(depth)
                 .create();
     }
 
