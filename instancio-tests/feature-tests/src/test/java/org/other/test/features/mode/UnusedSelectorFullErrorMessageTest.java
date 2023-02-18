@@ -120,6 +120,7 @@ class UnusedSelectorFullErrorMessageTest {
                         "Possible causes:%n" +
                         "%n" +
                         " -> Selector did not match any field or class within this object.%n" +
+                        " -> Selector target is beyond the current maximum depth setting: 8%n" +
                         " -> Selector matches an ignored target, for example:%n" +
                         "%n" +
                         "    Person person = Instancio.of(Person.class)%n" +

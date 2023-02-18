@@ -126,6 +126,7 @@ public final class ModelContext<T> {
     public void reportUnusedSelectorWarnings() {
         if (settings.get(Keys.MODE) == Mode.STRICT) {
             final UnusedSelectorReporter reporter = UnusedSelectorReporter.builder()
+                    .maxDepth(maxDepth)
                     .ignored(ignoredSelectorMap.getSelectorMap().getUnusedKeys())
                     .nullable(nullableSelectorMap.getSelectorMap().getUnusedKeys())
                     .generators(generatorSelectorMap.getSelectorMap().getUnusedKeys())
