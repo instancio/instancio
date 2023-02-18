@@ -16,14 +16,11 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.internal.ApiValidator;
 import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
 import org.instancio.internal.reflection.FieldCollector;
-import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.TypeUtils;
-import org.instancio.internal.util.Verify;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,158 +29,82 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Queue;
 
 /**
  * Class for creating a node hierarchy for a given {@link Type}.
  */
-@SuppressWarnings("PMD.GodClass")
 public final class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
     private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
     private final NodeContext nodeContext;
+    private final NodeCreator nodeCreator;
+    private final TypeHelper typeHelper;
 
     public NodeFactory(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
+        this.nodeCreator = new NodeCreator(nodeContext);
+        this.typeHelper = new TypeHelper(nodeContext);
     }
 
     public Node createRootNode(final Type type) {
-        return createNode(type, null, null);
+        final Node root = nodeCreator.createRootNodeWithoutChildren(type);
+
+        // The queue contains nodes without children.
+        // Children are populated after taking a node off the queue.
+        final Queue<Node> childlessNodeQueue = new LinkedList<>();
+        childlessNodeQueue.offer(root);
+
+        while (!childlessNodeQueue.isEmpty()) {
+            final Node node = childlessNodeQueue.poll();
+            final List<Node> children = createChildlessChildren(node);
+            node.setChildren(children);
+            childlessNodeQueue.addAll(children);
+        }
+        return root;
     }
 
-    private Node createNode(final Type type, @Nullable final Field field, @Nullable final Node parent) {
-        Verify.notNull(type, "'type' is null");
-
-        if (parent != null && parent.getDepth() >= nodeContext.getMaxDepth()) {
-            LOG.trace("Maximum depth ({}) reached {}", nodeContext.getMaxDepth(), parent);
-            return null;
+    /**
+     * Creates children for the given node.
+     * Returned children will not have of their own.
+     *
+     * @param node to create children for
+     * @return child nodes (without children), or an empty list if none.
+     */
+    @NotNull
+    private List<Node> createChildlessChildren(@NotNull final Node node) {
+        if (node.getDepth() >= nodeContext.getMaxDepth()) {
+            LOG.trace("Maximum depth ({}) reached {}", nodeContext.getMaxDepth(), node);
+            return Collections.emptyList();
         }
 
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Creating node for: {}", Format.withoutPackage(type));
-        }
+        final List<Node> children;
 
-        final Node node;
-
+        final Type type = node.getType();
         if (type instanceof Class) {
-            node = fromClass((Class<?>) type, field, parent);
+            children = createChildrenOfClass(node);
         } else if (type instanceof ParameterizedType) {
-            node = fromParameterizedType((ParameterizedType) type, field, parent);
-        } else if (type instanceof TypeVariable) {
-            node = fromTypeVariable((TypeVariable<?>) type, field, parent);
-        } else if (type instanceof WildcardType) {
-            node = fromWildcardType((WildcardType) type, field, parent);
+            children = createChildrenOfParameterizedType(node);
         } else if (type instanceof GenericArrayType) {
-            node = fromGenericArrayNode((GenericArrayType) type, field, parent);
+            children = createChildrenOfGenericArrayNode(node);
         } else {
-            throw new InstancioException("Unsupported type: " + type.getClass());
+            // should not be reachable
+            throw new InstancioException("Unexpected node type: " + type);
         }
-
-        LOG.trace("Created node: {}", node);
-        return node;
+        return children;
     }
 
-    private Node fromWildcardType(final WildcardType type, @Nullable final Field field, @Nullable final Node parent) {
-        return createNode(type.getUpperBounds()[0], field, parent);
-    }
-
-    private Node fromTypeVariable(final TypeVariable<?> type, @Nullable final Field field, @Nullable final Node parent) {
-        final Type resolvedType = resolveTypeVariable(type, parent);
-
-        if (resolvedType == null) {
-            LOG.warn("Unable to resolve type variable '{}'. Parent: {}", type, parent);
-            return null;
-        }
-
-        return createNode(resolvedType, field, parent);
-    }
-
-    private Optional<Class<?>> resolveSubtype(final Node node) {
-        final Optional<Class<?>> subtype = nodeContext.getSubtype(node);
-
-        if (subtype.isPresent()) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getName());
-            }
-            return subtype;
-        }
-
-        return Optional.ofNullable(resolveSubtypeFromAncestors(node));
-    }
-
-    private static Class<?> resolveSubtypeFromAncestors(final Node node) {
-        Node next = node;
-        while (next != null) {
-            final Type actualType = next.getTypeMap().getActualType(node.getRawType());
-            if (actualType != null) {
-                return TypeUtils.getRawType(actualType);
-            }
-            next = next.getParent();
-        }
-        return null;
-    }
-
-    private Node createNodeWithSubtypeMapping(final Type type, @Nullable final Field field, @Nullable final Node parent) {
-        final Class<?> rawType = TypeUtils.getRawType(type);
-
-        Node node = Node.builder()
-                .nodeContext(nodeContext)
-                .type(type)
-                .rawType(rawType)
-                .targetClass(rawType)
-                .field(field)
-                .parent(parent)
-                .nodeKind(getNodeKind(rawType))
-                .build();
-
-        final Class<?> targetClass = resolveSubtype(node).orElse(rawType);
-
-        // Handle the case where: Child<T> extends Parent<T>
-        // If the child node inherits a TypeVariable field declaration from
-        // the parent, we need to map Parent.T -> Child.T to resolve the type variable
-        final Map<Type, Type> genericSuperclassTypeMap = createSuperclassTypeMap(targetClass);
-
-        if (!genericSuperclassTypeMap.isEmpty()) {
-            node = node.toBuilder()
-                    .additionalTypeMap(genericSuperclassTypeMap)
-                    .build();
-        }
-
-        if (!rawType.isPrimitive() && rawType != targetClass && !targetClass.isEnum()) {
-            ApiValidator.validateSubtype(rawType, targetClass);
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Subtype mapping '{}' to '{}'", Format.withoutPackage(rawType), Format.withoutPackage(targetClass));
-            }
-
-            // Re-evaluate node kind and type map
-            return node.toBuilder()
-                    .targetClass(targetClass)
-                    .nodeKind(getNodeKind(targetClass))
-                    .additionalTypeMap(createBridgeTypeMap(rawType, targetClass))
-                    .build();
-        }
-
-        return node;
-    }
-
-    private Node fromClass(final Class<?> type, @Nullable final Field field, @Nullable final Node parent) {
-        final Node node = createNodeWithSubtypeMapping(type, field, parent);
-        if (node.hasAncestorEqualToSelf()) {
-            return null;
-        }
-
+    private List<Node> createChildrenOfClass(final Node node) {
         final Class<?> targetClass = node.getTargetClass();
 
-        if (isContainer(node)) {
+        if (node.isContainer()) {
             Type[] types = targetClass.isArray()
                     ? new Type[]{targetClass.getComponentType()}
                     : targetClass.getTypeParameters();
@@ -194,95 +115,27 @@ public final class NodeFactory {
                 types = TypeUtils.getGenericSuperclassTypeArguments(targetClass);
             }
 
-            final List<Node> children = createContainerNodeChildren(node, types);
-            node.setChildren(children);
-        } else {
-            final List<Node> children = createChildrenFromFields(targetClass, node);
-            node.setChildren(children);
+            return createContainerNodeChildren(node, types);
         }
-        return node;
+        return createChildrenFromFields(targetClass, node);
     }
 
-    private NodeKind getNodeKind(final Class<?> rawType) {
-        for (NodeKindResolver resolver : nodeContext.getNodeKindResolvers()) {
-            Optional<NodeKind> resolve = resolver.resolve(rawType);
-            if (resolve.isPresent()) {
-                return resolve.get();
-            }
-        }
-        return NodeKind.DEFAULT;
-    }
+    private List<Node> createChildrenOfParameterizedType(final Node node) {
+        final ParameterizedType type = (ParameterizedType) node.getType();
 
-    private Node fromParameterizedType(final ParameterizedType type, @Nullable final Field field, @Nullable final Node parent) {
-        final Node node = createNodeWithSubtypeMapping(type, field, parent);
-        if (node.hasAncestorEqualToSelf()) {
-            return null;
-        }
-
-        final List<Node> children = isContainer(node)
+        return node.isContainer()
                 ? createContainerNodeChildren(node, type.getActualTypeArguments())
                 : createChildrenFromFields(node.getTargetClass(), node);
-
-        node.setChildren(children);
-        return node;
     }
 
-    private Node fromGenericArrayNode(final GenericArrayType type, @Nullable final Field field, @Nullable final Node parent) {
+    private List<Node> createChildrenOfGenericArrayNode(final Node node) {
+        final GenericArrayType type = (GenericArrayType) node.getType();
         Type gcType = type.getGenericComponentType();
         if (gcType instanceof TypeVariable) {
-            gcType = resolveTypeVariable((TypeVariable<?>) gcType, parent);
+            gcType = typeHelper.resolveTypeVariable((TypeVariable<?>) gcType, node);
         }
 
-        final Node node = createArrayNodeWithSubtypeMapping(type, gcType, field, parent);
-        final List<Node> children = createContainerNodeChildren(node, gcType);
-        node.setChildren(children);
-        return node;
-    }
-
-    private Node createArrayNodeWithSubtypeMapping(
-            final Type arrayType,
-            final Type genericComponentType,
-            @Nullable final Field field,
-            @Nullable final Node parent) {
-
-        final Class<?> rawComponentType = TypeUtils.getRawType(genericComponentType);
-        final Node node = Node.builder()
-                .nodeContext(nodeContext)
-                .type(arrayType)
-                .rawType(TypeUtils.getArrayClass(rawComponentType))
-                .targetClass(TypeUtils.getArrayClass(rawComponentType))
-                .field(field)
-                .parent(parent)
-                .nodeKind(NodeKind.ARRAY)
-                .build();
-
-        final Class<?> targetClass = resolveSubtype(node).orElse(rawComponentType);
-        final Class<?> targetClassComponentType = targetClass.getComponentType();
-
-        if (!rawComponentType.isPrimitive()
-                && targetClassComponentType != null
-                && rawComponentType != targetClassComponentType) {
-
-            ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Subtype mapping '{}' to '{}'",
-                        Format.withoutPackage(rawComponentType),
-                        Format.withoutPackage(targetClass));
-            }
-
-            final Map<Type, Type> typeMapForSubtype = createBridgeTypeMap(rawComponentType, targetClassComponentType);
-
-            // Map component type to match array subtype
-            typeMapForSubtype.put(rawComponentType, targetClassComponentType);
-
-            return node.toBuilder()
-                    .targetClass(targetClass)
-                    .additionalTypeMap(typeMapForSubtype)
-                    .build();
-        }
-
-        return node;
+        return createContainerNodeChildren(node, gcType);
     }
 
     /**
@@ -298,7 +151,7 @@ public final class NodeFactory {
     private List<Node> createContainerNodeChildren(final Node parent, final Type... types) {
         final List<Node> results = new ArrayList<>(types.length);
         for (Type type : types) {
-            final Node node = createNode(type, null, parent);
+            final Node node = nodeCreator.createNodeWithoutChildren(type, null, parent);
             if (node != null) {
                 results.add(node);
             }
@@ -307,122 +160,16 @@ public final class NodeFactory {
     }
 
     private List<Node> createChildrenFromFields(final Class<?> targetClass, final Node parent) {
-        final List<Node> list = new ArrayList<>();
-        for (Field f : fieldCollector.getFields(targetClass)) {
-            Node node = createNode(ObjectUtils.defaultIfNull(f.getGenericType(), f.getType()), f, parent);
+        final List<Field> fields = fieldCollector.getFields(targetClass);
+        final List<Node> list = new ArrayList<>(fields.size());
+
+        for (Field f : fields) {
+            final Type type = ObjectUtils.defaultIfNull(f.getGenericType(), f.getType());
+            final Node node = nodeCreator.createNodeWithoutChildren(type, f, parent);
             if (node != null) {
                 list.add(node);
             }
         }
         return list;
-    }
-
-    private static boolean isContainer(final Node node) {
-        return node.is(NodeKind.COLLECTION)
-                || node.is(NodeKind.MAP)
-                || node.is(NodeKind.ARRAY)
-                || node.is(NodeKind.CONTAINER);
-    }
-
-    private Type resolveTypeVariable(final TypeVariable<?> typeVar, @Nullable final Node parent) {
-        Type mappedType = parent == null ? typeVar : parent.getTypeMap().getOrDefault(typeVar, typeVar);
-        Node ancestor = parent;
-
-        while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
-            Type rootTypeMapping = nodeContext.getRootTypeMap().get(mappedType);
-            if (rootTypeMapping != null) {
-                return rootTypeMapping;
-            }
-
-            mappedType = ancestor.getTypeMap().getOrDefault(mappedType, mappedType);
-
-            if (mappedType instanceof Class || mappedType instanceof ParameterizedType) {
-                break;
-            }
-
-            ancestor = ancestor.getParent();
-        }
-        return mappedType == typeVar ? null : mappedType; // NOPMD
-    }
-
-    private static Map<Type, Type> createSuperclassTypeMap(final Class<?> targetClass) {
-        Map<Type, Type> resultTypeMap = null;
-
-        Type supertype = targetClass.getGenericSuperclass();
-
-        while (supertype instanceof ParameterizedType) {
-            if (resultTypeMap == null) {
-                resultTypeMap = new HashMap<>();
-            }
-
-            addTypeParameters((ParameterizedType) supertype, resultTypeMap);
-
-            final Class<?> rawSuper = TypeUtils.getRawType(supertype);
-            supertype = rawSuper.getGenericSuperclass();
-        }
-
-        if (resultTypeMap == null) {
-            return Collections.emptyMap();
-        }
-
-        LOG.trace("Created superclass type map: {}", resultTypeMap);
-        return resultTypeMap;
-    }
-
-    /**
-     * A "bridge type map" is required for performing type substitutions of parameterized types.
-     * For example, a subtype may declare a type variable that maps to a type variable declared
-     * by the super type. This method provides the "bridge" mapping that allows resolving the actual
-     * type parameters.
-     * <p>
-     * For example, given the following classes:
-     *
-     * <pre>{@code
-     *     interface Supertype<A> {}
-     *     class Subtype<B> implements Supertype<B>
-     * }</pre>
-     * <p>
-     * the method returns a map of {@code {B -> A}}
-     * <p>
-     * NOTE: in its current form, this method only handles the most basic use cases.
-     *
-     * @param source source type
-     * @param target target type
-     * @return additional type mappings that might help resolve type variables
-     */
-    private static Map<Type, Type> createBridgeTypeMap(final Class<?> source, final Class<?> target) {
-        if (source.equals(target)) {
-            return Collections.emptyMap();
-        }
-
-        final Map<Type, Type> typeMap = new HashMap<>();
-        final TypeVariable<?>[] subtypeParams = target.getTypeParameters();
-        final TypeVariable<?>[] supertypeParams = source.getTypeParameters();
-
-        if (subtypeParams.length == supertypeParams.length) {
-            for (int i = 0; i < subtypeParams.length; i++) {
-                typeMap.put(subtypeParams[i], supertypeParams[i]);
-            }
-        }
-
-        // If subtype has a generic superclass, add its type variables and type arguments to the type map
-        final Type supertype = target.getGenericSuperclass();
-        if (supertype instanceof ParameterizedType) {
-            addTypeParameters((ParameterizedType) supertype, typeMap);
-        }
-
-        return typeMap;
-    }
-
-    private static void addTypeParameters(final ParameterizedType parameterizedType, final Map<Type, Type> typeMap) {
-        final Class<?> rawSuperclassType = TypeUtils.getRawType(parameterizedType);
-        final TypeVariable<?>[] typeVars = rawSuperclassType.getTypeParameters();
-        final Type[] typeArgs = parameterizedType.getActualTypeArguments();
-
-        if (typeVars.length == typeArgs.length) {
-            for (int i = 0; i < typeVars.length; i++) {
-                typeMap.put(typeVars[i], typeArgs[i]);
-            }
-        }
     }
 }
