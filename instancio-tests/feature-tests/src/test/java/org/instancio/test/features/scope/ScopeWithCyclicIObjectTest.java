@@ -21,6 +21,14 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences;
+import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences.ObjectA;
+import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences.ObjectB;
+import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences.ObjectC;
+import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences.ObjectD;
+import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences.ObjectE;
+import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences.ObjectF;
+import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences.ObjectG;
 import org.instancio.test.support.pojo.cyclic.ListNode;
 import org.instancio.test.support.pojo.cyclic.onetomany.DetailRecord;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
@@ -74,5 +82,68 @@ class ScopeWithCyclicIObjectTest {
 
         assertThat(result.getNext().getNext()).isNull();
         assertThat(result.getPrev().getPrev()).isNull();
+    }
+
+    @Test
+    void selectorScopeWithCyclicObject() {
+        final ClassesWithCrossReferences r = Instancio.of(ClassesWithCrossReferences.class)
+                .withMaxDepth(6)
+                .set(allStrings().within(scope(ObjectA.class), scope(ObjectB.class)), "B-within-A")
+                .set(allStrings().within(scope(ObjectB.class), scope(ObjectB.class)), "B-within-B")
+                .set(allStrings().within(scope(ObjectC.class), scope(ObjectB.class)), "B-within-C")
+                .set(allStrings().within(scope(ObjectD.class), scope(ObjectB.class)), "B-within-D")
+                .set(allStrings().within(scope(ObjectE.class), scope(ObjectB.class)), "B-within-E")
+                .set(allStrings().within(scope(ObjectF.class), scope(ObjectB.class)), "B-within-F")
+                .set(allStrings().within(scope(ObjectG.class), scope(ObjectB.class)), "B-within-G")
+                .create();
+
+        assertThat(r.getObjectA().getObjectB().getB().getValue()).isEqualTo("B-within-A");
+        assertThat(r.getObjectA().getObjectC().getObjectB().getB().getValue()).isEqualTo("B-within-C");
+        assertThat(r.getObjectA().getObjectD().getObjectB().getB().getValue()).isEqualTo("B-within-D");
+        assertThat(r.getObjectA().getObjectE().getObjectB().getB().getValue()).isEqualTo("B-within-E");
+        assertThat(r.getObjectA().getObjectF().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectA().getObjectG().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+
+        assertThat(r.getObjectB().getObjectA().getObjectB().getB().getValue()).isEqualTo("B-within-B");
+        assertThat(r.getObjectB().getObjectC().getObjectB().getB().getValue()).isEqualTo("B-within-C");
+        assertThat(r.getObjectB().getObjectD().getObjectB().getB().getValue()).isEqualTo("B-within-D");
+        assertThat(r.getObjectB().getObjectE().getObjectB().getB().getValue()).isEqualTo("B-within-E");
+        assertThat(r.getObjectB().getObjectF().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectB().getObjectG().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+
+        assertThat(r.getObjectC().getObjectA().getObjectB().getB().getValue()).isEqualTo("B-within-C");
+        assertThat(r.getObjectC().getObjectB().getB().getValue()).isEqualTo("B-within-C");
+        assertThat(r.getObjectC().getObjectD().getObjectB().getB().getValue()).isEqualTo("B-within-D");
+        assertThat(r.getObjectC().getObjectE().getObjectB().getB().getValue()).isEqualTo("B-within-E");
+        assertThat(r.getObjectC().getObjectF().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectC().getObjectG().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+
+        assertThat(r.getObjectD().getObjectA().getObjectB().getB().getValue()).isEqualTo("B-within-D");
+        assertThat(r.getObjectD().getObjectB().getB().getValue()).isEqualTo("B-within-D");
+        assertThat(r.getObjectD().getObjectC().getObjectB().getB().getValue()).isEqualTo("B-within-D");
+        assertThat(r.getObjectD().getObjectE().getObjectB().getB().getValue()).isEqualTo("B-within-E");
+        assertThat(r.getObjectD().getObjectF().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectD().getObjectG().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+
+        assertThat(r.getObjectE().getObjectA().getObjectB().getB().getValue()).isEqualTo("B-within-E");
+        assertThat(r.getObjectE().getObjectB().getB().getValue()).isEqualTo("B-within-E");
+        assertThat(r.getObjectE().getObjectC().getObjectB().getB().getValue()).isEqualTo("B-within-E");
+        assertThat(r.getObjectE().getObjectD().getObjectB().getB().getValue()).isEqualTo("B-within-E");
+        assertThat(r.getObjectE().getObjectF().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectE().getObjectG().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+
+        assertThat(r.getObjectF().getObjectA().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectF().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectF().getObjectC().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectF().getObjectD().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectF().getObjectE().getObjectB().getB().getValue()).isEqualTo("B-within-F");
+        assertThat(r.getObjectF().getObjectG().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+
+        assertThat(r.getObjectG().getObjectA().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+        assertThat(r.getObjectG().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+        assertThat(r.getObjectG().getObjectC().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+        assertThat(r.getObjectG().getObjectD().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+        assertThat(r.getObjectG().getObjectE().getObjectB().getB().getValue()).isEqualTo("B-within-G");
+        assertThat(r.getObjectG().getObjectF().getObjectB().getB().getValue()).isEqualTo("B-within-G");
     }
 }
