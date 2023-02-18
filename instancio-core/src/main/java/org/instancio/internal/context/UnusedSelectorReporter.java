@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.util.Constants.NL;
 
 final class UnusedSelectorReporter {
+    private final int maxDepth;
     private final Set<? super TargetSelector> ignored;
     private final Set<? super TargetSelector> nullable;
     private final Set<? super TargetSelector> generators;
@@ -32,6 +33,7 @@ final class UnusedSelectorReporter {
     private final Set<? super TargetSelector> subtypes;
 
     private UnusedSelectorReporter(final Builder builder) {
+        maxDepth = builder.maxDepth;
         ignored = builder.ignored;
         nullable = builder.nullable;
         generators = builder.generators;
@@ -65,6 +67,7 @@ final class UnusedSelectorReporter {
                 .append("Possible causes:").append(NL)
                 .append(NL)
                 .append(" -> Selector did not match any field or class within this object.").append(NL)
+                .append(" -> Selector target is beyond the current maximum depth setting: ").append(maxDepth).append(NL)
                 .append(" -> Selector matches an ignored target, for example:").append(NL)
                 .append(NL)
                 .append("    Person person = Instancio.of(Person.class)").append(NL)
@@ -144,6 +147,7 @@ final class UnusedSelectorReporter {
     }
 
     public static final class Builder {
+        private int maxDepth;
         private Set<? super TargetSelector> ignored;
         private Set<? super TargetSelector> nullable;
         private Set<? super TargetSelector> generators;
@@ -151,6 +155,11 @@ final class UnusedSelectorReporter {
         private Set<? super TargetSelector> subtypes;
 
         private Builder() {
+        }
+
+        public Builder maxDepth(final int maxDepth) {
+            this.maxDepth = maxDepth;
+            return this;
         }
 
         public Builder ignored(final Set<? super TargetSelector> ignored) {
