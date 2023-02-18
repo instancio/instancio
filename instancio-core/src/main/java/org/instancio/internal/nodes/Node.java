@@ -60,6 +60,13 @@ public final class Node {
         return this.nodeKind == nodeKind;
     }
 
+    boolean isContainer() {
+        return is(NodeKind.COLLECTION)
+                || is(NodeKind.MAP)
+                || is(NodeKind.ARRAY)
+                || is(NodeKind.CONTAINER);
+    }
+
     public Builder toBuilder() {
         final Builder builder = new Builder();
         builder.nodeContext = nodeContext;
