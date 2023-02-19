@@ -16,6 +16,7 @@
 package org.instancio.internal.beanvalidation;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.EAN;
 import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
@@ -23,6 +24,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
+import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.text.LuhnGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
@@ -37,7 +39,8 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
 
     @Override
     public boolean isPrimary(final Class<? extends Annotation> annotationType) {
-        return annotationType == LuhnCheck.class
+        return annotationType == EAN.class
+                || annotationType == LuhnCheck.class
                 || annotationType == CreditCardNumber.class
                 || annotationType == URL.class
                 || annotationType == UUID.class;
@@ -49,7 +52,15 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
             final GeneratorContext context) {
 
         final Class<?> annotationType = annotation.annotationType();
+        if (annotationType == EAN.class) {
+            final EAN ean = (EAN) annotation;
 
+            final EanGenerator generator = new EanGenerator(context);
+            if (ean.type() == EAN.Type.EAN8) {
+                generator.ean8();
+            }
+            return generator;
+        }
         if (annotationType == LuhnCheck.class) {
             final LuhnCheck luhn = (LuhnCheck) annotation;
 
