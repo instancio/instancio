@@ -16,6 +16,8 @@
 package org.instancio.internal.reflection;
 
 import org.instancio.internal.util.RecordUtils;
+import org.instancio.test.support.java16.record.AddressRecord;
+import org.instancio.test.support.java16.record.PersonRecord;
 import org.instancio.test.support.java16.record.PhoneRecord;
 import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
 import org.junit.jupiter.api.Test;
@@ -37,9 +39,18 @@ class RecordUtilsTest {
     @Test
     void instantiateNonRecordClass() {
         final Class<?> nonRecordClass = IntegerHolderWithoutDefaultConstructor.class;
-        assertThatThrownBy(() ->
-                RecordUtils.instantiate(nonRecordClass, 123, 345))
+        assertThatThrownBy(() -> RecordUtils.instantiate(nonRecordClass, 123, 345))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Class '%s' is not a record!", nonRecordClass.getName());
     }
+
+    @Test
+    void getComponentTypes() {
+        assertThat(RecordUtils.getComponentTypes(PersonRecord.class))
+                .containsExactly(String.class, int.class, AddressRecord.class);
+
+        assertThat(RecordUtils.getComponentTypes(RecordWithoutArgs.class)).isEmpty();
+    }
+
+    private record RecordWithoutArgs() {}
 }

@@ -36,6 +36,7 @@ import java.util.Optional;
 /**
  * Helper class for creating a {@link Node} without its children.
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 class NodeCreator {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeCreator.class);
@@ -81,7 +82,11 @@ class NodeCreator {
             throw new InstancioException("Unsupported type: " + type.getClass());
         }
 
-        LOG.trace("Created node: {}", node);
+        if (node != null && nodeContext.isIgnored(node)) {
+            return Node.ignoredNode();
+        }
+
+        LOG.trace("Created node {} for type {}", node, type);
         return node;
     }
 

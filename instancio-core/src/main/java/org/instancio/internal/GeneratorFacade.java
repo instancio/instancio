@@ -30,6 +30,7 @@ import org.instancio.internal.handlers.NodeHandler;
 import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.reflection.instantiation.Instantiator;
 import org.instancio.settings.Keys;
 import org.slf4j.Logger;
@@ -70,12 +71,12 @@ class GeneratorFacade {
         return isEnabled ? new BeanValidationProcessor() : new NoopBeanValidationProvider();
     }
 
-    private boolean isIgnored(final Node node) {
-        return context.isIgnored(node) || (node.getField() != null && Modifier.isStatic(node.getField().getModifiers()));
+    private boolean hasStaticField(final Node node) {
+        return node.getField() != null && Modifier.isStatic(node.getField().getModifiers());
     }
 
     GeneratorResult generateNodeValue(final Node node) {
-        if (isIgnored(node)) {
+        if (node.is(NodeKind.IGNORED) || hasStaticField(node)) {
             return GeneratorResult.ignoredResult();
         }
 

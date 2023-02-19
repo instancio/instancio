@@ -28,6 +28,15 @@ import java.util.Objects;
 
 public final class Node {
 
+    private static final Node IGNORED_NODE = builder()
+            .type(Object.class)
+            .rawType(Object.class)
+            .targetClass(Object.class)
+            .nodeKind(NodeKind.IGNORED)
+            .children(Collections.emptyList())
+            .nodeContext(NodeContext.builder().build())
+            .build();
+
     private final NodeContext nodeContext;
     private final Type type;
     private final Class<?> rawType;
@@ -50,6 +59,10 @@ public final class Node {
         nodeKind = builder.nodeKind;
         typeMap = new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap);
         depth = parent == null ? 0 : parent.depth + 1;
+    }
+
+    public static Node ignoredNode() {
+        return IGNORED_NODE;
     }
 
     public NodeKind getNodeKind() {
@@ -210,6 +223,9 @@ public final class Node {
 
     @Override
     public String toString() {
+        if (nodeKind == NodeKind.IGNORED) {
+            return "Node[IGNORED]";
+        }
         final String nodeName = field == null
                 ? Format.withoutPackage(targetClass)
                 : Format.withoutPackage(parent.targetClass) + '.' + field.getName();

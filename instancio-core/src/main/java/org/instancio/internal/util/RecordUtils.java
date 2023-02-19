@@ -30,4 +30,10 @@ public final class RecordUtils {
         // no-op implementation until java 16
         return null;
     }
+
+    @SuppressWarnings({"PMD.ReturnEmptyCollectionRatherThanNull", "unused"})
+    public static Class<?>[] getComponentTypes(final Class<?> recordClass) {
+        // no-op implementation until java 16
+        return null; // NOSONAR
+    }
 }

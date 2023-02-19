@@ -16,13 +16,11 @@
 package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.internal.util.Verify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.RecordComponent;
-import java.util.Arrays;
 
 public final class RecordUtils {
     private static final Logger LOG = LoggerFactory.getLogger(RecordUtils.class);
@@ -42,10 +40,17 @@ public final class RecordUtils {
         }
     }
 
+    public static Class<?>[] getComponentTypes(final Class<?> recordClass) {
+        final RecordComponent[] components = recordClass.getRecordComponents();
+        final Class<?>[] args = new Class<?>[components.length];
+        for (int i = 0; i < args.length; i++) {
+            args[i] = components[i].getType();
+        }
+        return args;
+    }
+
     private static Constructor<?> getCanonicalConstructor(final Class<?> recordClass) {
-        final Class<?>[] componentTypes = Arrays.stream(recordClass.getRecordComponents())
-                .map(RecordComponent::getType)
-                .toArray(Class<?>[]::new);
+        final Class<?>[] componentTypes = getComponentTypes(recordClass);
         try {
             return recordClass.getDeclaredConstructor(componentTypes);
         } catch (NoSuchMethodException ex) {

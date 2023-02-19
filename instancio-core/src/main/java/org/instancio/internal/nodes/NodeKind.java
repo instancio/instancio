@@ -21,6 +21,14 @@ package org.instancio.internal.nodes;
 public enum NodeKind {
 
     /**
+     * Represents a node marked with the {@code ignore()} method.
+     * An ignored node has no children.
+     *
+     * @since 2.10.0
+     */
+    IGNORED,
+
+    /**
      * Fallback kind. A node of this kind could represent either a POJO class
      * or a JDK type that is considered to be a leaf node, such as
      * {@code String}, {@code LocalDate}, {@code BigDecimal}, etc.

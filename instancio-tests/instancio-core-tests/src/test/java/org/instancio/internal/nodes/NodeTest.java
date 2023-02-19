@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.TypeToken;
+import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.test.support.pojo.collections.lists.ListString;
@@ -44,10 +45,23 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 class NodeTest {
     private static final NodeContext NODE_CONTEXT = NodeContext.builder()
             .maxDepth(Integer.MAX_VALUE)
+            .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
             .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
             .build();
 
     private static final NodeFactory NODE_FACTORY = new NodeFactory(NODE_CONTEXT);
+
+    @Test
+    void ignoredNode() {
+        final Node node = Node.ignoredNode();
+        assertNode(node)
+                .hasChildrenOfSize(0)
+                .isOfKind(NodeKind.IGNORED)
+                .hasType(Object.class)
+                .hasRawType(Object.class)
+                .hasTargetClass(Object.class)
+                .hasEmptyTypeMap();
+    }
 
     @Test
     void getNodeKind() {
@@ -216,6 +230,11 @@ class NodeTest {
 
             assertThat(NODE_FACTORY.createRootNode(new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {}.get()))
                     .hasToString("Node[Pair, depth=0, #chn=2, Pair<Item<String>, Foo<List<Integer>>>]");
+        }
+
+        @Test
+        void ignoredNode() {
+            assertThat(Node.ignoredNode()).hasToString("Node[IGNORED]");
         }
     }
 

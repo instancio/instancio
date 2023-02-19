@@ -50,6 +50,7 @@ import static org.instancio.Select.scope;
 class SelectorMapTest {
     private final NodeContext nodeContext = NodeContext.builder()
             .maxDepth(Integer.MAX_VALUE)
+            .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
             .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
             .build();
 

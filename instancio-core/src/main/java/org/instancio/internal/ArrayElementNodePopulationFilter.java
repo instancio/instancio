@@ -18,6 +18,7 @@ package org.instancio.internal;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,9 @@ class ArrayElementNodePopulationFilter implements NodePopulationFilter {
                               final AfterGenerate afterGenerate,
                               @Nullable final Object currentElementValue) {
 
+        if (elementNode.is(NodeKind.IGNORED)) {
+            return true;
+        }
         if (afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
             return true;
         }

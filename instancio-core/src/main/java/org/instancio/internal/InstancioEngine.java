@@ -227,21 +227,26 @@ class InstancioEngine {
             return generatorResult;
         }
 
-        final Hints hints = generatorResult.getHints();
-        final MapHint hint = defaultIfNull(hints.get(MapHint.class), MapHint.empty());
-
         //noinspection unchecked
         final Map<Object, Object> map = (Map<Object, Object>) generatorResult.getValue();
+        final Node valueNode = node.getChildren().get(1);
+        final Node keyNode = node.getChildren().get(0);
+        final Hints hints = generatorResult.getHints();
 
         // Populated objects that were created/added in the generator itself
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
-            final List<Node> keyNodeChildren = node.getChildren().get(0).getChildren();
-            final List<Node> valueNodeChildren = node.getChildren().get(1).getChildren();
+            final List<Node> keyNodeChildren = keyNode.getChildren();
+            final List<Node> valueNodeChildren = valueNode.getChildren();
 
             populateChildren(keyNodeChildren, GeneratorResult.create(entry.getKey(), hints));
             populateChildren(valueNodeChildren, GeneratorResult.create(entry.getValue(), hints));
         }
 
+        if (keyNode.is(NodeKind.IGNORED) || valueNode.is(NodeKind.IGNORED)) {
+            return generatorResult;
+        }
+
+        final MapHint hint = defaultIfNull(hints.get(MapHint.class), MapHint.empty());
         final boolean nullableKey = hint.nullableMapKeys();
         final boolean nullableValue = hint.nullableMapValues();
         final Iterator<Object> withKeysIterator = hint.withKeys().iterator();
@@ -250,14 +255,12 @@ class InstancioEngine {
         int failedAdditions = 0;
 
         while (entriesToGenerate > 0) {
-
-            final GeneratorResult mapValueResult = createObject(node.getChildren().get(1), nullableValue);
+            final GeneratorResult mapValueResult = createObject(valueNode, nullableValue);
             final Object mapValue = mapValueResult.getValue();
 
             final Object mapKey = withKeysIterator.hasNext()
                     ? withKeysIterator.next()
-                    : createObject(node.getChildren().get(0), nullableKey).getValue();
-
+                    : createObject(keyNode, nullableKey).getValue();
 
             if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
                 if (!map.containsKey(mapKey)) {
@@ -384,18 +387,22 @@ class InstancioEngine {
             return generatorResult;
         }
 
-        final Hints hints = generatorResult.getHints();
-        final CollectionHint hint = defaultIfNull(hints.get(CollectionHint.class), CollectionHint.empty());
-
         //noinspection unchecked
         final Collection<Object> collection = (Collection<Object>) generatorResult.getValue();
+        final Node elementNode = node.getOnlyChild();
+        final Hints hints = generatorResult.getHints();
 
         // Populated objects that were created/added in the generator itself
         for (Object element : collection) {
-            final List<Node> elementNodeChildren = node.getOnlyChild().getChildren();
+            final List<Node> elementNodeChildren = elementNode.getChildren();
             populateChildren(elementNodeChildren, GeneratorResult.create(element, hints));
         }
 
+        if (elementNode.is(NodeKind.IGNORED)) {
+            return generatorResult;
+        }
+
+        final CollectionHint hint = defaultIfNull(hints.get(CollectionHint.class), CollectionHint.empty());
         final boolean nullableElement = hint.nullableElements();
         final boolean requireUnique = hint.unique();
         final Set<Object> generated = new HashSet<>();
@@ -404,7 +411,7 @@ class InstancioEngine {
         int failedAdditions = 0;
 
         while (elementsToGenerate > 0) {
-            final GeneratorResult elementResult = createObject(node.getOnlyChild(), nullableElement);
+            final GeneratorResult elementResult = createObject(elementNode, nullableElement);
             final Object elementValue = elementResult.getValue();
 
             if (elementValue != null || nullableElement) {
@@ -459,13 +466,23 @@ class InstancioEngine {
 
         final List<Node> children = node.getChildren();
         final Object[] args = new Object[children.size()];
+        final Class<?>[] ctorArgs = RecordUtils.getComponentTypes(node.getTargetClass());
+
+        // There may have been a cyclic node structure that was terminated with a null node.
+        // If we don't have enough arguments for the record's constructor, simply return null.
+        if (ctorArgs.length != args.length) {
+            LOG.debug("Record {} has {} constructor arguments, but got {}",
+                    node.getTargetClass(), ctorArgs.length, args.length);
+
+            return GeneratorResult.nullResult();
+        }
 
         for (int i = 0; i < args.length; i++) {
             final Node child = children.get(i);
             final GeneratorResult result = createObject(child);
 
             args[i] = result.containsNull()
-                    ? ObjectUtils.defaultValue(child.getRawType())
+                    ? ObjectUtils.defaultValue(ctorArgs[i])
                     : result.getValue();
         }
 
