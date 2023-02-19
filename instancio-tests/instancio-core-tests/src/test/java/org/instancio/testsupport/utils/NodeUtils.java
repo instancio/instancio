@@ -17,8 +17,6 @@ package org.instancio.testsupport.utils;
 
 import org.instancio.internal.nodes.Node;
 
-import static org.assertj.core.api.Fail.fail;
-
 public class NodeUtils {
 
     private NodeUtils() {
@@ -29,6 +27,6 @@ public class NodeUtils {
         return parent.getChildren().stream()
                 .filter(it -> it.getField() != null && it.getField().getName().equals(fieldName))
                 .findAny()
-                .orElseGet(() -> fail("Expected child field node '%s' ", fieldName));
+                .orElse(null);
     }
 }

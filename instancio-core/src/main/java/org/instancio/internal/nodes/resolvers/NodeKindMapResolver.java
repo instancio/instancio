@@ -21,7 +21,7 @@ import org.instancio.internal.nodes.NodeKindResolver;
 import java.util.Map;
 import java.util.Optional;
 
-public class NodeKindMapResolver implements NodeKindResolver {
+class NodeKindMapResolver implements NodeKindResolver {
 
     @Override
     public Optional<NodeKind> resolve(final Class<?> targetClass) {

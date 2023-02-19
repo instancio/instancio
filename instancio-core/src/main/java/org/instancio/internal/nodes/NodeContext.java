@@ -20,17 +20,11 @@ import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.SubtypeSelectorMap;
-import org.instancio.internal.nodes.resolvers.NodeKindArrayResolver;
-import org.instancio.internal.nodes.resolvers.NodeKindCollectionResolver;
-import org.instancio.internal.nodes.resolvers.NodeKindContainerResolver;
-import org.instancio.internal.nodes.resolvers.NodeKindMapResolver;
-import org.instancio.internal.nodes.resolvers.NodeKindRecordResolver;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.settings.Settings;
 import org.instancio.spi.TypeResolver;
 
 import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +37,7 @@ public final class NodeContext {
     private final SubtypeSelectorMap subtypeSelectorMap;
     private final Map<Class<?>, Class<?>> subtypeMappingFromSettings;
     private final TypeResolverFacade typeResolverFacade;
-    private final List<NodeKindResolver> nodeKindResolvers;
+    private final List<InternalContainerFactoryProvider> containerFactories;
 
     private NodeContext(final Builder builder) {
         maxDepth = builder.maxDepth;
@@ -51,21 +45,12 @@ public final class NodeContext {
         ignoredSelectorMap = builder.ignoredSelectorMap;
         subtypeSelectorMap = builder.subtypeSelectorMap;
         subtypeMappingFromSettings = builder.subtypeMappingFromSettings;
+        containerFactories = builder.containerFactories;
         typeResolverFacade = new TypeResolverFacade();
-        nodeKindResolvers = Arrays.asList(
-                new NodeKindCollectionResolver(),
-                new NodeKindMapResolver(),
-                new NodeKindArrayResolver(),
-                new NodeKindRecordResolver(),
-                new NodeKindContainerResolver(Collections.unmodifiableList(builder.containerFactories)));
     }
 
     public int getMaxDepth() {
         return maxDepth;
-    }
-
-    public List<NodeKindResolver> getNodeKindResolvers() {
-        return nodeKindResolvers;
     }
 
     public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
@@ -98,6 +83,10 @@ public final class NodeContext {
 
     boolean isIgnored(@NotNull final Node node) {
         return ignoredSelectorMap.isTrue(node);
+    }
+
+    public List<InternalContainerFactoryProvider> getContainerFactories() {
+        return containerFactories;
     }
 
     public static Builder builder() {

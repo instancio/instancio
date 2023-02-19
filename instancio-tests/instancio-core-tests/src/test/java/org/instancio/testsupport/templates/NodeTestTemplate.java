@@ -45,7 +45,7 @@ public abstract class NodeTestTemplate<T> {
     @Test
     protected final void verifyingModelFromTypeToken() {
         final NodeContext nodeContext = NodeContext.builder()
-                .maxDepth(Integer.MAX_VALUE)
+                .maxDepth(withMaxDepth())
                 .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
                 .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
                 .build();
@@ -53,6 +53,10 @@ public abstract class NodeTestTemplate<T> {
         final TypeTokenSupplier<Type> typeSupplier = typeContext::getGenericType;
         final Node rootNode = nodeFactory.createRootNode(typeSupplier.get());
         verify(rootNode);
+    }
+
+    protected int withMaxDepth() {
+        return Integer.MAX_VALUE;
     }
 
     /**

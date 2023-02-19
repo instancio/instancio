@@ -20,7 +20,7 @@ import org.instancio.internal.nodes.NodeKindResolver;
 
 import java.util.Optional;
 
-public class NodeKindRecordResolver implements NodeKindResolver {
+class NodeKindRecordResolver implements NodeKindResolver {
 
     @Override
     public Optional<NodeKind> resolve(final Class<?> targetClass) {
