@@ -1502,6 +1502,7 @@ Anything not listed is unsupported, including `*.List` annotations.
 ### Hibernate
 
 - `@CreditCardNumber`
+- `@EAN`
 - `@Length`
 - `@LuhnCheck` (`startIndex`, `endIndex`, `checkDigitIndex` are supported; `ignoreNonDigitCharacters` is ignored, only digits are generated)
 - `@Range`
