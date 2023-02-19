@@ -16,11 +16,11 @@
 package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
-import org.instancio.internal.util.LuhnUtils;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.CreditCardNumberBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.util.HibernateValidatorUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -40,15 +40,12 @@ class CreditCardNumberBVTest {
                 .limit(SAMPLE_SIZE_DDD);
 
         assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+            HibernateValidatorUtil.assertValid(result);
 
             assertThat(result.getValue())
                     .as("Should generate a 16-digit Visa credit card number by default")
                     .startsWith("4")
                     .hasSize(16);
-
-            assertThat(LuhnUtils.isLuhnValid(result.getValue()))
-                    .as("Invalid credit card number: %s", result.getValue())
-                    .isTrue();
         });
     }
 }

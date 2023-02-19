@@ -17,21 +17,21 @@ package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.pojo.beanvalidation.records.AddressRecordBV;
 import org.instancio.test.pojo.beanvalidation.records.PersonRecordBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.util.HibernateValidatorUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 
+/**
+ * NOTE: this test fails in IntelliJ, run it using Maven
+ */
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
 class PersonRecordBVTest {
@@ -40,33 +40,12 @@ class PersonRecordBVTest {
     void personRecord() {
         final int sampleSize = SAMPLE_SIZE_DDD;
 
-        final List<PersonRecordBV> results = Instancio.of(PersonRecordBV.class)
+        final Stream<PersonRecordBV> results = Instancio.of(PersonRecordBV.class)
                 .stream()
-                .limit(sampleSize)
-                .collect(Collectors.toList());
+                .limit(sampleSize);
 
-        assertThat(results).hasSize(sampleSize)
-                .allSatisfy(result -> {
-                    assertThat(UUID.fromString(result.uuid())).isNotNull();
-                    assertThat(result.name()).hasSizeBetween(2, 10);
-                    assertThat(result.age()).isBetween(18, 65);
-                    assertThat(result.lastModified()).isBefore(LocalDateTime.now());
-
-                    final AddressRecordBV address = result.address();
-                    assertThat(address.address()).hasSizeBetween(5, 100);
-                    assertThat(address.city())
-                            .isNotBlank()
-                            .hasSizeLessThanOrEqualTo(32);
-
-                    assertThat(address.phoneNumbers())
-                            .hasSizeBetween(1, 5)
-                            .allSatisfy(phone -> {
-                                assertThat(phone.countryCode()).hasSizeBetween(1, 2);
-                                assertThat(phone.number()).containsOnlyDigits().hasSize(7);
-                            });
-
-                    assertThat(result.date()).isInTheFuture();
-                    assertThat(result.pets()).hasSizeBetween(0, 3);
-                });
+        assertThat(results)
+                .hasSize(sampleSize)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 }

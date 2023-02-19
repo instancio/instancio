@@ -22,19 +22,24 @@ import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
-@Data
 public class UniqueElementsWithSizeBV {
 
-    public static final int MIN_SIZE = 20;
-    public static final int MAX_SIZE = 26;
+    @Data
+    public static class WithList {
+        public static final int MIN_SIZE = 1;
+        public static final int MAX_SIZE = 2;
 
-    @NotNull
-    @Size(min = MIN_SIZE, max = MAX_SIZE)
-    @UniqueElements
-    private List<Character> list;
+        @NotNull
+        @Size(min = MIN_SIZE, max = MAX_SIZE)
+        @UniqueElements
+        private List<Character> list;
+    }
 
-    // Unsupported type for @UniqueElements, the annotation should be ignored.
-    @NotNull
-    @UniqueElements
-    private String string;
+    @Data
+    public static class WithUnsupportedType {
+        // Unsupported type for @UniqueElements, the annotation should be ignored.
+        @NotNull
+        @UniqueElements
+        private String string;
+    }
 }
