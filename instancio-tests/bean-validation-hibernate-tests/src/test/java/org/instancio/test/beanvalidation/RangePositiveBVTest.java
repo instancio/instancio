@@ -18,13 +18,12 @@ package org.instancio.test.beanvalidation;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.RangePositiveBV;
-import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.util.HibernateValidatorUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.math.BigDecimal;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,15 +34,13 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 class RangePositiveBVTest {
 
     @Test
-    void minMax() {
+    void range() {
         final Stream<RangePositiveBV> results = Instancio.of(RangePositiveBV.class)
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
-            Asserts.assertRange(result, RangePositiveBV.MIN, RangePositiveBV.MAX);
-
-            assertThat(new BigDecimal(result.getString())).isBetween(RangePositiveBV.MIN, RangePositiveBV.MAX);
-        });
+        assertThat(results)
+                .hasSize(SAMPLE_SIZE_DDD)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 }

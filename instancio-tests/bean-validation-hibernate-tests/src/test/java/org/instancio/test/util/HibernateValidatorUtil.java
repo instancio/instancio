@@ -15,22 +15,27 @@
  */
 package org.instancio.test.util;
 
-import org.instancio.internal.util.LuhnUtils;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public final class BVTestUtil {
+public final class HibernateValidatorUtil {
 
-    public static void assertValidLuhn(
-            final int startIdx, final int endIdx, final int checkIdx, final String value) {
+    @SuppressWarnings("resource")
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        assertThat(LuhnUtils.isLuhnValid(startIdx, endIdx, checkIdx, value))
-                .as("Should pass Luhn check: %s", value)
-                .isTrue();
+    public static void assertValid(final Object obj) {
+        final Set<ConstraintViolation<Object>> violations = validator.validate(obj);
+        assertThat(violations)
+                .as("Object '%s' has validation errors: %s", obj, violations)
+                .isEmpty();
     }
 
-
-    private BVTestUtil() {
+    private HibernateValidatorUtil() {
         // non-instantiable
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.instancio.test.pojo.beanvalidation.person;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -25,15 +26,15 @@ import java.util.List;
 @Data
 public class AddressBV {
 
-    @NotNull
+    @NotBlank
     @Length(min = 5, max = 100)
     private String address;
 
-    @NotNull
+    @NotBlank
     @Length(max = 32)
     private String city;
 
-    @NotNull
+    @NotBlank
     @Length(max = 32)
     private String country;
 

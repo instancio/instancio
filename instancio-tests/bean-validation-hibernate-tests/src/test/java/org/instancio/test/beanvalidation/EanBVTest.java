@@ -15,13 +15,12 @@
  */
 package org.instancio.test.beanvalidation;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.EanBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.util.HibernateValidatorUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -34,18 +33,14 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 @ExtendWith(InstancioExtension.class)
 class EanBVTest {
 
-    @SuppressWarnings("resource")
-    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
     @Test
     void ean() {
         final Stream<EanBV> results = Instancio.of(EanBV.class)
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result ->
-                assertThat(validator.validate(result))
-                        .as("Validation errors: %s", validator.validate(result))
-                        .isEmpty());
+        assertThat(results)
+                .hasSize(SAMPLE_SIZE_DDD)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 }

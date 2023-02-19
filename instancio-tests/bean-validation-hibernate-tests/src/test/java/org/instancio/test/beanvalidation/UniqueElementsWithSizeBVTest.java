@@ -18,8 +18,10 @@ package org.instancio.test.beanvalidation;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.UniqueElementsWithSizeBV;
+import org.instancio.test.pojo.beanvalidation.UniqueElementsWithSizeBV.WithUnsupportedType;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.util.HibernateValidatorUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -38,15 +40,15 @@ class UniqueElementsWithSizeBVTest {
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+        assertThat(results)
+                .hasSize(SAMPLE_SIZE_DDD)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
+    }
 
-            assertThat(result.getList())
-                    .hasSizeBetween(
-                            UniqueElementsWithSizeBV.MIN_SIZE,
-                            UniqueElementsWithSizeBV.MAX_SIZE)
-                    .doesNotHaveDuplicates();
+    @Test
+    void withUnsupportedType() {
+        final WithUnsupportedType result = Instancio.create(WithUnsupportedType.class);
 
-            assertThat(result.getString()).isNotNull();
-        });
+        assertThat(result.getString()).isNotNull();
     }
 }

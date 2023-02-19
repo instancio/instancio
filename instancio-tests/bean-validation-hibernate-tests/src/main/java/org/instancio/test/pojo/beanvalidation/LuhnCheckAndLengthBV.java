@@ -49,11 +49,4 @@ public class LuhnCheckAndLengthBV {
         @LuhnCheck(startIndex = 5, endIndex = 10, checkDigitIndex = 3)
         private String value1;
     }
-
-    @Data
-    public static class WithLengthLessThanEndIndex {
-        @Length(max = 5)
-        @LuhnCheck(endIndex = 7)
-        private String value;
-    }
 }
