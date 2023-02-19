@@ -19,28 +19,31 @@ import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.NodeKindResolver;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
 
-import java.util.EnumSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-class NodeKindContainerResolver implements NodeKindResolver {
+public class NodeKindResolverFacade {
 
-    private final List<InternalContainerFactoryProvider> containerFactories;
+    private final NodeKindResolver[] resolvers;
 
-    NodeKindContainerResolver(final List<InternalContainerFactoryProvider> containerFactories) {
-        this.containerFactories = containerFactories;
+    public NodeKindResolverFacade(final List<InternalContainerFactoryProvider> containerFactories) {
+        this.resolvers = new NodeKindResolver[]{
+                new NodeKindCollectionResolver(),
+                new NodeKindMapResolver(),
+                new NodeKindArrayResolver(),
+                new NodeKindRecordResolver(),
+                new NodeKindContainerResolver(Collections.unmodifiableList(containerFactories))
+        };
     }
 
-    @Override
-    public Optional<NodeKind> resolve(final Class<?> targetClass) {
-        if (targetClass == Optional.class
-                || targetClass == EnumSet.class
-                || Map.Entry.class.isAssignableFrom(targetClass)
-                || containerFactories.stream().anyMatch(p -> p.isContainerClass(targetClass))) {
-            return Optional.of(NodeKind.CONTAINER);
+    public NodeKind getNodeKind(final Class<?> rawType) {
+        for (NodeKindResolver resolver : resolvers) {
+            Optional<NodeKind> resolve = resolver.resolve(rawType);
+            if (resolve.isPresent()) {
+                return resolve.get();
+            }
         }
-
-        return Optional.empty();
+        return NodeKind.DEFAULT;
     }
 }

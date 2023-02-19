@@ -17,6 +17,7 @@ package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
@@ -43,10 +44,12 @@ class NodeCreator {
 
     private final NodeContext nodeContext;
     private final TypeHelper typeHelper;
+    private final NodeKindResolverFacade nodeKindResolverFacade;
 
     NodeCreator(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
         this.typeHelper = new TypeHelper(nodeContext);
+        this.nodeKindResolverFacade = new NodeKindResolverFacade(nodeContext.getContainerFactories());
     }
 
     Node createRootNodeWithoutChildren(final Type type) {
@@ -179,20 +182,11 @@ class NodeCreator {
 
     private Node fromClass(final Class<?> type, @Nullable final Field field, @Nullable final Node parent) {
         final Node node = createNodeWithSubtypeMapping(type, field, parent);
-        if (node.hasAncestorEqualToSelf()) {
-            return null;
-        }
-        return node;
+        return node.hasAncestorEqualToSelf() ? null : node;
     }
 
     private NodeKind getNodeKind(final Class<?> rawType) {
-        for (NodeKindResolver resolver : nodeContext.getNodeKindResolvers()) {
-            Optional<NodeKind> resolve = resolver.resolve(rawType);
-            if (resolve.isPresent()) {
-                return resolve.get();
-            }
-        }
-        return NodeKind.DEFAULT;
+        return nodeKindResolverFacade.getNodeKind(rawType);
     }
 
     private Node fromParameterizedType(
@@ -201,10 +195,7 @@ class NodeCreator {
             @Nullable final Node parent) {
 
         final Node node = createNodeWithSubtypeMapping(type, field, parent);
-        if (node.hasAncestorEqualToSelf()) {
-            return null;
-        }
-        return node;
+        return node.hasAncestorEqualToSelf() ? null : node;
     }
 
     private Node fromGenericArrayNode(

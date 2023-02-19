@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Optional;
 
-public class NodeKindCollectionResolver implements NodeKindResolver {
+class NodeKindCollectionResolver implements NodeKindResolver {
 
     @Override
     public Optional<NodeKind> resolve(final Class<?> targetClass) {
