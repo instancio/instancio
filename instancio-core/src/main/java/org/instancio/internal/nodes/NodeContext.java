@@ -15,8 +15,10 @@
  */
 package org.instancio.internal.nodes;
 
+import jakarta.validation.constraints.NotNull;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
+import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.nodes.resolvers.NodeKindArrayResolver;
 import org.instancio.internal.nodes.resolvers.NodeKindCollectionResolver;
@@ -37,6 +39,7 @@ import java.util.Optional;
 public final class NodeContext {
     private final int maxDepth;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final BooleanSelectorMap ignoredSelectorMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
     private final Map<Class<?>, Class<?>> subtypeMappingFromSettings;
     private final TypeResolverFacade typeResolverFacade;
@@ -45,6 +48,7 @@ public final class NodeContext {
     private NodeContext(final Builder builder) {
         maxDepth = builder.maxDepth;
         rootTypeMap = builder.rootTypeMap;
+        ignoredSelectorMap = builder.ignoredSelectorMap;
         subtypeSelectorMap = builder.subtypeSelectorMap;
         subtypeMappingFromSettings = builder.subtypeMappingFromSettings;
         typeResolverFacade = new TypeResolverFacade();
@@ -79,7 +83,7 @@ public final class NodeContext {
      *   <li>a generator's {@code subtype()} method, e.g. {@code gen.collection().subtype()}</li>
      * </ol>
      */
-    Optional<Class<?>> getSubtype(final Node node) {
+    Optional<Class<?>> getSubtype(@NotNull final Node node) {
         final Optional<Class<?>> subtype = subtypeSelectorMap.getSubtype(node);
         if (subtype.isPresent()) {
             return subtype;
@@ -92,6 +96,10 @@ public final class NodeContext {
                 : Optional.of(subtypeFromSettings);
     }
 
+    boolean isIgnored(@NotNull final Node node) {
+        return ignoredSelectorMap.isTrue(node);
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -99,6 +107,7 @@ public final class NodeContext {
     public static final class Builder {
         private int maxDepth;
         private Map<TypeVariable<?>, Class<?>> rootTypeMap = Collections.emptyMap();
+        private BooleanSelectorMap ignoredSelectorMap;
         private SubtypeSelectorMap subtypeSelectorMap;
         private Map<Class<?>, Class<?>> subtypeMappingFromSettings = Collections.emptyMap();
         private List<InternalContainerFactoryProvider> containerFactories = Collections.emptyList();
@@ -113,6 +122,11 @@ public final class NodeContext {
 
         public Builder rootTypeMap(final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
             this.rootTypeMap = rootTypeMap;
+            return this;
+        }
+
+        public Builder ignoredSelectorMap(final BooleanSelectorMap ignoredSelectorMap) {
+            this.ignoredSelectorMap = ignoredSelectorMap;
             return this;
         }
 

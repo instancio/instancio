@@ -164,6 +164,10 @@ public final class ModelContext<T> {
         return onCompleteCallbackSelectorMap.getCallbacks(node);
     }
 
+    public BooleanSelectorMap getIgnoredSelectorMap() {
+        return ignoredSelectorMap;
+    }
+
     public SubtypeSelectorMap getSubtypeSelectorMap() {
         return subtypeSelectorMap;
     }

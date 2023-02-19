@@ -22,12 +22,12 @@ import org.instancio.internal.selectors.Flattener;
 import java.util.Collections;
 import java.util.Set;
 
-class BooleanSelectorMap {
+public class BooleanSelectorMap {
 
     private final Set<TargetSelector> targetSelectors;
     private final SelectorMap<Boolean> selectorMap = new SelectorMap<>();
 
-    BooleanSelectorMap(final Set<TargetSelector> targetSelectors) {
+    public BooleanSelectorMap(final Set<TargetSelector> targetSelectors) {
         this.targetSelectors = Collections.unmodifiableSet(targetSelectors);
         putAll(targetSelectors);
     }
@@ -40,7 +40,7 @@ class BooleanSelectorMap {
         return targetSelectors;
     }
 
-    boolean isTrue(final Node node) {
+    public boolean isTrue(final Node node) {
         return Boolean.TRUE.equals(selectorMap.getValue(node).orElse(false));
     }
 

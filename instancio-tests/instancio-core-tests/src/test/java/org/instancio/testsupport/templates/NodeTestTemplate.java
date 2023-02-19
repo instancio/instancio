@@ -16,6 +16,7 @@
 package org.instancio.testsupport.templates;
 
 import org.instancio.TypeTokenSupplier;
+import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeContext;
@@ -45,6 +46,7 @@ public abstract class NodeTestTemplate<T> {
     protected final void verifyingModelFromTypeToken() {
         final NodeContext nodeContext = NodeContext.builder()
                 .maxDepth(Integer.MAX_VALUE)
+                .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
                 .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
                 .build();
         final NodeFactory nodeFactory = new NodeFactory(nodeContext);

@@ -19,6 +19,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ExceptionHandler;
 import org.instancio.internal.util.ReflectionUtils;
 
@@ -35,6 +36,9 @@ class FieldNodePopulationFilter implements NodePopulationFilter {
                               final AfterGenerate afterGenerate,
                               final Object objectContainingField) {
 
+        if (fieldNode.is(NodeKind.IGNORED)) {
+            return true;
+        }
         if (afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
             return true;
         }

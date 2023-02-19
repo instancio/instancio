@@ -19,6 +19,12 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.test.support.pojo.cyclic.onetomany.OneToManyWithCrossReferences.ObjectA;
+import org.instancio.test.support.pojo.cyclic.onetomany.OneToManyWithCrossReferences.ObjectB;
+import org.instancio.test.support.pojo.cyclic.onetomany.OneToManyWithCrossReferences.ObjectC;
+import org.instancio.test.support.pojo.cyclic.onetomany.OneToManyWithCrossReferences.ObjectD;
+import org.instancio.test.support.pojo.cyclic.onetomany.OneToManyWithCrossReferences.ObjectE;
+import org.instancio.test.support.pojo.cyclic.onetomany.OneToManyWithCrossReferences.ObjectF;
+import org.instancio.test.support.pojo.cyclic.onetomany.OneToManyWithCrossReferences.ObjectG;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -26,13 +32,14 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.all;
 
 @FeatureTag({Feature.CYCLIC, Feature.MAX_DEPTH})
 @ExtendWith(InstancioExtension.class)
 class OneToManyWithCrossReferencesTest {
 
     @Test
-    @Timeout(value = 3)
+    @Timeout(3)
     void defaultMaxDepth() {
         final ObjectA objectA = Instancio.create(ObjectA.class);
 
@@ -75,5 +82,45 @@ class OneToManyWithCrossReferencesTest {
                 .getObjectE(); // 4
 
         assertThat(maxDepthObject).hasAllNullFieldsOrProperties();
+    }
+
+    /**
+     * With the original implementation of {@code ignore()}, this test would
+     * have timed out because Instancio would try to create the entire
+     * node hierarchy even though the nodes were marked as ignored.
+     *
+     * <p>With the current implementation, ignored nodes are handled
+     * by the node factory (no children are created for ignored nodes).
+     * As a result, ignoring nodes actually speeds up object generation
+     * and this method should no longer time out.
+     */
+    @Test
+    @Timeout(1)
+    void withIgnore() {
+        final ObjectA objectA = Instancio.of(ObjectA.class)
+                .withMaxDepth(Integer.MAX_VALUE)
+                .ignore(all(
+                        all(ObjectC.class),
+                        all(ObjectD.class),
+                        all(ObjectE.class),
+                        all(ObjectF.class),
+                        all(ObjectG.class)))
+                .create();
+
+        assertThat(objectA.getObjectB()).isNotEmpty().allSatisfy(
+                (ObjectB b) -> {
+                    assertThat(b.getObjectA()).isNull();
+                    assertThat(b.getObjectC()).isNull();
+                    assertThat(b.getObjectD()).isNull();
+                    assertThat(b.getObjectE()).isNull();
+                    assertThat(b.getObjectF()).isNull();
+                    assertThat(b.getObjectG()).isNull();
+                });
+
+        assertThat(objectA.getObjectC()).isEmpty();
+        assertThat(objectA.getObjectD()).isEmpty();
+        assertThat(objectA.getObjectE()).isEmpty();
+        assertThat(objectA.getObjectF()).isEmpty();
+        assertThat(objectA.getObjectG()).isEmpty();
     }
 }

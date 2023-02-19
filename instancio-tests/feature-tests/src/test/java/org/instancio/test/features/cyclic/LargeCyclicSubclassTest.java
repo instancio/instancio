@@ -39,7 +39,7 @@ class LargeCyclicSubclassTest {
             .set(Keys.MAX_DEPTH, Integer.MAX_VALUE);
 
     @Test
-    @Timeout(value = 2)
+    @Timeout(2)
     void largeCyclicShouldBeGeneratedWithinGivenTimeout() {
         final LargeCyclicSubclass result = Instancio.create(LargeCyclicSubclass.class);
 

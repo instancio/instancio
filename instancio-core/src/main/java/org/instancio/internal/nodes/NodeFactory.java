@@ -80,6 +80,10 @@ public final class NodeFactory {
      */
     @NotNull
     private List<Node> createChildlessChildren(@NotNull final Node node) {
+        if (node.is(NodeKind.IGNORED)) {
+            return Collections.emptyList();
+        }
+
         if (node.getDepth() >= nodeContext.getMaxDepth()) {
             LOG.trace("Maximum depth ({}) reached {}", nodeContext.getMaxDepth(), node);
             return Collections.emptyList();

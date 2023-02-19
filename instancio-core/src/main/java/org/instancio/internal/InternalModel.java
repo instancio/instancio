@@ -43,6 +43,7 @@ final class InternalModel<T> implements Model<T> {
         final NodeContext nodeContext = NodeContext.builder()
                 .maxDepth(modelContext.getMaxDepth())
                 .rootTypeMap(modelContext.getRootTypeMap())
+                .ignoredSelectorMap(modelContext.getIgnoredSelectorMap())
                 .subtypeSelectorMap(modelContext.getSubtypeSelectorMap())
                 .subtypeMappingFromSettings(modelContext.getSettings().getSubtypeMap())
                 .containerFactories(modelContext.getContainerFactories())
