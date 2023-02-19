@@ -44,6 +44,11 @@
             <artifactId>hibernate-validator</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>4.0.1</version>
+        </dependency>
         <!-- validation-api is also needed because Hibernate declares it as 'provided' -->
         <dependency>
             <groupId>jakarta.validation</groupId>
