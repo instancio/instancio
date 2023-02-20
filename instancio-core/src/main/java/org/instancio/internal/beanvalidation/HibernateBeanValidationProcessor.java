@@ -17,6 +17,7 @@ package org.instancio.internal.beanvalidation;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.EAN;
+import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
@@ -25,25 +26,28 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 import org.instancio.internal.generator.domain.id.EanGenerator;
+import org.instancio.internal.generator.domain.id.IsbnGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.text.LuhnGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
+import java.util.Set;
 
 final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvider {
+
+    private static final Set<Class<?>> PRIMARY = CollectionUtils.asSet(
+            EAN.class, CreditCardNumber.class, ISBN.class, LuhnCheck.class, URL.class, UUID.class);
 
     private final HibernateBeanValidationHandlerResolver resolver =
             HibernateBeanValidationHandlerResolver.getInstance();
 
     @Override
     public boolean isPrimary(final Class<? extends Annotation> annotationType) {
-        return annotationType == EAN.class
-                || annotationType == CreditCardNumber.class
-                || annotationType == LuhnCheck.class
-                || annotationType == URL.class
-                || annotationType == UUID.class;
+        return PRIMARY.contains(annotationType);
     }
 
     @Override
@@ -53,46 +57,59 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
 
         final Class<?> annotationType = annotation.annotationType();
         if (annotationType == EAN.class) {
-            final EAN ean = (EAN) annotation;
-
-            final EanGenerator generator = new EanGenerator(context);
-            if (ean.type() == EAN.Type.EAN8) {
-                generator.ean8();
-            }
-            return generator;
+            return getEanGenerator((EAN) annotation, context);
         }
         if (annotationType == LuhnCheck.class) {
-            final LuhnCheck luhn = (LuhnCheck) annotation;
-
-            final LuhnGenerator generator = new LuhnGenerator(context)
-                    .startIndex(luhn.startIndex())
-                    .endIndex(luhn.endIndex());
-
-            if (luhn.checkDigitIndex() != -1) {
-                generator.checkIndex(luhn.checkDigitIndex());
-            }
-            return generator;
+            return getLuhnGenerator((LuhnCheck) annotation, context);
         }
         if (annotationType == CreditCardNumber.class) {
             return new CreditCardNumberGenerator(context);
+        }
+        if (annotationType == ISBN.class) {
+            return new IsbnGenerator(context);
         }
         if (annotationType == UUID.class) {
             return new UUIDGenerator(context);
         }
         if (annotationType == URL.class) {
-            final URL url = (URL) annotation;
-            final URLGenerator urlGenerator = new URLGenerator(context)
-                    .port(url.port());
-
-            if (!StringUtils.isBlank(url.protocol())) {
-                urlGenerator.protocol(url.protocol());
-            }
-            if (!StringUtils.isBlank(url.host())) {
-                urlGenerator.host(random -> url.host());
-            }
-            return urlGenerator;
+            return getUrlGenerator((URL) annotation, context);
         }
+
+        // should not be reachable if caller checked for supported annotations
         throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
+    }
+
+    private static URLGenerator getUrlGenerator(final URL url, final GeneratorContext context) {
+        final URLGenerator urlGenerator = new URLGenerator(context)
+                .port(url.port());
+
+        if (!StringUtils.isBlank(url.protocol())) {
+            urlGenerator.protocol(url.protocol());
+        }
+        if (!StringUtils.isBlank(url.host())) {
+            urlGenerator.host(random -> url.host());
+        }
+        return urlGenerator;
+    }
+
+    private static LuhnGenerator getLuhnGenerator(final LuhnCheck luhn, final GeneratorContext context) {
+        final LuhnGenerator generator = new LuhnGenerator(context)
+                .startIndex(luhn.startIndex())
+                .endIndex(luhn.endIndex());
+
+        if (luhn.checkDigitIndex() != -1) {
+            generator.checkIndex(luhn.checkDigitIndex());
+        }
+        return generator;
+    }
+
+    @NotNull
+    private static EanGenerator getEanGenerator(final EAN ean, final GeneratorContext context) {
+        final EanGenerator generator = new EanGenerator(context);
+        if (ean.type() == EAN.Type.EAN8) {
+            generator.ean8();
+        }
+        return generator;
     }
 
     @Override
