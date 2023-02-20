@@ -149,8 +149,9 @@ or if you have a question or a suggestion.
 
 # Special thanks to
 
-JetBrains for supporting this project with their [Open Source Licenses](https://www.jetbrains.com/opensource).
+[JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com) for supporting this project.
 
-<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="150px">
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="150px" alt="JetBrains logo">
 
+<img src="https://www.yourkit.com/images/yklogo.png" width="150px" alt="YourKit logo">
 
