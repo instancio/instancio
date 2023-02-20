@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
+import org.instancio.internal.util.Constants;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +46,9 @@ class DurationGeneratorTest {
     @Test
     void defaultDurationSpec() {
         final Duration duration = generator.generate(random);
-        assertThat(duration.get(ChronoUnit.NANOS)).isBetween(1L, 1_000_000_000_000_000L);
+        assertThat(duration.get(ChronoUnit.NANOS)).isBetween(
+                Constants.DURATION_MIN_NANOS,
+                Constants.DURATION_MAX_NANOS);
     }
 
     @Test
@@ -56,6 +59,18 @@ class DurationGeneratorTest {
                 .mapToObj(i -> generator.generate(random));
 
         assertThat(durationStream).contains(Duration.ZERO);
+    }
+
+    @Test
+    void minMax() {
+        final long minAmount = -10;
+        final long maxAmount = 0;
+
+        generator.min(minAmount, ChronoUnit.SECONDS);
+        generator.max(maxAmount, ChronoUnit.SECONDS);
+
+        final Duration duration = generator.generate(random);
+        assertThat(duration.get(ChronoUnit.SECONDS)).isBetween(minAmount, maxAmount);
     }
 
     @Test

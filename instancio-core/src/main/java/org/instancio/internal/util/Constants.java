@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collection;
@@ -59,6 +60,9 @@ public final class Constants {
 
     public static final LocalDateTime DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0);
     public static final LocalDateTime DEFAULT_MAX = LocalDateTime.of(2090, 1, 1, 0, 0).minusNanos(1);
+
+    public static final long DURATION_MIN_NANOS = 1;
+    public static final long DURATION_MAX_NANOS = Duration.ofDays(1000).toNanos();
 
     private Constants() {
         // non-instantiable

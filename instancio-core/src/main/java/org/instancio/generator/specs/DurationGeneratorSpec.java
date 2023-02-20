@@ -28,11 +28,31 @@ import java.time.temporal.TemporalUnit;
 public interface DurationGeneratorSpec extends GeneratorSpec<Duration> {
 
     /**
+     * Generate a {@link Duration} greater than or equal to the specified amount.
+     *
+     * @param amount minimum duration amount (inclusive)
+     * @param unit   unit the amount is measured in
+     * @return spec builder
+     * @since 2.10.0
+     */
+    DurationGeneratorSpec min(long amount, TemporalUnit unit);
+
+    /**
+     * Generate a {@link Duration} less than or equal to the specified amount.
+     *
+     * @param amount maximum duration amount (inclusive)
+     * @param unit   unit the amount is measured in
+     * @return spec builder
+     * @since 2.10.0
+     */
+    DurationGeneratorSpec max(long amount, TemporalUnit unit);
+
+    /**
      * Generate a {@link Duration} in the given range, measured in specified units.
      *
      * @param minAmount minimum duration amount (inclusive)
      * @param maxAmount maximum duration amount (inclusive)
-     * @param unit      unit the duration is measured in
+     * @param unit      unit the amount is measured in
      * @return spec builder
      * @since 1.5.4
      */

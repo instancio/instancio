@@ -40,8 +40,8 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
     @Override
     public boolean isPrimary(final Class<? extends Annotation> annotationType) {
         return annotationType == EAN.class
-                || annotationType == LuhnCheck.class
                 || annotationType == CreditCardNumber.class
+                || annotationType == LuhnCheck.class
                 || annotationType == URL.class
                 || annotationType == UUID.class;
     }

@@ -28,6 +28,12 @@ import java.time.temporal.TemporalUnit;
 public interface DurationSpec extends ValueSpec<Duration>, DurationGeneratorSpec {
 
     @Override
+    DurationSpec min(long amount, TemporalUnit unit);
+
+    @Override
+    DurationSpec max(long amount, TemporalUnit unit);
+
+    @Override
     DurationSpec of(long minAmount, long maxAmount, TemporalUnit unit);
 
     @Override
