@@ -13,7 +13,7 @@ Test classes will often have helper methods with arguments for creating objects.
 Even worse, common setup code will sometimes be duplicated across test methods.
 Manual data setup can get quite complicated as classes get bigger and more complex.
 This is especially true for classes with many relationships.
-In this article we will show how Models can be used to solve these challenges.
+In this article, we will show how Models can be used to solve these challenges.
 
 !!! note "GitHub link to the sample project is provided at the end of the article."
 
@@ -117,7 +117,7 @@ Testing the successful scenario *"should be"* straightforward:
  - pass it to the method under test
  - verify result has expected values
 
-However if we want to be thorough, then we need to verify as many valid states as *reasonably* possible.
+However, if we want to be thorough, then we need to verify as many valid states as *reasonably* possible.
 For example, is the range inclusive or exclusive?
 Our range is inclusive, so we should have a test for an applicant aged 18, and another 25. We don't really need to verify the numbers in the middle.
 This will ensure our service implemented the numeric bounds check correctly.
@@ -154,7 +154,7 @@ We will look at how to implement such a test fairly easily using Instancio.
 
 ### Implementing successful scenario tests
 
-Let's start by testing a valid applicant. Typically it will be implemented as follows:
+Let's start by testing a valid applicant. Typically, it will be implemented as follows:
 
 
 ``` java hl_lines="37 38"

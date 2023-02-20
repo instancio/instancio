@@ -1333,6 +1333,57 @@ on.set.method.error=IGNORE
 
 See [Configuration](#configuration) for details.
 
+## Maximum Depth Setting
+
+This setting controls the maximum depth for populating an object.
+Instancio will populate values up to the maximum depth.
+Beyond that, values will be `null` unless the maximum depth is set to a higher value.
+
+The count starts from the root object, which is at depth 0.
+Children of the root object are at depth 1, grandchildren at depth 2, and so on.
+The default value is defined by the `Keys.MAX_DEPTH` setting key.
+
+The primary reasons for modifying this setting are:
+
+- **To improve the performance.**
+
+    The performance may be inadequate when generating a cyclic class structure,
+    where multiple classes reference each other. Consider reducing the maximum
+    depth value (and also, using `ignore()` to exclude certain objects).
+
+- **To generate data beyond the default maximum depth.**
+
+    If the default maximum depth is not sufficient to fully populate an object,
+    consider increasing the value.
+
+### Modifying Maximum Depth
+
+The setting can be set to a custom value using one of the following options,
+from lowest to highest precedence.
+
+Using `instancio.properties` to define a new global maximum depth:
+
+```properties
+max.depth=5
+```
+
+Using {{Settings}} with `Keys.MAX_DEPTH` key.
+
+```java
+Settings settings = Settings.create().set(Keys.MAX_DEPTH, 5);
+Person person = Instancio.of(Person.class)
+    .withSettings(settings)
+    .create();
+```
+
+Using the API method {{withMaxDepth}}:
+
+```java
+Person person = Instancio.of(Person.class)
+    .withMaxDepth(5)
+    .create();
+```
+
 ## Seed
 
 Before creating an object, Instancio initialises a random seed value.
