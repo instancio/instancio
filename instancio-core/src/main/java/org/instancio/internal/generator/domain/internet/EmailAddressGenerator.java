@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.text;
+package org.instancio.internal.generator.domain.internet;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;

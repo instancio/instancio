@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Email;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.text.EmailAddressGenerator;
+import org.instancio.internal.generator.domain.internet.EmailAddressGenerator;
 
 import java.lang.annotation.Annotation;
 

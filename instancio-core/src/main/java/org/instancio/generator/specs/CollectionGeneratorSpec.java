@@ -88,7 +88,7 @@ public interface CollectionGeneratorSpec<T>
      *       .generate(field(Person::getFavouriteNumbers), gen -> gen.collection().unique().size(10))
      *       .create();
      * }</pre>
-     *
+     * <p>
      * Since the integer range is restricted to {@code 1..5}, it is impossible
      * to generate a collection of 10 unique elements. In this case,
      * a collection of size 5 will be generated.
