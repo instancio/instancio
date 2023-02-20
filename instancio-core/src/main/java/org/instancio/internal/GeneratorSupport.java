@@ -42,6 +42,9 @@ final class GeneratorSupport {
      * @return {@code true} if given generator supports the specified type
      */
     static boolean supports(Generator<?> generator, Class<?> type) {
+        if (type == Object.class) {
+            return true;
+        }
         if (generator instanceof ArrayGeneratorSpec) {
             return type.isArray();
         }
@@ -59,7 +62,7 @@ final class GeneratorSupport {
         }
         final Class<?> typeArg = TypeUtils.getGenericSuperclassTypeArgument(generator.getClass());
         if (typeArg != null) {
-            return typeArg.isAssignableFrom(type)
+            return type.isAssignableFrom(typeArg)
                     || PrimitiveWrapperBiLookup.findEquivalent(typeArg)
                     .filter(type::isAssignableFrom)
                     .isPresent();

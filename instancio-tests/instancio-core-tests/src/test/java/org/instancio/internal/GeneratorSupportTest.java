@@ -57,24 +57,24 @@ class GeneratorSupportTest {
 
     @Test
     void supportsIsTrue() {
-        assertSupportsAll(booleanGenerator, boolean.class, Boolean.class);
-        assertSupportsAll(integerGenerator, int.class, Integer.class);
-        assertSupportsAll(enumGenerator, Gender.class);
-        assertSupportsAll(enumSetGenerator, EnumSet.class);
-        assertSupportsAll(collectionGenerator, Collection.class, List.class, Set.class, SortedSet.class, HashSet.class);
-        assertSupportsAll(mapGenerator, Map.class, TreeMap.class, HashMap.class);
-        assertSupportsAll(stringGenerator, String.class);
+        assertSupportsAll(booleanGenerator, Object.class, boolean.class, Boolean.class);
+        assertSupportsAll(integerGenerator, Object.class, int.class, Integer.class);
+        assertSupportsAll(enumGenerator, Object.class, Gender.class);
+        assertSupportsAll(enumSetGenerator, Object.class, EnumSet.class);
+        assertSupportsAll(collectionGenerator, Object.class, Collection.class, List.class, Set.class, SortedSet.class, HashSet.class);
+        assertSupportsAll(mapGenerator, Object.class, Map.class, TreeMap.class, HashMap.class);
+        assertSupportsAll(stringGenerator, Object.class, CharSequence.class, String.class);
     }
 
     @Test
     void supportsIsFalse() {
-        assertSupportsNone(booleanGenerator, Object.class, boolean[].class);
-        assertSupportsNone(integerGenerator, long.class, Number.class);
-        assertSupportsNone(enumGenerator, Object.class);
-        assertSupportsNone(collectionGenerator, Object.class, Map.class);
-        assertSupportsNone(enumSetGenerator, Object.class, Foo.class, Gender.class, Collection.class);
-        assertSupportsNone(mapGenerator, Object.class, Collection.class);
-        assertSupportsNone(stringGenerator, CharSequence.class, StringBuilder.class);
+        assertSupportsNone(booleanGenerator, int.class, boolean[].class);
+        assertSupportsNone(integerGenerator, long.class, Double.class);
+        assertSupportsNone(enumGenerator, Integer.class);
+        assertSupportsNone(collectionGenerator, Map.class);
+        assertSupportsNone(enumSetGenerator, Foo.class, Gender.class, Collection.class);
+        assertSupportsNone(mapGenerator, Collection.class);
+        assertSupportsNone(stringGenerator, StringBuilder.class);
     }
 
     private static void assertSupportsAll(final Generator<?> generator, final Class<?>... types) {
