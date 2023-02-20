@@ -18,8 +18,11 @@ package org.instancio.internal.beanvalidation;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.hibernate.validator.constraints.time.DurationMax;
+import org.hibernate.validator.constraints.time.DurationMin;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
+import org.instancio.generator.specs.DurationGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
@@ -32,6 +35,8 @@ import org.instancio.settings.Keys;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +56,8 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
 
     private static Map<Class<?>, FieldAnnotationHandler> initHandlers() {
         final Map<Class<?>, FieldAnnotationHandler> map = new HashMap<>();
+        map.put(DurationMin.class, new DurationMinHandler());
+        map.put(DurationMax.class, new DurationMaxHandler());
         map.put(Length.class, new LengthHandler());
         map.put(Range.class, new RangeHandler());
         map.put(UniqueElements.class, new UniqueElementsHandler());
@@ -60,6 +67,54 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
     @Override
     public FieldAnnotationHandler resolveHandler(final Annotation annotation) {
         return handlerMap.get(annotation.annotationType());
+    }
+
+    private static class DurationMinHandler implements FieldAnnotationHandler {
+        @Override
+        public void process(final Annotation annotation,
+                            final GeneratorSpec<?> spec,
+                            final Field field,
+                            final Class<?> fieldType) {
+
+            if (spec instanceof DurationGeneratorSpec) {
+                final DurationMin d = (DurationMin) annotation;
+
+                final Duration min = Duration
+                        .ofDays(d.days())
+                        .plusHours(d.hours())
+                        .plusMinutes(d.minutes())
+                        .plusSeconds(d.seconds())
+                        .plusMillis(d.millis())
+                        .plusNanos(d.nanos());
+
+                final DurationGeneratorSpec durationSpec = (DurationGeneratorSpec) spec;
+                durationSpec.min(min.toNanos(), ChronoUnit.NANOS);
+            }
+        }
+    }
+
+    private static class DurationMaxHandler implements FieldAnnotationHandler {
+        @Override
+        public void process(final Annotation annotation,
+                            final GeneratorSpec<?> spec,
+                            final Field field,
+                            final Class<?> fieldType) {
+
+            if (spec instanceof DurationGeneratorSpec) {
+                final DurationMax d = (DurationMax) annotation;
+
+                final Duration max = Duration
+                        .ofDays(d.days())
+                        .plusHours(d.hours())
+                        .plusMinutes(d.minutes())
+                        .plusSeconds(d.seconds())
+                        .plusMillis(d.millis())
+                        .plusNanos(d.nanos());
+
+                final DurationGeneratorSpec durationSpec = (DurationGeneratorSpec) spec;
+                durationSpec.max(max.toNanos(), ChronoUnit.NANOS);
+            }
+        }
     }
 
     // Length is only applicable to character sequences

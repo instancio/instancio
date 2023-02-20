@@ -49,6 +49,45 @@ class DurationValueSpecTest {
     }
 
     @Test
+    void min() {
+        final Duration min = Duration.of(1000, ChronoUnit.DAYS);
+
+        final List<Duration> actual = temporal().duration().min(min.toDays(), ChronoUnit.DAYS)
+                .list(Constants.SAMPLE_SIZE_DDD);
+
+        assertThat(actual)
+                .hasSize(Constants.SAMPLE_SIZE_DDD)
+                .allSatisfy(d -> assertThat(d).isGreaterThanOrEqualTo(min));
+    }
+
+    @Test
+    void max() {
+        final Duration max = Duration.of(-1000, ChronoUnit.DAYS);
+
+        final List<Duration> actual = temporal().duration().max(max.toDays(), ChronoUnit.DAYS)
+                .list(Constants.SAMPLE_SIZE_DDD);
+
+        assertThat(actual)
+                .hasSize(Constants.SAMPLE_SIZE_DDD)
+                .allSatisfy(d -> assertThat(d).isLessThanOrEqualTo(max));
+    }
+
+    @Test
+    void minMax() {
+        final Duration min = Duration.of(1, ChronoUnit.SECONDS);
+        final Duration max = Duration.of(10, ChronoUnit.SECONDS);
+
+        final List<Duration> actual = temporal().duration()
+                .min(min.toNanos(), ChronoUnit.NANOS)
+                .max(max.toNanos(), ChronoUnit.NANOS)
+                .list(Constants.SAMPLE_SIZE_DDD);
+
+        assertThat(actual)
+                .hasSize(Constants.SAMPLE_SIZE_DDD)
+                .allSatisfy(d -> assertThat(d).isBetween(min, max));
+    }
+
+    @Test
     void of() {
         final Duration min = Duration.of(1, ChronoUnit.DAYS);
         final Duration max = Duration.of(9, ChronoUnit.DAYS);
