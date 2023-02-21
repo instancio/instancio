@@ -17,7 +17,7 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.CharacterAsStringGeneratorSpec;
+import org.instancio.generator.specs.CharacterAsGeneratorSpec;
 import org.instancio.generator.specs.CharacterSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
@@ -25,7 +25,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 
 public class CharacterGenerator extends AbstractGenerator<Character>
-        implements CharacterSpec, CharacterAsStringGeneratorSpec {
+        implements CharacterSpec, CharacterAsGeneratorSpec {
 
     private char min = 'A';
     private char max = 'Z';

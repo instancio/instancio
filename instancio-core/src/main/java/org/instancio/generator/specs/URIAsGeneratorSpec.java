@@ -17,35 +17,38 @@ package org.instancio.generator.specs;
 
 import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorSpec;
 
-import java.io.InputStream;
+import java.net.URI;
 
 /**
- * Generator spec for path values that supports {@link AsStringGeneratorSpec}.
+ * Generator spec for {@link URI} values that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
  */
-public interface PathAsStringGeneratorSpec<T> extends PathGeneratorSpec<T>, AsStringGeneratorSpec<T> {
+public interface URIAsGeneratorSpec
+        extends URIGeneratorSpec, AsGeneratorSpec<URI>, AsStringGeneratorSpec<URI> {
 
     @Override
-    PathAsStringGeneratorSpec<T> name(Generator<String> nameGenerator);
+    URIAsGeneratorSpec scheme(String... schemes);
 
     @Override
-    PathAsStringGeneratorSpec<T> prefix(String prefix);
+    URIAsGeneratorSpec userInfo(String userInfo);
 
     @Override
-    PathAsStringGeneratorSpec<T> suffix(String suffix);
+    URIAsGeneratorSpec host(Generator<String> hostGenerator);
 
     @Override
-    PathAsStringGeneratorSpec<T> tmp();
+    URIAsGeneratorSpec port(int port);
 
     @Override
-    GeneratorSpec<T> createDirectory();
+    URIAsGeneratorSpec randomPort();
 
     @Override
-    GeneratorSpec<T> createFile();
+    URIAsGeneratorSpec path(Generator<String> pathGenerator);
 
     @Override
-    GeneratorSpec<T> createFile(InputStream content);
+    URIAsGeneratorSpec query(Generator<String> queryGenerator);
+
+    @Override
+    URIAsGeneratorSpec fragment(Generator<String> fragmentGenerator);
 }

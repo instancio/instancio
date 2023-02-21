@@ -17,13 +17,13 @@ package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
-import org.instancio.generator.specs.BooleanAsStringGeneratorSpec;
-import org.instancio.generator.specs.CharacterAsStringGeneratorSpec;
+import org.instancio.generator.specs.BooleanAsGeneratorSpec;
+import org.instancio.generator.specs.CharacterAsGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
-import org.instancio.generator.specs.NumberAsStringGeneratorSpec;
+import org.instancio.generator.specs.NumberAsGeneratorSpec;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
@@ -78,7 +78,7 @@ public class Generators {
      * @return customised generator
      * @since 2.0.0
      */
-    public BooleanAsStringGeneratorSpec booleans() {
+    public BooleanAsGeneratorSpec booleans() {
         return new BooleanGenerator(context);
     }
 
@@ -88,7 +88,7 @@ public class Generators {
      * @return customised generator
      * @since 2.0.0
      */
-    public CharacterAsStringGeneratorSpec chars() {
+    public CharacterAsGeneratorSpec chars() {
         return new CharacterGenerator(context);
     }
 
@@ -97,7 +97,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberAsStringGeneratorSpec<Byte> bytes() {
+    public NumberAsGeneratorSpec<Byte> bytes() {
         return new ByteGenerator(context);
     }
 
@@ -106,7 +106,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberAsStringGeneratorSpec<Short> shorts() {
+    public NumberAsGeneratorSpec<Short> shorts() {
         return new ShortGenerator(context);
     }
 
@@ -115,7 +115,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberAsStringGeneratorSpec<Integer> ints() {
+    public NumberAsGeneratorSpec<Integer> ints() {
         return new IntegerGenerator(context);
     }
 
@@ -124,7 +124,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberAsStringGeneratorSpec<Long> longs() {
+    public NumberAsGeneratorSpec<Long> longs() {
         return new LongGenerator(context);
     }
 
@@ -133,7 +133,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberAsStringGeneratorSpec<Float> floats() {
+    public NumberAsGeneratorSpec<Float> floats() {
         return new FloatGenerator(context);
     }
 
@@ -142,7 +142,7 @@ public class Generators {
      *
      * @return customised generator
      */
-    public NumberAsStringGeneratorSpec<Double> doubles() {
+    public NumberAsGeneratorSpec<Double> doubles() {
         return new DoubleGenerator(context);
     }
 

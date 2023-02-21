@@ -15,6 +15,8 @@
  */
 package org.instancio.generator;
 
+import org.instancio.generator.specs.AsGeneratorSpec;
+
 import java.util.function.Function;
 
 /**
@@ -22,18 +24,11 @@ import java.util.function.Function;
  *
  * @param <T> generated type
  * @since 2.0.0
+ * @deprecated use {@link AsGeneratorSpec} instead.
+ * This class will be removed in version {@code 3.0.0}.
  */
+@Deprecated
 public interface AsStringGeneratorSpec<T> extends GeneratorSpec<T> {
-
-    /**
-     * Returns the generated value as a {@code String}.
-     *
-     * @return result as a string using the {@link Object#toString()} method
-     * @since 2.0.0
-     */
-    default GeneratorSpec<String> asString() {
-        return asString(Object::toString);
-    }
 
     /**
      * Returns the generated value as a {@code String} using
@@ -42,7 +37,10 @@ public interface AsStringGeneratorSpec<T> extends GeneratorSpec<T> {
      * @param toStringFunction function for converting the result to a string
      * @return result as a string using the specified function for conversion
      * @since 2.0.0
+     * @deprecated use {@link AsGeneratorSpec#as(Function)} method.
+     * This method will be removed in version {@code 3.0.0}
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     default GeneratorSpec<String> asString(Function<T, String> toStringFunction) {
         return (Generator<String>) random -> {

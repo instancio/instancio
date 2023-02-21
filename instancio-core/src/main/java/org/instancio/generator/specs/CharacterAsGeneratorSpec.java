@@ -18,23 +18,17 @@ package org.instancio.generator.specs;
 import org.instancio.generator.AsStringGeneratorSpec;
 
 /**
- * Generator spec for {@link Number} types
- * that supports {@link AsStringGeneratorSpec}.
+ * Generator spec for {@link Character} values
+ * that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
  */
-public interface NumberAsStringGeneratorSpec<T extends Number>
-        extends NumberGeneratorSpec<T>, AsStringGeneratorSpec<T> {
+public interface CharacterAsGeneratorSpec
+        extends CharacterGeneratorSpec, AsGeneratorSpec<Character>, AsStringGeneratorSpec<Character> {
 
     @Override
-    NumberAsStringGeneratorSpec<T> min(T min);
+    CharacterAsGeneratorSpec range(char min, char max);
 
     @Override
-    NumberAsStringGeneratorSpec<T> max(T max);
-
-    @Override
-    NumberAsStringGeneratorSpec<T> range(T min, T max);
-
-    @Override
-    NumberAsStringGeneratorSpec<T> nullable();
+    CharacterAsGeneratorSpec nullable();
 }

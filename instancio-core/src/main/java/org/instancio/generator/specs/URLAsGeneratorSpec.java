@@ -18,37 +18,28 @@ package org.instancio.generator.specs;
 import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
 
-import java.net.URI;
+import java.net.URL;
 
 /**
- * Generator spec for {@link URI} values that supports {@link AsStringGeneratorSpec}.
+ * Generator spec for {@link URL} values that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
  */
-public interface URIAsStringGeneratorSpec
-        extends URIGeneratorSpec, AsStringGeneratorSpec<URI> {
+public interface URLAsGeneratorSpec
+        extends URLGeneratorSpec, AsGeneratorSpec<URL>, AsStringGeneratorSpec<URL> {
 
     @Override
-    URIAsStringGeneratorSpec scheme(String... schemes);
+    URLAsGeneratorSpec protocol(String... protocols);
 
     @Override
-    URIAsStringGeneratorSpec userInfo(String userInfo);
+    URLAsGeneratorSpec port(int port);
 
     @Override
-    URIAsStringGeneratorSpec host(Generator<String> hostGenerator);
+    URLAsGeneratorSpec randomPort();
 
     @Override
-    URIAsStringGeneratorSpec port(int port);
+    URLAsGeneratorSpec host(Generator<String> hostGenerator);
 
     @Override
-    URIAsStringGeneratorSpec randomPort();
-
-    @Override
-    URIAsStringGeneratorSpec path(Generator<String> pathGenerator);
-
-    @Override
-    URIAsStringGeneratorSpec query(Generator<String> queryGenerator);
-
-    @Override
-    URIAsStringGeneratorSpec fragment(Generator<String> fragmentGenerator);
+    URLAsGeneratorSpec file(Generator<String> fileGenerator);
 }

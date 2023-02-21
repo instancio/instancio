@@ -17,12 +17,12 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.NumberAsStringGeneratorSpec;
+import org.instancio.generator.specs.NumberAsGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
-        extends AbstractGenerator<T> implements NumberAsStringGeneratorSpec<T> {
+        extends AbstractGenerator<T> implements NumberAsGeneratorSpec<T> {
 
     private T min;
     private T max;
@@ -47,31 +47,31 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public NumberAsStringGeneratorSpec<T> min(final T min) {
+    public NumberAsGeneratorSpec<T> min(final T min) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         return this;
     }
 
     @Override
-    public NumberAsStringGeneratorSpec<T> max(final T max) {
+    public NumberAsGeneratorSpec<T> max(final T max) {
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
     }
 
     @Override
-    public NumberAsStringGeneratorSpec<T> nullable() {
+    public NumberAsGeneratorSpec<T> nullable() {
         super.nullable();
         return this;
     }
 
     @Override
-    public NumberAsStringGeneratorSpec<T> nullable(final boolean isNullable) {
+    public NumberAsGeneratorSpec<T> nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
     }
 
     @Override
-    public NumberAsStringGeneratorSpec<T> range(final T min, final T max) {
+    public NumberAsGeneratorSpec<T> range(final T min, final T max) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;

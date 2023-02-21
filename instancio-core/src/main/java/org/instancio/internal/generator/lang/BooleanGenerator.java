@@ -17,14 +17,14 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.BooleanAsStringGeneratorSpec;
+import org.instancio.generator.specs.BooleanAsGeneratorSpec;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 
 public class BooleanGenerator extends AbstractGenerator<Boolean>
-        implements BooleanSpec, BooleanAsStringGeneratorSpec {
+        implements BooleanSpec, BooleanAsGeneratorSpec {
 
     public BooleanGenerator() {
         this(Global.generatorContext());

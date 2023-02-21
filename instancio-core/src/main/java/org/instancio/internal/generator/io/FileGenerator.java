@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.FileSpec;
-import org.instancio.generator.specs.PathAsStringGeneratorSpec;
+import org.instancio.generator.specs.PathAsGeneratorSpec;
 import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.nio.file.PathGenerator;
@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.InputStream;
 
 public class FileGenerator extends AbstractGenerator<File>
-        implements FileSpec, PathAsStringGeneratorSpec<File> {
+        implements FileSpec, PathAsGeneratorSpec<File> {
 
     private final PathGenerator delegate;
 

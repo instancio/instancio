@@ -22,7 +22,8 @@ import org.instancio.generator.AsStringGeneratorSpec;
  *
  * @since 1.6.0
  */
-public interface EnumGeneratorSpec<E extends Enum<E>> extends AsStringGeneratorSpec<E> {
+public interface EnumGeneratorSpec<E extends Enum<E>>
+        extends AsGeneratorSpec<E>, AsStringGeneratorSpec<E> {
 
     /**
      * Generate an enum while excluding the specified values.
