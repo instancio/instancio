@@ -16,16 +16,37 @@
 package org.instancio.generator.specs;
 
 import org.instancio.generator.AsStringGeneratorSpec;
+import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorSpec;
+
+import java.io.InputStream;
 
 /**
- * Generator spec for {@link Boolean} values
- * that supports {@link AsStringGeneratorSpec}.
+ * Generator spec for path values that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
  */
-public interface BooleanAsStringGeneratorSpec
-        extends BooleanGeneratorSpec, AsStringGeneratorSpec<Boolean> {
+public interface PathAsGeneratorSpec<T>
+        extends PathGeneratorSpec<T>, AsGeneratorSpec<T>, AsStringGeneratorSpec<T> {
 
     @Override
-    BooleanAsStringGeneratorSpec nullable();
+    PathAsGeneratorSpec<T> name(Generator<String> nameGenerator);
+
+    @Override
+    PathAsGeneratorSpec<T> prefix(String prefix);
+
+    @Override
+    PathAsGeneratorSpec<T> suffix(String suffix);
+
+    @Override
+    PathAsGeneratorSpec<T> tmp();
+
+    @Override
+    GeneratorSpec<T> createDirectory();
+
+    @Override
+    GeneratorSpec<T> createFile();
+
+    @Override
+    GeneratorSpec<T> createFile(InputStream content);
 }

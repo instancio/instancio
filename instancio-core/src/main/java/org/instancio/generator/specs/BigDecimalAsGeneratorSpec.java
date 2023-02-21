@@ -21,25 +21,25 @@ import java.math.BigDecimal;
 
 /**
  * Generator spec for {@link BigDecimal} values
- * that supports {@link AsStringGeneratorSpec}.
+ * that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
  */
-public interface BigDecimalAsStringGeneratorSpec
-        extends BigDecimalGeneratorSpec, AsStringGeneratorSpec<BigDecimal> {
+public interface BigDecimalAsGeneratorSpec
+        extends BigDecimalGeneratorSpec, AsGeneratorSpec<BigDecimal>, AsStringGeneratorSpec<BigDecimal> {
 
     @Override
-    BigDecimalAsStringGeneratorSpec min(BigDecimal min);
+    BigDecimalAsGeneratorSpec min(BigDecimal min);
 
     @Override
-    BigDecimalAsStringGeneratorSpec max(BigDecimal max);
+    BigDecimalAsGeneratorSpec max(BigDecimal max);
 
     @Override
-    BigDecimalAsStringGeneratorSpec range(BigDecimal min, BigDecimal max);
+    BigDecimalAsGeneratorSpec range(BigDecimal min, BigDecimal max);
 
     @Override
-    BigDecimalAsStringGeneratorSpec nullable();
+    BigDecimalAsGeneratorSpec nullable();
 
     @Override
-    BigDecimalAsStringGeneratorSpec scale(int scale);
+    BigDecimalAsGeneratorSpec scale(int scale);
 }

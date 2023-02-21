@@ -23,7 +23,7 @@ import org.instancio.generator.AsStringGeneratorSpec;
  * @since 2.6.0
  */
 public interface TemporalAaStringGeneratorSpec<T>
-        extends TemporalGeneratorSpec<T>, AsStringGeneratorSpec<T> {
+        extends TemporalGeneratorSpec<T>, AsGeneratorSpec<T>, AsStringGeneratorSpec<T> {
 
     @Override
     TemporalAaStringGeneratorSpec<T> past();

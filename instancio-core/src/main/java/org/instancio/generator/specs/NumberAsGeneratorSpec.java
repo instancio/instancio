@@ -16,30 +16,25 @@
 package org.instancio.generator.specs;
 
 import org.instancio.generator.AsStringGeneratorSpec;
-import org.instancio.generator.Generator;
-
-import java.net.URL;
 
 /**
- * Generator spec for {@link URL} values that supports {@link AsStringGeneratorSpec}.
+ * Generator spec for {@link Number} types
+ * that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
  */
-public interface URLAsStringGeneratorSpec
-        extends URLGeneratorSpec, AsStringGeneratorSpec<URL> {
+public interface NumberAsGeneratorSpec<T extends Number>
+        extends NumberGeneratorSpec<T>, AsGeneratorSpec<T>, AsStringGeneratorSpec<T> {
 
     @Override
-    URLAsStringGeneratorSpec protocol(String... protocols);
+    NumberAsGeneratorSpec<T> min(T min);
 
     @Override
-    URLAsStringGeneratorSpec port(int port);
+    NumberAsGeneratorSpec<T> max(T max);
 
     @Override
-    URLAsStringGeneratorSpec randomPort();
+    NumberAsGeneratorSpec<T> range(T min, T max);
 
     @Override
-    URLAsStringGeneratorSpec host(Generator<String> hostGenerator);
-
-    @Override
-    URLAsStringGeneratorSpec file(Generator<String> fileGenerator);
+    NumberAsGeneratorSpec<T> nullable();
 }

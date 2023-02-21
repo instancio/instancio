@@ -18,17 +18,14 @@ package org.instancio.generator.specs;
 import org.instancio.generator.AsStringGeneratorSpec;
 
 /**
- * Generator spec for {@link Character} values
- * that supports {@link AsStringGeneratorSpec}.
+ * Generator spec for {@link Boolean} values
+ * that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
  */
-public interface CharacterAsStringGeneratorSpec
-        extends CharacterGeneratorSpec, AsStringGeneratorSpec<Character> {
+public interface BooleanAsGeneratorSpec
+        extends BooleanGeneratorSpec, AsGeneratorSpec<Boolean>, AsStringGeneratorSpec<Boolean> {
 
     @Override
-    CharacterAsStringGeneratorSpec range(char min, char max);
-
-    @Override
-    CharacterAsStringGeneratorSpec nullable();
+    BooleanAsGeneratorSpec nullable();
 }

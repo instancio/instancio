@@ -22,6 +22,7 @@ import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.ValueSpec;
+import org.instancio.generator.specs.AsGeneratorSpec;
 import org.junit.jupiter.api.Test;
 
 class SpecInheritanceAndNamingTest {
@@ -64,6 +65,19 @@ class SpecInheritanceAndNamingTest {
         ArchRule rule = ArchRuleDefinition.classes()
                 .that().resideInAPackage("..specs..").and().areAssignableTo(ValueSpec.class)
                 .should().notBeAssignableTo(AsStringGeneratorSpec.class);
+
+        rule.check(classes);
+    }
+
+    /**
+     * Value specs should not expose methods defined by {@link AsGeneratorSpec},
+     * since they return {@link GeneratorSpec} and not String.
+     */
+    @Test
+    void valueSpecsShouldNotImplementAsGeneratorSpec() {
+        ArchRule rule = ArchRuleDefinition.classes()
+                .that().resideInAPackage("..specs..").and().areAssignableTo(ValueSpec.class)
+                .should().notBeAssignableTo(AsGeneratorSpec.class);
 
         rule.check(classes);
     }

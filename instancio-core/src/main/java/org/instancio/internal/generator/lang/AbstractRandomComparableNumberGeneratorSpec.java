@@ -16,7 +16,7 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.NumberAsStringGeneratorSpec;
+import org.instancio.generator.specs.NumberAsGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
@@ -37,7 +37,7 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
      * the {@code max} value will be updated to a value higher than the given {@code min}.
      */
     @Override
-    public NumberAsStringGeneratorSpec<T> min(final T min) {
+    public NumberAsGeneratorSpec<T> min(final T min) {
         super.min(min);
         super.max(NumberUtils.calculateNewMax(getMax(), min, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
         return this;
@@ -50,14 +50,14 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
      * the {@code min} value will be updated to a value lower than the given {@code max}.
      */
     @Override
-    public NumberAsStringGeneratorSpec<T> max(final T max) {
+    public NumberAsGeneratorSpec<T> max(final T max) {
         super.max(max);
         super.min(NumberUtils.calculateNewMin(getMin(), max, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
         return this;
     }
 
     @Override
-    public NumberAsStringGeneratorSpec<T> range(final T min, final T max) {
+    public NumberAsGeneratorSpec<T> range(final T min, final T max) {
         super.range(min, max);
         ApiValidator.isTrue(min.compareTo(max) <= 0,
                 "Invalid 'range(%s, %s)': lower bound must be less than or equal to upper bound", min, max);

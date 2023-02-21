@@ -16,7 +16,7 @@
 package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.PathAsStringGeneratorSpec;
+import org.instancio.generator.specs.PathAsGeneratorSpec;
 import org.instancio.generator.specs.PathGeneratorSpec;
 import org.instancio.internal.generator.nio.file.PathGenerator;
 
@@ -52,7 +52,7 @@ public class NioGenerators {
      * @return generator spec for paths
      * @since 2.1.0
      */
-    public PathAsStringGeneratorSpec<Path> path(final String... subdirectories) {
+    public PathAsGeneratorSpec<Path> path(final String... subdirectories) {
         return new PathGenerator(context, subdirectories);
     }
 }

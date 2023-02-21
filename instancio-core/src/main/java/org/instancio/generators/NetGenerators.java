@@ -16,8 +16,8 @@
 package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.URIAsStringGeneratorSpec;
-import org.instancio.generator.specs.URLAsStringGeneratorSpec;
+import org.instancio.generator.specs.URIAsGeneratorSpec;
+import org.instancio.generator.specs.URLAsGeneratorSpec;
 import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 
@@ -43,7 +43,7 @@ public class NetGenerators {
      * @return generator spec
      * @since 2.3.0
      */
-    public URIAsStringGeneratorSpec uri() {
+    public URIAsGeneratorSpec uri() {
         return new URIGenerator(context);
     }
 
@@ -53,7 +53,7 @@ public class NetGenerators {
      * @return generator spec
      * @since 2.3.0
      */
-    public URLAsStringGeneratorSpec url() {
+    public URLAsGeneratorSpec url() {
         return new URLGenerator(context);
     }
 }

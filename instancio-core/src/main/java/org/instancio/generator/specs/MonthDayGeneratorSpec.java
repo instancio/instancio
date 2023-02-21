@@ -24,7 +24,7 @@ import java.time.MonthDay;
  *
  * @since 2.3.0
  */
-public interface MonthDayGeneratorSpec extends AsStringGeneratorSpec<MonthDay> {
+public interface MonthDayGeneratorSpec extends AsGeneratorSpec<MonthDay>, AsStringGeneratorSpec<MonthDay> {
 
     /**
      * Generate a {@code MonthDay} value on or after the specified day.

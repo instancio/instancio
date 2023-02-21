@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.PathAsStringGeneratorSpec;
+import org.instancio.generator.specs.PathAsGeneratorSpec;
 import org.instancio.generator.specs.PathSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class PathGenerator extends AbstractGenerator<Path>
-        implements PathSpec, PathAsStringGeneratorSpec<Path> {
+        implements PathSpec, PathAsGeneratorSpec<Path> {
 
     private static final int DEFAULT_NAME_LENGTH = 16;
 

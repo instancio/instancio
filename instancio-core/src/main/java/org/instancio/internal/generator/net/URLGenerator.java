@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.URLAsStringGeneratorSpec;
+import org.instancio.generator.specs.URLAsGeneratorSpec;
 import org.instancio.generator.specs.URLSpec;
 import org.instancio.internal.context.Global;
 
@@ -29,7 +29,7 @@ import java.net.URL;
 import static org.instancio.internal.util.StringUtils.singleQuote;
 
 public class URLGenerator extends AbstractURIGenerator<URL>
-        implements URLSpec, URLAsStringGeneratorSpec {
+        implements URLSpec, URLAsGeneratorSpec {
 
     public URLGenerator() {
         this(Global.generatorContext());

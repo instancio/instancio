@@ -17,7 +17,7 @@ package org.instancio.internal.generator.math;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.BigDecimalAsStringGeneratorSpec;
+import org.instancio.generator.specs.BigDecimalAsGeneratorSpec;
 import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal>
-        implements BigDecimalSpec, BigDecimalAsStringGeneratorSpec {
+        implements BigDecimalSpec, BigDecimalAsGeneratorSpec {
 
     private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(0.000_01d);
     private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(10_000);

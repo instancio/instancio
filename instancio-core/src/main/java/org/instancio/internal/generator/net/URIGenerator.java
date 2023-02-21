@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.URIAsStringGeneratorSpec;
+import org.instancio.generator.specs.URIAsGeneratorSpec;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.internal.context.Global;
 
@@ -29,7 +29,7 @@ import java.net.URISyntaxException;
 import static org.instancio.internal.util.StringUtils.singleQuote;
 
 public class URIGenerator extends AbstractURIGenerator<URI>
-        implements URISpec, URIAsStringGeneratorSpec {
+        implements URISpec, URIAsGeneratorSpec {
 
     private String userInfo;
     private Generator<String> queryGenerator;
