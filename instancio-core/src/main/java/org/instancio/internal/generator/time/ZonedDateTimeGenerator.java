@@ -89,8 +89,8 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     }
 
     @Override
-    public ZonedDateTime generateNonNullValue(final Random random) {
+    public ZonedDateTime tryGenerateNonNull(final Random random) {
         delegate.range(min.toInstant(), max.toInstant());
-        return ZonedDateTime.ofInstant(delegate.generateNonNullValue(random), ZONE_OFFSET);
+        return ZonedDateTime.ofInstant(delegate.tryGenerateNonNull(random), ZONE_OFFSET);
     }
 }

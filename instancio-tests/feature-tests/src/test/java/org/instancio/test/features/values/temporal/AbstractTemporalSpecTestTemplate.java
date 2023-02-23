@@ -17,66 +17,44 @@ package org.instancio.test.features.values.temporal;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.instancio.generator.specs.TemporalSpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
+import org.instancio.test.support.util.Constants;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.time.temporal.Temporal;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-abstract class AbstractTemporalSpecTestTemplate<T extends Temporal & Comparable<? super T>> {
-
-    abstract TemporalSpec<T> getSpec();
+abstract class AbstractTemporalSpecTestTemplate<T extends Temporal & Comparable<? super T>>
+        extends AbstractValueSpecTestTemplate<T> {
 
     abstract Pair<T, T> getRangeFromNow();
 
-    @Test
-    void get() {
-        final T actual = getSpec().get();
-        assertThat(actual).isNotNull();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<T> results = getSpec().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final String result = getSpec().map(Object::toString);
-        assertThat(result).isNotBlank();
-    }
+    @Override
+    protected abstract TemporalSpec<T> spec();
 
     @Test
     void past() {
-        final T actual = getSpec().past().get();
+        final T actual = spec().past().get();
         assertThat(actual).isLessThan(getNow());
     }
 
     @Test
     void future() {
-        final T actual = getSpec().future().get();
+        final T actual = spec().future().get();
         assertThat(actual).isGreaterThan(getNow());
     }
 
-    @Test
+    @RepeatedTest(Constants.SAMPLE_SIZE_DD)
     void range() {
         final Pair<T, T> range = getRangeFromNow();
 
-        final T actual = getSpec()
+        final T actual = spec()
                 .range(range.getLeft(), range.getRight())
                 .get();
 
         assertThat(actual).isBetween(range.getLeft(), range.getRight());
-    }
-
-    @Test
-    void nullable() {
-        final int size = 500;
-        final List<T> actual = getSpec().nullable().list(size);
-        assertThat(actual).containsNull();
     }
 
     private T getNow() {

@@ -41,7 +41,7 @@ public class AtomicLongGenerator extends AbstractRandomNumberGeneratorSpec<Atomi
     }
 
     @Override
-    protected AtomicLong generateNonNullValue(final Random random) {
+    protected AtomicLong tryGenerateNonNull(final Random random) {
         return new AtomicLong(random.intRange(getMin().intValue(), getMax().intValue()));
     }
 }

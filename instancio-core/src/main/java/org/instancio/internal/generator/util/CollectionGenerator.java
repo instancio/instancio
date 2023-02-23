@@ -126,11 +126,9 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
-    public Collection<T> generate(final Random random) {
+    protected Collection<T> tryGenerateNonNull(final Random random) {
         try {
-            return random.diceRoll(isNullable())
-                    ? null
-                    : (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
+            return (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             LOG.debug("Error creating instance of: {}", collectionType, ex);
             return null; // NOPMD

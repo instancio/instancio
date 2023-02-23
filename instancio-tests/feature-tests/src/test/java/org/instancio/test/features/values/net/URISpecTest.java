@@ -15,35 +15,24 @@
  */
 package org.instancio.test.features.values.net;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.URISpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Gen.net;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class URISpecTest {
+class URISpecTest extends AbstractValueSpecTestTemplate<URI> {
 
-    @Test
-    void get() {
-        assertThat(net().uri().get()).isNotNull();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<URI> results = net().uri().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final String result = net().uri().map(URI::toString);
-        assertThat(result).isNotBlank();
+    @Override
+    protected URISpec spec() {
+        return Gen.net().uri();
     }
 
     @Test

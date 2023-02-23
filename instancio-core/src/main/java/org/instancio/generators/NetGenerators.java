@@ -16,8 +16,10 @@
 package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.EmailAsGeneratorSpec;
 import org.instancio.generator.specs.URIAsGeneratorSpec;
 import org.instancio.generator.specs.URLAsGeneratorSpec;
+import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 
@@ -55,5 +57,15 @@ public class NetGenerators {
      */
     public URLAsGeneratorSpec url() {
         return new URLGenerator(context);
+    }
+
+    /**
+     * Customises generated email addresses.
+     *
+     * @return generator spec
+     * @since 2.11.0
+     */
+    public EmailAsGeneratorSpec email() {
+        return new EmailGenerator(context);
     }
 }

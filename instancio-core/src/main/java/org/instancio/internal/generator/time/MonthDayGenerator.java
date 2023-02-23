@@ -60,7 +60,7 @@ public class MonthDayGenerator extends AbstractGenerator<MonthDay> implements Mo
     }
 
     @Override
-    public MonthDay generate(final Random random) {
+    protected MonthDay tryGenerateNonNull(final Random random) {
         final int minMonth = min.getMonthValue();
         final int maxMonth = max.getMonthValue();
         final int month = random.intRange(minMonth, maxMonth);

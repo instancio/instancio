@@ -24,10 +24,12 @@ public class EmailComboBV {
 
     @Data
     public static class EmailWithSize {
+        @NotNull
         @Email
         @Size(min = 7, max = 12)
         private String emailThenSize;
 
+        @NotNull
         @Size(min = 10, max = 10)
         @Email
         private String sizeThenEmail;

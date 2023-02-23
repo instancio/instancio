@@ -33,7 +33,7 @@ public class LocaleGenerator extends AbstractGenerator<Locale> {
     }
 
     @Override
-    public Locale generate(final Random random) {
+    public Locale tryGenerateNonNull(final Random random) {
         return random.oneOf(Locale.getAvailableLocales());
     }
 }

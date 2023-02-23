@@ -17,11 +17,17 @@ package org.instancio.internal.generator.domain.id;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.IsbnSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 
-public class IsbnGenerator extends AbstractGenerator<String> {
+public class IsbnGenerator extends AbstractGenerator<String> implements IsbnSpec {
 
     private final EanGenerator delegate;
+
+    public IsbnGenerator() {
+        this(Global.generatorContext());
+    }
 
     public IsbnGenerator(final GeneratorContext context) {
         super(context);
@@ -30,12 +36,18 @@ public class IsbnGenerator extends AbstractGenerator<String> {
 
     @Override
     public String apiMethod() {
-        return null;
+        return "isbn()";
     }
 
     @Override
-    public String generate(final Random random) {
-        return delegate.generate(random);
+    public IsbnGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected String tryGenerateNonNull(final Random random) {
+        return delegate.tryGenerateNonNull(random);
     }
 }
 

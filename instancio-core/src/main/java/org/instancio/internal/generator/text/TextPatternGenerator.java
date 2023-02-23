@@ -55,7 +55,13 @@ public class TextPatternGenerator extends AbstractGenerator<String>
     }
 
     @Override
-    public String generate(final Random random) {
+    public TextPatternGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected String tryGenerateNonNull(final Random random) {
         final StringBuilder res = new StringBuilder(pattern.length());
         final char[] p = pattern.toCharArray();
 

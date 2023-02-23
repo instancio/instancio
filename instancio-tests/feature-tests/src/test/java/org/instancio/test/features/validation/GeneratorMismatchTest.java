@@ -134,6 +134,11 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertIdGenerators() {
+        assertMessageContains("ean()", gen -> gen.id().ean());
+    }
+
+    @Test
     void assertBoolean() {
         assertMessageContains("booleans()", Generators::booleans);
     }

@@ -62,9 +62,7 @@ public class SqlDateGenerator extends AbstractGenerator<Date> implements Tempora
     }
 
     @Override
-    public Date generate(final Random random) {
-        return random.diceRoll(isNullable())
-                ? null
-                : Date.valueOf(delegate.generateNonNullValue(random));
+    public Date tryGenerateNonNull(final Random random) {
+        return Date.valueOf(delegate.tryGenerateNonNull(random));
     }
 }

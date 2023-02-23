@@ -18,10 +18,8 @@ package org.instancio.test.contract;
 import org.instancio.generator.ValueSpec;
 import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.generator.specs.BigIntegerSpec;
-import org.instancio.generator.specs.BooleanGeneratorSpec;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.generator.specs.ByteSpec;
-import org.instancio.generator.specs.CharacterGeneratorSpec;
 import org.instancio.generator.specs.CharacterSpec;
 import org.instancio.generator.specs.DoubleSpec;
 import org.instancio.generator.specs.FileSpec;
@@ -32,153 +30,185 @@ import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.generator.specs.LocalDateTimeSpec;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.generator.specs.LongSpec;
-import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.generator.specs.LoremIpsumSpec;
-import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.generator.specs.OffsetTimeSpec;
-import org.instancio.generator.specs.PathGeneratorSpec;
 import org.instancio.generator.specs.PathSpec;
 import org.instancio.generator.specs.ShortSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.generator.specs.StringSpec;
-import org.instancio.generator.specs.TemporalGeneratorSpec;
-import org.instancio.generator.specs.URIGeneratorSpec;
 import org.instancio.generator.specs.URISpec;
-import org.instancio.generator.specs.URLGeneratorSpec;
 import org.instancio.generator.specs.URLSpec;
-import org.instancio.generator.specs.UUIDStringGeneratorSpec;
 import org.instancio.generator.specs.UUIDStringSpec;
 import org.instancio.generator.specs.YearMonthSpec;
 import org.instancio.generator.specs.YearSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
+import org.instancio.internal.util.CollectionUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
- * Tests that interface subtypes of {@link ValueSpec} override methods in generator
- * specs to return the subtype interface class. This ensures consistent return
- * types from the API, for example:
+ * Interface that inherit from {@link ValueSpec} should override
+ * methods inherited from parent interfaces. For example,
+ * {@link StringSpec} should override methods from {@link StringGeneratorSpec}
+ * in order to override the return type from {@code StringGeneratorSpec}
+ * to {@code StringSpec}.
  *
- * <pre>{@code
- *   // Good: want to return the specific spec type (should pass the test)
- *   ZonedDateTimeSpec spec = ints().range(0, 9);
+ * <p>This ensures that when the Value Spec API is used, methods from all
+ * interfaces can be chained together, for example:
  *
- *   // Bad: returns the parent spec (should fail the test)
- *   TemporalSpec<ZonedDateTime> spec = ints().range(0, 9);
- * }</pre>
+ * <pre>
+ *   Gen.string().prefix("foo").get();
+ * </pre>
+ *
+ * <p>where {@code prefix()} is from {@code StringGeneratorSpec} and {@code get()}
+ * is from {@code ValueSpec}.
  */
 class ValueSpecSubtypesOverrideMethodsTest {
 
     @Test
     void booleanSpec() {
-        assertSpecSubtypeOverrides(BooleanGeneratorSpec.class, BooleanSpec.class);
+        assertSpecOverridesSuperMethods(BooleanSpec.class);
     }
 
     @Test
     void characterSpec() {
-        assertSpecSubtypeOverrides(CharacterGeneratorSpec.class, CharacterSpec.class);
+        assertSpecOverridesSuperMethods(CharacterSpec.class);
     }
 
-    @Test
-    void numericSpec() {
-        assertSpecSubtypeOverrides(NumberGeneratorSpec.class,
-                BigDecimalSpec.class,
-                BigIntegerSpec.class,
-                ByteSpec.class,
-                DoubleSpec.class,
-                FloatSpec.class,
-                IntegerSpec.class,
-                LongSpec.class,
-                ShortSpec.class
-        );
+    @ValueSource(classes = {
+            BigDecimalSpec.class,
+            BigIntegerSpec.class,
+            ByteSpec.class,
+            DoubleSpec.class,
+            FloatSpec.class,
+            IntegerSpec.class,
+            LongSpec.class,
+            ShortSpec.class
+    })
+    @ParameterizedTest
+    void numericSpec(final Class<?> specClass) {
+        assertSpecOverridesSuperMethods(specClass);
     }
 
-    @Test
-    void pathSpec() {
-        assertSpecSubtypeOverrides(PathGeneratorSpec.class, PathSpec.class, FileSpec.class);
+    @ValueSource(classes = {
+            PathSpec.class,
+            FileSpec.class
+    })
+    @ParameterizedTest
+    void pathSpec(final Class<?> specClass) {
+        assertSpecOverridesSuperMethods(specClass);
     }
 
     @Test
     void stringSpec() {
-        assertSpecSubtypeOverrides(StringGeneratorSpec.class, StringSpec.class);
+        assertSpecOverridesSuperMethods(StringSpec.class);
     }
 
-    @Test
-    void temporalSpec() {
-        assertSpecSubtypeOverrides(TemporalGeneratorSpec.class,
-                InstantSpec.class,
-                LocalDateSpec.class,
-                LocalDateTimeSpec.class,
-                LocalTimeSpec.class,
-                OffsetDateTimeSpec.class,
-                OffsetTimeSpec.class,
-                YearMonthSpec.class,
-                YearSpec.class,
-                ZonedDateTimeSpec.class
-        );
+    @ValueSource(classes = {
+            InstantSpec.class,
+            LocalDateSpec.class,
+            LocalDateTimeSpec.class,
+            LocalTimeSpec.class,
+            OffsetDateTimeSpec.class,
+            OffsetTimeSpec.class,
+            YearMonthSpec.class,
+            YearSpec.class,
+            ZonedDateTimeSpec.class
+
+    })
+    @ParameterizedTest
+    void temporalSpec(final Class<?> specClass) {
+        assertSpecOverridesSuperMethods(specClass);
     }
 
-    @Test
-    void text() {
-        assertSpecSubtypeOverrides(LoremIpsumGeneratorSpec.class, LoremIpsumSpec.class);
-        assertSpecSubtypeOverrides(UUIDStringGeneratorSpec.class, UUIDStringSpec.class);
+    @ValueSource(classes = {
+            LoremIpsumSpec.class,
+            UUIDStringSpec.class
+    })
+    @ParameterizedTest
+    void text(final Class<?> specClass) {
+        assertSpecOverridesSuperMethods(specClass);
     }
 
-    @Test
-    void net() {
-        assertSpecSubtypeOverrides(URIGeneratorSpec.class, URISpec.class);
-        assertSpecSubtypeOverrides(URLGeneratorSpec.class, URLSpec.class);
+    @ValueSource(classes = {
+            URISpec.class,
+            URLSpec.class
+    })
+    @ParameterizedTest
+    void net(final Class<?> specClass) {
+        assertSpecOverridesSuperMethods(specClass);
     }
 
-    private void assertSpecSubtypeOverrides(final Class<?> generatorSpec, final Class<?>... specSubtypes) {
+    /**
+     * Collects methods from super interfaces of {@code specClass}
+     * and checks that the class overrides all the inherited methods.
+     */
+    private static void assertSpecOverridesSuperMethods(final Class<?> specClass) {
+        final List<Method> superMethods = getMethodsFromParentInterfaces(specClass);
+        assertSpecOverridesAll(specClass, superMethods);
+    }
 
-        for (Class<?> specSubtype : specSubtypes) {
+    private static List<Method> getMethodsFromParentInterfaces(final Class<?> specClass) {
+        // These are terminal methods from ValueSpec
+        // They return a result and don't need to be overridden
+        // We're only interested in builder methods used for chaining API calls
+        final Set<String> excludedMethods = CollectionUtils.asSet(
+                "get", "list", "map", "stream", "toModel");
 
-            // The spec subtype should either
-            //  - override generator spec's methods with itself as the return type
-            //  - or, if it's a terminal method, it should return ValueSpec
-            final Map<String, Method> methods = getSpecMethodsThatAreTerminalOrReturnSelf(specSubtype);
+        final List<Method> methods = new ArrayList<>();
+        for (Class<?> interfaceClass : specClass.getInterfaces()) {
+            final List<Method> filtered = Arrays.stream(interfaceClass.getDeclaredMethods())
+                    .filter(m -> !excludedMethods.contains(m.getName()))
+                    .collect(Collectors.toList());
 
-            final Method[] genSpecMethods = generatorSpec.getDeclaredMethods();
+            methods.addAll(filtered);
+        }
+        return methods;
+    }
 
-            for (Method genSpecMethod : genSpecMethods) {
-
-                if (genSpecMethod.getName().toLowerCase(Locale.ROOT).contains("jacoco")) {
-                    // Jacoco modifies classes when tests are run via Maven
-                    // Ignore any methods added by Jacoco
-                    continue;
-                }
-
-                final Method specSubtypeMethod = methods.get(toMethodKey(genSpecMethod));
-
-                assertThat(specSubtypeMethod)
-                        .as("Generator spec method '%s' not overridden by %s",
-                                genSpecMethod.getName(), specSubtype.getSimpleName())
-                        .isNotNull();
+    private static void assertSpecOverridesAll(final Class<?> specClass, final List<Method> methods) {
+        for (Method method : methods) {
+            if (!overrides(specClass, method)) {
+                fail("%s is not overridden by %s", method, specClass);
             }
         }
     }
 
-    private Map<String, Method> getSpecMethodsThatAreTerminalOrReturnSelf(final Class<?> klass) {
-        assertThat(klass).isAssignableTo(ValueSpec.class);
+    private static boolean overrides(final Class<?> specClass, final Method superMethod) {
+        for (Method m : specClass.getDeclaredMethods()) {
 
-        return Arrays.stream(klass.getDeclaredMethods())
-                .filter(m -> m.getReturnType().equals(klass) || m.getReturnType().equals(ValueSpec.class))
-                .collect(Collectors.toMap(this::toMethodKey, Function.identity()));
+            /*
+             Ideally this method should also assert the return type,
+             e.g. that "StringSpec.nullable()" returns "StringSpec" and not "ValueSpec".
+             However, certain spec subclasses can return ValueSpec for terminal operations.
+             Therefore, we can't make a blanket statement
+            */
+            if (m.getName().equals(superMethod.getName())
+                    && paramsEqual(m.getParameters(), superMethod.getParameters())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private String toMethodKey(final Method method) {
-        // NOTE: this assumes that method name and
-        // parameter count combination is unique per class
-        return method.getName() + method.getParameters().length;
+    private static boolean paramsEqual(final Parameter[] a, final Parameter[] b) {
+        return Objects.equals(getParameterTypes(a), getParameterTypes(b));
+    }
+
+    private static List<Class<?>> getParameterTypes(final Parameter[] params) {
+        return Arrays.stream(params).map(Parameter::getType).collect(Collectors.toList());
     }
 }

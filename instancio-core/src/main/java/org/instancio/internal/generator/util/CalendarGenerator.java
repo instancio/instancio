@@ -66,9 +66,7 @@ public class CalendarGenerator extends AbstractGenerator<Calendar> implements Te
     }
 
     @Override
-    public Calendar generate(final Random random) {
-        return random.diceRoll(isNullable())
-                ? null
-                : GregorianCalendar.from(delegate.generateNonNullValue(random));
+    protected Calendar tryGenerateNonNull(final Random random) {
+        return GregorianCalendar.from(delegate.tryGenerateNonNull(random));
     }
 }

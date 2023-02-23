@@ -41,4 +41,7 @@ public interface URLSpec extends ValueSpec<URL>, URLGeneratorSpec {
 
     @Override
     URLSpec file(Generator<String> fileGenerator);
+
+    @Override
+    URLSpec nullable();
 }

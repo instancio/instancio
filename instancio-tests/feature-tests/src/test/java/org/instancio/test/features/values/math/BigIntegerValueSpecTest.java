@@ -28,7 +28,7 @@ import java.math.BigInteger;
 class BigIntegerValueSpecTest extends AbstractNumberSpecTestTemplate<BigInteger> {
 
     @Override
-    protected NumberSpec<BigInteger> getSpec() {
+    protected NumberSpec<BigInteger> spec() {
         return Gen.math().bigInteger();
     }
 

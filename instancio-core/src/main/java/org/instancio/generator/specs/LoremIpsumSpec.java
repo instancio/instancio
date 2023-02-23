@@ -29,4 +29,7 @@ public interface LoremIpsumSpec extends ValueSpec<String>, LoremIpsumGeneratorSp
 
     @Override
     LoremIpsumSpec paragraphs(int paragraphs);
+
+    @Override
+    LoremIpsumSpec nullable();
 }

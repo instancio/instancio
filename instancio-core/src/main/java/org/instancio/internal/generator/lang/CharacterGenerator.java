@@ -61,9 +61,7 @@ public class CharacterGenerator extends AbstractGenerator<Character>
     }
 
     @Override
-    public Character generate(final Random random) {
-        return random.diceRoll(isNullable())
-                ? null
-                : random.characterRange(min, max);
+    protected Character tryGenerateNonNull(final Random random) {
+        return random.characterRange(min, max);
     }
 }

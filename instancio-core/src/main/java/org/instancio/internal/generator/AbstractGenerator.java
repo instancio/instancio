@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.generator;
 
+import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
@@ -47,8 +48,24 @@ public abstract class AbstractGenerator<T> implements Generator<T>, NullableGene
      */
     public abstract String apiMethod();
 
-    public GeneratorContext getContext() {
-        return context;
+    /**
+     * Makes the best effort to return a non-null value.
+     * However, in certain cases this method will produce a {@code null}.
+     *
+     * @param random for generating the value
+     * @return generated value, either a null or non-null
+     */
+    protected abstract T tryGenerateNonNull(Random random);
+
+    /**
+     * Base implementation that handles nullable values.
+     *
+     * @param random generating random the value
+     * @return generated value, either a null or non-null
+     */
+    @Override
+    public final T generate(final Random random) {
+        return random.diceRoll(isNullable()) ? null : tryGenerateNonNull(random);
     }
 
     @Override
@@ -64,6 +81,10 @@ public abstract class AbstractGenerator<T> implements Generator<T>, NullableGene
 
     public final boolean isNullable() {
         return nullable;
+    }
+
+    public GeneratorContext getContext() {
+        return context;
     }
 
     @Override

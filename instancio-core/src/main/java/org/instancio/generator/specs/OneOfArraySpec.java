@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.Model;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.ValueSpec;
 
 /**
@@ -27,4 +29,9 @@ public interface OneOfArraySpec<T> extends ValueSpec<T>, OneOfArrayGeneratorSpec
 
     @Override
     OneOfArraySpec<T> oneOf(T... values);
+
+    @Override
+    default Model<T> toModel() {
+        throw new InstancioApiException("oneOf() spec does not support toModel()");
+    }
 }

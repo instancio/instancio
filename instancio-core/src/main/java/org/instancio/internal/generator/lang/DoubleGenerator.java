@@ -71,7 +71,7 @@ public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec
     }
 
     @Override
-    protected Double generateNonNullValue(final Random random) {
+    protected Double tryGenerateNonNull(final Random random) {
         return random.doubleRange(getMin(), getMax());
     }
 }

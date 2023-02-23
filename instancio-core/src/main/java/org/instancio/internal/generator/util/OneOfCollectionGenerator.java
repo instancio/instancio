@@ -48,7 +48,13 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
     }
 
     @Override
-    public T generate(final Random random) {
+    public OneOfCollectionGenerator<T> nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    public T tryGenerateNonNull(final Random random) {
         return random.oneOf(values);
     }
 }

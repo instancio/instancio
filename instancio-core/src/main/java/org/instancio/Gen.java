@@ -27,6 +27,8 @@ import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.ShortSpec;
 import org.instancio.generator.specs.StringSpec;
+import org.instancio.generators.FinanceSpecs;
+import org.instancio.generators.IdSpecs;
 import org.instancio.generators.IoSpecs;
 import org.instancio.generators.MathSpecs;
 import org.instancio.generators.NetSpecs;
@@ -237,6 +239,26 @@ public final class Gen {
      */
     public static TextSpecs text() {
         return new TextSpecs();
+    }
+
+    /**
+     * Provides identifier generators.
+     *
+     * @return built-in identifier generators
+     * @since 2.11.0
+     */
+    public static IdSpecs id() {
+        return new IdSpecs();
+    }
+
+    /**
+     * Provides finance-related generators.
+     *
+     * @return built-in finance-related generators
+     * @since 2.11.0
+     */
+    public static FinanceSpecs finance() {
+        return new FinanceSpecs();
     }
 
     private Gen() {

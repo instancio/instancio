@@ -50,4 +50,7 @@ public interface URISpec extends ValueSpec<URI>, URIGeneratorSpec {
 
     @Override
     URISpec fragment(Generator<String> fragmentGenerator);
+
+    @Override
+    URISpec nullable();
 }

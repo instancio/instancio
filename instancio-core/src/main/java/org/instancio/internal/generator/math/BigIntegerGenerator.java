@@ -78,7 +78,7 @@ public class BigIntegerGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
-    protected BigInteger generateNonNullValue(final Random random) {
+    protected BigInteger tryGenerateNonNull(final Random random) {
         final BigInteger delta = getMax().subtract(getMin());
         final BigInteger rndDelta = delta
                 .multiply(BigInteger.valueOf(random.intRange(1, 100)))

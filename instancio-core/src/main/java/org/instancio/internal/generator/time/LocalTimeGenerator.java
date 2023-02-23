@@ -96,7 +96,7 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
     }
 
     @Override
-    public LocalTime generateNonNullValue(final Random random) {
+    protected LocalTime tryGenerateNonNull(final Random random) {
         return LocalTime.ofNanoOfDay(random.longRange(
                 min.toNanoOfDay(),
                 max.toNanoOfDay()));

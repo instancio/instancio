@@ -89,7 +89,7 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     }
 
     @Override
-    public OffsetDateTime generateNonNullValue(final Random random) {
+    protected OffsetDateTime tryGenerateNonNull(final Random random) {
         delegate.range(min.toLocalDateTime(), max.toLocalDateTime());
         final LocalDateTime ldt = delegate.generate(random);
         return ldt == null ? null : OffsetDateTime.of(ldt, ZONE_OFFSET);

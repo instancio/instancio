@@ -84,7 +84,7 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
     }
 
     @Override
-    public Instant generateNonNullValue(final Random random) {
+    public Instant tryGenerateNonNull(final Random random) {
         final long sec = random.longRange(min.getEpochSecond(), max.getEpochSecond());
         final int nano;
 

@@ -58,8 +58,14 @@ public class UUIDStringGenerator extends AbstractGenerator<String> implements UU
     }
 
     @Override
-    public String generate(final Random random) {
-        String uuid = delegate.generate(random).toString();
+    public UUIDStringGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected String tryGenerateNonNull(final Random random) {
+        String uuid = delegate.tryGenerateNonNull(random).toString();
         if (isUpperCase) {
             uuid = uuid.toUpperCase(Locale.ROOT);
         }

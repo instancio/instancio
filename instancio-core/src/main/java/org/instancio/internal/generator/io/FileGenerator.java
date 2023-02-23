@@ -95,7 +95,13 @@ public class FileGenerator extends AbstractGenerator<File>
     }
 
     @Override
-    public File generate(final Random random) {
-        return delegate.generate(random).toFile();
+    public FileGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected File tryGenerateNonNull(final Random random) {
+        return delegate.tryGenerateNonNull(random).toFile();
     }
 }

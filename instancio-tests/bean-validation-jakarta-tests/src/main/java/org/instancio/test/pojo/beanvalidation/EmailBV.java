@@ -16,18 +16,21 @@
 package org.instancio.test.pojo.beanvalidation;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 public class EmailBV {
 
     @Data
     public static class OnString {
+        @NotNull
         @Email
         private String email;
     }
 
     @Data
     public static class OnCharSequence {
+        @NotNull
         @Email
         private CharSequence email;
     }

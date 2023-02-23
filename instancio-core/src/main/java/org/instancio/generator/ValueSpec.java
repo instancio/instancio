@@ -126,4 +126,12 @@ public interface ValueSpec<T> extends GeneratorSpec<T> {
                 .generate(all(typeArg), this)
                 .toModel();
     }
+
+    /**
+     * Specifies that a {@code null} value can be generated
+     *
+     * @return spec builder reference
+     * @since 2.11.0
+     */
+    ValueSpec<T> nullable();
 }

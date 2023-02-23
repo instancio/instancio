@@ -15,6 +15,9 @@
  */
 package org.instancio.test.features.values.temporal;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.PeriodSpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
@@ -24,35 +27,21 @@ import java.time.Period;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.temporal;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class PeriodValueSpecTest {
+class PeriodValueSpecTest extends AbstractValueSpecTestTemplate<Period> {
 
     private static final int MIN = 1;
     private static final int MAX = 9;
 
-    @Test
-    void get() {
-        assertThat(temporal().period().get()).isNotNull();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<Period> results = temporal().period().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final Integer result = temporal().period().map(Period::getDays);
-        assertThat(result).isPositive();
+    @Override
+    protected PeriodSpec spec() {
+        return Gen.temporal().period();
     }
 
     @Test
     void days() {
-        final List<Period> actual = temporal().period().days(MIN, MAX).list(Constants.SAMPLE_SIZE_DDD);
+        final List<Period> actual = spec().days(MIN, MAX).list(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(actual)
                 .hasSize(Constants.SAMPLE_SIZE_DDD)
@@ -61,7 +50,7 @@ class PeriodValueSpecTest {
 
     @Test
     void months() {
-        final List<Period> actual = temporal().period().months(MIN, MAX).list(Constants.SAMPLE_SIZE_DDD);
+        final List<Period> actual = spec().months(MIN, MAX).list(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(actual)
                 .hasSize(Constants.SAMPLE_SIZE_DDD)
@@ -70,7 +59,7 @@ class PeriodValueSpecTest {
 
     @Test
     void years() {
-        final List<Period> actual = temporal().period().years(MIN, MAX).list(Constants.SAMPLE_SIZE_DDD);
+        final List<Period> actual = spec().years(MIN, MAX).list(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(actual)
                 .hasSize(Constants.SAMPLE_SIZE_DDD)

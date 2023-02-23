@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Email;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.domain.internet.EmailAddressGenerator;
+import org.instancio.internal.generator.domain.internet.EmailGenerator;
 
 import java.lang.annotation.Annotation;
 
@@ -40,7 +40,7 @@ final class JakartaBeanValidationProcessor extends AbstractBeanValidationProvide
 
         final Class<?> annotationType = annotation.annotationType();
         if (annotationType == Email.class) {
-            return new EmailAddressGenerator(context);
+            return new EmailGenerator(context);
         }
         throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
     }

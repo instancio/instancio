@@ -83,7 +83,7 @@ public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth>
     }
 
     @Override
-    public YearMonth generateNonNullValue(final Random random) {
+    protected YearMonth tryGenerateNonNull(final Random random) {
         final int minMonth = min.getYear() * 12 + min.getMonthValue() - 1;
         final int maxMonth = max.getYear() * 12 + max.getMonthValue() - 1;
         final int result = random.intRange(minMonth, maxMonth);

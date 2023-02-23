@@ -17,11 +17,17 @@ package org.instancio.internal.generator.domain.id;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.EanSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 
-public class EanGenerator extends AbstractGenerator<String> {
+public class EanGenerator extends AbstractGenerator<String> implements EanSpec {
 
     private EanType type = EanType.EAN13;
+
+    public EanGenerator() {
+        super(Global.generatorContext());
+    }
 
     public EanGenerator(final GeneratorContext context) {
         super(context);
@@ -29,16 +35,29 @@ public class EanGenerator extends AbstractGenerator<String> {
 
     @Override
     public String apiMethod() {
-        return null;
+        return "ean()";
     }
 
-    public EanGenerator ean8() {
+    @Override
+    public EanGenerator type13() {
+        type = EanType.EAN13;
+        return this;
+    }
+
+    @Override
+    public EanGenerator type8() {
         type = EanType.EAN8;
         return this;
     }
 
     @Override
-    public String generate(final Random random) {
+    public EanGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected String tryGenerateNonNull(final Random random) {
         final String withoutCheckDigit = random.digits(type.length - 1);
         final int checkDigit = getCheckDigit(withoutCheckDigit, type);
         return withoutCheckDigit + checkDigit;

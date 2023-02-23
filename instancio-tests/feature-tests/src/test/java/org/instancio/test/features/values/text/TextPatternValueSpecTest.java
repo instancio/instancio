@@ -15,33 +15,24 @@
  */
 package org.instancio.test.features.values.text;
 
+import org.instancio.Gen;
+import org.instancio.generator.ValueSpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.text;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class TextPatternValueSpecTest {
+class TextPatternValueSpecTest extends AbstractValueSpecTestTemplate<String> {
 
-    @Test
-    void get() {
-        assertThat(text().pattern("#d#d#d").get()).hasSize(3).containsOnlyDigits();
+    @Override
+    protected ValueSpec<String> spec() {
+        return Gen.text().pattern("#d#d#d");
     }
 
-    @Test
-    void list() {
-        final int size = 10;
-        final List<String> results = text().pattern("foo").list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final Integer result = text().pattern("#d").map(Integer::valueOf);
-        assertThat(result).isBetween(0, 9);
+    @Override
+    protected void assertDefaultSpecValue(final String actual) {
+        assertThat(actual).hasSize(3).containsOnlyDigits();
     }
 }

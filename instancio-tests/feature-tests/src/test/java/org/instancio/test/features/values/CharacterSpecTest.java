@@ -15,36 +15,23 @@
  */
 package org.instancio.test.features.values;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.CharacterSpec;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Gen.chars;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class CharacterSpecTest {
+class CharacterSpecTest extends AbstractValueSpecTestTemplate<Character> {
 
-    @Test
-    void get() {
-        assertThat(chars().get()).isNotNull();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<Character> results = chars().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final String result = chars().map(c -> c.toString().toLowerCase());
-        assertThat(result).isLowerCase().hasSize(1);
+    @Override
+    protected CharacterSpec spec() {
+        return Gen.chars();
     }
 
     @Test
@@ -52,13 +39,5 @@ class CharacterSpecTest {
         final int size = 1000;
         final List<Character> result = chars().range('x', 'z').list(size);
         assertThat(result).containsOnly('x', 'y', 'z');
-    }
-
-    @Test
-    void nullable() {
-        final Stream<Character> result = IntStream.range(0, 500)
-                .mapToObj(i -> chars().nullable().get());
-
-        assertThat(result).containsNull();
     }
 }

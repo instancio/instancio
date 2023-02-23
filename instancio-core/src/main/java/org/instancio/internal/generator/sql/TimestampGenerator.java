@@ -62,9 +62,7 @@ public class TimestampGenerator extends AbstractGenerator<Timestamp> implements 
     }
 
     @Override
-    public Timestamp generate(final Random random) {
-        return random.diceRoll(isNullable())
-                ? null
-                : Timestamp.from(delegate.generateNonNullValue(random));
+    public Timestamp tryGenerateNonNull(final Random random) {
+        return Timestamp.from(delegate.tryGenerateNonNull(random));
     }
 }

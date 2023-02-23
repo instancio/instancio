@@ -49,7 +49,13 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     }
 
     @Override
-    public T generate(final Random random) {
+    public OneOfArrayGenerator<T> nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected T tryGenerateNonNull(final Random random) {
         return random.oneOf(values);
     }
 

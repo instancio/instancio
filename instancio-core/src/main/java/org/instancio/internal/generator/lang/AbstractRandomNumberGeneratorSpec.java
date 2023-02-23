@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.generator.lang;
 
-import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.NumberAsGeneratorSpec;
 import org.instancio.internal.ApiValidator;
@@ -35,8 +34,6 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         this.min = min;
         this.max = max;
     }
-
-    protected abstract T generateNonNullValue(Random random);
 
     protected T getMin() {
         return min;
@@ -75,10 +72,5 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
-    }
-
-    @Override
-    public final T generate(final Random random) {
-        return random.diceRoll(isNullable()) ? null : generateNonNullValue(random);
     }
 }

@@ -19,7 +19,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.instancio.generator.specs.TemporalSpec;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Nested;
 
 import java.time.Instant;
@@ -41,7 +40,7 @@ class TemporalSpecTest {
     @Nested
     class InstantValueSpecTest extends AbstractTemporalSpecTestTemplate<Instant> {
         @Override
-        TemporalSpec<Instant> getSpec() {
+        protected TemporalSpec<Instant> spec() {
             return temporal().instant();
         }
 
@@ -55,7 +54,7 @@ class TemporalSpecTest {
     @Nested
     class LocalDateValueSpecTest extends AbstractTemporalSpecTestTemplate<LocalDate> {
         @Override
-        TemporalSpec<LocalDate> getSpec() {
+        protected TemporalSpec<LocalDate> spec() {
             return temporal().localDate();
         }
 
@@ -69,7 +68,7 @@ class TemporalSpecTest {
     @Nested
     class LocalDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<LocalDateTime> {
         @Override
-        TemporalSpec<LocalDateTime> getSpec() {
+        protected TemporalSpec<LocalDateTime> spec() {
             return temporal().localDateTime();
         }
 
@@ -81,53 +80,51 @@ class TemporalSpecTest {
     }
 
     @Nested
-    @NonDeterministicTag("This test will fail if run less than 5 nanos before midnight")
     class LocalTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<LocalTime> {
         @Override
-        TemporalSpec<LocalTime> getSpec() {
+        protected TemporalSpec<LocalTime> spec() {
             return temporal().localTime();
         }
 
         @Override
         Pair<LocalTime, LocalTime> getRangeFromNow() {
             final LocalTime now = LocalTime.now();
-            return Pair.of(now, now.plusNanos(5));
+            return Pair.of(now, LocalTime.MAX);
         }
     }
 
     @Nested
     class OffsetDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<OffsetDateTime> {
         @Override
-        TemporalSpec<OffsetDateTime> getSpec() {
+        protected TemporalSpec<OffsetDateTime> spec() {
             return temporal().offsetDateTime();
         }
 
         @Override
         Pair<OffsetDateTime, OffsetDateTime> getRangeFromNow() {
-            final OffsetDateTime now = OffsetDateTime.now();
+            final OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
             return Pair.of(now, now.plusDays(400));
         }
     }
 
     @Nested
-    @NonDeterministicTag("This test will fail if run less than 5 nanos before midnight")
     class OffsetTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<OffsetTime> {
         @Override
-        TemporalSpec<OffsetTime> getSpec() {
+        protected TemporalSpec<OffsetTime> spec() {
             return temporal().offsetTime();
         }
 
         @Override
         Pair<OffsetTime, OffsetTime> getRangeFromNow() {
             final OffsetTime now = OffsetTime.now(ZoneOffset.UTC);
-            return Pair.of(now, now.plusNanos(5));
+            return Pair.of(now, OffsetTime.MAX);
         }
     }
 
     @Nested
     class YearValueSpecTest extends AbstractTemporalSpecTestTemplate<Year> {
         @Override
-        TemporalSpec<Year> getSpec() {
+        protected TemporalSpec<Year> spec() {
             return temporal().year();
         }
 
@@ -141,7 +138,7 @@ class TemporalSpecTest {
     @Nested
     class YearMonthValueSpecTest extends AbstractTemporalSpecTestTemplate<YearMonth> {
         @Override
-        TemporalSpec<YearMonth> getSpec() {
+        protected TemporalSpec<YearMonth> spec() {
             return temporal().yearMonth();
         }
 
@@ -155,7 +152,7 @@ class TemporalSpecTest {
     @Nested
     class ZonedDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<ZonedDateTime> {
         @Override
-        TemporalSpec<ZonedDateTime> getSpec() {
+        protected TemporalSpec<ZonedDateTime> spec() {
             return temporal().zonedDateTime();
         }
 

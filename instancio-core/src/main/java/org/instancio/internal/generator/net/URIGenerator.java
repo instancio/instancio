@@ -97,7 +97,13 @@ public class URIGenerator extends AbstractURIGenerator<URI>
     }
 
     @Override
-    public URI generate(final Random random) {
+    public URIGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected URI tryGenerateNonNull(final Random random) {
         final String scheme = getScheme(random);
         final int port = getPort(random);
         final String host = getHost(random);

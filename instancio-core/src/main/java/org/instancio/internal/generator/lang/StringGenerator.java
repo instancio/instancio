@@ -181,13 +181,10 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
-    public String generate(final Random random) {
+    protected String tryGenerateNonNull(final Random random) {
         if (delegate != null) {
             final Object result = delegate.generate(random);
             return result == null ? null : result.toString();
-        }
-        if (random.diceRoll(isNullable())) {
-            return null;
         }
         if (random.diceRoll(allowEmpty)) {
             return "";

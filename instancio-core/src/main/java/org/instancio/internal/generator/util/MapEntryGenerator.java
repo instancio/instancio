@@ -36,7 +36,7 @@ public class MapEntryGenerator<K, V> extends AbstractGenerator<Map.Entry<K, V>> 
     }
 
     @Override
-    public Map.Entry<K, V> generate(final Random random) {
+    public Map.Entry<K, V> tryGenerateNonNull(final Random random) {
         return null; // must be null to delegate creation to the engine
     }
 
