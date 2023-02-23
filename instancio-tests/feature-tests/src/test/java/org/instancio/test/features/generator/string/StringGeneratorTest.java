@@ -71,6 +71,8 @@ class StringGeneratorTest {
         assertStringType(StringGeneratorSpec::mixedCase, "^[a-zA-Z]+$");
         assertStringType(StringGeneratorSpec::digits, "^[0-9]+$");
         assertStringType(StringGeneratorSpec::alphaNumeric, "^[a-zA-Z0-9]+$");
+        assertStringType(StringGeneratorSpec::hex, "^[A-F0-9]+$");
+        assertStringType(spec -> spec.hex().lowerCase(), "^[a-f0-9]+$");
     }
 
     private void assertStringType(Function<StringGeneratorSpec, StringGeneratorSpec> fn, String expectedPattern) {

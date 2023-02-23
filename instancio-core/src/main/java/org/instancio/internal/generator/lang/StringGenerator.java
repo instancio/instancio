@@ -29,8 +29,11 @@ import org.instancio.settings.Settings;
 
 public class StringGenerator extends AbstractGenerator<String> implements StringSpec {
 
+    private static final char[] LC_HEX = "0123456789abcdef".toCharArray();
+    private static final char[] UC_HEX = "0123456789ABCDEF".toCharArray();
+
     private enum StringType {
-        LOWER_CASE, UPPER_CASE, MIXED_CASE, ALPHANUMERIC, DIGITS
+        MIXED_CASE, ALPHANUMERIC, DIGITS, HEX
     }
 
     protected int minLength;
@@ -39,6 +42,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     private String prefix;
     private String suffix;
     private StringType stringType;
+    private boolean isLowerCase; // uppercase by default
 
     /**
      * Delegate for internal use only. It is used to support Bean Validation.
@@ -152,13 +156,13 @@ public class StringGenerator extends AbstractGenerator<String> implements String
 
     @Override
     public StringGenerator lowerCase() {
-        stringType = StringType.LOWER_CASE;
+        isLowerCase = true;
         return this;
     }
 
     @Override
     public StringGenerator upperCase() {
-        stringType = StringType.UPPER_CASE;
+        isLowerCase = false;
         return this;
     }
 
@@ -177,6 +181,12 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     @Override
     public StringGenerator digits() {
         stringType = StringType.DIGITS;
+        return this;
+    }
+
+    @Override
+    public StringGenerator hex() {
+        stringType = StringType.HEX;
         return this;
     }
 
@@ -202,22 +212,26 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     private String generateString(final Random random, final int length) {
-        if (stringType == null || stringType == StringType.UPPER_CASE) {
-            return random.upperCaseAlphabetic(length);
-        }
-        if (stringType == StringType.LOWER_CASE) {
-            return random.lowerCaseAlphabetic(length);
-        }
-        if (stringType == StringType.MIXED_CASE) {
-            return random.mixedCaseAlphabetic(length);
-        }
-        if (stringType == StringType.ALPHANUMERIC) {
-            return random.alphanumeric(length);
+        if (stringType == null) {
+            return isLowerCase
+                    ? random.lowerCaseAlphabetic(length)
+                    : random.upperCaseAlphabetic(length);
         }
         if (stringType == StringType.DIGITS) {
             return random.digits(length);
         }
-
+        if (stringType == StringType.ALPHANUMERIC) {
+            // TODO refactor to support lower/upper case
+            return random.alphanumeric(length);
+        }
+        if (stringType == StringType.HEX) {
+            return isLowerCase
+                    ? random.stringOf(length, LC_HEX)
+                    : random.stringOf(length, UC_HEX);
+        }
+        if (stringType == StringType.MIXED_CASE) {
+            return random.mixedCaseAlphabetic(length);
+        }
         throw new IllegalStateException("Unknown StringType: " + stringType); // unreachable
     }
 }
