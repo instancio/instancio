@@ -17,7 +17,9 @@ package org.instancio.test.features.generator;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -30,6 +32,7 @@ import org.instancio.test.support.pojo.collections.maps.TwoMapsOfIntegerItemStri
 import org.instancio.test.support.pojo.collections.sets.HashSetLong;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.pojo.generics.basic.Item;
+import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -41,6 +44,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +54,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
@@ -208,6 +213,24 @@ class BuiltInCollectionGeneratorTest {
             assertThat(list)
                     .hasSizeBetween(minSize, maxSize)
                     .allSatisfy(item -> assertThat(item.getValue()).isInstanceOf(String.class));
+        }
+    }
+
+    @Nested
+    class ValidationTest {
+
+        /**
+         * {@link EnumSet} os has a dedicated generator and
+         * is not supported by the collection generator.
+         */
+        @Test
+        void shouldRejectEnumSet() {
+            final InstancioApi<EnumSet<Gender>> api = Instancio.of(new TypeToken<EnumSet<Gender>>() {})
+                    .generate(all(EnumSet.class), gen -> gen.collection().size(1));
+
+            assertThatThrownBy(api::create)
+                    .isExactlyInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("Method 'collection()' cannot be used for type: java.util.EnumSet");
         }
     }
 
