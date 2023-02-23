@@ -34,7 +34,7 @@ class NumberSpecTest {
     @Nested
     class ByteSpecTest extends AbstractNumberSpecTestTemplate<Byte> {
         @Override
-        protected NumberSpec<Byte> getSpec() {
+        protected NumberSpec<Byte> spec() {
             return bytes();
         }
 
@@ -47,7 +47,7 @@ class NumberSpecTest {
     @Nested
     class ShortSpecTest extends AbstractNumberSpecTestTemplate<Short> {
         @Override
-        protected NumberSpec<Short> getSpec() {
+        protected NumberSpec<Short> spec() {
             return shorts();
         }
 
@@ -60,7 +60,7 @@ class NumberSpecTest {
     @Nested
     class IntegerSpecTest extends AbstractNumberSpecTestTemplate<Integer> {
         @Override
-        protected NumberSpec<Integer> getSpec() {
+        protected NumberSpec<Integer> spec() {
             return ints();
         }
 
@@ -73,7 +73,7 @@ class NumberSpecTest {
     @Nested
     class LongSpecTest extends AbstractNumberSpecTestTemplate<Long> {
         @Override
-        protected NumberSpec<Long> getSpec() {
+        protected NumberSpec<Long> spec() {
             return longs();
         }
 
@@ -86,7 +86,7 @@ class NumberSpecTest {
     @Nested
     class FloatSpecTest extends AbstractNumberSpecTestTemplate<Float> {
         @Override
-        protected NumberSpec<Float> getSpec() {
+        protected NumberSpec<Float> spec() {
             return floats();
         }
 
@@ -99,7 +99,7 @@ class NumberSpecTest {
     @Nested
     class DoubleSpecTest extends AbstractNumberSpecTestTemplate<Double> {
         @Override
-        protected NumberSpec<Double> getSpec() {
+        protected NumberSpec<Double> spec() {
             return doubles();
         }
 

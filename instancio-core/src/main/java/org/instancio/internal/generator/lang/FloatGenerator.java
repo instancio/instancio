@@ -71,7 +71,7 @@ public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     }
 
     @Override
-    protected Float generateNonNullValue(final Random random) {
+    protected Float tryGenerateNonNull(final Random random) {
         return random.floatRange(getMin(), getMax());
     }
 }

@@ -47,7 +47,7 @@ public class BooleanGenerator extends AbstractGenerator<Boolean>
     }
 
     @Override
-    public Boolean generate(final Random random) {
+    protected Boolean tryGenerateNonNull(final Random random) {
         return random.diceRoll(isNullable()) ? null : random.trueOrFalse();
     }
 }

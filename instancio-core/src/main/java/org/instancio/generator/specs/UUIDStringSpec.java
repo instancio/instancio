@@ -31,4 +31,7 @@ public interface UUIDStringSpec extends ValueSpec<String>, UUIDStringGeneratorSp
 
     @Override
     UUIDStringSpec withoutDashes();
+
+    @Override
+    UUIDStringSpec nullable();
 }

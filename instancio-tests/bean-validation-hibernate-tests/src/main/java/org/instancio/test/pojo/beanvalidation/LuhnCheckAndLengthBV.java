@@ -15,6 +15,7 @@
  */
 package org.instancio.test.pojo.beanvalidation;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.LuhnCheck;
@@ -23,6 +24,7 @@ public class LuhnCheckAndLengthBV {
 
     @Data
     public static class WithDefaults {
+        @NotNull
         @Length(min = 10)
         @LuhnCheck
         private String value;
@@ -30,10 +32,12 @@ public class LuhnCheckAndLengthBV {
 
     @Data
     public static class WithStartEndIndices {
+        @NotNull
         @Length(min = 8, max = 8)
         @LuhnCheck(startIndex = 0, endIndex = 7)
         private String value0;
 
+        @NotNull
         @Length(min = 20, max = 22)
         @LuhnCheck(startIndex = 5, endIndex = 10)
         private String value1;
@@ -41,10 +45,12 @@ public class LuhnCheckAndLengthBV {
 
     @Data
     public static class WithStartEndAndCheckDigitIndices {
+        @NotNull
         @Length(min = 17)
         @LuhnCheck(startIndex = 0, endIndex = 7, checkDigitIndex = 7)
         private String value0;
 
+        @NotNull
         @Length(max = 20) // min = 0
         @LuhnCheck(startIndex = 5, endIndex = 10, checkDigitIndex = 3)
         private String value1;

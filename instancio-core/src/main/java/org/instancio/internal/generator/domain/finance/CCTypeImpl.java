@@ -19,32 +19,25 @@ import org.instancio.internal.util.CollectionUtils;
 
 import java.util.List;
 
-public enum CreditCardType {
+// Avoid naming CreditCard* to prevent it from appearing in IDE completion
+public enum CCTypeImpl {
 
-    AMEX(15, 34, 37),
-    DINERS(14, 36, 38, 300, 301, 302, 303, 304, 305),
-    DISCOVER(16, 6011),
-    JCB15(15, 1800, 2123),
-    JCB16(16, 3),
-    MC(16, 51, 52, 53, 54, 55),
-    VISA13(13, 4),
-    VISA16(16, 4);
+    CC_MASTERCARD(16, 51, 52, 53, 54, 55),
+    CC_VISA(16, 4);
 
     private final int length;
     private final List<Integer> prefixes;
 
-    CreditCardType(final int length, final Integer... prefixes) {
+    CCTypeImpl(final int length, final Integer... prefixes) {
         this.length = length;
         this.prefixes = CollectionUtils.asList(prefixes);
     }
 
-    int getLength() {
+    public int getLength() {
         return length;
     }
 
-    List<Integer> getPrefixes() {
+    public List<Integer> getPrefixes() {
         return prefixes;
     }
 }
-
-

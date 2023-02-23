@@ -74,7 +74,13 @@ public class PeriodGenerator extends AbstractGenerator<Period> implements Period
     }
 
     @Override
-    public Period generate(final Random random) {
+    public PeriodGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected Period tryGenerateNonNull(final Random random) {
         return Period.of(
                 random.intRange(minYears, maxYears),
                 random.intRange(minMonths, maxMonths),

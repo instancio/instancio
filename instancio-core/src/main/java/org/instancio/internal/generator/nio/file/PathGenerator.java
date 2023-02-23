@@ -120,7 +120,13 @@ public class PathGenerator extends AbstractGenerator<Path>
     }
 
     @Override
-    public Path generate(final Random random) {
+    public PathGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    public Path tryGenerateNonNull(final Random random) {
         final Path directoryPath = getDirectoryPath();
         final Path leafNameAsPath = getLeafNameAsPath(random);
         final Path completePath = directoryPath == null

@@ -32,7 +32,7 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
     }
 
     @Override
-    public Collection<T> generate(final Random random) {
+    protected Collection<T> tryGenerateNonNull(final Random random) {
         throw new InstancioException(getClass() + " should delegate to another generator");
     }
 }

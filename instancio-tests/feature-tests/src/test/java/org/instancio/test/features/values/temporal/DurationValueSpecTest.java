@@ -15,6 +15,9 @@
  */
 package org.instancio.test.features.values.temporal;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.DurationSpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
@@ -25,34 +28,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.temporal;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class DurationValueSpecTest {
+class DurationValueSpecTest extends AbstractValueSpecTestTemplate<Duration> {
 
-    @Test
-    void get() {
-        assertThat(temporal().duration().get()).isNotNull();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<Duration> results = temporal().duration().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final Long result = temporal().duration().map(Duration::toNanos);
-        assertThat(result).isPositive();
+    @Override
+    protected DurationSpec spec() {
+        return Gen.temporal().duration();
     }
 
     @Test
     void min() {
         final Duration min = Duration.of(1000, ChronoUnit.DAYS);
 
-        final List<Duration> actual = temporal().duration().min(min.toDays(), ChronoUnit.DAYS)
+        final List<Duration> actual = spec().min(min.toDays(), ChronoUnit.DAYS)
                 .list(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(actual)
@@ -64,7 +53,7 @@ class DurationValueSpecTest {
     void max() {
         final Duration max = Duration.of(-1000, ChronoUnit.DAYS);
 
-        final List<Duration> actual = temporal().duration().max(max.toDays(), ChronoUnit.DAYS)
+        final List<Duration> actual = spec().max(max.toDays(), ChronoUnit.DAYS)
                 .list(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(actual)
@@ -77,7 +66,7 @@ class DurationValueSpecTest {
         final Duration min = Duration.of(1, ChronoUnit.SECONDS);
         final Duration max = Duration.of(10, ChronoUnit.SECONDS);
 
-        final List<Duration> actual = temporal().duration()
+        final List<Duration> actual = spec()
                 .min(min.toNanos(), ChronoUnit.NANOS)
                 .max(max.toNanos(), ChronoUnit.NANOS)
                 .list(Constants.SAMPLE_SIZE_DDD);
@@ -92,7 +81,7 @@ class DurationValueSpecTest {
         final Duration min = Duration.of(1, ChronoUnit.DAYS);
         final Duration max = Duration.of(9, ChronoUnit.DAYS);
 
-        final List<Duration> actual = temporal().duration().of(1, 9, ChronoUnit.DAYS)
+        final List<Duration> actual = spec().of(1, 9, ChronoUnit.DAYS)
                 .list(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(actual)
@@ -102,7 +91,7 @@ class DurationValueSpecTest {
 
     @Test
     void allowZero() {
-        final List<Duration> actual = temporal().duration().allowZero().list(Constants.SAMPLE_SIZE_DDD);
+        final List<Duration> actual = spec().allowZero().list(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(actual)
                 .hasSize(Constants.SAMPLE_SIZE_DDD)

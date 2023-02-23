@@ -15,45 +15,32 @@
  */
 package org.instancio.test.features.values.text;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.LoremIpsumSpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.text;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class LoremIpsumSpecTest {
+class LoremIpsumSpecTest extends AbstractValueSpecTestTemplate<String> {
 
-    @Test
-    void get() {
-        assertThat(text().loremIpsum().get()).isNotNull();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<String> results = text().loremIpsum().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final Integer result = text().loremIpsum().map(String::length);
-        assertThat(result).isPositive();
+    @Override
+    protected LoremIpsumSpec spec() {
+        return Gen.text().loremIpsum();
     }
 
     @Test
     void words() {
-        final String result = text().loremIpsum().words(2).get();
+        final String result = spec().words(2).get();
         assertThat(result).matches("\\w+ \\w+\\.");
     }
 
     @Test
     void paragraphs() {
-        final String result = text().loremIpsum().paragraphs(1).get();
+        final String result = spec().paragraphs(1).get();
         assertThat(result.split(System.lineSeparator())).hasSize(1);
     }
 }

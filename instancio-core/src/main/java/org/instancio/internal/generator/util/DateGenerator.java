@@ -62,9 +62,7 @@ public class DateGenerator extends AbstractGenerator<Date> implements TemporalGe
     }
 
     @Override
-    public Date generate(final Random random) {
-        return random.diceRoll(isNullable())
-                ? null
-                : Date.from((delegate).generateNonNullValue(random));
+    protected Date tryGenerateNonNull(final Random random) {
+        return Date.from((delegate).tryGenerateNonNull(random));
     }
 }

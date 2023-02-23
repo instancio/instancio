@@ -15,8 +15,10 @@
  */
 package org.instancio.generators;
 
+import org.instancio.generator.specs.EmailSpec;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.generator.specs.URLSpec;
+import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 
@@ -48,5 +50,15 @@ public final class NetSpecs {
      */
     public URLSpec url() {
         return new URLGenerator();
+    }
+
+    /**
+     * Generates email addresses.
+     *
+     * @return API builder reference
+     * @since 2.11.0
+     */
+    public EmailSpec email() {
+        return new EmailGenerator();
     }
 }

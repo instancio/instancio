@@ -16,33 +16,39 @@
 package org.instancio.test.features.values.array;
 
 import org.instancio.Gen;
+import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.specs.OneOfArraySpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class OneOfArraySpecTest {
+class OneOfArraySpecTest extends AbstractValueSpecTestTemplate<String> {
 
     private static final String[] CHOICES = {"foo", "bar", "baz"};
 
-    @Test
-    void get() {
-        final String result = Gen.oneOf(CHOICES).get();
-        assertThat(result).isIn((Object[]) CHOICES);
+    @Override
+    protected OneOfArraySpec<String> spec() {
+        return Gen.oneOf(CHOICES);
+    }
+
+    @Override
+    protected void assertDefaultSpecValue(final String actual) {
+        assertThat(actual).isIn(Arrays.asList(CHOICES));
     }
 
     @Test
-    void list() {
-        final List<String> result = Gen.oneOf(CHOICES).list(100);
-        assertThat(result).contains(CHOICES);
-    }
-
-    @Test
-    void map() {
-        assertThat(Gen.oneOf(CHOICES).map(String::length)).isEqualTo(3);
+    @Override
+    protected void toModel() {
+        final OneOfArraySpec<String> spec = spec();
+        assertThatThrownBy(spec::toModel)
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("oneOf() spec does not support toModel()");
     }
 }

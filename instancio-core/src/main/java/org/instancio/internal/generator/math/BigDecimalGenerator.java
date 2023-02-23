@@ -89,7 +89,7 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
-    protected BigDecimal generateNonNullValue(final Random random) {
+    protected BigDecimal tryGenerateNonNull(final Random random) {
         final BigDecimal delta = getMax().subtract(getMin());
         final BigDecimal rndDelta = delta.multiply(BigDecimal.valueOf(random.doubleRange(0.01, 1)));
         return getMin().add(rndDelta).setScale(scale, RoundingMode.HALF_UP);

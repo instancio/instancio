@@ -40,13 +40,13 @@ class CreditCardNumberGeneratorTest {
 
     @Test
     void apiMethod() {
-        assertThat(generator.apiMethod()).isNull();
+        assertThat(generator.apiMethod()).isEqualTo("creditCard()");
     }
 
     @Test
     void generate() {
         for (int i = 0; i < Constants.SAMPLE_SIZE_DDD; i++) {
-            final CreditCardType cardType = Gen.oneOf(CreditCardType.values()).get();
+            final CCTypeImpl cardType = Gen.oneOf(CCTypeImpl.values()).get();
 
             final String[] prefixes = cardType.getPrefixes().stream()
                     .map(Object::toString)

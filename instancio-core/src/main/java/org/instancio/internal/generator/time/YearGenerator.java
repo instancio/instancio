@@ -83,7 +83,7 @@ public class YearGenerator extends JavaTimeTemporalGenerator<Year>
     }
 
     @Override
-    public Year generateNonNullValue(final Random random) {
+    protected Year tryGenerateNonNull(final Random random) {
         return Year.of(random.intRange(min.getValue(), max.getValue()));
     }
 }

@@ -288,4 +288,24 @@ public class Generators {
     public TextGenerators text() {
         return new TextGenerators(context);
     }
+
+    /**
+     * Provides access to identifier generators.
+     *
+     * @return built-in id generators
+     * @since 2.11.0
+     */
+    public IdGenerators id() {
+        return new IdGenerators(context);
+    }
+
+    /**
+     * Provides access to finance-related generators.
+     *
+     * @return built-in finance-related generators
+     * @since 2.11.0s
+     */
+    public FinanceGenerators finance() {
+        return new FinanceGenerators(context);
+    }
 }

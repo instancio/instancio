@@ -137,11 +137,9 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
-    public Map<K, V> generate(final Random random) {
+    public Map<K, V> tryGenerateNonNull(final Random random) {
         try {
-            return random.diceRoll(isNullable())
-                    ? null
-                    : (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
+            return (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
             LOG.debug("Error creating instance of: {}", mapType, ex);
             return null; // NOPMD

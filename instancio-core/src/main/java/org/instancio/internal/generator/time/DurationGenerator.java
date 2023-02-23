@@ -87,7 +87,13 @@ public class DurationGenerator extends AbstractGenerator<Duration> implements Du
     }
 
     @Override
-    public Duration generate(final Random random) {
+    public DurationGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected Duration tryGenerateNonNull(final Random random) {
         return random.diceRoll(allowZero)
                 ? Duration.ZERO
                 : Duration.of(random.longRange(min.toNanos(), max.toNanos()), ChronoUnit.NANOS);

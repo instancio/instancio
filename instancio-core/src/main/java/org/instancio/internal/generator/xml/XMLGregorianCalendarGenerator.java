@@ -44,7 +44,7 @@ public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregoria
     }
 
     @Override
-    public XMLGregorianCalendar generate(final Random random) {
+    protected XMLGregorianCalendar tryGenerateNonNull(final Random random) {
         LocalDateTime localDateTime = localDateTimeGenerator.generate(random);
         try {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(

@@ -15,12 +15,14 @@
  */
 package org.instancio.test.pojo.beanvalidation;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.CreditCardNumber;
 
 @Data
 public class CreditCardNumberBV {
 
+    @NotNull
     @CreditCardNumber
     private String value;
 }

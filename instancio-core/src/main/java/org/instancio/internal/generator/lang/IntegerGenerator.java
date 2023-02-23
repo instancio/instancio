@@ -71,7 +71,7 @@ public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpe
     }
 
     @Override
-    protected Integer generateNonNullValue(final Random random) {
+    protected Integer tryGenerateNonNull(final Random random) {
         return random.intRange(getMin(), getMax());
     }
 

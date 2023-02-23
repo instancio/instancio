@@ -75,7 +75,13 @@ public class URLGenerator extends AbstractURIGenerator<URL>
     }
 
     @Override
-    public URL generate(final Random random) {
+    public URLGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected URL tryGenerateNonNull(final Random random) {
         final String protocol = getScheme(random);
         final String host = getHost(random);
         final int portNumber = getPort(random);

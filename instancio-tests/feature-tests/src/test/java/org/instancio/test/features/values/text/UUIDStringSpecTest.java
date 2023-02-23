@@ -15,46 +15,32 @@
  */
 package org.instancio.test.features.values.text;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.UUIDStringSpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.text;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class UUIDStringSpecTest {
+class UUIDStringSpecTest extends AbstractValueSpecTestTemplate<String> {
 
-    @Test
-    void get() {
-        assertThat(text().uuid().get()).isNotNull();
+    @Override
+    protected UUIDStringSpec spec() {
+        return Gen.text().uuid();
     }
 
     @Test
-    void list() {
-        final int size = 10;
-        final List<String> results = text().uuid().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final UUID result = text().uuid().map(UUID::fromString);
-        assertThat(result).isNotNull();
-    }
-
-    @Test
-    void words() {
-        final String result = text().uuid().upperCase().get();
+    void upperCase() {
+        final String result = spec().upperCase().get();
         assertThat(result).isUpperCase();
     }
 
     @Test
-    void paragraphs() {
-        final String result = text().uuid().withoutDashes().get();
+    void withoutDashes() {
+        final String result = spec().withoutDashes().get();
         assertThat(result).doesNotContain("-");
     }
 }

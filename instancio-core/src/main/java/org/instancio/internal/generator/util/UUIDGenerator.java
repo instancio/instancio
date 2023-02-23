@@ -33,7 +33,7 @@ public class UUIDGenerator extends AbstractGenerator<UUID> {
     }
 
     @Override
-    public UUID generate(final Random random) {
+    public UUID tryGenerateNonNull(final Random random) {
         final byte[] randomBytes = new byte[16];
         for (int i = 0; i < randomBytes.length; i++) {
             randomBytes[i] = random.byteRange(Byte.MIN_VALUE, Byte.MAX_VALUE);

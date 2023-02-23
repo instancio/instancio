@@ -15,76 +15,63 @@
  */
 package org.instancio.test.features.values.nio;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.PathSpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.file.Path;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.nio;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class PathSpecTest {
+class PathSpecTest extends AbstractValueSpecTestTemplate<Path> {
 
-    @Test
-    void get() {
-        assertThat(nio().path().get()).isNotNull();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<Path> results = nio().path().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final URI result = nio().path().map(Path::toUri);
-        assertThat(result).isNotNull();
+    @Override
+    protected PathSpec spec() {
+        return Gen.nio().path();
     }
 
     @Test
     void name() {
-        assertThat(nio().path().name(r -> "foo").get()).hasFileName("foo");
+        assertThat(spec().name(r -> "foo").get()).hasFileName("foo");
     }
 
     @Test
     void prefix() {
-        assertThat(nio().path().prefix("prefix").get().toString()).startsWith("prefix");
+        assertThat(spec().prefix("prefix").get().toString()).startsWith("prefix");
     }
 
     @Test
     void suffix() {
-        assertThat(nio().path().suffix("suffix").get().toString()).endsWith("suffix");
+        assertThat(spec().suffix("suffix").get().toString()).endsWith("suffix");
     }
 
     @Test
     void tmp() {
-        assertThat(nio().path().tmp().get().toString()).contains(System.getProperty("java.io.tmpdir"));
+        assertThat(spec().tmp().get().toString()).contains(System.getProperty("java.io.tmpdir"));
     }
 
     @Test
     void createDirectory() {
-        final Path actual = nio().path().tmp().createDirectory().get();
+        final Path actual = spec().tmp().createDirectory().get();
         assertThat(actual).exists().isDirectory();
     }
 
     @Test
     void createFile() {
-        final Path actual = nio().path().tmp().createFile().get();
+        final Path actual = spec().tmp().createFile().get();
         assertThat(actual).exists().isEmptyFile();
     }
 
     @Test
     void createFileWithContent() {
         final InputStream is = new ByteArrayInputStream("foo".getBytes());
-        final Path actual = nio().path().tmp().createFile(is).get();
+        final Path actual = spec().tmp().createFile(is).get();
         assertThat(actual).hasContent("foo");
     }
 }

@@ -32,7 +32,7 @@ public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
     }
 
     @Override
-    public Map<K, V> generate(final Random random) {
+    public Map<K, V> tryGenerateNonNull(final Random random) {
         throw new InstancioException(getClass() + " should delegate to another generator");
     }
 }

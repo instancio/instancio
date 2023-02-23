@@ -95,7 +95,7 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumS
 
     @Override
     @SuppressWarnings({"PMD.ReturnEmptyCollectionRatherThanNull", Sonar.RETURN_EMPTY_COLLECTION})
-    public EnumSet<E> generate(final Random random) {
+    protected EnumSet<E> tryGenerateNonNull(final Random random) {
         // If enum class is known at this time (i.e. it was supplied by the user via the spec)
         // then generate an EnumSet internally.
         if (enumClass != null) {

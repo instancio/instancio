@@ -44,7 +44,7 @@ class CreditCardNumberBVTest {
 
             assertThat(result.getValue())
                     .as("Should generate a 16-digit Visa credit card number by default")
-                    .startsWith("4")
+                    .matches("^[45]\\d+$")
                     .hasSize(16);
         });
     }

@@ -107,7 +107,7 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
     private static EanGenerator getEanGenerator(final EAN ean, final GeneratorContext context) {
         final EanGenerator generator = new EanGenerator(context);
         if (ean.type() == EAN.Type.EAN8) {
-            generator.ean8();
+            generator.type8();
         }
         return generator;
     }

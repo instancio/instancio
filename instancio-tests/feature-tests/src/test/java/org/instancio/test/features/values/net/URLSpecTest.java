@@ -15,54 +15,42 @@
  */
 package org.instancio.test.features.values.net;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.URLSpec;
+import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.net;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class URLSpecTest {
+class URLSpecTest extends AbstractValueSpecTestTemplate<URL> {
 
-    @Test
-    void get() {
-        assertThat(net().url().get()).isNotNull();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<URL> results = net().url().list(size);
-        assertThat(results).hasSize(size);
-    }
-
-    @Test
-    void map() {
-        final String result = net().url().map(URL::toString);
-        assertThat(result).isNotBlank();
+    @Override
+    protected URLSpec spec() {
+        return Gen.net().url();
     }
 
     @Test
     void protocol() {
-        assertThat(net().url().protocol("ftp").get()).hasProtocol("ftp");
+        assertThat(spec().protocol("ftp").get()).hasProtocol("ftp");
     }
 
     @Test
     void host() {
-        assertThat(net().url().host(r -> "foo").get()).hasHost("foo");
+        assertThat(spec().host(r -> "foo").get()).hasHost("foo");
     }
 
     @Test
     void port() {
-        assertThat(net().url().port(1234).get()).hasPort(1234);
+        assertThat(spec().port(1234).get()).hasPort(1234);
     }
 
     @Test
     void file() {
-        assertThat(net().url().file(r -> "foo").get()).hasPath("foo");
+        assertThat(spec().file(r -> "foo").get()).hasPath("foo");
     }
 }

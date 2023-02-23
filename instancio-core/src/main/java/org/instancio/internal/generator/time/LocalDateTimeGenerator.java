@@ -89,7 +89,7 @@ public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateT
     }
 
     @Override
-    public LocalDateTime generateNonNullValue(final Random random) {
+    protected LocalDateTime tryGenerateNonNull(final Random random) {
         delegate.range(min.toInstant(ZONE_OFFSET), max.toInstant(ZONE_OFFSET));
         return LocalDateTime.ofInstant(delegate.generate(random), ZONE_OFFSET);
     }

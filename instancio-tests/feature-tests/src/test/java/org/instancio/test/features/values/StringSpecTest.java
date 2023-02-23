@@ -15,6 +15,8 @@
  */
 package org.instancio.test.features.values;
 
+import org.instancio.Gen;
+import org.instancio.generator.specs.StringSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -25,76 +27,51 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.math.BigInteger;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.string;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class StringSpecTest {
+class StringSpecTest extends AbstractValueSpecTestTemplate<String> {
 
-    @Test
-    void get() {
-        assertThat(string().get()).isNotBlank();
-    }
-
-    @Test
-    void list() {
-        final int size = 10;
-        final List<String> results = string().length(50).list(size);
-        assertThat(new HashSet<>(results)).hasSize(size);
-    }
-
-    @Test
-    void stream() {
-        final int size = 10;
-        final Stream<String> result = string().stream().filter(s -> s.contains("X"))
-                .limit(size);
-
-        assertThat(result).hasSize(size).allMatch(s -> s.contains("X"));
-    }
-
-    @Test
-    void map() {
-        final BigInteger result = string().digits().map(BigInteger::new);
-        assertThat(result).isPositive();
+    @Override
+    protected StringSpec spec() {
+        return Gen.string();
     }
 
     @Test
     void prefix() {
-        assertThat(string().prefix("foo").get()).startsWith("foo");
+        assertThat(spec().prefix("foo").get()).startsWith("foo");
     }
 
     @Test
     void suffix() {
-        assertThat(string().suffix("foo").get()).endsWith("foo");
+        assertThat(spec().suffix("foo").get()).endsWith("foo");
     }
 
     @Test
     void length() {
-        assertThat(string().length(5).get()).hasSize(5);
-        assertThat(string().length(5, 7).get()).hasSizeBetween(5, 7);
-        assertThat(string().minLength(10).get()).hasSizeGreaterThanOrEqualTo(10);
-        assertThat(string().maxLength(1).get()).hasSizeLessThanOrEqualTo(1);
+        assertThat(spec().length(5).get()).hasSize(5);
+        assertThat(spec().length(5, 7).get()).hasSizeBetween(5, 7);
+        assertThat(spec().minLength(10).get()).hasSizeGreaterThanOrEqualTo(10);
+        assertThat(spec().maxLength(1).get()).hasSizeLessThanOrEqualTo(1);
     }
 
     @Test
     void cases() {
-        assertThat(string().upperCase().get()).isUpperCase();
-        assertThat(string().lowerCase().get()).isLowerCase();
-        assertThat(string().mixedCase().length(20).get()).isMixedCase();
-        assertThat(string().alphaNumeric().length(20).get()).isAlphanumeric();
-        assertThat(string().digits().get()).containsOnlyDigits();
+        assertThat(spec().upperCase().get()).isUpperCase();
+        assertThat(spec().lowerCase().get()).isLowerCase();
+        assertThat(spec().mixedCase().length(20).get()).isMixedCase();
+        assertThat(spec().alphaNumeric().length(20).get()).isAlphanumeric();
+        assertThat(spec().digits().get()).containsOnlyDigits();
     }
 
     @Test
     void allowEmptyAndNullable() {
         final Stream<String> result = IntStream.range(0, 500)
-                .mapToObj(i -> string().allowEmpty().nullable().get());
+                .mapToObj(i -> spec().allowEmpty().nullable().get());
 
         assertThat(result).contains("").containsNull();
     }
@@ -109,7 +86,7 @@ class StringSpecTest {
 
         @Test
         void disallowEmpty() {
-            final List<String> results = string().allowEmpty(false).list(500);
+            final List<String> results = spec().allowEmpty(false).list(500);
 
             assertThat(results).hasSize(500).doesNotContain("");
         }

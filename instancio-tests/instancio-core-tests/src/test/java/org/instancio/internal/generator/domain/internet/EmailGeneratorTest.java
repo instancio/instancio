@@ -27,21 +27,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Gen.ints;
 
-class EmailAddressGeneratorTest {
-    private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
-            + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
-            + "%n\t#c - lower case character [a-z]"
-            + "%n\t#C - upper case character [A-Z]"
-            + "%n\t#d - digit [0-9]"
-            + "%n\t## - hash symbol escape%n");
-
+class EmailGeneratorTest {
     private static final Random random = new DefaultRandom();
     private final GeneratorContext context = new GeneratorContext(Settings.create(), random);
-    private final EmailAddressGenerator generator = new EmailAddressGenerator(context);
+    private final EmailGenerator generator = new EmailGenerator(context);
 
     @Test
     void apiMethod() {
-        assertThat(generator.apiMethod()).isNull();
+        assertThat(generator.apiMethod()).isEqualTo("email()");
     }
 
     @ValueSource(ints = {3, 4, 5, 6})
@@ -56,7 +49,7 @@ class EmailAddressGeneratorTest {
     @ValueSource(ints = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20})
     @ParameterizedTest
     void lengthGreaterThanSix(final int length) {
-        EmailAddressGenerator generator = new EmailAddressGenerator(context);
+        EmailGenerator generator = new EmailGenerator(context);
         generator.length(length);
         assertThat(generator.generate(random))
                 .hasSize(length)

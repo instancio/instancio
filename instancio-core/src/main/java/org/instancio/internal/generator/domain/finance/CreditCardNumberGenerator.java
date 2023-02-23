@@ -17,13 +17,20 @@ package org.instancio.internal.generator.domain.finance;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.CreditCardSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.LuhnUtils;
+import org.jetbrains.annotations.VisibleForTesting;
 
-public class CreditCardNumberGenerator extends AbstractGenerator<String> {
+public class CreditCardNumberGenerator extends AbstractGenerator<String>
+        implements CreditCardSpec {
 
-    // Default to Visa since apparently it is the most common card
-    private CreditCardType cardType = CreditCardType.VISA16;
+    private CCTypeImpl cardType;
+
+    public CreditCardNumberGenerator() {
+        super(Global.generatorContext());
+    }
 
     public CreditCardNumberGenerator(final GeneratorContext context) {
         super(context);
@@ -31,10 +38,21 @@ public class CreditCardNumberGenerator extends AbstractGenerator<String> {
 
     @Override
     public String apiMethod() {
-        return null;
+        return "creditCard()";
     }
 
-    public CreditCardNumberGenerator cardType(final CreditCardType cardType) {
+    @Override
+    public CreditCardNumberGenerator visa() {
+        return cardType(CCTypeImpl.CC_VISA);
+    }
+
+    @Override
+    public CreditCardNumberGenerator masterCard() {
+        return cardType(CCTypeImpl.CC_MASTERCARD);
+    }
+
+    @VisibleForTesting
+    CreditCardNumberGenerator cardType(final CCTypeImpl cardType) {
         this.cardType = cardType;
         return this;
     }
@@ -46,13 +64,13 @@ public class CreditCardNumberGenerator extends AbstractGenerator<String> {
     }
 
     @Override
-    public String generate(final Random random) {
-        if (random.diceRoll(isNullable())) {
-            return null;
-        }
+    protected String tryGenerateNonNull(final Random random) {
+        final CCTypeImpl type = cardType == null
+                ? random.oneOf(CCTypeImpl.values())
+                : cardType;
 
-        final String prefix = random.oneOf(cardType.getPrefixes()).toString();
-        final int lengthWithoutCheckDigit = cardType.getLength() - prefix.length();
+        final String prefix = random.oneOf(type.getPrefixes()).toString();
+        final int lengthWithoutCheckDigit = type.getLength() - prefix.length();
         final String withoutCheckDigit = prefix + random.digits(lengthWithoutCheckDigit);
         final char[] payload = withoutCheckDigit.toCharArray();
         final int checkDigit = LuhnUtils.getCheckDigit(payload);

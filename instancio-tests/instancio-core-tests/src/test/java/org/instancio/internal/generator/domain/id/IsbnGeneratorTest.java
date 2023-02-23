@@ -30,7 +30,7 @@ class IsbnGeneratorTest {
 
     @Test
     void apiMethod() {
-        assertThat(generator.apiMethod()).isNull();
+        assertThat(generator.apiMethod()).isEqualTo("isbn()");
     }
 
     @Test

@@ -95,10 +95,7 @@ public class LuhnGenerator extends AbstractGenerator<String>
     }
 
     @Override
-    public String generate(final Random random) {
-        if (random.diceRoll(isNullable())) {
-            return null;
-        }
+    protected String tryGenerateNonNull(final Random random) {
         final int size = random.intRange(minSize, maxSize);
         final int start = Math.max(0, startIndex);
         final int end = endIndex == -1 ? size - 1 : endIndex;

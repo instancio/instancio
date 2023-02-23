@@ -98,7 +98,7 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
     }
 
     @Override
-    public OffsetTime generateNonNullValue(final Random random) {
+    protected OffsetTime tryGenerateNonNull(final Random random) {
         int hour = random.intRange(min.getHour(), max.getHour());
         int minute = random.intRange(min.getMinute(), max.getMinute());
         int second = random.intRange(min.getSecond(), max.getSecond());

@@ -33,7 +33,7 @@ public class ZoneIdGenerator extends AbstractGenerator<ZoneId> {
     }
 
     @Override
-    public ZoneId generate(final Random random) {
+    protected ZoneId tryGenerateNonNull(final Random random) {
         return ZoneId.of(random.oneOf(ZoneId.getAvailableZoneIds()));
     }
 }

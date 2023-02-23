@@ -17,7 +17,9 @@ package org.instancio.internal.generator.domain.internet;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.NullableGeneratorSpec;
+import org.instancio.generator.specs.EmailAsGeneratorSpec;
+import org.instancio.generator.specs.EmailSpec;
+import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
 import org.instancio.internal.util.Verify;
@@ -28,37 +30,41 @@ import java.util.Locale;
  * Internal generator used for generating email addresses for fields annotated
  * with {@code @Email} annotation from Jakarta Bean Validation API.
  */
-public class EmailAddressGenerator extends AbstractGenerator<String>
-        implements NullableGeneratorSpec<String>, InternalLengthGeneratorSpec<String> {
+public class EmailGenerator extends AbstractGenerator<String>
+        implements EmailSpec, EmailAsGeneratorSpec, InternalLengthGeneratorSpec<String> {
 
     private static final String[] TLDS = {"com", "edu", "net", "org"};
 
     private int minLength = 7;
     private int maxLength = 24;
 
-    public EmailAddressGenerator(final GeneratorContext context) {
+    public EmailGenerator() {
+        super(Global.generatorContext());
+    }
+
+    public EmailGenerator(final GeneratorContext context) {
         super(context);
     }
 
     @Override
     public String apiMethod() {
-        return null;
+        return "email()";
     }
 
     @Override
-    public EmailAddressGenerator nullable() {
+    public EmailGenerator nullable() {
         super.nullable();
         return this;
     }
 
     @Override
-    public EmailAddressGenerator nullable(final boolean isNullable) {
+    public EmailGenerator nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
     }
 
     @Override
-    public EmailAddressGenerator length(final int min, final int max) {
+    public EmailGenerator length(final int min, final int max) {
         Verify.isTrue(min >= 3, "Email length must be at least 3 characters long");
         Verify.isTrue(min <= max, "Min must be less than or equal to max");
 
@@ -67,17 +73,14 @@ public class EmailAddressGenerator extends AbstractGenerator<String>
         return this;
     }
 
-    public EmailAddressGenerator length(final int length) {
+    @Override
+    public EmailGenerator length(final int length) {
         length(length, length);
         return this;
     }
 
     @Override
-    public String generate(final Random random) {
-        if (random.diceRoll(isNullable())) {
-            return null;
-        }
-
+    protected String tryGenerateNonNull(final Random random) {
         final int len = random.intRange(minLength, maxLength);
 
         // If length is at least 7, can generate with TLD: x@y.com

@@ -71,7 +71,7 @@ public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<B
     }
 
     @Override
-    protected Byte generateNonNullValue(final Random random) {
+    protected Byte tryGenerateNonNull(final Random random) {
         return random.byteRange(getMin(), getMax());
     }
 }

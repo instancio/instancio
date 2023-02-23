@@ -36,7 +36,7 @@ public class ZoneOffsetGenerator extends AbstractGenerator<ZoneOffset> {
     }
 
     @Override
-    public ZoneOffset generate(final Random random) {
+    protected ZoneOffset tryGenerateNonNull(final Random random) {
         final int hours = random.intRange(MIN_HOURS, MAX_HOURS);
 
         if (Math.abs(hours) == MAX_HOURS) {

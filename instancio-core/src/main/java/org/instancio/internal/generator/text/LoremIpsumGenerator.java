@@ -70,7 +70,13 @@ public class LoremIpsumGenerator extends AbstractGenerator<String>
     }
 
     @Override
-    public String generate(final Random random) {
+    public LoremIpsumGenerator nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected String tryGenerateNonNull(final Random random) {
         ApiValidator.isTrue(words >= paragraphs,
                 "The number of paragraphs (%s) is greater than the number of words (%s)", paragraphs, words);
 
