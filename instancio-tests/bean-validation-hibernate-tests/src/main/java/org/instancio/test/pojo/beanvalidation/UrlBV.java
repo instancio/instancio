@@ -15,6 +15,7 @@
  */
 package org.instancio.test.pojo.beanvalidation;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
@@ -26,12 +27,14 @@ public class UrlBV {
 
     @Data
     public static class WithDefaults {
+        @NotNull
         @URL
         private String value;
     }
 
     @Data
     public static class WithAttributes {
+        @NotNull
         @URL(protocol = PROTOCOL, host = HOST, port = PORT)
         private String value;
     }
