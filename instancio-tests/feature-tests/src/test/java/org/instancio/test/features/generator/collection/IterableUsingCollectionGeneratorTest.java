@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 import static org.instancio.Select.root;
 
 @FeatureTag(Feature.GENERATOR)
@@ -49,4 +50,20 @@ class IterableUsingCollectionGeneratorTest {
 
         assertThat(result).hasSize(10).hasOnlyElementsOfTypes(String.class);
     }
+
+    @Test
+    void assignCollectionToIterable() {
+        class IterableHolder {
+            Iterable<String> iterable;
+        }
+
+        final IterableHolder result = Instancio.of(IterableHolder.class)
+                .generate(field("iterable"), gen -> gen.collection().size(10))
+                .create();
+
+        assertThat(result.iterable)
+                .hasSize(10)
+                .allSatisfy(s -> assertThat(s).isNotBlank());
+    }
+
 }

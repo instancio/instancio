@@ -61,7 +61,8 @@ class GeneratorSupportTest {
         assertSupportsAll(integerGenerator, Object.class, int.class, Integer.class);
         assertSupportsAll(enumGenerator, Object.class, Gender.class);
         assertSupportsAll(enumSetGenerator, Object.class, EnumSet.class);
-        assertSupportsAll(collectionGenerator, Object.class, Collection.class, List.class, Set.class, SortedSet.class, HashSet.class);
+        assertSupportsAll(collectionGenerator, Object.class, Iterable.class, Collection.class,
+                List.class, Set.class, SortedSet.class, HashSet.class);
         assertSupportsAll(mapGenerator, Object.class, Map.class, TreeMap.class, HashMap.class);
         assertSupportsAll(stringGenerator, Object.class, CharSequence.class, String.class);
     }
@@ -71,7 +72,7 @@ class GeneratorSupportTest {
         assertSupportsNone(booleanGenerator, int.class, boolean[].class);
         assertSupportsNone(integerGenerator, long.class, Double.class);
         assertSupportsNone(enumGenerator, Integer.class);
-        assertSupportsNone(collectionGenerator, Map.class);
+        assertSupportsNone(collectionGenerator, Map.class, EnumSet.class); // EnumSet has a dedicated generator
         assertSupportsNone(enumSetGenerator, Foo.class, Gender.class, Collection.class);
         assertSupportsNone(mapGenerator, Collection.class);
         assertSupportsNone(stringGenerator, StringBuilder.class);

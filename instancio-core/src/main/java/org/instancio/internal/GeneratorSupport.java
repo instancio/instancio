@@ -52,7 +52,8 @@ final class GeneratorSupport {
             return EnumSet.class.isAssignableFrom(type);
         }
         if (generator instanceof CollectionGeneratorSpec) {
-            return Collection.class.isAssignableFrom(type) || type == Iterable.class;
+            return (Collection.class.isAssignableFrom(type) || type == Iterable.class)
+                    && type != EnumSet.class;
         }
         if (generator instanceof MapGeneratorSpec) {
             return Map.class.isAssignableFrom(type);
@@ -62,10 +63,10 @@ final class GeneratorSupport {
         }
         final Class<?> typeArg = TypeUtils.getGenericSuperclassTypeArgument(generator.getClass());
         if (typeArg != null) {
-            return type.isAssignableFrom(typeArg)
-                    || PrimitiveWrapperBiLookup.findEquivalent(typeArg)
-                    .filter(type::isAssignableFrom)
-                    .isPresent();
+            return type.isAssignableFrom(typeArg) ||
+                    PrimitiveWrapperBiLookup.findEquivalent(typeArg)
+                            .filter(type::isAssignableFrom)
+                            .isPresent();
         }
         // couldn't determine type arg ('this' is probably a lambda)
         return false;

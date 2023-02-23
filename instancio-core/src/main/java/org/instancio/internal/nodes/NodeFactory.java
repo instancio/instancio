@@ -73,7 +73,7 @@ public final class NodeFactory {
 
     /**
      * Creates children for the given node.
-     * Returned children will not have of their own.
+     * Returned children will not have children of their own.
      *
      * @param node to create children for
      * @return child nodes (without children), or an empty list if none.
