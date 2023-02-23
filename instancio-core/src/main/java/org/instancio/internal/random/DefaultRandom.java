@@ -147,6 +147,20 @@ public class DefaultRandom implements Random {
     }
 
     @Override
+    public String stringOf(final int length, final char... chars) {
+        Verify.isTrue(length >= 0, "Length must not be negative");
+        Verify.isTrue(chars != null && chars.length > 0,
+                "Character array must have at least one element");
+
+        char[] s = new char[length];
+        for (int i = 0; i < length; i++) {
+            s[i] = chars[intRange(0, chars.length - 1)];
+        }
+
+        return new String(s);
+    }
+
+    @Override
     public String alphanumeric(final int length) {
         char[] s = new char[length];
         for (int i = 0; i < length; i++) {

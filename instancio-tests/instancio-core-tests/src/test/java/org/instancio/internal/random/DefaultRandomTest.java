@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.data.Percentage.withPercentage;
 
 @NonDeterministicTag
@@ -374,6 +375,39 @@ class DefaultRandomTest {
                     Arguments.of('t', 'y'),
                     Arguments.of((char) (Character.MAX_VALUE - 1), Character.MAX_VALUE),
                     Arguments.of(Character.MAX_VALUE, Character.MAX_VALUE));
+        }
+    }
+
+    @Nested
+    class StringOfTest {
+
+        @Test
+        void stringOf() {
+            assertThat(random.stringOf(0, 'a')).isEmpty();
+            assertThat(random.stringOf(1, 'a')).isEqualTo("a");
+            assertThat(random.stringOf(3, 'a')).isEqualTo("aaa");
+            assertThat(random.stringOf(500, 'a', 'b', 'c').toCharArray()).contains('a', 'b', 'c');
+        }
+
+        @Test
+        void negativeLength() {
+            assertThatThrownBy(() -> random.stringOf(-1, 'a'))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Length must not be negative");
+        }
+
+        @Test
+        void nullOrEmptyArray() {
+            final String expectedErrorMsg = "Character array must have at least one element";
+
+            final char[] nullArray = null;
+            assertThatThrownBy(() -> random.stringOf(1, nullArray))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessage(expectedErrorMsg);
+
+            assertThatThrownBy(() -> random.stringOf(1, new char[0]))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessage(expectedErrorMsg);
         }
     }
 }

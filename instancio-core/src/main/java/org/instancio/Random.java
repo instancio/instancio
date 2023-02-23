@@ -179,6 +179,16 @@ public interface Random {
     String digits(int length);
 
     /**
+     * Generates a random String of the specified length
+     * comprised of given characters.
+     *
+     * @param length of a string to generate
+     * @param chars  characters to generate the string from
+     * @return random String containing chars from the input array
+     */
+    String stringOf(int length, char... chars);
+
+    /**
      * Returns a random element from the given array.
      *
      * @param array to pick a value from
