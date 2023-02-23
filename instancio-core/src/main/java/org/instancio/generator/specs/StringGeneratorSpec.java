@@ -23,7 +23,7 @@ package org.instancio.generator.specs;
 public interface StringGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
-     * Specifies a String prefix.
+     * Specifies the prefix to prepend to generated strings.
      *
      * @param prefix for generated strings
      * @return spec builder
@@ -31,7 +31,7 @@ public interface StringGeneratorSpec extends NullableGeneratorSpec<String> {
     StringGeneratorSpec prefix(String prefix);
 
     /**
-     * Specifes a String suffix.
+     * Specifies the suffix to append to generated strings.
      *
      * @param suffix for generated strings
      * @return spec builder
@@ -122,6 +122,14 @@ public interface StringGeneratorSpec extends NullableGeneratorSpec<String> {
      * @return spec builder
      */
     StringGeneratorSpec digits();
+
+    /**
+     * Generates a hexadecimal string, upper case by default.
+     *
+     * @return spec builder
+     * @since 2.11.0
+     */
+    StringGeneratorSpec hex();
 
     @Override
     StringGeneratorSpec nullable();

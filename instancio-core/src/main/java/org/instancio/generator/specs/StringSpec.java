@@ -65,4 +65,12 @@ public interface StringSpec extends ValueSpec<String>, StringGeneratorSpec {
 
     @Override
     StringSpec digits();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.11.0
+     */
+    @Override
+    StringSpec hex();
 }
