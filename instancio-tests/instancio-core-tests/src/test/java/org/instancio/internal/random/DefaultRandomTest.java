@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -71,20 +72,6 @@ class DefaultRandomTest {
     }
 
     @Test
-    void trueOrFalse() {
-        int[] counts = new int[2];
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final boolean value = random.trueOrFalse();
-            counts[value ? 1 : 0]++;
-            results.add(value);
-        }
-        assertThat(results).hasSize(2);
-        assertThat(counts[1])
-                .as("Expecting 'true' with 1/2 probability")
-                .isCloseTo(SAMPLE_SIZE / 2, withPercentage(PERCENTAGE_THRESHOLD));
-    }
-
-    @Test
     void diceRoll() {
         final boolean preCondition = true;
         int[] counts = new int[2];
@@ -107,6 +94,40 @@ class DefaultRandomTest {
         }
 
         assertThat(results).hasSize(SAMPLE_SIZE);
+    }
+
+    @Nested
+    class TrueOrFalseTest {
+        @Test
+        void trueOrFalse() {
+            assertFiftyFiftyProbability(random::trueOrFalse);
+        }
+
+        @Test
+        void trueOrFalseWithProbability0_5() {
+            assertFiftyFiftyProbability(() -> random.trueOrFalse(0.5d));
+        }
+
+        private void assertFiftyFiftyProbability(final Supplier<Boolean> supplier) {
+            int[] counts = new int[2];
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                final boolean value = supplier.get();
+                counts[value ? 1 : 0]++;
+                results.add(value);
+            }
+            assertThat(results).hasSize(2);
+            assertThat(counts[1])
+                    .as("Expecting 'true' with 1/2 probability")
+                    .isCloseTo(SAMPLE_SIZE / 2, withPercentage(PERCENTAGE_THRESHOLD));
+        }
+
+        @Test
+        void trueOrFalseWithProbability1() {
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                assertThat(random.trueOrFalse(1d)).isTrue();
+                assertThat(random.trueOrFalse(0d)).isFalse();
+            }
+        }
     }
 
     @Nested

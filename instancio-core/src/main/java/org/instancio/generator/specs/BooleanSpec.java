@@ -24,6 +24,14 @@ import org.instancio.generator.ValueSpec;
  */
 public interface BooleanSpec extends ValueSpec<Boolean>, BooleanGeneratorSpec {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.11.0
+     */
+    @Override
+    BooleanSpec probability(double probability);
+
     @Override
     BooleanSpec nullable();
 }

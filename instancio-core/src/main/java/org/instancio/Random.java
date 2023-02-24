@@ -38,6 +38,15 @@ public interface Random {
     boolean trueOrFalse();
 
     /**
+     * Returns {@code true} with the specified probability.
+     *
+     * @param probability of returning {@code true}
+     * @return a random {@code true} or {@code false}
+     * @since 2.11.0
+     */
+    boolean trueOrFalse(double probability);
+
+    /**
      * Returns {@code true} with a {@code 1/6} probability, but only
      * if the {@code precondition} is true.
      *

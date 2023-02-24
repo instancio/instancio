@@ -16,15 +16,23 @@
 package org.instancio.test.features.values;
 
 import org.instancio.Gen;
-import org.instancio.generator.ValueSpec;
+import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.VALUE_SPEC)
 class BooleanSpecTest extends AbstractValueSpecTestTemplate<Boolean> {
 
     @Override
-    protected ValueSpec<Boolean> spec() {
+    protected BooleanSpec spec() {
         return Gen.booleans();
+    }
+
+    @Test
+    void probability() {
+        assertThat(spec().probability(1).get()).isTrue();
     }
 }

@@ -26,6 +26,14 @@ import org.instancio.generator.AsStringGeneratorSpec;
 public interface BooleanAsGeneratorSpec
         extends BooleanGeneratorSpec, AsGeneratorSpec<Boolean>, AsStringGeneratorSpec<Boolean> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.11.0
+     */
+    @Override
+    BooleanGeneratorSpec probability(double probability);
+
     @Override
     BooleanAsGeneratorSpec nullable();
 }

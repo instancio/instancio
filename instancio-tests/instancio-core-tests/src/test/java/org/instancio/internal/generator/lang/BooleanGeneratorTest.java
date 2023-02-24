@@ -17,6 +17,7 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.random.DefaultRandom;
@@ -33,6 +34,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.withinPercentage;
 import static org.instancio.Select.allBooleans;
 
 @NonDeterministicTag
@@ -64,6 +67,28 @@ class BooleanGeneratorTest {
     }
 
     @Test
+    @NonDeterministicTag
+    void withProbability() {
+        final int sampleSize = 10_000;
+        final double probabilityOfTrue = 0.3;
+
+        final int[] counts = new int[2];
+
+        final BooleanGenerator generator = new BooleanGenerator();
+        generator.probability(probabilityOfTrue);
+
+        for (int i = 0; i < sampleSize; i++) {
+            final boolean result = generator.generate(random);
+            counts[result ? 1 : 0]++;
+        }
+
+        final double falsePercentage = counts[0] / (double) sampleSize;
+        final double truePercentage = counts[1] / (double) sampleSize;
+        assertThat(falsePercentage).isCloseTo(1 - probabilityOfTrue, withinPercentage(5));
+        assertThat(truePercentage).isCloseTo(probabilityOfTrue, withinPercentage(5));
+    }
+
+    @Test
     void nullableViaGeneratorSpec() {
         final Stream<Boolean> results = Instancio.of(Boolean.class)
                 .generate(allBooleans(), gen -> gen.booleans().nullable())
@@ -71,5 +96,16 @@ class BooleanGeneratorTest {
                 .limit(SAMPLE_SIZE);
 
         assertThat(results).containsNull();
+    }
+
+    @Test
+    void validation() {
+        assertThatThrownBy(() -> generator.probability(-0.000123))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Probability must be between 0 and 1, inclusive: -1.23E-4");
+
+        assertThatThrownBy(() -> generator.probability(1.000001))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Probability must be between 0 and 1, inclusive: 1.000001");
     }
 }
