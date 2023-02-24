@@ -53,6 +53,14 @@ public class DefaultRandom implements Random {
     }
 
     @Override
+    public boolean trueOrFalse(final double probability) {
+        Verify.isTrue(probability >= 0 && probability <= 1,
+                "Probability must be between 0 and 1, inclusive: %s", probability);
+
+        return doubleRange(0, 1) <= probability;
+    }
+
+    @Override
     public boolean diceRoll(final boolean precondition) {
         return precondition && intRange(0, 5) == 1;
     }

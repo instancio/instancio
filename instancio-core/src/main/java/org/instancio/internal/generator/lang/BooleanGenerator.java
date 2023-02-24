@@ -19,12 +19,15 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.BooleanAsGeneratorSpec;
 import org.instancio.generator.specs.BooleanSpec;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 
 public class BooleanGenerator extends AbstractGenerator<Boolean>
         implements BooleanSpec, BooleanAsGeneratorSpec {
+
+    private double probability = 0.5;
 
     public BooleanGenerator() {
         this(Global.generatorContext());
@@ -41,6 +44,15 @@ public class BooleanGenerator extends AbstractGenerator<Boolean>
     }
 
     @Override
+    public BooleanGenerator probability(final double probability) {
+        ApiValidator.isTrue(probability >= 0 && probability <= 1,
+                "Probability must be between 0 and 1, inclusive: %s", probability);
+
+        this.probability = probability;
+        return this;
+    }
+
+    @Override
     public BooleanGenerator nullable() {
         super.nullable(true);
         return this;
@@ -48,6 +60,6 @@ public class BooleanGenerator extends AbstractGenerator<Boolean>
 
     @Override
     protected Boolean tryGenerateNonNull(final Random random) {
-        return random.diceRoll(isNullable()) ? null : random.trueOrFalse();
+        return random.diceRoll(isNullable()) ? null : random.trueOrFalse(probability);
     }
 }

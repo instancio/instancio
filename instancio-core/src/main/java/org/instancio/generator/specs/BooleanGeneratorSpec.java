@@ -22,13 +22,22 @@ import org.instancio.generator.GeneratorSpec;
  *
  * @since 2.0.0
  */
-public interface BooleanGeneratorSpec extends GeneratorSpec<Boolean> {
+public interface BooleanGeneratorSpec extends GeneratorSpec<Boolean>, NullableGeneratorSpec<Boolean> {
 
     /**
-     * Indicates that {@code null} value can be generated.
+     * Specifies the probability of generating {@code true}.
      *
+     * @param probability of generating {@code true} between 0 and 1 inclusive
      * @return spec builder
+     * @since 2.11.0
+     */
+    BooleanGeneratorSpec probability(double probability);
+
+    /**
+     * {@inheritDoc}
+     *
      * @since 2.0.0
      */
+    @Override
     BooleanGeneratorSpec nullable();
 }
