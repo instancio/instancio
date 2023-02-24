@@ -27,22 +27,16 @@ import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
+import java.util.Locale;
+
 public class StringGenerator extends AbstractGenerator<String> implements StringSpec {
-
-    private static final char[] LC_HEX = "0123456789abcdef".toCharArray();
-    private static final char[] UC_HEX = "0123456789ABCDEF".toCharArray();
-
-    private enum StringType {
-        MIXED_CASE, ALPHANUMERIC, DIGITS, HEX
-    }
-
     protected int minLength;
     protected int maxLength;
     private boolean allowEmpty;
     private String prefix;
     private String suffix;
-    private StringType stringType;
-    private boolean isLowerCase; // uppercase by default
+    private StringType stringType = StringType.ALPHABETIC;
+    private StringCase stringCase = StringCase.UPPER;
 
     /**
      * Delegate for internal use only. It is used to support Bean Validation.
@@ -156,19 +150,19 @@ public class StringGenerator extends AbstractGenerator<String> implements String
 
     @Override
     public StringGenerator lowerCase() {
-        isLowerCase = true;
+        stringCase = StringCase.LOWER;
         return this;
     }
 
     @Override
     public StringGenerator upperCase() {
-        isLowerCase = false;
+        stringCase = StringCase.UPPER;
         return this;
     }
 
     @Override
     public StringGenerator mixedCase() {
-        stringType = StringType.MIXED_CASE;
+        stringCase = StringCase.MIXED;
         return this;
     }
 
@@ -201,7 +195,8 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         }
 
         final int length = random.intRange(minLength, maxLength);
-        String result = generateString(random, length);
+        final char[] chars = getStringCharacters();
+        String result = random.stringOf(length, chars);
         if (prefix != null) {
             result = prefix + result;
         }
@@ -211,27 +206,74 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         return result;
     }
 
-    private String generateString(final Random random, final int length) {
-        if (stringType == null) {
-            return isLowerCase
-                    ? random.lowerCaseAlphabetic(length)
-                    : random.upperCaseAlphabetic(length);
+    private char[] getStringCharacters() {
+        if (stringCase == StringCase.UPPER) {
+            return stringType.upperCaseChars;
         }
-        if (stringType == StringType.DIGITS) {
-            return random.digits(length);
+        if (stringCase == StringCase.LOWER) {
+            return stringType.lowerCaseChars;
         }
-        if (stringType == StringType.ALPHANUMERIC) {
-            // TODO refactor to support lower/upper case
-            return random.alphanumeric(length);
-        }
-        if (stringType == StringType.HEX) {
-            return isLowerCase
-                    ? random.stringOf(length, LC_HEX)
-                    : random.stringOf(length, UC_HEX);
-        }
-        if (stringType == StringType.MIXED_CASE) {
-            return random.mixedCaseAlphabetic(length);
+        if (stringCase == StringCase.MIXED) {
+            return stringType.mixedCaseChars;
         }
         throw new IllegalStateException("Unknown StringType: " + stringType); // unreachable
+    }
+
+    private enum StringCase {
+        LOWER, UPPER, MIXED
+    }
+
+    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
+    private enum StringType {
+        ALPHABETIC(
+                Chars.LC_ALPHABETIC,
+                Chars.UC_ALPHABETIC,
+                Chars.MC_ALPHABETIC),
+
+        ALPHANUMERIC(
+                Chars.LC_ALPHANUMERIC,
+                Chars.UC_ALPHANUMERIC,
+                Chars.MC_ALPHANUMERIC),
+
+        DIGITS(
+                Chars.DIGIT_CHARS,
+                Chars.DIGIT_CHARS,
+                Chars.DIGIT_CHARS),
+
+        HEX(
+                Chars.LC_HEX,
+                Chars.UC_HEX,
+                Chars.MC_HEX);
+
+        final char[] lowerCaseChars;
+        final char[] upperCaseChars;
+        final char[] mixedCaseChars;
+
+        @SuppressWarnings("PMD.UseVarargs")
+        StringType(final char[] lowerCaseChars, final char[] upperCaseChars, final char[] mixedCaseChars) {
+            this.lowerCaseChars = lowerCaseChars;
+            this.upperCaseChars = upperCaseChars;
+            this.mixedCaseChars = mixedCaseChars;
+        }
+
+        private static class Chars {
+            private static final String DIGITS = "0123456789";
+            private static final String ALPHABETIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            // Digits
+            private static final char[] DIGIT_CHARS = DIGITS.toCharArray();
+            // Alphabetic
+            private static final char[] UC_ALPHABETIC = ALPHABETIC.toCharArray();
+            private static final char[] LC_ALPHABETIC = ALPHABETIC.toLowerCase(Locale.ROOT).toCharArray();
+            private static final char[] MC_ALPHABETIC = (ALPHABETIC + ALPHABETIC.toLowerCase(Locale.ROOT)).toCharArray();
+            // Alphanumeric
+            private static final char[] LC_ALPHANUMERIC = (DIGITS + ALPHABETIC.toLowerCase(Locale.ROOT)).toCharArray();
+            private static final char[] UC_ALPHANUMERIC = (DIGITS + ALPHABETIC).toCharArray();
+            private static final char[] MC_ALPHANUMERIC = (DIGITS + ALPHABETIC + ALPHABETIC.toLowerCase(Locale.ROOT)).toCharArray();
+            // Hex
+            private static final char[] LC_HEX = (DIGITS + "abcdef").toCharArray();
+            private static final char[] UC_HEX = (DIGITS + "ABCDEF").toCharArray();
+            private static final char[] MC_HEX = (DIGITS + "abcdefABCDEF").toCharArray();
+        }
     }
 }

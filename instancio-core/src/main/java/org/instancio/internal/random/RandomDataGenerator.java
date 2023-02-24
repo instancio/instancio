@@ -30,7 +30,7 @@ import java.util.Random;
 public final class RandomDataGenerator {
 
     public static long nextLong(final Random random, final long lower, final long upper) {
-        Verify.isTrue(lower <= upper, "Lower must be less than upper: %s, %s", lower, upper);
+        Verify.closedRange(lower, upper);
 
         final long max = (upper - lower) + 1;
 
