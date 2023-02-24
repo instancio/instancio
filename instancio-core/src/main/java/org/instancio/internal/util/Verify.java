@@ -37,6 +37,12 @@ public final class Verify {
         return collection;
     }
 
+    public static void closedRange(final long min, final long max) {
+        if (min > max) {
+            throw new IllegalArgumentException(String.format("Lower must be less than upper: %s, %s", min, max));
+        }
+    }
+
     public static void isTrue(final boolean condition, final String message, final Object... values) {
         if (!condition) {
             throw new IllegalArgumentException(String.format(message, values));

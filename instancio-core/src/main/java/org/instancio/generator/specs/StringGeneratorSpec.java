@@ -110,7 +110,7 @@ public interface StringGeneratorSpec extends NullableGeneratorSpec<String> {
     StringGeneratorSpec mixedCase();
 
     /**
-     * Generates a mixed case alphanumeric string.
+     * Generates an alphanumeric string, upper case by default.
      *
      * @return spec builder
      */

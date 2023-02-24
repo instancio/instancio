@@ -24,9 +24,11 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.math.BigInteger;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -36,6 +38,11 @@ import static org.instancio.Select.allStrings;
 @FeatureTag({Feature.GENERATE, Feature.STRING_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class StringGeneratorTest {
+
+    private static final int STRING_LENGTH = 200;
+    private static final String DIGIT_CHARS = "[0-9]+";
+    private static final String LCASE_CHARS = "[a-z]+";
+    private static final String UCASE_CHARS = "[A-Z]+";
 
     @Test
     void disallowEmpty() {
@@ -64,22 +71,130 @@ class StringGeneratorTest {
                 .endsWith(suffix);
     }
 
-    @Test
-    void stringType() {
-        assertStringType(StringGeneratorSpec::lowerCase, "^[a-z]+$");
-        assertStringType(StringGeneratorSpec::upperCase, "^[A-Z]+$");
-        assertStringType(StringGeneratorSpec::mixedCase, "^[a-zA-Z]+$");
-        assertStringType(StringGeneratorSpec::digits, "^[0-9]+$");
-        assertStringType(StringGeneratorSpec::alphaNumeric, "^[a-zA-Z0-9]+$");
-        assertStringType(StringGeneratorSpec::hex, "^[A-F0-9]+$");
-        assertStringType(spec -> spec.hex().lowerCase(), "^[a-f0-9]+$");
+    @Nested
+    class StringTypesTest {
+        @Test
+        void precondition() {
+            // tests require a long string to ensure all expected character types are generated
+            assertThat(create(StringGeneratorSpec::upperCase)).hasSize(STRING_LENGTH);
+        }
+
+        @Test
+        void defaultCase() {
+            assertThat(create(s -> s))
+                    .isUpperCase().doesNotContainPattern(DIGIT_CHARS);
+        }
+
+        @Test
+        void upperCase() {
+            assertThat(create(StringGeneratorSpec::upperCase))
+                    .isUpperCase().doesNotContainPattern(DIGIT_CHARS);
+        }
+
+        @Test
+        void lowerCase() {
+            assertThat(create(StringGeneratorSpec::lowerCase))
+                    .isLowerCase().doesNotContainPattern(DIGIT_CHARS);
+        }
+
+        @Test
+        void mixedCase() {
+            assertThat(create(StringGeneratorSpec::mixedCase))
+                    .isMixedCase().doesNotContainPattern(DIGIT_CHARS);
+        }
+
+        @Test
+        void digits() {
+            assertThat(create(StringGeneratorSpec::digits)).containsOnlyDigits();
+        }
+
+        @Nested
+        class AlphaNumericTest {
+
+            @Test
+            void defaultCase() {
+                assertThat(create(StringGeneratorSpec::alphaNumeric))
+                        .isUpperCase()
+                        .containsPattern(UCASE_CHARS)
+                        .containsPattern(DIGIT_CHARS);
+            }
+
+            @Test
+            void upperCase() {
+                assertThat(create(s -> s.alphaNumeric().upperCase()))
+                        .isUpperCase().containsPattern(DIGIT_CHARS);
+            }
+
+            @Test
+            void lowerCase() {
+                assertThat(create(s -> s.alphaNumeric().lowerCase()))
+                        .isLowerCase()
+                        .containsPattern(LCASE_CHARS)
+                        .containsPattern(DIGIT_CHARS);
+            }
+
+            @Test
+            void mixedCase() {
+                assertThat(create(s -> s.alphaNumeric().mixedCase()))
+                        .isMixedCase()
+                        .containsPattern(LCASE_CHARS)
+                        .containsPattern(UCASE_CHARS)
+                        .containsPattern(DIGIT_CHARS);
+            }
+        }
+
+        @Nested
+        class HexTest {
+
+            @Test
+            void defaultCase() {
+                final String result = create(StringGeneratorSpec::hex);
+                assertThat(new BigInteger(result, 16)).isNotNull();
+
+                assertThat(result)
+                        .isUpperCase()
+                        .containsPattern(UCASE_CHARS)
+                        .containsPattern(DIGIT_CHARS);
+            }
+
+            @Test
+            void upperCase() {
+                final String result = create(s -> s.hex().upperCase());
+                assertThat(new BigInteger(result, 16)).isNotNull();
+                assertThat(result).isUpperCase();
+            }
+
+            @Test
+            void lowerCase() {
+                final String result = create(s -> s.hex().lowerCase());
+                assertThat(new BigInteger(result, 16)).isNotNull();
+
+                assertThat(result)
+                        .isLowerCase()
+                        .containsPattern(LCASE_CHARS)
+                        .containsPattern(DIGIT_CHARS);
+            }
+
+            @Test
+            void mixedCase() {
+                final String result = create(s -> s.hex().mixedCase());
+                assertThat(new BigInteger(result, 16)).isNotNull();
+
+                assertThat(result)
+                        .isMixedCase()
+                        .containsPattern(LCASE_CHARS)
+                        .containsPattern(UCASE_CHARS)
+                        .containsPattern(DIGIT_CHARS);
+            }
+        }
     }
 
-    private void assertStringType(Function<StringGeneratorSpec, StringGeneratorSpec> fn, String expectedPattern) {
+    private String create(final Function<StringGeneratorSpec, StringGeneratorSpec> fn) {
         final StringHolder result = Instancio.of(StringHolder.class)
-                .generate(allStrings(), gen -> fn.apply(gen.string()))
+                .generate(allStrings(), gen -> fn.apply(gen.string().length(STRING_LENGTH)))
                 .create();
 
-        assertThat(result.getValue()).matches(expectedPattern);
+        return result.getValue();
     }
+
 }
