@@ -22,6 +22,7 @@ import org.instancio.generator.specs.CharacterAsGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.EnumSetGeneratorSpec;
+import org.instancio.generator.specs.HashAsGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.generator.specs.NumberAsGeneratorSpec;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
@@ -29,6 +30,7 @@ import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.array.OneOfArrayGenerator;
+import org.instancio.internal.generator.domain.hash.HashGenerator;
 import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.ByteGenerator;
 import org.instancio.internal.generator.lang.CharacterGenerator;
@@ -297,6 +299,16 @@ public class Generators {
      */
     public IdGenerators id() {
         return new IdGenerators(context);
+    }
+
+    /**
+     * Generates various types of hashes.
+     *
+     * @return API builder reference
+     * @since 2.11.0
+     */
+    public HashAsGeneratorSpec hash() {
+        return new HashGenerator(context);
     }
 
     /**

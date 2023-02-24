@@ -38,22 +38,23 @@ class EmailGeneratorTest {
 
     @Test
     void asEmailObject() {
-        class Email {
-            final String email;
-
-            Email(String email) {
-                this.email = email;
-            }
-        }
-        class Contact {
-            Email email;
-        }
-
         final Contact result = Instancio.of(Contact.class)
                 .generate(field("email"), gen -> gen.net().email().as(Email::new))
                 .create();
 
         final Email email = result.email;
         assertThat(email.email).contains("@");
+    }
+
+    private static class Email {
+        final String email;
+
+        Email(String email) {
+            this.email = email;
+        }
+    }
+
+    private static class Contact {
+        Email email;
     }
 }

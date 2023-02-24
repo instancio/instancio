@@ -185,7 +185,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
     }
 
     @Override
-    protected String tryGenerateNonNull(final Random random) {
+    public String tryGenerateNonNull(final Random random) {
         if (delegate != null) {
             final Object result = delegate.generate(random);
             return result == null ? null : result.toString();

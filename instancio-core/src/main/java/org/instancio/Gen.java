@@ -21,6 +21,7 @@ import org.instancio.generator.specs.ByteSpec;
 import org.instancio.generator.specs.CharacterSpec;
 import org.instancio.generator.specs.DoubleSpec;
 import org.instancio.generator.specs.FloatSpec;
+import org.instancio.generator.specs.HashSpec;
 import org.instancio.generator.specs.IntegerSpec;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
@@ -36,6 +37,7 @@ import org.instancio.generators.NioSpecs;
 import org.instancio.generators.TemporalSpecs;
 import org.instancio.generators.TextSpecs;
 import org.instancio.internal.generator.array.OneOfArrayGenerator;
+import org.instancio.internal.generator.domain.hash.HashGenerator;
 import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.ByteGenerator;
 import org.instancio.internal.generator.lang.CharacterGenerator;
@@ -63,7 +65,7 @@ import java.util.Collection;
  * @since 2.6.0
  */
 @ExperimentalApi
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 public final class Gen {
 
     /**
@@ -249,6 +251,16 @@ public final class Gen {
      */
     public static IdSpecs id() {
         return new IdSpecs();
+    }
+
+    /**
+     * Generates various types of hashes.
+     *
+     * @return API builder reference
+     * @since 2.11.0
+     */
+    public static HashSpec hash() {
+        return new HashGenerator();
     }
 
     /**
