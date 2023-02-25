@@ -17,13 +17,13 @@ package org.instancio.test.contract;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-import com.tngtech.archunit.lang.ArchRule;
-import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.ValueSpec;
 import org.instancio.generator.specs.AsGeneratorSpec;
 import org.junit.jupiter.api.Test;
+
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 class SpecInheritanceAndNamingTest {
 
@@ -31,29 +31,26 @@ class SpecInheritanceAndNamingTest {
 
     @Test
     void shouldContainGeneratorSpecsOnly() {
-        ArchRule rule = ArchRuleDefinition.classes()
+        classes()
                 .that().resideInAPackage("..specs..").and().doNotHaveSimpleName("package-info")
-                .should().beAssignableTo(GeneratorSpec.class);
-
-        rule.check(classes);
+                .should().beAssignableTo(GeneratorSpec.class)
+                .check(classes);
     }
 
     @Test
     void specNaming() {
-        ArchRule rule = ArchRuleDefinition.classes()
+        classes()
                 .that().resideInAPackage("..specs..").and().doNotHaveSimpleName("package-info")
-                .should().haveSimpleNameEndingWith("Spec");
-
-        rule.check(classes);
+                .should().haveSimpleNameEndingWith("Spec")
+                .check(classes);
     }
 
     @Test
     void generatorSpecsShouldNotBeAssignableToValueSpec() {
-        ArchRule rule = ArchRuleDefinition.classes()
+        classes()
                 .that().resideInAPackage("..specs..").and().haveSimpleNameEndingWith("GeneratorSpec")
-                .should().notBeAssignableTo(ValueSpec.class);
-
-        rule.check(classes);
+                .should().notBeAssignableTo(ValueSpec.class)
+                .check(classes);
     }
 
     /**
@@ -62,11 +59,10 @@ class SpecInheritanceAndNamingTest {
      */
     @Test
     void valueSpecsShouldNotImplementAsStringGeneratorSpec() {
-        ArchRule rule = ArchRuleDefinition.classes()
+        classes()
                 .that().resideInAPackage("..specs..").and().areAssignableTo(ValueSpec.class)
-                .should().notBeAssignableTo(AsStringGeneratorSpec.class);
-
-        rule.check(classes);
+                .should().notBeAssignableTo(AsStringGeneratorSpec.class)
+                .check(classes);
     }
 
     /**
@@ -75,10 +71,9 @@ class SpecInheritanceAndNamingTest {
      */
     @Test
     void valueSpecsShouldNotImplementAsGeneratorSpec() {
-        ArchRule rule = ArchRuleDefinition.classes()
+        classes()
                 .that().resideInAPackage("..specs..").and().areAssignableTo(ValueSpec.class)
-                .should().notBeAssignableTo(AsGeneratorSpec.class);
-
-        rule.check(classes);
+                .should().notBeAssignableTo(AsGeneratorSpec.class)
+                .check(classes);
     }
 }

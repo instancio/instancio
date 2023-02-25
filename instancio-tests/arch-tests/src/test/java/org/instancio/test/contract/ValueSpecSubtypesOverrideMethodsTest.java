@@ -52,8 +52,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -109,7 +109,7 @@ class ValueSpecSubtypesOverrideMethodsTest {
     })
     @ParameterizedTest
     void pathSpec(final Class<?> specClass) {
-        assertSpecOverridesSuperMethods(specClass);
+        assertSpecOverridesSuperMethods(specClass, "createDirectory", "createFile");
     }
 
     @Test
@@ -154,24 +154,43 @@ class ValueSpecSubtypesOverrideMethodsTest {
 
     /**
      * Collects methods from super interfaces of {@code specClass}
-     * and checks that the class overrides all the inherited methods.
+     * and checks that the class overrides all the inherited methods,
+     * excepts the {@code excludedMethods}.
      */
-    private static void assertSpecOverridesSuperMethods(final Class<?> specClass) {
-        final List<Method> superMethods = getMethodsFromParentInterfaces(specClass);
+    private static void assertSpecOverridesSuperMethods(final Class<?> specClass, final String... excludedMethods) {
+        final List<Method> superMethods = getMethodsFromParentInterfaces(
+                specClass, CollectionUtils.asSet(excludedMethods));
+
         assertSpecOverridesAll(specClass, superMethods);
     }
 
-    private static List<Method> getMethodsFromParentInterfaces(final Class<?> specClass) {
+    /**
+     * Returns all the parent interface methods that the {@code specClass}
+     * should override.
+     *
+     * @param specClass       the spec class under test
+     * @param excludedMethods these are terminal methods, therefore they should
+     *                        have ValueSpec as the return type to prevent
+     *                        additional method calls
+     * @return all methods that the {@code specClass} should override
+     * in order to return itself.
+     */
+    private static List<Method> getMethodsFromParentInterfaces(
+            final Class<?> specClass,
+            final Set<String> excludedMethods) {
+
         // These are terminal methods from ValueSpec
         // They return a result and don't need to be overridden
         // We're only interested in builder methods used for chaining API calls
-        final Set<String> excludedMethods = CollectionUtils.asSet(
-                "get", "list", "map", "stream", "toModel");
+        final Set<String> exclusions = new HashSet<>(
+                CollectionUtils.asSet("get", "list", "map", "stream", "toModel"));
+
+        exclusions.addAll(excludedMethods);
 
         final List<Method> methods = new ArrayList<>();
         for (Class<?> interfaceClass : specClass.getInterfaces()) {
             final List<Method> filtered = Arrays.stream(interfaceClass.getDeclaredMethods())
-                    .filter(m -> !excludedMethods.contains(m.getName()))
+                    .filter(m -> !exclusions.contains(m.getName()) && !m.getName().contains("jacoco"))
                     .collect(Collectors.toList());
 
             methods.addAll(filtered);
@@ -188,27 +207,19 @@ class ValueSpecSubtypesOverrideMethodsTest {
     }
 
     private static boolean overrides(final Class<?> specClass, final Method superMethod) {
-        for (Method m : specClass.getDeclaredMethods()) {
-
-            /*
-             Ideally this method should also assert the return type,
-             e.g. that "StringSpec.nullable()" returns "StringSpec" and not "ValueSpec".
-             However, certain spec subclasses can return ValueSpec for terminal operations.
-             Therefore, we can't make a blanket statement
-            */
-            if (m.getName().equals(superMethod.getName())
-                    && paramsEqual(m.getParameters(), superMethod.getParameters())) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(specClass.getDeclaredMethods())
+                .anyMatch(m -> m.getName().equals(superMethod.getName())
+                        && paramsEqual(superMethod.getParameters(), m.getParameters())
+                        && m.getReturnType() == specClass);
     }
 
     private static boolean paramsEqual(final Parameter[] a, final Parameter[] b) {
-        return Objects.equals(getParameterTypes(a), getParameterTypes(b));
-    }
-
-    private static List<Class<?>> getParameterTypes(final Parameter[] params) {
-        return Arrays.stream(params).map(Parameter::getType).collect(Collectors.toList());
+        // Not comparing parameter types because some superclass method parameters
+        // are generic, and do not match subclass parameter types, e.g.:
+        // - NumberGeneratorSpec<T extends Number> vs IntegerSpec: Number vs Integer
+        // - TemporalGeneratorSpec<T> vs InstantSpec: Object vs Instant
+        //
+        // Method name + parameter count is good enough for this test.
+        return a.length == b.length;
     }
 }
