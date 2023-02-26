@@ -15,6 +15,7 @@
  */
 package org.instancio.generator;
 
+import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
@@ -37,11 +38,14 @@ import static org.instancio.Select.all;
  * A spec for generating simple value types, such as strings, numbers,
  * dates, and so on.
  *
- * <p>Provides support for the shorthand API:
+ * <p>Provides support for generating values using the shorthand API:
  *
  * <pre>{@code
- *   String s = Instancio.string().length(10).prefix("foo").get();
+ *   String str = Gen.string().length(10).prefix("foo").get();
+ *   List<BigDecimal> list = Gen.math().bigDecimal().list(10);
  * }</pre>
+ *
+ * <p>where {@link Gen} is the entry point for generating various types of values.
  *
  * @param <T> type of value
  * @since 2.6.0
