@@ -17,16 +17,26 @@ package org.instancio.internal.instantiation;
 
 import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uses {@code sun.misc.Unsafe} to instantiate objects.
  */
-public class UnsafeInstantiationStrategy implements InstantiationStrategy {
+class UnsafeInstantiationStrategy implements InstantiationStrategy {
+    private static final Logger LOG = LoggerFactory.getLogger(UnsafeInstantiationStrategy.class);
 
     private final boolean isUnsafeAvailable;
 
-    public UnsafeInstantiationStrategy() {
+    UnsafeInstantiationStrategy() {
         isUnsafeAvailable = ReflectionUtils.loadClass("sun.misc.Unsafe") != null;
+
+        if (!isUnsafeAvailable) {
+            LOG.info(String.format(
+                    "sun.misc.Unsafe is unavailable. This may result in nulls being generated%n" +
+                            "for POJO classes that do not provide a default (no-argument) constructor.%n" +
+                            "If using JPMS, consider adding 'requires jdk.unsupported' to module-info.java"));
+        }
     }
 
     @Override

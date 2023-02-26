@@ -19,7 +19,7 @@ import org.instancio.internal.util.Sonar;
 
 import java.lang.reflect.Constructor;
 
-public class NoArgumentConstructorInstantiationStrategy implements InstantiationStrategy {
+class NoArgumentConstructorInstantiationStrategy implements InstantiationStrategy {
 
     @Override
     @SuppressWarnings({"unchecked", Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED})
