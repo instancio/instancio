@@ -22,6 +22,7 @@ import org.instancio.exception.InstancioException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -61,6 +62,46 @@ class ExceptionHandlerTest {
     @AfterAll
     static void afterAll() {
         LOG.setLevel(originalLogLevel);
+    }
+
+    @Nested
+    class CausedByTest {
+        @Test
+        void getCausedIsNull() {
+            assertThat(ExceptionHandler.getCausedBy(null)).isEmpty();
+        }
+
+        @Test
+        void singleCauseWithNoMessage() {
+            assertThat(ExceptionHandler.getCausedBy(new Throwable()))
+                    .isEqualTo(String.format("%n => caused by: Throwable"));
+        }
+
+        @Test
+        void multipleCausesWithMessages() {
+            final InstancioException ex = new InstancioException("top",
+                    new RuntimeException("cause",
+                            new NullPointerException("root")));
+
+            assertThat(ExceptionHandler.getCausedBy(ex))
+                    .isEqualTo(String.format("%n" +
+                            " => caused by: InstancioException: \"top\"%n" +
+                            " => caused by: RuntimeException: \"cause\"%n" +
+                            " => caused by: NullPointerException: \"root\""));
+        }
+
+        @Test
+        void multipleCausesWithoutMessages() {
+            final InstancioException ex = new InstancioException("top",
+                    new RuntimeException(
+                            new NullPointerException()));
+
+            assertThat(ExceptionHandler.getCausedBy(ex))
+                    .isEqualTo(String.format("%n" +
+                            " => caused by: InstancioException: \"top\"%n" +
+                            " => caused by: RuntimeException: \"java.lang.NullPointerException\"%n" +
+                            " => caused by: NullPointerException"));
+        }
     }
 
     @Test

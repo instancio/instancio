@@ -17,6 +17,7 @@ package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
@@ -88,23 +89,31 @@ public final class ExceptionHandler {
      * otherwise log exception class name and message.
      *
      * @param msg  log message
-     * @param ex   exception to log
+     * @param t    exception to log
      * @param args message arguments
      */
-    public static void logException(final String msg, final Exception ex, final Object... args) {
+    public static void logException(final String msg, final Throwable t, final Object... args) {
         final String formatted = MessageFormatter.arrayFormat(msg, args).getMessage();
         if (LOG.isTraceEnabled()) {
-            LOG.trace(formatted, ex);
+            LOG.trace(formatted, t);
         } else {
-            LOG.debug("{} [caused by {}]", formatted, getCausedBy(ex));
+            LOG.debug("{} [{}]", formatted, getCausedBy(t));
         }
     }
 
-    private static String getCausedBy(final Exception ex) {
-        String causedBy = ex.getClass().getSimpleName();
-        if (ex.getMessage() != null) {
-            causedBy += ": " + ex.getMessage();
+    @VisibleForTesting
+    static String getCausedBy(final Throwable throwable) {
+        final StringBuilder sb = new StringBuilder();
+
+        for (Throwable t = throwable; t != null; t = t.getCause()) {
+            sb.append(Constants.NL)
+                    .append(" => caused by: ")
+                    .append(t.getClass().getSimpleName());
+
+            if (t.getMessage() != null) {
+                sb.append(": \"").append(t.getMessage()).append('"');
+            }
         }
-        return causedBy;
+        return sb.toString();
     }
 }
