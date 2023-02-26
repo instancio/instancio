@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection.instantiation;
+package org.instancio.internal.instantiation;
 
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.IntegerHolderWithPrivateDefaultConstructor;
@@ -22,31 +22,32 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class InstantiatorTest {
+class NoArgumentConstructorInstantiationStrategyTest {
 
-    private final Instantiator instantiator = new Instantiator();
+    private final InstantiationStrategy strategy = new NoArgumentConstructorInstantiationStrategy();
 
     @ValueSource(classes = {
+            ArrayList.class,
             TreeSet.class,
-            HashMap.class,
             IntegerHolder.class,
-            IntegerHolderWithoutDefaultConstructor.class,
             IntegerHolderWithPrivateDefaultConstructor.class
     })
     @ParameterizedTest
-    void instantiate(Class<?> klass) {
-        assertThat(instantiator.instantiate(klass)).isNotNull();
+    void createInstanceSuccessful(Class<?> klass) {
+        assertThat(strategy.createInstance(klass)).isNotNull();
     }
 
     @Test
-    void instantiateReturnNullIfTypeCannotBeInstantiated() {
-        final Class<?> klass = List.class;
-        assertThat(instantiator.instantiate(klass)).isNull();
+    void createInstanceFails() {
+        final Class<?> klass = IntegerHolderWithoutDefaultConstructor.class;
+        assertThatThrownBy(() -> strategy.createInstance(klass))
+                .isInstanceOf(InstantiationStrategyException.class)
+                .hasMessage("Error instantiating %s", klass);
     }
 }

@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection.instantiation;
+package org.instancio.internal.instantiation;
 
-import org.instancio.internal.util.UnsafeUtils;
+import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
+import org.junit.jupiter.api.Test;
 
-/**
- * Uses {@code sun.misc.Unsafe} to instantiate objects.
- */
-public class UnsafeInstantiationStrategy implements InstantiationStrategy {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    @Override
-    public <T> T createInstance(final Class<T> klass) {
-        return UnsafeUtils.allocateInstance(klass);
+class UnsafeHelperTest {
+
+    @Test
+    void allocate() {
+        final IntegerHolderWithoutDefaultConstructor result = UnsafeHelper.getInstance().allocateInstance(
+                IntegerHolderWithoutDefaultConstructor.class);
+
+        assertThat(result).isNotNull();
     }
-
 }

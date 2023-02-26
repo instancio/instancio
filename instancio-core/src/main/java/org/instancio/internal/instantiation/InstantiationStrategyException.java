@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Implementation classes providing support for instantiation.
- */
-package org.instancio.internal.reflection.instantiation;
+package org.instancio.internal.instantiation;
+
+public class InstantiationStrategyException extends RuntimeException {
+
+    public InstantiationStrategyException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+}

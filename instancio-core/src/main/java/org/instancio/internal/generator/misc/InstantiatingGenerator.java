@@ -17,7 +17,7 @@ package org.instancio.internal.generator.misc;
 
 import org.instancio.Random;
 import org.instancio.generator.Generator;
-import org.instancio.internal.reflection.instantiation.Instantiator;
+import org.instancio.internal.instantiation.Instantiator;
 
 public final class InstantiatingGenerator implements Generator<Object> {
 

@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection.instantiation;
+package org.instancio.internal.instantiation;
 
-import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
-import org.junit.jupiter.api.Test;
+import org.instancio.documentation.InternalApi;
 
-import static org.assertj.core.api.Assertions.assertThat;
+@InternalApi
+public interface InstantiationStrategy {
 
-class UnsafeInstantiationStrategyTest {
-
-    private final InstantiationStrategy strategy = new UnsafeInstantiationStrategy();
-
-    @Test
-    void createInstanceSuccessful() {
-        assertThat(strategy.createInstance(IntegerHolderWithoutDefaultConstructor.class)).isNotNull();
-    }
-
+    <T> T createInstance(Class<T> klass);
 }

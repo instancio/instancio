@@ -13,29 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.util;
+package org.instancio.internal.instantiation;
 
+import org.instancio.internal.util.ExceptionHandler;
 
 import java.lang.reflect.Field;
 
 @SuppressWarnings("all")
-public final class UnsafeUtils {
+public final class UnsafeHelper {
 
-    private static final sun.misc.Unsafe UNSAFE = getUnsafe();
+    // avoid import to prevent PMD/Checkstyle warnings
+    private final sun.misc.Unsafe unsafe;
 
-    public static <T> T allocateInstance(final Class<T> klass) {
-        if (UNSAFE == null) {
+    private UnsafeHelper() {
+        this.unsafe = getUnsafe();
+    }
+
+    public static UnsafeHelper getInstance() {
+        return UnsafeHelper.Holder.INSTANCE;
+    }
+
+    public <T> T allocateInstance(final Class<T> klass) {
+        if (unsafe == null) {
             return null;
         }
         try {
-            return (T) UNSAFE.allocateInstance(klass);
+            return (T) unsafe.allocateInstance(klass);
         } catch (Exception ex) {
             ExceptionHandler.logException("Error instantiating %s using Unsafe", ex, klass);
             return null;
         }
     }
 
-    private static sun.misc.Unsafe getUnsafe() {
+    private sun.misc.Unsafe getUnsafe() {
         try {
             final Field[] fields = sun.misc.Unsafe.class.getDeclaredFields();
             for (Field field : fields) {
@@ -45,13 +55,13 @@ public final class UnsafeUtils {
                     return (sun.misc.Unsafe) obj;
                 }
             }
-        } catch (Throwable t) { // NOPMD
+        } catch (Throwable t) {
             ExceptionHandler.logException("Error getting Unsafe", t);
         }
         return null;
     }
 
-    private UnsafeUtils() {
-        // non-instantiable
+    private static class Holder {
+        private static final UnsafeHelper INSTANCE = new UnsafeHelper();
     }
 }

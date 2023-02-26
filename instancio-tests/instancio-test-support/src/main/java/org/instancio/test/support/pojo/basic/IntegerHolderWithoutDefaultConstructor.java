@@ -15,6 +15,7 @@
  */
 package org.instancio.test.support.pojo.basic;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -22,13 +23,10 @@ import java.io.Serializable;
 
 @Getter
 @ToString
+@AllArgsConstructor
 public class IntegerHolderWithoutDefaultConstructor implements Serializable {
 
     private final int primitive;
 
     private final Integer wrapper;
-
-    public IntegerHolderWithoutDefaultConstructor(final int primitive, final Integer wrapper) {
-        throw new RuntimeException("XXXXXXXXXX error from constructor");
-    }
 }
