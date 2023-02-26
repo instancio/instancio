@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection.instantiation;
-
-import org.instancio.documentation.InternalApi;
-
-@InternalApi
-public interface InstantiationStrategy {
-
-    <T> T createInstance(Class<T> klass);
-}
+/**
+ * Implementation classes providing support for instantiation.
+ */
+package org.instancio.internal.instantiation;

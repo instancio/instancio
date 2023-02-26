@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection.instantiation;
+package org.instancio.internal.instantiation;
 
 
+import org.instancio.internal.util.ExceptionHandler;
 import org.instancio.internal.util.Sonar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +46,8 @@ public class Instantiator {
         try {
             return strategy.createInstance(klass);
         } catch (Throwable ex) { //NOPMD catches java.lang.InstantiationError
-            LOG.trace("'{}' failed instantiating class '{}'",
-                    strategy.getClass().getSimpleName(), klass.getName(), ex);
+            ExceptionHandler.logException("'{}' failed instantiating {}",
+                    ex, strategy.getClass().getSimpleName(), klass);
         }
         return null;
     }

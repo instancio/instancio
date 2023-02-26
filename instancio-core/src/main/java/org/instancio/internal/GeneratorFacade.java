@@ -31,7 +31,7 @@ import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.nodes.NodeKind;
-import org.instancio.internal.reflection.instantiation.Instantiator;
+import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
