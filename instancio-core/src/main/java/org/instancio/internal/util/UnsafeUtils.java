@@ -15,18 +15,14 @@
  */
 package org.instancio.internal.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
 
+@SuppressWarnings("all")
 public final class UnsafeUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(UnsafeUtils.class);
 
-    private static final Unsafe UNSAFE = getUnsafe();
+    private static final sun.misc.Unsafe UNSAFE = getUnsafe();
 
-    @SuppressWarnings("unchecked")
     public static <T> T allocateInstance(final Class<T> klass) {
         if (UNSAFE == null) {
             return null;
@@ -39,17 +35,17 @@ public final class UnsafeUtils {
         }
     }
 
-    private static Unsafe getUnsafe() {
+    private static sun.misc.Unsafe getUnsafe() {
         try {
-            final Field[] fields = Unsafe.class.getDeclaredFields();
+            final Field[] fields = sun.misc.Unsafe.class.getDeclaredFields();
             for (Field field : fields) {
-                field.setAccessible(true); // NOSONAR
+                field.setAccessible(true);
                 final Object obj = field.get(null);
-                if (obj instanceof Unsafe) {
-                    return (Unsafe) obj;
+                if (obj instanceof sun.misc.Unsafe) {
+                    return (sun.misc.Unsafe) obj;
                 }
             }
-        } catch (Throwable t) { // NOSONAR
+        } catch (Throwable t) { // NOPMD
             ExceptionHandler.logException("Error getting Unsafe", t);
         }
         return null;
