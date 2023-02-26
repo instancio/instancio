@@ -25,7 +25,7 @@ public class Instantiator {
 
     private final InstantiationStrategy[] strategies = {
             new NoArgumentConstructorInstantiationStrategy(),
-            new ObjenesisInstantiationStrategy()
+            new UnsafeInstantiationStrategy()
     };
 
     public <T> T instantiate(Class<T> klass) {

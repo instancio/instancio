@@ -15,18 +15,16 @@
  */
 package org.instancio.internal.reflection.instantiation;
 
-import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
-import org.junit.jupiter.api.Test;
+import org.instancio.internal.util.UnsafeUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * Uses {@code sun.misc.Unsafe} to instantiate objects.
+ */
+public class UnsafeInstantiationStrategy implements InstantiationStrategy {
 
-class ObjenesisInstantiationStrategyTest {
-
-    private final InstantiationStrategy strategy = new ObjenesisInstantiationStrategy();
-
-    @Test
-    void createInstanceSuccessful() {
-        assertThat(strategy.createInstance(IntegerHolderWithoutDefaultConstructor.class)).isNotNull();
+    @Override
+    public <T> T createInstance(final Class<T> klass) {
+        return UnsafeUtils.allocateInstance(klass);
     }
 
 }
