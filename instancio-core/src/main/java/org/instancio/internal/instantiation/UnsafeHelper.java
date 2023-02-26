@@ -20,7 +20,7 @@ import org.instancio.internal.util.ExceptionHandler;
 import java.lang.reflect.Field;
 
 @SuppressWarnings("all")
-public final class UnsafeHelper {
+final class UnsafeHelper {
 
     // avoid import to prevent PMD/Checkstyle warnings
     private final sun.misc.Unsafe unsafe;
@@ -29,18 +29,18 @@ public final class UnsafeHelper {
         this.unsafe = getUnsafe();
     }
 
-    public static UnsafeHelper getInstance() {
+    static UnsafeHelper getInstance() {
         return UnsafeHelper.Holder.INSTANCE;
     }
 
-    public <T> T allocateInstance(final Class<T> klass) {
+    <T> T allocateInstance(final Class<T> klass) {
         if (unsafe == null) {
             return null;
         }
         try {
             return (T) unsafe.allocateInstance(klass);
         } catch (Exception ex) {
-            ExceptionHandler.logException("Error instantiating %s using Unsafe", ex, klass);
+            ExceptionHandler.logException("Error instantiating {} using Unsafe", ex, klass);
             return null;
         }
     }

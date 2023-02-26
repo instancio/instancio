@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.instantiation;
 
-
 import org.instancio.internal.util.ExceptionHandler;
 import org.instancio.internal.util.Sonar;
 import org.slf4j.Logger;
@@ -26,6 +25,7 @@ public class Instantiator {
 
     private final InstantiationStrategy[] strategies = {
             new NoArgumentConstructorInstantiationStrategy(),
+            new LeastArgumentsConstructorInstantiationStrategy(),
             new UnsafeInstantiationStrategy()
     };
 
