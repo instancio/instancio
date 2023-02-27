@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.instantiation;
+package org.instancio.test.java16;
 
-import org.instancio.test.support.pojo.misc.WithNonDefaultConstructorThrowingError;
+import org.instancio.Instancio;
+import org.instancio.test.support.java16.record.RecordWithoutArgs;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UnsafeHelperTest {
-
-    private final UnsafeHelper unsafe = UnsafeHelper.getInstance();
+class RecordWithoutArgsTest {
 
     @Test
-    void shouldBypassConstructorInvocation() {
-        final WithNonDefaultConstructorThrowingError result = unsafe.allocateInstance(
-                WithNonDefaultConstructorThrowingError.class);
-
-        assertThat(result).isNotNull();
+    void recordWithoutArgs() {
+        assertThat(Instancio.create(RecordWithoutArgs.class)).isNotNull();
     }
 }
