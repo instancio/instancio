@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.instantiation;
+package org.instancio.test.support.pojo.misc;
 
-import org.instancio.test.support.pojo.misc.WithNonDefaultConstructorThrowingError;
-import org.junit.jupiter.api.Test;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import static org.assertj.core.api.Assertions.assertThat;
+@Getter
+@Setter
+@ToString
+public class WithNonDefaultConstructorThrowingError {
 
-class UnsafeHelperTest {
+    private final String value;
 
-    private final UnsafeHelper unsafe = UnsafeHelper.getInstance();
-
-    @Test
-    void shouldBypassConstructorInvocation() {
-        final WithNonDefaultConstructorThrowingError result = unsafe.allocateInstance(
-                WithNonDefaultConstructorThrowingError.class);
-
-        assertThat(result).isNotNull();
+    @SuppressWarnings("unused")
+    public WithNonDefaultConstructorThrowingError(String value) {
+        throw new UnsupportedOperationException(
+                "Expected error from " + getClass().getName() + " constructor");
     }
 }

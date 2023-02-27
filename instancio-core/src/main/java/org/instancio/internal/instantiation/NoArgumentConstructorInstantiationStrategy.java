@@ -25,12 +25,24 @@ class NoArgumentConstructorInstantiationStrategy implements InstantiationStrateg
     @SuppressWarnings({"unchecked", Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED})
     public <T> T createInstance(final Class<T> klass) {
         try {
-            final Constructor<?> ctor = klass.getDeclaredConstructor();
+            final Constructor<?> ctor = getDefaultConstructor(klass);
+            if (ctor == null) {
+                return null;
+            }
             ctor.setAccessible(true);
             return (T) ctor.newInstance();
         } catch (Exception ex) {
             throw new InstantiationStrategyException("Error instantiating " + klass, ex);
         }
+    }
+
+    private static Constructor<?> getDefaultConstructor(final Class<?> klass) {
+        for (Constructor<?> ctor : klass.getDeclaredConstructors()) {
+            if (ctor.getParameterCount() == 0) {
+                return ctor;
+            }
+        }
+        return null;
     }
 
 }

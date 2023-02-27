@@ -20,6 +20,8 @@ import org.instancio.Model;
 import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.basic.Triplet;
+import org.instancio.test.support.pojo.misc.WithDefaultConstructorThrowingError;
+import org.instancio.test.support.pojo.misc.WithNonDefaultConstructorThrowingError;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.AddressExtension;
 import org.instancio.test.support.pojo.person.Gender;
@@ -187,5 +189,21 @@ class InstancioApiTest {
                 .containsOnly(HOMER);
 
         assertThatObject(results).isFullyPopulated();
+    }
+
+    @Test
+    void createWithDefaultConstructorThrowingError() {
+        final WithDefaultConstructorThrowingError result = Instancio.create(
+                WithDefaultConstructorThrowingError.class);
+
+        assertThat(result.getValue()).isNotBlank();
+    }
+
+    @Test
+    void createWithNonDefaultConstructorThrowingError() {
+        final WithNonDefaultConstructorThrowingError result = Instancio.create(
+                WithNonDefaultConstructorThrowingError.class);
+
+        assertThat(result.getValue()).isNotBlank();
     }
 }

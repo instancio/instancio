@@ -18,6 +18,8 @@ package org.instancio.internal.instantiation;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.IntegerHolderWithPrivateDefaultConstructor;
 import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
+import org.instancio.test.support.pojo.misc.WithDefaultConstructorThrowingError;
+import org.instancio.test.support.pojo.misc.WithNonDefaultConstructorThrowingError;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -43,9 +45,18 @@ class NoArgumentConstructorInstantiationStrategyTest {
         assertThat(strategy.createInstance(klass)).isNotNull();
     }
 
+    @ValueSource(classes = {
+            IntegerHolderWithoutDefaultConstructor.class,
+            WithNonDefaultConstructorThrowingError.class
+    })
+    @ParameterizedTest
+    void shouldReturnNullIfDefaultConstructorIsNotPresent(Class<?> klass) {
+        assertThat(strategy.createInstance(klass)).isNull();
+    }
+
     @Test
     void createInstanceFails() {
-        final Class<?> klass = IntegerHolderWithoutDefaultConstructor.class;
+        final Class<?> klass = WithDefaultConstructorThrowingError.class;
         assertThatThrownBy(() -> strategy.createInstance(klass))
                 .isInstanceOf(InstantiationStrategyException.class)
                 .hasMessage("Error instantiating %s", klass);
