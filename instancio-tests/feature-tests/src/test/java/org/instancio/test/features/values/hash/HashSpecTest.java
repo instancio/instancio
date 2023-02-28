@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class HsahSpecTest extends AbstractValueSpecTestTemplate<String> {
+class HashSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected HashSpec spec() {
