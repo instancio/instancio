@@ -15,19 +15,30 @@
  */
 package org.instancio.internal.instantiation;
 
+import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.ExceptionHandler;
 import org.instancio.internal.util.Sonar;
+import org.instancio.spi.InstancioServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class Instantiator {
     private static final Logger LOG = LoggerFactory.getLogger(Instantiator.class);
 
-    private final InstantiationStrategy[] strategies = {
-            new NoArgumentConstructorInstantiationStrategy(),
-            new LeastArgumentsConstructorInstantiationStrategy(),
-            new UnsafeInstantiationStrategy()
-    };
+
+    private final InstantiationStrategy[] strategies;
+
+    public Instantiator(final List<ProviderEntry<InstancioServiceProvider.TypeInstantiator>> providerEntries) {
+        strategies = new InstantiationStrategy[]{
+                new ServiceProviderInstantiationStrategy(providerEntries),
+                new NoArgumentConstructorInstantiationStrategy(),
+                new LeastArgumentsConstructorInstantiationStrategy(),
+                new UnsafeInstantiationStrategy()
+        };
+    }
 
     public <T> T instantiate(Class<T> klass) {
         for (InstantiationStrategy strategy : strategies) {
@@ -45,6 +56,8 @@ public class Instantiator {
     private <T> T createInstance(final Class<T> klass, final InstantiationStrategy strategy) {
         try {
             return strategy.createInstance(klass);
+        } catch (InstancioApiException ex) {
+            throw ex;
         } catch (Throwable ex) { //NOPMD catches java.lang.InstantiationError
             ExceptionHandler.logException("'{}' failed instantiating {}",
                     ex, strategy.getClass().getSimpleName(), klass);

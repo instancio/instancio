@@ -140,10 +140,10 @@ public final class InternalSettings implements Settings {
     }
 
     @Override
-    public InternalSettings mapType(@NotNull final Class<?> from, @NotNull final Class<?> to) {
+    public InternalSettings mapType(@NotNull final Class<?> type, @NotNull final Class<?> subtype) {
         checkLockedForModifications();
-        validateSubtype(from, to);
-        subtypeMap.put(from, to);
+        validateSubtype(type, subtype);
+        subtypeMap.put(type, subtype);
         return this;
     }
 

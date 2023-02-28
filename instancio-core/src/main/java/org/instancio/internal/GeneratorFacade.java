@@ -49,10 +49,15 @@ class GeneratorFacade {
         this.context = context;
         this.random = context.getRandom();
 
-        final GeneratorResolver generatorResolver = new GeneratorResolver(
-                new GeneratorContext(context.getSettings(), random));
+        final GeneratorContext generatorContext = new GeneratorContext(
+                context.getSettings(), random);
 
-        final Instantiator instantiator = new Instantiator();
+        final GeneratorResolver generatorResolver = new GeneratorResolver(
+                generatorContext, context.getServiceProviders().getGeneratorProviders());
+
+        final Instantiator instantiator = new Instantiator(
+                context.getServiceProviders().getTypeInstantiators());
+
         final GeneratorSpecProcessor beanValidationProcessor = getGeneratorSpecProcessor();
 
         this.nodeHandlers = new NodeHandler[]{

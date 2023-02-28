@@ -47,6 +47,7 @@ final class InternalModel<T> implements Model<T> {
                 .subtypeSelectorMap(modelContext.getSubtypeSelectorMap())
                 .subtypeMappingFromSettings(modelContext.getSettings().getSubtypeMap())
                 .containerFactories(modelContext.getContainerFactories())
+                .providerEntries(modelContext.getServiceProviders().getTypeResolvers())
                 .build();
 
         final NodeFactory nodeFactory = new NodeFactory(nodeContext);

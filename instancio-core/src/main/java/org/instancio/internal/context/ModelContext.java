@@ -28,6 +28,7 @@ import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.generator.misc.SupplierAdapter;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.internal.util.Sonar;
@@ -35,6 +36,7 @@ import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.spi.InstancioServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,9 @@ public final class ModelContext<T> {
             CollectionUtils.combine(
                     ServiceLoaders.loadAll(InternalContainerFactoryProvider.class),
                     new InternalContainerFactoryProviderImpl());
+
+    private static final Providers PROVIDERS = new Providers(
+            ServiceLoaders.loadAll(InstancioServiceProvider.class));
 
     private final Type rootType;
     private final List<Class<?>> rootTypeParameters;
@@ -121,6 +126,10 @@ public final class ModelContext<T> {
 
     public List<InternalContainerFactoryProvider> getContainerFactories() {
         return CONTAINER_FACTORIES;
+    }
+
+    public Providers getServiceProviders() {
+        return PROVIDERS;
     }
 
     public void reportUnusedSelectorWarnings() {

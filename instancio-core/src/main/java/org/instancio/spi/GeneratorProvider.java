@@ -57,7 +57,10 @@ import java.util.Map;
  *
  * @see Generator
  * @since 1.2.0
+ * @deprecated use {@link InstancioServiceProvider} instead.
+ * This class will be removed in version {@code 3.0.0}.
  */
+@Deprecated
 public interface GeneratorProvider {
 
     /**
@@ -66,6 +69,9 @@ public interface GeneratorProvider {
      * @param context generator context
      * @return class to generator mapping
      * @since 1.2.0
+     * @deprecated this method will be removed in version {@code 3.0.0};
+     * use {@link InstancioServiceProvider#getGeneratorProvider()} instead.
      */
+    @Deprecated
     Map<Class<?>, Generator<?>> getGenerators(GeneratorContext context);
 }

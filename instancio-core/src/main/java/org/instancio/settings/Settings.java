@@ -60,7 +60,7 @@ public interface Settings {
     /**
      * Creates a new instance of empty settings.
      *
-     * @return empty settings
+     * @return a new instance of empty settings
      */
     static Settings create() {
         return InternalSettings.create();
@@ -69,7 +69,7 @@ public interface Settings {
     /**
      * Creates a new instance containing default settings.
      *
-     * @return settings containing defaults
+     * @return a new instance of settings containing the defaults
      */
     static Settings defaults() {
         return InternalSettings.defaults();
@@ -79,7 +79,7 @@ public interface Settings {
      * Create settings from the given map.
      *
      * @param map to create settings from
-     * @return settings
+     * @return a new instance of settings created from the given map
      */
     static Settings from(@NotNull Map<Object, Object> map) {
         return InternalSettings.from(map);
@@ -122,18 +122,31 @@ public interface Settings {
      *
      * @param key   to set
      * @param value to set
-     * @return updated settings
+     * @return this instance of settings
      */
     Settings set(@NotNull SettingKey key, @Nullable Object value);
 
     /**
-     * Map 'from' supertype to 'to' subtype.
+     * Maps the supertype {@code from} supertype to 'to' subtype.
      *
-     * @param from supertype class
-     * @param to   subtype class
-     * @return updated settings
+     * <p>Example:
+     *
+     * <pre>{@code
+     *   Settings settings = Settings.create()
+     *       .mapType(Animal.class, Dog.class);
+     *
+     *   Animal animal = Instancio.of(Animal.class)
+     *       .withSettings(settings)
+     *       .create();
+     *
+     *   assertThat(animal).isExactlyInstanceOf(Dog.class);
+     * }</pre>
+     *
+     * @param type    the type to map to a subtype
+     * @param subtype the subtype class
+     * @return this instance of settings
      */
-    Settings mapType(@NotNull Class<?> from, @NotNull Class<?> to);
+    Settings mapType(@NotNull Class<?> type, @NotNull Class<?> subtype);
 
     /**
      * Returns a read-only view of the subtype map.
@@ -146,7 +159,7 @@ public interface Settings {
      * Locks these settings for further modifications,
      * making this instance immutable.
      *
-     * @return read-only settings
+     * @return this instance of settings that can no longer be modified
      */
     Settings lock();
 
