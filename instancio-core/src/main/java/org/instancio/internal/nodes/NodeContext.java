@@ -21,7 +21,9 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Settings;
+import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.TypeResolver;
 
 import java.lang.reflect.TypeVariable;
@@ -46,7 +48,7 @@ public final class NodeContext {
         subtypeSelectorMap = builder.subtypeSelectorMap;
         subtypeMappingFromSettings = builder.subtypeMappingFromSettings;
         containerFactories = builder.containerFactories;
-        typeResolverFacade = new TypeResolverFacade();
+        typeResolverFacade = new TypeResolverFacade(builder.providerEntries);
     }
 
     public int getMaxDepth() {
@@ -100,6 +102,7 @@ public final class NodeContext {
         private SubtypeSelectorMap subtypeSelectorMap;
         private Map<Class<?>, Class<?>> subtypeMappingFromSettings = Collections.emptyMap();
         private List<InternalContainerFactoryProvider> containerFactories = Collections.emptyList();
+        private List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries = Collections.emptyList();
 
         private Builder() {
         }
@@ -131,6 +134,11 @@ public final class NodeContext {
 
         public Builder containerFactories(final List<InternalContainerFactoryProvider> containerFactories) {
             this.containerFactories = containerFactories;
+            return this;
+        }
+
+        public Builder providerEntries(final List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries) {
+            this.providerEntries = providerEntries;
             return this;
         }
 

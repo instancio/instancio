@@ -1,0 +1,2 @@
+org.example.spi.CustomTypeProvider
+org.example.spi.CustomGeneratorProvider

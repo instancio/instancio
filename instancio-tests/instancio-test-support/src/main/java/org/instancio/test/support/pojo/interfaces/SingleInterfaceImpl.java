@@ -16,20 +16,17 @@
 package org.instancio.test.support.pojo.interfaces;
 
 import lombok.Data;
-import lombok.ToString;
 
 public class SingleInterfaceImpl {
     public interface Widget {
         String getWidgetName();
     }
 
-    @ToString
     @Data
     public static class WidgetImpl implements Widget {
         private String widgetName;
     }
 
-    @ToString
     @Data
     public static class WidgetContainer {
         private Widget widget;

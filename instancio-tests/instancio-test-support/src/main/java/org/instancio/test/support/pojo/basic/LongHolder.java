@@ -15,9 +15,15 @@
  */
 package org.instancio.test.support.pojo.basic;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LongHolder {
 
     private long primitive;

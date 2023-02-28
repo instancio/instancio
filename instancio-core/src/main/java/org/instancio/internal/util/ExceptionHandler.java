@@ -27,7 +27,6 @@ import java.util.function.Supplier;
 
 import static org.instancio.internal.util.SystemProperties.isFailOnError;
 
-@SuppressWarnings("PMD.AvoidRethrowingException")
 public final class ExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
 

@@ -6,14 +6,15 @@
         <artifactId>instancio-tests</artifactId>
         <version>2.10.1-SNAPSHOT</version>
     </parent>
-    <artifactId>spi-tests</artifactId>
+    <artifactId>spi-old-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: Instancio SPI Tests</name>
+    <name>Instancio tests: Instancio Deprecated SPI Tests</name>
+    <description>Deprecated SPIs marked for removal in version 3</description>
 
     <dependencies>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>instancio-junit</artifactId>
+            <artifactId>instancio-core</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>

@@ -48,6 +48,7 @@
 
     <rule ref="category/java/design.xml">
         <exclude name="AvoidCatchingGenericException"/>
+        <exclude name="AvoidRethrowingException"/>
         <exclude name="LoosePackageCoupling"/>
     </rule>
     <rule ref="category/java/design.xml/CognitiveComplexity">

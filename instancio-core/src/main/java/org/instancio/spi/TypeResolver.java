@@ -61,7 +61,10 @@ import java.util.Optional;
  * </p>
  *
  * @since 1.6.0
+ * @deprecated use {@link InstancioServiceProvider} instead.
+ * This class will be removed in version {@code 3.0.0}.
  */
+@Deprecated
 public interface TypeResolver {
 
     /**
@@ -70,7 +73,10 @@ public interface TypeResolver {
      * @param type to resolve
      * @return an {@link Optional} containing a subtype, or an empty result if unresolved.
      * @since 1.6.0
+     * @deprecated this method will be removed in version {@code 3.0.0};
+     * use {@link InstancioServiceProvider#getTypeResolver()} instead.
      */
+    @Deprecated
     Optional<Class<?>> resolve(Class<?> type);
 
 }

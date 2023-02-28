@@ -20,29 +20,34 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.SubtypeGeneratorSpec;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.lang.EnumGenerator;
+import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.internal.util.Sonar;
 import org.instancio.spi.GeneratorProvider;
+import org.instancio.spi.InstancioServiceProvider;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Optional;
 
-public class GeneratorResolver {
-    private static final Logger LOG = LoggerFactory.getLogger(GeneratorResolver.class);
+import static org.instancio.internal.generator.GeneratorUtil.instantiateInternalGenerator;
 
-    private static final List<GeneratorProvider> PROVIDERS = ServiceLoaders.loadAll(GeneratorProvider.class);
+public class GeneratorResolver {
+
+    private static final List<GeneratorProvider> DEPRECATED_PROVIDERS =
+            ServiceLoaders.loadAll(GeneratorProvider.class);
 
     private final GeneratorContext context;
     private final GeneratorProviderFacade generatorProviderFacade;
 
-    public GeneratorResolver(final GeneratorContext context) {
+    public GeneratorResolver(
+            final GeneratorContext context,
+            final List<ProviderEntry<InstancioServiceProvider.GeneratorProvider>> providerEntries) {
+
         this.context = context;
-        this.generatorProviderFacade = new GeneratorProviderFacade(context, PROVIDERS);
+        this.generatorProviderFacade = new GeneratorProviderFacade(
+                context, DEPRECATED_PROVIDERS, providerEntries);
     }
 
     private static Generator<?> loadByClassName(
@@ -57,7 +62,7 @@ public class GeneratorResolver {
             return null;
         }
 
-        return instantiateGenerator(generatorClass, context);
+        return instantiateInternalGenerator(generatorClass, context);
     }
 
     @SuppressWarnings("all")
@@ -114,7 +119,7 @@ public class GeneratorResolver {
             return null;
         }
 
-        final Generator<?> generator = instantiateGenerator(genClass, context);
+        final Generator<?> generator = instantiateInternalGenerator(genClass, context);
         if (generator instanceof SubtypeGeneratorSpec<?>) {
             final Class<?> subtype = GeneratorResolverMaps.getSubtype(targetClass);
             if (subtype != null) {
@@ -122,17 +127,5 @@ public class GeneratorResolver {
             }
         }
         return generator;
-    }
-
-    private static Generator<?> instantiateGenerator(
-            final Class<?> generatorClass, final GeneratorContext context) {
-
-        try {
-            final Constructor<?> constructor = generatorClass.getConstructor(GeneratorContext.class);
-            return (Generator<?>) constructor.newInstance(context);
-        } catch (Exception ex) {
-            LOG.debug("Error instantiating generator: {}", generatorClass);
-            return null;
-        }
     }
 }

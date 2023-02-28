@@ -38,6 +38,7 @@
         <module>java17-tests</module>
         <module>api-contract-tests</module>
         <module>arch-tests</module>
+        <module>spi-old-tests</module>
         <module>spi-tests</module>
         <module>kotlin-tests</module>
         <module>bean-validation-jakarta-tests</module>

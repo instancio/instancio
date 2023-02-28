@@ -15,7 +15,10 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.ServiceLoaders;
+import org.instancio.spi.InstancioServiceProvider;
+import org.instancio.spi.InstancioSpiException;
 import org.instancio.spi.TypeResolver;
 
 import java.util.List;
@@ -23,16 +26,45 @@ import java.util.Optional;
 
 class TypeResolverFacade {
 
-    private static final List<TypeResolver> TYPE_RESOLVERS = ServiceLoaders.loadAll(TypeResolver.class);
+    private static final List<TypeResolver> DEPRECATED_TYPE_RESOLVERS = ServiceLoaders.loadAll(TypeResolver.class);
+
+    private final List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries;
+
+    TypeResolverFacade(final List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries) {
+        this.providerEntries = providerEntries;
+    }
 
     Optional<Class<?>> resolve(final Class<?> typeToResolve) {
-        for (TypeResolver resolver : TYPE_RESOLVERS) {
+        final Class<?> resolvedViaNewSpi = resolveViaNewSPI(typeToResolve);
+        return resolvedViaNewSpi == null
+                ? resolvedViaDeprecatedSPI(typeToResolve)
+                : Optional.of(resolvedViaNewSpi);
+    }
+
+    private Class<?> resolveViaNewSPI(final Class<?> typeToResolve) {
+        for (ProviderEntry<InstancioServiceProvider.TypeResolver> entry : providerEntries) {
+            final Class<?> resolved = entry.getProvider().getSubtype(typeToResolve);
+
+            if (resolved != null) {
+                if (!typeToResolve.isAssignableFrom(resolved)) {
+                    throw new InstancioSpiException(String.format(
+                            "%n%s provided an invalid subtype:%n" +
+                                    " -> %s%nis not a subtype of:%n -> %s",
+                            entry.getInstancioProviderClass(), resolved, typeToResolve));
+                }
+                return resolved;
+            }
+        }
+        return null;
+    }
+
+    private static Optional<Class<?>> resolvedViaDeprecatedSPI(final Class<?> typeToResolve) {
+        for (TypeResolver resolver : DEPRECATED_TYPE_RESOLVERS) {
             final Optional<Class<?>> resolved = resolver.resolve(typeToResolve);
             if (resolved.isPresent()) {
                 return resolved;
             }
         }
-
         return Optional.empty();
     }
 }
