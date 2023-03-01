@@ -10,7 +10,9 @@ hide:
 
 Instancio is packaged as a multi-release JAR and can be used with **Java 8** or higher.
 
-Since version `1.5.0` supports creating
+It has a single `compile` dependency on `org.slf4j:slf4j-api`.
+
+Since version `1.5.0` Instancio supports creating:
 
 - `java.lang.Record` classes on Java 16
 - `sealed` classes on Java 17
@@ -27,11 +29,13 @@ There are three dependencies available from Maven central:
 | `instancio-processor` | `org.instancio.processor` | Annotation processor for generating metamodels |
 
 
+!!! warning "The `org.instanio:instancio` artifact on Maven central is an older dependency that should no longer be used."
+
 ### **`instancio-junit`**
 
-If you use JUnit Jupiter, then use `instancio-junit`.
-Since `instancio-junit` has a transitive dependency on `instancio-core`, it is not necessary to import both.
-Importing only `instancio-junit` would suffice.
+If you have JUnit 5 on the classpath, then use `instancio-junit`.
+
+It includes a transitive dependency on `instancio-core`, therefore it is not necessary to import both.
 
 
 === "Maven"
@@ -69,11 +73,6 @@ If you use JUnit 4, TestNG, or would like to use Instancio standalone, then use 
         testImplementation 'org.instancio:instancio-core:{{config.latest_release}}'
     }
     ```
-
-`instancio-core` itself has minimal `compile` dependencies:
-
-- `org.slf4j:slf4j-api`
-- `org.objenesis:objenesis`
 
 ### **`instancio-processor`**
 
