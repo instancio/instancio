@@ -238,6 +238,24 @@ For methods that follow other naming conventions, or situations where no method 
 !!! info "Regular selector definition"
     From here on, the definition of *regular selectors* also includes method reference selectors.
 
+##### Kotlin method reference selector
+
+Since Instancio does not include Kotlin dependencies,
+the method reference selector described above is only supported for Java classes.
+If you use Kotlin, a similar selector can be implemented as a simple utility class shown below.
+This sample assumes that the property has a non-null backing `javaField`:
+
+``` kotlin title="Sample implementation method reference selector for Kotlin" linenums="1"
+class KSelect {
+    companion object {
+        fun <T, V> field(property: KProperty1<T, V>): TargetSelector {
+            val field = property.javaField!!
+            return Select.field(field.declaringClass, field.name)
+        }
+    }
+}
+```
+
 #### Predicate selectors
 
 Predicate selectors allow for greater flexibility in matching fields and classes.

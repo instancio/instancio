@@ -36,9 +36,10 @@ class MethodReferenceSelectorUnresolvedFieldTest {
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessage(String.format("%n" +
                         "%n" +
-                        "Unable to resolve field from method reference:%n" +
+                        "Unable to resolve the field from method reference:%n" +
                         "-> NonMatchingGetter::getBar%n" +
-                        "   at org.other.test.features.mode.MethodReferenceSelectorUnresolvedFieldTest.lambda$resolvingFieldFails$0(MethodReferenceSelectorUnresolvedFieldTest.java:35)%n%n" +
+                        "   at org.other.test.features.mode.MethodReferenceSelectorUnresolvedFieldTest.lambda$resolvingFieldFails$0(MethodReferenceSelectorUnresolvedFieldTest.java:35)%n" +
+                        "%n" +
                         "Potential causes:%n" +
                         "-> The method and the corresponding field do not follow expected naming conventions%n" +
                         "   See: https://www.instancio.org/user-guide/#method-reference-selector%n" +
@@ -51,6 +52,18 @@ class MethodReferenceSelectorUnresolvedFieldTest {
                         "Possible solutions:%n" +
                         "-> Resolve the above issues, if applicable%n" +
                         "-> Specify the field name explicitly, e.g.%n" +
-                        "   field(Example.class, \"someField\")"));
+                        "   field(Example.class, \"someField\")%n" +
+                        "-> If using Kotlin, consider creating a 'KSelect' utility class, for example:%n" +
+                        "%n" +
+                        "   class KSelect {%n" +
+                        "       companion object {%n" +
+                        "           fun <T, V> field(property: KProperty1<T, V>): TargetSelector {%n" +
+                        "               val field = property.javaField!!%n" +
+                        "               return Select.field(field.declaringClass, field.name)%n" +
+                        "           }%n" +
+                        "       }%n" +
+                        "   }%n" +
+                        "%n" +
+                        "   Usage: KSelect.field(SamplePojo::value)"));
     }
 }
