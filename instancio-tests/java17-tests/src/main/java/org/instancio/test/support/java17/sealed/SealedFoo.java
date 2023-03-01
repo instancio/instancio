@@ -15,14 +15,10 @@
  */
 package org.instancio.test.support.java17.sealed;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-@Getter
-@Setter
-@ToString
 public sealed class SealedFoo permits SealedFooSubclass {
     private FooRecord fooRecord;
 
+    public FooRecord getFooRecord() {
+        return fooRecord;
+    }
 }

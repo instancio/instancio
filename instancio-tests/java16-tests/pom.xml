@@ -21,20 +21,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <release>16</release>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.instancio</groupId>
-                            <artifactId>instancio-processor</artifactId>
-                            <version>${project.parent.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${version.lombok}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                    <source>16</source>
-                    <target>16</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -46,11 +32,6 @@
             <artifactId>logback-classic</artifactId>
             <version>${version.logback}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>

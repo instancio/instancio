@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
-import lombok.Data;
-
-@Data
 class DefaultPackageClass {
 
     private String value;
+
+    public String getValue() {
+        return value;
+    }
 }
