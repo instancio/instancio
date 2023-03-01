@@ -18,7 +18,9 @@ package org.instancio.test.kotlin
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.instancio.Instancio
+import org.instancio.Select
 import org.instancio.Select.*
+import org.instancio.TargetSelector
 import org.instancio.exception.InstancioApiException
 import org.instancio.junit.InstancioExtension
 import org.instancio.test.kotlin.pojo.person.KPerson
@@ -29,6 +31,8 @@ import org.instancio.test.support.tags.Feature
 import org.instancio.test.support.tags.FeatureTag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.reflect.KProperty1
+import kotlin.reflect.jvm.javaField
 
 @FeatureTag(
     Feature.SELECTOR,
@@ -68,15 +72,33 @@ internal class KSelectorsTest {
     @Test
     @FeatureTag(Feature.UNSUPPORTED)
     fun methodReferenceFromKotlinClass() {
-        val api = Instancio.of(KPhone::class.java)
-
         assertThatThrownBy {
-            api.ignore(field(KPhone::number))
+            field(KPhone::number)
         }.isExactlyInstanceOf(InstancioApiException::class.java)
             .hasMessageContainingAll(
-                "Unable to resolve field from method reference",
+                "Unable to resolve the field from method reference",
                 "You are using Kotlin and passing a method reference of a Kotlin class"
             )
+    }
+
+    @Test
+    fun usingKSelect() {
+        val result = Instancio.of(KPerson::class.java)
+            .set(KSelect.field(KPerson::name), "foo")
+            .create()
+
+        assertThat(result.name).isEqualTo("foo")
+    }
+
+    internal class KSelect {
+        companion object {
+            fun <T, V> field(property: KProperty1<T, V>): TargetSelector {
+                val field = property.javaField!!
+
+                @Suppress("RemoveRedundantQualifierName")
+                return Select.field(field.declaringClass, field.name)
+            }
+        }
     }
 
     @Test

@@ -66,7 +66,7 @@ public final class MethodReferenceHelper {
     private static String getErrorMessage(final SerializedLambda lambda, final Class<?> targetClass) {
         final String at = Format.firstNonInstancioStackTraceLine(new Throwable());
         return new StringBuilder(1024).append(NL).append(NL)
-                .append("Unable to resolve field from method reference:").append(NL)
+                .append("Unable to resolve the field from method reference:").append(NL)
                 .append("-> ").append(Format.withoutPackage(targetClass)).append("::").append(lambda.getImplMethodName()).append(NL)
                 .append("   at ").append(at).append(NL)
                 .append(NL)
@@ -82,7 +82,19 @@ public final class MethodReferenceHelper {
                 .append("Possible solutions:").append(NL)
                 .append("-> Resolve the above issues, if applicable").append(NL)
                 .append("-> Specify the field name explicitly, e.g.").append(NL)
-                .append("   field(Example.class, \"someField\")")
+                .append("   field(Example.class, \"someField\")").append(NL)
+                .append("-> If using Kotlin, consider creating a 'KSelect' utility class, for example:").append(NL)
+                .append(NL)
+                .append("   class KSelect {").append(NL)
+                .append("       companion object {").append(NL)
+                .append("           fun <T, V> field(property: KProperty1<T, V>): TargetSelector {").append(NL)
+                .append("               val field = property.javaField!!").append(NL)
+                .append("               return Select.field(field.declaringClass, field.name)").append(NL)
+                .append("           }").append(NL)
+                .append("       }").append(NL)
+                .append("   }").append(NL)
+                .append(NL)
+                .append("   Usage: KSelect.field(SamplePojo::value)")
                 .toString();
     }
 

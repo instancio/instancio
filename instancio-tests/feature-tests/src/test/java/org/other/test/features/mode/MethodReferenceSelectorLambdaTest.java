@@ -36,7 +36,7 @@ class MethodReferenceSelectorLambdaTest {
 
         assertThatThrownBy(() -> api.ignore(field((StringHolder holder) -> holder.getValue())))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContainingAll("Unable to resolve field from method reference",
+                .hasMessageContainingAll("Unable to resolve the field from method reference",
                         "The method reference is expressed as a lambda function",
                         "Example:     field((SamplePojo pojo) -> pojo.getValue())",
                         "Instead of:  field(SamplePojo::getValue)");
