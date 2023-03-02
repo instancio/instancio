@@ -19,8 +19,8 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LoremIpsumSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.support.Global;
 
 import static org.instancio.internal.util.StringUtils.capitalise;
 

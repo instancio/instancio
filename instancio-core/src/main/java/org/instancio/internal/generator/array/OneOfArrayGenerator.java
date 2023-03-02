@@ -21,9 +21,9 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.support.Global;
 
 public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArraySpec<T> {
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.random;
+package org.instancio.support;
 
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.BeforeEach;

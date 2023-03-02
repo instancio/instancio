@@ -22,11 +22,11 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.PathAsGeneratorSpec;
 import org.instancio.generator.specs.PathSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.IOUtils;
 import org.instancio.internal.util.StringUtils;
+import org.instancio.support.Global;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-final class PropertiesLoader {
+public final class PropertiesLoader {
     private static final Logger LOG = LoggerFactory.getLogger(PropertiesLoader.class);
     private static final String DEFAULT_PROPERTIES_FILE = "instancio.properties";
 
@@ -30,7 +30,7 @@ final class PropertiesLoader {
         // non-instantiable
     }
 
-    static Properties loadDefaultPropertiesFile() {
+    public static Properties loadDefaultPropertiesFile() {
         return load(DEFAULT_PROPERTIES_FILE);
     }
 

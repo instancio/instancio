@@ -19,8 +19,8 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.BigDecimalAsGeneratorSpec;
 import org.instancio.generator.specs.BigDecimalSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
+import org.instancio.support.Global;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

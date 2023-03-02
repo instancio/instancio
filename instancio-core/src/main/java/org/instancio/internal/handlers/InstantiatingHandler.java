@@ -18,8 +18,8 @@ package org.instancio.internal.handlers;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.nodes.Node;
 import org.instancio.internal.instantiation.Instantiator;
+import org.instancio.internal.nodes.Node;
 import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.NotNull;
 

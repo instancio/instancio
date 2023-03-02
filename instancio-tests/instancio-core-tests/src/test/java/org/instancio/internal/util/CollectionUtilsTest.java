@@ -17,7 +17,7 @@ package org.instancio.internal.util;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
-import org.instancio.internal.random.DefaultRandom;
+import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;

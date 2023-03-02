@@ -45,6 +45,7 @@
         <module>bean-validation-hibernate-tests</module>
         <module>annotation-processor-with-lombok</module>
         <module>annotation-processor-with-gradle</module>
+        <module>packaging-tests</module>
         <module>report-aggregate</module>
     </modules>
 

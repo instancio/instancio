@@ -17,8 +17,8 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
+import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 

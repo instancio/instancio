@@ -28,20 +28,23 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noMethods;
 
 class ApiPackageTest {
 
-    private static final String INTERNAL_PACKAGE = "org.instancio.internal..";
+    private static final String[] NON_PUBLIC_PACKAGES = {
+            "org.instancio.internal..",
+            "org.instancio.support.."
+    };
 
     private static final JavaClasses classes = new ClassFileImporter().importPackages("org.instancio");
 
     @Test
     void internalApisShouldResideWithinInternalPackage() {
         classes().that().areAnnotatedWith(InternalApi.class)
-                .should().resideInAPackage(INTERNAL_PACKAGE)
+                .should().resideInAnyPackage(NON_PUBLIC_PACKAGES)
                 .check(classes);
 
         methods()
                 .that().areAnnotatedWith(InternalApi.class)
                 .should().beDeclaredInClassesThat()
-                .resideInAPackage(INTERNAL_PACKAGE)
+                .resideInAnyPackage(NON_PUBLIC_PACKAGES)
                 .allowEmptyShould(true) // there may not be any annotated methods, which is fine
                 .check(classes);
     }
@@ -49,12 +52,12 @@ class ApiPackageTest {
     @Test
     void experimentalApisShouldResideInPublicPackages() {
         noClasses().that().areAnnotatedWith(ExperimentalApi.class)
-                .should().resideInAPackage(INTERNAL_PACKAGE)
+                .should().resideInAnyPackage(NON_PUBLIC_PACKAGES)
                 .check(classes);
 
         noMethods().that().areAnnotatedWith(ExperimentalApi.class)
                 .should().beDeclaredInClassesThat()
-                .resideInAPackage(INTERNAL_PACKAGE)
+                .resideInAnyPackage(NON_PUBLIC_PACKAGES)
                 .allowEmptyShould(true) // there may not be any annotated methods, which is fine
                 .check(classes);
     }

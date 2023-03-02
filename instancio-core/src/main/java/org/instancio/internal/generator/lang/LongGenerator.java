@@ -18,8 +18,8 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LongSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.settings.Keys;
+import org.instancio.support.Global;
 
 public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<Long>
         implements LongSpec {

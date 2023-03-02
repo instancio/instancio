@@ -20,8 +20,8 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.ValueSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.support.Global;
 
 public class TextPatternGenerator extends AbstractGenerator<String>
         implements ValueSpec<String> {

@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.internal.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalRandom;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

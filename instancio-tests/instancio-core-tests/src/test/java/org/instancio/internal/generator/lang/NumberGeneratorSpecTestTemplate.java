@@ -17,10 +17,10 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.specs.NumberGeneratorSpec;
-import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.TypeUtils;
+import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

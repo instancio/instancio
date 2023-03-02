@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.support;
 
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Order;

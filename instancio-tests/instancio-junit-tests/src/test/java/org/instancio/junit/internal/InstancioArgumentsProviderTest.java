@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.junit;
+package org.instancio.junit.internal;
 
 import org.instancio.Random;
-import org.instancio.internal.random.DefaultRandom;
+import org.instancio.support.DefaultRandom;
+import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;

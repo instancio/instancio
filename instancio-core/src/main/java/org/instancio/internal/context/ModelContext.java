@@ -24,7 +24,6 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.RandomHelper;
-import org.instancio.internal.ThreadLocalSettings;
 import org.instancio.internal.generator.misc.SupplierAdapter;
 import org.instancio.internal.nodes.Node;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
@@ -37,6 +36,8 @@ import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
+import org.instancio.support.Global;
+import org.instancio.support.ThreadLocalSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

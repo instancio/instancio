@@ -19,9 +19,9 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.HashAsGeneratorSpec;
 import org.instancio.generator.specs.HashSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
+import org.instancio.support.Global;
 
 public class HashGenerator extends AbstractGenerator<String>
         implements HashSpec, HashAsGeneratorSpec {

@@ -21,7 +21,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.URLAsGeneratorSpec;
 import org.instancio.generator.specs.URLSpec;
-import org.instancio.internal.context.Global;
+import org.instancio.support.Global;
 
 import java.net.MalformedURLException;
 import java.net.URL;

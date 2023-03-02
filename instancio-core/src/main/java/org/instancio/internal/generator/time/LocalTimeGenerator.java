@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.context.Global;
+import org.instancio.support.Global;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.LocalTime;

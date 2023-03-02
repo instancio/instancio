@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.junit;
+package org.instancio.junit.internal;
 
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.ThreadLocalRandom;
-import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.internal.context.Global;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.internal.random.Seeds;
-import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.Sonar;
+import org.instancio.junit.Seed;
+import org.instancio.junit.WithSettings;
 import org.instancio.settings.Settings;
+import org.instancio.support.DefaultRandom;
+import org.instancio.support.Global;
+import org.instancio.support.Seeds;
+import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.lang.reflect.Field;
@@ -33,11 +33,13 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
-final class ExtensionSupport {
+public final class ExtensionSupport {
 
-    static void processAnnotations(final ExtensionContext context,
-                                   final ThreadLocalRandom threadLocalRandom,
-                                   final ThreadLocalSettings threadLocalSettings) {
+    public static void processAnnotations(
+            final ExtensionContext context,
+            final ThreadLocalRandom threadLocalRandom,
+            final ThreadLocalSettings threadLocalSettings) {
+
         try {
             ExtensionSupport.processWithSettingsAnnotation(context, threadLocalSettings);
             ExtensionSupport.processSeedAnnotation(context, threadLocalRandom);
@@ -48,8 +50,9 @@ final class ExtensionSupport {
         }
     }
 
-    private static void processSeedAnnotation(final ExtensionContext context,
-                                              final ThreadLocalRandom threadLocalRandom) {
+    private static void processSeedAnnotation(
+            final ExtensionContext context,
+            final ThreadLocalRandom threadLocalRandom) {
 
         final Optional<Method> testMethod = context.getTestMethod();
         if (testMethod.isPresent()) {
@@ -70,9 +73,10 @@ final class ExtensionSupport {
         }
     }
 
-    @SuppressWarnings({Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED, "PMD.CyclomaticComplexity"})
-    private static void processWithSettingsAnnotation(final ExtensionContext context,
-                                                      final ThreadLocalSettings threadLocalSettings) {
+    @SuppressWarnings({"java:S3011", "PMD.CyclomaticComplexity"})
+    private static void processWithSettingsAnnotation(
+            final ExtensionContext context,
+            final ThreadLocalSettings threadLocalSettings) {
 
         final Optional<Class<?>> testClass = context.getTestClass();
         if (!testClass.isPresent()) {

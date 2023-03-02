@@ -21,7 +21,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.URIAsGeneratorSpec;
 import org.instancio.generator.specs.URISpec;
-import org.instancio.internal.context.Global;
+import org.instancio.support.Global;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -19,8 +19,8 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.InstantSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.util.Constants;
+import org.instancio.support.Global;
 
 import java.time.Instant;
 
