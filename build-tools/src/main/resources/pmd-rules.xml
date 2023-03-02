@@ -81,7 +81,6 @@
         <exclude name="AvoidAccessibilityAlteration"/>
         <exclude name="AvoidFieldNameMatchingMethodName"/>
         <exclude name="AvoidFieldNameMatchingTypeName"/>
-        <exclude name="BeanMembersShouldSerialize"/>
         <exclude name="MissingSerialVersionUID"/>
     </rule>
     <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
