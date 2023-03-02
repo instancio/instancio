@@ -41,18 +41,21 @@ class ManifestFileTest {
     private static final String IMPORT_PACKAGE = "Import-Package";
     private static final String MULTI_RELEASE = "Multi-Release";
 
+    // entries that end with "," are to assert that there is no version restriction
+    // (unless it's the last entry, then no comma is added)
+
     private static final String[] INSTANCIO_CORE_EXPECTED_IMPORTS = {
             "jakarta.validation.constraints;version=\"[3.0,4)\";resolution:=optional",
-            "javax.xml.datatype",
+            "javax.xml.datatype;resolution:=optional",
             "org.hibernate.validator.constraints.time;version=\"[8.0,9)\";resolution:=optional",
             "org.hibernate.validator.constraints;version=\"[8.0,9)\";resolution:=optional",
             "org.instancio.documentation",
             "org.instancio.exception",
             "org.instancio.generator.specs",
             "org.instancio.spi",
-            "org.slf4j.helpers;version=\"[1.7,2)\"",
-            "org.slf4j;version=\"[1.7,2)\"",
-            "sun.misc",
+            "org.slf4j.helpers,",
+            "org.slf4j,",
+            "sun.misc;resolution:=optional",
     };
 
     private static final String[] INSTANCIO_JUNIT_EXPECTED_IMPORTS = {
@@ -60,10 +63,10 @@ class ManifestFileTest {
             "org.instancio.settings;version=\"[2.10,3)\"",
             "org.instancio.support;version=\"[2.10,3)\"",
             "org.instancio;version=\"[2.10,3)\"",
-            "org.junit.jupiter.api.extension;version=\"[5.9,6)\"",
-            "org.junit.jupiter.params.provider;version=\"[5.9,6)\"",
-            "org.junit.jupiter.params.support;version=\"[5.9,6)\"",
-            "org.slf4j;version=\"[1.7,2)\""
+            "org.junit.jupiter.api.extension,",
+            "org.junit.jupiter.params.provider;resolution:=optional",
+            "org.junit.jupiter.params.support;resolution:=optional",
+            "org.slf4j"
     };
 
     @Test

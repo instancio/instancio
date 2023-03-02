@@ -12,10 +12,6 @@
     <name>Instancio JUnit 5 Support</name>
     <description>Instancio integration with JUnit 5</description>
 
-    <properties>
-        <osgi.export.packages>org.instancio.junit</osgi.export.packages>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -30,6 +26,21 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.instancio.junit</Export-Package>
+                        <Import-Package>
+                            org.instancio.exception;version="[2.10,3)",
+                            org.instancio.settings;version="[2.10,3)",
+                            org.instancio.support;version="[2.10,3)",
+                            org.instancio;version="[2.10,3)",
+                            org.junit.jupiter.api.extension;version=!,
+                            org.junit.jupiter.params.provider;version=!;resolution:=optional,
+                            org.junit.jupiter.params.support;version=!;resolution:=optional,
+                            org.slf4j;version=!
+                        </Import-Package>
+                    </instructions>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -60,6 +71,7 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

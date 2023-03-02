@@ -56,8 +56,6 @@
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <latest.release.version>2.10.0</latest.release.version>
-        <!-- placeholder property; value is set in child poms -->
-        <osgi.export.packages/>
         <version.jakarta.validation>3.0.2</version.jakarta.validation>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
         <version.jetbrains.annotations>24.0.0</version.jetbrains.annotations>
@@ -331,11 +329,6 @@
                             <goals>
                                 <goal>manifest</goal>
                             </goals>
-                            <configuration>
-                                <instructions>
-                                    <Export-Package>${osgi.export.packages}</Export-Package>
-                                </instructions>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

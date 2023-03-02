@@ -12,10 +12,6 @@
     <name>Instancio Core</name>
     <description>The standalone module of Instancio</description>
 
-    <properties>
-        <osgi.export.packages>!org.instancio.internal.*</osgi.export.packages>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -30,6 +26,36 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            org.instancio,
+                            org.instancio.assignment,
+                            org.instancio.documentation,
+                            org.instancio.exception,
+                            org.instancio.generator,
+                            org.instancio.generator.hints,
+                            org.instancio.generator.specs,
+                            org.instancio.generators,
+                            org.instancio.settings,
+                            org.instancio.spi,
+                            org.instancio.support
+                        </Export-Package>
+                        <Import-Package>
+                            jakarta.validation.constraints;version="[3.0,4)";resolution:=optional,
+                            javax.xml.datatype;resolution:=optional,
+                            org.hibernate.validator.constraints.time;version="[8.0,9)";resolution:=optional,
+                            org.hibernate.validator.constraints;version="[8.0,9)";resolution:=optional,
+                            org.instancio.documentation,
+                            org.instancio.exception,
+                            org.instancio.generator.specs,
+                            org.instancio.spi,
+                            org.slf4j.helpers;version=!,
+                            org.slf4j;version=!,
+                            sun.misc;resolution:=optional
+                        </Import-Package>
+                    </instructions>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
