@@ -20,12 +20,12 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
 import org.instancio.internal.RandomHelper;
-import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.support.Global;
+import org.instancio.support.ThreadLocalSettings;
 
 import java.util.ArrayList;
 import java.util.List;

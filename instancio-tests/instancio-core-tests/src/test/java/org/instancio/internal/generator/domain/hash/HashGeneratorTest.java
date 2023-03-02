@@ -17,8 +17,8 @@ package org.instancio.internal.generator.domain.hash;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
+import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

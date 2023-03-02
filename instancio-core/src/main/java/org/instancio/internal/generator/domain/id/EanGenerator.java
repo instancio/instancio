@@ -18,8 +18,8 @@ package org.instancio.internal.generator.domain.id;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EanSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.support.Global;
 
 public class EanGenerator extends AbstractGenerator<String> implements EanSpec {
 

@@ -71,7 +71,7 @@ public final class RandomDataGenerator {
         throw new IllegalStateException("Not Strictly positive: " + n);
     }
 
-    static double nextDouble(final Random random, double lower, double upper) {
+    public static double nextDouble(final Random random, double lower, double upper) {
         Verify.isTrue(lower <= upper, "Lower must be less than or equal to upper: %s, %s", lower, upper);
         Verify.isFalse(Double.isInfinite(lower), "Lower bound must not be infinite");
         Verify.isFalse(Double.isInfinite(upper), "Upper bound must not be infinite");

@@ -19,10 +19,10 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.DurationSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.support.Global;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

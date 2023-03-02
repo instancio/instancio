@@ -18,9 +18,9 @@ package org.instancio.internal.generator.text;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.UUIDStringSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
+import org.instancio.support.Global;
 
 import java.util.Locale;
 

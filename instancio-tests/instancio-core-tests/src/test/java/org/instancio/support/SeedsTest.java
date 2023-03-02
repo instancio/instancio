@@ -13,35 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.support;
 
-import org.instancio.Random;
-import org.instancio.internal.random.DefaultRandom;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ThreadLocalRandomTest {
+class SeedsTest {
+
+    private static final int SAMPLE_SIZE = 1000;
 
     @Test
-    @Order(1)
-    void get() {
-        assertThat(ThreadLocalRandom.getInstance().get()).isNull();
-    }
-
-    @Test
-    @Order(2)
-    void set() {
-        final Random provider = new DefaultRandom();
-        ThreadLocalRandom.getInstance().set(provider);
-        assertThat(ThreadLocalRandom.getInstance().get()).isSameAs(provider);
-    }
-
-    @Test
-    @Order(3)
-    void remove() {
-        ThreadLocalRandom.getInstance().remove();
-        assertThat(ThreadLocalRandom.getInstance().get()).isNull();
+    void shouldReturnNonNegativeSeed() {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            assertThat(Seeds.randomSeed()).isNotNegative();
+        }
     }
 }

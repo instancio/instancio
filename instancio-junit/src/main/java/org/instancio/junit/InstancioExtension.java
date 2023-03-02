@@ -15,8 +15,9 @@
  */
 package org.instancio.junit;
 
-import org.instancio.internal.ThreadLocalRandom;
-import org.instancio.internal.ThreadLocalSettings;
+import org.instancio.junit.internal.ExtensionSupport;
+import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;

@@ -18,8 +18,8 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ShortSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.settings.Keys;
+import org.instancio.support.Global;
 
 public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<Short>
         implements ShortSpec {

@@ -20,9 +20,9 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.BooleanAsGeneratorSpec;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
+import org.instancio.support.Global;
 
 public class BooleanGenerator extends AbstractGenerator<Boolean>
         implements BooleanSpec, BooleanAsGeneratorSpec {

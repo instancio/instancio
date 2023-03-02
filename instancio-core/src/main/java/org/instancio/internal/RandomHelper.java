@@ -17,10 +17,11 @@ package org.instancio.internal;
 
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
-import org.instancio.internal.context.Global;
-import org.instancio.internal.random.DefaultRandom;
-import org.instancio.internal.random.Seeds;
 import org.instancio.internal.util.ObjectUtils;
+import org.instancio.support.DefaultRandom;
+import org.instancio.support.Global;
+import org.instancio.support.Seeds;
+import org.instancio.support.ThreadLocalRandom;
 import org.jetbrains.annotations.Nullable;
 
 @InternalApi

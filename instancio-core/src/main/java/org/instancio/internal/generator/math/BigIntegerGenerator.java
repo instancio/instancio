@@ -18,8 +18,8 @@ package org.instancio.internal.generator.math;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.BigIntegerSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
+import org.instancio.support.Global;
 
 import java.math.BigInteger;
 

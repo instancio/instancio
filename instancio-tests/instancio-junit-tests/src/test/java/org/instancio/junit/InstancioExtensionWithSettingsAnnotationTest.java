@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.internal.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalRandom;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;

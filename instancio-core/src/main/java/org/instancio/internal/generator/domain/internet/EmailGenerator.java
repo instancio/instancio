@@ -19,10 +19,10 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EmailAsGeneratorSpec;
 import org.instancio.generator.specs.EmailSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
 import org.instancio.internal.util.Verify;
+import org.instancio.support.Global;
 
 import java.util.Locale;
 

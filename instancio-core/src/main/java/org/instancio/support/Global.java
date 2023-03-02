@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.context;
+package org.instancio.support;
 
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.internal.random.DefaultRandom;
+import org.instancio.internal.context.PropertiesLoader;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.jetbrains.annotations.NotNull;

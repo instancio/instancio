@@ -21,15 +21,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-
-import static java.util.stream.Collectors.toList;
 
 public final class ReflectionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
@@ -113,12 +108,6 @@ public final class ReflectionUtils {
         } catch (Exception ex) {
             throw new InstancioApiException(String.format("Unable to get class: '%s'", name), ex);
         }
-    }
-
-    public static List<Field> getAnnotatedFields(final Class<?> klass, final Class<? extends Annotation> annotation) {
-        return Arrays.stream(klass.getDeclaredFields())
-                .filter(field -> field.getAnnotation(annotation) != null)
-                .collect(toList());
     }
 }
 

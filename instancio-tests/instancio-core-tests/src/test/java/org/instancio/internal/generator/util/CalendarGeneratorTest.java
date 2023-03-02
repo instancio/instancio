@@ -18,8 +18,8 @@ package org.instancio.internal.generator.util;
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
+import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

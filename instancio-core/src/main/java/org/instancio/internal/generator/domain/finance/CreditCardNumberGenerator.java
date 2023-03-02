@@ -18,9 +18,9 @@ package org.instancio.internal.generator.domain.finance;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CreditCardSpec;
-import org.instancio.internal.context.Global;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.LuhnUtils;
+import org.instancio.support.Global;
 import org.jetbrains.annotations.VisibleForTesting;
 
 public class CreditCardNumberGenerator extends AbstractGenerator<String>

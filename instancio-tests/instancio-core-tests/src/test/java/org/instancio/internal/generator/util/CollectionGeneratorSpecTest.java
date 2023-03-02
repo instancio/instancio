@@ -17,9 +17,9 @@ package org.instancio.internal.generator.util;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.random.DefaultRandom;
 import org.instancio.internal.util.Constants;
 import org.instancio.settings.Settings;
+import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

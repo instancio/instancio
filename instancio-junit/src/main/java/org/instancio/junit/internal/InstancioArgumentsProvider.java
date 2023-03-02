@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.junit;
+package org.instancio.junit.internal;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioOfClassApi;
 import org.instancio.Random;
-import org.instancio.internal.ThreadLocalRandom;
-import org.instancio.internal.ThreadLocalSettings;
+import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Settings;
+import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;

@@ -56,6 +56,8 @@
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <latest.release.version>2.10.0</latest.release.version>
+        <!-- placeholder property; value is set in child poms -->
+        <osgi.export.packages/>
         <version.jakarta.validation>3.0.2</version.jakarta.validation>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
         <version.jetbrains.annotations>24.0.0</version.jetbrains.annotations>
@@ -317,13 +319,25 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.3.0</version>
-                    <configuration>
-                        <archive>
-                            <manifestEntries>
-                                <Multi-Release>true</Multi-Release>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.8</version>
+                    <executions>
+                        <execution>
+                            <id>bundle-manifest</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>manifest</goal>
+                            </goals>
+                            <configuration>
+                                <instructions>
+                                    <Export-Package>${osgi.export.packages}</Export-Package>
+                                </instructions>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

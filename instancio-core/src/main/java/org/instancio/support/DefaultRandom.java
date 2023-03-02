@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.random;
+package org.instancio.support;
 
 import org.instancio.Random;
+import org.instancio.documentation.InternalApi;
+import org.instancio.internal.random.RandomDataGenerator;
 import org.instancio.internal.util.Verify;
 
 import java.util.Collection;
 
+@InternalApi
 public class DefaultRandom implements Random {
 
     private final long seed;

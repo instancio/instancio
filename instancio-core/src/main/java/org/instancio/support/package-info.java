@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.random;
+/**
+ * Provides miscellaneous support classes to {@code instancio-junit}.
+ *
+ * <p>This package is not part of the public API.
+ */
+@InternalApi
+package org.instancio.support;
 
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-class SeedsTest {
-
-    private static final int SAMPLE_SIZE = 1000;
-
-    @Test
-    void shouldReturnNonNegativeSeed() {
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            assertThat(Seeds.randomSeed()).isNotNegative();
-        }
-    }
-}
+import org.instancio.documentation.InternalApi;

@@ -17,9 +17,9 @@ package org.instancio.junit;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.ThreadLocalRandom;
-import org.instancio.internal.ThreadLocalSettings;
-import org.instancio.internal.random.DefaultRandom;
+import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalSettings;
+import org.instancio.support.DefaultRandom;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

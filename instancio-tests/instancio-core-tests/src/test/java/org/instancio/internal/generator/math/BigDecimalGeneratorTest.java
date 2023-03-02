@@ -18,8 +18,8 @@ package org.instancio.internal.generator.math;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.NumberGeneratorSpecTestTemplate;
-import org.instancio.internal.random.DefaultRandom;
 import org.instancio.settings.Settings;
+import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

@@ -20,15 +20,12 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
-import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.AbstractList;
 import java.util.List;
@@ -139,36 +136,7 @@ class ReflectionUtilsTest {
                 ReflectionUtils.getField(PrimitiveFields.class, fieldName), initialised)).isTrue();
     }
 
-    @Test
-    void getAnnotatedFields() {
-        final List<Field> fields = ReflectionUtils.getAnnotatedFields(WithAnnotatedField.class, AnnotationX.class);
-
-        assertThat(fields).hasSize(2)
-                .extracting(Field::getName)
-                .contains("foo", "bar");
-    }
-
-    @Test
-    void getAnnotatedFieldsReturnsEmptyList() {
-        assertThat(ReflectionUtils.getAnnotatedFields(StringHolder.class, AnnotationX.class)).isEmpty();
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    private @interface AnnotationX {}
-
-    @Retention(RetentionPolicy.RUNTIME)
-    private @interface AnnotationY {}
-
     @SuppressWarnings("all")
-    private static class WithAnnotatedField {
-        @AnnotationX
-        private String foo;
-        @AnnotationX
-        private Integer bar;
-        @AnnotationY
-        private Integer baz;
-    }
-
     private static class StaticFieldWithValue {
         private static String staticField = "expected";
     }

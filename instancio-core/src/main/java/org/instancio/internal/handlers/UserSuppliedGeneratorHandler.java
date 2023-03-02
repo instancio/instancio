@@ -25,8 +25,8 @@ import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.InstantiatingGenerator;
-import org.instancio.internal.nodes.Node;
 import org.instancio.internal.instantiation.Instantiator;
+import org.instancio.internal.nodes.Node;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

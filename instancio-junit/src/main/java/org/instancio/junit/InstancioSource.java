@@ -15,6 +15,7 @@
  */
 package org.instancio.junit;
 
+import org.instancio.junit.internal.InstancioArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.lang.annotation.Documented;
