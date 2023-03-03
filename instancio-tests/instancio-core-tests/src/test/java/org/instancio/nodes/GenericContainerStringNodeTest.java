@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.container.GenericContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
@@ -27,7 +27,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<String>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasDepth(0)
                 .hasTargetClass(GenericContainer.class)
@@ -43,7 +43,7 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .hasNoChildren();
 
         // T[] array
-        final Node array = assertNode(NodeUtils.getChildNode(rootNode, "array"))
+        final InternalNode array = assertNode(NodeUtils.getChildNode(rootNode, "array"))
                 .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("array")
@@ -61,7 +61,7 @@ class GenericContainerStringNodeTest extends NodeTestTemplate<GenericContainer<S
                 .hasNoChildren();
 
         // List<T> list
-        final Node list = assertNode(NodeUtils.getChildNode(rootNode, "list"))
+        final InternalNode list = assertNode(NodeUtils.getChildNode(rootNode, "list"))
                 .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("list")

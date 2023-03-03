@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.MapWithoutTypes;
 import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -25,7 +25,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class MapWithoutTypesNodeTest extends NodeTestTemplate<MapWithoutTypes> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(MapWithoutTypes.class)
                 .hasChildrenOfSize(1);

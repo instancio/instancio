@@ -17,7 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.AfterGenerate;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 
 @InternalApi
 interface NodePopulationFilter {
@@ -30,6 +30,6 @@ interface NodePopulationFilter {
      * @param obj           what the object is varies depending on filter implementation
      * @return {@code true} if node should be skipped, {@code false} otherwise
      */
-    boolean shouldSkip(Node node, AfterGenerate afterGenerate, Object obj);
+    boolean shouldSkip(InternalNode node, AfterGenerate afterGenerate, Object obj);
 
 }

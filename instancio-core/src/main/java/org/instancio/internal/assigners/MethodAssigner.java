@@ -21,7 +21,7 @@ import org.instancio.assignment.OnSetMethodNotFound;
 import org.instancio.assignment.SetterStyle;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
@@ -69,7 +69,7 @@ public class MethodAssigner implements Assigner {
     }
 
     @Override
-    public void assign(final Node node, final Object target, final Object arg) {
+    public void assign(final InternalNode node, final Object target, final Object arg) {
         final Field field = node.getField();
         if (arg != null) {
             // can't use setters on final fields
@@ -84,7 +84,7 @@ public class MethodAssigner implements Assigner {
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    private void assignViaMethod(final Node node, final Object target, final Object arg) {
+    private void assignViaMethod(final InternalNode node, final Object target, final Object arg) {
         final String methodName = setterNameResolver.resolveFor(node.getField());
         final Optional<Method> methodOpt = resolveSetterMethod(methodName, node.getField());
 
@@ -104,7 +104,7 @@ public class MethodAssigner implements Assigner {
     }
 
     private void handleMethodInvocationError(
-            final Node node,
+            final InternalNode node,
             final Object target,
             final Object arg,
             final Method method,
@@ -126,7 +126,7 @@ public class MethodAssigner implements Assigner {
     }
 
     private void handleMethodNotFoundError(
-            final Node node,
+            final InternalNode node,
             final Object target,
             final Object arg,
             final String methodName) {

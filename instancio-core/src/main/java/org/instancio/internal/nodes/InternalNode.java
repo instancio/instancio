@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class Node {
+public final class InternalNode {
 
-    private static final Node IGNORED_NODE = builder()
+    private static final InternalNode IGNORED_NODE = builder()
             .type(Object.class)
             .rawType(Object.class)
             .targetClass(Object.class)
@@ -42,13 +42,13 @@ public final class Node {
     private final Class<?> rawType;
     private final Class<?> targetClass;
     private final Field field;
-    private final Node parent;
+    private final InternalNode parent;
     private final TypeMap typeMap;
     private final NodeKind nodeKind;
     private final int depth;
-    private List<Node> children;
+    private List<InternalNode> children;
 
-    private Node(final Builder builder) {
+    private InternalNode(final Builder builder) {
         nodeContext = builder.nodeContext;
         type = Verify.notNull(builder.type, "null type");
         rawType = Verify.notNull(builder.rawType, "null rawType");
@@ -61,7 +61,7 @@ public final class Node {
         depth = parent == null ? 0 : parent.depth + 1;
     }
 
-    public static Node ignoredNode() {
+    public static InternalNode ignoredNode() {
         return IGNORED_NODE;
     }
 
@@ -142,7 +142,7 @@ public final class Node {
         return field;
     }
 
-    public Node getParent() {
+    public InternalNode getParent() {
         return parent;
     }
 
@@ -150,7 +150,7 @@ public final class Node {
         return typeMap;
     }
 
-    public Node getOnlyChild() {
+    public InternalNode getOnlyChild() {
         Verify.state(getChildren().size() == 1, "Expected one child, but were %s", getChildren().size());
         return getChildren().get(0);
     }
@@ -165,11 +165,11 @@ public final class Node {
      *
      * @return this node's children or an empty list if none
      */
-    public List<Node> getChildren() {
+    public List<InternalNode> getChildren() {
         return children;
     }
 
-    public void setChildren(final List<Node> children) {
+    public void setChildren(final List<InternalNode> children) {
         this.children = children;
     }
 
@@ -181,7 +181,7 @@ public final class Node {
      * {@code false} otherwise.
      */
     public boolean hasAncestorEqualToSelf() {
-        Node ancestor = parent;
+        InternalNode ancestor = parent;
 
         while (ancestor != null) {
             if (ancestor.equals(this)) {
@@ -209,7 +209,7 @@ public final class Node {
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Node other = (Node) o;
+        final InternalNode other = (InternalNode) o;
 
         return this.getTargetClass().equals(other.getTargetClass())
                 && Objects.equals(this.getType(), other.getType())
@@ -246,8 +246,8 @@ public final class Node {
         private Class<?> rawType;
         private Class<?> targetClass;
         private Field field;
-        private Node parent;
-        private List<Node> children;
+        private InternalNode parent;
+        private List<InternalNode> children;
         private NodeKind nodeKind;
         private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
 
@@ -279,12 +279,12 @@ public final class Node {
             return this;
         }
 
-        public Builder parent(@Nullable final Node parent) {
+        public Builder parent(@Nullable final InternalNode parent) {
             this.parent = parent;
             return this;
         }
 
-        public Builder children(final List<Node> children) {
+        public Builder children(final List<InternalNode> children) {
             this.children = children;
             return this;
         }
@@ -299,8 +299,8 @@ public final class Node {
             return this;
         }
 
-        public Node build() {
-            return new Node(this);
+        public InternalNode build() {
+            return new InternalNode(this);
         }
     }
 }

@@ -17,17 +17,14 @@ package org.instancio.spi.tests;
 
 import org.example.generator.CustomIntegerGenerator;
 import org.example.spi.CustomGeneratorProvider;
-import org.example.spi.CustomGeneratorProvider.GeneratorWithConstructorThatThrowsException;
-import org.example.spi.CustomGeneratorProvider.GeneratorWithGeneratorContextConstructor;
-import org.example.spi.CustomGeneratorProvider.GeneratorWithoutExpectedConstructors;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.generator.Generator;
 import org.instancio.spi.InstancioSpiException;
-import org.instancio.test.support.pojo.basic.StringHolder;
-import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
-import org.instancio.test.support.pojo.misc.StringFields;
-import org.instancio.test.support.pojo.misc.getters.BeanStylePojo;
+import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.PersonName;
+import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -38,8 +35,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
+import static org.instancio.Select.field;
 
 class GeneratorFromSpiTest {
+
+    private static class PersonPojo {
+        @PersonName(min = 10, max = 10)
+        String name;
+    }
+
+    @Test
+    void processingCustomAnnotation() {
+        final PersonPojo result = Instancio.create(PersonPojo.class);
+        assertThat(result.name).hasSize(10);
+    }
+
+    @Test
+    void overrideCustomAnnotationGenerator() {
+        final PersonPojo result = Instancio.of(PersonPojo.class)
+                .generate(field("name"), gen -> gen.string().length(20))
+                .create();
+
+        assertThat(result.name).hasSize(20);
+    }
 
     @Test
     void overrideBuiltInGenerator() {
@@ -60,54 +78,55 @@ class GeneratorFromSpiTest {
     }
 
     /**
-     * @see GeneratorWithGeneratorContextConstructor
+     * @see CustomGeneratorProvider.CustomAddressGenerator
      */
     @Test
-    void shouldPreferConstructorWithGeneratorContextParameter() {
-        final StringHolder result = Instancio.create(StringHolder.class);
-        assertThat(result.getValue()).isEqualTo("withGeneratorContextConstructor");
+    void generatorWithCustomAfterGenerateAction() {
+        final Address address = Instancio.create(Address.class);
+
+        // Set by the generator
+        assertThat(address.getCountry()).isEqualTo(
+                CustomGeneratorProvider.CustomAddressGenerator.COUNTRY);
+
+        // The generator has AfterGenerate hint set to APPLY_SELECTORS,
+        // therefore all fields except the one set by the generator should be null
+        assertThat(address).hasAllNullFieldsOrPropertiesExcept("country");
     }
 
     /**
-     * @see GeneratorWithConstructorThatThrowsException
+     * @see CustomGeneratorProvider.CustomPhoneGenerator
      */
     @Test
-    void shouldPropagateErrorIfInstantiatingGeneratorFails() {
-        assertThatThrownBy(() -> Instancio.create(StringFields.class))
-                .isExactlyInstanceOf(InstancioSpiException.class)
-                .hasMessage("Error instantiating generator %s", GeneratorWithConstructorThatThrowsException.class)
-                .hasRootCauseExactlyInstanceOf(RuntimeException.class)
-                .hasRootCauseMessage("Expected error from generator constructor");
+    void generatorWithDefaultAfterGenerateAction() {
+        final Phone phone = Instancio.create(Phone.class);
+
+        // Set by the generator
+        assertThat(phone.getNumber()).isEqualTo(
+                CustomGeneratorProvider.CustomPhoneGenerator.NUMBER);
+
+        // The generator does not specify AfterGenerate hint,
+        // therefore all uninitialised fields should be populated
+        // (i.e. engine will use default AfterGenerate value)
+        assertThat(phone).hasNoNullFieldsOrProperties();
     }
 
     /**
-     * @see GeneratorWithoutExpectedConstructors
+     * @see CustomGeneratorProvider.PhoneWithTypeGenerator
      */
     @Test
-    void shouldThrowErrorIfGeneratorHasNoneOfTheExpectedConstructors() {
-        assertThatThrownBy(() -> Instancio.create(BeanStylePojo.class))
-                .isExactlyInstanceOf(InstancioSpiException.class)
-                .hasMessage(String.format("%n" +
-                        "Generator class:%n" +
-                        " -> %s%n" +
-                        "does not define any of the expected constructors:%n" +
-                        " -> constructor with GeneratorContext as the only argument, or%n" +
-                        " -> default no-argument constructor", GeneratorWithoutExpectedConstructors.class.getName()))
-                .hasNoCause();
-    }
+    void generatorWithSubtype() {
+        final Phone result = Instancio.of(Phone.class)
+                .subtype(all(Phone.class), PhoneWithType.class)
+                .create();
 
-    @Test
-    void shouldThrowErrorIfClassIsNotAGenerator() {
-        final TypeToken<Foo<String>> type = new TypeToken<Foo<String>>() {};
+        assertThat(result).isExactlyInstanceOf(PhoneWithType.class);
 
-        assertThatThrownBy(() -> Instancio.create(type))
-                .isExactlyInstanceOf(InstancioSpiException.class)
-                .hasMessage(String.format(
-                        "%s returned an invalid generator class:%n" +
-                                " -> org.instancio.test.support.pojo.generics.foobarbaz.Bar%n" +
-                                "The class does not implement the interface %s interface",
-                        CustomGeneratorProvider.class, Generator.class.getName()))
-                .hasNoCause();
+        final PhoneWithType phone = (PhoneWithType) result;
+
+        assertThat(phone.getNumber()).isEqualTo(
+                CustomGeneratorProvider.PhoneWithTypeGenerator.NUMBER);
+
+        assertThat(phone.getPhoneType()).isNotNull();
     }
 
     @Test
@@ -135,5 +154,19 @@ class GeneratorFromSpiTest {
                 .allSatisfy(n -> assertThat(n)
                         .isEven()
                         .isBetween(CustomIntegerGenerator.MIN, CustomIntegerGenerator.MAX));
+    }
+
+    /**
+     * @see CustomGeneratorProvider.CustomFloatSpec
+     */
+    @Test
+    void generatorSpecDoesNotImplementGeneratorInterface() {
+        assertThatThrownBy(() -> Instancio.create(Float.class))
+                .isExactlyInstanceOf(InstancioSpiException.class)
+                .hasMessage("The GeneratorSpec %s returned by %s must implement %s",
+                        CustomGeneratorProvider.CustomFloatSpec.class,
+                        CustomGeneratorProvider.class,
+                        Generator.class);
+
     }
 }

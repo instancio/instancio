@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.inheritance.WithGenericParent;
 import org.instancio.test.support.pojo.generics.inheritance.WithGenericParent.GenericChild;
 import org.instancio.test.support.pojo.generics.inheritance.WithGenericParent.GenericGrandChild;
@@ -30,7 +30,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(WithGenericParent.class)
                 .hasEmptyTypeMap()
@@ -41,7 +41,7 @@ class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
         assertGenericGrandChild(NodeUtils.getChildNode(rootNode, "genericGrandChild"));
     }
 
-    private static void assertGenericParent(final Node node) {
+    private static void assertGenericParent(final InternalNode node) {
         assertNode(node)
                 .hasFieldName("genericParent")
                 .hasTargetClass(GenericParent.class)
@@ -54,7 +54,7 @@ class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
                 .hasNoChildren();
     }
 
-    private static void assertGenericChild(final Node node) {
+    private static void assertGenericChild(final InternalNode node) {
         assertNode(node)
                 .hasFieldName("genericChild")
                 .hasTargetClass(GenericChild.class)
@@ -72,7 +72,7 @@ class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
                 .hasNoChildren();
     }
 
-    private void assertGenericGrandChild(final Node node) {
+    private void assertGenericGrandChild(final InternalNode node) {
         assertNode(node)
                 .hasFieldName("genericGrandChild")
                 .hasTargetClass(GenericGrandChild.class)

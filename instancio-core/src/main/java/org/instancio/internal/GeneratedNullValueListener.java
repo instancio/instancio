@@ -18,7 +18,7 @@ package org.instancio.internal;
 import org.instancio.Mode;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.Keys;
 
 import java.util.ArrayDeque;
@@ -39,16 +39,16 @@ class GeneratedNullValueListener implements GenerationListener {
     }
 
     @Override
-    public void objectCreated(final Node node, final GeneratorResult result) {
+    public void objectCreated(final InternalNode node, final GeneratorResult result) {
         if (isLenientMode) {
             return;
         }
 
-        final Queue<Node> queue = new ArrayDeque<>();
+        final Queue<InternalNode> queue = new ArrayDeque<>();
         queue.add(node);
 
         while (!queue.isEmpty()) {
-            final Node current = queue.poll();
+            final InternalNode current = queue.poll();
 
             if (result.isIgnored()) {
                 context.isIgnored(current);

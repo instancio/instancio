@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.SubtypeGeneratorSpec;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.lang.EnumGenerator;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.ServiceLoaders;
@@ -66,9 +67,11 @@ public class GeneratorResolver {
     }
 
     @SuppressWarnings("all")
-    public Optional<Generator<?>> get(final Class<?> klass) {
+    public Optional<Generator<?>> get(final InternalNode node) {
+        final Class<?> klass = node.getTargetClass();
+
         // Generators provided by SPI take precedence over built-in generators
-        final Optional<Generator<?>> spiGenerator = generatorProviderFacade.getGenerator(klass);
+        final Optional<Generator<?>> spiGenerator = generatorProviderFacade.getGenerator(node);
         if (spiGenerator.isPresent()) {
             return spiGenerator;
         }

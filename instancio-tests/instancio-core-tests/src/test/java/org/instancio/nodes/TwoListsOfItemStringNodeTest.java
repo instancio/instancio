@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.util.CollectionUtils;
@@ -31,7 +31,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class TwoListsOfItemStringNodeTest extends NodeTestTemplate<TwoListsOfItemString> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(TwoListsOfItemString.class)
                 .hasChildrenOfSize(2);
@@ -40,8 +40,8 @@ class TwoListsOfItemStringNodeTest extends NodeTestTemplate<TwoListsOfItemString
         assertListNode(rootNode, "list2");
     }
 
-    private void assertListNode(Node rootNode, String listField) {
-        final Node list = assertNode(NodeUtils.getChildNode(rootNode, listField))
+    private void assertListNode(InternalNode rootNode, String listField) {
+        final InternalNode list = assertNode(NodeUtils.getChildNode(rootNode, listField))
                 .hasChildrenOfSize(1)
                 .hasType(Types.LIST_ITEM_STRING.get())
                 .get();

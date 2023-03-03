@@ -15,7 +15,7 @@
  */
 package org.instancio.testsupport.utils;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 
 public class NodeUtils {
 
@@ -23,7 +23,7 @@ public class NodeUtils {
         // non-instantiable
     }
 
-    public static Node getChildNode(Node parent, String fieldName) {
+    public static InternalNode getChildNode(InternalNode parent, String fieldName) {
         return parent.getChildren().stream()
                 .filter(it -> it.getField() != null && it.getField().getName().equals(fieldName))
                 .findAny()

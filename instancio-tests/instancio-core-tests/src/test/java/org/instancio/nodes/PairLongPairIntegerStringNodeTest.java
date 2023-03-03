@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.PairLongPairIntegerString;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.testsupport.fixtures.Types;
@@ -27,7 +27,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairIntegerString> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(PairLongPairIntegerString.class)
                 .hasChildrenOfSize(1);
@@ -35,7 +35,7 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
         // Pair<Long, Pair<Integer, String>>
         final String fieldName = "pairLongPairIntegerString";
 
-        final Node outerPair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
+        final InternalNode outerPair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
                 .hasTargetClass(Pair.class)
@@ -51,7 +51,7 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
                 .hasTargetClass(Long.class)
                 .hasNoChildren();
 
-        final Node innerPair = assertNode(NodeUtils.getChildNode(outerPair, "right"))
+        final InternalNode innerPair = assertNode(NodeUtils.getChildNode(outerPair, "right"))
                 .hasFieldName("right")
                 .hasParent(outerPair)
                 .hasTargetClass(Pair.class)
@@ -64,7 +64,7 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
         assertInnerPair(innerPair);
     }
 
-    private void assertInnerPair(Node innerPair) {
+    private void assertInnerPair(InternalNode innerPair) {
         assertNode(NodeUtils.getChildNode(innerPair, "left"))
                 .hasFieldName("left")
                 .hasParent(innerPair)

@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.PairAString;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -28,7 +28,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class PairAStringNodeTest extends NodeTestTemplate<PairAString<UUID>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(PairAString.class)
                 .hasChildrenOfSize(1);
@@ -36,7 +36,7 @@ class PairAStringNodeTest extends NodeTestTemplate<PairAString<UUID>> {
         // Pair<A, String>
         final String fieldName = "pairAString";
 
-        final Node pair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
+        final InternalNode pair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
                 .hasFieldName(fieldName)
                 .hasTargetClass(Pair.class)

@@ -17,7 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 
 /**
  * Listener interface for classes interested in when an object has been created.
@@ -37,7 +37,7 @@ interface GenerationListener {
      *               be generated.
      * @since 1.3.3
      */
-    default void objectCreated(Node node, GeneratorResult result) {
+    default void objectCreated(InternalNode node, GeneratorResult result) {
         // no-op
     }
 }

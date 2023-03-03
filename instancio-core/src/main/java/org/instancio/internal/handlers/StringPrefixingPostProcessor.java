@@ -2,7 +2,7 @@ package org.instancio.internal.handlers;
 
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.lang.StringGenerator;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.StringUtils;
 
 class StringPrefixingPostProcessor implements GeneratedValuePostProcessor {
@@ -14,7 +14,7 @@ class StringPrefixingPostProcessor implements GeneratedValuePostProcessor {
     }
 
     @Override
-    public Object process(final Object value, final Node node, final Generator<?> generator) {
+    public Object process(final Object value, final InternalNode node, final Generator<?> generator) {
         if (stringFieldPrefixEnabled
                 && node.getField() != null
                 && generator.getClass() == StringGenerator.class

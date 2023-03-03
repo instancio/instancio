@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.container.ItemArrayContainer;
@@ -27,7 +27,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArrayContainer<String, Integer>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(ItemArrayContainer.class)
                 .isOfKind(NodeKind.DEFAULT)
@@ -40,9 +40,9 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
         assertItemArrayY(rootNode);
     }
 
-    private void assertItemArrayX(Node rootNode) {
+    private void assertItemArrayX(InternalNode rootNode) {
         final String itemArrayField = "itemArrayX";
-        final Node array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
+        final InternalNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
                 .hasFieldName(itemArrayField)
                 .hasTargetClass(Item[].class)
                 .hasTypeName("org.instancio.test.support.pojo.generics.basic.Item<X>[]")
@@ -53,9 +53,9 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
         assertElementNode(array, "X");
     }
 
-    private void assertItemArrayY(Node rootNode) {
+    private void assertItemArrayY(InternalNode rootNode) {
         final String itemArrayField = "itemArrayY";
-        final Node array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
+        final InternalNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
                 .hasFieldName(itemArrayField)
                 .hasTargetClass(Item[].class)
                 .hasTypeName("org.instancio.test.support.pojo.generics.basic.Item<Y>[]")
@@ -66,8 +66,8 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
         assertElementNode(array, "Y");
     }
 
-    private void assertElementNode(Node arrayNode, String expectedType) {
-        final Node elementNode = arrayNode.getOnlyChild();
+    private void assertElementNode(InternalNode arrayNode, String expectedType) {
+        final InternalNode elementNode = arrayNode.getOnlyChild();
         assertNode(elementNode)
                 .hasTargetClass(Item.class)
                 .hasNullField()

@@ -16,7 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.Flattener;
 
 import java.util.Collections;
@@ -40,7 +40,7 @@ public class BooleanSelectorMap {
         return targetSelectors;
     }
 
-    public boolean isTrue(final Node node) {
+    public boolean isTrue(final InternalNode node) {
         return Boolean.TRUE.equals(selectorMap.getValue(node).orElse(false));
     }
 

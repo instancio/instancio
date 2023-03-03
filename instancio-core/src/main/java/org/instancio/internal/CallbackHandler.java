@@ -20,7 +20,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,14 +33,14 @@ public class CallbackHandler implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(CallbackHandler.class);
 
     private final ModelContext<?> context;
-    private final Map<Node, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
+    private final Map<InternalNode, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
 
     public CallbackHandler(final ModelContext<?> context) {
         this.context = context;
     }
 
     @Override
-    public void objectCreated(final Node node, final GeneratorResult result) {
+    public void objectCreated(final InternalNode node, final GeneratorResult result) {
         // callbacks are not invoked on null values
         if (result.getValue() == null) {
             return;
@@ -70,7 +70,7 @@ public class CallbackHandler implements GenerationListener {
         });
     }
 
-    private List<OnCompleteCallback<?>> getCallbacks(final Node node) {
+    private List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {
         return context.getCallbacks(node);
     }
 

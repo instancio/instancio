@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.cyclic.ClassesABCWithCrossReferences;
 import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -32,7 +32,7 @@ class ClassesABCWithCrossReferencesNodeTest extends NodeTestTemplate<ClassesABCW
     private static final int EXPECTED_MAX_DEPTH = 10;
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(ClassesABCWithCrossReferences.class)
                 .hasChildrenOfSize(3);
@@ -73,7 +73,7 @@ class ClassesABCWithCrossReferencesNodeTest extends NodeTestTemplate<ClassesABCW
         assertThat(stats.nodesAtDepth[10]).isEqualTo(216);
     }
 
-    private void assertNodeRecursively(final Node node, final int expectedDepth, final Stats stats) {
+    private void assertNodeRecursively(final InternalNode node, final int expectedDepth, final Stats stats) {
         if (node == null) return;
 
         stats.maxDepth = Math.max(stats.maxDepth, node.getDepth());

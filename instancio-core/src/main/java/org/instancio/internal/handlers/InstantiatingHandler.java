@@ -19,7 +19,7 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.instantiation.Instantiator;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class InstantiatingHandler implements NodeHandler {
 
     @NotNull
     @Override
-    public GeneratorResult getResult(@NotNull final Node node) {
+    public GeneratorResult getResult(@NotNull final InternalNode node) {
         final Class<?> targetClass = node.getTargetClass();
 
         if (ReflectionUtils.isArrayOrConcrete(targetClass)) {

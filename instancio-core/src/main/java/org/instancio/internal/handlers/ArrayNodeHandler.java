@@ -20,7 +20,7 @@ import org.instancio.internal.GeneratorSpecProcessor;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
 
 public class ArrayNodeHandler implements NodeHandler {
@@ -41,9 +41,9 @@ public class ArrayNodeHandler implements NodeHandler {
 
     @NotNull
     @Override
-    public GeneratorResult getResult(@NotNull final Node node) {
+    public GeneratorResult getResult(@NotNull final InternalNode node) {
         if (node.getTargetClass().isArray()) {
-            final Generator<?> generator = generatorResolver.get(node.getTargetClass()).orElseThrow(
+            final Generator<?> generator = generatorResolver.get(node).orElseThrow(
                     () -> new IllegalStateException("Unable to get array generator for node: " + node));
 
             beanValidationProcessors.process(generator, node.getTargetClass(), node.getField());

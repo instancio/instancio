@@ -30,7 +30,7 @@ import org.instancio.internal.handlers.NodeHandler;
 import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.instantiation.Instantiator;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.settings.Keys;
 import org.slf4j.Logger;
@@ -76,11 +76,11 @@ class GeneratorFacade {
         return isEnabled ? new BeanValidationProcessor() : new NoopBeanValidationProvider();
     }
 
-    private boolean hasStaticField(final Node node) {
+    private boolean hasStaticField(final InternalNode node) {
         return node.getField() != null && Modifier.isStatic(node.getField().getModifiers());
     }
 
-    GeneratorResult generateNodeValue(final Node node) {
+    GeneratorResult generateNodeValue(final InternalNode node) {
         if (node.is(NodeKind.IGNORED) || hasStaticField(node)) {
             return GeneratorResult.ignoredResult();
         }
@@ -101,7 +101,7 @@ class GeneratorFacade {
         return generatorResult;
     }
 
-    private boolean shouldReturnNullForNullable(final Node node) {
+    private boolean shouldReturnNullForNullable(final InternalNode node) {
         final boolean precondition = context.isNullable(node);
         return random.diceRoll(precondition);
     }

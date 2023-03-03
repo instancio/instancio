@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.cyclic.ClassesWithCrossReferences;
 import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -33,7 +33,7 @@ class ClassesWithCrossReferencesNodeTest extends NodeTestTemplate<ClassesWithCro
     }
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode).isNotNull();
     }
 }

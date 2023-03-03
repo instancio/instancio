@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Helper class for creating a {@link Node} without its children.
+ * Helper class for creating a {@link InternalNode} without its children.
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")
 class NodeCreator {
@@ -52,12 +52,12 @@ class NodeCreator {
         this.nodeKindResolverFacade = new NodeKindResolverFacade(nodeContext.getContainerFactories());
     }
 
-    Node createRootNodeWithoutChildren(final Type type) {
+    InternalNode createRootNodeWithoutChildren(final Type type) {
         return createNodeWithoutChildren(type, null, null);
     }
 
     @Nullable
-    Node createNodeWithoutChildren(final Type type, @Nullable final Field field, @Nullable final Node parent) {
+    InternalNode createNodeWithoutChildren(final Type type, @Nullable final Field field, @Nullable final InternalNode parent) {
         Verify.notNull(type, "'type' is null");
 
         if (parent != null && parent.getDepth() >= nodeContext.getMaxDepth()) {
@@ -69,7 +69,7 @@ class NodeCreator {
             LOG.trace("Creating node for: {}", Format.withoutPackage(type));
         }
 
-        final Node node;
+        final InternalNode node;
 
         if (type instanceof Class) {
             node = fromClass((Class<?>) type, field, parent);
@@ -86,18 +86,18 @@ class NodeCreator {
         }
 
         if (node != null && nodeContext.isIgnored(node)) {
-            return Node.ignoredNode();
+            return InternalNode.ignoredNode();
         }
 
         LOG.trace("Created node {} for type {}", node, type);
         return node;
     }
 
-    private Node fromWildcardType(final WildcardType type, @Nullable final Field field, @Nullable final Node parent) {
+    private InternalNode fromWildcardType(final WildcardType type, @Nullable final Field field, @Nullable final InternalNode parent) {
         return createNodeWithoutChildren(type.getUpperBounds()[0], field, parent);
     }
 
-    private Node fromTypeVariable(final TypeVariable<?> type, @Nullable final Field field, @Nullable final Node parent) {
+    private InternalNode fromTypeVariable(final TypeVariable<?> type, @Nullable final Field field, @Nullable final InternalNode parent) {
         final Type resolvedType = typeHelper.resolveTypeVariable(type, parent);
 
         if (resolvedType == null) {
@@ -107,7 +107,7 @@ class NodeCreator {
         return createNodeWithoutChildren(resolvedType, field, parent);
     }
 
-    private Optional<Class<?>> resolveSubtype(final Node node) {
+    private Optional<Class<?>> resolveSubtype(final InternalNode node) {
         final Optional<Class<?>> subtype = nodeContext.getSubtype(node);
 
         if (subtype.isPresent()) {
@@ -119,8 +119,8 @@ class NodeCreator {
         return Optional.ofNullable(resolveSubtypeFromAncestors(node));
     }
 
-    private static Class<?> resolveSubtypeFromAncestors(final Node node) {
-        Node next = node;
+    private static Class<?> resolveSubtypeFromAncestors(final InternalNode node) {
+        InternalNode next = node;
         while (next != null) {
             final Type actualType = next.getTypeMap().getActualType(node.getRawType());
             if (actualType != null) {
@@ -131,14 +131,14 @@ class NodeCreator {
         return null;
     }
 
-    private Node createNodeWithSubtypeMapping(
+    private InternalNode createNodeWithSubtypeMapping(
             final Type type,
             @Nullable final Field field,
-            @Nullable final Node parent) {
+            @Nullable final InternalNode parent) {
 
         final Class<?> rawType = TypeUtils.getRawType(type);
 
-        Node node = Node.builder()
+        InternalNode node = InternalNode.builder()
                 .nodeContext(nodeContext)
                 .type(type)
                 .rawType(rawType)
@@ -180,8 +180,8 @@ class NodeCreator {
         return node;
     }
 
-    private Node fromClass(final Class<?> type, @Nullable final Field field, @Nullable final Node parent) {
-        final Node node = createNodeWithSubtypeMapping(type, field, parent);
+    private InternalNode fromClass(final Class<?> type, @Nullable final Field field, @Nullable final InternalNode parent) {
+        final InternalNode node = createNodeWithSubtypeMapping(type, field, parent);
         return node.hasAncestorEqualToSelf() ? null : node;
     }
 
@@ -189,19 +189,19 @@ class NodeCreator {
         return nodeKindResolverFacade.getNodeKind(rawType);
     }
 
-    private Node fromParameterizedType(
+    private InternalNode fromParameterizedType(
             final ParameterizedType type,
             @Nullable final Field field,
-            @Nullable final Node parent) {
+            @Nullable final InternalNode parent) {
 
-        final Node node = createNodeWithSubtypeMapping(type, field, parent);
+        final InternalNode node = createNodeWithSubtypeMapping(type, field, parent);
         return node.hasAncestorEqualToSelf() ? null : node;
     }
 
-    private Node fromGenericArrayNode(
+    private InternalNode fromGenericArrayNode(
             final GenericArrayType type,
             @Nullable final Field field,
-            @Nullable final Node parent) {
+            @Nullable final InternalNode parent) {
 
         Type gcType = type.getGenericComponentType();
         if (gcType instanceof TypeVariable) {
@@ -210,14 +210,14 @@ class NodeCreator {
         return createArrayNodeWithSubtypeMapping(type, gcType, field, parent);
     }
 
-    private Node createArrayNodeWithSubtypeMapping(
+    private InternalNode createArrayNodeWithSubtypeMapping(
             final Type arrayType,
             final Type genericComponentType,
             @Nullable final Field field,
-            @Nullable final Node parent) {
+            @Nullable final InternalNode parent) {
 
         final Class<?> rawComponentType = TypeUtils.getRawType(genericComponentType);
-        final Node node = Node.builder()
+        final InternalNode node = InternalNode.builder()
                 .nodeContext(nodeContext)
                 .type(arrayType)
                 .rawType(TypeUtils.getArrayClass(rawComponentType))

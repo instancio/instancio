@@ -42,7 +42,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 
 @NodeTag
-class NodeTest {
+class InternalNodeTest {
     private static final NodeContext NODE_CONTEXT = NodeContext.builder()
             .maxDepth(Integer.MAX_VALUE)
             .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
@@ -53,7 +53,7 @@ class NodeTest {
 
     @Test
     void ignoredNode() {
-        final Node node = Node.ignoredNode();
+        final InternalNode node = InternalNode.ignoredNode();
         assertNode(node)
                 .hasChildrenOfSize(0)
                 .isOfKind(NodeKind.IGNORED)
@@ -75,10 +75,10 @@ class NodeTest {
 
     @Test
     void toBuilder() {
-        final Node parent = createNode(Person.class, new TypeToken<Person>() {});
-        final List<Node> children = Collections.singletonList(createNode(String.class, new TypeToken<String>() {}));
+        final InternalNode parent = createNode(Person.class, new TypeToken<Person>() {});
+        final List<InternalNode> children = Collections.singletonList(createNode(String.class, new TypeToken<String>() {}));
 
-        final Node node = Node.builder()
+        final InternalNode node = InternalNode.builder()
                 .type(Types.LIST_STRING.get())
                 .rawType(List.class)
                 .targetClass(List.class)
@@ -89,7 +89,7 @@ class NodeTest {
                 .children(children)
                 .build();
 
-        final Node copy = node.toBuilder().build();
+        final InternalNode copy = node.toBuilder().build();
 
         assertThat(copy.getNodeContext()).isEqualTo(node.getNodeContext());
         assertThat(copy.getType()).isEqualTo(node.getType());
@@ -111,18 +111,20 @@ class NodeTest {
             TypeToken<?> typeBazInteger = new TypeToken<Baz<Integer>>() {};
             TypeToken<?> typeBazString = new TypeToken<Baz<String>>() {};
 
-            Node bazInteger = createNode(List.class, typeBazInteger);
-            Node bazString = createNode(List.class, typeBazString);
+            InternalNode bazInteger = createNode(List.class, typeBazInteger);
+            InternalNode bazString = createNode(List.class, typeBazString);
             NodeContext nodeContext = NodeContext.builder().build();
-            Node bazIntegerClassNode = Node.builder()
+            InternalNode bazIntegerClassNode = InternalNode.builder()
                     .nodeContext(nodeContext)
                     .type(typeBazInteger.get())
                     .rawType(Baz.class)
                     .targetClass(Baz.class)
                     .build();
 
-            assertThat(bazString).isEqualTo(bazString).hasSameHashCodeAs(bazString);
-            assertThat(bazString).isNotEqualTo(bazInteger).doesNotHaveSameHashCodeAs(bazInteger);
+            assertThat(bazString)
+                    .isEqualTo(bazString).hasSameHashCodeAs(bazString)
+                    .isNotEqualTo(bazInteger).doesNotHaveSameHashCodeAs(bazInteger);
+
             assertThat(bazInteger).isNotEqualTo(bazIntegerClassNode).doesNotHaveSameHashCodeAs(bazIntegerClassNode);
         }
     }
@@ -211,7 +213,7 @@ class NodeTest {
 
         @Test
         void verifyToString() {
-            final Node personNode = NODE_FACTORY.createRootNode(Person.class);
+            final InternalNode personNode = NODE_FACTORY.createRootNode(Person.class);
 
             assertThat(personNode)
                     .hasToString("Node[Person, depth=0, #chn=9, Person]");
@@ -234,13 +236,13 @@ class NodeTest {
 
         @Test
         void ignoredNode() {
-            assertThat(Node.ignoredNode()).hasToString("Node[IGNORED]");
+            assertThat(InternalNode.ignoredNode()).hasToString("Node[IGNORED]");
         }
     }
 
-    private static Node createNode(Class<?> klass, TypeToken<?> type) {
+    private static InternalNode createNode(Class<?> klass, TypeToken<?> type) {
         final NodeContext nodeContext = NodeContext.builder().build();
-        return Node.builder()
+        return InternalNode.builder()
                 .nodeContext(nodeContext)
                 .type(type.get())
                 .rawType(klass)

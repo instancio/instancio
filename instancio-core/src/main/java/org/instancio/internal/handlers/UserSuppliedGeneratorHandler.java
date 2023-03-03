@@ -26,7 +26,7 @@ import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.instantiation.Instantiator;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -53,7 +53,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
      */
     @NotNull
     @Override
-    public GeneratorResult getResult(@NotNull final Node node) {
+    public GeneratorResult getResult(@NotNull final InternalNode node) {
         return getUserSuppliedGenerator(node).map(generator -> {
             final Hints hints = generator.hints();
             final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
@@ -69,7 +69,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     }
 
     @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
-    private Optional<Generator<?>> getUserSuppliedGenerator(final Node node) {
+    private Optional<Generator<?>> getUserSuppliedGenerator(final InternalNode node) {
         final Optional<Generator<?>> generatorOpt = modelContext.getGenerator(node);
 
         if (generatorOpt.isPresent()) {
@@ -81,7 +81,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
 
             if (internalHint != null && internalHint.isDelegating()) {
                 final Class<?> forClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
-                final Generator<?> delegate = generatorResolver.get(forClass)
+                final Generator<?> delegate = generatorResolver.get(node)
                         .orElse(new InstantiatingGenerator(instantiator, forClass));
 
                 if (delegate instanceof AbstractGenerator<?>) {

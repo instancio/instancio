@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
@@ -29,13 +29,13 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(FooBarBazContainer.class)
                 .hasDepth(0)
                 .hasChildrenOfSize(1);
 
-        final Node itemNode = CollectionUtils.getOnlyElement(rootNode.getChildren());
+        final InternalNode itemNode = CollectionUtils.getOnlyElement(rootNode.getChildren());
         assertNode(itemNode)
                 .hasDepth(1)
                 .hasTargetClass(Foo.class)
@@ -48,7 +48,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                         "Baz<java.lang.String>>>")
                 .hasChildrenOfSize(2);
 
-        final Node fooValueNode = NodeUtils.getChildNode(itemNode, "fooValue");
+        final InternalNode fooValueNode = NodeUtils.getChildNode(itemNode, "fooValue");
         assertNode(fooValueNode)
                 .hasDepth(2)
                 .hasTargetClass(Bar.class)
@@ -64,7 +64,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                 .hasTargetClass(Object.class)
                 .hasNoChildren();
 
-        final Node barValueNode = NodeUtils.getChildNode(fooValueNode, "barValue");
+        final InternalNode barValueNode = NodeUtils.getChildNode(fooValueNode, "barValue");
         assertNode(barValueNode)
                 .hasDepth(3)
                 .hasTargetClass(Baz.class)

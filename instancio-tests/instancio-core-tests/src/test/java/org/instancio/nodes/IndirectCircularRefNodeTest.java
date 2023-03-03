@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.cyclic.IndirectCircularRef;
 import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.test.support.util.CollectionUtils;
@@ -27,27 +27,27 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class IndirectCircularRefNodeTest extends NodeTestTemplate<IndirectCircularRef> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasDepth(0)
                 .hasTargetClass(IndirectCircularRef.class)
                 .hasChildrenOfSize(1);
 
-        final Node startA = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        final InternalNode startA = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasDepth(1)
                 .hasTargetClass(IndirectCircularRef.A.class)
                 .hasFieldName("startA")
                 .hasChildrenOfSize(1)
                 .get();
 
-        final Node b = assertNode(CollectionUtils.getOnlyElement(startA.getChildren()))
+        final InternalNode b = assertNode(CollectionUtils.getOnlyElement(startA.getChildren()))
                 .hasDepth(2)
                 .hasTargetClass(IndirectCircularRef.B.class)
                 .hasFieldName("b")
                 .hasChildrenOfSize(1)
                 .get();
 
-        final Node c = assertNode(CollectionUtils.getOnlyElement(b.getChildren()))
+        final InternalNode c = assertNode(CollectionUtils.getOnlyElement(b.getChildren()))
                 .hasDepth(3)
                 .hasTargetClass(IndirectCircularRef.C.class)
                 .hasFieldName("c")

@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.container.ItemContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -27,13 +27,13 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<String, Long>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(ItemContainer.class)
                 .hasChildrenOfSize(2);
 
         final String itemValueXField = "itemValueX";
-        final Node itemValueX = assertNode(NodeUtils.getChildNode(rootNode, itemValueXField))
+        final InternalNode itemValueX = assertNode(NodeUtils.getChildNode(rootNode, itemValueXField))
                 .hasParent(rootNode)
                 .hasFieldName(itemValueXField)
                 .hasTargetClass(Item.class)
@@ -49,7 +49,7 @@ class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<Str
                 .hasNoChildren();
 
         final String itemValueYField = "itemValueY";
-        final Node itemValueY = assertNode(NodeUtils.getChildNode(rootNode, itemValueYField))
+        final InternalNode itemValueY = assertNode(NodeUtils.getChildNode(rootNode, itemValueYField))
                 .hasParent(rootNode)
                 .hasFieldName(itemValueYField)
                 .hasTargetClass(Item.class)

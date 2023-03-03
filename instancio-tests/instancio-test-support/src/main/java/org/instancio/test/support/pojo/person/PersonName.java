@@ -26,4 +26,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PersonName {
+
+    int min() default -1;
+
+    int max() default -1;
 }

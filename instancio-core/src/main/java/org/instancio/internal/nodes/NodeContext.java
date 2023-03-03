@@ -70,7 +70,7 @@ public final class NodeContext {
      *   <li>a generator's {@code subtype()} method, e.g. {@code gen.collection().subtype()}</li>
      * </ol>
      */
-    Optional<Class<?>> getSubtype(@NotNull final Node node) {
+    Optional<Class<?>> getSubtype(@NotNull final InternalNode node) {
         final Optional<Class<?>> subtype = subtypeSelectorMap.getSubtype(node);
         if (subtype.isPresent()) {
             return subtype;
@@ -83,7 +83,7 @@ public final class NodeContext {
                 : Optional.of(subtypeFromSettings);
     }
 
-    boolean isIgnored(@NotNull final Node node) {
+    boolean isIgnored(@NotNull final InternalNode node) {
         return ignoredSelectorMap.isTrue(node);
     }
 

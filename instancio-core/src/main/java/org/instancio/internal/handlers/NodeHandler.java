@@ -17,13 +17,13 @@ package org.instancio.internal.handlers;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
 
 @InternalApi
 public interface NodeHandler {
 
     @NotNull
-    GeneratorResult getResult(@NotNull Node node);
+    GeneratorResult getResult(@NotNull InternalNode node);
 
 }

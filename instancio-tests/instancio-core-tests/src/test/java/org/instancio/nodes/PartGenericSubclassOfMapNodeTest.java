@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.inheritance.PartGenericSubclassOfMap;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.junit.jupiter.api.Disabled;
@@ -26,7 +26,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class PartGenericSubclassOfMapNodeTest extends NodeTestTemplate<PartGenericSubclassOfMap<Long>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(PartGenericSubclassOfMap.class)
                 .hasChildrenOfSize(2);

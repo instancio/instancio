@@ -17,14 +17,14 @@ package org.instancio.internal;
 
 import org.instancio.Model;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 
 final class InternalModel<T> implements Model<T> {
 
     private final ModelContext<T> modelContext;
-    private final Node rootNode;
+    private final InternalNode rootNode;
 
     InternalModel(ModelContext<T> modelContext) {
         this.modelContext = modelContext;
@@ -35,11 +35,11 @@ final class InternalModel<T> implements Model<T> {
         return modelContext;
     }
 
-    Node getRootNode() {
+    InternalNode getRootNode() {
         return rootNode;
     }
 
-    private Node createRootNode() {
+    private InternalNode createRootNode() {
         final NodeContext nodeContext = NodeContext.builder()
                 .maxDepth(modelContext.getMaxDepth())
                 .rootTypeMap(modelContext.getRootTypeMap())
