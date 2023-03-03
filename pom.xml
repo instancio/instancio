@@ -58,7 +58,7 @@
         <latest.release.version>2.10.0</latest.release.version>
         <version.jakarta.validation>3.0.2</version.jakarta.validation>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
-        <version.jetbrains.annotations>24.0.0</version.jetbrains.annotations>
+        <version.jetbrains.annotations>24.0.1</version.jetbrains.annotations>
         <version.junit>5.9.2</version.junit>
         <version.slf4j>1.7.36</version.slf4j>
     </properties>
