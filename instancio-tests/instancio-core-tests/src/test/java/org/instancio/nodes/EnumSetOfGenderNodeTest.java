@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
@@ -26,7 +26,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class EnumSetOfGenderNodeTest extends NodeTestTemplate<EnumSet<Gender>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(EnumSet.class)
                 .hasDepth(0)

@@ -18,7 +18,7 @@ package org.instancio.internal.assignment;
 import org.instancio.assignment.OnSetFieldError;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.assigners.FieldAssigner;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Person;
@@ -38,13 +38,13 @@ import static org.mockito.Mockito.when;
 class FieldAssignerTest {
     private static final Exception EXPECTED_ERROR = new RuntimeException("expected error");
 
-    private static Node getMockNode() {
+    private static InternalNode getMockNode() {
         final Field mockField = mock(Field.class);
         doReturn(Person.class).when(mockField).getDeclaringClass();
         doReturn(String.class).when(mockField).getType();
         doReturn("name").when(mockField).getName();
         doThrow(EXPECTED_ERROR).when(mockField).setAccessible(true);
-        return when(mock(Node.class).getField()).thenReturn(mockField).getMock();
+        return when(mock(InternalNode.class).getField()).thenReturn(mockField).getMock();
     }
 
     private static FieldAssigner createAssigner(final OnSetFieldError onSetFieldError) {
@@ -54,7 +54,7 @@ class FieldAssignerTest {
 
     @Test
     void ignoreError() throws IllegalAccessException {
-        final Node mockNode = getMockNode();
+        final InternalNode mockNode = getMockNode();
         final FieldAssigner assigner = createAssigner(OnSetFieldError.IGNORE);
         assigner.assign(mockNode, "any-target", "any-value");
 
@@ -65,7 +65,7 @@ class FieldAssignerTest {
     @Test
     void failOnError() {
         final FieldAssigner assigner = createAssigner(OnSetFieldError.FAIL);
-        final Node mockNode = getMockNode();
+        final InternalNode mockNode = getMockNode();
 
         assertThatThrownBy(() -> assigner.assign(mockNode, "any-target", "any-value"))
                 .isExactlyInstanceOf(InstancioApiException.class)

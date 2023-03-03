@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.container.PairContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -26,14 +26,14 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class PairContainerIntegerStringNodeTest extends NodeTestTemplate<PairContainer<Integer, String>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(PairContainer.class)
                 .hasChildrenOfSize(1);
 
         // Pair<X, Y> pairValue;
         final String pairValueFieldName = "pairValue";
-        final Node pairValue = assertNode(NodeUtils.getChildNode(rootNode, pairValueFieldName))
+        final InternalNode pairValue = assertNode(NodeUtils.getChildNode(rootNode, pairValueFieldName))
                 .hasFieldName(pairValueFieldName)
                 .hasTargetClass(Pair.class)
                 .hasTypeName("org.instancio.test.support.pojo.generics.basic.Pair<X, Y>")

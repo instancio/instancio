@@ -2,7 +2,7 @@ package org.instancio.internal.handlers;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Generator;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 
 /**
  * Post-processor for generated values.
@@ -20,5 +20,5 @@ interface GeneratedValuePostProcessor {
      * @param generator that generated the value
      * @return processed value, or the same value if no processing was done
      */
-    Object process(Object value, Node node, Generator<?> generator);
+    Object process(Object value, InternalNode node, Generator<?> generator);
 }

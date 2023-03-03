@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ProviderEntryTest {
 
-    private static final GeneratorProvider NOOP_GENERATOR_PROVIDER = type -> null;
+    private static final GeneratorProvider NOOP_GENERATOR_PROVIDER = (node, generators) -> null;
     private static final TypeResolver NOOP_TYPE_RESOLVER = type -> null;
     private static final TypeInstantiator NOOP_TYPE_INSTANTIATOR = type -> null;
 

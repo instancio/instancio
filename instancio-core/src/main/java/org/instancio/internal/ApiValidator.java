@@ -19,7 +19,7 @@ import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.SettingKey;
@@ -125,7 +125,7 @@ public final class ApiValidator {
         return collection;
     }
 
-    public static void validateGeneratorUsage(final Node node, final Generator<?> generator) {
+    public static void validateGeneratorUsage(final InternalNode node, final Generator<?> generator) {
         final AbstractGenerator<?> absGen = GeneratorSupport.unpackGenerator(generator);
         if (absGen == null) return;
 
@@ -136,7 +136,7 @@ public final class ApiValidator {
         }
     }
 
-    private static String generateMismatchErrorMessageTemplate(final Node node, final String apiMethodName) {
+    private static String generateMismatchErrorMessageTemplate(final InternalNode node, final String apiMethodName) {
         return "%nGenerator type mismatch:%n"
                 + "Method '" + apiMethodName + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
                 + (node.getField() == null ? "" : "%nField: " + node.getField());

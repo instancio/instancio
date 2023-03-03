@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
@@ -25,7 +25,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class PairStringIntegerNodeTest extends NodeTestTemplate<Pair<String, Integer>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", String.class)

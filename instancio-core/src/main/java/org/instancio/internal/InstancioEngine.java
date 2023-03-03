@@ -30,7 +30,7 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.ContainerAddFunction;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalContainerHint;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
@@ -73,7 +73,7 @@ class InstancioEngine {
 
     private final GeneratorFacade generatorFacade;
     private final ModelContext<?> context;
-    private final Node rootNode;
+    private final InternalNode rootNode;
     private final CallbackHandler callbackHandler;
     private final List<GenerationListener> listeners;
     private final AfterGenerate defaultAfterGenerate;
@@ -117,7 +117,7 @@ class InstancioEngine {
         }).orElse(null);
     }
 
-    private GeneratorResult createObject(final Node node) {
+    private GeneratorResult createObject(final InternalNode node) {
         LOG.trace("Processing: {}", node);
 
         if (node.getChildren().isEmpty()) { // leaf - generate a value
@@ -139,7 +139,7 @@ class InstancioEngine {
         throw new InstancioException(String.format("Unhandled node kind '%s' for %s", node.getNodeKind(), node));
     }
 
-    private GeneratorResult generateContainer(final Node node) {
+    private GeneratorResult generateContainer(final InternalNode node) {
         GeneratorResult generatorResult = generateValue(node);
 
         if (generatorResult.isEmpty() || generatorResult.isIgnored()) {
@@ -150,7 +150,7 @@ class InstancioEngine {
                 generatorResult.getHints().get(InternalContainerHint.class),
                 InternalContainerHint.empty());
 
-        final List<Node> children = node.getChildren();
+        final List<InternalNode> children = node.getChildren();
 
         // Creation delegated to the engine
         if (generatorResult.containsNull() && hint.createFunction() != null) {
@@ -194,7 +194,7 @@ class InstancioEngine {
      * a Map to ImmutableMap using {@code ImmutableMap.copyOf(Map)}).
      */
     private Optional<GeneratorResult> substituteResult(
-            final Node node,
+            final InternalNode node,
             final GeneratorResult generatorResult) {
 
         return context.getContainerFactories()
@@ -203,7 +203,7 @@ class InstancioEngine {
                         node.getTargetClass(),
                         node.getChildren()
                                 .stream()
-                                .map(Node::getTargetClass)
+                                .map(InternalNode::getTargetClass)
                                 .collect(Collectors.toList())))
                 .filter(Objects::nonNull)
                 .findFirst()
@@ -211,7 +211,7 @@ class InstancioEngine {
                 .map(replacedValue -> GeneratorResult.create(replacedValue, generatorResult.getHints()));
     }
 
-    private GeneratorResult generatePojo(final Node node) {
+    private GeneratorResult generatePojo(final InternalNode node) {
         final GeneratorResult nodeResult = generateValue(node);
         if (!nodeResult.containsNull()) {
             populateChildren(node.getChildren(), nodeResult);
@@ -220,7 +220,7 @@ class InstancioEngine {
     }
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
-    private GeneratorResult generateMap(final Node node) {
+    private GeneratorResult generateMap(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);
 
         if (generatorResult.containsNull() || node.getChildren().size() < 2) {
@@ -229,14 +229,14 @@ class InstancioEngine {
 
         //noinspection unchecked
         final Map<Object, Object> map = (Map<Object, Object>) generatorResult.getValue();
-        final Node valueNode = node.getChildren().get(1);
-        final Node keyNode = node.getChildren().get(0);
+        final InternalNode valueNode = node.getChildren().get(1);
+        final InternalNode keyNode = node.getChildren().get(0);
         final Hints hints = generatorResult.getHints();
 
         // Populated objects that were created/added in the generator itself
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
-            final List<Node> keyNodeChildren = keyNode.getChildren();
-            final List<Node> valueNodeChildren = valueNode.getChildren();
+            final List<InternalNode> keyNodeChildren = keyNode.getChildren();
+            final List<InternalNode> valueNodeChildren = valueNode.getChildren();
 
             populateChildren(keyNodeChildren, GeneratorResult.create(entry.getKey(), hints));
             populateChildren(valueNodeChildren, GeneratorResult.create(entry.getValue(), hints));
@@ -294,7 +294,7 @@ class InstancioEngine {
             "PMD.NPathComplexity",
             "PMD.ForLoopVariableCount",
             "PMD.AvoidReassigningLoopVariables"})
-    private GeneratorResult generateArray(final Node node) {
+    private GeneratorResult generateArray(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);
 
         if (generatorResult.containsNull() || node.getChildren().isEmpty()) {
@@ -307,7 +307,7 @@ class InstancioEngine {
 
         final List<?> withElements = hint.withElements();
         final int arrayLength = Array.getLength(arrayObj);
-        final Node elementNode = node.getOnlyChild();
+        final InternalNode elementNode = node.getOnlyChild();
         int lastIndex = 0;
 
         // Fill-in withElements first (if any)
@@ -316,7 +316,7 @@ class InstancioEngine {
 
             // Populate objects created by user within the generator
             if (elementValue != null) {
-                final List<Node> elementNodeChildren = node.getOnlyChild().getChildren();
+                final List<InternalNode> elementNodeChildren = node.getOnlyChild().getChildren();
                 populateChildren(elementNodeChildren, GeneratorResult.create(elementValue, hints));
             }
 
@@ -346,7 +346,7 @@ class InstancioEngine {
 
             // Populate objects created by user within the generator
             if (currentValue != null) {
-                final List<Node> elementNodeChildren = node.getOnlyChild().getChildren();
+                final List<InternalNode> elementNodeChildren = node.getOnlyChild().getChildren();
                 populateChildren(elementNodeChildren, GeneratorResult.create(currentValue, hints));
             }
 
@@ -380,7 +380,7 @@ class InstancioEngine {
     }
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
-    private GeneratorResult generateCollection(final Node node) {
+    private GeneratorResult generateCollection(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);
 
         if (generatorResult.containsNull() || node.getChildren().isEmpty()) {
@@ -389,12 +389,12 @@ class InstancioEngine {
 
         //noinspection unchecked
         final Collection<Object> collection = (Collection<Object>) generatorResult.getValue();
-        final Node elementNode = node.getOnlyChild();
+        final InternalNode elementNode = node.getOnlyChild();
         final Hints hints = generatorResult.getHints();
 
         // Populated objects that were created/added in the generator itself
         for (Object element : collection) {
-            final List<Node> elementNodeChildren = elementNode.getChildren();
+            final List<InternalNode> elementNodeChildren = elementNode.getChildren();
             populateChildren(elementNodeChildren, GeneratorResult.create(element, hints));
         }
 
@@ -457,14 +457,14 @@ class InstancioEngine {
         return spiResult.orElse(generatorResult);
     }
 
-    private GeneratorResult generateRecord(final Node node) {
+    private GeneratorResult generateRecord(final InternalNode node) {
         // Handle the case where user supplies a generator for creating a record.
         final Optional<Generator<?>> generator = context.getGenerator(node);
         if (generator.isPresent()) {
             return generateValue(node);
         }
 
-        final List<Node> children = node.getChildren();
+        final List<InternalNode> children = node.getChildren();
         final Object[] args = new Object[children.size()];
         final Class<?>[] ctorArgs = RecordUtils.getComponentTypes(node.getTargetClass());
 
@@ -478,7 +478,7 @@ class InstancioEngine {
         }
 
         for (int i = 0; i < args.length; i++) {
-            final Node child = children.get(i);
+            final InternalNode child = children.get(i);
             final GeneratorResult result = createObject(child);
 
             args[i] = result.containsNull()
@@ -501,7 +501,7 @@ class InstancioEngine {
         return GeneratorResult.emptyResult();
     }
 
-    private void populateChildren(final List<Node> children, final GeneratorResult generatorResult) {
+    private void populateChildren(final List<InternalNode> children, final GeneratorResult generatorResult) {
         if (generatorResult.containsNull()) {
             return;
         }
@@ -510,7 +510,7 @@ class InstancioEngine {
         final AfterGenerate action = generatorResult.getHints().afterGenerate();
         final NodePopulationFilter filter = new FieldNodePopulationFilter(context);
 
-        for (final Node child : children) {
+        for (final InternalNode child : children) {
             if (filter.shouldSkip(child, action, value)) {
                 continue;
             }
@@ -528,7 +528,7 @@ class InstancioEngine {
     }
 
     @NotNull
-    private GeneratorResult createObject(final Node node, final boolean isNullable) {
+    private GeneratorResult createObject(final InternalNode node, final boolean isNullable) {
         if (context.getRandom().diceRoll(isNullable)) {
             final GeneratorResult nullResult = GeneratorResult.nullResult();
             notifyListeners(node, nullResult);
@@ -537,13 +537,13 @@ class InstancioEngine {
         return createObject(node);
     }
 
-    private GeneratorResult generateValue(final Node node) {
+    private GeneratorResult generateValue(final InternalNode node) {
         final GeneratorResult generatorResult = generatorFacade.generateNodeValue(node);
         notifyListeners(node, generatorResult);
         return generatorResult;
     }
 
-    private void notifyListeners(final Node node, final GeneratorResult result) {
+    private void notifyListeners(final InternalNode node, final GeneratorResult result) {
         for (GenerationListener listener : listeners) {
             listener.objectCreated(node, result);
         }

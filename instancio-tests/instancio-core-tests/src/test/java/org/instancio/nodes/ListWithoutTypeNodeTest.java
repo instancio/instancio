@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.ListWithoutType;
 import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -25,7 +25,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class ListWithoutTypeNodeTest extends NodeTestTemplate<ListWithoutType> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(ListWithoutType.class)
                 .hasChildrenOfSize(1);

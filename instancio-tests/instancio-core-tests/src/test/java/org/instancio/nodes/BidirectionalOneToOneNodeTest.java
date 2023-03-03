@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.cyclic.BidirectionalOneToOne;
 import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -27,13 +27,13 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class BidirectionalOneToOneNodeTest extends NodeTestTemplate<BidirectionalOneToOne.Parent> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasDepth(0)
                 .hasTargetClass(BidirectionalOneToOne.Parent.class)
                 .hasChildrenOfSize(2);
 
-        final Node child = assertNode(NodeUtils.getChildNode(rootNode, "child"))
+        final InternalNode child = assertNode(NodeUtils.getChildNode(rootNode, "child"))
                 .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("child")

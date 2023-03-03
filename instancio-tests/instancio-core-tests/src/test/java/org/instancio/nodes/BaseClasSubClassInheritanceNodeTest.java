@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance;
 import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance.SubClass;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -26,13 +26,13 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class BaseClasSubClassInheritanceNodeTest extends NodeTestTemplate<BaseClassSubClassInheritance> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasDepth(0)
                 .hasTargetClass(BaseClassSubClassInheritance.class)
                 .hasChildrenOfSize(1);
 
-        final Node subClass = assertNode(rootNode.getOnlyChild())
+        final InternalNode subClass = assertNode(rootNode.getOnlyChild())
                 .hasDepth(1)
                 .hasTargetClass(SubClass.class)
                 .hasFieldName("subClass")

@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.arrayofsuppliers.ArrayOfStringSuppliers;
 import org.instancio.test.support.pojo.generics.arrayofsuppliers.GenericArrayHolder;
 import org.instancio.test.support.tags.GenericsTag;
@@ -29,7 +29,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class ArrayOfStringSuppliersNodeTest extends NodeTestTemplate<ArrayOfStringSuppliers> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasDepth(0)
                 .hasTargetClass(ArrayOfStringSuppliers.class)
@@ -37,7 +37,7 @@ class ArrayOfStringSuppliersNodeTest extends NodeTestTemplate<ArrayOfStringSuppl
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1);
 
-        final Node array = assertNode(rootNode.getOnlyChild())
+        final InternalNode array = assertNode(rootNode.getOnlyChild())
                 .hasDepth(1)
                 .hasFieldName("array")
                 .hasTargetClass(Supplier[].class)

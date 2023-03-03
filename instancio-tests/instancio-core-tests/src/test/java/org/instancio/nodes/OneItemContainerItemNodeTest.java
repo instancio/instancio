@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.container.OneItemContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -27,14 +27,14 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Item<String>>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(OneItemContainer.class)
                 .hasTypeMappedTo(OneItemContainer.class, "T", "org.instancio.test.support.pojo.generics.basic.Item<java.lang.String>")
                 .hasChildrenOfSize(1);
 
         final String itemField = "item";
-        final Node item = assertNode(NodeUtils.getChildNode(rootNode, itemField))
+        final InternalNode item = assertNode(NodeUtils.getChildNode(rootNode, itemField))
                 .hasParent(rootNode)
                 .hasFieldName(itemField)
                 .hasTargetClass(Item.class)
@@ -43,7 +43,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
                 .hasChildrenOfSize(1)
                 .get();
 
-        final Node nestedItem = assertNode(getOnlyElement(item.getChildren()))
+        final InternalNode nestedItem = assertNode(getOnlyElement(item.getChildren()))
                 .hasParent(item)
                 .hasFieldName("value")
                 .hasTargetClass(Item.class)

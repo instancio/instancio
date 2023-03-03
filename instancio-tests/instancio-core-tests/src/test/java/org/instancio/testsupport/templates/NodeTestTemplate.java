@@ -18,7 +18,7 @@ package org.instancio.testsupport.templates;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.SubtypeSelectorMap;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.test.support.tags.NodeTag;
@@ -51,7 +51,7 @@ public abstract class NodeTestTemplate<T> {
                 .build();
         final NodeFactory nodeFactory = new NodeFactory(nodeContext);
         final TypeTokenSupplier<Type> typeSupplier = typeContext::getGenericType;
-        final Node rootNode = nodeFactory.createRootNode(typeSupplier.get());
+        final InternalNode rootNode = nodeFactory.createRootNode(typeSupplier.get());
         verify(rootNode);
     }
 
@@ -62,5 +62,5 @@ public abstract class NodeTestTemplate<T> {
     /**
      * A method for verifying created node.
      */
-    protected abstract void verify(Node rootNode);
+    protected abstract void verify(InternalNode rootNode);
 }

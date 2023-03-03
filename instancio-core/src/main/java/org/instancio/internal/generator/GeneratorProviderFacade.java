@@ -15,10 +15,15 @@
  */
 package org.instancio.internal.generator;
 
+import org.instancio.Node;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.GeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
@@ -36,6 +41,7 @@ class GeneratorProviderFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorProviderFacade.class);
 
     private final GeneratorContext context;
+    private final Generators generators;
     private final List<GeneratorProvider> generatorProviders;
     private final List<ProviderEntry<InstancioServiceProvider.GeneratorProvider>> providerEntries;
     private final AfterGenerate afterGenerate;
@@ -46,21 +52,24 @@ class GeneratorProviderFacade {
             final List<ProviderEntry<InstancioServiceProvider.GeneratorProvider>> providerEntries) {
 
         this.context = context;
+        this.generators = new Generators(context);
         this.generatorProviders = generatorProviders;
         this.afterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         this.providerEntries = providerEntries;
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    Optional<Generator<?>> getGenerator(final Class<?> forClass) {
-        Generator<?> result = resolveViaNewSPI(forClass);
+    Optional<Generator<?>> getGenerator(final InternalNode node) {
+        Generator<?> result = resolveViaNewSPI(node);
         if (result == null) {
-            result = resolveViaDeprecatedSPI(forClass);
+            result = resolveViaDeprecatedSPI(node);
         }
         return Optional.ofNullable(result);
     }
 
-    private Generator<?> resolveViaDeprecatedSPI(final Class<?> forClass) {
+    private Generator<?> resolveViaDeprecatedSPI(final InternalNode node) {
+        final Class<?> forClass = node.getTargetClass();
+
         for (GeneratorProvider provider : generatorProviders) {
             final Generator<?> generator = provider.getGenerators(context).get(forClass);
             if (generator != null) {
@@ -72,25 +81,31 @@ class GeneratorProviderFacade {
     }
 
     @SuppressWarnings("PMD.AvoidBranchingStatementAsLastInLoop")
-    private Generator<?> resolveViaNewSPI(final Class<?> forClass) {
+    private Generator<?> resolveViaNewSPI(final InternalNode internalNode) {
+        final Node node = new NodeImpl(internalNode.getTargetClass(), internalNode.getField());
+
         for (ProviderEntry<InstancioServiceProvider.GeneratorProvider> entry : providerEntries) {
-            final Class<?> generatorClass = entry.getProvider().getGenerator(forClass);
-            if (generatorClass == null) {
-                continue;
-            }
+            final GeneratorSpec<?> spec = entry.getProvider().getGenerator(node, generators);
 
-            if (!Generator.class.isAssignableFrom(generatorClass)) {
-                throw new InstancioSpiException(String.format(
-                        "%s returned an invalid generator class:%n" +
-                                " -> %s%n" +
-                                "The class does not implement the %s interface",
-                        entry.getInstancioProviderClass(), generatorClass.getName(), Generator.class));
-            }
+            if (spec != null) {
+                validateSpec(entry, spec);
 
-            final Generator<?> generator = GeneratorUtil.instantiateSpiGenerator(generatorClass, context);
-            LOG.trace("SPI generator {} found for {}", generator, forClass);
-            return GeneratorDecorator.decorate(generator, afterGenerate);
+                final Generator<?> generator = (Generator<?>) spec;
+                LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), node);
+                return GeneratorDecorator.decorate(generator, afterGenerate);
+            }
         }
         return null;
+    }
+
+    private static void validateSpec(
+            final ProviderEntry<InstancioServiceProvider.GeneratorProvider> entry,
+            final GeneratorSpec<?> spec) {
+
+        if (spec instanceof Generator<?>) {
+            return;
+        }
+        throw new InstancioSpiException(String.format("The GeneratorSpec %s returned by %s must implement %s",
+                spec.getClass(), entry.getInstancioProviderClass(), Generator.class));
     }
 }

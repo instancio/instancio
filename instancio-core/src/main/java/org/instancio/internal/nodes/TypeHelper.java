@@ -39,9 +39,9 @@ class TypeHelper {
         this.nodeContext = nodeContext;
     }
 
-    Type resolveTypeVariable(final TypeVariable<?> typeVar, @Nullable final Node parent) {
+    Type resolveTypeVariable(final TypeVariable<?> typeVar, @Nullable final InternalNode parent) {
         Type mappedType = parent == null ? typeVar : parent.getTypeMap().getOrDefault(typeVar, typeVar);
-        Node ancestor = parent;
+        InternalNode ancestor = parent;
 
         while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
             Type rootTypeMapping = nodeContext.getRootTypeMap().get(mappedType);

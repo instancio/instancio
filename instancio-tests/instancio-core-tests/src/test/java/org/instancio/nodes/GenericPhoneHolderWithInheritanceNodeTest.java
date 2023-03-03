@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance.EntityWithId;
 import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance.GenericPhoneHolderWithInheritance;
 import org.instancio.test.support.pojo.person.PhoneType;
@@ -31,7 +31,7 @@ class GenericPhoneHolderWithInheritanceNodeTest
         extends NodeTestTemplate<GenericPhoneHolderWithInheritance<PhoneWithType>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasDepth(0)
                 .hasTargetClass(GenericPhoneHolderWithInheritance.class)
@@ -44,7 +44,7 @@ class GenericPhoneHolderWithInheritanceNodeTest
         assertPhone(rootNode);
     }
 
-    private static void assertId(final Node rootNode) {
+    private static void assertId(final InternalNode rootNode) {
         assertNode(NodeUtils.getChildNode(rootNode, "id"))
                 .hasDepth(1)
                 .hasParent(rootNode)
@@ -55,8 +55,8 @@ class GenericPhoneHolderWithInheritanceNodeTest
                 .get();
     }
 
-    private static void assertPhone(final Node rootNode) {
-        final Node phoneWithType = assertNode(NodeUtils.getChildNode(rootNode, "phone"))
+    private static void assertPhone(final InternalNode rootNode) {
+        final InternalNode phoneWithType = assertNode(NodeUtils.getChildNode(rootNode, "phone"))
                 .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("phone")

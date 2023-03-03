@@ -18,7 +18,7 @@ package org.instancio.internal;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ExceptionHandler;
 import org.instancio.internal.util.ReflectionUtils;
@@ -32,7 +32,7 @@ class FieldNodePopulationFilter implements NodePopulationFilter {
     }
 
     @Override
-    public boolean shouldSkip(final Node fieldNode,
+    public boolean shouldSkip(final InternalNode fieldNode,
                               final AfterGenerate afterGenerate,
                               final Object objectContainingField) {
 

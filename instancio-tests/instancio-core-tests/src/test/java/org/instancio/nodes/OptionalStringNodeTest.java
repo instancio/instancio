@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.misc.OptionalString;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -29,12 +29,12 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class OptionalStringNodeTest extends NodeTestTemplate<OptionalString> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(OptionalString.class)
                 .hasChildrenOfSize(1);
 
-        final Node optionalNode = assertNode(NodeUtils.getChildNode(rootNode, "optional"))
+        final InternalNode optionalNode = assertNode(NodeUtils.getChildNode(rootNode, "optional"))
                 .hasParent(rootNode)
                 .hasFieldName("optional")
                 .isOfKind(NodeKind.CONTAINER)

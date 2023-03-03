@@ -16,7 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.Flattener;
 
 import java.util.Collections;
@@ -41,7 +41,7 @@ public final class SubtypeSelectorMap {
         return selectorMap;
     }
 
-    public Optional<Class<?>> getSubtype(final Node node) {
+    public Optional<Class<?>> getSubtype(final InternalNode node) {
         return selectorMap.getValue(node);
     }
 

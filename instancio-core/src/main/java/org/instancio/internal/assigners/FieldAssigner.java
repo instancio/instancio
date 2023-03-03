@@ -18,7 +18,7 @@ package org.instancio.internal.assigners;
 import org.instancio.assignment.AssignmentType;
 import org.instancio.assignment.OnSetFieldError;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
@@ -42,7 +42,7 @@ public class FieldAssigner implements Assigner {
     }
 
     @Override
-    public void assign(final Node node, final Object target, final Object value) {
+    public void assign(final InternalNode node, final Object target, final Object value) {
         final Field field = node.getField();
 
         if (value != null) {

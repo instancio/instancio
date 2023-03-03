@@ -54,17 +54,17 @@ public final class NodeFactory {
         this.typeHelper = new TypeHelper(nodeContext);
     }
 
-    public Node createRootNode(final Type type) {
-        final Node root = nodeCreator.createRootNodeWithoutChildren(type);
+    public InternalNode createRootNode(final Type type) {
+        final InternalNode root = nodeCreator.createRootNodeWithoutChildren(type);
 
         // The queue contains nodes without children.
         // Children are populated after taking a node off the queue.
-        final Queue<Node> childlessNodeQueue = new LinkedList<>();
+        final Queue<InternalNode> childlessNodeQueue = new LinkedList<>();
         childlessNodeQueue.offer(root);
 
         while (!childlessNodeQueue.isEmpty()) {
-            final Node node = childlessNodeQueue.poll();
-            final List<Node> children = createChildlessChildren(node);
+            final InternalNode node = childlessNodeQueue.poll();
+            final List<InternalNode> children = createChildlessChildren(node);
             node.setChildren(children);
             childlessNodeQueue.addAll(children);
         }
@@ -79,7 +79,7 @@ public final class NodeFactory {
      * @return child nodes (without children), or an empty list if none.
      */
     @NotNull
-    private List<Node> createChildlessChildren(@NotNull final Node node) {
+    private List<InternalNode> createChildlessChildren(@NotNull final InternalNode node) {
         if (node.is(NodeKind.IGNORED)) {
             return Collections.emptyList();
         }
@@ -89,7 +89,7 @@ public final class NodeFactory {
             return Collections.emptyList();
         }
 
-        final List<Node> children;
+        final List<InternalNode> children;
 
         final Type type = node.getType();
         if (type instanceof Class) {
@@ -105,7 +105,7 @@ public final class NodeFactory {
         return children;
     }
 
-    private List<Node> createChildrenOfClass(final Node node) {
+    private List<InternalNode> createChildrenOfClass(final InternalNode node) {
         final Class<?> targetClass = node.getTargetClass();
 
         if (node.isContainer()) {
@@ -124,7 +124,7 @@ public final class NodeFactory {
         return createChildrenFromFields(targetClass, node);
     }
 
-    private List<Node> createChildrenOfParameterizedType(final Node node) {
+    private List<InternalNode> createChildrenOfParameterizedType(final InternalNode node) {
         final ParameterizedType type = (ParameterizedType) node.getType();
 
         return node.isContainer()
@@ -132,7 +132,7 @@ public final class NodeFactory {
                 : createChildrenFromFields(node.getTargetClass(), node);
     }
 
-    private List<Node> createChildrenOfGenericArrayNode(final Node node) {
+    private List<InternalNode> createChildrenOfGenericArrayNode(final InternalNode node) {
         final GenericArrayType type = (GenericArrayType) node.getType();
         Type gcType = type.getGenericComponentType();
         if (gcType instanceof TypeVariable) {
@@ -152,10 +152,10 @@ public final class NodeFactory {
      * @param types  children's types
      * @return a list of children, or an empty list if no children were created (e.g. to avoid cycles)
      */
-    private List<Node> createContainerNodeChildren(final Node parent, final Type... types) {
-        final List<Node> results = new ArrayList<>(types.length);
+    private List<InternalNode> createContainerNodeChildren(final InternalNode parent, final Type... types) {
+        final List<InternalNode> results = new ArrayList<>(types.length);
         for (Type type : types) {
-            final Node node = nodeCreator.createNodeWithoutChildren(type, null, parent);
+            final InternalNode node = nodeCreator.createNodeWithoutChildren(type, null, parent);
             if (node != null) {
                 results.add(node);
             }
@@ -163,13 +163,13 @@ public final class NodeFactory {
         return results;
     }
 
-    private List<Node> createChildrenFromFields(final Class<?> targetClass, final Node parent) {
+    private List<InternalNode> createChildrenFromFields(final Class<?> targetClass, final InternalNode parent) {
         final List<Field> fields = fieldCollector.getFields(targetClass);
-        final List<Node> list = new ArrayList<>(fields.size());
+        final List<InternalNode> list = new ArrayList<>(fields.size());
 
         for (Field f : fields) {
             final Type type = ObjectUtils.defaultIfNull(f.getGenericType(), f.getType());
-            final Node node = nodeCreator.createNodeWithoutChildren(type, f, parent);
+            final InternalNode node = nodeCreator.createNodeWithoutChildren(type, f, parent);
             if (node != null) {
                 list.add(node);
             }

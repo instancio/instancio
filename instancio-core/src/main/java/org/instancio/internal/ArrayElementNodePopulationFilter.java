@@ -17,7 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,7 @@ class ArrayElementNodePopulationFilter implements NodePopulationFilter {
     }
 
     @Override
-    public boolean shouldSkip(final Node elementNode,
+    public boolean shouldSkip(final InternalNode elementNode,
                               final AfterGenerate afterGenerate,
                               @Nullable final Object currentElementValue) {
 

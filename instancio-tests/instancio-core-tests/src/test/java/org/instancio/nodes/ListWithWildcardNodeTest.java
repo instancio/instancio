@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.ListWithWildcard;
 import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -27,12 +27,12 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class ListWithWildcardNodeTest extends NodeTestTemplate<ListWithWildcard> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(ListWithWildcard.class)
                 .hasChildrenOfSize(1);
 
-        final Node list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        final InternalNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("list")
                 .hasChildrenOfSize(1)
                 .hasTargetClass(List.class)

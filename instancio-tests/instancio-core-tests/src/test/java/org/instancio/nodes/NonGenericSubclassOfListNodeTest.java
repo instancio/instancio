@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfList;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
@@ -24,7 +24,7 @@ import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 class NonGenericSubclassOfListNodeTest extends NodeTestTemplate<NonGenericSubclassOfList> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(NonGenericSubclassOfList.class)
                 .hasChildrenOfSize(1);

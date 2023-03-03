@@ -19,7 +19,7 @@ import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
@@ -122,7 +122,7 @@ final class SelectorMap<V> {
      * @param node for which to look up the value
      * @return value for given node, if present
      */
-    Optional<V> getValue(final Node node) {
+    Optional<V> getValue(final InternalNode node) {
         final List<SelectorImpl> withParent = getSelectorsWithParent(node, getCandidates(node), FIND_ONE_ONLY);
 
         if (!withParent.isEmpty()) {
@@ -134,7 +134,7 @@ final class SelectorMap<V> {
         return getPredicateSelectorMatch(node);
     }
 
-    private Optional<V> getPredicateSelectorMatch(final Node node) {
+    private Optional<V> getPredicateSelectorMatch(final InternalNode node) {
         PredicateSelectorEntry<V> classPredicate = null;
 
         // If there's a field predicate anywhere in the list, then return the last one found.
@@ -167,7 +167,7 @@ final class SelectorMap<V> {
      * @param node for which to look up the values
      * @return all values for given node, or an empty list if none found
      */
-    List<V> getValues(final Node node) {
+    List<V> getValues(final InternalNode node) {
         final List<SelectorImpl> selectorsWithParent = getSelectorsWithParent(node, getCandidates(node), !FIND_ONE_ONLY);
         final List<V> values = new ArrayList<>(selectorsWithParent.size() + predicateSelectors.size());
 
@@ -186,7 +186,7 @@ final class SelectorMap<V> {
         return values;
     }
 
-    private static boolean isPredicateMatch(final Node node, final PredicateSelectorEntry<?> entry) {
+    private static boolean isPredicateMatch(final InternalNode node, final PredicateSelectorEntry<?> entry) {
         return entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD
                 ? entry.predicateSelector.getFieldPredicate().test(node.getField())
                 : entry.predicateSelector.getClassPredicate().test(node.getTargetClass());
@@ -212,7 +212,7 @@ final class SelectorMap<V> {
      * @param node to look up selectors for
      * @return list of selectors
      */
-    private List<SelectorImpl> getCandidates(final Node node) {
+    private List<SelectorImpl> getCandidates(final InternalNode node) {
         if (node.getParent() == null && scopelessSelectors.containsKey(SCOPELESS_ROOT)) {
             return Collections.singletonList(scopelessSelectors.get(SCOPELESS_ROOT).get(0));
         }
@@ -233,7 +233,7 @@ final class SelectorMap<V> {
     }
 
     private static List<SelectorImpl> getSelectorsWithParent(
-            final Node targetNode,
+            final InternalNode targetNode,
             final List<SelectorImpl> candidates,
             final boolean findOneOnly) {
 
@@ -258,13 +258,13 @@ final class SelectorMap<V> {
         return results;
     }
 
-    private static boolean selectorScopesMatchNodeHierarchy(final SelectorImpl candidate, final Node targetNode) {
+    private static boolean selectorScopesMatchNodeHierarchy(final SelectorImpl candidate, final InternalNode targetNode) {
         if (candidate.getScopes().isEmpty()) {
             return true;
         }
         final Deque<Scope> deq = new ArrayDeque<>(candidate.getScopes());
         ScopeImpl scope = (ScopeImpl) deq.removeLast();
-        Node node = targetNode;
+        InternalNode node = targetNode;
 
         while (node != null) {
             if (scope.isFieldScope()) {

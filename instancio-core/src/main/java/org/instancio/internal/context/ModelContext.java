@@ -25,7 +25,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.RandomHelper;
 import org.instancio.internal.generator.misc.SupplierAdapter;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
@@ -156,21 +156,21 @@ public final class ModelContext<T> {
         return maxDepth;
     }
 
-    public boolean isIgnored(final Node node) {
+    public boolean isIgnored(final InternalNode node) {
         return ignoredSelectorMap.isTrue(node);
     }
 
-    public boolean isNullable(final Node node) {
+    public boolean isNullable(final InternalNode node) {
         return nullableSelectorMap.isTrue(node);
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    public Optional<Generator<?>> getGenerator(final Node node) {
+    public Optional<Generator<?>> getGenerator(final InternalNode node) {
         return generatorSelectorMap.getGenerator(node);
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    public List<OnCompleteCallback<?>> getCallbacks(final Node node) {
+    public List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {
         return onCompleteCallbackSelectorMap.getCallbacks(node);
     }
 

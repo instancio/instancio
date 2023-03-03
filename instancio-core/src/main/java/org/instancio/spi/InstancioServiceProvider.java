@@ -16,9 +16,11 @@
 package org.instancio.spi;
 
 import org.instancio.InstancioApi;
+import org.instancio.Node;
 import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.GeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
@@ -43,6 +45,9 @@ import java.util.ServiceLoader;
  * {@code org.instancio.spi.InstancioServiceProvider} under
  * {@code /META-INF/services}. The file must contain the fully-qualified name
  * of the implementing class.
+ *
+ * <p><b>Note:</b> only {@link InstancioServiceProvider} (and not the interfaces
+ * defined within it) can be registered via the {@code ServiceLoader}.
  *
  * @since 2.11.0
  */
@@ -111,33 +116,20 @@ public interface InstancioServiceProvider {
     interface GeneratorProvider {
 
         /**
-         * Returns a generator class for the specified {@code type}.
-         * If the implementation does not define a generator for the given
-         * type, then a {@code null} can be returned.
+         * Returns a generator spec for the specified {@code node}.
+         * The returned spec must also implement the {@link Generator} interface.
          *
-         * <p>Instancio will attempt to instantiate the generator class
-         * using the following constructors (in order of precedence):
+         * <p>If the implementation does not define a generator for the given
+         * node, then a {@code null} can be returned.
          *
-         * <ol>
-         *   <li>constructor with a single parameter {@link GeneratorContext}</li>
-         *   <li>default (no-argument) constructor</li>
-         * </ol>
-         *
-         * <p>If the custom generator defines a constructor with
-         * {@code GeneratorContext} as the sole parameter, then this
-         * constructor will be invoked, and an instance of
-         * {@code GeneratorContext} will be provided to it.
-         * Otherwise, the default constructor will be used.
-         *
-         * @param type for which to return a generator
-         * @return generator class for the given {@code type},
-         * or {@code null} if no generator is defined
-         * @throws InstancioSpiException if the returned class
+         * @param generators provides access to built-in generators
+         * @param node       for which to return a generator
+         * @return generator spec for the given {@code node}, or {@code null}
+         * @throws InstancioSpiException if the returned generator spec
          *                               does not implement {@link Generator}
-         *                               or cannot be instantiated
          * @since 2.11.0
          */
-        Class<?> getGenerator(Class<?> type);
+        GeneratorSpec<?> getGenerator(Node node, Generators generators);
     }
 
     /**
@@ -213,5 +205,4 @@ public interface InstancioServiceProvider {
          */
         Object instantiate(Class<?> type);
     }
-
 }

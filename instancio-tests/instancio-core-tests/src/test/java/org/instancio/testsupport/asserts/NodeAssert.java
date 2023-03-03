@@ -16,7 +16,7 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.TypeMap;
 
@@ -26,17 +26,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 @SuppressWarnings("UnusedReturnValue")
-public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
+public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
 
-    private NodeAssert(Node actual) {
+    private NodeAssert(InternalNode actual) {
         super(actual, NodeAssert.class);
     }
 
-    public static NodeAssert assertNode(Node actual) {
+    public static NodeAssert assertNode(InternalNode actual) {
         return new NodeAssert(actual);
     }
 
-    public Node get() {
+    public InternalNode get() {
         return actual;
     }
 
@@ -136,7 +136,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
         return this;
     }
 
-    public NodeAssert hasParent(Node expected) {
+    public NodeAssert hasParent(InternalNode expected) {
         isNotNull();
         assertThat(actual.getParent()).isSameAs(expected);
         return this;

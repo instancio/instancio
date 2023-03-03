@@ -15,7 +15,7 @@
  */
 package org.instancio.nodes;
 
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance.EntityWithId;
 import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance.GenericItemHolderWithInheritance;
@@ -32,7 +32,7 @@ class GenericItemHolderWithInheritanceNodeTest
         extends NodeTestTemplate<GenericItemHolderWithInheritance<PhoneWithType, Item<PhoneWithType>>> {
 
     @Override
-    protected void verify(Node rootNode) {
+    protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasDepth(0)
                 .hasTargetClass(GenericItemHolderWithInheritance.class)
@@ -47,7 +47,7 @@ class GenericItemHolderWithInheritanceNodeTest
         assertItem(rootNode);
     }
 
-    private static void assertId(final Node rootNode) {
+    private static void assertId(final InternalNode rootNode) {
         assertNode(NodeUtils.getChildNode(rootNode, "id"))
                 .hasDepth(1)
                 .hasParent(rootNode)
@@ -58,8 +58,8 @@ class GenericItemHolderWithInheritanceNodeTest
                 .get();
     }
 
-    private static void assertItem(final Node rootNode) {
-        final Node item = assertNode(NodeUtils.getChildNode(rootNode, "item"))
+    private static void assertItem(final InternalNode rootNode) {
+        final InternalNode item = assertNode(NodeUtils.getChildNode(rootNode, "item"))
                 .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("item")
@@ -67,7 +67,7 @@ class GenericItemHolderWithInheritanceNodeTest
                 .hasChildrenOfSize(1)
                 .get();
 
-        final Node phoneWithType = assertNode(NodeUtils.getChildNode(item, "value"))
+        final InternalNode phoneWithType = assertNode(NodeUtils.getChildNode(item, "value"))
                 .hasDepth(2)
                 .hasParent(item)
                 .hasTargetClass(PhoneWithType.class)

@@ -16,15 +16,20 @@
 package org.example.spi;
 
 import org.example.generator.CustomIntegerGenerator;
+import org.instancio.Gen;
+import org.instancio.Node;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.Hints;
+import org.instancio.generators.Generators;
+import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.spi.InstancioServiceProvider;
-import org.instancio.test.support.pojo.basic.StringHolder;
-import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
-import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
-import org.instancio.test.support.pojo.misc.StringFields;
-import org.instancio.test.support.pojo.misc.getters.BeanStylePojo;
+import org.instancio.test.support.pojo.person.Address;
+import org.instancio.test.support.pojo.person.PersonName;
+import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.pojo.person.PhoneWithType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,24 +40,19 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
     public static final String STRING_GENERATOR_VALUE = "overridden string generator from SPI Generator!";
     public static final Pattern PATTERN_GENERATOR_VALUE = Pattern.compile("baz");
 
-    private static final Map<Class<?>, Class<?>> GENERATOR_MAP = new HashMap<Class<?>, Class<?>>() {{
-        put(String.class, StringGeneratorFromSpi.class);
-        put(Pattern.class, PatternGeneratorFromSpi.class);
-        put(int.class, CustomIntegerGenerator.class);
-        put(Integer.class, CustomIntegerGenerator.class);
+    private static final Map<Class<?>, GeneratorSpec<?>> GENERATOR_MAP = new HashMap<Class<?>, GeneratorSpec<?>>() {{
+        put(String.class, new StringGeneratorFromSpi());
+        put(Pattern.class, new PatternGeneratorFromSpi());
+        put(int.class, new CustomIntegerGenerator());
+        put(Integer.class, new CustomIntegerGenerator());
+        put(Address.class, new CustomAddressGenerator());
+        put(Phone.class, new CustomPhoneGenerator());
 
-        // Constructor precedence
-        put(StringHolder.class, GeneratorWithGeneratorContextConstructor.class);
-
-        // Error handling: Foo is mapped to a non-generator class
-        put(Foo.class, Bar.class);
-
-        // Error handling: constructor throws an exception
-        put(StringFields.class, GeneratorWithConstructorThatThrowsException.class);
-
-        // Error handling: generator without any of the expected constructors
-        put(BeanStylePojo.class, GeneratorWithoutExpectedConstructors.class);
+        // Error-handling: generator spec does not implement the Generator interface
+        put(Float.class, new CustomFloatSpec());
     }};
+
+    private final GeneratorProvider generatorProvider = new GeneratorProviderImpl();
 
     private boolean getGeneratorProviderInvoked;
 
@@ -63,10 +63,36 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         }
 
         getGeneratorProviderInvoked = true;
-        return GENERATOR_MAP::get;
+        return generatorProvider;
     }
 
-    private static class StringGeneratorFromSpi implements Generator<String> {
+    private static class GeneratorProviderImpl implements GeneratorProvider {
+        @Override
+        public GeneratorSpec<?> getGenerator(final Node node, final Generators generators) {
+            if (node.getClass() != NodeImpl.class) {
+                // Verify that InternalNode implementation is not exposed via the SPI
+                throw new AssertionError("Unexpected Node implementation: " + node.getClass());
+            }
+
+            if (node.getField() != null) {
+                // Set string length based on annotation attributes
+                final PersonName name = node.getField().getAnnotation(PersonName.class);
+                if (name != null) {
+                    return generators.string()
+                            .minLength(name.min())
+                            .maxLength(name.max());
+                }
+            }
+
+            // verify: subtype(all(Phone.class),  PhoneWithType.class)
+            if (node.getTargetClass() == PhoneWithType.class) {
+                return new PhoneWithTypeGenerator();
+            }
+            return GENERATOR_MAP.get(node.getTargetClass());
+        }
+    }
+
+    private static class StringGeneratorFromSpi implements org.instancio.generator.Generator<String> {
         @Override
         public String generate(final Random random) {
             return STRING_GENERATOR_VALUE;
@@ -80,64 +106,37 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         }
     }
 
-    /**
-     * Constructor with {@link GeneratorContext} parameter should take
-     * precedence over the default constructor.
-     */
-    public static class GeneratorWithGeneratorContextConstructor implements Generator<StringHolder> {
+    public static class CustomAddressGenerator implements Generator<Address> {
+        public static final String COUNTRY = "foo";
 
-        private final String invokedConstructor;
-
-        /**
-         * Should not be called, but is required to verify the behaviour.
-         */
-        @SuppressWarnings("unused")
-        public GeneratorWithGeneratorContextConstructor() {
-            throw new AssertionError("Default constructor is not expected to be called!");
-        }
-
-        /**
-         * Called via reflection.
-         */
-        @SuppressWarnings("unused")
-        public GeneratorWithGeneratorContextConstructor(final GeneratorContext context) {
-            invokedConstructor = "withGeneratorContextConstructor";
+        @Override
+        public Address generate(final Random random) {
+            return Address.builder().country(COUNTRY).build();
         }
 
         @Override
-        public StringHolder generate(final Random random) {
-            return new StringHolder(invokedConstructor);
+        public Hints hints() {
+            return Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS);
         }
     }
 
-    /**
-     * Errors thrown when instantiating a generator should propagate all the way up.
-     */
-    public static class GeneratorWithConstructorThatThrowsException implements Generator<StringFields> {
-
-        GeneratorWithConstructorThatThrowsException() {
-            throw new RuntimeException("Expected error from generator constructor");
-        }
+    public static class CustomPhoneGenerator implements Generator<Phone> {
+        public static final String NUMBER = Gen.string().digits().get();
 
         @Override
-        public StringFields generate(final Random random) {
-            throw new AssertionError("generate() is not expected to be called!");
+        public Phone generate(final Random random) {
+            return Phone.builder().number(NUMBER).build();
         }
     }
 
-    /**
-     * This generator class does not define any of the expected constructors.
-     */
-    public static class GeneratorWithoutExpectedConstructors implements Generator<BeanStylePojo> {
-
-        @SuppressWarnings("unused")
-        GeneratorWithoutExpectedConstructors(String someArg) {
-            throw new AssertionError("constructor is not expected to be called!");
-        }
+    public static class PhoneWithTypeGenerator implements Generator<PhoneWithType> {
+        public static final String NUMBER = Gen.string().digits().get();
 
         @Override
-        public BeanStylePojo generate(final Random random) {
-            throw new AssertionError("generate() is not expected to be called!");
+        public PhoneWithType generate(final Random random) {
+            return PhoneWithType.builder().number(NUMBER).build();
         }
     }
+
+    public static class CustomFloatSpec implements GeneratorSpec<Float> {}
 }

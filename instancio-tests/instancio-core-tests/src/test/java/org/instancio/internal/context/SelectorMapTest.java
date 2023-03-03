@@ -19,7 +19,7 @@ import org.instancio.GroupableSelector;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.internal.selectors.SelectorImpl;
@@ -56,15 +56,15 @@ class SelectorMapTest {
 
     private final NodeFactory nodeFactory = new NodeFactory(nodeContext);
 
-    private final Node rootNode = nodeFactory.createRootNode(PersonHolder.class);
-    private final Node personNameNode = getNodeWithField(rootNode, Person.class, "name");
-    private final Node phoneNumberNode = getNodeWithField(rootNode, Phone.class, "number");
-    private final Node petNameNode = getNodeWithField(rootNode, Pet.class, "name");
+    private final InternalNode rootNode = nodeFactory.createRootNode(PersonHolder.class);
+    private final InternalNode personNameNode = getNodeWithField(rootNode, Person.class, "name");
+    private final InternalNode phoneNumberNode = getNodeWithField(rootNode, Phone.class, "number");
+    private final InternalNode petNameNode = getNodeWithField(rootNode, Pet.class, "name");
     // RichPerson.phone.number
-    private final Node richPersonPhoneFieldNumberFieldNode = getNodeWithField(
+    private final InternalNode richPersonPhoneFieldNumberFieldNode = getNodeWithField(
             getNodeWithField(rootNode, RichPerson.class, "phone"), Phone.class, "number");
     // RichPerson.address1.List<Phone>.number
-    private final Node richPersonListOfPhonesPhoneNumberFieldNode = getNodeWithField(
+    private final InternalNode richPersonListOfPhonesPhoneNumberFieldNode = getNodeWithField(
             getNodeWithField(rootNode, RichPerson.class, "address1"), Phone.class, "number");
 
     private final SelectorMap<String> selectorMap = new SelectorMap<>();
@@ -181,19 +181,19 @@ class SelectorMapTest {
         assertThat(selectorMap.getValue(personNameNode)).isEmpty();
         assertThat(selectorMap.getValue(phoneNumberNode)).isEmpty();
 
-        final Node stringNode = nodeFactory.createRootNode(String.class);
+        final InternalNode stringNode = nodeFactory.createRootNode(String.class);
         assertThat(selectorMap.getValue(stringNode)).isEmpty();
     }
 
-    private static Node getNodeWithField(final Node node, final Class<?> declaringClass, final String fieldName) {
+    private static InternalNode getNodeWithField(final InternalNode node, final Class<?> declaringClass, final String fieldName) {
         final Field field = ReflectionUtils.getField(declaringClass, fieldName);
         assertThat(field).as("null field").isNotNull();
         if (Objects.equals(node.getField(), field)) {
             return node;
         }
 
-        Node result = null;
-        for (Node child : node.getChildren()) {
+        InternalNode result = null;
+        for (InternalNode child : node.getChildren()) {
             result = getNodeWithField(child, declaringClass, fieldName);
             if (result != null) break;
         }

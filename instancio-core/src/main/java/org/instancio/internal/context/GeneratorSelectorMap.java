@@ -24,7 +24,7 @@ import org.instancio.generators.Generators;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.util.Sonar;
@@ -77,7 +77,7 @@ class GeneratorSelectorMap {
         return Collections.unmodifiableMap(generatorSubtypeMap);
     }
 
-    Optional<Generator<?>> getGenerator(final Node node) {
+    Optional<Generator<?>> getGenerator(final InternalNode node) {
         return selectorMap.getValue(node);
     }
 

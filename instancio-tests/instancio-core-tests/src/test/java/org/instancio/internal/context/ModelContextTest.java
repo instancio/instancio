@@ -31,7 +31,7 @@ import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.SupplierAdapter;
-import org.instancio.internal.nodes.Node;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -336,14 +336,14 @@ class ModelContextTest {
         return field(field.getDeclaringClass(), field.getName());
     }
 
-    private static Node mockNode(Class<?> targetClass, Field field) {
-        final Node node = mock(Node.class);
+    private static InternalNode mockNode(Class<?> targetClass, Field field) {
+        final InternalNode node = mock(InternalNode.class);
         doReturn(targetClass).when(node).getRawType();
         doReturn(field).when(node).getField();
         return node;
     }
 
-    private static Node mockNode(Class<?> targetClass) {
+    private static InternalNode mockNode(Class<?> targetClass) {
         return mockNode(targetClass, null);
     }
 }
