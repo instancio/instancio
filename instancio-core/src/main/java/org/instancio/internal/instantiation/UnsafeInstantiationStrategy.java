@@ -23,20 +23,26 @@ import org.slf4j.LoggerFactory;
 /**
  * Uses {@code sun.misc.Unsafe} to instantiate objects.
  */
-class UnsafeInstantiationStrategy implements InstantiationStrategy {
+final class UnsafeInstantiationStrategy implements InstantiationStrategy {
     private static final Logger LOG = LoggerFactory.getLogger(UnsafeInstantiationStrategy.class);
 
     private final boolean isUnsafeAvailable;
 
-    UnsafeInstantiationStrategy() {
+    private UnsafeInstantiationStrategy() {
         isUnsafeAvailable = ReflectionUtils.loadClass("sun.misc.Unsafe") != null;
 
         if (!isUnsafeAvailable) {
-            LOG.info(String.format(
+            // Verbose message, but should be logged only once since this class is a singleton
+            // Note: this issue can also occur within an OSGi container
+            LOG.debug(String.format(
                     "sun.misc.Unsafe is unavailable. This may result in nulls being generated%n" +
                             "for POJO classes that do not provide a default (no-argument) constructor.%n" +
                             "If using JPMS, consider adding 'requires jdk.unsupported' to module-info.java"));
         }
+    }
+
+    static InstantiationStrategy getInstance() {
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -49,5 +55,9 @@ class UnsafeInstantiationStrategy implements InstantiationStrategy {
     @VisibleForTesting
     boolean isUnsafeAvailable() {
         return isUnsafeAvailable;
+    }
+
+    private static class Holder {
+        private static final InstantiationStrategy INSTANCE = new UnsafeInstantiationStrategy();
     }
 }

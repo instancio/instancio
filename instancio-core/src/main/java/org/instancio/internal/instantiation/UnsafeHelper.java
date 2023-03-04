@@ -19,6 +19,10 @@ import org.instancio.internal.util.ExceptionHandler;
 
 import java.lang.reflect.Field;
 
+/**
+ * This class should only be used if {@code sun.misc.Unsafe}
+ * is found on the classpath, otherwise class not found error will be thrown.
+ */
 @SuppressWarnings("all")
 final class UnsafeHelper {
 
@@ -30,7 +34,7 @@ final class UnsafeHelper {
     }
 
     static UnsafeHelper getInstance() {
-        return UnsafeHelper.Holder.INSTANCE;
+        return Holder.INSTANCE;
     }
 
     <T> T allocateInstance(final Class<T> klass) {

@@ -28,7 +28,6 @@ import java.util.List;
 public class Instantiator {
     private static final Logger LOG = LoggerFactory.getLogger(Instantiator.class);
 
-
     private final InstantiationStrategy[] strategies;
 
     public Instantiator(final List<ProviderEntry<InstancioServiceProvider.TypeInstantiator>> providerEntries) {
@@ -36,11 +35,12 @@ public class Instantiator {
                 new ServiceProviderInstantiationStrategy(providerEntries),
                 new NoArgumentConstructorInstantiationStrategy(),
                 new LeastArgumentsConstructorInstantiationStrategy(),
-                new UnsafeInstantiationStrategy()
+                UnsafeInstantiationStrategy.getInstance(),
+                ReflectionFactoryInstantiationStrategy.getInstance()
         };
     }
 
-    public <T> T instantiate(Class<T> klass) {
+    public <T> T instantiate(final Class<T> klass) {
         for (InstantiationStrategy strategy : strategies) {
             final T instance = createInstance(klass, strategy);
             if (instance != null) {
@@ -55,11 +55,12 @@ public class Instantiator {
     @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
     private <T> T createInstance(final Class<T> klass, final InstantiationStrategy strategy) {
         try {
+            LOG.trace("{}: attempting to instantiate {}", strategy.getClass().getSimpleName(), klass);
             return strategy.createInstance(klass);
         } catch (InstancioApiException ex) {
             throw ex;
         } catch (Throwable ex) { //NOPMD catches java.lang.InstantiationError
-            ExceptionHandler.logException("'{}' failed instantiating {}",
+            ExceptionHandler.logException("{}: failed instantiating {}",
                     ex, strategy.getClass().getSimpleName(), klass);
         }
         return null;
