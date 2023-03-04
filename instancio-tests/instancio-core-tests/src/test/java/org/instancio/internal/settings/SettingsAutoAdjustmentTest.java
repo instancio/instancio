@@ -61,7 +61,7 @@ class SettingsAutoAdjustmentTest {
                 .set(Keys.INTEGER_MAX, max)
                 .set(Keys.INTEGER_MIN, newMin);
 
-        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isEqualTo(max);
+        assertThat(settings.get(Keys.INTEGER_MAX)).isEqualTo(max);
     }
 
     @Test
@@ -73,7 +73,7 @@ class SettingsAutoAdjustmentTest {
                 .set(Keys.ARRAY_MAX_LENGTH, max)
                 .set(Keys.ARRAY_MIN_LENGTH, newMin);
 
-        assertThat((Object) settings.get(Keys.ARRAY_MAX_LENGTH))
+        assertThat(settings.get(Keys.ARRAY_MAX_LENGTH))
                 .as("Expecting newMax value to be greater than newMin by %s%%", PERCENTAGE)
                 .isEqualTo((int) Math.round((newMin * (100 + PERCENTAGE)) / 100d));
     }
@@ -86,7 +86,7 @@ class SettingsAutoAdjustmentTest {
                 .set(Keys.INTEGER_MAX, 0)
                 .set(Keys.INTEGER_MIN, newMin);
 
-        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isEqualTo(Integer.MAX_VALUE);
+        assertThat(settings.get(Keys.INTEGER_MAX)).isEqualTo(Integer.MAX_VALUE);
     }
 
     @ValueSource(longs = {Long.MIN_VALUE + 1})
@@ -97,7 +97,7 @@ class SettingsAutoAdjustmentTest {
                 .set(Keys.LONG_MIN, Long.MIN_VALUE + 100)
                 .set(Keys.LONG_MAX, newMax);
 
-        assertThat((Object) settings.get(Keys.LONG_MIN)).isEqualTo(Long.MIN_VALUE);
+        assertThat(settings.get(Keys.LONG_MIN)).isEqualTo(Long.MIN_VALUE);
     }
 
     @Test
@@ -105,7 +105,7 @@ class SettingsAutoAdjustmentTest {
     void newMaxIsNegativeAndIsLessThanMin() {
         settings.set(Keys.INTEGER_MAX, -100);
 
-        assertThat((Object) settings.get(Keys.INTEGER_MIN)).isEqualTo(-150);
+        assertThat(settings.get(Keys.INTEGER_MIN)).isEqualTo(-150);
     }
 
     @Test
@@ -115,25 +115,25 @@ class SettingsAutoAdjustmentTest {
                 .set(Keys.INTEGER_MAX, -120)
                 .set(Keys.INTEGER_MIN, -100);
 
-        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isEqualTo(-50);
+        assertThat(settings.get(Keys.INTEGER_MAX)).isEqualTo(-50);
     }
 
     @Test
     @DisplayName("max is null: should set max")
     void setMaxIfNull() {
         final Settings settings = Settings.create();
-        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isNull();
+        assertThat(settings.get(Keys.INTEGER_MAX)).isNull();
         settings.set(Keys.INTEGER_MIN, 100);
-        assertThat((Object) settings.get(Keys.INTEGER_MAX)).isEqualTo(150);
+        assertThat(settings.get(Keys.INTEGER_MAX)).isEqualTo(150);
     }
 
     @Test
     @DisplayName("min is null: should set min")
     void setMinIfNull() {
         final Settings settings = Settings.create();
-        assertThat((Object) settings.get(Keys.INTEGER_MIN)).isNull();
+        assertThat(settings.get(Keys.INTEGER_MIN)).isNull();
         settings.set(Keys.INTEGER_MAX, -100);
-        assertThat((Object) settings.get(Keys.INTEGER_MIN)).isEqualTo(-150);
+        assertThat(settings.get(Keys.INTEGER_MIN)).isEqualTo(-150);
     }
 
     @Nested
@@ -143,8 +143,8 @@ class SettingsAutoAdjustmentTest {
         @ParameterizedTest
         @MethodSource("minSettingKeys")
         @DisplayName("newMin > max: verify each settings updates its max to: newMin + PERCENTAGE")
-        void newMinIsGreaterThanMax(SettingKey minSetting) {
-            final Optional<SettingKey> maxSetting = SettingsSupport.getAutoAdjustable(minSetting);
+        void newMinIsGreaterThanMax(SettingKey<Number> minSetting) {
+            final Optional<SettingKey<Number>> maxSetting = SettingsSupport.getAutoAdjustable(minSetting);
             assertThat(maxSetting).isPresent();
 
             final Number max = NumberUtils.longConverter(minSetting.type()).apply(50L);
@@ -155,14 +155,14 @@ class SettingsAutoAdjustmentTest {
                     .set(maxSetting.get(), max)
                     .set(minSetting, newMin);
 
-            assertThat((Object) settings.get(maxSetting.get())).isEqualTo(expectedMax);
+            assertThat(settings.get(maxSetting.get())).isEqualTo(expectedMax);
         }
 
         @ParameterizedTest
         @MethodSource("maxSettingKeys")
         @DisplayName("newMax < min: verify each settings updates its min to: newMax - PERCENTAGE")
-        void newMaxIsLessThanMin(SettingKey maxSetting) {
-            final Optional<SettingKey> minSetting = SettingsSupport.getAutoAdjustable(maxSetting);
+        void newMaxIsLessThanMin(SettingKey<Number> maxSetting) {
+            final Optional<SettingKey<Number>> minSetting = SettingsSupport.getAutoAdjustable(maxSetting);
             assertThat(minSetting).isPresent();
 
             final Number min = NumberUtils.longConverter(maxSetting.type()).apply(120L);
@@ -173,7 +173,7 @@ class SettingsAutoAdjustmentTest {
                     .set(minSetting.get(), min)
                     .set(maxSetting, newMax);
 
-            assertThat((Object) settings.get(minSetting.get())).isEqualTo(expectedMin);
+            assertThat(settings.get(minSetting.get())).isEqualTo(expectedMin);
         }
 
         private Stream<Arguments> minSettingKeys() {

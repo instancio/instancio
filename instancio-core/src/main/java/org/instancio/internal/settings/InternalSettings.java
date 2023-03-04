@@ -16,8 +16,8 @@
 package org.instancio.internal.settings;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 
@@ -39,7 +40,7 @@ public final class InternalSettings implements Settings {
     private static final boolean AUTO_ADJUST_ENABLED = true;
 
     private boolean isLockedForModifications;
-    private Map<SettingKey, Object> settingsMap;
+    private Map<SettingKey<?>, Object> settingsMap;
     private Map<Class<?>, Class<?>> subtypeMap;
 
     InternalSettings() {
@@ -53,7 +54,7 @@ public final class InternalSettings implements Settings {
 
     public static InternalSettings defaults() {
         InternalSettings settings = new InternalSettings();
-        for (SettingKey setting : Keys.all()) {
+        for (SettingKey<Object> setting : Keys.all()) {
             settings.set(setting, setting.defaultValue());
         }
         return settings;
@@ -68,7 +69,7 @@ public final class InternalSettings implements Settings {
                 final String fromClass = key.replace(TYPE_MAPPING_PREFIX, "");
                 settings.mapType(ReflectionUtils.getClass(fromClass), ReflectionUtils.getClass(v.toString()));
             } else {
-                final SettingKey settingKey = Keys.get(key);
+                final SettingKey<Object> settingKey = Keys.get(key);
                 final Function<String, Object> fn = SettingsSupport.getFunction(settingKey.type());
                 final Object val;
                 try {
@@ -104,12 +105,12 @@ public final class InternalSettings implements Settings {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(@NotNull final SettingKey key) {
-        return (T) settingsMap.get(Verify.notNull(key, "Key must not be null"));
+    public <T> T get(@NotNull final SettingKey<T> key) {
+        return (T) settingsMap.get(ApiValidator.notNull(key, "Key must not be null"));
     }
 
     @Override
-    public InternalSettings set(@NotNull final SettingKey key, @Nullable final Object value) {
+    public <T> InternalSettings set(@NotNull final SettingKey<T> key, @Nullable final T value) {
         return set(key, value, AUTO_ADJUST_ENABLED);
     }
 
@@ -124,18 +125,18 @@ public final class InternalSettings implements Settings {
      * @param key        to set
      * @param value      to set
      * @param autoAdjust whether to auto-adjust related
-     * @return updated setting
+     * @return this instance of settings
      */
-    InternalSettings set(@NotNull final SettingKey key, @Nullable final Object value, final boolean autoAdjust) {
+    <T> InternalSettings set(@NotNull final SettingKey<T> key, @Nullable final T value, final boolean autoAdjust) {
         checkLockedForModifications();
         validateKeyValue(key, value);
         settingsMap.put(key, value);
 
-        if (autoAdjust) {
-            SettingsSupport.getAutoAdjustable(key)
-                    .ifPresent(k -> k.autoAdjust(this, new NumberCaster<>().cast(value)));
+        if (autoAdjust && value != null && key instanceof AutoAdjustable) {
+            final Optional<SettingKey<T>> adjustable = SettingsSupport.getAutoAdjustable(key);
+            adjustable.ifPresent(settingKey -> ((AutoAdjustable) settingKey)
+                    .autoAdjust(this, new NumberCaster<>().cast(value)));
         }
-
         return this;
     }
 

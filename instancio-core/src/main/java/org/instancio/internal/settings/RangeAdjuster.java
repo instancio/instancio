@@ -43,7 +43,7 @@ public interface RangeAdjuster {
      * @param otherValue based on which to update given setting key
      * @param <T>        numeric type
      */
-    <T extends Number & Comparable<T>> void adjustRange(Settings settings, SettingKey key, T otherValue);
+    <T extends Number & Comparable<T>> void adjustRange(Settings settings, SettingKey<T> key, T otherValue);
 
     /**
      * Adjusts the lower bound of a range given a new upper bound.
@@ -57,10 +57,10 @@ public interface RangeAdjuster {
 
         @Override
         public <T extends Number & Comparable<T>> void adjustRange(
-                final Settings settings, final SettingKey minSetting, final T newMax) {
+                final Settings settings, final SettingKey<T> minSetting, final T newMax) {
 
             final T curMin = settings.get(minSetting);
-            final Number newMin = NumberUtils.calculateNewMin(curMin, newMax, percentage);
+            final T newMin = NumberUtils.calculateNewMin(curMin, newMax, percentage);
             ((InternalSettings) settings).set(minSetting, newMin, false);
         }
     }
@@ -77,10 +77,10 @@ public interface RangeAdjuster {
 
         @Override
         public <T extends Number & Comparable<T>> void adjustRange(
-                final Settings settings, final SettingKey maxSetting, final T newMin) {
+                final Settings settings, final SettingKey<T> maxSetting, final T newMin) {
 
             final T curMax = settings.get(maxSetting);
-            final Number newMax = NumberUtils.calculateNewMax(curMax, newMin, percentage);
+            final T newMax = NumberUtils.calculateNewMax(curMax, newMin, percentage);
             ((InternalSettings) settings).set(maxSetting, newMax, false);
         }
     }

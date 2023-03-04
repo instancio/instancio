@@ -15,8 +15,6 @@
  */
 package org.instancio.settings;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A setting key represents a configuration item and has the following properties:
  *
@@ -25,11 +23,12 @@ import org.jetbrains.annotations.NotNull;
  *   <li>{@link #defaultValue()} - that will be used if there is no configuration file present</li>
  * </ul>
  *
+ * @param <T> type of the value
  * @see Keys
  * @see Settings
  * @since 1.0.1
  */
-public interface SettingKey extends Comparable<SettingKey> {
+public interface SettingKey<T> {
 
     /**
      * A property key that can be used to configure this setting in a properties file.
@@ -45,16 +44,15 @@ public interface SettingKey extends Comparable<SettingKey> {
      * @return value class
      * @since 1.0.1
      */
-    <T> Class<T> type();
+    Class<T> type();
 
     /**
      * Default value for this key.
      *
-     * @param <T> type of the value
      * @return default value
      * @since 1.0.1
      */
-    <T> T defaultValue();
+    T defaultValue();
 
     /**
      * Indicates whether the value for this key can be set to {@code null}.
@@ -64,14 +62,4 @@ public interface SettingKey extends Comparable<SettingKey> {
      */
     boolean allowsNullValue();
 
-    /**
-     * Auto-adjusts the {@link Settings} value for this key based on the value of another setting key.
-     *
-     * @param settings   to adjust
-     * @param otherValue value of the other setting to base the adjustment off
-     * @since 1.2.0
-     */
-    default <T extends Number & Comparable<T>> void autoAdjust(@NotNull Settings settings, @NotNull T otherValue) {
-        // no-op by default
-    }
 }

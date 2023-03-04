@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.Mode;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
@@ -37,14 +38,14 @@ class ApiValidatorTest {
 
         @Test
         void nullAllowedForNullableValue() {
-            final SettingKey key = Keys.SEED;
+            final SettingKey<Long> key = Keys.SEED;
             assertThat(key.allowsNullValue()).isTrue();
             ApiValidator.validateKeyValue(key, null); // no error
         }
 
         @Test
         void nullNotAllowedForNonNullableValue() {
-            final SettingKey key = Keys.MODE;
+            final SettingKey<Mode> key = Keys.MODE;
             assertThat(key.allowsNullValue()).isFalse();
             assertThatThrownBy(() -> ApiValidator.validateKeyValue(key, null))
                     .isExactlyInstanceOf(InstancioApiException.class)
