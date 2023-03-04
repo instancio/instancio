@@ -59,6 +59,7 @@ extra:
   AfterGenerate:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/AfterGenerate.html" target="_blank">AfterGenerate</a>'
   Instancio:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Instancio.html" target="_blank">Instancio</a>'
   InstancioApi:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html" target="_blank">InstancioApi</a>'
+  InstancioServiceProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/InstancioServiceProvider.html" target="_blank">InstancioServiceProvider</a>'
   Generator:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/Generator.html" target="_blank">Generator</a>'
   GeneratorContext:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/GeneratorContext.html" target="_blank">GeneratorContext</a>'
   GeneratorProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/GeneratorProvider.html" target="_blank">GeneratorProvider</a>'

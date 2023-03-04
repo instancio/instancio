@@ -1831,6 +1831,180 @@ This is done in the following order:
 
 In the absence of any other configuration, Instancio uses defaults as returned by `Settings.defaults()`. If `instancio.properties` is found at the root of the classpath, it will override the defaults. Finally, settings can also be overridden at runtime using `@WithSettings` annotation or {{withSettings}} method. The latter takes precedence over everything else.
 
+# Instancio Service Provider Interface
+
+The {{InstancioServiceProvider}} interface allows customising how objects are created and populated.
+It defines the following methods, which return `null` by default and can be overridden as needed:
+
+- `GeneratorProvider getGeneratorProvider()`
+- `TypeResolver getTypeResolver()`
+- `TypeInstantiator getTypeInstantiator()`
+
+An implementation of `InstancioServiceProvider` can be registered by creating
+a file named `org.instancio.spi.InstancioServiceProvider` under `/META-INF/services/`.
+The file should contain the fully-qualified name of the implementation class, for example:
+
+``` title="/META-INF/services/org.instancio.spi.InstancioServiceProvider"
+org.example.InstancioServiceProviderImpl
+```
+
+## `GeneratorProvider`
+
+This interface allows mapping a `Node` to a `GeneratorSpec`:
+
+```java
+interface GeneratorProvider {
+    GeneratorSpec<?> getGenerator(Node node, Generators gen);
+}
+```
+
+The `Generators` parameter provides access to built-in generators.
+This is the same class that is provided to the `generate()` method.
+
+The `Node` object represents a class and/or field in the node hierarchy,
+for example:
+
+- `Person.dateOfBirth` node will have the target class `LocalDate` and the `java.lang.reflect.Field` `dateOfBirth`
+- the collection element node of `List<Phone>` will have the target class `Phone` and a `null` field
+
+### Use Case
+
+The main use case for implementing the `GeneratorProvider` is to have generators resolved automatically.
+For example, the following implementation generates maximum string length based on the `length` attribute
+of the JPA `@Column` annotation:
+
+```java linenums="1" hl_lines="12 15"
+import javax.persistence.Column;
+
+public class GeneratorProviderImpl implements GeneratorProvider {
+    @Override
+    public GeneratorSpec<?> getGenerator(final Node node, final Generators gen) {
+        Field field = node.getField();
+        Class<?> targetClass = node.getTargetClass();
+
+        if (targetClass == String.class && field != null) {
+            Column column = field.getDeclaredAnnotation(Column.class);
+            if (column != null) {
+                return gen.string().maxLength(column.length());
+            }
+        }
+        return null;
+    }
+}
+```
+!!! attention ""
+    <lnum>12</lnum> Set maximum string length based on the `length` attribute.<br/>
+    <lnum>15</lnum> Returning `null` means a value will be generated using built-in generators.<br/>
+
+Assuming the following entity:
+
+```java linenums="1"
+class Phone {
+    @Column(length = 3)
+    String countryCode;
+
+    @Column(length = 15)
+    String number;
+}
+```
+
+Calling `Instancio.create()` should produce string lengths that conform to the schema:
+
+```java linenums="1"
+Phone phone = Instancio.create(Phone.class);
+assertThat(phone.getCountryCode()).hasSizeLessThanOrEqualTo(3);
+assertThat(phone.getNumber()).hasSizeLessThanOrEqualTo(15);
+```
+
+Using the API methods `set()`, `supply()`, or `generate()`
+it is still possible to override values using the API if needed:
+
+```java linenums="1"
+Phone phone = Instancio.of(Phone.class)
+    .generate(field(Phone::getNumber), gen -> gen.string().length(20))
+    .create();
+```
+
+## `TypeResolver`
+
+This interface allows mapping a type to a subtype:
+
+```java
+interface TypeResolver {
+    Class<?> getSubtype(Class<?> type);
+}
+```
+
+The subtype mapping uses the same mechanism as the `subtype()` API method.
+
+### Use Case
+
+The primary use case for implementing the `TypeResolver` is to resolve subtypes automatically.
+By default, Instancio does not resolve the implementation class if given an abstract type.
+Instead, the implementation class must be specified manually.
+This can be done either via the `subtype()` method:
+
+```java linenums="1"
+Animal animal = Instancio.of(Animal.class)
+    .subtype(all(Animal.class), Cat.class)
+    .create();
+```
+
+or via `Settings`:
+
+```java linenums="1"
+Settings settings = Settings.create()
+    .mapType(Animal.class, Cat.class);
+
+Animal animal = Instancio.of(Animal.class)
+    .withSettings(settings)
+    .create();
+```
+
+Using `TypeResolver`, the subtype can be resolved automatically:
+
+```java linenums="1"
+public class TypeResolverImpl implements TypeResolver {
+    @Override
+    public Class<?> getSubtype(final Class<?> type) {
+        if (type == Animal.class) {
+            return Cat.class;
+        }
+        return null;
+    }
+}
+```
+
+Then calling `Instancio.create()` should use the specified subtype:
+
+```java linenums="1"
+Animal animal = Instancio.create(Animal.class);
+assertThat(animal).isExactlyInstanceOf(Cat.class);
+```
+
+Using `TypeResolver` it is also possible to resolve implementation classes
+via classpath scanning, for example, using third-party libraries.
+
+
+## `TypeInstantiator`
+
+This interface is for providing custom instantiation logic for classes that
+Instancio is unable to instantiate out-of-the-box:
+
+```java
+interface TypeInstantiator {
+    Object instantiate(Class<?> type);
+}
+```
+
+By default, Instancio attempts to instantiate a class using the default constructor.
+If the default constructor is unavailable or fails (for example, the constructor throws an exception),
+Instancio will attempt to use a constructor with the least number of parameters and pass in default values.
+If the last option also fails, then it resorts to JDK-specific approaches, such as using `sun.misc.Unsafe`.
+There may be situations where all the listed options fail, which would result in `null` values
+being generated. Using `TypeInstantiator` allows plugging in custom instantiation logic.
+
+
 # JUnit Jupiter Integration
 
 Instancio supports JUnit 5 via the {{InstancioExtension}} and can be used in combination with extensions from other testing frameworks.
