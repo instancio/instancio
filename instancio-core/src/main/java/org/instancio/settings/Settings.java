@@ -110,7 +110,7 @@ public interface Settings {
      * @param <T> setting value type
      * @return value for given key, or {@code null} if none.
      */
-    <T> T get(@NotNull SettingKey key);
+    <T> T get(@NotNull SettingKey<T> key);
 
     /**
      * Set the setting with the given key to the specified value.
@@ -124,7 +124,7 @@ public interface Settings {
      * @param value to set
      * @return this instance of settings
      */
-    Settings set(@NotNull SettingKey key, @Nullable Object value);
+    <T> Settings set(@NotNull SettingKey<T> key, @Nullable T value);
 
     /**
      * Maps the supertype {@code from} supertype to 'to' subtype.

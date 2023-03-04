@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public final class InternalKey implements SettingKey {
+public final class InternalKey<T> implements SettingKey<T>, AutoAdjustable, Comparable<SettingKey<T>> {
 
     private final String propertyKey;
     private final Class<?> type;
@@ -50,13 +50,13 @@ public final class InternalKey implements SettingKey {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Class<T> type() {
+    public Class<T> type() {
         return (Class<T>) type;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T defaultValue() {
+    public T defaultValue() {
         return (T) defaultValue;
     }
 
@@ -66,12 +66,14 @@ public final class InternalKey implements SettingKey {
     }
 
     @Override
-    public <T extends Number & Comparable<T>> void autoAdjust(
+    @SuppressWarnings("unchecked")
+    public <N extends Number & Comparable<N>> void autoAdjust(
             @NotNull final Settings settings,
-            @NotNull final T otherValue) {
+            @NotNull final N otherValue) {
 
         if (rangeAdjuster != null) {
-            rangeAdjuster.adjustRange(settings, this, otherValue);
+            final SettingKey<N> key = (SettingKey<N>) this;
+            rangeAdjuster.adjustRange(settings, key, otherValue);
         }
     }
 
@@ -79,7 +81,7 @@ public final class InternalKey implements SettingKey {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof InternalKey)) return false;
-        final InternalKey key = (InternalKey) o;
+        final InternalKey<?> key = (InternalKey<?>) o;
         return Objects.equals(propertyKey, key.propertyKey);
     }
 
@@ -89,7 +91,7 @@ public final class InternalKey implements SettingKey {
     }
 
     @Override
-    public int compareTo(final SettingKey o) {
+    public int compareTo(final SettingKey<T> o) {
         return propertyKey.compareTo(o.propertyKey());
     }
 

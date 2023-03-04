@@ -29,14 +29,15 @@ final class SettingsSupport {
 
     private static final Map<Class<?>, Function<String, Object>> VALUE_OF_FUNCTIONS = createValueOfFunctionsMap();
 
-    private static final Map<SettingKey, SettingKey> AUTO_ADJUSTABLE_MAP = getAutoAdjustableKeys();
+    private static final Map<SettingKey<?>, SettingKey<?>> AUTO_ADJUSTABLE_MAP = getAutoAdjustableKeys();
 
     static Function<String, Object> getFunction(final Class<?> type) {
         return VALUE_OF_FUNCTIONS.get(type);
     }
 
-    static Optional<SettingKey> getAutoAdjustable(final SettingKey key) {
-        return Optional.ofNullable(AUTO_ADJUSTABLE_MAP.get(key));
+    @SuppressWarnings("unchecked")
+    static <T> Optional<SettingKey<T>> getAutoAdjustable(final SettingKey<T> key) {
+        return Optional.ofNullable((SettingKey<T>) AUTO_ADJUSTABLE_MAP.get(key));
     }
 
     private static Map<Class<?>, Function<String, Object>> createValueOfFunctionsMap() {
@@ -52,8 +53,8 @@ final class SettingsSupport {
         return Collections.unmodifiableMap(fnMap);
     }
 
-    private static Map<SettingKey, SettingKey> getAutoAdjustableKeys() {
-        final Map<SettingKey, SettingKey> map = new HashMap<>();
+    private static Map<SettingKey<?>, SettingKey<?>> getAutoAdjustableKeys() {
+        final Map<SettingKey<?>, SettingKey<?>> map = new HashMap<>();
         map.put(Keys.ARRAY_MAX_LENGTH, Keys.ARRAY_MIN_LENGTH);
         map.put(Keys.ARRAY_MIN_LENGTH, Keys.ARRAY_MAX_LENGTH);
         map.put(Keys.BYTE_MAX, Keys.BYTE_MIN);

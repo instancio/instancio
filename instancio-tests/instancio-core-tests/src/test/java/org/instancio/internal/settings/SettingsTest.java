@@ -48,7 +48,7 @@ class SettingsTest {
 
     @Test
     void defaults() {
-        for (SettingKey settingKey : Keys.all()) {
+        for (SettingKey<?> settingKey : Keys.all()) {
             final Object actual = DEFAULTS.get(settingKey);
             final Object expected = settingKey.defaultValue();
             assertThat(actual).isEqualTo(expected);
@@ -65,8 +65,8 @@ class SettingsTest {
 
         final Settings settings = Settings.from(map);
 
-        assertThat((Float) settings.get(Keys.FLOAT_MAX)).isEqualTo(9f);
-        assertThat((Boolean) settings.get(Keys.LONG_NULLABLE)).isTrue();
+        assertThat(settings.get(Keys.FLOAT_MAX)).isEqualTo(9f);
+        assertThat(settings.get(Keys.LONG_NULLABLE)).isTrue();
         assertThat(settings.getSubtypeMap())
                 .containsEntry(List.class, ArrayList.class)
                 .containsEntry(Set.class, HashSet.class);
@@ -87,9 +87,9 @@ class SettingsTest {
 
         final Settings merged = original.merge(overrides);
 
-        assertThat((Byte) merged.get(Keys.BYTE_MIN)).isEqualTo((byte) 99);
-        assertThat((Boolean) merged.get(Keys.ARRAY_NULLABLE)).isTrue();
-        assertThat((Long) merged.get(Keys.LONG_MAX))
+        assertThat(merged.get(Keys.BYTE_MIN)).isEqualTo((byte) 99);
+        assertThat(merged.get(Keys.ARRAY_NULLABLE)).isTrue();
+        assertThat(merged.get(Keys.LONG_MAX))
                 .as("Properties that were not overridden should retain their value")
                 .isEqualTo(originalLongMax);
 
@@ -98,17 +98,17 @@ class SettingsTest {
 
     @Test
     void getReturnsNullIfKeyHasNoValue() {
-        assertThat((Byte) Settings.create().get(Keys.BYTE_MIN)).isNull();
+        assertThat(Settings.create().get(Keys.BYTE_MIN)).isNull();
     }
 
     @Test
     void strictModeIsEnabledByDefault() {
-        assertThat((Mode) DEFAULTS.get(Keys.MODE)).isEqualTo(Mode.STRICT);
+        assertThat(DEFAULTS.get(Keys.MODE)).isEqualTo(Mode.STRICT);
     }
 
     @Test
-    void name() {
-        assertThat((AfterGenerate) DEFAULTS.get(Keys.AFTER_GENERATE_HINT))
+    void afterGenerateHintDefault() {
+        assertThat(DEFAULTS.get(Keys.AFTER_GENERATE_HINT))
                 .isEqualTo(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
     }
 
@@ -123,16 +123,7 @@ class SettingsTest {
     @Test
     void getSetEnum() {
         final Settings settings = Settings.create().set(Keys.MODE, Mode.LENIENT);
-        assertThat((Mode) settings.get(Keys.MODE)).isEqualTo(Mode.LENIENT);
-    }
-
-    @Test
-    void setThrowsErrorIfGivenInvalidType() {
-        final Settings settings = Settings.create();
-        assertThatThrownBy(() -> settings.set(Keys.LONG_MAX, AUTO_ADJUST_DISABLED))
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage("The value 'false' is of unexpected type (Boolean) for key '%s' (expected: Long)",
-                        Keys.LONG_MAX.propertyKey());
+        assertThat(settings.get(Keys.MODE)).isEqualTo(Mode.LENIENT);
     }
 
     @Test
@@ -221,11 +212,11 @@ class SettingsTest {
                     .set(Keys.FLOAT_MIN, 3f)
                     .set(Keys.FLOAT_MAX, 3f);
 
-            assertThat((int) settings.get(Keys.COLLECTION_MIN_SIZE))
+            assertThat(settings.get(Keys.COLLECTION_MIN_SIZE))
                     .isEqualTo(settings.get(Keys.COLLECTION_MIN_SIZE))
                     .isEqualTo(2);
 
-            assertThat((float) settings.get(Keys.FLOAT_MIN))
+            assertThat(settings.get(Keys.FLOAT_MIN))
                     .isEqualTo(settings.get(Keys.FLOAT_MAX))
                     .isEqualTo(3f);
         }
@@ -242,8 +233,8 @@ class SettingsTest {
                     .merge(settings1)
                     .merge(settings2);
 
-            assertThat((Long) result.get(Keys.LONG_MIN)).isEqualTo(6);
-            assertThat((Long) result.get(Keys.LONG_MAX)).isEqualTo(11);
+            assertThat(result.get(Keys.LONG_MIN)).isEqualTo(6);
+            assertThat(result.get(Keys.LONG_MAX)).isEqualTo(11);
         }
 
         @Test

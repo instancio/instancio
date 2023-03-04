@@ -103,7 +103,7 @@ public final class ApiValidator {
                 "Invalid subtype mapping from '%s' to '%s'", to.getTypeName(), from.getTypeName()));
     }
 
-    public static void validateKeyValue(@Nullable final SettingKey key, @Nullable final Object value) {
+    public static void validateKeyValue(@Nullable final SettingKey<?> key, @Nullable final Object value) {
         isTrue(key != null, "Setting key must not be null");
         if (!key.allowsNullValue()) {
             isTrue(value != null, "Setting value for key '%s' must not be null", key);
