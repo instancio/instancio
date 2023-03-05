@@ -42,17 +42,19 @@
                             org.instancio.support
                         </Export-Package>
                         <Import-Package>
-                            jakarta.validation.constraints;version="[3.0,4)";resolution:=optional,
+                            jakarta.validation.constraints;version=!;resolution:=optional,
+                            javax.validation.constraints;version=!;resolution:=optional,
                             javax.xml.datatype;resolution:=optional,
-                            org.hibernate.validator.constraints.time;version="[8.0,9)";resolution:=optional,
-                            org.hibernate.validator.constraints;version="[8.0,9)";resolution:=optional,
+                            org.hibernate.validator.constraints.time;version=!;resolution:=optional,
+                            org.hibernate.validator.constraints;version=!;resolution:=optional,
                             org.instancio.documentation,
                             org.instancio.exception,
                             org.instancio.generator.specs,
                             org.instancio.spi,
                             org.slf4j.helpers;version=!,
                             org.slf4j;version=!,
-                            sun.misc;resolution:=optional
+                            sun.misc;resolution:=optional,
+                            sun.reflect;resolution:=optional
                         </Import-Package>
                     </instructions>
                 </configuration>

@@ -45,10 +45,10 @@ class ManifestFileTest {
     // (unless it's the last entry, then no comma is added)
 
     private static final String[] INSTANCIO_CORE_EXPECTED_IMPORTS = {
-            "jakarta.validation.constraints;version=\"[3.0,4)\";resolution:=optional",
+            "jakarta.validation.constraints;resolution:=optional",
             "javax.xml.datatype;resolution:=optional",
-            "org.hibernate.validator.constraints.time;version=\"[8.0,9)\";resolution:=optional",
-            "org.hibernate.validator.constraints;version=\"[8.0,9)\";resolution:=optional",
+            "org.hibernate.validator.constraints.time;resolution:=optional",
+            "org.hibernate.validator.constraints;resolution:=optional",
             "org.instancio.documentation",
             "org.instancio.exception",
             "org.instancio.generator.specs",
@@ -59,10 +59,10 @@ class ManifestFileTest {
     };
 
     private static final String[] INSTANCIO_JUNIT_EXPECTED_IMPORTS = {
-            "org.instancio.exception;version=\"[2.10,3)\"",
-            "org.instancio.settings;version=\"[2.10,3)\"",
-            "org.instancio.support;version=\"[2.10,3)\"",
-            "org.instancio;version=\"[2.10,3)\"",
+            "org.instancio.exception,",
+            "org.instancio.settings,",
+            "org.instancio.support,",
+            "org.instancio,",
             "org.junit.jupiter.api.extension,",
             "org.junit.jupiter.params.provider;resolution:=optional",
             "org.junit.jupiter.params.support;resolution:=optional",
