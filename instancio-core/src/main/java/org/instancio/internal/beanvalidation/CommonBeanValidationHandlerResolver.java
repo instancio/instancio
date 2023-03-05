@@ -107,8 +107,7 @@ class CommonBeanValidationHandlerResolver implements AnnotationHandlerResolver {
                 numSpec.max(converter.apply(max));
                 BeanValidationUtils.setNonNullablePrimitive(spec, field);
 
-                // NOTE: currently fractions only supported for BigDecimal, and partially at that.
-                // See: https://github.com/instancio/instancio/issues/375
+                // Currently fractions are supported for BigDecimal, but not float/double
                 if (spec instanceof BigDecimalGeneratorSpec) {
                     ((BigDecimalGeneratorSpec) spec).scale(fraction);
                 }

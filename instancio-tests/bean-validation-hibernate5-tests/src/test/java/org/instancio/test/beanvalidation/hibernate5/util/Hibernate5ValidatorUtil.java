@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.util;
+package org.instancio.test.beanvalidation.hibernate5.util;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
-
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public final class HibernateValidatorUtil {
+public final class Hibernate5ValidatorUtil {
 
     public static void assertValid(final Object obj) {
         try (final ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
@@ -36,7 +35,7 @@ public final class HibernateValidatorUtil {
         }
     }
 
-    private HibernateValidatorUtil() {
+    private Hibernate5ValidatorUtil() {
         // non-instantiable
     }
 }

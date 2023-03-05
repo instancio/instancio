@@ -24,12 +24,17 @@ import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClass
 
 /**
  * Contain {@link FieldAnnotationHandler}s for non-primary annotations from
-{@code jakarta.validation.constraints} package.
+ * {@code jakarta.validation.constraints} package.
  *
  * <p>To get additional info about primary/non-primary annotations,
  * please read javadoc for {@link BeanValidationProcessor} class.
  */
 final class JakartaBeanValidationHandlerResolver extends CommonBeanValidationHandlerResolver {
+
+    /*
+     * Note: this class should not import `jakarta.validation.constraints.*`
+     * to avoid class-not-found error if a constraint is not available on the classpath
+     */
 
     static JakartaBeanValidationHandlerResolver getInstance() {
         return Holder.INSTANCE;
