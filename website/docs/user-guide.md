@@ -1561,16 +1561,28 @@ or globally, using `instancio.properties`:
 bean.validation.enabled=true
 ```
 
-In addition, `jakarta.validation-api` must be present on the classpath for the feature to be activated.
+In addition, `jakarta.validation-api` or `validation-api` must be present on the classpath for the feature to be activated.
 Instancio does not provide the dependency transitively:
 
 ```xml
 <dependency>
     <groupId>jakarta.validation</groupId>
     <artifactId>jakarta.validation-api</artifactId>
-    <version>3.0.2</version>
+    <version>${jakarta-validation-api-version}</version>
 </dependency>
 ```
+
+or
+
+```xml
+<dependency>
+    <groupId>javax.validation</groupId>
+    <artifactId>validation-api</artifactId>
+    <version>${javax-validation-api-version}</version>
+</dependency>
+```
+
+i.e. Instancio supports the constraint annotations from `jakarta.validation.constraints` and `javax.validation.constraints` packages.
 
 Optionally, Hibernate validator must be present on the classpath in order to use
 Hibernate-specific annotations:
@@ -1579,7 +1591,7 @@ Hibernate-specific annotations:
 <dependency>
     <groupId>org.hibernate.validator</groupId>
     <artifactId>hibernate-validator</artifactId>
-    <version>8.0.0.Final</version>
+    <version>${hibernate-validator-version}</version>
 </dependency>
 ```
 
@@ -1588,7 +1600,7 @@ Hibernate-specific annotations:
 The list of supported annotations is provided below.
 Anything not listed is unsupported, including `*.List` annotations.
 
-### Jakarta
+### Jakarta or Javax
 
 - `@DecimalMax`
 - `@DecimalMin`
