@@ -75,4 +75,9 @@
         <property name="message" value="Don't use Javadoc @author tags"/>
         <property name="fileExtensions" value="java,groovy,kt"/>
     </module>
+    <module name="Header">
+        <property name="id" value="ApacheLicenceJavaHeader"/>
+        <property name="headerFile" value="build-tools/src/main/resources/LicenseHeader/apache-licence-java-header.txt"/>
+        <property name="fileExtensions" value="java"/>
+    </module>
 </module>
