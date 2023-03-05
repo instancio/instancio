@@ -52,7 +52,7 @@ public final class BeanValidationUtils {
         if (max == 0) {
             minSize = 0;
             maxSize = 0;
-        } else if (min == 0) {
+        } else if (min <= 1) {
             minSize = 1; // by default, don't generate empty values!
             maxSize = Math.min(max, maxLimit);
         } else if (isMoreThanDouble(min, max)) {

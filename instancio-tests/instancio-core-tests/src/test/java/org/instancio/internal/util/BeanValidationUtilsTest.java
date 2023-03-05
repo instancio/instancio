@@ -16,6 +16,8 @@
 package org.instancio.internal.util;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Gen.ints;
@@ -48,10 +50,12 @@ class BeanValidationUtilsTest {
     @Test
     void minIsLessThanHalfOfMax() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final int min = ints().range(1, 100).get();
-            final int max = min + min + ints().range(1, 5).get();
-            // irrelevant for this test
-            final int maxLimit = ints().range(Integer.MIN_VALUE, Integer.MAX_VALUE).get();
+            final int min = ints().range(2, 100).get();
+            final int max = min + min + ints().range(2, 5).get();
+
+            // maxLimit argument is irrelevant for this test
+            // (it is calculated internally)
+            final int maxLimit = -1;
 
             final int expectedMax = (min * (100 + Constants.RANGE_ADJUSTMENT_PERCENTAGE)) / 100;
 
@@ -73,6 +77,23 @@ class BeanValidationUtilsTest {
             final IntRange result = BeanValidationUtils.calculateRange(min, max, maxLimit);
             assertThat(result.min()).isEqualTo(min);
             assertThat(result.max()).isEqualTo(max);
+        }
+    }
+
+    @ValueSource(ints = {0, 1})
+    @ParameterizedTest
+    void minSizeIsOne(final int min) {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final int max = ints().range(2, 100).get();
+            final int maxLimit = ints().range(2, 100).get();
+
+            final int expectedMin = 1;
+            final int expectedMax = Math.min(max, maxLimit);
+
+            final IntRange result = BeanValidationUtils.calculateRange(min, max, maxLimit);
+
+            assertThat(result.min()).isEqualTo(expectedMin);
+            assertThat(result.max()).isEqualTo(expectedMax);
         }
     }
 }
