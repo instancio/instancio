@@ -30,10 +30,10 @@
                     <instructions>
                         <Export-Package>org.instancio.junit</Export-Package>
                         <Import-Package>
-                            org.instancio.exception;version="[2.10,3)",
-                            org.instancio.settings;version="[2.10,3)",
-                            org.instancio.support;version="[2.10,3)",
-                            org.instancio;version="[2.10,3)",
+                            org.instancio.exception;version=!,
+                            org.instancio.settings;version=!,
+                            org.instancio.support;version=!,
+                            org.instancio;version=!,
                             org.junit.jupiter.api.extension;version=!,
                             org.junit.jupiter.params.provider;version=!;resolution:=optional,
                             org.junit.jupiter.params.support;version=!;resolution:=optional,
