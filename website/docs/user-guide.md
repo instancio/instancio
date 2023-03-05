@@ -1052,30 +1052,89 @@ Person person = Instancio.of(Person.class)
 
 ## Subtype Mapping
 
-Subtype mapping allows mapping a particular type to its subtype.
-This can be useful for specifying a specific implementation for an abstract type.
-The mapping can be specified using the `subtype` method:
+Subtype mapping allows mapping a type to its subtype.
 
+By default, Instancio does not attempt to resolve the implementation class if given an abstract type.
+Instead, the implementation class must be specified via the API, or a `null` value will be generated.
 
-``` java linenums="1"
+In addition, subtype mapping can also be useful for verifying the behaviour
+of a class using different implementations.
+
+The mapping can be specified using the `subtype()` method:
+
+``` java
 subtype(TargetSelector selector, Class<?> subtype)
 ```
 
-All the types represented by the selectors must be supertypes of the given `subtype` parameter.
+or the `mapType()` method declared by the {{Settings}} class:
 
-``` java linenums="1" title="Example: subtype mapping" hl_lines="2 3 4"
-Person person = Instancio.of(Person.class)
-    .subtype(all(Pet.class), Cat.class)
-    .subtype(all(all(Collection.class), all(Set.class)), TreeSet.class)
-    .subtype(field("address"), AddressImpl.class)
-    .create();
+``` java
+mapType(Class<?> type, Class<?> subtype)
 ```
 
+Functionally, the two methods are equivalent. However, one may be preferable over another
+depending on the use case.
+
+The `subtype()` method
+
+- has higher precedence than the one offered by `Settings`
+- provides more flexibility as it can be applied to any selector target, such as fields
+
+The `Settings.mapType()` method, on the other hand
+
+- can only be mapped based on class
+- is reusable since an instance of `Settings` can be shared across multiple test methods
+- allows subtypes to be specified via `instancio.properties` and applied automatically
+
+The following is an example of using the `subtype()` method:
+
+``` java linenums="1" hl_lines="2 4"
+Person person = Instancio.of(Person.class)
+    .subtype(all(all(Collection.class), all(Set.class)), TreeSet.class)
+    .subtype(field(Person::getPet), Cat.class)
+    .subtype(all(Address.class), AddressImpl.class)
+    .create();
+```
 !!! attention ""
-    <lnum>2</lnum> If `Pet` is an abstract type, then without the mapping all `Pet` instances will be `null`
-     since Instancio would not be able to resolve the implementation class.<br/>
-    <lnum>3</lnum> Multiple types can be mapped as long as the subtype is valid for all of them.<br/>
-    <lnum>4</lnum> Assuming `Person` has an `Address` field, where `Address` is the superclass of `AddressImpl`.
+    <lnum>2</lnum> Group selector can be used as long as the subtype is valid for all group members.<br/>
+    <lnum>4</lnum> Assuming `Address` is the superclass of `AddressImpl`.
+
+The same can be specified using `Settings`:
+
+``` java linenums="1" hl_lines="2"
+Settings settings = Settings.create()
+    .mapType(Pet.class, Cat.class)
+    .mapType(Collection.class, TreeSet.class)
+    .mapType(Set.class, TreeSet.class)
+    .mapType(Address.class, AddressImpl.class);
+
+Person person = Instancio.of(Person.class)
+    .withSettings(settings)
+    .create();
+```
+!!! attention ""
+    <lnum>2</lnum> Note that this is not exactly equivalent to `subtype(field(Person::getPet), Cat.class)`,
+    since the field selector is a more specific target.
+
+Finally, when specifying the mapping via `instancio.properties`:
+
+``` properties linenums="1"
+subtype.java.util.Collection=java.util.TreeSet
+subtype.java.util.Set=java.util.TreeSet
+subtype.com.example.Pet=com.example.Cat
+subtype.com.example.Address=com.example.AddressImpl
+```
+
+subtypes are resolved automatically:
+
+``` java linenums="1"
+Person person = Instancio.create(Person.class);
+
+assertThat(person.getPet()).isExactlyInstanceOf(Cat.class)
+```
+
+In addition to specifying subtypes using the API or properties file, subtypes can be resolved
+automatically by implementing the [`InstancioServiceProvider`](#instancio-service-provider-interface) interface.
 
 ## Using Models
 
@@ -1211,25 +1270,7 @@ In summary, a generator can instantiate an object and instruct the engine
 what should be done with the object after `generate()` method returns using
 the `AfterGenerate` hint.
 
-
-### Registering generators using `GeneratorProvider` SPI
-
-Instancio offers {{GeneratorProvider}} service provider interface for registering custom generators
-(or overriding built-in generators) using the `ServiceLoader` mechanism.
-The provider interface is defined as:
-
-```java linenums="1"
-interface GeneratorProvider {
-    Map<Class<?>, Generator<?>> getGenerators();
-}
-```
-
-The service provider can be registered by creating a file named `org.instancio.spi.GeneratorProvider`
-under `/META-INF/services/`, and containing the fully-qualified name of the provider implementation:
-
-``` title="/META-INF/services/org.instancio.spi.GeneratorProvider"
-org.example.CustomGeneratorProvider
-```
+!!! info "Custom generators can also be specified using the [Instancio Service Provider Interface](#instancio-service-provider-interface)"
 
 ### Modifying `overwrite.existing.values` setting
 
