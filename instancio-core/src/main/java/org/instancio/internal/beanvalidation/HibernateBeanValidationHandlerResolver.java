@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
+
 final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerResolver {
 
     private final Map<Class<?>, FieldAnnotationHandler> handlerMap;
@@ -56,11 +58,11 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
 
     private static Map<Class<?>, FieldAnnotationHandler> initHandlers() {
         final Map<Class<?>, FieldAnnotationHandler> map = new HashMap<>();
-        map.put(DurationMin.class, new DurationMinHandler());
-        map.put(DurationMax.class, new DurationMaxHandler());
-        map.put(Length.class, new LengthHandler());
-        map.put(Range.class, new RangeHandler());
-        map.put(UniqueElements.class, new UniqueElementsHandler());
+        runIgnoringTheNoClassDefFoundError(() -> map.put(DurationMin.class, new DurationMinHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(DurationMax.class, new DurationMaxHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Length.class, new LengthHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Range.class, new RangeHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(UniqueElements.class, new UniqueElementsHandler()));
         return Collections.unmodifiableMap(map);
     }
 

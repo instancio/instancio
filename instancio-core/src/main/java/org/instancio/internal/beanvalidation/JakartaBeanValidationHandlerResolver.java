@@ -61,6 +61,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
+
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 final class JakartaBeanValidationHandlerResolver implements AnnotationHandlerResolver {
 
@@ -76,23 +78,23 @@ final class JakartaBeanValidationHandlerResolver implements AnnotationHandlerRes
 
     private static Map<Class<?>, FieldAnnotationHandler> initHandlers() {
         final Map<Class<?>, FieldAnnotationHandler> map = new HashMap<>();
-        map.put(DecimalMax.class, new DecimalMaxHandler());
-        map.put(DecimalMin.class, new DecimalMinHandler());
-        map.put(Digits.class, new DigitsHandler());
-        map.put(Future.class, new FutureHandler());
-        map.put(FutureOrPresent.class, new FutureHandler());
-        map.put(Max.class, new MaxHandler());
-        map.put(Min.class, new MinHandler());
-        map.put(Negative.class, new NegativeHandler(new BigDecimal("-0.5")));
-        map.put(NotBlank.class, new NotEmptyHandler());
-        map.put(NotEmpty.class, new NotEmptyHandler());
-        map.put(NotNull.class, new NotNullHandler());
-        map.put(NegativeOrZero.class, new NegativeHandler(BigDecimal.ZERO));
-        map.put(Past.class, new PastHandler());
-        map.put(PastOrPresent.class, new PastHandler());
-        map.put(Positive.class, new PositiveHandler(new BigDecimal("0.5")));
-        map.put(PositiveOrZero.class, new PositiveHandler(BigDecimal.ZERO));
-        map.put(Size.class, new SizeHandler());
+        runIgnoringTheNoClassDefFoundError(() -> map.put(DecimalMax.class, new DecimalMaxHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(DecimalMin.class, new DecimalMinHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Digits.class, new DigitsHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Future.class, new FutureHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(FutureOrPresent.class, new FutureHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Max.class, new MaxHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Min.class, new MinHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Negative.class, new NegativeHandler(new BigDecimal("-0.5"))));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(NotBlank.class, new NotEmptyHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(NotEmpty.class, new NotEmptyHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(NotNull.class, new NotNullHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(NegativeOrZero.class, new NegativeHandler(BigDecimal.ZERO)));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Past.class, new PastHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(PastOrPresent.class, new PastHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Positive.class, new PositiveHandler(new BigDecimal("0.5"))));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(PositiveOrZero.class, new PositiveHandler(BigDecimal.ZERO)));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(Size.class, new SizeHandler()));
         return Collections.unmodifiableMap(map);
     }
 

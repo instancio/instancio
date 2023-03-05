@@ -21,28 +21,39 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
-import org.instancio.internal.util.Sonar;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 abstract class AbstractBeanValidationProvider implements BeanValidationProvider {
 
-    /**
-     * Returns a generator for the given primary annotation.
-     * Primary annotations are determined by the implementation of
-     * {@link BeanValidationProvider#isPrimary(Class)} method.
-     * If the above method returns {@code true} for any given annotation,
-     * then this method must be able to resolve the appropriate generator.
-     *
-     * @param annotation the annotation for which to resolve a generator
-     * @param context    the context that will be used to initialise the generator
-     * @return resolved generator
-     * @throws InstancioException if the generator could not be resolved
-     */
-    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    protected abstract Generator<?> resolveGenerator(Annotation annotation, GeneratorContext context);
+    private final Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> map;
+
+    protected AbstractBeanValidationProvider(
+            Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> map) {
+        this.map = Collections.unmodifiableMap(map);
+    }
+
+    @Override
+    public final boolean isPrimary(Class<? extends Annotation> annotationType) {
+        return this.map.containsKey(annotationType);
+    }
+
+
+    private Generator<?> resolveGenerator(Annotation annotation, GeneratorContext context) {
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        BiFunction<Annotation, GeneratorContext, Generator<?>> generatorBuilder = this.map.get(annotationType);
+        if (generatorBuilder != null) {
+            return generatorBuilder.apply(annotation, context);
+        } else {
+            // should not be reachable if caller checked for supported annotations
+            throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
+        }
+    }
 
 
     /**
