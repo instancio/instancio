@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,7 +53,7 @@ public class BeanValidationProcessor implements GeneratorSpecProcessor {
     private static final String JAKARTA_VALIDATOR_CLASS = "jakarta.validation.Validation";
     private static final String HIBERNATE_VALIDATOR_CLASS = "org.hibernate.validator.HibernateValidator";
 
-    private final BeanValidationProvider[] validationProviders;
+    private final List<BeanValidationProvider> validationProviders;
 
     public BeanValidationProcessor() {
         validationProviders = initValidationProviders();
@@ -86,7 +87,7 @@ public class BeanValidationProcessor implements GeneratorSpecProcessor {
         }
     }
 
-    private static BeanValidationProvider[] initValidationProviders() {
+    private static List<BeanValidationProvider> initValidationProviders() {
         List<BeanValidationProvider> providers = new ArrayList<>();
         if (ReflectionUtils.loadClass(HIBERNATE_VALIDATOR_CLASS) != null) {
             providers.add(new HibernateBeanValidationProcessor());
@@ -97,6 +98,6 @@ public class BeanValidationProcessor implements GeneratorSpecProcessor {
         if (ReflectionUtils.loadClass(JAVAX_VALIDATOR_CLASS) != null) {
             providers.add(new JavaxBeanValidationProcessor());
         }
-        return providers.toArray(new BeanValidationProvider[0]);
+        return Collections.unmodifiableList(providers);
     }
 }

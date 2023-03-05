@@ -15,11 +15,6 @@
  */
 package org.instancio.internal.beanvalidation;
 
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.hibernate.validator.constraints.time.DurationMax;
-import org.hibernate.validator.constraints.time.DurationMin;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.DurationGeneratorSpec;
@@ -46,6 +41,11 @@ import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClass
 
 final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerResolver {
 
+    /*
+     * Note: this class should not import `org.hibernate.validator.constraints.*`
+     * to avoid class-not-found error if a constraint is not available on the classpath
+     */
+
     private final Map<Class<?>, FieldAnnotationHandler> handlerMap;
 
     private HibernateBeanValidationHandlerResolver() {
@@ -58,11 +58,16 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
 
     private static Map<Class<?>, FieldAnnotationHandler> initHandlers() {
         final Map<Class<?>, FieldAnnotationHandler> map = new HashMap<>();
-        runIgnoringTheNoClassDefFoundError(() -> map.put(DurationMin.class, new DurationMinHandler()));
-        runIgnoringTheNoClassDefFoundError(() -> map.put(DurationMax.class, new DurationMaxHandler()));
-        runIgnoringTheNoClassDefFoundError(() -> map.put(Length.class, new LengthHandler()));
-        runIgnoringTheNoClassDefFoundError(() -> map.put(Range.class, new RangeHandler()));
-        runIgnoringTheNoClassDefFoundError(() -> map.put(UniqueElements.class, new UniqueElementsHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(
+                org.hibernate.validator.constraints.time.DurationMin.class, new DurationMinHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(
+                org.hibernate.validator.constraints.time.DurationMax.class, new DurationMaxHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(
+                org.hibernate.validator.constraints.Length.class, new LengthHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(
+                org.hibernate.validator.constraints.Range.class, new RangeHandler()));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(
+                org.hibernate.validator.constraints.UniqueElements.class, new UniqueElementsHandler()));
         return Collections.unmodifiableMap(map);
     }
 
@@ -79,7 +84,8 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
                             final Class<?> fieldType) {
 
             if (spec instanceof DurationGeneratorSpec) {
-                final DurationMin d = (DurationMin) annotation;
+                final org.hibernate.validator.constraints.time.DurationMin d =
+                        (org.hibernate.validator.constraints.time.DurationMin) annotation;
 
                 final Duration min = Duration
                         .ofDays(d.days())
@@ -103,7 +109,8 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
                             final Class<?> fieldType) {
 
             if (spec instanceof DurationGeneratorSpec) {
-                final DurationMax d = (DurationMax) annotation;
+                final org.hibernate.validator.constraints.time.DurationMax d =
+                        (org.hibernate.validator.constraints.time.DurationMax) annotation;
 
                 final Duration max = Duration
                         .ofDays(d.days())
@@ -127,7 +134,9 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
                             final Field field,
                             final Class<?> fieldType) {
 
-            final Length length = (Length) annotation;
+            final org.hibernate.validator.constraints.Length length =
+                    (org.hibernate.validator.constraints.Length) annotation;
+
             final IntRange range = BeanValidationUtils.calculateRange(
                     length.min(), length.max(), Keys.STRING_MAX_LENGTH.defaultValue());
 
@@ -149,7 +158,8 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
                             final Field field,
                             final Class<?> fieldType) {
 
-            final Range range = (Range) annotation;
+            final org.hibernate.validator.constraints.Range range =
+                    (org.hibernate.validator.constraints.Range) annotation;
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(fieldType);

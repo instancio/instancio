@@ -31,6 +31,11 @@ import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClass
  */
 final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandlerResolver {
 
+    /*
+     * Note: this class should not import `org.hibernate.validator.constraints.*`
+     * to avoid class-not-found error if a constraint is not available on the classpath
+     */
+
     static JavaxBeanValidationHandlerResolver getInstance() {
         return Holder.INSTANCE;
     }
