@@ -27,24 +27,24 @@ import java.util.function.BiFunction;
 import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
 
 /**
- * Contain generator(s) for primary annotation(s) from {@code jakarta.validation.constraints} package.
+ * Contain generator(s) for primary annotation(s) from {@code javax.validation.constraints} package.
  *
  * <p>To get additional info about primary/non-primary annotations,
  * please read javadoc for {@link BeanValidationProcessor} class.
  */
-final class JakartaBeanValidationProcessor extends AbstractBeanValidationProvider {
+final class JavaxBeanValidationProcessor extends AbstractBeanValidationProvider {
 
-    private final JakartaBeanValidationHandlerResolver resolver =
-            JakartaBeanValidationHandlerResolver.getInstance();
+    private final JavaxBeanValidationHandlerResolver resolver =
+            JavaxBeanValidationHandlerResolver.getInstance();
 
-    JakartaBeanValidationProcessor() {
+    JavaxBeanValidationProcessor() {
         super(buildMap());
     }
 
     private static Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> buildMap() {
         Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> map = new HashMap<>();
         runIgnoringTheNoClassDefFoundError(() ->
-                map.put(jakarta.validation.constraints.Email.class, ((annotation, context) -> new EmailGenerator(context)))
+                map.put(javax.validation.constraints.Email.class, ((annotation, context) -> new EmailGenerator(context)))
         );
         return map;
     }

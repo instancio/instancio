@@ -23,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is the entry point for processing Bean Validation annotations.
@@ -46,6 +48,7 @@ import java.lang.reflect.Field;
  */
 public class BeanValidationProcessor implements GeneratorSpecProcessor {
 
+    private static final String JAVAX_VALIDATOR_CLASS = "javax.validation.Validation";
     private static final String JAKARTA_VALIDATOR_CLASS = "jakarta.validation.Validation";
     private static final String HIBERNATE_VALIDATOR_CLASS = "org.hibernate.validator.HibernateValidator";
 
@@ -84,15 +87,16 @@ public class BeanValidationProcessor implements GeneratorSpecProcessor {
     }
 
     private static BeanValidationProvider[] initValidationProviders() {
+        List<BeanValidationProvider> providers = new ArrayList<>();
         if (ReflectionUtils.loadClass(HIBERNATE_VALIDATOR_CLASS) != null) {
-            return new BeanValidationProvider[]{
-                    new HibernateBeanValidationProcessor(),
-                    new JakartaBeanValidationProcessor()};
+            providers.add(new HibernateBeanValidationProcessor());
         }
         if (ReflectionUtils.loadClass(JAKARTA_VALIDATOR_CLASS) != null) {
-            return new BeanValidationProvider[]{
-                    new JakartaBeanValidationProcessor()};
+            providers.add(new JakartaBeanValidationProcessor());
         }
-        return new BeanValidationProvider[0];
+        if (ReflectionUtils.loadClass(JAVAX_VALIDATOR_CLASS) != null) {
+            providers.add(new JavaxBeanValidationProcessor());
+        }
+        return providers.toArray(new BeanValidationProvider[0]);
     }
 }

@@ -41,6 +41,7 @@
         <module>spi-old-tests</module>
         <module>spi-tests</module>
         <module>kotlin-tests</module>
+        <module>bean-validation-javax-tests</module>
         <module>bean-validation-jakarta-tests</module>
         <module>bean-validation-hibernate-tests</module>
         <module>annotation-processor-with-lombok</module>
