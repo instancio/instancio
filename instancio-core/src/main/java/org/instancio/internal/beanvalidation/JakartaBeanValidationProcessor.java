@@ -16,33 +16,32 @@
 package org.instancio.internal.beanvalidation;
 
 import jakarta.validation.constraints.Email;
-import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
+
+import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
 
 final class JakartaBeanValidationProcessor extends AbstractBeanValidationProvider {
 
     private final JakartaBeanValidationHandlerResolver resolver =
             JakartaBeanValidationHandlerResolver.getInstance();
 
-    @Override
-    public boolean isPrimary(final Class<? extends Annotation> annotationType) {
-        return annotationType == Email.class;
+    JakartaBeanValidationProcessor() {
+        super(buildMap());
     }
 
-    @Override
-    protected Generator<?> resolveGenerator(
-            final Annotation annotation,
-            final GeneratorContext context) {
-
-        final Class<?> annotationType = annotation.annotationType();
-        if (annotationType == Email.class) {
-            return new EmailGenerator(context);
-        }
-        throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
+    private static Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> buildMap() {
+        Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> map = new HashMap<>();
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(Email.class, ((annotation, context) -> new EmailGenerator(context)))
+        );
+        return map;
     }
 
     @Override

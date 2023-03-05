@@ -21,7 +21,6 @@ import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
-import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
@@ -30,53 +29,46 @@ import org.instancio.internal.generator.domain.id.IsbnGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.text.LuhnGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
-import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
+
+import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
 
 final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvider {
-
-    private static final Set<Class<?>> PRIMARY = CollectionUtils.asSet(
-            EAN.class, CreditCardNumber.class, ISBN.class, LuhnCheck.class, URL.class, UUID.class);
 
     private final HibernateBeanValidationHandlerResolver resolver =
             HibernateBeanValidationHandlerResolver.getInstance();
 
-    @Override
-    public boolean isPrimary(final Class<? extends Annotation> annotationType) {
-        return PRIMARY.contains(annotationType);
+    HibernateBeanValidationProcessor() {
+        super(buildMap());
     }
 
-    @Override
-    protected Generator<?> resolveGenerator(
-            final Annotation annotation,
-            final GeneratorContext context) {
-
-        final Class<?> annotationType = annotation.annotationType();
-        if (annotationType == EAN.class) {
-            return getEanGenerator((EAN) annotation, context);
-        }
-        if (annotationType == LuhnCheck.class) {
-            return getLuhnGenerator((LuhnCheck) annotation, context);
-        }
-        if (annotationType == CreditCardNumber.class) {
-            return new CreditCardNumberGenerator(context);
-        }
-        if (annotationType == ISBN.class) {
-            return new IsbnGenerator(context);
-        }
-        if (annotationType == UUID.class) {
-            return new UUIDGenerator(context);
-        }
-        if (annotationType == URL.class) {
-            return getUrlGenerator((URL) annotation, context);
-        }
-
-        // should not be reachable if caller checked for supported annotations
-        throw new InstancioException("Unmapped primary annotation:  " + annotationType.getName());
+    private static Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> buildMap() {
+        Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> map = new HashMap<>();
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(EAN.class, ((annotation, context) -> getEanGenerator((EAN) annotation, context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(LuhnCheck.class, ((annotation, context) -> getLuhnGenerator((LuhnCheck) annotation, context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(CreditCardNumber.class, ((annotation, context) -> new CreditCardNumberGenerator(context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(ISBN.class, ((annotation, context) -> new IsbnGenerator(context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(UUID.class, ((annotation, context) -> new UUIDGenerator(context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(URL.class, ((annotation, context) -> getUrlGenerator((URL) annotation, context)))
+        );
+        return map;
     }
 
     private static URLGenerator getUrlGenerator(final URL url, final GeneratorContext context) {

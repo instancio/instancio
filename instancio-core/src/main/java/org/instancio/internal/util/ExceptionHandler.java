@@ -100,6 +100,20 @@ public final class ExceptionHandler {
         }
     }
 
+    /**
+     * Run the provided {@code action} ignoring the
+     * {@link NoClassDefFoundError} if it will be thrown.
+     *
+     * @param action the provided action
+     */
+    public static void runIgnoringTheNoClassDefFoundError(Runnable action) {
+        try {
+            action.run();
+        } catch (NoClassDefFoundError error) {
+            LOG.debug("Error is ignored: " + error);
+        }
+    }
+
     @VisibleForTesting
     static String getCausedBy(final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();
