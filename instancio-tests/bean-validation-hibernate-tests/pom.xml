@@ -45,9 +45,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.el</artifactId>
-            <version>4.0.2</version>
+            <groupId>org.mortbay.jasper</groupId>
+            <artifactId>apache-el</artifactId>
+            <version>10.1.5</version>
         </dependency>
         <!-- validation-api is also needed because Hibernate declares it as 'provided' -->
         <dependency>
