@@ -112,7 +112,7 @@ class InstancioEngine {
             final GeneratorResult result = createObject(rootNode);
             final T rootResult = (T) result.getValue();
             callbackHandler.invokeCallbacks();
-            context.reportUnusedSelectorWarnings();
+            context.reportWarnings();
             return rootResult;
         }).orElse(null);
     }
@@ -262,7 +262,9 @@ class InstancioEngine {
                     ? withKeysIterator.next()
                     : createObject(keyNode, nullableKey).getValue();
 
-            if ((mapKey != null || nullableKey) && (mapValue != null || nullableValue)) {
+            // Note: map key does not support emit() null
+            if ((mapKey != null || nullableKey)
+                    && (mapValue != null || nullableValue || mapValueResult.hasEmitNullHint())) {
                 if (!map.containsKey(mapKey)) {
                     map.put(mapKey, mapValue);
                     entriesToGenerate--;
@@ -360,6 +362,7 @@ class InstancioEngine {
             // If elements are not nullable, keep generating until a non-null
             while (elementValue == null
                     && !hint.nullableElements()
+                    && !elementResult.hasEmitNullHint()
                     && !context.isIgnored(elementNode)
                     && failedAdditions < Constants.FAILED_ADD_THRESHOLD) {
 
@@ -403,7 +406,7 @@ class InstancioEngine {
         }
 
         final CollectionHint hint = defaultIfNull(hints.get(CollectionHint.class), CollectionHint.empty());
-        final boolean nullableElement = hint.nullableElements();
+        final boolean nullableElements = hint.nullableElements();
         final boolean requireUnique = hint.unique();
         final Set<Object> generated = new HashSet<>();
 
@@ -411,10 +414,10 @@ class InstancioEngine {
         int failedAdditions = 0;
 
         while (elementsToGenerate > 0) {
-            final GeneratorResult elementResult = createObject(elementNode, nullableElement);
+            final GeneratorResult elementResult = createObject(elementNode, nullableElements);
             final Object elementValue = elementResult.getValue();
 
-            if (elementValue != null || nullableElement) {
+            if (elementValue != null || nullableElements || elementResult.hasEmitNullHint()) {
 
                 boolean canAdd = !requireUnique || !generated.contains(elementValue);
 

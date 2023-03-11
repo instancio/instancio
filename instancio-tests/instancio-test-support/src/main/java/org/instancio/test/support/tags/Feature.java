@@ -44,6 +44,7 @@ public enum Feature {
     COLLECTION_GENERATOR_WITH_ELEMENTS,
     CONTAINER_GENERATOR,
     CYCLIC,
+    EMIT_GENERATOR,
     ENUM_GENERATOR,
     FILE_GENERATOR,
     GENERATE,  // API generate() method

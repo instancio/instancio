@@ -23,6 +23,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.instantiation.Instantiator;
@@ -54,18 +55,29 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final InternalNode node) {
-        return getUserSuppliedGenerator(node).map(generator -> {
-            final Hints hints = generator.hints();
-            final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
-            final boolean nullable = internalHint != null && internalHint.nullableResult();
+        final Optional<Generator<?>> generatorOpt = getUserSuppliedGenerator(node);
 
-            if (modelContext.getRandom().diceRoll(nullable)) {
-                return GeneratorResult.nullResult();
-            }
+        if (!generatorOpt.isPresent()) {
+            return GeneratorResult.emptyResult();
+        }
 
-            final Object value = generator.generate(modelContext.getRandom());
-            return GeneratorResult.create(value, hints);
-        }).orElse(GeneratorResult.emptyResult());
+        final Generator<?> generator = generatorOpt.get();
+
+        if (generator instanceof EmitGenerator) {
+            final EmitGeneratorHelper helper = new EmitGeneratorHelper(modelContext);
+            return helper.getResult((EmitGenerator<?>) generator, node);
+        }
+
+        final Hints hints = generator.hints();
+        final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
+        final boolean nullable = internalHint != null && internalHint.nullableResult();
+
+        if (modelContext.getRandom().diceRoll(nullable)) {
+            return GeneratorResult.nullResult();
+        }
+
+        final Object value = generator.generate(modelContext.getRandom());
+        return GeneratorResult.create(value, hints);
     }
 
     @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")

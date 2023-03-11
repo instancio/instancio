@@ -678,7 +678,7 @@ class Foo {
 
 Instancio.of(Foo.class)
     .generate(field("dateString"), gen -> gen.temporal().localDate().past().asString())
-    .generate(field("enumString"), gen -> gen.enumOf(MyEnum.class).asString(e -> e.name().toUpperCase()))
+    .generate(field("enumString"), gen -> gen.enumOf(MyEnum.class).as(e -> e.name().toUpperCase()))
     .create();
 ```
 
@@ -700,6 +700,7 @@ Generators
 ├── array()
 ├── collection()
 ├── map()
+├── emit()
 ├── enumOf(Class<E>)
 ├── enumSet(Class<E>)
 │
