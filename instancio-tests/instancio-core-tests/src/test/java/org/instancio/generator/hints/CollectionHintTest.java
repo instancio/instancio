@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator;
+package org.instancio.generator.hints;
 
-import org.instancio.generator.hints.ArrayHint;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -23,11 +22,12 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ArrayHintTest {
+class CollectionHintTest {
 
     @Test
     void emptyHint() {
-        final ArrayHint empty = ArrayHint.empty();
+        final CollectionHint empty = CollectionHint.empty();
+        assertThat(empty.generateElements()).isZero();
         assertThat(empty.nullableElements()).isFalse();
         assertThat(empty.shuffle()).isFalse();
         assertThat(empty.withElements()).isEmpty();
@@ -35,7 +35,7 @@ class ArrayHintTest {
 
     @Test
     void withElements() {
-        final ArrayHint hint = ArrayHint.builder()
+        final CollectionHint hint = CollectionHint.builder()
                 .withElements(Arrays.asList("a", "b"))
                 .withElements(null)
                 .withElements(Collections.emptyList())
@@ -47,19 +47,20 @@ class ArrayHintTest {
 
     @Test
     void verifyToString() {
-        assertThat(ArrayHint.builder().build())
-                .hasToString("ArrayHint[" +
-                        "nullableElements=false," +
+        assertThat(CollectionHint.builder().build())
+                .hasToString("CollectionHint[generateElements=0," +
+                        " nullableElements=false," +
                         " shuffle=false," +
                         " withElements=[]]");
 
-        assertThat(ArrayHint.builder()
+        assertThat(CollectionHint.builder()
+                .generateElements(3)
                 .nullableElements(true)
                 .shuffle(true)
                 .withElements(Arrays.asList("foo", "bar"))
                 .build())
-                .hasToString("ArrayHint[" +
-                        "nullableElements=true," +
+                .hasToString("CollectionHint[generateElements=3," +
+                        " nullableElements=true," +
                         " shuffle=true," +
                         " withElements=[foo, bar]]");
     }

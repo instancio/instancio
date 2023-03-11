@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import static java.util.stream.Collectors.joining;
 
@@ -56,6 +57,7 @@ import static java.util.stream.Collectors.joining;
  *
  * @param <V> value type
  */
+@SuppressWarnings("PMD.GodClass")
 final class SelectorMap<V> {
     private static final boolean FIND_ONE_ONLY = true;
 
@@ -75,6 +77,19 @@ final class SelectorMap<V> {
         private PredicateSelectorEntry(final PredicateSelectorImpl predicateSelector, final V value) {
             this.predicateSelector = predicateSelector;
             this.value = value;
+        }
+    }
+
+    void forEach(final BiConsumer<? super TargetSelector, ? super V> action) {
+        for (Map.Entry<? super TargetSelector, V> entry : selectors.entrySet()) {
+            final TargetSelector selector = (TargetSelector) entry.getKey();
+            final V value = entry.getValue();
+
+            action.accept(selector, value);
+        }
+
+        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+            action.accept(entry.predicateSelector, entry.value);
         }
     }
 

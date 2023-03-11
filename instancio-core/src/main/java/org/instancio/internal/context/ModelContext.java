@@ -133,7 +133,18 @@ public final class ModelContext<T> {
         return PROVIDERS;
     }
 
-    public void reportUnusedSelectorWarnings() {
+    public void reportWarnings() {
+        reportUnusedSelectorWarnings();
+        reportEmitGeneratorWarnings();
+    }
+
+    private void reportEmitGeneratorWarnings() {
+        final SelectorMap<Generator<?>> selectorMap = generatorSelectorMap.getSelectorMap();
+        final UnusedEmitItemsReporter reporter = new UnusedEmitItemsReporter(selectorMap);
+        reporter.report();
+    }
+
+    void reportUnusedSelectorWarnings() {
         if (settings.get(Keys.MODE) == Mode.STRICT) {
             final UnusedSelectorReporter reporter = UnusedSelectorReporter.builder()
                     .maxDepth(maxDepth)

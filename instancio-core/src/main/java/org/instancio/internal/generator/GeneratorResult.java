@@ -78,6 +78,13 @@ public final class GeneratorResult {
         return IGNORED_RESULT;
     }
 
+    // Note: another option is to introduce a dedicated EmitGeneratorHint,
+    // however for a single boolean flag it doesn't seem to be worth it
+    public boolean hasEmitNullHint() {
+        final InternalGeneratorHint hint = hints.get(InternalGeneratorHint.class);
+        return hint != null && hint.emitNull();
+    }
+
     public boolean containsNull() {
         return value == null;
     }

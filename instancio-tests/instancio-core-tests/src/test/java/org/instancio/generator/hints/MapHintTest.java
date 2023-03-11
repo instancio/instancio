@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator;
+package org.instancio.generator.hints;
 
 import org.instancio.Instancio;
-import org.instancio.generator.hints.MapHint;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

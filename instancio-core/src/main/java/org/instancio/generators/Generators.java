@@ -15,11 +15,13 @@
  */
 package org.instancio.generators;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.BooleanAsGeneratorSpec;
 import org.instancio.generator.specs.CharacterAsGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
+import org.instancio.generator.specs.EmitGeneratorSpec;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.HashAsGeneratorSpec;
@@ -41,6 +43,7 @@ import org.instancio.internal.generator.lang.IntegerGenerator;
 import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.ShortGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
+import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.util.CollectionGeneratorSpecImpl;
 import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.generator.util.MapGeneratorSpecImpl;
@@ -242,6 +245,54 @@ public class Generators {
      */
     public <K, V> MapGeneratorSpec<K, V> map() {
         return new MapGeneratorSpecImpl<>(context);
+    }
+
+    /**
+     * Emits provided items. This generator would typically be used
+     * to generate collections containing different expected values.
+     *
+     * <p>The following example generates a list of 7 orders with different
+     * statuses: 1 received, 1 shipped, 3 completed, and 2 cancelled.
+     *
+     * <pre>{@code
+     *   List<Order> orders = Instancio.ofList(Order.class)
+     *     .size(7)
+     *     .generate(field(Order::getStatus), gen -> gen.emit()
+     *              .items(OrderStatus.RECEIVED, OrderStatus.SHIPPED)
+     *              .item(OrderStatus.COMPLETED, 3)
+     *              .item(OrderStatus.CANCELLED, 2))
+     *     .create();
+     * }</pre>
+     *
+     * <p>If the selector target is a group, then each selector will
+     * have its own copy of items, for example:
+     *
+     * <pre>{@code
+     *   // Given
+     *   class FooBar {
+     *       String foo;
+     *       String bar;
+     *   }
+     *
+     *   TargetSelector fooAndBarFields = Select.all(
+     *       field(FooBar::getFoo),
+     *       field(FooBar::getBar));
+     *
+     *   // When
+     *   FooBar result = Instancio.of(FooBar.class)
+     *       .generate(fooAndBarFields, gen -> gen.emit().items("BAZ"))
+     *       .create();
+     *
+     *   // Then => FooBar[foo=BAZ, bar=BAZ]
+     * }</pre>
+     *
+     * @param <T> the type to emit
+     * @return emitting generator
+     * @since 2.12.0
+     */
+    @ExperimentalApi
+    public <T> EmitGeneratorSpec<T> emit() {
+        return new EmitGenerator<>(context);
     }
 
     /**
