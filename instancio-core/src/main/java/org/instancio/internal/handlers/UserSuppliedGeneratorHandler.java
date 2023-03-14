@@ -80,29 +80,31 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
         return GeneratorResult.create(value, hints);
     }
 
-    @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
     private Optional<Generator<?>> getUserSuppliedGenerator(final InternalNode node) {
         final Optional<Generator<?>> generatorOpt = modelContext.getGenerator(node);
 
-        if (generatorOpt.isPresent()) {
-            final Generator<?> generator = generatorOpt.get();
-            ApiValidator.validateGeneratorUsage(node, generator);
-
-            final Hints hints = generator.hints();
-            final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
-
-            if (internalHint != null && internalHint.isDelegating()) {
-                final Class<?> forClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
-                final Generator<?> delegate = generatorResolver.get(node)
-                        .orElse(new InstantiatingGenerator(instantiator, forClass));
-
-                if (delegate instanceof AbstractGenerator<?>) {
-                    final boolean nullable = ((AbstractGenerator<?>) generator).isNullable();
-                    ((AbstractGenerator<?>) delegate).nullable(nullable);
-                }
-                return Optional.of(new GeneratorDecorator(delegate, hints));
-            }
+        if (!generatorOpt.isPresent()) {
+            return Optional.empty();
         }
-        return generatorOpt;
+
+        final Generator<?> generator = generatorOpt.get();
+        ApiValidator.validateGeneratorUsage(node, generator);
+
+        final Hints hints = generator.hints();
+        final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
+
+        if (internalHint == null || !internalHint.isDelegating()) {
+            return generatorOpt;
+        }
+
+        final Class<?> forClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
+        final Generator<?> delegate = generatorResolver.get(node)
+                .orElse(new InstantiatingGenerator(instantiator, forClass));
+
+        if (delegate instanceof AbstractGenerator<?>) {
+            final boolean nullable = ((AbstractGenerator<?>) generator).isNullable();
+            ((AbstractGenerator<?>) delegate).nullable(nullable);
+        }
+        return Optional.of(new GeneratorDecorator(delegate, hints));
     }
 }
