@@ -26,6 +26,35 @@ public interface InstancioOfCollectionApi<C> extends InstancioApi<C> {
     /**
      * Specifies collection size to generate.
      *
+     * <p>This method is syntactic sugar for:
+     *
+     * <pre>{@code
+     *   List<Integer> result = Instancio.ofList(Integer.class)
+     *       .generate(root(), gen -> gen.collection().size(50))
+     *       .create();
+     * }</pre>
+     *
+     * <p>Therefore, if you modify the collection generator via {@code root()}
+     * selector (for example, to specify the collection's type) then you will
+     * need to specify the size using the generator as well.
+     *
+     * <p>For example, instead of:
+     *
+     * <pre>{@code
+     *   List<Integer> result = Instancio.ofList(Integer.class)
+     *       .size(50)
+     *       .generate(root(), gen -> gen.collection().subtype(LinkedList.class))
+     *       .create();
+     * }</pre>
+     *
+     * <p>use:
+     *
+     * <pre>{@code
+     *   List<Integer> result = Instancio.ofList(Integer.class)
+     *       .generate(root(), gen -> gen.collection().subtype(LinkedList.class).size(50))
+     *       .create();
+     * }</pre>
+     *
      * @param size of the collection to generate
      * @return API builder reference
      * @since 2.0.0

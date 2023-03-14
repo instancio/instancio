@@ -67,11 +67,11 @@ Map<Integer, List<String>> map = Instancio.create(new TypeToken<Map<Integer, Lis
 
 // Create from a model
 Model<Person> personModel = Instancio.of(Person.class)
-    .ignore(field("age"))
+    .ignore(field(Person::getAge))
     .toModel();
 
 Person personWithoutAgeAndAddress = Instancio.of(personModel)
-    .ignore(field("address"))
+    .ignore(field(Person::getAddress))
     .create();
 ```
 
@@ -109,12 +109,12 @@ Instancio.ofSet(Model<T> elementModel).create()
 List<Person> list = Instancio.ofList(Person.class).size(10).create();
 
 Map<UUID, Address> map = Instancio.ofMap(UUID.class, Address.class).size(3)
-    .set(field(Address.class, "city"), "Vancouver")
+    .set(field(Address::getCity), "Vancouver")
     .create();
 
 // Create from a model
 Model<Person> personModel = Instancio.of(Person.class)
-    .ignore(field("age"))
+    .ignore(field(Person:getAge))
     .toModel();
 
 Set<Person> set = Instancio.ofSet(personModel).size(5).create()
@@ -159,7 +159,7 @@ List<Person> personList = Instancio.stream(Person.class)
     .collect(Collectors.toList());
 
 Map<UUID, Person> personMap = Instancio.of(new TypeToken<Person>() {})
-    .ignore(all(field("age"), field("address")))
+    .ignore(all(field(Person::getAge), field(Person::getAddress)))
     .stream()
     .limit(3)
     .collect(Collectors.toMap(Person::getUuid, Function.identity()));
@@ -179,7 +179,7 @@ These types are:
 - selector groups
 - convenience selectors
 
-All of the above can be created using static methods in the {{Select}} class.
+All of the above can be created using static methods from the {{Select}} class.
 
 #### Regular selectors
 
@@ -254,6 +254,8 @@ class KSelect {
         }
     }
 }
+
+// Usage: KSelect.field(SamplePojo::value)
 ```
 
 #### Predicate selectors

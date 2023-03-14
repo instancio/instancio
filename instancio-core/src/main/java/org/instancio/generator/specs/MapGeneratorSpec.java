@@ -89,7 +89,7 @@ public interface MapGeneratorSpec<K, V>
      * Example:
      *
      * <pre>{@code
-     *  // will generate a map of size 5
+     *  // will generate a map of size 5 (3 random + 2 custom entries)
      *  generate(field("someMap"), gen -> gen.map()
      *          .size(3)
      *          .with("key1", "value1")
