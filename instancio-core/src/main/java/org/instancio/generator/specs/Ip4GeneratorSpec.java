@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.util;
+package org.instancio.generator.specs;
 
-public final class Constants {
-    private Constants() {
-        // non-instantiable
-    }
+import org.instancio.generator.GeneratorSpec;
 
-    public static final int MIN_SIZE = 2;
-    public static final int MAX_SIZE = 6;
+/**
+ * Generator spec for IPv4.
+ *
+ * @since 2.12.0
+ */
+public interface Ip4GeneratorSpec extends GeneratorSpec<String> {
 
-    public static final int SAMPLE_SIZE_D = 9;
-    public static final int SAMPLE_SIZE_DD = 99;
-    public static final int SAMPLE_SIZE_DDD = 999;
-    public static final int SAMPLE_SIZE_DDDD = 9999;
+    /**
+     * Generates IPv4 address from
+     * <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">CIDR notation</a>,
+     * for example: {@code fromCidr("192.168.1.0/24")}.
+     *
+     * @param cidr CIDR notation from which an IP address will be generated
+     * @return generator spec
+     * @since 2.12.0
+     */
+    GeneratorSpec<String> fromCidr(String cidr);
 }
