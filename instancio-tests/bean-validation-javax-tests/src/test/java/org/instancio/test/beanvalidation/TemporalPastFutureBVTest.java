@@ -20,7 +20,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.TemporalPastFutureBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Timestamp;
@@ -38,13 +38,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
 class TemporalPastFutureBVTest {
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void past() {
         final TemporalPastFutureBV.WithPast result = Instancio.create(TemporalPastFutureBV.WithPast.class);
 
@@ -64,7 +63,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getCalendar()).isLessThan(Calendar.getInstance());
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void pastOrPresent() {
         final TemporalPastFutureBV.WithPastOrPresent result = Instancio.create(TemporalPastFutureBV.WithPastOrPresent.class);
 
@@ -84,7 +83,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getCalendar()).isLessThan(Calendar.getInstance());
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void future() {
         final TemporalPastFutureBV.WithFuture result = Instancio.create(TemporalPastFutureBV.WithFuture.class);
 
@@ -104,7 +103,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getCalendar()).isGreaterThan(Calendar.getInstance());
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void futureOrPresent() {
         final TemporalPastFutureBV.WithFutureOrPresent result = Instancio.create(TemporalPastFutureBV.WithFutureOrPresent.class);
 

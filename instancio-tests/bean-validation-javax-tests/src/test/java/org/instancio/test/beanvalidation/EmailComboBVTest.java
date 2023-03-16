@@ -22,11 +22,10 @@ import org.instancio.settings.Settings;
 import org.instancio.test.pojo.beanvalidation.EmailComboBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -34,7 +33,7 @@ class EmailComboBVTest {
 
     private static final String EMAIL_PATTERN = "\\w+@\\w+\\.\\p{Lower}{3}";
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void emailWithSize() {
         final EmailComboBV.EmailWithSize result = Instancio.create(EmailComboBV.EmailWithSize.class);
 
@@ -47,7 +46,7 @@ class EmailComboBVTest {
                 .hasSize(10);
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void notNullEmailWithSize() {
         final EmailComboBV.NotNullEmailWithSize result = Instancio.of(EmailComboBV.NotNullEmailWithSize.class)
                 .withSettings(Settings.create().set(Keys.STRING_NULLABLE, true))

@@ -25,6 +25,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.pojo.beanvalidation.NotNullBv;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -65,6 +66,7 @@ class NotNullBVTest {
             .set(Keys.MAP_NULLABLE, true);
 
     @Test
+    @NonDeterministicTag
     void notNullWithNullablesViaSettings() {
         final List<NotNullBv> result = Instancio.of(NotNullBv.class)
                 .stream()
@@ -77,6 +79,7 @@ class NotNullBVTest {
     }
 
     @Test
+    @NonDeterministicTag
     void withNullableHasHigherPrecedenceThanBeanValidationAnnotations() {
         final TargetSelector nullables = Select.all(
                 allStrings(),

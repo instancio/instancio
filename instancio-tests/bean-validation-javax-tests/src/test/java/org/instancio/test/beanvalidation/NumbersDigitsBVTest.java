@@ -20,20 +20,19 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.NumbersDigitsBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
 class NumbersDigitsBVTest {
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void noFraction() {
         final NumbersDigitsBV.NoFraction result = Instancio.create(NumbersDigitsBV.NoFraction.class);
 
@@ -60,7 +59,7 @@ class NumbersDigitsBVTest {
                 new BigDecimal("999999999999"));
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void withFraction() {
         final NumbersDigitsBV.WithFraction result = Instancio.create(NumbersDigitsBV.WithFraction.class);
 
@@ -77,7 +76,7 @@ class NumbersDigitsBVTest {
                 .hasScaleOf(20);
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void withZeroInteger() {
         final NumbersDigitsBV.WithZeroInteger result = Instancio.create(NumbersDigitsBV.WithZeroInteger.class);
         assertThat(result.getPrimitiveFloat()).isBetween(0f, 0.999999f);

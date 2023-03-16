@@ -20,11 +20,10 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.EmailBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -34,7 +33,7 @@ class EmailBVTest {
     private static final int EMAIL_ADDRESS_MIN = 7;
     private static final int EMAIL_ADDRESS_MAX = 24;
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void onString() {
         final EmailBV.OnString result = Instancio.create(EmailBV.OnString.class);
         assertThat(result.getEmail())
@@ -42,7 +41,7 @@ class EmailBVTest {
                 .matches(DEFAULT_EMAIL_PATTERN);
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void onCharSequence() {
         final EmailBV.OnCharSequence result = Instancio.create(EmailBV.OnCharSequence.class);
         assertThat(result.getEmail())

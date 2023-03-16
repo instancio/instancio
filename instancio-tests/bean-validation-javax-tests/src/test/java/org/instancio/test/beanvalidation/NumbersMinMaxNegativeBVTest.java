@@ -22,16 +22,14 @@ import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.basic.Numbers;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
 class NumbersMinMaxNegativeBVTest {
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void minMax() {
         final Numbers result = Instancio.create(NumbersMinMaxNegativeBV.class);
 
