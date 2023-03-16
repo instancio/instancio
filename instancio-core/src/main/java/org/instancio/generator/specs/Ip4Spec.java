@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.util;
+package org.instancio.generator.specs;
 
-public final class Constants {
-    private Constants() {
-        // non-instantiable
-    }
+import org.instancio.generator.ValueSpec;
 
-    public static final int MIN_SIZE = 2;
-    public static final int MAX_SIZE = 6;
+/**
+ * Spec for generating IPv4 addresses.
+ *
+ * @since 2.12.0
+ */
+public interface Ip4Spec extends ValueSpec<String>, Ip4GeneratorSpec {
 
-    public static final int SAMPLE_SIZE_D = 9;
-    public static final int SAMPLE_SIZE_DD = 99;
-    public static final int SAMPLE_SIZE_DDD = 999;
-    public static final int SAMPLE_SIZE_DDDD = 9999;
+    @Override
+    ValueSpec<String> fromCidr(String cidr);
 }

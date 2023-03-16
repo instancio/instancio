@@ -17,9 +17,11 @@ package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EmailAsGeneratorSpec;
+import org.instancio.generator.specs.Ip4GeneratorSpec;
 import org.instancio.generator.specs.URIAsGeneratorSpec;
 import org.instancio.generator.specs.URLAsGeneratorSpec;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
+import org.instancio.internal.generator.domain.internet.Ip4Generator;
 import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 
@@ -50,16 +52,6 @@ public class NetGenerators {
     }
 
     /**
-     * Customises generated {@link URL} objects.
-     *
-     * @return generator spec
-     * @since 2.3.0
-     */
-    public URLAsGeneratorSpec url() {
-        return new URLGenerator(context);
-    }
-
-    /**
      * Customises generated email addresses.
      *
      * @return generator spec
@@ -67,5 +59,25 @@ public class NetGenerators {
      */
     public EmailAsGeneratorSpec email() {
         return new EmailGenerator(context);
+    }
+
+    /**
+     * Generates IPv4 address.
+     *
+     * @return generator spec
+     * @since 2.12.0
+     */
+    public Ip4GeneratorSpec ip4() {
+        return new Ip4Generator(context);
+    }
+
+    /**
+     * Customises generated {@link URL} objects.
+     *
+     * @return generator spec
+     * @since 2.3.0
+     */
+    public URLAsGeneratorSpec url() {
+        return new URLGenerator(context);
     }
 }

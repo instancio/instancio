@@ -16,9 +16,11 @@
 package org.instancio.generators;
 
 import org.instancio.generator.specs.EmailSpec;
+import org.instancio.generator.specs.Ip4Spec;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.generator.specs.URLSpec;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
+import org.instancio.internal.generator.domain.internet.Ip4Generator;
 import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 
@@ -31,6 +33,26 @@ import java.net.URL;
  * @since 2.6.0
  */
 public final class NetSpecs {
+
+    /**
+     * Generates email addresses.
+     *
+     * @return API builder reference
+     * @since 2.11.0
+     */
+    public EmailSpec email() {
+        return new EmailGenerator();
+    }
+
+    /**
+     * Generates IPv4 addresses.
+     *
+     * @return API builder reference
+     * @since 2.12.0
+     */
+    public Ip4Spec ip4() {
+        return new Ip4Generator();
+    }
 
     /**
      * Generates {@link URI} values.
@@ -52,13 +74,4 @@ public final class NetSpecs {
         return new URLGenerator();
     }
 
-    /**
-     * Generates email addresses.
-     *
-     * @return API builder reference
-     * @since 2.11.0
-     */
-    public EmailSpec email() {
-        return new EmailGenerator();
-    }
 }
