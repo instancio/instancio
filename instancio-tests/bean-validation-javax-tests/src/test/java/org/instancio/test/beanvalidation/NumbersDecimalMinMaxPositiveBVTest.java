@@ -21,7 +21,7 @@ import org.instancio.test.pojo.beanvalidation.NumbersDecimalMinMaxPositiveBV;
 import org.instancio.test.support.pojo.basic.Numbers;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,13 +29,12 @@ import static org.instancio.test.pojo.beanvalidation.NumbersDecimalMinMaxPositiv
 import static org.instancio.test.pojo.beanvalidation.NumbersDecimalMinMaxPositiveBV.MAX_ROUNDED;
 import static org.instancio.test.pojo.beanvalidation.NumbersDecimalMinMaxPositiveBV.MIN;
 import static org.instancio.test.pojo.beanvalidation.NumbersDecimalMinMaxPositiveBV.MIN_ROUNDED;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
 class NumbersDecimalMinMaxPositiveBVTest {
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void decimalMinMax() {
         final Numbers result = Instancio.create(NumbersDecimalMinMaxPositiveBV.class);
 

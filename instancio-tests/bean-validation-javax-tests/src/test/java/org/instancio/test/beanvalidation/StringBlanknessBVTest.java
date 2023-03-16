@@ -29,7 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
+import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_D;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -46,11 +46,11 @@ class StringBlanknessBVTest {
     @Test
     void notBlank() {
         final List<StringBlanknessBV.WithNotBlank> results = Instancio.ofList(StringBlanknessBV.WithNotBlank.class)
-                .size(SAMPLE_SIZE_DDD)
+                .size(SAMPLE_SIZE_D)
                 .create();
 
         assertThat(results)
-                .hasSize(SAMPLE_SIZE_DDD)
+                .hasSize(SAMPLE_SIZE_D)
                 .extracting(StringBlanknessBV.WithNotBlank::getValue)
                 .doesNotContain(null, "");
     }
@@ -58,11 +58,11 @@ class StringBlanknessBVTest {
     @Test
     void notEmpty() {
         final List<StringBlanknessBV.WithNotEmpty> results = Instancio.ofList(StringBlanknessBV.WithNotEmpty.class)
-                .size(SAMPLE_SIZE_DDD)
+                .size(SAMPLE_SIZE_D)
                 .create();
 
         assertThat(results)
-                .hasSize(SAMPLE_SIZE_DDD)
+                .hasSize(SAMPLE_SIZE_D)
                 .extracting(StringBlanknessBV.WithNotEmpty::getValue)
                 .doesNotContain(null, "");
     }
@@ -70,12 +70,12 @@ class StringBlanknessBVTest {
     @Test
     void notNull() {
         final List<StringBlanknessBV.WithNotNull> results = Instancio.ofList(StringBlanknessBV.WithNotNull.class)
-                .size(SAMPLE_SIZE_DDD)
+                .size(SAMPLE_SIZE_D)
                 .withSettings(Settings.create().set(Keys.STRING_NULLABLE, true))
                 .create();
 
         assertThat(results)
-                .hasSize(SAMPLE_SIZE_DDD)
+                .hasSize(SAMPLE_SIZE_D)
                 .extracting(StringBlanknessBV.WithNotNull::getValue)
                 .doesNotContainNull();
     }

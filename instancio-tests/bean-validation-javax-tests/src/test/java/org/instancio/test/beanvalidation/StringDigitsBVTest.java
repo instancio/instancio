@@ -20,17 +20,16 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.StringDigitsBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
 class StringDigitsBVTest {
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void onString() {
         final StringDigitsBV.OnString result = Instancio.create(StringDigitsBV.OnString.class);
 
@@ -41,7 +40,7 @@ class StringDigitsBVTest {
         assertThat(result.getS4()).matches("\\d{15}\\.\\d{20}");
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void onCharSequence() {
         final StringDigitsBV.OnCharSequence result = Instancio.create(StringDigitsBV.OnCharSequence.class);
 

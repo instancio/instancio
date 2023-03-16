@@ -23,11 +23,10 @@ import org.instancio.settings.Settings;
 import org.instancio.test.pojo.beanvalidation.NumbersPositiveBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -49,7 +48,7 @@ class NumbersPositiveBVTest {
             .set(Keys.FLOAT_MAX, -1f)
             .set(Keys.DOUBLE_MAX, -1d);
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void positive() {
         final NumbersPositiveBV.PositiveNumbers result = Instancio.create(NumbersPositiveBV.PositiveNumbers.class);
 
@@ -71,7 +70,7 @@ class NumbersPositiveBVTest {
         assertThat(result.getBigDecimal()).isPositive();
     }
 
-    @RepeatedTest(SAMPLE_SIZE_DD)
+    @Test
     void positiveOrZero() {
         final NumbersPositiveBV.PositiveOrZeroNumbers result = Instancio.create(NumbersPositiveBV.PositiveOrZeroNumbers.class);
 

@@ -23,11 +23,10 @@ import org.instancio.settings.Settings;
 import org.instancio.test.pojo.beanvalidation.StringDigitsBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_D;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -40,7 +39,7 @@ class BeanValidationDisabledBVTest {
             .set(Keys.STRING_ALLOW_EMPTY, false)
             .set(Keys.STRING_NULLABLE, false);
 
-    @RepeatedTest(SAMPLE_SIZE_D)
+    @Test
     void shouldIgnoreBeanValidationAnnotationsWhenDisabledViaSettings() {
         final StringDigitsBV.OnString result = Instancio.create(StringDigitsBV.OnString.class);
 

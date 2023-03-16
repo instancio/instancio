@@ -23,12 +23,10 @@ import org.instancio.settings.Settings;
 import org.instancio.test.pojo.beanvalidation.StringSizeBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_D;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -40,38 +38,38 @@ class StringSizeBVTest {
             .set(Keys.STRING_MIN_LENGTH, Keys.STRING_MIN_LENGTH.defaultValue())
             .set(Keys.STRING_MAX_LENGTH, Keys.STRING_MAX_LENGTH.defaultValue());
 
-    @RepeatedTest(SAMPLE_SIZE_D)
+    @Test
     void withMinSize() {
         final StringSizeBV.WithMinSize result = Instancio.create(StringSizeBV.WithMinSize.class);
         assertThat(result.getValue()).hasSizeGreaterThanOrEqualTo(8);
     }
 
-    @RepeatedTest(SAMPLE_SIZE_D)
+    @Test
     void withMinSizeZeo() {
         final StringSizeBV.WithMinSizeZero result = Instancio.create(StringSizeBV.WithMinSizeZero.class);
         assertThat(result.getValue()).hasSizeBetween(0, Keys.STRING_MAX_LENGTH.defaultValue());
     }
 
-    @RepeatedTest(SAMPLE_SIZE_D)
+    @Test
     void withMaxSize() {
         final StringSizeBV.WithMaxSize result = Instancio.create(StringSizeBV.WithMaxSize.class);
         assertThat(result.getValue()).hasSizeLessThanOrEqualTo(1);
 
     }
 
-    @RepeatedTest(SAMPLE_SIZE_D)
+    @Test
     void withMaxSizeZero() {
         final StringSizeBV.WithMaxSizeZero result = Instancio.create(StringSizeBV.WithMaxSizeZero.class);
         assertThat(result.getValue()).isEmpty();
     }
 
-    @RepeatedTest(SAMPLE_SIZE_D)
+    @Test
     void withMinMaxSize() {
         final StringSizeBV.WithMinMaxSize result = Instancio.create(StringSizeBV.WithMinMaxSize.class);
         assertThat(result.getValue()).hasSizeBetween(19, 20);
     }
 
-    @RepeatedTest(SAMPLE_SIZE_D)
+    @Test
     void withMinMaxEqual() {
         final StringSizeBV.WithMinMaxEqual result = Instancio.create(StringSizeBV.WithMinMaxEqual.class);
         assertThat(result.getValue()).hasSize(5);

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
+import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_D;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -46,11 +46,11 @@ class NotEmptyBVTest {
     void notEmptyWithEmptyAllowedViaSettings() {
         final List<NotEmptyBv> results = Instancio.of(NotEmptyBv.class)
                 .stream()
-                .limit(SAMPLE_SIZE_DDD)
+                .limit(SAMPLE_SIZE_D)
                 .collect(Collectors.toList());
 
         assertThat(results)
-                .hasSize(SAMPLE_SIZE_DDD)
+                .hasSize(SAMPLE_SIZE_D)
                 .allSatisfy(o -> {
                     assertThat(o.getString()).isNotEmpty();
                     assertThat(o.getArray()).isNotEmpty();

@@ -15,10 +15,6 @@
  */
 package org.instancio.test.beanvalidation;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
@@ -26,6 +22,11 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
