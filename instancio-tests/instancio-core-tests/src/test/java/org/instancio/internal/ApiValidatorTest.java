@@ -56,7 +56,7 @@ class ApiValidatorTest {
         void errorThrownIfValueHasInvalidType() {
             assertThatThrownBy(() -> ApiValidator.validateKeyValue(Keys.INTEGER_MIN, "bad"))
                     .isExactlyInstanceOf(InstancioApiException.class)
-                    .hasMessage("The value 'bad' is of unexpected type (String) for key 'integer.min' (expected: Integer)");
+                    .hasMessage("The value 'bad' is of unexpected type (String) for key %s", Keys.INTEGER_MIN);
         }
     }
 }

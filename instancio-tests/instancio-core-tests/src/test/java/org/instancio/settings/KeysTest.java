@@ -16,6 +16,7 @@
 package org.instancio.settings;
 
 import org.instancio.exception.InstancioApiException;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,8 +32,68 @@ class KeysTest {
 
     @Test
     void getWithInvalidProperty() {
-        assertThatThrownBy(() -> Keys.get("foo"))
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid instancio property key: 'foo'");
+        assertThat(Keys.get("an-invalid-property")).isNull();
+    }
+
+    @Test
+    void create() {
+        final SettingKey<Integer> key = Keys.ofType(Integer.class)
+                .withPropertyKey("foo.bar")
+                .create();
+
+        assertThat(key.propertyKey()).isEqualTo("foo.bar");
+        assertThat(key.type()).isEqualTo(Integer.class);
+        assertThat(key.defaultValue()).isNull();
+        assertThat(key.allowsNullValue()).isTrue();
+    }
+
+    @Test
+    void createWithoutPropertyKey() {
+        final SettingKey<String> key = Keys.ofType(String.class).create();
+
+        assertThat(key.propertyKey()).matches("custom\\.key\\.[0-9a-f]{20}");
+        assertThat(key.type()).isEqualTo(String.class);
+        assertThat(key.defaultValue()).isNull();
+        assertThat(key.allowsNullValue()).isTrue();
+    }
+
+    @Test
+    void validationNullType() {
+        assertThatThrownBy(() -> Keys.ofType(null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Type must not be null");
+    }
+
+    @Test
+    void validationNullPropertyKey() {
+        final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class);
+
+        assertThatThrownBy(() -> builder.withPropertyKey(null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Property key must not be null");
+    }
+
+    @Nested
+    class EqualsHashCodeTest {
+        @Test
+        void withTypeAndPropertyKey() {
+            final SettingKey<Integer> key1 = Keys.ofType(Integer.class)
+                    .withPropertyKey("foo.bar")
+                    .create();
+
+            final SettingKey<Integer> key2 = Keys.ofType(Integer.class)
+                    .withPropertyKey("foo.bar")
+                    .create();
+
+            assertThat(key1).isEqualTo(key2).hasSameHashCodeAs(key2);
+        }
+
+        @Test
+        void withoutTypeAndPropertyKey() {
+            final SettingKey<Integer> key1 = Keys.ofType(Integer.class).create();
+            final SettingKey<Integer> key2 = Keys.ofType(Integer.class).create();
+
+            assertThat(key1).isNotEqualTo(key2).doesNotHaveSameHashCodeAs(key2);
+        }
     }
 }

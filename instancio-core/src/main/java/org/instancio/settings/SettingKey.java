@@ -15,13 +15,11 @@
  */
 package org.instancio.settings;
 
+import org.instancio.documentation.ExperimentalApi;
+
 /**
- * A setting key represents a configuration item and has the following properties:
- *
- * <ul>
- *   <li>{@link #propertyKey()} - property name that can be used in a configuration file</li>
- *   <li>{@link #defaultValue()} - that will be used if there is no configuration file present</li>
- * </ul>
+ * A setting key represents a configuration item that can be
+ * stored in a {@link Settings} instance.
  *
  * @param <T> type of the value
  * @see Keys
@@ -31,35 +29,92 @@ package org.instancio.settings;
 public interface SettingKey<T> {
 
     /**
-     * A property key that can be used to configure this setting in a properties file.
+     * The type of value associated with this key.
      *
-     * @return property key
-     * @since 1.2.0
-     */
-    String propertyKey();
-
-    /**
-     * Type of the property value.
+     * <p>This method is used for converting a value from a string
+     * to the specified {@code type()} when retrieving the value
+     * from {@link Settings}.
      *
-     * @return value class
+     * @return the type of value associated with this key
      * @since 1.0.1
      */
     Class<T> type();
 
     /**
+     * A unique property key identifying this setting.
+     * The property key is used to identify the setting in a properties file.
+     *
+     * @return a unique property key identifying this setting
+     * @since 1.2.0
+     */
+    String propertyKey();
+
+    /**
      * Default value for this key.
      *
-     * @return default value
+     * @return default value, or {@code null} if not defined
      * @since 1.0.1
      */
-    T defaultValue();
+    default T defaultValue() {
+        return null;
+    }
 
     /**
      * Indicates whether the value for this key can be set to {@code null}.
+     * Setting a {@code null} for a key that does not accept {@code null}
+     * will produce an exception.
      *
      * @return {@code true} if {@code null} is allowed, {@code false} otherwise
      * @since 1.5.1
      */
-    boolean allowsNullValue();
+    default boolean allowsNullValue() {
+        return true;
+    }
 
+    /**
+     * A builder for creating custom keys.
+     *
+     * @param <T> the type of value associated with this key
+     * @since 2.12.0
+     */
+    @ExperimentalApi
+    interface SettingKeyBuilder<T> {
+
+        /**
+         * Specifies the value's type.
+         *
+         * @param type of value
+         * @return key builder
+         * @since 2.12.0
+         */
+        SettingKeyBuilder<T> ofType(Class<T> type);
+
+        /**
+         * Specifies the property key.
+         *
+         * <p>When defining custom keys, it is advisable to use
+         * a custom prefix to distinguish from and to avoid potential clashes
+         * with built-in keys, for example:
+         *
+         * <pre>{@code
+         *   com.acme.string.length=10
+         * }</pre>
+         *
+         * <p>If {@code withPropertyKey()} is not specified,
+         * then an auto-generated property key will be assigned.
+         *
+         * @param propertyKey a unique property key
+         * @return key builder
+         * @since 2.12.0
+         */
+        SettingKeyBuilder<T> withPropertyKey(String propertyKey);
+
+        /**
+         * Returns the created setting key.
+         *
+         * @return the setting key
+         * @since 2.12.0
+         */
+        SettingKey<T> create();
+    }
 }
