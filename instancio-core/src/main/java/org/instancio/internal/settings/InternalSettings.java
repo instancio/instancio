@@ -69,15 +69,16 @@ public final class InternalSettings implements Settings {
                 final String fromClass = key.replace(TYPE_MAPPING_PREFIX, "");
                 settings.mapType(ReflectionUtils.getClass(fromClass), ReflectionUtils.getClass(v.toString()));
             } else {
-                final SettingKey<Object> settingKey = Keys.get(key);
-                final Function<String, Object> fn = SettingsSupport.getFunction(settingKey.type());
-                final Object val;
-                try {
-                    val = fn.apply(v.toString());
-                } catch (NumberFormatException ex) {
-                    throw new InstancioApiException("Invalid value for setting key: " + settingKey, ex);
+                SettingKey<Object> settingKey = Keys.get(key);
+
+                if (settingKey == null) {
+                    // If not defined in Keys, then this is a user-defined key
+                    // Since the type is unknown, default to null
+                    settingKey = new InternalKey<>(key, null, null, null, true);
+                    settings.set(settingKey, v);
+                } else {
+                    settings.set(settingKey, convertValueToKeyType(settingKey, v));
                 }
-                settings.set(settingKey, val);
             }
         });
         return settings;
@@ -106,7 +107,13 @@ public final class InternalSettings implements Settings {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T get(@NotNull final SettingKey<T> key) {
-        return (T) settingsMap.get(ApiValidator.notNull(key, "Key must not be null"));
+        final Object value = settingsMap.get(ApiValidator.notNull(key, "Key must not be null"));
+
+        if (value == null || key.type() == null || value.getClass() == key.type()) {
+            return (T) value;
+        }
+
+        return convertValueToKeyType(key, value);
     }
 
     @Override
@@ -175,14 +182,33 @@ public final class InternalSettings implements Settings {
                         "%nsettingsMap:%s" +
                         "%nsubtypeMap:%s",
                 isLockedForModifications,
-                mapToString(new TreeMap<>(settingsMap)), mapToString(subtypeMap));
+                mapToString(new TreeMap<>(settingsMap)),
+                mapToString(subtypeMap));
     }
 
     private static String mapToString(final Map<?, ?> map) {
         if (map.isEmpty()) return " {}";
         return "\n" + map.entrySet().stream()
-                .map(e -> String.format("\t'%s': %s", e.getKey(), e.getValue()))
+                .map(e -> {
+                    final String key = (e.getKey() instanceof SettingKey<?>)
+                            ? ((SettingKey<?>) e.getKey()).propertyKey()
+                            : e.getKey().toString();
+
+                    return String.format("\t'%s': %s", key, e.getValue());
+                })
                 .collect(joining("\n"));
+    }
+
+    private static <T> T convertValueToKeyType(final SettingKey<T> key, final Object value) {
+        final Function<String, T> fn = SettingsSupport.getFunction(key.type());
+        try {
+            return fn.apply(value.toString());
+        } catch (NumberFormatException ex) {
+            throw new InstancioApiException(String.format(
+                    "Invalid value %s (of type %s) for setting key %s",
+                    value, value.getClass().getSimpleName(), key), ex);
+        }
+
     }
 
     // a hack to workaround generics... we know the type is valid since it's a numeric settings

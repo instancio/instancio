@@ -23,9 +23,9 @@ import org.instancio.assignment.OnSetMethodNotFound;
 import org.instancio.assignment.SetterStyle;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.AfterGenerate;
-import org.instancio.internal.ApiValidator;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
+import org.instancio.settings.SettingKey.SettingKeyBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -412,13 +412,30 @@ public final class Keys {
      * Returns a {@link SettingKey} instance with the given property key.
      *
      * @param key to lookup
-     * @return the setting key; an exception is thrown if the key is not found
+     * @return the setting key, or {@code null} if none found
      */
     @SuppressWarnings("unchecked")
     public static <T> SettingKey<T> get(@NotNull final String key) {
-        final SettingKey<T> settingKey = (SettingKey<T>) SETTING_KEY_MAP.get(key);
-        ApiValidator.isTrue(settingKey != null, "Invalid instancio property key: '%s'", key);
-        return settingKey;
+        return (SettingKey<T>) SETTING_KEY_MAP.get(key);
+    }
+
+    /**
+     * A builder for creating custom setting keys.
+     *
+     * <p>When defining custom keys, specifying
+     * {@link SettingKeyBuilder#withPropertyKey(String)} is optional since
+     * not all settings will be defined in a properties file.
+     * If {@code withPropertyKey()} is not specified, then a random
+     * property key will be assigned.
+     *
+     * @param type of the value the key is associated with, not {@code null}
+     * @param <T>  the value type
+     * @return key builder
+     * @since 2.12.0
+     */
+    @ExperimentalApi
+    public static <T> SettingKeyBuilder<T> ofType(final Class<T> type) {
+        return InternalKey.builder(type);
     }
 
     private static <T> SettingKey<T> register(

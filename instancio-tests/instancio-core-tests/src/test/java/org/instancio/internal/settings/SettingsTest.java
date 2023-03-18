@@ -20,6 +20,7 @@ import org.instancio.Mode;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
+import org.instancio.internal.context.PropertiesLoader;
 import org.instancio.internal.util.Constants;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
@@ -136,12 +137,13 @@ class SettingsTest {
 
     @Test
     void numericValueOutOfBounds() {
+        final int value = 1000;
         final Map<Object, Object> map = new HashMap<>();
-        map.put(Keys.BYTE_MAX.propertyKey(), 1000);
+        map.put(Keys.BYTE_MAX.propertyKey(), value);
 
         assertThatThrownBy(() -> Settings.from(map))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid value for setting key: %s", Keys.BYTE_MAX.propertyKey())
+                .hasMessage("Invalid value %s (of type Integer) for setting key %s", value, Keys.BYTE_MAX)
                 .hasCauseExactlyInstanceOf(NumberFormatException.class);
     }
 
@@ -168,10 +170,17 @@ class SettingsTest {
     }
 
     @Test
+    @DisplayName("Should produce settings sorted by SettingKey.propertyKey()")
     void verifyToString() {
+        final SettingKey<String> customKey = Keys.ofType(String.class).create();
+
         assertThat(Settings.create()
                 .set(Keys.LONG_MIN, 123L)
                 .set(Keys.DOUBLE_MIN, 345.9)
+                .set(Keys.STRING_NULLABLE, true)
+                .set(customKey, "custom-key-value")
+                .set(Keys.ARRAY_MIN_LENGTH, 1)
+                .set(Keys.ARRAY_MAX_LENGTH, 5)
                 .mapType(List.class, ArrayList.class)
                 .lock()
                 .toString()
@@ -179,8 +188,12 @@ class SettingsTest {
                 "Settings[",
                 "isLockedForModifications: true",
                 "settingsMap:",
+                "\t'array.max.length': 5",
+                "\t'array.min.length': 1",
+                "\t'custom.key.", "': custom-key-value",
                 "\t'double.min': 345.9",
                 "\t'long.min': 123",
+                "\t'string.nullable': true",
                 "subtypeMap:",
                 "\t'interface java.util.List': class java.util.ArrayList"
         );
@@ -256,5 +269,16 @@ class SettingsTest {
     void subtypeMappingFromInstancioProperties() {
         assertThat(Instancio.create(new TypeToken<SortedMap<String, Integer>>() {}))
                 .isExactlyInstanceOf(ConcurrentSkipListMap.class);
+    }
+
+    @Test
+    void userDefinedKeyFromProperties() {
+        final SettingKey<Integer> key = Keys.ofType(Integer.class)
+                .withPropertyKey("user.defined.key")
+                .create();
+
+        final Settings settings = Settings.from(PropertiesLoader.loadDefaultPropertiesFile());
+
+        assertThat(settings.get(key)).isEqualTo(12345);
     }
 }

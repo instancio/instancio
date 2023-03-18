@@ -106,12 +106,14 @@ public final class ApiValidator {
     public static void validateKeyValue(@Nullable final SettingKey<?> key, @Nullable final Object value) {
         isTrue(key != null, "Setting key must not be null");
         if (!key.allowsNullValue()) {
-            isTrue(value != null, "Setting value for key '%s' must not be null", key);
+            isTrue(value != null, "Setting value for key '%s' must not be null", key.propertyKey());
         }
-        if (value != null) {
+
+        // key.type could be null if it's a user-defined key
+        if (value != null && key.type() != null) {
             isTrue(key.type() == value.getClass(),
-                    () -> String.format("The value '%s' is of unexpected type (%s) for key '%s' (expected: %s)",
-                            value, value.getClass().getSimpleName(), key, key.type().getSimpleName()));
+                    () -> String.format("The value '%s' is of unexpected type (%s) for key %s",
+                            value, value.getClass().getSimpleName(), key));
         }
     }
 

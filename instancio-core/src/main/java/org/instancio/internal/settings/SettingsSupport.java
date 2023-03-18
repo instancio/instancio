@@ -31,8 +31,9 @@ final class SettingsSupport {
 
     private static final Map<SettingKey<?>, SettingKey<?>> AUTO_ADJUSTABLE_MAP = getAutoAdjustableKeys();
 
-    static Function<String, Object> getFunction(final Class<?> type) {
-        return VALUE_OF_FUNCTIONS.get(type);
+    @SuppressWarnings("unchecked")
+    static <T> Function<String, T> getFunction(final Class<T> type) {
+        return (Function<String, T>) VALUE_OF_FUNCTIONS.get(type);
     }
 
     @SuppressWarnings("unchecked")
@@ -48,6 +49,7 @@ final class SettingsSupport {
         fnMap.put(Integer.class, Integer::valueOf);
         fnMap.put(Long.class, Long::valueOf);
         fnMap.put(Float.class, Float::valueOf);
+        fnMap.put(String.class, String::valueOf);
         fnMap.put(Double.class, Double::valueOf);
         fnMap.put(Mode.class, Mode::valueOf);
         return Collections.unmodifiableMap(fnMap);
