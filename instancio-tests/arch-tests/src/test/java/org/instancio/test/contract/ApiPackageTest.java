@@ -61,4 +61,12 @@ class ApiPackageTest {
                 .allowEmptyShould(true) // there may not be any annotated methods, which is fine
                 .check(classes);
     }
+
+    @Test
+    void noPublicClassWithinInternalPackagesShouldStartWithInstancio() {
+        noClasses().that().resideInAnyPackage(NON_PUBLIC_PACKAGES)
+                .and().arePublic()
+                .should().haveSimpleNameStartingWith("Instancio")
+                .check(classes);
+    }
 }
