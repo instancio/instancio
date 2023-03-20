@@ -18,6 +18,7 @@ package org.instancio.spi;
 import org.instancio.InstancioApi;
 import org.instancio.Node;
 import org.instancio.TargetSelector;
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
@@ -52,6 +53,17 @@ import java.util.ServiceLoader;
  * @since 2.11.0
  */
 public interface InstancioServiceProvider {
+
+    /**
+     * An optional method that can be used by implementations
+     * that require access to the context information.
+     *
+     * @param context containing additional information
+     * @since 2.12.0
+     */
+    @ExperimentalApi
+    default void init(ServiceProviderContext context) {
+    }
 
     /**
      * Returns a {@code GeneratorProvider} implementation.

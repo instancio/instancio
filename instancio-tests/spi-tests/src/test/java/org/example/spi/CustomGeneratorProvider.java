@@ -26,6 +26,7 @@ import org.instancio.generator.Hints;
 import org.instancio.generators.Generators;
 import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.spi.InstancioServiceProvider;
+import org.instancio.spi.ServiceProviderContext;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
@@ -34,6 +35,8 @@ import org.instancio.test.support.pojo.person.PhoneWithType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CustomGeneratorProvider implements InstancioServiceProvider {
 
@@ -53,8 +56,16 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
     }};
 
     private final GeneratorProvider generatorProvider = new GeneratorProviderImpl();
-
     private boolean getGeneratorProviderInvoked;
+    private int initInvocationCount;
+
+    @Override
+    public void init(final ServiceProviderContext context) {
+        initInvocationCount++;
+
+        assertThat(initInvocationCount).isLessThanOrEqualTo(1);
+        assertThat(context).isNotNull();
+    }
 
     @Override
     public GeneratorProvider getGeneratorProvider() {

@@ -27,6 +27,7 @@ import org.instancio.internal.RandomHelper;
 import org.instancio.internal.generator.misc.SupplierAdapter;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.internal.spi.InternalServiceProviderContext;
 import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ServiceLoaders;
@@ -67,9 +68,8 @@ public final class ModelContext<T> {
                     ServiceLoaders.loadAll(InternalContainerFactoryProvider.class),
                     new InternalContainerFactoryProviderImpl());
 
-    private static final Providers PROVIDERS = new Providers(
-            ServiceLoaders.loadAll(InstancioServiceProvider.class));
 
+    private final Providers providers;
     private final Type rootType;
     private final List<Class<?>> rootTypeParameters;
     private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
@@ -107,6 +107,10 @@ public final class ModelContext<T> {
                 builder.generatorSpecSelectors);
 
         subtypeSelectorMap.putAll(generatorSelectorMap.getGeneratorSubtypeMap());
+
+        providers = new Providers(
+                ServiceLoaders.loadAll(InstancioServiceProvider.class),
+                new InternalServiceProviderContext(settings));
     }
 
     private static Integer getMaxDepth(final Integer builderMaxDepth, final Settings settings) {
@@ -130,7 +134,7 @@ public final class ModelContext<T> {
     }
 
     public Providers getServiceProviders() {
-        return PROVIDERS;
+        return providers;
     }
 
     public void reportWarnings() {

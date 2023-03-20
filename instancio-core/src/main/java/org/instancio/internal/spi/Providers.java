@@ -19,6 +19,7 @@ import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioServiceProvider.GeneratorProvider;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
+import org.instancio.spi.ServiceProviderContext;
 
 import java.util.List;
 
@@ -28,7 +29,8 @@ public final class Providers {
     private final List<ProviderEntry<TypeResolver>> typeResolvers;
     private final List<ProviderEntry<TypeInstantiator>> typeInstantiators;
 
-    public Providers(final List<InstancioServiceProvider> spList) {
+    public Providers(final List<InstancioServiceProvider> spList, ServiceProviderContext context) {
+        spList.forEach(sp -> sp.init(context));
         generatorProviders = ProviderEntry.from(spList, InstancioServiceProvider::getGeneratorProvider);
         typeResolvers = ProviderEntry.from(spList, InstancioServiceProvider::getTypeResolver);
         typeInstantiators = ProviderEntry.from(spList, InstancioServiceProvider::getTypeInstantiator);
