@@ -23,6 +23,7 @@ import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
 
 import java.util.Collection;
@@ -72,6 +73,7 @@ final class GeneratorSupport {
         return false;
     }
 
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     static AbstractGenerator<?> unpackGenerator(final Generator<?> generator) {
         if (generator instanceof AbstractGenerator) {
             return (AbstractGenerator<?>) generator;

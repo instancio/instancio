@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.java17.sealed;
+package org.instancio;
 
-import java.time.LocalDate;
+import org.junit.jupiter.api.Test;
 
-public final class SealedFooSubclass extends SealedFoo {
-    private LocalDate fooDate;
-    private String fooString;
+import static org.assertj.core.api.Assertions.assertThat;
 
-    public LocalDate getFooDate() {
-        return fooDate;
-    }
+class ResultTest {
 
-    public String getFooString() {
-        return fooString;
-    }
+    @Test
+    void verifyToString() {
+        assertThat(new Result<>("foo", 123L))
+                .hasToString("Result[seed=123, object=foo]");
 
-    public void setFooString(final String fooString) {
-        this.fooString = fooString;
+        assertThat(new Result<>(null, 123L))
+                .hasToString("Result[seed=123, object=null]");
     }
 }

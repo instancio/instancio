@@ -48,6 +48,7 @@ public final class GeneratorDecorator implements Generator<Object> {
         return new GeneratorDecorator(generator, newHints);
     }
 
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public Generator<?> getDelegate() {
         return delegate;
     }

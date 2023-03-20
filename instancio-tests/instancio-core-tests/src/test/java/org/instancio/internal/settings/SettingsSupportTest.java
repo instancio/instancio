@@ -24,7 +24,7 @@ class SettingsSupportTest {
 
     @Test
     void verifyFunctions() {
-        assertThat(SettingsSupport.getFunction(Boolean.class).apply("true")).isEqualTo(true);
+        assertThat(SettingsSupport.getFunction(Boolean.class).apply("true")).isTrue();
         assertThat(SettingsSupport.getFunction(Byte.class).apply("5")).isEqualTo((byte) 5);
         assertThat(SettingsSupport.getFunction(Short.class).apply("6")).isEqualTo((short) 6);
         assertThat(SettingsSupport.getFunction(Integer.class).apply("7")).isEqualTo(7);
