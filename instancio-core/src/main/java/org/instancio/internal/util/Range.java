@@ -15,11 +15,14 @@
  */
 package org.instancio.internal.util;
 
-public final class IntRange {
-    private final int min;
-    private final int max;
+import java.util.Objects;
 
-    private IntRange(final int min, final int max) {
+public final class Range<T> {
+
+    private final T min;
+    private final T max;
+
+    private Range(final T min, final T max) {
         this.min = min;
         this.max = max;
     }
@@ -31,18 +34,29 @@ public final class IntRange {
      * @param max upper bound
      * @return range with given bounds
      */
-    public static IntRange range(final int min, final int max) {
-        Verify.isTrue(min <= max,
-                "Min must be less than or equal to max: (%s, %s)", min, max);
-        return new IntRange(min, max);
+    public static <T> Range<T> of(final T min, final T max) {
+        return new Range<>(min, max);
     }
 
-    public int min() {
+    public T min() {
         return min;
     }
 
-    public int max() {
+    public T max() {
         return max;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Range)) return false;
+        final Range<?> range = (Range<?>) o;
+        return Objects.equals(min, range.min) && Objects.equals(max, range.max);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(min, max);
     }
 
     @Override

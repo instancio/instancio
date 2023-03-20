@@ -15,16 +15,22 @@
  */
 package org.instancio.internal.generator.lang;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.NumberAsGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.util.Range;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         extends AbstractGenerator<T> implements NumberAsGeneratorSpec<T> {
 
     private T min;
     private T max;
+    private final List<Range<T>> rangeStack = new ArrayList<>();
 
     protected AbstractRandomNumberGeneratorSpec(
             final GeneratorContext context, final T min, final T max, final boolean nullable) {
@@ -35,11 +41,11 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         this.max = max;
     }
 
-    protected T getMin() {
+    protected final T getMin() {
         return min;
     }
 
-    protected T getMax() {
+    protected final T getMax() {
         return max;
     }
 
@@ -71,6 +77,26 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     public NumberAsGeneratorSpec<T> range(final T min, final T max) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         this.max = ApiValidator.notNull(max, "'max' must not be null");
+        rangeStack.add(Range.of(min, max));
         return this;
+    }
+
+    @Override
+    public T generate(final Random random) {
+        if (random.diceRoll(isNullable())) {
+            return null;
+        }
+        setRange(random);
+        return tryGenerateNonNull(random);
+    }
+
+    private void setRange(final Random random) {
+        // if range() and min()/max() are used at the same time, range() takes precedence
+        // therefore, it's ok to overwrite the min/max fields
+        if (!rangeStack.isEmpty()) {
+            final Range<T> range = random.oneOf(rangeStack);
+            min = range.min();
+            max = range.max();
+        }
     }
 }

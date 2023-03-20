@@ -24,8 +24,8 @@ import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.util.BeanValidationUtils;
-import org.instancio.internal.util.IntRange;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.internal.util.Range;
 import org.instancio.settings.Keys;
 
 import java.lang.annotation.Annotation;
@@ -137,7 +137,7 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
             final org.hibernate.validator.constraints.Length length =
                     (org.hibernate.validator.constraints.Length) annotation;
 
-            final IntRange range = BeanValidationUtils.calculateRange(
+            final Range<Integer> range = BeanValidationUtils.calculateRange(
                     length.min(), length.max(), Keys.STRING_MAX_LENGTH.defaultValue());
 
             if (spec instanceof StringGeneratorSpec) {

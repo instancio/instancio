@@ -64,7 +64,7 @@ public abstract class AbstractGenerator<T> implements Generator<T>, NullableGene
      * @return generated value, either a null or non-null
      */
     @Override
-    public final T generate(final Random random) {
+    public T generate(final Random random) {
         return random.diceRoll(isNullable()) ? null : tryGenerateNonNull(random);
     }
 

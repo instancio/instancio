@@ -15,22 +15,20 @@
  */
 package org.instancio.internal.util;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class IntRangeTest {
+class RangeTest {
 
     @Test
-    void verifyToString() {
-        assertThat(IntRange.range(1, 2)).hasToString("Range[1, 2]");
+    void verifyEqualsHashCode() {
+        EqualsVerifier.forClass(Range.class).verify();
     }
 
     @Test
-    void validation() {
-        assertThatThrownBy(() -> IntRange.range(2, 1))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Min must be less than or equal to max: (2, 1)");
+    void verifyToString() {
+        assertThat(Range.of(1, 2)).hasToString("Range[1, 2]");
     }
 }

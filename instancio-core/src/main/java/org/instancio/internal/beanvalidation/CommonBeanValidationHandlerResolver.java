@@ -31,8 +31,8 @@ import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.util.BeanValidationUtils;
-import org.instancio.internal.util.IntRange;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.internal.util.Range;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.Keys;
 
@@ -281,7 +281,7 @@ class CommonBeanValidationHandlerResolver implements AnnotationHandlerResolver {
                                   final Class<?> fieldType) {
 
             if (spec instanceof StringGeneratorSpec) {
-                final IntRange range = BeanValidationUtils.calculateRange(
+                final Range<Integer> range = BeanValidationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), Keys.STRING_MAX_LENGTH.defaultValue());
 
                 final StringGeneratorSpec stringSpec = (StringGeneratorSpec) spec;
@@ -291,17 +291,17 @@ class CommonBeanValidationHandlerResolver implements AnnotationHandlerResolver {
                 }
 
             } else if (spec instanceof CollectionGeneratorSpec<?>) {
-                final IntRange range = BeanValidationUtils.calculateRange(
+                final Range<Integer> range = BeanValidationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), Keys.COLLECTION_MAX_SIZE.defaultValue());
 
                 ((CollectionGeneratorSpec<?>) spec).minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof MapGeneratorSpec<?, ?>) {
-                final IntRange range = BeanValidationUtils.calculateRange(
+                final Range<Integer> range = BeanValidationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), Keys.MAP_MAX_SIZE.defaultValue());
 
                 ((MapGeneratorSpec<?, ?>) spec).minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof ArrayGeneratorSpec<?>) {
-                final IntRange range = BeanValidationUtils.calculateRange(
+                final Range<Integer> range = BeanValidationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), Keys.ARRAY_MAX_LENGTH.defaultValue());
 
                 ((ArrayGeneratorSpec<?>) spec).minLength(range.min()).maxLength(range.max());
