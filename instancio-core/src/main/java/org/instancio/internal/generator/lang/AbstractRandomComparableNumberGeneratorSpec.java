@@ -58,7 +58,7 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
 
     @Override
     public NumberAsGeneratorSpec<T> range(final T min, final T max) {
-        super.range(min, max);
+        super.range(min, max); // validates that neither is null
         ApiValidator.isTrue(min.compareTo(max) <= 0,
                 "Invalid 'range(%s, %s)': lower bound must be less than or equal to upper bound", min, max);
         return this;

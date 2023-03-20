@@ -42,7 +42,7 @@ public final class BeanValidationUtils {
      * @return a range containing the same values as provided, or
      * an updated range with new max, smaller than the original.
      */
-    public static IntRange calculateRange(final int min, final int max, final int maxLimit) {
+    public static Range<Integer> calculateRange(final int min, final int max, final int maxLimit) {
         ApiValidator.isTrue(min <= max, "Invalid bean validation annotation:" +
                 " min must be less than or equal to max: min=%s, max=%s", min, max);
 
@@ -63,7 +63,7 @@ public final class BeanValidationUtils {
             minSize = min;
             maxSize = max;
         }
-        return IntRange.range(minSize, maxSize);
+        return Range.of(minSize, maxSize);
     }
 
     private static boolean isMoreThanDouble(final int min, final int max) {

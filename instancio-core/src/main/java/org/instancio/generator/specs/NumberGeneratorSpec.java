@@ -24,7 +24,7 @@ package org.instancio.generator.specs;
 public interface NumberGeneratorSpec<T extends Number> extends NullableGeneratorSpec<T> {
 
     /**
-     * Lower bound for the random number generator.
+     * Specifies the lower bound.
      *
      * @param min lower bound (inclusive)
      * @return spec builder
@@ -33,7 +33,7 @@ public interface NumberGeneratorSpec<T extends Number> extends NullableGenerator
     NumberGeneratorSpec<T> min(T min);
 
     /**
-     * Upper bound for the random number generator.
+     * Specifies the upper bound.
      *
      * @param max upper bound (inclusive)
      * @return spec builder
@@ -42,7 +42,23 @@ public interface NumberGeneratorSpec<T extends Number> extends NullableGenerator
     NumberGeneratorSpec<T> max(T max);
 
     /**
-     * Range for the random number generator
+     * Specifies the range for the generated number.
+     *
+     * <p>This method can be invoked multiple times to specify several
+     * ranges, for example, the following will generate a random value
+     * within {@code [10-15]} or {@code [20-25]}:
+     *
+     * <pre>{@code
+     *   ints().range(10, 15).range(20, 25)
+     * }</pre>
+     *
+     * <b>Note:</b> this method has higher precedence than {@link #min(Number)}
+     * and {@link #max(Number)}. For example, the following will generate
+     * a number within {@code [1, 5]}:
+     *
+     * <pre>{@code
+     *   ints().range(1, 5).min(95).max(99)
+     * }</pre>
      *
      * @param min lower bound (inclusive)
      * @param max upper bound (inclusive)
@@ -52,7 +68,7 @@ public interface NumberGeneratorSpec<T extends Number> extends NullableGenerator
     NumberGeneratorSpec<T> range(T min, T max);
 
     /**
-     * Specifies the generated value can be {@code null}.
+     * Specifies that a {@code null} can be generated.
      *
      * @return spec builder
      * @since 1.0.1

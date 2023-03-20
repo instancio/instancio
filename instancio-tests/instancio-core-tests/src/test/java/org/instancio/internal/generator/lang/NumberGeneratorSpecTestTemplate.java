@@ -60,7 +60,8 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
         initialMin = asT(INITIAL_MIN);
         initialMax = asT(INITIAL_MAX);
         generator = createGenerator();
-        generator.range(initialMin, initialMax);
+        generator.min(initialMin);
+        generator.max(initialMax);
     }
 
     protected final AbstractRandomNumberGeneratorSpec<T> getGenerator() {
@@ -68,13 +69,13 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     }
 
     @Test
-    void verifyApiMethod() {
+    final void verifyApiMethod() {
         assertThat(generator.apiMethod()).isEqualTo(apiMethod());
     }
 
     @Test
     @DisplayName("newMax < min: new min should be less than newMax by PERCENTAGE")
-    void newMaxIsLessThanMin() {
+    final void newMaxIsLessThanMin() {
         T newMax = asT(initialMin.longValue() - 1);
         generator.max(newMax);
         assertThat(generator.getMin())
@@ -84,7 +85,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
 
     @Test
     @DisplayName("newMax == min: new min should be less than newMax by PERCENTAGE")
-    void newMaxIsEqualToMin() {
+    final void newMaxIsEqualToMin() {
         T newMax = initialMin;
         generator.max(newMax);
         assertThat(generator.getMin())
@@ -95,7 +96,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
 
     @Test
     @DisplayName("newMin > max: new max should be set to greater than newMin by PERCENTAGE")
-    void newMinIsGreaterThanMax() {
+    final void newMinIsGreaterThanMax() {
         T newMin = asT(initialMax.longValue() + 1);
         generator.min(newMin);
         assertThat(generator.getMax()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
@@ -103,7 +104,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
 
     @Test
     @DisplayName("newMin == max: max should remain unchanged")
-    void newMinIsEqualToMax() {
+    final void newMinIsEqualToMax() {
         T newMin = asT(initialMax.longValue());
         generator.min(newMin);
 
@@ -119,7 +120,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     }
 
     @Test
-    void range() {
+    final void range() {
         final T min = asT(2L);
         final T max = asT(3L);
         generator.range(min, max);
@@ -128,7 +129,24 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     }
 
     @Test
-    void rangeWithEqualMinMax() {
+    final void rangeStack() {
+        final T range1 = asT(1L);
+        final T range2 = asT(5L);
+
+        // equal lower/upper bounds to simplify testing decimal ranges
+        generator
+                .range(range1, range1)
+                .range(range2, range2);
+
+        final T result = generator.generate(RANDOM);
+
+        assertThat(result.compareTo(range1) == 0 || result.compareTo(range2) == 0)
+                .as("Expected %s to be within %s-%s or %s-%s", result, range1, range1, range2, range2)
+                .isTrue();
+    }
+
+    @Test
+    final void rangeWithEqualMinMax() {
         final T min = asT(3L);
         final T max = asT(3L);
         generator.range(min, max);
@@ -138,21 +156,21 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     }
 
     @Test
-    void minValidation() {
+    final void minValidation() {
         assertThatThrownBy(() -> generator.min(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessage("'min' must not be null");
     }
 
     @Test
-    void maxValidation() {
+    final void maxValidation() {
         assertThatThrownBy(() -> generator.max(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessage("'max' must not be null");
     }
 
     @Test
-    void rangeValidation() {
+    final void rangeValidation() {
         assertThatThrownBy(() -> generator.range(null, initialMax))
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("'min' must not be null");
@@ -163,7 +181,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     }
 
     @Test
-    void rangeThrowsErrorIfMinIsGreaterThanMax() {
+    final void rangeThrowsErrorIfMinIsGreaterThanMax() {
         final T min = asT(3L);
         final T max = asT(2L);
         final String errorRange = String.format("%s, %s", min, max);
@@ -173,7 +191,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     }
 
     @Test
-    void nullable() {
+    final void nullable() {
         final Set<T> results = new HashSet<>();
 
         generator.nullable();

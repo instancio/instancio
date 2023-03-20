@@ -30,7 +30,7 @@ class BeanValidationUtilsTest {
     void minAndMaxAreZero() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final int maxLimit = ints().range(0, 100).get();
-            final IntRange result = BeanValidationUtils.calculateRange(0, 0, maxLimit);
+            final Range<Integer> result = BeanValidationUtils.calculateRange(0, 0, maxLimit);
             assertThat(result.min()).isEqualTo(result.max()).isZero();
         }
     }
@@ -41,7 +41,7 @@ class BeanValidationUtilsTest {
             final int veryMaxLarge = ints().range(Integer.MAX_VALUE - 10000, Integer.MAX_VALUE).get();
             final int maxLimit = ints().range(1, 1000).get();
 
-            final IntRange result = BeanValidationUtils.calculateRange(0, veryMaxLarge, maxLimit);
+            final Range<Integer> result = BeanValidationUtils.calculateRange(0, veryMaxLarge, maxLimit);
             assertThat(result.min()).isOne();
             assertThat(result.max()).isEqualTo(maxLimit);
         }
@@ -59,7 +59,7 @@ class BeanValidationUtilsTest {
 
             final int expectedMax = (min * (100 + Constants.RANGE_ADJUSTMENT_PERCENTAGE)) / 100;
 
-            final IntRange result = BeanValidationUtils.calculateRange(min, max, maxLimit);
+            final Range<Integer> result = BeanValidationUtils.calculateRange(min, max, maxLimit);
             assertThat(result.min()).isEqualTo(min);
             assertThat(result.max()).isEqualTo(expectedMax);
         }
@@ -74,7 +74,7 @@ class BeanValidationUtilsTest {
             // irrelevant for this test
             final int maxLimit = ints().range(Integer.MIN_VALUE, Integer.MAX_VALUE).get();
 
-            final IntRange result = BeanValidationUtils.calculateRange(min, max, maxLimit);
+            final Range<Integer> result = BeanValidationUtils.calculateRange(min, max, maxLimit);
             assertThat(result.min()).isEqualTo(min);
             assertThat(result.max()).isEqualTo(max);
         }
@@ -90,7 +90,7 @@ class BeanValidationUtilsTest {
             final int expectedMin = 1;
             final int expectedMax = Math.min(max, maxLimit);
 
-            final IntRange result = BeanValidationUtils.calculateRange(min, max, maxLimit);
+            final Range<Integer> result = BeanValidationUtils.calculateRange(min, max, maxLimit);
 
             assertThat(result.min()).isEqualTo(expectedMin);
             assertThat(result.max()).isEqualTo(expectedMax);
