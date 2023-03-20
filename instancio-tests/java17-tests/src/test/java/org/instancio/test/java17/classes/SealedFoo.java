@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.java17.sealed;
+package org.instancio.test.java17.classes;
 
 public sealed class SealedFoo permits SealedFooSubclass {
     private FooRecord fooRecord;

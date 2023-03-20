@@ -13,7 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.java17.sealed;
+package org.instancio.test.java17.classes;
 
-public record FooRecord(Integer fooId, String fooValue) {
+import java.time.LocalDate;
+
+public final class SealedFooSubclass extends SealedFoo {
+    private LocalDate fooDate;
+    private String fooString;
+
+    public LocalDate getFooDate() {
+        return fooDate;
+    }
+
+    public String getFooString() {
+        return fooString;
+    }
+
+    public void setFooString(final String fooString) {
+        this.fooString = fooString;
+    }
 }

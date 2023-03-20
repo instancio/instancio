@@ -15,14 +15,14 @@
  */
 package org.instancio.test.java17.generator;
 
-import org.instancio.generator.Generator;
 import org.instancio.Instancio;
 import org.instancio.Random;
-import org.instancio.generator.Hints;
 import org.instancio.generator.AfterGenerate;
+import org.instancio.generator.Generator;
+import org.instancio.generator.Hints;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.java17.sealed.FooRecord;
-import org.instancio.test.support.java17.sealed.SealedFooSubclass;
+import org.instancio.test.java17.classes.FooRecord;
+import org.instancio.test.java17.classes.SealedFooSubclass;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

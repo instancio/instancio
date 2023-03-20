@@ -125,10 +125,12 @@ class ExceptionHandlerTest {
     @DisplayName("Verify API exception is propagated even if 'fail on error' is disabled")
     @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "false")
     void propagatesApiExceptionWithVoidFunction() {
-        assertThatThrownBy(() -> ExceptionHandler.conditionalFailOnError(functionThrowing(INSTANCIO_API_EXCEPTION)))
+        final VoidFunction voidFunction = functionThrowing(INSTANCIO_API_EXCEPTION);
+        assertThatThrownBy(() -> ExceptionHandler.conditionalFailOnError(voidFunction))
                 .isSameAs(INSTANCIO_API_EXCEPTION);
 
-        assertThatThrownBy(() -> conditionalFailOnError(supplierThrowing(INSTANCIO_API_EXCEPTION)))
+        final Supplier<?> supplier = supplierThrowing(INSTANCIO_API_EXCEPTION);
+        assertThatThrownBy(() -> conditionalFailOnError(supplier))
                 .isSameAs(INSTANCIO_API_EXCEPTION);
     }
 
@@ -136,12 +138,14 @@ class ExceptionHandlerTest {
     @DisplayName("Verify errors are wrapped in InstancioException and include a request to submit a bug report")
     @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
     void failWithSupplier() {
-        assertThatThrownBy(() -> conditionalFailOnError(supplierThrowing(RUNTIME_EXCEPTION)))
+        final Supplier<?> supplier = supplierThrowing(RUNTIME_EXCEPTION);
+        assertThatThrownBy(() -> conditionalFailOnError(supplier))
                 .isExactlyInstanceOf(InstancioException.class)
                 .hasCause(RUNTIME_EXCEPTION)
                 .hasMessageContainingAll(SUBMIT_BUG_REPORT_MESSAGE);
 
-        assertThatThrownBy(() -> ExceptionHandler.conditionalFailOnError(functionThrowing(THROWABLE)))
+        final VoidFunction voidFunction = functionThrowing(THROWABLE);
+        assertThatThrownBy(() -> conditionalFailOnError(voidFunction))
                 .isExactlyInstanceOf(InstancioException.class)
                 .hasCause(THROWABLE)
                 .hasMessageContainingAll(SUBMIT_BUG_REPORT_MESSAGE);
