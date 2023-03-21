@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.Random;
+import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.beanvalidation.BeanValidationProcessor;
 import org.instancio.internal.beanvalidation.NoopBeanValidationProvider;
@@ -32,11 +33,13 @@ import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
+import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Modifier;
+import java.util.Optional;
 
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
@@ -44,6 +47,7 @@ class GeneratorFacade {
     private final ModelContext<?> context;
     private final Random random;
     private final NodeHandler[] nodeHandlers;
+    private final GeneratorResolver generatorResolver;
 
     GeneratorFacade(final ModelContext<?> context) {
         this.context = context;
@@ -52,7 +56,7 @@ class GeneratorFacade {
         final GeneratorContext generatorContext = new GeneratorContext(
                 context.getSettings(), random);
 
-        final GeneratorResolver generatorResolver = new GeneratorResolver(
+        this.generatorResolver = new GeneratorResolver(
                 generatorContext, context.getServiceProviders().getGeneratorProviders());
 
         final Instantiator instantiator = new Instantiator(
@@ -78,6 +82,11 @@ class GeneratorFacade {
 
     private boolean hasStaticField(final InternalNode node) {
         return node.getField() != null && Modifier.isStatic(node.getField().getModifiers());
+    }
+
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
+    Optional<Generator<?>> getGenerator(final InternalNode node) {
+        return generatorResolver.get(node);
     }
 
     GeneratorResult generateNodeValue(final InternalNode node) {

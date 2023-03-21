@@ -15,17 +15,23 @@
  */
 package org.instancio.spi.tests;
 
+import org.example.FooRecord;
 import org.example.generator.CustomIntegerGenerator;
 import org.example.spi.CustomGeneratorProvider;
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
+import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generator.Generator;
 import org.instancio.spi.InstancioSpiException;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.PhoneWithType;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -77,20 +83,71 @@ class GeneratorFromSpiTest {
                 .isBetween(CustomIntegerGenerator.MIN, CustomIntegerGenerator.MAX);
     }
 
+
     /**
      * @see CustomGeneratorProvider.CustomAddressGenerator
      */
-    @Test
-    void generatorWithCustomAfterGenerateAction() {
-        final Address address = Instancio.create(Address.class);
+    @Nested
+    class AddressGeneratorTest {
+        @Test
+        void generatorWithCustomAfterGenerateAction() {
+            final Address address = Instancio.create(Address.class);
 
-        // Set by the generator
-        assertThat(address.getCountry()).isEqualTo(
-                CustomGeneratorProvider.CustomAddressGenerator.COUNTRY);
+            // Set by the generator
+            assertThat(address.getCountry()).isEqualTo(
+                    CustomGeneratorProvider.CustomAddressGenerator.COUNTRY);
 
-        // The generator has AfterGenerate hint set to APPLY_SELECTORS,
-        // therefore all fields except the one set by the generator should be null
-        assertThat(address).hasAllNullFieldsOrPropertiesExcept("country");
+            // The generator has AfterGenerate hint set to APPLY_SELECTORS,
+            // therefore all fields except the one set by the generator should be null
+            assertThat(address).hasAllNullFieldsOrPropertiesExcept("country");
+        }
+
+        @Test
+        void overrideFieldValueSetByCustomGenerator() {
+            final String override = "override";
+            final Address address = Instancio.of(Address.class)
+                    .set(field(Address::getCountry), override)
+                    .create();
+
+            assertThat(address.getCountry()).isEqualTo(override);
+
+            assertThat(address).hasAllNullFieldsOrPropertiesExcept("country");
+        }
+    }
+
+    @Nested
+    class RecordTest {
+        @Test
+        void createRecord() {
+            final FooRecord result = Instancio.create(FooRecord.class);
+
+            assertThat(result.value()).isEqualTo(CustomGeneratorProvider.FOO_RECORD_VALUE);
+        }
+
+        @Test
+        void overrideRecordSpiGenerator() {
+            final FooRecord override = new FooRecord("override");
+            final FooRecord result = Instancio.of(FooRecord.class)
+                    .supply(all(FooRecord.class), random -> override)
+                    .create();
+
+            assertThat(result).isSameAs(override);
+        }
+
+        /**
+         * If a generator supplies an entire record, it is no longer possible
+         * to customise the record's field via selectors due to its immutability.
+         */
+        @Test
+        @FeatureTag(Feature.UNSUPPORTED)
+        void overrideRecordField() {
+            final InstancioApi<FooRecord> api = Instancio.of(FooRecord.class)
+                    .set(field(FooRecord::value), "override");
+
+            assertThatThrownBy(api::create)
+                    .isExactlyInstanceOf(UnusedSelectorException.class)
+                    .hasMessageContaining("field(FooRecord, \"value\")");
+        }
     }
 
     /**
