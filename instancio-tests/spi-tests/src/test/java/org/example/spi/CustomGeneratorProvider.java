@@ -15,6 +15,7 @@
  */
 package org.example.spi;
 
+import org.example.FooRecord;
 import org.example.generator.CustomIntegerGenerator;
 import org.instancio.Gen;
 import org.instancio.Node;
@@ -41,15 +42,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CustomGeneratorProvider implements InstancioServiceProvider {
 
     public static final String STRING_GENERATOR_VALUE = "overridden string generator from SPI Generator!";
+    public static final String FOO_RECORD_VALUE = "expected-foo-value";
     public static final Pattern PATTERN_GENERATOR_VALUE = Pattern.compile("baz");
 
-    private static final Map<Class<?>, GeneratorSpec<?>> GENERATOR_MAP = new HashMap<Class<?>, GeneratorSpec<?>>() {{
+    private static final Map<Class<?>, GeneratorSpec<?>> GENERATOR_MAP = new HashMap<>() {{
         put(String.class, new StringGeneratorFromSpi());
         put(Pattern.class, new PatternGeneratorFromSpi());
         put(int.class, new CustomIntegerGenerator());
         put(Integer.class, new CustomIntegerGenerator());
         put(Address.class, new CustomAddressGenerator());
         put(Phone.class, new CustomPhoneGenerator());
+        put(FooRecord.class, (Generator<?>) random -> new FooRecord(FOO_RECORD_VALUE));
 
         // Error-handling: generator spec does not implement the Generator interface
         put(Float.class, new CustomFloatSpec());
