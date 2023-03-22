@@ -15,18 +15,13 @@
  */
 package org.instancio.internal.util;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
-import org.slf4j.LoggerFactory;
 
 import java.util.function.Supplier;
 
@@ -48,21 +43,6 @@ class ExceptionHandlerTest {
     private static final InstancioException INSTANCIO_API_EXCEPTION = new InstancioApiException(EXCEPTION_MSG);
     private static final RuntimeException RUNTIME_EXCEPTION = new RuntimeException(EXCEPTION_MSG);
     private static final Throwable THROWABLE = new Throwable(EXCEPTION_MSG);
-
-    private static final Logger LOG = (Logger) LoggerFactory.getLogger(ExceptionHandler.class);
-    private static Level originalLogLevel;
-
-    // Suppress test stacktraces in build output
-    @BeforeAll
-    static void beforeAll() {
-        originalLogLevel = LOG.getEffectiveLevel();
-        LOG.setLevel(Level.OFF);
-    }
-
-    @AfterAll
-    static void afterAll() {
-        LOG.setLevel(originalLogLevel);
-    }
 
     @Nested
     class CausedByTest {
