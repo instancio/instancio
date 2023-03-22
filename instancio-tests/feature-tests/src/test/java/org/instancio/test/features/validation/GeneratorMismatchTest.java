@@ -128,6 +128,7 @@ class GeneratorMismatchTest {
 
     @Test
     void assertText() {
+        assertMessageContains("csv()", gen -> gen.text().csv());
         assertMessageContains("loremIpsum()", gen -> gen.text().loremIpsum());
         assertMessageContains("pattern()", gen -> gen.text().pattern("foo"));
         assertMessageContains("uuid()", gen -> gen.text().uuid());

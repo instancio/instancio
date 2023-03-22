@@ -18,8 +18,10 @@ package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.specs.CsvGeneratorSpec;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.generator.specs.UUIDStringGeneratorSpec;
+import org.instancio.internal.generator.text.CsvGenerator;
 import org.instancio.internal.generator.text.LoremIpsumGenerator;
 import org.instancio.internal.generator.text.TextPatternGenerator;
 import org.instancio.internal.generator.text.UUIDStringGenerator;
@@ -35,6 +37,16 @@ public class TextGenerators {
 
     public TextGenerators(final GeneratorContext context) {
         this.context = context;
+    }
+
+    /**
+     * Generates CSV.
+     *
+     * @return CSV generator
+     * @since 2.12.0
+     */
+    public CsvGeneratorSpec csv() {
+        return new CsvGenerator(context);
     }
 
     /**

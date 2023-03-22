@@ -16,8 +16,10 @@
 package org.instancio.generators;
 
 import org.instancio.generator.ValueSpec;
+import org.instancio.generator.specs.CsvSpec;
 import org.instancio.generator.specs.LoremIpsumSpec;
 import org.instancio.generator.specs.UUIDStringSpec;
+import org.instancio.internal.generator.text.CsvGenerator;
 import org.instancio.internal.generator.text.LoremIpsumGenerator;
 import org.instancio.internal.generator.text.TextPatternGenerator;
 import org.instancio.internal.generator.text.UUIDStringGenerator;
@@ -28,6 +30,16 @@ import org.instancio.internal.generator.text.UUIDStringGenerator;
  * @since 2.6.0
  */
 public final class TextSpecs {
+
+    /**
+     * Generates CSV.
+     *
+     * @return CSV generator
+     * @since 2.12.0
+     */
+    public CsvSpec csv() {
+        return new CsvGenerator();
+    }
 
     /**
      * Generates "Lorem ipsum" text.
