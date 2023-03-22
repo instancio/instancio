@@ -62,7 +62,7 @@ extra:
   InstancioServiceProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/InstancioServiceProvider.html" target="_blank">InstancioServiceProvider</a>'
   Generator:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/Generator.html" target="_blank">Generator</a>'
   GeneratorContext:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/GeneratorContext.html" target="_blank">GeneratorContext</a>'
-  GeneratorProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/GeneratorProvider.html" target="_blank">GeneratorProvider</a>'
+  GeneratorProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/InstancioServiceProvider.GeneratorProvider.html" target="_blank">GeneratorProvider</a>'
   Generators:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generators/Generators.html" target="_blank">Generators</a>'
   Hints:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/Hints.html" target="_blank">Hints</a>'
   Mode:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Mode.html" target="_blank">Mode</a>'

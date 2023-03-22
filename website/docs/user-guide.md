@@ -1268,10 +1268,62 @@ The `AfterGenerate` enum defines the following values:
     This action will cause all the values to be overwritten with random data.
     This is the default mode the engine operates in when using internal generators.
 
+#### Custom Generator Example
+
+To illustrate the above with an example, consider the following generator that creates an instance of a `Phone`:
+
+```java linenums="1"
+class PhoneGenerator implements Generator<Phone> {
+
+    @Override
+    public Phone generate(Random random) {
+        int countryCodeLength = random.intRange(1, 3);
+
+        return Phone.builder()
+            .countryCode("+" + random.digits(countryCodeLength))
+            .number(random.digits(8))
+            .build();
+    }
+}
+```
+
+Since no `hints()` are specified, the default `AfterGenerate` action is `POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`.
+Therefore, the generated object can be customised using selectors:
+
+```java linenums="1"
+Phone phone = Instancio.of(Phone.class)
+    .set(field(Phone::getCountryCode), "+55")
+    .create();
+```
+
+This will produce an object like `Phone[countryCode="+55", number="83703291"]`, where the `number`
+is set by the `PhoneGenerator`, and the `countryCode` is overridden by applying the selector.
+For certain use cases, it may be necessary to prevent deliberate or accidental modification
+of generated objects. In such cases, the generator can include the `DO_NOT_MODIFY` hint as shown below:
+
+```java linenums="1"
+class PhoneGenerator implements Generator<Phone> {
+
+    @Override
+    public Phone generate(Random random) { /* same as before */ }
+
+    @Override
+    public Hints hints() {
+        return Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
+    }
+}
+```
 
 In summary, a generator can instantiate an object and instruct the engine
 what should be done with the object after `generate()` method returns using
 the `AfterGenerate` hint.
+
+
+!!! warning "Generating `record` objects"
+    It should be noted that if a generator returns an instance of a `record`, then the created object cannot
+    be modified regardless of the `AfterGenerate` hint. This is due to immutability of records,
+    since they cannot be modified after construction.
+
 
 !!! info "Custom generators can also be specified using the [Instancio Service Provider Interface](#instancio-service-provider-interface)"
 
@@ -2038,8 +2090,10 @@ Animal animal = Instancio.create(Animal.class);
 assertThat(animal).isExactlyInstanceOf(Cat.class);
 ```
 
-Using `TypeResolver` it is also possible to resolve implementation classes
-via classpath scanning, for example, using third-party libraries.
+!!! info "Scanning the Classpath"
+    Using `TypeResolver` it is also possible to resolve implementation classes
+    via classpath scanning, for example, using a third-party library.
+    For a sample implementation, see [`type-resolver-sample`](https://github.com/instancio/instancio-samples).
 
 
 ## `TypeInstantiator`
