@@ -16,6 +16,7 @@
 
 package org.instancio.generators;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.CsvGeneratorSpec;
@@ -45,6 +46,7 @@ public class TextGenerators {
      * @return CSV generator
      * @since 2.12.0
      */
+    @ExperimentalApi
     public CsvGeneratorSpec csv() {
         return new CsvGenerator(context);
     }

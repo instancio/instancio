@@ -15,6 +15,7 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 
@@ -25,6 +26,7 @@ import java.util.function.Predicate;
  *
  * @since 2.12.0
  */
+@ExperimentalApi
 public interface CsvGeneratorSpec extends GeneratorSpec<String> {
 
     /**

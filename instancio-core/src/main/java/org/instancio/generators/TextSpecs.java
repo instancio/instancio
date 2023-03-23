@@ -15,6 +15,7 @@
  */
 package org.instancio.generators;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.ValueSpec;
 import org.instancio.generator.specs.CsvSpec;
 import org.instancio.generator.specs.LoremIpsumSpec;
@@ -37,6 +38,7 @@ public final class TextSpecs {
      * @return CSV generator
      * @since 2.12.0
      */
+    @ExperimentalApi
     public CsvSpec csv() {
         return new CsvGenerator();
     }
