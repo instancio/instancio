@@ -17,22 +17,28 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.AfterGenerate;
-import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
-import org.instancio.generator.specs.EnumGeneratorSpec;
+import org.instancio.generator.specs.EnumAsGeneratorSpec;
+import org.instancio.generator.specs.EnumSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.support.Global;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 
-public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E> implements EnumGeneratorSpec<E>, Generator<E> {
+public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E>
+        implements EnumSpec<E>, EnumAsGeneratorSpec<E> {
 
     private final Class<E> enumClass;
     private final EnumSet<E> values;
     private EnumSet<E> valuesWithExclusions;
+
+    public EnumGenerator(final Class<E> enumClass) {
+        this(Global.generatorContext(), enumClass);
+    }
 
     public EnumGenerator(final GeneratorContext context, final Class<E> enumClass) {
         super(context);
@@ -48,7 +54,7 @@ public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E> imple
 
     @Override
     @SafeVarargs
-    public final EnumGeneratorSpec<E> excluding(final E... values) {
+    public final EnumGenerator<E> excluding(final E... values) {
         ApiValidator.notNull(values, "Excluded values must not be null: excluding()");
 
         // Allow passing empty array, meaning 'no exclusions'

@@ -22,7 +22,7 @@ import org.instancio.generator.specs.BooleanAsGeneratorSpec;
 import org.instancio.generator.specs.CharacterAsGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.EmitGeneratorSpec;
-import org.instancio.generator.specs.EnumGeneratorSpec;
+import org.instancio.generator.specs.EnumAsGeneratorSpec;
 import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.HashAsGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
@@ -158,7 +158,7 @@ public class Generators {
      * @param <E>       enum type
      * @return customised generator
      */
-    public <E extends Enum<E>> EnumGeneratorSpec<E> enumOf(final Class<E> enumClass) {
+    public <E extends Enum<E>> EnumAsGeneratorSpec<E> enumOf(final Class<E> enumClass) {
         return new EnumGenerator<>(context, enumClass);
     }
 
