@@ -15,31 +15,43 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
+import org.instancio.Model;
+import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.ValueSpec;
 
 /**
- * Generator spec for {@link Enum Enums}.
+ * Spec for generating enums.
  *
- * @since 1.6.0
+ * @since 2.12.0
  */
-public interface EnumGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<E> {
+public interface EnumSpec<E extends Enum<E>> extends ValueSpec<E>, EnumGeneratorSpec<E> {
 
     /**
-     * Generate an enum while excluding the specified values.
-     * The argument can be an empty array, but not {@code null}.
+     * {@inheritDoc}
      *
-     * @param values to exclude
-     * @return spec builder
-     * @since 1.6.0
+     * @since 2.12.0
      */
     @SuppressWarnings("unchecked")
-    EnumGeneratorSpec<E> excluding(E... values);
+    @Override
+    EnumSpec<E> excluding(E... values);
 
     /**
-     * Indicates that {@code null} value can be generated.
+     * {@inheritDoc}
      *
-     * @return spec builder
-     * @since 1.6.0
+     * @since 2.12.0
      */
-    EnumGeneratorSpec<E> nullable();
+    @Override
+    EnumSpec<E> nullable();
+
+    /**
+     * <b>{@code toModel()} is not supported by this spec.</b>
+     *
+     * <p>{@inheritDoc}
+     *
+     * @since 2.12.0
+     */
+    @Override
+    default Model<E> toModel() {
+        throw new InstancioApiException("enumOf() spec does not support toModel()");
+    }
 }

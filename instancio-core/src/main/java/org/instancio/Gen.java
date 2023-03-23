@@ -20,6 +20,7 @@ import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.generator.specs.ByteSpec;
 import org.instancio.generator.specs.CharacterSpec;
 import org.instancio.generator.specs.DoubleSpec;
+import org.instancio.generator.specs.EnumSpec;
 import org.instancio.generator.specs.FloatSpec;
 import org.instancio.generator.specs.HashSpec;
 import org.instancio.generator.specs.IntegerSpec;
@@ -42,6 +43,7 @@ import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.ByteGenerator;
 import org.instancio.internal.generator.lang.CharacterGenerator;
 import org.instancio.internal.generator.lang.DoubleGenerator;
+import org.instancio.internal.generator.lang.EnumGenerator;
 import org.instancio.internal.generator.lang.FloatGenerator;
 import org.instancio.internal.generator.lang.IntegerGenerator;
 import org.instancio.internal.generator.lang.LongGenerator;
@@ -156,6 +158,18 @@ public final class Gen {
      */
     public static DoubleSpec doubles() {
         return new DoubleGenerator();
+    }
+
+    /**
+     * Generates enum values.
+     *
+     * @param enumClass the enum class
+     * @param <E>       enum type
+     * @return value spec builder
+     * @since 2.12.0
+     */
+    public static <E extends Enum<E>> EnumSpec<E> enumOf(final Class<E> enumClass) {
+        return new EnumGenerator<>(enumClass);
     }
 
     /**

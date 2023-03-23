@@ -15,31 +15,20 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.AsStringGeneratorSpec;
 
 /**
  * Generator spec for {@link Enum Enums}.
  *
- * @since 1.6.0
+ * @since 2.12.0
  */
-public interface EnumGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<E> {
+public interface EnumAsGeneratorSpec<E extends Enum<E>>
+        extends AsGeneratorSpec<E>, AsStringGeneratorSpec<E>, EnumGeneratorSpec<E> {
 
-    /**
-     * Generate an enum while excluding the specified values.
-     * The argument can be an empty array, but not {@code null}.
-     *
-     * @param values to exclude
-     * @return spec builder
-     * @since 1.6.0
-     */
     @SuppressWarnings("unchecked")
-    EnumGeneratorSpec<E> excluding(E... values);
+    @Override
+    EnumAsGeneratorSpec<E> excluding(E... values);
 
-    /**
-     * Indicates that {@code null} value can be generated.
-     *
-     * @return spec builder
-     * @since 1.6.0
-     */
-    EnumGeneratorSpec<E> nullable();
+    @Override
+    EnumAsGeneratorSpec<E> nullable();
 }
