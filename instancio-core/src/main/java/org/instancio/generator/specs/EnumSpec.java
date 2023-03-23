@@ -22,6 +22,7 @@ import org.instancio.generator.ValueSpec;
 /**
  * Spec for generating enums.
  *
+ * @param <E> enum type
  * @since 2.12.0
  */
 public interface EnumSpec<E extends Enum<E>> extends ValueSpec<E>, EnumGeneratorSpec<E> {

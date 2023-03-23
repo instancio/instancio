@@ -18,8 +18,9 @@ package org.instancio.generator.specs;
 import org.instancio.generator.AsStringGeneratorSpec;
 
 /**
- * Generator spec for {@link Enum Enums}.
+ * Spec for {@link Enum Enums} that supports {@link AsGeneratorSpec}.
  *
+ * @param <E> enum type
  * @since 2.12.0
  */
 public interface EnumAsGeneratorSpec<E extends Enum<E>>

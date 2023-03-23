@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorSpec;
 /**
  * Generator spec for {@link Enum Enums}.
  *
+ * @param <E> enum type
  * @since 1.6.0
  */
 public interface EnumGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<E> {
