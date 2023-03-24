@@ -87,7 +87,11 @@ class GeneratorProviderFacade {
 
     @SuppressWarnings("PMD.AvoidBranchingStatementAsLastInLoop")
     private Generator<?> resolveViaNewSPI(final InternalNode internalNode) {
-        final Node node = new NodeImpl(internalNode.getTargetClass(), internalNode.getField());
+        InternalNode parentNode = internalNode.getParent();
+        final Node node = new NodeImpl(
+            internalNode.getTargetClass(),
+            internalNode.getField(),
+            parentNode == null ? null : parentNode.getTargetClass());
 
         for (ProviderEntry<InstancioServiceProvider.GeneratorProvider> entry : providerEntries) {
             final GeneratorSpec<?> spec = entry.getProvider().getGenerator(node, generators);

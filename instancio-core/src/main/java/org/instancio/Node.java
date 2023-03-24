@@ -61,4 +61,5 @@ public interface Node {
      */
     Field getField();
 
+    Class<?> getParentTargetClass();
 }

@@ -15,18 +15,18 @@
  */
 package org.instancio.internal.selectors;
 
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import org.instancio.Node;
 import org.instancio.PredicateSelector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 public final class PredicateSelectorImpl implements PredicateSelector, Flattener, UnusedSelectorDescription {
     private static final Predicate<Field> NON_NULL_FIELD = Objects::nonNull;
@@ -35,15 +35,17 @@ public final class PredicateSelectorImpl implements PredicateSelector, Flattener
     private final SelectorTargetKind selectorTargetKind;
     private final Predicate<Field> fieldPredicate;
     private final Predicate<Class<?>> classPredicate;
+    private final Predicate<Node> nodePredicate;
     private final String apiInvocationDescription;
     private final Throwable stackTraceHolder;
 
     public PredicateSelectorImpl(final SelectorTargetKind selectorTargetKind,
                                  @Nullable final Predicate<Field> fieldPredicate,
                                  @Nullable final Predicate<Class<?>> classPredicate,
+                                 @Nullable final Predicate<Node> nodePredicate,
                                  @Nullable final String apiInvocationDescription) {
 
-        this(selectorTargetKind, fieldPredicate, classPredicate, apiInvocationDescription, new Throwable());
+        this(selectorTargetKind, fieldPredicate, classPredicate, nodePredicate, apiInvocationDescription, new Throwable());
     }
 
     /**
@@ -56,12 +58,14 @@ public final class PredicateSelectorImpl implements PredicateSelector, Flattener
     PredicateSelectorImpl(final SelectorTargetKind selectorTargetKind,
                           @Nullable final Predicate<Field> fieldPredicate,
                           @Nullable final Predicate<Class<?>> classPredicate,
+                          @Nullable final Predicate<Node> nodePredicate,
                           @Nullable final String apiInvocationDescription,
                           final Throwable stackTraceHolder) {
 
         this.selectorTargetKind = selectorTargetKind;
         this.fieldPredicate = fieldPredicate == null ? null : NON_NULL_FIELD.and(fieldPredicate);
         this.classPredicate = classPredicate == null ? null : NON_NULL_TYPE.and(classPredicate);
+        this.nodePredicate = nodePredicate;
         this.apiInvocationDescription = apiInvocationDescription;
         this.stackTraceHolder = stackTraceHolder;
     }
@@ -88,11 +92,17 @@ public final class PredicateSelectorImpl implements PredicateSelector, Flattener
         return classPredicate;
     }
 
+    public Predicate<Node> getNodePredicate() {
+        return nodePredicate;
+    }
+
     private String buildCustomPredicateToString() {
         if (selectorTargetKind == SelectorTargetKind.FIELD) {
             return "fields(Predicate<Field>)";
         } else if (selectorTargetKind == SelectorTargetKind.CLASS) {
             return "types(Predicate<Class>)";
+        } else if (selectorTargetKind == SelectorTargetKind.NODE) {
+            return "types(Predicate<Class>) and fields(Predicate<Field>)";
         }
         // should not be reachable
         throw new InstancioException("Unknown selector kind: " + selectorTargetKind);

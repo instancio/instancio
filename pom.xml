@@ -75,6 +75,7 @@
         <module>instancio-junit</module>
         <module>instancio-processor</module>
         <module>instancio-tests</module>
+        <module>instancio-jpa</module>
     </modules>
 
     <profiles>

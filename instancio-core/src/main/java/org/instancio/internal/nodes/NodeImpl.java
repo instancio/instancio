@@ -25,10 +25,12 @@ public final class NodeImpl implements Node {
 
     private final Class<?> targetClass;
     private final Field field;
+    private final Class<?> parentTargetClass;
 
-    public NodeImpl(final Class<?> targetClass, final Field field) {
+    public NodeImpl(final Class<?> targetClass, final Field field, final Class<?> parentTargetClass) {
         this.targetClass = Verify.notNull(targetClass, "targetClass is null");
         this.field = field;
+        this.parentTargetClass = parentTargetClass;
     }
 
     @Override
@@ -42,23 +44,30 @@ public final class NodeImpl implements Node {
     }
 
     @Override
+    public Class<?> getParentTargetClass() {
+        return parentTargetClass;
+    }
+
+    @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof NodeImpl)) return false;
         final NodeImpl node = (NodeImpl) o;
         return Objects.equals(targetClass, node.targetClass)
-                && Objects.equals(field, node.field);
+                && Objects.equals(field, node.field)
+                && Objects.equals(parentTargetClass, node.parentTargetClass);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(targetClass, field);
+        return Objects.hash(targetClass, field, parentTargetClass);
     }
 
     @Override
     public String toString() {
-        return String.format("Node[targetClass=%s, field=%s]",
+        return String.format("Node[targetClass=%s, field=%s, parentTargetClass=%s]",
                 targetClass.getName(),
-                field == null ? null : field.getName());
+                field == null ? null : field.getName(),
+                parentTargetClass == null ? null : parentTargetClass.getName());
     }
 }

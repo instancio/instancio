@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.selectors;
+package org.instancio.jpa.generator;
 
-/**
- * Represents what is being targeted, a field or a class.
- */
-public enum SelectorTargetKind {
+public class LongSequenceGenerator extends AbstractNumberSequenceGenerator<LongSequenceGenerator, Long> {
+    public LongSequenceGenerator() {
+        super(0L, Long.MAX_VALUE);
+    }
 
-    /**
-     * Field target.
-     */
-    FIELD,
+    @Override
+    protected Long increment(Long value) {
+        return value + 1;
+    }
 
-    /**
-     * Class target.
-     */
-    CLASS,
-
-    NODE
+    @Override
+    protected boolean isGreater(Long v1, Long v2) {
+        return v1 > v2;
+    }
 }

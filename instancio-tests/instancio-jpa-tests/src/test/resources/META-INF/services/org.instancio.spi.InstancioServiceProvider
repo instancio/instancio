@@ -1,0 +1,2 @@
+# Strangely, we need to specify this here again so that the provider is discovered in tests
+org.instancio.jpa.InstancioJpaServiceProvider

@@ -20,6 +20,7 @@ import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
@@ -151,16 +152,20 @@ final class SelectorMap<V> {
 
     private Optional<V> getPredicateSelectorMatch(final InternalNode node) {
         PredicateSelectorEntry<V> classPredicate = null;
+        PredicateSelectorEntry<V> fieldPredicate = null;
 
         // If there's a field predicate anywhere in the list, then return the last one found.
         // Otherwise, return the last class predicate.
         for (int i = predicateSelectors.size() - 1; i >= 0; i--) {
             final PredicateSelectorEntry<V> entry = predicateSelectors.get(i);
-            if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
-                if (isPredicateMatch(node, entry)) {
-                    entry.matched = true;
-                    return Optional.of(entry.value);
-                }
+            if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.NODE
+                && isPredicateMatch(node, entry)) {
+                entry.matched = true;
+                return Optional.of(entry.value);
+            } else if (fieldPredicate == null
+                    && entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD
+                    && isPredicateMatch(node, entry)) {
+                fieldPredicate = entry;
             } else if (classPredicate == null // we want to return the first one that matches
                     && entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.CLASS
                     && isPredicateMatch(node, entry)) {
@@ -168,6 +173,10 @@ final class SelectorMap<V> {
             }
         }
 
+        if (fieldPredicate != null) {
+            fieldPredicate.matched = true;
+            return Optional.of(fieldPredicate.value);
+        }
         if (classPredicate != null) {
             classPredicate.matched = true;
             return Optional.of(classPredicate.value);
@@ -202,9 +211,18 @@ final class SelectorMap<V> {
     }
 
     private static boolean isPredicateMatch(final InternalNode node, final PredicateSelectorEntry<?> entry) {
-        return entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD
-                ? entry.predicateSelector.getFieldPredicate().test(node.getField())
-                : entry.predicateSelector.getClassPredicate().test(node.getTargetClass());
+        switch (entry.predicateSelector.getSelectorTargetKind()) {
+            case CLASS: return entry.predicateSelector.getClassPredicate().test(node.getTargetClass());
+            case FIELD: return entry.predicateSelector.getFieldPredicate().test(node.getField());
+            case NODE: {
+                InternalNode parentNode = node.getParent();
+                return entry.predicateSelector.getNodePredicate().test(new NodeImpl(
+                    node.getTargetClass(),
+                    node.getField(),
+                    parentNode == null ? null : parentNode.getTargetClass()));
+            }
+            default: throw new IllegalStateException();
+        }
     }
 
     private void markUsed(final SelectorImpl selector) {

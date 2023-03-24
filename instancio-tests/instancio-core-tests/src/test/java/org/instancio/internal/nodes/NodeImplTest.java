@@ -34,17 +34,17 @@ class NodeImplTest {
 
     @Test
     void validation() {
-        assertThatThrownBy(() -> new NodeImpl(null, null))
+        assertThatThrownBy(() -> new NodeImpl(null, null, null))
                 .isExactlyInstanceOf(NullPointerException.class)
                 .hasMessage("targetClass is null");
     }
 
     @Test
     void verifyToString() {
-        assertThat(new NodeImpl(Foo.class, ReflectionUtils.getField(Foo.class, "fooValue")))
-                .hasToString("Node[targetClass=org.instancio.test.support.pojo.generics.foobarbaz.Foo, field=fooValue]");
+        assertThat(new NodeImpl(Foo.class, ReflectionUtils.getField(Foo.class, "fooValue"), Foo.class))
+                .hasToString("Node[targetClass=org.instancio.test.support.pojo.generics.foobarbaz.Foo, field=fooValue, parentTargetClass=org.instancio.test.support.pojo.generics.foobarbaz.Foo]");
 
-        assertThat(new NodeImpl(Foo.class, null))
-                .hasToString("Node[targetClass=org.instancio.test.support.pojo.generics.foobarbaz.Foo, field=null]");
+        assertThat(new NodeImpl(Foo.class, null, null))
+                .hasToString("Node[targetClass=org.instancio.test.support.pojo.generics.foobarbaz.Foo, field=null, parentTargetClass=null]");
     }
 }

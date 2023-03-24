@@ -38,7 +38,7 @@ class PredicateSelectorImplTest {
         final String apiMethod = "anUnusedSelectorMethodName()";
 
         final PredicateSelectorImpl selector = new PredicateSelectorImpl(
-                SelectorTargetKind.CLASS, klass -> false, null, apiMethod, throwable);
+                SelectorTargetKind.CLASS, klass -> false, null, null, apiMethod, throwable);
 
         assertThat(selector.getDescription()).isEqualTo(
                 String.format("anUnusedSelectorMethodName()%n" +
