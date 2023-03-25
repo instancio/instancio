@@ -32,7 +32,7 @@ public class OptionalGenerator<T> extends AbstractGenerator<Optional<T>> {
 
     @Override
     public String apiMethod() {
-        return null;
+        return null; // no generator spec defined
     }
 
     @Override
