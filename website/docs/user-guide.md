@@ -745,6 +745,7 @@ Generators
 │   └── zonedDateTime()
 │
 └── text()
+    └── csv()
     └── loremIpsum()
     └── pattern(String)
     └── uuid()
