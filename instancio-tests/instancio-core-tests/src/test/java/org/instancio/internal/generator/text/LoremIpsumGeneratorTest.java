@@ -15,12 +15,10 @@
  */
 package org.instancio.internal.generator.text;
 
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -29,17 +27,20 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LoremIpsumGeneratorTest {
+class LoremIpsumGeneratorTest extends AbstractGeneratorTestTemplate {
 
     private static final String PARAGRAPH_SEPARATOR = System.lineSeparator() + System.lineSeparator();
-    private static final Random random = new DefaultRandom();
 
-    private final LoremIpsumGenerator generator = new LoremIpsumGenerator(
-            new GeneratorContext(Settings.defaults(), random));
+    private final LoremIpsumGenerator generator = new LoremIpsumGenerator(getGeneratorContext());
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("loremIpsum()");
+    @Override
+    protected String getApiMethod() {
+        return "loremIpsum()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test

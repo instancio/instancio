@@ -15,16 +15,14 @@
  */
 package org.instancio.internal.generator.lang;
 
-import org.instancio.Random;
-import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -34,21 +32,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @NonDeterministicTag
 @FeatureTag(Feature.SETTINGS)
-class StringGeneratorTest {
+class StringGeneratorTest extends AbstractGeneratorTestTemplate {
     private static final int SAMPLE_SIZE = 1000;
-    private static final Settings settings = Settings.defaults()
+
+    private final Settings settings = Settings.defaults()
             .set(Keys.STRING_MIN_LENGTH, 1)
             .set(Keys.STRING_MAX_LENGTH, 1)
             .set(Keys.STRING_ALLOW_EMPTY, true)
-            .set(Keys.STRING_NULLABLE, true);
+            .set(Keys.STRING_NULLABLE, true)
+            .lock();
 
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private final StringGenerator generator = new StringGenerator(context);
+    private final StringGenerator generator = new StringGenerator(getGeneratorContext());
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("string()");
+    @Override
+    protected String getApiMethod() {
+        return "string()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
+    }
+
+    @Override
+    public Settings getSettings() {
+        return settings;
     }
 
     @Test
@@ -64,8 +72,6 @@ class StringGeneratorTest {
                 .containsNull()
                 .containsOnlyOnce("")
                 .contains(upperCaseLettersAtoZ());
-
-        HintsAssert.assertHints(generator.hints()).afterGenerate(AfterGenerate.DO_NOT_MODIFY);
     }
 
     @Test

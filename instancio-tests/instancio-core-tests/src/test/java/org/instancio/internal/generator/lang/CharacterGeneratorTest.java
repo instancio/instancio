@@ -16,16 +16,10 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.Instancio;
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.AfterGenerate;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -37,16 +31,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.allChars;
 
 @NonDeterministicTag
-@FeatureTag(Feature.SETTINGS)
-class CharacterGeneratorTest {
+class CharacterGeneratorTest extends AbstractGeneratorTestTemplate {
     private static final int SAMPLE_SIZE = 1000;
-    private static final Random random = new DefaultRandom();
-    private final CharacterGenerator generator = new CharacterGenerator(
-            new GeneratorContext(Settings.defaults(), random));
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("chars()");
+    private final CharacterGenerator generator = new CharacterGenerator(getGeneratorContext());
+
+    @Override
+    protected String getApiMethod() {
+        return "chars()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test
@@ -60,8 +57,6 @@ class CharacterGeneratorTest {
                 .as("26 letters")
                 .hasSize(26)
                 .allSatisfy(c -> assertThat(c).isUpperCase());
-
-        HintsAssert.assertHints(generator.hints()).afterGenerate(AfterGenerate.DO_NOT_MODIFY);
     }
 
     @Test

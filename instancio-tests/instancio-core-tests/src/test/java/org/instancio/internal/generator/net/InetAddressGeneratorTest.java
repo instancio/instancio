@@ -15,10 +15,8 @@
  */
 package org.instancio.internal.generator.net;
 
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -28,15 +26,18 @@ import java.net.UnknownHostException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 
-class InetAddressGeneratorTest {
-    private static final Settings settings = Settings.defaults();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private final InetAddressGenerator generator = new InetAddressGenerator(context);
+class InetAddressGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isNull();
+    private final InetAddressGenerator generator = new InetAddressGenerator(getGeneratorContext());
+
+    @Override
+    protected String getApiMethod() {
+        return null;
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test

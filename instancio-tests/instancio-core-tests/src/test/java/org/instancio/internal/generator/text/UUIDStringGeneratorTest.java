@@ -15,24 +15,24 @@
  */
 package org.instancio.internal.generator.text;
 
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UUIDStringGeneratorTest {
+class UUIDStringGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    private static final Random random = new DefaultRandom();
+    private final UUIDStringGenerator generator = new UUIDStringGenerator(getGeneratorContext());
 
-    private final UUIDStringGenerator generator = new UUIDStringGenerator(
-            new GeneratorContext(Settings.create(), random));
+    @Override
+    protected String getApiMethod() {
+        return "uuid()";
+    }
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("uuid()");
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test

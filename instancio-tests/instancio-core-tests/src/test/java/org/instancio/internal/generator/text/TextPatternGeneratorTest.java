@@ -15,12 +15,11 @@
  */
 package org.instancio.internal.generator.text;
 
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.util.StringUtils;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +28,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class TextPatternGeneratorTest {
+class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate {
     private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
             + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
             + "%n\t#c - lower case character [a-z]"
@@ -37,14 +36,18 @@ class TextPatternGeneratorTest {
             + "%n\t#d - digit [0-9]"
             + "%n\t## - hash symbol escape%n");
 
-    private static final Random random = new DefaultRandom();
-    private final GeneratorContext context = new GeneratorContext(Settings.create(), random);
+    private final GeneratorContext context = getGeneratorContext();
 
-    @Test
-    void apiMethod() {
-        TextPatternGenerator generator = new TextPatternGenerator(context, "any");
-        assertThat(generator.apiMethod()).isEqualTo("pattern()");
+    @Override
+    protected String getApiMethod() {
+        return "pattern()";
     }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return new TextPatternGenerator(context, "any");
+    }
+
 
     @ValueSource(strings = {"", " \n \t \r\n ", "abc", "123", "a1b2", "`~!@$%^&*()_-+={[}]|\\:;\"'<,>.?/"})
     @ParameterizedTest

@@ -15,22 +15,24 @@
  */
 package org.instancio.internal.generator.domain.id;
 
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class EanGeneratorTest {
-    private final Random random = new DefaultRandom();
-    private final EanGenerator generator = new EanGenerator(
-            new GeneratorContext(Settings.defaults(), random));
+class EanGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("ean()");
+    private final EanGenerator generator = new EanGenerator(getGeneratorContext());
+
+    @Override
+    protected String getApiMethod() {
+        return "ean()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test

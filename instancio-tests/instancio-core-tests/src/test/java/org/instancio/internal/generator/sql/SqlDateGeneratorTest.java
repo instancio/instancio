@@ -15,33 +15,32 @@
  */
 package org.instancio.internal.generator.sql;
 
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class SqlDateGeneratorTest {
+class SqlDateGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final LocalDate START = LocalDate.of(2000, 1, 1);
     private static final boolean INCLUSIVE = true;
 
-    private final SqlDateGenerator generator = new SqlDateGenerator(context);
+    private final SqlDateGenerator generator = new SqlDateGenerator(getGeneratorContext());
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("sqlDate()");
+    @Override
+    protected String getApiMethod() {
+        return "sqlDate()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test
@@ -78,12 +77,5 @@ class SqlDateGeneratorTest {
         final Date end = Date.valueOf(START.plusYears(1));
         generator.range(start, end);
         assertThat(generator.generate(random)).isBetween(start, end, INCLUSIVE, INCLUSIVE);
-    }
-
-    @Test
-    void nullable() {
-        generator.nullable();
-        assertThat(Stream.generate(() -> generator.generate(random)).limit(500))
-                .containsNull();
     }
 }

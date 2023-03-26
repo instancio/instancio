@@ -16,17 +16,9 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.Instancio;
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.AfterGenerate;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.tags.NonDeterministicTag;
-import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -39,17 +31,18 @@ import static org.assertj.core.api.Assertions.withinPercentage;
 import static org.instancio.Select.allBooleans;
 
 @NonDeterministicTag
-@FeatureTag(Feature.SETTINGS)
-class BooleanGeneratorTest {
-    private static final int SAMPLE_SIZE = 500;
-    private static final Settings settings = Settings.defaults().set(Keys.BOOLEAN_NULLABLE, true);
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private final BooleanGenerator generator = new BooleanGenerator(context);
+class BooleanGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("booleans()");
+    private final BooleanGenerator generator = new BooleanGenerator(getGeneratorContext());
+
+    @Override
+    protected String getApiMethod() {
+        return "booleans()";
+    }
+
+    @Override
+    protected BooleanGenerator generator() {
+        return generator;
     }
 
     @Test
@@ -59,11 +52,9 @@ class BooleanGeneratorTest {
             results.add(generator.generate(random));
         }
 
-        assertThat(results).containsNull()
-                .as("true, false, and null")
-                .hasSize(3);
-
-        HintsAssert.assertHints(generator.hints()).afterGenerate(AfterGenerate.DO_NOT_MODIFY);
+        assertThat(results)
+                .as("Should contain true and false")
+                .hasSize(2);
     }
 
     @Test
@@ -74,8 +65,7 @@ class BooleanGeneratorTest {
 
         final int[] counts = new int[2];
 
-        final BooleanGenerator generator = new BooleanGenerator();
-        generator.probability(probabilityOfTrue);
+        final BooleanGenerator generator = generator().probability(probabilityOfTrue);
 
         for (int i = 0; i < sampleSize; i++) {
             final boolean result = generator.generate(random);

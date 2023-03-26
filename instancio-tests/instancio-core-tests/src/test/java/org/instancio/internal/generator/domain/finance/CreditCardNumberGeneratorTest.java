@@ -16,31 +16,29 @@
 package org.instancio.internal.generator.domain.finance;
 
 import org.instancio.Gen;
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.util.LuhnUtils;
 import org.instancio.internal.util.StringUtils;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@FeatureTag(Feature.GENERATOR)
-class CreditCardNumberGeneratorTest {
-    private static final Settings settings = Settings.defaults();
-    private final Random random = new DefaultRandom();
-    private final CreditCardNumberGenerator generator = new CreditCardNumberGenerator(new GeneratorContext(settings, random));
+class CreditCardNumberGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("creditCard()");
+    private final CreditCardNumberGenerator generator = new CreditCardNumberGenerator(getGeneratorContext());
+
+    @Override
+    protected String getApiMethod() {
+        return "creditCard()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test
@@ -67,13 +65,5 @@ class CreditCardNumberGeneratorTest {
                     .as("%s card number '%s' failed Luhn check", cardType, result)
                     .isTrue();
         }
-    }
-
-    @Test
-    void nullable() {
-        final Stream<String> results = Stream.generate(() -> generator.nullable().generate(random))
-                .limit(Constants.SAMPLE_SIZE_DDD);
-
-        assertThat(results).containsNull();
     }
 }
