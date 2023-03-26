@@ -15,22 +15,24 @@
  */
 package org.instancio.internal.generator.domain.id;
 
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class IsbnGeneratorTest {
-    private final Random random = new DefaultRandom();
-    private final IsbnGenerator generator = new IsbnGenerator(
-            new GeneratorContext(Settings.defaults(), random));
+class IsbnGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("isbn()");
+    private final IsbnGenerator generator = new IsbnGenerator(getGeneratorContext());
+
+    @Override
+    protected String getApiMethod() {
+        return "isbn()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test

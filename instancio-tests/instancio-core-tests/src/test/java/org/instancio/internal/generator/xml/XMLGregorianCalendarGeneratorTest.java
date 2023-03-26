@@ -15,28 +15,18 @@
  */
 package org.instancio.internal.generator.xml;
 
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
-import org.junit.jupiter.api.Test;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+class XMLGregorianCalendarGeneratorTest extends AbstractGeneratorTestTemplate {
 
-class XMLGregorianCalendarGeneratorTest {
-
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(Settings.create(), random);
-
-    private final XMLGregorianCalendarGenerator generator = new XMLGregorianCalendarGenerator(context);
-
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isNull();
+    @Override
+    protected String getApiMethod() {
+        return null;
     }
 
-    @Test
-    void generate() {
-        assertThat(generator.generate(random)).isNotNull();
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return new XMLGregorianCalendarGenerator(getGeneratorContext());
     }
 }

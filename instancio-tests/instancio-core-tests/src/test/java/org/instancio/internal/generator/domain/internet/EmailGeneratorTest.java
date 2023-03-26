@@ -15,26 +15,27 @@
  */
 package org.instancio.internal.generator.domain.internet;
 
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Gen.ints;
 
-class EmailGeneratorTest {
-    private static final Random random = new DefaultRandom();
-    private final GeneratorContext context = new GeneratorContext(Settings.create(), random);
-    private final EmailGenerator generator = new EmailGenerator(context);
+class EmailGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("email()");
+    private final EmailGenerator generator = new EmailGenerator(getGeneratorContext());
+
+    @Override
+    protected String getApiMethod() {
+        return "email()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @ValueSource(ints = {3, 4, 5, 6})
@@ -49,7 +50,6 @@ class EmailGeneratorTest {
     @ValueSource(ints = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20})
     @ParameterizedTest
     void lengthGreaterThanSix(final int length) {
-        EmailGenerator generator = new EmailGenerator(context);
         generator.length(length);
         assertThat(generator.generate(random))
                 .hasSize(length)

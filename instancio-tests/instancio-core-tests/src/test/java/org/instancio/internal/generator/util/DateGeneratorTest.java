@@ -15,35 +15,34 @@
  */
 package org.instancio.internal.generator.util;
 
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Date;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class DateGeneratorTest {
+class DateGeneratorTest extends AbstractGeneratorTestTemplate {
 
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
     private static final Instant START = LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999)
             .toInstant(OffsetDateTime.now().getOffset());
 
-    private final DateGenerator generator = new DateGenerator(context);
+    private final DateGenerator generator = new DateGenerator(getGeneratorContext());
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("date()");
+    @Override
+    protected String getApiMethod() {
+        return "date()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test
@@ -81,12 +80,5 @@ class DateGeneratorTest {
         final Date max = Date.from(START.plusSeconds(10));
         generator.range(min, max);
         assertThat(generator.generate(random)).isBetween(min, max);
-    }
-
-    @Test
-    void nullable() {
-        generator.nullable();
-        assertThat(Stream.generate(() -> generator.generate(random)).limit(500))
-                .containsNull();
     }
 }

@@ -15,12 +15,9 @@
  */
 package org.instancio.internal.generator.domain.internet;
 
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.AfterGenerate;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 
@@ -30,19 +27,18 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class Ip4GeneratorTest {
-    private static final Random random = new DefaultRandom();
-    private final GeneratorContext context = new GeneratorContext(Settings.create(), random);
-    private final Ip4Generator generator = new Ip4Generator(context);
+class Ip4GeneratorTest extends AbstractGeneratorTestTemplate {
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("ip4()");
+    private final Ip4Generator generator = new Ip4Generator(getGeneratorContext());
+
+    @Override
+    protected String getApiMethod() {
+        return "ip4()";
     }
 
-    @Test
-    void hints() {
-        assertThat(generator.hints().afterGenerate()).isEqualTo(AfterGenerate.DO_NOT_MODIFY);
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test

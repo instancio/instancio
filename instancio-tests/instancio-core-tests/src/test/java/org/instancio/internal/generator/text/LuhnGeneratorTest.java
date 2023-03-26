@@ -16,30 +16,28 @@
 package org.instancio.internal.generator.text;
 
 import org.instancio.Gen;
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.util.LuhnUtils;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
-
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LuhnGeneratorTest {
+class LuhnGeneratorTest extends AbstractGeneratorTestTemplate {
     private static final int DEFAULT_SIZE = 16;
 
-    private final Random random = new DefaultRandom();
-    private final LuhnGenerator generator = new LuhnGenerator(
-            new GeneratorContext(Settings.create(), random));
+    private final LuhnGenerator generator = new LuhnGenerator(getGeneratorContext());
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isNull();
+    @Override
+    protected String getApiMethod() {
+        return null;
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test
@@ -78,16 +76,6 @@ class LuhnGeneratorTest {
             final String result = generator.generate(random);
             assertLuhn(result, size, startIdx, endIdx, checkIdx);
         }
-    }
-
-    @Test
-    void nullable() {
-        generator.nullable();
-        final Stream<String> result = Stream.generate(() -> generator.generate(random))
-                .filter(Objects::isNull)
-                .limit(1);
-
-        assertThat(result).containsNull();
     }
 
     @Test

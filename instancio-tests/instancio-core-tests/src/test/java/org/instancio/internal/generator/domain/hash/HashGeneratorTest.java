@@ -15,21 +15,18 @@
  */
 package org.instancio.internal.generator.domain.hash;
 
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
-import org.junit.jupiter.api.Test;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+class HashGeneratorTest extends AbstractGeneratorTestTemplate {
 
-class HashGeneratorTest {
-    private final Random random = new DefaultRandom();
-    private final HashGenerator generator = new HashGenerator(
-            new GeneratorContext(Settings.defaults(), random));
+    @Override
+    protected String getApiMethod() {
+        return "hash()";
+    }
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("hash()");
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return new HashGenerator(getGeneratorContext());
     }
 }

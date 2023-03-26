@@ -15,32 +15,34 @@
  */
 package org.instancio.internal.generator.sql;
 
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class TimestampGeneratorTest {
-    private static final Settings settings = Settings.create();
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private static final LocalDateTime START = LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999);
+class TimestampGeneratorTest extends AbstractGeneratorTestTemplate {
+
+    private static final LocalDateTime START = LocalDateTime.of(
+            1970, 1, 1, 0, 0, 1, 999999999);
+
     private static final boolean INCLUSIVE = true;
 
-    private final TimestampGenerator generator = new TimestampGenerator(context);
+    private final TimestampGenerator generator = new TimestampGenerator(getGeneratorContext());
 
-    @Test
-    void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("timestamp()");
+    @Override
+    protected String getApiMethod() {
+        return "timestamp()";
+    }
+
+    @Override
+    protected AbstractGenerator<?> generator() {
+        return generator;
     }
 
     @Test
@@ -77,12 +79,5 @@ class TimestampGeneratorTest {
         final Timestamp end = Timestamp.valueOf(START.plusYears(1));
         generator.range(start, end);
         assertThat(generator.generate(random)).isBetween(start, end, INCLUSIVE, INCLUSIVE);
-    }
-
-    @Test
-    void nullable() {
-        generator.nullable();
-        assertThat(Stream.generate(() -> generator.generate(random)).limit(500))
-                .containsNull();
     }
 }
