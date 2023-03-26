@@ -28,6 +28,7 @@ import org.instancio.internal.generator.lang.StringBuilderGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.math.BigIntegerGenerator;
+import org.instancio.internal.generator.net.InetAddressGenerator;
 import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.nio.file.PathGenerator;
@@ -60,6 +61,8 @@ import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerat
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
@@ -184,6 +187,8 @@ final class GeneratorResolverMaps {
         map.put(BigInteger.class, BigIntegerGenerator.class);
 
         // java.net
+        map.put(InetAddress.class, InetAddressGenerator.class);
+        map.put(Inet4Address.class, InetAddressGenerator.class);
         map.put(URI.class, URIGenerator.class);
         map.put(URL.class, URLGenerator.class);
 
