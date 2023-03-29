@@ -285,7 +285,9 @@ class InstancioEngine {
             }
         }
 
-        map.putAll(hint.withEntries());
+        if (!hint.withEntries().isEmpty()) {
+            map.putAll(hint.withEntries());
+        }
 
         final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
         return spiResult.orElse(generatorResult);

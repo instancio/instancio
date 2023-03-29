@@ -57,6 +57,8 @@ nav:
 extra:
   # Core
   AfterGenerate:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/AfterGenerate.html" target="_blank">AfterGenerate</a>'
+  ArrayHint:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/hints/ArrayHint.html" target="_blank">ArrayHint</a>'
+  CollectionHint:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/hints/CollectionHint.html" target="_blank">CollectionHint</a>'
   Instancio:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Instancio.html" target="_blank">Instancio</a>'
   InstancioApi:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html" target="_blank">InstancioApi</a>'
   InstancioServiceProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/InstancioServiceProvider.html" target="_blank">InstancioServiceProvider</a>'
@@ -65,6 +67,7 @@ extra:
   GeneratorProvider:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/spi/InstancioServiceProvider.GeneratorProvider.html" target="_blank">GeneratorProvider</a>'
   Generators:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generators/Generators.html" target="_blank">Generators</a>'
   Hints:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/Hints.html" target="_blank">Hints</a>'
+  MapHint:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/hints/MapHint.html" target="_blank">MapHint</a>'
   Mode:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Mode.html" target="_blank">Mode</a>'
   Model:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Model.html" target="_blank">Model</a>'
   OnCompleteCallback:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/OnCompleteCallback.html" target="_blank">OnCompleteCallback</a>'
