@@ -1233,7 +1233,13 @@ public Hints hints() {
 }
 ```
 
-The `AfterGenerate` enum defines the following values:
+In short, the `AfterGenerate` enum defines what should happen to an object returned by a generator.
+The exact semantics of `AfterGenerate` actions vary depending on the type of object.
+Different rules are applied to POJOs, arrays, collections, and records.
+For example, if a generator returns an instance of a `record`, the returned instance
+cannot be modified regardless of the `AfterGenerate` hint.
+
+The following describes the actions as they apply to POJOs:
 
 - **`DO_NOT_MODIFY`**
   
@@ -1252,7 +1258,6 @@ The `AfterGenerate` enum defines the following values:
     In addition, the object will be modifiable using selectors as described
     by above by `APPLY_SELECTORS`.
 
-
 - **`POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`** **(default behaviour)**
 
     Indicates that primitive fields with default values declared by the object
@@ -1268,6 +1273,12 @@ The `AfterGenerate` enum defines the following values:
     Indicates that all fields should be populated, regardless of their initial values.
     This action will cause all the values to be overwritten with random data.
     This is the default mode the engine operates in when using internal generators.
+
+When defining custom array or collection generators, the following hints can also be used:
+
+- {{ArrayHint}}
+- {{CollectionHint}}
+- {{MapHint}}
 
 #### Custom Generator Example
 
