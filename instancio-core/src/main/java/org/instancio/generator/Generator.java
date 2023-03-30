@@ -16,6 +16,7 @@
 package org.instancio.generator;
 
 import org.instancio.Random;
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
@@ -30,6 +31,22 @@ import org.instancio.settings.Settings;
  */
 @FunctionalInterface
 public interface Generator<T> extends GeneratorSpec<T> {
+
+    /**
+     * An optional method for generators that need to initialise state before
+     * generating values.
+     *
+     * <p><b>Note:</b> this method is guaranteed to be called <b>before</b>
+     * {@link #generate(Random)}, however, there is no guarantee as to
+     * the number of times it will be invoked. It is possible for {@code init()}
+     * to be called multiple times for a given generator instance.
+     *
+     * @param context generator context
+     * @since 2.13.0
+     */
+    @ExperimentalApi
+    default void init(GeneratorContext context) {
+    }
 
     /**
      * Returns a generated value.
