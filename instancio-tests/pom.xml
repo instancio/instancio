@@ -21,7 +21,7 @@
         <version.assertj>3.24.2</version.assertj>
         <version.equalsverifier>3.14.1</version.equalsverifier>
         <version.junit.pioneer>1.9.1</version.junit.pioneer>
-        <version.logback>1.2.11</version.logback>
+        <version.logback>1.4.6</version.logback>
         <version.lombok>1.18.26</version.lombok>
         <version.mockito>4.8.0</version.mockito>
     </properties>
