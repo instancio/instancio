@@ -37,6 +37,20 @@ class LeastArgumentsConstructorInstantiationStrategyTest {
         assertThat(strategy.createInstance(ConstructorThrowingError.class)).isNull();
     }
 
+    @Test
+    void shouldExcludeBuilderConstructor() {
+        assertThat(strategy.createInstance(PojoWithBuilder.class)).isNull();
+    }
+
+    // Used via reflection
+    @SuppressWarnings("unused")
+    private static class PojoWithBuilder {
+        private PojoWithBuilder(final Builder builder) {
+        }
+
+        private static final class Builder {}
+    }
+
     // Used via reflection
     @SuppressWarnings("unused")
     private static class ConstructorThrowingError {
