@@ -24,6 +24,7 @@ import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Attempts instantiating a class using a non-default constructor with
@@ -31,11 +32,15 @@ import java.util.Optional;
  */
 class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStrategy {
 
+    private static final Predicate<Constructor<?>> NON_ZERO_ARG = c -> c.getParameterCount() > 0;
+    private static final Predicate<Constructor<?>> NOT_BUILDER = c ->
+            !(c.getParameterCount() == 1 && "Builder".equals(c.getParameterTypes()[0].getSimpleName()));
+
     @Override
     @SuppressWarnings({"unchecked", Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED})
     public <T> T createInstance(final Class<T> klass) {
         final Optional<Constructor<?>> optCtor = Arrays.stream(klass.getDeclaredConstructors())
-                .filter(c -> c.getParameterCount() > 0)
+                .filter(NON_ZERO_ARG.and(NOT_BUILDER))
                 .min(Comparator.comparingInt(Constructor::getParameterCount));
 
         if (!optCtor.isPresent()) {
