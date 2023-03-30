@@ -16,9 +16,11 @@
 package org.instancio.junit.internal;
 
 import org.instancio.Random;
-import org.instancio.support.DefaultRandom;
 import org.instancio.junit.InstancioSource;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.support.DefaultRandom;
+import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -58,11 +60,18 @@ class InstancioArgumentsProviderTest {
         assertThat(stream).isEmpty();
     }
 
+    @NonDeterministicTag("Small chance of duplicate values being generated")
     @MethodSource("types")
     @ParameterizedTest
     void createObjectsGroupingByType(final Class<?>[] types) {
         final Random random = new DefaultRandom();
-        final Settings settings = Settings.create();
+        final Settings settings = Settings.create()
+                .set(Keys.STRING_MIN_LENGTH, 20)
+                .set(Keys.INTEGER_MIN, Integer.MIN_VALUE)
+                .set(Keys.INTEGER_MAX, Integer.MAX_VALUE)
+                .set(Keys.LONG_MIN, Long.MIN_VALUE)
+                .set(Keys.LONG_MAX, Long.MAX_VALUE);
+
         final Object[] results = InstancioArgumentsProvider.createObjectsGroupingByType(types, random, settings);
 
         assertThat(results).hasExactlyElementsOfTypes(types);

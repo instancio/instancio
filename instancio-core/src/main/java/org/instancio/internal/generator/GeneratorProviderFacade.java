@@ -36,6 +36,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Resolves generators provided by the SPI.
+ */
 class GeneratorProviderFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorProviderFacade.class);
@@ -64,6 +67,7 @@ class GeneratorProviderFacade {
         if (result == null) {
             result = resolveViaDeprecatedSPI(node);
         }
+
         return Optional.ofNullable(result);
     }
 
@@ -74,6 +78,7 @@ class GeneratorProviderFacade {
             final Generator<?> generator = provider.getGenerators(context).get(forClass);
             if (generator != null) {
                 LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), forClass);
+                generator.init(context);
                 return GeneratorDecorator.decorate(generator, afterGenerate);
             }
         }
@@ -92,6 +97,7 @@ class GeneratorProviderFacade {
 
                 final Generator<?> generator = (Generator<?>) spec;
                 LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), node);
+                generator.init(context);
                 return GeneratorDecorator.decorate(generator, afterGenerate);
             }
         }

@@ -22,6 +22,7 @@ import org.instancio.Node;
 import org.instancio.Random;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.Hints;
 import org.instancio.generators.Generators;
@@ -45,6 +46,17 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
     public static final String FOO_RECORD_VALUE = "expected-foo-value";
     public static final Pattern PATTERN_GENERATOR_VALUE = Pattern.compile("baz");
 
+    /**
+     * A static generator instance for verifying {@link Generator#init(GeneratorContext)}
+     * invocation counts. Should only be used by {@code SpiGeneratorInitTest}.
+     */
+    public static final InitCountingPojoGenerator INIT_COUNTING_GENERATOR = new InitCountingPojoGenerator();
+
+    public static class InitCountingPojo {
+        // empty
+    }
+
+
     private static final Map<Class<?>, GeneratorSpec<?>> GENERATOR_MAP = new HashMap<>() {{
         put(String.class, new StringGeneratorFromSpi());
         put(Pattern.class, new PatternGeneratorFromSpi());
@@ -53,6 +65,7 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         put(Address.class, new CustomAddressGenerator());
         put(Phone.class, new CustomPhoneGenerator());
         put(FooRecord.class, (Generator<?>) random -> new FooRecord(FOO_RECORD_VALUE));
+        put(InitCountingPojo.class, INIT_COUNTING_GENERATOR);
 
         // Error-handling: generator spec does not implement the Generator interface
         put(Float.class, new CustomFloatSpec());
@@ -153,4 +166,23 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
     }
 
     public static class CustomFloatSpec implements GeneratorSpec<Float> {}
+
+    public static class InitCountingPojoGenerator implements Generator<InitCountingPojo> {
+
+        private int initCount;
+
+        public int getInitCount() {
+            return initCount;
+        }
+
+        @Override
+        public void init(final GeneratorContext context) {
+            initCount++;
+        }
+
+        @Override
+        public InitCountingPojo generate(final Random random) {
+            return new InitCountingPojo();
+        }
+    }
 }

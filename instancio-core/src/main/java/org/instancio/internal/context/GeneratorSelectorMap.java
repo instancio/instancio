@@ -108,6 +108,8 @@ class GeneratorSelectorMap {
     }
 
     private void putGenerator(final TargetSelector targetSelector, final Generator<?> g) {
+        g.init(context);
+
         final Generator<?> generator = GeneratorDecorator.decorate(g, defaultAfterGenerate);
         selectorMap.put(targetSelector, generator);
 
