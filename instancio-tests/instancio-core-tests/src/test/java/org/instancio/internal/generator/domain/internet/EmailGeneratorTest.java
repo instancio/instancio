@@ -15,13 +15,16 @@
  */
 package org.instancio.internal.generator.domain.internet;
 
+import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Gen.ints;
 
 class EmailGeneratorTest extends AbstractGeneratorTestTemplate {
@@ -66,5 +69,20 @@ class EmailGeneratorTest extends AbstractGeneratorTestTemplate {
         assertThat(generator.generate(random))
                 .hasSizeBetween(min, max)
                 .matches("^\\w+@\\w+\\.\\p{Lower}{3}$");
+    }
+
+    @Test
+    void validation() {
+        assertThatThrownBy(() -> generator.length(2))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Email length must be at least 3 characters long");
+
+        assertThatThrownBy(() -> generator.length(2, 10))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Email length must be at least 3 characters long");
+
+        assertThatThrownBy(() -> generator.length(6, 5))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Email length min must be less than or equal to max: (6, 5)");
     }
 }
