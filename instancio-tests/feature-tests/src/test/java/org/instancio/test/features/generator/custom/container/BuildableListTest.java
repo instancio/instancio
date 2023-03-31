@@ -25,9 +25,12 @@ import org.instancio.test.support.pojo.containers.BuildableList;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.allStrings;
 
 /**
  * Tests generating a "container" that is built using static factory method.
@@ -36,9 +39,7 @@ import static org.instancio.Select.all;
 @FeatureTag({Feature.GENERATOR, Feature.CONTAINER_GENERATOR})
 class BuildableListTest {
 
-    private static final int GENERATE_ENTRIES = 3;
-
-    private static <T> Generator<BuildableList.Builder<T>> generator() {
+    private static <T> Generator<BuildableList.Builder<T>> generator(final int numEntries) {
         return new Generator<BuildableList.Builder<T>>() {
 
             @Override
@@ -51,7 +52,7 @@ class BuildableListTest {
             public Hints hints() {
                 return Hints.builder()
                         .with(InternalContainerHint.builder()
-                                .generateEntries(GENERATE_ENTRIES)
+                                .generateEntries(numEntries)
                                 .addFunction((BuildableList.Builder<T> builder, Object... args) ->
                                         builder.add((T) args[0]))
                                 .buildFunction((BuildableList.Builder<T> builder) ->
@@ -62,16 +63,43 @@ class BuildableListTest {
         };
     }
 
-    @Test
-    void generateContainer() {
+    @ValueSource(ints = {0, 1, 2, 3})
+    @ParameterizedTest
+    void generateContainer(final int numEntries) {
         final BuildableList<String> result = Instancio.of(new TypeToken<BuildableList<String>>() {})
-                .supply(all(BuildableList.class), generator())
+                .supply(all(BuildableList.class), generator(numEntries))
                 .create();
 
         assertThat(result.getElements())
-                .hasSize(GENERATE_ENTRIES)
+                .hasSize(numEntries)
                 .doesNotContainNull();
 
         result.assertOriginalListNotOverwritten();
+    }
+
+    @Test
+    void withNullable() {
+        final int numEntries = 500;
+        final BuildableList<String> result = Instancio.of(new TypeToken<BuildableList<String>>() {})
+                .withNullable(allStrings())
+                .supply(all(BuildableList.class), generator(numEntries))
+                .create();
+
+        assertThat(result.getElements())
+                .hasSize(numEntries)
+                .containsNull();
+    }
+
+    @Test
+    void ignore() {
+        final int numEntries = 3;
+        final BuildableList<String> result = Instancio.of(new TypeToken<BuildableList<String>>() {})
+                .ignore(allStrings())
+                .supply(all(BuildableList.class), generator(numEntries))
+                .create();
+
+        assertThat(result.getElements())
+                .hasSize(numEntries)
+                .containsOnlyNulls();
     }
 }

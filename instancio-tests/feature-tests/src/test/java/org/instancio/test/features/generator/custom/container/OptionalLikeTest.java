@@ -22,6 +22,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.test.support.pojo.containers.OptionalLike;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -32,18 +33,8 @@ import static org.instancio.Select.all;
 @FeatureTag({Feature.GENERATOR, Feature.CONTAINER_GENERATOR})
 class OptionalLikeTest {
 
-    @Test
-    void optionalLike() {
-        final OptionalLike<String> result = Instancio.of(new TypeToken<OptionalLike<String>>() {})
-                .supply(all(OptionalLike.class), generator())
-                .create();
-
-        assertThat(result.get()).isNotBlank();
-    }
-
     private static <T> Generator<OptionalLike<T>> generator() {
         return new Generator<OptionalLike<T>>() {
-
             @Override
             public OptionalLike<T> generate(final Random random) {
                 return null; // delegates to the engine via createFunction hint
@@ -59,5 +50,18 @@ class OptionalLikeTest {
                         .build();
             }
         };
+    }
+
+    @Test
+    void optionalLike() {
+        final OptionalLike<Phone> result = Instancio.of(new TypeToken<OptionalLike<Phone>>() {})
+                .supply(all(OptionalLike.class), generator())
+                .create();
+
+        final Phone phone = result.get();
+
+        assertThat(phone).isNotNull();
+        assertThat(phone.getCountryCode()).isNotBlank();
+        assertThat(phone.getNumber()).isNotBlank();
     }
 }
