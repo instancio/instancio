@@ -54,10 +54,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
@@ -75,6 +73,7 @@ class InstancioEngine {
     private final ModelContext<?> context;
     private final InternalNode rootNode;
     private final CallbackHandler callbackHandler;
+    private final ContainerFactoriesHandler containerFactoriesHandler;
     private final List<GenerationListener> listeners;
     private final AfterGenerate defaultAfterGenerate;
     private final boolean overwriteExistingValues;
@@ -84,6 +83,7 @@ class InstancioEngine {
         context = model.getModelContext();
         rootNode = model.getRootNode();
         callbackHandler = new CallbackHandler(context);
+        containerFactoriesHandler = new ContainerFactoriesHandler(context.getContainerFactories());
         generatorFacade = new GeneratorFacade(context);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
@@ -155,12 +155,12 @@ class InstancioEngine {
         // Creation delegated to the engine
         if (generatorResult.containsNull() && hint.createFunction() != null) {
             final Object[] args = new Object[children.size()];
-            for (int j = 0; j < children.size(); j++) {
-                final GeneratorResult childResult = createObject(children.get(j));
-                args[j] = childResult.getValue();
+            for (int i = 0; i < children.size(); i++) {
+                final GeneratorResult childResult = createObject(children.get(i));
+                args[i] = childResult.getValue();
             }
-            final Object result = hint.createFunction().create(args);
 
+            final Object result = hint.createFunction().create(args);
             generatorResult = GeneratorResult.create(result, generatorResult.getHints());
         }
 
@@ -184,31 +184,7 @@ class InstancioEngine {
             return GeneratorResult.create(builtContainer, generatorResult.getHints());
         }
 
-
-        final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
-        return spiResult.orElse(generatorResult);
-    }
-
-    /**
-     * Replaces the original result with another type. For example, converts
-     * a Map to ImmutableMap using {@code ImmutableMap.copyOf(Map)}).
-     */
-    private Optional<GeneratorResult> substituteResult(
-            final InternalNode node,
-            final GeneratorResult generatorResult) {
-
-        return context.getContainerFactories()
-                .stream()
-                .map(it -> it.createFromOtherFunction(
-                        node.getTargetClass(),
-                        node.getChildren()
-                                .stream()
-                                .map(InternalNode::getTargetClass)
-                                .collect(Collectors.toList())))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .map(fn -> fn.apply(generatorResult.getValue()))
-                .map(replacedValue -> GeneratorResult.create(replacedValue, generatorResult.getHints()));
+        return containerFactoriesHandler.substituteResult(node, generatorResult);
     }
 
     private GeneratorResult generatePojo(final InternalNode node) {
@@ -289,8 +265,7 @@ class InstancioEngine {
             map.putAll(hint.withEntries());
         }
 
-        final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
-        return spiResult.orElse(generatorResult);
+        return containerFactoriesHandler.substituteResult(node, generatorResult);
     }
 
     @SuppressWarnings({
@@ -458,8 +433,7 @@ class InstancioEngine {
             CollectionUtils.shuffle(collection, context.getRandom());
         }
 
-        final Optional<GeneratorResult> spiResult = substituteResult(node, generatorResult);
-        return spiResult.orElse(generatorResult);
+        return containerFactoriesHandler.substituteResult(node, generatorResult);
     }
 
     private GeneratorResult generateRecord(final InternalNode node) {
