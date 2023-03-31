@@ -21,6 +21,8 @@ import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.cyclic.onetomany.DetailRecord;
+import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +36,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 import static org.instancio.Select.root;
 
 @FeatureTag({Feature.GENERATOR, Feature.EMIT_GENERATOR})
@@ -62,6 +65,19 @@ class EmitGeneratorTest {
 
         assertThat(result).containsExactly(-1, -2, -3, -4, -5, -6, -6, -7, -7, -7);
     }
+
+    @Test
+    void emitCollectionElementField() {
+        final MainRecord result = Instancio.of(MainRecord.class)
+                .generate(all(List.class), gen -> gen.collection().size(3))
+                .generate(field(DetailRecord::getId), gen -> gen.emit().items(1L, 2L, 3L))
+                .create();
+
+        assertThat(result.getDetailRecords())
+                .extracting(DetailRecord::getId)
+                .containsExactly(1L, 2L, 3L);
+    }
+
 
     @Test
     void ignoreUnusedItems() {

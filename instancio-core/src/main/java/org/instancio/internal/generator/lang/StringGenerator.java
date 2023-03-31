@@ -45,10 +45,6 @@ public class StringGenerator extends AbstractGenerator<String> implements String
      */
     private Generator<?> delegate;
 
-    public void setDelegate(final Generator<?> delegate) {
-        this.delegate = delegate;
-    }
-
     public StringGenerator() {
         this(Global.generatorContext());
     }
@@ -65,6 +61,10 @@ public class StringGenerator extends AbstractGenerator<String> implements String
 
     public final int getMinLength() {
         return minLength;
+    }
+
+    public void setDelegate(final Generator<?> delegate) {
+        this.delegate = delegate;
     }
 
     @Override

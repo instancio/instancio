@@ -19,9 +19,9 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EmailAsGeneratorSpec;
 import org.instancio.generator.specs.EmailSpec;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
-import org.instancio.internal.util.Verify;
 import org.instancio.support.Global;
 
 import java.util.Locale;
@@ -65,8 +65,11 @@ public class EmailGenerator extends AbstractGenerator<String>
 
     @Override
     public EmailGenerator length(final int min, final int max) {
-        Verify.isTrue(min >= 3, "Email length must be at least 3 characters long");
-        Verify.isTrue(min <= max, "Min must be less than or equal to max");
+        ApiValidator.isTrue(min >= 3,
+                "Email length must be at least 3 characters long");
+
+        ApiValidator.isTrue(min <= max,
+                "Email length min must be less than or equal to max: (%s, %s)", min, max);
 
         minLength = min;
         maxLength = max;
