@@ -17,10 +17,11 @@ package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
 
+import java.lang.reflect.AnnotatedType;
 import java.util.Collection;
 
 @Data
 public class UninstantiableCollectionElementType {
 
-    private Collection<Class<?>> collection;
+    private Collection<AnnotatedType> collection;
 }

@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.creation.optional;
+package org.instancio.internal.generator.lang;
 
-import org.instancio.testsupport.templates.AutoVerificationDisabled;
-import org.instancio.testsupport.templates.CreationTestTemplate;
-
-import java.lang.reflect.AnnotatedType;
-import java.util.Optional;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoVerificationDisabled
-class OptionalClassCreationTest extends CreationTestTemplate<Optional<AnnotatedType>> {
+class ClassGeneratorTest extends AbstractGeneratorTestTemplate {
+
+    private final ClassGenerator generator = new ClassGenerator(getGeneratorContext());
 
     @Override
-    protected void verify(Optional<AnnotatedType> result) {
-        assertThat(result).isEmpty();
+    protected String getApiMethod() {
+        return null;
+    }
+
+    @Override
+    protected ClassGenerator generator() {
+        return generator;
+    }
+
+    @Test
+    void generate() {
+        final Class<?> result = generator.generate(random);
+
+        assertThat(result).isNotNull();
     }
 }

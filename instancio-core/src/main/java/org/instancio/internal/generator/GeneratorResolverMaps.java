@@ -19,6 +19,7 @@ import org.instancio.internal.generator.io.FileGenerator;
 import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.ByteGenerator;
 import org.instancio.internal.generator.lang.CharacterGenerator;
+import org.instancio.internal.generator.lang.ClassGenerator;
 import org.instancio.internal.generator.lang.DoubleGenerator;
 import org.instancio.internal.generator.lang.FloatGenerator;
 import org.instancio.internal.generator.lang.IntegerGenerator;
@@ -178,6 +179,7 @@ final class GeneratorResolverMaps {
         map.put(String.class, StringGenerator.class);
 
         // java.lang
+        map.put(Class.class, ClassGenerator.class);
         map.put(Number.class, IntegerGenerator.class);
         map.put(CharSequence.class, StringGenerator.class);  // default CharSequence
         map.put(StringBuilder.class, StringBuilderGenerator.class);

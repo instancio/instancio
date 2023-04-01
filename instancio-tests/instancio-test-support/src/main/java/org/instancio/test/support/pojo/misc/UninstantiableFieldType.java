@@ -17,8 +17,10 @@ package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
 
+import java.lang.reflect.AnnotatedType;
+
 @Data
 public class UninstantiableFieldType {
 
-    private Class<?> klass;
+    private AnnotatedType value;
 }
