@@ -51,3 +51,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Maven wrapper ###
+.mvn/wrapper/*.jar
