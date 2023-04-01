@@ -31,7 +31,7 @@ class UninstantiableTypeTest {
     @DisplayName("If a field value cannot be generated, set it to null")
     void field() {
         final UninstantiableFieldType result = Instancio.create(UninstantiableFieldType.class);
-        assertThat(result.getKlass()).isNull();
+        assertThat(result.getValue()).isNull();
     }
 
     @Test
@@ -45,8 +45,8 @@ class UninstantiableTypeTest {
     @DisplayName("If map key or value cannot be generated, do not add it to the map")
     void mapKeyValueType() {
         final UninstantiableMapKeyValueType result = Instancio.create(UninstantiableMapKeyValueType.class);
-        assertThat(result.getMapClassString()).isEmpty();
-        assertThat(result.getMapStringClass()).isEmpty();
+        assertThat(result.getMap2()).isEmpty();
+        assertThat(result.getMap1()).isEmpty();
     }
 
     @Test

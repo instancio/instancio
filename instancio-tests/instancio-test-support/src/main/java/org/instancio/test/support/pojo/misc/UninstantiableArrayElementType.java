@@ -17,8 +17,10 @@ package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
 
+import java.lang.reflect.AnnotatedType;
+
 @Data
 public class UninstantiableArrayElementType {
 
-    private Class<?>[] array;
+    private AnnotatedType[] array;
 }

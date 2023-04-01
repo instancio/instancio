@@ -17,12 +17,13 @@ package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
 
+import java.lang.reflect.AnnotatedType;
 import java.util.Map;
 
 @Data
 public class UninstantiableMapKeyValueType {
 
-    private Map<String, Class<?>> mapStringClass;
+    private Map<String, AnnotatedType> map1;
 
-    private Map<Class<?>, String> mapClassString;
+    private Map<AnnotatedType, String> map2;
 }
