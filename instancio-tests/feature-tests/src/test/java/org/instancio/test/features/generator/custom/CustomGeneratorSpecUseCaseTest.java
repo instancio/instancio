@@ -128,6 +128,8 @@ class CustomGeneratorSpecUseCaseTest {
         }
     }
 
+    // Used via reflection
+    @SuppressWarnings("unused")
     private static final class ListHolder {
         private List<Integer> list1;
         private List<Integer> list2;

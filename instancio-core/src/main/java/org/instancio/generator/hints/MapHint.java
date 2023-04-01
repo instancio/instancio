@@ -207,10 +207,6 @@ public final class MapHint implements Hint<MapHint> {
         private Builder() {
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
         /**
          * Indicates how many entries the engine should generate
          * and insert into the map.

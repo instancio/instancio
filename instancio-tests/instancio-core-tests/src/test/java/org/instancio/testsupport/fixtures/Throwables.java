@@ -26,7 +26,7 @@ public final class Throwables {
         // non-instantiable
     }
 
-    public static <T extends Throwable> T mockThrowable(Class<T> throwableType, String... stackElementClassNames) {
+    public static <T extends Throwable> T mockThrowable(String... stackElementClassNames) {
         final StackTraceElement[] stackTraceElements = Arrays.stream(stackElementClassNames)
                 .map(Throwables::mockStackTraceElement)
                 .toArray(StackTraceElement[]::new);

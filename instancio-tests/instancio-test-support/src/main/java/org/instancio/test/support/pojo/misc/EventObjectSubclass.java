@@ -18,7 +18,11 @@ package org.instancio.test.support.pojo.misc;
 import java.util.EventObject;
 
 public class EventObjectSubclass extends EventObject {
+
+    // used via reflection
+    @SuppressWarnings("unused")
     private String foo;
+
 
     public EventObjectSubclass(final Object source) {
         super(source);

@@ -105,10 +105,6 @@ public final class Hints {
         private Builder() {
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
         /**
          * Adds specified hint object.
          *

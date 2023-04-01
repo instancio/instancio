@@ -144,6 +144,7 @@ class GeneratorFromSpiTest {
             final InstancioApi<FooRecord> api = Instancio.of(FooRecord.class)
                     .set(field(FooRecord::value), "override");
 
+            // Note: this test requires src/main/java16 and fails in IDE
             assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(UnusedSelectorException.class)
                     .hasMessageContaining("field(FooRecord, \"value\")");

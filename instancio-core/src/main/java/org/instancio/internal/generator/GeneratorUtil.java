@@ -20,12 +20,9 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.util.ExceptionHandler;
 import org.instancio.internal.util.Sonar;
-import org.instancio.spi.InstancioSpiException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
 
 @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
 final class GeneratorUtil {
@@ -39,8 +36,8 @@ final class GeneratorUtil {
      */
     @Nullable
     static Generator<?> instantiateInternalGenerator(
-            @NotNull final Class<?> generatorClass,
-            @NotNull final GeneratorContext context) {
+            final Class<?> generatorClass,
+            final GeneratorContext context) {
 
         try {
             final Constructor<?> constructor = generatorClass.getConstructor(GeneratorContext.class);
@@ -52,57 +49,4 @@ final class GeneratorUtil {
             return null;
         }
     }
-
-    /**
-     * Instantiates generator class provided via SPI.
-     */
-    @NotNull
-    static Generator<?> instantiateSpiGenerator(
-            @NotNull final Class<?> generatorClass,
-            @NotNull final GeneratorContext context) {
-
-        final Constructor<?> constructor = getConstructor(generatorClass);
-
-        if (constructor == null) {
-            throw new InstancioSpiException(String.format(
-                    "%nGenerator class:%n -> %s%n" +
-                            "does not define any of the expected constructors:%n" +
-                            " -> constructor with GeneratorContext as the only argument, or%n" +
-                            " -> default no-argument constructor", generatorClass.getName()));
-        }
-
-        try {
-            constructor.setAccessible(true);
-
-            final Object[] args = constructor.getParameterCount() == 1
-                    ? new Object[]{context}
-                    : new Object[0];
-
-            return (Generator<?>) constructor.newInstance(args);
-        } catch (Exception ex) {
-            throw new InstancioSpiException("Error instantiating generator " + generatorClass, ex);
-        }
-    }
-
-    /**
-     * Returns constructor with {@link org.instancio.generator.GeneratorContext} parameter, if available,
-     * or the default constructor otherwise. If no suitable constructor is found,
-     * returns {@code null}.
-     */
-    @Nullable
-    static Constructor<?> getConstructor(@NotNull final Class<?> generatorClass) {
-        final Constructor<?>[] constructors = generatorClass.getDeclaredConstructors();
-        Constructor<?> defaultCtor = null;
-
-        for (Constructor<?> ctor : constructors) {
-            final Parameter[] params = ctor.getParameters();
-            if (params.length == 0) {
-                defaultCtor = ctor;
-            } else if (params.length == 1 && params[0].getType() == GeneratorContext.class) {
-                return ctor;
-            }
-        }
-        return defaultCtor;
-    }
-
 }

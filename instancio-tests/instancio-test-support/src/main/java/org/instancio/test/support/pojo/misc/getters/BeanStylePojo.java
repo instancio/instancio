@@ -1,5 +1,7 @@
 package org.instancio.test.support.pojo.misc.getters;
 
+// used via reflection
+@SuppressWarnings("unused")
 public class BeanStylePojo {
 
     private String foo;

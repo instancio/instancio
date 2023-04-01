@@ -30,7 +30,7 @@ class PredicateSelectorImplTest {
 
     @Test
     void getDescription() {
-        final Throwable throwable = Throwables.mockThrowable(Throwable.class,
+        final Throwable throwable = Throwables.mockThrowable(
                 "org.instancio.Foo:1",
                 "org.example.ExpectedClass:2",
                 "org.instancio.Bar:3");

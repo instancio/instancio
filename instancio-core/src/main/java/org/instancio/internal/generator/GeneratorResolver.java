@@ -53,16 +53,9 @@ public class GeneratorResolver {
 
     private static Generator<?> loadByClassName(
             final GeneratorContext context,
-            final String generateTypeClassName,
             final String generatorClassName) {
 
-        final Class<?> targetClass = ReflectionUtils.loadClass(generateTypeClassName);
         final Class<?> generatorClass = ReflectionUtils.loadClass(generatorClassName);
-
-        if (targetClass == null || generatorClass == null) {
-            return null;
-        }
-
         return instantiateInternalGenerator(generatorClass, context);
     }
 
@@ -99,19 +92,13 @@ public class GeneratorResolver {
     @SuppressWarnings(Sonar.USE_INSTANCEOF)
     private Generator<?> getGeneratorForLegacyClass(final Class<?> klass) {
         if ("java.sql.Date".equals(klass.getName())) {
-            return loadByClassName(context,
-                    "java.sql.Date",
-                    "org.instancio.internal.generator.sql.SqlDateGenerator");
+            return loadByClassName(context, "org.instancio.internal.generator.sql.SqlDateGenerator");
         }
         if ("java.sql.Timestamp".equals(klass.getName())) {
-            return loadByClassName(context,
-                    "java.sql.Timestamp",
-                    "org.instancio.internal.generator.sql.TimestampGenerator");
+            return loadByClassName(context, "org.instancio.internal.generator.sql.TimestampGenerator");
         }
         if ("javax.xml.datatype.XMLGregorianCalendar".equals(klass.getName())) {
-            return loadByClassName(context,
-                    "javax.xml.datatype.XMLGregorianCalendar",
-                    "org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator");
+            return loadByClassName(context, "org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator");
         }
         return null;
     }

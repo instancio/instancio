@@ -19,5 +19,5 @@ import lombok.Data;
 
 @Data
 public class WithByteArray {
-    private Byte[] values;
+    private byte[] values;
 }
