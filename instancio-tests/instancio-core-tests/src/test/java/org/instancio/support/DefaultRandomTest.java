@@ -15,6 +15,7 @@
  */
 package org.instancio.support;
 
+import org.instancio.Random;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -47,7 +48,7 @@ class DefaultRandomTest {
     private static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile("^[a-zA-Z0-9]*$");
     private static final Pattern DIGITS_PATTERN = Pattern.compile("^[0-9]*$");
 
-    private final DefaultRandom random = new DefaultRandom();
+    private final Random random = new DefaultRandom();
     private Set<Object> results;
 
     @BeforeEach

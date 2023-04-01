@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 /**
  * Helper class for mapping type variables to actual type arguments.
@@ -135,13 +134,5 @@ public final class TypeMap {
     @Override
     public int hashCode() {
         return Objects.hash(rootTypeMap, typeMap);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner("\n - ", TypeMap.class.getSimpleName() + "[", "]")
-                .add("typeMap=" + typeMap)
-                .add("rootTypeMap=" + rootTypeMap)
-                .toString();
     }
 }

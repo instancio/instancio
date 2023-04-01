@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 
@@ -71,6 +72,15 @@ class InternalNodeTest {
         assertThat(NODE_FACTORY.createRootNode(Types.LIST_STRING.get()).getNodeKind()).isEqualTo(NodeKind.COLLECTION);
         assertThat(NODE_FACTORY.createRootNode(Types.MAP_INTEGER_STRING.get()).getNodeKind()).isEqualTo(NodeKind.MAP);
         assertThat(NODE_FACTORY.createRootNode(new TypeToken<Optional<Integer>>() {}.get()).getNodeKind()).isEqualTo(NodeKind.CONTAINER);
+    }
+
+    @Test
+    void getOnlyChildValidation() {
+        final InternalNode node = NODE_FACTORY.createRootNode(Types.MAP_INTEGER_STRING.get());
+
+        assertThatThrownBy(node::getOnlyChild)
+                .isExactlyInstanceOf(IllegalStateException.class)
+                .hasMessage("Expected one child, but were 2");
     }
 
     @Test
@@ -126,6 +136,13 @@ class InternalNodeTest {
                     .isNotEqualTo(bazInteger).doesNotHaveSameHashCodeAs(bazInteger);
 
             assertThat(bazInteger).isNotEqualTo(bazIntegerClassNode).doesNotHaveSameHashCodeAs(bazIntegerClassNode);
+        }
+
+        @Test
+        void equalsWithNull() {
+            final InternalNode node = NODE_FACTORY.createRootNode(int.class);
+
+            assertThat(node.equals(null)).isFalse();
         }
     }
 

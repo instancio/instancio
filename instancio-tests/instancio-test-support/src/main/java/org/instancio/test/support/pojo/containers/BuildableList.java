@@ -74,6 +74,8 @@ public class BuildableList<E> {
         private Builder() {
         }
 
+        // used via reflection
+        @SuppressWarnings("unused")
         public static <E> Builder<E> builder() {
             return new Builder<>();
         }

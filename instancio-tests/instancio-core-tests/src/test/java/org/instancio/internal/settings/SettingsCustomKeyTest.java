@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.settings;
 
+import org.instancio.exception.InstancioApiException;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
@@ -22,6 +23,7 @@ import org.instancio.test.support.pojo.basic.StringHolder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SettingsCustomKeyTest {
 
@@ -34,6 +36,28 @@ class SettingsCustomKeyTest {
         final Settings settings = Settings.create().set(KEY, value);
 
         assertThat(settings.get(KEY)).isSameAs(value);
+    }
+
+    @Test
+    void customKeyViaBuilder() {
+        final SettingKey<String> key = Keys.ofType(String.class)
+                .withPropertyKey("xyz")
+                .create();
+
+        assertThat(key.type()).isEqualTo(String.class);
+        assertThat(key.propertyKey()).isEqualTo("xyz");
+    }
+
+    @Test
+    void validation() {
+        assertThatThrownBy(() -> Keys.ofType(null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Type must not be null");
+
+        final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class);
+        assertThatThrownBy(() -> builder.withPropertyKey(null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Property key must not be null");
     }
 
     @Test

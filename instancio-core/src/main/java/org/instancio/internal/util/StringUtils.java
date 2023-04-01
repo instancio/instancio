@@ -50,7 +50,7 @@ public final class StringUtils {
     }
 
     public static boolean startsWithAny(@Nullable final String s, final String... prefixes) {
-        if (s == null) {
+        if (s == null || prefixes.length == 0) {
             return false;
         }
         for (String prefix : prefixes) {

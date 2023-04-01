@@ -17,7 +17,6 @@ package org.instancio.test.features.generator.finance;
 
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Instancio;
-import org.instancio.internal.util.LuhnUtils;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -72,12 +71,5 @@ class CreditCardNumberGeneratorTest {
                 .limit(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(result).containsNull();
-    }
-
-    private static void assertResult(final String actual, final int expectedLength) {
-        assertThat(actual).containsOnlyDigits().hasSize(expectedLength);
-        assertThat(LuhnUtils.isLuhnValid(actual))
-                .as("Expected credit card number '%s' to pass Luhn check", actual)
-                .isTrue();
     }
 }

@@ -93,7 +93,7 @@ import java.util.StringJoiner;
 public final class CollectionHint implements Hint<CollectionHint> {
     private static final CollectionHint EMPTY_HINT = builder().build();
 
-    private int generateElements;
+    private final int generateElements;
     private final boolean nullableElements;
     private final boolean shuffle;
     private final boolean unique;
@@ -128,16 +128,6 @@ public final class CollectionHint implements Hint<CollectionHint> {
      */
     public int generateElements() {
         return generateElements;
-    }
-
-    /**
-     * Sets number of elements to generate.
-     *
-     * @param generateElements number of elements to generate
-     * @since 2.7.0
-     */
-    public void generateElements(final int generateElements) {
-        this.generateElements = generateElements;
     }
 
     /**
@@ -199,10 +189,6 @@ public final class CollectionHint implements Hint<CollectionHint> {
         private List<Object> withElements;
 
         private Builder() {
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         /**

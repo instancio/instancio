@@ -165,10 +165,6 @@ public final class ArrayHint implements Hint<ArrayHint> {
         private Builder() {
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
         /**
          * Indicates whether {@code null} elements are allowed to be generated.
          *

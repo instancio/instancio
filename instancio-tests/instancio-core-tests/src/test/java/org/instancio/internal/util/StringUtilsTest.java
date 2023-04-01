@@ -97,4 +97,15 @@ class StringUtilsTest {
         assertThat(StringUtils.quoteToString("123")).isEqualTo("\"123\"");
         assertThat(StringUtils.quoteToString(123)).isEqualTo("123");
     }
+
+    @Test
+    @SuppressWarnings("ConstantConditions")
+    void startsWithAny() {
+        assertThat(StringUtils.startsWithAny(null)).isFalse();
+        assertThat(StringUtils.startsWithAny("foo", "F", "o")).isFalse();
+        assertThat(StringUtils.startsWithAny("foo", "fooo", "FOO")).isFalse();
+        assertThat(StringUtils.startsWithAny("foo", "")).isTrue();
+        assertThat(StringUtils.startsWithAny("foo", "x", "f", "y")).isTrue();
+        assertThat(StringUtils.startsWithAny("foo", "x", "foo")).isTrue();
+    }
 }

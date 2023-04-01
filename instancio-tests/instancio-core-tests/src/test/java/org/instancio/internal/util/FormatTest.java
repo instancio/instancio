@@ -31,8 +31,8 @@ import static org.instancio.Select.scope;
 
 class FormatTest {
 
+    @SuppressWarnings("all")
     private static class Nested1 {
-        @SuppressWarnings("all")
         private static class Nested2 {
             private String nested;
 

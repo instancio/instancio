@@ -135,10 +135,6 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
         private Builder() {
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
         public Builder targetClass(final Class<?> targetClass) {
             this.targetClass = targetClass;
             return this;

@@ -16,6 +16,8 @@
 
 class DefaultPackageClass {
 
+    // used via reflection
+    @SuppressWarnings("unused")
     private String value;
 
     public String getValue() {

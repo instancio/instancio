@@ -27,6 +27,8 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.Hints;
 import org.instancio.generators.Generators;
 import org.instancio.internal.nodes.NodeImpl;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.ServiceProviderContext;
 import org.instancio.test.support.pojo.person.Address;
@@ -39,6 +41,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CustomGeneratorProvider implements InstancioServiceProvider {
 
@@ -81,6 +84,11 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
 
         assertThat(initInvocationCount).isLessThanOrEqualTo(1);
         assertThat(context).isNotNull();
+
+        final Settings settings = context.getSettings();
+        assertThatThrownBy(() -> settings.set(Keys.STRING_MIN_LENGTH, 1))
+                .isExactlyInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("This instance of Settings has been locked and is read-only");
     }
 
     @Override
