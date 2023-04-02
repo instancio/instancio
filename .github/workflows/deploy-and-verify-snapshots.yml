@@ -1,18 +1,17 @@
 name: "Deploy Snapshots"
 on:
-  pull_request:
-    types:
-      - closed
+  push:
+    branches:
+      - main
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - run: echo "PR merged, deploying snapshots"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Maven Central Repository
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'
           java-version: 17
           server-id: sonatype-snapshots
           server-username: MAVEN_USERNAME
@@ -26,10 +25,11 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: "Run tests with JDK 8 using deployed snapshots"
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 1.8
+          distribution: 'temurin'
+          java-version: 8
       # exclude test modules that require versions higher than 8
       - run: cd instancio-tests && mvn -v && mvn -B -pl '!java16-tests,!java17-tests,!spi-tests,!bean-validation-hibernate-tests' install
