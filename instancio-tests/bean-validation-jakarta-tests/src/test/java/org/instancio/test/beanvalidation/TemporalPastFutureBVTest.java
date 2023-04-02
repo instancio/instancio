@@ -53,7 +53,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getLocalDate()).isBefore(LocalDate.now());
         assertThat(result.getLocalDateTime()).isBefore(LocalDateTime.now());
         ///assertThat(result.getMonthDay()).isLessThan(MonthDay.now()); // TODO
-        assertThat(result.getOffsetTime()).isBefore(OffsetTime.now());
+        assertThat(result.getOffsetTime()).isBefore(OffsetTime.now(ZoneOffset.UTC));
         assertThat(result.getOffsetDateTime()).isBefore(OffsetDateTime.now());
         assertThat(result.getZonedDateTime()).isBefore(ZonedDateTime.now());
         assertThat(result.getYearMonth()).isLessThan(YearMonth.now());
@@ -73,7 +73,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getLocalDate()).isBefore(LocalDate.now());
         assertThat(result.getLocalDateTime()).isBefore(LocalDateTime.now());
         ///assertThat(result.getMonthDay()).isLessThan(MonthDay.now()); // TODO
-        assertThat(result.getOffsetTime()).isBefore(OffsetTime.now());
+        assertThat(result.getOffsetTime()).isBefore(OffsetTime.now(ZoneOffset.UTC));
         assertThat(result.getOffsetDateTime()).isBefore(OffsetDateTime.now());
         assertThat(result.getZonedDateTime()).isBefore(ZonedDateTime.now());
         assertThat(result.getYearMonth()).isLessThan(YearMonth.now());
