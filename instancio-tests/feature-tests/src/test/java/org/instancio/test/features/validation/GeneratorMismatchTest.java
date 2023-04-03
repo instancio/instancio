@@ -74,6 +74,12 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertNumericSequences() {
+        assertMessageContains("intSeq()", Generators::intSeq);
+        assertMessageContains("longSeq()", Generators::longSeq);
+    }
+
+    @Test
     void assertMathTypes() {
         assertMessageContains("shorts()", Generators::shorts);
         assertMessageContains("doubles()", Generators::doubles);
