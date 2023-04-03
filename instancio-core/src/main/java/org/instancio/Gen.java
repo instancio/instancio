@@ -25,6 +25,7 @@ import org.instancio.generator.specs.FloatSpec;
 import org.instancio.generator.specs.HashSpec;
 import org.instancio.generator.specs.IntegerSpec;
 import org.instancio.generator.specs.LongSpec;
+import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.ShortSpec;
@@ -49,6 +50,8 @@ import org.instancio.internal.generator.lang.IntegerGenerator;
 import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.ShortGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
+import org.instancio.internal.generator.sequence.IntegerSequenceGenerator;
+import org.instancio.internal.generator.sequence.LongSequenceGenerator;
 import org.instancio.internal.generator.util.OneOfCollectionGenerator;
 
 import java.util.Collection;
@@ -131,6 +134,17 @@ public final class Gen {
     }
 
     /**
+     * Generates {@link Integer} sequences.
+     *
+     * @return value spec builder
+     * @since 2.13.0
+     */
+    @ExperimentalApi
+    public static NumericSequenceSpec<Integer> intSeq() {
+        return new IntegerSequenceGenerator();
+    }
+
+    /**
      * Generates {@link Long} values.
      *
      * @return value spec builder
@@ -138,6 +152,17 @@ public final class Gen {
      */
     public static LongSpec longs() {
         return new LongGenerator();
+    }
+
+    /**
+     * Generates {@link Long} sequences.
+     *
+     * @return value spec builder
+     * @since 2.13.0
+     */
+    @ExperimentalApi
+    public static NumericSequenceSpec<Long> longSeq() {
+        return new LongSequenceGenerator();
     }
 
     /**

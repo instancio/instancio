@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag({Feature.GENERATOR, Feature.GENERATE})
-public abstract class AbstractGeneratorTestTemplate {
+public abstract class AbstractGeneratorTestTemplate<T, G extends AbstractGenerator<T>> {
 
     private static final Settings DEFAULT_SETTINGS = Settings.defaults().lock();
     protected final int SAMPLE_SIZE = 500;
@@ -40,7 +40,7 @@ public abstract class AbstractGeneratorTestTemplate {
 
     protected abstract String getApiMethod();
 
-    protected abstract AbstractGenerator<?> generator();
+    protected abstract G generator();
 
     protected Settings getSettings() {
         return DEFAULT_SETTINGS;

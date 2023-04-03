@@ -27,6 +27,7 @@ import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.HashAsGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.generator.specs.NumberAsGeneratorSpec;
+import org.instancio.generator.specs.NumericSequenceAsGeneratorSpec;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
@@ -44,6 +45,8 @@ import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.ShortGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.misc.EmitGenerator;
+import org.instancio.internal.generator.sequence.IntegerSequenceGenerator;
+import org.instancio.internal.generator.sequence.LongSequenceGenerator;
 import org.instancio.internal.generator.util.CollectionGeneratorSpecImpl;
 import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.generator.util.MapGeneratorSpecImpl;
@@ -125,12 +128,34 @@ public class Generators {
     }
 
     /**
+     * An {@code Integer} sequence generator.
+     *
+     * @return sequence generator
+     * @since 2.13.0
+     */
+    @ExperimentalApi
+    public NumericSequenceAsGeneratorSpec<Integer> intSeq() {
+        return new IntegerSequenceGenerator(context);
+    }
+
+    /**
      * Customises generated {@link Long} values.
      *
      * @return customised generator
      */
     public NumberAsGeneratorSpec<Long> longs() {
         return new LongGenerator(context);
+    }
+
+    /**
+     * A {@code Long} sequence generator.
+     *
+     * @return sequence generator
+     * @since 2.13.0
+     */
+    @ExperimentalApi
+    public NumericSequenceAsGeneratorSpec<Long> longSeq() {
+        return new LongSequenceGenerator(context);
     }
 
     /**
