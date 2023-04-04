@@ -48,6 +48,8 @@
         </properties>
     </persistence-unit>
     <persistence-unit name="EntityGraphPersisterTestPu" transaction-type="RESOURCE_LOCAL">
+        <class>org.instancio.jpa.EntityGraphPersisterTest$AbstractEntity</class>
+        <class>org.instancio.jpa.EntityGraphPersisterTest$FlatOrder</class>
         <class>org.instancio.jpa.EntityGraphPersisterTest$Order</class>
         <class>org.instancio.jpa.EntityGraphPersisterTest$OrderItem</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>

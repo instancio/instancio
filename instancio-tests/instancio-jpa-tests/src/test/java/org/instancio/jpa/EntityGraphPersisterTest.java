@@ -37,6 +37,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.Model;
 import org.instancio.jpa.settings.JpaKeys;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.BeforeAll;
@@ -61,29 +62,24 @@ public class EntityGraphPersisterTest {
     }
 
     @Test
-    public void test() {
+    public void testFlatOrder() {
         // Given
-        // TODO: Need to find an integration path with InstancioApi to hide all these aspects from the user
-        InstancioApi<Order> orderApi = Instancio.of(Order.class)
-            .lenient()
-            .withNullable(jpaOptionalAttribute(emf.getMetamodel()))
-            .ignore(jpaTransient(emf.getMetamodel()))
-            .ignore(jpaGeneratedId(emf.getMetamodel()))
-            .withSettings(Settings.create().set(JpaKeys.METAMODEL, emf.getMetamodel()));
+        FlatOrder order = Instancio.of(jpaModel(FlatOrder.class)).create();
 
-        EntityGraphMinDepthPredictor entityGraphMinDepthPredictor =
-            new EntityGraphMinDepthPredictor(emf.getMetamodel());
-        int minDepth = entityGraphMinDepthPredictor.predictRequiredDepth(Order.class);
-        orderApi.withMaxDepth(minDepth);
+        // When
+        doInTransaction(() -> {
+            entityGraphPersister.persist(order);
+        });
 
-        orderApi
-            .onComplete(root(), (root) -> {
-                new EntityGraphShrinker(emf.getMetamodel()).shrink(root);
-                new EntityGraphAssociationFixer(emf.getMetamodel()).fixAssociations(root);
-            })
-            .create();
+        // Then
+        FlatOrder actualOrder = doInTransaction(() -> entityManager.find(FlatOrder.class, order.getId()));
+        assertThat(actualOrder).isNotNull();
+    }
 
-        Order order = orderApi.create();
+    @Test
+    public void testOrder() {
+        // Given
+        Order order = Instancio.of(jpaModel(Order.class)).create();
 
         // When
         doInTransaction(() -> {
@@ -93,6 +89,28 @@ public class EntityGraphPersisterTest {
         // Then
         Order actualOrder = doInTransaction(() -> entityManager.find(Order.class, order.getId()));
         assertThat(actualOrder).isNotNull();
+    }
+
+    private static <T> Model<T> jpaModel(Class<T> entityClass) {
+        InstancioApi<T> instancioApi = Instancio.of(entityClass)
+            .lenient()
+            .withNullable(jpaOptionalAttribute(emf.getMetamodel()))
+            .ignore(jpaTransient(emf.getMetamodel()))
+            .set(jpaGeneratedId(emf.getMetamodel()), null)
+            .withSettings(Settings.create().set(JpaKeys.METAMODEL, emf.getMetamodel()));
+
+        EntityGraphMinDepthPredictor entityGraphMinDepthPredictor =
+            new EntityGraphMinDepthPredictor(emf.getMetamodel());
+        int minDepth = entityGraphMinDepthPredictor.predictRequiredDepth(entityClass);
+        instancioApi.withMaxDepth(minDepth);
+
+        instancioApi
+            .onComplete(root(), (root) -> {
+                new EntityGraphShrinker(emf.getMetamodel()).shrink(root);
+                new EntityGraphAssociationFixer(emf.getMetamodel()).fixAssociations(root);
+            })
+            .create();
+        return instancioApi.toModel();
     }
 
     private <V> V doInTransaction(Callable<V> callable) {
@@ -123,12 +141,41 @@ public class EntityGraphPersisterTest {
     @Table(name = "service_order")
     @Getter
     @Setter
-    public static class Order {
+    public static class FlatOrder {
+
         @Id
         @GeneratedValue
         private Long id;
+
         @OneToMany
         private Set<OrderItem> orderItems = new HashSet<>(0);
+    }
+
+    @Entity
+    @Table(name = "service_order")
+    @Getter
+    @Setter
+    public static class Order extends AbstractEntity {
+
+        private Set<OrderItem> orderItems = new HashSet<>(0);
+
+        @Id
+        @GeneratedValue
+        public Long getId() {
+            return super.getId();
+        }
+
+        @OneToMany
+        public Set<OrderItem> getOrderItems() {
+            return orderItems;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static abstract class AbstractEntity {
+
+        private Long id;
     }
 
     @Entity
