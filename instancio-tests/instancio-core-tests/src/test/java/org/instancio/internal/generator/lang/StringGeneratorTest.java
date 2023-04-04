@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -32,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @NonDeterministicTag
 @FeatureTag(Feature.SETTINGS)
-class StringGeneratorTest extends AbstractGeneratorTestTemplate {
+class StringGeneratorTest extends AbstractGeneratorTestTemplate<String, StringGenerator> {
     private static final int SAMPLE_SIZE = 1000;
 
     private final Settings settings = Settings.defaults()
@@ -50,7 +49,7 @@ class StringGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected StringGenerator generator() {
         return generator;
     }
 

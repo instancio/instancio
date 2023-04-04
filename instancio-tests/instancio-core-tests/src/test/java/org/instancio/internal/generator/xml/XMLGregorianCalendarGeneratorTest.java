@@ -15,10 +15,12 @@
  */
 package org.instancio.internal.generator.xml;
 
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 
-class XMLGregorianCalendarGeneratorTest extends AbstractGeneratorTestTemplate {
+import javax.xml.datatype.XMLGregorianCalendar;
+
+class XMLGregorianCalendarGeneratorTest
+        extends AbstractGeneratorTestTemplate<XMLGregorianCalendar, XMLGregorianCalendarGenerator> {
 
     @Override
     protected String getApiMethod() {
@@ -26,7 +28,7 @@ class XMLGregorianCalendarGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected XMLGregorianCalendarGenerator generator() {
         return new XMLGregorianCalendarGenerator(getGeneratorContext());
     }
 }

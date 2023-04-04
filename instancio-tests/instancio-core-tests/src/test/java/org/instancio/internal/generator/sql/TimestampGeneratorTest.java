@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.sql;
 
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +25,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class TimestampGeneratorTest extends AbstractGeneratorTestTemplate {
+class TimestampGeneratorTest extends AbstractGeneratorTestTemplate<Timestamp, TimestampGenerator> {
 
     private static final LocalDateTime START = LocalDateTime.of(
             1970, 1, 1, 0, 0, 1, 999999999);
@@ -41,7 +40,7 @@ class TimestampGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected TimestampGenerator generator() {
         return generator;
     }
 

@@ -26,6 +26,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.Hints;
 import org.instancio.generators.Generators;
+import org.instancio.internal.generator.sequence.IntegerSequenceGenerator;
 import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -59,12 +60,13 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         // empty
     }
 
-
     private static final Map<Class<?>, GeneratorSpec<?>> GENERATOR_MAP = new HashMap<>() {{
         put(String.class, new StringGeneratorFromSpi());
         put(Pattern.class, new PatternGeneratorFromSpi());
         put(int.class, new CustomIntegerGenerator());
         put(Integer.class, new CustomIntegerGenerator());
+        put(byte.class, new IntegerSequenceGenerator().as(Integer::byteValue));
+        put(Byte.class, new IntegerSequenceGenerator().as(Integer::byteValue));
         put(Address.class, new CustomAddressGenerator());
         put(Phone.class, new CustomPhoneGenerator());
         put(FooRecord.class, (Generator<?>) random -> new FooRecord(FOO_RECORD_VALUE));

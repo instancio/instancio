@@ -17,7 +17,6 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -28,7 +27,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate {
+class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, TextPatternGenerator> {
     private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
             + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
             + "%n\t#c - lower case character [a-z]"
@@ -44,7 +43,7 @@ class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected TextPatternGenerator generator() {
         return new TextPatternGenerator(context, "any");
     }
 

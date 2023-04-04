@@ -17,7 +17,6 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,7 +26,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LoremIpsumGeneratorTest extends AbstractGeneratorTestTemplate {
+class LoremIpsumGeneratorTest extends AbstractGeneratorTestTemplate<String, LoremIpsumGenerator> {
 
     private static final String PARAGRAPH_SEPARATOR = System.lineSeparator() + System.lineSeparator();
 
@@ -39,7 +38,7 @@ class LoremIpsumGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected LoremIpsumGenerator generator() {
         return generator;
     }
 

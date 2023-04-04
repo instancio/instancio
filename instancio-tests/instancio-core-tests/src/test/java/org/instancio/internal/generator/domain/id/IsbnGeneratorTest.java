@@ -15,13 +15,12 @@
  */
 package org.instancio.internal.generator.domain.id;
 
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class IsbnGeneratorTest extends AbstractGeneratorTestTemplate {
+class IsbnGeneratorTest extends AbstractGeneratorTestTemplate<String, IsbnGenerator> {
 
     private final IsbnGenerator generator = new IsbnGenerator(getGeneratorContext());
 
@@ -31,7 +30,7 @@ class IsbnGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected IsbnGenerator generator() {
         return generator;
     }
 

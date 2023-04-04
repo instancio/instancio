@@ -15,10 +15,9 @@
  */
 package org.instancio.internal.generator.domain.hash;
 
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 
-class HashGeneratorTest extends AbstractGeneratorTestTemplate {
+class HashGeneratorTest extends AbstractGeneratorTestTemplate<String, HashGenerator> {
 
     @Override
     protected String getApiMethod() {
@@ -26,7 +25,7 @@ class HashGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected HashGenerator generator() {
         return new HashGenerator(getGeneratorContext());
     }
 }

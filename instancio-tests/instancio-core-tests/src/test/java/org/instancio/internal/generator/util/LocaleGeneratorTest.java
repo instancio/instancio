@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.generator.util;
 
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Percentage.withPercentage;
 
 @NonDeterministicTag
-class LocaleGeneratorTest extends AbstractGeneratorTestTemplate {
+class LocaleGeneratorTest extends AbstractGeneratorTestTemplate<Locale, LocaleGenerator> {
 
     private static final int SAMPLE_SIZE = 7000;
     private final LocaleGenerator generator = new LocaleGenerator(getGeneratorContext());
@@ -40,7 +39,7 @@ class LocaleGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected LocaleGenerator generator() {
         return generator;
     }
 

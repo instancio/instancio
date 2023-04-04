@@ -17,7 +17,6 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.Gen;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.util.LuhnUtils;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LuhnGeneratorTest extends AbstractGeneratorTestTemplate {
+class LuhnGeneratorTest extends AbstractGeneratorTestTemplate<String, LuhnGenerator> {
     private static final int DEFAULT_SIZE = 16;
 
     private final LuhnGenerator generator = new LuhnGenerator(getGeneratorContext());
@@ -36,7 +35,7 @@ class LuhnGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected LuhnGenerator generator() {
         return generator;
     }
 

@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +29,7 @@ import java.util.GregorianCalendar;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class CalendarGeneratorTest extends AbstractGeneratorTestTemplate {
+class CalendarGeneratorTest extends AbstractGeneratorTestTemplate<Calendar, CalendarGenerator> {
 
     private static final ZonedDateTime START = ZonedDateTime.of(
             LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999),
@@ -44,7 +43,7 @@ class CalendarGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected CalendarGenerator generator() {
         return generator;
     }
 

@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ClassGeneratorTest extends AbstractGeneratorTestTemplate {
+class ClassGeneratorTest extends AbstractGeneratorTestTemplate<Class<?>, ClassGenerator> {
 
     private final ClassGenerator generator = new ClassGenerator(getGeneratorContext());
 
