@@ -42,6 +42,7 @@ import org.instancio.internal.generator.time.MonthDayGenerator;
 import org.instancio.internal.generator.time.OffsetDateTimeGenerator;
 import org.instancio.internal.generator.time.OffsetTimeGenerator;
 import org.instancio.internal.generator.time.PeriodGenerator;
+import org.instancio.internal.generator.time.TimeZoneGenerator;
 import org.instancio.internal.generator.time.YearGenerator;
 import org.instancio.internal.generator.time.YearMonthGenerator;
 import org.instancio.internal.generator.time.ZoneIdGenerator;
@@ -104,6 +105,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -218,12 +220,13 @@ final class GeneratorResolverMaps {
         map.put(ZoneOffset.class, ZoneOffsetGenerator.class);
 
         // java.util
+        map.put(AbstractMap.SimpleEntry.class, MapEntryGenerator.class);
         map.put(Calendar.class, CalendarGenerator.class);
         map.put(Date.class, DateGenerator.class);
         map.put(Locale.class, LocaleGenerator.class);
         map.put(Map.Entry.class, MapEntryGenerator.class);
-        map.put(AbstractMap.SimpleEntry.class, MapEntryGenerator.class);
         map.put(Optional.class, OptionalGenerator.class);
+        map.put(TimeZone.class, TimeZoneGenerator.class);
         map.put(UUID.class, UUIDGenerator.class);
 
         // java.util
