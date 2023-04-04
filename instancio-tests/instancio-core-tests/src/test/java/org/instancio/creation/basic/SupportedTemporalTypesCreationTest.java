@@ -43,6 +43,7 @@ public class SupportedTemporalTypesCreationTest extends CreationTestTemplate<Sup
         assertThat(result.getDate()).isNotNull();
         assertThat(result.getSqlDate()).isNotNull();
         assertThat(result.getTimestamp()).isNotNull();
+        assertThat(result.getTimeZone()).isNotNull();
         assertThat(result.getCalendar()).isNotNull();
         assertThat(result.getZoneId()).isNotNull();
         assertThat(result.getZoneOffset()).isNotNull();

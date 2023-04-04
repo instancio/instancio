@@ -35,6 +35,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 @Data
 public class SupportedTemporalTypes {
@@ -56,6 +57,7 @@ public class SupportedTemporalTypes {
     private Year year;
     private Date date;
     private java.sql.Date sqlDate;
-    private Timestamp timestamp;
     private Calendar calendar;
+    private Timestamp timestamp;
+    private TimeZone timeZone;
 }
