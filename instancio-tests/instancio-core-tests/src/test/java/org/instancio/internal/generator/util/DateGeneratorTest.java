@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +27,7 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class DateGeneratorTest extends AbstractGeneratorTestTemplate {
+class DateGeneratorTest extends AbstractGeneratorTestTemplate<Date, DateGenerator> {
 
     private static final Instant START = LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999)
             .toInstant(OffsetDateTime.now().getOffset());
@@ -41,7 +40,7 @@ class DateGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected DateGenerator generator() {
         return generator;
     }
 

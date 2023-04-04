@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.domain.finance;
 
 import org.instancio.Gen;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.util.LuhnUtils;
 import org.instancio.internal.util.StringUtils;
@@ -27,7 +26,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CreditCardNumberGeneratorTest extends AbstractGeneratorTestTemplate {
+class CreditCardNumberGeneratorTest extends AbstractGeneratorTestTemplate<String, CreditCardNumberGenerator> {
 
     private final CreditCardNumberGenerator generator = new CreditCardNumberGenerator(getGeneratorContext());
 
@@ -37,7 +36,7 @@ class CreditCardNumberGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected CreditCardNumberGenerator generator() {
         return generator;
     }
 

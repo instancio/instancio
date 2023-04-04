@@ -15,13 +15,12 @@
  */
 package org.instancio.internal.generator.text;
 
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UUIDStringGeneratorTest extends AbstractGeneratorTestTemplate {
+class UUIDStringGeneratorTest extends AbstractGeneratorTestTemplate<String, UUIDStringGenerator> {
 
     private final UUIDStringGenerator generator = new UUIDStringGenerator(getGeneratorContext());
 
@@ -31,7 +30,7 @@ class UUIDStringGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected UUIDStringGenerator generator() {
         return generator;
     }
 

@@ -17,7 +17,6 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.allChars;
 
 @NonDeterministicTag
-class CharacterGeneratorTest extends AbstractGeneratorTestTemplate {
+class CharacterGeneratorTest extends AbstractGeneratorTestTemplate<Character, CharacterGenerator> {
     private static final int SAMPLE_SIZE = 1000;
 
     private final CharacterGenerator generator = new CharacterGenerator(getGeneratorContext());
@@ -42,7 +41,7 @@ class CharacterGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected CharacterGenerator generator() {
         return generator;
     }
 

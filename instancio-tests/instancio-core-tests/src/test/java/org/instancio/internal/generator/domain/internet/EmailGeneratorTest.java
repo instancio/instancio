@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.domain.internet;
 
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Gen.ints;
 
-class EmailGeneratorTest extends AbstractGeneratorTestTemplate {
+class EmailGeneratorTest extends AbstractGeneratorTestTemplate<String, EmailGenerator> {
 
     private final EmailGenerator generator = new EmailGenerator(getGeneratorContext());
 
@@ -37,7 +36,7 @@ class EmailGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected EmailGenerator generator() {
         return generator;
     }
 

@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.withinPercentage;
 import static org.instancio.Select.allBooleans;
 
 @NonDeterministicTag
-class BooleanGeneratorTest extends AbstractGeneratorTestTemplate {
+class BooleanGeneratorTest extends AbstractGeneratorTestTemplate<Boolean, BooleanGenerator> {
 
     private final BooleanGenerator generator = new BooleanGenerator(getGeneratorContext());
 

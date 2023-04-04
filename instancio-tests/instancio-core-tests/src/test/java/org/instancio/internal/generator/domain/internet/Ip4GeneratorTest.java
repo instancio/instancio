@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.domain.internet;
 
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class Ip4GeneratorTest extends AbstractGeneratorTestTemplate {
+class Ip4GeneratorTest extends AbstractGeneratorTestTemplate<String, Ip4Generator> {
 
     private final Ip4Generator generator = new Ip4Generator(getGeneratorContext());
 
@@ -37,7 +36,7 @@ class Ip4GeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected Ip4Generator generator() {
         return generator;
     }
 

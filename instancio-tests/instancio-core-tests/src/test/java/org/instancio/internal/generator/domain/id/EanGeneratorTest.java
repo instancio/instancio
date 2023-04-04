@@ -15,13 +15,12 @@
  */
 package org.instancio.internal.generator.domain.id;
 
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class EanGeneratorTest extends AbstractGeneratorTestTemplate {
+class EanGeneratorTest extends AbstractGeneratorTestTemplate<String, EanGenerator> {
 
     private final EanGenerator generator = new EanGenerator(getGeneratorContext());
 
@@ -31,7 +30,7 @@ class EanGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected EanGenerator generator() {
         return generator;
     }
 

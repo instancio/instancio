@@ -15,18 +15,18 @@
  */
 package org.instancio.internal.generator.net;
 
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 
-class InetAddressGeneratorTest extends AbstractGeneratorTestTemplate {
+class InetAddressGeneratorTest extends AbstractGeneratorTestTemplate<InetAddress, InetAddressGenerator> {
 
     private final InetAddressGenerator generator = new InetAddressGenerator(getGeneratorContext());
 
@@ -36,7 +36,7 @@ class InetAddressGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected InetAddressGenerator generator() {
         return generator;
     }
 

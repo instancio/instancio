@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.sql;
 
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +25,7 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class SqlDateGeneratorTest extends AbstractGeneratorTestTemplate {
+class SqlDateGeneratorTest extends AbstractGeneratorTestTemplate<Date, SqlDateGenerator> {
 
     private static final LocalDate START = LocalDate.of(2000, 1, 1);
     private static final boolean INCLUSIVE = true;
@@ -39,7 +38,7 @@ class SqlDateGeneratorTest extends AbstractGeneratorTestTemplate {
     }
 
     @Override
-    protected AbstractGenerator<?> generator() {
+    protected SqlDateGenerator generator() {
         return generator;
     }
 

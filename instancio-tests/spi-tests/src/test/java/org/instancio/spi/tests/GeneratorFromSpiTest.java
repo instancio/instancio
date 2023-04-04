@@ -225,6 +225,23 @@ class GeneratorFromSpiTest {
                         CustomGeneratorProvider.CustomFloatSpec.class,
                         CustomGeneratorProvider.class,
                         Generator.class);
+    }
 
+    @Test
+    void byteSequenceGenerator() {
+        final List<ByteHolder> result = Instancio.ofList(ByteHolder.class)
+                .size(3)
+                .create();
+
+        final Byte[] expected = {1, 2, 3};
+        assertThat(result).extracting("primitive").containsExactly(expected);
+        assertThat(result).extracting("wrapper").containsExactly(expected);
+    }
+
+    // used via reflection
+    @SuppressWarnings("unused")
+    private static final class ByteHolder {
+        private byte primitive;
+        private Byte wrapper;
     }
 }
