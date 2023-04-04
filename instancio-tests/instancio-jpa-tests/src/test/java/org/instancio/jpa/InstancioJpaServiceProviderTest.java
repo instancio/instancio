@@ -50,8 +50,8 @@ public class InstancioJpaServiceProviderTest {
             .toModel()).size(2).create();
 
         // Then
-        assertThat(orders.get(0).getId()).isEqualTo(0L);
-        assertThat(orders.get(1).getId()).isEqualTo(1L);
+        assertThat(orders.get(0).getId()).isEqualTo(1L);
+        assertThat(orders.get(1).getId()).isEqualTo(2L);
     }
 
     @Entity

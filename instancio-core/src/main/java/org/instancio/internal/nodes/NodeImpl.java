@@ -45,7 +45,7 @@ public final class NodeImpl implements Node {
 
     @Override
     public Class<?> getParentTargetClass() {
-        return parentTargetClass;
+        return field == null ? null : field.getDeclaringClass();
     }
 
     @Override

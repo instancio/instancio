@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.generator;
 
-import java.util.TimeZone;
 import org.instancio.internal.generator.io.FileGenerator;
 import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.ByteGenerator;
@@ -225,7 +224,6 @@ final class GeneratorResolverMaps {
         map.put(Calendar.class, CalendarGenerator.class);
         map.put(Date.class, DateGenerator.class);
         map.put(Locale.class, LocaleGenerator.class);
-        map.put(TimeZone.class, TimeZoneGenerator.class);
         map.put(Map.Entry.class, MapEntryGenerator.class);
         map.put(Optional.class, OptionalGenerator.class);
         map.put(TimeZone.class, TimeZoneGenerator.class);
