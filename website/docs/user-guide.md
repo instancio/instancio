@@ -2307,6 +2307,3 @@ It should be noted that using `@InstancioSource` has a couple of important limit
 The biggest limitation is that the generated objects cannot be customised.
 The only option is to customise generated values using [settings injection](#settings-injection).
 However, it is not possible to customise values on a per-field basis, as you would with the builder API.
-
-The second limitation is that it does not support parameterized types.
-For instance, it is not possible to specify that `@InstancioSource(List.class)` should be of type `List<String>`.
