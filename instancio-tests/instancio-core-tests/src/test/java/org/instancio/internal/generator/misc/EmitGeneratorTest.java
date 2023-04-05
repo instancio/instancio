@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.misc;
 
 import org.instancio.Random;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.EmitGenerator.WhenEmptyAction;
@@ -24,12 +25,13 @@ import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EmitGeneratorTest {
 
     private final Random random = new DefaultRandom();
 
-    private final EmitGenerator<?> generator = new EmitGenerator<>(
+    private final EmitGenerator<Number> generator = new EmitGenerator<>(
             new GeneratorContext(Settings.defaults(), random));
 
     @Test
@@ -54,5 +56,16 @@ class EmitGeneratorTest {
 
         final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
         assertThat(hint.emitNull()).isTrue();
+    }
+
+    @Test
+    void validation() {
+        assertThatThrownBy(() -> generator.items((Iterable<Long>) null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("'items' Iterable must not be null");
+
+        assertThatThrownBy(() -> generator.items((Integer[]) null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("'items' array must not be null");
     }
 }

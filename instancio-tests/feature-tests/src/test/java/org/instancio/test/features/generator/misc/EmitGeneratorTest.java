@@ -29,6 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,16 +55,30 @@ class EmitGeneratorTest {
     @Test
     void multipleItemsInvocations() {
         final List<Integer> result = Instancio.ofList(Integer.class)
-                .size(10)
+                .size(12)
                 .generate(all(Integer.class), gen -> gen.emit()
                         .items(-1, -2, -3)
                         .items(-4)
                         .item(-5, 1)
                         .item(-6, 2)
-                        .item(-7, 3))
+                        .items(Arrays.asList(-7, -7, -7))
+                        .items(Arrays.asList(-8, -9)))
                 .create();
 
-        assertThat(result).containsExactly(-1, -2, -3, -4, -5, -6, -6, -7, -7, -7);
+        assertThat(result).containsExactly(-1, -2, -3, -4, -5, -6, -6, -7, -7, -7, -8, -9);
+    }
+
+    @Test
+    void emitSubtypes() {
+        final List<Number> result = Instancio.ofList(Number.class)
+                .size(5)
+                .generate(all(Number.class), gen -> gen.emit()
+                        .item((byte) 1, 1)
+                        .items(2, 3L)
+                        .items(Arrays.asList(4f, 5d)))
+                .create();
+
+        assertThat(result).containsExactly((byte) 1, 2, 3L, 4f, 5d);
     }
 
     @Test
@@ -77,7 +92,6 @@ class EmitGeneratorTest {
                 .extracting(DetailRecord::getId)
                 .containsExactly(1L, 2L, 3L);
     }
-
 
     @Test
     void ignoreUnusedItems() {
