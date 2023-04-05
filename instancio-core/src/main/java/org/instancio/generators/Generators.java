@@ -15,6 +15,7 @@
  */
 package org.instancio.generators;
 
+import org.instancio.InstancioApi;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
@@ -310,6 +311,11 @@ public class Generators {
      *
      *   // Then => FooBar[foo=BAZ, bar=BAZ]
      * }</pre>
+     *
+     * <p><b>Warning:</b> using {@code emit()} with cyclic classes,
+     * where instances of the same type are generated at different depths,
+     * may produce unexpected results. It might be possible to use
+     * {@link InstancioApi#withMaxDepth(int)} to limit the depth as a workaround.
      *
      * @param <T> the type to emit
      * @return emitting generator

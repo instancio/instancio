@@ -38,10 +38,26 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      *              but the array itself may contain {@code null} elements
      *              unless the target is a {@link Map} key
      * @return spec builder
+     * @see #items(Iterable)
      * @see #item(Object, int)
      * @since 2.12.0
      */
     EmitGeneratorSpec<T> items(T... items);
+
+    /**
+     * Emit given {@code items}.
+     *
+     * <p>This method can be invoked multiple times to add more items to emit.
+     *
+     * @param items to emit, {@code null} iterable is not allowed,
+     *              but the iterable itself may contain {@code null} elements
+     *              unless the target is a {@link Map} key
+     * @return spec builder
+     * @see #items(Object[])
+     * @see #item(Object, int)
+     * @since 2.13.0
+     */
+    EmitGeneratorSpec<T> items(Iterable<? extends T> items);
 
     /**
      * Emit given {@code item} {@code n} number of times.
@@ -55,6 +71,7 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      *             must not be negative
      * @return spec builder
      * @see #items(Object[])
+     * @see #items(Iterable)
      * @since 2.12.0
      */
     EmitGeneratorSpec<T> item(T item, int n);

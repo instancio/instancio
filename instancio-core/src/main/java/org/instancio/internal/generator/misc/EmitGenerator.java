@@ -56,8 +56,17 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
 
     @Override
     public EmitGenerator<T> items(final T... items) {
-        ApiValidator.notNull(items, "Items must not be null");
+        ApiValidator.notNull(items, "'items' array must not be null");
         Collections.addAll(this.items, items);
+        return this;
+    }
+
+    @Override
+    public EmitGeneratorSpec<T> items(final Iterable<? extends T> items) {
+        ApiValidator.notNull(items, "'items' Iterable must not be null");
+        for (T item : items) {
+            this.items.add(item);
+        }
         return this;
     }
 
