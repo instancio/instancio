@@ -154,4 +154,3 @@ or if you have a question or a suggestion.
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="120px" alt="JetBrains logo">
 
 <img src="https://www.yourkit.com/images/yklogo.png" width="150px" alt="YourKit logo">
-
