@@ -16,7 +16,7 @@
 package org.instancio.junit.internal;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioOfClassApi;
+import org.instancio.InstancioApi;
 import org.instancio.Random;
 import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Settings;
@@ -27,6 +27,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.AnnotationConsumer;
 
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -55,7 +56,7 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
 
         final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
-        final Class<?>[] paramTypes = context.getRequiredTestMethod().getParameterTypes();
+        final Type[] paramTypes = context.getRequiredTestMethod().getGenericParameterTypes();
         final Object[] args = createObjectsGroupingByType(paramTypes, random, settings);
         return args.length == 0 ? Stream.of() : Stream.of(Arguments.of(args));
     }
@@ -65,14 +66,14 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
      * should be generated using a single context. This is to prevent the same value being
      * generated, e.g. @InstancioSource({String.class, String.class}) => "foo", "foo"
      */
-    static Object[] createObjectsGroupingByType(final Class<?>[] types, final Random random, final Settings settings) {
-        final Map<Class<?>, Long> counts = Arrays.stream(types)
+    static Object[] createObjectsGroupingByType(final Type[] types, final Random random, final Settings settings) {
+        final Map<Type, Long> counts = Arrays.stream(types)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        final Map<Class<?>, Queue<Object>> resultsByType = new LinkedHashMap<>();
+        final Map<Type, Queue<Object>> resultsByType = new LinkedHashMap<>();
 
         counts.forEach((type, count) -> {
-            final InstancioOfClassApi<?> api = Instancio.of(type);
+            final InstancioApi<?> api = Instancio.of(() -> type);
             if (settings != null) {
                 api.withSettings(settings);
             }

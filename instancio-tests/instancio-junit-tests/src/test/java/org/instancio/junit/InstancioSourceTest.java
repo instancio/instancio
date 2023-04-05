@@ -17,6 +17,11 @@ package org.instancio.junit;
 
 import org.junit.jupiter.params.ParameterizedTest;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class InstancioSourceTest {
@@ -42,6 +47,28 @@ class InstancioSourceTest {
         assertThat(second.bar).isNotBlank();
     }
 
+    @InstancioSource
+    @ParameterizedTest
+    void list(final List<String> list) {
+        assertThat(list).isNotEmpty().allSatisfy(s -> assertThat(s).isNotBlank());
+    }
+
+    @InstancioSource
+    @ParameterizedTest
+    void map(final Map<String, Integer> map) {
+        assertThat(map).isNotEmpty();
+        assertThat(map.keySet()).allSatisfy(s -> assertThat(s).isNotBlank());
+        assertThat(map.values()).allSatisfy(i -> assertThat(i).isNotZero());
+    }
+
+    @InstancioSource
+    @ParameterizedTest
+    void customGeneric(final Generic<String, UUID> arg) {
+        assertThat(arg).isNotNull();
+        assertThat(arg.first).isNotBlank();
+        assertThat(arg.second).isNotEmpty().doesNotContainNull();
+    }
+
     static class First {
         String foo;
 
@@ -55,6 +82,19 @@ class InstancioSourceTest {
 
         void setBar(final String bar) {
             this.bar = bar;
+        }
+    }
+
+    static class Generic<T, E> {
+        T first;
+        List<E> second;
+
+        public void setFirst(final T first) {
+            this.first = first;
+        }
+
+        public void setSecond(final List<E> second) {
+            this.second = second;
         }
     }
 }
