@@ -52,6 +52,9 @@
         <class>org.instancio.jpa.EntityGraphPersisterTest$FlatOrder</class>
         <class>org.instancio.jpa.EntityGraphPersisterTest$Order</class>
         <class>org.instancio.jpa.EntityGraphPersisterTest$OrderItem</class>
+        <class>org.instancio.jpa.EntityGraphPersisterTest$AbstractOrder</class>
+        <class>org.instancio.jpa.EntityGraphPersisterTest$OrderWithDescription1</class>
+        <class>org.instancio.jpa.EntityGraphPersisterTest$OrderWithDescription2</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />

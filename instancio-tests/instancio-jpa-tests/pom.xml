@@ -25,9 +25,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-junit</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.1.7.Final</version>
+            <version>6.2.0.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>

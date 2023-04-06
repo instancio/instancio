@@ -16,17 +16,21 @@
 package org.instancio.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.fields;
 import static org.instancio.Select.root;
 import static org.instancio.jpa.selector.JpaGeneratedIdSelectorBuilder.jpaGeneratedId;
 import static org.instancio.jpa.selector.JpaOptionalAttributeSelectorBuilder.jpaOptionalAttribute;
 import static org.instancio.jpa.selector.JpaTransientAttributeSelectorBuilder.jpaTransient;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Table;
@@ -39,11 +43,16 @@ import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.jpa.settings.JpaKeys;
+import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.Seed;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(InstancioExtension.class)
 public class EntityGraphPersisterTest {
 
     private static EntityManagerFactory emf;
@@ -91,11 +100,30 @@ public class EntityGraphPersisterTest {
         assertThat(actualOrder).isNotNull();
     }
 
+    @Test
+    @Seed(738392784923318094L)
+    public void testOrderWithDescription() {
+        // Given
+        OrderWithDescription1 order = Instancio.of(jpaModel(OrderWithDescription1.class))
+            .set(fields().named("id"), null)
+            .create();
+
+        // When
+        doInTransaction(() -> {
+            entityGraphPersister.persist(order);
+        });
+
+        // Then
+        OrderWithDescription1
+            actualOrder = doInTransaction(() -> entityManager.find(OrderWithDescription1.class, order.getId()));
+        assertThat(actualOrder).isNotNull();
+    }
+
     private static <T> Model<T> jpaModel(Class<T> entityClass) {
         InstancioApi<T> instancioApi = Instancio.of(entityClass)
             .lenient()
             .withNullable(jpaOptionalAttribute(emf.getMetamodel()))
-            .ignore(jpaTransient(emf.getMetamodel()))
+            .set(jpaTransient(emf.getMetamodel()), null)
             .set(jpaGeneratedId(emf.getMetamodel()), null)
             .withSettings(Settings.create().set(JpaKeys.METAMODEL, emf.getMetamodel()));
 
@@ -104,13 +132,12 @@ public class EntityGraphPersisterTest {
         int minDepth = entityGraphMinDepthPredictor.predictRequiredDepth(entityClass);
         instancioApi.withMaxDepth(minDepth);
 
-        instancioApi
+        return instancioApi
             .onComplete(root(), (root) -> {
                 new EntityGraphShrinker(emf.getMetamodel()).shrink(root);
                 new EntityGraphAssociationFixer(emf.getMetamodel()).fixAssociations(root);
             })
-            .create();
-        return instancioApi.toModel();
+            .toModel();
     }
 
     private <V> V doInTransaction(Callable<V> callable) {
@@ -187,4 +214,34 @@ public class EntityGraphPersisterTest {
         @GeneratedValue
         private Long id;
     }
+
+    @Getter
+    @Setter
+    @Entity
+    @AttributeOverride(name = "description", column = @Column(nullable = false))
+    public static class OrderWithDescription1 extends AbstractOrder { }
+
+    @Getter
+    @Setter
+    @MappedSuperclass
+    public static abstract class AbstractOrder extends AbstractEntity {
+
+        private String description;
+
+        @Id
+        @GeneratedValue
+        public Long getId() {
+            return super.getId();
+        }
+
+        @Column(nullable = true)
+        public String getDescription() {
+            return description;
+        }
+    }
+
+    @Getter
+    @Setter
+    @Entity
+    public static class OrderWithDescription2 extends AbstractOrder { }
 }
