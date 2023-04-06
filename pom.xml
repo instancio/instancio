@@ -50,7 +50,6 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.enforcer.require.java.version>[17,)</maven.enforcer.require.java.version>
         <sonar.organization>instancio</sonar.organization>
-        <sonar.projectKey>instancio_instancio</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.coverage.jacoco.xmlReportPaths>
