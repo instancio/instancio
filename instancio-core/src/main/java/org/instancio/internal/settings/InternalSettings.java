@@ -109,7 +109,7 @@ public final class InternalSettings implements Settings {
     public <T> T get(@NotNull final SettingKey<T> key) {
         final Object value = settingsMap.get(ApiValidator.notNull(key, "Key must not be null"));
 
-        if (value == null || key.type() == null || value.getClass() == key.type()) {
+        if (value == null || key.type() == null || key.type().isAssignableFrom(value.getClass())) {
             return (T) value;
         }
 

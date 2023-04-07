@@ -281,4 +281,19 @@ class SettingsTest {
 
         assertThat(settings.get(key)).isEqualTo(12345);
     }
+
+    @Test
+    @DisplayName("Settings should accept values that are subtypes of SettingKey.type()")
+    void keyType() {
+        final SettingKey<CharSequence> key = Keys.ofType(CharSequence.class)
+                .withPropertyKey("custom.key")
+                .create();
+
+        final String expected = "foo";
+        final Settings settings = Settings.create().set(key, expected);
+
+        final CharSequence actual = settings.get(key);
+
+        assertThat(actual).isEqualTo(expected);
+    }
 }

@@ -111,7 +111,7 @@ public final class ApiValidator {
 
         // key.type could be null if it's a user-defined key
         if (value != null && key.type() != null) {
-            isTrue(key.type() == value.getClass(),
+            isTrue(key.type().isAssignableFrom(value.getClass()),
                     () -> String.format("The value '%s' is of unexpected type (%s) for key %s",
                             value, value.getClass().getSimpleName(), key));
         }
