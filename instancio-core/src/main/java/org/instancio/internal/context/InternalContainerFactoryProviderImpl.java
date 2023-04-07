@@ -26,7 +26,7 @@ class InternalContainerFactoryProviderImpl implements InternalContainerFactoryPr
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public <S, T> Function<S, T> createFromOtherFunction(
+    public <S, T> Function<S, T> getMappingFunction(
             final Class<T> targetType,
             final List<Class<?>> typeArguments) {
 
@@ -45,7 +45,7 @@ class InternalContainerFactoryProviderImpl implements InternalContainerFactoryPr
     }
 
     @Override
-    public boolean isContainerClass(final Class<?> type) {
+    public boolean isContainer(final Class<?> type) {
         return false;
     }
 }

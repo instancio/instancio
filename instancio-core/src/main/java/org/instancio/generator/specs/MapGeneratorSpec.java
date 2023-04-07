@@ -24,7 +24,9 @@ import java.util.Map;
  * @param <V> value type
  */
 public interface MapGeneratorSpec<K, V>
-        extends NullableGeneratorSpec<Map<K, V>>, SubtypeGeneratorSpec<Map<K, V>> {
+        extends SizeGeneratorSpec<Map<K, V>>,
+        NullableGeneratorSpec<Map<K, V>>,
+        SubtypeGeneratorSpec<Map<K, V>> {
 
     /**
      * Size of map to generate.
@@ -32,6 +34,7 @@ public interface MapGeneratorSpec<K, V>
      * @param size of map
      * @return spec builder
      */
+    @Override
     MapGeneratorSpec<K, V> size(int size);
 
     /**
@@ -40,6 +43,7 @@ public interface MapGeneratorSpec<K, V>
      * @param size minimum size (inclusive)
      * @return spec builder
      */
+    @Override
     MapGeneratorSpec<K, V> minSize(int size);
 
     /**
@@ -48,6 +52,7 @@ public interface MapGeneratorSpec<K, V>
      * @param size maximum size (inclusive)
      * @return spec builder
      */
+    @Override
     MapGeneratorSpec<K, V> maxSize(int size);
 
     /**

@@ -15,6 +15,7 @@
  */
 package org.instancio.spi;
 
+import org.instancio.Random;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.settings.Settings;
 
@@ -33,4 +34,13 @@ public interface ServiceProviderContext {
      * @since 2.12.0
      */
     Settings getSettings();
+
+    /**
+     * Returns the random instance that should be used for generating
+     * values to ensure reproducible results.
+     *
+     * @return the random instance
+     * @since 2.13.0
+     */
+    Random random();
 }

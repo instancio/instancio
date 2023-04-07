@@ -23,7 +23,9 @@ import java.util.Collection;
  * @param <T> element type
  */
 public interface CollectionGeneratorSpec<T>
-        extends NullableGeneratorSpec<Collection<T>>, SubtypeGeneratorSpec<Collection<T>> {
+        extends SizeGeneratorSpec<Collection<T>>,
+        NullableGeneratorSpec<Collection<T>>,
+        SubtypeGeneratorSpec<Collection<T>> {
 
     /**
      * Size of collection to generate.
@@ -31,6 +33,7 @@ public interface CollectionGeneratorSpec<T>
      * @param size of collection
      * @return spec builder
      */
+    @Override
     CollectionGeneratorSpec<T> size(int size);
 
     /**
@@ -39,6 +42,7 @@ public interface CollectionGeneratorSpec<T>
      * @param size minimum size (inclusive)
      * @return spec builder
      */
+    @Override
     CollectionGeneratorSpec<T> minSize(int size);
 
     /**
@@ -47,6 +51,7 @@ public interface CollectionGeneratorSpec<T>
      * @param size maximum size (inclusive)
      * @return spec builder
      */
+    @Override
     CollectionGeneratorSpec<T> maxSize(int size);
 
     /**

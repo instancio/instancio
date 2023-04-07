@@ -86,6 +86,7 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
 
         assertThat(initInvocationCount).isLessThanOrEqualTo(1);
         assertThat(context).isNotNull();
+        assertThat(context.random()).isNotNull();
 
         final Settings settings = context.getSettings();
         assertThatThrownBy(() -> settings.set(Keys.STRING_MIN_LENGTH, 1))
