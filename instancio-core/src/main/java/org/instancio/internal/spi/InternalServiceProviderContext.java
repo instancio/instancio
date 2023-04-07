@@ -15,19 +15,27 @@
  */
 package org.instancio.internal.spi;
 
+import org.instancio.Random;
 import org.instancio.settings.Settings;
 import org.instancio.spi.ServiceProviderContext;
 
 public final class InternalServiceProviderContext implements ServiceProviderContext {
 
     private final Settings settings;
+    private final Random random;
 
-    public InternalServiceProviderContext(final Settings settings) {
+    public InternalServiceProviderContext(final Settings settings, final Random random) {
         this.settings = settings;
+        this.random = random;
     }
 
     @Override
     public Settings getSettings() {
         return settings;
+    }
+
+    @Override
+    public Random random() {
+        return random;
     }
 }

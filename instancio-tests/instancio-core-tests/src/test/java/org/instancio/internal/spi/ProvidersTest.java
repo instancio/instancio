@@ -18,6 +18,7 @@ package org.instancio.internal.spi;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.ServiceProviderContext;
+import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -30,7 +31,8 @@ class ProvidersTest {
     void verifyProviderInit() {
         final InstancioServiceProviderImpl p1 = new InstancioServiceProviderImpl();
         final InstancioServiceProviderImpl p2 = new InstancioServiceProviderImpl();
-        final ServiceProviderContext context = new InternalServiceProviderContext(Settings.create());
+        final ServiceProviderContext context = new InternalServiceProviderContext
+                (Settings.create(), new DefaultRandom());
 
         final Providers providers = new Providers(Arrays.asList(p1, p2), context);
 

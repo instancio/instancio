@@ -37,7 +37,7 @@ class NodeKindContainerResolver implements NodeKindResolver {
         if (targetClass == Optional.class
                 || targetClass == EnumSet.class
                 || Map.Entry.class.isAssignableFrom(targetClass)
-                || containerFactories.stream().anyMatch(p -> p.isContainerClass(targetClass))) {
+                || containerFactories.stream().anyMatch(p -> p.isContainer(targetClass))) {
             return Optional.of(NodeKind.CONTAINER);
         }
 

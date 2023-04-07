@@ -43,24 +43,17 @@ class ContainerFactoriesHandler {
             final InternalNode node,
             final GeneratorResult result) {
 
-        return providers.isEmpty() ? result : substitute(node, result);
-    }
-
-    private GeneratorResult substitute(
-            final InternalNode node,
-            final GeneratorResult result) {
-
         final List<Class<?>> typeArgs = node.getChildren()
                 .stream()
                 .map(InternalNode::getTargetClass)
                 .collect(Collectors.toList());
 
         for (InternalContainerFactoryProvider provider : providers) {
-            final Function<Object, ?> converterFn = provider.createFromOtherFunction(
+            final Function<Object, ?> fn = provider.getMappingFunction(
                     node.getTargetClass(), typeArgs);
 
-            if (converterFn != null) {
-                final Object replacement = converterFn.apply(result.getValue());
+            if (fn != null) {
+                final Object replacement = fn.apply(result.getValue());
                 return GeneratorResult.create(replacement, result.getHints());
             }
         }

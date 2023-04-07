@@ -110,7 +110,7 @@ public final class ModelContext<T> {
 
         providers = new Providers(
                 ServiceLoaders.loadAll(InstancioServiceProvider.class),
-                new InternalServiceProviderContext(settings));
+                new InternalServiceProviderContext(settings, random));
     }
 
     private static Integer getMaxDepth(final Integer builderMaxDepth, final Settings settings) {
