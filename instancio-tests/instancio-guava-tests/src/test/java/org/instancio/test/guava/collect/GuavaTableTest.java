@@ -1,0 +1,98 @@
+/*
+ * Copyright 2022-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.instancio.test.guava.collect;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import org.instancio.Instancio;
+import org.instancio.TypeToken;
+import org.instancio.internal.util.Constants;
+import org.instancio.junit.InstancioExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.allLongs;
+import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
+import static org.instancio.Select.root;
+import static org.instancio.guava.GenGuava.table;
+
+@ExtendWith(InstancioExtension.class)
+class GuavaTableTest {
+
+    private static final int SAMPLE_SIZE = 500;
+
+    @Test
+    void createViaTypeToken() {
+        final long expectedValue = -1L;
+        final Table<String, Integer, Long> result = Instancio.of(new TypeToken<Table<String, Integer, Long>>() {})
+                .set(allLongs(), expectedValue)
+                .create();
+
+        assertThat(result).isExactlyInstanceOf(HashBasedTable.class);
+        assertThat(result.size()).isBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
+
+        assertThat(result.rowKeySet()).hasOnlyElementsOfType(String.class);
+        assertThat(result.columnKeySet()).hasOnlyElementsOfType(Integer.class);
+        assertThat(result.values()).containsOnly(expectedValue);
+    }
+
+    @Test
+    void listOfTables() {
+        final List<Table<String, Integer, Long>> result = Instancio.of(new TypeToken<List<Table<String, Integer, Long>>>() {})
+                .generate(root(), gen -> gen.collection().size(SAMPLE_SIZE))
+                .create();
+
+        final Set<Integer> tableSizes = result.stream().map(Table::size).collect(Collectors.toSet());
+        assertThat(tableSizes).hasSize(Constants.MAX_SIZE - Constants.MIN_SIZE + 1);
+    }
+
+    @Test
+    void generatorSpecSize() {
+        final TableHolder result = Instancio.of(TableHolder.class)
+                .generate(field("table1"), table().minSize(1).maxSize(2))
+                .generate(field("table2"), table().size(3))
+                .create();
+
+        assertThat(result.table1.size()).isBetween(1, 2);
+        assertThat(result.table2.size()).isEqualTo(3);
+    }
+
+    @Test
+    void emit() {
+        final String[] items = {"foo", "bar", "baz"};
+
+        final TableHolder result = Instancio.of(TableHolder.class)
+                .generate(allStrings().within(field("table1").toScope()),
+                        gen -> gen.emit().items(items))
+                .generate(field("table1"), table().size(3))
+                .create();
+
+        assertThat(result.table1.size()).isEqualTo(3);
+        assertThat(result.table1.rowKeySet()).containsExactlyInAnyOrder(items);
+        assertThat(result.table2.rowKeySet()).doesNotContain(items);
+    }
+
+    private static class TableHolder {
+        private Table<String, Character, Integer> table1;
+        private Table<String, Character, Integer> table2;
+    }
+}
