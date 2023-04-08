@@ -97,6 +97,7 @@ Person marge = Instancio.of(simpsons)
 - Support for generating data based on Bean Validation annotations.
 - Flexible configuration options.
 - `InstancioExtension` for Junit 5 `@ExtendWith`.
+- Support for Guava via `instancio-guava` module (experimental)
 
 ## Documentation
 
@@ -114,8 +115,8 @@ git clone https://github.com/instancio/instancio-quickstart.git
 
 ## Latest Release
 
-Version `2.12.1` is now available.
-A summary of new features is available in the [release notes](https://github.com/instancio/instancio/discussions/515).
+Version `2.13.0` is now available.
+A summary of new features is available in the [release notes](https://github.com/instancio/instancio/discussions/558).
 
 # Maven coordinates
 
@@ -125,7 +126,7 @@ If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
 <dependency>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-junit</artifactId>
-    <version>2.12.1</version>
+    <version>2.13.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -136,7 +137,7 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
 <dependency>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-core</artifactId>
-    <version>2.12.1</version>
+    <version>2.13.0</version>
     <scope>test</scope>
 </dependency>
 ```
