@@ -19,13 +19,14 @@ Since version `1.5.0` Instancio supports creating:
 
 ## Dependencies
 
-There are three dependencies available from Maven central:
+The following dependencies are available from Maven central:
 
 
-| Dependency            | Module Name               | Description |
-| --------------------- | ------------------------- |------------ |
-| `instancio-core`      | `org.instancio.core`      | Core library |
-| `instancio-junit`     | `org.instancio.junit`     | JUnit Jupiter integration |
+| Dependency            | JPMS Module Name          | Description                                    |
+| --------------------- |---------------------------|------------------------------------------------|
+| `instancio-core`      | `org.instancio.core`      | Core library                                   |
+| `instancio-junit`     | `org.instancio.junit`     | JUnit Jupiter integration                      |
+| `instancio-guava`     | `org.instancio.guava`     | Support for Google Guava                       |
 | `instancio-processor` | `org.instancio.processor` | Annotation processor for generating metamodels |
 
 
@@ -73,6 +74,13 @@ If you use JUnit 4, TestNG, or would like to use Instancio standalone, then use 
         testImplementation 'org.instancio:instancio-core:{{config.latest_release}}'
     }
     ```
+
+### **`instancio-guava`**
+
+Using `instancio-guava` requires the following dependencies on the classpath:
+
+- either `instancio-core` or `instancio-junit`
+- `com.google.guava:guava` version `23.1-jre` or higher
 
 ### **`instancio-processor`**
 
