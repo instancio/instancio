@@ -46,6 +46,11 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
+            <artifactId>instancio-guava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
             <artifactId>instancio-core-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -59,6 +64,12 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-processor-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-guava-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
