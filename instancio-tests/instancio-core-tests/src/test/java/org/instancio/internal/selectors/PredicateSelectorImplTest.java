@@ -20,6 +20,7 @@ import org.instancio.Select;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.testsupport.fixtures.Throwables;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -37,8 +38,11 @@ class PredicateSelectorImplTest {
 
         final String apiMethod = "anUnusedSelectorMethodName()";
 
-        final PredicateSelectorImpl selector = new PredicateSelectorImpl(
-                SelectorTargetKind.CLASS, klass -> false, null, apiMethod, throwable);
+        final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
+                .typePredicate(klass -> false)
+                .apiInvocationDescription(apiMethod)
+                .stackTraceHolder(throwable)
+                .build();
 
         assertThat(selector.getDescription()).isEqualTo(
                 String.format("anUnusedSelectorMethodName()%n" +
@@ -75,5 +79,55 @@ class PredicateSelectorImplTest {
         assertThat(selector).hasToString("types(Predicate<Class>)");
     }
 
+    @Nested
+    class DescriptionTest {
+        @Test
+        void field() {
+            final PredicateSelectorImpl result = PredicateSelectorImpl.builder()
+                    .fieldPredicate(o -> true)
+                    .build();
 
+            assertThat(result.getDescription())
+                    .startsWith(String.format("fields(Predicate<Field>)%n    at"));
+        }
+
+        @Test
+        void type() {
+            final PredicateSelectorImpl result = PredicateSelectorImpl.builder()
+                    .typePredicate(o -> true)
+                    .build();
+
+            assertThat(result.getDescription())
+                    .startsWith(String.format("types(Predicate<Class>)%n    at"));
+        }
+
+        @Test
+        void customFieldPredicateDescription() {
+            final PredicateSelectorImpl result = PredicateSelectorImpl.builder()
+                    .apiInvocationDescription("foo()")
+                    .fieldPredicate(o -> true)
+                    .build();
+
+            assertThat(result.getDescription())
+                    .startsWith(String.format("foo()%n    at"));
+        }
+
+        @Test
+        void customTypedPredicateDescription() {
+            final PredicateSelectorImpl result = PredicateSelectorImpl.builder()
+                    .apiInvocationDescription("foo()")
+                    .typePredicate(o -> true)
+                    .build();
+
+            assertThat(result.getDescription())
+                    .startsWith(String.format("foo()%n    at"));
+        }
+
+        @Test
+        void nullDescription() {
+            final PredicateSelectorImpl result = PredicateSelectorImpl.builder().build();
+
+            assertThat(result.getDescription()).startsWith(String.format("<selector>%n    at"));
+        }
+    }
 }

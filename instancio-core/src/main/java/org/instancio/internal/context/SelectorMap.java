@@ -25,13 +25,13 @@ import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.ScopelessSelector;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetKind;
 import org.instancio.internal.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -65,9 +65,15 @@ final class SelectorMap<V> {
     private static final ScopelessSelector SCOPELESS_ROOT = new ScopelessSelector(null);
 
     private final Map<ScopelessSelector, List<SelectorImpl>> scopelessSelectors = new LinkedHashMap<>(0);
-    private final Map<? super TargetSelector, V> selectors = new LinkedHashMap<>(0);
-    private final Set<? super TargetSelector> unusedSelectors = new LinkedHashSet<>(0);
-    private final List<PredicateSelectorEntry<V>> predicateSelectors = new ArrayList<>(0);
+    private final Map<TargetSelector, V> selectors = new LinkedHashMap<>(0);
+    private final Set<TargetSelector> unusedSelectors = new LinkedHashSet<>(0);
+
+    /**
+     * Predicate selector precedence is based on priority (lower values are higher priority)
+     * and insertion order (last added wins).
+     */
+    private final Set<PredicateSelectorEntry<V>> predicateSelectors = new SortedSetWithReverseInsertionOrder<>(
+            Comparator.comparingInt((o -> o.predicateSelector.getPriority())));
 
     private static final class PredicateSelectorEntry<V> {
         private final PredicateSelectorImpl predicateSelector;
@@ -80,9 +86,9 @@ final class SelectorMap<V> {
         }
     }
 
-    void forEach(final BiConsumer<? super TargetSelector, ? super V> action) {
-        for (Map.Entry<? super TargetSelector, V> entry : selectors.entrySet()) {
-            final TargetSelector selector = (TargetSelector) entry.getKey();
+    void forEach(final BiConsumer<TargetSelector, V> action) {
+        for (Map.Entry<TargetSelector, V> entry : selectors.entrySet()) {
+            final TargetSelector selector = entry.getKey();
             final V value = entry.getValue();
 
             action.accept(selector, value);
@@ -117,8 +123,8 @@ final class SelectorMap<V> {
         }
     }
 
-    public Set<? super TargetSelector> getUnusedKeys() {
-        final Set<? super TargetSelector> unused = new HashSet<>(unusedSelectors);
+    public Set<TargetSelector> getUnusedKeys() {
+        final Set<TargetSelector> unused = new HashSet<>(unusedSelectors);
         for (PredicateSelectorEntry<?> entry : predicateSelectors) {
             if (!entry.matched) {
                 unused.add(entry.predicateSelector);
@@ -150,29 +156,12 @@ final class SelectorMap<V> {
     }
 
     private Optional<V> getPredicateSelectorMatch(final InternalNode node) {
-        PredicateSelectorEntry<V> classPredicate = null;
-
-        // If there's a field predicate anywhere in the list, then return the last one found.
-        // Otherwise, return the last class predicate.
-        for (int i = predicateSelectors.size() - 1; i >= 0; i--) {
-            final PredicateSelectorEntry<V> entry = predicateSelectors.get(i);
-            if (entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD) {
-                if (isPredicateMatch(node, entry)) {
-                    entry.matched = true;
-                    return Optional.of(entry.value);
-                }
-            } else if (classPredicate == null // we want to return the first one that matches
-                    && entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.CLASS
-                    && isPredicateMatch(node, entry)) {
-                classPredicate = entry;
+        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+            if (isPredicateMatch(node, entry)) {
+                entry.matched = true;
+                return Optional.of(entry.value);
             }
         }
-
-        if (classPredicate != null) {
-            classPredicate.matched = true;
-            return Optional.of(classPredicate.value);
-        }
-
         return Optional.empty();
     }
 
@@ -202,9 +191,7 @@ final class SelectorMap<V> {
     }
 
     private static boolean isPredicateMatch(final InternalNode node, final PredicateSelectorEntry<?> entry) {
-        return entry.predicateSelector.getSelectorTargetKind() == SelectorTargetKind.FIELD
-                ? entry.predicateSelector.getFieldPredicate().test(node.getField())
-                : entry.predicateSelector.getClassPredicate().test(node.getTargetClass());
+        return entry.predicateSelector.getNodePredicate().test(node);
     }
 
     private void markUsed(final SelectorImpl selector) {

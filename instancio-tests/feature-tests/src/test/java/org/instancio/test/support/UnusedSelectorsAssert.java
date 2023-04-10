@@ -117,7 +117,7 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
     private UnusedSelectorsAssert assertUnusedSelectorAt(
             final TargetSelector selector,
             final String stackTraceLine,
-            final Set<? super TargetSelector> selectors) {
+            final Set<TargetSelector> selectors) {
 
         assertThat(getActualStackTraceLine(selector.toString())).containsSubsequence(stackTraceLine);
         return assertUnused(selector, selectors);
@@ -125,7 +125,7 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
 
     private UnusedSelectorsAssert assertUnused(
             final TargetSelector selector,
-            final Set<? super TargetSelector> selectors) {
+            final Set<TargetSelector> selectors) {
 
         assertThat(isUnusedSelector(selector, selectors))
                 .as("Expected selector %s to be unused", selector)
@@ -154,7 +154,7 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
         return message.substring(0, message.indexOf("Possible causes"));
     }
 
-    private boolean isUnusedSelector(final TargetSelector selector, final Set<? super TargetSelector> selectors) {
+    private boolean isUnusedSelector(final TargetSelector selector, final Set<TargetSelector> selectors) {
         if (selector instanceof Selector) {
             return selectors.contains(selector);
         } else if (selector instanceof PredicateSelector || selector instanceof SelectorBuilder) {

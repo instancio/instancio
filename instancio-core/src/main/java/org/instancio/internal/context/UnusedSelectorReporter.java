@@ -26,11 +26,11 @@ import static org.instancio.internal.util.Constants.NL;
 
 final class UnusedSelectorReporter {
     private final int maxDepth;
-    private final Set<? super TargetSelector> ignored;
-    private final Set<? super TargetSelector> nullable;
-    private final Set<? super TargetSelector> generators;
-    private final Set<? super TargetSelector> callbacks;
-    private final Set<? super TargetSelector> subtypes;
+    private final Set<TargetSelector> ignored;
+    private final Set<TargetSelector> nullable;
+    private final Set<TargetSelector> generators;
+    private final Set<TargetSelector> callbacks;
+    private final Set<TargetSelector> subtypes;
 
     private UnusedSelectorReporter(final Builder builder) {
         maxDepth = builder.maxDepth;
@@ -112,7 +112,7 @@ final class UnusedSelectorReporter {
     }
 
     private static void append(
-            final Set<? super TargetSelector> selectors,
+            final Set<TargetSelector> selectors,
             final StringBuilder sb,
             final String apiMethodName) {
 
@@ -133,7 +133,7 @@ final class UnusedSelectorReporter {
                 && subtypes.isEmpty();
     }
 
-    private static String formatSelectors(final Set<? super TargetSelector> selectors) {
+    private static String formatSelectors(final Set<TargetSelector> selectors) {
         final int[] count = {1};
         return selectors.stream()
                 .map(UnusedSelectorDescription.class::cast)
@@ -148,11 +148,11 @@ final class UnusedSelectorReporter {
 
     public static final class Builder {
         private int maxDepth;
-        private Set<? super TargetSelector> ignored;
-        private Set<? super TargetSelector> nullable;
-        private Set<? super TargetSelector> generators;
-        private Set<? super TargetSelector> callbacks;
-        private Set<? super TargetSelector> subtypes;
+        private Set<TargetSelector> ignored;
+        private Set<TargetSelector> nullable;
+        private Set<TargetSelector> generators;
+        private Set<TargetSelector> callbacks;
+        private Set<TargetSelector> subtypes;
 
         private Builder() {
         }
@@ -162,27 +162,27 @@ final class UnusedSelectorReporter {
             return this;
         }
 
-        public Builder ignored(final Set<? super TargetSelector> ignored) {
+        public Builder ignored(final Set<TargetSelector> ignored) {
             this.ignored = ignored;
             return this;
         }
 
-        public Builder nullable(final Set<? super TargetSelector> nullable) {
+        public Builder nullable(final Set<TargetSelector> nullable) {
             this.nullable = nullable;
             return this;
         }
 
-        public Builder generators(final Set<? super TargetSelector> generators) {
+        public Builder generators(final Set<TargetSelector> generators) {
             this.generators = generators;
             return this;
         }
 
-        public Builder callbacks(final Set<? super TargetSelector> callbacks) {
+        public Builder callbacks(final Set<TargetSelector> callbacks) {
             this.callbacks = callbacks;
             return this;
         }
 
-        public Builder subtypes(final Set<? super TargetSelector> subtypes) {
+        public Builder subtypes(final Set<TargetSelector> subtypes) {
             this.subtypes = subtypes;
             return this;
         }

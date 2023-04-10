@@ -17,6 +17,8 @@ package org.instancio.internal.selectors;
 
 import org.instancio.PredicateSelector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeContext;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
@@ -24,7 +26,6 @@ import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Pojo;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -40,41 +41,41 @@ class FieldSelectorBuilderImplTest {
     void named() {
         selectorBuilder.named("name");
         assertThat(build(selectorBuilder)).acceptsAll(Arrays.asList(
-                getField(Person.class, "name"),
-                getField(Pet.class, "name")));
+                createNode(Person.class, "name"),
+                createNode(Pet.class, "name")));
 
-        assertThat(build(selectorBuilder)).rejects(getField(Address.class, "city"));
+        assertThat(build(selectorBuilder)).rejects(createNode(Address.class, "city"));
     }
 
     @Test
     void matching() {
         selectorBuilder.matching("^ge.*|.*ge$");
         assertThat(build(selectorBuilder)).acceptsAll(Arrays.asList(
-                getField(Person.class, "age"),
-                getField(Person.class, "gender")));
+                createNode(Person.class, "age"),
+                createNode(Person.class, "gender")));
 
-        assertThat(build(selectorBuilder)).rejects(getField(Address.class, "city"));
+        assertThat(build(selectorBuilder)).rejects(createNode(Address.class, "city"));
     }
 
     @Test
     void ofType() {
         selectorBuilder.ofType(String.class);
-        assertThat(build(selectorBuilder)).accepts(getField(Person.class, "name"));
-        assertThat(build(selectorBuilder)).rejects(getField(Person.class, "age"));
+        assertThat(build(selectorBuilder)).accepts(createNode(Person.class, "name"));
+        assertThat(build(selectorBuilder)).rejects(createNode(Person.class, "age"));
     }
 
     @Test
     void declaredIn() {
         selectorBuilder.declaredIn(Address.class);
-        assertThat(build(selectorBuilder)).accepts(getField(Address.class, "city"));
-        assertThat(build(selectorBuilder)).rejects(getField(Person.class, "name"));
+        assertThat(build(selectorBuilder)).accepts(createNode(Address.class, "city"));
+        assertThat(build(selectorBuilder)).rejects(createNode(Person.class, "name"));
     }
 
     @Test
     void annotated() {
         selectorBuilder.annotated(PersonName.class);
-        assertThat(build(selectorBuilder)).accepts(getField(Person.class, "name"));
-        assertThat(build(selectorBuilder)).rejects(getField(Pet.class, "name"));
+        assertThat(build(selectorBuilder)).accepts(createNode(Person.class, "name"));
+        assertThat(build(selectorBuilder)).rejects(createNode(Pet.class, "name"));
     }
 
     @Test
@@ -85,7 +86,7 @@ class FieldSelectorBuilderImplTest {
                 .declaredIn(Person.class)
                 .annotated(PersonName.class);
 
-        assertThat(build(selectorBuilder)).accepts(getField(Person.class, "name"));
+        assertThat(build(selectorBuilder)).accepts(createNode(Person.class, "name"));
     }
 
     @Test
@@ -131,8 +132,19 @@ class FieldSelectorBuilderImplTest {
                 ".declaredIn(Person).annotated(Pojo).annotated(PersonName)");
     }
 
-    private static Predicate<Field> build(FieldSelectorBuilderImpl builder) {
+    // Note: creates a minimal node for tests to pass (will throw an exception if toString() is called)
+    private static InternalNode createNode(final Class<?> type, final String field) {
+        return InternalNode.builder()
+                .type(type)
+                .rawType(type)
+                .targetClass(type)
+                .field(getField(type, field))
+                .nodeContext(NodeContext.builder().build())
+                .build();
+    }
+
+    private static Predicate<InternalNode> build(FieldSelectorBuilderImpl builder) {
         final PredicateSelector predicateSelector = builder.build();
-        return ((PredicateSelectorImpl) predicateSelector).getFieldPredicate();
+        return ((PredicateSelectorImpl) predicateSelector).getNodePredicate();
     }
 }

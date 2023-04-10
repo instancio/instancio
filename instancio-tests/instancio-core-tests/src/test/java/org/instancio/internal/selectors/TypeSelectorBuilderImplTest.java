@@ -17,6 +17,8 @@ package org.instancio.internal.selectors;
 
 import org.instancio.PredicateSelector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeContext;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
@@ -27,7 +29,9 @@ import org.instancio.test.support.pojo.person.Pojo;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,16 +43,17 @@ class TypeSelectorBuilderImplTest {
     @Test
     void of() {
         selectorBuilder.of(CharSequence.class);
-        assertThat(build(selectorBuilder)).acceptsAll(Arrays.asList(
+        assertThat(build(selectorBuilder)).acceptsAll(toNodes(
                 CharSequence.class, String.class, StringBuilder.class));
-        assertThat(build(selectorBuilder)).rejects(Integer.class);
+
+        assertThat(build(selectorBuilder)).rejectsAll(toNodes(Integer.class));
     }
 
     @Test
     void annotated() {
         selectorBuilder.annotated(Pojo.class);
-        assertThat(build(selectorBuilder)).accepts(Person.class);
-        assertThat(build(selectorBuilder)).rejects(Foo.class);
+        assertThat(build(selectorBuilder)).acceptsAll(toNodes(Person.class));
+        assertThat(build(selectorBuilder)).rejectsAll(toNodes(Foo.class));
     }
 
     @Test
@@ -58,8 +63,8 @@ class TypeSelectorBuilderImplTest {
                 .excluding(Person.class)
                 .annotated(Pojo.class);
 
-        assertThat(build(selectorBuilder)).acceptsAll(Arrays.asList(Address.class, Phone.class));
-        assertThat(build(selectorBuilder)).rejects(Person.class);
+        assertThat(build(selectorBuilder)).acceptsAll(toNodes(Address.class, Phone.class));
+        assertThat(build(selectorBuilder)).rejectsAll(toNodes(Person.class));
     }
 
     @Test
@@ -93,8 +98,19 @@ class TypeSelectorBuilderImplTest {
         assertThat(result).isEqualTo("types().of(Object).excluding(Foo).excluding(Bar).annotated(Pojo).annotated(PersonName)");
     }
 
-    private static Predicate<Class<?>> build(TypeSelectorBuilderImpl builder) {
+    private static List<InternalNode> toNodes(final Class<?>... types) {
+        return Arrays.stream(types)
+                .map(type -> InternalNode.builder()
+                        .type(type)
+                        .rawType(type)
+                        .targetClass(type)
+                        .nodeContext(NodeContext.builder().build())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static Predicate<InternalNode> build(TypeSelectorBuilderImpl builder) {
         final PredicateSelector predicateSelector = builder.build();
-        return ((PredicateSelectorImpl) predicateSelector).getClassPredicate();
+        return ((PredicateSelectorImpl) predicateSelector).getNodePredicate();
     }
 }
