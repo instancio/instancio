@@ -47,12 +47,25 @@ public class LuhnCheckAndLengthBV {
     public static class WithStartEndAndCheckDigitIndices {
         @NotNull
         @Length(min = 17)
-        @LuhnCheck(startIndex = 0, endIndex = 7, checkDigitIndex = 7)
+        @LuhnCheck(startIndex = 0, endIndex = 7, checkDigitIndex = 8)
         private String value0;
 
         @NotNull
         @Length(max = 20) // min = 0
         @LuhnCheck(startIndex = 5, endIndex = 10, checkDigitIndex = 3)
+        private String value1;
+    }
+
+    @Data
+    public static class WithEndAndCheckDigitIndicesEqual {
+        @NotNull
+        @Length(min = 17)
+        @LuhnCheck(startIndex = 0, endIndex = 7, checkDigitIndex = 7)
+        private String value0;
+
+        @NotNull
+        @Length(max = 20) // min = 0
+        @LuhnCheck(startIndex = 5, endIndex = 10, checkDigitIndex = 10)
         private String value1;
     }
 }

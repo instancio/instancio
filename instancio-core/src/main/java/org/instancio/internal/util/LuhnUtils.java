@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.util;
 
-import static org.instancio.internal.util.NumberUtils.sumDigits;
+import java.util.stream.IntStream;
 
 public final class LuhnUtils {
 
@@ -45,23 +45,27 @@ public final class LuhnUtils {
                 "Invalid check digit index %s for range (%s, %s)",
                 checkIdx, startIdx, endIdx);
 
-        final char[] payload = s.substring(startIdx, endIdx + 1).toCharArray();
-        final int expectedCheckDigit = getCheckDigit(payload);
-        final int checkDigit = s.charAt(checkIdx) - '0';
-        return checkDigit == expectedCheckDigit;
+        final int actualEnd = endIdx == checkIdx ? endIdx - 1 : endIdx;
+        final String payload = s.substring(startIdx, actualEnd + 1);
+        return getCheckDigit(payload) == s.charAt(checkIdx) - '0';
     }
 
-    @SuppressWarnings("PMD.UseVarargs")
-    public static int getCheckDigit(char[] payload) {
-        final int parity = payload.length % 2;
-        int sum = 0;
+    public static int getCheckDigit(final String payload) {
+        return (10 - module10(payload)) % 10;
+    }
 
-        for (int i = 0; i < payload.length - 1; i++) { // exclude last digit
-            final int n = payload[i] - '0';
-            final int doubled = i % 2 == parity ? n * 2 : n;
-            final int doubledSum = sumDigits(sumDigits(doubled)); // sum twice to handle 10
-            sum += doubledSum;
-        }
-        return (10 - (sum % 10)) % 10;
+    private static int module10(final String payload) {
+        String reverse = new StringBuilder(payload).reverse().toString();
+        int sum = IntStream.range(0, payload.length())
+                .map(i -> extractDigit(i, reverse))
+                .map(NumberUtils::sumDigits)
+                .map(NumberUtils::sumDigits)
+                .sum();
+        return sum % 10;
+    }
+
+    private static int extractDigit(final int position, final String string) {
+        int digit = string.charAt(position) - '0';
+        return position % 2 == 0 ? digit << 1 : digit;
     }
 }

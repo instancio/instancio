@@ -58,7 +58,7 @@ class LuhnUtilsTest {
 
     @Test
     void validWithIndexCheckDigitOutsidePayload() {
-        assertThat(LuhnUtils.isLuhnValid(1, 2, 3, "X677")).isTrue();
-        assertThat(LuhnUtils.isLuhnValid(2, 4, 0, "4X364XXX")).isTrue();
+        assertThat(LuhnUtils.isLuhnValid(1, 2, 3, "X679")).isTrue();
+        assertThat(LuhnUtils.isLuhnValid(2, 4, 0, "0X364XXX")).isTrue();
     }
 }
