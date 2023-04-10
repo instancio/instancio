@@ -25,7 +25,6 @@ import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.SelectorTargetKind;
 import org.instancio.internal.selectors.TypeSelectorBuilderImpl;
 
 import java.lang.reflect.Field;
@@ -138,7 +137,7 @@ public final class Select {
      */
     public static TargetSelector fields(final Predicate<Field> predicate) {
         ApiValidator.notNull(predicate, "Field predicate must not be null");
-        return new PredicateSelectorImpl(SelectorTargetKind.FIELD, predicate, null, null);
+        return PredicateSelectorImpl.builder().fieldPredicate(predicate).build();
     }
 
     /**
@@ -153,7 +152,7 @@ public final class Select {
      */
     public static TargetSelector types(final Predicate<Class<?>> predicate) {
         ApiValidator.notNull(predicate, "Type predicate must not be null");
-        return new PredicateSelectorImpl(SelectorTargetKind.CLASS, null, predicate, null);
+        return PredicateSelectorImpl.builder().typePredicate(predicate).build();
     }
 
     /**

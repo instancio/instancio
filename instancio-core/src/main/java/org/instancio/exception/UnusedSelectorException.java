@@ -28,19 +28,19 @@ import java.util.Set;
 @SuppressWarnings({Sonar.NUMBER_OF_PARENTS, Sonar.GENERIC_WILDCARD_IN_RETURN})
 public class UnusedSelectorException extends InstancioApiException {
 
-    private final transient Set<? super TargetSelector> ignored;
-    private final transient Set<? super TargetSelector> nullable;
-    private final transient Set<? super TargetSelector> generators;
-    private final transient Set<? super TargetSelector> callbacks;
-    private final transient Set<? super TargetSelector> subtypes;
+    private final transient Set<TargetSelector> ignored;
+    private final transient Set<TargetSelector> nullable;
+    private final transient Set<TargetSelector> generators;
+    private final transient Set<TargetSelector> callbacks;
+    private final transient Set<TargetSelector> subtypes;
 
     public UnusedSelectorException(
             final String message,
-            final Set<? super TargetSelector> ignored,
-            final Set<? super TargetSelector> nullable,
-            final Set<? super TargetSelector> generators,
-            final Set<? super TargetSelector> callbacks,
-            final Set<? super TargetSelector> subtypes) {
+            final Set<TargetSelector> ignored,
+            final Set<TargetSelector> nullable,
+            final Set<TargetSelector> generators,
+            final Set<TargetSelector> callbacks,
+            final Set<TargetSelector> subtypes) {
         super(message);
         this.ignored = ignored;
         this.nullable = nullable;
@@ -49,23 +49,23 @@ public class UnusedSelectorException extends InstancioApiException {
         this.subtypes = subtypes;
     }
 
-    public Set<? super TargetSelector> getIgnored() {
+    public Set<TargetSelector> getIgnored() {
         return ignored;
     }
 
-    public Set<? super TargetSelector> getNullable() {
+    public Set<TargetSelector> getNullable() {
         return nullable;
     }
 
-    public Set<? super TargetSelector> getGenerators() {
+    public Set<TargetSelector> getGenerators() {
         return generators;
     }
 
-    public Set<? super TargetSelector> getCallbacks() {
+    public Set<TargetSelector> getCallbacks() {
         return callbacks;
     }
 
-    public Set<? super TargetSelector> getSubtypes() {
+    public Set<TargetSelector> getSubtypes() {
         return subtypes;
     }
 }

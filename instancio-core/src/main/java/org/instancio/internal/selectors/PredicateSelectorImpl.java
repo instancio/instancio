@@ -17,10 +17,8 @@ package org.instancio.internal.selectors;
 
 import org.instancio.PredicateSelector;
 import org.instancio.TargetSelector;
-import org.instancio.exception.InstancioException;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
-import org.instancio.internal.util.ObjectUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -28,42 +26,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
+
 public final class PredicateSelectorImpl implements PredicateSelector, Flattener, UnusedSelectorDescription {
+    private static final int FIELD_PRIORITY = 1;
+    private static final int TYPE_PRIORITY = 2;
+    private static final String DEFAULT_SELECTOR_DESCRIPTION = "<selector>";
     private static final Predicate<Field> NON_NULL_FIELD = Objects::nonNull;
     private static final Predicate<Class<?>> NON_NULL_TYPE = Objects::nonNull;
 
-    private final SelectorTargetKind selectorTargetKind;
-    private final Predicate<Field> fieldPredicate;
-    private final Predicate<Class<?>> classPredicate;
+    private final int priority;
+    private final Predicate<InternalNode> nodePredicate;
     private final String apiInvocationDescription;
     private final Throwable stackTraceHolder;
 
-    public PredicateSelectorImpl(final SelectorTargetKind selectorTargetKind,
-                                 @Nullable final Predicate<Field> fieldPredicate,
-                                 @Nullable final Predicate<Class<?>> classPredicate,
-                                 @Nullable final String apiInvocationDescription) {
-
-        this(selectorTargetKind, fieldPredicate, classPredicate, apiInvocationDescription, new Throwable());
-    }
-
-    /**
-     * @param selectorTargetKind       selector target's kind
-     * @param fieldPredicate           field predicate, applicable to field selectors only
-     * @param classPredicate           class predicate, applicable to type selectors only
-     * @param apiInvocationDescription string describing builder method(s) invoked
-     * @param stackTraceHolder         a throwable containing stacktrace line where selector was used
-     */
-    PredicateSelectorImpl(final SelectorTargetKind selectorTargetKind,
-                          @Nullable final Predicate<Field> fieldPredicate,
-                          @Nullable final Predicate<Class<?>> classPredicate,
-                          @Nullable final String apiInvocationDescription,
-                          final Throwable stackTraceHolder) {
-
-        this.selectorTargetKind = selectorTargetKind;
-        this.fieldPredicate = fieldPredicate == null ? null : NON_NULL_FIELD.and(fieldPredicate);
-        this.classPredicate = classPredicate == null ? null : NON_NULL_TYPE.and(classPredicate);
-        this.apiInvocationDescription = apiInvocationDescription;
-        this.stackTraceHolder = stackTraceHolder;
+    private PredicateSelectorImpl(final Builder builder) {
+        priority = builder.priority;
+        nodePredicate = builder.nodePredicate;
+        apiInvocationDescription = defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION);
+        stackTraceHolder = defaultIfNull(builder.stackTraceHolder, Throwable::new);
     }
 
     @Override
@@ -76,30 +57,68 @@ public final class PredicateSelectorImpl implements PredicateSelector, Flattener
         return String.format("%s%n    at %s", this, Format.firstNonInstancioStackTraceLine(stackTraceHolder));
     }
 
-    public SelectorTargetKind getSelectorTargetKind() {
-        return selectorTargetKind;
+    /**
+     * Returns the priority of this predicate selector,
+     * with lower numbers having a higher priority.
+     *
+     * @return priority of this selector
+     */
+    public int getPriority() {
+        return priority;
     }
 
-    public Predicate<Field> getFieldPredicate() {
-        return fieldPredicate;
-    }
-
-    public Predicate<Class<?>> getClassPredicate() {
-        return classPredicate;
-    }
-
-    private String buildCustomPredicateToString() {
-        if (selectorTargetKind == SelectorTargetKind.FIELD) {
-            return "fields(Predicate<Field>)";
-        } else if (selectorTargetKind == SelectorTargetKind.CLASS) {
-            return "types(Predicate<Class>)";
-        }
-        // should not be reachable
-        throw new InstancioException("Unknown selector kind: " + selectorTargetKind);
+    public Predicate<InternalNode> getNodePredicate() {
+        return nodePredicate;
     }
 
     @Override
     public String toString() {
-        return ObjectUtils.defaultIfNull(apiInvocationDescription, this::buildCustomPredicateToString);
+        return apiInvocationDescription;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private int priority;
+        private Predicate<InternalNode> nodePredicate;
+        private String apiInvocationDescription;
+        private Throwable stackTraceHolder;
+
+        private Builder() {
+        }
+
+        public Builder fieldPredicate(final Predicate<Field> predicate) {
+            this.priority = FIELD_PRIORITY;
+            this.nodePredicate = node -> NON_NULL_FIELD.and(predicate).test(node.getField());
+            if (this.apiInvocationDescription == null) {
+                this.apiInvocationDescription = "fields(Predicate<Field>)";
+            }
+            return this;
+        }
+
+        public Builder typePredicate(final Predicate<Class<?>> predicate) {
+            this.priority = TYPE_PRIORITY;
+            this.nodePredicate = node -> NON_NULL_TYPE.and(predicate).test(node.getTargetClass());
+            if (this.apiInvocationDescription == null) {
+                this.apiInvocationDescription = "types(Predicate<Class>)";
+            }
+            return this;
+        }
+
+        public Builder apiInvocationDescription(final String apiInvocationDescription) {
+            this.apiInvocationDescription = apiInvocationDescription;
+            return this;
+        }
+
+        public Builder stackTraceHolder(final Throwable stackTraceHolder) {
+            this.stackTraceHolder = stackTraceHolder;
+            return this;
+        }
+
+        public PredicateSelectorImpl build() {
+            return new PredicateSelectorImpl(this);
+        }
     }
 }

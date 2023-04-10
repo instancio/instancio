@@ -94,7 +94,10 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
         for (Predicate<Field> p : fieldPredicates) {
             predicate = predicate.and(p);
         }
-        return new PredicateSelectorImpl(SelectorTargetKind.FIELD, predicate, null, description.toString());
+        return PredicateSelectorImpl.builder()
+                .fieldPredicate(predicate)
+                .apiInvocationDescription(description.toString())
+                .build();
     }
 
     @Override

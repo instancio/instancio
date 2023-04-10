@@ -71,7 +71,10 @@ public class TypeSelectorBuilderImpl implements TypeSelectorBuilder, SelectorBui
         for (Predicate<Class<?>> p : classPredicates) {
             predicate = predicate.and(p);
         }
-        return new PredicateSelectorImpl(SelectorTargetKind.CLASS, null, predicate, description.toString());
+        return PredicateSelectorImpl.builder()
+                .typePredicate(predicate)
+                .apiInvocationDescription(description.toString())
+                .build();
     }
 
     @Override
