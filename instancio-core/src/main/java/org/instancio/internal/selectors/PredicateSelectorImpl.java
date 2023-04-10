@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-public final class PredicateSelectorImpl implements PredicateSelector, Flattener, UnusedSelectorDescription {
+public class PredicateSelectorImpl implements PredicateSelector, Flattener, UnusedSelectorDescription {
     private static final int FIELD_PRIORITY = 1;
     private static final int TYPE_PRIORITY = 2;
     private static final String DEFAULT_SELECTOR_DESCRIPTION = "<selector>";
@@ -40,11 +40,25 @@ public final class PredicateSelectorImpl implements PredicateSelector, Flattener
     private final String apiInvocationDescription;
     private final Throwable stackTraceHolder;
 
+    protected PredicateSelectorImpl(
+            final int priority,
+            final Predicate<InternalNode> nodePredicate,
+            final String apiInvocationDescription,
+            final Throwable stackTraceHolder) {
+
+        this.priority = priority;
+        this.nodePredicate = nodePredicate;
+        this.apiInvocationDescription = apiInvocationDescription;
+        this.stackTraceHolder = stackTraceHolder;
+    }
+
     private PredicateSelectorImpl(final Builder builder) {
-        priority = builder.priority;
-        nodePredicate = builder.nodePredicate;
-        apiInvocationDescription = defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION);
-        stackTraceHolder = defaultIfNull(builder.stackTraceHolder, Throwable::new);
+        this(
+                builder.priority,
+                builder.nodePredicate,
+                defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION),
+                defaultIfNull(builder.stackTraceHolder, Throwable::new)
+        );
     }
 
     @Override
