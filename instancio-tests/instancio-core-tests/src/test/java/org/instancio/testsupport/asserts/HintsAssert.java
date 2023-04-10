@@ -21,6 +21,7 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
+import org.instancio.internal.generator.InternalContainerHint;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,16 +41,20 @@ public class HintsAssert extends AbstractAssert<HintsAssert, Hints> {
         return this;
     }
 
-    public HintsAssert generateElementsIsBetween(int min, int max) {
+    public HintsAssert containerHintGenerateEntriesIsBetween(int min, int max) {
+        assertThat(actual.get(InternalContainerHint.class).generateEntries()).isBetween(min, max);
+        return this;
+    }
+
+    public HintsAssert collectionHintGenerateElementsIsBetween(int min, int max) {
         assertThat(actual.get(CollectionHint.class).generateElements()).isBetween(min, max);
         return this;
     }
 
-    public HintsAssert generateEntriesIsBetween(int min, int max) {
+    public HintsAssert mapHintGenerateEntriesIsBetween(int min, int max) {
         assertThat(actual.get(MapHint.class).generateEntries()).isBetween(min, max);
         return this;
     }
-
 
     public HintsAssert nullableCollectionElements(boolean expected) {
         assertThat(actual.get(CollectionHint.class).nullableElements()).isEqualTo(expected);

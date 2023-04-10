@@ -160,6 +160,11 @@ class GeneratorMismatchTest {
         assertMessageContains("enumOf()", gen -> gen.enumOf(Gender.class));
     }
 
+    @Test
+    void assertOptional() {
+        assertMessageContains("optional()", Generators::optional);
+    }
+
     private static <T> void assertMessageContains(
             final String expectedGeneratorMethod,
             final GeneratorSpecProvider<T> specProvider) {
