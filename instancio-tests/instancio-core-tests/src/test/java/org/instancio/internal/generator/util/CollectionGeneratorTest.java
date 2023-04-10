@@ -79,7 +79,7 @@ class CollectionGeneratorTest {
                 .isCloseTo((5 * SAMPLE_SIZE) / 6, withPercentage(PERCENTAGE_THRESHOLD));
 
         HintsAssert.assertHints(generator.hints())
-                .generateElementsIsBetween(MIN_SIZE, MAX_SIZE)
+                .collectionHintGenerateElementsIsBetween(MIN_SIZE, MAX_SIZE)
                 .nullableCollectionElements(true)
                 .afterGenerate(AfterGenerate.POPULATE_ALL);
     }

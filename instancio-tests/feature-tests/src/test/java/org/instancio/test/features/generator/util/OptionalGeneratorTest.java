@@ -21,12 +21,15 @@ import org.instancio.test.support.pojo.empty.EmptyEnum;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
+import static org.instancio.Select.all;
 
 @FeatureTag(Feature.GENERATOR)
 class OptionalGeneratorTest {
@@ -39,9 +42,23 @@ class OptionalGeneratorTest {
     }
 
     @Test
-    void emptyOptional() {
+    void emptyOptionalWhenOptionalValueCannotBeGenerator() {
         final Optional<EmptyEnum> result = Instancio.create(new TypeToken<Optional<EmptyEnum>>() {});
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void allowEmpty() {
+        final Stream<Optional<Boolean>> result = Instancio.of(new TypeToken<Optional<Boolean>>() {})
+                .generate(all(Optional.class), gen -> gen.optional().allowEmpty())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DDD);
+
+        assertThat(result).contains(
+                Optional.empty(),
+                Optional.of(true),
+                Optional.of(false));
+
     }
 
     @Test

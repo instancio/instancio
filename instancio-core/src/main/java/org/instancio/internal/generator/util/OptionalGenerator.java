@@ -18,13 +18,17 @@ package org.instancio.internal.generator.util;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
+import org.instancio.generator.specs.OptionalGeneratorSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.util.Sonar;
 
 import java.util.Optional;
 
-public class OptionalGenerator<T> extends AbstractGenerator<Optional<T>> {
+public class OptionalGenerator<T> extends AbstractGenerator<Optional<T>>
+        implements OptionalGeneratorSpec<T> {
+
+    private boolean allowEmpty;
 
     public OptionalGenerator(final GeneratorContext context) {
         super(context);
@@ -32,12 +36,21 @@ public class OptionalGenerator<T> extends AbstractGenerator<Optional<T>> {
 
     @Override
     public String apiMethod() {
-        return null; // no generator spec defined
+        return "optional()";
+    }
+
+    @Override
+    public OptionalGenerator<T> allowEmpty() {
+        allowEmpty = true;
+        return this;
     }
 
     @Override
     @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL})
     public Optional<T> tryGenerateNonNull(final Random random) {
+        if (random.diceRoll(allowEmpty)) {
+            return Optional.empty();
+        }
         return null; // must be null to delegate creation to the engine
     }
 

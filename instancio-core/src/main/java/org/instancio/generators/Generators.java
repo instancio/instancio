@@ -31,6 +31,7 @@ import org.instancio.generator.specs.NumberAsGeneratorSpec;
 import org.instancio.generator.specs.NumericSequenceAsGeneratorSpec;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
+import org.instancio.generator.specs.OptionalGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.array.OneOfArrayGenerator;
@@ -52,6 +53,7 @@ import org.instancio.internal.generator.util.CollectionGeneratorSpecImpl;
 import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.generator.util.MapGeneratorSpecImpl;
 import org.instancio.internal.generator.util.OneOfCollectionGenerator;
+import org.instancio.internal.generator.util.OptionalGenerator;
 
 import java.util.Collection;
 
@@ -228,6 +230,17 @@ public class Generators {
      */
     public final <T> OneOfCollectionGeneratorSpec<T> oneOf(Collection<T> choices) {
         return new OneOfCollectionGenerator<T>(context).oneOf(choices);
+    }
+
+    /**
+     * Customises generated {@code Optional}.
+     *
+     * @param <T> the type of value
+     * @return optional generator spec
+     * @since 2.14.0
+     */
+    public final <T> OptionalGeneratorSpec<T> optional() {
+        return new OptionalGenerator<>(context);
     }
 
     /**
