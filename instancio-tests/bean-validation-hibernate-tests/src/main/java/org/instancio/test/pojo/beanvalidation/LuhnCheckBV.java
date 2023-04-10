@@ -40,11 +40,23 @@ public class LuhnCheckBV {
 
     @Data
     public static class WithStartEndAndCheckDigitIndices {
-        @LuhnCheck(startIndex = 0, endIndex = 7, checkDigitIndex = 7)
+        @LuhnCheck(startIndex = 0, endIndex = 7, checkDigitIndex = 8)
         private String value0;
         @LuhnCheck(startIndex = 5, endIndex = 10, checkDigitIndex = 3)
         private String value1;
         @LuhnCheck(startIndex = 1, endIndex = 21, checkDigitIndex = 0)
+        private String value2;
+        @LuhnCheck(startIndex = 100, endIndex = 105, checkDigitIndex = 150)
+        private String value3;
+    }
+
+    @Data
+    public static class WithEndAndCheckDigitIndicesEqual {
+        @LuhnCheck(startIndex = 0, endIndex = 7, checkDigitIndex = 7)
+        private String value0;
+        @LuhnCheck(startIndex = 5, endIndex = 10, checkDigitIndex = 10)
+        private String value1;
+        @LuhnCheck(startIndex = 1, endIndex = 21, checkDigitIndex = 21)
         private String value2;
         @LuhnCheck(startIndex = 100, endIndex = 105, checkDigitIndex = 105)
         private String value3;

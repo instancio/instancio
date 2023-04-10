@@ -99,26 +99,19 @@ public class LuhnGenerator extends AbstractGenerator<String>
         final int size = random.intRange(minSize, maxSize);
         final int start = Math.max(0, startIndex);
         final int end = endIndex == -1 ? size - 1 : endIndex;
-        final int actualSize = Math.max(size, endIndex);
         final int check = checkDigitIndex == -1 ? end : checkDigitIndex;
-        final int payloadSize = end - start + 1;
+        final int actualEnd = end == check ? end - 1 : end;
+        final int actualSize = Math.max(Math.max(size, actualEnd + 1), check + 1);
+        final int payloadSize = actualEnd - start + 1;
         final String digits = random.digits(payloadSize);
-        final char[] payloadChars = digits.toCharArray();
-        final int checkDigit = LuhnUtils.getCheckDigit(payloadChars);
+        final int checkDigit = LuhnUtils.getCheckDigit(digits);
 
-        String result = new String(payloadChars);
-
-        if (start > 0) {
-            final String prefix = random.digits(start);
-            result = prefix + result;
-        }
-        if (end < actualSize) {
-            final String suffix = random.digits(actualSize - end - 1);
-            result += suffix;
-        }
-
-        final char[] resultChars = result.toCharArray();
-        resultChars[check] = (char) (checkDigit + '0');
-        return new String(resultChars);
+        final StringBuilder result = new StringBuilder(digits);
+        final String prefix = random.digits(start);
+        result.insert(0, prefix);
+        final String suffix = random.digits(actualSize - result.length());
+        result.append(suffix);
+        result.setCharAt(check, (char) (checkDigit + '0'));
+        return result.toString();
     }
 }

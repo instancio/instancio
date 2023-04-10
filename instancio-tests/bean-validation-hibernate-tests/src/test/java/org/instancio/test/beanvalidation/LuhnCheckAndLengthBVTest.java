@@ -20,6 +20,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithDefaults;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithStartEndAndCheckDigitIndices;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithStartEndIndices;
+import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithEndAndCheckDigitIndicesEqual;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.util.HibernateValidatorUtil;
@@ -61,11 +62,23 @@ class LuhnCheckAndLengthBVTest {
         });
     }
 
-    // TODO broken test
     @Test
-    @Disabled("FIXME")
     void withStartEndAndCheckDigitIndices() {
         final Stream<WithStartEndAndCheckDigitIndices> results = Instancio.of(WithStartEndAndCheckDigitIndices.class)
+                .stream()
+                .limit(SAMPLE_SIZE_DDD);
+
+        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+            HibernateValidatorUtil.assertValid(result);
+            assertThat(result.getValue0()).hasSizeBetween(17, 25);
+            assertThat(result.getValue1()).hasSizeBetween(11, 20);
+        });
+    }
+
+    @Disabled("https://hibernate.atlassian.net/browse/HV-1945")
+    @Test
+    void withEndAndCheckDigitIndicesEqual() {
+        final Stream<WithEndAndCheckDigitIndicesEqual> results = Instancio.of(WithEndAndCheckDigitIndicesEqual.class)
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 

@@ -70,11 +70,8 @@ public class CreditCardNumberGenerator extends AbstractGenerator<String>
                 : cardType;
 
         final String prefix = random.oneOf(type.getPrefixes()).toString();
-        final int lengthWithoutCheckDigit = type.getLength() - prefix.length();
+        final int lengthWithoutCheckDigit = type.getLength() - prefix.length() - 1;
         final String withoutCheckDigit = prefix + random.digits(lengthWithoutCheckDigit);
-        final char[] payload = withoutCheckDigit.toCharArray();
-        final int checkDigit = LuhnUtils.getCheckDigit(payload);
-        payload[payload.length - 1] = (char) (checkDigit + '0');
-        return new String(payload);
+        return withoutCheckDigit + LuhnUtils.getCheckDigit(withoutCheckDigit);
     }
 }
