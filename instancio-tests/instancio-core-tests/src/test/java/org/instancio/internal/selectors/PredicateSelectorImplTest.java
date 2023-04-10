@@ -80,6 +80,27 @@ class PredicateSelectorImplTest {
     }
 
     @Nested
+    class PriorityTest {
+        @Test
+        void fieldPredicatePriority() {
+            final PredicateSelectorImpl result = PredicateSelectorImpl.builder()
+                    .fieldPredicate(o -> true)
+                    .build();
+
+            assertThat(result.getPriority()).isOne();
+        }
+
+        @Test
+        void typePredicatePriority() {
+            final PredicateSelectorImpl result = PredicateSelectorImpl.builder()
+                    .typePredicate(o -> true)
+                    .build();
+
+            assertThat(result.getPriority()).isEqualTo(2);
+        }
+    }
+
+    @Nested
     class DescriptionTest {
         @Test
         void field() {
