@@ -709,6 +709,8 @@ Generators
 ├── oneOf(Collection<T>)
 ├── oneOf(T...)
 │
+├── optional()
+│
 ├── math()
 │   └── bigInteger()
 │   └── bigDecimal()
