@@ -26,6 +26,7 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.Pojo;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -83,19 +84,44 @@ class TypeSelectorBuilderImplTest {
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Excluded type must not be null.")
                 .hasMessageContaining("Method invocation: types().excluding( -> null <- )");
+
+        assertThatThrownBy(() -> selectorBuilder.atDepth(-1))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Depth must not be negative: -1");
     }
 
-    @Test
-    void verifyToString() {
-        final String result = selectorBuilder
-                .of(Object.class)
-                .excluding(Foo.class)
-                .excluding(Bar.class)
-                .annotated(Pojo.class)
-                .annotated(PersonName.class)
-                .toString();
+    @Nested
+    class ToStringTest {
+        @Test
+        void minimal() {
+            final String result = selectorBuilder.toString();
 
-        assertThat(result).isEqualTo("types().of(Object).excluding(Foo).excluding(Bar).annotated(Pojo).annotated(PersonName)");
+            assertThat(result).isEqualTo("types()");
+        }
+
+        @Test
+        void predicateDepth() {
+            final String result = selectorBuilder
+                    .atDepth(d -> true)
+                    .toString();
+
+            assertThat(result).isEqualTo("types().atDepth(Predicate<Integer>)");
+        }
+
+        @Test
+        void full() {
+            final String result = selectorBuilder
+                    .of(Object.class)
+                    .excluding(Foo.class)
+                    .excluding(Bar.class)
+                    .annotated(Pojo.class)
+                    .annotated(PersonName.class)
+                    .atDepth(5)
+                    .toString();
+
+            assertThat(result).isEqualTo("types().of(Object).excluding(Foo).excluding(Bar)" +
+                    ".annotated(Pojo).annotated(PersonName).atDepth(5)");
+        }
     }
 
     private static List<InternalNode> toNodes(final Class<?>... types) {

@@ -16,16 +16,24 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.FieldSelectorBuilder;
+import org.instancio.PredicateSelector;
 import org.instancio.Select;
 import org.instancio.TypeSelectorBuilder;
+import org.instancio.exception.InstancioApiException;
+import org.instancio.test.support.pojo.person.PersonName;
+import org.instancio.test.support.pojo.person.Pojo;
 import org.instancio.testsupport.fixtures.Throwables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.sql.Timestamp;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Select.fields;
+import static org.instancio.Select.types;
 
 class PredicateSelectorImplTest {
 
@@ -50,33 +58,27 @@ class PredicateSelectorImplTest {
     }
 
     @Test
-    @DisplayName("Field predicate description should be constructed by the builder")
-    void fieldPredicateToString() {
-        final FieldSelectorBuilder builder = Select.fields().ofType(String.class);
-        final PredicateSelectorImpl selector = (PredicateSelectorImpl) ((SelectorBuilder) builder).build();
-        assertThat(selector).hasToString("fields().ofType(String)");
+    void depthValidation() {
+        final PredicateSelector fieldsSelector = Select.fields(f -> true);
+        final PredicateSelector typesSelector = types(t -> true);
+
+        assertThatThrownBy(() -> fieldsSelector.atDepth(-1))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Depth must not be negative: -1");
+
+        assertThatThrownBy(() -> typesSelector.atDepth(-1))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Depth must not be negative: -1");
     }
 
     @Test
-    @DisplayName("Type predicate description should be constructed by the builder")
-    void typePredicateToString() {
-        final TypeSelectorBuilder selectorBuilder = Select.types().of(String.class);
-        final PredicateSelectorImpl selector = (PredicateSelectorImpl) ((SelectorBuilder) selectorBuilder).build();
-        assertThat(selector).hasToString("types().of(String)");
-    }
+    void multipleDepthInvocationsShouldThrowError() {
+        final PredicateSelectorImpl.Builder builder = PredicateSelectorImpl.builder()
+                .depth(1);
 
-    @Test
-    @DisplayName("Field predicate description when using a Predicate<Field> directly (without builder)")
-    void fieldPredicateToStringWithoutBuilder() {
-        PredicateSelectorImpl selector = (PredicateSelectorImpl) Select.fields(Field::isEnumConstant);
-        assertThat(selector).hasToString("fields(Predicate<Field>)");
-    }
-
-    @Test
-    @DisplayName("Type predicate description when using a Predicate<Class> directly (without builder)")
-    void typePredicateToStringWithoutBuilder() {
-        PredicateSelectorImpl selector = (PredicateSelectorImpl) Select.types(Class::isArray);
-        assertThat(selector).hasToString("types(Predicate<Class>)");
+        assertThatThrownBy(() -> builder.depth(2))
+                .isExactlyInstanceOf(IllegalStateException.class)
+                .hasMessage("Depth already set!");
     }
 
     @Nested
@@ -123,6 +125,7 @@ class PredicateSelectorImplTest {
         }
 
         @Test
+        @DisplayName("Custom apiInvocationDescription should not be overwritten by fieldPredicate()")
         void customFieldPredicateDescription() {
             final PredicateSelectorImpl result = PredicateSelectorImpl.builder()
                     .apiInvocationDescription("foo()")
@@ -134,6 +137,7 @@ class PredicateSelectorImplTest {
         }
 
         @Test
+        @DisplayName("Custom apiInvocationDescription should not be overwritten by typePredicate()")
         void customTypedPredicateDescription() {
             final PredicateSelectorImpl result = PredicateSelectorImpl.builder()
                     .apiInvocationDescription("foo()")
@@ -149,6 +153,96 @@ class PredicateSelectorImplTest {
             final PredicateSelectorImpl result = PredicateSelectorImpl.builder().build();
 
             assertThat(result.getDescription()).startsWith(String.format("<selector>%n    at"));
+        }
+    }
+
+    @Nested
+    class ToStringTest {
+
+        @Test
+        void fieldsNameWithIntegerDepth() {
+            assertThat(fields().named("foo").atDepth(3))
+                    .hasToString("fields().named(\"foo\").atDepth(3)");
+        }
+
+        @Test
+        void typesOfWithIntegerDepth() {
+            assertThat(types().of(Timestamp.class).atDepth(1))
+                    .hasToString("types().of(Timestamp).atDepth(1)");
+        }
+
+        @Test
+        void typesAnnotatedAtDepth() {
+            assertThat(types().annotated(Pojo.class).annotated(PersonName.class).atDepth(2))
+                    .hasToString("types().annotated(Pojo).annotated(PersonName).atDepth(2)");
+        }
+
+        @Test
+        void fieldPredicate() {
+            assertThat(fields(Field::isEnumConstant))
+                    .hasToString("fields(Predicate<Field>)");
+        }
+
+        @Test
+        void typePredicate() {
+            assertThat(types(Class::isArray))
+                    .hasToString("types(Predicate<Class>)");
+        }
+
+        @Test
+        void fieldSelectorBuilder() {
+            final FieldSelectorBuilder builder = Select.fields().ofType(String.class);
+
+            assertThat(((SelectorBuilder) builder).build())
+                    .hasToString("fields().ofType(String)");
+        }
+
+        @Test
+        void typeSelectorBuilder() {
+            final TypeSelectorBuilder selectorBuilder = types().of(String.class);
+
+            assertThat(((SelectorBuilder) selectorBuilder).build())
+                    .hasToString("types().of(String)");
+        }
+
+        @Test
+        void fieldPredicateWithIntegerDepth() {
+            final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
+                    .fieldPredicate(o -> true)
+                    .depth(3)
+                    .build();
+
+            assertThat(selector).hasToString("fields(Predicate<Field>).atDepth(3)");
+        }
+
+        @Test
+        void fieldPredicateWithPredicateDepth() {
+            final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
+                    .fieldPredicate(o -> true)
+                    .depth(d -> true)
+                    .build();
+
+            assertThat(selector).hasToString("fields(Predicate<Field>).atDepth(Predicate<Integer>)");
+        }
+
+        @Test
+        void typePredicateWithIntegerDepth() {
+            final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
+                    .typePredicate(o -> true)
+                    .depth(3)
+                    .build();
+
+            assertThat(selector).hasToString("types(Predicate<Class>).atDepth(3)");
+        }
+
+        @Test
+        void typePredicateWithPredicateDepth() {
+            final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
+                    .typePredicate(o -> true)
+                    .depth(d -> true)
+                    .build();
+
+            assertThat(selector).hasToString("types(Predicate<Class>).atDepth(Predicate<Integer>)");
         }
     }
 }

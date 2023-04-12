@@ -63,7 +63,7 @@ class CustomPredicateNodeSelectorTest {
         private static final int PRIORITY = Integer.MAX_VALUE; // lowest priority
 
         AddressStringSelector(final Predicate<InternalNode> nodePredicate, final String apiInvocationDescription) {
-            super(PRIORITY, nodePredicate, apiInvocationDescription, new Throwable());
+            super(PRIORITY, nodePredicate, /* depth = */ null, apiInvocationDescription, new Throwable());
         }
     }
 }

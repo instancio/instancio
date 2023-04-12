@@ -83,6 +83,7 @@ public enum Feature {
     ROOT_SELECTOR,
     SCOPE,
     SELECTOR,
+    DEPTH_SELECTOR,
     SELECTOR_PRECEDENCE,
     SET,
     SETTINGS,

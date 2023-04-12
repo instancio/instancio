@@ -19,6 +19,7 @@ import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +37,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
     private final Selector parent;
     private final Throwable stackTraceHolder;
     private final boolean isRoot;
+    private final Integer depth;
 
     /**
      * Constructor.
@@ -59,6 +61,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         this.parent = parent;
         this.stackTraceHolder = stackTraceHolder;
         this.isRoot = isRoot;
+        this.depth = null; // NOPMD
     }
 
     SelectorImpl(@Nullable final Class<?> targetClass,
@@ -77,6 +80,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         parent = builder.parent;
         stackTraceHolder = builder.stackTraceHolder == null ? new Throwable() : builder.stackTraceHolder;
         isRoot = builder.isRoot;
+        depth = builder.depth;
     }
 
     public static Builder builder(final SelectorImpl copy) {
@@ -86,6 +90,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         builder.scopes = copy.getScopes();
         builder.parent = copy.getParent();
         builder.stackTraceHolder = copy.getStackTraceHolder();
+        builder.depth = copy.depth;
         return builder;
     }
 
@@ -101,6 +106,13 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
 
     public Throwable getStackTraceHolder() {
         return stackTraceHolder;
+    }
+
+    @Override
+    public TargetSelector atDepth(final int depth) {
+        return builder(this)
+                .depth(ApiValidator.validateDepth(depth))
+                .build();
     }
 
     @Override
@@ -143,6 +155,10 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         return fieldName;
     }
 
+    public Integer getDepth() {
+        return depth;
+    }
+
     /**
      * {@inheritDoc}
      * <p>
@@ -156,6 +172,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         return Objects.equals(targetClass, that.targetClass)
                 && Objects.equals(fieldName, that.fieldName)
                 && Objects.equals(scopes, that.scopes)
+                && Objects.equals(depth, that.depth)
                 && isRoot == that.isRoot;
     }
 
@@ -166,7 +183,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
      */
     @Override
     public final int hashCode() {
-        return Objects.hash(targetClass, fieldName, scopes, isRoot);
+        return Objects.hash(targetClass, fieldName, scopes, depth, isRoot);
     }
 
     @Override
@@ -191,7 +208,10 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
             }
             sb.append(')');
 
-            if (!scopes.isEmpty()) {
+            // can only have depth or scopes, but not both
+            if (depth != null) {
+                sb.append(".atDepth(").append(depth).append(')');
+            } else if (!scopes.isEmpty()) {
                 sb.append(", ").append(Format.formatScopes(scopes));
             }
         }
@@ -209,6 +229,7 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
         private Selector parent;
         private Throwable stackTraceHolder;
         private boolean isRoot;
+        private Integer depth;
 
         private Builder() {
         }
@@ -240,6 +261,11 @@ public class SelectorImpl implements Selector, GroupableSelector, Flattener, Unu
 
         public Builder root(final boolean isRoot) {
             this.isRoot = isRoot;
+            return this;
+        }
+
+        public Builder depth(final Integer depth) {
+            this.depth = depth;
             return this;
         }
 

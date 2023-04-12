@@ -19,6 +19,7 @@ import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,6 +67,14 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     }
 
     @Override
+    public TargetSelector atDepth(final int depth) {
+        ApiValidator.validateDepth(depth);
+        return new PrimitiveAndWrapperSelectorImpl(
+                SelectorImpl.builder(primitive).depth(depth).build(),
+                SelectorImpl.builder(wrapper).depth(depth).build());
+    }
+
+    @Override
     public List<TargetSelector> flatten() {
         return Arrays.asList(primitive, wrapper);
     }
@@ -99,8 +108,12 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     @Override
     public String toString() {
         String str = API_METHOD_NAMES.get(primitive.getTargetClass());
+
+        // can have either scopes or depth, but not both
         if (!primitive.getScopes().isEmpty()) {
             str += ", " + Format.formatScopes(primitive.getScopes());
+        } else if (primitive.getDepth() != null) {
+            str += ".atDepth(" + primitive.getDepth() + ")";
         }
         return str;
     }

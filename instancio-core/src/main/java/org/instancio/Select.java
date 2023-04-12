@@ -135,7 +135,7 @@ public final class Select {
      * @see #types(Predicate)
      * @since 1.6.0
      */
-    public static TargetSelector fields(final Predicate<Field> predicate) {
+    public static PredicateSelector fields(final Predicate<Field> predicate) {
         ApiValidator.notNull(predicate, "Field predicate must not be null");
         return PredicateSelectorImpl.builder().fieldPredicate(predicate).build();
     }
@@ -150,7 +150,7 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.6.0
      */
-    public static TargetSelector types(final Predicate<Class<?>> predicate) {
+    public static PredicateSelector types(final Predicate<Class<?>> predicate) {
         ApiValidator.notNull(predicate, "Type predicate must not be null");
         return PredicateSelectorImpl.builder().typePredicate(predicate).build();
     }

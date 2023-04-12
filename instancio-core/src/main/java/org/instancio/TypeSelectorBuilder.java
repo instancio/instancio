@@ -16,6 +16,7 @@
 package org.instancio;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Predicate;
 
 /**
  * A builder for constructing predicate-based type selectors.
@@ -36,7 +37,7 @@ import java.lang.annotation.Annotation;
  * @see TargetSelector
  * @since 1.6.0
  */
-public interface TypeSelectorBuilder extends TargetSelector {
+public interface TypeSelectorBuilder extends TargetSelector, DepthSelector, DepthPredicateSelector {
 
     /**
      * Matches specified type, including subtypes.
@@ -77,4 +78,19 @@ public interface TypeSelectorBuilder extends TargetSelector {
      */
     TypeSelectorBuilder excluding(Class<?> type);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.14.0
+     */
+    @Override
+    TargetSelector atDepth(int depth);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.14.0
+     */
+    @Override
+    TargetSelector atDepth(Predicate<Integer> atDepth);
 }

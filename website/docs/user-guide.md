@@ -538,6 +538,43 @@ set(allStrings().within(scope(Person.class)), "foo")
 set(allStrings().within(all(Person.class).toScope()), "foo")
 ```
 
+### Selector Depth
+
+Regular and predicate selectors can also be narrowed down by specifying target's depth.
+Both selector types allow specifying depth as an integer value:
+
+``` java linenums="1"
+Select.all(Class<T> targetClass).atDepth(int depth)
+Select.field(Class<T> targetClass, String field).atDepth(int depth)
+Select.field(GetMethodSelector<T, R> methodReference).atDepth(int depth)
+
+Select.fields(Predicate<Field> fieldPredicate).atDepth(int depth)
+Select.types(Predicate<Class> typePredicate).atDepth(int depth)
+```
+
+In addition, predicate selectors also support specifying depth as a predicate:
+
+``` java linenums="1"
+Select.fields(Predicate<Field> fieldPredicate).atDepth(Predicate<Integer> depthPredicate)
+Select.types(Predicate<Class> typePredicate).atDepth(Predicate<Integer> depthPredicate)
+```
+
+Using depth is particularly useful for dealing with cyclic classes.
+Instancio does not support back-references. Instead, it detects and terminates cycles with a null reference.
+However, it is still possible it might generate an object structure as shown below:
+
+```
+A -> B -> C -> A -> null
+```
+
+Using `atDepth()` it is possible to prevent the last `A` from being generated:
+
+```java
+A a = Instancio.of(A.class)
+    .ignore(types().of(A.class).atDepth(depth -> depth > 0))
+    .create();
+```
+
 ### Selector Strictness
 
 #### Strict Mode

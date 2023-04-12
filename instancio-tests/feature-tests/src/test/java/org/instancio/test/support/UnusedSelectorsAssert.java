@@ -149,8 +149,7 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
 
     private static String extractUnusedSelectorsFromExceptionMessage(final String message) {
         // Remove everything after "possible causes" from the exception message.
-        // This is to prevent the selectors in the examples in the error message examples
-        // from being counted.
+        // This is to prevent examples selectors in the error message from being counted.
         return message.substring(0, message.indexOf("Possible causes"));
     }
 

@@ -15,31 +15,34 @@
  */
 package org.instancio.internal.selectors;
 
-import org.instancio.PredicateSelector;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 
-@SuppressWarnings("PMD.InsufficientStringBufferDeclaration")
-public class TypeSelectorBuilderImpl implements TypeSelectorBuilder, SelectorBuilder {
+public class TypeSelectorBuilderImpl
+        extends PredicateSelectorBuilderTemplate<Class<?>>
+        implements TypeSelectorBuilder {
 
-    private final List<Predicate<Class<?>>> classPredicates = new ArrayList<>(3);
-    private final StringBuilder description = new StringBuilder("types()");
+    @Override
+    protected String apiMethod() {
+        return "types()";
+    }
+
+    @Override
+    protected PredicateSelectorImpl.Builder createBuilder() {
+        return PredicateSelectorImpl.builder().typePredicate(buildPredicate());
+    }
 
     @Override
     public TypeSelectorBuilder of(final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
                 "Type must not be null.",
-                "of", description.toString(), new Throwable()));
+                "of", description().toString(), new Throwable()));
 
-        classPredicates.add(type::isAssignableFrom);
-        description.append(".of(").append(type.getSimpleName()).append(')');
+        addPredicate(type::isAssignableFrom);
+        description().append(".of(").append(type.getSimpleName()).append(')');
         return this;
     }
 
@@ -47,10 +50,10 @@ public class TypeSelectorBuilderImpl implements TypeSelectorBuilder, SelectorBui
     public <A extends Annotation> TypeSelectorBuilder annotated(final Class<? extends A> annotation) {
         ApiValidator.notNull(annotation, () -> Format.selectorErrorMessage(
                 "Type's declared annotation must not be null.",
-                "annotated", description.toString(), new Throwable()));
+                "annotated", description().toString(), new Throwable()));
 
-        classPredicates.add(klass -> klass.getDeclaredAnnotation(annotation) != null);
-        description.append(".annotated(").append(annotation.getSimpleName()).append(')');
+        addPredicate(klass -> klass.getDeclaredAnnotation(annotation) != null);
+        description().append(".annotated(").append(annotation.getSimpleName()).append(')');
         return this;
     }
 
@@ -58,27 +61,10 @@ public class TypeSelectorBuilderImpl implements TypeSelectorBuilder, SelectorBui
     public TypeSelectorBuilder excluding(final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
                 "Excluded type must not be null.",
-                "excluding", description.toString(), new Throwable()));
+                "excluding", description().toString(), new Throwable()));
 
-        classPredicates.add(klass -> klass != type);
-        description.append(".excluding(").append(type.getSimpleName()).append(')');
+        addPredicate(klass -> klass != type);
+        description().append(".excluding(").append(type.getSimpleName()).append(')');
         return this;
-    }
-
-    @Override
-    public PredicateSelector build() {
-        Predicate<Class<?>> predicate = Objects::nonNull;
-        for (Predicate<Class<?>> p : classPredicates) {
-            predicate = predicate.and(p);
-        }
-        return PredicateSelectorImpl.builder()
-                .typePredicate(predicate)
-                .apiInvocationDescription(description.toString())
-                .build();
-    }
-
-    @Override
-    public String toString() {
-        return description.toString();
     }
 }

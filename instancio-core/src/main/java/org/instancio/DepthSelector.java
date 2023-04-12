@@ -15,11 +15,25 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
+
 /**
- * A selector for matching targets using predicates.
+ * Allows specifying target depth.
  *
- * @see Select
- * @since 1.6.0
+ * @see DepthPredicateSelector
+ * @see Selector
+ * @since 2.14.0
  */
-public interface PredicateSelector extends TargetSelector, DepthSelector, DepthPredicateSelector {
+public interface DepthSelector {
+
+    /**
+     * Restricts this selector's target(s) to the specified depth.
+     *
+     * @param depth the depth at which selector applies
+     * @return selector restricted to the specified depth
+     * @since 2.14.0
+     */
+    @ExperimentalApi
+    TargetSelector atDepth(int depth);
+
 }

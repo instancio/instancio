@@ -24,6 +24,7 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Pojo;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -115,21 +116,45 @@ class FieldSelectorBuilderImplTest {
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Field's declared annotation must not be null.")
                 .hasMessageContaining("Method invocation: fields().annotated( -> null <- )");
+
+        assertThatThrownBy(() -> selectorBuilder.atDepth(-1))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Depth must not be negative: -1");
     }
 
-    @Test
-    void verifyToString() {
-        final String result = selectorBuilder
-                .named("name")
-                .matching("regex")
-                .ofType(String.class)
-                .declaredIn(Person.class)
-                .annotated(Pojo.class)
-                .annotated(PersonName.class)
-                .toString();
+    @Nested
+    class ToStringTest {
+        @Test
+        void minimal() {
+            final String result = selectorBuilder.toString();
 
-        assertThat(result).isEqualTo("fields().named(\"name\").matching(\"regex\").ofType(String)" +
-                ".declaredIn(Person).annotated(Pojo).annotated(PersonName)");
+            assertThat(result).isEqualTo("fields()");
+        }
+
+        @Test
+        void predicateDepth() {
+            final String result = selectorBuilder
+                    .atDepth(d -> true)
+                    .toString();
+
+            assertThat(result).isEqualTo("fields().atDepth(Predicate<Integer>)");
+        }
+
+        @Test
+        void full() {
+            final String result = selectorBuilder
+                    .named("name")
+                    .matching("regex")
+                    .ofType(String.class)
+                    .declaredIn(Person.class)
+                    .annotated(Pojo.class)
+                    .annotated(PersonName.class)
+                    .atDepth(5)
+                    .toString();
+
+            assertThat(result).isEqualTo("fields().named(\"name\").matching(\"regex\").ofType(String)" +
+                    ".declaredIn(Person).annotated(Pojo).annotated(PersonName).atDepth(5)");
+        }
     }
 
     // Note: creates a minimal node for tests to pass (will throw an exception if toString() is called)
