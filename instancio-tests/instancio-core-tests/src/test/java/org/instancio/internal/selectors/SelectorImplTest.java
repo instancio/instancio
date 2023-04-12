@@ -20,6 +20,7 @@ import nl.jqno.equalsverifier.Warning;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.scope;
 
 class SelectorImplTest {
@@ -125,6 +127,9 @@ class SelectorImplTest {
         assertThat(Select.field(Person.class, "name"))
                 .hasToString("field(Person, \"name\")");
 
+        assertThat(Select.field(Phone.class, "number").atDepth(3))
+                .hasToString("field(Phone, \"number\").atDepth(3)");
+
         assertThat(Select.field(Phone.class, "number").within(scope(Address.class)))
                 .hasToString("field(Phone, \"number\"), scope(Address)");
 
@@ -133,5 +138,14 @@ class SelectorImplTest {
                 scope(Address.class)))
                 .hasToString(
                         "field(Phone, \"number\"), scope(Person, \"address\"), scope(Address)");
+    }
+
+    @Test
+    void depthValidation() {
+        final Selector selector = Select.field(Phone.class, "number");
+
+        assertThatThrownBy(() -> selector.atDepth(-1))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Depth must not be negative: -1");
     }
 }

@@ -327,8 +327,31 @@ public class Generators {
      *
      * <p><b>Warning:</b> using {@code emit()} with cyclic classes,
      * where instances of the same type are generated at different depths,
-     * may produce unexpected results. It might be possible to use
-     * {@link InstancioApi#withMaxDepth(int)} to limit the depth as a workaround.
+     * may produce unexpected results. In case of cyclic classes, use
+     * one of the following methods to limit the depth:
+     *
+     * <ul>
+     *   <li>{@link InstancioApi#withMaxDepth(int)} to limit
+     *       the overall depth, <b>or</b></li>
+     *   <li>{@code atDepth()} method provided by selectors (example below)</li>
+     * </ul>
+     *
+     * <p><b>Example:</b>
+     *
+     * <pre>{@code
+     *   // emit() order status values only at depth 2
+     *   //
+     *   // Depth 0: List (root object)
+     *   // Depth 1: Order class (list element)
+     *   // Depth 2: Order fields (including OrderStatus)
+     *   List<Order> orders = Instancio.ofList(Order.class)
+     *     .size(7)
+     *     .generate(field(Order::getStatus).atDepth(2), gen -> gen.emit()
+     *              .items(OrderStatus.RECEIVED, OrderStatus.SHIPPED)
+     *              .item(OrderStatus.COMPLETED, 3)
+     *              .item(OrderStatus.CANCELLED, 2))
+     *     .create();
+     * }</pre>
      *
      * @param <T> the type to emit
      * @return emitting generator

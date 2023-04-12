@@ -16,10 +16,8 @@
 package org.instancio.test.support.pojo.cyclic.onetomany;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 public class DetailRecord {
     private Long id;
     private MainRecord mainRecord;

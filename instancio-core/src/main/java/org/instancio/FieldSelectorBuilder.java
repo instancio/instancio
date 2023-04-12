@@ -17,6 +17,7 @@ package org.instancio;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.TypeVariable;
+import java.util.function.Predicate;
 
 /**
  * A builder for constructing predicate-based field selectors.
@@ -36,7 +37,7 @@ import java.lang.reflect.TypeVariable;
  * @see TargetSelector
  * @since 1.6.0
  */
-public interface FieldSelectorBuilder extends TargetSelector {
+public interface FieldSelectorBuilder extends TargetSelector, DepthSelector, DepthPredicateSelector {
 
     /**
      * Matches fields with the specified name.
@@ -108,4 +109,20 @@ public interface FieldSelectorBuilder extends TargetSelector {
      * @since 1.6.0
      */
     <A extends Annotation> FieldSelectorBuilder annotated(Class<? extends A> annotation);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.14.0
+     */
+    @Override
+    TargetSelector atDepth(int depth);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.14.0
+     */
+    @Override
+    TargetSelector atDepth(Predicate<Integer> atDepth);
 }

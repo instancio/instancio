@@ -28,7 +28,7 @@ package org.instancio;
  * @see TargetSelector
  * @since 1.2.0
  */
-public interface Selector extends GroupableSelector, ConvertibleToScope {
+public interface Selector extends DepthSelector, GroupableSelector, ConvertibleToScope {
 
     /**
      * Specifies the scope for this selector in order to narrow down its target.

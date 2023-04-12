@@ -261,6 +261,9 @@ final class SelectorMap<V> {
     }
 
     private static boolean selectorScopesMatchNodeHierarchy(final SelectorImpl candidate, final InternalNode targetNode) {
+        if (candidate.getDepth() != null && candidate.getDepth() != targetNode.getDepth()) {
+            return false;
+        }
         if (candidate.getScopes().isEmpty()) {
             return true;
         }

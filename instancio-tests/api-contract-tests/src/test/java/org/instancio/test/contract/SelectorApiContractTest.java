@@ -123,14 +123,14 @@ class SelectorApiContractTest {
     @DisplayName("Cannot group predicate field selectors")
     void cannotGroupPredicateFieldSelectors() throws Exception {
         assertCompilationError("NonCompilable_GroupWithPredicateFieldSelector.java",
-                "no suitable method found for all(org.instancio.TargetSelector)");
+                "no suitable method found for all(org.instancio.PredicateSelector)");
     }
 
     @Test
     @DisplayName("Cannot group predicate type selectors")
     void cannotGroupPredicateTypeSelectors() throws Exception {
         assertCompilationError("NonCompilable_GroupWithPredicateTypeSelector.java",
-                "no suitable method found for all(org.instancio.TargetSelector)");
+                "no suitable method found for all(org.instancio.PredicateSelector)");
     }
 
     @Test
@@ -187,6 +187,20 @@ class SelectorApiContractTest {
     void typesPredicateBuilderShouldNotExposeBuildMethod() throws Exception {
         assertCompilationError("NonCompilable_TypesPredicateBuilderBuildMethod.java",
                 "cannot find symbol", "method build()");
+    }
+
+    @Test
+    @DisplayName("GroupableSelector should not expose atDepth() method")
+    void groupableSelectorShouldNotExposeAtDepthMethod() throws Exception {
+        assertCompilationError("NonCompilable_SelectorGroupDoesNotSupportAtDepth.java",
+                "cannot find symbol", "method atDepth");
+    }
+
+    @Test
+    @DisplayName("Root selector should not expose atDepth() method")
+    void rootSelectorShouldNotExposeAtDepthMethod() throws Exception {
+        assertCompilationError("NonCompilable_RootSelectorDoesNotSupportAtDepth.java",
+                "cannot find symbol", "method atDepth");
     }
 
     @Test

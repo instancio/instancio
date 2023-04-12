@@ -16,12 +16,10 @@
 package org.instancio.test.support.pojo.cyclic.onetomany;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.List;
 
 @Data
-@ToString
 public class MainRecord {
     private Long id;
     private List<DetailRecord> detailRecords;

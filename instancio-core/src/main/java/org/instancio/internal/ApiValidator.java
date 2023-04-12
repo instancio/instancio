@@ -34,6 +34,7 @@ import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParameter
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNonGenericClass;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
 
+@SuppressWarnings("PMD.GodClass")
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
@@ -93,7 +94,6 @@ public final class ApiValidator {
             }
         }
     }
-
 
     public static void validateSubtype(final Class<?> from, final Class<?> to) {
         isTrue(from.isAssignableFrom(to), () -> String.format(
@@ -200,9 +200,14 @@ public final class ApiValidator {
         if (condition) throw new InstancioApiException(message.get());
     }
 
+    public static int validateDepth(final int depth) {
+        if (depth < 0) throw new InstancioApiException("Depth must not be negative: " + depth);
+        return depth;
+    }
+
     public static void validateField(final Class<?> declaringClass, final String fieldName, final String message) {
-        ApiValidator.notNull(declaringClass, message);
-        ApiValidator.notNull(fieldName, message);
+        notNull(declaringClass, message);
+        notNull(fieldName, message);
         isTrue(ReflectionUtils.isValidField(declaringClass, fieldName), message);
     }
 

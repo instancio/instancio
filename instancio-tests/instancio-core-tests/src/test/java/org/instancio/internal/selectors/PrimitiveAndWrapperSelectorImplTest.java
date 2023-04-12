@@ -66,6 +66,9 @@ class PrimitiveAndWrapperSelectorImplTest {
         assertThat(Select.allLongs()).hasToString("allLongs()");
         assertThat(Select.allFloats()).hasToString("allFloats()");
         assertThat(Select.allDoubles()).hasToString("allDoubles()");
+
+        // with depth
+        assertThat(Select.allInts().atDepth(5)).hasToString("allInts().atDepth(5)");
     }
 
     @Test
@@ -83,5 +86,14 @@ class PrimitiveAndWrapperSelectorImplTest {
         assertThatThrownBy(selector::toScope)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessage("Method 'toScope()' is not supported for selector 'allInts()'");
+    }
+
+    @Test
+    void depthValidation() {
+        final Selector selector = Select.allInts();
+
+        assertThatThrownBy(() -> selector.atDepth(-1))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessage("Depth must not be negative: -1");
     }
 }

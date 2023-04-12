@@ -15,10 +15,12 @@
  */
 package org.instancio.internal.selectors;
 
+import org.instancio.DepthPredicateSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
+import org.instancio.internal.util.Verify;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -28,7 +30,9 @@ import java.util.function.Predicate;
 
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-public class PredicateSelectorImpl implements PredicateSelector, Flattener, UnusedSelectorDescription {
+public class PredicateSelectorImpl
+        implements PredicateSelector, DepthPredicateSelector, Flattener, UnusedSelectorDescription {
+
     private static final int FIELD_PRIORITY = 1;
     private static final int TYPE_PRIORITY = 2;
     private static final String DEFAULT_SELECTOR_DESCRIPTION = "<selector>";
@@ -37,17 +41,20 @@ public class PredicateSelectorImpl implements PredicateSelector, Flattener, Unus
 
     private final int priority;
     private final Predicate<InternalNode> nodePredicate;
+    private final SelectorDepth selectorDepth;
     private final String apiInvocationDescription;
     private final Throwable stackTraceHolder;
 
     protected PredicateSelectorImpl(
             final int priority,
             final Predicate<InternalNode> nodePredicate,
+            final SelectorDepth selectorDepth,
             final String apiInvocationDescription,
             final Throwable stackTraceHolder) {
 
         this.priority = priority;
         this.nodePredicate = nodePredicate;
+        this.selectorDepth = selectorDepth;
         this.apiInvocationDescription = apiInvocationDescription;
         this.stackTraceHolder = stackTraceHolder;
     }
@@ -56,6 +63,7 @@ public class PredicateSelectorImpl implements PredicateSelector, Flattener, Unus
         this(
                 builder.priority,
                 builder.nodePredicate,
+                builder.selectorDepth,
                 defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION),
                 defaultIfNull(builder.stackTraceHolder, Throwable::new)
         );
@@ -86,17 +94,46 @@ public class PredicateSelectorImpl implements PredicateSelector, Flattener, Unus
     }
 
     @Override
+    public TargetSelector atDepth(final int depth) {
+        return builder(this).depth(depth).build();
+    }
+
+    @Override
+    public TargetSelector atDepth(final Predicate<Integer> depthPredicate) {
+        return builder(this).depth(depthPredicate).build();
+    }
+
+    @Override
     public String toString() {
-        return apiInvocationDescription;
+        String s = apiInvocationDescription;
+        if (selectorDepth != null) {
+            final String depth = selectorDepth.getDepth() == null
+                    ? "Predicate<Integer>"
+                    : selectorDepth.getDepth().toString();
+
+            s += ".atDepth(" + depth + ")";
+        }
+        return s;
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
+    public static Builder builder(final PredicateSelectorImpl copy) {
+        Builder builder = new Builder();
+        builder.priority = copy.priority;
+        builder.nodePredicate = copy.nodePredicate;
+        builder.apiInvocationDescription = copy.apiInvocationDescription;
+        builder.stackTraceHolder = copy.stackTraceHolder;
+        builder.selectorDepth = copy.selectorDepth;
+        return builder;
+    }
+
     public static final class Builder {
         private int priority;
-        private Predicate<InternalNode> nodePredicate;
+        private Predicate<InternalNode> nodePredicate = Objects::nonNull;
+        private SelectorDepth selectorDepth;
         private String apiInvocationDescription;
         private Throwable stackTraceHolder;
 
@@ -105,7 +142,9 @@ public class PredicateSelectorImpl implements PredicateSelector, Flattener, Unus
 
         public Builder fieldPredicate(final Predicate<Field> predicate) {
             this.priority = FIELD_PRIORITY;
-            this.nodePredicate = node -> NON_NULL_FIELD.and(predicate).test(node.getField());
+            this.nodePredicate = this.nodePredicate.and(node ->
+                    NON_NULL_FIELD.and(predicate).test(node.getField()));
+
             if (this.apiInvocationDescription == null) {
                 this.apiInvocationDescription = "fields(Predicate<Field>)";
             }
@@ -114,13 +153,40 @@ public class PredicateSelectorImpl implements PredicateSelector, Flattener, Unus
 
         public Builder typePredicate(final Predicate<Class<?>> predicate) {
             this.priority = TYPE_PRIORITY;
-            this.nodePredicate = node -> NON_NULL_TYPE.and(predicate).test(node.getTargetClass());
+            this.nodePredicate = this.nodePredicate.and(node ->
+                    NON_NULL_TYPE.and(predicate).test(node.getTargetClass()));
+
             if (this.apiInvocationDescription == null) {
                 this.apiInvocationDescription = "types(Predicate<Class>)";
             }
             return this;
         }
 
+        Builder depth(final int depth) {
+            return withDepth(new SelectorDepth(depth));
+        }
+
+        Builder depth(final Predicate<Integer> predicate) {
+            return withDepth(new SelectorDepth(predicate));
+        }
+
+        private Builder withDepth(final SelectorDepth selectorDepth) {
+            // This check is solely for internal code because the
+            // public API shouldn't allow atDepth() to be chained multiple times.
+            // Setting depth more than once would lead to hard-to-debug issues
+            // because the selector toString() would be, e.g. 'atDepth(3)',
+            // while the underlying predicate is comprised of multiple,
+            // potentially conflicting, depth conditions.
+            Verify.state(this.selectorDepth == null, "Depth already set!");
+
+            this.selectorDepth = selectorDepth;
+            this.nodePredicate = this.nodePredicate.and(selectorDepth.getDepthPredicate());
+            return this;
+        }
+
+        /**
+         * Should only be used for setting a custom description, e.g. {@code "myPredicateSelector()"}.
+         */
         public Builder apiInvocationDescription(final String apiInvocationDescription) {
             this.apiInvocationDescription = apiInvocationDescription;
             return this;

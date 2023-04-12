@@ -15,11 +15,28 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
+
+import java.util.function.Predicate;
+
 /**
- * A selector for matching targets using predicates.
+ * Allows specifying target depth using as a predicate.
  *
- * @see Select
- * @since 1.6.0
+ * @see DepthSelector
+ * @see PredicateSelector
+ * @since 2.14.0
  */
-public interface PredicateSelector extends TargetSelector, DepthSelector, DepthPredicateSelector {
+public interface DepthPredicateSelector {
+
+    /**
+     * Restricts this selector's target(s) to a depth
+     * that satisfies the given {@code predicate}.
+     *
+     * @param predicate specifying the depth
+     * @return selector restricted to the specified depth
+     * @since 2.14.0
+     */
+    @ExperimentalApi
+    TargetSelector atDepth(Predicate<Integer> predicate);
+
 }

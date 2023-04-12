@@ -31,6 +31,7 @@ public final class Sonar {
     public static final String ONE_METHOD_WHEN_TESTING_EXCEPTIONS = "java:S5778";
     public static final String STRING_LITERALS_DUPLICATED = "java:S1192";
     public static final String USE_INSTANCEOF = "java:S1872";
+    public static final String FUNCTIONAL_INTERFACES_SHOULD_BE_SPECIALISED = "java:S4276";
 
     private Sonar() {
         // non-instantiable

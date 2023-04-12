@@ -16,31 +16,34 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.FieldSelectorBuilder;
-import org.instancio.PredicateSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 
-@SuppressWarnings("PMD.InsufficientStringBufferDeclaration")
-public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorBuilder {
+public class FieldSelectorBuilderImpl
+        extends PredicateSelectorBuilderTemplate<Field>
+        implements FieldSelectorBuilder {
 
-    private final List<Predicate<Field>> fieldPredicates = new ArrayList<>(4);
-    private final StringBuilder description = new StringBuilder("fields()");
+    @Override
+    protected String apiMethod() {
+        return "fields()";
+    }
+
+    @Override
+    protected PredicateSelectorImpl.Builder createBuilder() {
+        return PredicateSelectorImpl.builder().fieldPredicate(buildPredicate());
+    }
 
     @Override
     public FieldSelectorBuilder named(final String fieldName) {
         ApiValidator.notNull(fieldName, () -> Format.selectorErrorMessage(
                 "Field name must not be null.",
-                "named", description.toString(), new Throwable()));
+                "named", description().toString(), new Throwable()));
 
-        fieldPredicates.add(field -> field.getName().equals(fieldName));
-        description.append(".named(\"").append(fieldName).append("\")");
+        addPredicate(field -> field.getName().equals(fieldName));
+        description().append(".named(\"").append(fieldName).append("\")");
         return this;
     }
 
@@ -48,10 +51,10 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     public FieldSelectorBuilder matching(final String regex) {
         ApiValidator.notNull(regex, () -> Format.selectorErrorMessage(
                 "Regex must not be null.",
-                "matching", description.toString(), new Throwable()));
+                "matching", description().toString(), new Throwable()));
 
-        fieldPredicates.add(field -> field.getName().matches(regex));
-        description.append(".matching(\"").append(regex).append("\")");
+        addPredicate(field -> field.getName().matches(regex));
+        description().append(".matching(\"").append(regex).append("\")");
         return this;
     }
 
@@ -59,10 +62,10 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     public FieldSelectorBuilder ofType(final Class<?> fieldType) {
         ApiValidator.notNull(fieldType, () -> Format.selectorErrorMessage(
                 "Field type must not be null.",
-                "ofType", description.toString(), new Throwable()));
+                "ofType", description().toString(), new Throwable()));
 
-        fieldPredicates.add(field -> fieldType.isAssignableFrom(field.getType()));
-        description.append(".ofType(").append(fieldType.getSimpleName()).append(')');
+        addPredicate(field -> fieldType.isAssignableFrom(field.getType()));
+        description().append(".ofType(").append(fieldType.getSimpleName()).append(')');
         return this;
     }
 
@@ -70,10 +73,10 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     public FieldSelectorBuilder declaredIn(final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
                 "Declaring type must not be null.",
-                "declaredIn", description.toString(), new Throwable()));
+                "declaredIn", description().toString(), new Throwable()));
 
-        fieldPredicates.add(field -> field.getDeclaringClass() == type);
-        description.append(".declaredIn(").append(type.getSimpleName()).append(')');
+        addPredicate(field -> field.getDeclaringClass() == type);
+        description().append(".declaredIn(").append(type.getSimpleName()).append(')');
         return this;
     }
 
@@ -81,27 +84,10 @@ public class FieldSelectorBuilderImpl implements FieldSelectorBuilder, SelectorB
     public <A extends Annotation> FieldSelectorBuilder annotated(final Class<? extends A> annotation) {
         ApiValidator.notNull(annotation, () -> Format.selectorErrorMessage(
                 "Field's declared annotation must not be null.",
-                "annotated", description.toString(), new Throwable()));
+                "annotated", description().toString(), new Throwable()));
 
-        fieldPredicates.add(field -> field.getDeclaredAnnotation(annotation) != null);
-        description.append(".annotated(").append(annotation.getSimpleName()).append(')');
+        addPredicate(field -> field.getDeclaredAnnotation(annotation) != null);
+        description().append(".annotated(").append(annotation.getSimpleName()).append(')');
         return this;
-    }
-
-    @Override
-    public PredicateSelector build() {
-        Predicate<Field> predicate = Objects::nonNull;
-        for (Predicate<Field> p : fieldPredicates) {
-            predicate = predicate.and(p);
-        }
-        return PredicateSelectorImpl.builder()
-                .fieldPredicate(predicate)
-                .apiInvocationDescription(description.toString())
-                .build();
-    }
-
-    @Override
-    public String toString() {
-        return description.toString();
     }
 }
