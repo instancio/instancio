@@ -158,21 +158,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.11.0</version>
-                    <configuration>
-                        <showWarnings>true</showWarnings>
-                    </configuration>
                     <executions>
-                        <execution>
-                            <id>java-8</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>compile</goal>
-                            </goals>
-                            <configuration>
-                                <source>1.8</source>
-                                <target>1.8</target>
-                            </configuration>
-                        </execution>
                         <execution>
                             <id>java-16</id>
                             <phase>compile</phase>
@@ -300,9 +286,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.5.0</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                    </configuration>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
