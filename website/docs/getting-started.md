@@ -22,12 +22,11 @@ Since version `1.5.0` Instancio supports creating:
 The following dependencies are available from Maven central:
 
 
-| Dependency            | JPMS Module Name          | Description                                    |
-| --------------------- |---------------------------|------------------------------------------------|
-| `instancio-core`      | `org.instancio.core`      | Core library                                   |
-| `instancio-junit`     | `org.instancio.junit`     | JUnit Jupiter integration                      |
-| `instancio-guava`     | `org.instancio.guava`     | Support for Google Guava                       |
-| `instancio-processor` | `org.instancio.processor` | Annotation processor for generating metamodels |
+| Dependency            | JPMS Module Name          | Description               |
+| --------------------- |---------------------------|---------------------------|
+| `instancio-core`      | `org.instancio.core`      | Core library              |
+| `instancio-junit`     | `org.instancio.junit`     | JUnit Jupiter integration |
+| `instancio-guava`     | `org.instancio.guava`     | Support for Google Guava  |
 
 
 !!! warning "The `org.instanio:instancio` artifact on Maven central is an older dependency that should no longer be used."
@@ -81,38 +80,3 @@ Using `instancio-guava` requires the following dependencies on the classpath:
 
 - either `instancio-core` or `instancio-junit`
 - `com.google.guava:guava` version `23.1-jre` or higher
-
-### **`instancio-processor`**
-
-The annotation processor generates metamodels, which can be used to avoid referencing fields by their names. The annotation processor can be enabled as shown below. Please refer to the [Metamodel](user-guide.md#metamodel) section of the user guide for examples.
-
-=== "Maven"
-    ``` xml linenums="1" title="Maven"
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${your.java.version}</source>
-                    <target>${your.java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.instancio</groupId>
-                            <artifactId>instancio-processor</artifactId>
-                            <version>{{config.latest_release}}</version>
-                        </path>
-                        <!-- include other processors, if any -->
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    ```
-=== "Gradle (4.6 or higher)"
-    ``` groovy linenums="1" title="Gradle"
-    dependencies {
-        testAnnotationProcessor "org.instancio:instancio-processor:{{config.latest_release}}"
-    }
-    ```
