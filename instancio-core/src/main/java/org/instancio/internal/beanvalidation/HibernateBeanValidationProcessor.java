@@ -17,6 +17,7 @@ package org.instancio.internal.beanvalidation;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.EAN;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.URL;
@@ -26,6 +27,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
+import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.text.LuhnGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
@@ -52,6 +54,11 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
         Map<Class<? extends Annotation>, BiFunction<Annotation, GeneratorContext, Generator<?>>> map = new HashMap<>();
         runIgnoringTheNoClassDefFoundError(() ->
                 map.put(EAN.class, ((annotation, context) -> getEanGenerator((EAN) annotation, context)))
+        );
+        // Instancio aims to support Hibernate validator 5.x, in which Email is not deprecated
+        //noinspection deprecation
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(Email.class, ((annotation, context) -> new EmailGenerator(context))) // NOSONAR
         );
         runIgnoringTheNoClassDefFoundError(() ->
                 map.put(LuhnCheck.class, ((annotation, context) -> getLuhnGenerator((LuhnCheck) annotation, context)))

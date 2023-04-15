@@ -18,6 +18,7 @@ package org.instancio.test.beanvalidation.hibernate5;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
@@ -59,6 +60,10 @@ class Hibernate5PojoBVTest {
 
         @Range(min = 1, max = 10)
         private int range;
+
+        @NotNull
+        @Email
+        private String email;
 
         @URL
         @NotBlank

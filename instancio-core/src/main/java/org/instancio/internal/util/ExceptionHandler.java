@@ -110,7 +110,7 @@ public final class ExceptionHandler {
         try {
             action.run();
         } catch (NoClassDefFoundError error) {
-            LOG.debug("Error is ignored: {}", error.toString());
+            LOG.trace("Error is ignored: {}", error.toString());
         }
     }
 
