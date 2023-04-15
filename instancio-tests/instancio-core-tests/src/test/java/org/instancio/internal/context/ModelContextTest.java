@@ -19,6 +19,7 @@ import org.instancio.GeneratorSpecProvider;
 import org.instancio.Mode;
 import org.instancio.Random;
 import org.instancio.Select;
+import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.UnusedSelectorException;
@@ -124,6 +125,7 @@ class ModelContextTest {
 
     @Test
     void withGenerators() {
+        final Hints expectedHints = Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
         final Generator<String> stringGenerator = random -> "some string";
         final Generator<Address> addressGenerator = new Generator<Address>() {
             @Override
@@ -133,7 +135,7 @@ class ModelContextTest {
 
             @Override
             public Hints hints() {
-                return Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
+                return expectedHints;
             }
         };
 
@@ -143,13 +145,14 @@ class ModelContextTest {
                 .build();
 
         assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD)))
-                .as("Should NOT be decorated since it has AfterGenerate hint")
-                .containsSame(addressGenerator);
+                .containsInstanceOf(GeneratorDecorator.class)
+                .get().extracting(Generator::hints)
+                .isSameAs(expectedHints);
 
         assertThat(ctx.getGenerator(mockNode(String.class))).isPresent().get()
                 .as("Should be decorated since its Hints are null")
                 .isNotSameAs(stringGenerator)
-                .isExactlyInstanceOf(GeneratorDecorator.class);
+                .isInstanceOf(GeneratorDecorator.class);
     }
 
     @Test
@@ -161,7 +164,7 @@ class ModelContextTest {
 
         assertThat(ctx.getGenerator(mockNode(Person.class, ADDRESS_FIELD))).get()
                 .as("Should NOT be decorated since it has AfterGenerate hint")
-                .isExactlyInstanceOf(SupplierAdapter.class);
+                .isInstanceOf(SupplierAdapter.class);
     }
 
     @Test
@@ -196,8 +199,9 @@ class ModelContextTest {
     @Test
     void nullSubtype() {
         final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
+        final Selector allLists = all(List.class);
 
-        assertThatThrownBy(() -> builder.withSubtype(all(List.class), null))
+        assertThatThrownBy(() -> builder.withSubtype(allLists, null))
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessage("Subtype must not be null");
     }
@@ -249,10 +253,10 @@ class ModelContextTest {
                 .build();
 
         final Settings result = ctx.getSettings();
-        assertThat((long) result.get(Keys.LONG_MIN)).isEqualTo(min);
-        assertThat((long) result.get(Keys.LONG_MAX)).isEqualTo(max);
-        assertThat((int) result.get(Keys.INTEGER_MIN)).isEqualTo(min);
-        assertThat((int) result.get(Keys.INTEGER_MAX)).isEqualTo(max);
+        assertThat(result.get(Keys.LONG_MIN)).isEqualTo(min);
+        assertThat(result.get(Keys.LONG_MAX)).isEqualTo(max);
+        assertThat(result.get(Keys.INTEGER_MIN)).isEqualTo(min);
+        assertThat(result.get(Keys.INTEGER_MAX)).isEqualTo(max);
     }
 
     @Test
@@ -284,20 +288,22 @@ class ModelContextTest {
 
         final ModelContext<?> actual = ctx.toBuilder().build();
 
-        assertThat(actual.getGenerator(mockNode(String.class))).get().isExactlyInstanceOf(GeneratorDecorator.class);
-        assertThat(actual.getGenerator(mockNode(Person.class, ADDRESS_CITY_FIELD))).get().isExactlyInstanceOf(GeneratorDecorator.class);
-        assertThat(actual.getGenerator(mockNode(Person.class, PETS_FIELD))).get().isExactlyInstanceOf(GeneratorDecorator.class);
+        assertThat(actual.getGenerator(mockNode(String.class))).get().isInstanceOf(GeneratorDecorator.class);
+        assertThat(actual.getGenerator(mockNode(Person.class, ADDRESS_CITY_FIELD))).get().isInstanceOf(GeneratorDecorator.class);
+        assertThat(actual.getGenerator(mockNode(Person.class, PETS_FIELD))).get().isInstanceOf(GeneratorDecorator.class);
         assertThat(actual.isIgnored(mockNode(Person.class, NAME_FIELD))).isTrue();
         assertThat(actual.isIgnored(mockNode(ignoredClass))).isTrue();
         assertThat(actual.isNullable(mockNode(nullableClass))).isTrue();
         assertThat(actual.isNullable(mockNode(Person.class, ADDRESS_FIELD))).isTrue();
         assertThat(actual.getMaxDepth()).isEqualTo(maxDepth);
         assertThat(actual.getRandom().getSeed()).isEqualTo(seed);
-        assertThat((int) actual.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
-        assertThat((Mode) actual.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
+
+        final Settings settings = actual.getSettings();
+        assertThat(settings.get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
+        assertThat(settings.get(Keys.MODE)).isEqualTo(Mode.LENIENT);
         assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
 
-        assertThatThrownBy(() -> actual.getSettings().set(Keys.STRING_MIN_LENGTH, 5))
+        assertThatThrownBy(() -> settings.set(Keys.STRING_MIN_LENGTH, 5))
                 .as("Settings should be locked")
                 .isInstanceOf(UnsupportedOperationException.class);
     }

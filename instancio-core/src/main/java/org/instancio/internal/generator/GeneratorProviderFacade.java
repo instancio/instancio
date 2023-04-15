@@ -79,7 +79,7 @@ class GeneratorProviderFacade {
             if (generator != null) {
                 LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), forClass);
                 generator.init(context);
-                return GeneratorDecorator.decorate(generator, afterGenerate);
+                return GeneratorDecorator.decorateIfNullAfterGenerate(generator, afterGenerate);
             }
         }
         return null;
@@ -98,7 +98,7 @@ class GeneratorProviderFacade {
                 final Generator<?> generator = (Generator<?>) spec;
                 LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), node);
                 generator.init(context);
-                return GeneratorDecorator.decorate(generator, afterGenerate);
+                return GeneratorDecorator.decorateIfNullAfterGenerate(generator, afterGenerate);
             }
         }
         return null;
