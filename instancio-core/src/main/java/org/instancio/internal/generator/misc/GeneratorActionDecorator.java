@@ -16,30 +16,34 @@
 package org.instancio.internal.generator.misc;
 
 import org.instancio.generator.AfterGenerate;
+import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
-import org.instancio.internal.generator.InternalGeneratorHint;
 
-import java.util.function.Supplier;
+final class GeneratorActionDecorator<T> extends GeneratorDecorator<T> {
 
-public final class SupplierAdapter<T> extends GeneratorDecorator<T> {
+    private final AfterGenerate defaultAfterGenerate;
 
-    private static final Hints HINT_READ_ONLY_NO_CALLBACKS = Hints.builder()
-            .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
-            .with(InternalGeneratorHint.builder().excludeFromCallbacks(true).build())
-            .build();
+    GeneratorActionDecorator(
+            final Generator<T> delegate,
+            final AfterGenerate defaultAfterGenerate) {
 
-    SupplierAdapter(final Supplier<T> supplier) {
-        super(random -> supplier.get());
+        super(delegate);
+        this.defaultAfterGenerate = defaultAfterGenerate;
     }
 
-    /**
-     * Objects created via {@link Supplier} should not be modified
-     * and callbacks should never be called on returned objects.
-     *
-     * @return hint to not modify the object
-     */
     @Override
     public Hints hints() {
-        return HINT_READ_ONLY_NO_CALLBACKS;
+        final Hints hints = getDelegate().hints();
+
+        if (hints == null) {
+            return Hints.afterGenerate(defaultAfterGenerate);
+        }
+
+        if (hints.afterGenerate() == null) {
+            return Hints.builder(hints)
+                    .afterGenerate(defaultAfterGenerate)
+                    .build();
+        }
+        return hints;
     }
 }

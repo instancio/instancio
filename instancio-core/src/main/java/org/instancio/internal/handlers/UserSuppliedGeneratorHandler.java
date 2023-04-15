@@ -105,6 +105,6 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
             final boolean nullable = ((AbstractGenerator<?>) generator).isNullable();
             ((AbstractGenerator<?>) delegate).nullable(nullable);
         }
-        return Optional.of(new GeneratorDecorator(delegate, hints));
+        return Optional.of(GeneratorDecorator.replaceHints(delegate, hints));
     }
 }

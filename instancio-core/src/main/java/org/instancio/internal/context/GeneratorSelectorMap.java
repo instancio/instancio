@@ -29,6 +29,7 @@ import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -81,8 +82,8 @@ class GeneratorSelectorMap {
         return selectorMap.getValue(node);
     }
 
-    private void putAllGenerators(final Map<TargetSelector, Generator<?>> generatorSelectors) {
-        for (Map.Entry<TargetSelector, Generator<?>> entry : generatorSelectors.entrySet()) {
+    private void putAllGenerators(final Map<TargetSelector, Generator<?>> generatorMap) {
+        for (Map.Entry<TargetSelector, Generator<?>> entry : generatorMap.entrySet()) {
             final TargetSelector targetSelector = entry.getKey();
             final Generator<?> generator = entry.getValue();
             for (TargetSelector selector : ((Flattener) targetSelector).flatten()) {
@@ -110,32 +111,34 @@ class GeneratorSelectorMap {
     private void putGenerator(final TargetSelector targetSelector, final Generator<?> g) {
         g.init(context);
 
-        final Generator<?> generator = GeneratorDecorator.decorate(g, defaultAfterGenerate);
+        final Generator<?> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
         selectorMap.put(targetSelector, generator);
 
         final InternalGeneratorHint internalHint = generator.hints().get(InternalGeneratorHint.class);
         final Optional<Class<?>> generatorTargetClass = Optional.ofNullable(internalHint)
                 .map(InternalGeneratorHint::targetClass);
 
-        generatorTargetClass.ifPresent(aClass -> generatorSubtypeMap.put(targetSelector, aClass));
+        generatorTargetClass.ifPresent(klass -> generatorSubtypeMap.put(targetSelector, klass));
 
+        if (g instanceof ArrayGenerator) {
+            final Class<?> arrayType = generatorTargetClass.orElseGet(
+                    () -> resolveArrayTypeFromSelector(targetSelector));
+
+            ((ArrayGenerator<?>) g).subtype(arrayType);
+        }
+    }
+
+    @Nullable
+    private static Class<?> resolveArrayTypeFromSelector(final TargetSelector targetSelector) {
         if (targetSelector instanceof SelectorImpl) {
             final SelectorImpl selector = (SelectorImpl) targetSelector;
-
             if (selector.isFieldSelector()) {
                 final Field field = getField(selector.getTargetClass(), selector.getFieldName());
-                final Class<?> userSpecifiedClass = generatorTargetClass.orElse(field.getType());
-
-                if (generator instanceof ArrayGenerator) {
-                    ((ArrayGenerator<?>) generator).subtype(userSpecifiedClass);
-                }
+                return field.getType();
             } else {
-                final Class<?> userSpecifiedClass = generatorTargetClass.orElse(selector.getTargetClass());
-
-                if (generator instanceof ArrayGenerator) {
-                    ((ArrayGenerator<?>) generator).subtype(userSpecifiedClass);
-                }
+                return selector.getTargetClass();
             }
         }
+        return null;
     }
 }

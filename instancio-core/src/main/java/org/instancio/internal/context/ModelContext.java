@@ -24,7 +24,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.RandomHelper;
-import org.instancio.internal.generator.misc.SupplierAdapter;
+import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.internal.spi.InternalServiceProviderContext;
@@ -269,7 +269,7 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
-            this.generatorSelectors.put(preProcess(selector, rootClass), new SupplierAdapter(supplier));
+            this.generatorSelectors.put(preProcess(selector, rootClass), GeneratorDecorator.decorate(supplier));
             return this;
         }
 

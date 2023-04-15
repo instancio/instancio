@@ -79,7 +79,7 @@ final class GeneratorSupport {
             return (AbstractGenerator<?>) generator;
         }
         if (generator instanceof GeneratorDecorator) {
-            final Generator<?> delegate = ((GeneratorDecorator) generator).getDelegate();
+            final Generator<?> delegate = ((GeneratorDecorator<?>) generator).getDelegate();
             if (delegate instanceof AbstractGenerator) {
                 return (AbstractGenerator<?>) delegate;
             }
