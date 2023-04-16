@@ -20,7 +20,7 @@ package org.instancio.generator.specs;
  *
  * @param <T> array type
  */
-public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T> {
+public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T>, SubtypeGeneratorSpec<T> {
 
     /**
      * length of array to generate.
@@ -68,6 +68,7 @@ public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T> {
      * @return spec builder
      * @since 1.4.0
      */
+    @Override
     ArrayGeneratorSpec<T> subtype(Class<?> type);
 
     /**

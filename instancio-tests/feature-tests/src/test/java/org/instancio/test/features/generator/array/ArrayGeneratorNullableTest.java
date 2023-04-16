@@ -25,21 +25,34 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 
-@FeatureTag({Feature.ARRAY_GENERATOR_NULLABLE, Feature.GENERATE})
+@FeatureTag({
+        Feature.ARRAY_GENERATOR_NULLABLE,
+        Feature.GENERATE,
+        Feature.WITH_NULLABLE
+})
 class ArrayGeneratorNullableTest {
 
-    private static final int SAMPLE_SIZE = 500;
-
     @Test
-    void nullableArray() {
+    void viaGeneratorSpec() {
         final Set<String[]> results = Instancio.of(String[].class)
                 .generate(all(String[].class), gen -> gen.array().nullable())
                 .stream()
-                .limit(SAMPLE_SIZE)
+                .limit(SAMPLE_SIZE_DDD)
                 .collect(Collectors.toSet());
 
         assertThat(results).containsNull();
     }
 
+    @Test
+    void withNullable() {
+        final Set<String[]> results = Instancio.of(String[].class)
+                .withNullable(all(String[].class))
+                .stream()
+                .limit(SAMPLE_SIZE_DDD)
+                .collect(Collectors.toSet());
+
+        assertThat(results).containsNull();
+    }
 }

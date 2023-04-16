@@ -23,6 +23,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.InstantiatingGenerator;
@@ -90,6 +91,10 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
         final Generator<?> generator = generatorOpt.get();
         ApiValidator.validateGeneratorUsage(node, generator);
 
+        if (generator instanceof ArrayGenerator) {
+            ((ArrayGenerator<?>) generator).subtype(node.getTargetClass());
+        }
+
         final Hints hints = generator.hints();
         final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
 
@@ -107,4 +112,5 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
         }
         return Optional.of(GeneratorDecorator.replaceHints(delegate, hints));
     }
+
 }
