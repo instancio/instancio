@@ -49,14 +49,14 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
         this.nullableElements = context.getSettings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
     }
 
+    public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {
+        this(context);
+        this.arrayType = arrayType;
+    }
+
     @Override
     public String apiMethod() {
         return "array()";
-    }
-
-    public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {
-        this(context);
-        this.arrayType = ApiValidator.notNull(arrayType, "Type must not be null");
     }
 
     @Override
@@ -111,7 +111,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
         ApiValidator.notEmpty(elements, "'array().with(...)' must contain at least one element");
 
         if (withElements == null) {
-            withElements = new ArrayList<>();
+            withElements = new ArrayList<>(elements.length);
         }
         Collections.addAll(withElements, elements);
         return this;
@@ -120,8 +120,6 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     @Override
     @SuppressWarnings("unchecked")
     protected T tryGenerateNonNull(final Random random) {
-        ApiValidator.isTrue(arrayType != null && arrayType.isArray(), "Expected an array type: %s", arrayType);
-
         final int length = random.intRange(minLength, maxLength)
                 + (withElements == null ? 0 : withElements.size());
 

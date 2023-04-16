@@ -22,22 +22,16 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.InternalGeneratorHint;
-import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.Flattener;
-import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
-import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.instancio.internal.util.ReflectionUtils.getField;
 
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 class GeneratorSelectorMap {
@@ -119,26 +113,5 @@ class GeneratorSelectorMap {
                 .map(InternalGeneratorHint::targetClass);
 
         generatorTargetClass.ifPresent(klass -> generatorSubtypeMap.put(targetSelector, klass));
-
-        if (g instanceof ArrayGenerator) {
-            final Class<?> arrayType = generatorTargetClass.orElseGet(
-                    () -> resolveArrayTypeFromSelector(targetSelector));
-
-            ((ArrayGenerator<?>) g).subtype(arrayType);
-        }
-    }
-
-    @Nullable
-    private static Class<?> resolveArrayTypeFromSelector(final TargetSelector targetSelector) {
-        if (targetSelector instanceof SelectorImpl) {
-            final SelectorImpl selector = (SelectorImpl) targetSelector;
-            if (selector.isFieldSelector()) {
-                final Field field = getField(selector.getTargetClass(), selector.getFieldName());
-                return field.getType();
-            } else {
-                return selector.getTargetClass();
-            }
-        }
-        return null;
     }
 }
