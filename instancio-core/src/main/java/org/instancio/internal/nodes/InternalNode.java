@@ -169,7 +169,7 @@ public final class InternalNode {
         return children;
     }
 
-    public void setChildren(final List<InternalNode> children) {
+    void setChildren(final List<InternalNode> children) {
         this.children = children;
     }
 
