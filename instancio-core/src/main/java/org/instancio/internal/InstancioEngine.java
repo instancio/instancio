@@ -205,8 +205,8 @@ class InstancioEngine {
 
         //noinspection unchecked
         final Map<Object, Object> map = (Map<Object, Object>) generatorResult.getValue();
-        final InternalNode valueNode = node.getChildren().get(1);
         final InternalNode keyNode = node.getChildren().get(0);
+        final InternalNode valueNode = node.getChildren().get(1);
         final Hints hints = generatorResult.getHints();
 
         // Populated objects that were created/added in the generator itself

@@ -15,20 +15,21 @@
  */
 package org.instancio.creation.array.misc;
 
-import org.instancio.test.support.pojo.person.Address;
-import org.instancio.test.support.tags.GenericsTag;
-import org.instancio.test.support.util.Constants;
+import org.instancio.internal.util.Constants;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@GenericsTag
-public class ArrayAddressTest extends CreationTestTemplate<Address[]> {
+class ThreeDimensionalArrayCreationTest extends CreationTestTemplate<Integer[][][]> {
 
     @Override
-    protected void verify(Address[] result) {
-        assertThat(result)
-                .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
-                .allSatisfy(element -> assertThat(element).isInstanceOf(Address.class));
+    protected void verify(final Integer[][][] result) {
+        for (Integer[][] arr1 : result) {
+            for (Integer[] arr2 : arr1) {
+                assertThat(arr2)
+                        .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
+                        .doesNotContainNull();
+            }
+        }
     }
 }
