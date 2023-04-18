@@ -15,7 +15,6 @@
  */
 package org.instancio.internal;
 
-import org.instancio.assignment.AssignmentType;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
@@ -24,8 +23,7 @@ import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.internal.assigners.Assigner;
-import org.instancio.internal.assigners.FieldAssigner;
-import org.instancio.internal.assigners.MethodAssigner;
+import org.instancio.internal.assigners.AssignerImpl;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.ContainerAddFunction;
 import org.instancio.internal.generator.GeneratorResult;
@@ -39,9 +37,7 @@ import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,22 +86,7 @@ class InstancioEngine {
         overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
         listeners = Arrays.asList(callbackHandler, new GeneratedNullValueListener(context));
         nodeFilter = new NodeFilter(context);
-        assigner = getAssigner();
-    }
-
-    private Assigner getAssigner() {
-        final Settings settings = context.getSettings();
-        final AssignmentType defaultAssignment = settings.get(Keys.ASSIGNMENT_TYPE);
-
-        // The system property is used for running the feature test suite using both assignment types
-        final AssignmentType assignment = defaultIfNull(SystemProperties.getAssignmentType(), defaultAssignment);
-
-        if (assignment == AssignmentType.FIELD) {
-            return new FieldAssigner(settings);
-        } else if (assignment == AssignmentType.METHOD) {
-            return new MethodAssigner(settings);
-        }
-        throw new InstancioException("Invalid assignment type: " + assignment); // unreachable
+        assigner = new AssignerImpl(context);
     }
 
     @SuppressWarnings("unchecked")

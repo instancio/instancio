@@ -30,12 +30,12 @@ import java.lang.reflect.Field;
 
 import static org.instancio.internal.util.ExceptionHandler.logException;
 
-public class FieldAssigner implements Assigner {
+final class FieldAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(FieldAssigner.class);
 
     private final OnSetFieldError onSetFieldError;
 
-    public FieldAssigner(final Settings settings) {
+    FieldAssigner(final Settings settings) {
         this.onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
 
         LOG.trace("{}, {}", AssignmentType.FIELD, onSetFieldError);
