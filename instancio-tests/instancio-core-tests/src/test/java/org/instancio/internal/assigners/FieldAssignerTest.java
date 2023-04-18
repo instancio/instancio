@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.assignment;
+package org.instancio.internal.assigners;
 
 import org.instancio.assignment.OnSetFieldError;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.assigners.FieldAssigner;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;

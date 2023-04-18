@@ -36,7 +36,7 @@ import java.util.Optional;
 
 import static org.instancio.internal.util.ExceptionHandler.logException;
 
-public class MethodAssigner implements Assigner {
+final class MethodAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(MethodAssigner.class);
 
     private final Assigner fieldAssigner;
@@ -45,7 +45,7 @@ public class MethodAssigner implements Assigner {
     private final OnSetMethodNotFound onSetMethodNotFound;
     private final OnSetMethodError onSetMethodError;
 
-    public MethodAssigner(final Settings settings) {
+    MethodAssigner(final Settings settings) {
         this.onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
         this.onSetMethodError = settings.get(Keys.ON_SET_METHOD_ERROR);
         this.setterStyle = settings.get(Keys.SETTER_STYLE);
