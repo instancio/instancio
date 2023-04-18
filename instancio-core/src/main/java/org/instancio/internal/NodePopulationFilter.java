@@ -27,9 +27,9 @@ interface NodePopulationFilter {
      *
      * @param node          to evaluate
      * @param afterGenerate hint specifying action to take for the given object
-     * @param obj           what the object is varies depending on filter implementation
+     * @param owner         the object created from the parent of the {@code node}
      * @return {@code true} if node should be skipped, {@code false} otherwise
      */
-    boolean shouldSkip(InternalNode node, AfterGenerate afterGenerate, Object obj);
+    boolean shouldSkip(InternalNode node, AfterGenerate afterGenerate, Object owner);
 
 }

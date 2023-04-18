@@ -77,6 +77,7 @@ class InstancioEngine {
     private final List<GenerationListener> listeners;
     private final AfterGenerate defaultAfterGenerate;
     private final boolean overwriteExistingValues;
+    private final NodeFilter nodeFilter;
     private final Assigner assigner;
 
     InstancioEngine(InternalModel<?> model) {
@@ -88,6 +89,7 @@ class InstancioEngine {
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
         listeners = Arrays.asList(callbackHandler, new GeneratedNullValueListener(context));
+        nodeFilter = new NodeFilter(context);
         assigner = getAssigner();
     }
 
@@ -311,7 +313,6 @@ class InstancioEngine {
         }
 
         final AfterGenerate action = hints.afterGenerate();
-        final NodePopulationFilter filter = new ArrayElementNodePopulationFilter(context);
         final boolean isPrimitiveArray = elementNode.getRawType().isPrimitive();
 
         // If array elements fail to generate for any reason and null is returned,
@@ -329,7 +330,7 @@ class InstancioEngine {
                 populateChildren(elementNodeChildren, GeneratorResult.create(currentValue, hints));
             }
 
-            if (filter.shouldSkip(elementNode, action, currentValue)) {
+            if (nodeFilter.shouldSkip(elementNode, action, currentValue)) {
                 continue;
             }
 
@@ -484,17 +485,19 @@ class InstancioEngine {
         return GeneratorResult.emptyResult();
     }
 
-    private void populateChildren(final List<InternalNode> children, final GeneratorResult generatorResult) {
+    private void populateChildren(
+            final List<InternalNode> children,
+            final GeneratorResult generatorResult) {
+
         if (generatorResult.containsNull()) {
             return;
         }
 
         final Object value = generatorResult.getValue();
         final AfterGenerate action = generatorResult.getHints().afterGenerate();
-        final NodePopulationFilter filter = new FieldNodePopulationFilter(context);
 
         for (final InternalNode child : children) {
-            if (filter.shouldSkip(child, action, value)) {
+            if (nodeFilter.shouldSkip(child, action, value)) {
                 continue;
             }
 
