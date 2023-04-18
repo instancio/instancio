@@ -33,6 +33,8 @@ class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, Tex
             + "%n\t#c - lower case character [a-z]"
             + "%n\t#C - upper case character [A-Z]"
             + "%n\t#d - digit [0-9]"
+            + "%n\t#h - lower case hexadecimal character [a-f, 0-9]"
+            + "%n\t#H - upper case hexadecimal character [A-F, 0-9]"
             + "%n\t## - hash symbol escape%n");
 
     private final GeneratorContext context = getGeneratorContext();
@@ -96,6 +98,16 @@ class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, Tex
     @Test
     void mixed() {
         assertThat(generate("#c#C#d###c#C#d")).matches("^[a-z][A-Z]\\d#[a-z][A-Z]\\d$");
+    }
+
+    @Test
+    void lowerCaseHex() {
+        assertThat(generate("#h#h#h")).matches("^[a-f0-9]{3}$");
+    }
+
+    @Test
+    void upperCaseHex() {
+        assertThat(generate("#H#H#H")).matches("^[A-F0-9]{3}$");
     }
 
     @ValueSource(strings = {"#", "###", "#c#"})

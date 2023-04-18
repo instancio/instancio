@@ -31,11 +31,15 @@ public class TextPatternGenerator extends AbstractGenerator<String>
             + "%n\t#c - lower case character [a-z]"
             + "%n\t#C - upper case character [A-Z]"
             + "%n\t#d - digit [0-9]"
+            + "%n\t#h - lower case hexadecimal character [a-f, 0-9]"
+            + "%n\t#H - upper case hexadecimal character [A-F, 0-9]"
             + "%n\t## - hash symbol escape%n");
 
     private static final char ALNUM_CHAR = 'a';
     private static final char LCASE_CHAR = 'c';
     private static final char UCASE_CHAR = 'C';
+    private static final char LCASE_HEX_CHAR = 'h';
+    private static final char UCASE_HEX_CHAR = 'H';
     private static final char DIGIT = 'd';
     private static final char HASH = '#';
     private final String pattern;
@@ -80,6 +84,10 @@ public class TextPatternGenerator extends AbstractGenerator<String>
                     res.append(random.lowerCaseCharacter());
                 } else if (tag == UCASE_CHAR) {
                     res.append(random.upperCaseCharacter());
+                } else if (tag == LCASE_HEX_CHAR) {
+                    res.append(Character.toLowerCase(upperCaseHexChar(random)));
+                } else if (tag == UCASE_HEX_CHAR) {
+                    res.append(upperCaseHexChar(random));
                 } else if (tag == DIGIT) {
                     res.append(random.digits(1));
                 } else if (tag == HASH) {
@@ -96,4 +104,9 @@ public class TextPatternGenerator extends AbstractGenerator<String>
         return res.toString();
     }
 
+    private static char upperCaseHexChar(final Random random) {
+        return random.trueOrFalse()
+                ? random.characterRange('0', '9')
+                : random.characterRange('A', 'F');
+    }
 }
