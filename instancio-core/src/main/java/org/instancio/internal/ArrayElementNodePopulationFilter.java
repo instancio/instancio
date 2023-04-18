@@ -16,46 +16,25 @@
 package org.instancio.internal;
 
 import org.instancio.generator.AfterGenerate;
-import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.Nullable;
 
-class ArrayElementNodePopulationFilter implements NodePopulationFilter {
-
-    private final ModelContext<?> context;
-
-    ArrayElementNodePopulationFilter(final ModelContext<?> context) {
-        this.context = context;
-    }
+final class ArrayElementNodePopulationFilter implements NodePopulationFilter {
 
     @Override
-    public boolean shouldSkip(final InternalNode elementNode,
+    public boolean shouldSkip(final InternalNode node,
                               final AfterGenerate afterGenerate,
-                              @Nullable final Object currentElementValue) {
-
-        if (elementNode.is(NodeKind.IGNORED)) {
-            return true;
-        }
-        if (afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
-            return true;
-        }
-
-        // For APPLY_SELECTORS and remaining values, if there is at least
-        // one matching selector for this node, then it should not be skipped
-        if (context.getGenerator(elementNode).isPresent()) {
-            return false;
-        }
+                              @Nullable final Object owner) {
 
         if (afterGenerate == AfterGenerate.POPULATE_NULLS) {
-            return elementNode.getRawType().isPrimitive() || currentElementValue != null;
+            return node.getRawType().isPrimitive() || owner != null;
         }
 
         if (afterGenerate == AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES) {
             return ReflectionUtils.neitherNullNorPrimitiveWithDefaultValue(
-                    elementNode.getRawType(),
-                    currentElementValue);
+                    node.getRawType(),
+                    owner);
         }
 
         return afterGenerate != AfterGenerate.POPULATE_ALL;

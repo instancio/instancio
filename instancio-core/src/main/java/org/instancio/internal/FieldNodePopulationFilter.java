@@ -17,48 +17,29 @@ package org.instancio.internal;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
-import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ExceptionHandler;
 import org.instancio.internal.util.ReflectionUtils;
 
-class FieldNodePopulationFilter implements NodePopulationFilter {
-
-    private final ModelContext<?> context;
-
-    FieldNodePopulationFilter(final ModelContext<?> context) {
-        this.context = context;
-    }
+final class FieldNodePopulationFilter implements NodePopulationFilter {
 
     @Override
-    public boolean shouldSkip(final InternalNode fieldNode,
+    public boolean shouldSkip(final InternalNode node,
                               final AfterGenerate afterGenerate,
-                              final Object objectContainingField) {
+                              final Object owner) {
 
-        if (fieldNode.is(NodeKind.IGNORED)) {
-            return true;
-        }
-        if (afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
-            return true;
-        }
-
-        // For APPLY_SELECTORS and remaining actions, if there is at least
-        // one matching selector for this node, then it should not be skipped
-        if (context.getGenerator(fieldNode).isPresent()) {
-            return false;
-        }
         if (afterGenerate == AfterGenerate.POPULATE_NULLS) {
-            return ReflectionUtils.hasNonNullValue(fieldNode.getField(), objectContainingField);
+            return ReflectionUtils.hasNonNullValue(node.getField(), owner);
         }
+
         if (afterGenerate == AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES) {
-            if (fieldNode.getField() == null) {
+            if (node.getField() == null) {
                 ExceptionHandler.conditionalFailOnError(() -> {
-                    throw new InstancioException("Node has a null field: " + fieldNode);
+                    throw new InstancioException("Node has a null field: " + node);
                 });
             }
             return ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(
-                    fieldNode.getField(), objectContainingField);
+                    node.getField(), owner);
         }
 
         return afterGenerate != AfterGenerate.POPULATE_ALL;
