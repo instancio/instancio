@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.nodes.resolvers;
+package org.instancio.internal.util;
 
-import org.instancio.internal.nodes.NodeKind;
-import org.instancio.internal.nodes.NodeKindResolver;
-import org.instancio.internal.util.IgnoreJRERequirement;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.Optional;
-
-@IgnoreJRERequirement
-public class NodeKindRecordResolver implements NodeKindResolver {
-
-    @Override
-    public Optional<NodeKind> resolve(final Class<?> targetClass) {
-        return targetClass.isRecord()
-                ? Optional.of(NodeKind.RECORD)
-                : Optional.empty();
-    }
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.TYPE, ElementType.FIELD})
+public @interface IgnoreJRERequirement {
 }

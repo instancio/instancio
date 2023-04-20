@@ -12,6 +12,7 @@
 
     <properties>
         <sonar.exclusions>**/test/pojo/beanvalidation/**/*</sonar.exclusions>
+        <animal.sniffer.skip>true</animal.sniffer.skip>
     </properties>
 
     <build>
