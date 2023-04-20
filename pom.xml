@@ -346,6 +346,30 @@
                         <arguments>-Pupdate-latest-release-version</arguments>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>animal-sniffer-maven-plugin</artifactId>
+                    <version>1.23</version>
+                    <configuration>
+                        <signature>
+                            <groupId>org.codehaus.mojo.signature</groupId>
+                            <artifactId>java18</artifactId>
+                            <version>1.0</version>
+                        </signature>
+                        <annotations>
+                            <annotation>org.instancio.internal.util.IgnoreJRERequirement</annotation>
+                        </annotations>
+                        <checkTestClasses>true</checkTestClasses>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>animal-sniffer</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -364,6 +388,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

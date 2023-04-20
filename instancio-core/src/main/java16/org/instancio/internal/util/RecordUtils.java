@@ -16,12 +16,14 @@
 package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioException;
+import org.instancio.internal.util.IgnoreJRERequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.RecordComponent;
 
+@IgnoreJRERequirement
 public final class RecordUtils {
     private static final Logger LOG = LoggerFactory.getLogger(RecordUtils.class);
 

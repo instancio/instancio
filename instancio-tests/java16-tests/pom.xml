@@ -12,6 +12,7 @@
 
     <properties>
         <maven.enforcer.require.java.version>[16,)</maven.enforcer.require.java.version>
+        <animal.sniffer.skip>true</animal.sniffer.skip>
     </properties>
 
     <build>
