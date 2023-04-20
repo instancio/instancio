@@ -19,12 +19,14 @@ import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Data
 public class SupportedAtomicTypes {
 
+    private AtomicBoolean atomicBoolean;
     private AtomicInteger atomicInteger;
     private AtomicLong atomicLong;
 

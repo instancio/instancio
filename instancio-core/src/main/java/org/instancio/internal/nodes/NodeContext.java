@@ -23,8 +23,7 @@ import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Settings;
-import org.instancio.spi.InstancioServiceProvider;
-import org.instancio.spi.TypeResolver;
+import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
@@ -102,7 +101,7 @@ public final class NodeContext {
         private SubtypeSelectorMap subtypeSelectorMap;
         private Map<Class<?>, Class<?>> subtypeMappingFromSettings = Collections.emptyMap();
         private List<InternalContainerFactoryProvider> containerFactories = Collections.emptyList();
-        private List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries = Collections.emptyList();
+        private List<ProviderEntry<TypeResolver>> providerEntries = Collections.emptyList();
 
         private Builder() {
         }
@@ -137,7 +136,7 @@ public final class NodeContext {
             return this;
         }
 
-        public Builder providerEntries(final List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries) {
+        public Builder providerEntries(final List<ProviderEntry<TypeResolver>> providerEntries) {
             this.providerEntries = providerEntries;
             return this;
         }

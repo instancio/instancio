@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.creation.basic;
+package org.instancio.internal.generator.concurrent.atomic;
 
-import org.instancio.test.support.pojo.basic.SupportedAtomicTypes;
-import org.instancio.testsupport.templates.CreationTestTemplate;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.instancio.internal.generator.util.concurrent.atomic.AtomicBooleanGenerator;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SupportedAtomicTypesCreationTest extends CreationTestTemplate<SupportedAtomicTypes> {
+class AtomicBooleanGeneratorTest extends AbstractGeneratorTestTemplate<AtomicBoolean, AtomicBooleanGenerator> {
 
     @Override
-    protected void verify(final SupportedAtomicTypes result) {
-        assertThat(result.getAtomicBoolean()).isNotNull();
-        assertThat(result.getAtomicInteger()).isNotNull();
-        assertThat(result.getAtomicLong()).isNotNull();
+    protected String getApiMethod() {
+        return null;
+    }
+
+    @Override
+    protected AtomicBooleanGenerator generator() {
+        return new AtomicBooleanGenerator(getGeneratorContext());
     }
 }

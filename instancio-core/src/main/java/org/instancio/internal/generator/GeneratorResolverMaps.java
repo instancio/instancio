@@ -57,6 +57,7 @@ import org.instancio.internal.generator.util.MapEntryGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.generator.util.OptionalGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
+import org.instancio.internal.generator.util.concurrent.atomic.AtomicBooleanGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator;
 
@@ -119,6 +120,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -253,6 +255,7 @@ final class GeneratorResolverMaps {
         map.put(SortedMap.class, MapGenerator.class);
 
         // java.util.concurrent
+        map.put(AtomicBoolean.class, AtomicBooleanGenerator.class);
         map.put(AtomicInteger.class, AtomicIntegerGenerator.class);
         map.put(AtomicLong.class, AtomicLongGenerator.class);
         return Collections.unmodifiableMap(map);
