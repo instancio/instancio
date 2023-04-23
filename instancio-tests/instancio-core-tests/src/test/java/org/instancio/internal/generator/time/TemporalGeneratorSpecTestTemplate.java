@@ -169,7 +169,7 @@ abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable
         final T slightlyBeforeStart = getStartMinusSmallestIncrement();
         assertThatThrownBy(() -> generator.range(start, slightlyBeforeStart))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Start must not exceed end");
+                .hasMessageContaining("start must not exceed end");
     }
 
     @Test

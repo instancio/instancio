@@ -70,9 +70,9 @@ public class DurationGenerator extends AbstractGenerator<Duration> implements Du
 
     @Override
     public DurationGenerator of(final long minAmount, final long maxAmount, final TemporalUnit unit) {
-        ApiValidator.notNull(unit, "Unit must not be null");
+        ApiValidator.notNull(unit, "unit must not be null");
         ApiValidator.isTrue(minAmount <= maxAmount,
-                "Minimum duration amount must be less than or equal to the maximum amount: of(%s, %s, %s)",
+                "minimum duration amount must be less than or equal to the maximum amount: of(%s, %s, %s)",
                 minAmount, maxAmount, unit);
 
         min(minAmount, unit);

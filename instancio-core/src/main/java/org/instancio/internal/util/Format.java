@@ -81,7 +81,7 @@ public final class Format {
             final String message, final String methodName, final String invokedMethods, final Throwable t) {
         final String template = "%n" +
                 "  %s%n" +
-                "  Method invocation: %s%n" +
+                "  method invocation: %s%n" +
                 "  at %s";
         final String invocation = String.format("%s.%s( -> null <- )", invokedMethods, methodName);
         final String at = Format.firstNonInstancioStackTraceLine(t);

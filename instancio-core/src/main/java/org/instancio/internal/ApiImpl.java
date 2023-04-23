@@ -100,7 +100,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
             final TargetSelector selector,
             final Generator<V> generator) {
 
-        ApiValidator.validateSupplierOrGenerator(generator);
+        ApiValidator.validateGeneratorNotNull(generator);
         modelContextBuilder.withGenerator(selector, generator);
         return this;
     }
@@ -110,7 +110,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
             final TargetSelector selector,
             final Supplier<V> supplier) {
 
-        ApiValidator.validateSupplierOrGenerator(supplier);
+        ApiValidator.validateSupplierNotNull(supplier);
         modelContextBuilder.withSupplier(selector, supplier);
         return this;
     }

@@ -19,7 +19,7 @@ import org.instancio.assignment.AssignmentType;
 import org.instancio.assignment.OnSetFieldError;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.util.Format;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -33,12 +33,12 @@ import static org.instancio.internal.util.ExceptionHandler.logException;
 final class FieldAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(FieldAssigner.class);
 
-    private final OnSetFieldError onSetFieldError;
+    private final Settings settings;
 
     FieldAssigner(final Settings settings) {
-        this.onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
+        this.settings = settings;
 
-        LOG.trace("{}, {}", AssignmentType.FIELD, onSetFieldError);
+        LOG.trace("{}, {}", AssignmentType.FIELD, settings.get(Keys.ON_SET_FIELD_ERROR));
     }
 
     @Override
@@ -59,21 +59,21 @@ final class FieldAssigner implements Assigner {
             field.set(target, value);
         } catch (IllegalArgumentException ex) {
             // Wrong type is being assigned to a field.
-            // Always propagate type mismatch errors as it's either a bug or user error.
-            final String msg = AssignerErrorUtil.getFieldAssignmentErrorMessage(
-                    value, Format.formatField(field), ex);
+            // Always propagate type mismatch errors as it's most likely a user error.
+            final String msg = AssignerErrorUtil.getIncompatibleTypesErrorMessage(
+                    value, field, ex);
 
-            throw new InstancioApiException(msg, ex);
+            throw Fail.withUsageError(msg, ex);
         } catch (Exception ex) {
             handleError(field, value, ex);
         }
     }
 
     private void handleError(final Field field, final Object value, final Exception ex) {
-        if (onSetFieldError == OnSetFieldError.FAIL) {
-            final String msg = AssignerErrorUtil.getFieldAssignmentErrorMessage(
-                    value, Format.formatField(field), ex);
+        final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
 
+        if (onSetFieldError == OnSetFieldError.FAIL) {
+            final String msg = AssignerErrorUtil.incompatibleField(value, field, ex, settings);
             throw new InstancioApiException(msg, ex);
         }
 

@@ -62,10 +62,10 @@ class EmitGeneratorTest {
     void validation() {
         assertThatThrownBy(() -> generator.items((Iterable<Long>) null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("'items' Iterable must not be null");
+                .hasMessageContaining("'items' Iterable must not be null");
 
         assertThatThrownBy(() -> generator.items((Integer[]) null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("'items' array must not be null");
+                .hasMessageContaining("'items' array must not be null");
     }
 }

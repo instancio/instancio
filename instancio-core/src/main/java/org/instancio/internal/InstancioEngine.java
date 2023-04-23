@@ -33,6 +33,7 @@ import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Constants;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.RecordUtils;
@@ -118,8 +119,7 @@ class InstancioEngine {
         } else if (node.is(NodeKind.DEFAULT)) {
             return generatePojo(node);
         }
-        // unreachable
-        throw new InstancioException(String.format("Unhandled node kind '%s' for %s", node.getNodeKind(), node));
+        throw Fail.withFataInternalError("Unhandled node kind '%s' for %s", node.getNodeKind(), node);
     }
 
     private GeneratorResult generateContainer(final InternalNode node) {

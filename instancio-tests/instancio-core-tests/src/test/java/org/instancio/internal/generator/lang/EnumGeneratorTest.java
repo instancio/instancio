@@ -96,10 +96,10 @@ class EnumGeneratorTest {
 
         assertThatThrownBy(() -> generator.excluding((Gender[]) null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Excluded values must not be null: excluding()");
+                .hasMessageContaining("excluded values must not be null: excluding()");
 
         assertThatThrownBy(() -> new EnumGenerator<>(context, null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Enum class must not be null");
+                .hasMessageContaining("enum class must not be null");
     }
 }

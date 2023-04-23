@@ -16,8 +16,8 @@
 package org.instancio.generator.specs;
 
 import org.instancio.Model;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.ValueSpec;
+import org.instancio.internal.ApiValidator;
 
 /**
  * Spec for selecting a random value from an array.
@@ -32,6 +32,6 @@ public interface OneOfArraySpec<T> extends ValueSpec<T>, OneOfArrayGeneratorSpec
 
     @Override
     default Model<T> toModel() {
-        throw new InstancioApiException("oneOf() spec does not support toModel()");
+        return ApiValidator.valueSpecDoesNotSupportToModel("oneOf()");
     }
 }

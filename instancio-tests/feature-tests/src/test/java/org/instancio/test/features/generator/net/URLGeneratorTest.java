@@ -98,7 +98,7 @@ class URLGeneratorTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage(String.format("Error generating a URL using parameters: %n" +
+                .hasMessageContaining(String.format("error generating a URL using parameters: %n" +
                         "  protocol: 'xyz'%n" +
                         "  host: 'example.com'%n" +
                         "  port: 123%n" +

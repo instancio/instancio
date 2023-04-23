@@ -63,7 +63,7 @@ class FileGeneratorTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Generated name must not be blank");
+                .hasMessageContaining("generated name must not be blank");
     }
 
     @Nested

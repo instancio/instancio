@@ -73,7 +73,7 @@ class ReflectionUtilsTest {
 
         assertThatThrownBy(() -> ReflectionUtils.getField(Person.class, "foo"))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid field 'foo' for class org.instancio.test.support.pojo.person.Person");
+                .hasMessageContaining("invalid field 'foo' for class org.instancio.test.support.pojo.person.Person");
     }
 
     @Test

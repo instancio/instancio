@@ -23,6 +23,10 @@ import org.instancio.assignment.SetterStyle;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.StringUtils;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
+
+import java.lang.reflect.Field;
 
 import static org.instancio.internal.util.Constants.NL;
 
@@ -34,23 +38,53 @@ final class AssignerErrorUtil {
         // non-instantiable
     }
 
-    static String getFieldAssignmentErrorMessage(
+    static String getIncompatibleTypesErrorMessage(
             final Object value,
-            final String fieldName,
+            final Field field,
             final Throwable cause) {
+
+        final String fieldName = Format.formatField(field);
+        final String argType = Format.withoutPackage(value.getClass());
+        final String argValue = StringUtils.quoteToString(value);
+        final Throwable rootCause = getRootCause(cause);
+
+        //noinspection StringBufferReplaceableByString
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("error assigning value to field due to incompatible types").append(NL)
+                .append(NL)
+                .append(" -> Field ....................: ").append(fieldName).append(NL)
+                .append(" -> Provided argument type ...: ").append(argType).append(NL)
+                .append(" -> Provided argument value ..: ").append(argValue).append(NL)
+                .append(NL)
+                .append("Root cause:").append(NL)
+                .append(" -> ").append(rootCause)
+                .toString();
+    }
+
+    static String incompatibleField(
+            final Object value,
+            final Field field,
+            final Throwable cause,
+            final Settings settings) {
+
+        final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
+        final String fieldName = Format.formatField(field);
+        final String argType = Format.withoutPackage(value.getClass());
+        final String argValue = StringUtils.quoteToString(value);
 
         //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append(NL)
                 .append("Throwing exception because:").append(NL)
-                .append(" -> Keys.ON_SET_FIELD_ERROR = ").append(OnSetFieldError.FAIL).append(NL)
+                .append(" -> Keys.ON_SET_FIELD_ERROR = ").append(onSetFieldError).append(NL)
                 .append(NL)
                 .append("Error assigning value to field:").append(NL)
-                .append(" -> Field: ").append(fieldName).append(NL)
-                .append(" -> Argument type:  ").append(Format.withoutPackage(value.getClass())).append(NL)
-                .append(" -> Argument value: ").append(StringUtils.quoteToString(value)).append(NL)
                 .append(NL)
-                .append("Root cause: ").append(NL)
+                .append(" -> Field ....................: ").append(fieldName).append(NL)
+                .append(" -> Provided argument type ...: ").append(argType).append(NL)
+                .append(" -> Provided argument value ..: ").append(argValue).append(NL)
+                .append(NL)
+                .append("Root cause:").append(NL)
                 .append(" -> ").append(getRootCause(cause)).append(NL)
                 .append(NL)
                 .append("To ignore the error and leave the field uninitialised").append(NL)
@@ -58,17 +92,21 @@ final class AssignerErrorUtil {
                 .toString();
     }
 
-    static String getSetterNotFoundMessage(
-            final String fieldName,
+    static String setterNotFound(
+            final Field field,
             final String expectedMethodName,
-            final SetterStyle setterStyle) {
+            final Settings settings) {
+
+        final String fieldName = Format.formatField(field);
+        final SetterStyle setterStyle = settings.get(Keys.SETTER_STYLE);
+        final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
 
         //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append(NL)
                 .append("Throwing exception because:").append(NL)
                 .append(" -> Keys.ASSIGNMENT_TYPE = ").append(AssignmentType.METHOD).append(NL)
-                .append(" -> Keys.ON_SET_METHOD_NOT_FOUND = ").append(OnSetMethodNotFound.FAIL).append(NL)
+                .append(" -> Keys.ON_SET_METHOD_NOT_FOUND = ").append(onSetMethodNotFound).append(NL)
                 .append(NL)
                 .append("Setter method could not be resolved for field:").append(NL)
                 .append(" -> ").append(fieldName).append(NL)
@@ -87,9 +125,13 @@ final class AssignerErrorUtil {
 
     static String getSetterInvocationErrorMessage(
             final Object value,
-            final OnSetMethodError onSetMethodError,
             final String method,
-            final Throwable cause) {
+            final Throwable cause,
+            final Settings settings) {
+
+        final OnSetMethodError onSetMethodError = settings.get(Keys.ON_SET_METHOD_ERROR);
+        final String argType = Format.withoutPackage(value.getClass());
+        final String argValue = StringUtils.quoteToString(value);
 
         //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
@@ -99,11 +141,12 @@ final class AssignerErrorUtil {
                 .append(" -> Keys.ON_SET_METHOD_ERROR = ").append(onSetMethodError).append(NL)
                 .append(NL)
                 .append("Method invocation failed:").append(NL)
-                .append(" -> Method: ").append(method).append(NL)
-                .append(" -> Argument type:  ").append(Format.withoutPackage(value.getClass())).append(NL)
-                .append(" -> Argument value: ").append(StringUtils.quoteToString(value)).append(NL)
                 .append(NL)
-                .append("Root cause: ").append(NL)
+                .append(" -> Method ...................: ").append(method).append(NL)
+                .append(" -> Provided argument type ...: ").append(argType).append(NL)
+                .append(" -> Provided argument value ..: ").append(argValue).append(NL)
+                .append(NL)
+                .append("Root cause:").append(NL)
                 .append(" -> ").append(getRootCause(cause)).append(NL)
                 .append(NL)
                 .append("To resolve the error, consider one of the following:").append(NL)

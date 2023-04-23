@@ -99,10 +99,10 @@ class MetamodelBasedOnClassesTest {
         final Field staticFinalField = ReflectionUtils.getField(Person.class, "STATIC_FINAL_FIELD");
 
         assertThatThrownBy(() -> ReflectionUtils.getField(Person_.class, staticField.getName()))
-                .hasMessageContaining("Invalid field");
+                .hasMessageContaining("invalid field");
 
         assertThatThrownBy(() -> ReflectionUtils.getField(Person_.class, staticFinalField.getName()))
-                .hasMessageContaining("Invalid field");
+                .hasMessageContaining("invalid field");
     }
 
     @Test

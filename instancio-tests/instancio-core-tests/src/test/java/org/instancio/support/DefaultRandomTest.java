@@ -415,7 +415,7 @@ class DefaultRandomTest {
         void negativeLength() {
             assertThatThrownBy(() -> random.stringOf(-1, 'a'))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("Length must not be negative");
+                    .hasMessage("length must not be negative");
         }
 
         @Test

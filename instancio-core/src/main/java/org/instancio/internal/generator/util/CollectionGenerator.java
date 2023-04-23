@@ -103,7 +103,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @Override
     public CollectionGeneratorSpec<T> subtype(final Class<?> type) {
-        this.collectionType = ApiValidator.notNull(type, "Type must not be null");
+        this.collectionType = ApiValidator.notNull(type, "type must not be null");
         return this;
     }
 

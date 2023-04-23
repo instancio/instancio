@@ -79,7 +79,7 @@ public class YearGenerator extends JavaTimeTemporalGenerator<Year>
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
+        ApiValidator.validateStartEnd(min, max);
     }
 
     @Override

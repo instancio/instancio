@@ -92,10 +92,10 @@ class BooleanGeneratorTest extends AbstractGeneratorTestTemplate<Boolean, Boolea
     void validation() {
         assertThatThrownBy(() -> generator.probability(-0.000123))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Probability must be between 0 and 1, inclusive: -1.23E-4");
+                .hasMessageContaining("probability must be between 0 and 1, inclusive: -1.23E-4");
 
         assertThatThrownBy(() -> generator.probability(1.000001))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Probability must be between 0 and 1, inclusive: 1.000001");
+                .hasMessageContaining("probability must be between 0 and 1, inclusive: 1.000001");
     }
 }

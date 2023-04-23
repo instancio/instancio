@@ -52,12 +52,12 @@ class SettingsCustomKeyTest {
     void validation() {
         assertThatThrownBy(() -> Keys.ofType(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Type must not be null");
+                .hasMessageContaining("type must not be null");
 
         final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class);
         assertThatThrownBy(() -> builder.withPropertyKey(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Property key must not be null");
+                .hasMessageContaining("property key must not be null");
     }
 
     @Test

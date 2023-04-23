@@ -115,7 +115,7 @@ class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, Tex
     void unterminatedHash(final String pattern) {
         assertThatThrownBy(() -> generate(pattern))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid text pattern '%s'. Expected a character after the last '#'", pattern);
+                .hasMessageContaining("invalid text pattern '%s'. Expected a character after the last '#'", pattern);
     }
 
     @Test
@@ -123,7 +123,7 @@ class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, Tex
         final String pattern = "b#xd";
         assertThatThrownBy(() -> generate(pattern))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Text pattern '%s' contains an invalid hashtag '#x'", pattern)
+                .hasMessageContaining("text pattern '%s' contains an invalid hashtag '#x'", pattern)
                 .hasMessageContaining(ALLOWED_HASHTAGS_MESSAGE);
     }
 

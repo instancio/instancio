@@ -27,19 +27,18 @@ import static org.instancio.internal.util.Constants.NL;
 final class ApiValidatorMessageHelper {
 
     private static final String INVALID_USAGE_OF_WITH_TYPE_PARAMETERS =
-            "Invalid usage of withTypeParameters() method:";
+            "invalid usage of withTypeParameters() method";
 
     static String withTypeParametersNonGenericClass(final Class<?> rootClass) {
-        return new StringBuilder().append(NL)
+        return new StringBuilder()
                 .append(INVALID_USAGE_OF_WITH_TYPE_PARAMETERS).append(NL)
-                .append(NL)
-                .append(" -> Class ").append(Format.withoutPackage(rootClass))
-                .append(" is not generic and does not require type parameters").append(NL)
+                .append(" -> class ").append(Format.withoutPackage(rootClass))
+                .append(" is not generic and does not require type parameters")
                 .toString();
     }
 
     static String withTypeParametersNestedGenerics(final String classWithTypeParams) {
-        return new StringBuilder().append(NL)
+        return new StringBuilder()
                 .append(INVALID_USAGE_OF_WITH_TYPE_PARAMETERS).append(NL)
                 .append(NL)
                 .append("  -> The argument ").append(classWithTypeParams)
@@ -54,7 +53,9 @@ final class ApiValidatorMessageHelper {
                 .append(NL)
                 .append("    or the builder version:").append(NL)
                 .append(NL)
-                .append("    Map<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();")
+                .append("    Map<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){})").append(NL)
+                .append("            // additional API methods...").append(NL)
+                .append("            .create();")
                 .toString();
     }
 
@@ -62,7 +63,7 @@ final class ApiValidatorMessageHelper {
             final Class<?> rootClass,
             final List<Class<?>> rootTypeParameters) {
 
-        final StringBuilder sb = new StringBuilder().append(NL)
+        final StringBuilder sb = new StringBuilder()
                 .append(INVALID_USAGE_OF_WITH_TYPE_PARAMETERS).append(NL)
                 .append(NL)
                 .append(" -> Class ").append(rootClass.getName()).append(" requires ")
@@ -89,8 +90,7 @@ final class ApiValidatorMessageHelper {
                 .append(NL)
                 .append(" -> Or use a type token:").append(NL)
                 .append(NL)
-                .append("    Instancio.create(new TypeToken<Map<UUID, Person>>() {});").append(NL)
-                .append(NL);
+                .append("    Instancio.create(new TypeToken<Map<UUID, Person>>() {});");
         return sb.toString();
     }
 

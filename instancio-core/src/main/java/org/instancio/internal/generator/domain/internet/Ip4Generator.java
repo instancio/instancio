@@ -16,11 +16,11 @@
 package org.instancio.internal.generator.domain.internet;
 
 import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.Ip4Spec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.util.Fail;
 import org.instancio.support.Global;
 
 public class Ip4Generator extends AbstractGenerator<String> implements Ip4Spec {
@@ -60,8 +60,8 @@ public class Ip4Generator extends AbstractGenerator<String> implements Ip4Spec {
         try {
             return generateFromCidr(random);
         } catch (Exception ex) {
-            throw new InstancioApiException(
-                    String.format("Error generating IPv4 address from: '%s'", cidr), ex);
+            throw Fail.withUsageError(String.format(
+                    "error generating IPv4 address from: '%s'", cidr), ex);
         }
     }
 

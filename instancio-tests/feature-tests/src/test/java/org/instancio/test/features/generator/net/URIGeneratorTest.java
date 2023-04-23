@@ -108,7 +108,7 @@ class URIGeneratorTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage(String.format("Error generating a URI using parameters: %n" +
+                .hasMessageContaining(String.format("error generating a URI using parameters: %n" +
                         "  scheme: 'foo!'%n" +
                         "  userInfo: null%n" +
                         "  host: 'example.com'%n" +

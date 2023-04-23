@@ -25,6 +25,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.misc.SetterErrorPojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -40,15 +41,6 @@ import static org.instancio.Select.allInts;
 @DisabledIfSystemProperty(named = SystemProperties.ASSIGNMENT_TYPE, matches = "FIELD")
 class OnSetMethodErrorTest {
 
-    @SuppressWarnings("unused")
-    private static class SetterErrorPojo {
-        private int value;
-
-        private void setValue(final int value) {
-            throw new UnsupportedOperationException("setter error");
-        }
-    }
-
     @WithSettings
     private final Settings settings = Settings.create()
             .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD);
@@ -60,7 +52,7 @@ class OnSetMethodErrorTest {
                         .set(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.ASSIGN_FIELD))
                 .create();
 
-        assertThat(result.value).isNotZero();
+        assertThat(result.getValue()).isNotZero();
     }
 
     @Test
@@ -70,37 +62,19 @@ class OnSetMethodErrorTest {
                         .set(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.IGNORE))
                 .create();
 
-        assertThat(result.value).isZero();
+        assertThat(result.getValue()).isZero();
     }
 
     @Test
     void failOnError() {
-        final int expectedValue = 123;
         final InstancioApi<SetterErrorPojo> api = Instancio.of(SetterErrorPojo.class)
-                .set(allInts(), expectedValue)
+                .set(allInts(), 123)
                 .withSettings(Settings.create()
                         .set(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.FAIL));
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasRootCauseExactlyInstanceOf(UnsupportedOperationException.class)
-                .hasMessage(String.format("%n" +
-                        "Throwing exception because:%n" +
-                        " -> Keys.ASSIGNMENT_TYPE = AssignmentType.METHOD%n" +
-                        " -> Keys.ON_SET_METHOD_ERROR = OnSetMethodError.FAIL%n" +
-                        "%n" +
-                        "Method invocation failed:%n" +
-                        " -> Method: OnSetMethodErrorTest$SetterErrorPojo.setValue(int)%n" +
-                        " -> Argument type:  Integer%n" +
-                        " -> Argument value: " + expectedValue + "%n" +
-                        "%n" +
-                        "Root cause: %n" +
-                        " -> java.lang.UnsupportedOperationException: setter error%n" +
-                        "%n" +
-                        "To resolve the error, consider one of the following:%n" +
-                        " -> Address the root cause that triggered the exception%n" +
-                        " -> Update Keys.ON_SET_METHOD_ERROR setting to%n" +
-                        "    -> OnSetMethodError.ASSIGN_FIELD to assign value via field%n" +
-                        "    -> OnSetMethodError.IGNORE to leave value uninitialised%n"));
+                .hasMessageContaining("Method invocation failed");
     }
 }

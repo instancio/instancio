@@ -40,7 +40,7 @@ class SelectorWithSubclassTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Invalid field 'privateBaseClassField'");
+                .hasMessageContaining("invalid field 'privateBaseClassField'");
     }
 
     @Test

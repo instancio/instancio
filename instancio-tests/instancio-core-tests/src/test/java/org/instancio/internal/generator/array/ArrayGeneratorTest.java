@@ -104,6 +104,6 @@ class ArrayGeneratorTest extends AbstractGeneratorTestTemplate<String[], ArrayGe
     void subtypeValidation(final Class<?> klass) {
         assertThatThrownBy(() -> generator.subtype(klass))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Type must be an array: %s", klass);
+                .hasMessageContaining("type must be an array: %s", klass);
     }
 }

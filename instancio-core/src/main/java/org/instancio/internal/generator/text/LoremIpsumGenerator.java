@@ -57,14 +57,14 @@ public class LoremIpsumGenerator extends AbstractGenerator<String>
 
     @Override
     public LoremIpsumGenerator words(final int words) {
-        ApiValidator.isTrue(words > 0, "Number of words must be greater than zero: %s", words);
+        ApiValidator.isTrue(words > 0, "number of words must be greater than zero: %s", words);
         this.words = words;
         return this;
     }
 
     @Override
     public LoremIpsumGenerator paragraphs(final int paragraphs) {
-        ApiValidator.isTrue(paragraphs > 0, "Number of paragraphs must be greater than zero: %s", paragraphs);
+        ApiValidator.isTrue(paragraphs > 0, "number of paragraphs must be greater than zero: %s", paragraphs);
         this.paragraphs = paragraphs;
         return this;
     }
@@ -78,7 +78,7 @@ public class LoremIpsumGenerator extends AbstractGenerator<String>
     @Override
     protected String tryGenerateNonNull(final Random random) {
         ApiValidator.isTrue(words >= paragraphs,
-                "The number of paragraphs (%s) is greater than the number of words (%s)", paragraphs, words);
+                "the number of paragraphs (%s) is greater than the number of words (%s)", paragraphs, words);
 
         final int wordsPerParagraph = words / paragraphs;
         final int remainder = words - wordsPerParagraph * paragraphs;

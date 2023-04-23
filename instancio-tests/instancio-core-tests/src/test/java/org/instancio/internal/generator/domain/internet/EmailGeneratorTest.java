@@ -74,14 +74,14 @@ class EmailGeneratorTest extends AbstractGeneratorTestTemplate<String, EmailGene
     void validation() {
         assertThatThrownBy(() -> generator.length(2))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Email length must be at least 3 characters long");
+                .hasMessageContaining("email length must be at least 3 characters long");
 
         assertThatThrownBy(() -> generator.length(2, 10))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Email length must be at least 3 characters long");
+                .hasMessageContaining("email length must be at least 3 characters long");
 
         assertThatThrownBy(() -> generator.length(6, 5))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Email length min must be less than or equal to max: (6, 5)");
+                .hasMessageContaining("email length min must be less than or equal to max: (6, 5)");
     }
 }

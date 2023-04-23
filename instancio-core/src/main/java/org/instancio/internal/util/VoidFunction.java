@@ -24,6 +24,7 @@ public interface VoidFunction {
     /**
      * Invokes the function.
      */
+    @SuppressWarnings(Sonar.DEFINE_DEDICATED_EXCEPTION)
     void invoke() throws Throwable;
 
 }

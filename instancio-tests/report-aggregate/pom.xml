@@ -51,12 +51,6 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>instancio-core-tests</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.instancio</groupId>
             <artifactId>instancio-junit-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -150,6 +144,12 @@
                 <jdk>[17,)</jdk>
             </activation>
             <dependencies>
+                <dependency>
+                    <groupId>org.instancio</groupId>
+                    <artifactId>instancio-core-tests</artifactId>
+                    <version>${project.version}</version>
+                    <scope>test</scope>
+                </dependency>
                 <dependency>
                     <groupId>org.instancio</groupId>
                     <artifactId>java17-tests</artifactId>

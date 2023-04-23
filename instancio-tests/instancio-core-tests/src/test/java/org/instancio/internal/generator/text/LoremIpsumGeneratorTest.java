@@ -82,18 +82,18 @@ class LoremIpsumGeneratorTest extends AbstractGeneratorTestTemplate<String, Lore
         generator.words(5).paragraphs(6);
         assertThatThrownBy(() -> generator.generate(random))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("The number of paragraphs (6) is greater than the number of words (5)");
+                .hasMessageContaining("the number of paragraphs (6) is greater than the number of words (5)");
     }
 
     @Test
     void validationErrorWhenGivenNegativeInput() {
         assertThatThrownBy(() -> generator.words(0))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Number of words must be greater than zero: 0");
+                .hasMessageContaining("number of words must be greater than zero: 0");
 
         assertThatThrownBy(() -> generator.paragraphs(0))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Number of paragraphs must be greater than zero: 0");
+                .hasMessageContaining("number of paragraphs must be greater than zero: 0");
     }
 
     private static void assertParagraphs(final String result, final int expectedParagraphCount) {

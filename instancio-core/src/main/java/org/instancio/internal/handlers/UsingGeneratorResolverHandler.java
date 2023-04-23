@@ -48,24 +48,26 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
         this.beanValidationProcessors = beanValidationProcessors;
     }
 
-
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final InternalNode node) {
         final Optional<Generator<?>> generatorOpt = generatorResolver.get(node);
 
-        return generatorOpt.map(generator -> {
-            final Class<?> targetClass = node.getTargetClass();
+        if (!generatorOpt.isPresent()) {
+            return GeneratorResult.emptyResult();
+        }
 
-            LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), targetClass.getName());
-            beanValidationProcessors.process(generator, node.getTargetClass(), node.getField());
+        final Generator<?> generator = generatorOpt.get();
+        final Class<?> targetClass = node.getTargetClass();
 
-            final Object value = generator.generate(context.getRandom());
-            final Object processed = stringPostProcessor.process(value, node, generator);
-            final GeneratorResult result = GeneratorResult.create(processed, generator.hints());
+        LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), targetClass.getName());
+        beanValidationProcessors.process(generator, node.getTargetClass(), node.getField());
 
-            LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
-            return result;
-        }).orElse(GeneratorResult.emptyResult());
+        final Object value = generator.generate(context.getRandom());
+        final Object processed = stringPostProcessor.process(value, node, generator);
+        final GeneratorResult result = GeneratorResult.create(processed, generator.hints());
+
+        LOG.trace("Generated {} using '{}' generator ", result, generator.getClass().getSimpleName());
+        return result;
     }
 }

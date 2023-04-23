@@ -79,11 +79,11 @@ class MonthDayGeneratorTest {
     void validateMinMax() {
         assertThatThrownBy(() -> generator.min(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("'min' must not be null");
+                .hasMessageContaining("'min' must not be null");
 
         assertThatThrownBy(() -> generator.max(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("'max' must not be null");
+                .hasMessageContaining("'max' must not be null");
     }
 
     @Test
@@ -93,7 +93,7 @@ class MonthDayGeneratorTest {
 
         assertThatThrownBy(() -> generator.range(start, end))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: --01-02, --01-01");
+                .hasMessageContaining("start must not exceed end: --01-02, --01-01");
     }
 
     private static Stream<Arguments> ranges() {

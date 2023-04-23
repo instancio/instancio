@@ -94,32 +94,32 @@ class FieldSelectorBuilderImplTest {
     void validation() {
         assertThatThrownBy(() -> selectorBuilder.named(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Field name must not be null.")
-                .hasMessageContaining("Method invocation: fields().named( -> null <- )");
+                .hasMessageContaining("field name must not be null.")
+                .hasMessageContaining("method invocation: fields().named( -> null <- )");
 
         assertThatThrownBy(() -> selectorBuilder.matching(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Regex must not be null.")
-                .hasMessageContaining("Method invocation: fields().matching( -> null <- )");
+                .hasMessageContaining("regex must not be null.")
+                .hasMessageContaining("method invocation: fields().matching( -> null <- )");
 
         assertThatThrownBy(() -> selectorBuilder.ofType(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Field type must not be null.")
-                .hasMessageContaining("Method invocation: fields().ofType( -> null <- )");
+                .hasMessageContaining("field type must not be null.")
+                .hasMessageContaining("method invocation: fields().ofType( -> null <- )");
 
         assertThatThrownBy(() -> selectorBuilder.declaredIn(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Declaring type must not be null.")
-                .hasMessageContaining("Method invocation: fields().declaredIn( -> null <- )");
+                .hasMessageContaining("declaring type must not be null.")
+                .hasMessageContaining("method invocation: fields().declaredIn( -> null <- )");
 
         assertThatThrownBy(() -> selectorBuilder.annotated(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Field's declared annotation must not be null.")
-                .hasMessageContaining("Method invocation: fields().annotated( -> null <- )");
+                .hasMessageContaining("field's declared annotation must not be null.")
+                .hasMessageContaining("method invocation: fields().annotated( -> null <- )");
 
         assertThatThrownBy(() -> selectorBuilder.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Depth must not be negative: -1");
+                .hasMessageContaining("depth must not be negative: -1");
     }
 
     @Nested

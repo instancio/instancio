@@ -71,14 +71,14 @@ class PeriodGeneratorTest {
     void validation() {
         assertThatThrownBy(() -> generator.days(2, 1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Period days 'min' must be less than or equal 'max': days(2, 1)");
+                .hasMessageContaining("Period days 'min' must be less than or equal 'max': days(2, 1)");
 
         assertThatThrownBy(() -> generator.months(2, 1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Period months 'min' must be less than or equal 'max': months(2, 1)");
+                .hasMessageContaining("Period months 'min' must be less than or equal 'max': months(2, 1)");
 
         assertThatThrownBy(() -> generator.years(2, 1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Period years 'min' must be less than or equal 'max': years(2, 1)");
+                .hasMessageContaining("Period years 'min' must be less than or equal 'max': years(2, 1)");
     }
 }

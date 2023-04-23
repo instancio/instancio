@@ -90,14 +90,14 @@ class ArrayGeneratorSpecTest {
     void minValidation() {
         assertThatThrownBy(() -> generator.minLength(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Length must not be negative: -1");
+                .hasMessageContaining("length must not be negative: -1");
     }
 
     @Test
     void maxValidation() {
         assertThatThrownBy(() -> generator.maxLength(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Length must not be negative: -1");
+                .hasMessageContaining("length must not be negative: -1");
     }
 
     private static int calculatePercentage(final int initial, final int percentage) {

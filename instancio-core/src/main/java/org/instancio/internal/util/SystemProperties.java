@@ -28,7 +28,7 @@ public final class SystemProperties {
         // non-instantiable
     }
 
-    public static boolean isFailOnError() {
+    public static boolean shouldFailOnError() {
         return isEnabled(FAIL_ON_ERROR);
     }
 

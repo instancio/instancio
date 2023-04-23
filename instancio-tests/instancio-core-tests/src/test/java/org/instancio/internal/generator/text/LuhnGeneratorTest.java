@@ -81,18 +81,18 @@ class LuhnGeneratorTest extends AbstractGeneratorTestTemplate<String, LuhnGenera
     void validationLength() {
         assertThatThrownBy(() -> generator.length(1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Luhn-valid number length must be greater than 1, but was: 1");
+                .hasMessageContaining("Luhn-valid number length must be greater than 1, but was: 1");
     }
 
     @Test
     void validationLengthRange() {
         assertThatThrownBy(() -> generator.length(0, 1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Luhn-valid number length must be greater than 1, but was: length(0, 1)");
+                .hasMessageContaining("Luhn-valid number length must be greater than 1, but was: length(0, 1)");
 
         assertThatThrownBy(() -> generator.length(5, 4))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Min must be less than or equal to max");
+                .hasMessageContaining("Min must be less than or equal to max");
     }
 
     private static void assertLuhn(final String result, final int expectedSize) {

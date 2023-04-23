@@ -89,6 +89,6 @@ class CollectionGeneratorWithElementTest {
 
         assertThatThrownBy(api::create)
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("'collection().with(...)' must contain at least one element");
+                .hasMessageContaining("'collection().with(...)' must contain at least one element");
     }
 }

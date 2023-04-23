@@ -39,6 +39,7 @@ import java.util.SortedMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SettingsTest {
@@ -114,14 +115,6 @@ class SettingsTest {
     }
 
     @Test
-    void setNullOnNonNullableValue() {
-        final Settings settings = Settings.create();
-        assertThatThrownBy(() -> settings.set(Keys.INTEGER_MIN, null))
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Setting value for key 'integer.min' must not be null");
-    }
-
-    @Test
     void getSetEnum() {
         final Settings settings = Settings.create().set(Keys.MODE, Mode.LENIENT);
         assertThat(settings.get(Keys.MODE)).isEqualTo(Mode.LENIENT);
@@ -132,7 +125,7 @@ class SettingsTest {
         final Settings settings = Settings.create();
         assertThatThrownBy(() -> settings.mapType(List.class, HashSet.class))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Class 'java.util.HashSet' is not a subtype of 'java.util.List'");
+                .hasMessageContaining("class 'java.util.HashSet' is not a subtype of 'java.util.List'");
     }
 
     @Test
@@ -143,7 +136,7 @@ class SettingsTest {
 
         assertThatThrownBy(() -> Settings.from(map))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid value %s (of type Integer) for setting key %s", value, Keys.BYTE_MAX)
+                .hasMessageContaining("invalid value %s (of type Integer) for setting key %s", value, Keys.BYTE_MAX)
                 .hasCauseExactlyInstanceOf(NumberFormatException.class);
     }
 
@@ -295,5 +288,32 @@ class SettingsTest {
         final CharSequence actual = settings.get(key);
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Nested
+    class ValidationTest {
+        private final Settings settings = Settings.create();
+
+        @Test
+        void setNullOnNonNullableValue() {
+            assertThatThrownBy(() -> settings.set(Keys.INTEGER_MIN, null))
+                    .isInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("setting value for key 'integer.min' must not be null");
+        }
+
+        @Test
+        void nullAllowedForNullableValue() {
+            final SettingKey<Long> key = Keys.SEED;
+            assertThat(key.allowsNullValue()).isTrue();
+
+            assertThatNoException().isThrownBy(() -> settings.set(key, null));
+        }
+
+        @Test
+        void nullKeyNotAllowed() {
+            assertThatThrownBy(() -> settings.set(null, "some value"))
+                    .isExactlyInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("setting key must not be null");
+        }
     }
 }

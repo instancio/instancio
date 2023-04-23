@@ -82,8 +82,8 @@ public class CsvGenerator extends AbstractGenerator<String> implements CsvSpec {
 
     @Override
     public CsvGenerator rows(final int min, final int max) {
-        ApiValidator.isTrue(min >= 0, "Min must not be negative: " + min);
-        ApiValidator.isTrue(min <= max, "Min must be less than or equal to max: (%s, %s)", min, max);
+        ApiValidator.isTrue(min >= 0, "min must not be negative: " + min);
+        ApiValidator.isTrue(min <= max, "min must be less than or equal to max: (%s, %s)", min, max);
         this.minRows = min;
         this.maxRows = max;
         return this;
@@ -127,7 +127,7 @@ public class CsvGenerator extends AbstractGenerator<String> implements CsvSpec {
 
     @Override
     protected String tryGenerateNonNull(final Random random) {
-        ApiValidator.isTrue(!columns.isEmpty(), "At least 1 column is required to generate CSV");
+        ApiValidator.isTrue(!columns.isEmpty(), "at least 1 column is required to generate CSV");
         final int rows = random.intRange(minRows, maxRows);
         final int initialSize = rows * columns.size() * 32;
         final StringBuilder sb = new StringBuilder(initialSize);

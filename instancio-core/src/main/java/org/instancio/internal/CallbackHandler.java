@@ -16,11 +16,11 @@
 package org.instancio.internal;
 
 import org.instancio.OnCompleteCallback;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Fail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +89,7 @@ public class CallbackHandler implements GenerationListener {
                             "               ^^^^^^^^^    ^^^^^^^^^^^^^%n" +
                             "})%n%n" +
                             "Caused by:%n%s", ex.getMessage());
-            throw new InstancioApiException(errorMsg, ex);
+            throw Fail.withUsageError(errorMsg, ex);
         }
     }
 }

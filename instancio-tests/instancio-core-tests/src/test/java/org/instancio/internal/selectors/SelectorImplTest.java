@@ -146,6 +146,6 @@ class SelectorImplTest {
 
         assertThatThrownBy(() -> selector.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Depth must not be negative: -1");
+                .hasMessageContaining("depth must not be negative: -1");
     }
 }

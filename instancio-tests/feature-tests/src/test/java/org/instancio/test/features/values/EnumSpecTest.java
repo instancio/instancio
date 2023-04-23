@@ -47,6 +47,6 @@ class EnumSpecTest extends AbstractValueSpecTestTemplate<Gender> {
         final EnumSpec<Gender> spec = spec();
         assertThatThrownBy(spec::toModel)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("enumOf() spec does not support toModel()");
+                .hasMessageContaining("enumOf() spec does not support toModel()");
     }
 }

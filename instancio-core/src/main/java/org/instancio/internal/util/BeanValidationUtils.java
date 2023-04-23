@@ -17,7 +17,6 @@ package org.instancio.internal.util;
 
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
-import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 
 import java.lang.reflect.Field;
@@ -43,8 +42,10 @@ public final class BeanValidationUtils {
      * an updated range with new max, smaller than the original.
      */
     public static Range<Integer> calculateRange(final int min, final int max, final int maxLimit) {
-        ApiValidator.isTrue(min <= max, "Invalid bean validation annotation:" +
-                " min must be less than or equal to max: min=%s, max=%s", min, max);
+        if (min > max) {
+            throw Fail.withUsageError(String.format("invalid bean validation annotation: " +
+                    "min must be less than or equal to max: min=%s, max=%s", min, max));
+        }
 
         final int minSize;
         final int maxSize;

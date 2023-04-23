@@ -106,7 +106,8 @@ final class UnusedSelectorReporter {
                 .append("        .withSettings(settings)").append(NL)
                 .append("        .create();").append(NL)
                 .append(NL)
-                .append("For more information see: https://www.instancio.org/user-guide/#selector-strictness");
+                .append("For more information see: https://www.instancio.org/user-guide/#selector-strictness")
+                .append(NL);
 
         throw new UnusedSelectorException(sb.toString(), ignored, nullable, generators, callbacks, subtypes);
     }

@@ -72,22 +72,22 @@ class TypeSelectorBuilderImplTest {
     void validation() {
         assertThatThrownBy(() -> selectorBuilder.of(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Type must not be null.")
-                .hasMessageContaining("Method invocation: types().of( -> null <- )");
+                .hasMessageContaining("type must not be null.")
+                .hasMessageContaining("method invocation: types().of( -> null <- )");
 
         assertThatThrownBy(() -> selectorBuilder.annotated(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Type's declared annotation must not be null.")
-                .hasMessageContaining("Method invocation: types().annotated( -> null <- )");
+                .hasMessageContaining("type's declared annotation must not be null.")
+                .hasMessageContaining("method invocation: types().annotated( -> null <- )");
 
         assertThatThrownBy(() -> selectorBuilder.excluding(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Excluded type must not be null.")
-                .hasMessageContaining("Method invocation: types().excluding( -> null <- )");
+                .hasMessageContaining("excluded type must not be null.")
+                .hasMessageContaining("method invocation: types().excluding( -> null <- )");
 
         assertThatThrownBy(() -> selectorBuilder.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Depth must not be negative: -1");
+                .hasMessageContaining("depth must not be negative: -1");
     }
 
     @Nested

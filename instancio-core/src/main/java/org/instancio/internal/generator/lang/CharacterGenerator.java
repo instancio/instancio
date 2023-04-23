@@ -47,7 +47,7 @@ public class CharacterGenerator extends AbstractGenerator<Character>
     @Override
     public CharacterGenerator range(final char min, final char max) {
         ApiValidator.isTrue(min <= max,
-                "Invalid 'range(%s, %s)': lower bound must be less than or equal to upper bound", min, max);
+                "invalid 'range(%s, %s)': lower bound must be less than or equal to upper bound", min, max);
 
         this.min = min;
         this.max = max;

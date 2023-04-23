@@ -16,8 +16,8 @@
 package org.instancio.generator.specs;
 
 import org.instancio.Model;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.ValueSpec;
+import org.instancio.internal.ApiValidator;
 
 /**
  * Spec for generating enums.
@@ -53,6 +53,6 @@ public interface EnumSpec<E extends Enum<E>> extends ValueSpec<E>, EnumGenerator
      */
     @Override
     default Model<E> toModel() {
-        throw new InstancioApiException("enumOf() spec does not support toModel()");
+        return ApiValidator.valueSpecDoesNotSupportToModel("enumOf()");
     }
 }

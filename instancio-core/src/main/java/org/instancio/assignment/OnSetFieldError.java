@@ -40,6 +40,9 @@ public enum OnSetFieldError {
     /**
      * Ignore the error and continue populating the object.
      *
+     * <p><b>Warning:</b> an error caused by assigning an incompatible type
+     * is considered a user error and is never ignored.
+     *
      * @since 2.1.0
      */
     IGNORE;
