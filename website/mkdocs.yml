@@ -83,8 +83,6 @@ extra:
   withNullable: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withNullable(org.instancio.TargetSelector)" target="_blank">withNullable(TargetSelector)</a>'
   withSeed: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSeed(int)" target="_blank">withSeed(int seed)</a>'
   withSettings: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSettings(org.instancio.settings.Settings)" target="_blank">withSettings(Settings)</a>'
-  # Processor
-  InstancioMetamodel:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioMetamodel.html" target="_blank">@InstancioMetamodel</a>'
   # JUnit
   InstancioExtension:  '<a href="https://javadoc.io/doc/org.instancio/instancio-junit/latest/org/instancio/junit/InstancioExtension.html" target="_blank">InstancioExtension</a>'
   InstancioSource:  '<a href="https://javadoc.io/doc/org.instancio/instancio-junit/latest/org/instancio/junit/InstancioSource.html" target="_blank">@InstancioSource</a>'

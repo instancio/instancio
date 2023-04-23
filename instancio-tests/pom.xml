@@ -42,7 +42,6 @@
         <module>bean-validation-javax-tests</module>
         <module>bean-validation-jakarta-tests</module>
         <module>bean-validation-hibernate5-tests</module>
-        <module>annotation-processor-with-lombok</module>
         <module>packaging-tests</module>
         <module>report-aggregate</module>
     </modules>
@@ -163,16 +162,6 @@
                 <module>java17-tests</module>
                 <module>bean-validation-hibernate-tests</module>
                 <module>spi-tests</module>
-            </modules>
-        </profile>
-        <profile>
-            <!-- Gradle doesn't support jdk 20 yet https://github.com/gradle/gradle/issues/23488 -->
-            <id>java-20</id>
-            <activation>
-                <jdk>(,20)</jdk>
-            </activation>
-            <modules>
-                <module>annotation-processor-with-gradle</module>
             </modules>
         </profile>
     </profiles>
