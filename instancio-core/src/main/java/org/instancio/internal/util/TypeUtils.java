@@ -22,6 +22,11 @@ import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public final class TypeUtils {
 
@@ -74,21 +79,44 @@ public final class TypeUtils {
         return null;
     }
 
-    // NOTE: the implementation could be improved (see unit test describing the unhandled case)
     public static Class<?> getGenericSuperclassTypeArgument(final Class<?> klass) {
-        if (klass.getGenericSuperclass() instanceof ParameterizedType) {
-            final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
-            final Type genericType = genericSuperclass.getActualTypeArguments()[0];
-            return getRawType(genericType);
+        return findParameterizedSupertype(klass)
+                .map(t -> t.getActualTypeArguments()[0])
+                .map(TypeUtils::getRawType)
+                .orElse(null);
+    }
+
+    private static Optional<ParameterizedType> findParameterizedSupertype(final Class<?> klass) {
+        if (klass == null) {
+            return Optional.empty();
         }
-        for (Type type : klass.getGenericInterfaces()) {
-            if (type instanceof ParameterizedType) {
-                final ParameterizedType genericSuperclass = (ParameterizedType) type;
-                final Type genericType = genericSuperclass.getActualTypeArguments()[0];
-                return getRawType(genericType);
+        List<Type> supertypes = collectSupertypes(klass);
+        Optional<ParameterizedType> parameterizedType = Optional.empty();
+        for (Type supertype : supertypes) {
+            if (supertype instanceof ParameterizedType) {
+                parameterizedType = Optional.of((ParameterizedType) supertype);
+                break;
             }
         }
-        return null;
+        return parameterizedType.isPresent() ? parameterizedType : findParameterizedSupertype(supertypes);
+    }
+
+    private static List<Type> collectSupertypes(final Class<?> klass) {
+        List<Type> supertypes = new ArrayList<>();
+        supertypes.add(klass.getGenericSuperclass());
+        supertypes.addAll(Arrays.asList(klass.getGenericInterfaces()));
+        supertypes.removeIf(Objects::isNull);
+        return supertypes;
+    }
+
+    private static Optional<ParameterizedType> findParameterizedSupertype(final List<Type> types) {
+        for (Type type : types) {
+            Optional<ParameterizedType> parameterizedSupertype = findParameterizedSupertype(getRawType(type));
+            if (parameterizedSupertype.isPresent()) {
+                return parameterizedSupertype;
+            }
+        }
+        return Optional.empty();
     }
 
     public static Type[] getGenericSuperclassTypeArguments(final Class<?> klass) {
