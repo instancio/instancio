@@ -1741,7 +1741,9 @@ Anything not listed is unsupported, including `*.List` annotations.
 - `@EAN`
 - `@ISBN`
 - `@Length`
-- `@LuhnCheck` (`startIndex`, `endIndex`, `checkDigitIndex` are supported; `ignoreNonDigitCharacters` is ignored, only digits are generated)
+- `@LuhnCheck` (`ignoreNonDigitCharacters` is ignored, only digits are generated)
+- `@Mod10Check` (`ignoreNonDigitCharacters` is ignored, only digits are generated)
+- `@Mod11Check` (`ignoreNonDigitCharacters` is ignored, only digits are generated)
 - `@Range`
 - `@UniqueElements`
 - `@URL` (`protocol`, `host`, `port` are supported; `regexp` not supported)

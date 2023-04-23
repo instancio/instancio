@@ -25,7 +25,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public final class TypeUtils {
@@ -103,9 +102,12 @@ public final class TypeUtils {
 
     private static List<Type> collectSupertypes(final Class<?> klass) {
         List<Type> supertypes = new ArrayList<>();
-        supertypes.add(klass.getGenericSuperclass());
-        supertypes.addAll(Arrays.asList(klass.getGenericInterfaces()));
-        supertypes.removeIf(Objects::isNull);
+        if (klass.getGenericSuperclass() != null) {
+            supertypes.add(klass.getGenericSuperclass());
+        }
+        if (klass.getGenericInterfaces().length > 0) {
+            supertypes.addAll(Arrays.asList(klass.getGenericInterfaces()));
+        }
         return supertypes;
     }
 

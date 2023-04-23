@@ -17,11 +17,10 @@ package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.Seed;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithDefaults;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithStartEndAndCheckDigitIndices;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithStartEndIndices;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithEndAndCheckDigitIndicesEqual;
+import org.instancio.test.pojo.beanvalidation.Mod11CheckAndLengthBV.WithDefaults;
+import org.instancio.test.pojo.beanvalidation.Mod11CheckAndLengthBV.WithEndAndCheckDigitIndicesEqual;
+import org.instancio.test.pojo.beanvalidation.Mod11CheckAndLengthBV.WithStartEndAndCheckDigitIndices;
+import org.instancio.test.pojo.beanvalidation.Mod11CheckAndLengthBV.WithStartEndIndices;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.util.HibernateValidatorUtil;
@@ -36,7 +35,7 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
-class LuhnCheckAndLengthBVTest {
+class Mod11CheckAndLengthBVTest {
 
     @Test
     void withDefaults() {

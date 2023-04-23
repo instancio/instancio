@@ -17,11 +17,10 @@ package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.Seed;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithDefaults;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithStartEndAndCheckDigitIndices;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithStartEndIndices;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckAndLengthBV.WithEndAndCheckDigitIndicesEqual;
+import org.instancio.test.pojo.beanvalidation.Mod11CheckBV.WithDefaults;
+import org.instancio.test.pojo.beanvalidation.Mod11CheckBV.WithEndAndCheckDigitIndicesEqual;
+import org.instancio.test.pojo.beanvalidation.Mod11CheckBV.WithStartEndAndCheckDigitIndices;
+import org.instancio.test.pojo.beanvalidation.Mod11CheckBV.WithStartEndIndices;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.util.HibernateValidatorUtil;
@@ -36,7 +35,7 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
-class LuhnCheckAndLengthBVTest {
+class Mod11CheckBVTest {
 
     @Test
     void withDefaults() {
@@ -44,10 +43,7 @@ class LuhnCheckAndLengthBVTest {
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
-            HibernateValidatorUtil.assertValid(result);
-            assertThat(result.getValue()).hasSizeBetween(10, 16);
-        });
+        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
     }
 
     @Test
@@ -56,11 +52,7 @@ class LuhnCheckAndLengthBVTest {
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
-            HibernateValidatorUtil.assertValid(result);
-            assertThat(result.getValue0()).hasSize(8);
-            assertThat(result.getValue1()).hasSizeBetween(20, 22);
-        });
+        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
     }
 
     @Test
@@ -69,11 +61,7 @@ class LuhnCheckAndLengthBVTest {
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
-            HibernateValidatorUtil.assertValid(result);
-            assertThat(result.getValue0()).hasSizeBetween(17, 25);
-            assertThat(result.getValue1()).hasSizeBetween(11, 20);
-        });
+        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
     }
 
     @Disabled("https://hibernate.atlassian.net/browse/HV-1945")
@@ -83,10 +71,6 @@ class LuhnCheckAndLengthBVTest {
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
-            HibernateValidatorUtil.assertValid(result);
-            assertThat(result.getValue0()).hasSizeBetween(17, 25);
-            assertThat(result.getValue1()).hasSizeBetween(11, 20);
-        });
+        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
     }
 }
