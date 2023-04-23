@@ -34,9 +34,9 @@ public class Instantiator {
         strategies = new InstantiationStrategy[]{
                 new ServiceProviderInstantiationStrategy(providerEntries),
                 new NoArgumentConstructorInstantiationStrategy(),
-                new LeastArgumentsConstructorInstantiationStrategy(),
                 UnsafeInstantiationStrategy.getInstance(),
-                ReflectionFactoryInstantiationStrategy.getInstance()
+                ReflectionFactoryInstantiationStrategy.getInstance(),
+                new LeastArgumentsConstructorInstantiationStrategy()
         };
     }
 
