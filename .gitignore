@@ -12,15 +12,6 @@ NOTES.md
 target/
 src/test/java/experimental/
 
-# Instancio build includes a gradle module for testing the annotation processor.
-# The build.gradle file is generated from a template, therefore not checked in.
-build.gradle
-.gradle
-build/
-!**/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
 ### STS ###
 .apt_generated
 .classpath

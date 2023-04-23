@@ -20,6 +20,7 @@ import org.instancio.Selector;
 /**
  * Selector for use in generated metamodel classes only.
  */
+@Deprecated
 public final class MetamodelSelector extends SelectorImpl {
 
     private MetamodelSelector(final Class<?> targetClass, final String fieldName) {

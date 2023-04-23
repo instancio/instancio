@@ -16,8 +16,8 @@
 package org.instancio.processor;
 
 import org.instancio.InstancioMetamodel;
-import org.instancio.processor.util.Logger;
 import org.instancio.internal.util.Sonar;
+import org.instancio.processor.util.Logger;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Deprecated
 @SupportedOptions({"instancio.verbose", "instancio.suffix"})
 @SupportedAnnotationTypes("org.instancio.InstancioMetamodel")
 public final class InstancioAnnotationProcessor extends AbstractProcessor {

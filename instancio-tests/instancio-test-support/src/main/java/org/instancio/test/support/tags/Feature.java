@@ -66,6 +66,7 @@ public enum Feature {
     MAP_GENERATOR_WITH_KEYS,
     MATH_GENERATOR,
     MAX_DEPTH,
+    @Deprecated
     METAMODEL,
     METHOD_REFERENCE_SELECTOR,
     MODE,

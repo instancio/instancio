@@ -61,7 +61,12 @@ import java.lang.annotation.Target;
  * <p>
  * The reason for this is that duplicating the annotation for the same {@code 'classes'}
  * will cause metamodels for those classes to be generated more than once.
+ *
+ * @deprecated this feature is deprecated and will be removed in version {@code 3.0.0}.
+ * Instead of generating metamodels, please use {@link Select#field(GetMethodSelector)}
+ * to target fields using method references.
  */
+@Deprecated
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface InstancioMetamodel {
