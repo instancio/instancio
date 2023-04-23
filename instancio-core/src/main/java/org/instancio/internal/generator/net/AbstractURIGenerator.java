@@ -43,7 +43,7 @@ abstract class AbstractURIGenerator<T> extends AbstractGenerator<T> {
     }
 
     final void withScheme(final String... schemes) {
-        this.schemes = CollectionUtils.asList(schemes);
+        this.schemes = CollectionUtils.asUnmodifiableList(schemes);
     }
 
     final void withHost(final Generator<String> hostGenerator) {

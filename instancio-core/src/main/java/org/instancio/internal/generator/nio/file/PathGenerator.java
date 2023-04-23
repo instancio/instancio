@@ -68,7 +68,7 @@ public class PathGenerator extends AbstractGenerator<Path>
 
     public PathGenerator(final GeneratorContext context, final String... directories) {
         super(context);
-        this.directories = CollectionUtils.asList(directories);
+        this.directories = CollectionUtils.asUnmodifiableList(directories);
     }
 
     @Override

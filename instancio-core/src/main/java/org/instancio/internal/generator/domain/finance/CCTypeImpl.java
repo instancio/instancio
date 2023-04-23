@@ -30,7 +30,7 @@ public enum CCTypeImpl {
 
     CCTypeImpl(final int length, final Integer... prefixes) {
         this.length = length;
-        this.prefixes = CollectionUtils.asList(prefixes);
+        this.prefixes = CollectionUtils.asUnmodifiableList(prefixes);
     }
 
     public int getLength() {

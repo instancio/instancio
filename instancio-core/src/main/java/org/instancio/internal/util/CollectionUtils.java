@@ -43,7 +43,7 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <T> List<T> asList(final T... values) {
+    public static <T> List<T> asUnmodifiableList(final T... values) {
         return Collections.unmodifiableList(asArrayList(values));
     }
 
