@@ -15,23 +15,18 @@
  */
 package org.instancio.internal.generator.domain.id;
 
-import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.IsbnSpec;
-import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.support.Global;
+import org.instancio.internal.generator.BaseModuleGenerator;
 
-public class IsbnGenerator extends AbstractGenerator<String> implements IsbnSpec {
-
-    private final EanGenerator delegate;
+public class IsbnGenerator extends BaseModuleGenerator implements IsbnSpec {
 
     public IsbnGenerator() {
-        this(Global.generatorContext());
+        super();
     }
 
     public IsbnGenerator(final GeneratorContext context) {
         super(context);
-        delegate = new EanGenerator(context);
     }
 
     @Override
@@ -46,8 +41,18 @@ public class IsbnGenerator extends AbstractGenerator<String> implements IsbnSpec
     }
 
     @Override
-    protected String tryGenerateNonNull(final Random random) {
-        return delegate.tryGenerateNonNull(random);
+    protected int payloadLength() {
+        return 12;
+    }
+
+    @Override
+    protected int even(final int position) {
+        return 3;
+    }
+
+    @Override
+    protected boolean sumDigits() {
+        return false;
     }
 }
 

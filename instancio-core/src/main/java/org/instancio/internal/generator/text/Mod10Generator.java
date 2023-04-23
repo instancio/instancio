@@ -16,11 +16,15 @@
 package org.instancio.internal.generator.text;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.VariableLengthModuleGenerator;
 
-public class LuhnGenerator extends VariableLengthModuleGenerator<LuhnGenerator> {
+public class Mod10Generator extends VariableLengthModuleGenerator<Mod10Generator> {
 
-    public LuhnGenerator(final GeneratorContext context) {
+    private int multiplier;
+    private int weight;
+
+    public Mod10Generator(final GeneratorContext context) {
         super(context);
     }
 
@@ -30,14 +34,41 @@ public class LuhnGenerator extends VariableLengthModuleGenerator<LuhnGenerator> 
     }
 
     @Override
-    public LuhnGenerator nullable() {
+    public Mod10Generator nullable() {
         super.nullable();
         return this;
     }
 
     @Override
-    public LuhnGenerator nullable(final boolean isNullable) {
+    public Mod10Generator nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
+    }
+
+    public Mod10Generator multiplier(final int multiplier) {
+        ApiValidator.isTrue(multiplier >= 0, "Multiplier must not be negative: %s", multiplier);
+        this.multiplier = multiplier;
+        return this;
+    }
+
+    public Mod10Generator weight(final int weight) {
+        ApiValidator.isTrue(weight >= 0, "Weight must not be negative: %s", weight);
+        this.weight = weight;
+        return this;
+    }
+
+    @Override
+    protected int even(final int position) {
+        return multiplier;
+    }
+
+    @Override
+    protected int odd(final int position) {
+        return weight;
+    }
+
+    @Override
+    protected boolean sumDigits() {
+        return false;
     }
 }

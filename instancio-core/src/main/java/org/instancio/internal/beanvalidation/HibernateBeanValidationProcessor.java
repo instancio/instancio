@@ -20,6 +20,8 @@ import org.hibernate.validator.constraints.EAN;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.LuhnCheck;
+import org.hibernate.validator.constraints.Mod10Check;
+import org.hibernate.validator.constraints.Mod11Check;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
 import org.instancio.generator.Generator;
@@ -30,6 +32,8 @@ import org.instancio.internal.generator.domain.id.IsbnGenerator;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.text.LuhnGenerator;
+import org.instancio.internal.generator.text.Mod10Generator;
+import org.instancio.internal.generator.text.Mod11Generator;
 import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +68,12 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
                 map.put(LuhnCheck.class, ((annotation, context) -> getLuhnGenerator((LuhnCheck) annotation, context)))
         );
         runIgnoringTheNoClassDefFoundError(() ->
+                map.put(Mod10Check.class, ((annotation, context) -> getMod10Generator((Mod10Check) annotation, context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(Mod11Check.class, ((annotation, context) -> getMod11Generator((Mod11Check) annotation, context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
                 map.put(CreditCardNumber.class, ((annotation, context) -> new CreditCardNumberGenerator(context)))
         );
         runIgnoringTheNoClassDefFoundError(() ->
@@ -91,6 +101,15 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
         return urlGenerator;
     }
 
+    @NotNull
+    private static EanGenerator getEanGenerator(final EAN ean, final GeneratorContext context) {
+        final EanGenerator generator = new EanGenerator(context);
+        if (ean.type() == EAN.Type.EAN8) {
+            generator.type8();
+        }
+        return generator;
+    }
+
     private static LuhnGenerator getLuhnGenerator(final LuhnCheck luhn, final GeneratorContext context) {
         final LuhnGenerator generator = new LuhnGenerator(context)
                 .startIndex(luhn.startIndex())
@@ -102,11 +121,30 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
         return generator;
     }
 
-    @NotNull
-    private static EanGenerator getEanGenerator(final EAN ean, final GeneratorContext context) {
-        final EanGenerator generator = new EanGenerator(context);
-        if (ean.type() == EAN.Type.EAN8) {
-            generator.type8();
+    private static Mod10Generator getMod10Generator(final Mod10Check mod10, final GeneratorContext context) {
+        final Mod10Generator generator = new Mod10Generator(context)
+                .startIndex(mod10.startIndex())
+                .endIndex(mod10.endIndex())
+                .multiplier(mod10.multiplier())
+                .weight(mod10.weight());
+
+        if (mod10.checkDigitIndex() != -1) {
+            generator.checkIndex(mod10.checkDigitIndex());
+        }
+        return generator;
+    }
+
+    private static Mod11Generator getMod11Generator(final Mod11Check mod11, final GeneratorContext context) {
+        final Mod11Generator generator = new Mod11Generator(context)
+                .startIndex(mod11.startIndex())
+                .endIndex(mod11.endIndex())
+                .threshold(mod11.threshold())
+                .treatCheck10As(mod11.treatCheck10As())
+                .treatCheck11As(mod11.treatCheck11As())
+                .reverse(mod11.processingDirection() == Mod11Check.ProcessingDirection.RIGHT_TO_LEFT);
+
+        if (mod11.checkDigitIndex() != -1) {
+            generator.checkIndex(mod11.checkDigitIndex());
         }
         return generator;
     }

@@ -18,8 +18,12 @@ package org.instancio.test.beanvalidation.hibernate5;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.EAN;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.LuhnCheck;
+import org.hibernate.validator.constraints.Mod10Check;
+import org.hibernate.validator.constraints.Mod11Check;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 import org.instancio.Instancio;
@@ -71,6 +75,19 @@ class Hibernate5PojoBVTest {
 
         @CreditCardNumber
         private String creditCard;
+
+        @EAN
+        private String ean;
+
+        @LuhnCheck(startIndex = 5, endIndex = 10, checkDigitIndex = 15)
+        private String luhn;
+
+        @Mod10Check(startIndex = 5, endIndex = 10, checkDigitIndex = 15, multiplier = 5, weight = 3)
+        private String mod10;
+
+        @Mod11Check(startIndex = 5, endIndex = 10, checkDigitIndex = 15, threshold = 5,
+                treatCheck10As = 'C', treatCheck11As = 'N', processingDirection = Mod11Check.ProcessingDirection.LEFT_TO_RIGHT)
+        private String mod11;
 
         @Override
         public String toString() {

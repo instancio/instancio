@@ -15,13 +15,12 @@
  */
 package org.instancio.internal.generator.domain.id;
 
-import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EanSpec;
-import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.BaseModuleGenerator;
 import org.instancio.support.Global;
 
-public class EanGenerator extends AbstractGenerator<String> implements EanSpec {
+public class EanGenerator extends BaseModuleGenerator implements EanSpec {
 
     private EanType type = EanType.EAN13;
 
@@ -57,31 +56,18 @@ public class EanGenerator extends AbstractGenerator<String> implements EanSpec {
     }
 
     @Override
-    protected String tryGenerateNonNull(final Random random) {
-        final String withoutCheckDigit = random.digits(type.length - 1);
-        final int checkDigit = getCheckDigit(withoutCheckDigit, type);
-        return withoutCheckDigit + checkDigit;
+    protected int payloadLength() {
+        return type.length - 1;
     }
 
-    private static int getCheckDigit(final String s, final EanType type) {
-        int even = 0;
-        int odd = 0;
+    @Override
+    protected int even(final int position) {
+        return 3;
+    }
 
-        for (int i = 0; i < s.length(); i++) {
-            final int idx = i + 1;
-            final int d = s.charAt(i) - '0';
-            if (idx % 2 == 0) {
-                even += d;
-            } else {
-                odd += d;
-            }
-        }
-
-        final int sum = type == EanType.EAN8
-                ? 3 * odd + even
-                : 3 * even + odd;
-
-        return (10 - (sum % 10)) % 10;
+    @Override
+    protected boolean sumDigits() {
+        return false;
     }
 
     private enum EanType {

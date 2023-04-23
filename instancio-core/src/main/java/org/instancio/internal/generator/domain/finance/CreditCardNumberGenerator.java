@@ -18,13 +18,11 @@ package org.instancio.internal.generator.domain.finance;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CreditCardSpec;
-import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.util.LuhnUtils;
+import org.instancio.internal.generator.BaseModuleGenerator;
 import org.instancio.support.Global;
 import org.jetbrains.annotations.VisibleForTesting;
 
-public class CreditCardNumberGenerator extends AbstractGenerator<String>
-        implements CreditCardSpec {
+public class CreditCardNumberGenerator extends BaseModuleGenerator implements CreditCardSpec {
 
     private CCTypeImpl cardType;
 
@@ -64,14 +62,15 @@ public class CreditCardNumberGenerator extends AbstractGenerator<String>
     }
 
     @Override
-    protected String tryGenerateNonNull(final Random random) {
-        final CCTypeImpl type = cardType == null
-                ? random.oneOf(CCTypeImpl.values())
-                : cardType;
+    protected String payload(final Random random) {
+        cardType = cardType == null ? random.oneOf(CCTypeImpl.values()) : cardType;
+        final String payload = super.payload(random);
+        final String prefix = random.oneOf(cardType.getPrefixes()).toString();
+        return prefix + payload.substring(prefix.length());
+    }
 
-        final String prefix = random.oneOf(type.getPrefixes()).toString();
-        final int lengthWithoutCheckDigit = type.getLength() - prefix.length() - 1;
-        final String withoutCheckDigit = prefix + random.digits(lengthWithoutCheckDigit);
-        return withoutCheckDigit + LuhnUtils.getCheckDigit(withoutCheckDigit);
+    @Override
+    protected int payloadLength() {
+        return cardType.getLength() - 1;
     }
 }

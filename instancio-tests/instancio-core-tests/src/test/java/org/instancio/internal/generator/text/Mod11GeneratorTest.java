@@ -26,10 +26,10 @@ import org.junitpioneer.jupiter.params.IntRangeSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LuhnGeneratorTest extends AbstractGeneratorTestTemplate<String, LuhnGenerator> {
+class Mod11GeneratorTest extends AbstractGeneratorTestTemplate<String, Mod11Generator> {
     private static final int DEFAULT_SIZE = 16;
 
-    private final LuhnGenerator generator = new LuhnGenerator(getGeneratorContext());
+    private final Mod11Generator generator = new Mod11Generator(getGeneratorContext());
 
     @Override
     protected String getApiMethod() {
@@ -37,7 +37,7 @@ class LuhnGeneratorTest extends AbstractGeneratorTestTemplate<String, LuhnGenera
     }
 
     @Override
-    protected LuhnGenerator generator() {
+    protected Mod11Generator generator() {
         return generator;
     }
 
@@ -91,5 +91,12 @@ class LuhnGeneratorTest extends AbstractGeneratorTestTemplate<String, LuhnGenera
         assertThatThrownBy(() -> generator.length(5, 4))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Min must be less than or equal to max");
+    }
+
+    @Test
+    void validationThreshold() {
+        assertThatThrownBy(() -> generator.threshold(-1))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("Threshold must not be negative: -1");
     }
 }
