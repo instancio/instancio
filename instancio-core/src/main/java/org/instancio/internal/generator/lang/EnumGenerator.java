@@ -42,7 +42,7 @@ public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E>
 
     public EnumGenerator(final GeneratorContext context, final Class<E> enumClass) {
         super(context);
-        this.enumClass = ApiValidator.notNull(enumClass, "Enum class must not be null");
+        this.enumClass = ApiValidator.notNull(enumClass, "enum class must not be null");
         this.values = EnumSet.allOf(enumClass);
         this.valuesWithExclusions = EnumSet.noneOf(enumClass);
     }
@@ -55,7 +55,7 @@ public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E>
     @Override
     @SafeVarargs
     public final EnumGenerator<E> excluding(final E... values) {
-        ApiValidator.notNull(values, "Excluded values must not be null: excluding()");
+        ApiValidator.notNull(values, "excluded values must not be null: excluding()");
 
         // Allow passing empty array, meaning 'no exclusions'
         if (values.length > 0) {

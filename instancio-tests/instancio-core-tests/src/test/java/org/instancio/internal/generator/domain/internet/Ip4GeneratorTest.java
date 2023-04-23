@@ -67,13 +67,13 @@ class Ip4GeneratorTest extends AbstractGeneratorTestTemplate<String, Ip4Generato
 
         assertThatThrownBy(() -> generator.generate(random))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Error generating IPv4 address from: '%s'", badInput);
+                .hasMessageContaining("error generating IPv4 address from: '%s'", badInput);
     }
 
     @Test
     void fromCidrNull() {
         assertThatThrownBy(() -> generator.fromCidr(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("CIDR must not be null");
+                .hasMessageContaining("CIDR must not be null");
     }
 }

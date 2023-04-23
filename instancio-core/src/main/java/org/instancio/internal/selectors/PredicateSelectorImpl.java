@@ -177,7 +177,7 @@ public class PredicateSelectorImpl
             // because the selector toString() would be, e.g. 'atDepth(3)',
             // while the underlying predicate is comprised of multiple,
             // potentially conflicting, depth conditions.
-            Verify.state(this.selectorDepth == null, "Depth already set!");
+            Verify.state(this.selectorDepth == null, "depth already set!");
 
             this.selectorDepth = selectorDepth;
             this.nodePredicate = this.nodePredicate.and(selectorDepth.getDepthPredicate());

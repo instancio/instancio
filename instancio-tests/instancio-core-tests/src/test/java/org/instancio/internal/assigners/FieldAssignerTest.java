@@ -69,19 +69,6 @@ class FieldAssignerTest {
         assertThatThrownBy(() -> assigner.assign(mockNode, "any-target", "any-value"))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasRootCauseExactlyInstanceOf(EXPECTED_ERROR.getClass())
-                .hasMessage(String.format("%n" +
-                        "Throwing exception because:%n" +
-                        " -> Keys.ON_SET_FIELD_ERROR = OnSetFieldError.FAIL%n" +
-                        "%n" +
-                        "Error assigning value to field:%n" +
-                        " -> Field: String Person.name%n" +
-                        " -> Argument type:  String%n" +
-                        " -> Argument value: \"any-value\"%n" +
-                        "%n" +
-                        "Root cause: %n" +
-                        " -> java.lang.RuntimeException: expected error%n" +
-                        "%n" +
-                        "To ignore the error and leave the field uninitialised%n" +
-                        " -> Update Keys.ON_SET_FIELD_ERROR setting to: OnSetFieldError.IGNORE%n"));
+                .hasMessageContaining("Error assigning value to field");
     }
 }

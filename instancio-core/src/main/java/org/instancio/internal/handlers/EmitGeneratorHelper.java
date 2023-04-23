@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Hints;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
@@ -23,6 +22,7 @@ import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.misc.EmitGenerator.WhenEmptyAction;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 
 import java.lang.reflect.Field;
@@ -60,8 +60,7 @@ class EmitGeneratorHelper {
 
         // The error message isn't great. Ideally it should also report
         // the selector, but it's not readily available here
-        throw new InstancioApiException("No items left to emit() for " +
-                getTargetDescription(node));
+        throw Fail.withUsageError("no items left to emit() for " + getTargetDescription(node));
     }
 
     private String getTargetDescription(final InternalNode node) {

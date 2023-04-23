@@ -85,6 +85,6 @@ class ArrayGeneratorWithElementTest {
 
         assertThatThrownBy(api::create)
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("'array().with(...)' must contain at least one element");
+                .hasMessageContaining("'array().with(...)' must contain at least one element");
     }
 }

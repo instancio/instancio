@@ -99,22 +99,6 @@ class OnSetMethodNotFoundTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage(String.format("%nThrowing exception because:%n" +
-                        " -> Keys.ASSIGNMENT_TYPE = AssignmentType.METHOD%n" +
-                        " -> Keys.ON_SET_METHOD_NOT_FOUND = OnSetMethodNotFound.FAIL%n" +
-                        "%n" +
-                        "Setter method could not be resolved for field:%n" +
-                        " -> int OnSetMethodNotFoundTest$WithoutSetter.value%n" +
-                        "%n" +
-                        "Using:%n" +
-                        " -> Keys.SETTER_STYLE = SetterStyle.SET%n" +
-                        " -> Expected method name: 'setValue'%n" +
-                        "%n" +
-                        "To resolve the error, consider one of the following:%n" +
-                        " -> Add the expected setter method%n" +
-                        " -> Update Keys.ON_SET_METHOD_NOT_FOUND setting to:%n" +
-                        "    -> OnSetMethodNotFound.ASSIGN_FIELD to assign value via field%n" +
-                        "    -> OnSetMethodNotFound.IGNORE to leave value uninitialised" +
-                        "%n"));
+                .hasMessageContaining("Setter method could not be resolved for field");
     }
 }

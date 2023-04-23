@@ -80,7 +80,7 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
+        ApiValidator.validateStartEnd(min, max);
     }
 
     @Override

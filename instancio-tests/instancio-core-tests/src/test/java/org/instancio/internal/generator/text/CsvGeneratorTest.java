@@ -41,33 +41,33 @@ class CsvGeneratorTest {
     void validationRows() {
         assertThatThrownBy(() -> generator.rows(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Min must not be negative: -1");
+                .hasMessageContaining("min must not be negative: -1");
 
         assertThatThrownBy(() -> generator.rows(-1, 10))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Min must not be negative: -1");
+                .hasMessageContaining("min must not be negative: -1");
 
         assertThatThrownBy(() -> generator.rows(2, 1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Min must be less than or equal to max: (2, 1)");
+                .hasMessageContaining("min must be less than or equal to max: (2, 1)");
     }
 
     @Test
     void validationWrapIf() {
         assertThatThrownBy(() -> generator.wrapIf(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("wrapIf() predicate must not be null");
+                .hasMessageContaining("wrapIf() predicate must not be null");
     }
 
     @Test
     void validationColumns() {
         assertThatThrownBy(() -> generator.column(null, random -> "foo"))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("column() name must not be null");
+                .hasMessageContaining("column() name must not be null");
 
         assertThatThrownBy(() -> generator.column("name", null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("column() generator must not be null");
+                .hasMessageContaining("column() generator must not be null");
     }
 
 }

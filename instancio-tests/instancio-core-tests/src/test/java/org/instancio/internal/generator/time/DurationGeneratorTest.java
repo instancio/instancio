@@ -86,10 +86,10 @@ class DurationGeneratorTest {
     void validation() {
         assertThatThrownBy(() -> generator.of(2, 1, ChronoUnit.NANOS))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Minimum duration amount must be less than or equal to the maximum amount: of(2, 1, Nanos)");
+                .hasMessageContaining("minimum duration amount must be less than or equal to the maximum amount: of(2, 1, Nanos)");
 
         assertThatThrownBy(() -> generator.of(1, 2, null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Unit must not be null");
+                .hasMessageContaining("unit must not be null");
     }
 }

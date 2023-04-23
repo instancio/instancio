@@ -55,7 +55,7 @@ public class MonthDayGenerator extends AbstractGenerator<MonthDay> implements Mo
         this.min = ApiValidator.notNull(min, "MonthDay start must not be null");
         this.max = ApiValidator.notNull(max, "MonthDay end must not be null");
         ApiValidator.isTrue(min.compareTo(max) <= 0,
-                "Start must not exceed end: %s, %s", this.min, this.max);
+                "start must not exceed end: %s, %s", this.min, this.max);
         return this;
     }
 

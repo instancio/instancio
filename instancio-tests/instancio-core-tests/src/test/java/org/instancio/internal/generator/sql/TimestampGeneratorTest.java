@@ -65,11 +65,12 @@ class TimestampGeneratorTest extends AbstractGeneratorTestTemplate<Timestamp, Ti
 
     @Test
     void validateRange() {
+        final Timestamp start = Timestamp.valueOf(START);
         final Timestamp end = Timestamp.valueOf(START.minusNanos(1));
 
-        assertThatThrownBy(() -> generator.range(Timestamp.valueOf(START), end))
+        assertThatThrownBy(() -> generator.range(start, end))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Start must not exceed end");
+                .hasMessageContaining("start must not exceed end");
     }
 
     @Test

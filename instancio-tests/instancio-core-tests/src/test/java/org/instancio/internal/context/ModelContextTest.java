@@ -203,7 +203,7 @@ class ModelContextTest {
 
         assertThatThrownBy(() -> builder.withSubtype(allLists, null))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Subtype must not be null");
+                .hasMessageContaining("subtype must not be null");
     }
 
     @Test

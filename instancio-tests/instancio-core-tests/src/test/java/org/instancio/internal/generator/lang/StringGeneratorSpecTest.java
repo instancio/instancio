@@ -98,21 +98,21 @@ class StringGeneratorSpecTest {
         final int max = 5;
         assertThatThrownBy(() -> generator.length(min, max))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Min length must be less than or equal to max (6, 5)", min, max);
+                .hasMessageContaining("min length must be less than or equal to max (6, 5)", min, max);
     }
 
     @Test
     void minValidation() {
         assertThatThrownBy(() -> generator.minLength(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Length must not be negative: -1");
+                .hasMessageContaining("length must not be negative: -1");
     }
 
     @Test
     void maxValidation() {
         assertThatThrownBy(() -> generator.maxLength(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Length must not be negative: -1");
+                .hasMessageContaining("length must not be negative: -1");
     }
 
     private static int calculatePercentage(final int initial, final int percentage) {

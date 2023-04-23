@@ -22,6 +22,7 @@ import org.instancio.assignment.SetterStyle;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
@@ -40,19 +41,18 @@ final class MethodAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(MethodAssigner.class);
 
     private final Assigner fieldAssigner;
+    private final Settings settings;
     private final MethodNameResolver setterNameResolver;
-    private final SetterStyle setterStyle;
-    private final OnSetMethodNotFound onSetMethodNotFound;
-    private final OnSetMethodError onSetMethodError;
 
     MethodAssigner(final Settings settings) {
-        this.onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
-        this.onSetMethodError = settings.get(Keys.ON_SET_METHOD_ERROR);
-        this.setterStyle = settings.get(Keys.SETTER_STYLE);
-        this.setterNameResolver = getMethodNameResolver(setterStyle);
+        this.settings = settings;
+        this.setterNameResolver = getMethodNameResolver(settings.get(Keys.SETTER_STYLE));
         this.fieldAssigner = new FieldAssigner(settings);
 
-        LOG.trace("{}, {}, {}, {}", AssignmentType.METHOD, setterStyle, onSetMethodNotFound, onSetMethodError);
+        LOG.trace("{}, {}, {}, {}", AssignmentType.METHOD,
+                settings.get(Keys.SETTER_STYLE),
+                settings.get(Keys.ON_SET_METHOD_NOT_FOUND),
+                settings.get(Keys.ON_SET_METHOD_ERROR));
     }
 
     private static MethodNameResolver getMethodNameResolver(final SetterStyle style) {
@@ -63,8 +63,8 @@ final class MethodAssigner implements Assigner {
                 return new SetterMethodNameWithPrefixResolver("with");
             case PROPERTY:
                 return new SetterMethodNameNoPrefix();
-            default: // unreachable
-                throw new InstancioException("Unknown method resolver type: " + style);
+            default:
+                throw Fail.withFataInternalError("Unhandled setter style: %s", style);
         }
     }
 
@@ -110,9 +110,14 @@ final class MethodAssigner implements Assigner {
             final Method method,
             final Exception ex) {
 
+        final OnSetMethodError onSetMethodError = settings.get(Keys.ON_SET_METHOD_ERROR);
+
         if (onSetMethodError == OnSetMethodError.FAIL) {
-            throw new InstancioApiException(AssignerErrorUtil.getSetterInvocationErrorMessage(
-                    arg, onSetMethodError, Format.formatMethod(method), ex), ex);
+            final String methodName = Format.formatMethod(method);
+            final String errorMsg = AssignerErrorUtil.getSetterInvocationErrorMessage(
+                    arg, methodName, ex, settings);
+
+            throw new InstancioApiException(errorMsg, ex);
         }
 
         if (onSetMethodError == OnSetMethodError.ASSIGN_FIELD) {
@@ -131,9 +136,11 @@ final class MethodAssigner implements Assigner {
             final Object arg,
             final String methodName) {
 
+        final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
+
         if (onSetMethodNotFound == OnSetMethodNotFound.FAIL) {
-            throw new InstancioApiException(AssignerErrorUtil.getSetterNotFoundMessage(
-                    Format.formatField(node.getField()), methodName, setterStyle));
+            throw new InstancioApiException(AssignerErrorUtil.setterNotFound(
+                    node.getField(), methodName, settings));
         }
 
         if (onSetMethodNotFound == OnSetMethodNotFound.ASSIGN_FIELD) {

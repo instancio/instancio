@@ -70,7 +70,7 @@ class DateGeneratorTest extends AbstractGeneratorTestTemplate<Date, DateGenerato
 
         assertThatThrownBy(() -> generator.range(min, max))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Start must not exceed end");
+                .hasMessageContaining("start must not exceed end");
     }
 
     @Test

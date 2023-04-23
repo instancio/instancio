@@ -38,13 +38,13 @@ public abstract class AbstractNumericSequenceGenerator<T extends Number & Compar
 
     @Override
     public AbstractNumericSequenceGenerator<T> start(final T start) {
-        this.seq = ApiValidator.notNull(start, "Sequence 'start' value must not be null");
+        this.seq = ApiValidator.notNull(start, "sequence 'start' value must not be null");
         return this;
     }
 
     @Override
     public AbstractNumericSequenceGenerator<T> next(final UnaryOperator<T> next) {
-        this.next = ApiValidator.notNull(next, "Sequence 'next' function must not be null");
+        this.next = ApiValidator.notNull(next, "sequence 'next' function must not be null");
         return this;
     }
 

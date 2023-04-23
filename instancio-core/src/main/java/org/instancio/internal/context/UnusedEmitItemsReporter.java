@@ -16,10 +16,10 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
+import org.instancio.internal.util.Fail;
 
 import java.util.Collection;
 
@@ -38,7 +38,7 @@ class UnusedEmitItemsReporter {
             if (generator instanceof EmitGenerator) {
                 final EmitGenerator<?> g = (EmitGenerator<?>) generator;
                 if (!g.isIgnoreUnused() && g.hasMore()) {
-                    throw new InstancioApiException(buildUnusedItemsErrorMessage(selector, g.getItems()));
+                    throw Fail.withUsageError(buildUnusedItemsErrorMessage(selector, g.getItems()));
                 }
             }
         });
@@ -50,8 +50,8 @@ class UnusedEmitItemsReporter {
 
         //noinspection StringBufferReplaceableByString
         return new StringBuilder(256)
+                .append("not all the items provided via the 'emit()' method have been consumed").append(NL)
                 .append(NL)
-                .append("This error was thrown because not all the items provided via emit() have been consumed.").append(NL)
                 .append("The following items are still remaining:").append(NL)
                 .append(NL)
                 .append(" -> ").append(((UnusedSelectorDescription) selector).getDescription()).append(NL)
@@ -83,7 +83,7 @@ class UnusedEmitItemsReporter {
                 .append(NL)
                 .append(" -> Suppress this error with 'ignoreUnused()' to ignore remaining items:").append(NL)
                 .append(NL)
-                .append("        gen.emit().items(1, 2, 3, 4, 5, 6, 7).ignoreUnused()").append(NL)
+                .append("        gen.emit().items(1, 2, 3, 4, 5, 6, 7).ignoreUnused()")
                 .toString();
     }
 }

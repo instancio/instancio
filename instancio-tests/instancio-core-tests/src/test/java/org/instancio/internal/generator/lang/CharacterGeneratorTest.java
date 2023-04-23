@@ -84,6 +84,6 @@ class CharacterGeneratorTest extends AbstractGeneratorTestTemplate<Character, Ch
     void rangeValidation() {
         assertThatThrownBy(() -> generator.range('b', 'a'))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid 'range(b, a)': lower bound must be less than or equal to upper bound");
+                .hasMessageContaining("invalid 'range(b, a)': lower bound must be less than or equal to upper bound");
     }
 }

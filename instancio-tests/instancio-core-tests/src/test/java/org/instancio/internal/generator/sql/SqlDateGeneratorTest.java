@@ -63,11 +63,12 @@ class SqlDateGeneratorTest extends AbstractGeneratorTestTemplate<Date, SqlDateGe
 
     @Test
     void validateRange() {
+        final Date start = Date.valueOf(START);
         final Date end = Date.valueOf(START.minusDays(1));
 
-        assertThatThrownBy(() -> generator.range(Date.valueOf(START), end))
+        assertThatThrownBy(() -> generator.range(start, end))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Start must not exceed end: 2000-01-01, 1999-12-31");
+                .hasMessageContaining("start must not exceed end: 2000-01-01, 1999-12-31");
     }
 
     @Test

@@ -151,7 +151,7 @@ class CsvGeneratorTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("At least 1 column is required to generate CSV");
+                .hasMessageContaining("at least 1 column is required to generate CSV");
     }
 
     @Test

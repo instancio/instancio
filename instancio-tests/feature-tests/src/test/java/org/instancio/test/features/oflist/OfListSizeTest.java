@@ -63,7 +63,7 @@ class OfListSizeTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Size must not be negative: -1");
+                .hasMessageContaining("size must not be negative: -1");
     }
 
 }

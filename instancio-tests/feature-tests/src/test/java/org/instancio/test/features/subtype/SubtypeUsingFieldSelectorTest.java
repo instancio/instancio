@@ -92,6 +92,6 @@ class SubtypeUsingFieldSelectorTest {
 
         assertThatThrownBy(api::create)
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Class '%s' is not a subtype of '%s'", String.class.getName(), List.class.getName());
+                .hasMessageContaining("class '%s' is not a subtype of '%s'", String.class.getName(), List.class.getName());
     }
 }

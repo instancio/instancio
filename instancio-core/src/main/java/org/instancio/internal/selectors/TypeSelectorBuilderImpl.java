@@ -38,7 +38,7 @@ public class TypeSelectorBuilderImpl
     @Override
     public TypeSelectorBuilder of(final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
-                "Type must not be null.",
+                "type must not be null.",
                 "of", description().toString(), new Throwable()));
 
         addPredicate(type::isAssignableFrom);
@@ -49,7 +49,7 @@ public class TypeSelectorBuilderImpl
     @Override
     public <A extends Annotation> TypeSelectorBuilder annotated(final Class<? extends A> annotation) {
         ApiValidator.notNull(annotation, () -> Format.selectorErrorMessage(
-                "Type's declared annotation must not be null.",
+                "type's declared annotation must not be null.",
                 "annotated", description().toString(), new Throwable()));
 
         addPredicate(klass -> klass.getDeclaredAnnotation(annotation) != null);
@@ -60,7 +60,7 @@ public class TypeSelectorBuilderImpl
     @Override
     public TypeSelectorBuilder excluding(final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
-                "Excluded type must not be null.",
+                "excluded type must not be null.",
                 "excluding", description().toString(), new Throwable()));
 
         addPredicate(klass -> klass != type);

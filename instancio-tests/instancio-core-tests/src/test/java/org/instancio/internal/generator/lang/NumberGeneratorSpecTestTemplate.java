@@ -159,25 +159,25 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     final void minValidation() {
         assertThatThrownBy(() -> generator.min(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("'min' must not be null");
+                .hasMessageContaining("'min' must not be null");
     }
 
     @Test
     final void maxValidation() {
         assertThatThrownBy(() -> generator.max(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("'max' must not be null");
+                .hasMessageContaining("'max' must not be null");
     }
 
     @Test
     final void rangeValidation() {
         assertThatThrownBy(() -> generator.range(null, initialMax))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("'min' must not be null");
+                .hasMessageContaining("'min' must not be null");
 
         assertThatThrownBy(() -> generator.range(initialMin, null))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("'max' must not be null");
+                .hasMessageContaining("'max' must not be null");
     }
 
     @Test
@@ -187,7 +187,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
         final String errorRange = String.format("%s, %s", min, max);
         assertThatThrownBy(() -> generator.range(min, max))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage("Invalid 'range(%s)': lower bound must be less than or equal to upper bound", errorRange);
+                .hasMessageContaining("invalid 'range(%s)': lower bound must be less than or equal to upper bound", errorRange);
     }
 
     @Test

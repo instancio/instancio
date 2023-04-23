@@ -58,7 +58,7 @@ public class DefaultRandom implements Random {
     @Override
     public boolean trueOrFalse(final double probability) {
         Verify.isTrue(probability >= 0 && probability <= 1,
-                "Probability must be between 0 and 1, inclusive: %s", probability);
+                "probability must be between 0 and 1, inclusive: %s", probability);
 
         return doubleRange(0, 1) <= probability;
     }
@@ -159,7 +159,7 @@ public class DefaultRandom implements Random {
 
     @Override
     public String stringOf(final int length, final char... chars) {
-        Verify.isTrue(length >= 0, "Length must not be negative");
+        Verify.isTrue(length >= 0, "length must not be negative");
         Verify.isTrue(chars != null && chars.length > 0,
                 "Character array must have at least one element");
 

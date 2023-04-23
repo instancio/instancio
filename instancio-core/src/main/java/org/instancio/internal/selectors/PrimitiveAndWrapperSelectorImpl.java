@@ -18,8 +18,8 @@ package org.instancio.internal.selectors;
 import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.jetbrains.annotations.NotNull;
 
@@ -89,7 +89,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
 
     @Override
     public Scope toScope() {
-        throw new InstancioApiException(String.format("Method 'toScope()' is not supported for selector '%s'", this));
+        throw Fail.withUsageError(String.format("method 'toScope()' is not supported for selector '%s'", this));
     }
 
     @Override

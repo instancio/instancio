@@ -16,9 +16,9 @@
 package org.instancio.internal.assigners;
 
 import org.instancio.assignment.AssignmentType;
-import org.instancio.exception.InstancioException;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -47,9 +47,10 @@ public class AssignerImpl implements Assigner {
 
         if (assignment == AssignmentType.FIELD) {
             return new FieldAssigner(settings);
-        } else if (assignment == AssignmentType.METHOD) {
+        }
+        if (assignment == AssignmentType.METHOD) {
             return new MethodAssigner(settings);
         }
-        throw new InstancioException("Invalid assignment type: " + assignment); // unreachable
+        throw Fail.withFataInternalError("Invalid assignment type: %s", assignment);
     }
 }

@@ -15,16 +15,12 @@
  */
 package org.instancio.internal.generator;
 
-import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.util.ExceptionHandler;
-import org.instancio.internal.util.Sonar;
-import org.jetbrains.annotations.Nullable;
+import org.instancio.internal.util.Fail;
 
 import java.lang.reflect.Constructor;
 
-@SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
 final class GeneratorUtil {
 
     private GeneratorUtil() {
@@ -34,19 +30,16 @@ final class GeneratorUtil {
     /**
      * Instantiates internal generator class using the expected constructor.
      */
-    @Nullable
-    static Generator<?> instantiateInternalGenerator(
+    @SuppressWarnings("unchecked")
+    static <T> Generator<T> instantiateInternalGenerator(
             final Class<?> generatorClass,
             final GeneratorContext context) {
 
         try {
             final Constructor<?> constructor = generatorClass.getConstructor(GeneratorContext.class);
-            return (Generator<?>) constructor.newInstance(context);
-        } catch (final Exception ex) {
-            ExceptionHandler.conditionalFailOnError(() -> {
-                throw new InstancioException("Error instantiating generator " + generatorClass, ex);
-            });
-            return null;
+            return (Generator<T>) constructor.newInstance(context);
+        } catch (Exception ex) {
+            throw Fail.withFataInternalError("Error instantiating generator %s", generatorClass, ex);
         }
     }
 }

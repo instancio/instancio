@@ -16,8 +16,8 @@
 package org.instancio.generator.specs;
 
 import org.instancio.Model;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.ValueSpec;
+import org.instancio.internal.ApiValidator;
 
 import java.util.Collection;
 
@@ -34,6 +34,6 @@ public interface OneOfCollectionSpec<T> extends ValueSpec<T>, OneOfCollectionGen
 
     @Override
     default Model<T> toModel() {
-        throw new InstancioApiException("oneOf() spec does not support toModel()");
+        return ApiValidator.valueSpecDoesNotSupportToModel("oneOf()");
     }
 }

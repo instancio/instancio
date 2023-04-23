@@ -63,9 +63,9 @@ public final class ReflectionUtils {
         try {
             return klass.getDeclaredField(Verify.notNull(fieldName, "null field name"));
         } catch (NoSuchFieldException ex) {
-            throw new InstancioApiException("Invalid field '" + fieldName + "' for " + klass, ex);
+            throw Fail.withUsageError("invalid field '" + fieldName + "' for " + klass, ex);
         } catch (SecurityException ex) {
-            throw new InstancioApiException("Unable to access '" + fieldName + "' of " + klass, ex);
+            throw new InstancioException("Unable to access '" + fieldName + "' of " + klass, ex);
         }
     }
 

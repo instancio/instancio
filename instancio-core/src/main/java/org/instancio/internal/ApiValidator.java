@@ -15,11 +15,13 @@
  */
 package org.instancio.internal;
 
+import org.instancio.Model;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.SettingKey;
@@ -38,20 +40,22 @@ import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParameter
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
-    private static final String CREATE_TYPE_TOKEN_HELP =
-            "%nMap<String, List<Integer>> map = Instancio.create(new TypeToken<Map<String, List<Integer>>>(){});" +
-                    "%n%nor the builder version:%n" +
-                    "%nMap<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();";
+    private static final String CREATE_TYPE_TOKEN_HELP = "" +
+            "%n\tExample:" +
+            "%n\tMap<String, List<Integer>> map = Instancio.create(new TypeToken<Map<String, List<Integer>>>(){});" +
+            "%n%n\t// or the builder version" +
+            "%n\tMap<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();";
 
-    private static final String CREATE_CLASS_HELP =
-            "%nPerson person = Instancio.create(Person.class);" +
-                    "%n%nor the builder version:%n" +
-                    "%nPerson person = Instancio.of(Person.class).create();";
+    private static final String CREATE_CLASS_HELP = "" +
+            "%n\tExample:" +
+            "%n\tPerson person = Instancio.create(Person.class);" +
+            "%n%n\t// or the builder version" +
+            "%n\tPerson person = Instancio.of(Person.class).create();";
 
     public static <T> Class<T> validateRootClass(@Nullable final Class<T> klass) {
         isTrue(klass != null,
-                "%nClass must not be null."
-                        + "%nProvide a valid class, for example:%n"
+                "class must not be null"
+                        + "%n -> Please provide a valid class%n"
                         + CREATE_CLASS_HELP);
 
         return klass;
@@ -59,14 +63,14 @@ public final class ApiValidator {
 
     public static Type validateTypeToken(@Nullable final TypeTokenSupplier<?> typeTokenSupplier) {
         isTrue(typeTokenSupplier != null,
-                "%nType token supplier must not be null."
-                        + "%nProvide a valid type token, for example:%n"
+                "type token must not be null"
+                        + "%n -> Please provide a valid type token%n"
                         + CREATE_TYPE_TOKEN_HELP);
 
         final Type type = typeTokenSupplier.get();
         isTrue(type != null,
-                "%nType token supplier must not return a null Type."
-                        + "%nProvide a valid Type, for example:%n"
+                "type token must not return a null Type"
+                        + "%n -> Please provide a valid Type%n"
                         + CREATE_TYPE_TOKEN_HELP);
 
         return type;
@@ -78,7 +82,7 @@ public final class ApiValidator {
                 : rootClass.getTypeParameters().length;
 
         if (typeVarsLength == 0 && !rootTypeParameters.isEmpty()) {
-            throw new InstancioApiException(withTypeParametersNonGenericClass(rootClass));
+            throw Fail.withUsageError(withTypeParametersNonGenericClass(rootClass));
         }
 
         isTrue(typeVarsLength == rootTypeParameters.size(),
@@ -90,30 +94,21 @@ public final class ApiValidator {
                 final String classWithTypeParams = String.format("%s<%s>",
                         param.getSimpleName(), Format.getTypeVariablesCsv(param));
 
-                throw new InstancioApiException(withTypeParametersNestedGenerics(classWithTypeParams));
+                throw Fail.withUsageError(withTypeParametersNestedGenerics(classWithTypeParams));
             }
         }
     }
 
     public static void validateSubtype(final Class<?> from, final Class<?> to) {
-        isTrue(from.isAssignableFrom(to), () -> String.format(
-                "Class '%s' is not a subtype of '%s'", to.getTypeName(), from.getTypeName()));
-
-        isFalse(from.equals(to), () -> String.format(
-                "Invalid subtype mapping from '%s' to '%s'", to.getTypeName(), from.getTypeName()));
+        isTrue(from.isAssignableFrom(to), () -> String.format("" +
+                "invalid subtype mapping" +
+                "%n -> class '%s' is not a subtype of '%s'", to.getTypeName(), from.getTypeName()));
     }
 
     public static void validateKeyValue(@Nullable final SettingKey<?> key, @Nullable final Object value) {
-        isTrue(key != null, "Setting key must not be null");
+        isTrue(key != null, "setting key must not be null");
         if (!key.allowsNullValue()) {
-            isTrue(value != null, "Setting value for key '%s' must not be null", key.propertyKey());
-        }
-
-        // key.type could be null if it's a user-defined key
-        if (value != null && key.type() != null) {
-            isTrue(key.type().isAssignableFrom(value.getClass()),
-                    () -> String.format("The value '%s' is of unexpected type (%s) for key %s",
-                            value, value.getClass().getSimpleName(), key));
+            isTrue(value != null, "setting value for key '%s' must not be null", key.propertyKey());
         }
     }
 
@@ -139,69 +134,85 @@ public final class ApiValidator {
     }
 
     private static String generateMismatchErrorMessageTemplate(final InternalNode node, final String apiMethodName) {
-        return "%nGenerator type mismatch:%n"
-                + "Method '" + apiMethodName + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
-                + (node.getField() == null ? "" : "%nField: " + node.getField());
+        return "the target type is incompatible with the generator"
+                + "%n -> Method '" + apiMethodName + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
+                + (node.getField() == null ? "" : "%n -> Field: " + node.getField());
     }
 
     public static void validateGenerateSecondArgument(final Object arg) {
         isFalse(arg == null, () ->
-                String.format("%nThe second argument of 'generate()' method must not be null."
-                        + "%nTo generate a null value, use 'set(TargetSelector, null)"
-                        + "%nExample:"
+                String.format("the second argument of 'generate()' method must not be null"
+                        + "%n -> To generate a null value, use 'set(TargetSelector, null)'"
+                        + "%n%n\tExample:"
                         + "%n\tPerson person = Instancio.of(Person.class)"
                         + "%n\t\t.set(field(\"firstName\"), null)"
-                        + "%n\t\t.create()"));
+                        + "%n\t\t.create();"));
     }
 
-    public static void validateSupplierOrGenerator(@Nullable final Object obj) {
+    public static void validateGeneratorNotNull(@Nullable final Object obj) {
+        validateSupplierOrGenerator(obj, "Generator");
+    }
+
+    public static void validateSupplierNotNull(@Nullable final Object obj) {
+        validateSupplierOrGenerator(obj, "Supplier");
+    }
+
+    private static void validateSupplierOrGenerator(@Nullable final Object obj, final String supplierOrGenerator) {
         isFalse(obj == null, () ->
-                String.format("%nThe second argument of 'supply()' method must not be null."
-                        + "%nTo generate a null value, use 'set(TargetSelector, null)"
-                        + "%nExample:"
+                String.format("null %s passed to 'supply()' method"
+                        + "%n -> To generate a null value, use 'set(TargetSelector, null)'"
+                        + "%n%n\tExample:"
                         + "%n\tPerson person = Instancio.of(Person.class)"
                         + "%n\t\t.set(field(\"firstName\"), null)"
-                        + "%n\t\t.create()"));
+                        + "%n\t\t.create();", supplierOrGenerator));
+    }
+
+    public static <E> Model<E> valueSpecDoesNotSupportToModel(final String specMethodName) {
+        throw new InstancioApiException(specMethodName + " spec does not support toModel()");
     }
 
     public static int validateSize(final int size) {
-        isTrue(size >= 0, "Size must not be negative: %s", size);
+        isTrue(size >= 0, "size must not be negative: %s", size);
         return size;
     }
 
     public static int validateLength(final int length) {
-        isTrue(length >= 0, "Length must not be negative: %s", length);
+        isTrue(length >= 0, "length must not be negative: %s", length);
         return length;
     }
 
+    public static <T extends Comparable<T>> void validateStartEnd(final T min, final T max) {
+        ApiValidator.isTrue(min.compareTo(max) <= 0, "start must not exceed end: %s, %s", min, max);
+    }
+
     public static <T> T notNull(@Nullable final T obj, final String message, final Object... values) {
-        if (obj == null) throw new InstancioApiException(String.format(message, values));
+        if (obj == null) throw Fail.withUsageError(String.format(message, values));
         return obj;
     }
 
     public static <T> T notNull(@Nullable final T obj, final Supplier<String> supplier) {
-        if (obj == null) throw new InstancioApiException(supplier.get());
+        if (obj == null) throw Fail.withUsageError(supplier.get());
         return obj;
     }
 
     public static void isTrue(final boolean condition, final String message, final Object... values) {
-        if (!condition) throw new InstancioApiException(String.format(message, values));
+        if (!condition) throw Fail.withUsageError(String.format(message, values));
     }
 
     public static void isFalse(final boolean condition, final String message, final Object... values) {
-        if (condition) throw new InstancioApiException(String.format(message, values));
+        if (condition) throw Fail.withUsageError(String.format(message, values));
     }
 
     private static void isTrue(final boolean condition, final Supplier<String> message) {
-        if (!condition) throw new InstancioApiException(message.get());
+        if (!condition) throw Fail.withUsageError(message.get());
     }
 
     public static void isFalse(final boolean condition, final Supplier<String> message) {
-        if (condition) throw new InstancioApiException(message.get());
+        if (condition) throw Fail.withUsageError(message.get());
     }
 
     public static int validateDepth(final int depth) {
-        if (depth < 0) throw new InstancioApiException("Depth must not be negative: " + depth);
+        if (depth < 0) throw Fail.withUsageError("depth must not be negative: " + depth);
         return depth;
     }
 

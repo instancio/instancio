@@ -15,8 +15,7 @@
  */
 package org.instancio.internal.util;
 
-import org.instancio.exception.InstancioApiException;
-import org.instancio.exception.InstancioException;
+import org.instancio.exception.InstancioTerminatingException;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +24,13 @@ import org.slf4j.helpers.MessageFormatter;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static org.instancio.internal.util.SystemProperties.isFailOnError;
+import static org.instancio.internal.util.SystemProperties.shouldFailOnError;
 
+@SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
 public final class ExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
 
-    private static final String ERROR_MSG = String.format(
+    private static final String SUPPRESSION_REASON = String.format(
             "Suppressed error because system property '%s' is disabled", SystemProperties.FAIL_ON_ERROR);
 
     private ExceptionHandler() {
@@ -40,36 +40,25 @@ public final class ExceptionHandler {
     public static <T> Optional<T> conditionalFailOnError(final Supplier<T> supplier) {
         try {
             return Optional.ofNullable(supplier.get());
-        } catch (InstancioApiException ex) {
+        } catch (InstancioTerminatingException ex) {
             throw ex;
-        } catch (InstancioException ex) {
-            if (isFailOnError()) {
-                throw ex;
-            }
-            logSuppressed(ex);
-        } catch (Exception ex) {
-            if (isFailOnError()) {
-                throw InstancioException.unhandledException(ex);
+        } catch (Throwable ex) { //NOPMD
+            if (shouldFailOnError()) {
+                throw Fail.withInternalError(ex);
             }
             logSuppressed(ex);
         }
         return Optional.empty();
     }
 
-    @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
     public static void conditionalFailOnError(final VoidFunction function) {
         try {
             function.invoke();
-        } catch (InstancioApiException ex) {
+        } catch (InstancioTerminatingException ex) {
             throw ex;
-        } catch (InstancioException ex) {
-            if (isFailOnError()) {
-                throw ex;
-            }
-            logSuppressed(ex);
         } catch (Throwable ex) { //NOPMD
-            if (isFailOnError()) {
-                throw InstancioException.unhandledException(ex);
+            if (shouldFailOnError()) {
+                throw Fail.withInternalError(ex);
             }
             logSuppressed(ex);
         }
@@ -77,9 +66,9 @@ public final class ExceptionHandler {
 
     private static void logSuppressed(final Throwable t) {
         if (LOG.isTraceEnabled()) {
-            LOG.trace(ERROR_MSG, t);
+            LOG.trace(SUPPRESSION_REASON, t);
         } else {
-            LOG.debug("{}. {}: {}", ERROR_MSG, t.getClass().getName(), t.getMessage());
+            LOG.debug("{}. {}: {}", SUPPRESSION_REASON, t.getClass().getName(), t.getMessage());
         }
     }
 

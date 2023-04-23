@@ -274,6 +274,9 @@ public final class Keys {
      * Specifies what should happen if an error occurs setting a field's value;
      * default is {@link OnSetFieldError#IGNORE}; property name {@code on.set.field.error}.
      *
+     * <p><b>Warning:</b> an error caused by assigning an incompatible type is
+     * considered a user error and is never ignored, despite this setting.
+     *
      * @see OnSetFieldError
      * @since 2.1.0
      */

@@ -50,6 +50,6 @@ class OneOfCollectionSpecTest extends AbstractValueSpecTestTemplate<String> {
         final OneOfCollectionSpec<String> spec = spec();
         assertThatThrownBy(spec::toModel)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("oneOf() spec does not support toModel()");
+                .hasMessageContaining("oneOf() spec does not support toModel()");
     }
 }

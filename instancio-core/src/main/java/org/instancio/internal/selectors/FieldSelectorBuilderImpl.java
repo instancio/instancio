@@ -39,7 +39,7 @@ public class FieldSelectorBuilderImpl
     @Override
     public FieldSelectorBuilder named(final String fieldName) {
         ApiValidator.notNull(fieldName, () -> Format.selectorErrorMessage(
-                "Field name must not be null.",
+                "field name must not be null.",
                 "named", description().toString(), new Throwable()));
 
         addPredicate(field -> field.getName().equals(fieldName));
@@ -50,7 +50,7 @@ public class FieldSelectorBuilderImpl
     @Override
     public FieldSelectorBuilder matching(final String regex) {
         ApiValidator.notNull(regex, () -> Format.selectorErrorMessage(
-                "Regex must not be null.",
+                "regex must not be null.",
                 "matching", description().toString(), new Throwable()));
 
         addPredicate(field -> field.getName().matches(regex));
@@ -61,7 +61,7 @@ public class FieldSelectorBuilderImpl
     @Override
     public FieldSelectorBuilder ofType(final Class<?> fieldType) {
         ApiValidator.notNull(fieldType, () -> Format.selectorErrorMessage(
-                "Field type must not be null.",
+                "field type must not be null.",
                 "ofType", description().toString(), new Throwable()));
 
         addPredicate(field -> fieldType.isAssignableFrom(field.getType()));
@@ -72,7 +72,7 @@ public class FieldSelectorBuilderImpl
     @Override
     public FieldSelectorBuilder declaredIn(final Class<?> type) {
         ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
-                "Declaring type must not be null.",
+                "declaring type must not be null.",
                 "declaredIn", description().toString(), new Throwable()));
 
         addPredicate(field -> field.getDeclaringClass() == type);
@@ -83,7 +83,7 @@ public class FieldSelectorBuilderImpl
     @Override
     public <A extends Annotation> FieldSelectorBuilder annotated(final Class<? extends A> annotation) {
         ApiValidator.notNull(annotation, () -> Format.selectorErrorMessage(
-                "Field's declared annotation must not be null.",
+                "field's declared annotation must not be null.",
                 "annotated", description().toString(), new Throwable()));
 
         addPredicate(field -> field.getDeclaredAnnotation(annotation) != null);

@@ -16,11 +16,11 @@
 package org.instancio.internal.generator.net;
 
 import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.URLAsGeneratorSpec;
 import org.instancio.generator.specs.URLSpec;
+import org.instancio.internal.util.Fail;
 import org.instancio.support.Global;
 
 import java.net.MalformedURLException;
@@ -99,7 +99,7 @@ public class URLGenerator extends AbstractURIGenerator<URL>
                     portNumber,
                     singleQuote(file));
 
-            throw new InstancioApiException("Error generating a URL using parameters: " + params, ex);
+            throw Fail.withUsageError("error generating a URL using parameters: " + params, ex);
         }
     }
 }

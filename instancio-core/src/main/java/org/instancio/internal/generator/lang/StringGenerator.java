@@ -126,7 +126,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
         this.minLength = ApiValidator.validateLength(minLength);
         this.maxLength = ApiValidator.validateLength(maxLength);
         ApiValidator.isTrue(minLength <= maxLength,
-                "Min length must be less than or equal to max (%s, %s)", minLength, maxLength);
+                "min length must be less than or equal to max (%s, %s)", minLength, maxLength);
 
         if (delegate instanceof InternalLengthGeneratorSpec<?>) {
             ((InternalLengthGeneratorSpec<?>) delegate).length(minLength, maxLength);

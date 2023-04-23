@@ -259,7 +259,7 @@ public final class ModelContext<T> {
 
         public Builder<T> withSubtype(final TargetSelector selector, final Class<?> subtype) {
             this.subtypeSelectors.put(preProcess(selector, rootClass),
-                    ApiValidator.notNull(subtype, "Subtype must not be null"));
+                    ApiValidator.notNull(subtype, "subtype must not be null"));
             return this;
         }
 

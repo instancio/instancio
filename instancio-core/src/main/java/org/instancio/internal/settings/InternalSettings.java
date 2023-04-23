@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.settings;
 
-import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
@@ -117,7 +117,7 @@ public final class InternalSettings implements Settings {
     }
 
     @Override
-    public <T> InternalSettings set(@NotNull final SettingKey<T> key, @Nullable final T value) {
+    public <T> InternalSettings set(final SettingKey<T> key, final T value) {
         return set(key, value, AUTO_ADJUST_ENABLED);
     }
 
@@ -129,12 +129,12 @@ public final class InternalSettings implements Settings {
      * opposite bound (for example, if {@code min} is set higher than max, then
      * the {@code max} will be auto-adjusted to a higher value).
      *
-     * @param key        to set
+     * @param key        to set, not {@code null}
      * @param value      to set
      * @param autoAdjust whether to auto-adjust related
      * @return this instance of settings
      */
-    <T> InternalSettings set(@NotNull final SettingKey<T> key, @Nullable final T value, final boolean autoAdjust) {
+    <T> InternalSettings set(final SettingKey<T> key, @Nullable final T value, final boolean autoAdjust) {
         checkLockedForModifications();
         validateKeyValue(key, value);
         settingsMap.put(key, value);
@@ -204,8 +204,8 @@ public final class InternalSettings implements Settings {
         try {
             return fn.apply(value.toString());
         } catch (NumberFormatException ex) {
-            throw new InstancioApiException(String.format(
-                    "Invalid value %s (of type %s) for setting key %s",
+            throw Fail.withUsageError(String.format(
+                    "invalid value %s (of type %s) for setting key %s",
                     value, value.getClass().getSimpleName(), key), ex);
         }
 

@@ -143,6 +143,6 @@ class MapGeneratorWithKeysTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("'map().withKeys(...)' must contain at least one key");
+                .hasMessageContaining("'map().withKeys(...)' must contain at least one key");
     }
 }

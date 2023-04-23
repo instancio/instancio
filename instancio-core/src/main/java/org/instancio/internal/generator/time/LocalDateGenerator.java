@@ -81,7 +81,7 @@ public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate>
 
     @Override
     void validateRange() {
-        ApiValidator.isTrue(min.compareTo(max) <= 0, "Start must not exceed end: %s, %s", min, max);
+        ApiValidator.validateStartEnd(min, max);
     }
 
     @Override

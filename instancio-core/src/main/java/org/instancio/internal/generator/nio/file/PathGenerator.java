@@ -16,7 +16,6 @@
 package org.instancio.internal.generator.nio.file;
 
 import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.PathAsGeneratorSpec;
@@ -24,6 +23,7 @@ import org.instancio.generator.specs.PathSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.IOUtils;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.support.Global;
@@ -140,8 +140,8 @@ public class PathGenerator extends AbstractGenerator<Path>
         try {
             return createPath(directoryPath, completePath);
         } catch (IOException ex) {
-            throw new InstancioApiException(String.format(
-                    "Error generating %s: %s",
+            throw Fail.withUsageError(String.format(
+                    "error generating %s: %s",
                     createPathType.name().toLowerCase(Locale.ENGLISH), completePath), ex);
         }
     }
@@ -174,7 +174,7 @@ public class PathGenerator extends AbstractGenerator<Path>
                 : nameGenerator.generate(random);
 
         final String pathName = StringUtils.concatNonNull(prefix, name, suffix);
-        ApiValidator.isFalse(StringUtils.isBlank(pathName), "Generated name must not be blank");
+        ApiValidator.isFalse(StringUtils.isBlank(pathName), "generated name must not be blank");
         return Paths.get(pathName);
     }
 

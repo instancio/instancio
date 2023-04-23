@@ -113,7 +113,7 @@ public final class InternalKey<T>
         private String propertyKey;
 
         private InternalKeyBuilder(final Class<T> type) {
-            this.type = ApiValidator.notNull(type, "Type must not be null");
+            this.type = ApiValidator.notNull(type, "type must not be null");
         }
 
         @Override
@@ -123,7 +123,7 @@ public final class InternalKey<T>
 
         @Override
         public SettingKeyBuilder<T> withPropertyKey(final String propertyKey) {
-            this.propertyKey = ApiValidator.notNull(propertyKey, "Property key must not be null");
+            this.propertyKey = ApiValidator.notNull(propertyKey, "property key must not be null");
             return this;
         }
 

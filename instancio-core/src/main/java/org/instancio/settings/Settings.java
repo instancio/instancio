@@ -18,7 +18,6 @@ package org.instancio.settings;
 import org.instancio.internal.settings.InternalSettings;
 import org.instancio.internal.util.Constants;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -120,11 +119,11 @@ public interface Settings {
      * {@link Constants#RANGE_ADJUSTMENT_PERCENTAGE} if the new minimum
      * is higher than the current maximum, and vice versa.
      *
-     * @param key   to set
-     * @param value to set
+     * @param key   the key to set, not {@code null}
+     * @param value to set, can be {@code null}
      * @return this instance of settings
      */
-    <T> Settings set(@NotNull SettingKey<T> key, @Nullable T value);
+    <T> Settings set(SettingKey<T> key, T value);
 
     /**
      * Maps the supertype {@code from} supertype to 'to' subtype.

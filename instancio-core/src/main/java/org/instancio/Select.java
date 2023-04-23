@@ -251,7 +251,7 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector field(final String fieldName) {
-        ApiValidator.notNull(fieldName, "Field name must not be null");
+        ApiValidator.notNull(fieldName, "field name must not be null");
         return SelectorImpl.builder().fieldName(fieldName).build();
     }
 

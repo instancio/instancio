@@ -16,11 +16,11 @@
 package org.instancio.internal.generator.net;
 
 import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.URIAsGeneratorSpec;
 import org.instancio.generator.specs.URISpec;
+import org.instancio.internal.util.Fail;
 import org.instancio.support.Global;
 
 import java.net.URI;
@@ -124,7 +124,7 @@ public class URIGenerator extends AbstractURIGenerator<URI>
                     singleQuote(scheme), singleQuote(userInfo), singleQuote(host),
                     port, singleQuote(path), singleQuote(query), singleQuote(fragment));
 
-            throw new InstancioApiException("Error generating a URI using parameters: " + params, ex);
+            throw Fail.withUsageError("error generating a URI using parameters: " + params, ex);
         }
     }
 }

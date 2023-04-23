@@ -72,11 +72,11 @@ public abstract class AbstractNumericSequenceGeneratorTestTemplate<T extends Num
 
         assertThatThrownBy(() -> generator.start(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Sequence 'start' value must not be null");
+                .hasMessageContaining("sequence 'start' value must not be null");
 
         assertThatThrownBy(() -> generator.next(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Sequence 'next' function must not be null");
+                .hasMessageContaining("sequence 'next' function must not be null");
     }
 
     @SuppressWarnings("unchecked")

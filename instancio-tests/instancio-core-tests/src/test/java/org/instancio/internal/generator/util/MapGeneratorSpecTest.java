@@ -89,14 +89,14 @@ class MapGeneratorSpecTest {
     void minValidation() {
         assertThatThrownBy(() -> generator.minSize(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Size must not be negative: -1");
+                .hasMessageContaining("size must not be negative: -1");
     }
 
     @Test
     void maxValidation() {
         assertThatThrownBy(() -> generator.maxSize(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Size must not be negative: -1");
+                .hasMessageContaining("size must not be negative: -1");
     }
 
     private static int calculatePercentage(final int initial, final int percentage) {

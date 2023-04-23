@@ -80,7 +80,7 @@ class SelectorGroupImplTest {
     void empty() {
         assertThatThrownBy(Select::all)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Selector group must contain at least one selector");
+                .hasMessageContaining("Selector group must contain at least one selector");
     }
 
     @Test

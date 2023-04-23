@@ -1461,6 +1461,12 @@ The remaining `ON_SET_*` keys are used to control error-handling behaviour:
 All of the above can be set to ignore errors or fail fast by raising an exception.
 In addition, both `ON_SET_METHOD_*` settings can be configured to fall back to field assignment in case of an error.
 
+!!! warning "Setting `Keys.ON_SET_FIELD_ERROR` to `OnSetFieldError.IGNORE`"
+    An error caused by assigning an incompatible type is considered a user error and is never ignored.<br/><br/>
+    For example, attempting to `set(allStrings(), 12345)` will always trigger an error
+    regardless of the `ON_SET_FIELD_ERROR` setting.
+
+
 The following snippet illustrates how to create an object populated via setters.
 In this example, `SetterStyle.PROPERTY` is used since the `Phone` class has setters without the *set* prefix:
 

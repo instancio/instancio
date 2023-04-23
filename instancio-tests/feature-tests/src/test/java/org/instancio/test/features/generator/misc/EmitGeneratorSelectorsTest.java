@@ -105,7 +105,7 @@ class EmitGeneratorSelectorsTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("not all the items provided via emit() have been consumed");
+                .hasMessageContaining("not all the items provided via the 'emit()' method have been consumed");
     }
 
     private static class IntHolder {

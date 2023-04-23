@@ -16,11 +16,11 @@
 package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.ValueSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.util.Fail;
 import org.instancio.support.Global;
 
 public class TextPatternGenerator extends AbstractGenerator<String>
@@ -75,7 +75,7 @@ public class TextPatternGenerator extends AbstractGenerator<String>
 
             if (c == HASH) {
                 ApiValidator.isFalse(i == p.length,
-                        "Invalid text pattern '%s'. Expected a character after the last '#'", pattern);
+                        "invalid text pattern '%s'. Expected a character after the last '#'", pattern);
 
                 final char tag = p[i++];
                 if (tag == ALNUM_CHAR) {
@@ -93,7 +93,7 @@ public class TextPatternGenerator extends AbstractGenerator<String>
                 } else if (tag == HASH) {
                     res.append(HASH);
                 } else {
-                    throw new InstancioApiException("Text pattern '" + pattern
+                    throw Fail.withUsageError("text pattern '" + pattern
                             + "' contains an invalid hashtag '#" + tag + "'" + ALLOWED_HASHTAGS_MESSAGE);
                 }
             } else {

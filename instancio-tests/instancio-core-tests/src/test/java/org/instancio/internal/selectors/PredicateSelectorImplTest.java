@@ -64,11 +64,11 @@ class PredicateSelectorImplTest {
 
         assertThatThrownBy(() -> fieldsSelector.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Depth must not be negative: -1");
+                .hasMessageContaining("depth must not be negative: -1");
 
         assertThatThrownBy(() -> typesSelector.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("Depth must not be negative: -1");
+                .hasMessageContaining("depth must not be negative: -1");
     }
 
     @Test
@@ -78,7 +78,7 @@ class PredicateSelectorImplTest {
 
         assertThatThrownBy(() -> builder.depth(2))
                 .isExactlyInstanceOf(IllegalStateException.class)
-                .hasMessage("Depth already set!");
+                .hasMessageContaining("depth already set!");
     }
 
     @Nested

@@ -46,7 +46,7 @@ public class BooleanGenerator extends AbstractGenerator<Boolean>
     @Override
     public BooleanGenerator probability(final double probability) {
         ApiValidator.isTrue(probability >= 0 && probability <= 1,
-                "Probability must be between 0 and 1, inclusive: %s", probability);
+                "probability must be between 0 and 1, inclusive: %s", probability);
 
         this.probability = probability;
         return this;

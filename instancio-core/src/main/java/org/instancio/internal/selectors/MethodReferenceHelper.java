@@ -94,7 +94,7 @@ public final class MethodReferenceHelper {
                 .append("       }").append(NL)
                 .append("   }").append(NL)
                 .append(NL)
-                .append("   Usage: KSelect.field(SamplePojo::value)")
+                .append("   Usage: KSelect.field(SamplePojo::value)").append(NL)
                 .toString();
     }
 

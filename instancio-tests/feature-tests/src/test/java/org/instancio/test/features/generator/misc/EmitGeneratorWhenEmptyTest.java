@@ -85,7 +85,7 @@ class EmitGeneratorWhenEmptyTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("No items left to emit() for class Integer");
+                .hasMessageContaining("no items left to emit() for class Integer");
     }
 
     @Test
@@ -97,6 +97,6 @@ class EmitGeneratorWhenEmptyTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessage("No items left to emit() for field IntegerHolder.wrapper");
+                .hasMessageContaining("no items left to emit() for field IntegerHolder.wrapper");
     }
 }

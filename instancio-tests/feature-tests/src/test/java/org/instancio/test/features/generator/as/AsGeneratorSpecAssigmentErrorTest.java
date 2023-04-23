@@ -38,8 +38,6 @@ class AsGeneratorSpecAssigmentErrorTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContainingAll("Error assigning value to field",
-                        "Field: int Person.age",
-                        "Argument type:  String");
+                .hasMessageContaining("error assigning value to field due to incompatible types");
     }
 }
