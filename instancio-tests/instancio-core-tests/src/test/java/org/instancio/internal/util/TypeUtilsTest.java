@@ -42,9 +42,7 @@ class TypeUtilsTest {
     void getGenericSuperclassTypeArgument() {
         assertThat(TypeUtils.getGenericSuperclassTypeArgument(StringGenerator.class)).isEqualTo(String.class);
         assertThat(TypeUtils.getGenericSuperclassTypeArgument(TextPatternGenerator.class)).isEqualTo(String.class);
-        assertThat(TypeUtils.getGenericSuperclassTypeArgument(Bar.class))
-                .as("Should return String.class. Currently unsupported as it's needed at this time.")
-                .isNull();
+        assertThat(TypeUtils.getGenericSuperclassTypeArgument(Bar.class)).isEqualTo(String.class);
     }
 
     @Test
