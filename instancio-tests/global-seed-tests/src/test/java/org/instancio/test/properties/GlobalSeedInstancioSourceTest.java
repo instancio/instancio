@@ -32,6 +32,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GlobalSeedInstancioSourceTest {
 
     private static final long ANNOTATION_SEED = -123;
+    private static final String PARAMETERIZED_NON_PARAM = "FCGVRXSUU";
+    private static final String PARAMETERIZED_WITH_SEED_NON_PARAM1 = "HCVIN";
+    private static final String PARAMETERIZED_WITH_SEED_NON_PARAM2 = "CKIR";
 
     @ParameterizedTest
     @InstancioSource
@@ -43,8 +46,8 @@ class GlobalSeedInstancioSourceTest {
         final Result<String> nonParam = Instancio.of(String.class).asResult();
 
         // (!) Random instance gets reset after parameters are generated,
-        // therefore nonParam value is the same as param1
-        assertThat(nonParam.get()).isEqualTo(param1);
+        // therefore nonParam value is the same as if it weren't presents any parameters
+        assertThat(nonParam.get()).isEqualTo(PARAMETERIZED_NON_PARAM);
         assertThat(nonParam.getSeed()).isEqualTo(TestConstants.GLOBAL_SEED);
     }
 
@@ -60,11 +63,11 @@ class GlobalSeedInstancioSourceTest {
         final Result<String> nonParam2 = Instancio.of(String.class).asResult();
 
         // (!) Random instance gets reset after parameters are generated,
-        // therefore nonParam value is the same as param1
-        assertThat(nonParam1.get()).isEqualTo(param1);
+        // therefore nonParam value is the same as if it weren't presents any parameters
+        assertThat(nonParam1.get()).isEqualTo(PARAMETERIZED_WITH_SEED_NON_PARAM1);
         assertThat(nonParam1.getSeed()).isEqualTo(ANNOTATION_SEED);
 
-        assertThat(nonParam2.get()).isEqualTo(param2);
+        assertThat(nonParam2.get()).isEqualTo(PARAMETERIZED_WITH_SEED_NON_PARAM2);
         assertThat(nonParam2.getSeed()).isEqualTo(ANNOTATION_SEED);
     }
 }

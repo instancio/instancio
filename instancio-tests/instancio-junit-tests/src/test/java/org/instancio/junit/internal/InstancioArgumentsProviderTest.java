@@ -57,13 +57,13 @@ class InstancioArgumentsProviderTest {
         provider.accept(instancioSource);
         final Stream<? extends Arguments> stream = provider.provideArguments(mockContext);
 
-        assertThat(stream).isEmpty();
+        assertThat(stream).doesNotContainNull().hasSize(1).allSatisfy(arguments -> assertThat(arguments.get()).isEmpty());
     }
 
     @NonDeterministicTag("Small chance of duplicate values being generated")
     @MethodSource("types")
     @ParameterizedTest
-    void createObjectsGroupingByType(final Class<?>[] types) {
+    void createObjects(final Class<?>[] types) {
         final Random random = new DefaultRandom();
         final Settings settings = Settings.create()
                 .set(Keys.STRING_MIN_LENGTH, 20)
@@ -72,7 +72,7 @@ class InstancioArgumentsProviderTest {
                 .set(Keys.LONG_MIN, Long.MIN_VALUE)
                 .set(Keys.LONG_MAX, Long.MAX_VALUE);
 
-        final Object[] results = InstancioArgumentsProvider.createObjectsGroupingByType(types, random, settings);
+        final Object[] results = InstancioArgumentsProvider.createObjects(types, random, settings);
 
         assertThat(results).hasExactlyElementsOfTypes(types);
         assertThat(new HashSet<>(Arrays.asList(results)))
