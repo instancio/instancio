@@ -28,6 +28,11 @@ class InstancioSourceTest {
 
     @InstancioSource
     @ParameterizedTest
+    void zeroArg() {
+    }
+
+    @InstancioSource
+    @ParameterizedTest
     void oneArg(final String arg) {
         assertThat(arg).isNotBlank();
     }
@@ -69,6 +74,14 @@ class InstancioSourceTest {
         assertThat(arg.second).isNotEmpty().doesNotContainNull();
     }
 
+    @InstancioSource
+    @ParameterizedTest
+    void differentTypesWithSameFields(final Entity entity, final Dto dto) {
+        assertThat(entity).isNotNull();
+        assertThat(dto).isNotNull();
+        assertThat(entity).usingRecursiveComparison().isNotEqualTo(dto);
+    }
+
     static class First {
         String foo;
 
@@ -95,6 +108,52 @@ class InstancioSourceTest {
 
         public void setSecond(final List<E> second) {
             this.second = second;
+        }
+    }
+
+    static class Entity {
+        int id;
+        boolean valid;
+        String name;
+        UUID group;
+
+        public void setId(final int id) {
+            this.id = id;
+        }
+
+        public void setValid(final boolean valid) {
+            this.valid = valid;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public void setGroup(final UUID group) {
+            this.group = group;
+        }
+    }
+
+    static class Dto {
+        int id;
+        boolean valid;
+        String name;
+        UUID group;
+
+        public void setId(final int id) {
+            this.id = id;
+        }
+
+        public void setValid(final boolean valid) {
+            this.valid = valid;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public void setGroup(final UUID group) {
+            this.group = group;
         }
     }
 }

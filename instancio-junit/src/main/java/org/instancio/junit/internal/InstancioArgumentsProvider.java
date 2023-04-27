@@ -28,12 +28,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.AnnotationConsumer;
 
 import java.lang.reflect.Type;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,39 +52,21 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
         final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
         final Type[] paramTypes = context.getRequiredTestMethod().getGenericParameterTypes();
-        final Object[] args = createObjectsGroupingByType(paramTypes, random, settings);
-        return args.length == 0 ? Stream.of() : Stream.of(Arguments.of(args));
+        final Object[] args = createObjects(paramTypes, random, settings);
+        return Stream.of(Arguments.of(args));
     }
 
-    /*
-     * Since the seed value is the same for all parameters, parameters of the same type
-     * should be generated using a single context. This is to prevent the same value being
-     * generated, e.g. @InstancioSource({String.class, String.class}) => "foo", "foo"
-     */
-    static Object[] createObjectsGroupingByType(final Type[] types, final Random random, final Settings settings) {
-        final Map<Type, Long> counts = Arrays.stream(types)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    static Object[] createObjects(final Type[] types, final Random random, final Settings settings) {
+        return Arrays.stream(types).map(type -> createObject(type, random, settings)).collect(Collectors.toList()).toArray();
+    }
 
-        final Map<Type, Queue<Object>> resultsByType = new LinkedHashMap<>();
-
-        counts.forEach((type, count) -> {
-            final InstancioApi<?> api = Instancio.of(() -> type);
-            if (settings != null) {
-                api.withSettings(settings);
-            }
-            final Queue<Object> results = api
-                    .withSeed(random.getSeed())
-                    .stream()
-                    .limit(count)
-                    .collect(Collectors.toCollection(ArrayDeque::new));
-
-            resultsByType.put(type, results);
-        });
-
-        final Object[] results = new Object[types.length];
-        for (int i = 0; i < results.length; i++) {
-            results[i] = resultsByType.get(types[i]).poll();
+    static Object createObject(final Type type, final Random random, final Settings settings) {
+        final InstancioApi<?> api = Instancio.of(() -> type);
+        if (settings != null) {
+            api.withSettings(settings);
         }
-        return results;
+        return api
+                .withSeed(random.longRange(1, Long.MAX_VALUE))
+                .create();
     }
 }

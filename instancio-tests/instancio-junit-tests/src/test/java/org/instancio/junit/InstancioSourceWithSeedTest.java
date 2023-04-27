@@ -16,9 +16,9 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.support.ThreadLocalRandom;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.support.ThreadLocalRandom;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class InstancioSourceWithSeedTest {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioSourceWithSeedTest.class);
-    private static final String EXPECTED_STRING = "YDOQGZUVWOINKQNTDAONTOBMAYC";
+    private static final String SOURCE_EXPECTED_STRING = "LWJNPOYHFLFDNHMUUSBQ";
+    private static final String CREATE_EXPECTED_STRING = "YDOQGZUVWOINKQNTDAONTOBMAYC";
     private static final int STRING_MIN_LENGTH = 20;
     private static final long SEED = -1234;
 
@@ -51,7 +52,7 @@ class InstancioSourceWithSeedTest {
     void parameterizedWithSeed(final String value) {
         LOG.debug("ThreadLocalRandom seed: {}", ThreadLocalRandom.getInstance().get().getSeed());
         assertThat(ThreadLocalRandom.getInstance().get().getSeed()).isEqualTo(SEED);
-        assertThat(value).isEqualTo(EXPECTED_STRING);
+        assertThat(value).isEqualTo(SOURCE_EXPECTED_STRING);
     }
 
     @Seed(SEED)
@@ -60,7 +61,7 @@ class InstancioSourceWithSeedTest {
     void nonParameterizedWithSeed() {
         LOG.debug("ThreadLocalRandom seed: {}", ThreadLocalRandom.getInstance().get().getSeed());
         assertThat(ThreadLocalRandom.getInstance().get().getSeed()).isEqualTo(SEED);
-        assertThat(Instancio.create(String.class)).isEqualTo(EXPECTED_STRING);
+        assertThat(Instancio.create(String.class)).isEqualTo(CREATE_EXPECTED_STRING);
     }
 
     @NonDeterministicTag("Assuming the random seed will not be equal to the SEED constant")
