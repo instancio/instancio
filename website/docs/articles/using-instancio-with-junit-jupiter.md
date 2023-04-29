@@ -135,19 +135,19 @@ Once you have the dependency on the classpath, you can declare a test method as 
 class PersonToPersonDTOTest {
 
     @ParameterizedTest
-    @InstancioSource(Person.class)
+    @InstancioSource
     void singleArgument(Person person) {
         // provides a fully-populated person as an argument
     }
 }
 ```
 
-Instancio will provide a populated instance of the class specified in the annotation. You can specify any number of classes in the annotation. Just remember to declare a method argument for each class in the annotation:
+Instancio will provide a populated instance of the class specified in the annotation. You can specify as many parameters as you need:
 
 
 ``` java linenums="1" title="Parameterized test with multiple arguments"
 @ParameterizedTest
-@InstancioSource(String.class, UUID.class, Foo.class)
+@InstancioSource
 void multipleArguments(String str, UUID uuid, Foo foo) {
     // any number of arguments can be specified...
 }
@@ -155,9 +155,7 @@ void multipleArguments(String str, UUID uuid, Foo foo) {
 
 There are a couple of important limitations to using @InstancioSource to be aware of.
 
-First, it cannot provide instances of generic types. For example, there is no way to specify a List<Person>.
-
-Second, you cannot customise the object as you would with the builder API. In other words, there is no way to specify something like this:
+For example, you cannot customise the object as you would with the builder API. In other words, there is no way to specify something like this:
 
 ``` java linenums="1"
 Person person = Instancio.of(Person.class)

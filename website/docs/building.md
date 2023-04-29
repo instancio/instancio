@@ -13,13 +13,8 @@ Building Instancio from sources requires JDK 17 or higher:
 ```sh
 git clone https://github.com/instancio/instancio.git
 cd instancio
-mvn install
+mvn verify
 ```
-
-!!! note
-    The build includes a Gradle test module which requires the dependencies to be installed into
-    the local `~/.m2` repository. For this reason, `mvn install` must be run at least once
-    for the Gradle test module to build successfully.
 
 # Building the Website
 
