@@ -15,9 +15,9 @@
  */
 package org.instancio.internal;
 
+import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
-import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
@@ -44,14 +44,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
@@ -71,108 +71,124 @@ class InstancioEngine {
     private final InternalNode rootNode;
     private final CallbackHandler callbackHandler;
     private final ContainerFactoriesHandler containerFactoriesHandler;
-    private final List<GenerationListener> listeners;
+    private final GenerationListener[] listeners;
     private final AfterGenerate defaultAfterGenerate;
-    private final boolean overwriteExistingValues;
     private final NodeFilter nodeFilter;
     private final Assigner assigner;
+    private final ConditionalObjectStore conditionalObjectStore;
+    private final Deque<DelayedNode> delayedNodeQueue = new ArrayDeque<>();
+    private final Map<InternalNode, Integer> recordNodeDelayCount = new IdentityHashMap<>();
 
     InstancioEngine(InternalModel<?> model) {
         context = model.getModelContext();
         rootNode = model.getRootNode();
         callbackHandler = new CallbackHandler(context);
         containerFactoriesHandler = new ContainerFactoriesHandler(context.getContainerFactories());
-        generatorFacade = new GeneratorFacade(context);
+        conditionalObjectStore = new ConditionalObjectStore(context);
+        generatorFacade = new GeneratorFacade(context, conditionalObjectStore);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
-        overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
-        listeners = Arrays.asList(callbackHandler, new GeneratedNullValueListener(context));
         nodeFilter = new NodeFilter(context);
         assigner = new AssignerImpl(context);
+        listeners = new GenerationListener[]{
+                callbackHandler, conditionalObjectStore, new GeneratedNullValueListener(context)};
     }
 
     @SuppressWarnings("unchecked")
     <T> T createRootObject() {
         return conditionalFailOnError(() -> {
-            final GeneratorResult result = createObject(rootNode);
-            final T rootResult = (T) result.getValue();
+            final GeneratorResult rootResult = createObject(rootNode); // NOPMD
+
+            if (!recordNodeDelayCount.isEmpty()) {
+                throw new InstancioApiException("Circular conditional detected: " + recordNodeDelayCount);
+            }
+            processQueue(true);
+
             callbackHandler.invokeCallbacks();
             context.reportWarnings();
-            return rootResult;
+            return (T) rootResult.getValue();
         }).orElse(null);
     }
 
-    private GeneratorResult createObject(final InternalNode node) {
-        LOG.trace("Processing: {}", node);
+    private void processQueue(final boolean failOnThreshold) {
 
-        if (node.getChildren().isEmpty()) { // leaf - generate a value
-            return generateValue(node);
-        } else if (node.is(NodeKind.ARRAY)) {
-            return generateArray(node);
-        } else if (node.is(NodeKind.COLLECTION)) {
-            return generateCollection(node);
-        } else if (node.is(NodeKind.MAP)) {
-            return generateMap(node);
-        } else if (node.is(NodeKind.RECORD)) {
-            return generateRecord(node);
-        } else if (node.is(NodeKind.CONTAINER)) {
-            return generateContainer(node);
-        } else if (node.is(NodeKind.DEFAULT)) {
-            return generatePojo(node);
+        int threshold = delayedNodeQueue.size();
+
+        if (threshold == 0) {
+            LOG.trace("--- [empty queue]");
+            return;
         }
-        throw Fail.withFataInternalError("Unhandled node kind '%s' for %s", node.getNodeKind(), node);
+
+        LOG.trace("---------------> Flush queue size: {} ", delayedNodeQueue.size());
+
+        while (!delayedNodeQueue.isEmpty()) {
+            final DelayedNode entry = delayedNodeQueue.removeLast();
+            final GeneratorResult result = createObject(entry.getNode());
+
+            if (result.isDelayed()) {
+                threshold--;
+                delayedNodeQueue.addFirst(entry);
+            } else {
+                assignFieldValue(entry.getParentResult().getValue(), entry.getNode(), result);
+            }
+            if (threshold == 0) {
+                if (failOnThreshold) {
+                    throw new InstancioApiException("Circular conditional detected: " + delayedNodeQueue);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        LOG.trace("<--------------- Flush queue size: {} ", delayedNodeQueue.size());
     }
 
-    private GeneratorResult generateContainer(final InternalNode node) {
-        GeneratorResult generatorResult = generateValue(node);
+    @NotNull
+    private GeneratorResult createObject(final InternalNode node, final boolean isNullable) {
+        LOG.trace("");
+        LOG.trace(">> {}", node);
 
-        if (generatorResult.isEmpty() || generatorResult.isIgnored()) {
-            return generatorResult;
+        final GeneratorResult generatorResult;
+
+        if (context.getRandom().diceRoll(isNullable)) {
+            generatorResult = GeneratorResult.nullResult();
+        } else if (node.getChildren().isEmpty()) { // leaf - generate a value
+            generatorResult = generateValue(node);
+        } else if (node.is(NodeKind.ARRAY)) {
+            generatorResult = generateArray(node);
+        } else if (node.is(NodeKind.COLLECTION)) {
+            generatorResult = generateCollection(node);
+        } else if (node.is(NodeKind.MAP)) {
+            conditionalObjectStore.enterScope();
+            generatorResult = generateMap(node);
+            conditionalObjectStore.exitScope();
+        } else if (node.is(NodeKind.RECORD)) {
+            conditionalObjectStore.enterScope();
+            generatorResult = generateRecord(node);
+            conditionalObjectStore.exitScope();
+        } else if (node.is(NodeKind.CONTAINER)) {
+            generatorResult = generateContainer(node);
+        } else if (node.is(NodeKind.DEFAULT)) {
+            generatorResult = generatePojo(node);
+        } else {
+            throw Fail.withFataInternalError("Unhandled node kind '%s' for %s", node.getNodeKind(), node);
         }
 
-        final InternalContainerHint hint = defaultIfNull(
-                generatorResult.getHints().get(InternalContainerHint.class),
-                InternalContainerHint.empty());
+        notifyListeners(node, generatorResult);
 
-        final List<InternalNode> children = node.getChildren();
+        LOG.trace("<< {} : {}", node, generatorResult);
 
-        // Creation delegated to the engine
-        if (generatorResult.containsNull() && hint.createFunction() != null) {
-            final Object[] args = new Object[children.size()];
-            for (int i = 0; i < children.size(); i++) {
-                final GeneratorResult childResult = createObject(children.get(i));
-                args[i] = childResult.getValue();
-            }
+        return generatorResult;
+    }
 
-            final Object result = hint.createFunction().create(args);
-            generatorResult = GeneratorResult.create(result, generatorResult.getHints());
-        }
-
-        final ContainerAddFunction<Object> addFunction = hint.addFunction();
-
-        if (addFunction != null) {
-            for (int i = 0; i < hint.generateEntries(); i++) {
-                final Object[] args = new Object[children.size()];
-
-                for (int j = 0; j < children.size(); j++) {
-                    final GeneratorResult childResult = createObject(children.get(j));
-                    args[j] = childResult.getValue();
-                }
-
-                addFunction.addTo(generatorResult.getValue(), args);
-            }
-        }
-
-        if (hint.buildFunction() != null) {
-            final Object builtContainer = hint.buildFunction().build(generatorResult.getValue());
-            return GeneratorResult.create(builtContainer, generatorResult.getHints());
-        }
-
-        return containerFactoriesHandler.substituteResult(node, generatorResult);
+    @NotNull
+    private GeneratorResult createObject(final InternalNode node) {
+        return createObject(node, false);
     }
 
     private GeneratorResult generatePojo(final InternalNode node) {
         final GeneratorResult nodeResult = generateValue(node);
-        if (!nodeResult.containsNull()) {
+
+        if (!nodeResult.isDelayed()) {
             populateChildren(node.getChildren(), nodeResult);
         }
         return nodeResult;
@@ -214,12 +230,22 @@ class InstancioEngine {
         int failedAdditions = 0;
 
         while (entriesToGenerate > 0) {
+
+            final GeneratorResult mapKeyResult = createObject(keyNode, nullableKey);
+            if (mapKeyResult.isDelayed()) {
+                return GeneratorResult.delayed();
+            }
+
             final GeneratorResult mapValueResult = createObject(valueNode, nullableValue);
+            if (mapValueResult.isDelayed()) {
+                return GeneratorResult.delayed();
+            }
+
             final Object mapValue = mapValueResult.getValue();
 
             final Object mapKey = withKeysIterator.hasNext()
                     ? withKeysIterator.next()
-                    : createObject(keyNode, nullableKey).getValue();
+                    : mapKeyResult.getValue();
 
             // Note: map key does not support emit() null
             if ((mapKey != null || nullableKey)
@@ -316,6 +342,10 @@ class InstancioEngine {
             }
 
             final GeneratorResult elementResult = createObject(elementNode, hint.nullableElements());
+            if (elementResult.isDelayed()) {
+                return GeneratorResult.delayed();
+            }
+
             Object elementValue = elementResult.getValue();
 
             // If elements are not nullable, keep generating until a non-null
@@ -374,6 +404,11 @@ class InstancioEngine {
 
         while (elementsToGenerate > 0) {
             final GeneratorResult elementResult = createObject(elementNode, nullableElements);
+
+            if (elementResult.isDelayed()) {
+                return GeneratorResult.delayed();
+            }
+
             final Object elementValue = elementResult.getValue();
 
             if (elementValue != null || nullableElements || elementResult.hasEmitNullHint()) {
@@ -418,15 +453,14 @@ class InstancioEngine {
         return containerFactoriesHandler.substituteResult(node, generatorResult);
     }
 
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private GeneratorResult generateRecord(final InternalNode node) {
         // Handle the case where user supplies a generator for creating a record.
-        Optional<Generator<?>> generator = context.getGenerator(node);
-        if (!generator.isPresent()) {
-            generator = generatorFacade.getGenerator(node);
-        }
+        // This could be either a regular or conditional generator.
+        final GeneratorResult customRecord = generateValue(node);
 
-        if (generator.isPresent()) {
-            return generateValue(node);
+        if (!customRecord.isEmpty()) {
+            return customRecord;
         }
 
         final List<InternalNode> children = node.getChildren();
@@ -442,13 +476,55 @@ class InstancioEngine {
             return GeneratorResult.nullResult();
         }
 
+        // Record's constructor argument nodes can depend on each other.
+        // If a node depends on a subsequent node, add it to the queue,
+        // along with the index, and attempt to generate it again later.
+        final Deque<DelayedRecordComponentNode> recordComponentQueue = new ArrayDeque<>();
+
         for (int i = 0; i < args.length; i++) {
             final InternalNode child = children.get(i);
             final GeneratorResult result = createObject(child);
 
-            args[i] = result.containsNull()
-                    ? ObjectUtils.defaultValue(ctorArgs[i])
-                    : result.getValue();
+            if (result.isDelayed()) {
+                LOG.trace("Delayed record arg: {}", child);
+                recordComponentQueue.add(new DelayedRecordComponentNode(child, i));
+
+                incrementRecordDelays(child);
+            } else {
+                recordNodeDelayCount.remove(child);
+                args[i] = result.containsNull()
+                        ? ObjectUtils.defaultValue(ctorArgs[i])
+                        : result.getValue();
+            }
+        }
+
+        int threshold = recordComponentQueue.size();
+
+        while (!recordComponentQueue.isEmpty()) {
+            final DelayedRecordComponentNode entry = recordComponentQueue.removeLast();
+            final GeneratorResult result = createObject(entry.getNode());
+
+            LOG.trace("Attempt to create delayed record component: {}", entry.getNode());
+
+            if (result.isDelayed()) {
+                threshold--;
+                recordComponentQueue.addFirst(entry);
+                incrementRecordDelays(entry.getNode());
+
+            } else if (!result.isEmpty() && !result.isIgnored()) {
+                args[entry.getArgIndex()] = result.getValue();
+                recordNodeDelayCount.remove(entry.getNode());
+            }
+            if (threshold == 0) {
+                break;
+            }
+        }
+
+        if (!recordComponentQueue.isEmpty()) {
+            // Ideally the node would go into delayedNodeQueue
+            // but that requires knowing the parent GeneratorResult
+            incrementRecordDelays(node);
+            return GeneratorResult.delayed();
         }
 
         try {
@@ -456,7 +532,7 @@ class InstancioEngine {
             final GeneratorResult generatorResult = GeneratorResult.create(
                     obj, Hints.afterGenerate(defaultAfterGenerate));
 
-            notifyListeners(node, generatorResult);
+            recordNodeDelayCount.remove(node);
             return generatorResult;
         } catch (Exception ex) {
             conditionalFailOnError(() -> {
@@ -464,6 +540,10 @@ class InstancioEngine {
             });
         }
         return GeneratorResult.emptyResult();
+    }
+
+    private void incrementRecordDelays(final InternalNode node) {
+        recordNodeDelayCount.merge(node, 1, Integer::sum);
     }
 
     private void populateChildren(
@@ -477,42 +557,94 @@ class InstancioEngine {
         final Object value = generatorResult.getValue();
         final AfterGenerate action = generatorResult.getHints().afterGenerate();
 
+        conditionalObjectStore.enterScope(value);
+
         for (final InternalNode child : children) {
             if (nodeFilter.shouldSkip(child, action, value)) {
                 continue;
             }
 
             final GeneratorResult result = createObject(child);
-            if (!result.isEmpty() && !result.isIgnored()) {
-                final Object arg = result.getValue();
-                final Field field = child.getField();
 
-                if (overwriteExistingValues || !ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(field, value)) {
-                    assigner.assign(child, value, arg);
-                }
+            if (result.isDelayed()) {
+                delayedNodeQueue.add(new DelayedNode(child, generatorResult));
+            } else {
+                assignFieldValue(value, child, result);
             }
         }
+
+        processQueue(false);
+        conditionalObjectStore.exitScope();
     }
 
-    @NotNull
-    private GeneratorResult createObject(final InternalNode node, final boolean isNullable) {
-        if (context.getRandom().diceRoll(isNullable)) {
-            final GeneratorResult nullResult = GeneratorResult.nullResult();
-            notifyListeners(node, nullResult);
-            return nullResult;
+    private GeneratorResult generateContainer(final InternalNode node) {
+        GeneratorResult generatorResult = generateValue(node);
+
+        if (generatorResult.isEmpty() || generatorResult.isIgnored()) {
+            return generatorResult;
         }
-        return createObject(node);
+
+        final InternalContainerHint hint = defaultIfNull(
+                generatorResult.getHints().get(InternalContainerHint.class),
+                InternalContainerHint.empty());
+
+        final List<InternalNode> children = node.getChildren();
+
+        // Creation delegated to the engine
+        if (generatorResult.containsNull() && hint.createFunction() != null) {
+            final Object[] args = new Object[children.size()];
+            for (int i = 0; i < children.size(); i++) {
+                final GeneratorResult childResult = createObject(children.get(i));
+
+                if (childResult.isDelayed()) {
+                    return GeneratorResult.delayed();
+                }
+
+                args[i] = childResult.getValue();
+            }
+
+            final Object result = hint.createFunction().create(args);
+            generatorResult = GeneratorResult.create(result, generatorResult.getHints());
+        }
+
+        final ContainerAddFunction<Object> addFunction = hint.addFunction();
+
+        if (addFunction != null) {
+            for (int i = 0; i < hint.generateEntries(); i++) {
+                final Object[] args = new Object[children.size()];
+
+                for (int j = 0; j < children.size(); j++) {
+                    final GeneratorResult childResult = createObject(children.get(j));
+                    args[j] = childResult.getValue();
+                }
+
+                addFunction.addTo(generatorResult.getValue(), args);
+            }
+        }
+
+        if (hint.buildFunction() != null) {
+            final Object builtContainer = hint.buildFunction().build(generatorResult.getValue());
+            return GeneratorResult.create(builtContainer, generatorResult.getHints());
+        }
+
+        return containerFactoriesHandler.substituteResult(node, generatorResult);
+    }
+
+    private void assignFieldValue(final Object parentResult, final InternalNode node, final GeneratorResult result) {
+        if (!result.isEmpty() && !result.isIgnored()) {
+            assigner.assign(node, parentResult, result.getValue());
+        }
     }
 
     private GeneratorResult generateValue(final InternalNode node) {
-        final GeneratorResult generatorResult = generatorFacade.generateNodeValue(node);
-        notifyListeners(node, generatorResult);
-        return generatorResult;
+        return generatorFacade.generateNodeValue(node);
     }
 
     private void notifyListeners(final InternalNode node, final GeneratorResult result) {
-        for (GenerationListener listener : listeners) {
-            listener.objectCreated(node, result);
+        if (!result.isEmpty() && !result.isDelayed() && !result.isIgnored()) {
+            for (GenerationListener listener : listeners) {
+                listener.objectCreated(node, result);
+            }
         }
     }
 }

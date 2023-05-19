@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.context;
 
+import org.instancio.Conditional;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Mode;
 import org.instancio.OnCompleteCallback;
@@ -24,6 +25,8 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.RandomHelper;
+import org.instancio.internal.conditional.InternalConditional;
+import org.instancio.internal.conditional.OptionalAction;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
@@ -82,6 +85,7 @@ public final class ModelContext<T> {
     private final OnCompleteCallbackSelectorMap onCompleteCallbackSelectorMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
     private final GeneratorSelectorMap generatorSelectorMap;
+    private final ConditionalSelectorMap conditionalSelectorMap;
 
     private ModelContext(final Builder<T> builder) {
         rootType = builder.rootType;
@@ -101,12 +105,16 @@ public final class ModelContext<T> {
         nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
         onCompleteCallbackSelectorMap = new OnCompleteCallbackSelectorMap(builder.onCompleteCallbacks);
         subtypeSelectorMap = new SubtypeSelectorMap(builder.subtypeSelectors);
+
+        final GeneratorContext generatorContext = new GeneratorContext(settings, random);
+
         generatorSelectorMap = new GeneratorSelectorMap(
-                new GeneratorContext(settings, random),
+                generatorContext,
                 builder.generatorSelectors,
                 builder.generatorSpecSelectors);
 
         subtypeSelectorMap.putAll(generatorSelectorMap.getGeneratorSubtypeMap());
+        conditionalSelectorMap = new ConditionalSelectorMap(builder.conditionalSelectors, generatorContext);
 
         providers = new Providers(
                 ServiceLoaders.loadAll(InstancioServiceProvider.class),
@@ -222,11 +230,20 @@ public final class ModelContext<T> {
         builder.generatorSpecSelectors.putAll(this.generatorSelectorMap.getGeneratorSpecSelectors());
         builder.subtypeSelectors.putAll(this.subtypeSelectorMap.getSubtypeSelectors());
         builder.onCompleteCallbacks.putAll(this.onCompleteCallbackSelectorMap.getOnCompleteCallbackSelectors());
+        builder.conditionalSelectors.putAll(this.conditionalSelectorMap.getConditionalSelectors());
         return builder;
     }
 
     public static <T> Builder<T> builder(final Type rootType) {
         return new Builder<>(rootType);
+    }
+
+    public List<InternalConditional> getConditionals(final InternalNode node) {
+        return conditionalSelectorMap.getConditionals(node);
+    }
+
+    public List<TargetSelector> getConditionalDestinationSelectors(final InternalNode node) {
+        return conditionalSelectorMap.getDestinationSelectors(node);
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -239,6 +256,7 @@ public final class ModelContext<T> {
         private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, Generator<?>> generatorSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks = new LinkedHashMap<>();
+        private final Map<TargetSelector, List<Conditional>> conditionalSelectors = new LinkedHashMap<>();
         private final Set<TargetSelector> ignoredTargets = new LinkedHashSet<>();
         private final Set<TargetSelector> nullableTargets = new LinkedHashSet<>();
         private Settings settings;
@@ -298,6 +316,25 @@ public final class ModelContext<T> {
             return this;
         }
 
+        public Builder<T> withConditional(final Conditional conditional) {
+            final List<InternalConditional> conditionals = ((OptionalAction) conditional).getConditionals();
+
+            for (InternalConditional c : conditionals) {
+                final TargetSelector origin = preProcess(c.getOrigin(), rootClass);
+                final TargetSelector destination = preProcess(c.getDestination(), rootClass);
+
+                final Conditional processedConditional = c.toBuilder()
+                        .origin(origin)
+                        .destination(destination)
+                        .build();
+
+                this.conditionalSelectors
+                        .computeIfAbsent(destination, k -> new ArrayList<>())
+                        .add(processedConditional);
+            }
+            return this;
+        }
+
         public Builder<T> withSettings(final Settings arg) {
             ApiValidator.notNull(arg, "Null Settings provided to withSettings() method");
 
@@ -330,6 +367,7 @@ public final class ModelContext<T> {
             generatorSpecSelectors.putAll(otherContext.generatorSelectorMap.getGeneratorSpecSelectors());
             subtypeSelectors.putAll(otherContext.subtypeSelectorMap.getSubtypeSelectors());
             onCompleteCallbacks.putAll(otherContext.onCompleteCallbackSelectorMap.getOnCompleteCallbackSelectors());
+            conditionalSelectors.putAll(otherContext.conditionalSelectorMap.getConditionalSelectors());
             return this;
         }
 

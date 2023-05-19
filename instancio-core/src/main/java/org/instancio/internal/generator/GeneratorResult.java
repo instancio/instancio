@@ -21,22 +21,31 @@ import org.instancio.generator.Hints;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public final class GeneratorResult {
     private static final Hints EMPTY_HINTS = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
-    private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS);
-    private static final GeneratorResult EMPTY_RESULT = new GeneratorResult(null, EMPTY_HINTS);
-    private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS);
+    private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.NULL);
+    private static final GeneratorResult EMPTY_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.EMPTY);
+    private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.IGNORED);
+    private static final GeneratorResult DELAYED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.DELAYED);
+
+    private enum Type {
+        NULL, EMPTY, IGNORED, DELAYED, NORMAL
+    }
 
     private final Object value;
     private final Hints hints;
+    private final Type type;
 
-    private GeneratorResult(@Nullable final Object value, @NotNull final Hints hints) {
+    private GeneratorResult(@Nullable final Object value, @NotNull final Hints hints, final Type type) {
         this.value = value;
-        this.hints = hints;
+        this.hints = Objects.requireNonNull(hints, "null hints");
+        this.type = type;
     }
 
     public static GeneratorResult create(@Nullable final Object value, final Hints hints) {
-        return new GeneratorResult(value, hints);
+        return new GeneratorResult(value, hints, Type.NORMAL);
     }
 
     public Object getValue() {
@@ -78,6 +87,16 @@ public final class GeneratorResult {
         return IGNORED_RESULT;
     }
 
+    /**
+     * A delayed result indicates that a value could not be generated
+     * due to an unsatisfied dependency.
+     *
+     * @return delayed result
+     */
+    public static GeneratorResult delayed() {
+        return DELAYED_RESULT;
+    }
+
     // Note: another option is to introduce a dedicated EmitGeneratorHint,
     // however for a single boolean flag it doesn't seem to be worth it
     public boolean hasEmitNullHint() {
@@ -90,15 +109,22 @@ public final class GeneratorResult {
     }
 
     public boolean isEmpty() {
-        return this == EMPTY_RESULT;
+        return type == Type.EMPTY;
     }
 
     public boolean isIgnored() {
-        return this == IGNORED_RESULT;
+        return type == Type.IGNORED;
+    }
+
+    public boolean isDelayed() {
+        return type == Type.DELAYED;
     }
 
     @Override
     public String toString() {
-        return String.format("GeneratorResult[value=%s, hints=%s]", value, hints);
+        if (type == Type.NORMAL) {
+            return String.format("Result[%s, %s]", value, hints);
+        }
+        return String.format("Result[%s]", type);
     }
 }

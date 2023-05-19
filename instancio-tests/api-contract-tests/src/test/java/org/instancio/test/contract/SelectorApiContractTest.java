@@ -224,6 +224,14 @@ class SelectorApiContractTest {
                 "cannot find symbol", "method withTypeParameters");
     }
 
+    @Test
+    @DisplayName("when() should not accept an incomplete conditional")
+    void incompleteConditionalNotAllowed() throws Exception {
+        assertCompilationError("NonCompilable_IncompleteConditional.java",
+                "required:", "org.instancio.Conditional",
+                "found:", "org.instancio.RequiredConditionalAction");
+    }
+
     private static void assertCompilationError(final String sourceFile, final String... expectedErrorMsg) throws Exception {
         final DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
 

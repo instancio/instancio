@@ -223,7 +223,7 @@ public interface InstancioApi<T> {
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param supplier providing the value for given selector
-     * @param <V>      type of the value to generate
+     * @param <V>      type of the supplied value
      * @return API builder reference
      * @see #supply(TargetSelector, Generator)
      */
@@ -381,6 +381,56 @@ public interface InstancioApi<T> {
      * @since 1.4.0
      */
     InstancioApi<T> subtype(TargetSelector selector, Class<?> subtype);
+
+    /**
+     * Generates values based on the given conditional expression.
+     * A conditional can be created using one of the {@code Select.valueOf()}
+     * methods. The syntax follows a pattern similar to:
+     *
+     * <pre>{@code
+     *   when(valueOf(originSelector).satisfies(Predicate).set(destinationSelector, value))
+     * }</pre>
+     *
+     * <p>In other words, if origin selector's target has a value that satisfies
+     * the given predicate, then set targets matching the destination selector
+     * to the specified value. In addition to the {@code satisfies(Predicate)}
+     * method, the following methods are also available (examples provided below):
+     *
+     * <ul>
+     *   <li>{@link ConditionOrigin#is(Object)}</li>
+     *   <li>{@link ConditionOrigin#isIn(Object[])}</li>
+     * </ul>
+     *
+     * <p>The following snippet sets {@code Phone.countryCode} values based
+     * on the value of {@code Address.country}:
+     *
+     * <pre>{@code
+     *   Address address = Instancio.of(Address.class)
+     *       .generate(field(Address::getCountry), gen -> gen.oneOf("CA", "UK", "US"))
+     *       .when(valueOf(Address::getCountry).isIn("CA", "US").set(field(Phone::getCountryCode), "+1"))
+     *       .when(valueOf(Address::getCountry).is("UK").set(field(Phone::getCountryCode), "+44"))
+     *       .create();
+     * }</pre>
+     *
+     * <h4>Limitations</h4>
+     *
+     * <p>Using conditionals has a few limitations to be aware of.
+     *
+     * <ul>
+     *   <li>If the origin selector matches multiple values, the conditional
+     *       may produce arbitrary results.</li>
+     *   <li>When using conditionals with Java records, the conditional should
+     *       be specified top-down (from outer record to inner record).</li>
+     *   <li>Circular conditionals will produce an error.</li>
+     * </ul>
+     *
+     * @param conditional an expression for setting values
+     *                    only if the condition is satisfied
+     * @return API builder reference
+     * @since 3.0.0
+     */
+    @ExperimentalApi
+    InstancioApi<T> when(Conditional conditional);
 
     /**
      * Specifies the maximum depth for populating an object.

@@ -57,6 +57,11 @@ class GeneratorResultTest {
     @Test
     void verifyToString() {
         assertThat(GeneratorResult.create("foo", Hints.builder().build()))
-                .hasToString("GeneratorResult[value=foo, hints=Hints[afterGenerate=null, hints={}]]");
+                .hasToString("Result[foo, Hints[afterGenerate=null, hints={}]]");
+
+        assertThat(GeneratorResult.emptyResult()).hasToString("Result[EMPTY]");
+        assertThat(GeneratorResult.nullResult()).hasToString("Result[NULL]");
+        assertThat(GeneratorResult.delayed()).hasToString("Result[DELAYED]");
+        assertThat(GeneratorResult.ignoredResult()).hasToString("Result[IGNORED]");
     }
 }

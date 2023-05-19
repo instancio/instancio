@@ -25,6 +25,7 @@ import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.ScopelessSelector;
 import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -120,6 +121,10 @@ final class SelectorMap<V> {
         } else if (targetSelector instanceof PredicateSelector) {
             final PredicateSelectorImpl selector = (PredicateSelectorImpl) targetSelector;
             predicateSelectors.add(new PredicateSelectorEntry<>(selector, value));
+        } else {
+            // Other types not expected because selectors should be
+            // pre-processed by ModelContext being adding to the selector map
+            throw Fail.withFataInternalError("Invalid selector type: " + targetSelector.getClass().getName());
         }
     }
 

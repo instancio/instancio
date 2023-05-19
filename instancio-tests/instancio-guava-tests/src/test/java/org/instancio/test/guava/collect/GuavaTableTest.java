@@ -17,10 +17,12 @@ package org.instancio.test.guava.collect;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.internal.util.Constants;
 import org.instancio.junit.InstancioExtension;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -33,6 +35,7 @@ import static org.instancio.Select.allLongs;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.root;
+import static org.instancio.Select.valueOf;
 import static org.instancio.guava.GenGuava.table;
 
 @ExtendWith(InstancioExtension.class)
@@ -89,6 +92,28 @@ class GuavaTableTest {
         assertThat(result.table1.size()).isEqualTo(3);
         assertThat(result.table1.rowKeySet()).containsExactlyInAnyOrder(items);
         assertThat(result.table2.rowKeySet()).doesNotContain(items);
+    }
+
+    @RepeatedTest(100)
+    void conditional() {
+        final String expected = Gen.oneOf("foo1", "bar1").get();
+
+        final TableHolder result = Instancio.of(TableHolder.class)
+                .set(allStrings().within(field("table1").toScope()), expected)
+                .when(valueOf(field("table1"))
+                        .satisfies((Table<String, Character, Integer> t) -> t.containsRow("foo1"))
+                        .set(allStrings().within(field("table2").toScope()), "foo2"))
+                .when(valueOf(field("table1"))
+                        .satisfies((Table<String, Character, Integer> t) -> t.containsRow("bar1"))
+                        .set(allStrings().within(field("table2").toScope()), "bar2"))
+                .create();
+
+
+        if (result.table1.containsRow("foo1")) {
+            assertThat(result.table2.containsRow("foo2")).isTrue();
+        } else if (result.table1.containsRow("bar1")) {
+            assertThat(result.table2.containsRow("bar2")).isTrue();
+        }
     }
 
     private static class TableHolder {

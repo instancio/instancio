@@ -18,6 +18,7 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.conditional.InternalConditionOrigin;
 import org.instancio.internal.selectors.FieldSelectorBuilderImpl;
 import org.instancio.internal.selectors.MethodReferenceHelper;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
@@ -307,7 +308,7 @@ public final class Select {
      */
     @ExperimentalApi
     public static <T, R> Selector field(final GetMethodSelector<T, R> methodReference) {
-        ApiValidator.notNull(methodReference, "Method reference must not be null");
+        ApiValidator.notNull(methodReference, "method reference must not be null");
         return MethodReferenceHelper.resolve(methodReference);
     }
 
@@ -464,6 +465,59 @@ public final class Select {
     public static Scope scope(final Class<?> targetClass) {
         ApiValidator.notNull(targetClass, "Scope class must not be null");
         return new ScopeImpl(targetClass, null);
+    }
+
+    /**
+     * Returns a builder for creating a {@link Conditional}.
+     *
+     * <p>Example:
+     *
+     * <pre>{@code
+     *   valueOf(field(Foo::getFoo))
+     *      .is("foo")
+     *      .set(field(Bar::getBar), "bar")
+     * }</pre>
+     *
+     * <p><b>Note:</b> this method does not accept selector groups and
+     * primitive/wrapper selectors, such as {@link #allInts()}.
+     *
+     * @param selector the origin selector
+     * @return builder for constructing the conditional expression
+     * @see #valueOf(GetMethodSelector)
+     * @since 3.0.0
+     */
+    public static ConditionOrigin valueOf(final TargetSelector selector) {
+        ApiValidator.isFalse(selector instanceof SelectorGroup,
+                "valueOf() does not support selector groups");
+
+        ApiValidator.isFalse(selector instanceof PrimitiveAndWrapperSelectorImpl,
+                "valueOf() does not support primitive and wrapper selectors such as %s", selector);
+
+        return new InternalConditionOrigin(selector);
+    }
+
+    /**
+     * Returns a builder for creating a {@link Conditional}.
+     *
+     * <p>This is a shorthand for {@link #valueOf(TargetSelector)} that accepts
+     * a method reference:
+     *
+     * <p>Example:
+     *
+     * <pre>{@code
+     *   valueOf(Foo::getFoo)
+     *      .is("foo")
+     *      .set(field(Bar::getBar), "bar")
+     * }</pre>
+     *
+     * @param methodReference a method reference
+     * @param <T>             type declaring the method
+     * @param <R>             return type of the method
+     * @return builder for constructing the conditional expression
+     * @since 3.0.0
+     */
+    public static <T, R> ConditionOrigin valueOf(final GetMethodSelector<T, R> methodReference) {
+        return new InternalConditionOrigin(Select.field(methodReference));
     }
 
     private Select() {
