@@ -34,6 +34,8 @@ abstract class AbstractErrorMessageTestTemplate {
     final void verifyErrorMessage() {
         assertThatThrownBy(this::methodUnderTest)
                 .isExactlyInstanceOf(expectedException())
-                .hasMessage(String.format(expectedMessage()));
+                // replace \r to prevent test failures when run on Windows
+                .extracting(ex -> ex.getMessage().replace("\r", ""))
+                .isEqualTo(expectedMessage());
     }
 }
