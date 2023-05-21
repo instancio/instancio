@@ -71,8 +71,8 @@ public final class ModelContext<T> {
 
     private final Providers providers;
     private final Type rootType;
-    private final List<Class<?>> rootTypeParameters;
-    private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final List<Type> rootTypeParameters;
+    private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final Integer maxDepth;
     private final Long seed;
     private final Random random;
@@ -198,7 +198,7 @@ public final class ModelContext<T> {
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
+    public Map<TypeVariable<?>, Type> getRootTypeMap() {
         return rootTypeMap;
     }
 
@@ -234,7 +234,7 @@ public final class ModelContext<T> {
         private final Type rootType;
         private final Class<T> rootClass;
 
-        private final List<Class<?>> rootTypeParameters = new ArrayList<>();
+        private final List<Type> rootTypeParameters = new ArrayList<>();
         private final Map<TargetSelector, Class<?>> subtypeSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, Generator<?>> generatorSelectors = new LinkedHashMap<>();
@@ -251,7 +251,7 @@ public final class ModelContext<T> {
             this.rootClass = TypeUtils.getRawType(this.rootType);
         }
 
-        public Builder<T> withRootTypeParameters(final List<Class<?>> rootTypeParameters) {
+        public Builder<T> withRootTypeParameters(final List<Type> rootTypeParameters) {
             ApiValidator.validateTypeParameters(rootClass, rootTypeParameters);
             this.rootTypeParameters.addAll(rootTypeParameters);
             return this;

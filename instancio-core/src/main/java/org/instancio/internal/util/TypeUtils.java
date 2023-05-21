@@ -33,6 +33,12 @@ public final class TypeUtils {
         // non-instantiable
     }
 
+    public static int getTypeParameterCount(final Class<?> klass) {
+        return klass.isArray()
+                ? klass.getComponentType().getTypeParameters().length
+                : klass.getTypeParameters().length;
+    }
+
     public static Class<?> getArrayClass(@Nullable final Type type) {
         if (type instanceof Class) {
             final Class<?> klass = (Class<?>) type;

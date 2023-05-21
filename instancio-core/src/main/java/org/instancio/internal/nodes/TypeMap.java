@@ -33,15 +33,15 @@ import java.util.Objects;
  */
 public final class TypeMap {
 
-    private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final Map<Type, Type> typeMap;
 
-    public TypeMap(final Type genericType, final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
+    public TypeMap(final Type genericType, final Map<TypeVariable<?>, Type> rootTypeMap) {
         this(genericType, rootTypeMap, Collections.emptyMap());
     }
 
     public TypeMap(final Type genericType,
-                   final Map<TypeVariable<?>, Class<?>> rootTypeMap,
+                   final Map<TypeVariable<?>, Type> rootTypeMap,
                    final Map<Type, Type> subtypeMappingTypeMap) {
 
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
@@ -91,7 +91,7 @@ public final class TypeMap {
         }
 
         if (genericType instanceof TypeVariable && rootTypeMap.containsKey(genericType)) {
-            final Class<?> mappedType = rootTypeMap.get(genericType);
+            final Type mappedType = rootTypeMap.get(genericType);
             map.put(genericType, mappedType);
             return map;
         }

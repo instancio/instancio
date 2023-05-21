@@ -18,6 +18,7 @@ package org.instancio.internal;
 import org.instancio.InstancioOfCollectionApi;
 import org.instancio.Model;
 import org.instancio.Select;
+import org.instancio.TypeTokenSupplier;
 import org.instancio.internal.context.ModelContext;
 
 import java.util.Collection;
@@ -32,6 +33,14 @@ public final class OfCollectionApiImpl<T, C extends Collection<T>>
 
         super(collectionType);
         withTypeParameters(elementType);
+    }
+
+    public OfCollectionApiImpl(
+            final Class<C> collectionType,
+            final TypeTokenSupplier<T> typeToken) {
+
+        super(collectionType);
+        withTypeParameters(ApiValidator.validateTypeToken(typeToken));
     }
 
     private OfCollectionApiImpl(final Model<C> collectionModel) {

@@ -38,7 +38,7 @@ import static org.instancio.testsupport.asserts.TypeMapResolverAssert.assertThat
 @GenericsTag
 class TypeMapTest {
 
-    public static final Map<TypeVariable<?>, Class<?>> EMPTY_ROOT_TYPE_MAP = Collections.emptyMap();
+    public static final Map<TypeVariable<?>, Type> EMPTY_ROOT_TYPE_MAP = Collections.emptyMap();
 
     @Test
     void verifyEqualsAndHashcode() {

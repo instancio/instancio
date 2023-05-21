@@ -97,6 +97,14 @@ Instancio.ofSet(Class<T> elementType).create()
 Instancio.ofMap(Class<K> keyType, Class<V> valueType).create()
 ```
 
+If the element is a generic type, the following methods can be used instead:
+
+``` java linenums="1" title="Collections API: using TypeToken"
+Instancio.ofList(TypeTokenSupplier<T> elementType).create()
+Instancio.ofSet(TypeTokenSupplier<T> elementType).create()
+Instancio.ofMap(TypeTokenSupplier<K> keyType, TypeTokenSupplier<V> valueType).create()
+```
+
 In addition, `ofList()` and `ofSet()` can be used to create collections
 from models:
 
@@ -107,6 +115,8 @@ Instancio.ofSet(Model<T> elementModel).create()
 
 ```java linenums="1" title="Examples"
 List<Person> list = Instancio.ofList(Person.class).size(10).create();
+
+List<Pair<String, Integer>> list = Instancio.ofList(new TypeToken<Pair<String, Integer>>() {}).create();
 
 Map<UUID, Address> map = Instancio.ofMap(UUID.class, Address.class).size(3)
     .set(field(Address::getCity), "Vancouver")
