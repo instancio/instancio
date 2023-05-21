@@ -15,13 +15,14 @@
  */
 package org.instancio.testsupport.utils;
 
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TypeMapBuilder {
 
-    private final Map<TypeVariable<?>, Class<?>> typeMap = new HashMap<>();
+    private final Map<TypeVariable<?>, Type> typeMap = new HashMap<>();
     private final Class<?> klass;
 
     private TypeMapBuilder(Class<?> klass) {
@@ -32,12 +33,12 @@ public class TypeMapBuilder {
         return new TypeMapBuilder(klass);
     }
 
-    public TypeMapBuilder with(String typeVariable, Class<?> mappedType) {
+    public TypeMapBuilder with(String typeVariable, Type mappedType) {
         typeMap.put(TypeUtils.getTypeVar(klass, typeVariable), mappedType);
         return this;
     }
 
-    public Map<TypeVariable<?>, Class<?>> get() {
+    public Map<TypeVariable<?>, Type> get() {
         return typeMap;
     }
 }

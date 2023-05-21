@@ -25,6 +25,7 @@ import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.Optional;
 
 public final class NodeContext {
     private final int maxDepth;
-    private final Map<TypeVariable<?>, Class<?>> rootTypeMap;
+    private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final BooleanSelectorMap ignoredSelectorMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
     private final Map<Class<?>, Class<?>> subtypeMappingFromSettings;
@@ -54,7 +55,7 @@ public final class NodeContext {
         return maxDepth;
     }
 
-    public Map<TypeVariable<?>, Class<?>> getRootTypeMap() {
+    public Map<TypeVariable<?>, Type> getRootTypeMap() {
         return rootTypeMap;
     }
 
@@ -96,7 +97,7 @@ public final class NodeContext {
 
     public static final class Builder {
         private int maxDepth;
-        private Map<TypeVariable<?>, Class<?>> rootTypeMap = Collections.emptyMap();
+        private Map<TypeVariable<?>, Type> rootTypeMap = Collections.emptyMap();
         private BooleanSelectorMap ignoredSelectorMap;
         private SubtypeSelectorMap subtypeSelectorMap;
         private Map<Class<?>, Class<?>> subtypeMappingFromSettings = Collections.emptyMap();
@@ -111,7 +112,7 @@ public final class NodeContext {
             return this;
         }
 
-        public Builder rootTypeMap(final Map<TypeVariable<?>, Class<?>> rootTypeMap) {
+        public Builder rootTypeMap(final Map<TypeVariable<?>, Type> rootTypeMap) {
             this.rootTypeMap = rootTypeMap;
             return this;
         }

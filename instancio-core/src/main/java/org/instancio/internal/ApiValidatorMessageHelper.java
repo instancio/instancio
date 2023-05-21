@@ -17,6 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.internal.util.Format;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +35,62 @@ final class ApiValidatorMessageHelper {
                 .append(INVALID_USAGE_OF_WITH_TYPE_PARAMETERS).append(NL)
                 .append(" -> class ").append(Format.withoutPackage(rootClass))
                 .append(" is not generic and does not require type parameters")
+                .toString();
+    }
+
+    static String ofCollectionElementType(final Class<?> elementType, final String method) {
+        final String classWithTypeParams = String.format("%s<%s>",
+                elementType.getSimpleName(), Format.getTypeVariablesCsv(elementType));
+
+        return new StringBuilder()
+                .append("invalid usage of ").append(method).append(" method").append(NL)
+                .append(NL)
+                .append("  -> The argument ").append(classWithTypeParams)
+                .append(" is a generic class and also requires type parameter(s),").append(NL)
+                .append("     but this method does not support nested generics.").append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Use one of the methods that accepts a type token, e.g:").append(NL)
+                .append(NL)
+                .append("    List<Pair<String, Integer>> list = Instancio.ofList(new TypeToken<Pair<String, Integer>>() {})").append(NL)
+                .append("            // additional API methods...").append(NL)
+                .append("            .create();")
+                .append(NL)
+                .append("    or:").append(NL)
+                .append(NL)
+                .append("    List<Pair<String, Integer>> list = Instancio.of(new TypeToken<List<Pair<String, Integer>>>(){})").append(NL)
+                .append("            // additional API methods...").append(NL)
+                .append("            .create();")
+                .toString();
+    }
+
+    static String ofMapKeyOrValueType(final Class<?> keyOrValue) {
+        final String classWithTypeParams = String.format("%s<%s>",
+                keyOrValue.getSimpleName(), Format.getTypeVariablesCsv(keyOrValue));
+
+        return new StringBuilder()
+                .append("invalid usage of ofMap() method").append(NL)
+                .append(NL)
+                .append("  -> The argument ").append(classWithTypeParams)
+                .append(" is a generic class and also requires type parameter(s),").append(NL)
+                .append("     but this method does not support nested generics.").append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Use one of the methods that accepts a type token, e.g:").append(NL)
+                .append(NL)
+                .append("    Map<Item<String>, Pair<String, Integer>> map = Instancio.ofMap(").append(NL)
+                .append("                    new TypeToken<Item<String>>() {},").append(NL)
+                .append("                    new TypeToken<Pair<String, Integer>>() {})").append(NL)
+                .append("            // additional API methods...").append(NL)
+                .append("            .create();")
+                .append(NL)
+                .append("    or:").append(NL)
+                .append(NL)
+                .append("    Map<Item<String>, Pair<String, Integer>> map = Instancio.of(new TypeToken<Map<Item<String>, Pair<String, Integer>>>(){})").append(NL)
+                .append("            // additional API methods...").append(NL)
+                .append("            .create();")
                 .toString();
     }
 
@@ -61,7 +118,7 @@ final class ApiValidatorMessageHelper {
 
     static String withTypeParametersNumberOfParameters(
             final Class<?> rootClass,
-            final List<Class<?>> rootTypeParameters) {
+            final List<Type> rootTypeParameters) {
 
         final StringBuilder sb = new StringBuilder()
                 .append(INVALID_USAGE_OF_WITH_TYPE_PARAMETERS).append(NL)

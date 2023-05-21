@@ -27,6 +27,7 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.settings.Settings;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -50,8 +51,8 @@ public class ApiImpl<T> implements InstancioApi<T> {
         this.modelContextBuilder = suppliedContext.toBuilder();
     }
 
-    protected void addTypeParameters(final Class<?>... type) {
-        modelContextBuilder.withRootTypeParameters(Arrays.asList(type));
+    protected final void addTypeParameters(final Type... types) {
+        modelContextBuilder.withRootTypeParameters(Arrays.asList(types));
     }
 
     @Override

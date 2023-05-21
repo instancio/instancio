@@ -25,9 +25,18 @@ import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOf
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfMap;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TypeUtilsTest {
+
+    @Test
+    void getTypeParameterCount() {
+        assertThat(TypeUtils.getTypeParameterCount(String.class)).isZero();
+        assertThat(TypeUtils.getTypeParameterCount(List.class)).isOne();
+        assertThat(TypeUtils.getTypeParameterCount(List[].class)).isOne();
+    }
 
     @Test
     void getArrayClass() {

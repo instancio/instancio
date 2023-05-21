@@ -19,6 +19,8 @@ import org.instancio.InstancioApi;
 import org.instancio.InstancioOfClassApi;
 import org.instancio.Model;
 
+import java.lang.reflect.Type;
+
 public class OfClassApiImpl<T> extends ApiImpl<T> implements InstancioOfClassApi<T> {
 
     public OfClassApiImpl(final Class<T> klass) {
@@ -35,4 +37,7 @@ public class OfClassApiImpl<T> extends ApiImpl<T> implements InstancioOfClassApi
         return this;
     }
 
+    protected final void withTypeParameters(final Type... type) {
+        super.addTypeParameters(type);
+    }
 }

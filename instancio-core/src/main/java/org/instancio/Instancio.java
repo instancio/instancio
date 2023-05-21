@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.internal.ApiImpl;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.OfClassApiImpl;
 import org.instancio.internal.OfCollectionApiImpl;
 import org.instancio.internal.OfMapApiImpl;
@@ -329,7 +330,20 @@ public final class Instancio {
      */
     @SuppressWarnings("all")
     public static <T> InstancioOfCollectionApi<List<T>> ofList(final Class<T> elementType) {
-        return new OfCollectionApiImpl(List.class, elementType);
+        return new OfCollectionApiImpl(List.class, ApiValidator.validateOfListElementType(elementType));
+    }
+
+    /**
+     * Builder API for generating a {@link List} using a type token.
+     *
+     * @param elementTypeToken specifying the element type
+     * @param <T>              element type
+     * @return API builder reference
+     * @since 2.16.0
+     */
+    @SuppressWarnings("all")
+    public static <T> InstancioOfCollectionApi<List<T>> ofList(final TypeTokenSupplier<T> elementTypeToken) {
+        return new OfCollectionApiImpl(List.class, elementTypeToken);
     }
 
     /**
@@ -354,7 +368,20 @@ public final class Instancio {
      */
     @SuppressWarnings("all")
     public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final Class<T> elementType) {
-        return new OfCollectionApiImpl(Set.class, elementType);
+        return new OfCollectionApiImpl(Set.class, ApiValidator.validateOfSetElementType(elementType));
+    }
+
+    /**
+     * Builder API for generating a {@link Set} using a type token.
+     *
+     * @param elementTypeToken specifying the element type
+     * @param <T>              element type
+     * @return API builder reference
+     * @since 2.16.0
+     */
+    @SuppressWarnings("all")
+    public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final TypeTokenSupplier<T> elementTypeToken) {
+        return new OfCollectionApiImpl(Set.class, elementTypeToken);
     }
 
     /**
@@ -384,7 +411,27 @@ public final class Instancio {
             final Class<K> keyType,
             final Class<V> valueType) {
 
-        return new OfMapApiImpl(Map.class, keyType, valueType);
+        return new OfMapApiImpl(Map.class,
+                ApiValidator.validateOfMapKeyOrValueType(keyType),
+                ApiValidator.validateOfMapKeyOrValueType(valueType));
+    }
+
+    /**
+     * Builder API for generating a {@link Map} using type tokens.
+     *
+     * @param keyTypeToken   specifying the key type
+     * @param valueTypeToken specifying the value type
+     * @param <K>            key type
+     * @param <V>            value type
+     * @return API builder reference
+     * @since 2.16.0
+     */
+    @SuppressWarnings("all")
+    public static <K, V> InstancioOfCollectionApi<Map<K, V>> ofMap(
+            final TypeTokenSupplier<K> keyTypeToken,
+            final TypeTokenSupplier<V> valueTypeToken) {
+
+        return new OfMapApiImpl(Map.class, keyTypeToken, valueTypeToken);
     }
 
     @SuppressWarnings("unchecked")

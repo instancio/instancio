@@ -140,9 +140,9 @@ final class ModelContextHelper {
         return results;
     }
 
-    static Map<TypeVariable<?>, Class<?>> buildRootTypeMap(
+    static Map<TypeVariable<?>, Type> buildRootTypeMap(
             final Type rootType,
-            final List<Class<?>> rootTypeParameters) {
+            final List<Type> rootTypeParameters) {
 
         final Class<?> rootClass = TypeUtils.getRawType(rootType);
         ApiValidator.validateTypeParameters(rootClass, rootTypeParameters);
@@ -152,11 +152,11 @@ final class ModelContextHelper {
                 : rootClass;
 
         final TypeVariable<?>[] typeVariables = targetClass.getTypeParameters();
-        final Map<TypeVariable<?>, Class<?>> typeMap = new HashMap<>();
+        final Map<TypeVariable<?>, Type> typeMap = new HashMap<>();
 
         for (int i = 0; i < typeVariables.length; i++) {
             final TypeVariable<?> typeVariable = typeVariables[i];
-            final Class<?> actualType = rootTypeParameters.get(i);
+            final Type actualType = rootTypeParameters.get(i);
             LOG.trace("Mapping type variable '{}' to '{}'", typeVariable, actualType);
             typeMap.put(typeVariable, actualType);
         }
@@ -167,7 +167,7 @@ final class ModelContextHelper {
 
     private static void populateTypeMapFromGenericSuperclass(
             @Nullable final Class<?> rootClass,
-            final Map<TypeVariable<?>, Class<?>> typeMap) {
+            final Map<TypeVariable<?>, Type> typeMap) {
 
         if (rootClass == null) {
             return;

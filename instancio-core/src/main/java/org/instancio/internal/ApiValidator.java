@@ -24,6 +24,7 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.SettingKey;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,7 +77,33 @@ public final class ApiValidator {
         return type;
     }
 
-    public static void validateTypeParameters(final Class<?> rootClass, final List<Class<?>> rootTypeParameters) {
+    public static <T> Class<T> validateOfListElementType(final Class<T> elementType) {
+        return validateOfCollectionElementType(elementType, "ofList()");
+    }
+
+    public static <T> Class<T> validateOfSetElementType(final Class<T> elementType) {
+        return validateOfCollectionElementType(elementType, "ofSet()");
+    }
+
+    public static <T> Class<T> validateOfCollectionElementType(final Class<T> elementType, final String method) {
+        isTrue(elementType != null, "%s element type must not be null", method);
+
+        if (TypeUtils.getTypeParameterCount(elementType) > 0) {
+            throw Fail.withUsageError(ApiValidatorMessageHelper.ofCollectionElementType(elementType, method));
+        }
+        return elementType;
+    }
+
+    public static <T> Class<T> validateOfMapKeyOrValueType(final Class<T> keyOrValueType) {
+        isTrue(keyOrValueType != null, "ofMap() key/value type must not be null");
+
+        if (TypeUtils.getTypeParameterCount(keyOrValueType) > 0) {
+            throw Fail.withUsageError(ApiValidatorMessageHelper.ofMapKeyOrValueType(keyOrValueType));
+        }
+        return keyOrValueType;
+    }
+
+    public static void validateTypeParameters(final Class<?> rootClass, final List<Type> rootTypeParameters) {
         final int typeVarsLength = rootClass.isArray()
                 ? rootClass.getComponentType().getTypeParameters().length
                 : rootClass.getTypeParameters().length;
@@ -88,13 +115,16 @@ public final class ApiValidator {
         isTrue(typeVarsLength == rootTypeParameters.size(),
                 withTypeParametersNumberOfParameters(rootClass, rootTypeParameters));
 
-        for (Class<?> param : rootTypeParameters) {
-            if (param.getTypeParameters().length > 0) {
+        for (Type param : rootTypeParameters) {
+            if (param instanceof Class<?>) {
+                final Class<Object> paramRawType = TypeUtils.getRawType(param);
 
-                final String classWithTypeParams = String.format("%s<%s>",
-                        param.getSimpleName(), Format.getTypeVariablesCsv(param));
+                if (paramRawType.getTypeParameters().length > 0) {
+                    final String classWithTypeParams = String.format("%s<%s>",
+                            paramRawType.getSimpleName(), Format.getTypeVariablesCsv(paramRawType));
 
-                throw Fail.withUsageError(withTypeParametersNestedGenerics(classWithTypeParams));
+                    throw Fail.withUsageError(withTypeParametersNestedGenerics(classWithTypeParams));
+                }
             }
         }
     }
