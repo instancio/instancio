@@ -320,7 +320,7 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> useModelAsTypeArgument(final ModelContext<?> otherContext) {
-            rootTypeParameters.add(TypeUtils.getRawType(otherContext.getRootType()));
+            rootTypeParameters.add(otherContext.getRootType());
             maxDepth = otherContext.maxDepth;
             seed = otherContext.seed;
             settings = otherContext.settings;
