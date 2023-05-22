@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 
 public class OfClassApiImpl<T> extends ApiImpl<T> implements InstancioOfClassApi<T> {
 
-    public OfClassApiImpl(final Class<T> klass) {
+    public OfClassApiImpl(final Type klass) {
         super(klass);
     }
 

@@ -18,29 +18,18 @@ package org.instancio.internal;
 import org.instancio.InstancioOfCollectionApi;
 import org.instancio.Model;
 import org.instancio.Select;
-import org.instancio.TypeTokenSupplier;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.reflect.ParameterizedTypeImpl;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 public final class OfCollectionApiImpl<T, C extends Collection<T>>
         extends OfClassApiImpl<C>
         implements InstancioOfCollectionApi<C> {
 
-    public OfCollectionApiImpl(
-            final Class<C> collectionType,
-            final Class<T> elementType) {
-
-        super(collectionType);
-        withTypeParameters(elementType);
-    }
-
-    public OfCollectionApiImpl(
-            final Class<C> collectionType,
-            final TypeTokenSupplier<T> typeToken) {
-
-        super(collectionType);
-        withTypeParameters(ApiValidator.validateTypeToken(typeToken));
+    public OfCollectionApiImpl(final Class<C> collectionType, final Type elementType) {
+        super(new ParameterizedTypeImpl(collectionType, elementType));
     }
 
     private OfCollectionApiImpl(final Model<C> collectionModel) {

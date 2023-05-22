@@ -15,8 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.internal.util.Verify;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -51,9 +49,8 @@ public interface TypeToken<T> extends TypeTokenSupplier<T> {
      */
     @Override
     default Type get() {
-        Type superClass = getClass().getGenericInterfaces()[0];
-        Verify.isTrue(superClass instanceof ParameterizedType, "Missing type parameter");
-        return ((ParameterizedType) superClass).getActualTypeArguments()[0];
+        Type type = getClass().getGenericInterfaces()[0];
+        return ((ParameterizedType) type).getActualTypeArguments()[0];
     }
 
 }

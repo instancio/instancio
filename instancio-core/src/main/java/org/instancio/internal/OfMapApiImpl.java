@@ -17,32 +17,17 @@ package org.instancio.internal;
 
 import org.instancio.InstancioOfCollectionApi;
 import org.instancio.Select;
-import org.instancio.TypeTokenSupplier;
+import org.instancio.internal.reflect.ParameterizedTypeImpl;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 public final class OfMapApiImpl<K, V, M extends Map<K, V>>
         extends OfClassApiImpl<M>
         implements InstancioOfCollectionApi<M> {
 
-    public OfMapApiImpl(
-            final Class<M> mapType,
-            final Class<K> keyType,
-            final Class<V> valueType) {
-
-        super(mapType);
-        withTypeParameters(keyType, valueType);
-    }
-
-    public OfMapApiImpl(
-            final Class<M> mapType,
-            final TypeTokenSupplier<K> keyTypeToken,
-            final TypeTokenSupplier<V> valueTypeToken) {
-
-        super(mapType);
-        withTypeParameters(
-                ApiValidator.validateTypeToken(keyTypeToken),
-                ApiValidator.validateTypeToken(valueTypeToken));
+    public OfMapApiImpl(final Class<M> mapType, final Type keyType, final Type valueType) {
+        super(new ParameterizedTypeImpl(mapType, keyType, valueType));
     }
 
     @Override

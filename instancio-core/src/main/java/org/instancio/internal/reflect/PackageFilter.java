@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.instancio.internal.reflect;
+
+import org.instancio.documentation.InternalApi;
+
 /**
- * Implementation classes providing support for reflection.
+ * A filter for checking whether a {@link Package} should be excluded from processing.
  */
-package org.instancio.internal.reflection;
+@InternalApi
+public interface PackageFilter {
+
+    /**
+     * Checks if given package is excluded.
+     *
+     * @param pkg package to check
+     * @return {@code true} if package should be excluded, {@code false} otherwise
+     */
+    boolean isExcluded(Package pkg);
+}

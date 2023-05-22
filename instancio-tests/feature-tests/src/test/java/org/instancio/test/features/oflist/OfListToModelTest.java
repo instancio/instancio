@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.allStrings;
 
 @FeatureTag({Feature.OF_LIST, Feature.MODEL})
 class OfListToModelTest {
@@ -44,5 +45,18 @@ class OfListToModelTest {
                 .hasSize(expectedSize)
                 .extracting(Phone::getCountryCode)
                 .containsOnly("+1");
+    }
+
+    @Test
+    void nestedListsFromModel() {
+        final Model<List<String>> model = Instancio.ofList(String.class)
+                .generate(allStrings(), gen -> gen.string().length(1))
+                .toModel();
+
+        final List<List<String>> results = Instancio.ofList(model).create();
+
+        assertThat(results).isNotEmpty().allSatisfy(nested ->
+                assertThat(nested).isNotEmpty().allSatisfy(s ->
+                        assertThat(s).hasSize(1)));
     }
 }

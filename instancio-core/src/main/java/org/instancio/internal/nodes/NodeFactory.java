@@ -16,8 +16,8 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.internal.reflection.DeclaredAndInheritedFieldsCollector;
-import org.instancio.internal.reflection.FieldCollector;
+import org.instancio.internal.reflect.DeclaredAndInheritedFieldsCollector;
+import org.instancio.internal.reflect.FieldCollector;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.jetbrains.annotations.NotNull;

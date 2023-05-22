@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection;
+package org.instancio.internal.reflect;
 
 import org.instancio.internal.util.StringUtils;
 import org.jetbrains.annotations.Nullable;

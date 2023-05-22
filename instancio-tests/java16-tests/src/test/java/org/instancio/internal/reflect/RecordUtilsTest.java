@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.reflection;
+package org.instancio.internal.reflect;
 
 import org.instancio.internal.util.RecordUtils;
 import org.instancio.test.support.java16.record.AddressRecord;

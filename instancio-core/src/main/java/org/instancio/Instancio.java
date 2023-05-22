@@ -269,6 +269,7 @@ public final class Instancio {
      * @return API builder reference
      */
     public static <T> InstancioOfClassApi<T> of(final Class<T> type) {
+        ApiValidator.validateRootClass(type);
         return new OfClassApiImpl<>(type);
     }
 
@@ -343,7 +344,7 @@ public final class Instancio {
      */
     @SuppressWarnings("all")
     public static <T> InstancioOfCollectionApi<List<T>> ofList(final TypeTokenSupplier<T> elementTypeToken) {
-        return new OfCollectionApiImpl(List.class, elementTypeToken);
+        return new OfCollectionApiImpl(List.class, ApiValidator.validateTypeToken(elementTypeToken));
     }
 
     /**
@@ -381,7 +382,7 @@ public final class Instancio {
      */
     @SuppressWarnings("all")
     public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final TypeTokenSupplier<T> elementTypeToken) {
-        return new OfCollectionApiImpl(Set.class, elementTypeToken);
+        return new OfCollectionApiImpl(Set.class, ApiValidator.validateTypeToken(elementTypeToken));
     }
 
     /**
@@ -431,7 +432,9 @@ public final class Instancio {
             final TypeTokenSupplier<K> keyTypeToken,
             final TypeTokenSupplier<V> valueTypeToken) {
 
-        return new OfMapApiImpl(Map.class, keyTypeToken, valueTypeToken);
+        return new OfMapApiImpl(Map.class,
+                ApiValidator.validateTypeToken(keyTypeToken),
+                ApiValidator.validateTypeToken(valueTypeToken));
     }
 
     @SuppressWarnings("unchecked")

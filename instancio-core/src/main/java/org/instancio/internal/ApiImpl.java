@@ -36,8 +36,8 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     private final ModelContext.Builder<T> modelContextBuilder;
 
-    public ApiImpl(final Class<T> klass) {
-        this.modelContextBuilder = ModelContext.builder(ApiValidator.validateRootClass(klass));
+    public ApiImpl(final Type klass) {
+        this.modelContextBuilder = ModelContext.builder(klass);
     }
 
     public ApiImpl(final TypeTokenSupplier<T> typeToken) {
