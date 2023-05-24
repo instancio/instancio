@@ -31,6 +31,8 @@ import org.instancio.generator.specs.LocalDateTimeSpec;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.LoremIpsumSpec;
+import org.instancio.generator.specs.Mod10Spec;
+import org.instancio.generator.specs.Mod11Spec;
 import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.generator.specs.PathSpec;
@@ -149,6 +151,15 @@ class ValueSpecSubtypesOverrideMethodsTest {
     })
     @ParameterizedTest
     void net(final Class<?> specClass) {
+        assertSpecOverridesSuperMethods(specClass);
+    }
+
+    @ValueSource(classes = {
+            Mod10Spec.class,
+            Mod11Spec.class
+    })
+    @ParameterizedTest
+    void checksum(final Class<?> specClass) {
         assertSpecOverridesSuperMethods(specClass);
     }
 

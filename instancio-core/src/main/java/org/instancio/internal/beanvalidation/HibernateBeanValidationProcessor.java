@@ -26,14 +26,14 @@ import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.checksum.LuhnGenerator;
+import org.instancio.internal.generator.checksum.Mod10Generator;
+import org.instancio.internal.generator.checksum.Mod11Generator;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
-import org.instancio.internal.generator.text.LuhnGenerator;
-import org.instancio.internal.generator.text.Mod10Generator;
-import org.instancio.internal.generator.text.Mod11Generator;
 import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -116,7 +116,7 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
                 .endIndex(luhn.endIndex());
 
         if (luhn.checkDigitIndex() != -1) {
-            generator.checkIndex(luhn.checkDigitIndex());
+            generator.checkDigitIndex(luhn.checkDigitIndex());
         }
         return generator;
     }
@@ -129,7 +129,7 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
                 .weight(mod10.weight());
 
         if (mod10.checkDigitIndex() != -1) {
-            generator.checkIndex(mod10.checkDigitIndex());
+            generator.checkDigitIndex(mod10.checkDigitIndex());
         }
         return generator;
     }
@@ -140,11 +140,13 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
                 .endIndex(mod11.endIndex())
                 .threshold(mod11.threshold())
                 .treatCheck10As(mod11.treatCheck10As())
-                .treatCheck11As(mod11.treatCheck11As())
-                .reverse(mod11.processingDirection() == Mod11Check.ProcessingDirection.RIGHT_TO_LEFT);
+                .treatCheck11As(mod11.treatCheck11As());
 
+        if (mod11.processingDirection() == Mod11Check.ProcessingDirection.LEFT_TO_RIGHT) {
+            generator.leftToRight();
+        }
         if (mod11.checkDigitIndex() != -1) {
-            generator.checkIndex(mod11.checkDigitIndex());
+            generator.checkDigitIndex(mod11.checkDigitIndex());
         }
         return generator;
     }

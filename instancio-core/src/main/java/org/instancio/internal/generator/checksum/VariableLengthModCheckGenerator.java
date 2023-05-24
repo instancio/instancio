@@ -13,68 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator;
+package org.instancio.internal.generator.checksum;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
 
-public abstract class VariableLengthModuleGenerator<S extends VariableLengthModuleGenerator<S>>
-        extends BaseModuleGenerator implements InternalLengthGeneratorSpec<String> {
+import static org.instancio.internal.util.Constants.NL;
+
+abstract class VariableLengthModCheckGenerator
+        extends BaseModCheckGenerator implements InternalLengthGeneratorSpec<String> {
 
     private static final int DEFAULT_SIZE = 16;
 
     private int minSize = DEFAULT_SIZE;
     private int maxSize = DEFAULT_SIZE;
-
     private int startIndex;
     private int endIndex = -1;
     private int checkDigitIndex = -1;
-
     private int size;
 
-    public VariableLengthModuleGenerator(final GeneratorContext context) {
+    protected VariableLengthModCheckGenerator(final GeneratorContext context) {
         super(context);
     }
 
-    public S startIndex(final int idx) {
-        ApiValidator.isTrue(idx >= 0, "Start index must not be negative: %s", idx);
+    public VariableLengthModCheckGenerator startIndex(final int idx) {
+        ApiValidator.isTrue(idx >= 0, "start index must not be negative: %s", idx);
         this.startIndex = idx;
-        return self();
+        return this;
     }
 
-    public S endIndex(final int idx) {
-        ApiValidator.isTrue(idx >= 0, "End index must not be negative: %s", idx);
+    public VariableLengthModCheckGenerator endIndex(final int idx) {
+        ApiValidator.isTrue(idx >= 0, "end index must not be negative: %s", idx);
         // Avoid generating large strings
         // The default value of Hibernate "endIndex" is Integer.MAX_VALUE
         this.endIndex = idx == Integer.MAX_VALUE ? -1 : idx;
-        return self();
+        return this;
     }
 
-    public S checkIndex(final int idx) {
-        ApiValidator.isTrue(idx >= 0, "Check digit index must not be negative: %s", idx);
+    public VariableLengthModCheckGenerator checkDigitIndex(final int idx) {
+        ApiValidator.isTrue(idx >= 0, "check digit index must not be negative: %s", idx);
         this.checkDigitIndex = idx;
-        return self();
+        return this;
     }
 
-    public S length(final int length) {
-        ApiValidator.isTrue(length > 1,
-                "Module-valid number length must be greater than 1, but was: %s", length);
+    public VariableLengthModCheckGenerator length(final int length) {
+        ApiValidator.isTrue(length > 1, "number length must be greater than 1, but was: %s", length);
         this.minSize = length;
         this.maxSize = length;
-        return self();
+        return this;
     }
 
     @Override
-    public S length(final int min, final int max) {
+    public VariableLengthModCheckGenerator length(final int min, final int max) {
         ApiValidator.isTrue(min > 0 && max > 1,
-                "Module-valid number length must be greater than 1, but was: length(%s, %s)", min, max);
-        ApiValidator.isTrue(min <= max, "Min must be less than or equal to max");
+                "number length must be greater than 1, but was: length(%s, %s)", min, max);
+        ApiValidator.isTrue(min <= max, "min must be less than or equal to max");
 
         this.minSize = min;
         this.maxSize = max;
-        return self();
+        return this;
     }
 
     @Override
@@ -82,14 +81,30 @@ public abstract class VariableLengthModuleGenerator<S extends VariableLengthModu
         size = random.intRange(minSize, maxSize);
         endIndex = endIndex == -1 ? size - 1 : endIndex;
         checkDigitIndex = checkDigitIndex == -1 ? endIndex : checkDigitIndex;
+        validateCheckDigit();
+
         endIndex = endIndex == checkDigitIndex ? endIndex - 1 : endIndex;
         size = Math.max(checkDigitIndex + 1, Math.max(size, endIndex + 1));
+
         return super.tryGenerateNonNull(random);
     }
 
-    @SuppressWarnings("unchecked")
-    private S self() {
-        return (S) this;
+    private void validateCheckDigit() {
+        boolean isValidCheckDigit = checkDigitIndex >= 0 && (checkDigitIndex < startIndex || checkDigitIndex >= endIndex);
+        ApiValidator.isTrue(isValidCheckDigit, this::getCheckDigitErrorMessage);
+    }
+
+    private String getCheckDigitErrorMessage() {
+        //noinspection StringBufferReplaceableByString
+        return new StringBuilder()
+                .append("checkDigitIndex must satisfy condition:").append(NL)
+                .append("  ->  checkDigitIndex >= 0 && (checkDigitIndex < startIndex || checkDigitIndex >= endIndex)").append(NL)
+                .append(NL)
+                .append("Actual values were:").append(NL)
+                .append("  -> startIndex .......: ").append(startIndex).append(NL)
+                .append("  -> endIndex .........: ").append(endIndex).append(NL)
+                .append("  -> checkDigitIndex ..: ").append(checkDigitIndex).append(NL)
+                .toString();
     }
 
     @Override

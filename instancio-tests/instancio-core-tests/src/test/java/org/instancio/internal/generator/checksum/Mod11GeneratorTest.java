@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.text;
+package org.instancio.internal.generator.checksum;
 
 import org.instancio.Gen;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.params.IntRangeSource;
@@ -26,18 +25,18 @@ import org.junitpioneer.jupiter.params.IntRangeSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class LuhnGeneratorTest extends AbstractGeneratorTestTemplate<String, LuhnGenerator> {
+class Mod11GeneratorTest extends AbstractGeneratorTestTemplate<String, Mod11Generator> {
     private static final int DEFAULT_SIZE = 16;
 
-    private final LuhnGenerator generator = new LuhnGenerator(getGeneratorContext());
+    private final Mod11Generator generator = new Mod11Generator(getGeneratorContext());
 
     @Override
     protected String getApiMethod() {
-        return null;
+        return "mod11()";
     }
 
     @Override
-    protected LuhnGenerator generator() {
+    protected Mod11Generator generator() {
         return generator;
     }
 
@@ -54,42 +53,42 @@ class LuhnGeneratorTest extends AbstractGeneratorTestTemplate<String, LuhnGenera
         assertThat(generator.generate(random)).hasSize(length);
     }
 
-    @RepeatedTest(10_000)
+    @Test
     void withExplicitIndices() {
-        final int startIdx = Gen.ints().range(0, 10).get();
-        final int endIdx = startIdx + Gen.ints().range(2, 10).get();
+        final int sampleSize = 100_000;
 
-        final int checkIdx = startIdx == 0 || Gen.booleans().get()
-                ? endIdx
-                : Gen.ints().range(0, startIdx - 1).get();
+        for (int i = 0; i < sampleSize; i++) {
+            final int startIdx = Gen.ints().range(0, 10).get();
+            final int endIdx = startIdx + Gen.ints().range(2, 10).get();
 
-        final int size = endIdx + Gen.ints().range(1, 10).get();
+            final int checkIdx = startIdx == 0 || Gen.booleans().get()
+                    ? endIdx
+                    : Gen.ints().range(0, startIdx - 1).get();
 
-        generator
-                .startIndex(startIdx)
-                .endIndex(endIdx)
-                .checkIndex(checkIdx)
-                .length(size);
+            final int size = endIdx + Gen.ints().range(1, 10).get();
 
-        final String result = generator.generate(random);
-        assertThat(result).hasSize(size);
+            generator
+                    .startIndex(startIdx)
+                    .endIndex(endIdx)
+                    .checkDigitIndex(checkIdx)
+                    .length(size);
+
+            final String result = generator.generate(random);
+            assertThat(result).hasSize(size);
+        }
     }
 
     @Test
     void validationLength() {
         assertThatThrownBy(() -> generator.length(1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Module-valid number length must be greater than 1, but was: 1");
+                .hasMessageContaining("number length must be greater than 1, but was: 1");
     }
 
     @Test
-    void validationLengthRange() {
-        assertThatThrownBy(() -> generator.length(0, 1))
+    void validationThreshold() {
+        assertThatThrownBy(() -> generator.threshold(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Module-valid number length must be greater than 1, but was: length(0, 1)");
-
-        assertThatThrownBy(() -> generator.length(5, 4))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Min must be less than or equal to max");
+                .hasMessageContaining("threshold must not be negative: -1");
     }
 }

@@ -17,10 +17,10 @@ package org.instancio.internal.generator.domain.id;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EanSpec;
-import org.instancio.internal.generator.BaseModuleGenerator;
+import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
 import org.instancio.support.Global;
 
-public class EanGenerator extends BaseModuleGenerator implements EanSpec {
+public class EanGenerator extends BaseModCheckGenerator implements EanSpec {
 
     private EanType type = EanType.EAN13;
 

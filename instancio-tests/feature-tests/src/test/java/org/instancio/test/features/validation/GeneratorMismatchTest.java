@@ -141,6 +141,12 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertChecksumGenerators() {
+        assertMessageContains("mod10()", gen -> gen.checksum().mod10());
+        assertMessageContains("mod11()", gen -> gen.checksum().mod11());
+    }
+
+    @Test
     void assertIdGenerators() {
         assertMessageContains("ean()", gen -> gen.id().ean());
     }

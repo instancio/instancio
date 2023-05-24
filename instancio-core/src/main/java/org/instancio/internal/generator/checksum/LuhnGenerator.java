@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.text;
+package org.instancio.internal.generator.checksum;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.VariableLengthModuleGenerator;
 
-public class LuhnGenerator extends VariableLengthModuleGenerator<LuhnGenerator> {
+public class LuhnGenerator extends VariableLengthModCheckGenerator {
 
     public LuhnGenerator(final GeneratorContext context) {
         super(context);
@@ -38,6 +37,18 @@ public class LuhnGenerator extends VariableLengthModuleGenerator<LuhnGenerator> 
     @Override
     public LuhnGenerator nullable(final boolean isNullable) {
         super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
+    public LuhnGenerator startIndex(final int idx) {
+        super.startIndex(idx);
+        return this;
+    }
+
+    @Override
+    public LuhnGenerator endIndex(final int idx) {
+        super.endIndex(idx);
         return this;
     }
 }

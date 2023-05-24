@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator;
+package org.instancio.internal.generator.checksum;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.NumberUtils;
-import org.instancio.support.Global;
 
-import java.util.stream.IntStream;
+public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
 
-public abstract class BaseModuleGenerator extends AbstractGenerator<String> {
-
-    public BaseModuleGenerator() {
-        super(Global.generatorContext());
-    }
-
-    public BaseModuleGenerator(final GeneratorContext context) {
+    protected BaseModCheckGenerator(final GeneratorContext context) {
         super(context);
     }
+
+    protected abstract int payloadLength();
 
     @Override
     protected String tryGenerateNonNull(final Random random) {
@@ -48,7 +44,7 @@ public abstract class BaseModuleGenerator extends AbstractGenerator<String> {
     }
 
     private char getCheckDigit(final String payload) {
-        int result = base() - module(payload);
+        int result = base() - modulo(payload);
         if (result == 10) {
             return treat10As();
         } else if (result == 11) {
@@ -58,13 +54,21 @@ public abstract class BaseModuleGenerator extends AbstractGenerator<String> {
         }
     }
 
-    private int module(final String payload) {
-        final String newPayload = reverse() ? new StringBuilder(payload).reverse().toString() : payload;
-        int sum = IntStream.range(0, payload.length())
-                .map(i -> extractDigit(i, newPayload))
-                .map(n -> sumDigits() ? NumberUtils.sumDigits(n) : n)
-                .map(n -> sumDigits() ? NumberUtils.sumDigits(n) : n)
-                .sum();
+    private int modulo(final String payload) {
+        final String newPayload = direction() == Direction.RIGHT_TO_LEFT
+                ? new StringBuilder(payload).reverse().toString()
+                : payload;
+
+        int sum = 0;
+        int bound = payload.length();
+        for (int i = 0; i < bound; i++) {
+            int n = extractDigit(i, newPayload);
+            if (sumDigits()) {
+                n = NumberUtils.sumDigits(n);
+                n = NumberUtils.sumDigits(n);
+            }
+            sum += n;
+        }
         return sum % base();
     }
 
@@ -77,8 +81,6 @@ public abstract class BaseModuleGenerator extends AbstractGenerator<String> {
     protected int prefixLength() {
         return 0;
     }
-
-    protected abstract int payloadLength();
 
     protected int suffixLength() {
         return 1;
@@ -100,11 +102,11 @@ public abstract class BaseModuleGenerator extends AbstractGenerator<String> {
         return true;
     }
 
-    protected boolean reverse() {
-        return true;
+    protected Direction direction() {
+        return Direction.RIGHT_TO_LEFT;
     }
 
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract") // Why PMD is flagging this method empty?
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected int base() {
         return 10;
     }
@@ -115,5 +117,9 @@ public abstract class BaseModuleGenerator extends AbstractGenerator<String> {
 
     protected char treat11As() {
         return '0';
+    }
+
+    enum Direction {
+        LEFT_TO_RIGHT, RIGHT_TO_LEFT
     }
 }

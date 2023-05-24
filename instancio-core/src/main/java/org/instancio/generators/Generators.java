@@ -372,6 +372,16 @@ public class Generators {
     }
 
     /**
+     * Provides access to checksum generators.
+     *
+     * @return built-in checksum generators
+     * @since 2.16.0
+     */
+    public ChecksumGenerators checksum() {
+        return new ChecksumGenerators(context);
+    }
+
+    /**
      * Provides access to IO generators.
      *
      * @return built-in IO generators
@@ -433,7 +443,7 @@ public class Generators {
      * Provides access to finance-related generators.
      *
      * @return built-in finance-related generators
-     * @since 2.11.0s
+     * @since 2.11.0
      */
     public FinanceGenerators finance() {
         return new FinanceGenerators(context);

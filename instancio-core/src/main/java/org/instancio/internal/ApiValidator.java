@@ -229,12 +229,12 @@ public final class ApiValidator {
         if (!condition) throw Fail.withUsageError(String.format(message, values));
     }
 
-    public static void isFalse(final boolean condition, final String message, final Object... values) {
-        if (condition) throw Fail.withUsageError(String.format(message, values));
+    public static void isTrue(final boolean condition, final Supplier<String> message) {
+        if (!condition) throw Fail.withUsageError(message.get());
     }
 
-    private static void isTrue(final boolean condition, final Supplier<String> message) {
-        if (!condition) throw Fail.withUsageError(message.get());
+    public static void isFalse(final boolean condition, final String message, final Object... values) {
+        if (condition) throw Fail.withUsageError(String.format(message, values));
     }
 
     public static void isFalse(final boolean condition, final Supplier<String> message) {
