@@ -758,6 +758,10 @@ Generators
 │
 ├── optional()
 │
+├── checksum()
+│   └── mod10()
+│   └── mod11()
+│
 ├── math()
 │   └── bigInteger()
 │   └── bigDecimal()

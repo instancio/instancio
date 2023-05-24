@@ -17,12 +17,13 @@ package org.instancio.internal.generator.domain.id;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.IsbnSpec;
-import org.instancio.internal.generator.BaseModuleGenerator;
+import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
+import org.instancio.support.Global;
 
-public class IsbnGenerator extends BaseModuleGenerator implements IsbnSpec {
+public class IsbnGenerator extends BaseModCheckGenerator implements IsbnSpec {
 
     public IsbnGenerator() {
-        super();
+        super(Global.generatorContext());
     }
 
     public IsbnGenerator(final GeneratorContext context) {

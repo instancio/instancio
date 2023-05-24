@@ -30,6 +30,7 @@ import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.ShortSpec;
 import org.instancio.generator.specs.StringSpec;
+import org.instancio.generators.ChecksumSpecs;
 import org.instancio.generators.FinanceSpecs;
 import org.instancio.generators.IdSpecs;
 import org.instancio.generators.IoSpecs;
@@ -280,6 +281,16 @@ public final class Gen {
      */
     public static TextSpecs text() {
         return new TextSpecs();
+    }
+
+    /**
+     * Provides generators for checksum-valid numbers.
+     *
+     * @return built-in checksum generators
+     * @since 2.16.0
+     */
+    public static ChecksumSpecs checksum() {
+        return new ChecksumSpecs();
     }
 
     /**

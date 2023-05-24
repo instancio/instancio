@@ -18,11 +18,11 @@ package org.instancio.internal.generator.domain.finance;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CreditCardSpec;
-import org.instancio.internal.generator.BaseModuleGenerator;
+import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
 import org.instancio.support.Global;
 import org.jetbrains.annotations.VisibleForTesting;
 
-public class CreditCardNumberGenerator extends BaseModuleGenerator implements CreditCardSpec {
+public class CreditCardNumberGenerator extends BaseModCheckGenerator implements CreditCardSpec {
 
     private CCTypeImpl cardType;
 
