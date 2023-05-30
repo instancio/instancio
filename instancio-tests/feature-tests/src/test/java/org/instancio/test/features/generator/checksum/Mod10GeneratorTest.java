@@ -16,14 +16,17 @@
 package org.instancio.test.features.generator.checksum;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.root;
 
 @FeatureTag(Feature.GENERATOR)
+@ExtendWith(InstancioExtension.class)
 class Mod10GeneratorTest {
 
     @Test
@@ -51,11 +54,13 @@ class Mod10GeneratorTest {
 
     @Test
     void createAsNumber() {
+        final int length = 5;
         final Long result = Instancio.of(Long.class)
-                .generate(root(), gen -> gen.checksum().mod10().length(8).as(Long::valueOf))
+                .generate(root(), gen -> gen.checksum().mod10().length(length)
+                        .as(Long::valueOf))
                 .create();
 
         assertThat(result).isPositive();
-        assertThat(result.toString()).hasSize(8);
+        assertThat(result.toString()).hasSize(length);
     }
 }

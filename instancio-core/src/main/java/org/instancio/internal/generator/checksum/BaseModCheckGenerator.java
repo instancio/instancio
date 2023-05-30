@@ -40,7 +40,16 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
     }
 
     protected String payload(final Random random) {
-        return random.digits(payloadLength());
+        final int length = payloadLength();
+        final char[] res = new char[length];
+
+        // Avoid generating numbers that start with zero to prevent the loss of
+        // the leading digit if the generated string is converted to an int/long
+        res[0] = random.characterRange('1', '9');
+        for (int i = 1; i < length; i++) {
+            res[i] = random.characterRange('0', '9');
+        }
+        return new String(res);
     }
 
     private char getCheckDigit(final String payload) {
