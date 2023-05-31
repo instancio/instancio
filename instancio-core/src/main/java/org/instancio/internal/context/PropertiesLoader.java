@@ -38,7 +38,7 @@ public final class PropertiesLoader {
         final Properties properties = new Properties();
         try (InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
             if (inStream == null) {
-                LOG.debug("No '{}' found on classpath", file);
+                LOG.debug("No custom '{}' found on classpath. Using default settings.", file);
                 return properties;
             }
             LOG.info("Found '{}' on classpath", file);
