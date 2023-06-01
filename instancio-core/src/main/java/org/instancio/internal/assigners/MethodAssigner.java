@@ -43,11 +43,13 @@ final class MethodAssigner implements Assigner {
     private final Assigner fieldAssigner;
     private final Settings settings;
     private final MethodNameResolver setterNameResolver;
+    private final int excludedModifiers;
 
     MethodAssigner(final Settings settings) {
         this.settings = settings;
         this.setterNameResolver = getMethodNameResolver(settings.get(Keys.SETTER_STYLE));
         this.fieldAssigner = new FieldAssigner(settings);
+        this.excludedModifiers = settings.get(Keys.SETTER_EXCLUDE_MODIFIER);
 
         LOG.trace("{}, {}, {}, {}", AssignmentType.METHOD,
                 settings.get(Keys.SETTER_STYLE),
@@ -90,6 +92,11 @@ final class MethodAssigner implements Assigner {
 
         if (methodOpt.isPresent()) {
             final Method method = methodOpt.get();
+
+            if (AssignerUtil.isExcluded(method.getModifiers(), excludedModifiers)) {
+                return;
+            }
+
             try {
                 method.setAccessible(true);
                 method.invoke(target, arg);
