@@ -17,6 +17,7 @@ package org.instancio.settings;
 
 import org.instancio.Mode;
 import org.instancio.assignment.AssignmentType;
+import org.instancio.assignment.MethodModifier;
 import org.instancio.assignment.OnSetFieldError;
 import org.instancio.assignment.OnSetMethodError;
 import org.instancio.assignment.OnSetMethodNotFound;
@@ -265,6 +266,10 @@ public final class Keys {
      * default is {@link AssignmentType#FIELD}; property name {@code assignment.type}.
      *
      * @see AssignmentType
+     * @see #ON_SET_METHOD_ERROR
+     * @see #ON_SET_METHOD_NOT_FOUND
+     * @see #SETTER_EXCLUDE_MODIFIER
+     * @see #SETTER_STYLE
      * @since 2.1.0
      */
     @ExperimentalApi
@@ -313,6 +318,35 @@ public final class Keys {
     @ExperimentalApi
     public static final SettingKey<SetterStyle> SETTER_STYLE = register(
             "setter.style", SetterStyle.class, SetterStyle.SET);
+    /**
+     * Specifies modifier exclusions for setter-methods;
+     * default is {@code 0} (no exclusions);
+     * property name {@code setter.exclude.modifier}.
+     *
+     * <p>This setting can be used to control which setter methods are allowed
+     * to be invoked (based on method modifiers) when {@link #ASSIGNMENT_TYPE}
+     * is set to {@link AssignmentType#METHOD}). For instance, using this
+     * setting, it is possible to restrict method assignment to {@code public}
+     * setters only (by default, a setter is invoked even if it is {@code private}).
+     *
+     * <p>Multiple modifiers can be specified using logical {@code OR}
+     * operator. For example, the following allows only {@code public} methods:
+     *
+     * <pre>{@code
+     *   int exclusions = MethodModifier.PACKAGE_PRIVATE
+     *                  | MethodModifier.PROTECTED
+     *                  | MethodModifier.PRIVATE;
+     *
+     *   Settings.create().set(Keys.SETTER_EXCLUDE_MODIFIER, exclusions);
+     * }</pre>
+     *
+     * @see #ASSIGNMENT_TYPE
+     * @see MethodModifier
+     * @since 2.16.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Integer> SETTER_EXCLUDE_MODIFIER = register(
+            "setter.exclude.modifier", Integer.class, 0);
     /**
      * Specifies whether values should be generated based on
      * <a href="https://beanvalidation.org/3.0/">Jakarta Bean Validation 3.0</a>
