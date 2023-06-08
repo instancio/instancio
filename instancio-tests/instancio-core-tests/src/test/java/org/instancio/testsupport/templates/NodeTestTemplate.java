@@ -48,6 +48,7 @@ public abstract class NodeTestTemplate<T> {
                 .maxDepth(withMaxDepth())
                 .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
                 .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
+                .conditionalOriginSelectors(new BooleanSelectorMap(Collections.emptySet()))
                 .build();
         final NodeFactory nodeFactory = new NodeFactory(nodeContext);
         final TypeTokenSupplier<Type> typeSupplier = typeContext::getGenericType;

@@ -17,22 +17,27 @@ package org.instancio.test.guava.collect;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.internal.util.Constants;
 import org.instancio.junit.InstancioExtension;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.allInts;
 import static org.instancio.Select.allLongs;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.root;
+import static org.instancio.When.valueOf;
 import static org.instancio.guava.GenGuava.table;
 
 @ExtendWith(InstancioExtension.class)
@@ -89,6 +94,66 @@ class GuavaTableTest {
         assertThat(result.table1.size()).isEqualTo(3);
         assertThat(result.table1.rowKeySet()).containsExactlyInAnyOrder(items);
         assertThat(result.table2.rowKeySet()).doesNotContain(items);
+    }
+
+    @RepeatedTest(10)
+    void conditionalWithinTable() {
+        final List<Table<String, Integer, Long>> result = Instancio.of(new TypeToken<List<Table<String, Integer, Long>>>() {})
+                .generate(allStrings(), gen -> gen.oneOf("S1", "S2", "S3"))
+                .when(valueOf(allStrings()).is("S1")
+                        .set(allInts(), -1)
+                        .set(allLongs(), -10L))
+                .when(valueOf(allStrings()).is("S2")
+                        .set(allInts(), -2)
+                        .set(allLongs(), -20L))
+                .create();
+
+        assertThat(result).isNotEmpty();
+
+        result.forEach(table -> {
+            assertThat(table.isEmpty()).isFalse();
+
+            final Map<String, Map<Integer, Long>> map = table.rowMap();
+
+            assertThat(map).isNotEmpty().allSatisfy((String key, Map<Integer, Long> rowMap) -> {
+
+                assertThat(rowMap).allSatisfy((Integer k, Long v) -> {
+
+                    if ("S1".equals(key)) {
+                        assertThat(k).isEqualTo(-1);
+                        assertThat(v).isEqualTo(-10);
+                    } else if ("S2".equals(key)) {
+                        assertThat(k).isEqualTo(-2);
+                        assertThat(v).isEqualTo(-20);
+                    } else {
+                        assertThat(k).isNotIn(-1, -2);
+                        assertThat(v).isNotIn(-10, -20);
+                    }
+                });
+            });
+        });
+    }
+
+    @RepeatedTest(10)
+    void conditionalAcrossTables() {
+        final String expected = Gen.oneOf("foo1", "bar1").get();
+
+        final TableHolder result = Instancio.of(TableHolder.class)
+                .set(allStrings().within(field("table1").toScope()), expected)
+                .when(valueOf(field("table1"))
+                        .satisfies((Table<String, Character, Integer> t) -> t.containsRow("foo1"))
+                        .set(allStrings().within(field("table2").toScope()), "foo2"))
+                .when(valueOf(field("table1"))
+                        .satisfies((Table<String, Character, Integer> t) -> t.containsRow("bar1"))
+                        .set(allStrings().within(field("table2").toScope()), "bar2"))
+                .create();
+
+
+        if (result.table1.containsRow("foo1")) {
+            assertThat(result.table2.containsRow("foo2")).isTrue();
+        } else if (result.table1.containsRow("bar1")) {
+            assertThat(result.table2.containsRow("bar2")).isTrue();
+        }
     }
 
     private static class TableHolder {

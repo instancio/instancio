@@ -20,10 +20,15 @@ import org.instancio.generator.Hints;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class InstantiatingHandler implements NodeHandler {
+
+    private static final Hints POPULATE_ALL_HINT = Hints.builder()
+            .afterGenerate(AfterGenerate.POPULATE_ALL)
+            .build();
 
     private final Instantiator instantiator;
 
@@ -34,18 +39,19 @@ public class InstantiatingHandler implements NodeHandler {
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final InternalNode node) {
+        if (node.is(NodeKind.RECORD) && !node.getChildren().isEmpty()) {
+            // If a record has args, it must be populated
+            // via the canonical constructor by the engine
+            return GeneratorResult.emptyResult();
+        }
+
         final Class<?> targetClass = node.getTargetClass();
 
         if (ReflectionUtils.isArrayOrConcrete(targetClass)) {
-            final Hints hints = Hints.builder()
-                    .afterGenerate(AfterGenerate.POPULATE_ALL)
-                    .build();
-
             final Object object = instantiator.instantiate(targetClass);
-            return GeneratorResult.create(object, hints);
+            return GeneratorResult.create(object, POPULATE_ALL_HINT);
         }
+
         return GeneratorResult.emptyResult();
     }
-
-
 }

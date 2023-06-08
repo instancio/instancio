@@ -234,8 +234,7 @@ public final class InternalNode {
         return new StringBuilder().append("Node[")
                 .append(nodeName)
                 .append(", depth=").append(depth)
-                .append(", #chn=").append(children.size())
-                .append(", ").append(Format.withoutPackage(type))
+                .append(", type=").append(Format.withoutPackage(type))
                 .append(']')
                 .toString();
     }

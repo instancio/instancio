@@ -42,6 +42,11 @@ public final class CollectionUtils {
         return map == null || map.isEmpty();
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T lastElement(final List<? super T> list) {
+        return (T) list.get(list.size() - 1);
+    }
+
     @SafeVarargs
     public static <T> List<T> asUnmodifiableList(final T... values) {
         return Collections.unmodifiableList(asArrayList(values));

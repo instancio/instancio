@@ -40,7 +40,7 @@ public final class ExceptionHandler {
     public static <T> Optional<T> conditionalFailOnError(final Supplier<T> supplier) {
         try {
             return Optional.ofNullable(supplier.get());
-        } catch (InstancioTerminatingException ex) {
+        } catch (AssertionError | InstancioTerminatingException ex) {
             throw ex;
         } catch (Throwable ex) { //NOPMD
             if (shouldFailOnError()) {
@@ -54,7 +54,7 @@ public final class ExceptionHandler {
     public static void conditionalFailOnError(final VoidFunction function) {
         try {
             function.invoke();
-        } catch (InstancioTerminatingException ex) {
+        } catch (AssertionError | InstancioTerminatingException ex) {
             throw ex;
         } catch (Throwable ex) { //NOPMD
             if (shouldFailOnError()) {

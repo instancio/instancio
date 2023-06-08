@@ -36,6 +36,10 @@ public class BooleanSelectorMap {
         return selectorMap;
     }
 
+    public Set<TargetSelector> getOriginSelectors(final InternalNode node) {
+        return selectorMap.getSelectors(node);
+    }
+
     Set<TargetSelector> getTargetSelectors() {
         return targetSelectors;
     }

@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
@@ -223,7 +224,7 @@ public interface InstancioApi<T> {
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param supplier providing the value for given selector
-     * @param <V>      type of the value to generate
+     * @param <V>      type of the supplied value
      * @return API builder reference
      * @see #supply(TargetSelector, Generator)
      */
@@ -381,6 +382,94 @@ public interface InstancioApi<T> {
      * @since 1.4.0
      */
     InstancioApi<T> subtype(TargetSelector selector, Class<?> subtype);
+
+    /**
+     * Generates values based on given conditional expressions.
+     *
+     * <p><b>Note:</b> this is an experimental API that only supports
+     * basic use-cases (see below for limitations).
+     *
+     * <p>A {@link Conditional} can be created using one of the builder methods
+     * provided by the {@link When} class which provides two types of builders:
+     *
+     * <ul>
+     *   <li>{@code When.valueOf(originSelector).satisfies(predicate).set(destinationSelector, value)}</li>
+     *   <li>{@code When.given(originSelector, destinationSelector).set(predicate, value)}</li>
+     * </ul>
+     *
+     * <p>If the value matched by the {@code originSelector} satisfies given
+     * {@code predicate}, then all values matched by the
+     * {@code destinationSelector} will be set to the specified value.
+     * The origin selector must match only one target.
+     *
+     * <p>The following snippet uses {@link When#given(TargetSelector, TargetSelector)}
+     * to create a conditional that sets {@code Phone.countryCode} values based
+     * on the value of {@code Address.country}:
+     *
+     * <pre>{@code
+     * Conditional conditional = When.given(field(Address::getCountry), field(Phone::getCountryCode))
+     *     .set(When.isIn("Canada", "USA"), "+1")
+     *     .set(When.is("Italy"), "+39")
+     *     .set(When.is("Poland"), "+48")
+     *     .set(When.is("Germany"), "+49");
+     *
+     * Person person = Instancio.of(Person.class)
+     *     .generate(field(Address::getCountry), gen -> gen.oneOf("Canada", "USA", "Italy", "Poland", "Germany"))
+     *     .when(conditional)
+     *     .create();
+     * }</pre>
+     *
+     * <p>The above API allows specifying different values for a given
+     * origin/destination pair. An alternative for creating a conditional
+     * is provided by {@link When#valueOf(TargetSelector)}. This method
+     * allows specifying an origin with different destinations:
+     *
+     * <pre>{@code
+     * Conditional[] conditionals = {
+     *     When.valueOf(Order::getStatus)
+     *             .is(OrderStatus.SHIPPED)
+     *             .supply(field(Order::getDeliveryDueDate), () -> LocalDate.now().plusDays(2)),
+     *
+     *     When.valueOf(Order::getStatus)
+     *             .is(OrderStatus.CANCELLED)
+     *             .set(field(Order::getCancellationReason), "Shipping delays")
+     *             .generate(field(Order::getCancellationDate), gen -> gen.temporal().localDate().past())
+     * };
+     *
+     * List<Order> orders = Instancio.ofList(Order.class)
+     *     .generate(all(OrderStatus.class), gen -> gen.oneOf(OrderStatus.SHIPPED, OrderStatus.CANCELLED))
+     *     .when(conditionals)
+     *     .create();
+     * }</pre>
+     *
+     * <h4>Limitations of conditionals</h4>
+     *
+     * <p>Using conditionals has a few limitations to be aware of.
+     *
+     * <ul>
+     *   <li>The origin selector must match a single target.
+     *       It must not be a {@link SelectorGroup} created via
+     *       {@link Select#all(GroupableSelector...)} or primitive/wrapper
+     *       selector, such as {@link Select#allInts()}</li>
+     *   <li>A conditional where the origin selector's target is within
+     *       a collection element can only have a destination selector
+     *       within the same collection element.</li>
+     *   <li>When using conditionals with Java records, the conditional should
+     *       be specified top-down (from outer record to inner record).</li>
+     *   <li>Circular conditionals will produce an error.</li>
+     * </ul>
+     *
+     * @param conditionals one or more conditional expressions for setting
+     *                     values only when a given condition is satisfied
+     * @return API builder reference
+     * @throws InstancioApiException if the origin selector of a conditional
+     *                               matches more than one target, or the
+     *                               conditionals form a cycle
+     * @see When
+     * @since 3.0.0
+     */
+    @ExperimentalApi
+    InstancioApi<T> when(Conditional... conditionals);
 
     /**
      * Specifies the maximum depth for populating an object.

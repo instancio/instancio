@@ -17,47 +17,53 @@ package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
 
-import java.util.UUID;
-
-//
-//        A
-//      / |  \
-//    ID  B    C
-//        |   /|\
-//       ID  B D ID
-//           |  \
-//           ID  ID
+/**
+ * <pre>
+ *  Depth
+ *    0     MultipleClassesWithId
+ *                 |
+ *    1            A
+ *               / |  \
+ *    2        ID  B    C
+ *             |   |   /|\
+ *    3     value  ID  B D ID
+ *                /    |  \   \
+ *    4        value  ID  ID  value
+ *                    |    \
+ *    5            value  value
+ * </pre>
+ */
 @Data
-public class MultipleClassesWithId {
+public class MultipleClassesWithId<T> {
 
-    private A a;
+    private A<T> a;
 
     @Data
-    public static class ID {
-        private UUID id;
+    public static class ID<T> {
+        private T value;
     }
 
     @Data
-    public static class A {
-        private ID id;
-        private B b;
-        private C c;
+    public static class A<T> {
+        private ID<T> id;
+        private B<T> b;
+        private C<T> c;
     }
 
     @Data
-    public static class B {
-        private ID id;
+    public static class B<T> {
+        private ID<T> id;
     }
 
     @Data
-    public static class C {
-        private ID id;
-        private B b;
-        private D d;
+    public static class C<T> {
+        private ID<T> id;
+        private B<T> b;
+        private D<T> d;
     }
 
     @Data
-    public static class D {
-        private ID id;
+    public static class D<T> {
+        private ID<T> id;
     }
 }

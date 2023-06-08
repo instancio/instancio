@@ -52,6 +52,7 @@ class SelectorMapTest {
             .maxDepth(Integer.MAX_VALUE)
             .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
             .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
+            .conditionalOriginSelectors(new BooleanSelectorMap(Collections.emptySet()))
             .build();
 
     private final NodeFactory nodeFactory = new NodeFactory(nodeContext);

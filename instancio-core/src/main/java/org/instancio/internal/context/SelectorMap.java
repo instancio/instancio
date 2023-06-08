@@ -25,6 +25,7 @@ import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.ScopelessSelector;
 import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -120,6 +121,10 @@ final class SelectorMap<V> {
         } else if (targetSelector instanceof PredicateSelector) {
             final PredicateSelectorImpl selector = (PredicateSelectorImpl) targetSelector;
             predicateSelectors.add(new PredicateSelectorEntry<>(selector, value));
+        } else {
+            // Other types not expected because selectors should be
+            // pre-processed by ModelContext being adding to the selector map
+            throw Fail.withFataInternalError("Invalid selector type: " + targetSelector.getClass().getName());
         }
     }
 
@@ -173,7 +178,7 @@ final class SelectorMap<V> {
      */
     List<V> getValues(final InternalNode node) {
         final List<SelectorImpl> selectorsWithParent = getSelectorsWithParent(node, getCandidates(node), !FIND_ONE_ONLY);
-        final List<V> values = new ArrayList<>(selectorsWithParent.size() + predicateSelectors.size());
+        final List<V> values = new ArrayList<>();
 
         for (SelectorImpl s : selectorsWithParent) {
             markUsed(s);
@@ -188,6 +193,26 @@ final class SelectorMap<V> {
         }
 
         return values;
+    }
+
+    /**
+     * Returns all selectors that match given {@code node}.
+     *
+     * @param node to match selectors against
+     * @return selectors matching the node
+     */
+    Set<TargetSelector> getSelectors(final InternalNode node) {
+        final List<SelectorImpl> selectorsWithParent = getSelectorsWithParent(node, getCandidates(node), !FIND_ONE_ONLY);
+
+        final Set<TargetSelector> results = new HashSet<>(selectorsWithParent);
+
+        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+            if (isPredicateMatch(node, entry)) {
+                results.add(entry.predicateSelector);
+            }
+        }
+
+        return results;
     }
 
     private static boolean isPredicateMatch(final InternalNode node, final PredicateSelectorEntry<?> entry) {
