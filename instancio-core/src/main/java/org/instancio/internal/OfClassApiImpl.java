@@ -36,8 +36,4 @@ public class OfClassApiImpl<T> extends ApiImpl<T> implements InstancioOfClassApi
         super.addTypeParameters(type);
         return this;
     }
-
-    protected final void withTypeParameters(final Type... type) {
-        super.addTypeParameters(type);
-    }
 }
