@@ -30,6 +30,7 @@ import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.internal.spi.InternalServiceProviderContext;
 import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
@@ -92,8 +93,8 @@ public final class ModelContext<T> {
                 : Collections.unmodifiableMap(buildRootTypeMap(builder.rootType, builder.rootTypeParameters));
 
         seed = builder.seed;
+        maxDepth = builder.maxDepth;
         settings = createSettings(builder);
-        maxDepth = getMaxDepth(builder.maxDepth, settings);
 
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
 
@@ -111,10 +112,6 @@ public final class ModelContext<T> {
         providers = new Providers(
                 ServiceLoaders.loadAll(InstancioServiceProvider.class),
                 new InternalServiceProviderContext(settings, random));
-    }
-
-    private static Integer getMaxDepth(final Integer builderMaxDepth, final Settings settings) {
-        return builderMaxDepth == null ? settings.get(Keys.MAX_DEPTH) : builderMaxDepth;
     }
 
     private static Settings createSettings(final Builder<?> builder) {
@@ -151,7 +148,7 @@ public final class ModelContext<T> {
     void reportUnusedSelectorWarnings() {
         if (settings.get(Keys.MODE) == Mode.STRICT) {
             final UnusedSelectorReporter reporter = UnusedSelectorReporter.builder()
-                    .maxDepth(maxDepth)
+                    .maxDepth(getMaxDepth())
                     .ignored(ignoredSelectorMap.getSelectorMap().getUnusedKeys())
                     .nullable(nullableSelectorMap.getSelectorMap().getUnusedKeys())
                     .generators(generatorSelectorMap.getSelectorMap().getUnusedKeys())
@@ -167,8 +164,8 @@ public final class ModelContext<T> {
         return rootType;
     }
 
-    public int getMaxDepth() {
-        return maxDepth;
+    public Integer getMaxDepth() {
+        return ObjectUtils.defaultIfNull(maxDepth, settings.get(Keys.MAX_DEPTH));
     }
 
     public boolean isIgnored(final InternalNode node) {
@@ -321,15 +318,20 @@ public final class ModelContext<T> {
 
         public Builder<T> useModelAsTypeArgument(final ModelContext<?> otherContext) {
             rootTypeParameters.add(otherContext.getRootType());
-            maxDepth = otherContext.maxDepth;
             seed = otherContext.seed;
-            settings = otherContext.settings;
             nullableTargets.addAll(otherContext.nullableSelectorMap.getTargetSelectors());
             ignoredTargets.addAll(otherContext.ignoredSelectorMap.getTargetSelectors());
             generatorSelectors.putAll(otherContext.generatorSelectorMap.getGeneratorSelectors());
             generatorSpecSelectors.putAll(otherContext.generatorSelectorMap.getGeneratorSpecSelectors());
             subtypeSelectors.putAll(otherContext.subtypeSelectorMap.getSubtypeSelectors());
             onCompleteCallbacks.putAll(otherContext.onCompleteCallbackSelectorMap.getOnCompleteCallbackSelectors());
+
+            // Increment max depth to account for the additional layer added by the collection
+            maxDepth = otherContext.maxDepth == null ? null : otherContext.maxDepth + 1;
+            settings = Settings.from(otherContext.settings)
+                    .set(Keys.MAX_DEPTH, otherContext.settings.get(Keys.MAX_DEPTH) + 1)
+                    .lock();
+
             return this;
         }
 
