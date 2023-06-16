@@ -20,6 +20,7 @@ import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.util.Format;
+import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
 import org.jetbrains.annotations.Nullable;
@@ -39,14 +40,18 @@ public final class MethodReferenceHelper {
         // non-instantiable
     }
 
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    @SuppressWarnings({Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED, "PMD.UseProperClassLoader"})
     public static <T, R> Selector resolve(final GetMethodSelector<T, R> methodRef) {
         try {
-            final Method replaceMethod = methodRef.getClass().getDeclaredMethod("writeReplace");
+            final Class<?> methodRefClass = methodRef.getClass();
+            final Method replaceMethod = methodRefClass.getDeclaredMethod("writeReplace");
             replaceMethod.setAccessible(true);
             final SerializedLambda lambda = (SerializedLambda) replaceMethod.invoke(methodRef);
             final String className = lambda.getImplClass().replace('/', '.');
-            final Class<?> targetClass = Class.forName(className);
+            final ClassLoader classLoader = ObjectUtils.defaultIfNull(
+                    methodRefClass.getClassLoader(), MethodReferenceHelper.class.getClassLoader());
+
+            final Class<?> targetClass = Class.forName(className, true, classLoader);
             final String fieldName = getFieldNameDeclaredInClass(targetClass, lambda.getImplMethodName());
 
             if (fieldName == null) {
