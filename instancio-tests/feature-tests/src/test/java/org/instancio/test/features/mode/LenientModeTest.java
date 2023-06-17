@@ -16,8 +16,8 @@
 package org.instancio.test.features.mode;
 
 import org.instancio.Instancio;
-import org.instancio.Mode;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Mode;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;

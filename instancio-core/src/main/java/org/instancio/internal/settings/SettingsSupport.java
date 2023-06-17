@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.settings;
 
-import org.instancio.Mode;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Mode;
 import org.instancio.settings.SettingKey;
 
 import java.util.Collections;

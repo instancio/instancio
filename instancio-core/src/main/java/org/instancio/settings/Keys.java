@@ -15,7 +15,6 @@
  */
 package org.instancio.settings;
 
-import org.instancio.Mode;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.settings.InternalKey;

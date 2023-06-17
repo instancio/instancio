@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio;
+package org.instancio.settings;
 
+import org.instancio.InstancioApi;
 import org.instancio.exception.UnusedSelectorException;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 
 /**
  * The mode is used to specify strictness level, either {@link #STRICT}

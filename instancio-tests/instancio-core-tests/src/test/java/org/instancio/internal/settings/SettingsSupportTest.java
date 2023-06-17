@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.settings;
 
-import org.instancio.Mode;
+import org.instancio.settings.Mode;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
