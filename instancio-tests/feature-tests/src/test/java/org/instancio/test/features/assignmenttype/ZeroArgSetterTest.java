@@ -16,7 +16,7 @@
 package org.instancio.test.features.assignmenttype;
 
 import org.instancio.Instancio;
-import org.instancio.assignment.AssignmentType;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.assignment.ZeroArgSetter;

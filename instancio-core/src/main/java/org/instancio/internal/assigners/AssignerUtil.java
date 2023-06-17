@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.assigners;
 
-import org.instancio.assignment.MethodModifier;
+import org.instancio.settings.MethodModifier;
 
 import java.lang.reflect.Modifier;
 

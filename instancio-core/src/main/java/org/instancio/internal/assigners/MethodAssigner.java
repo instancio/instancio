@@ -15,17 +15,17 @@
  */
 package org.instancio.internal.assigners;
 
-import org.instancio.assignment.AssignmentType;
-import org.instancio.assignment.OnSetMethodError;
-import org.instancio.assignment.OnSetMethodNotFound;
-import org.instancio.assignment.SetterStyle;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodError;
+import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

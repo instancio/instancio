@@ -17,13 +17,13 @@ package org.instancio.test.features.assignmenttype;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.assignment.AssignmentType;
-import org.instancio.assignment.OnSetMethodError;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.misc.SetterErrorPojo;
 import org.instancio.test.support.tags.Feature;

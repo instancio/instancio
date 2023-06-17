@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import org.instancio.assignment.AssignmentType;
 import org.instancio.documentation.InternalApi;
+import org.instancio.settings.AssignmentType;
 
 @InternalApi
 public final class SystemProperties {

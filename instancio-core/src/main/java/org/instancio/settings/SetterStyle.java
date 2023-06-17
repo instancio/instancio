@@ -13,46 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.assignment;
+package org.instancio.settings;
 
 import org.instancio.documentation.ExperimentalApi;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.util.StringUtils;
-import org.instancio.settings.Keys;
 
 /**
- * A setting that specifies what should happen if an error occurs
- * during a setter method invocation.
+ * Specifies the style of setter to use when
+ * {@link AssignmentType#METHOD} is enabled.
  *
- * @see Keys#ON_SET_METHOD_ERROR
+ * @see Keys#ASSIGNMENT_TYPE
  * @since 2.1.0
  */
 @ExperimentalApi
-public enum OnSetMethodError {
+public enum SetterStyle {
 
     /**
-     * Use field assignment as the fallback (default behaviour).
+     * Standard setters with "set" prefix, for example {@code setFoo("value")}
      *
      * @since 2.1.0
      */
-    ASSIGN_FIELD,
+    SET,
 
     /**
-     * Propagate the error up by throwing {@link InstancioApiException}.
+     * Setters with "with" prefix, for example {@code withFoo("value")}
      *
      * @since 2.1.0
      */
-    FAIL,
+    WITH,
 
     /**
-     * Ignore the error and continue populating the object.
-     * <p>
-     * Depending on what causes the error within the {@code set} method,
-     * the target field may or may not have been populated.
+     * Setters without a prefix, where the setter's name is the same
+     * as the corresponding property name, for example {@code foo("value")}
      *
      * @since 2.1.0
      */
-    IGNORE;
+    PROPERTY;
 
     @Override
     public String toString() {

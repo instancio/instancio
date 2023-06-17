@@ -15,6 +15,7 @@
  */
 package org.instancio.assignment;
 
+import org.instancio.settings.AssignmentType;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -15,12 +15,12 @@
  */
 package org.instancio.internal.assigners;
 
-import org.instancio.assignment.AssignmentType;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.SystemProperties;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
