@@ -16,12 +16,10 @@
 package org.instancio.creation.misc;
 
 import org.instancio.test.support.pojo.misc.WithFinalUnassignedLong;
-import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@NonDeterministicTag
 public class WithFinalUnassignedLongCreationTest extends CreationTestTemplate<WithFinalUnassignedLong> {
 
     @Override

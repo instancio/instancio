@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.empty.EmptyEnum;
 import org.instancio.test.support.pojo.generics.basic.Pair;
+import org.instancio.test.support.pojo.misc.OptionalString;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
@@ -68,5 +69,14 @@ class OptionalGeneratorTest {
                 .isNotEmpty()
                 .get()
                 .satisfies(pair -> assertThatObject(pair).hasNoNullFieldsOrProperties());
+    }
+
+    @Test
+    void optionalWithIgnore() {
+        final OptionalString result = Instancio.of(OptionalString.class)
+                .ignore(all(Optional.class))
+                .create();
+
+        assertThat(result.getOptional()).isNull();
     }
 }
