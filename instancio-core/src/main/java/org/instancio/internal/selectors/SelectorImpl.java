@@ -20,6 +20,7 @@ import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.util.Format;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +30,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class SelectorImpl implements Selector, GroupableSelector, Flattener, UnusedSelectorDescription {
+public class SelectorImpl
+        implements Selector, GroupableSelector, Flattener<TargetSelector>, UnusedSelectorDescription {
 
     private final Class<?> targetClass;
     private final String fieldName;

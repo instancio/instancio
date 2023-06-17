@@ -26,7 +26,7 @@ import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
-import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.misc.StringsAbc;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Pojo;
 import org.instancio.test.support.tags.Feature;
@@ -38,6 +38,7 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 
+import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
@@ -57,7 +58,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
         final GetMethodSelector<Foo<String>, String> getFooValueMethod = Foo::getFooValue;
         final TargetSelector timestampSelector = types().of(Timestamp.class);
 
-        Instancio.of(Person.class)
+        Instancio.of(String.class)
                 .ignore(all(YearMonth.class))
                 .ignore(field(Bar.class, "barValue"))
                 .withNullable(all(BigDecimal.class))
@@ -72,6 +73,8 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                 .supply(fields().named("foo"), () -> Assertions.fail("not called"))
                 .ignore(types(klass -> false))
                 .supply(fields(field -> false), () -> Assertions.fail("not called"))
+                .assign(valueOf(StringsAbc::getA)
+                        .to(StringsAbc::getC))
                 .create();
     }
 
@@ -83,39 +86,47 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
 
                  -> Unused selectors in ignore():
                  1: all(YearMonth)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:61)
-                 2: field(Bar, "barValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:62)
+                 2: field(Bar, "barValue")
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:63)
                  3: types().annotated(Pojo).annotated(PersonName)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:71)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:72)
                  4: types(Predicate<Class>)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:73)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:74)
 
                  -> Unused selectors in withNullable():
                  1: all(BigDecimal)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:63)
-                 2: field(Foo, "fooValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:64)
+                 2: field(Foo, "fooValue")
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:65)
 
                  -> Unused selectors in generate(), set(), or supply():
                  1: all(Year)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:65)
-                 2: field(Baz, "bazValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:66)
-                 3: field(StringHolder, "value")
+                 2: field(Baz, "bazValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:67)
+                 3: field(StringHolder, "value")
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:68)
                  4: fields().named("foo")
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:72)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:73)
                  5: fields(Predicate<Field>)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:74)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:75)
                  6: types().of(Timestamp)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:70)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:71)
 
                  -> Unused selectors in onComplete():
                  1: all(ZonedDateTime)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:69)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:70)
                  2: field(IntegerHolder, "primitive")
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:68)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:69)
+
+                 -> Unused origin selectors in assign():
+                 1: field(StringsAbc, "a")
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:76)
+
+                 -> Unused destination selectors in assign():
+                 1: field(StringsAbc, "c")
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:77)
 
                 This error aims to highlight potential problems and help maintain clean test code.
 

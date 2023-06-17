@@ -20,6 +20,7 @@ import org.instancio.Selector;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
+import org.instancio.internal.Flattener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +31,7 @@ import java.util.Objects;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-public final class SelectorGroupImpl implements SelectorGroup, Flattener {
+public final class SelectorGroupImpl implements SelectorGroup, Flattener<TargetSelector> {
 
     private final List<GroupableSelector> selectors;
 

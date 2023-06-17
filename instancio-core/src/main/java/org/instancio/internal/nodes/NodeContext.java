@@ -31,12 +31,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public final class NodeContext {
     private final int maxDepth;
     private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final BooleanSelectorMap ignoredSelectorMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
+    private final BooleanSelectorMap assignmentOriginSelectors;
     private final Map<Class<?>, Class<?>> subtypeMappingFromSettings;
     private final TypeResolverFacade typeResolverFacade;
     private final List<InternalContainerFactoryProvider> containerFactories;
@@ -47,6 +49,7 @@ public final class NodeContext {
         ignoredSelectorMap = builder.ignoredSelectorMap;
         subtypeSelectorMap = builder.subtypeSelectorMap;
         subtypeMappingFromSettings = builder.subtypeMappingFromSettings;
+        assignmentOriginSelectors = builder.assignmentOriginSelectors;
         containerFactories = builder.containerFactories;
         typeResolverFacade = new TypeResolverFacade(builder.providerEntries);
     }
@@ -57,6 +60,10 @@ public final class NodeContext {
 
     public Map<TypeVariable<?>, Type> getRootTypeMap() {
         return rootTypeMap;
+    }
+
+    public Set<TargetSelector> getAssignmentOriginSelectors(final InternalNode node) {
+        return assignmentOriginSelectors.getOriginSelectors(node);
     }
 
     /**
@@ -100,6 +107,7 @@ public final class NodeContext {
         private Map<TypeVariable<?>, Type> rootTypeMap = Collections.emptyMap();
         private BooleanSelectorMap ignoredSelectorMap;
         private SubtypeSelectorMap subtypeSelectorMap;
+        private BooleanSelectorMap assignmentOriginSelectors;
         private Map<Class<?>, Class<?>> subtypeMappingFromSettings = Collections.emptyMap();
         private List<InternalContainerFactoryProvider> containerFactories = Collections.emptyList();
         private List<ProviderEntry<TypeResolver>> providerEntries = Collections.emptyList();
@@ -124,6 +132,11 @@ public final class NodeContext {
 
         public Builder subtypeSelectorMap(final SubtypeSelectorMap subtypeSelectorMap) {
             this.subtypeSelectorMap = subtypeSelectorMap;
+            return this;
+        }
+
+        public Builder assignmentOriginSelectors(final BooleanSelectorMap assignmentOriginSelectors) {
+            this.assignmentOriginSelectors = assignmentOriginSelectors;
             return this;
         }
 

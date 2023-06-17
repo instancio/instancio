@@ -16,11 +16,14 @@
 package org.instancio.internal;
 
 import org.instancio.Model;
+import org.instancio.SelectorGroup;
+import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
@@ -242,7 +245,7 @@ public final class ApiValidator {
     }
 
     public static int validateDepth(final int depth) {
-        if (depth < 0) throw Fail.withUsageError("depth must not be negative: " + depth);
+        if (depth < 0) throw Fail.withUsageError("depth must not be negative: %s", depth);
         return depth;
     }
 
@@ -250,6 +253,26 @@ public final class ApiValidator {
         notNull(declaringClass, message);
         notNull(fieldName, message);
         isTrue(ReflectionUtils.isValidField(declaringClass, fieldName), message);
+    }
+
+    public static void validateAssignmentOrigin(final TargetSelector selector) {
+        ApiValidator.notNull(selector, "origin selector must not be null");
+
+        ApiValidator.isFalse(selector instanceof SelectorGroup,
+                "invalid origin selector%n%n" +
+                        "Assignment origin must not match more than one target." +
+                        "Therefore origin selector cannot be a group such as:%n%n" +
+                        "%s", selector);
+
+        if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
+            final PrimitiveAndWrapperSelectorImpl pw = (PrimitiveAndWrapperSelectorImpl) selector;
+            throw Fail.withUsageError(
+                    "assignment origin must not be a primitive/wrapper selector such as %s%n%n" +
+                            "Please specify the type explicitly, for example: 'all(%s.class)' or 'all(%s.class)'",
+                    selector,
+                    pw.getWrapper().getTargetClass().getSimpleName(),
+                    pw.getPrimitive().getTargetClass().getSimpleName());
+        }
     }
 
     private ApiValidator() {

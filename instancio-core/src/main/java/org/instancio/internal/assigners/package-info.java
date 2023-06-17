@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains classes implementing value assignment logic.
+ * Implements how values are assigned: fields or methods.
  */
 package org.instancio.internal.assigners;

@@ -82,7 +82,7 @@ public final class CollectionUtils {
         return Collections.unmodifiableList(result);
     }
 
-    public static void shuffle(final Collection<Object> collection, final Random random) {
+    public static <T> void shuffle(final Collection<T> collection, final Random random) {
         if (collection.isEmpty()) {
             return;
         } else if (collection instanceof List) {
@@ -90,16 +90,16 @@ public final class CollectionUtils {
             return;
         }
 
-        final List<Object> list = new ArrayList<>(collection);
+        final List<T> list = new ArrayList<>(collection);
         shuffleList(list, random);
         collection.clear();
         collection.addAll(list);
     }
 
-    private static void shuffleList(final List<Object> list, final Random random) {
+    private static <T> void shuffleList(final List<T> list, final Random random) {
         for (int i = 0; i < list.size(); i++) {
             final int r = random.intRange(0, i);
-            final Object tmp = list.get(i);
+            final T tmp = list.get(i);
             list.set(i, list.get(r));
             list.set(r, tmp);
         }

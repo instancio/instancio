@@ -19,6 +19,7 @@ import org.instancio.Scope;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattener {
+public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattener<TargetSelector> {
 
     private static final Map<Class<?>, String> API_METHOD_NAMES = getApiMethodNames();
 

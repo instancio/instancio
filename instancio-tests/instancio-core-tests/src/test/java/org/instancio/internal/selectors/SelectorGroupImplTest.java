@@ -18,6 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.Flattener;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.testsupport.asserts.SelectorAssert;
@@ -85,7 +86,7 @@ class SelectorGroupImplTest {
 
     @Test
     void flatten() {
-        final List<TargetSelector> results = ((Flattener) Select.all(
+        final List<TargetSelector> results = ((Flattener<TargetSelector>) Select.all(
                 Select.allBytes().within(Select.scope(Bar.class)),
                 Select.field(Foo.class, "fooValue"),
                 Select.all(String.class)

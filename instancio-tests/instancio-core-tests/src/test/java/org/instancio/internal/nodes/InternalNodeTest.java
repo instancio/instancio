@@ -16,8 +16,6 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.TypeToken;
-import org.instancio.internal.context.BooleanSelectorMap;
-import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -28,6 +26,7 @@ import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.test.support.tags.NodeTag;
+import org.instancio.testsupport.fixtures.Nodes;
 import org.instancio.testsupport.fixtures.Types;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -44,13 +43,8 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 
 @NodeTag
 class InternalNodeTest {
-    private static final NodeContext NODE_CONTEXT = NodeContext.builder()
-            .maxDepth(Integer.MAX_VALUE)
-            .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
-            .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
-            .build();
-
-    private static final NodeFactory NODE_FACTORY = new NodeFactory(NODE_CONTEXT);
+    private static final NodeContext NODE_CONTEXT = Nodes.nodeContext();
+    private static final NodeFactory NODE_FACTORY = Nodes.nodeFactory();
 
     @Test
     void ignoredNode() {
@@ -233,27 +227,53 @@ class InternalNodeTest {
             final InternalNode personNode = NODE_FACTORY.createRootNode(Person.class);
 
             assertThat(personNode)
-                    .hasToString("Node[Person, depth=0, #chn=9, Person]");
+                    .hasToString("Node[Person, depth=0, type=Person]");
 
             assertThat(getChildNode(personNode, "age"))
-                    .hasToString("Node[Person.age, depth=1, #chn=0, int]");
+                    .hasToString("Node[Person.age, depth=1, type=int]");
 
             assertThat(getChildNode(personNode, "name"))
-                    .hasToString("Node[Person.name, depth=1, #chn=0, String]");
+                    .hasToString("Node[Person.name, depth=1, type=String]");
 
             assertThat(getChildNode(personNode, "address"))
-                    .hasToString("Node[Person.address, depth=1, #chn=4, Address]");
+                    .hasToString("Node[Person.address, depth=1, type=Address]");
 
             assertThat(NODE_FACTORY.createRootNode(String.class))
-                    .hasToString("Node[String, depth=0, #chn=0, String]");
+                    .hasToString("Node[String, depth=0, type=String]");
 
             assertThat(NODE_FACTORY.createRootNode(new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {}.get()))
-                    .hasToString("Node[Pair, depth=0, #chn=2, Pair<Item<String>, Foo<List<Integer>>>]");
+                    .hasToString("Node[Pair, depth=0, type=Pair<Item<String>, Foo<List<Integer>>>]");
         }
 
         @Test
         void ignoredNode() {
             assertThat(InternalNode.ignoredNode()).hasToString("Node[IGNORED]");
+        }
+    }
+
+    @Nested
+    class DisplayStringTest {
+
+        @Test
+        void displayString() {
+            final InternalNode personNode = NODE_FACTORY.createRootNode(Person.class);
+
+            assertThat(personNode.toDisplayString())
+                    .isEqualTo("class Person");
+
+            assertThat(getChildNode(personNode, "age").toDisplayString())
+                    .isEqualTo("field Person.age");
+
+            assertThat(NODE_FACTORY.createRootNode(String.class).toDisplayString())
+                    .isEqualTo("class String");
+
+            assertThat(NODE_FACTORY.createRootNode(new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {}.get()).toDisplayString())
+                    .isEqualTo("class Pair<Item<String>, Foo<List<Integer>>>");
+        }
+
+        @Test
+        void ignoredNode() {
+            assertThat(InternalNode.ignoredNode().toDisplayString()).isEqualTo("ignored");
         }
     }
 

@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
@@ -23,6 +24,8 @@ import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -191,6 +194,14 @@ public interface InstancioApi<T> {
      *             .create();
      * }</pre>
      *
+     * <p>Note: Instancio <b>will not</b></p>
+     * <ul>
+     *   <li>populate or modify objects supplied by this method</li>
+     *   <li>apply other {@code set()}, {@code supply()}, or {@code generate()}}
+     *       methods with matching selectors to the supplied object</li>
+     *   <li>invoke {@code onComplete()} callbacks on supplied instances</li>
+     * </ul>
+     *
      * @param selector for fields and/or classes this method should be applied to
      * @param value    value to set
      * @param <V>      type of the value
@@ -211,11 +222,13 @@ public interface InstancioApi<T> {
      *                 new PhoneNumber("+1", "345-67-89")))
      *             .create();
      * }</pre>
+     *
      * <p>Note: Instancio <b>will not</b></p>
      * <ul>
      *   <li>populate or modify objects supplied by this method</li>
      *   <li>apply other {@code set()}, {@code supply()}, or {@code generate()}}
      *       methods with matching selectors to the supplied object</li>
+     *   <li>invoke {@code onComplete()} callbacks on supplied instances</li>
      * </ul>
      *
      * <p>If you require the supplied object to be populated and/or selectors
@@ -223,7 +236,7 @@ public interface InstancioApi<T> {
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param supplier providing the value for given selector
-     * @param <V>      type of the value to generate
+     * @param <V>      type of the supplied value
      * @return API builder reference
      * @see #supply(TargetSelector, Generator)
      */
@@ -364,7 +377,7 @@ public interface InstancioApi<T> {
      * <b>Override default implementations</b>
      * <p>
      * By default, Instancio uses certain defaults for collection classes, for example
-     * {@link java.util.ArrayList} for {@link java.util.List}.
+     * {@link ArrayList} for {@link List}.
      * If an alternative implementation is required, this method allows to specify it:
      *
      * <pre>{@code
@@ -381,6 +394,84 @@ public interface InstancioApi<T> {
      * @since 1.4.0
      */
     InstancioApi<T> subtype(TargetSelector selector, Class<?> subtype);
+
+    /**
+     * Generates values based on given assignments.
+     * An {@link Assignment} can be created using one of the builder patterns
+     * provided by the {@link Assign} class.
+     *
+     * <ul>
+     *   <li>{@code Assign.valueOf(originSelector).to(destinationSelector)}</li>
+     *   <li>{@code Assign.given(originSelector).satisfies(predicate).set(destinationSelector, value)}</li>
+     *   <li>{@code Assign.given(originSelector, destinationSelector).set(predicate, value)}</li>
+     * </ul>
+     *
+     * <p>For example, the following snippet uses
+     * {@link Assign#given(TargetSelector, TargetSelector)} to create
+     * an assignment that sets {@code Phone.countryCode} based on
+     * the value of the {@code Address.country} field:
+     *
+     * <pre>{@code
+     * Assignment assignment = Assign.given(field(Address::getCountry), field(Phone::getCountryCode))
+     *     .set(When.isIn("Canada", "USA"), "+1")
+     *     .set(When.is("Italy"), "+39")
+     *     .set(When.is("Poland"), "+48")
+     *     .set(When.is("Germany"), "+49");
+     *
+     * Person person = Instancio.of(Person.class)
+     *     .generate(field(Address::getCountry), gen -> gen.oneOf("Canada", "USA", "Italy", "Poland", "Germany"))
+     *     .assign(assignment)
+     *     .create();
+     * }</pre>
+     *
+     * <p>The above API allows specifying different values for a given
+     * origin/destination pair. An alternative for creating a conditional
+     * is provided by {@link Assign#given(TargetSelector)}. This method
+     * allows specifying different destination selectors for a given origin:
+     *
+     * <pre>{@code
+     * Assignment[] assignments = {
+     *     Assign.given(Order::getStatus)
+     *             .is(OrderStatus.SHIPPED)
+     *             .supply(field(Order::getDeliveryDueDate), () -> LocalDate.now().plusDays(2)),
+     *
+     *     Assign.given(Order::getStatus)
+     *             .is(OrderStatus.CANCELLED)
+     *             .set(field(Order::getCancellationReason), "Shipping delays")
+     *             .generate(field(Order::getCancellationDate), gen -> gen.temporal().instant().past())
+     * };
+     *
+     * List<Order> orders = Instancio.ofList(Order.class)
+     *     .generate(all(OrderStatus.class), gen -> gen.oneOf(OrderStatus.SHIPPED, OrderStatus.CANCELLED))
+     *     .assign(assignments)
+     *     .create();
+     * }</pre>
+     *
+     * <h4>Limitations of assignments</h4>
+     *
+     * <p>Using assignments has a few limitations to be aware of.
+     *
+     * <ul>
+     *   <li>The origin selector must match a single target.
+     *       It must not be a {@link SelectorGroup} created via
+     *       {@link Select#all(GroupableSelector...)} or primitive/wrapper
+     *       selector, such as {@link Select#allInts()}</li>
+     *   <li>An assignment where the origin selector's target is within
+     *       a collection element must have a destination selector
+     *       within the same collection element.</li>
+     *   <li>Circular assignments will produce an error.</li>
+     * </ul>
+     *
+     * @param assignments one or more assignment expressions for setting values
+     * @return API builder reference
+     * @throws InstancioApiException if the origin selector of an assignment
+     *                               matches more than one target, or the
+     *                               assignments form a cycle
+     * @see Assign
+     * @since 3.0.0
+     */
+    @ExperimentalApi
+    InstancioApi<T> assign(Assignment... assignments);
 
     /**
      * Specifies the maximum depth for populating an object.

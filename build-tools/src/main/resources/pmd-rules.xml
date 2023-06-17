@@ -33,6 +33,7 @@
         <exclude name="CommentDefaultAccessModifier"/>
         <exclude name="ConfusingTernary"/>
         <exclude name="ControlStatementBraces"/>
+        <exclude name="LinguisticNaming"/>
         <exclude name="LocalVariableCouldBeFinal"/>
         <exclude name="LongVariable"/>
         <exclude name="OnlyOneReturn"/>

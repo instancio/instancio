@@ -18,6 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
+import org.instancio.internal.util.Sonar;
 
 import java.util.Set;
 
@@ -31,6 +32,9 @@ final class UnusedSelectorReporter {
     private final Set<TargetSelector> generators;
     private final Set<TargetSelector> callbacks;
     private final Set<TargetSelector> subtypes;
+    private final Set<TargetSelector> assignmentOrigins;
+    private final Set<TargetSelector> assignmentDestinations;
+
 
     private UnusedSelectorReporter(final Builder builder) {
         maxDepth = builder.maxDepth;
@@ -39,12 +43,15 @@ final class UnusedSelectorReporter {
         generators = builder.generators;
         callbacks = builder.callbacks;
         subtypes = builder.subtypes;
+        assignmentOrigins = builder.assignmentOrigins;
+        assignmentDestinations = builder.assignmentDestinations;
     }
 
     static Builder builder() {
         return new Builder();
     }
 
+    @SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
     void report() {
         if (hasNoUnusedSelectors()) {
             return;
@@ -55,11 +62,13 @@ final class UnusedSelectorReporter {
                 .append("Found unused selectors referenced in the following methods:")
                 .append(NL);
 
-        append(ignored, sb, "ignore()");
-        append(nullable, sb, "withNullable()");
-        append(generators, sb, "generate(), set(), or supply()");
-        append(callbacks, sb, "onComplete()");
-        append(subtypes, sb, "subtype()");
+        append(ignored, sb, "selectors", "ignore()");
+        append(nullable, sb, "selectors", "withNullable()");
+        append(generators, sb, "selectors", "generate(), set(), or supply()");
+        append(callbacks, sb, "selectors", "onComplete()");
+        append(subtypes, sb, "selectors", "subtype()");
+        append(assignmentOrigins, sb, "origin selectors", "assign()");
+        append(assignmentDestinations, sb, "destination selectors", "assign()");
 
         sb.append(NL)
                 .append("This error aims to highlight potential problems and help maintain clean test code.").append(NL)
@@ -115,11 +124,16 @@ final class UnusedSelectorReporter {
     private static void append(
             final Set<TargetSelector> selectors,
             final StringBuilder sb,
+            final String selectorDescription,
             final String apiMethodName) {
 
         if (!selectors.isEmpty()) {
             sb.append(NL)
-                    .append(" -> Unused selectors in ").append(apiMethodName).append(':')
+                    .append(" -> Unused ")
+                    .append(selectorDescription)
+                    .append(" in ")
+                    .append(apiMethodName)
+                    .append(':')
                     .append(NL)
                     .append(formatSelectors(selectors))
                     .append(NL);
@@ -131,7 +145,9 @@ final class UnusedSelectorReporter {
                 && nullable.isEmpty()
                 && generators.isEmpty()
                 && callbacks.isEmpty()
-                && subtypes.isEmpty();
+                && subtypes.isEmpty()
+                && assignmentOrigins.isEmpty()
+                && assignmentDestinations.isEmpty();
     }
 
     private static String formatSelectors(final Set<TargetSelector> selectors) {
@@ -154,6 +170,8 @@ final class UnusedSelectorReporter {
         private Set<TargetSelector> generators;
         private Set<TargetSelector> callbacks;
         private Set<TargetSelector> subtypes;
+        private Set<TargetSelector> assignmentOrigins;
+        private Set<TargetSelector> assignmentDestinations;
 
         private Builder() {
         }
@@ -185,6 +203,16 @@ final class UnusedSelectorReporter {
 
         public Builder subtypes(final Set<TargetSelector> subtypes) {
             this.subtypes = subtypes;
+            return this;
+        }
+
+        public Builder assignmentOrigins(final Set<TargetSelector> assignmentOrigins) {
+            this.assignmentOrigins = assignmentOrigins;
+            return this;
+        }
+
+        public Builder assignmentDestinations(final Set<TargetSelector> assignmentDestinations) {
+            this.assignmentDestinations = assignmentDestinations;
             return this;
         }
 

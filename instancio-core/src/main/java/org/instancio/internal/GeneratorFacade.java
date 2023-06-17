@@ -15,15 +15,15 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Random;
-import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.beanvalidation.BeanValidationProcessor;
 import org.instancio.internal.beanvalidation.NoopBeanValidationProvider;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.handlers.ArrayNodeHandler;
+import org.instancio.internal.handlers.AssignmentNodeHandler;
 import org.instancio.internal.handlers.CollectionNodeHandler;
 import org.instancio.internal.handlers.InstantiatingHandler;
 import org.instancio.internal.handlers.MapNodeHandler;
@@ -33,38 +33,39 @@ import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
-import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Modifier;
-import java.util.Optional;
+import java.util.Set;
 
 class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
     private final ModelContext<?> context;
-    private final Random random;
     private final NodeHandler[] nodeHandlers;
-    private final GeneratorResolver generatorResolver;
+    private final AssignmentNodeHandler assignmentNodeHandler;
 
-    GeneratorFacade(final ModelContext<?> context) {
+    GeneratorFacade(final ModelContext<?> context, final GeneratedObjectStore generatedObjectStore) {
         this.context = context;
-        this.random = context.getRandom();
 
         final GeneratorContext generatorContext = new GeneratorContext(
-                context.getSettings(), random);
+                context.getSettings(), context.getRandom());
 
-        this.generatorResolver = new GeneratorResolver(
+        final GeneratorSpecProcessor beanValidationProcessor = getGeneratorSpecProcessor();
+
+        final GeneratorResolver generatorResolver = new GeneratorResolver(
                 generatorContext, context.getServiceProviders().getGeneratorProviders());
 
         final Instantiator instantiator = new Instantiator(
                 context.getServiceProviders().getTypeInstantiators());
 
-        final GeneratorSpecProcessor beanValidationProcessor = getGeneratorSpecProcessor();
+        assignmentNodeHandler = new AssignmentNodeHandler(
+                context, generatedObjectStore, generatorResolver, instantiator);
 
         this.nodeHandlers = new NodeHandler[]{
+                assignmentNodeHandler,
                 new UserSuppliedGeneratorHandler(context, generatorResolver, instantiator),
                 new ArrayNodeHandler(context, generatorResolver, beanValidationProcessor),
                 new UsingGeneratorResolverHandler(context, generatorResolver, beanValidationProcessor),
@@ -72,6 +73,10 @@ class GeneratorFacade {
                 new MapNodeHandler(context, beanValidationProcessor),
                 new InstantiatingHandler(instantiator)
         };
+    }
+
+    Set<InternalAssignment> getUnresolvedAssignments() {
+        return assignmentNodeHandler.getUnresolvedAssignments();
     }
 
     private GeneratorSpecProcessor getGeneratorSpecProcessor() {
@@ -84,34 +89,29 @@ class GeneratorFacade {
         return node.getField() != null && Modifier.isStatic(node.getField().getModifiers());
     }
 
-    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    Optional<Generator<?>> getGenerator(final InternalNode node) {
-        return generatorResolver.get(node);
+    private boolean shouldReturnNullForNullable(final InternalNode node) {
+        final boolean precondition = context.isNullable(node);
+        return context.getRandom().diceRoll(precondition);
     }
 
     GeneratorResult generateNodeValue(final InternalNode node) {
+        GeneratorResult result = GeneratorResult.emptyResult();
+
         if (node.is(NodeKind.IGNORED) || hasStaticField(node)) {
-            return GeneratorResult.ignoredResult();
-        }
+            result = GeneratorResult.ignoredResult();
+        } else if (shouldReturnNullForNullable(node)) {
+            result = GeneratorResult.nullResult();
+        } else {
+            for (NodeHandler handler : nodeHandlers) {
+                result = handler.getResult(node);
 
-        if (shouldReturnNullForNullable(node)) {
-            return GeneratorResult.nullResult();
-        }
-
-        GeneratorResult generatorResult = GeneratorResult.emptyResult();
-        for (NodeHandler handler : nodeHandlers) {
-            generatorResult = handler.getResult(node);
-            if (!generatorResult.isEmpty()) {
-                LOG.trace("{} generated using '{}'", node, handler.getClass().getName());
-                break;
+                if (!result.isEmpty() || result.isDelayed()) {
+                    break;
+                }
             }
         }
 
-        return generatorResult;
-    }
-
-    private boolean shouldReturnNullForNullable(final InternalNode node) {
-        final boolean precondition = context.isNullable(node);
-        return random.diceRoll(precondition);
+        LOG.trace("{} - {}", node, result);
+        return result;
     }
 }

@@ -21,10 +21,10 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.selectors.Flattener;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 
@@ -80,7 +80,7 @@ class GeneratorSelectorMap {
         for (Map.Entry<TargetSelector, Generator<?>> entry : generatorMap.entrySet()) {
             final TargetSelector targetSelector = entry.getKey();
             final Generator<?> generator = entry.getValue();
-            for (TargetSelector selector : ((Flattener) targetSelector).flatten()) {
+            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
                 putGenerator(selector, generator);
             }
         }
@@ -92,7 +92,7 @@ class GeneratorSelectorMap {
         for (Map.Entry<TargetSelector, GeneratorSpecProvider<?>> entry : specs.entrySet()) {
             final TargetSelector targetSelector = entry.getKey();
             final GeneratorSpecProvider<?> genFn = entry.getValue();
-            for (TargetSelector selector : ((Flattener) targetSelector).flatten()) {
+            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
                 // Do not share generator instances between different selectors.
                 // For example, array generators are created for each component type.
                 // Therefore, using 'gen.array().length(10)' would fail when selectors are different for array types.

@@ -40,7 +40,7 @@ class GeneratedNullValueListener implements GenerationListener {
 
     @Override
     public void objectCreated(final InternalNode node, final GeneratorResult result) {
-        if (isLenientMode) {
+        if (isLenientMode || !result.containsNull()) {
             return;
         }
 
@@ -66,6 +66,11 @@ class GeneratedNullValueListener implements GenerationListener {
                 context.getGenerator(current);
                 context.getCallbacks(current);
                 context.getSubtypeSelectorMap().getSubtype(current);
+                // mark destination selectors as used
+                context.getAssignments(current);
+                // confusing method naming: this is marking _origin_ selectors as used
+                context.getAssignmentDestinationSelectors(current);
+
                 queue.addAll(current.getChildren());
             }
         }

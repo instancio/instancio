@@ -21,6 +21,7 @@ import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.Flattener;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
@@ -79,7 +80,7 @@ class SelectorImplTest {
     @Test
     void flatten() {
         final Selector selector = Select.field("foo");
-        final List<TargetSelector> results = ((Flattener) selector).flatten();
+        final List<TargetSelector> results = ((Flattener<TargetSelector>) selector).flatten();
         assertThat(results).containsExactly(selector);
     }
 

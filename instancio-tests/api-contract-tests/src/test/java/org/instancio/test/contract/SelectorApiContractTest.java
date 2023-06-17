@@ -224,6 +224,30 @@ class SelectorApiContractTest {
                 "cannot find symbol", "method withTypeParameters");
     }
 
+    @Test
+    @DisplayName("assign() should not accept an incomplete Assign.given(TargetSelector) assignment")
+    void incompleteGivenWithOneArgNotAllowed() throws Exception {
+        assertCompilationError("NonCompilable_IncompleteGivenWithOneArg.java",
+                "required:", "org.instancio.Assignment",
+                "found:", "org.instancio.GivenOriginPredicate");
+    }
+
+    @Test
+    @DisplayName("assign() should not accept an incomplete Assign.given(TargetSelector, TargetSelector) assignment")
+    void incompleteGivenWithTwoArgsNotAllowed() throws Exception {
+        assertCompilationError("NonCompilable_IncompleteGivenWithTwoArgs.java",
+                "required:", "org.instancio.Assignment",
+                "found:", "org.instancio.GivenOriginDestination");
+    }
+
+    @Test
+    @DisplayName("assign() should not accept an incomplete Assign.valueOf(TargetSelector) assignment")
+    void incompleteValueOf() throws Exception {
+        assertCompilationError("NonCompilable_IncompleteValueOf.java",
+                "required:", "org.instancio.Assignment",
+                "found:", "org.instancio.ValueOf");
+    }
+
     private static void assertCompilationError(final String sourceFile, final String... expectedErrorMsg) throws Exception {
         final DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
 

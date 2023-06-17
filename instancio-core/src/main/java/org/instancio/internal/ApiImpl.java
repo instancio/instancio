@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.Assignment;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
@@ -116,13 +117,19 @@ public class ApiImpl<T> implements InstancioApi<T> {
         return this;
     }
 
-
     @Override
     public InstancioApi<T> subtype(
             final TargetSelector selector,
             final Class<?> subtype) {
 
         modelContextBuilder.withSubtype(selector, subtype);
+        return this;
+    }
+
+    @Override
+    public InstancioApi<T> assign(final Assignment... assignments) {
+        ApiValidator.notNull(assignments, "assignments array must not be null");
+        modelContextBuilder.withAssignments(assignments);
         return this;
     }
 

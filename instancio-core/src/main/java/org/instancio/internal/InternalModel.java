@@ -45,6 +45,7 @@ final class InternalModel<T> implements Model<T> {
                 .rootTypeMap(modelContext.getRootTypeMap())
                 .ignoredSelectorMap(modelContext.getIgnoredSelectorMap())
                 .subtypeSelectorMap(modelContext.getSubtypeSelectorMap())
+                .assignmentOriginSelectors(modelContext.getAssignmentOriginSelectorMap())
                 .subtypeMappingFromSettings(modelContext.getSettings().getSubtypeMap())
                 .containerFactories(modelContext.getContainerFactories())
                 .providerEntries(modelContext.getServiceProviders().getTypeResolvers())

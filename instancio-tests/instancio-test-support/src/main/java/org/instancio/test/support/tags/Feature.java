@@ -28,7 +28,14 @@ public enum Feature {
     ARRAY_GENERATOR_SHUFFLE,
     ARRAY_GENERATOR_SUBTYPE,
     ARRAY_GENERATOR_WITH,
-    ASSIGNMENT,
+    /**
+     * Tests for {@code assign()} API.
+     */
+    ASSIGN,
+    /**
+     * Tests for {@code AssignmentType} setting.
+     */
+    ASSIGNMENT_TYPE,
     AS_GENERATOR_SPEC,
     AS_STRING_GENERATOR_SPEC,
     ATOMIC_GENERATOR,

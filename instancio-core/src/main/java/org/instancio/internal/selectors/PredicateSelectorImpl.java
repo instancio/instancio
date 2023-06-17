@@ -18,6 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.DepthPredicateSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.TargetSelector;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
@@ -31,7 +32,7 @@ import java.util.function.Predicate;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 public class PredicateSelectorImpl
-        implements PredicateSelector, DepthPredicateSelector, Flattener, UnusedSelectorDescription {
+        implements PredicateSelector, DepthPredicateSelector, Flattener<TargetSelector>, UnusedSelectorDescription {
 
     private static final int FIELD_PRIORITY = 1;
     private static final int TYPE_PRIORITY = 2;
