@@ -18,7 +18,6 @@ package org.instancio.test.features.selector;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -31,6 +30,7 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 
 @FeatureTag(Feature.SELECTOR)
 class SelectWithIgnoreTest {
@@ -43,9 +43,9 @@ class SelectWithIgnoreTest {
                         allStrings(),
                         all(LocalDateTime.class),
                         all(Date.class),
-                        Person_.gender,
-                        Person_.age,
-                        Person_.pets,
+                        field(Person::getGender),
+                        field(Person::getAge),
+                        field(Person::getPets),
                         all(Phone.class)))
                 .create();
 

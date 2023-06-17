@@ -25,8 +25,7 @@ import org.instancio.generator.hints.MapHint;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.maps.MapOfStringAndPrimitiveFields;
 import org.instancio.test.support.pojo.misc.StringAndPrimitiveFields;
-import org.instancio.test.support.pojo.misc.StringAndPrimitiveFields_;
-import org.instancio.test.support.pojo.misc.StringFields_;
+import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +53,6 @@ import static org.instancio.test.support.asserts.Asserts.assertNoZeroes;
         Feature.AFTER_GENERATE,
         Feature.GENERATE,
         Feature.GENERATOR,
-        Feature.METAMODEL,
         Feature.MODEL,
         Feature.SELECTOR
 })
@@ -121,10 +119,10 @@ class CustomMapGeneratorAfterGenerateAndSelectorsTest {
                 .build();
 
         return Instancio.of(createBaseModelWith(hints))
-                .set(StringFields_.one, STR_ONE_OVERRIDE)
-                .set(StringFields_.two, STR_TWO_OVERRIDE)
-                .set(StringAndPrimitiveFields_.intOne, INT_ONE_OVERRIDE)
-                .set(StringAndPrimitiveFields_.intTwo, INT_TWO_OVERRIDE)
+                .set(field(StringFields::getOne), STR_ONE_OVERRIDE)
+                .set(field(StringFields::getTwo), STR_TWO_OVERRIDE)
+                .set(field(StringAndPrimitiveFields::getIntOne), INT_ONE_OVERRIDE)
+                .set(field(StringAndPrimitiveFields::getIntTwo), INT_TWO_OVERRIDE)
                 .lenient() // only needed for testing selectors when AfterGenerate is DO_NOT_MODIFY
                 .create();
     }

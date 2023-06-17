@@ -24,10 +24,8 @@ import org.instancio.test.support.pojo.collections.lists.ListPerson;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.pojo.cyclic.IndirectCircularRef;
 import org.instancio.test.support.pojo.person.Address;
-import org.instancio.test.support.pojo.person.Address_;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Person_;
-import org.instancio.test.support.pojo.person.Phone_;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -44,6 +42,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 
 /**
  * If null is generated for a nullable and some selector(s) are not used as a result,
@@ -72,11 +71,11 @@ class StrictModeWithNullableValuesTest {
     @Test
     void overrideModelWithNullValue() {
         final Model<Person> model = Instancio.of(Person.class)
-                .set(Address_.city, "foo")
+                .set(field(Address::getCity), "foo")
                 .toModel();
 
         final Person result = Instancio.of(model)
-                .set(Person_.address, null)
+                .set(field(Person::getAddress), null)
                 .create();
 
         assertThat(result.getAddress()).isNull();
@@ -89,9 +88,9 @@ class StrictModeWithNullableValuesTest {
                 // nullable strings
                 .withNullable(allStrings())
                 // and string fields
-                .supply(Person_.name, random -> "foo")
-                .generate(Address_.city, gen -> gen.text().pattern("bar"))
-                .onComplete(Person_.name, name -> assertThat(name).isEqualTo("foo"))
+                .supply(field(Person::getName), random -> "foo")
+                .generate(field(Address::getCity), gen -> gen.text().pattern("bar"))
+                .onComplete(field(Person::getName), name -> assertThat(name).isEqualTo("foo"))
                 .create();
     }
 
@@ -103,9 +102,9 @@ class StrictModeWithNullableValuesTest {
                     // nullable address
                     .withNullable(all(Address.class))
                     // and address fields
-                    .supply(Address_.country, random -> "foo")
-                    .generate(Address_.city, gen -> gen.text().pattern("bar"))
-                    .onComplete(Address_.country, name -> assertThat(name).isEqualTo("foo"))
+                    .supply(field(Address::getCountry), random -> "foo")
+                    .generate(field(Address::getCity), gen -> gen.text().pattern("bar"))
+                    .onComplete(field(Address::getCountry), name -> assertThat(name).isEqualTo("foo"))
                     .create();
 
             results.add(result.getAddress());
@@ -122,7 +121,7 @@ class StrictModeWithNullableValuesTest {
             //      (nullable ancestor)     (target)
             final Person result = Instancio.of(Person.class)
                     .withNullable(all(Address.class))
-                    .set(Phone_.number, "foo")
+                    .set(field(Phone::getNumber), "foo")
                     .create();
 
             results.add(result.getAddress());
@@ -144,7 +143,7 @@ class StrictModeWithNullableValuesTest {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final ArrayPerson result = Instancio.of(ArrayPerson.class)
                     .withNullable(all(Person[].class))
-                    .set(Phone_.number, "foo")
+                    .set(field(Phone::getNumber), "foo")
                     .create();
 
             results.add(result.getArray());
@@ -157,7 +156,7 @@ class StrictModeWithNullableValuesTest {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final ArrayPerson result = Instancio.of(ArrayPerson.class)
                     .generate(all(Person[].class), gen -> gen.array().nullableElements())
-                    .set(Phone_.number, "foo")
+                    .set(field(Phone::getNumber), "foo")
                     .create();
 
             results.addAll(ArrayUtils.toList(result.getArray()));
@@ -171,7 +170,7 @@ class StrictModeWithNullableValuesTest {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final Person result = Instancio.of(Person.class)
                     .withNullable(all(List.class))
-                    .set(Phone_.number, "foo")
+                    .set(field(Phone::getNumber), "foo")
                     .create();
 
             results.add(result.getAddress().getPhoneNumbers());
@@ -187,7 +186,7 @@ class StrictModeWithNullableValuesTest {
                     .generate(all(List.class), gen -> gen.collection()
                             .size(CONTAINER_SIZE_WITH_NULLABLE)
                             .nullableElements())
-                    .set(Phone_.number, "foo")
+                    .set(field(Phone::getNumber), "foo")
                     .create();
 
             results.addAll(result.getList());
@@ -200,7 +199,7 @@ class StrictModeWithNullableValuesTest {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final MapStringPerson result = Instancio.of(MapStringPerson.class)
                     .withNullable(all(Map.class))
-                    .set(Phone_.number, "foo")
+                    .set(field(Phone::getNumber), "foo")
                     .create();
 
             results.add(result.getMap());
@@ -213,7 +212,7 @@ class StrictModeWithNullableValuesTest {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final Map<Person, String> result = Instancio.of(new TypeToken<Map<Person, String>>() {})
                     .generate(all(Map.class), gen -> gen.map().size(CONTAINER_SIZE_WITH_NULLABLE).nullableKeys())
-                    .set(Phone_.number, "foo")
+                    .set(field(Phone::getNumber), "foo")
                     .create();
             results.addAll(result.keySet());
         }
@@ -225,7 +224,7 @@ class StrictModeWithNullableValuesTest {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final MapStringPerson result = Instancio.of(MapStringPerson.class)
                     .generate(all(Map.class), gen -> gen.map().size(CONTAINER_SIZE_WITH_NULLABLE).nullableValues())
-                    .set(Phone_.number, "foo")
+                    .set(field(Phone::getNumber), "foo")
                     .create();
             results.addAll(result.getMap().values());
         }

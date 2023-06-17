@@ -24,9 +24,7 @@ import org.instancio.generator.Hints;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.pojo.person.Phone;
-import org.instancio.test.support.pojo.person.Phone_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +36,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 
 @FeatureTag({
         Feature.GENERATE,
@@ -95,7 +94,7 @@ class GeneratorCompositionTest {
                 .supply(all(Person.class), new PersonGenerator().afterGenerate(afterGenerate))
                 .supply(all(Address.class), new AddressGenerator().afterGenerate(afterGenerate))
                 .supply(all(Phone.class), new PhoneGenerator().afterGenerate(afterGenerate))
-                .generate(Phone_.number, gen -> gen.string().digits())
+                .generate(field(Phone::getNumber), gen -> gen.string().digits())
                 .toModel();
     }
 
@@ -109,7 +108,7 @@ class GeneratorCompositionTest {
 
         final Person person = Instancio.of(createModel(afterGenerate))
                 .generate(all(List.class), gen -> gen.collection().size(listSize))
-                .set(Person_.age, age)
+                .set(field(Person::getAge), age)
                 .create();
 
         assertThat(person.getName()).isEqualTo(PERSON_NAME);

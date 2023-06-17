@@ -18,7 +18,6 @@ package org.instancio.test.features.ofmap;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.test.support.pojo.person.Phone;
-import org.instancio.test.support.pojo.person.Phone_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 
 @FeatureTag({Feature.OF_MAP, Feature.MODEL})
 class OfMapToModelTest {
@@ -36,7 +36,7 @@ class OfMapToModelTest {
         final int expectedSize = 3;
         final Model<Map<UUID, Phone>> model = Instancio.ofMap(UUID.class, Phone.class)
                 .size(expectedSize)
-                .set(Phone_.countryCode, "+1")
+                .set(field(Phone::getCountryCode), "+1")
                 .toModel();
 
         final Map<UUID, Phone> results = Instancio.create(model);

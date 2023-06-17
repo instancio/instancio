@@ -22,7 +22,6 @@ import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.selectors.MetamodelSelector;
 import org.instancio.internal.selectors.MethodReferenceHelper;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
@@ -56,9 +55,7 @@ final class ModelContextHelper {
     static TargetSelector preProcess(final TargetSelector selector, final Class<?> rootClass) {
         Verify.notNull(selector, "Selector must not be null");
 
-        if (selector instanceof MetamodelSelector) {
-            return ((MetamodelSelector) selector).copyWithNewStackTraceHolder();
-        } else if (selector instanceof SelectorGroupImpl) {
+        if (selector instanceof SelectorGroupImpl) {
             final List<TargetSelector> results = flattenSelectorGroup((SelectorGroupImpl) selector, rootClass);
             return new SelectorGroupImpl(results.toArray(new GroupableSelector[0]));
         } else if (selector instanceof GetMethodSelector<?, ?>) {
@@ -126,9 +123,7 @@ final class ModelContextHelper {
         final List<TargetSelector> results = new ArrayList<>();
 
         for (Selector groupMember : selectorGroup.getSelectors()) {
-            if (groupMember instanceof MetamodelSelector) {
-                results.add(((MetamodelSelector) groupMember).copyWithNewStackTraceHolder());
-            } else if (groupMember instanceof SelectorImpl) {
+            if (groupMember instanceof SelectorImpl) {
                 final SelectorImpl selector = applyRootClass((SelectorImpl) groupMember, rootClass);
                 results.add(selector);
             } else if (groupMember instanceof PrimitiveAndWrapperSelectorImpl) {

@@ -74,7 +74,6 @@
         <module>build-tools</module>
         <module>instancio-core</module>
         <module>instancio-junit</module>
-        <module>instancio-processor</module>
         <module>instancio-guava</module>
         <module>instancio-tests</module>
     </modules>
@@ -85,7 +84,6 @@
             <modules>
                 <module>instancio-core</module>
                 <module>instancio-junit</module>
-                <module>instancio-processor</module>
                 <module>instancio-guava</module>
             </modules>
             <build>
