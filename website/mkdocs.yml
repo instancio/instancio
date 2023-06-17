@@ -58,6 +58,8 @@ extra:
   # Core
   AfterGenerate:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/AfterGenerate.html" target="_blank">AfterGenerate</a>'
   ArrayHint:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/hints/ArrayHint.html" target="_blank">ArrayHint</a>'
+  Assign:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Assign.html" target="_blank">Assign</a>'
+  Assignment:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Assignment.html" target="_blank">Assignment</a>'
   CollectionHint:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/hints/CollectionHint.html" target="_blank">CollectionHint</a>'
   Instancio:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/Instancio.html" target="_blank">Instancio</a>'
   InstancioApi:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html" target="_blank">InstancioApi</a>'
@@ -79,6 +81,7 @@ extra:
   Keys:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/settings/Keys.html" target="_blank">Keys</a>'
   SettingKey:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/settings/SettingKey.html" target="_blank">SettingKey</a>'
   Settings:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/settings/Settings.html" target="_blank">Settings</a>'
+  When:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/When.html" target="_blank">When</a>'
   withMaxDepth: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withMaxDepth(int)" target="_blank">withMaxDepth(int depth)</a>'
   withNullable: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withNullable(org.instancio.TargetSelector)" target="_blank">withNullable(TargetSelector)</a>'
   withSeed: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSeed(int)" target="_blank">withSeed(int seed)</a>'

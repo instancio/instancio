@@ -880,6 +880,197 @@ Person person = Instancio.of(Person.class)
 Generators can be used for generating simple value types as well as building complex objects.
 They are described in more detail in the [Custom Generators](#custom-generators) section.
 
+### Using `assign()`
+
+The assignment API allows customising an object by passing in one or more `Assignment` objects:
+
+```java
+InstancioApi<T> assign(Assignment... assignments);
+```
+
+Each `Assignment` may have:
+
+- an origin selector - the source of the assignment; must match exactly one value
+- destination selector(s) whose target(s) will be assigned a given value
+- `Generator` for generating the value to assign
+- `Predicate` that must be satisfied by the origin for the assignment to be applied
+- `Function` for mapping the value before assigning to destination targets
+
+Assignments can be created using static methods provided by the {{Assign}} class.
+There are three entry-point methods provided by the `Assign` class:
+
+```java linenums="1"
+Assign.given(TargetSelector origin)
+Assign.given(TargetSelector origin, TargetSelector destination)
+Assign.valueOf(TargetSelector target)
+```
+
+The three types of expressions can be used for different use-cases described
+in the following sections.
+
+#### `Assign.valueOf(target)`
+
+This builder provides two options:
+
+- Assign value directly **to** the `target`
+- Assign value **of** the `target` to another selector
+
+The first option is to assign a value directly to the `target` selector using
+`set()`, `supply()`, or `generate()` methods as shown in the following example:
+
+```java
+Assignment[] assignments = {
+    Assign.valueOf(Person::getName).set("Bob"),
+    Assign.valueOf(Person::getAge).generate(gen->gen.ints().range(1,100))
+};
+
+Person person = Instancio.of(Person.class)
+    .assign(assignments)
+    .create();
+```
+
+The second option is to set the value of the `target` to another selector.
+For example, the following snippet assigns the value of `Person.firstName` to `Person.preferredName`:
+
+```java linenums="1"
+Assignment preferredName = Assign.valueOf(Person::getFirstName).to(Person::getPreferredName);
+
+Person person = Instancio.of(Person.class)
+    .assign(preferredName)
+    .create();
+```
+
+This method supports an optional predicate to specify when the assignment should be applied.
+In the following example, the preferred name is set to the first name only if the first name starts with "A".
+Otherwise, the preferred name will be set to a random value.
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+    .generate(field(Person::getFirstName), gen -> gen.oneOf("Alice", "Alex", "Robert"))
+    .assign(valueOf(Person::getFirstName)
+            .to(Person::getPreferredName)
+            .when((String firstName) -> firstName.startsWith("A")))
+    .create()
+```
+
+In addition, the expression allows specifying a `Function` for transforming
+the result prior to the assignment:
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+    .generate(field(Person::getFirstName), gen -> gen.oneOf("Alice", "Alex", "Robert"))
+    .assign(valueOf(Person::getFirstName)
+            .to(Person::getPreferredName)
+            .as((String firstName) -> "Robert".equals(firstName) ? "Bob" : firstName))
+    .create()
+```
+
+#### `Assign.given(origin)`
+
+This expression allows setting different destination selectors with different values
+based on a given origin and predicate. The following snippet sets
+cancellation-related order data when the generated order status is `CANCELLED`:
+
+```java linenums="1"
+List<Order> orders = Instancio.ofList(Order.class)
+    .assign(Assign.given(Order::getStatus)
+        .is(OrderStatus.CANCELLED)
+        .set(field(Order::getCancellationReason), "Shipping delays")
+        .set(field(Order::isRefundIssued), true)
+        .generate(field(Order::getCancellationDate), gen -> gen.temporal().instant().past()))
+    .create();
+```
+
+#### `Assign.given(origin, destination)`
+
+This expression allows mapping predicates to different values
+for a given pair of origin and destination selectors:
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+    .assign(Assign.given(field(Address::getCountry), field(Phone::getCountryCode))
+        .set(When.isIn("Canada", "USA"), "+1")
+        .set(When.is("Italy"), "+39")
+        .set(When.is("Poland"), "+48")
+        .set(When.is("Germany"), "+49")
+        .elseGenerate(gen -> gen.ints().range(1, 999).as(code -> "+" + code)))
+    .create();
+```
+
+The {{When}} class provides convenience methods for creating predicates.
+In addition to `set(predicate, value)` method shown above, this API
+also supports `supply()` and `generate()`, as well as the following
+optional methods to specify an `else` action if none of the predicates match:
+
+- `elseSet()`
+- `elseSupply()`
+- `elseGenerate()`
+
+#### Assignment Restrictions
+
+##### Origin selector restrictions
+
+When using assignments, the origin selector must match a single target.
+For this reason, the origin does not support selector groups and
+primitive/wrapper selectors, such as `allInts()`.
+
+For example, `Assign.given(allStrings())` is acceptable for the following class definition
+because there is only one string that matches the selector:
+
+```java
+class MyRecord(String string, Integer number) {}
+```
+
+but not for the following class definitions, since `allStrings()`
+would match more than one string value:
+
+```java
+record MyRecord(String string1, String string2, Integer number) {}
+
+record MyRecord(List<String> string, Integer number) {}
+```
+
+Convenience primitive/wrapper selectors, such as `allInts()`, are not accepted
+by assignments as they are a shorthand for `Select.all(all(int.class). all(Integer.class))`.
+Assignment expressions must specify either the primitive, or the wrapper type explicitly:
+`Assign.given(all(Integer.class))`.
+
+
+##### Collection restrictions
+
+Assignments have an additional restriction when used with collections.
+If the origin selector of an assignment targets a collection element,
+then destination selector(s) must be within the collection.
+Assuming we have the following data model:
+
+```java
+class Person {
+    String name;
+    String countryOfCitizenship;
+    List<Address> addresses;
+}
+
+class Address {
+    String street;
+    String city;
+    String country;
+}
+```
+
+It is possible to create an assignment based on address `city` and fields `country`:
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+    .generate(field(Address::getCountry), gen -> gen.oneOf("France", "Italy", "Spain"))
+    .assign(given(field(Address::getCountry), field(Address::getCity)
+        .set(When.is("France"), "Paris")
+        .set(When.is("Italy"), "Rome")
+        .set(When.is("Spain"), "Madrid")
+    .create();
+```
+
+Since an `Address` is a collection element, the assignment is scoped to each `Address` instance.
+
 ### Using `onComplete()`
 
 Another option for customising generated data is using the {{OnCompleteCallback}}, a functional interface with the following signature:

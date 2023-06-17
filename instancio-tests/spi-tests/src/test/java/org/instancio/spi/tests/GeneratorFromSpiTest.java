@@ -24,6 +24,7 @@ import org.instancio.TypeToken;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generator.Generator;
 import org.instancio.spi.InstancioSpiException;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
@@ -39,6 +40,7 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
@@ -212,6 +214,19 @@ class GeneratorFromSpiTest {
                 .allSatisfy(n -> assertThat(n)
                         .isEven()
                         .isBetween(CustomIntegerGenerator.MIN, CustomIntegerGenerator.MAX));
+    }
+
+    @Test
+    void assignmentTakesPrecedenceOverSpi() {
+        final int expected = -1;
+        final IntegerHolder result = Instancio.of(IntegerHolder.class)
+                .set(all(int.class), expected)
+                .assign(valueOf(int.class).to(all(Integer.class)))
+                .create();
+
+        assertThat(result.getPrimitive())
+                .isEqualTo(result.getWrapper())
+                .isEqualTo(expected);
     }
 
     /**

@@ -18,6 +18,7 @@ package org.instancio.internal.util;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.exception.InstancioTerminatingException;
+import org.instancio.exception.UnresolvedAssignmentException;
 
 import java.util.List;
 
@@ -62,10 +63,20 @@ public final class Fail {
      */
     public static InstancioApiException withUsageError(final String msg, final Object... args) {
         final ErrorArgs errorArgs = unpackArgs(args);
+        final String fullErrorMsg = createUsageErrorMessage(msg, errorArgs);
+        return new InstancioApiException(fullErrorMsg, errorArgs.throwable);
+    }
+
+    public static UnresolvedAssignmentException withUnresolvedAssignment(final String msg, final Object... args) {
+        final ErrorArgs errorArgs = unpackArgs(args);
+        final String fullErrorMsg = createUsageErrorMessage(msg, errorArgs);
+        return new UnresolvedAssignmentException(fullErrorMsg, errorArgs.throwable);
+    }
+
+    private static String createUsageErrorMessage(final String msg, final ErrorArgs errorArgs) {
         final String location = Format.firstNonInstancioStackTraceLine(new Throwable());
         final String msgWithArgs = String.format(msg, errorArgs.args);
-
-        final String fullErrorMsg = String.format("" +
+        return String.format("" +
                 "%n" +
                 "%nError creating an object" +
                 "%n -> at %s" +
@@ -73,7 +84,6 @@ public final class Fail {
                 "%nReason: %s" +
                 "%n" +
                 "%n", location, msgWithArgs);
-        return new InstancioApiException(fullErrorMsg, errorArgs.throwable);
     }
 
     /**

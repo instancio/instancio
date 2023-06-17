@@ -47,11 +47,13 @@ public final class NodeFactory {
     private final NodeContext nodeContext;
     private final NodeCreator nodeCreator;
     private final TypeHelper typeHelper;
+    private final OriginSelectorValidator originSelectorValidator;
 
     public NodeFactory(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
         this.nodeCreator = new NodeCreator(nodeContext);
         this.typeHelper = new TypeHelper(nodeContext);
+        this.originSelectorValidator = new OriginSelectorValidator(nodeContext);
     }
 
     public InternalNode createRootNode(final Type type) {
@@ -64,6 +66,8 @@ public final class NodeFactory {
 
         while (!childlessNodeQueue.isEmpty()) {
             final InternalNode node = childlessNodeQueue.poll();
+            originSelectorValidator.checkNode(node);
+
             final List<InternalNode> children = createChildlessChildren(node);
             node.setChildren(children);
             childlessNodeQueue.addAll(children);

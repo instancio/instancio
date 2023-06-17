@@ -20,7 +20,6 @@ import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.util.ReflectionUtils;
@@ -30,6 +29,7 @@ import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
+import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +37,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -48,13 +47,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
 class SelectorMapTest {
-    private final NodeContext nodeContext = NodeContext.builder()
-            .maxDepth(Integer.MAX_VALUE)
-            .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
-            .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
-            .build();
-
-    private final NodeFactory nodeFactory = new NodeFactory(nodeContext);
+    private final NodeFactory nodeFactory = Nodes.nodeFactory();
 
     private final InternalNode rootNode = nodeFactory.createRootNode(PersonHolder.class);
     private final InternalNode personNameNode = getNodeWithField(rootNode, Person.class, "name");

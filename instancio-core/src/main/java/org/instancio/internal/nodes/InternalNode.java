@@ -234,10 +234,29 @@ public final class InternalNode {
         return new StringBuilder().append("Node[")
                 .append(nodeName)
                 .append(", depth=").append(depth)
-                .append(", #chn=").append(children.size())
-                .append(", ").append(Format.withoutPackage(type))
+                .append(", type=").append(Format.withoutPackage(type))
                 .append(']')
                 .toString();
+    }
+
+    public String toDisplayString() {
+        if (nodeKind == NodeKind.IGNORED) {
+            return "ignored";
+        }
+
+        final StringBuilder sb = new StringBuilder();
+
+        final String nodeName = field == null
+                ? Format.withoutPackage(type)
+                : Format.withoutPackage(parent.targetClass) + '.' + field.getName();
+
+        if (field == null) {
+            sb.append("class ").append(nodeName);
+        } else {
+            sb.append("field ").append(nodeName);
+        }
+
+        return sb.toString();
     }
 
     public static final class Builder {

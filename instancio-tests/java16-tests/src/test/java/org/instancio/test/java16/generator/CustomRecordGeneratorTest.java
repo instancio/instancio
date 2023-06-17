@@ -15,11 +15,11 @@
  */
 package org.instancio.test.java16.generator;
 
-import org.instancio.generator.Generator;
 import org.instancio.Instancio;
 import org.instancio.Random;
-import org.instancio.generator.Hints;
 import org.instancio.generator.AfterGenerate;
+import org.instancio.generator.Generator;
+import org.instancio.generator.Hints;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.java16.record.PersonRecord;
 import org.junit.jupiter.api.DisplayName;

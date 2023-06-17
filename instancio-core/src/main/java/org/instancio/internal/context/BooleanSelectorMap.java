@@ -16,8 +16,8 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.selectors.Flattener;
 
 import java.util.Collections;
 import java.util.Set;
@@ -36,6 +36,10 @@ public class BooleanSelectorMap {
         return selectorMap;
     }
 
+    public Set<TargetSelector> getOriginSelectors(final InternalNode node) {
+        return selectorMap.getSelectors(node);
+    }
+
     Set<TargetSelector> getTargetSelectors() {
         return targetSelectors;
     }
@@ -46,7 +50,7 @@ public class BooleanSelectorMap {
 
     private void putAll(final Set<TargetSelector> targetSelectors) {
         for (TargetSelector targetSelector : targetSelectors) {
-            for (TargetSelector target : ((Flattener) targetSelector).flatten()) {
+            for (TargetSelector target : ((Flattener<TargetSelector>) targetSelector).flatten()) {
                 selectorMap.put(target, true);
             }
         }

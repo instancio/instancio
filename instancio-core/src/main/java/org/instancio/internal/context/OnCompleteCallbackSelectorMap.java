@@ -17,8 +17,8 @@ package org.instancio.internal.context;
 
 import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.selectors.Flattener;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +50,7 @@ class OnCompleteCallbackSelectorMap {
         for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : callbacks.entrySet()) {
             final TargetSelector targetSelector = entry.getKey();
             final OnCompleteCallback<?> callback = entry.getValue();
-            for (TargetSelector selector : ((Flattener) targetSelector).flatten()) {
+            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
                 selectorMap.put(selector, callback);
             }
         }

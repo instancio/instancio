@@ -18,16 +18,18 @@ package org.instancio.creation.misc;
 import org.instancio.test.support.pojo.misc.MultipleClassesWithId;
 import org.instancio.testsupport.templates.CreationTestTemplate;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MultipleClassesWithIdCreationTest extends CreationTestTemplate<MultipleClassesWithId> {
+class MultipleClassesWithIdCreationTest extends CreationTestTemplate<MultipleClassesWithId<UUID>> {
 
     @Override
-    protected void verify(final MultipleClassesWithId result) {
+    protected void verify(final MultipleClassesWithId<UUID> result) {
         assertThat(result.getA().getId()).isNotNull();
         assertThat(result.getA().getB().getId()).isNotNull();
 
-        final MultipleClassesWithId.C c = result.getA().getC();
+        final MultipleClassesWithId.C<UUID> c = result.getA().getC();
         assertThat(c.getId()).isNotNull();
         assertThat(c.getB().getId()).isNotNull();
         assertThat(c.getD().getId()).isNotNull();

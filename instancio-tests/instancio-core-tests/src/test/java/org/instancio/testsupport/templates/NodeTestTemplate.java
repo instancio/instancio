@@ -16,17 +16,14 @@
 package org.instancio.testsupport.templates;
 
 import org.instancio.TypeTokenSupplier;
-import org.instancio.internal.context.BooleanSelectorMap;
-import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.test.support.tags.NodeTag;
+import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
@@ -44,12 +41,7 @@ public abstract class NodeTestTemplate<T> {
 
     @Test
     protected final void verifyingModelFromTypeToken() {
-        final NodeContext nodeContext = NodeContext.builder()
-                .maxDepth(withMaxDepth())
-                .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
-                .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
-                .build();
-        final NodeFactory nodeFactory = new NodeFactory(nodeContext);
+        final NodeFactory nodeFactory = Nodes.nodeFactory();
         final TypeTokenSupplier<Type> typeSupplier = typeContext::getGenericType;
         final InternalNode rootNode = nodeFactory.createRootNode(typeSupplier.get());
         verify(rootNode);

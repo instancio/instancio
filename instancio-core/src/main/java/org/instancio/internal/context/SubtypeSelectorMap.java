@@ -16,8 +16,8 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.selectors.Flattener;
 
 import java.util.Collections;
 import java.util.Map;
@@ -51,7 +51,7 @@ public final class SubtypeSelectorMap {
 
     private void putAdditional(final Map<TargetSelector, Class<?>> subtypes) {
         subtypes.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
-            for (TargetSelector selector : ((Flattener) targetSelector).flatten()) {
+            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
                 selectorMap.put(selector, subtype);
             }
         });

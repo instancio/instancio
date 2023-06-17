@@ -15,15 +15,24 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
+import org.instancio.exception.InstancioTerminatingException;
+import org.instancio.exception.UnusedSelectorException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -101,17 +110,41 @@ class ExceptionHandlerTest {
         assertThat(conditionalFailOnError(supplierThrowing(INSTANCIO_EXCEPTION))).isEmpty();
     }
 
-    @Test
+    private static Stream<Arguments> shouldPropagateExceptions() {
+        final Set<TargetSelector> emptySet = Collections.emptySet();
+        return Stream.of(
+                Arguments.of(INSTANCIO_API_EXCEPTION),
+                Arguments.of(new InstancioTerminatingException(EXCEPTION_MSG)),
+                Arguments.of(new UnusedSelectorException(EXCEPTION_MSG, emptySet, emptySet, emptySet, emptySet, emptySet))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shouldPropagateExceptions")
     @DisplayName("Verify API exception is propagated even if 'fail on error' is disabled")
     @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "false")
-    void propagatesApiExceptionWithVoidFunction() {
-        final VoidFunction voidFunction = functionThrowing(INSTANCIO_API_EXCEPTION);
+    void propagatesApiException(final RuntimeException ex) {
+        final VoidFunction voidFunction = functionThrowing(ex);
         assertThatThrownBy(() -> ExceptionHandler.conditionalFailOnError(voidFunction))
-                .isSameAs(INSTANCIO_API_EXCEPTION);
+                .isSameAs(ex);
 
-        final Supplier<?> supplier = supplierThrowing(INSTANCIO_API_EXCEPTION);
+        final Supplier<?> supplier = supplierThrowing(ex);
         assertThatThrownBy(() -> conditionalFailOnError(supplier))
-                .isSameAs(INSTANCIO_API_EXCEPTION);
+                .isSameAs(ex);
+    }
+
+    @Test
+    @DisplayName("Verify AssertionError is propagated even if 'fail on error' is disabled")
+    @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "false")
+    void propagatesAssertionError() {
+        final AssertionError error = new AssertionError();
+        final VoidFunction voidFunction = functionThrowing(error);
+        assertThatThrownBy(() -> ExceptionHandler.conditionalFailOnError(voidFunction))
+                .isSameAs(error);
+
+        final Supplier<?> supplier = supplierThrowing(error);
+        assertThatThrownBy(() -> conditionalFailOnError(supplier))
+                .isSameAs(error);
     }
 
     @Test
@@ -140,6 +173,12 @@ class ExceptionHandlerTest {
     private static Supplier<?> supplierThrowing(final RuntimeException ex) {
         return () -> {
             throw ex;
+        };
+    }
+
+    private static Supplier<?> supplierThrowing(final Error e) {
+        return () -> {
+            throw e;
         };
     }
 }
