@@ -16,9 +16,9 @@
 package org.external.errorhandling;
 
 import org.instancio.Instancio;
-import org.instancio.assignment.AssignmentType;
-import org.instancio.assignment.OnSetMethodNotFound;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.Settings;
 
 class MethodAssignerOnSetMethodNotFoundTest extends AbstractErrorMessageTestTemplate {

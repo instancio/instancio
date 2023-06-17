@@ -15,10 +15,10 @@
  */
 package org.instancio.internal.assigners;
 
-import org.instancio.assignment.OnSetFieldError;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;

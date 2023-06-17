@@ -16,12 +16,6 @@
 package org.instancio.settings;
 
 import org.instancio.Mode;
-import org.instancio.assignment.AssignmentType;
-import org.instancio.assignment.MethodModifier;
-import org.instancio.assignment.OnSetFieldError;
-import org.instancio.assignment.OnSetMethodError;
-import org.instancio.assignment.OnSetMethodNotFound;
-import org.instancio.assignment.SetterStyle;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.settings.InternalKey;

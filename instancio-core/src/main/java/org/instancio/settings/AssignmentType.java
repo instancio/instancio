@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.assignment;
+package org.instancio.settings;
 
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.internal.util.StringUtils;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 
 /**
  * A setting that specifies whether objects

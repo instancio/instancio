@@ -15,15 +15,15 @@
  */
 package org.instancio.internal.assigners;
 
-import org.instancio.assignment.AssignmentType;
-import org.instancio.assignment.OnSetFieldError;
-import org.instancio.assignment.OnSetMethodError;
-import org.instancio.assignment.OnSetMethodNotFound;
-import org.instancio.assignment.SetterStyle;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.StringUtils;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetFieldError;
+import org.instancio.settings.OnSetMethodError;
+import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
 
 import java.lang.reflect.Field;

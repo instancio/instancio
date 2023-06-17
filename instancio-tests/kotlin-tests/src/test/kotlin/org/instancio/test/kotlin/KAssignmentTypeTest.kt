@@ -20,12 +20,12 @@ import org.instancio.Instancio
 import org.instancio.Model
 import org.instancio.Select.field
 import org.instancio.Select.fields
-import org.instancio.assignment.AssignmentType
-import org.instancio.assignment.OnSetMethodError
-import org.instancio.assignment.OnSetMethodNotFound
 import org.instancio.junit.InstancioExtension
 import org.instancio.junit.WithSettings
+import org.instancio.settings.AssignmentType
 import org.instancio.settings.Keys
+import org.instancio.settings.OnSetMethodError
+import org.instancio.settings.OnSetMethodNotFound
 import org.instancio.settings.Settings
 import org.instancio.test.support.tags.Feature
 import org.instancio.test.support.tags.FeatureTag

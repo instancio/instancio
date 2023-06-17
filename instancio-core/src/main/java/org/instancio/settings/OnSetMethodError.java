@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.assignment;
+package org.instancio.settings;
 
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.util.StringUtils;
-import org.instancio.settings.Keys;
 
 /**
  * A setting that specifies what should happen if an error occurs
- * when setting a field's value.
+ * during a setter method invocation.
  *
- * @see Keys#ON_SET_FIELD_ERROR
+ * @see Keys#ON_SET_METHOD_ERROR
  * @since 2.1.0
  */
 @ExperimentalApi
-public enum OnSetFieldError {
+public enum OnSetMethodError {
+
+    /**
+     * Use field assignment as the fallback (default behaviour).
+     *
+     * @since 2.1.0
+     */
+    ASSIGN_FIELD,
 
     /**
      * Propagate the error up by throwing {@link InstancioApiException}.
@@ -39,9 +45,9 @@ public enum OnSetFieldError {
 
     /**
      * Ignore the error and continue populating the object.
-     *
-     * <p><b>Warning:</b> an error caused by assigning an incompatible type
-     * is considered a user error and is never ignored.
+     * <p>
+     * Depending on what causes the error within the {@code set} method,
+     * the target field may or may not have been populated.
      *
      * @since 2.1.0
      */

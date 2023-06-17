@@ -15,13 +15,13 @@
  */
 package org.instancio.internal.assigners;
 
-import org.instancio.assignment.AssignmentType;
-import org.instancio.assignment.OnSetFieldError;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

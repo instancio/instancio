@@ -21,7 +21,7 @@ import org.instancio.Gen;
 import org.instancio.GivenOriginPredicateAction;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.assignment.OnSetFieldError;
+import org.instancio.settings.OnSetFieldError;
 import org.instancio.exception.UnresolvedAssignmentException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;

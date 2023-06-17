@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.assigners;
 
-import org.instancio.assignment.MethodModifier;
+import org.instancio.settings.MethodModifier;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
