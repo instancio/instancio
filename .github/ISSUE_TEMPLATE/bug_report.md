@@ -18,9 +18,10 @@ Describe the actual behaviour
 **Additional information**
 Add any other context about the problem here
 
-**Sample code reproducing the issue**
+**Link to a minimal sample project reproducing the issue or runnable sample code**
 ```java
 // code sample
 ```
 
+- Java version:
 - Instancio version:
