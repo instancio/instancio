@@ -23,9 +23,7 @@ import org.instancio.internal.generator.lang.EnumGenerator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.internal.util.Sonar;
-import org.instancio.spi.GeneratorProvider;
 import org.instancio.spi.InstancioServiceProvider;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,9 +34,6 @@ import static org.instancio.internal.generator.GeneratorUtil.instantiateInternal
 
 public class GeneratorResolver {
 
-    private static final List<GeneratorProvider> DEPRECATED_PROVIDERS =
-            ServiceLoaders.loadAll(GeneratorProvider.class);
-
     private final GeneratorContext context;
     private final GeneratorProviderFacade generatorProviderFacade;
 
@@ -47,8 +42,7 @@ public class GeneratorResolver {
             final List<ProviderEntry<InstancioServiceProvider.GeneratorProvider>> providerEntries) {
 
         this.context = context;
-        this.generatorProviderFacade = new GeneratorProviderFacade(
-                context, DEPRECATED_PROVIDERS, providerEntries);
+        this.generatorProviderFacade = new GeneratorProviderFacade(context, providerEntries);
     }
 
     private static Generator<?> loadByClassName(
