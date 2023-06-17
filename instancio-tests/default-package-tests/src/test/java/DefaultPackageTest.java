@@ -15,15 +15,11 @@
  */
 
 import org.instancio.Instancio;
-import org.instancio.InstancioMetamodel;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 
-@FeatureTag(Feature.METAMODEL)
-@InstancioMetamodel(classes = DefaultPackageClass.class)
 class DefaultPackageTest {
 
     @Test
@@ -33,10 +29,10 @@ class DefaultPackageTest {
     }
 
     @Test
-    void withMetamodel() {
+    void customise() {
         final String expected = "some value";
         final DefaultPackageClass result = Instancio.of(DefaultPackageClass.class)
-                .supply(DefaultPackageClass_.value, () -> expected)
+                .set(field(DefaultPackageClass::getValue), expected)
                 .create();
 
         assertThat(result.getValue()).isEqualTo(expected);

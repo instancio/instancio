@@ -23,9 +23,8 @@ import org.instancio.generators.Generators;
 import org.instancio.test.support.pojo.arrays.MiscArrays;
 import org.instancio.test.support.pojo.basic.LongHolder;
 import org.instancio.test.support.pojo.generics.basic.Item;
-import org.instancio.test.support.pojo.person.Address_;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +36,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.allLongs;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 
 @FeatureTag(Feature.SELECTOR)
 class SelectWithGenerateTest {
@@ -81,7 +81,7 @@ class SelectWithGenerateTest {
     void compositeSelectorGroup() {
         final int expectedLength = 100;
         final Person result = Instancio.of(Person.class)
-                .generate(Select.all(Person_.name, Address_.city),
+                .generate(Select.all(field(Person::getName), field(Address::getCity)),
                         gen -> gen.string().length(expectedLength))
                 .create();
 

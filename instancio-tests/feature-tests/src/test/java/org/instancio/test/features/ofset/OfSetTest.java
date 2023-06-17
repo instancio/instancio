@@ -17,7 +17,6 @@ package org.instancio.test.features.ofset;
 
 import org.instancio.Instancio;
 import org.instancio.test.support.pojo.person.Phone;
-import org.instancio.test.support.pojo.person.Phone_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
@@ -27,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 import static org.instancio.Select.root;
 
 /**
@@ -46,8 +46,8 @@ class OfSetTest {
     void ofSet() {
         final Set<Phone> results = Instancio.ofSet(Phone.class).size(5)
                 .subtype(root(), LinkedHashSet.class)
-                .set(Phone_.countryCode, "+1")
-                .generate(Phone_.number, gen -> gen.string().digits().length(7))
+                .set(field(Phone::getCountryCode), "+1")
+                .generate(field(Phone::getNumber), gen -> gen.string().digits().length(7))
                 .create();
 
         assertThat(results)

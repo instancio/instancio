@@ -41,23 +41,12 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>instancio-processor</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.instancio</groupId>
             <artifactId>instancio-guava</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-junit-tests</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.instancio</groupId>
-            <artifactId>instancio-processor-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

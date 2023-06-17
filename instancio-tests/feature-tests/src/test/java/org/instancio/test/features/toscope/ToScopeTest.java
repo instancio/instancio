@@ -19,12 +19,10 @@ import org.instancio.ConvertibleToScope;
 import org.instancio.Instancio;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfInteger;
 import org.instancio.test.support.pojo.person.Address;
-import org.instancio.test.support.pojo.person.Address_;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -68,18 +66,6 @@ class ToScopeTest {
 
             assertThat(result.getList1()).containsOnly(1);
             assertThat(result.getList2()).containsOnly(2);
-        }
-    }
-
-    @Nested
-    class ScopeCreatedFromMetamodelSelectorTest {
-        @Test
-        void field() {
-            final Address result = Instancio.of(Address.class)
-                    .set(allStrings().within(Address_.phoneNumbers.toScope()), FOO)
-                    .create();
-
-            assertExpectedStrings(result);
         }
     }
 

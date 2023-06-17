@@ -22,7 +22,6 @@ import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Baz;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -49,18 +48,18 @@ class UnusedSelectorsWithMixedApiMethodsTest {
                 .ignore(field(Foo.class, "fooValue"))
                 .set(field(Bar.class, "barValue"), "barrr")
                 .generate(field(Baz.class, "bazValue"), Generators::string)
-                .supply(allStrings().within(Person_.age.toScope()), UnusedSelectorsWithMixedApiMethodsTest::failIfCalled)
+                .supply(allStrings().within(field(Person::getAge).toScope()), UnusedSelectorsWithMixedApiMethodsTest::failIfCalled)
                 .onComplete(all(LinkedList.class), list -> failIfCalled())
                 .withNullable(all(SortedSet.class))
                 .subtype(all(CharSequence.class), String.class);
 
-        int l = 49;
+        int l = 48;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(7)
                 .ignoreSelector(field(Foo.class, "fooValue"), line(getClass(), l++))
                 .generatorSelector(field(Bar.class, "barValue"), line(getClass(), l++))
                 .generatorSelector(field(Baz.class, "bazValue"), line(getClass(), l++))
-                .generatorSelector(allStrings().within(Person_.age.toScope()), line(getClass(), l++))
+                .generatorSelector(allStrings().within(field(Person::getAge).toScope()), line(getClass(), l++))
                 .onCompleteSelector(all(LinkedList.class), line(getClass(), l++))
                 .withNullableSelector(all(SortedSet.class), line(getClass(), l++))
                 .subtypeSelector(all(CharSequence.class), line(getClass(), l));

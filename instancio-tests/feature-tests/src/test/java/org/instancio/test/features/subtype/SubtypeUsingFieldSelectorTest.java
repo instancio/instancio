@@ -26,7 +26,6 @@ import org.instancio.test.support.pojo.generics.basic.ItemInterfaceStringHolder;
 import org.instancio.test.support.pojo.generics.basic.NonGenericItemStringExtension;
 import org.instancio.test.support.pojo.person.AddressExtension;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.test.support.pojo.person.Person_;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +58,7 @@ class SubtypeUsingFieldSelectorTest {
     @DisplayName("Map non-generic field type to non-generic subtype")
     void mapNonGenericTypeToNonGenericSubtype() {
         final Person result = Instancio.of(Person.class)
-                .subtype(Person_.address, AddressExtension.class)
+                .subtype(field(Person::getAddress), AddressExtension.class)
                 .create();
 
         assertThat(result.getAddress()).isExactlyInstanceOf(AddressExtension.class);
