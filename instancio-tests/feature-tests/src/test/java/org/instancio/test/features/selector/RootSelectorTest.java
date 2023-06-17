@@ -16,11 +16,11 @@
 package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
-import org.instancio.Mode;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Mode;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;

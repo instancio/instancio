@@ -17,7 +17,6 @@ package org.instancio.internal.context;
 
 import org.instancio.Assignment;
 import org.instancio.GeneratorSpecProvider;
-import org.instancio.Mode;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
 import org.instancio.TargetSelector;
@@ -39,6 +38,7 @@ import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Mode;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.support.Global;

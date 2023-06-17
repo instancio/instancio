@@ -16,7 +16,6 @@
 package org.instancio.internal.context;
 
 import org.instancio.GeneratorSpecProvider;
-import org.instancio.Mode;
 import org.instancio.Random;
 import org.instancio.Select;
 import org.instancio.Selector;
@@ -35,6 +34,7 @@ import org.instancio.internal.generator.misc.SupplierAdapter;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Mode;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;

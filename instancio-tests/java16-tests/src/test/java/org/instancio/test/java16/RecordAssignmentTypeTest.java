@@ -1,11 +1,11 @@
 package org.instancio.test.java16;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
-import org.instancio.junit.InstancioExtension;
-import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.java16.record.PhoneRecord;
 import org.instancio.test.support.tags.Feature;

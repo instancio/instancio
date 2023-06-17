@@ -16,13 +16,13 @@
 package org.instancio.internal.settings;
 
 import org.instancio.Instancio;
-import org.instancio.Mode;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.PropertiesLoader;
 import org.instancio.internal.util.Constants;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Mode;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;

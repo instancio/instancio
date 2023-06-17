@@ -16,10 +16,10 @@
 package org.instancio.test.features.ignore;
 
 import org.instancio.Instancio;
-import org.instancio.Mode;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Mode;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;

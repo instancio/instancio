@@ -15,11 +15,11 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Mode;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Mode;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
