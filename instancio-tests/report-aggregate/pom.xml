@@ -100,12 +100,6 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>spi-old-tests</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.instancio</groupId>
             <artifactId>kotlin-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

@@ -27,7 +27,6 @@ import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
-import org.instancio.spi.GeneratorProvider;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioSpiException;
 import org.slf4j.Logger;
@@ -45,48 +44,27 @@ class GeneratorProviderFacade {
 
     private final GeneratorContext context;
     private final Generators generators;
-    private final List<GeneratorProvider> generatorProviders;
     private final List<ProviderEntry<InstancioServiceProvider.GeneratorProvider>> providerEntries;
     private final AfterGenerate afterGenerate;
 
     GeneratorProviderFacade(
             final GeneratorContext context,
-            final List<GeneratorProvider> generatorProviders,
             final List<ProviderEntry<InstancioServiceProvider.GeneratorProvider>> providerEntries) {
 
         this.context = context;
         this.generators = new Generators(context);
-        this.generatorProviders = generatorProviders;
         this.afterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         this.providerEntries = providerEntries;
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     Optional<Generator<?>> getGenerator(final InternalNode node) {
-        Generator<?> result = resolveViaNewSPI(node);
-        if (result == null) {
-            result = resolveViaDeprecatedSPI(node);
-        }
-
+        Generator<?> result = resolveViaSPI(node);
         return Optional.ofNullable(result);
     }
 
-    private Generator<?> resolveViaDeprecatedSPI(final InternalNode node) {
-        final Class<?> forClass = node.getTargetClass();
-
-        for (GeneratorProvider provider : generatorProviders) {
-            final Generator<?> generator = provider.getGenerators(context).get(forClass);
-            if (generator != null) {
-                LOG.trace("Custom generator '{}' found for {}", generator.getClass().getName(), forClass);
-                generator.init(context);
-                return GeneratorDecorator.decorateIfNullAfterGenerate(generator, afterGenerate);
-            }
-        }
-        return null;
-    }
-
     @SuppressWarnings("PMD.AvoidBranchingStatementAsLastInLoop")
-    private Generator<?> resolveViaNewSPI(final InternalNode internalNode) {
+    private Generator<?> resolveViaSPI(final InternalNode internalNode) {
         final Node node = new NodeImpl(internalNode.getTargetClass(), internalNode.getField());
 
         for (ProviderEntry<InstancioServiceProvider.GeneratorProvider> entry : providerEntries) {
