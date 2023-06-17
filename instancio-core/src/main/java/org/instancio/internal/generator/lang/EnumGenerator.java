@@ -84,7 +84,7 @@ public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E>
     @Override
     public Hints hints() {
         return Hints.builder()
-                .afterGenerate(AfterGenerate.APPLY_SELECTORS)
+                .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
                 .with(InternalGeneratorHint.builder()
                         .targetClass(enumClass)
                         .build())
