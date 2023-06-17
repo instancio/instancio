@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
-
 /**
  * Spec for {@link Enum Enums} that supports {@link AsGeneratorSpec}.
  *
@@ -24,7 +22,7 @@ import org.instancio.generator.AsStringGeneratorSpec;
  * @since 2.12.0
  */
 public interface EnumAsGeneratorSpec<E extends Enum<E>>
-        extends AsGeneratorSpec<E>, AsStringGeneratorSpec<E>, EnumGeneratorSpec<E> {
+        extends AsGeneratorSpec<E>, EnumGeneratorSpec<E> {
 
     @SuppressWarnings("unchecked")
     @Override

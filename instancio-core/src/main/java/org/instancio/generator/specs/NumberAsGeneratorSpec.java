@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
-
 /**
  * Generator spec for {@link Number} types
  * that supports {@link AsGeneratorSpec}.
@@ -24,7 +22,7 @@ import org.instancio.generator.AsStringGeneratorSpec;
  * @since 2.6.0
  */
 public interface NumberAsGeneratorSpec<T extends Number>
-        extends NumberGeneratorSpec<T>, AsGeneratorSpec<T>, AsStringGeneratorSpec<T> {
+        extends NumberGeneratorSpec<T>, AsGeneratorSpec<T> {
 
     @Override
     NumberAsGeneratorSpec<T> min(T min);

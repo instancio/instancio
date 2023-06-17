@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
-
 import java.math.BigDecimal;
 
 /**
@@ -26,7 +24,7 @@ import java.math.BigDecimal;
  * @since 2.6.0
  */
 public interface BigDecimalAsGeneratorSpec
-        extends BigDecimalGeneratorSpec, AsGeneratorSpec<BigDecimal>, AsStringGeneratorSpec<BigDecimal> {
+        extends BigDecimalGeneratorSpec, AsGeneratorSpec<BigDecimal> {
 
     @Override
     BigDecimalAsGeneratorSpec min(BigDecimal min);

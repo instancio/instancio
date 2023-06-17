@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
-
 /**
  * Generator spec for {@link Character} values
  * that supports {@link AsGeneratorSpec}.
@@ -24,7 +22,7 @@ import org.instancio.generator.AsStringGeneratorSpec;
  * @since 2.6.0
  */
 public interface CharacterAsGeneratorSpec
-        extends CharacterGeneratorSpec, AsGeneratorSpec<Character>, AsStringGeneratorSpec<Character> {
+        extends CharacterGeneratorSpec, AsGeneratorSpec<Character> {
 
     @Override
     CharacterAsGeneratorSpec range(char min, char max);

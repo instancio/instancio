@@ -15,7 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 
@@ -27,7 +26,7 @@ import java.io.InputStream;
  * @since 2.6.0
  */
 public interface PathAsGeneratorSpec<T>
-        extends PathGeneratorSpec<T>, AsGeneratorSpec<T>, AsStringGeneratorSpec<T> {
+        extends PathGeneratorSpec<T>, AsGeneratorSpec<T> {
 
     @Override
     PathAsGeneratorSpec<T> name(Generator<String> nameGenerator);
