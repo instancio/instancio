@@ -47,16 +47,4 @@ import java.lang.annotation.Target;
 @Documented
 @ArgumentsSource(InstancioArgumentsProvider.class)
 public @interface InstancioSource {
-
-    /**
-     * Specifies parameter types to generate. Each specified type
-     * represents a parameter in the {@code ParameterizedTest} method.
-     *
-     * @return parameter types to generate
-     * @deprecated parameter types will be resolved from method arguments,
-     * therefore specifying the types via the annotation is no longer necessary
-     * (this method will be removed in version {@code 3.0.0}).
-     */
-    @Deprecated
-    Class<?>[] value() default {};
 }

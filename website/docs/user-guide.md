@@ -2445,8 +2445,6 @@ class ExampleTest {
 }
 ```
 
-It should be noted that using `@InstancioSource` has a couple of important limitations that make it unsuitable in many situations.
-
-The biggest limitation is that the generated objects cannot be customised.
+It should be noted that using `@InstancioSource` has one important limitations in that generated objects cannot be customised.
 The only option is to customise generated values using [settings injection](#settings-injection).
-However, it is not possible to customise values on a per-field basis, as you would with the builder API.
+However, it is not possible to customise values on a per-field basis like with the builder API.
