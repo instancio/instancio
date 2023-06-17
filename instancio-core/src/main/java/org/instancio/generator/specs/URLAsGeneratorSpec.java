@@ -15,7 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
 
 import java.net.URL;
@@ -26,7 +25,7 @@ import java.net.URL;
  * @since 2.6.0
  */
 public interface URLAsGeneratorSpec
-        extends URLGeneratorSpec, AsGeneratorSpec<URL>, AsStringGeneratorSpec<URL> {
+        extends URLGeneratorSpec, AsGeneratorSpec<URL> {
 
     @Override
     URLAsGeneratorSpec protocol(String... protocols);

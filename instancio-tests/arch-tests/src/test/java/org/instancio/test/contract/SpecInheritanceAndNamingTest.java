@@ -17,7 +17,6 @@ package org.instancio.test.contract;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.ValueSpec;
 import org.instancio.generator.specs.AsGeneratorSpec;
@@ -50,18 +49,6 @@ class SpecInheritanceAndNamingTest {
         classes()
                 .that().resideInAPackage("..specs..").and().haveSimpleNameEndingWith("GeneratorSpec")
                 .should().notBeAssignableTo(ValueSpec.class)
-                .check(classes);
-    }
-
-    /**
-     * Value specs should not expose methods defined by {@link AsStringGeneratorSpec},
-     * since they return {@link GeneratorSpec} and not String.
-     */
-    @Test
-    void valueSpecsShouldNotImplementAsStringGeneratorSpec() {
-        classes()
-                .that().resideInAPackage("..specs..").and().areAssignableTo(ValueSpec.class)
-                .should().notBeAssignableTo(AsStringGeneratorSpec.class)
                 .check(classes);
     }
 

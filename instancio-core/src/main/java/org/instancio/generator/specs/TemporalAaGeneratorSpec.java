@@ -15,22 +15,20 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
-
 /**
- * Generator spec for temporal values that supports {@link AsStringGeneratorSpec}.
+ * Generator spec for temporal values that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
  */
-public interface TemporalAaStringGeneratorSpec<T>
-        extends TemporalGeneratorSpec<T>, AsGeneratorSpec<T>, AsStringGeneratorSpec<T> {
+public interface TemporalAaGeneratorSpec<T>
+        extends TemporalGeneratorSpec<T>, AsGeneratorSpec<T> {
 
     @Override
-    TemporalAaStringGeneratorSpec<T> past();
+    TemporalAaGeneratorSpec<T> past();
 
     @Override
-    TemporalAaStringGeneratorSpec<T> future();
+    TemporalAaGeneratorSpec<T> future();
 
     @Override
-    TemporalAaStringGeneratorSpec<T> range(T start, T end);
+    TemporalAaGeneratorSpec<T> range(T start, T end);
 }

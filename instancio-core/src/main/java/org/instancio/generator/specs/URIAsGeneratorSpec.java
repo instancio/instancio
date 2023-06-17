@@ -15,7 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.AsStringGeneratorSpec;
 import org.instancio.generator.Generator;
 
 import java.net.URI;
@@ -26,7 +25,7 @@ import java.net.URI;
  * @since 2.6.0
  */
 public interface URIAsGeneratorSpec
-        extends URIGeneratorSpec, AsGeneratorSpec<URI>, AsStringGeneratorSpec<URI> {
+        extends URIGeneratorSpec, AsGeneratorSpec<URI> {
 
     @Override
     URIAsGeneratorSpec scheme(String... schemes);
