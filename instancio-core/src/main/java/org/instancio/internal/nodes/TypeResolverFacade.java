@@ -16,17 +16,13 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.internal.spi.ProviderEntry;
-import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioSpiException;
-import org.instancio.spi.TypeResolver;
 
 import java.util.List;
 import java.util.Optional;
 
 class TypeResolverFacade {
-
-    private static final List<TypeResolver> DEPRECATED_TYPE_RESOLVERS = ServiceLoaders.loadAll(TypeResolver.class);
 
     private final List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries;
 
@@ -35,13 +31,11 @@ class TypeResolverFacade {
     }
 
     Optional<Class<?>> resolve(final Class<?> typeToResolve) {
-        final Class<?> resolvedViaNewSpi = resolveViaNewSPI(typeToResolve);
-        return resolvedViaNewSpi == null
-                ? resolvedViaDeprecatedSPI(typeToResolve)
-                : Optional.of(resolvedViaNewSpi);
+        final Class<?> type = resolveViaSPI(typeToResolve);
+        return Optional.ofNullable(type);
     }
 
-    private Class<?> resolveViaNewSPI(final Class<?> typeToResolve) {
+    private Class<?> resolveViaSPI(final Class<?> typeToResolve) {
         for (ProviderEntry<InstancioServiceProvider.TypeResolver> entry : providerEntries) {
             final Class<?> resolved = entry.getProvider().getSubtype(typeToResolve);
 
@@ -56,15 +50,5 @@ class TypeResolverFacade {
             }
         }
         return null;
-    }
-
-    private static Optional<Class<?>> resolvedViaDeprecatedSPI(final Class<?> typeToResolve) {
-        for (TypeResolver resolver : DEPRECATED_TYPE_RESOLVERS) {
-            final Optional<Class<?>> resolved = resolver.resolve(typeToResolve);
-            if (resolved.isPresent()) {
-                return resolved;
-            }
-        }
-        return Optional.empty();
     }
 }
