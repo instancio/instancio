@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattener<TargetSelector> {
 
@@ -71,8 +70,8 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     public TargetSelector atDepth(final int depth) {
         ApiValidator.validateDepth(depth);
         return new PrimitiveAndWrapperSelectorImpl(
-                SelectorImpl.builder(primitive).depth(depth).build(),
-                SelectorImpl.builder(wrapper).depth(depth).build());
+                primitive.toBuilder().depth(depth).build(),
+                wrapper.toBuilder().depth(depth).build());
     }
 
     @Override
@@ -84,8 +83,8 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     public Selector within(@NotNull final Scope... scopes) {
         final List<Scope> scopeList = Arrays.asList(scopes);
         return new PrimitiveAndWrapperSelectorImpl(
-                SelectorImpl.builder(primitive).scopes(scopeList).build(),
-                SelectorImpl.builder(wrapper).scopes(scopeList).build());
+                primitive.toBuilder().scopes(scopeList).build(),
+                wrapper.toBuilder().scopes(scopeList).build());
     }
 
     @Override
@@ -98,12 +97,14 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
         if (this == o) return true;
         if (!(o instanceof PrimitiveAndWrapperSelectorImpl)) return false;
         final PrimitiveAndWrapperSelectorImpl that = (PrimitiveAndWrapperSelectorImpl) o;
-        return Objects.equals(primitive, that.primitive) && Objects.equals(wrapper, that.wrapper);
+        return primitive.equals(that.primitive) && wrapper.equals(that.wrapper);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(primitive, wrapper);
+        int result = primitive.hashCode();
+        result = 31 * result + wrapper.hashCode();
+        return result;
     }
 
     @Override

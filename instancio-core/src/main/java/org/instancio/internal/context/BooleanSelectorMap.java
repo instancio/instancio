@@ -18,6 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Set;
@@ -25,11 +26,20 @@ import java.util.Set;
 public class BooleanSelectorMap {
 
     private final Set<TargetSelector> targetSelectors;
-    private final SelectorMap<Boolean> selectorMap = new SelectorMap<>();
+    private final SelectorMap<Boolean> selectorMap;
 
-    public BooleanSelectorMap(final Set<TargetSelector> targetSelectors) {
+    public BooleanSelectorMap(@NotNull final Set<TargetSelector> targetSelectors) {
         this.targetSelectors = Collections.unmodifiableSet(targetSelectors);
+        this.selectorMap = targetSelectors.isEmpty() ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
         putAll(targetSelectors);
+    }
+
+    private void putAll(final Set<TargetSelector> targetSelectors) {
+        for (TargetSelector targetSelector : targetSelectors) {
+            for (TargetSelector target : ((Flattener<TargetSelector>) targetSelector).flatten()) {
+                selectorMap.put(target, true);
+            }
+        }
     }
 
     public SelectorMap<Boolean> getSelectorMap() {
@@ -46,13 +56,5 @@ public class BooleanSelectorMap {
 
     public boolean isTrue(final InternalNode node) {
         return Boolean.TRUE.equals(selectorMap.getValue(node).orElse(false));
-    }
-
-    private void putAll(final Set<TargetSelector> targetSelectors) {
-        for (TargetSelector targetSelector : targetSelectors) {
-            for (TargetSelector target : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                selectorMap.put(target, true);
-            }
-        }
     }
 }

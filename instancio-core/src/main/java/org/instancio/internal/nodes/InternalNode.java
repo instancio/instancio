@@ -47,6 +47,7 @@ public final class InternalNode {
     private final NodeKind nodeKind;
     private final int depth;
     private List<InternalNode> children;
+    private int hash;
 
     private InternalNode(final Builder builder) {
         nodeContext = builder.nodeContext;
@@ -211,14 +212,24 @@ public final class InternalNode {
         if (o == null || getClass() != o.getClass()) return false;
         final InternalNode other = (InternalNode) o;
 
-        return this.getTargetClass().equals(other.getTargetClass())
-                && Objects.equals(this.getType(), other.getType())
-                && Objects.equals(this.getField(), other.getField());
+        return this.targetClass.equals(other.targetClass)
+                && this.type.equals(other.type)
+                && Objects.equals(this.field, other.field);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTargetClass(), getType(), getField());
+        if (hash == 0) {
+            hash = computeHashCode();
+        }
+        return hash;
+    }
+
+    private int computeHashCode() {
+        int result = type.hashCode();
+        result = 31 * result + targetClass.hashCode();
+        result = 31 * result + (field != null ? field.hashCode() : 0);
+        return result;
     }
 
     @Override

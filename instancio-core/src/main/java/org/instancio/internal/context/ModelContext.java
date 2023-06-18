@@ -99,13 +99,11 @@ public final class ModelContext<T> {
         seed = builder.seed;
         maxDepth = builder.maxDepth;
         settings = createSettings(builder);
-
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
 
         ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
         nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
         onCompleteCallbackSelectorMap = new OnCompleteCallbackSelectorMap(builder.onCompleteCallbacks);
-        subtypeSelectorMap = new SubtypeSelectorMap(builder.subtypeSelectors);
 
         final GeneratorContext generatorContext = new GeneratorContext(settings, random);
 
@@ -114,7 +112,10 @@ public final class ModelContext<T> {
                 builder.generatorSelectors,
                 builder.generatorSpecSelectors);
 
-        subtypeSelectorMap.putAll(generatorSelectorMap.getGeneratorSubtypeMap());
+        subtypeSelectorMap = new SubtypeSelectorMap(
+                builder.subtypeSelectors,
+                generatorSelectorMap.getGeneratorSubtypeMap());
+
         assignmentSelectorMap = new AssignmentSelectorMap(builder.assignmentSelectors, generatorContext);
 
         providers = new Providers(
@@ -291,8 +292,7 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
-            this.generatorSelectors.put(preProcess(selector, rootClass), GeneratorDecorator.decorate(supplier));
-            return this;
+            return withGenerator(selector, GeneratorDecorator.decorate(supplier));
         }
 
         public <V> Builder<T> withGeneratorSpec(final TargetSelector selector, final GeneratorSpecProvider<V> spec) {
@@ -310,13 +310,13 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withMaxDepth(final int maxDepth) {
-            this.maxDepth = maxDepth;
+        public Builder<T> withNullable(final TargetSelector selector) {
+            this.nullableTargets.add(preProcess(selector, rootClass));
             return this;
         }
 
-        public Builder<T> withNullable(final TargetSelector selector) {
-            this.nullableTargets.add(preProcess(selector, rootClass));
+        public Builder<T> withMaxDepth(final int maxDepth) {
+            this.maxDepth = maxDepth;
             return this;
         }
 

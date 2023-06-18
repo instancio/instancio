@@ -18,6 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,18 +29,11 @@ import java.util.Map;
  */
 final class TargetSelectorSelectorMap {
 
-    private final SelectorMap<List<TargetSelector>> selectorMap = new SelectorMap<>();
+    private final SelectorMap<List<TargetSelector>> selectorMap;
 
-    TargetSelectorSelectorMap(final Map<TargetSelector, List<TargetSelector>> targetSelectors) {
+    TargetSelectorSelectorMap(@NotNull final Map<TargetSelector, List<TargetSelector>> targetSelectors) {
+        this.selectorMap = targetSelectors.isEmpty() ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
         putAll(targetSelectors);
-    }
-
-    SelectorMap<List<TargetSelector>> getSelectorMap() {
-        return selectorMap;
-    }
-
-    List<TargetSelector> getTargetSelector(final InternalNode node) {
-        return selectorMap.getValue(node).orElse(Collections.emptyList());
     }
 
     private void putAll(final Map<TargetSelector, List<TargetSelector>> map) {
@@ -51,5 +45,13 @@ final class TargetSelectorSelectorMap {
                 selectorMap.put(selector, assignments);
             }
         }
+    }
+
+    SelectorMap<List<TargetSelector>> getSelectorMap() {
+        return selectorMap;
+    }
+
+    List<TargetSelector> getTargetSelector(final InternalNode node) {
+        return selectorMap.getValue(node).orElse(Collections.emptyList());
     }
 }

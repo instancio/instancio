@@ -54,6 +54,7 @@ class PrimitiveAndWrapperSelectorImplTest {
     void verifyEqualsAndHashcode() {
         EqualsVerifier.forClass(PrimitiveAndWrapperSelectorImpl.class)
                 .suppress(Warning.NONFINAL_FIELDS)
+                .withNonnullFields("primitive", "wrapper")
                 .verify();
     }
 

@@ -16,8 +16,8 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
+import org.instancio.GroupableSelector;
 import org.instancio.Scope;
-import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
@@ -140,7 +140,7 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
         return this;
     }
 
-    public List<Selector> getGroupedSelectors() {
+    public List<GroupableSelector> getGroupedSelectors() {
         return getAs(SelectorGroupImpl.class).getSelectors();
     }
 }

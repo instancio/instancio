@@ -35,30 +35,32 @@ class SelectorGroupImplTest {
     @Nested
     class EqualsAndHashcodeTest {
         @Test
-        void verifyEqualsAndHashcodeEmptyGroup() {
-            final SelectorGroupImpl one = new SelectorGroupImpl();
-            final SelectorGroupImpl two = new SelectorGroupImpl();
-            assertThat(one)
-                    .isEqualTo(one).hasSameHashCodeAs(one)
-                    .isEqualTo(two).hasSameHashCodeAs(two);
+        void emptyGroup() {
+            final TargetSelector one = new SelectorGroupImpl();
+            final TargetSelector two = new SelectorGroupImpl();
+            assertThat(one).isEqualTo(two).hasSameHashCodeAs(two);
         }
 
         @Test
-        void verifyEqualsAndHashcodeWithEqualObjects() {
-            final SelectorGroupImpl one = new SelectorGroupImpl(Select.field("foo"), Select.field("bar"));
-            final SelectorGroupImpl two = new SelectorGroupImpl(Select.field("foo"), Select.field("bar"));
+        void equalObjects() {
+            final TargetSelector one = new SelectorGroupImpl(Select.field("foo"), Select.field("bar"));
+            final TargetSelector two = new SelectorGroupImpl(Select.field("foo"), Select.field("bar"));
             assertThat(one).isEqualTo(two).hasSameHashCodeAs(two);
             assertThat(two).isEqualTo(one).hasSameHashCodeAs(one);
         }
 
         @Test
-        void verifyEqualsAndHashcodeWithNonEqualObjects() {
-            final SelectorGroupImpl one = new SelectorGroupImpl(Select.field("foo"), Select.field("bar"));
-            final SelectorGroupImpl two = new SelectorGroupImpl(Select.field("bar"), Select.field("foo"));
-            final SelectorGroupImpl three = new SelectorGroupImpl(Select.field("foo"));
+        void unequalObjects() {
+            final TargetSelector one = new SelectorGroupImpl(Select.field("foo"), Select.field("bar"));
+            final TargetSelector two = new SelectorGroupImpl(Select.field("bar"), Select.field("foo"));
+            final TargetSelector three = new SelectorGroupImpl(Select.field("foo"));
+            final TargetSelector four = Select.field("foo");
+
             assertThat(one)
                     .isNotEqualTo(two).doesNotHaveSameHashCodeAs(two)
                     .isNotEqualTo(three).doesNotHaveSameHashCodeAs(three);
+
+            assertThat(three).isNotEqualTo(four);
         }
     }
 

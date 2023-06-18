@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.util.Format;
+import org.instancio.internal.util.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,16 +31,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class SelectorImpl
+public final class SelectorImpl
         implements Selector, GroupableSelector, Flattener<TargetSelector>, UnusedSelectorDescription {
+
+    private static final SelectorImpl ROOT_SELECTOR = SelectorImpl.builder().depth(0).build();
 
     private final Class<?> targetClass;
     private final String fieldName;
     private final List<Scope> scopes;
     private final Selector parent;
     private final Throwable stackTraceHolder;
-    private final boolean isRoot;
     private final Integer depth;
+    private int hash;
 
     /**
      * Constructor.
@@ -52,58 +55,48 @@ public class SelectorImpl
      */
     private SelectorImpl(@Nullable final Class<?> targetClass,
                          @Nullable final String fieldName,
-                         @Nullable final List<Scope> scopes,
+                         @NotNull final List<Scope> scopes,
                          @Nullable final Selector parent,
-                         @Nullable final Throwable stackTraceHolder,
-                         final boolean isRoot) {
+                         @NotNull final Throwable stackTraceHolder,
+                         @Nullable final Integer depth) {
 
         this.targetClass = targetClass;
         this.fieldName = fieldName;
-        this.scopes = scopes == null ? Collections.emptyList() : Collections.unmodifiableList(scopes);
+        this.scopes = Collections.unmodifiableList(scopes);
         this.parent = parent;
         this.stackTraceHolder = stackTraceHolder;
-        this.isRoot = isRoot;
-        this.depth = null; // NOPMD
-    }
-
-    SelectorImpl(@Nullable final Class<?> targetClass,
-                 @Nullable final String fieldName,
-                 final boolean isRoot) {
-
-        this(targetClass, fieldName, Collections.emptyList(), null, new Throwable(), isRoot);
+        this.depth = depth;
     }
 
     private SelectorImpl(final Builder builder) {
-        targetClass = builder.targetClass;
-        fieldName = builder.fieldName;
-        scopes = builder.scopes == null
-                ? Collections.emptyList()
-                : Collections.unmodifiableList(builder.scopes);
-        parent = builder.parent;
-        stackTraceHolder = builder.stackTraceHolder == null ? new Throwable() : builder.stackTraceHolder;
-        isRoot = builder.isRoot;
-        depth = builder.depth;
+        this(
+                builder.targetClass,
+                builder.fieldName,
+                ObjectUtils.defaultIfNull(builder.scopes, Collections.emptyList()),
+                builder.parent,
+                ObjectUtils.defaultIfNull(builder.stackTraceHolder, Throwable::new),
+                builder.depth);
     }
 
-    public static Builder builder(final SelectorImpl copy) {
+    public Builder toBuilder() {
         Builder builder = new Builder();
-        builder.targetClass = copy.getTargetClass();
-        builder.fieldName = copy.getFieldName();
-        builder.scopes = copy.getScopes();
-        builder.parent = copy.getParent();
-        builder.stackTraceHolder = copy.getStackTraceHolder();
-        builder.depth = copy.depth;
+        builder.targetClass = this.targetClass;
+        builder.fieldName = this.fieldName;
+        builder.scopes = this.scopes;
+        builder.parent = this.parent;
+        builder.stackTraceHolder = this.stackTraceHolder;
+        builder.depth = this.depth;
         return builder;
     }
 
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
     // which can be confused with the public API method 'Selector.root()'
     public static SelectorImpl getRootSelector() {
-        return new SelectorImpl(null, null, true);
+        return ROOT_SELECTOR;
     }
 
     public boolean isRoot() {
-        return isRoot;
+        return this == ROOT_SELECTOR;
     }
 
     public Throwable getStackTraceHolder() {
@@ -112,7 +105,7 @@ public class SelectorImpl
 
     @Override
     public TargetSelector atDepth(final int depth) {
-        return builder(this)
+        return toBuilder()
                 .depth(ApiValidator.validateDepth(depth))
                 .build();
     }
@@ -124,7 +117,7 @@ public class SelectorImpl
 
     @Override
     public Selector within(@NotNull final Scope... scopes) {
-        return builder(this).scopes(Arrays.asList(scopes)).build();
+        return toBuilder().scopes(Arrays.asList(scopes)).build();
     }
 
     @Override
@@ -167,15 +160,14 @@ public class SelectorImpl
      * Performs equality check with all fields except {@code parent} and {@code stackTraceHolder}.
      */
     @Override
-    public final boolean equals(final Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof SelectorImpl)) return false;
         final SelectorImpl that = (SelectorImpl) o;
         return Objects.equals(targetClass, that.targetClass)
                 && Objects.equals(fieldName, that.fieldName)
                 && Objects.equals(scopes, that.scopes)
-                && Objects.equals(depth, that.depth)
-                && isRoot == that.isRoot;
+                && Objects.equals(depth, that.depth);
     }
 
     /**
@@ -184,13 +176,24 @@ public class SelectorImpl
      * Calculates hashcode using all fields except {@code parent} and {@code stackTraceHolder}.
      */
     @Override
-    public final int hashCode() {
-        return Objects.hash(targetClass, fieldName, scopes, depth, isRoot);
+    public int hashCode() {
+        if (hash == 0) {
+            hash = computeHashCode();
+        }
+        return hash;
+    }
+
+    private int computeHashCode() {
+        int result = targetClass == null ? 0 : targetClass.hashCode();
+        result = 31 * result + (fieldName == null ? 0 : fieldName.hashCode());
+        result = 31 * result + scopes.hashCode();
+        result = 31 * result + (depth == null ? 0 : depth.hashCode());
+        return result;
     }
 
     @Override
     public String toString() {
-        if (isRoot) return "root()";
+        if (isRoot()) return "root()";
 
         final StringBuilder sb = new StringBuilder();
 
@@ -230,7 +233,6 @@ public class SelectorImpl
         private List<Scope> scopes;
         private Selector parent;
         private Throwable stackTraceHolder;
-        private boolean isRoot;
         private Integer depth;
 
         private Builder() {
@@ -258,11 +260,6 @@ public class SelectorImpl
 
         public Builder stackTraceHolder(final Throwable stackTraceHolder) {
             this.stackTraceHolder = stackTraceHolder;
-            return this;
-        }
-
-        public Builder root(final boolean isRoot) {
-            this.isRoot = isRoot;
             return this;
         }
 

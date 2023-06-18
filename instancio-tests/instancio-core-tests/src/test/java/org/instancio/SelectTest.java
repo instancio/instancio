@@ -51,7 +51,7 @@ class SelectTest {
 
     @Test
     void group() {
-        final List<Selector> selectors = assertSelector(
+        final List<GroupableSelector> selectors = assertSelector(
                 Select.all(
                         Select.all(String.class),
                         Select.all(Integer.class).within(Select.scope(Foo.class))))

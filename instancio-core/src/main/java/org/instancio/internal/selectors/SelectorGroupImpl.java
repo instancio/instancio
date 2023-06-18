@@ -16,47 +16,44 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.GroupableSelector;
-import org.instancio.Selector;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
-import org.instancio.exception.InstancioException;
 import org.instancio.internal.Flattener;
+import org.instancio.internal.util.Fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 public final class SelectorGroupImpl implements SelectorGroup, Flattener<TargetSelector> {
 
     private final List<GroupableSelector> selectors;
+    private final List<TargetSelector> flattened = new ArrayList<>();
 
     public SelectorGroupImpl(final GroupableSelector... selectors) {
         this.selectors = Collections.unmodifiableList(Arrays.asList(selectors));
+
+        for (GroupableSelector selector : selectors) {
+            if (selector instanceof SelectorImpl) {
+                flattened.add(selector);
+            } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
+                flattened.addAll(((PrimitiveAndWrapperSelectorImpl) selector).flatten());
+            } else {
+                throw Fail.withFataInternalError("Unhandled selector: " + selector.getClass());
+            }
+        }
     }
 
-    public List<Selector> getSelectors() {
-        return selectors.stream().map(Selector.class::cast).collect(toList());
+    public List<GroupableSelector> getSelectors() {
+        return selectors;
     }
 
     @Override
     public List<TargetSelector> flatten() {
-        final List<TargetSelector> results = new ArrayList<>();
-
-        for (GroupableSelector selector : selectors) {
-            if (selector instanceof SelectorImpl) {
-                results.add(selector);
-            } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
-                results.addAll(((PrimitiveAndWrapperSelectorImpl) selector).flatten());
-            } else {
-                throw new InstancioException("Unhandled selector: " + selector.getClass());
-            }
-        }
-        return results;
+        return flattened;
     }
 
     @Override
@@ -64,12 +61,12 @@ public final class SelectorGroupImpl implements SelectorGroup, Flattener<TargetS
         if (this == o) return true;
         if (!(o instanceof SelectorGroupImpl)) return false;
         final SelectorGroupImpl that = (SelectorGroupImpl) o;
-        return Objects.equals(getSelectors(), that.getSelectors());
+        return selectors.equals(that.selectors);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSelectors());
+        return selectors.hashCode();
     }
 
     @Override

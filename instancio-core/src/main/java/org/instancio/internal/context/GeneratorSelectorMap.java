@@ -27,6 +27,7 @@ import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -36,24 +37,67 @@ import java.util.Optional;
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 class GeneratorSelectorMap {
 
+    private final GeneratorContext context;
+    private final AfterGenerate defaultAfterGenerate;
     private final Map<TargetSelector, Generator<?>> generatorSelectors;
     private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors;
-    private final SelectorMap<Generator<?>> selectorMap = new SelectorMap<>();
+    private final SelectorMap<Generator<?>> selectorMap;
     private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
-    private final AfterGenerate defaultAfterGenerate;
-    private final GeneratorContext context;
 
     GeneratorSelectorMap(
-            final GeneratorContext context,
-            final Map<TargetSelector, Generator<?>> generatorSelectors,
-            final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors) {
+            @NotNull final GeneratorContext context,
+            @NotNull final Map<TargetSelector, Generator<?>> generatorSelectors,
+            @NotNull final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors) {
 
         this.context = context;
+        this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         this.generatorSelectors = Collections.unmodifiableMap(generatorSelectors);
         this.generatorSpecSelectors = Collections.unmodifiableMap(generatorSpecSelectors);
-        this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
+
+        this.selectorMap = generatorSelectors.isEmpty() && generatorSpecSelectors.isEmpty()
+                ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
+
         putAllGeneratorSpecs(generatorSpecSelectors);
         putAllGenerators(generatorSelectors);
+    }
+
+    private void putAllGeneratorSpecs(final Map<TargetSelector, GeneratorSpecProvider<?>> specs) {
+        final Generators generators = new Generators(context);
+
+        for (Map.Entry<TargetSelector, GeneratorSpecProvider<?>> entry : specs.entrySet()) {
+            final TargetSelector targetSelector = entry.getKey();
+            final GeneratorSpecProvider<?> genFn = entry.getValue();
+            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
+                // Do not share generator instances between different selectors.
+                // For example, array generators are created for each component type.
+                // Therefore, using 'gen.array().length(10)' would fail when selectors are different for array types.
+                final Generator<?> generator = (Generator<?>) genFn.getSpec(generators);
+                putGenerator(selector, generator);
+            }
+        }
+    }
+
+    private void putAllGenerators(final Map<TargetSelector, Generator<?>> generatorMap) {
+        for (Map.Entry<TargetSelector, Generator<?>> entry : generatorMap.entrySet()) {
+            final TargetSelector targetSelector = entry.getKey();
+            final Generator<?> generator = entry.getValue();
+            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
+                putGenerator(selector, generator);
+            }
+        }
+    }
+
+    private void putGenerator(final TargetSelector targetSelector, final Generator<?> g) {
+        g.init(context);
+
+        final Generator<?> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
+        selectorMap.put(targetSelector, generator);
+
+        final InternalGeneratorHint internalHint = generator.hints().get(InternalGeneratorHint.class);
+        final Optional<Class<?>> generatorTargetClass = Optional.ofNullable(internalHint)
+                .map(InternalGeneratorHint::targetClass);
+
+        generatorTargetClass.ifPresent(klass -> generatorSubtypeMap.put(targetSelector, klass));
     }
 
     public SelectorMap<Generator<?>> getSelectorMap() {
@@ -74,44 +118,5 @@ class GeneratorSelectorMap {
 
     Optional<Generator<?>> getGenerator(final InternalNode node) {
         return selectorMap.getValue(node);
-    }
-
-    private void putAllGenerators(final Map<TargetSelector, Generator<?>> generatorMap) {
-        for (Map.Entry<TargetSelector, Generator<?>> entry : generatorMap.entrySet()) {
-            final TargetSelector targetSelector = entry.getKey();
-            final Generator<?> generator = entry.getValue();
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                putGenerator(selector, generator);
-            }
-        }
-    }
-
-    private void putAllGeneratorSpecs(final Map<TargetSelector, GeneratorSpecProvider<?>> specs) {
-        final Generators generators = new Generators(context);
-
-        for (Map.Entry<TargetSelector, GeneratorSpecProvider<?>> entry : specs.entrySet()) {
-            final TargetSelector targetSelector = entry.getKey();
-            final GeneratorSpecProvider<?> genFn = entry.getValue();
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                // Do not share generator instances between different selectors.
-                // For example, array generators are created for each component type.
-                // Therefore, using 'gen.array().length(10)' would fail when selectors are different for array types.
-                final Generator<?> generator = (Generator<?>) genFn.getSpec(generators);
-                putGenerator(selector, generator);
-            }
-        }
-    }
-
-    private void putGenerator(final TargetSelector targetSelector, final Generator<?> g) {
-        g.init(context);
-
-        final Generator<?> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
-        selectorMap.put(targetSelector, generator);
-
-        final InternalGeneratorHint internalHint = generator.hints().get(InternalGeneratorHint.class);
-        final Optional<Class<?>> generatorTargetClass = Optional.ofNullable(internalHint)
-                .map(InternalGeneratorHint::targetClass);
-
-        generatorTargetClass.ifPresent(klass -> generatorSubtypeMap.put(targetSelector, klass));
     }
 }
