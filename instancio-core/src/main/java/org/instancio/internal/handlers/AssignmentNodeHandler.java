@@ -23,7 +23,6 @@ import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
@@ -54,7 +53,7 @@ public class AssignmentNodeHandler implements NodeHandler {
         this.context = context;
         this.generatedObjectStore = generatedObjectStore;
         this.userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
-                generatorResolver, instantiator);
+                context, generatorResolver, instantiator);
     }
 
     @NotNull
@@ -90,21 +89,13 @@ public class AssignmentNodeHandler implements NodeHandler {
                         destinationResult = assignment.getValueMapper().apply(destinationResult);
                     }
 
+                    // Since the same object instance is assigned to different fields,
+                    // set this result to DO_NOT_MODIFY. The result will be populated
+                    // based on the original hint
                     return GeneratorResult.create(destinationResult, DO_NOT_MODIFY);
                 } else {
-                    final Generator<?> assignmentGenerator = assignment.getGenerator();
-
-                    // TODO refactor to remove this check
-                    if (assignmentGenerator instanceof EmitGenerator) {
-                        final EmitGeneratorHelper helper = new EmitGeneratorHelper(context);
-                        return helper.getResult((EmitGenerator<?>) assignmentGenerator, node);
-                    }
-
-                    final Generator<?> generator = userSuppliedGeneratorProcessor.processGenerator(
-                            assignmentGenerator, node);
-
-                    final Object destinationResult = generator.generate(context.getRandom());
-                    return GeneratorResult.create(destinationResult, generator.hints());
+                    final Generator<?> generator = assignment.getGenerator();
+                    return userSuppliedGeneratorProcessor.getGeneratorResult(node, generator);
                 }
             }
         }

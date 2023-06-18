@@ -94,13 +94,13 @@ class GeneratorSelectorMap {
         selectorMap.put(targetSelector, generator);
 
         final InternalGeneratorHint internalHint = generator.hints().get(InternalGeneratorHint.class);
-        final Optional<Class<?>> generatorTargetClass = Optional.ofNullable(internalHint)
-                .map(InternalGeneratorHint::targetClass);
 
-        generatorTargetClass.ifPresent(klass -> generatorSubtypeMap.put(targetSelector, klass));
+        Optional.ofNullable(internalHint)
+                .map(InternalGeneratorHint::targetClass)
+                .ifPresent(klass -> generatorSubtypeMap.put(targetSelector, klass));
     }
 
-    public SelectorMap<Generator<?>> getSelectorMap() {
+    SelectorMap<Generator<?>> getSelectorMap() {
         return selectorMap;
     }
 
@@ -112,7 +112,7 @@ class GeneratorSelectorMap {
         return generatorSpecSelectors;
     }
 
-    public Map<TargetSelector, Class<?>> getGeneratorSubtypeMap() {
+    Map<TargetSelector, Class<?>> getGeneratorSubtypeMap() {
         return Collections.unmodifiableMap(generatorSubtypeMap);
     }
 

@@ -112,11 +112,12 @@ public final class ModelContext<T> {
                 builder.generatorSelectors,
                 builder.generatorSpecSelectors);
 
+        assignmentSelectorMap = new AssignmentSelectorMap(builder.assignmentSelectors, generatorContext);
+
         subtypeSelectorMap = new SubtypeSelectorMap(
                 builder.subtypeSelectors,
-                generatorSelectorMap.getGeneratorSubtypeMap());
-
-        assignmentSelectorMap = new AssignmentSelectorMap(builder.assignmentSelectors, generatorContext);
+                generatorSelectorMap.getGeneratorSubtypeMap(),
+                assignmentSelectorMap.getGeneratorSubtypeMap());
 
         providers = new Providers(
                 ServiceLoaders.loadAll(InstancioServiceProvider.class),
@@ -331,11 +332,11 @@ public final class ModelContext<T> {
         private void processAssignment(final Assignment assignment) {
             final List<InternalAssignment> assignments = ((Flattener<InternalAssignment>) assignment).flatten();
 
-            for (InternalAssignment c : assignments) {
-                final TargetSelector origin = preProcess(c.getOrigin(), rootClass);
-                final TargetSelector destination = preProcess(c.getDestination(), rootClass);
+            for (InternalAssignment a : assignments) {
+                final TargetSelector origin = preProcess(a.getOrigin(), rootClass);
+                final TargetSelector destination = preProcess(a.getDestination(), rootClass);
 
-                final Assignment processedAssignment = c.toBuilder()
+                final Assignment processedAssignment = a.toBuilder()
                         .origin(origin)
                         .destination(destination)
                         .build();

@@ -16,12 +16,9 @@
 package org.instancio.internal.handlers;
 
 import org.instancio.generator.Generator;
-import org.instancio.generator.Hints;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.generator.InternalGeneratorHint;
-import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +35,7 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
                                         final Instantiator instantiator) {
         this.modelContext = modelContext;
         this.userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
-                generatorResolver, instantiator);
+                modelContext, generatorResolver, instantiator);
     }
 
     /**
@@ -54,23 +51,6 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
             return GeneratorResult.emptyResult();
         }
 
-        final Generator<?> generator = userSuppliedGeneratorProcessor.processGenerator(
-                generatorOpt.get(), node);
-
-        if (generator instanceof EmitGenerator) {
-            final EmitGeneratorHelper helper = new EmitGeneratorHelper(modelContext);
-            return helper.getResult((EmitGenerator<?>) generator, node);
-        }
-
-        final Hints hints = generator.hints();
-        final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
-        final boolean nullable = internalHint != null && internalHint.nullableResult();
-
-        if (modelContext.getRandom().diceRoll(nullable)) {
-            return GeneratorResult.nullResult();
-        }
-
-        final Object value = generator.generate(modelContext.getRandom());
-        return GeneratorResult.create(value, hints);
+        return userSuppliedGeneratorProcessor.getGeneratorResult(node, generatorOpt.get());
     }
 }

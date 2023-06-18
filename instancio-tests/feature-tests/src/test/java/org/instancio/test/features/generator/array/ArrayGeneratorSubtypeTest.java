@@ -38,6 +38,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
@@ -48,20 +49,31 @@ import static org.instancio.Select.types;
 class ArrayGeneratorSubtypeTest {
 
     @Test
-    void shouldCreateArrayOfSpecifiedType() {
+    void shouldCreateArrayOfTypeSpecifiedViaGenerate() {
         final TwoArraysOfItemInterfaceString result = Instancio.of(TwoArraysOfItemInterfaceString.class)
                 .generate(all(ItemInterface[].class), gen -> gen.array().subtype(Item[].class))
-                .lenient()
                 .create();
 
-        assertThat(result.getArray1()).isNotEmpty().allSatisfy(it -> {
-            assertThat(it).isNotNull();
-            assertThat(it.getValue()).isNotBlank();
-        });
-        assertThat(result.getArray2()).isNotEmpty().allSatisfy(it -> {
-            assertThat(it).isNotNull();
-            assertThat(it.getValue()).isNotBlank();
-        });
+        assertArrayContainsExpectedSubtype(result);
+    }
+
+    @Test
+    void shouldCreateArrayOfTypeSpecifiedViaAssign() {
+        final TwoArraysOfItemInterfaceString result = Instancio.of(TwoArraysOfItemInterfaceString.class)
+                .assign(valueOf(all(ItemInterface[].class)).generate(gen -> gen.array().subtype(Item[].class)))
+                .create();
+
+        assertArrayContainsExpectedSubtype(result);
+    }
+
+    private static void assertArrayContainsExpectedSubtype(final TwoArraysOfItemInterfaceString result) {
+        assertThat(result.getArray1()).isNotEmpty()
+                .hasOnlyElementsOfType(Item.class)
+                .allSatisfy((ItemInterface<String> it) -> assertThat(it).hasNoNullFieldsOrProperties());
+
+        assertThat(result.getArray2()).isNotEmpty()
+                .hasOnlyElementsOfType(Item.class)
+                .allSatisfy((ItemInterface<String> it) -> assertThat(it).hasNoNullFieldsOrProperties());
     }
 
     @Test
