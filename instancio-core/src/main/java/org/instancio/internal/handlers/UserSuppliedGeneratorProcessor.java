@@ -18,10 +18,13 @@ package org.instancio.internal.handlers;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.GeneratorResolver;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.array.ArrayGenerator;
+import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.InstantiatingGenerator;
 import org.instancio.internal.instantiation.Instantiator;
@@ -37,19 +40,42 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  */
 final class UserSuppliedGeneratorProcessor {
 
+    private final ModelContext<?> context;
     private final GeneratorResolver generatorResolver;
     private final Instantiator instantiator;
 
     UserSuppliedGeneratorProcessor(
+            final ModelContext<?> context,
             final GeneratorResolver generatorResolver,
             final Instantiator instantiator) {
 
+        this.context = context;
         this.generatorResolver = generatorResolver;
         this.instantiator = instantiator;
     }
 
+    GeneratorResult getGeneratorResult(final @NotNull InternalNode node, final Generator<?> g) {
+        final Generator<?> generator = processGenerator(g, node);
+
+        if (generator instanceof EmitGenerator) {
+            final EmitGeneratorHelper helper = new EmitGeneratorHelper(context);
+            return helper.getResult((EmitGenerator<?>) generator, node);
+        }
+
+        final Hints hints = generator.hints();
+        final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
+        final boolean nullable = internalHint != null && internalHint.nullableResult();
+
+        if (context.getRandom().diceRoll(nullable)) {
+            return GeneratorResult.nullResult();
+        }
+
+        final Object value = generator.generate(context.getRandom());
+        return GeneratorResult.create(value, hints);
+    }
+
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    Generator<?> processGenerator(final Generator<?> generator, final InternalNode node) {
+    private Generator<?> processGenerator(final Generator<?> generator, final InternalNode node) {
         ApiValidator.validateGeneratorUsage(node, generator);
 
         if (generator instanceof ArrayGenerator) {

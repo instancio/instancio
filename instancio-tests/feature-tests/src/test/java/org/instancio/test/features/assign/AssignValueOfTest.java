@@ -21,6 +21,7 @@ import org.instancio.Instancio;
 import org.instancio.When;
 import org.instancio.generator.Generator;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.pojo.misc.StringsAbc;
 import org.instancio.test.support.pojo.misc.StringsDef;
 import org.instancio.test.support.pojo.misc.StringsGhi;
@@ -34,6 +35,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -165,6 +167,17 @@ class AssignValueOfTest {
 
         assertThat(result.getPhoneNumbers()).isNotEmpty().allSatisfy(phone ->
                 assertThat(phone.getNumber()).containsOnlyDigits());
+    }
+
+    @Test
+    void valueOfGenerateCollectionSubtype() {
+        ListString result = Instancio.of(ListString.class)
+                .assign(valueOf(ListString::getList).generate(gen -> gen.collection().subtype(LinkedList.class)))
+                .create();
+
+        assertThat(result.getList())
+                .isExactlyInstanceOf(LinkedList.class)
+                .doesNotContainNull();
     }
 
 }

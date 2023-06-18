@@ -31,14 +31,16 @@ public final class SubtypeSelectorMap {
 
     public SubtypeSelectorMap(
             @NotNull final Map<TargetSelector, Class<?>> subtypeSelectors,
-            @NotNull final Map<TargetSelector, Class<?>> generatorSubtypeMap) {
+            @NotNull final Map<TargetSelector, Class<?>> generatorSubtypeMap,
+            @NotNull final Map<TargetSelector, Class<?>> assignmentGeneratorSubtypeMap) {
 
         this.subtypeSelectors = Collections.unmodifiableMap(subtypeSelectors);
-        this.selectorMap = subtypeSelectors.isEmpty() && generatorSubtypeMap.isEmpty()
+        this.selectorMap = subtypeSelectors.isEmpty() && generatorSubtypeMap.isEmpty() && assignmentGeneratorSubtypeMap.isEmpty()
                 ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
 
         putAll(subtypeSelectors);
         putAll(generatorSubtypeMap);
+        putAll(assignmentGeneratorSubtypeMap);
     }
 
     private void putAll(final Map<TargetSelector, Class<?>> subtypes) {
