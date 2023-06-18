@@ -18,9 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.GetMethodSelector;
 import org.instancio.GroupableSelector;
 import org.instancio.Scope;
-import org.instancio.Selector;
 import org.instancio.TargetSelector;
-import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.MethodReferenceHelper;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
@@ -29,6 +27,7 @@ import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.SelectorBuilder;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +38,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +68,8 @@ final class ModelContextHelper {
                 final List<Scope> scopes = recreateWithRootClass(rootClass, ps.getPrimitive().getScopes());
 
                 return new PrimitiveAndWrapperSelectorImpl(
-                        SelectorImpl.builder(ps.getPrimitive()).scopes(scopes).build(),
-                        SelectorImpl.builder(ps.getWrapper()).scopes(scopes).build());
+                        ps.getPrimitive().toBuilder().scopes(scopes).build(),
+                        ps.getWrapper().toBuilder().scopes(scopes).build());
             }
 
             return selector;
@@ -82,7 +82,7 @@ final class ModelContextHelper {
         }
 
         // should not be reachable
-        throw new InstancioException("Unhandled selector type: " + selector.getClass());
+        throw Fail.withFataInternalError("Unhandled selector type: %s", selector.getClass());
     }
 
     /**
@@ -92,14 +92,15 @@ final class ModelContextHelper {
      * (creating a new selector from the original and specifying the root class).
      */
     private static SelectorImpl applyRootClass(final SelectorImpl source, final Class<?> rootClass) {
-        if (source.getTargetClass() == null) {
-            return SelectorImpl.builder(source)
+        if (source.isRoot()) {
+            return source;
+        } else if (source.getTargetClass() == null) {
+            return source.toBuilder()
                     .targetClass(rootClass)
                     .scopes(recreateWithRootClass(rootClass, source.getScopes()))
-                    .root(source.isRoot())
                     .build();
         } else if (!source.getScopes().isEmpty()) {
-            return SelectorImpl.builder(source)
+            return source.toBuilder()
                     .scopes(recreateWithRootClass(rootClass, source.getScopes()))
                     .build();
         }
@@ -107,6 +108,10 @@ final class ModelContextHelper {
     }
 
     private static List<Scope> recreateWithRootClass(final Class<?> rootClass, final List<Scope> scopes) {
+        if (scopes.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         final List<Scope> results = new ArrayList<>(scopes.size());
         for (Scope scope : scopes) {
             ScopeImpl s = (ScopeImpl) scope;
@@ -120,16 +125,22 @@ final class ModelContextHelper {
     }
 
     private static List<TargetSelector> flattenSelectorGroup(final SelectorGroupImpl selectorGroup, final Class<?> rootClass) {
+        final List<GroupableSelector> selectors = selectorGroup.getSelectors();
+
+        if (selectors.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         final List<TargetSelector> results = new ArrayList<>();
 
-        for (Selector groupMember : selectorGroup.getSelectors()) {
+        for (GroupableSelector groupMember : selectors) {
             if (groupMember instanceof SelectorImpl) {
                 final SelectorImpl selector = applyRootClass((SelectorImpl) groupMember, rootClass);
                 results.add(selector);
             } else if (groupMember instanceof PrimitiveAndWrapperSelectorImpl) {
                 results.addAll(((PrimitiveAndWrapperSelectorImpl) groupMember).flatten());
             } else {
-                throw new InstancioException("Unhandled selector type: " + groupMember.getClass());
+                throw Fail.withFataInternalError("Unhandled selector type: %s", groupMember.getClass());
             }
         }
         return results;

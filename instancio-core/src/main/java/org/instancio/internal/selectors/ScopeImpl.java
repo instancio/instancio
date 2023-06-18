@@ -60,7 +60,9 @@ public final class ScopeImpl implements Scope {
 
     @Override
     public int hashCode() {
-        return Objects.hash(targetClass, fieldName);
+        int result = targetClass != null ? targetClass.hashCode() : 0;
+        result = 31 * result + (fieldName != null ? fieldName.hashCode() : 0);
+        return result;
     }
 
     @Override

@@ -26,8 +26,8 @@ import org.instancio.internal.assignment.GeneratorHolder;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,36 +38,37 @@ import java.util.Optional;
 
 public final class AssignmentSelectorMap {
 
+    private final GeneratorContext context;
+    private final AfterGenerate defaultAfterGenerate;
     private final Map<TargetSelector, List<Assignment>> assignmentSelectors;
-    private final SelectorMap<List<InternalAssignment>> selectorMap = new SelectorMap<>();
+    private final SelectorMap<List<InternalAssignment>> selectorMap;
     private final BooleanSelectorMap originSelectors;
     private final TargetSelectorSelectorMap destinationSelectors;
-    private final AfterGenerate defaultAfterGenerate;
-    private final GeneratorContext context;
 
     public AssignmentSelectorMap(
-            final Map<TargetSelector, List<Assignment>> targetSelectors,
-            final GeneratorContext context) {
+            @NotNull final Map<TargetSelector, List<Assignment>> targetSelectors,
+            @NotNull final GeneratorContext context) {
 
-        this.assignmentSelectors = Collections.unmodifiableMap(targetSelectors);
-        this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         this.context = context;
+        this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
+        this.assignmentSelectors = Collections.unmodifiableMap(targetSelectors);
+        this.selectorMap = targetSelectors.isEmpty() ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
 
         // Maps an origin selector to a list of destination selectors.
-        // When specifying an assignment, the destination selector may be a group, e.g.
-        // assign(given(origin).is("foo").set(Select.all(field("f1"), field("f2")))
+        // When specifying an assignment, the destination selector may be a group
+        // e.g. assign(given(origin).is("foo").set(Select.all(field("f1"), field("f2")))
         final Map<TargetSelector, List<TargetSelector>> originDestinationsMap = new HashMap<>();
 
         for (Map.Entry<TargetSelector, List<Assignment>> entry : targetSelectors.entrySet()) {
             final TargetSelector targetSelector = entry.getKey();
             final List<InternalAssignment> assignments = processAssignments(entry.getValue());
 
-            assignments.forEach(c -> {
+            for (InternalAssignment a : assignments) {
                 final List<TargetSelector> destinations = originDestinationsMap.computeIfAbsent(
-                        c.getOrigin(), k -> new ArrayList<>());
+                        a.getOrigin(), k -> new ArrayList<>());
 
-                destinations.add(c.getDestination());
-            });
+                destinations.add(a.getDestination());
+            }
 
             for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
                 selectorMap.put(selector, assignments);
@@ -76,31 +77,6 @@ public final class AssignmentSelectorMap {
 
         originSelectors = new BooleanSelectorMap(originDestinationsMap.keySet());
         destinationSelectors = new TargetSelectorSelectorMap(originDestinationsMap);
-    }
-
-    public List<InternalAssignment> getAssignments(final InternalNode node) {
-        final Optional<List<InternalAssignment>> value = selectorMap.getValue(node);
-        return value.orElse(Collections.emptyList());
-    }
-
-    BooleanSelectorMap getOriginSelectors() {
-        return originSelectors;
-    }
-
-    SelectorMap<List<InternalAssignment>> getSelectorMap() {
-        return selectorMap;
-    }
-
-    TargetSelectorSelectorMap getDestinationSelectors() {
-        return destinationSelectors;
-    }
-
-    Map<TargetSelector, List<Assignment>> getAssignmentSelectors() {
-        return assignmentSelectors;
-    }
-
-    List<TargetSelector> getDestinationSelectors(final InternalNode node) {
-        return destinationSelectors.getTargetSelector(node);
     }
 
     private List<InternalAssignment> processAssignments(final List<Assignment> assignments) {
@@ -128,13 +104,37 @@ public final class AssignmentSelectorMap {
         return processed;
     }
 
-    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    private Generator<?> getGenerator(final InternalAssignment assignment, final Generators generators) {
+    private <T> Generator<T> getGenerator(final InternalAssignment assignment, final Generators generators) {
         final GeneratorHolder holder = assignment.getGeneratorHolder();
 
         if (holder.getGenerator() == null) {
-            return (Generator<?>) holder.getSpecProvider().getSpec(generators);
+            return (Generator<T>) holder.getSpecProvider().getSpec(generators);
         }
         return holder.getGenerator();
+    }
+
+    public List<InternalAssignment> getAssignments(final InternalNode node) {
+        final Optional<List<InternalAssignment>> value = selectorMap.getValue(node);
+        return value.orElse(Collections.emptyList());
+    }
+
+    BooleanSelectorMap getOriginSelectors() {
+        return originSelectors;
+    }
+
+    SelectorMap<List<InternalAssignment>> getSelectorMap() {
+        return selectorMap;
+    }
+
+    TargetSelectorSelectorMap getDestinationSelectors() {
+        return destinationSelectors;
+    }
+
+    Map<TargetSelector, List<Assignment>> getAssignmentSelectors() {
+        return assignmentSelectors;
+    }
+
+    List<TargetSelector> getDestinationSelectors(final InternalNode node) {
+        return destinationSelectors.getTargetSelector(node);
     }
 }

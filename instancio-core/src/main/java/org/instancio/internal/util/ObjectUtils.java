@@ -47,7 +47,7 @@ public final class ObjectUtils {
     }
 
     @NotNull
-    public static <T> T defaultIfNull(@Nullable final T value, final T defaultValue) {
+    public static <T> T defaultIfNull(@Nullable final T value, @NotNull final T defaultValue) {
         return value == null ? defaultValue : value;
     }
 

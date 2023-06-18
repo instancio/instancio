@@ -42,6 +42,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
@@ -60,7 +61,7 @@ class SelectorMapTest {
     private final InternalNode richPersonListOfPhonesPhoneNumberFieldNode = getNodeWithField(
             getNodeWithField(rootNode, RichPerson.class, "address1"), Phone.class, "number");
 
-    private final SelectorMap<String> selectorMap = new SelectorMap<>();
+    private final SelectorMap<String> selectorMap = new SelectorMapImpl<>();
 
     private void put(final TargetSelector selector, final String value) {
         selectorMap.put(cast(selector), value);
@@ -191,6 +192,16 @@ class SelectorMapTest {
             if (result != null) break;
         }
         return result;
+    }
+
+    @Test
+    void emptyMapIsReadOnly() {
+        final Selector selector = allStrings();
+        final SelectorMap<Object> empty = SelectorMapImpl.emptyMap();
+
+        assertThatThrownBy(() -> empty.put(selector, "any"))
+                .isExactlyInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("Unmodifiable SelectorMap");
     }
 
     @Nested

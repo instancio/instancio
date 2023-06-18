@@ -38,7 +38,7 @@ public final class Nodes {
         return NodeContext.builder()
                 .maxDepth(Integer.MAX_VALUE)
                 .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
-                .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap()))
+                .subtypeSelectorMap(new SubtypeSelectorMap(Collections.emptyMap(), Collections.emptyMap()))
                 .assignmentOriginSelectors(new BooleanSelectorMap(Collections.emptySet()))
                 .build();
     }

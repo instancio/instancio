@@ -15,8 +15,6 @@
  */
 package org.instancio.internal.selectors;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
@@ -29,8 +27,10 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.testsupport.asserts.ScopeAssert;
 import org.instancio.testsupport.fixtures.Throwables;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +42,7 @@ class SelectorImplTest {
     @Test
     void root() {
         final SelectorImpl root = SelectorImpl.getRootSelector();
-        assertThat(root).hasAllNullFieldsOrPropertiesExcept("scopes", "stackTraceHolder", "isRoot");
+        assertThat(root).hasAllNullFieldsOrPropertiesExcept("scopes", "stackTraceHolder", "depth", "hash");
         assertThat(root.getScopes()).isEmpty();
     }
 
@@ -67,14 +67,6 @@ class SelectorImplTest {
         assertThat(selector.getDescription()).isEqualTo(
                 String.format("all(Foo)%n" +
                         "    at org.example.ExpectedClass:2"));
-    }
-
-    @Test
-    void verifyEqualsAndHashcode() {
-        EqualsVerifier.forClass(SelectorImpl.class)
-                .suppress(Warning.NONFINAL_FIELDS)
-                .withIgnoredFields("parent", "stackTraceHolder")
-                .verify();
     }
 
     @Test
@@ -148,5 +140,99 @@ class SelectorImplTest {
         assertThatThrownBy(() -> selector.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("depth must not be negative: -1");
+    }
+
+    @Nested
+    class ToBuilderTest {
+        @Test
+        void complete() {
+            final SelectorImpl selector = SelectorImpl.builder()
+                    .targetClass(Person.class)
+                    .fieldName("name")
+                    .scopes(Collections.singletonList(scope(List.class)))
+                    .depth(1)
+                    .parent(SelectorImpl.builder().build())
+                    .stackTraceHolder(new Throwable())
+                    .build();
+
+            final SelectorImpl copy = selector.toBuilder().build();
+
+            assertThat(copy).usingRecursiveComparison().isEqualTo(selector);
+        }
+
+        @Test
+        void empty() {
+            final SelectorImpl selector = SelectorImpl.builder().build();
+            final SelectorImpl copy = selector.toBuilder().build();
+
+            assertThat(copy).usingRecursiveComparison().isEqualTo(selector);
+        }
+    }
+
+    @Nested
+    class VerifyEqualsAndHashCode {
+        @Test
+        void equalsFieldSelector() {
+            assertThat(Select.field("name"))
+                    .isEqualTo(Select.field("name"))
+                    .isNotEqualTo(Select.field("Name"))
+                    .isNotEqualTo(Select.field("name").within(scope(Person.class)))
+                    .isNotEqualTo(Select.field("name").atDepth(1))
+                    .isNotEqualTo(Select.field(Person.class, "name"));
+        }
+
+        @Test
+        void hashCodeFieldSelector() {
+            assertThat(Select.field("name"))
+                    .hasSameHashCodeAs(Select.field("name"))
+                    .doesNotHaveSameHashCodeAs(Select.field("Name"))
+                    .doesNotHaveSameHashCodeAs(Select.field("name").within(scope(Person.class)))
+                    .doesNotHaveSameHashCodeAs(Select.field(Person.class, "name"));
+        }
+
+        @Test
+        void equalsClassSelector() {
+            assertThat(Select.all(Person.class))
+                    .isEqualTo(Select.all(Person.class))
+                    .isNotEqualTo(Select.all(String.class))
+                    .isNotEqualTo(Select.all(Person.class).within(scope(List.class)))
+                    .isNotEqualTo(Select.field(Person.class, "name"));
+        }
+
+        @Test
+        void hashCodeClassSelector() {
+            assertThat(Select.all(Person.class))
+                    .hasSameHashCodeAs(Select.all(Person.class))
+                    .doesNotHaveSameHashCodeAs(Select.all(String.class))
+                    .doesNotHaveSameHashCodeAs(Select.all(Person.class).within(scope(List.class)))
+                    .doesNotHaveSameHashCodeAs(Select.field(Person.class, "name"))
+                    .doesNotHaveSameHashCodeAs(Select.root());
+        }
+
+        @Test
+        void equalsRootSelector() {
+            final SelectorImpl anotherRootInstance = SelectorImpl.builder().depth(0).build();
+
+            assertThat(Select.root())
+                    .isEqualTo(Select.root())
+                    .isEqualTo(anotherRootInstance)
+                    .isNotEqualTo(null);
+        }
+
+        @Test
+        void hashCodeRootSelector() {
+            final SelectorImpl anotherRootInstance = SelectorImpl.builder().depth(0).build();
+
+            assertThat(Select.root())
+                    .hasSameHashCodeAs(Select.root())
+                    .hasSameHashCodeAs(anotherRootInstance);
+        }
+
+        @Test
+        void equalsWithNull() {
+            final Selector selector = Select.field("foo");
+
+            assertThat(selector.equals(null)).isFalse();
+        }
     }
 }

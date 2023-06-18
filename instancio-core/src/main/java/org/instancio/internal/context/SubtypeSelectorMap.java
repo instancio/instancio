@@ -18,6 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,11 +27,26 @@ import java.util.Optional;
 public final class SubtypeSelectorMap {
 
     private final Map<TargetSelector, Class<?>> subtypeSelectors;
-    private final SelectorMap<Class<?>> selectorMap = new SelectorMap<>();
+    private final SelectorMap<Class<?>> selectorMap;
 
-    public SubtypeSelectorMap(final Map<TargetSelector, Class<?>> subtypeSelectors) {
+    public SubtypeSelectorMap(
+            @NotNull final Map<TargetSelector, Class<?>> subtypeSelectors,
+            @NotNull final Map<TargetSelector, Class<?>> generatorSubtypeMap) {
+
         this.subtypeSelectors = Collections.unmodifiableMap(subtypeSelectors);
-        putAdditional(subtypeSelectors);
+        this.selectorMap = subtypeSelectors.isEmpty() && generatorSubtypeMap.isEmpty()
+                ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
+
+        putAll(subtypeSelectors);
+        putAll(generatorSubtypeMap);
+    }
+
+    private void putAll(final Map<TargetSelector, Class<?>> subtypes) {
+        subtypes.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
+            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
+                selectorMap.put(selector, subtype);
+            }
+        });
     }
 
     Map<TargetSelector, Class<?>> getSubtypeSelectors() {
@@ -43,17 +59,5 @@ public final class SubtypeSelectorMap {
 
     public Optional<Class<?>> getSubtype(final InternalNode node) {
         return selectorMap.getValue(node);
-    }
-
-    void putAll(final Map<TargetSelector, Class<?>> subtypeMapping) {
-        subtypeMapping.forEach(selectorMap::put);
-    }
-
-    private void putAdditional(final Map<TargetSelector, Class<?>> subtypes) {
-        subtypes.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                selectorMap.put(selector, subtype);
-            }
-        });
     }
 }

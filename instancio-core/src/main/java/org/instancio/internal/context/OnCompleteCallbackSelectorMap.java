@@ -19,6 +19,7 @@ import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,11 +28,22 @@ import java.util.Map;
 class OnCompleteCallbackSelectorMap {
 
     private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks;
-    private final SelectorMap<OnCompleteCallback<?>> selectorMap = new SelectorMap<>();
+    private final SelectorMap<OnCompleteCallback<?>> selectorMap;
 
-    OnCompleteCallbackSelectorMap(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
+    OnCompleteCallbackSelectorMap(@NotNull final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
         this.onCompleteCallbacks = Collections.unmodifiableMap(callbacks);
+        this.selectorMap = callbacks.isEmpty() ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
         putAll(callbacks);
+    }
+
+    private void putAll(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
+        for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : callbacks.entrySet()) {
+            final TargetSelector targetSelector = entry.getKey();
+            final OnCompleteCallback<?> callback = entry.getValue();
+            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
+                selectorMap.put(selector, callback);
+            }
+        }
     }
 
     public SelectorMap<OnCompleteCallback<?>> getSelectorMap() {
@@ -44,16 +56,6 @@ class OnCompleteCallbackSelectorMap {
 
     List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {
         return selectorMap.getValues(node);
-    }
-
-    private void putAll(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
-        for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : callbacks.entrySet()) {
-            final TargetSelector targetSelector = entry.getKey();
-            final OnCompleteCallback<?> callback = entry.getValue();
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                selectorMap.put(selector, callback);
-            }
-        }
     }
 
 }
