@@ -21,9 +21,8 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 public class CollectionNodeHandler implements NodeHandler {
 
@@ -41,7 +40,7 @@ public class CollectionNodeHandler implements NodeHandler {
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final InternalNode node) {
-        if (Collection.class.isAssignableFrom(node.getTargetClass())) {
+        if (node.is(NodeKind.COLLECTION)) {
             final CollectionGenerator<?> generator = new CollectionGenerator<>(
                     new GeneratorContext(context.getSettings(), context.getRandom()));
 

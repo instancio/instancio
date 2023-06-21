@@ -22,7 +22,6 @@ import org.instancio.internal.beanvalidation.NoopBeanValidationProvider;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.handlers.ArrayNodeHandler;
 import org.instancio.internal.handlers.AssignmentNodeHandler;
 import org.instancio.internal.handlers.CollectionNodeHandler;
 import org.instancio.internal.handlers.InstantiatingHandler;
@@ -67,7 +66,6 @@ class GeneratorFacade {
         this.nodeHandlers = new NodeHandler[]{
                 assignmentNodeHandler,
                 new UserSuppliedGeneratorHandler(context, generatorResolver, instantiator),
-                new ArrayNodeHandler(context, generatorResolver, beanValidationProcessor),
                 new UsingGeneratorResolverHandler(context, generatorResolver, beanValidationProcessor),
                 new CollectionNodeHandler(context, beanValidationProcessor),
                 new MapNodeHandler(context, beanValidationProcessor),
