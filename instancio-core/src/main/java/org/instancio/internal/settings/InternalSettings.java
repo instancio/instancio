@@ -180,7 +180,7 @@ public final class InternalSettings implements Settings {
     public String toString() {
         return String.format("Settings[%nisLockedForModifications: %s" +
                         "%nsettingsMap:%s" +
-                        "%nsubtypeMap:%s",
+                        "%nSettings subtypeMap:%s",
                 isLockedForModifications,
                 mapToString(new TreeMap<>(settingsMap)),
                 mapToString(subtypeMap));

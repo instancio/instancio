@@ -87,6 +87,7 @@ public final class ModelContext<T> {
     private final SubtypeSelectorMap subtypeSelectorMap;
     private final GeneratorSelectorMap generatorSelectorMap;
     private final AssignmentSelectorMap assignmentSelectorMap;
+    private final boolean verbose;
 
     private ModelContext(final Builder<T> builder) {
         rootType = builder.rootType;
@@ -100,6 +101,7 @@ public final class ModelContext<T> {
         maxDepth = builder.maxDepth;
         settings = createSettings(builder);
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
+        verbose = builder.verbose;
 
         ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
         nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
@@ -220,6 +222,10 @@ public final class ModelContext<T> {
         return random;
     }
 
+    public boolean isVerbose() {
+        return verbose;
+    }
+
     public Builder<T> toBuilder() {
         final Builder<T> builder = new Builder<>(rootType);
         builder.rootTypeParameters.addAll(this.rootTypeParameters);
@@ -269,6 +275,7 @@ public final class ModelContext<T> {
         private Integer maxDepth;
         private Long seed;
         private Boolean lenient;
+        private boolean verbose;
 
         private Builder(final Type rootType) {
             this.rootType = Verify.notNull(rootType, "Root type is null");
@@ -365,6 +372,11 @@ public final class ModelContext<T> {
 
         public Builder<T> lenient() {
             this.lenient = true;
+            return this;
+        }
+
+        public Builder<T> verbose() {
+            this.verbose = true;
             return this;
         }
 
