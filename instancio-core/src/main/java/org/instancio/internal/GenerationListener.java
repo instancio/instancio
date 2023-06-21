@@ -37,7 +37,5 @@ interface GenerationListener {
      *               be generated.
      * @since 1.3.3
      */
-    default void objectCreated(InternalNode node, GeneratorResult result) {
-        // no-op
-    }
+    void objectCreated(InternalNode node, GeneratorResult result);
 }
