@@ -90,6 +90,8 @@ public class CallbackHandler implements GenerationListener {
                             "})%n%n" +
                             "Caused by:%n%s", ex.getMessage());
             throw Fail.withUsageError(errorMsg, ex);
+        } catch (Exception ex) {
+            throw Fail.withUsageError("error invoking the callback", ex);
         }
     }
 }
