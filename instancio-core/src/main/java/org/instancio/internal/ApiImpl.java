@@ -164,6 +164,11 @@ public class ApiImpl<T> implements InstancioApi<T> {
         return this;
     }
 
+    @Override
+    public InstancioApi<T> verbose() {
+        modelContextBuilder.verbose();
+        return this;
+    }
 
     @Override
     public Model<T> toModel() {

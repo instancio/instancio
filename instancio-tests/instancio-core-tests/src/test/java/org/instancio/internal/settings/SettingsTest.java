@@ -159,7 +159,7 @@ class SettingsTest {
                 "Settings[",
                 "isLockedForModifications: false",
                 "settingsMap: {}",
-                "subtypeMap: {}");
+                "Settings subtypeMap: {}");
     }
 
     @Test
@@ -187,7 +187,7 @@ class SettingsTest {
                 "\t'double.min': 345.9",
                 "\t'long.min': 123",
                 "\t'string.nullable': true",
-                "subtypeMap:",
+                "Settings subtypeMap:",
                 "\t'interface java.util.List': class java.util.ArrayList"
         );
     }

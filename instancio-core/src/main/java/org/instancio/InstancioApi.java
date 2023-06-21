@@ -554,4 +554,27 @@ public interface InstancioApi<T> {
      * @since 1.4.1
      */
     InstancioApi<T> lenient();
+
+    /**
+     * Outputs debug information to {@code System.out}. This includes:
+     *
+     * <ul>
+     *   <li>current {@link Settings}</li>
+     *   <li>node hierarchy, including the type and depth of each node</li>
+     *   <li>seed used to create the object</li>
+     * </ul>
+     *
+     * <p>Note: {@code verbose()} information is only output when creating
+     * an object. This method has no effect when creating a {@link Model}.
+     *
+     * <p><b>Warning:</b> this method has a significant performance impact.
+     * It is recommended to remove the call to {@code verbose()} after
+     * troubleshooting is complete.
+     *
+     * @return API builder reference
+     * @since 3.0.0
+     */
+    @ExperimentalApi
+    InstancioApi<T> verbose();
+
 }

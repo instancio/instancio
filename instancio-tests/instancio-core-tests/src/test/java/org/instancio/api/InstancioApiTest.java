@@ -206,4 +206,13 @@ class InstancioApiTest {
 
         assertThat(result.getValue()).isNotBlank();
     }
+
+    @Test
+    void verbose() {
+        final String result = Instancio.of(String.class)
+                .verbose()
+                .create();
+
+        assertThat(result).isNotNull();
+    }
 }
