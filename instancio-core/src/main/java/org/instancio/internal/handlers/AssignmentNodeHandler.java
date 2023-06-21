@@ -117,8 +117,7 @@ public class AssignmentNodeHandler implements NodeHandler {
                     "error invoking the predicate against generated object of type %s",
                     object.getClass().getTypeName(), ex);
         } catch (Exception ex) {
-            throw Fail.withUsageError("error invoking the predicate",
-                    object.getClass().getTypeName(), ex);
+            throw Fail.withUsageError("error invoking the predicate", ex);
         }
     }
 }

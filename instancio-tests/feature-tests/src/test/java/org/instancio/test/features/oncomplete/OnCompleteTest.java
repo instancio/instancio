@@ -16,7 +16,9 @@
 package org.instancio.test.features.oncomplete;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.fields;
@@ -104,5 +107,20 @@ class OnCompleteTest {
         assertThat(callbacksCount.get())
                 .as("StringFields has 4 string fields, 1 callback per field expected")
                 .isEqualTo(4);
+    }
+
+    @Test
+    void shouldPropagateError() {
+        final RuntimeException expectedException = new RuntimeException();
+
+        final InstancioApi<StringFields> api = Instancio.of(StringFields.class)
+                .onComplete(fields(), val -> {
+                    throw expectedException;
+                });
+
+        assertThatThrownBy(api::create)
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("error invoking the callback")
+                .hasRootCause(expectedException);
     }
 }
