@@ -16,7 +16,6 @@
 package org.instancio.internal.util;
 
 import org.instancio.Scope;
-import org.instancio.internal.selectors.ScopeImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -51,10 +50,7 @@ public final class Format {
 
     public static String formatScopes(final List<Scope> scopes) {
         return scopes.stream()
-                .map(ScopeImpl.class::cast)
-                .map(s -> s.getFieldName() == null
-                        ? String.format("scope(%s)", s.getTargetClass().getSimpleName())
-                        : String.format("scope(%s, \"%s\")", s.getTargetClass().getSimpleName(), s.getFieldName()))
+                .map(Object::toString)
                 .collect(joining(", "));
     }
 

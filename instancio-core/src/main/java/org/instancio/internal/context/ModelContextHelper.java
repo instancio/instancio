@@ -116,7 +116,7 @@ final class ModelContextHelper {
         for (Scope scope : scopes) {
             ScopeImpl s = (ScopeImpl) scope;
             if (s.getTargetClass() == null) {
-                results.add(new ScopeImpl(rootClass, s.getFieldName()));
+                results.add(new ScopeImpl(rootClass, s.getFieldName(), s.getDepth()));
             } else {
                 results.add(scope);
             }

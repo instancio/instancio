@@ -104,7 +104,7 @@ public final class SelectorImpl
     }
 
     @Override
-    public TargetSelector atDepth(final int depth) {
+    public Selector atDepth(final int depth) {
         return toBuilder()
                 .depth(ApiValidator.validateDepth(depth))
                 .build();
@@ -122,7 +122,7 @@ public final class SelectorImpl
 
     @Override
     public Scope toScope() {
-        return new ScopeImpl(targetClass, fieldName);
+        return new ScopeImpl(targetClass, fieldName, depth);
     }
 
     @Override

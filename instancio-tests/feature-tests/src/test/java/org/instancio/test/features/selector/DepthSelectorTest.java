@@ -15,9 +15,18 @@
  */
 package org.instancio.test.features.selector;
 
+import lombok.Data;
+import org.instancio.GroupableSelector;
 import org.instancio.Instancio;
+import org.instancio.Scope;
+import org.instancio.Select;
+import org.instancio.Selector;
 import org.instancio.TargetSelector;
+import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.cyclic.onetomany.DetailRecord;
+import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
+import org.instancio.test.support.pojo.misc.MultipleClassesWithId;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
@@ -34,6 +43,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
+import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
 import static org.instancio.Select.types;
@@ -118,6 +128,89 @@ class DepthSelectorTest {
     }
 
     @Nested
+    class WithScopeTest {
+
+        @Test
+        void atDepthWithScope() {
+            @Data
+            class Holder {
+                MainRecord mainRecord1;
+                MainRecord mainRecord2;
+            }
+
+            // Set only the Holder.mainRecord1.id to expected value.
+            // All other MainRecord.id fields should be random values, i.e.
+            //  - Holder.mainRecord2.id
+            //  - Holder.mainRecord1.List[detailRecords].mainRecord.id
+            //  - Holder.mainRecord2.List[detailRecords].mainRecord.id
+            final GroupableSelector selector = field(MainRecord::getId)
+                    .atDepth(2)
+                    .within(field(Holder::getMainRecord1).toScope());
+
+            final long expected = -1L;
+            final Holder result = Instancio.of(Holder.class)
+                    .set(selector, expected)
+                    .create();
+
+            assertThat(result.mainRecord1.getId()).isEqualTo(expected);
+            assertThat(result.mainRecord2.getId()).isNotEqualTo(expected);
+
+            assertThat(result.mainRecord1.getDetailRecords()).isNotEmpty().allSatisfy(detail ->
+                    assertThat(detail.getMainRecord().getId())
+                            .isNotNull()
+                            .isNotEqualTo(expected));
+
+            assertThat(result.mainRecord2.getDetailRecords()).isNotEmpty().allSatisfy(detail ->
+                    assertThat(detail.getMainRecord().getId())
+                            .isNotNull()
+                            .isNotEqualTo(expected));
+        }
+
+        @Test
+        void atDepthWithScopeGroup() {
+            @Data
+            class Holder {
+                MainRecord mainRecord1;
+                MainRecord mainRecord2;
+            }
+
+            final TargetSelector selectorGroup = Select.all(
+                    // Select MainRecord.id
+                    field(MainRecord::getId).atDepth(2).within(field(Holder::getMainRecord1).toScope()),
+                    field(MainRecord::getId).atDepth(2).within(field(Holder::getMainRecord2).toScope()),
+
+                    // Select DetailRecord.mainRecordId
+                    field(DetailRecord::getMainRecordId).atDepth(4).within(field(Holder::getMainRecord1).toScope()),
+                    field(DetailRecord::getMainRecordId).atDepth(4).within(field(Holder::getMainRecord2).toScope())
+            );
+
+            final long expected = -1L;
+            final Holder result = Instancio.of(Holder.class)
+                    .set(selectorGroup, expected)
+                    .create();
+
+            assertThat(result.mainRecord1.getId()).isEqualTo(expected);
+            assertThat(result.mainRecord2.getId()).isEqualTo(expected);
+
+            assertThat(result.mainRecord1.getDetailRecords()).isNotEmpty().allSatisfy(detail -> {
+                assertThat(detail.getMainRecord().getId())
+                        .isNotNull()
+                        .isNotEqualTo(expected);
+
+                assertThat(detail.getMainRecordId()).isEqualTo(expected);
+            });
+
+            assertThat(result.mainRecord2.getDetailRecords()).isNotEmpty().allSatisfy(detail -> {
+                assertThat(detail.getMainRecord().getId())
+                        .isNotNull()
+                        .isNotEqualTo(expected);
+
+                assertThat(detail.getMainRecordId()).isEqualTo(expected);
+            });
+        }
+    }
+
+    @Nested
     class DepthSelectorPrecedenceTest {
 
         @Test
@@ -175,6 +268,96 @@ class DepthSelectorTest {
             assertThat(result.pojo1.val).isEqualTo(1);
             assertThat(result.pojo1.pojo2.val).isEqualTo(1);
             assertThat(result.pojo1.pojo2.pojo3.val).isEqualTo(1);
+        }
+
+        /**
+         * When using the same scope with different depth values,
+         * the ordering of selectors matters.
+         */
+        @Nested
+        class AtDepthToScopeTest {
+
+            @Test
+            void ascendingDepthOrder() {
+                final Selector id = all(MultipleClassesWithId.ID.class);
+
+                final MultipleClassesWithId<String> result = Instancio.of(new TypeToken<MultipleClassesWithId<String>>() {})
+                        .set(allStrings().within(id.atDepth(2).toScope()), "foo")
+                        .set(allStrings().within(id.atDepth(3).toScope()), "bar")
+                        .set(allStrings().within(id.atDepth(4).toScope()), "baz")
+                        .create();
+
+                assertThat(result.getA().getId().getValue()).isEqualTo("foo");
+                assertThat(result.getA().getB().getId().getValue()).isEqualTo("bar");
+                assertThat(result.getA().getC().getB().getId().getValue()).isEqualTo("baz");
+                assertThat(result.getA().getC().getD().getId().getValue()).isEqualTo("baz");
+            }
+
+            @Test
+            void descendingDepthOrder() {
+                final Selector id = all(MultipleClassesWithId.ID.class);
+
+                // Run in lenient mode since last selector atDepth(2)
+                // consumes all the matches of selectors atDepth(3) and atDepth(4)
+                final MultipleClassesWithId<String> result = Instancio.of(new TypeToken<MultipleClassesWithId<String>>() {})
+                        .set(allStrings().within(id.atDepth(4).toScope()), "baz") // unused!
+                        .set(allStrings().within(id.atDepth(3).toScope()), "bar") // unused!
+                        .set(allStrings().within(id.atDepth(2).toScope()), "foo")
+                        .lenient()
+                        .create();
+
+                assertThat(result.getA().getId().getValue()).isEqualTo("foo");
+                assertThat(result.getA().getB().getId().getValue()).isEqualTo("foo");
+                assertThat(result.getA().getC().getB().getId().getValue()).isEqualTo("foo");
+                assertThat(result.getA().getC().getD().getId().getValue()).isEqualTo("foo");
+            }
+
+            @Test
+            void mixedDepthOrder() {
+                final Selector id = all(MultipleClassesWithId.ID.class);
+
+                // Run in lenient mode since last selector atDepth(3)
+                // consumes all the matches of selector atDepth(4)
+                final MultipleClassesWithId<String> result = Instancio.of(new TypeToken<MultipleClassesWithId<String>>() {})
+                        .set(allStrings().within(id.atDepth(4).toScope()), "baz") // unused!
+                        .set(allStrings().within(id.atDepth(2).toScope()), "foo")
+                        .set(allStrings().within(id.atDepth(3).toScope()), "bar")
+                        .lenient()
+                        .create();
+
+                assertThat(result.getA().getId().getValue()).isEqualTo("foo");
+                assertThat(result.getA().getB().getId().getValue()).isEqualTo("bar");
+                assertThat(result.getA().getC().getB().getId().getValue()).isEqualTo("bar");
+                assertThat(result.getA().getC().getD().getId().getValue()).isEqualTo("bar");
+            }
+
+            @Test
+            void multipleScopes() {
+                // scopes specified top-down: outermost to innermost
+                final Scope[] scopes = {
+                        all(MultipleClassesWithId.class).atDepth(0).toScope(),
+                        all(MultipleClassesWithId.A.class).atDepth(1).toScope(),
+                        all(MultipleClassesWithId.C.class).atDepth(2).toScope(),
+                        all(MultipleClassesWithId.B.class).atDepth(3).toScope(),
+                        all(MultipleClassesWithId.ID.class).atDepth(4).toScope(),
+                        allStrings().atDepth(5).toScope()
+                };
+
+                final String expected = "foo";
+
+                final MultipleClassesWithId<String> result = Instancio.of(new TypeToken<MultipleClassesWithId<String>>() {})
+                        .set(allStrings().within(scopes), expected)
+                        .create();
+
+                // Scopes:   0     1      2      3      4       5
+                assertThat(result.getA().getC().getB().getId().getValue()).isEqualTo(expected);
+
+                // non-matches
+                assertThat(result.getA().getId().getValue()).isNotEqualTo(expected);
+                assertThat(result.getA().getB().getId().getValue()).isNotEqualTo(expected);
+                assertThat(result.getA().getC().getId().getValue()).isNotEqualTo(expected);
+                assertThat(result.getA().getC().getD().getId().getValue()).isNotEqualTo(expected);
+            }
         }
     }
 

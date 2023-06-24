@@ -327,17 +327,19 @@ all(field(Address::getCity),
 - **`Select.fields()`** and **`Select.types()`**
 
 These selectors provide a builder API for constructing predicate selectors. 
-For example, the following predicate that matches `Long` fields annotated with `@Id`
+For example, the following selector matches `Long` fields annotated with `@Id`
+
+``` java
+Select.fields().ofType(Long.class).annotated(Id.class)
+```
+
+which is equivalent to using the following predicate:
 
 ``` java
 Select.fields(f -> f.getType() == Long.class && f.getDeclaredAnnotation(Id.class) != null)
 ```
 
-can also be expressed using the `fields()` predicate builder:
 
-``` java
-Select.fields().ofType(Long.class).annotated(Id.class)
-```
 - **`Select.root()`**
 
 This method selects the root object. The following snippet creates nested lists,
@@ -459,7 +461,7 @@ Person person = Instancio.of(Person.class)
 
 For more complex class structures, multiple scopes can be specified using `within(Scope...)` method.
 When specifying multiple scopes, the order is important: from outermost to innermost scope.
-Additional examples will be provided below.
+Additional examples are provided below.
 
 #### Creating scopes
 
@@ -506,26 +508,26 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-Using `within()` we can narrow down the scope of the `allStrings()` selector. For brevity,
-the `Instancio.of(Person.class)` line will be omitted.
+Using `within()` we can narrow down the scope of the `allStrings()` selector as shown in the following examples.
+For brevity, `Instancio.of(Person.class)` is omitted.
 
 
 ``` java title="Set all strings in all Address instances; this includes Phone instances as they are contained within addresses"
-set(allStrings().within(scope(Address.class)), "foo")
+allStrings().within(scope(Address.class))
 ```
 
 ``` java title="Set all strings contained within lists (matches all Phone instances in our example)"
-set(allStrings().within(scope(List.class)), "foo")
+allStrings().within(scope(List.class))
 ```
 
 ``` java title="Set all strings in Person.homeAddress address object"
-set(allStrings().within(scope(Person.class, "homeAddress")), "foo")
+allStrings().within(scope(Person.class, "homeAddress"))
 ```
 
 Using `within()` also allows specifying multiple scopes. Scopes must be specified top-down, starting from the outermost to the innermost.
 
 ``` java title="Set all strings of all Phone instances contained within Person.workAddress field"
-set(allStrings().within(scope(Person.class, "workAddress"), scope(Phone.class)), "foo")
+allStrings().within(scope(Person.class, "workAddress"), scope(Phone.class))
 ```
 
 The `Person.workAddress` object contains a list of phones, therefore `Person.workAddress` is the outermost scope and is specified first.
@@ -535,17 +537,17 @@ The final examples illustrate the creation of scope objects from regular selecto
 The following examples are equivalent to each other:
 
 ``` java title="Equivalent ways of creating scopes based on field"
-set(allStrings().within(scope(Person.class, "homeAddress")), "foo")
+allStrings().within(scope(Person.class, "homeAddress"))
 
-set(allStrings().within(field(Person.class, "homeAddress").toScope()), "foo")
+allStrings().within(field(Person.class, "homeAddress").toScope())
 
-set(allStrings().within(field(Person::getHomeAddress).toScope()), "foo")
+allStrings().within(field(Person::getHomeAddress).toScope())
 ```
 
 ``` java title="Equivalent ways of creating scopes based on class"
-set(allStrings().within(scope(Person.class)), "foo")
+allStrings().within(scope(Person.class))
 
-set(allStrings().within(all(Person.class).toScope()), "foo")
+allStrings().within(all(Person.class).toScope())
 ```
 
 ### Selector Depth
@@ -584,6 +586,86 @@ A a = Instancio.of(A.class)
     .ignore(types().of(A.class).atDepth(depth -> depth > 0))
     .create();
 ```
+
+For remaining examples we wil use the following class structure
+to illustrate how selectors can target different nodes:
+
+```java
+Depth       Class
+----------------------
+  0         Root
+            /  \
+  1        A    B
+              / | \
+  2          A  A  C
+                  / \
+  3              A   D
+                      \
+  4                    A
+```
+
+where the classes are defined as:
+
+```java
+record Root(A a, B b) {}
+record A(String value) {}
+record B(A a1, A a2, C c) {}
+record C(A a, D d) {}
+record D(A a) {}
+```
+
+In the first few examples, we will target class `A` at different levels:
+
+``` java title="Select the A at depth 1"
+Root root = Instancio.of(Root.class)
+    .set(all(A.class).atDepth(1), new A("Hello!"))
+    .create();
+
+=> Root[a=A[value="Hello!"], b=B[a1=A[value="BRHD"], a2=A[value="AVBMJRP"], c=C[a=A[value="PZK"], d=D[a=A[value="AQVXCT"]]]]]
+```
+
+Similar to the above, but omitting `Instancio.of()` for brevity:
+
+``` java title="Select the two A nodes at depth 2"
+all(A.class).atDepth(2)
+
+=> Root[a=A[value="FNPI"], b=B[a1=A[value="Hello!"], a2=A[value="Hello!"], c=C[a=A[value="IDLOM"], d=D[a=A[value="QXPW"]]]]]
+```
+
+``` java title="Select the A nodes at depths 3 and 4 (and beyond, if any)"
+types().of(A.class).atDepth(depth -> depth > 2)
+
+=> Root[a=A[value="MWAASZU"], b=B[a1=A[value="ODSRTG"], a2=A[value="TDG"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
+```
+
+``` java title="Select all (four) A nodes reachable from B"
+all(A.class).within(scope(B.class))
+
+=> Root[a=A[value="GNDUXU"], b=B[a1=A[value="hello!"], a2=A[value="hello!"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
+```
+
+The next example is targeting `allStrings()`, therefore the value is being set to `"Hello!"` instead of `new A("Hello!")`.
+This snippet targets all strings that are reachable from class `A`, but only if class `A` is at depth `3` or greater.
+
+``` java title="Select all Strings reachable from A nodes at depth 3 or greater" linenums="1" hl_lines="2"
+Root root = Instancio.of(Root.class)
+    .set(allStrings().within(all(A.class).atDepth(3).toScope()), "Hello!")
+    .create();
+
+=> Root[a=A[value="SERWVQV"], b=B[a1=A[value="PTF"], a2=A[value="CHZP"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
+```
+!!! attention ""
+    <lnum>2</lnum> When a selector `atDepth(N)` is converted to `toScope()`, the selection matches any target at depth `N` or greater.
+
+
+The final example is targeting the field `A.value` but only within the `a1` field of class `B`:
+
+``` java title="Select 'A.value' of the 'a1' field"
+field(A::value).within(field(B::a1).toScope())
+
+=> Root[a=A[value="DBOS"], b=B[a1=A[value="hello!"], a2=A[value="KFBWJL"], c=C[a=A[value="VLTNXF"], d=D[a=A[value="CDV"]]]]]
+```
+
 
 ### Selector Strictness
 
