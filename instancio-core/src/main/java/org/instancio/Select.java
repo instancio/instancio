@@ -425,6 +425,7 @@ public final class Select {
      * @param targetClass of the scope
      * @param fieldName   declared by the target class
      * @return a scope for fine-tuning a selector
+     * @see #scope(GetMethodSelector)
      * @since 1.3.0
      */
     public static Scope scope(final Class<?> targetClass, final String fieldName) {
@@ -464,6 +465,25 @@ public final class Select {
     public static Scope scope(final Class<?> targetClass) {
         ApiValidator.notNull(targetClass, "Scope class must not be null");
         return new ScopeImpl(targetClass, null);
+    }
+
+    /**
+     * Creates a scope for narrowing down a selector's target to a
+     * matching the specified method reference.
+     *
+     * <p>This is a convenience method for {@link #scope(Class, String)}
+     * that avoids referring to a field by its name.
+     *
+     * @param methodReference method reference from which field name will be resolved
+     * @param <T>             type declaring the method
+     * @param <R>             return type of the method
+     * @return a scope for fine-tuning a selector
+     * @see #scope(Class, String)
+     * @since 3.0.0
+     */
+    public static <T, R> Scope scope(final GetMethodSelector<T, R> methodReference) {
+        ApiValidator.notNull(methodReference, "method reference must not be null");
+        return MethodReferenceHelper.resolve(methodReference).toScope();
     }
 
     private Select() {

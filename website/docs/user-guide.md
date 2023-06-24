@@ -475,11 +475,13 @@ The first approach requires specifying the target class and, for field-level sco
 ``` java linenums="1"
 Select.scope(Class<?> targetClass)
 Select.scope(Class<?> targetClass, String field)
+Select.scope(GetMethodSelector<T, R> methodReference)
 ```
 
 ``` java title="Examples"
 Select.scope(Phone.class);
 Select.scope(Person.class, "homeAddress");
+Select.scope(Person::getHomeAddress);
 ```
 
 The second approach is to create scopes from selectors using the `toScope()` method.
@@ -527,7 +529,7 @@ allStrings().within(scope(Person.class, "homeAddress"))
 Using `within()` also allows specifying multiple scopes. Scopes must be specified top-down, starting from the outermost to the innermost.
 
 ``` java title="Set all strings of all Phone instances contained within Person.workAddress field"
-allStrings().within(scope(Person.class, "workAddress"), scope(Phone.class))
+allStrings().within(scope(Person::getWorkAddress), scope(Phone.class))
 ```
 
 The `Person.workAddress` object contains a list of phones, therefore `Person.workAddress` is the outermost scope and is specified first.
@@ -538,6 +540,8 @@ The following examples are equivalent to each other:
 
 ``` java title="Equivalent ways of creating scopes based on field"
 allStrings().within(scope(Person.class, "homeAddress"))
+
+allStrings().within(scope(Person::getHomeAddress))
 
 allStrings().within(field(Person.class, "homeAddress").toScope())
 

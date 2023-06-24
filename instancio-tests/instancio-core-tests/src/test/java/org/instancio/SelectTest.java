@@ -189,6 +189,10 @@ class SelectTest {
         assertScope(Select.scope(Foo.class, "fooValue"))
                 .hasTargetClass(Foo.class)
                 .hasFieldName("fooValue");
+
+        assertScope(Select.scope(StringHolder::getValue))
+                .hasTargetClass(StringHolder.class)
+                .hasFieldName("value");
     }
 
 }
