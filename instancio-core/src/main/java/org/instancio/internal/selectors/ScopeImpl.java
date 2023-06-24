@@ -26,10 +26,21 @@ import java.util.Objects;
 public final class ScopeImpl implements Scope {
     private final Class<?> targetClass;
     private final String fieldName;
+    private final Integer depth;
 
-    public ScopeImpl(final Class<?> targetClass, @Nullable final String fieldName) {
+    public ScopeImpl(@Nullable final Class<?> targetClass,
+                     @Nullable final String fieldName,
+                     @Nullable final Integer depth) {
+
         this.targetClass = targetClass;
         this.fieldName = fieldName;
+        this.depth = depth;
+    }
+
+    public ScopeImpl(@Nullable final Class<?> targetClass,
+                     @Nullable final String fieldName) {
+
+        this(targetClass, fieldName, null);
     }
 
     public Class<?> getTargetClass() {
@@ -38,6 +49,10 @@ public final class ScopeImpl implements Scope {
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    public Integer getDepth() {
+        return depth;
     }
 
     public boolean isFieldScope() {
@@ -55,21 +70,27 @@ public final class ScopeImpl implements Scope {
         if (!(o instanceof ScopeImpl)) return false;
         final ScopeImpl scope = (ScopeImpl) o;
         return Objects.equals(targetClass, scope.targetClass)
-                && Objects.equals(fieldName, scope.fieldName);
+                && Objects.equals(fieldName, scope.fieldName)
+                && Objects.equals(depth, scope.depth);
     }
 
     @Override
     public int hashCode() {
-        int result = targetClass != null ? targetClass.hashCode() : 0;
-        result = 31 * result + (fieldName != null ? fieldName.hashCode() : 0);
+        int result = targetClass == null ? 0 : targetClass.hashCode();
+        result = 31 * result + (fieldName == null ? 0 : fieldName.hashCode());
+        result = 31 * result + (depth == null ? 0 : depth.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
-        if (fieldName == null) {
-            return String.format("scope(%s)", targetClass.getSimpleName());
+        String s = "scope(" + targetClass.getSimpleName();
+        if (fieldName != null) {
+            s += ", \"" + fieldName + '"';
         }
-        return String.format("scope(%s, \"%s\")", getTargetClass().getSimpleName(), fieldName);
+        if (depth != null) {
+            s += ", atDepth(" + depth + ')';
+        }
+        return s + ')';
     }
 }

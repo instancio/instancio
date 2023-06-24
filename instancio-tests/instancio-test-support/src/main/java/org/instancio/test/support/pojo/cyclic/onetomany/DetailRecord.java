@@ -20,5 +20,6 @@ import lombok.Data;
 @Data
 public class DetailRecord {
     private Long id;
+    private Long mainRecordId;
     private MainRecord mainRecord;
 }

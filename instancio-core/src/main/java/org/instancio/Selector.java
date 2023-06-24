@@ -28,41 +28,21 @@ package org.instancio;
  * @see TargetSelector
  * @since 1.2.0
  */
-public interface Selector extends DepthSelector, GroupableSelector, ConvertibleToScope {
+public interface Selector extends DepthSelector, GroupableSelector, ScopeableSelector, ConvertibleToScope {
 
     /**
-     * Specifies the scope for this selector in order to narrow down its target.
-     * <p>
-     * For example, if the {@code Person} class has two {@code Phone} fields:
-     * <p>
-     * <pre>{@code
-     *     class Person {
-     *         private Phone home;
-     *         private Phone cell;
-     *         // snip...
-     *     }
-     * }</pre>
+     * {@inheritDoc}
      *
-     * <p>and we want to set only the {@code cell} phone to a specific value, we can narrow
-     * down the selector as follows:
+     * @since 3.0.0
+     */
+    @Override
+    ScopeableSelector atDepth(int depth);
+
+    /**
+     * {@inheritDoc}
      *
-     * <pre>{@code
-     *   // Scope can be created using:
-     *   Scope cellPhone = scope(Person.class, "cell");
-     *   // or selector toScope() method
-     *   Scope cellPhone = field(Person::getCell).toScope();
-     *
-     *   Person person = Instancio.of(Person.class)
-     *       .set(field(Phone.class, "number").within(cellPhone), "123-45-67")
-     *       .create();
-     * }</pre>
-     *
-     * <p>See <a href="http://localhost:8000/user-guide/#selector-scopes">Selector Scopes</a>
-     * section of the user guide for details.
-     *
-     * @param scopes one or more scopes to apply
-     * @return a selector with the specified scope
      * @since 1.3.0
      */
+    @Override
     GroupableSelector within(Scope... scopes);
 }

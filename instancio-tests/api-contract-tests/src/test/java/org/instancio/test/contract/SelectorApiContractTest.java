@@ -204,6 +204,13 @@ class SelectorApiContractTest {
     }
 
     @Test
+    @DisplayName("atDepth() cannot be called more than once")
+    void atDepthCannotBeCalledMoreThanOnce() throws Exception {
+        assertCompilationError("NonCompilable_SelectorAtDepthCannotBeCalledMoreThanOnce.java",
+                "cannot find symbol", "method atDepth");
+    }
+
+    @Test
     @DisplayName("ofList() should not expose withTypeParameters() method")
     void ofListWithTypeParametersNotAllowed() throws Exception {
         assertCompilationError("NonCompilable_OfListWithTypeParameters.java",

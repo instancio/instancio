@@ -27,6 +27,7 @@ import org.instancio.internal.selectors.ScopelessSelector;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Sonar;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -251,7 +252,11 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         return results;
     }
 
-    private static boolean selectorScopesMatchNodeHierarchy(final SelectorImpl candidate, final InternalNode targetNode) {
+    @SuppressWarnings(Sonar.COGNITIVE_COMPLEXITY_OF_METHOD)
+    private static boolean selectorScopesMatchNodeHierarchy(
+            final SelectorImpl candidate,
+            final InternalNode targetNode) {
+
         if (candidate.getDepth() != null && candidate.getDepth() != targetNode.getDepth()) {
             return false;
         }
@@ -263,17 +268,32 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         InternalNode node = targetNode;
 
         while (node != null) {
-            if (scope.isFieldScope()) {
-                if (scope.resolveField().equals(node.getField())) {
+            // Matching scope depth offers two implementation options:
+            //
+            // (A) node.getDepth() == scope.getDepth()
+            // (B) node.getDepth() >= scope.getDepth()
+            //
+            // (A) would result in exact matching between scope and node depth values.
+            // Although it seems like a good option and feels more intuitive, this approach
+            // has two disadvantages:
+            //
+            //  1. The precise matching is actually more restrictive
+            //  2. It's inconsistent with the semantics of within(Scope) API,
+            //     i.e. "match anywhere _within_ given scope" (at given depth or further)
+            if (scope.getDepth() == null || node.getDepth() >= scope.getDepth()) {
+
+                if (scope.isFieldScope()) {
+                    if (scope.resolveField().equals(node.getField())) {
+                        scope = (ScopeImpl) deq.pollLast();
+                    }
+                } else if (node.getRawType().equals(scope.getTargetClass())) {
                     scope = (ScopeImpl) deq.pollLast();
                 }
-            } else if (node.getRawType().equals(scope.getTargetClass())) {
-                scope = (ScopeImpl) deq.pollLast();
             }
-
             if (scope == null) { // All scopes have been matched
                 return true;
             }
+
             node = node.getParent();
         }
         return false;

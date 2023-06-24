@@ -67,7 +67,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     }
 
     @Override
-    public TargetSelector atDepth(final int depth) {
+    public Selector atDepth(final int depth) {
         ApiValidator.validateDepth(depth);
         return new PrimitiveAndWrapperSelectorImpl(
                 primitive.toBuilder().depth(depth).build(),

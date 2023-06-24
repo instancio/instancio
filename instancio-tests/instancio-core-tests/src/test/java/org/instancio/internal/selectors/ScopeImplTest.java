@@ -39,5 +39,9 @@ class ScopeImplTest {
     void verifyToString() {
         assertThat(new ScopeImpl(String.class, null)).hasToString("scope(String)");
         assertThat(new ScopeImpl(Person.class, "name")).hasToString("scope(Person, \"name\")");
+
+        // with depth
+        assertThat(new ScopeImpl(String.class, null, 1)).hasToString("scope(String, atDepth(1))");
+        assertThat(new ScopeImpl(Person.class, "name", 2)).hasToString("scope(Person, \"name\", atDepth(2))");
     }
 }
