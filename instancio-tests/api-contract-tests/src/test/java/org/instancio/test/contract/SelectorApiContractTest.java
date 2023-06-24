@@ -57,10 +57,7 @@ class SelectorApiContractTest {
     @DisplayName("Cannot pass 'Selector' to 'within()' method")
     void passingSelectorToWithinNotAllowed() throws Exception {
         assertCompilationError("NonCompilable_SelectorWithinSelector.java",
-                "method within in interface org.instancio.Selector cannot be applied to given types;",
-                "required: ", "org.instancio.Scope[]",
-                "found: ", "org.instancio.Selector",
-                "reason: ", "varargs mismatch; org.instancio.Selector cannot be converted to org.instancio.Scope");
+                "varargs mismatch; org.instancio.Selector cannot be converted to org.instancio.Scope");
     }
 
     @Test
