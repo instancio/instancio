@@ -16,6 +16,7 @@
 package org.instancio.test.features.scope;
 
 import org.instancio.Instancio;
+import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.scope;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
@@ -55,5 +57,23 @@ class ScopeTest {
 
         assertThat(result.getRichPerson().getAddress2().getPhoneNumbers()).allSatisfy(phone ->
                 assertThatObject(phone).hasAllFieldsOfTypeSetToNull(String.class));
+    }
+
+    @Test
+    void fieldScope() {
+        final String expected = "foo";
+        final StringFields result = Instancio.of(StringFields.class)
+                .set(all(
+                        allStrings().within(scope(StringFields::getOne)),
+                        allStrings().within(scope(StringFields::getFour))
+                ), expected)
+                .create();
+
+        assertThat(result.getOne())
+                .isEqualTo(expected)
+                .isEqualTo(result.getFour())
+                .isNotEqualTo(result.getTwo())
+                .isNotEqualTo(result.getThree());
+
     }
 }
