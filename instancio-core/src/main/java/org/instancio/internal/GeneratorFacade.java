@@ -31,7 +31,6 @@ import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeKind;
 import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +94,7 @@ class GeneratorFacade {
     GeneratorResult generateNodeValue(final InternalNode node) {
         GeneratorResult result = GeneratorResult.emptyResult();
 
-        if (node.is(NodeKind.IGNORED) || hasStaticField(node)) {
+        if (node.isIgnored() || hasStaticField(node)) {
             result = GeneratorResult.ignoredResult();
         } else if (shouldReturnNullForNullable(node)) {
             result = GeneratorResult.nullResult();

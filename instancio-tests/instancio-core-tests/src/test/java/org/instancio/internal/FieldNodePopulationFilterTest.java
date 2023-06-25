@@ -19,6 +19,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.SystemProperties;
+import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -33,7 +34,13 @@ class FieldNodePopulationFilterTest {
     @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
     @DisplayName("Should throw error on null field if fail-on-error is enabled")
     void nullFieldWithFailOnErrorEnabled() {
-        final InternalNode nodeWithNullField = InternalNode.ignoredNode();
+        final InternalNode nodeWithNullField = InternalNode.builder()
+                .type(String.class)
+                .rawType(String.class)
+                .targetClass(String.class)
+                .nodeContext(Nodes.nodeContext())
+                .build();
+
         final Object anyObject = new Object();
 
         assertThatThrownBy(() -> filter.shouldSkip(

@@ -28,15 +28,6 @@ import java.util.Objects;
 
 public final class InternalNode {
 
-    private static final InternalNode IGNORED_NODE = builder()
-            .type(Object.class)
-            .rawType(Object.class)
-            .targetClass(Object.class)
-            .nodeKind(NodeKind.IGNORED)
-            .children(Collections.emptyList())
-            .nodeContext(NodeContext.builder().build())
-            .build();
-
     private final NodeContext nodeContext;
     private final Type type;
     private final Class<?> rawType;
@@ -51,9 +42,9 @@ public final class InternalNode {
 
     private InternalNode(final Builder builder) {
         nodeContext = builder.nodeContext;
-        type = Verify.notNull(builder.type, "null type");
-        rawType = Verify.notNull(builder.rawType, "null rawType");
-        targetClass = Verify.notNull(builder.targetClass, "null targetClass");
+        type = builder.type;
+        rawType = builder.rawType;
+        targetClass = builder.targetClass;
         field = builder.field;
         parent = builder.parent;
         children = builder.children == null ? Collections.emptyList() : Collections.unmodifiableList(builder.children);
@@ -62,16 +53,16 @@ public final class InternalNode {
         depth = parent == null ? 0 : parent.depth + 1;
     }
 
-    public static InternalNode ignoredNode() {
-        return IGNORED_NODE;
-    }
-
     public NodeKind getNodeKind() {
         return nodeKind;
     }
 
     public boolean is(final NodeKind nodeKind) {
         return this.nodeKind == nodeKind;
+    }
+
+    public boolean isIgnored() {
+        return nodeKind == NodeKind.IGNORED;
     }
 
     boolean isContainer() {

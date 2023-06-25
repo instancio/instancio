@@ -86,7 +86,7 @@ class NodeCreator {
         }
 
         if (node != null && nodeContext.isIgnored(node)) {
-            return InternalNode.ignoredNode();
+            return node.toBuilder().nodeKind(NodeKind.IGNORED).build();
         }
 
         LOG.trace("Created node {} for type {}", node, type);

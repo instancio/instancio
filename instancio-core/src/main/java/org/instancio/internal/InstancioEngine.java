@@ -201,7 +201,7 @@ class InstancioEngine {
             populateChildren(valueNodeChildren, GeneratorResult.create(entry.getValue(), hints));
         }
 
-        if (keyNode.is(NodeKind.IGNORED) || valueNode.is(NodeKind.IGNORED)) {
+        if (keyNode.isIgnored() || valueNode.isIgnored()) {
             return generatorResult;
         }
 
@@ -376,7 +376,7 @@ class InstancioEngine {
             populateChildren(elementNodeChildren, GeneratorResult.create(element, hints));
         }
 
-        if (elementNode.is(NodeKind.IGNORED)) {
+        if (elementNode.isIgnored()) {
             return generatorResult;
         }
 

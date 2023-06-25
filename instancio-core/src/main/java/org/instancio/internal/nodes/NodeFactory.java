@@ -84,7 +84,7 @@ public final class NodeFactory {
      */
     @NotNull
     private List<InternalNode> createChildlessChildren(@NotNull final InternalNode node) {
-        if (node.is(NodeKind.IGNORED)) {
+        if (node.isIgnored()) {
             return Collections.emptyList();
         }
 

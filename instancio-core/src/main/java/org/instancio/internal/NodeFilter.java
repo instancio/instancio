@@ -32,7 +32,7 @@ final class NodeFilter implements NodePopulationFilter {
 
     @Override
     public boolean shouldSkip(final InternalNode node, final AfterGenerate afterGenerate, final Object owner) {
-        if (node.is(NodeKind.IGNORED) || afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
+        if (node.isIgnored() || afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
             return true;
         }
 
