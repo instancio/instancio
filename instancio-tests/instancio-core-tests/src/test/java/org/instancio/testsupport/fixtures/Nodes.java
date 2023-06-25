@@ -44,6 +44,15 @@ public final class Nodes {
                 .build();
     }
 
+    public static NodeContext.Builder nodeContextBuilder() {
+        return NodeContext.builder()
+                .maxDepth(Integer.MAX_VALUE)
+                .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
+                .subtypeSelectorMap(new SubtypeSelectorMap(
+                        Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap()))
+                .assignmentOriginSelectors(new BooleanSelectorMap(Collections.emptySet()));
+    }
+
     private Nodes() {
         // non-instantiable
     }

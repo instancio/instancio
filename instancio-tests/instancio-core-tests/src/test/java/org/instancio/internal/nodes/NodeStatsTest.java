@@ -15,10 +15,18 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.Select;
+import org.instancio.TargetSelector;
+import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.test.support.pojo.misc.ClassWithoutFields;
+import org.instancio.test.support.pojo.misc.StringsDef;
+import org.instancio.test.support.pojo.misc.StringsGhi;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,5 +77,33 @@ class NodeStatsTest {
         assertThat(stats.getTreeString()).isEqualTo(expected);
         assertThat(stats.getTotalNodes()).isOne();
         assertThat(stats.getHeight()).isZero();
+    }
+
+    @Test
+    void withIgnoredNode() {
+        final Set<TargetSelector> ignored = Collections.singleton(Select.field(StringsGhi::getH));
+        final NodeContext ctx = Nodes.nodeContextBuilder()
+                .ignoredSelectorMap(new BooleanSelectorMap(ignored))
+                .build();
+
+        final NodeFactory nodeFactory = new NodeFactory(ctx);
+        final InternalNode node = nodeFactory.createRootNode(StringsDef.class);
+
+        final NodeStats stats = NodeStats.compute(node);
+
+        final String expected = """
+                <0:StringsDef>
+                 ├──<1:StringsDef: String d>
+                 ├──<1:StringsDef: String e>
+                 ├──<1:StringsDef: String f>
+                 └──<1:StringsDef: StringsGhi ghi>
+                     ├──<2:StringsGhi: String g>
+                     ├──<2:StringsGhi: String h [IGNORED]>
+                     └──<2:StringsGhi: String i>
+                """;
+
+        assertThat(stats.getTreeString()).isEqualTo(expected);
+        assertThat(stats.getTotalNodes()).isEqualTo(8);
+        assertThat(stats.getHeight()).isEqualTo(2);
     }
 }

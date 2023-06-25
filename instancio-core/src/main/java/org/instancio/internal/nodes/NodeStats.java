@@ -82,7 +82,9 @@ public final class NodeStats {
                     .append(' ')
                     .append(node.getField().getName());
         }
-
+        if (node.isIgnored()) {
+            sb.append(" [IGNORED]");
+        }
         return sb.append('>').toString();
     }
 

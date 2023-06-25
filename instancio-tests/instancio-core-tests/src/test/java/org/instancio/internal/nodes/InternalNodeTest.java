@@ -47,18 +47,6 @@ class InternalNodeTest {
     private static final NodeFactory NODE_FACTORY = Nodes.nodeFactory();
 
     @Test
-    void ignoredNode() {
-        final InternalNode node = InternalNode.ignoredNode();
-        assertNode(node)
-                .hasChildrenOfSize(0)
-                .isOfKind(NodeKind.IGNORED)
-                .hasType(Object.class)
-                .hasRawType(Object.class)
-                .hasTargetClass(Object.class)
-                .hasEmptyTypeMap();
-    }
-
-    @Test
     void getNodeKind() {
         assertThat(NODE_FACTORY.createRootNode(Person.class).getNodeKind()).isEqualTo(NodeKind.DEFAULT);
         assertThat(NODE_FACTORY.createRootNode(int.class).getNodeKind()).isEqualTo(NodeKind.DEFAULT);
@@ -247,7 +235,10 @@ class InternalNodeTest {
 
         @Test
         void ignoredNode() {
-            assertThat(InternalNode.ignoredNode()).hasToString("Node[IGNORED]");
+            final InternalNode ignoredNode = NODE_FACTORY.createRootNode(Person.class)
+                    .toBuilder().nodeKind(NodeKind.IGNORED).build();
+
+            assertThat(ignoredNode).hasToString("Node[IGNORED]");
         }
     }
 
@@ -273,7 +264,10 @@ class InternalNodeTest {
 
         @Test
         void ignoredNode() {
-            assertThat(InternalNode.ignoredNode().toDisplayString()).isEqualTo("ignored");
+            final InternalNode ignoredNode = NODE_FACTORY.createRootNode(Person.class)
+                    .toBuilder().nodeKind(NodeKind.IGNORED).build();
+
+            assertThat(ignoredNode.toDisplayString()).isEqualTo("ignored");
         }
     }
 
