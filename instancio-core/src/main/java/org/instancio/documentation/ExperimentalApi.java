@@ -28,9 +28,11 @@ import static java.lang.annotation.ElementType.PACKAGE;
 import static java.lang.annotation.ElementType.TYPE;
 
 /**
- * Denotes experimental APIs that may be modified or removed in the future.
- * If you use an API marked as experimental, please consider submitting feedback
- * on how it can be improved.
+ * Denotes experimental APIs that may be modified or removed entirely
+ * at any time, even across minor versions.
+ *
+ * <p>If you use an API marked as experimental, please consider submitting
+ * feedback on how it can be improved.
  *
  * @since 2.0.0
  */
