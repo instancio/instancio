@@ -26,15 +26,15 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
 
-import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class EmitGenerator<T> extends AbstractGenerator<T>
         implements EmitGeneratorSpec<T> {
 
-    private final Queue<T> items = new ArrayDeque<>();
+    private final Queue<T> items = new LinkedList<>();
     private boolean shuffle;
     private boolean ignoreUnused;
     private WhenEmptyAction whenEmptyAction = WhenEmptyAction.EMIT_RANDOM;
