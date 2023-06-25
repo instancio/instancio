@@ -34,6 +34,7 @@ import java.util.Queue;
 public class EmitGenerator<T> extends AbstractGenerator<T>
         implements EmitGeneratorSpec<T> {
 
+    // Items to emit (may contain null elements)
     private final Queue<T> items = new LinkedList<>();
     private boolean shuffle;
     private boolean ignoreUnused;
