@@ -215,4 +215,15 @@ class InstancioApiTest {
 
         assertThat(result).isNotNull();
     }
+
+    @Test
+    void staticFieldShouldNotBePopulated() {
+        final ClassWithStaticField result = Instancio.create(ClassWithStaticField.class);
+
+        assertThat(result.value).isNull();
+    }
+
+    private static class ClassWithStaticField {
+        private static String value;
+    }
 }

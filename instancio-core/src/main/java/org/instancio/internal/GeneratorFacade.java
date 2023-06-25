@@ -35,7 +35,6 @@ import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Modifier;
 import java.util.Set;
 
 class GeneratorFacade {
@@ -82,10 +81,6 @@ class GeneratorFacade {
         return isEnabled ? new BeanValidationProcessor() : new NoopBeanValidationProvider();
     }
 
-    private boolean hasStaticField(final InternalNode node) {
-        return node.getField() != null && Modifier.isStatic(node.getField().getModifiers());
-    }
-
     private boolean shouldReturnNullForNullable(final InternalNode node) {
         final boolean precondition = context.isNullable(node);
         return context.getRandom().diceRoll(precondition);
@@ -94,7 +89,7 @@ class GeneratorFacade {
     GeneratorResult generateNodeValue(final InternalNode node) {
         GeneratorResult result = GeneratorResult.emptyResult();
 
-        if (node.isIgnored() || hasStaticField(node)) {
+        if (node.isIgnored()) {
             result = GeneratorResult.ignoredResult();
         } else if (shouldReturnNullForNullable(node)) {
             result = GeneratorResult.nullResult();
