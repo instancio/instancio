@@ -61,7 +61,7 @@ class NodeStatsTest {
                          └──<3:Pet: String name>
                 """;
 
-        assertThat(stats.getTreeString()).isEqualTo(expected);
+        assertTreeString(stats, expected);
         assertThat(stats.getTotalNodes()).isEqualTo(19);
         assertThat(stats.getHeight()).isEqualTo(4);
     }
@@ -75,7 +75,7 @@ class NodeStatsTest {
                 <0:ClassWithoutFields>
                 """;
 
-        assertThat(stats.getTreeString()).isEqualTo(expected);
+        assertTreeString(stats, expected);
         assertThat(stats.getTotalNodes()).isOne();
         assertThat(stats.getHeight()).isZero();
     }
@@ -103,7 +103,7 @@ class NodeStatsTest {
                      └──<2:StringsGhi: String i>
                 """;
 
-        assertThat(stats.getTreeString()).isEqualTo(expected);
+        assertTreeString(stats, expected);
         assertThat(stats.getTotalNodes()).isEqualTo(8);
         assertThat(stats.getHeight()).isEqualTo(2);
     }
@@ -123,6 +123,11 @@ class NodeStatsTest {
                          └──<3:DetailPojo: MainPojo mainPojo [CYCLIC]>
                 """;
 
-        assertThat(stats.getTreeString()).isEqualTo(expected);
+        assertTreeString(stats, expected);
+    }
+
+    private static void assertTreeString(final NodeStats stats, final String expected) {
+        // remove carriage return to prevent test failure on Windows
+        assertThat(stats.getTreeString().replace("\r", "")).isEqualTo(expected);
     }
 }

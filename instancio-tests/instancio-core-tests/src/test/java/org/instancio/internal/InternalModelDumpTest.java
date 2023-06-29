@@ -71,7 +71,8 @@ class InternalModelDumpTest {
 
         verify(mockConsumer).accept(captor.capture());
 
-        final String actual = captor.getValue();
+        // remove carriage return to prevent test failure on Windows
+        final String actual = captor.getValue().replace("\r", "");
 
         // verify parts of the message excluding stacktrace line with the location
         // of the create() method (since this class is under org.instancio package,
