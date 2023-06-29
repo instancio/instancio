@@ -182,7 +182,7 @@ class NodeCreator {
 
     private InternalNode fromClass(final Class<?> type, @Nullable final Field field, @Nullable final InternalNode parent) {
         final InternalNode node = createNodeWithSubtypeMapping(type, field, parent);
-        return node.hasAncestorEqualToSelf() ? null : node;
+        return node.hasAncestorWithSameTargetType() ? node.toBuilder().cyclic().build() : node;
     }
 
     private NodeKind getNodeKind(final Class<?> rawType) {
@@ -195,7 +195,7 @@ class NodeCreator {
             @Nullable final InternalNode parent) {
 
         final InternalNode node = createNodeWithSubtypeMapping(type, field, parent);
-        return node.hasAncestorEqualToSelf() ? null : node;
+        return node.hasAncestorWithSameTargetType() ? node.toBuilder().cyclic().build() : node;
     }
 
     private InternalNode fromGenericArrayNode(

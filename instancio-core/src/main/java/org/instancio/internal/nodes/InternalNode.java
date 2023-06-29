@@ -37,6 +37,7 @@ public final class InternalNode {
     private final TypeMap typeMap;
     private final NodeKind nodeKind;
     private final int depth;
+    private final boolean cyclic;
     private List<InternalNode> children;
     private int hash;
 
@@ -51,6 +52,7 @@ public final class InternalNode {
         nodeKind = builder.nodeKind;
         typeMap = new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap);
         depth = parent == null ? 0 : parent.depth + 1;
+        cyclic = builder.cyclic;
     }
 
     public NodeKind getNodeKind() {
@@ -63,6 +65,10 @@ public final class InternalNode {
 
     public boolean isIgnored() {
         return nodeKind == NodeKind.IGNORED;
+    }
+
+    public boolean isCyclic() {
+        return cyclic;
     }
 
     boolean isContainer() {
@@ -82,6 +88,7 @@ public final class InternalNode {
         builder.parent = parent;
         builder.children = children;
         builder.nodeKind = nodeKind;
+        builder.cyclic = cyclic;
         return builder;
     }
 
@@ -166,25 +173,16 @@ public final class InternalNode {
     }
 
     /**
-     * This method is used for detecting cycles. If this node
-     * is equal to any of its ancestors, then there is a cycle.
-     *
-     * @return {@code true} if this node has an ancestor equal to it,
-     * {@code false} otherwise.
+     * This method is used to determine if this is a cyclic node.
      */
-    public boolean hasAncestorEqualToSelf() {
+    boolean hasAncestorWithSameTargetType() {
         InternalNode ancestor = parent;
 
         while (ancestor != null) {
-            if (ancestor.equals(this)) {
+            if ((nodeKind == NodeKind.DEFAULT || nodeKind == NodeKind.RECORD)
+                    && Objects.equals(targetClass, ancestor.targetClass)
+                    && Objects.equals(type, ancestor.type)) {
                 return true;
-            }
-
-            // Partial equals() check when dealing with the root:
-            // ignore the field since the root doesn't have one
-            if (ancestor.getParent() == null) {
-                return Objects.equals(ancestor.getTargetClass(), targetClass)
-                        && Objects.equals(ancestor.getType(), type);
             }
 
             ancestor = ancestor.getParent();
@@ -270,6 +268,7 @@ public final class InternalNode {
         private InternalNode parent;
         private List<InternalNode> children;
         private NodeKind nodeKind;
+        private boolean cyclic;
         private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
 
         private Builder() {
@@ -312,6 +311,11 @@ public final class InternalNode {
 
         public Builder nodeKind(final NodeKind nodeKind) {
             this.nodeKind = nodeKind;
+            return this;
+        }
+
+        public Builder cyclic() {
+            this.cyclic = true;
             return this;
         }
 

@@ -53,20 +53,19 @@ class OneToManyWithCrossReferencesTest {
                 .getObjectE()  // 4
                 .getObjectF()  // 5
                 .getObjectG()  // 6
-                .getObjectB()  // 7
-                .getObjectC(); // 8
+                .getObjectB(); // 7
 
         assertThat(maxDepthObject).hasAllNullFieldsOrProperties();
 
         // Cycles should be terminated with a null
         assertThat(objectA.getObjectB().get(0).getObjectA()).isNull();
-        assertThat(objectA.getObjectB().get(0).getObjectC().getObjectB().getObjectC()).isNull();
+        assertThat(objectA.getObjectB().get(0).getObjectC().getObjectB()).isNull();
 
         assertThat(objectA.getObjectC().get(0).getObjectA()).isNull();
-        assertThat(objectA.getObjectC().get(0).getObjectD().getObjectG().getObjectD().getObjectG()).isNull();
+        assertThat(objectA.getObjectC().get(0).getObjectD().getObjectG().getObjectD()).isNull();
 
         assertThat(objectA.getObjectD().get(0).getObjectA()).isNull();
-        assertThat(objectA.getObjectD().get(0).getObjectB().getObjectC().getObjectB().getObjectC()).isNull();
+        assertThat(objectA.getObjectD().get(0).getObjectB().getObjectC().getObjectB()).isNull();
     }
 
     @Test

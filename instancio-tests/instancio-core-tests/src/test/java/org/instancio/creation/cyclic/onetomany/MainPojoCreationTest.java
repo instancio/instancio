@@ -15,8 +15,7 @@
  */
 package org.instancio.creation.cyclic.onetomany;
 
-import org.instancio.test.support.pojo.cyclic.onetomany.DetailRecord;
-import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
+import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
 import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.AutoVerificationDisabled;
 import org.instancio.testsupport.templates.CreationTestTemplate;
@@ -25,15 +24,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @CyclicTag
 @AutoVerificationDisabled
-public class DetailRecordCreationTest extends CreationTestTemplate<DetailRecord> {
+public class MainPojoCreationTest extends CreationTestTemplate<MainPojo> {
 
     @Override
-    protected void verify(DetailRecord result) {
-        final MainRecord mainRecord = result.getMainRecord();
-        assertThat(mainRecord).isNotNull();
-        assertThat(mainRecord.getDetailRecords())
-                .as("Should have an empty collection to break the cycle")
-                .isEmpty();
+    protected void verify(MainPojo result) {
+        assertThat(result.getDetailPojos())
+                .isNotEmpty()
+                .allSatisfy(detail -> {
+                    assertThat(detail.getId()).isNotNull();
+                    assertThat(detail.getMainPojo()).isNull();
+                });
     }
-
 }

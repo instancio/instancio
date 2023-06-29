@@ -18,6 +18,7 @@ package org.instancio.internal.nodes;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
+import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
 import org.instancio.test.support.pojo.misc.ClassWithoutFields;
 import org.instancio.test.support.pojo.misc.StringsDef;
 import org.instancio.test.support.pojo.misc.StringsGhi;
@@ -105,5 +106,23 @@ class NodeStatsTest {
         assertThat(stats.getTreeString()).isEqualTo(expected);
         assertThat(stats.getTotalNodes()).isEqualTo(8);
         assertThat(stats.getHeight()).isEqualTo(2);
+    }
+
+    @Test
+    void withCyclicNode() {
+        final InternalNode node = NODE_FACTORY.createRootNode(MainPojo.class);
+        final NodeStats stats = NodeStats.compute(node);
+
+        final String expected = """
+                <0:MainPojo>
+                 ├──<1:MainPojo: Long id>
+                 └──<1:MainPojo: List<DetailPojo> detailPojos>
+                     └──<2:DetailPojo>
+                         ├──<3:DetailPojo: Long id>
+                         ├──<3:DetailPojo: Long mainPojoId>
+                         └──<3:DetailPojo: MainPojo mainPojo [CYCLIC]>
+                """;
+
+        assertThat(stats.getTreeString()).isEqualTo(expected);
     }
 }

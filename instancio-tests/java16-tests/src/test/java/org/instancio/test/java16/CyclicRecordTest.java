@@ -15,7 +15,6 @@
  */
 package org.instancio.test.java16;
 
-import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
@@ -46,9 +45,15 @@ class CyclicRecordTest {
     void cyclicGenericRecord() {
         final NodeRecord<String> result = Instancio.create(new TypeToken<>() {});
 
-        assertThat(result.next()).isNull();
-        assertThat(result.prev()).isNull();
         assertThat(result.value()).isNotBlank();
+        // next
+        assertThat(result.next().value()).isNotBlank();
+        assertThat(result.next().next()).isNull();
+        assertThat(result.next().prev()).isNull();
+        // prev
+        assertThat(result.prev().value()).isNotBlank();
+        assertThat(result.prev().next()).isNull();
+        assertThat(result.prev().prev()).isNull();
     }
 
     @Test
@@ -56,7 +61,15 @@ class CyclicRecordTest {
         final ParentRecord parent = Instancio.create(ParentRecord.class);
 
         assertThat(parent.name()).isNotBlank();
-        assertThat(parent.children()).isNotEmpty()
-                .allSatisfy(child -> Assertions.assertThat(child.parent()).isNull());
+        assertThat(parent.children())
+                .isNotEmpty()
+                .allSatisfy(child -> assertThat(child.parent()).isNull());
     }
+
+    record Rec(Pojo pojo) {}
+
+    static class Pojo {
+        Rec rec;
+    }
+
 }

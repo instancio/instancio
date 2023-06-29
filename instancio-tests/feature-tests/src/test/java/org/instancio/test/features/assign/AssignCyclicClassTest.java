@@ -60,15 +60,11 @@ class AssignCyclicClassTest {
 
         // prev
         assertThat(result.getPrev().getPrev()).isNull();
-        assertThat(result.getPrev().getNext().getValue())
-                .isNotNull()
-                .isNotEqualTo(childVal);
+        assertThat(result.getPrev().getNext()).isNull();
 
         // next
         assertThat(result.getNext().getNext()).isNull();
-        assertThat(result.getNext().getPrev().getValue())
-                .isNotNull()
-                .isNotEqualTo(childVal);
+        assertThat(result.getNext().getPrev()).isNull();
     }
 
     @Test
@@ -100,14 +96,10 @@ class AssignCyclicClassTest {
 
         // prev
         assertThat(result.getPrev().getPrev()).isNull();
-        assertThat(result.getPrev().getNext().getValue())
-                .isNotNull()
-                .isEqualTo(childVal);
+        assertThat(result.getPrev().getNext()).isNull();
 
         // next
         assertThat(result.getNext().getNext()).isNull();
-        assertThat(result.getNext().getPrev().getValue())
-                .isNotNull()
-                .isEqualTo(childVal);
+        assertThat(result.getNext().getPrev()).isNull();
     }
 }

@@ -82,9 +82,15 @@ public final class NodeStats {
                     .append(' ')
                     .append(node.getField().getName());
         }
+
         if (node.isIgnored()) {
             sb.append(" [IGNORED]");
         }
+
+        if (node.isCyclic()) {
+            sb.append(" [CYCLIC]");
+        }
+
         return sb.append('>').toString();
     }
 

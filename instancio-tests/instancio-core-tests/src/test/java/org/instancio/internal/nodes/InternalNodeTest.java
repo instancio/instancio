@@ -79,6 +79,7 @@ class InternalNodeTest {
                 .parent(parent)
                 .nodeContext(NODE_CONTEXT)
                 .children(children)
+                .cyclic()
                 .build();
 
         final InternalNode copy = node.toBuilder().build();
@@ -93,6 +94,7 @@ class InternalNodeTest {
         assertThat(copy.getOnlyChild()).isEqualTo(node.getOnlyChild());
         assertThat(copy.getChildren()).isEqualTo(node.getChildren());
         assertThat(copy.getNodeKind()).isEqualTo(node.getNodeKind());
+        assertThat(copy.isCyclic()).isEqualTo(node.isCyclic());
     }
 
     @Nested

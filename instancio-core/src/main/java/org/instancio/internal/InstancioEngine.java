@@ -147,7 +147,7 @@ class InstancioEngine {
             generatorResult = generateRecord(node);
         } else if (node.is(NodeKind.CONTAINER)) {
             generatorResult = generateContainer(node);
-        } else if (node.is(NodeKind.DEFAULT)) {
+        } else if (node.is(NodeKind.DEFAULT) || node.isCyclic()) {
             generatorResult = generatePojo(node);
         } else { // unreachable
             throw Fail.withFataInternalError("Unhandled node kind: '%s' for %s", node.getNodeKind(), node);

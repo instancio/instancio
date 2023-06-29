@@ -15,10 +15,8 @@
  */
 package org.instancio.test.features.assign;
 
-import lombok.Data;
 import org.instancio.Assign;
 import org.instancio.Instancio;
-import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Phone;
@@ -27,17 +25,13 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
-import static org.instancio.Select.root;
 
 /**
  * This test is disabled and is for documentation purposes only.
@@ -46,27 +40,6 @@ import static org.instancio.Select.root;
 @FeatureTag({Feature.ASSIGN, Feature.UNSUPPORTED})
 @ExtendWith(InstancioExtension.class)
 class AssignUnsupportedTest {
-
-    //@formatter:off
-    private static @Data class Order { List<OrderItem> items; }
-    private static @Data class OrderItem { Order order; }
-    //@formatter:on
-
-    /**
-     * Currently unsupported because {@code OrderItem.order} is set
-     * to {@code null} to terminate the cycle. Will probably require
-     * changes to the {@link NodeFactory} to support this use case.
-     */
-    @Test
-    void assignRoot() {
-        final Order order = Instancio.of(Order.class)
-                .assign(valueOf(root()).to(OrderItem::getOrder))
-                .create();
-
-        assertThat(order.getItems()).isNotEmpty().allSatisfy(item ->
-                assertThat(item.getOrder()).isSameAs(order));
-    }
-
 
     /**
      * What happens when the origin selector matches multiple targets?

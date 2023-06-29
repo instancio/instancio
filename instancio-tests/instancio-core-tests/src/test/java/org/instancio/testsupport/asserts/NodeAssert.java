@@ -160,6 +160,12 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
         return this;
     }
 
+    public NodeAssert isCyclic() {
+        isNotNull();
+        assertThat(actual.isCyclic()).isTrue();
+        return this;
+    }
+
     public NodeAssert hasDepth(final int expected) {
         isNotNull();
         assertThat(actual.getDepth()).isEqualTo(expected);

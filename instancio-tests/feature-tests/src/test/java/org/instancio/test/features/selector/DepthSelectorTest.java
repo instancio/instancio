@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.selector;
 
-import lombok.Data;
 import org.instancio.GroupableSelector;
 import org.instancio.Instancio;
 import org.instancio.Scope;
@@ -24,8 +23,9 @@ import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.cyclic.onetomany.DetailRecord;
-import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
+import org.instancio.test.support.pojo.cyclic.onetomany.DetailPojo;
+import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
+import org.instancio.test.support.pojo.cyclic.onetomany.MainPojoContainer;
 import org.instancio.test.support.pojo.misc.MultipleClassesWithId;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -132,80 +132,53 @@ class DepthSelectorTest {
 
         @Test
         void atDepthWithScope() {
-            @Data
-            class Holder {
-                MainRecord mainRecord1;
-                MainRecord mainRecord2;
-            }
-
-            // Set only the Holder.mainRecord1.id to expected value.
-            // All other MainRecord.id fields should be random values, i.e.
-            //  - Holder.mainRecord2.id
-            //  - Holder.mainRecord1.List[detailRecords].mainRecord.id
-            //  - Holder.mainRecord2.List[detailRecords].mainRecord.id
-            final GroupableSelector selector = field(MainRecord::getId)
+            // Set only the MainPojoContainer.mainPojo1.id to expected value.
+            // All other MainPojo.id fields should be random values
+            final GroupableSelector selector = field(MainPojo::getId)
                     .atDepth(2)
-                    .within(field(Holder::getMainRecord1).toScope());
+                    .within(field(MainPojoContainer::getMainPojo1).toScope());
 
             final long expected = -1L;
-            final Holder result = Instancio.of(Holder.class)
+            final MainPojoContainer result = Instancio.of(MainPojoContainer.class)
                     .set(selector, expected)
                     .create();
 
-            assertThat(result.mainRecord1.getId()).isEqualTo(expected);
-            assertThat(result.mainRecord2.getId()).isNotEqualTo(expected);
+            assertThat(result.getMainPojo1().getId()).isEqualTo(expected);
+            assertThat(result.getMainPojo2().getId()).isNotEqualTo(expected);
 
-            assertThat(result.mainRecord1.getDetailRecords()).isNotEmpty().allSatisfy(detail ->
-                    assertThat(detail.getMainRecord().getId())
-                            .isNotNull()
-                            .isNotEqualTo(expected));
+            assertThat(result.getMainPojo1().getDetailPojos()).isNotEmpty().allSatisfy(detail ->
+                    assertThat(detail.getMainPojo()).isNull());
 
-            assertThat(result.mainRecord2.getDetailRecords()).isNotEmpty().allSatisfy(detail ->
-                    assertThat(detail.getMainRecord().getId())
-                            .isNotNull()
-                            .isNotEqualTo(expected));
+            assertThat(result.getMainPojo2().getDetailPojos()).isNotEmpty().allSatisfy(detail ->
+                    assertThat(detail.getMainPojo()).isNull());
         }
 
         @Test
         void atDepthWithScopeGroup() {
-            @Data
-            class Holder {
-                MainRecord mainRecord1;
-                MainRecord mainRecord2;
-            }
-
             final TargetSelector selectorGroup = Select.all(
-                    // Select MainRecord.id
-                    field(MainRecord::getId).atDepth(2).within(field(Holder::getMainRecord1).toScope()),
-                    field(MainRecord::getId).atDepth(2).within(field(Holder::getMainRecord2).toScope()),
+                    field(MainPojo::getId).atDepth(2).within(field(MainPojoContainer::getMainPojo1).toScope()),
+                    field(MainPojo::getId).atDepth(2).within(field(MainPojoContainer::getMainPojo2).toScope()),
 
-                    // Select DetailRecord.mainRecordId
-                    field(DetailRecord::getMainRecordId).atDepth(4).within(field(Holder::getMainRecord1).toScope()),
-                    field(DetailRecord::getMainRecordId).atDepth(4).within(field(Holder::getMainRecord2).toScope())
+                    field(DetailPojo::getMainPojoId).atDepth(4).within(field(MainPojoContainer::getMainPojo1).toScope()),
+                    field(DetailPojo::getMainPojoId).atDepth(4).within(field(MainPojoContainer::getMainPojo2).toScope())
             );
 
             final long expected = -1L;
-            final Holder result = Instancio.of(Holder.class)
+            final MainPojoContainer result = Instancio.of(MainPojoContainer.class)
                     .set(selectorGroup, expected)
                     .create();
 
-            assertThat(result.mainRecord1.getId()).isEqualTo(expected);
-            assertThat(result.mainRecord2.getId()).isEqualTo(expected);
+            assertThat(result.getMainPojo1().getId()).isEqualTo(expected);
+            assertThat(result.getMainPojo2().getId()).isEqualTo(expected);
 
-            assertThat(result.mainRecord1.getDetailRecords()).isNotEmpty().allSatisfy(detail -> {
-                assertThat(detail.getMainRecord().getId())
-                        .isNotNull()
-                        .isNotEqualTo(expected);
-
-                assertThat(detail.getMainRecordId()).isEqualTo(expected);
+            assertThat(result.getMainPojo1().getDetailPojos()).isNotEmpty().allSatisfy(detail -> {
+                assertThat(detail.getMainPojo()).isNull();
+                assertThat(detail.getMainPojoId()).isEqualTo(expected);
             });
 
-            assertThat(result.mainRecord2.getDetailRecords()).isNotEmpty().allSatisfy(detail -> {
-                assertThat(detail.getMainRecord().getId())
-                        .isNotNull()
-                        .isNotEqualTo(expected);
-
-                assertThat(detail.getMainRecordId()).isEqualTo(expected);
+            assertThat(result.getMainPojo2().getDetailPojos()).isNotEmpty().allSatisfy(detail -> {
+                assertThat(detail.getMainPojo()).isNull();
+                assertThat(detail.getMainPojoId()).isEqualTo(expected);
             });
         }
     }
