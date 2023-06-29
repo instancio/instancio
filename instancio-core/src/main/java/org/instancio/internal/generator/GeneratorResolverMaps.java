@@ -56,6 +56,7 @@ import org.instancio.internal.generator.util.LocaleGenerator;
 import org.instancio.internal.generator.util.MapEntryGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.generator.util.OptionalGenerator;
+import org.instancio.internal.generator.util.OptionalIntGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicBooleanGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
@@ -102,6 +103,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
@@ -228,6 +230,7 @@ final class GeneratorResolverMaps {
         map.put(Locale.class, LocaleGenerator.class);
         map.put(Map.Entry.class, MapEntryGenerator.class);
         map.put(Optional.class, OptionalGenerator.class);
+        map.put(OptionalInt.class, OptionalIntGenerator.class);
         map.put(TimeZone.class, TimeZoneGenerator.class);
         map.put(UUID.class, UUIDGenerator.class);
 
