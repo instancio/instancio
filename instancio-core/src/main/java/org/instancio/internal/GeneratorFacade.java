@@ -91,6 +91,9 @@ class GeneratorFacade {
 
         if (node.isIgnored()) {
             result = GeneratorResult.ignoredResult();
+        } else if (node.isCyclic()) {
+            // Cyclic nodes can only be set via an assignment
+            result = assignmentNodeHandler.getResult(node);
         } else if (shouldReturnNullForNullable(node)) {
             result = GeneratorResult.nullResult();
         } else {

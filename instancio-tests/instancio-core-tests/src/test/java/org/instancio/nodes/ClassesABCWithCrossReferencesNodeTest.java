@@ -29,7 +29,7 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 @CyclicTag
 class ClassesABCWithCrossReferencesNodeTest extends NodeTestTemplate<ClassesABCWithCrossReferences> {
 
-    private static final int EXPECTED_MAX_DEPTH = 10;
+    private static final int EXPECTED_MAX_DEPTH = 5;
 
     @Override
     protected void verify(InternalNode rootNode) {
@@ -40,37 +40,15 @@ class ClassesABCWithCrossReferencesNodeTest extends NodeTestTemplate<ClassesABCW
         final Stats stats = new Stats();
         assertNodeRecursively(rootNode, 0, stats);
 
-        // Sample path:
-        // Root: ClassesABCWithCrossReferences[0]
-        // > ClassesABCWithCrossReferences.objectA[1]
-        // > ObjectA.objectA[2]
-        // > ObjectA.objectB[3]
-        // > ObjectB.objectA[4]
-        // > ObjectA.objectC[5]
-        // > ObjectC.objectB[6]
-        // > ObjectB.objectB[7]
-        // > ObjectB.objectC[8]
-        // > ObjectC.objectC[9]
-        // > ObjectC.objectA[10]
-        // > ObjectC.objectB - null since already occurred at depth [6]
-        assertThat(stats.maxDepth).isEqualTo(EXPECTED_MAX_DEPTH);
+        final int totalNodes = Arrays.stream(stats.nodesAtDepth).sum();
+        assertThat(totalNodes).isEqualTo(49);
 
-        // Note: the expected counts were put in after running the test.
-        // Need a calculation to confirm whether these expectations are actually correct
-        // (some nodes were discarded due to cycles)
-        assertThat(Arrays.stream(stats.nodesAtDepth).sum()).isEqualTo(1885);
-
+        assertThat(stats.maxDepth).isEqualTo(4);
         assertThat(stats.nodesAtDepth[0]).isEqualTo(1);
         assertThat(stats.nodesAtDepth[1]).isEqualTo(3);
         assertThat(stats.nodesAtDepth[2]).isEqualTo(9);
-        assertThat(stats.nodesAtDepth[3]).isEqualTo(24);
-        assertThat(stats.nodesAtDepth[4]).isEqualTo(60);
-        assertThat(stats.nodesAtDepth[5]).isEqualTo(126);
-        assertThat(stats.nodesAtDepth[6]).isEqualTo(234);
-        assertThat(stats.nodesAtDepth[7]).isEqualTo(348);
-        assertThat(stats.nodesAtDepth[8]).isEqualTo(432);
-        assertThat(stats.nodesAtDepth[9]).isEqualTo(432);
-        assertThat(stats.nodesAtDepth[10]).isEqualTo(216);
+        assertThat(stats.nodesAtDepth[3]).isEqualTo(18);
+        assertThat(stats.nodesAtDepth[4]).isEqualTo(18);
     }
 
     private void assertNodeRecursively(final InternalNode node, final int expectedDepth, final Stats stats) {
@@ -87,6 +65,6 @@ class ClassesABCWithCrossReferencesNodeTest extends NodeTestTemplate<ClassesABCW
 
     private static class Stats {
         int maxDepth;
-        final int[] nodesAtDepth = new int[EXPECTED_MAX_DEPTH + 1];
+        final int[] nodesAtDepth = new int[EXPECTED_MAX_DEPTH];
     }
 }

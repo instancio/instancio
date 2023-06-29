@@ -45,9 +45,6 @@ class EmitGeneratorCyclicRecordTest {
                 OrderStatus.DELIVERED, OrderStatus.DELIVERED, OrderStatus.DELIVERED
         };
 
-        // emit() happens to work with cyclic records without specifying depth
-        // because record nodes are processed differently than POJOs.
-        // This test would fail for a POJO with similar structure unless depth was specified.
         final List<OrderRecord> result = Instancio.ofList(OrderRecord.class)
                 .size(statuses.length)
                 .generate(field(OrderRecord::status), gen -> gen.emit().items(statuses))

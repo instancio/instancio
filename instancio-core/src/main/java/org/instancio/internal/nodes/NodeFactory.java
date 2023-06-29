@@ -66,6 +66,10 @@ public final class NodeFactory {
 
         while (!childlessNodeQueue.isEmpty()) {
             final InternalNode node = childlessNodeQueue.poll();
+            if (node.isCyclic()) {
+                continue;
+            }
+
             originSelectorValidator.checkNode(node);
 
             final List<InternalNode> children = createChildlessChildren(node);

@@ -18,8 +18,8 @@ package org.instancio.test.support.pojo.cyclic.onetomany;
 import lombok.Data;
 
 @Data
-public class DetailRecord {
+public class DetailPojo {
     private Long id;
-    private Long mainRecordId;
-    private MainRecord mainRecord;
+    private Long mainPojoId;
+    private MainPojo mainPojo;
 }

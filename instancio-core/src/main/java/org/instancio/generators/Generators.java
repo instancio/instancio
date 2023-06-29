@@ -15,7 +15,6 @@
  */
 package org.instancio.generators;
 
-import org.instancio.InstancioApi;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
@@ -325,33 +324,9 @@ public class Generators {
      *   // Then => FooBar[foo=BAZ, bar=BAZ]
      * }</pre>
      *
-     * <p><b>Warning:</b> using {@code emit()} with cyclic classes,
-     * where instances of the same type are generated at different depths,
-     * may produce unexpected results. In case of cyclic classes, use
-     * one of the following methods to limit the depth:
-     *
-     * <ul>
-     *   <li>{@link InstancioApi#withMaxDepth(int)} to limit
-     *       the overall depth, <b>or</b></li>
-     *   <li>{@code atDepth()} method provided by selectors (example below)</li>
-     * </ul>
-     *
-     * <p><b>Example:</b>
-     *
-     * <pre>{@code
-     *   // emit() order status values only at depth 2
-     *   //
-     *   // Depth 0: List (root object)
-     *   // Depth 1: Order class (list element)
-     *   // Depth 2: Order fields (including OrderStatus)
-     *   List<Order> orders = Instancio.ofList(Order.class)
-     *     .size(7)
-     *     .generate(field(Order::getStatus).atDepth(2), gen -> gen.emit()
-     *              .items(OrderStatus.RECEIVED, OrderStatus.SHIPPED)
-     *              .item(OrderStatus.COMPLETED, 3)
-     *              .item(OrderStatus.CANCELLED, 2))
-     *     .create();
-     * }</pre>
+     * <p><b>Warning:</b> special care must be taken to ensure that the
+     * selector associated with {@code emit()} matches only the expected target
+     * and nothing else. Failure to do so may produce unexpected results.
      *
      * @param <T> the type to emit
      * @return emitting generator

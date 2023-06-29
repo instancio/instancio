@@ -18,8 +18,8 @@ package org.instancio.test.features.generator.misc;
 import org.instancio.Instancio;
 import org.instancio.TargetSelector;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.cyclic.onetomany.DetailRecord;
-import org.instancio.test.support.pojo.cyclic.onetomany.MainRecord;
+import org.instancio.test.support.pojo.cyclic.onetomany.DetailPojo;
+import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -51,13 +51,13 @@ class EmitGeneratorCyclicPojoTest {
 
     @Test
     void emitCollectionElementField() {
-        final MainRecord result = Instancio.of(MainRecord.class)
+        final MainPojo result = Instancio.of(MainPojo.class)
                 .generate(all(List.class), gen -> gen.collection().size(3))
-                .generate(field(DetailRecord::getId), gen -> gen.emit().items(1L, 2L, 3L))
+                .generate(field(DetailPojo::getId), gen -> gen.emit().items(1L, 2L, 3L))
                 .create();
 
-        assertThat(result.getDetailRecords())
-                .extracting(DetailRecord::getId)
+        assertThat(result.getDetailPojos())
+                .extracting(DetailPojo::getId)
                 .containsExactly(1L, 2L, 3L);
     }
 
@@ -83,20 +83,30 @@ class EmitGeneratorCyclicPojoTest {
     private static Stream<Arguments> statusSelectors() {
         final int depth = 2;
         final Predicate<Integer> predicate = d -> d == depth;
+
         return Stream.of(
-                // regular and predicate selectors: depth as an integer
+                // regular and predicate selectors
+                Arguments.of(all(OrderStatus.class)),
                 Arguments.of(all(OrderStatus.class).atDepth(depth)),
+                Arguments.of(field(Order::getStatus)),
                 Arguments.of(field(Order::getStatus).atDepth(depth)),
+                Arguments.of(field(Order.class, "status")),
                 Arguments.of(field(Order.class, "status").atDepth(depth)),
+                Arguments.of(fields(f -> f.getType() == OrderStatus.class)),
                 Arguments.of(fields(f -> f.getType() == OrderStatus.class).atDepth(depth)),
+                Arguments.of(types(t -> t == OrderStatus.class)),
                 Arguments.of(types(t -> t == OrderStatus.class).atDepth(depth)),
 
-                // predicate selectors: depth as a predicate
+                // predicate selectors
+                Arguments.of(fields(f -> f.getType() == OrderStatus.class)),
                 Arguments.of(fields(f -> f.getType() == OrderStatus.class).atDepth(predicate)),
+                Arguments.of(types(t -> t == OrderStatus.class)),
                 Arguments.of(types(t -> t == OrderStatus.class).atDepth(predicate)),
 
-                // predicate selector builders: depth as a predicate
+                // predicate selector builders
+                Arguments.of(fields().ofType(OrderStatus.class)),
                 Arguments.of(fields().ofType(OrderStatus.class).atDepth(predicate)),
+                Arguments.of(types().of(OrderStatus.class)),
                 Arguments.of(types().of(OrderStatus.class).atDepth(predicate))
         );
     }

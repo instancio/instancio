@@ -20,7 +20,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class MainRecord {
+public class MainPojo {
     private Long id;
-    private List<DetailRecord> detailRecords;
+    private List<DetailPojo> detailPojos;
 }
