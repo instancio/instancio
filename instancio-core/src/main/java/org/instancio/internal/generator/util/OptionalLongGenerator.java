@@ -18,17 +18,17 @@ package org.instancio.internal.generator.util;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.lang.IntegerGenerator;
+import org.instancio.internal.generator.lang.LongGenerator;
 
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
-public final class OptionalIntGenerator extends AbstractGenerator<OptionalInt> {
+public final class OptionalLongGenerator extends AbstractGenerator<OptionalLong> {
 
-    private final IntegerGenerator delegate;
+    private final LongGenerator delegate;
 
-    OptionalIntGenerator(final GeneratorContext context) {
+    OptionalLongGenerator(GeneratorContext context) {
         super(context);
-        this.delegate = new IntegerGenerator(context);
+        this.delegate = new LongGenerator(context);
     }
 
     @Override
@@ -37,7 +37,7 @@ public final class OptionalIntGenerator extends AbstractGenerator<OptionalInt> {
     }
 
     @Override
-    protected OptionalInt tryGenerateNonNull(final Random random) {
-        return OptionalInt.of(delegate.generate(random));
+    protected OptionalLong tryGenerateNonNull(final Random random) {
+        return OptionalLong.of(delegate.generate(random));
     }
 }
