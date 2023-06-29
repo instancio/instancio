@@ -15,29 +15,21 @@
  */
 package org.instancio.internal.generator.util;
 
-import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.lang.IntegerGenerator;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
-public final class OptionalIntGenerator extends AbstractGenerator<OptionalInt> {
+public class OptionalLongGeneratorTest extends AbstractGeneratorTestTemplate<OptionalLong, OptionalLongGenerator> {
 
-    private final IntegerGenerator delegate;
-
-    OptionalIntGenerator(final GeneratorContext context) {
-        super(context);
-        this.delegate = new IntegerGenerator(context);
-    }
+    private final OptionalLongGenerator generator = new OptionalLongGenerator(getGeneratorContext());
 
     @Override
-    public String apiMethod() {
+    protected String getApiMethod() {
         return null;
     }
 
     @Override
-    protected OptionalInt tryGenerateNonNull(final Random random) {
-        return OptionalInt.of(delegate.generate(random));
+    protected OptionalLongGenerator generator() {
+        return generator;
     }
 }
