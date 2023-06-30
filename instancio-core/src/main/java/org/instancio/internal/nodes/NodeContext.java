@@ -19,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
+import org.instancio.internal.context.Subtype;
 import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.internal.spi.ProviderEntry;
@@ -77,17 +78,20 @@ public final class NodeContext {
      *   <li>a generator's {@code subtype()} method, e.g. {@code gen.collection().subtype()}</li>
      * </ol>
      */
-    Optional<Class<?>> getSubtype(@NotNull final InternalNode node) {
-        final Optional<Class<?>> subtype = subtypeSelectorMap.getSubtype(node);
+    Optional<Subtype> getSubtype(@NotNull final InternalNode node) {
+        final Optional<Subtype> subtype = subtypeSelectorMap.getSubtype(node);
         if (subtype.isPresent()) {
             return subtype;
         }
 
         final Class<?> subtypeFromSettings = subtypeMappingFromSettings.get(node.getRawType());
 
-        return subtypeFromSettings == null
-                ? typeResolverFacade.resolve(node.getRawType())
-                : Optional.of(subtypeFromSettings);
+        if (subtypeFromSettings != null) {
+            return Optional.of(new Subtype(subtypeFromSettings));
+        }
+
+        return typeResolverFacade.resolve(node.getRawType()).map(Subtype::new);
+
     }
 
     boolean isIgnored(@NotNull final InternalNode node) {

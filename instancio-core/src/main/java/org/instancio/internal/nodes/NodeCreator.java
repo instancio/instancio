@@ -17,6 +17,7 @@ package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.Subtype;
 import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.TypeUtils;
@@ -107,16 +108,17 @@ class NodeCreator {
         return createNodeWithoutChildren(resolvedType, field, parent);
     }
 
-    private Optional<Class<?>> resolveSubtype(final InternalNode node) {
-        final Optional<Class<?>> subtype = nodeContext.getSubtype(node);
+    private Optional<Subtype> resolveSubtype(final InternalNode node) {
+        final Optional<Subtype> subtype = nodeContext.getSubtype(node);
 
         if (subtype.isPresent()) {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getName());
+                LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getSubtypeClass().getName());
             }
             return subtype;
         }
-        return Optional.ofNullable(resolveSubtypeFromAncestors(node));
+        final Class<?> subtypeClass = resolveSubtypeFromAncestors(node);
+        return subtypeClass == null ? Optional.empty() : Optional.of(new Subtype(subtypeClass));
     }
 
     private static Class<?> resolveSubtypeFromAncestors(final InternalNode node) {
@@ -148,7 +150,8 @@ class NodeCreator {
                 .nodeKind(getNodeKind(rawType))
                 .build();
 
-        final Class<?> targetClass = resolveSubtype(node).orElse(rawType);
+        final Subtype subtype = resolveSubtype(node).orElse(new Subtype(rawType));
+        final Class<?> targetClass = subtype.getSubtypeClass();
 
         // Handle the case where: Child<T> extends Parent<T>
         // If the child node inherits a TypeVariable field declaration from
@@ -162,7 +165,10 @@ class NodeCreator {
         }
 
         if (rawType != targetClass && !targetClass.isEnum() && !rawType.isPrimitive()) {
-            ApiValidator.validateSubtype(rawType, targetClass);
+
+            if (!subtype.isViaGenerator()) {
+                ApiValidator.validateSubtype(rawType, targetClass);
+            }
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Subtype mapping '{}' to '{}'",
@@ -227,14 +233,18 @@ class NodeCreator {
                 .nodeKind(NodeKind.ARRAY)
                 .build();
 
-        final Class<?> targetClass = resolveSubtype(node).orElse(rawComponentType);
+
+        final Subtype subtype = resolveSubtype(node).orElse(new Subtype(rawComponentType));
+        final Class<?> targetClass = subtype.getSubtypeClass();
         final Class<?> targetClassComponentType = targetClass.getComponentType();
 
         if (!rawComponentType.isPrimitive()
                 && targetClassComponentType != null
                 && rawComponentType != targetClassComponentType) {
 
-            ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
+            if (!subtype.isViaGenerator()) {
+                ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
+            }
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Subtype mapping '{}' to '{}'",
