@@ -35,7 +35,7 @@ class SetObjectOfInvalidTypeTest extends AbstractErrorMessageTestTemplate {
 
 
                 Error creating an object
-                 -> at org.external.errorhandling.SsetObjectOfInvalidTypeTest.methodUnderTest(SsetObjectOfInvalidTypeTest.java:29)
+                 -> at org.external.errorhandling.SetObjectOfInvalidTypeTest.methodUnderTest(SetObjectOfInvalidTypeTest.java:29)
 
                 Reason: error assigning value to field due to incompatible types
 
