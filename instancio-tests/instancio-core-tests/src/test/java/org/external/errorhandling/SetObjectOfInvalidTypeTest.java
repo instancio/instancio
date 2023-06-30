@@ -20,7 +20,7 @@ import org.instancio.test.support.pojo.person.Person;
 
 import static org.instancio.Select.field;
 
-class SsetObjectOfInvalidTypeTest extends AbstractErrorMessageTestTemplate {
+class SetObjectOfInvalidTypeTest extends AbstractErrorMessageTestTemplate {
 
     @Override
     void methodUnderTest() {
