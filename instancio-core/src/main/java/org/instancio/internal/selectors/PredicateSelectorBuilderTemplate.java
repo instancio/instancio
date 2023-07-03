@@ -17,8 +17,8 @@ package org.instancio.internal.selectors;
 
 import org.instancio.DepthPredicateSelector;
 import org.instancio.DepthSelector;
+import org.instancio.GroupableSelector;
 import org.instancio.PredicateSelector;
-import org.instancio.TargetSelector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
     }
 
     @Override
-    public final TargetSelector atDepth(final int depth) {
+    public final GroupableSelector atDepth(final int depth) {
         final PredicateSelectorImpl copy = (PredicateSelectorImpl) build();
         return PredicateSelectorImpl.builder(copy)
                 .depth(depth)
@@ -56,7 +56,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
     }
 
     @Override
-    public final TargetSelector atDepth(final Predicate<Integer> predicate) {
+    public final GroupableSelector atDepth(final Predicate<Integer> predicate) {
         final PredicateSelectorImpl copy = (PredicateSelectorImpl) build();
         return PredicateSelectorImpl.builder(copy)
                 .depth(predicate)

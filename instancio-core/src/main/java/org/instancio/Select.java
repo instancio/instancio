@@ -31,20 +31,22 @@ import java.lang.reflect.Field;
 import java.util.function.Predicate;
 
 /**
- * A collection of static factory methods for creating selectors.
+ * Provides static factory methods for creating selectors and selector scopes.
  * Selectors are used for targeting fields and classes.
  * Instancio supports two types of selectors: regular and predicate-based.
  *
  * <p>Regular selectors allow matching by exact class (not including subtypes)
- * and exact field names:</p>
+ * and field:</p>
  *
  * <ul>
- *   <li>{@link #field(String)}</li>
- *   <li>{@link #field(Class, String)}</li>
  *   <li>{@link #all(Class)}</li>
+ *   <li>{@link #field(GetMethodSelector)}</li>
+ *   <li>{@link #field(Class, String)}</li>
+ *   <li>{@link #field(String)}</li>
  * </ul>
  *
- * <p>Predicate selectors are more flexible as they use {@link Predicate Predicates} for matching:
+ * <p>Predicate selectors, as the name suggests, use a {@link Predicate}
+ * for matching targets:
  *
  * <ul>
  *   <li>{@link #fields()}</li>
@@ -53,9 +55,14 @@ import java.util.function.Predicate;
  *   <li>{@link #types(Predicate)}</li>
  * </ul>
  *
- * <p>The first two allow constructing predicates using convenience builder methods.
- * If the builder methods are not sufficient, then the last two methods
- * can be used instead with arbitrary predicates.</p>
+ * <p>The first two allow constructing predicates using convenience builder
+ * methods. The last two methods can be used with arbitrary predicates
+ * where the builders are not sufficient.</p>
+ *
+ * <p>It should be noted that regular selectors have higher precedence than
+ * predicate selectors. See the
+ * <a href="https://www.instancio.org/user-guide/#selectors">Selectors</a>
+ * section of the User Guide for more details.
  *
  * @see Selector
  * @see SelectorGroup
@@ -177,27 +184,17 @@ public final class Select {
 
     /**
      * A convenience method for combining multiple selectors.
-     * <p>
-     * Example:
+     *
+     * <p>Example:
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *         .withNullable(all(
-     *             all(Gender.class),
-     *             all(Phone.class),
-     *             field(Person.class, "dateOfBirth")
-     *         ))
-     *         .create()
+     * Person person = Instancio.of(Person.class)
+     *     .withNullable(all(
+     *         all(Gender.class),
+     *         all(Phone.class),
+     *         field(Person::getDateOfBirth)
+     *     ))
+     *     .create()
      * }</pre>
-     *
-     * <p><b>Note:</b> this method only accepts regular selectors.
-     * Predicate selectors, listed below, are not groupable:</p>
-     *
-     * <ul>
-     *   <li>{@link #types()}</li>
-     *   <li>{@link #fields()}</li>
-     *   <li>{@link #types(Predicate)}</li>
-     *   <li>{@link #fields(Predicate)}</li>
-     * </ul>
      *
      * @param selectors to combine
      * @return a group containing given selectors

@@ -21,5 +21,5 @@ package org.instancio;
  * @see Select
  * @since 1.6.0
  */
-public interface PredicateSelector extends TargetSelector, DepthSelector, DepthPredicateSelector {
+public interface PredicateSelector extends GroupableSelector, DepthSelector, DepthPredicateSelector {
 }

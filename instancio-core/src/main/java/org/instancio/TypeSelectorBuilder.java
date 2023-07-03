@@ -37,7 +37,7 @@ import java.util.function.Predicate;
  * @see TargetSelector
  * @since 1.6.0
  */
-public interface TypeSelectorBuilder extends TargetSelector, DepthSelector, DepthPredicateSelector {
+public interface TypeSelectorBuilder extends GroupableSelector, DepthSelector, DepthPredicateSelector {
 
     /**
      * Matches specified type, including subtypes.
@@ -84,7 +84,7 @@ public interface TypeSelectorBuilder extends TargetSelector, DepthSelector, Dept
      * @since 2.14.0
      */
     @Override
-    TargetSelector atDepth(int depth);
+    GroupableSelector atDepth(int depth);
 
     /**
      * {@inheritDoc}
@@ -92,5 +92,5 @@ public interface TypeSelectorBuilder extends TargetSelector, DepthSelector, Dept
      * @since 2.14.0
      */
     @Override
-    TargetSelector atDepth(Predicate<Integer> atDepth);
+    GroupableSelector atDepth(Predicate<Integer> atDepth);
 }

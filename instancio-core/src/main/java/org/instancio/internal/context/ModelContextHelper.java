@@ -20,6 +20,7 @@ import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.selectors.MethodReferenceHelper;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
@@ -125,20 +126,17 @@ final class ModelContextHelper {
     }
 
     private static List<TargetSelector> flattenSelectorGroup(final SelectorGroupImpl selectorGroup, final Class<?> rootClass) {
-        final List<GroupableSelector> selectors = selectorGroup.getSelectors();
-
-        if (selectors.isEmpty()) {
-            return Collections.emptyList();
-        }
-
         final List<TargetSelector> results = new ArrayList<>();
 
-        for (GroupableSelector groupMember : selectors) {
+        for (GroupableSelector groupMember : selectorGroup.getSelectors()) {
             if (groupMember instanceof SelectorImpl) {
                 final SelectorImpl selector = applyRootClass((SelectorImpl) groupMember, rootClass);
                 results.add(selector);
-            } else if (groupMember instanceof PrimitiveAndWrapperSelectorImpl) {
-                results.addAll(((PrimitiveAndWrapperSelectorImpl) groupMember).flatten());
+            } else if (groupMember instanceof Flattener<?>) {
+                final List<TargetSelector> flatten = ((Flattener<TargetSelector>) groupMember).flatten();
+                results.addAll(flatten);
+            } else if (groupMember instanceof SelectorBuilder) {
+                results.add(((SelectorBuilder) groupMember).build());
             } else {
                 throw Fail.withFataInternalError("Unhandled selector type: %s", groupMember.getClass());
             }

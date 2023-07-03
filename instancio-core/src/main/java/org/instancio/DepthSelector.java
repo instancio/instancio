@@ -38,6 +38,6 @@ public interface DepthSelector {
      * @since 2.14.0
      */
     @ExperimentalApi
-    TargetSelector atDepth(int depth);
+    GroupableSelector atDepth(int depth);
 
 }

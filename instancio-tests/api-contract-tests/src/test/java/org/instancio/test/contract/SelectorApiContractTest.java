@@ -117,34 +117,6 @@ class SelectorApiContractTest {
     }
 
     @Test
-    @DisplayName("Cannot group predicate field selectors")
-    void cannotGroupPredicateFieldSelectors() throws Exception {
-        assertCompilationError("NonCompilable_GroupWithPredicateFieldSelector.java",
-                "no suitable method found for all(org.instancio.PredicateSelector)");
-    }
-
-    @Test
-    @DisplayName("Cannot group predicate type selectors")
-    void cannotGroupPredicateTypeSelectors() throws Exception {
-        assertCompilationError("NonCompilable_GroupWithPredicateTypeSelector.java",
-                "no suitable method found for all(org.instancio.PredicateSelector)");
-    }
-
-    @Test
-    @DisplayName("Cannot group predicate builder for fields")
-    void cannotGroupFieldPredicateBuilder() throws Exception {
-        assertCompilationError("NonCompilable_GroupWithFieldsPredicateBuilder.java",
-                "no suitable method found for all(org.instancio.FieldSelectorBuilder)");
-    }
-
-    @Test
-    @DisplayName("Cannot group predicate builder for types")
-    void cannotGroupTypePredicateBuilder() throws Exception {
-        assertCompilationError("NonCompilable_GroupWithTypesPredicateBuilder.java",
-                "no suitable method found for all(org.instancio.TypeSelectorBuilder)");
-    }
-
-    @Test
     @DisplayName("Fields predicate builder cannot be converted to scope")
     void fieldsPredicateBuilderCannotBeConvertedToScope() throws Exception {
         assertCompilationError("NonCompilable_FieldsPredicateBuilderToScope.java",
