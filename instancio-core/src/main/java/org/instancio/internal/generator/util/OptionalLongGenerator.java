@@ -16,19 +16,19 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.lang.LongGenerator;
+import org.instancio.internal.generator.InternalContainerHint;
+import org.instancio.internal.util.Sonar;
 
 import java.util.OptionalLong;
 
 public final class OptionalLongGenerator extends AbstractGenerator<OptionalLong> {
 
-    private final LongGenerator delegate;
-
-    OptionalLongGenerator(GeneratorContext context) {
+    public OptionalLongGenerator(final GeneratorContext context) {
         super(context);
-        this.delegate = new LongGenerator(context);
     }
 
     @Override
@@ -37,7 +37,19 @@ public final class OptionalLongGenerator extends AbstractGenerator<OptionalLong>
     }
 
     @Override
-    protected OptionalLong tryGenerateNonNull(final Random random) {
-        return OptionalLong.of(delegate.generate(random));
+    @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL})
+    public OptionalLong tryGenerateNonNull(final Random random) {
+        return null; // must be null to delegate creation to the engine
+    }
+
+    @Override
+    public Hints hints() {
+        return Hints.builder()
+                .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
+                .with(InternalContainerHint.builder()
+                        .generateEntries(1)
+                        .createFunction(args -> OptionalLong.of((long) args[0]))
+                        .build())
+                .build();
     }
 }

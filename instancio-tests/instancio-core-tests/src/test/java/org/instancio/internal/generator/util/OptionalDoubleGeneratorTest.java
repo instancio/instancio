@@ -16,12 +16,13 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.junit.jupiter.api.Test;
 
 import java.util.OptionalDouble;
 
-public class OptionalDoubleGeneratorTest extends AbstractGeneratorTestTemplate<OptionalDouble, OptionalDoubleGenerator> {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    private final OptionalDoubleGenerator generator = new OptionalDoubleGenerator(getGeneratorContext());
+public class OptionalDoubleGeneratorTest extends AbstractGeneratorTestTemplate<OptionalDouble, OptionalDoubleGenerator> {
 
     @Override
     protected String getApiMethod() {
@@ -30,6 +31,14 @@ public class OptionalDoubleGeneratorTest extends AbstractGeneratorTestTemplate<O
 
     @Override
     protected OptionalDoubleGenerator generator() {
-        return generator;
+        return new OptionalDoubleGenerator(getGeneratorContext());
     }
+
+    @Test
+    protected void tryGenerateNonNull() {
+        assertThat(generator().tryGenerateNonNull(random))
+                .as("delegates generating the value to the engine")
+                .isNull();
+    }
+
 }

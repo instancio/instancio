@@ -57,37 +57,37 @@ public final class NodeFactory {
     }
 
     public InternalNode createRootNode(final Type type) {
-        final InternalNode root = nodeCreator.createRootNodeWithoutChildren(type);
+        final InternalNode root = nodeCreator.createNode(type, null, null);
 
-        // The queue contains nodes without children.
-        // Children are populated after taking a node off the queue.
-        final Queue<InternalNode> childlessNodeQueue = new LinkedList<>();
-        childlessNodeQueue.offer(root);
+        final Queue<InternalNode> nodeQueue = new LinkedList<>();
+        nodeQueue.offer(root);
 
-        while (!childlessNodeQueue.isEmpty()) {
-            final InternalNode node = childlessNodeQueue.poll();
-            if (node.isCyclic()) {
+        while (!nodeQueue.isEmpty()) {
+            final InternalNode node = nodeQueue.poll();
+
+            if (node.isCyclic() || !node.getChildren().isEmpty()) {
                 continue;
             }
 
             originSelectorValidator.checkNode(node);
 
-            final List<InternalNode> children = createChildlessChildren(node);
+            final List<InternalNode> children = createChildren(node);
             node.setChildren(children);
-            childlessNodeQueue.addAll(children);
+            nodeQueue.addAll(children);
         }
         return root;
     }
 
     /**
      * Creates children for the given node.
-     * Returned children will not have children of their own.
+     * Returned children will not have children of their own
+     * unless the node was created by the {@link PredefinedNodeCreator}.
      *
      * @param node to create children for
      * @return child nodes (without children), or an empty list if none.
      */
     @NotNull
-    private List<InternalNode> createChildlessChildren(@NotNull final InternalNode node) {
+    private List<InternalNode> createChildren(@NotNull final InternalNode node) {
         if (node.isIgnored()) {
             return Collections.emptyList();
         }
@@ -163,7 +163,7 @@ public final class NodeFactory {
     private List<InternalNode> createContainerNodeChildren(final InternalNode parent, final Type... types) {
         final List<InternalNode> results = new ArrayList<>(types.length);
         for (Type type : types) {
-            final InternalNode node = nodeCreator.createNodeWithoutChildren(type, null, parent);
+            final InternalNode node = nodeCreator.createNode(type, null, parent);
             if (node != null) {
                 results.add(node);
             }
@@ -177,7 +177,7 @@ public final class NodeFactory {
 
         for (Field f : fields) {
             final Type type = ObjectUtils.defaultIfNull(f.getGenericType(), f.getType());
-            final InternalNode node = nodeCreator.createNodeWithoutChildren(type, f, parent);
+            final InternalNode node = nodeCreator.createNode(type, f, parent);
             if (node != null) {
                 list.add(node);
             }

@@ -22,6 +22,7 @@ import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +37,14 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Helper class for creating a {@link InternalNode} without its children.
+ * Helper class for creating nodes.
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")
 class NodeCreator {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeCreator.class);
 
+    private final PredefinedNodeCreator predefinedNodeCreator;
     private final NodeContext nodeContext;
     private final TypeHelper typeHelper;
     private final NodeKindResolverFacade nodeKindResolverFacade;
@@ -51,14 +53,19 @@ class NodeCreator {
         this.nodeContext = nodeContext;
         this.typeHelper = new TypeHelper(nodeContext);
         this.nodeKindResolverFacade = new NodeKindResolverFacade(nodeContext.getContainerFactories());
+        this.predefinedNodeCreator = new PredefinedNodeCreator(nodeContext);
     }
 
-    InternalNode createRootNodeWithoutChildren(final Type type) {
-        return createNodeWithoutChildren(type, null, null);
-    }
-
+    /**
+     * This method creates nodes without children, except nodes that are
+     * created using the {@link PredefinedNodeCreator}, in which case
+     * the returned node may have children.
+     */
     @Nullable
-    InternalNode createNodeWithoutChildren(final Type type, @Nullable final Field field, @Nullable final InternalNode parent) {
+    InternalNode createNode(@NotNull final Type type,
+                            @Nullable final Field field,
+                            @Nullable final InternalNode parent) {
+
         Verify.notNull(type, "'type' is null");
 
         if (parent != null && parent.getDepth() >= nodeContext.getMaxDepth()) {
@@ -71,8 +78,11 @@ class NodeCreator {
         }
 
         final InternalNode node;
+        final InternalNode template = predefinedNodeCreator.createFromTemplate(type, field, parent);
 
-        if (type instanceof Class) {
+        if (template != null) {
+            node = template;
+        } else if (type instanceof Class) {
             node = fromClass((Class<?>) type, field, parent);
         } else if (type instanceof ParameterizedType) {
             node = fromParameterizedType((ParameterizedType) type, field, parent);
@@ -95,7 +105,7 @@ class NodeCreator {
     }
 
     private InternalNode fromWildcardType(final WildcardType type, @Nullable final Field field, @Nullable final InternalNode parent) {
-        return createNodeWithoutChildren(type.getUpperBounds()[0], field, parent);
+        return createNode(type.getUpperBounds()[0], field, parent);
     }
 
     private InternalNode fromTypeVariable(final TypeVariable<?> type, @Nullable final Field field, @Nullable final InternalNode parent) {
@@ -105,7 +115,7 @@ class NodeCreator {
             LOG.warn("Unable to resolve type variable '{}'. Parent: {}", type, parent);
             return null;
         }
-        return createNodeWithoutChildren(resolvedType, field, parent);
+        return createNode(resolvedType, field, parent);
     }
 
     private Optional<Subtype> resolveSubtype(final InternalNode node) {

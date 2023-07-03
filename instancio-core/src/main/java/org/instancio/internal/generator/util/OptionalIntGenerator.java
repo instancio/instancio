@@ -16,19 +16,19 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.lang.IntegerGenerator;
+import org.instancio.internal.generator.InternalContainerHint;
+import org.instancio.internal.util.Sonar;
 
 import java.util.OptionalInt;
 
 public final class OptionalIntGenerator extends AbstractGenerator<OptionalInt> {
 
-    private final IntegerGenerator delegate;
-
-    OptionalIntGenerator(final GeneratorContext context) {
+    public OptionalIntGenerator(final GeneratorContext context) {
         super(context);
-        this.delegate = new IntegerGenerator(context);
     }
 
     @Override
@@ -37,7 +37,19 @@ public final class OptionalIntGenerator extends AbstractGenerator<OptionalInt> {
     }
 
     @Override
-    protected OptionalInt tryGenerateNonNull(final Random random) {
-        return OptionalInt.of(delegate.generate(random));
+    @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL})
+    public OptionalInt tryGenerateNonNull(final Random random) {
+        return null; // must be null to delegate creation to the engine
+    }
+
+    @Override
+    public Hints hints() {
+        return Hints.builder()
+                .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
+                .with(InternalContainerHint.builder()
+                        .generateEntries(1)
+                        .createFunction(args -> OptionalInt.of((int) args[0]))
+                        .build())
+                .build();
     }
 }
