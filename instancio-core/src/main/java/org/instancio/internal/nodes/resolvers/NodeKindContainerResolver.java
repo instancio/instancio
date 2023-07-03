@@ -37,10 +37,19 @@ class NodeKindContainerResolver implements NodeKindResolver {
         if (targetClass == Optional.class
                 || targetClass == EnumSet.class
                 || Map.Entry.class.isAssignableFrom(targetClass)
-                || containerFactories.stream().anyMatch(p -> p.isContainer(targetClass))) {
+                || isSpiDefinedContainer(targetClass)) {
             return Optional.of(NodeKind.CONTAINER);
         }
 
         return Optional.empty();
+    }
+
+    private boolean isSpiDefinedContainer(final Class<?> targetClass) {
+        for (InternalContainerFactoryProvider p : containerFactories) {
+            if (p.isContainer(targetClass)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
