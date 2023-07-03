@@ -16,19 +16,19 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.lang.DoubleGenerator;
+import org.instancio.internal.generator.InternalContainerHint;
+import org.instancio.internal.util.Sonar;
 
 import java.util.OptionalDouble;
 
 public final class OptionalDoubleGenerator extends AbstractGenerator<OptionalDouble> {
 
-    private final DoubleGenerator delegate;
-
-    OptionalDoubleGenerator(GeneratorContext context) {
+    public OptionalDoubleGenerator(final GeneratorContext context) {
         super(context);
-        this.delegate = new DoubleGenerator(context);
     }
 
     @Override
@@ -37,7 +37,19 @@ public final class OptionalDoubleGenerator extends AbstractGenerator<OptionalDou
     }
 
     @Override
-    protected OptionalDouble tryGenerateNonNull(Random random) {
-        return OptionalDouble.of(delegate.generate(random));
+    @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL})
+    public OptionalDouble tryGenerateNonNull(final Random random) {
+        return null; // must be null to delegate creation to the engine
+    }
+
+    @Override
+    public Hints hints() {
+        return Hints.builder()
+                .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
+                .with(InternalContainerHint.builder()
+                        .generateEntries(1)
+                        .createFunction(args -> OptionalDouble.of((double) args[0]))
+                        .build())
+                .build();
     }
 }
