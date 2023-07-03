@@ -15,6 +15,8 @@
  */
 package org.instancio.test.features.selector;
 
+import org.instancio.Assign;
+import org.instancio.Assignment;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
@@ -25,12 +27,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
 import static org.instancio.Select.types;
 import static org.instancio.test.support.asserts.Asserts.assertAllNulls;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
-@FeatureTag({Feature.PREDICATE_SELECTOR, Feature.SELECTOR_PRECEDENCE,})
+@FeatureTag({
+        Feature.PREDICATE_SELECTOR,
+        Feature.SELECT_GROUP,
+        Feature.SELECTOR_PRECEDENCE
+})
 @ExtendWith(InstancioExtension.class)
 class PredicateSelectorPrecedenceTest {
 
@@ -76,5 +84,31 @@ class PredicateSelectorPrecedenceTest {
 
         assertThat(result.getTwo()).isEqualTo("foo");
         assertAllNulls(result.getOne(), result.getThree(), result.getFour());
+    }
+
+    @Test
+    void precedenceWithGroupViaSet() {
+        final StringFields result = Instancio.of(StringFields.class)
+                .set(all(field(StringFields::getTwo)), "bar")
+                .set(all(fields().named("two")), "foo") // unused!
+                .lenient()
+                .create();
+
+        assertThat(result.getTwo()).isEqualTo("bar");
+    }
+
+    @Test
+    void precedenceWithGroupViaAssign() {
+        final Assignment[] assignments = {
+                Assign.valueOf(all(field(StringFields::getTwo))).set("bar"),
+                Assign.valueOf(all(fields().named("two"))).set("foo") // unused!
+        };
+
+        final StringFields result = Instancio.of(StringFields.class)
+                .assign(assignments)
+                .lenient()
+                .create();
+
+        assertThat(result.getTwo()).isEqualTo("bar");
     }
 }

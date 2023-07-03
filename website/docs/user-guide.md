@@ -304,7 +304,7 @@ Select.types()
 Select.root()
 ```
 !!! attention ""
-    <lnum>1</lnum> For combining multiple regular selectors.<br/>
+    <lnum>1</lnum> For combining multiple selectors.<br/>
     <lnum>2</lnum> Equivalent to `all(String.class)`.<br/>
     <lnum>3</lnum> Equivalent to `all(all(int.class), all(Integer.class))`.<br/>
     <lnum>4</lnum> Builder for constructing `Predicate<Field>` selectors.<br/>
@@ -315,8 +315,7 @@ Select.root()
 
 - **`Select.all(GroupableSelector... selectors)`**
 
-This method can be used for grouping multiple selectors, allowing for more concise code
-as shown below. However, only regular selectors are groupable using `all()`. Predicate selectors are not groupable.
+This method can be used for grouping multiple selectors, allowing for more concise code as shown below.
 
 ``` java
 all(field(Address::getCity),

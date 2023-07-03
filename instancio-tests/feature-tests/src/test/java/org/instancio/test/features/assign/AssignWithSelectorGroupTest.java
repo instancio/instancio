@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
-@FeatureTag({Feature.ASSIGN, Feature.SELECTOR})
+@FeatureTag({Feature.ASSIGN, Feature.SELECTOR, Feature.SELECT_GROUP})
 @ExtendWith(InstancioExtension.class)
 class AssignWithSelectorGroupTest {
 

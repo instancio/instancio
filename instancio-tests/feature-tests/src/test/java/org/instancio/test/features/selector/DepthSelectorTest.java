@@ -20,6 +20,7 @@ import org.instancio.Instancio;
 import org.instancio.Scope;
 import org.instancio.Select;
 import org.instancio.Selector;
+import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
@@ -27,8 +28,11 @@ import org.instancio.test.support.pojo.cyclic.onetomany.DetailPojo;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainPojoContainer;
 import org.instancio.test.support.pojo.misc.MultipleClassesWithId;
+import org.instancio.test.support.pojo.misc.StringsAbc;
+import org.instancio.test.support.pojo.misc.StringsDef;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +50,7 @@ import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
+import static org.instancio.Select.scope;
 import static org.instancio.Select.types;
 
 /**
@@ -82,16 +87,6 @@ class DepthSelectorTest {
         );
     }
 
-    private static Stream<Arguments> depthGreaterThanOneSelectors() {
-        final Predicate<Integer> predicate = d -> d > 1;
-        return Stream.of(
-                Arguments.of(types(t -> t == Integer.class).atDepth(predicate)),
-                Arguments.of(fields(f -> f.getType() == Integer.class).atDepth(predicate)),
-                Arguments.of(fields().ofType(Integer.class).atDepth(predicate)),
-                Arguments.of(types().of(Integer.class).atDepth(predicate))
-        );
-    }
-
     @MethodSource("depth1Selectors")
     @ParameterizedTest
     void depth1(final TargetSelector selector) {
@@ -105,9 +100,19 @@ class DepthSelectorTest {
         assertThat(result.pojo1.pojo2.pojo3.val).isNotEqualTo(EXPECTED);
     }
 
-    @MethodSource("depthGreaterThanOneSelectors")
+    private static Stream<Arguments> depthGreaterThan1Selectors() {
+        final Predicate<Integer> predicate = d -> d > 1;
+        return Stream.of(
+                Arguments.of(types(t -> t == Integer.class).atDepth(predicate)),
+                Arguments.of(fields(f -> f.getType() == Integer.class).atDepth(predicate)),
+                Arguments.of(fields().ofType(Integer.class).atDepth(predicate)),
+                Arguments.of(types().of(Integer.class).atDepth(predicate))
+        );
+    }
+
+    @MethodSource("depthGreaterThan1Selectors")
     @ParameterizedTest
-    void depthGreaterThanOne(final TargetSelector selector) {
+    void depthGreaterThan1(final TargetSelector selector) {
         final Pojo0 result = Instancio.of(Pojo0.class)
                 .set(selector, EXPECTED)
                 .create();
@@ -331,6 +336,57 @@ class DepthSelectorTest {
                 assertThat(result.getA().getC().getId().getValue()).isNotEqualTo(expected);
                 assertThat(result.getA().getC().getD().getId().getValue()).isNotEqualTo(expected);
             }
+        }
+    }
+
+    @Nested
+    class GroupOfScopedSelectorTest {
+        @Test
+        @DisplayName("Selector atDepth() within a scope")
+        void atDepthWithinScope() {
+            final SelectorGroup group = all(Select.allStrings()
+                    .atDepth(2)
+                    .within(scope(StringsDef.class)));
+
+            final StringsAbc result = Instancio.of(StringsAbc.class)
+                    .set(group, "foo")
+                    .create();
+
+            assertThat(result.a).isNotEqualTo("foo");
+            assertThat(result.b).isNotEqualTo("foo");
+            assertThat(result.c).isNotEqualTo("foo");
+
+            assertThat(result.def.d)
+                    .isEqualTo(result.def.e)
+                    .isEqualTo(result.def.f)
+                    .isEqualTo("foo");
+
+            assertThat(result.def.ghi.g).isNotEqualTo("foo");
+            assertThat(result.def.ghi.h).isNotEqualTo("foo");
+            assertThat(result.def.ghi.i).isNotEqualTo("foo");
+        }
+
+        @Test
+        @DisplayName("within() contains a scope with atDepth()")
+        void withinScopeWithAtDepth() {
+            final SelectorGroup group = all(Select.allStrings()
+                    .within(all(StringsDef.class).atDepth(1).toScope()));
+
+            final StringsAbc result = Instancio.of(StringsAbc.class)
+                    .set(group, "foo")
+                    .create();
+
+            assertThat(result.a).isNotEqualTo("foo");
+            assertThat(result.b).isNotEqualTo("foo");
+            assertThat(result.c).isNotEqualTo("foo");
+
+            assertThat(result.def.d)
+                    .isEqualTo(result.def.e)
+                    .isEqualTo(result.def.f)
+                    .isEqualTo(result.def.ghi.g)
+                    .isEqualTo(result.def.ghi.h)
+                    .isEqualTo(result.def.ghi.i)
+                    .isEqualTo("foo");
         }
     }
 

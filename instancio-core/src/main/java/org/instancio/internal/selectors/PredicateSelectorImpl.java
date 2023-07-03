@@ -16,6 +16,7 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.DepthPredicateSelector;
+import org.instancio.GroupableSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.Flattener;
@@ -95,12 +96,12 @@ public class PredicateSelectorImpl
     }
 
     @Override
-    public TargetSelector atDepth(final int depth) {
+    public GroupableSelector atDepth(final int depth) {
         return builder(this).depth(depth).build();
     }
 
     @Override
-    public TargetSelector atDepth(final Predicate<Integer> depthPredicate) {
+    public GroupableSelector atDepth(final Predicate<Integer> depthPredicate) {
         return builder(this).depth(depthPredicate).build();
     }
 

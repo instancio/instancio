@@ -37,7 +37,7 @@ import java.util.function.Predicate;
  * @see TargetSelector
  * @since 1.6.0
  */
-public interface FieldSelectorBuilder extends TargetSelector, DepthSelector, DepthPredicateSelector {
+public interface FieldSelectorBuilder extends GroupableSelector, DepthSelector, DepthPredicateSelector {
 
     /**
      * Matches fields with the specified name.
@@ -116,7 +116,7 @@ public interface FieldSelectorBuilder extends TargetSelector, DepthSelector, Dep
      * @since 2.14.0
      */
     @Override
-    TargetSelector atDepth(int depth);
+    GroupableSelector atDepth(int depth);
 
     /**
      * {@inheritDoc}
@@ -124,5 +124,5 @@ public interface FieldSelectorBuilder extends TargetSelector, DepthSelector, Dep
      * @since 2.14.0
      */
     @Override
-    TargetSelector atDepth(Predicate<Integer> atDepth);
+    GroupableSelector atDepth(Predicate<Integer> atDepth);
 }

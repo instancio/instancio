@@ -15,9 +15,12 @@
  */
 package org.instancio.internal.selectors;
 
+import org.instancio.FieldSelectorBuilder;
 import org.instancio.GroupableSelector;
+import org.instancio.PredicateSelector;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
+import org.instancio.TypeSelectorBuilder;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.util.Fail;
 
@@ -37,7 +40,10 @@ public final class SelectorGroupImpl implements SelectorGroup, Flattener<TargetS
         this.selectors = Collections.unmodifiableList(Arrays.asList(selectors));
 
         for (GroupableSelector selector : selectors) {
-            if (selector instanceof SelectorImpl) {
+            if (selector instanceof SelectorImpl
+                    || selector instanceof FieldSelectorBuilder
+                    || selector instanceof TypeSelectorBuilder
+                    || selector instanceof PredicateSelector) {
                 flattened.add(selector);
             } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
                 flattened.addAll(((PrimitiveAndWrapperSelectorImpl) selector).flatten());
