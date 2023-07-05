@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes.resolvers;
 
 import org.instancio.internal.nodes.NodeKind;
+import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -52,7 +53,6 @@ class NodeKindResolverTest {
         assertThat(new NodeKindCollectionResolver().resolve(klass)).contains(NodeKind.COLLECTION);
     }
 
-
     @Test
     void collection() {
         assertThat(new NodeKindCollectionResolver().resolve(String.class)).isEmpty();
@@ -64,7 +64,6 @@ class NodeKindResolverTest {
         assertThat(new NodeKindMapResolver().resolve(klass)).contains(NodeKind.MAP);
     }
 
-
     @Test
     void map() {
         assertThat(new NodeKindMapResolver().resolve(String.class)).isEmpty();
@@ -75,5 +74,10 @@ class NodeKindResolverTest {
     void optional(Class<?> klass) {
         assertThat(new NodeKindContainerResolver(Collections.emptyList()).resolve(klass))
                 .contains(NodeKind.CONTAINER);
+    }
+
+    @Test
+    void record() {
+        assertThat(new NodeKindRecordResolver().resolve(Person.class)).isEmpty();
     }
 }
