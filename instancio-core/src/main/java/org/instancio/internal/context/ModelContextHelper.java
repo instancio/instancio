@@ -182,7 +182,6 @@ final class ModelContextHelper {
             final ParameterizedType genericSuperclass = (ParameterizedType) gsClass;
             final Class<?> rawType = TypeUtils.getRawType(genericSuperclass.getRawType());
             final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
-
             final Type[] actualTypeArguments = genericSuperclass.getActualTypeArguments();
 
             for (int i = 0; i < typeParameters.length; i++) {
