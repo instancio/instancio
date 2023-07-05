@@ -22,6 +22,7 @@ import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -34,6 +35,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ReflectionUtilsTest {
+
+    @Nested
+    class GetClassTest {
+        @Test
+        void nullClassName() {
+            assertThatThrownBy(() -> ReflectionUtils.getClass(null))
+                    .isExactlyInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("failed loading class: 'null'")
+                    .hasCauseExactlyInstanceOf(NullPointerException.class);
+        }
+
+        @Test
+        void invalidClassName() {
+            final String invalidClass = "foo.bar.Baz";
+            assertThatThrownBy(() -> ReflectionUtils.getClass(invalidClass))
+                    .isExactlyInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("class not found: '%s'", invalidClass)
+                    .hasCauseExactlyInstanceOf(ClassNotFoundException.class);
+        }
+    }
 
     @Test
     void loadClass() {
@@ -58,6 +79,10 @@ class ReflectionUtilsTest {
     void getEnumValues() {
         final Gender[] enumValues = ReflectionUtils.getEnumValues(Gender.class);
         assertThat(enumValues).containsExactly(Gender.values());
+
+        assertThatThrownBy(() -> ReflectionUtils.getEnumValues(null))
+                .isExactlyInstanceOf(InstancioException.class)
+                .hasMessage("Error getting enum values for: null");
     }
 
     @Test

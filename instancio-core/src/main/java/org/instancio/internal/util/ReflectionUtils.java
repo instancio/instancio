@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.util;
 
-import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +45,7 @@ public final class ReflectionUtils {
             m.setAccessible(true); // NOSONAR needed when Enum.values() is an empty array
             return (E[]) m.invoke(null);
         } catch (Exception ex) {
-            throw new InstancioException("Error getting enum values for class: " + enumClass.getName(), ex);
+            throw new InstancioException("Error getting enum values for: " + enumClass, ex);
         }
     }
 
@@ -101,9 +100,9 @@ public final class ReflectionUtils {
         try {
             return Class.forName(name);
         } catch (ClassNotFoundException ex) {
-            throw new InstancioApiException(String.format("Class not found: '%s'", name), ex);
+            throw Fail.withUsageError("class not found: '%s'", name, ex);
         } catch (Exception ex) {
-            throw new InstancioApiException(String.format("Unable to get class: '%s'", name), ex);
+            throw Fail.withUsageError("failed loading class: '%s'", name, ex);
         }
     }
 }
