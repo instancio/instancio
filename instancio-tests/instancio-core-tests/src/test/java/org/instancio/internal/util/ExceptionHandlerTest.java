@@ -20,6 +20,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.exception.UnusedSelectorException;
+import org.instancio.test.support.asserts.Asserts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,6 @@ class ExceptionHandlerTest {
     private static final InstancioException INSTANCIO_EXCEPTION = new InstancioException(EXCEPTION_MSG);
     private static final InstancioException INSTANCIO_API_EXCEPTION = new InstancioApiException(EXCEPTION_MSG);
     private static final RuntimeException RUNTIME_EXCEPTION = new RuntimeException(EXCEPTION_MSG);
-    private static final Throwable THROWABLE = new Throwable(EXCEPTION_MSG);
 
     @Nested
     class CausedByTest {
@@ -102,10 +102,6 @@ class ExceptionHandlerTest {
     @Test
     @DisplayName("Verify errors are suppressed by default when 'fail on error' property is not set")
     void doesNotFailOnErrorWithSupplier() {
-        // no return value - just verify no exception is raised
-        ExceptionHandler.conditionalFailOnError(functionThrowing(THROWABLE));
-        ExceptionHandler.conditionalFailOnError(functionThrowing(INSTANCIO_EXCEPTION));
-
         assertThat(conditionalFailOnError(supplierThrowing(RUNTIME_EXCEPTION))).isEmpty();
         assertThat(conditionalFailOnError(supplierThrowing(INSTANCIO_EXCEPTION))).isEmpty();
     }
@@ -124,10 +120,6 @@ class ExceptionHandlerTest {
     @DisplayName("Verify API exception is propagated even if 'fail on error' is disabled")
     @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "false")
     void propagatesApiException(final RuntimeException ex) {
-        final VoidFunction voidFunction = functionThrowing(ex);
-        assertThatThrownBy(() -> ExceptionHandler.conditionalFailOnError(voidFunction))
-                .isSameAs(ex);
-
         final Supplier<?> supplier = supplierThrowing(ex);
         assertThatThrownBy(() -> conditionalFailOnError(supplier))
                 .isSameAs(ex);
@@ -138,9 +130,6 @@ class ExceptionHandlerTest {
     @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "false")
     void propagatesAssertionError() {
         final AssertionError error = new AssertionError();
-        final VoidFunction voidFunction = functionThrowing(error);
-        assertThatThrownBy(() -> ExceptionHandler.conditionalFailOnError(voidFunction))
-                .isSameAs(error);
 
         final Supplier<?> supplier = supplierThrowing(error);
         assertThatThrownBy(() -> conditionalFailOnError(supplier))
@@ -149,25 +138,12 @@ class ExceptionHandlerTest {
 
     @Test
     @DisplayName("Verify errors are wrapped in InstancioException and include a request to submit a bug report")
-    @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
     void failWithSupplier() {
         final Supplier<?> supplier = supplierThrowing(RUNTIME_EXCEPTION);
-        assertThatThrownBy(() -> conditionalFailOnError(supplier))
+        Asserts.assertWithFailOnErrorEnabled(() -> conditionalFailOnError(supplier))
                 .isExactlyInstanceOf(InstancioException.class)
                 .hasCause(RUNTIME_EXCEPTION)
                 .hasMessageContainingAll(SUBMIT_BUG_REPORT_MESSAGE);
-
-        final VoidFunction voidFunction = functionThrowing(THROWABLE);
-        assertThatThrownBy(() -> conditionalFailOnError(voidFunction))
-                .isExactlyInstanceOf(InstancioException.class)
-                .hasCause(THROWABLE)
-                .hasMessageContainingAll(SUBMIT_BUG_REPORT_MESSAGE);
-    }
-
-    private static VoidFunction functionThrowing(final Throwable t) {
-        return () -> {
-            throw t;
-        };
     }
 
     private static Supplier<?> supplierThrowing(final RuntimeException ex) {

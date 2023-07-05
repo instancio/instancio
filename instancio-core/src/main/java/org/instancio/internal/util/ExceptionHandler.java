@@ -51,19 +51,6 @@ public final class ExceptionHandler {
         return Optional.empty();
     }
 
-    public static void conditionalFailOnError(final VoidFunction function) {
-        try {
-            function.invoke();
-        } catch (AssertionError | InstancioTerminatingException ex) {
-            throw ex;
-        } catch (Throwable ex) { //NOPMD
-            if (shouldFailOnError()) {
-                throw Fail.withInternalError(ex);
-            }
-            logSuppressed(ex);
-        }
-    }
-
     private static void logSuppressed(final Throwable t) {
         if (LOG.isTraceEnabled()) {
             LOG.trace(SUPPRESSION_REASON, t);
