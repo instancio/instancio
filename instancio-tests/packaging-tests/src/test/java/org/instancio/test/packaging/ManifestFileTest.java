@@ -89,7 +89,6 @@ class ManifestFileTest {
 
         assertThat(getExportedPackages(attrs)).containsExactlyInAnyOrder(
                 "org.instancio",
-                "org.instancio.assignment",
                 "org.instancio.documentation",
                 "org.instancio.exception",
                 "org.instancio.generator",
