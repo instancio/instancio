@@ -34,6 +34,7 @@ When writing code, consider the following:
 - Import the [format config](https://github.com/instancio/instancio/blob/main/ide/instancio-formatter.xml) for IntelliJ.
   (No config file available for Eclipse yet).
 - Follow existing naming conventions.
+- Include only the necessary changes for the PR. Unrelated changes/refactoring can be submitted as a separate PR.
 - Update Javadocs when making changes to the public API. Include examples, if applicable. Do not include `@author` tags.
   Once your changes are merged, your username will be listed on the Contributors page on GitHub.
 - Goes without saying: include tests :)
