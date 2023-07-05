@@ -16,13 +16,10 @@
 package org.instancio.internal.generator.array;
 
 import org.instancio.Random;
-import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.Hints;
 import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.support.Global;
 
 public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArraySpec<T> {
@@ -39,7 +36,7 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
 
     @Override
     public String apiMethod() {
-        return null;
+        return "oneOf()";
     }
 
     @Override
@@ -57,15 +54,5 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     @Override
     protected T tryGenerateNonNull(final Random random) {
         return random.oneOf(values);
-    }
-
-    @Override
-    public Hints hints() {
-        return Hints.builder()
-                .afterGenerate(AfterGenerate.POPULATE_ALL)
-                .with(InternalGeneratorHint.builder()
-                        .targetClass(values.getClass().getComponentType())
-                        .build())
-                .build();
     }
 }

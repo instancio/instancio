@@ -21,6 +21,8 @@ import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
+import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
+import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.util.Sonar;
@@ -45,23 +47,23 @@ final class GeneratorSupport {
     static boolean supports(Generator<?> generator, Class<?> type) {
         if (type == Object.class) {
             return true;
-        }
-        if (generator instanceof ArrayGeneratorSpec) {
+        } else if (generator instanceof OneOfArrayGeneratorSpec<?> || generator instanceof OneOfCollectionGeneratorSpec<?>) {
+            // Cannot validate because any types can be passed in to these generators.
+            // If invalid type is passed, it will be reported as an assignment error.
+            return true;
+        } else if (generator instanceof ArrayGeneratorSpec) {
             return type.isArray();
-        }
-        if (generator instanceof EnumSetGeneratorSpec) {
+        } else if (generator instanceof EnumSetGeneratorSpec) {
             return EnumSet.class.isAssignableFrom(type);
-        }
-        if (generator instanceof CollectionGeneratorSpec) {
+        } else if (generator instanceof CollectionGeneratorSpec) {
             return (Collection.class.isAssignableFrom(type) || type == Iterable.class)
                     && type != EnumSet.class;
-        }
-        if (generator instanceof MapGeneratorSpec) {
+        } else if (generator instanceof MapGeneratorSpec) {
             return Map.class.isAssignableFrom(type);
-        }
-        if (generator instanceof EnumGeneratorSpec) {
+        } else if (generator instanceof EnumGeneratorSpec) {
             return type.isEnum();
         }
+
         final Class<?> typeArg = TypeUtils.getGenericSuperclassTypeArgument(generator.getClass());
         if (typeArg != null) {
             return type.isAssignableFrom(typeArg) ||
