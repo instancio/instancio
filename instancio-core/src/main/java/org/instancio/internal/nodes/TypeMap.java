@@ -34,7 +34,7 @@ import java.util.Objects;
 public final class TypeMap {
 
     private final Map<TypeVariable<?>, Type> rootTypeMap;
-    private final Map<Type, Type> typeMap;
+    private final Map<Type, Type> typeVariableMap;
 
     public TypeMap(final Type genericType, final Map<TypeVariable<?>, Type> rootTypeMap) {
         this(genericType, rootTypeMap, Collections.emptyMap());
@@ -45,23 +45,23 @@ public final class TypeMap {
                    final Map<Type, Type> subtypeMappingTypeMap) {
 
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
-        this.typeMap = Collections.unmodifiableMap(buildTypeMap(genericType, subtypeMappingTypeMap));
+        this.typeVariableMap = Collections.unmodifiableMap(buildTypeMap(genericType, subtypeMappingTypeMap));
     }
 
     public Type get(final Type type) {
-        return typeMap.get(type);
+        return typeVariableMap.get(type);
     }
 
     public Type getOrDefault(final Type type, final Type defaultValue) {
-        return typeMap.getOrDefault(type, defaultValue);
+        return typeVariableMap.getOrDefault(type, defaultValue);
     }
 
     public Type getActualType(final Type type) {
-        return typeMap.get(type);
+        return typeVariableMap.get(type);
     }
 
     public int size() {
-        return typeMap.size();
+        return typeVariableMap.size();
     }
 
     /**
@@ -79,26 +79,26 @@ public final class TypeMap {
      *   Item<? extends Foo> | WildcardType
      * }</pre>
      *
-     * @param genericType           to build the type map for
+     * @param type                  to build the type map for
      * @param subtypeMappingTypeMap map type parameters of supertype to type parameters of subtype
      * @return type map
      */
-    private Map<Type, Type> buildTypeMap(final Type genericType, final Map<Type, Type> subtypeMappingTypeMap) {
+    private Map<Type, Type> buildTypeMap(final Type type, final Map<Type, Type> subtypeMappingTypeMap) {
         final Map<Type, Type> map = new HashMap<>(subtypeMappingTypeMap);
 
-        if (genericType instanceof Class) {
+        if (type instanceof Class) {
             return map;
         }
 
-        if (genericType instanceof TypeVariable && rootTypeMap.containsKey(genericType)) {
-            final Type mappedType = rootTypeMap.get(genericType);
-            map.put(genericType, mappedType);
+        if (type instanceof TypeVariable && rootTypeMap.containsKey(type)) {
+            final Type mappedType = rootTypeMap.get(type);
+            map.put(type, mappedType);
             return map;
         }
 
-        if (genericType instanceof ParameterizedType) {
-            final Class<?> rawType = TypeUtils.getRawType(genericType);
-            final Type[] typeArgs = TypeUtils.getTypeArguments(genericType);
+        if (type instanceof ParameterizedType) {
+            final Class<?> rawType = TypeUtils.getRawType(type);
+            final Type[] typeArgs = ((ParameterizedType) type).getActualTypeArguments();
             final TypeVariable<?>[] typeVars = rawType.getTypeParameters();
 
             for (int i = 0; i < typeArgs.length; i++) {
@@ -111,16 +111,16 @@ public final class TypeMap {
         return map;
     }
 
-    private Type resolveTypeMapping(final Type typeArg) {
-        if (typeArg instanceof Class || typeArg instanceof ParameterizedType || typeArg instanceof GenericArrayType) {
-            return typeArg;
-        } else if (typeArg instanceof TypeVariable) {
-            return rootTypeMap.get(typeArg);
-        } else if (typeArg instanceof WildcardType) {
-            WildcardType wType = (WildcardType) typeArg;
+    private Type resolveTypeMapping(final Type type) {
+        if (type instanceof Class || type instanceof ParameterizedType || type instanceof GenericArrayType) {
+            return type;
+        } else if (type instanceof TypeVariable) {
+            return rootTypeMap.get(type);
+        } else if (type instanceof WildcardType) {
+            WildcardType wType = (WildcardType) type;
             return resolveTypeMapping(wType.getUpperBounds()[0]); // TODO multiple bounds
         }
-        throw new UnsupportedOperationException("Unsupported type: " + typeArg.getClass());
+        throw new UnsupportedOperationException("Unsupported type: " + type.getClass());
     }
 
     @Override
@@ -128,11 +128,14 @@ public final class TypeMap {
         if (this == o) return true;
         if (!(o instanceof TypeMap)) return false;
         final TypeMap other = (TypeMap) o;
-        return Objects.equals(rootTypeMap, other.rootTypeMap) && Objects.equals(typeMap, other.typeMap);
+        return Objects.equals(rootTypeMap, other.rootTypeMap)
+                && Objects.equals(typeVariableMap, other.typeVariableMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rootTypeMap, typeMap);
+        int result = rootTypeMap != null ? rootTypeMap.hashCode() : 0;
+        result = 31 * result + (typeVariableMap != null ? typeVariableMap.hashCode() : 0);
+        return result;
     }
 }

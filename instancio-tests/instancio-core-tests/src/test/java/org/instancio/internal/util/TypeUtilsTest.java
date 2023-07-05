@@ -17,19 +17,65 @@ package org.instancio.internal.util;
 
 import org.instancio.Random;
 import org.instancio.TypeToken;
+import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.text.TextPatternGenerator;
+import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfList;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfMap;
+import org.instancio.testsupport.fixtures.Types;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TypeUtilsTest {
+
+    private static final Type TYPE_VARIABLE = Types.LIST_TYPE_VARIABLE.get();
+
+    @Nested
+    class GetRawTypeTest {
+        @Test
+        void withClass() {
+            assertThat(TypeUtils.getRawType(String.class)).isEqualTo(String.class);
+        }
+
+        @Test
+        void withParameterizedType() {
+            assertThat(TypeUtils.getRawType(Types.LIST_ITEM_STRING.get())).isEqualTo(List.class);
+        }
+
+        @Test
+        @SuppressWarnings("rawtypes")
+        void withArrayOfParameterizedType() {
+            List[] arrayOfLists = new List[0];
+            assertThat(TypeUtils.getRawType(arrayOfLists.getClass())).isEqualTo(List[].class);
+        }
+
+        @Test
+        void withTypeVariable() {
+            assertThat(TypeUtils.getRawType(TYPE_VARIABLE))
+                    .as("Should not throw exception when %s is disabled", SystemProperties.FAIL_ON_ERROR)
+                    .isNull();
+
+            Asserts.assertWithFailOnErrorEnabled(() -> TypeUtils.getRawType(TYPE_VARIABLE))
+                    .isExactlyInstanceOf(InstancioException.class)
+                    .hasMessage("Unhandled type: %s", TYPE_VARIABLE.getClass().getSimpleName());
+        }
+
+        @Test
+        void withNullArgument() {
+            assertThatThrownBy(() -> TypeUtils.getRawType(null))
+                    .isExactlyInstanceOf(NullPointerException.class)
+                    .hasMessage("null type");
+        }
+    }
 
     @Test
     void getTypeParameterCount() {
@@ -40,11 +86,15 @@ class TypeUtilsTest {
 
     @Test
     void getArrayClass() {
-        assertThat(TypeUtils.getArrayClass(new TypeToken<Integer[]>() {}.get())).isEqualTo(Integer[].class);
-        assertThat(TypeUtils.getArrayClass(new TypeToken<int[]>() {}.get())).isEqualTo(int[].class);
-        assertThat(TypeUtils.getArrayClass(new TypeToken<Item<Integer>[]>() {}.get())).isEqualTo(Item[].class);
+        assertThat(TypeUtils.getArrayClass(String.class)).isEqualTo(String[].class);
+        assertThat(TypeUtils.getArrayClass(Types.LIST_STRING.get())).isEqualTo(List[].class);
+        assertThat(TypeUtils.getArrayClass(Integer[].class)).isEqualTo(Integer[].class);
+        assertThat(TypeUtils.getArrayClass(int[].class)).isEqualTo(int[].class);
         assertThat(TypeUtils.getArrayClass(new TypeToken<Item<String>[]>() {}.get())).isEqualTo(Item[].class);
-        assertThat(TypeUtils.getArrayClass(new TypeToken<String>() {}.get())).isEqualTo(String[].class);
+
+        assertThatThrownBy(() -> TypeUtils.getArrayClass(TYPE_VARIABLE))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not resolve array class for type: %s", TYPE_VARIABLE);
     }
 
     @Test

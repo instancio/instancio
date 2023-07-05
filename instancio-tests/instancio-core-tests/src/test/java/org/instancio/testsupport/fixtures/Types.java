@@ -21,10 +21,19 @@ import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.basic.Triplet;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Map;
 
 public class Types {
+
+    public static final TypeToken<TypeVariable<Class<List>>> LIST_TYPE_VARIABLE = new TypeToken<>() {
+        @Override
+        public Type get() {
+            return List.class.getTypeParameters()[0];
+        }
+    };
 
     public static final TypeToken<?> LIST_STRING = new TypeToken<List<String>>() {
     };

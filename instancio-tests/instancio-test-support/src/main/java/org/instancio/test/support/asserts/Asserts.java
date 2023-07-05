@@ -16,11 +16,14 @@
 package org.instancio.test.support.asserts;
 
 import org.assertj.core.api.AbstractCharSequenceAssert;
+import org.assertj.core.api.AbstractThrowableAssert;
+import org.assertj.core.api.ThrowableAssert;
 import org.instancio.test.support.pojo.basic.Numbers;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public final class Asserts {
 
@@ -75,5 +78,17 @@ public final class Asserts {
             final String prefix, final String actual) {
 
         return assertThat(actual).isNotBlank().doesNotContain(prefix);
+    }
+
+    public static AbstractThrowableAssert<?, ? extends Throwable> assertWithFailOnErrorEnabled(
+            final ThrowableAssert.ThrowingCallable shouldRaiseThrowable) {
+
+        final String failOnErrorKey = "instancio.failOnError";
+        try {
+            System.setProperty(failOnErrorKey, "true");
+            return assertThatThrownBy(shouldRaiseThrowable);
+        } finally {
+            System.clearProperty(failOnErrorKey);
+        }
     }
 }
