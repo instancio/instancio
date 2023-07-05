@@ -127,7 +127,7 @@ class ModelContextTest {
     void withGenerators() {
         final Hints expectedHints = Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
         final Generator<String> stringGenerator = random -> "some string";
-        final Generator<Address> addressGenerator = new Generator<Address>() {
+        final Generator<Address> addressGenerator = new Generator<>() {
             @Override
             public Address generate(final Random random) {
                 return Address.builder().build();
@@ -209,7 +209,7 @@ class ModelContextTest {
     @Test
     void lenient() {
         final ModelContext<?> ctx = ModelContext.builder(Person.class).lenient().build();
-        assertThat((Mode) ctx.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
+        assertThat(ctx.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
     }
 
     @Test
@@ -334,7 +334,7 @@ class ModelContextTest {
                 .isNotEmpty()
                 .isEqualTo(elementModel.getSubtypeSelectorMap().getSubtypeSelectors());
 
-        assertThat((Integer) ctx.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
+        assertThat(ctx.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
         assertThat(ctx.getRandom().getSeed()).isEqualTo(seed);
     }
 
