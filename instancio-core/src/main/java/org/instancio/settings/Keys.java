@@ -48,8 +48,11 @@ public final class Keys {
     private static final List<SettingKey<Object>> ALL_KEYS = new ArrayList<>();
 
     /**
-     * Specifies how to assign values via reflection, using fields or methods;
+     * Specifies whether to assign values using fields or methods;
      * default is {@link AssignmentType#FIELD}; property name {@code assignment.type}.
+     *
+     * <p>This setting does not apply to fields that are {@code final} and
+     * {@code record} classes, since those cannot have setters.
      *
      * @see AssignmentType
      * @see #ON_SET_METHOD_ERROR
