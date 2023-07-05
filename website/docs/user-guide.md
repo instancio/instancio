@@ -1733,6 +1733,9 @@ or via setter methods. There are a few {{Settings}} keys with enum values that c
 | `ON_SET_METHOD_NOT_FOUND` | `OnSetMethodNotFound` |
 
 To enable assignment via methods, `Keys.ASSIGNMENT_TYPE` can be set to `AssignmentType.METHOD`.
+This setting only applies to mutable fields because `final` fields cannot have setters.
+For non-static `final` fields Instancio will fall back to `AssignmentType.FIELD`.
+
 When enabled, Instancio will attempt to resolve setter names from field names using `SETTER_STYLE` setting.
 This key's value is the `SetterStyle` enum that supports three naming conventions:
 
