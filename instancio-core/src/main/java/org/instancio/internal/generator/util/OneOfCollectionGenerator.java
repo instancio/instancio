@@ -38,7 +38,7 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
 
     @Override
     public String apiMethod() {
-        return null;
+        return "oneOf()";
     }
 
     @Override

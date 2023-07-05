@@ -192,13 +192,8 @@ class ModelContextTest {
                 .withSubtype(all(List.class), LinkedList.class)
                 .build();
 
-        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(Collection.class)))
-                .get().extracting(Subtype::getSubtypeClass)
-                .isEqualTo(HashSet.class);
-
-        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(List.class)))
-                .get().extracting(Subtype::getSubtypeClass)
-                .isEqualTo(LinkedList.class);
+        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(Collection.class))).contains(HashSet.class);
+        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
     }
 
     @Test
@@ -214,7 +209,7 @@ class ModelContextTest {
     @Test
     void lenient() {
         final ModelContext<?> ctx = ModelContext.builder(Person.class).lenient().build();
-        assertThat(ctx.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
+        assertThat((Mode) ctx.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
     }
 
     @Test
@@ -306,8 +301,7 @@ class ModelContextTest {
         final Settings settings = actual.getSettings();
         assertThat(settings.get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
         assertThat(settings.get(Keys.MODE)).isEqualTo(Mode.LENIENT);
-        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(List.class)))
-                .get().extracting(Subtype::getSubtypeClass).isEqualTo(LinkedList.class);
+        assertThat(ctx.getSubtypeSelectorMap().getSubtype(mockNode(List.class))).contains(LinkedList.class);
 
         assertThatThrownBy(() -> settings.set(Keys.STRING_MIN_LENGTH, 5))
                 .as("Settings should be locked")
@@ -340,7 +334,7 @@ class ModelContextTest {
                 .isNotEmpty()
                 .isEqualTo(elementModel.getSubtypeSelectorMap().getSubtypeSelectors());
 
-        assertThat(ctx.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
+        assertThat((Integer) ctx.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
         assertThat(ctx.getRandom().getSeed()).isEqualTo(seed);
     }
 

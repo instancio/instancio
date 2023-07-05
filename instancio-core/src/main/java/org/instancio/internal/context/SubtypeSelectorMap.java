@@ -25,10 +25,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public final class SubtypeSelectorMap {
-    private static final boolean VIA_GENERATOR = true;
 
     private final Map<TargetSelector, Class<?>> subtypeSelectors;
-    private final SelectorMap<Subtype> selectorMap;
+    private final SelectorMap<Class<?>> selectorMap;
 
     public SubtypeSelectorMap(
             @NotNull final Map<TargetSelector, Class<?>> subtypeSelectors,
@@ -39,15 +38,15 @@ public final class SubtypeSelectorMap {
         this.selectorMap = subtypeSelectors.isEmpty() && generatorSubtypeMap.isEmpty() && assignmentGeneratorSubtypeMap.isEmpty()
                 ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
 
-        putAll(subtypeSelectors, !VIA_GENERATOR);
-        putAll(generatorSubtypeMap, VIA_GENERATOR);
-        putAll(assignmentGeneratorSubtypeMap, VIA_GENERATOR);
+        putAll(subtypeSelectors);
+        putAll(generatorSubtypeMap);
+        putAll(assignmentGeneratorSubtypeMap);
     }
 
-    private void putAll(final Map<TargetSelector, Class<?>> subtypes, final boolean isViaGenerator) {
+    private void putAll(final Map<TargetSelector, Class<?>> subtypes) {
         subtypes.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
             for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                selectorMap.put(selector, new Subtype(subtype, isViaGenerator));
+                selectorMap.put(selector, subtype);
             }
         });
     }
@@ -56,11 +55,11 @@ public final class SubtypeSelectorMap {
         return subtypeSelectors;
     }
 
-    SelectorMap<Subtype> getSelectorMap() {
+    SelectorMap<Class<?>> getSelectorMap() {
         return selectorMap;
     }
 
-    public Optional<Subtype> getSubtype(final InternalNode node) {
+    public Optional<Class<?>> getSubtype(final InternalNode node) {
         return selectorMap.getValue(node);
     }
 }
