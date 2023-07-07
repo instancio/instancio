@@ -120,7 +120,7 @@ class OnCompleteTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("error invoking the callback")
+                .hasMessageContaining("onComplete() callback error")
                 .hasRootCause(expectedException);
     }
 }

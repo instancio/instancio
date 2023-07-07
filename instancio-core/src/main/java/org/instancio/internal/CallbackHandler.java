@@ -64,7 +64,7 @@ public class CallbackHandler implements GenerationListener {
             for (OnCompleteCallback<?> callback : callbacks) {
                 LOG.trace("{} results for callbacks generated for: {}", results.size(), node);
                 for (Object result : results) {
-                    invokeCallback(callback, result);
+                    invokeCallback(callback, result, node);
                 }
             }
         });
@@ -74,13 +74,17 @@ public class CallbackHandler implements GenerationListener {
         return context.getCallbacks(node);
     }
 
-    private static void invokeCallback(final OnCompleteCallback<?> callback, final Object result) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static void invokeCallback(final OnCompleteCallback<?> callback,
+                                       final Object result,
+                                       final InternalNode node) {
         try {
-            //noinspection unchecked,rawtypes
             ((OnCompleteCallback) callback).onComplete(result);
         } catch (ClassCastException ex) {
             final String errorMsg = String.format(
                     "onComplete() callback error.%n%n" +
+                            "Node matched by the callback's selector:%n" +
+                            " -> %s%n%n" +
                             "ClassCastException was thrown by the callback.%n" +
                             "This usually happens because the type declared by the callback%n" +
                             "does not match the actual type of the target object.%n%n" +
@@ -88,10 +92,17 @@ public class CallbackHandler implements GenerationListener {
                             "onComplete(all(Foo.class), (Bar wrongType) -> {%n" +
                             "               ^^^^^^^^^    ^^^^^^^^^^^^^%n" +
                             "})%n%n" +
-                            "Caused by:%n%s", ex.getMessage());
+                            "Caused by:%n%s", node, ex.getMessage());
+
             throw Fail.withUsageError(errorMsg, ex);
         } catch (Exception ex) {
-            throw Fail.withUsageError("error invoking the callback", ex);
+            final String errorMsg = String.format(
+                    "onComplete() callback error.%n%n" +
+                            "Node matched by the callback's selector:%n" +
+                            " -> %s%n%n" +
+                            "Caused by:%n%s", node, ex.getMessage());
+
+            throw Fail.withUsageError(errorMsg, ex);
         }
     }
 }
