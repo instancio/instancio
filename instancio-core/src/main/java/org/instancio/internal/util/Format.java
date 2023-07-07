@@ -66,7 +66,8 @@ public final class Format {
      */
     public static String firstNonInstancioStackTraceLine(final Throwable throwable) {
         for (StackTraceElement element : throwable.getStackTrace()) {
-            if (!element.getClassName().startsWith("org.instancio")) {
+            final String className = element.getClassName();
+            if (!className.startsWith("org.instancio") && !className.startsWith("java.")) {
                 return element.toString();
             }
         }
