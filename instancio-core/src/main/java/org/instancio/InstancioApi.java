@@ -42,7 +42,7 @@ public interface InstancioApi<T> {
      * <p>
      * Example:
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class).create();
+     * Person person = Instancio.of(Person.class).create();
      * }</pre>
      * <p>
      * The returned object will have all its fields populated with random data,
@@ -68,10 +68,10 @@ public interface InstancioApi<T> {
      * <p>
      * Example:
      * <pre>{@code
-     *     List<Person> persons = Instancio.of(Person.class)
-     *         .stream()
-     *         .limit(5)
-     *         .collect(Collectors.toList());
+     * List<Person> persons = Instancio.of(Person.class)
+     *     .stream()
+     *     .limit(5)
+     *     .collect(Collectors.toList());
      * }</pre>
      *
      * @return an infinite stream of distinct, populated objects
@@ -87,21 +87,21 @@ public interface InstancioApi<T> {
      *
      * <p>Example:
      * <pre>{@code
-     *   Model<Person> simpsons = Instancio.of(Person.class)
-     *       .set(field(Person::getLastName), "Simpson")
-     *       .set(field(Address::getCity), "Springfield")
-     *       .generate(field(Person::getAge), gen -> gen.ints().range(40, 50))
-     *       .toModel();
+     * Model<Person> simpsons = Instancio.of(Person.class)
+     *     .set(field(Person::getLastName), "Simpson")
+     *     .set(field(Address::getCity), "Springfield")
+     *     .generate(field(Person::getAge), gen -> gen.ints().range(40, 50))
+     *     .toModel();
      *
-     *   Person homer = Instancio.of(simpsons)
-     *       .set(field(Person::getFirstName), "Homer")
-     *       .set(all(Gender.class), Gender.MALE)
-     *       .create();
+     * Person homer = Instancio.of(simpsons)
+     *     .set(field(Person::getFirstName), "Homer")
+     *     .set(all(Gender.class), Gender.MALE)
+     *     .create();
      *
-     *   Person marge = Instancio.of(simpsons)
-     *       .set(field(Person::getFirstName), "Marge")
-     *       .set(all(Gender.class), Gender.FEMALE)
-     *       .create();
+     * Person marge = Instancio.of(simpsons)
+     *     .set(field(Person::getFirstName), "Marge")
+     *     .set(all(Gender.class), Gender.FEMALE)
+     *     .create();
      * }</pre>
      *
      * @return a model that can be used as a template for creating objects
@@ -114,10 +114,10 @@ public interface InstancioApi<T> {
      *
      * <p>Example:
      * <pre>{@code
-     *   Person person = Instancio.of(Person.class)
-     *       .ignore(field(Phone::getPhoneNumber))
-     *       .ignore(allStrings())
-     *       .create();
+     * Person person = Instancio.of(Person.class)
+     *     .ignore(field(Phone::getPhoneNumber))
+     *     .ignore(allStrings())
+     *     .create();
      * }</pre>
      *
      * <p>will create a fully populated person, but will ignore the
@@ -131,10 +131,10 @@ public interface InstancioApi<T> {
      * because {@code field(Phone::getNumber)} is redundant:
      *
      * <pre>{@code
-     *   Person person = Instancio.of(Person.class)
-     *       .ignore(all(Phone.class))
-     *       .set(field(Phone::getNumber), "123-45-56")
-     *       .create();
+     * Person person = Instancio.of(Person.class)
+     *     .ignore(all(Phone.class))
+     *     .set(field(Phone::getNumber), "123-45-56")
+     *     .create();
      * }</pre>
      *
      * <h4>Usage with Java records</h4>
@@ -144,14 +144,14 @@ public interface InstancioApi<T> {
      *
      * <p>Example:
      * <pre>{@code
-     *   record PersonRecord(String name, int age) {}
+     * record PersonRecord(String name, int age) {}
      *
-     *   PersonRecord person = Instancio.of(PersonRecord.class)
-     *       .ignore(allInts())
-     *       .ignore(allStrings())
-     *       .create();
+     * PersonRecord person = Instancio.of(PersonRecord.class)
+     *     .ignore(allInts())
+     *     .ignore(allStrings())
+     *     .create();
      *
-     *   // will produce: PersonRecord[name=null, age=0]
+     * // will produce: PersonRecord[name=null, age=0]
      * }</pre>
      *
      * @param selector for fields and/or classes this method should be applied to
@@ -166,11 +166,11 @@ public interface InstancioApi<T> {
      *
      * <p>Example:
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .withNullable(allStrings())
-     *             .withNullable(field(Person::getAddress))
-     *             .withNullable(fields().named("lastModified"))
-     *             .create();
+     * Person person = Instancio.of(Person.class)
+     *     .withNullable(allStrings())
+     *     .withNullable(field(Person::getAddress))
+     *     .withNullable(fields().named("lastModified"))
+     *     .create();
      * }</pre>
      *
      * <b>Note:</b> a type marked as nullable using this method is only nullable
@@ -189,9 +189,9 @@ public interface InstancioApi<T> {
      * <p>Example: if {@code Person} class contains a {@code List<Phone>}, the following
      * snippet will set all the country code of all phone instances to "+1".
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .set(field(Phone::getCountryCode), "+1")
-     *             .create();
+     * Person person = Instancio.of(Person.class)
+     *     .set(field(Phone::getCountryCode), "+1")
+     *     .create();
      * }</pre>
      *
      * <p>Note: Instancio <b>will not</b></p>
@@ -215,12 +215,12 @@ public interface InstancioApi<T> {
      *
      * <p>Example:
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
-     *             .supply(field(Address::getPhoneNumbers), () -> List.of(
-     *                 new PhoneNumber("+1", "123-45-67"),
-     *                 new PhoneNumber("+1", "345-67-89")))
-     *             .create();
+     * Person person = Instancio.of(Person.class)
+     *     .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
+     *     .supply(field(Address::getPhoneNumbers), () -> List.of(
+     *         new PhoneNumber("+1", "123-45-67"),
+     *         new PhoneNumber("+1", "345-67-89")))
+     *     .create();
      * }</pre>
      *
      * <p>Note: Instancio <b>will not</b></p>
@@ -256,9 +256,9 @@ public interface InstancioApi<T> {
      * creation of {@code java.time.Year}, it could be generated as follows:
      *
      * <pre>{@code
-     *   List<Year> years = Instancio.ofList(Year.class)
-     *         .supply(all(Year.class), random -> Year.of(random.intRange(1900, 2000)))
-     *         .create();
+     * List<Year> years = Instancio.ofList(Year.class)
+     *     .supply(all(Year.class), random -> Year.of(random.intRange(1900, 2000)))
+     *     .create();
      * }</pre>
      *
      * <h4>Provide a partially initialised instance</h4>
@@ -269,9 +269,9 @@ public interface InstancioApi<T> {
      * Instancio will populate remaining fields that are {@code null}:
      *
      * <pre>{@code
-     *   Person person = Instancio.of(Person.class)
-     *       .supply(field(Person::getAddress), random -> new Address("Springfield", "USA"))
-     *       .create();
+     * Person person = Instancio.of(Person.class)
+     *     .supply(field(Person::getAddress), random -> new Address("Springfield", "USA"))
+     *     .create();
      * }</pre>
      *
      * <p>This behaviour is controlled by the {@link AfterGenerate} hint specified
@@ -295,12 +295,12 @@ public interface InstancioApi<T> {
      *
      * <p>Example:
      * <pre>{@code
-     *   Person person = Instancio.of(Person.class)
-     *       .generate(field(Person::getAge), gen -> gen.ints().range(18, 100))
-     *       .generate(all(LocalDate.class), gen -> gen.temporal().localDate().past())
-     *       .generate(field(Address::getPhoneNumbers), gen -> gen.collection().size(5))
-     *       .generate(field(Address::getCity), gen -> gen.oneOf("Burnaby", "Vancouver", "Richmond"))
-     *       .create();
+     * Person person = Instancio.of(Person.class)
+     *     .generate(field(Person::getAge), gen -> gen.ints().range(18, 100))
+     *     .generate(all(LocalDate.class), gen -> gen.temporal().localDate().past())
+     *     .generate(field(Address::getPhoneNumbers), gen -> gen.collection().size(5))
+     *     .generate(field(Address::getCity), gen -> gen.oneOf("Burnaby", "Vancouver", "Richmond"))
+     *     .create();
      * }</pre>
      *
      * @param selector for fields and/or classes this method should be applied to
@@ -317,11 +317,11 @@ public interface InstancioApi<T> {
      *
      * <p>Example:
      * <pre>{@code
-     *   Person person = Instancio.of(Person.class)
-     *       .generate(field(Person::getAge), Instancio.ints().range(18, 100))
-     *       .generate(all(LocalDate.class),  Instancio.temporal().localDate().past())
-     *       .generate(field(Phone::getNumber),  MyCustomGenerators.phones().northAmerican())
-     *       .create();
+     * Person person = Instancio.of(Person.class)
+     *     .generate(field(Person::getAge), Instancio.ints().range(18, 100))
+     *     .generate(all(LocalDate.class),  Instancio.temporal().localDate().past())
+     *     .generate(field(Phone::getNumber),  MyCustomGenerators.phones().northAmerican())
+     *     .create();
      * }</pre>
      *
      * @param selector for fields and/or classes this method should be applied to
@@ -339,10 +339,10 @@ public interface InstancioApi<T> {
      * <p>
      * Example:
      * <pre>{@code
-     *     // Sets countryCode field on all instances of Phone to the specified value
-     *     Person person = Instancio.of(Person.class)
-     *             .onComplete(all(Phone.class), (Phone phone) -> phone.setCountryCode("+1"))
-     *             .create();
+     * // Sets countryCode field on all instances of Phone to the specified value
+     * Person person = Instancio.of(Person.class)
+     *     .onComplete(all(Phone.class), (Phone phone) -> phone.setCountryCode("+1"))
+     *     .create();
      * }</pre>
      *
      * @param selector for fields and/or classes this method should be applied to
@@ -358,8 +358,8 @@ public interface InstancioApi<T> {
      * in the following cases:
      *
      * <ol>
-     *     <li>to specify an implementation for interfaces or abstract classes</li>
-     *     <li>to override default implementations used by Instancio</li>
+     *   <li>to specify an implementation for interfaces or abstract classes</li>
+     *   <li>to override default implementations used by Instancio</li>
      * </ol>
      * <b>Specify an implementation for an abstract type</b>
      * <p>
@@ -369,9 +369,9 @@ public interface InstancioApi<T> {
      * For example:
      *
      * <pre>{@code
-     *     WidgetContainer container = Instancio.of(WidgetContainer.class)
-     *             .subtype(all(AbstractWidget.class), ConcreteWidget.class)
-     *             .create();
+     * WidgetContainer container = Instancio.of(WidgetContainer.class)
+     *     .subtype(all(AbstractWidget.class), ConcreteWidget.class)
+     *     .create();
      * }</pre>
      * <p>
      * <b>Override default implementations</b>
@@ -381,9 +381,9 @@ public interface InstancioApi<T> {
      * If an alternative implementation is required, this method allows to specify it:
      *
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .subtype(all(List.class), LinkedList.class)
-     *             .create();
+     * Person person = Instancio.of(Person.class)
+     *     .subtype(all(List.class), LinkedList.class)
+     *     .create();
      * }</pre>
      * <p>
      * will use the {@code LinkedList} implementation for all {@code List}s.
@@ -487,10 +487,10 @@ public interface InstancioApi<T> {
      * <p><b>Note:</b> this method is a shorthand for:
      *
      * <pre>{@code
-     *     int maxDepth = 5;
-     *     Person person = Instancio.of(Person.class)
-     *         .withSettings(Settings.create().set(Keys.MAX_DEPTH, maxDepth))
-     *         .create();
+     * int maxDepth = 5;
+     * Person person = Instancio.of(Person.class)
+     *     .withSettings(Settings.create().set(Keys.MAX_DEPTH, maxDepth))
+     *     .create();
      * }</pre>
      *
      * <p>If the maximum depth is specified using {@code Settings} <i>and</i>
@@ -523,13 +523,13 @@ public interface InstancioApi<T> {
      * <p>
      * Example:
      * <pre>{@code
-     *     // Generates a different UUID each time
-     *     UUID result = Instancio.create(UUID.class);
+     * // Generates a different UUID each time
+     * UUID result = Instancio.create(UUID.class);
      *
-     *     // Generates the same UUID each time
-     *     UUID result = Instancio.of(UUID.class)
-     *             .withSeed(1234)
-     *             .create();
+     * // Generates the same UUID each time
+     * UUID result = Instancio.of(UUID.class)
+     *     .withSeed(1234)
+     *     .create();
      * }</pre>
      *
      * @param seed for the random number generator
@@ -545,9 +545,9 @@ public interface InstancioApi<T> {
      * This method is a shorthand for:
      *
      * <pre>{@code
-     *     Example example = Instancio.of(Example.class)
-     *         .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
-     *         .create();
+     * Example example = Instancio.of(Example.class)
+     *     .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+     *     .create();
      * }</pre>
      *
      * @return API builder reference

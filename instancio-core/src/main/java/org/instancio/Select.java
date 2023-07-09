@@ -82,9 +82,9 @@ public final class Select {
      * declared in the {@code Person} and other classes referenced from {@code Person}.</p>
      *
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *         .supply(fields().named("lastModified"), () -> LocalDateTime.now())
-     *         .create();
+     * Person person = Instancio.of(Person.class)
+     *     .supply(fields().named("lastModified"), () -> LocalDateTime.now())
+     *     .create();
      * }</pre>
      *
      * <p>Specifying only {@code fields()} (without further predicates)
@@ -111,9 +111,9 @@ public final class Select {
      * <p>The following example will match all types annotated {@code @Embeddable}.</p>
      *
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *         .set(types().annotated(Embeddable.class), null)
-     *         .create();
+     * Person person = Instancio.of(Person.class)
+     *     .set(types().annotated(Embeddable.class), null)
+     *     .create();
      * }</pre>
      *
      * <p>Specifying only {@code types()} (without further predicates)
@@ -233,9 +233,9 @@ public final class Select {
      * <p>
      * Example
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *             .ignore(field("fullName")) // Person.fullName
-     *             .create();
+     * Person person = Instancio.of(Person.class)
+     *     .ignore(field("fullName")) // Person.fullName
+     *     .create();
      * }</pre>
      * <p>
      *
@@ -268,13 +268,13 @@ public final class Select {
      * <b>Examples:</b>
      *
      * <pre>{@code
-     *   // Java beans naming convention
-     *   field(Person::getName)  -> field(Person.class, "name")
-     *   field(Person::isActive) -> field(Person.class, "active")
+     * // Java beans naming convention
+     * field(Person::getName)  -> field(Person.class, "name")
+     * field(Person::isActive) -> field(Person.class, "active")
      *
-     *   // Property-style naming convention (e.g. Java records)
-     *   field(Person::name)     -> field(Person.class, "name")
-     *   field(Person::isActive) -> field(Person.class, "isActive")
+     * // Property-style naming convention (e.g. Java records)
+     * field(Person::name)     -> field(Person.class, "name")
+     * field(Person::isActive) -> field(Person.class, "isActive")
      * }</pre>
      * <p>
      * <b>Note:</b> for a method reference with a generic return type,
@@ -414,9 +414,9 @@ public final class Select {
      * For example, the following will set all lists within {@code Person.address} object to an empty list.
      *
      * <pre>{@code
-     *     Person person = Instancio.of(Person.class)
-     *         .set(all(List.class).within(scope(Person.class, "address")), Collections.emptyList())
-     *         .create();
+     * Person person = Instancio.of(Person.class)
+     *     .set(all(List.class).within(scope(Person.class, "address")), Collections.emptyList())
+     *     .create();
      * }</pre>
      *
      * @param targetClass of the scope
@@ -440,9 +440,9 @@ public final class Select {
      * the following will set all booleans within {@code CustomerConsent} to {@code true}.
      *
      * <pre>{@code
-     *     Customer customer = Instancio.of(Customer.class)
-     *         .set(allBooleans().within(scope(CustomerConsent.class)), true)
-     *         .create();
+     * Customer customer = Instancio.of(Customer.class)
+     *     .set(allBooleans().within(scope(CustomerConsent.class)), true)
+     *     .create();
      * }</pre>
      *
      * <p><b>Note:</b> scopes can only be applied to regular selectors.

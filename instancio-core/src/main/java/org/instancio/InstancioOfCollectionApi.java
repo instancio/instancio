@@ -29,9 +29,9 @@ public interface InstancioOfCollectionApi<C> extends InstancioApi<C> {
      * <p>This method is syntactic sugar for:
      *
      * <pre>{@code
-     *   List<Integer> result = Instancio.ofList(Integer.class)
-     *       .generate(root(), gen -> gen.collection().size(50))
-     *       .create();
+     * List<Integer> result = Instancio.ofList(Integer.class)
+     *     .generate(root(), gen -> gen.collection().size(50))
+     *     .create();
      * }</pre>
      *
      * <p>Therefore, if you modify the collection generator via {@code root()}
@@ -41,18 +41,18 @@ public interface InstancioOfCollectionApi<C> extends InstancioApi<C> {
      * <p>For example, instead of:
      *
      * <pre>{@code
-     *   List<Integer> result = Instancio.ofList(Integer.class)
-     *       .size(50)
-     *       .generate(root(), gen -> gen.collection().subtype(LinkedList.class))
-     *       .create();
+     * List<Integer> result = Instancio.ofList(Integer.class)
+     *     .size(50)
+     *     .generate(root(), gen -> gen.collection().subtype(LinkedList.class))
+     *     .create();
      * }</pre>
      *
      * <p>use:
      *
      * <pre>{@code
-     *   List<Integer> result = Instancio.ofList(Integer.class)
-     *       .generate(root(), gen -> gen.collection().subtype(LinkedList.class).size(50))
-     *       .create();
+     * List<Integer> result = Instancio.ofList(Integer.class)
+     *     .generate(root(), gen -> gen.collection().subtype(LinkedList.class).size(50))
+     *     .create();
      * }</pre>
      *
      * @param size of the collection to generate

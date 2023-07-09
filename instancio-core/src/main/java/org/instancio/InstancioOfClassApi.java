@@ -28,9 +28,9 @@ public interface InstancioOfClassApi<T> extends InstancioApi<T> {
      * <p>
      * Example:
      * <pre>{@code
-     *   List<Address> addresses = Instancio.of(List.class)
-     *           .withTypeParameters(Address.class)
-     *           .create();
+     * List<Address> addresses = Instancio.of(List.class)
+     *     .withTypeParameters(Address.class)
+     *     .create();
      * }</pre>
      *
      * <p>This method can be used when the type parameters need
@@ -47,7 +47,7 @@ public interface InstancioOfClassApi<T> extends InstancioApi<T> {
      * is using {@link TypeToken TypeTokens}:
      *
      * <pre>{@code
-     *   List<Address> addresses = Instancio.create(new TypeToken<List<Address>>() {});
+     * List<Address> addresses = Instancio.create(new TypeToken<List<Address>>() {});
      * }</pre>
      *
      * @param types one or more type arguments
