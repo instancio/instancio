@@ -967,10 +967,21 @@ They are described in more detail in the [Custom Generators](#custom-generators)
 
 ### Using `assign()`
 
-The assignment API allows customising an object by passing in one or more `Assignment` objects:
+The assignment API allows customising an object by passing in one or more `Assignment` objects as a vararg:
 
 ```java
 InstancioApi<T> assign(Assignment... assignments);
+```
+
+!!! info "This is an experimental API available since version `3.0.0`"
+
+Assignments can be created using static methods provided by the {{Assign}} class.
+It provides three entry-point methods for creating an assignment:
+
+```java linenums="1"
+Assign.given(TargetSelector origin)
+Assign.given(TargetSelector origin, TargetSelector destination)
+Assign.valueOf(TargetSelector target)
 ```
 
 Each `Assignment` may have:
@@ -980,15 +991,6 @@ Each `Assignment` may have:
 - `Generator` for generating the value to assign
 - `Predicate` that must be satisfied by the origin for the assignment to be applied
 - `Function` for mapping the value before assigning to destination targets
-
-Assignments can be created using static methods provided by the {{Assign}} class.
-There are three entry-point methods provided by the `Assign` class:
-
-```java linenums="1"
-Assign.given(TargetSelector origin)
-Assign.given(TargetSelector origin, TargetSelector destination)
-Assign.valueOf(TargetSelector target)
-```
 
 The three types of expressions can be used for different use-cases described
 in the following sections.
@@ -1038,8 +1040,9 @@ Person person = Instancio.of(Person.class)
     .create()
 ```
 
-In addition, the expression allows specifying a `Function` for transforming
-the result prior to the assignment:
+In addition, the expression allows specifying a `Function` for transforming the result.
+For example, the following snippet sets the preferred name to the same value as the first name,
+unless the first name is *Robert*, in which case the preferred name will be set to *Bob*:
 
 ```java linenums="1"
 Person person = Instancio.of(Person.class)
@@ -1099,15 +1102,14 @@ When using assignments, the origin selector must match a single target.
 For this reason, the origin does not support selector groups and
 primitive/wrapper selectors, such as `allInts()`.
 
-For example, `Assign.given(allStrings())` is acceptable for the following class definition
+For example, `Assign.given(allStrings())` is acceptable for the following class
 because there is only one string that matches the selector:
 
 ```java
 class MyRecord(String string, Integer number) {}
 ```
 
-but not for the following class definitions, since `allStrings()`
-would match more than one string value:
+but not for the following classes because `allStrings()` would match more than one string value:
 
 ```java
 record MyRecord(String string1, String string2, Integer number) {}
@@ -1154,7 +1156,18 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
-Since an `Address` is a collection element, the assignment is scoped to each `Address` instance.
+Since `Address` is a collection element, the assignment is scoped to each `Address` instance.
+The following usage, on the other hand, is **invalid**:
+
+```java linenums="1" title="Invalid usage"
+Person person = Instancio.of(Person.class)
+    .generate(field(Address::getCountry), gen -> gen.oneOf("France", "Italy", "Spain"))
+    .assign(valueOf(Address::getCountry).to(Person::getCountryOfCitizenship))
+    .create();
+```
+
+This is because `Address` is a collection element, therefore, `valueOf(Address::getCountry)` matches multiple values.
+For this reason, no guarantee is made as to the value that will be assigned to `Person.countryOfCitizenship` field.
 
 ### Using `onComplete()`
 

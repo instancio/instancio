@@ -38,6 +38,8 @@ public class Person {
     @Getter
     private static String staticField;
 
+    // This field is intentionatilly non-static
+    @SuppressWarnings("all")
     private final String finalField = "a final field";
 
     private UUID uuid;
