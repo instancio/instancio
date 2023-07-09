@@ -15,13 +15,13 @@
  */
 package org.instancio.test.features.generator.collection;
 
+import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.util.Constants;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.CollectionLong;
 import org.instancio.test.support.pojo.person.Gender;
@@ -31,15 +31,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
+import static org.instancio.test.support.asserts.Asserts.assertWithFailOnErrorEnabled;
 
 @FeatureTag({
         Feature.GENERATE,
@@ -98,15 +97,15 @@ class CollectionGeneratorSizeTest {
         }
 
         @Test
-        @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
         void impossibleSetSizeWithFailOnErrorEnabled() {
-            final int size = 1000;
+            final int size = Gen.ints().range(1000, 1100).get();
             final InstancioApi<Set<Boolean>> api = Instancio.of(new TypeToken<Set<Boolean>>() {})
                     .generate(all(Set.class), gen -> gen.collection().size(size));
 
-            assertThatThrownBy(api::create)
+            assertWithFailOnErrorEnabled(api::create)
                     .isExactlyInstanceOf(InstancioException.class)
-                    .hasMessage("Unable to populate Set<Boolean> with requested number of elements: " + size);
+                    .hasMessage("Unable to populate Set<Boolean> with %s elements." +
+                            "%nElement node: Node[Boolean, depth=1, type=Boolean]", size);
         }
     }
 

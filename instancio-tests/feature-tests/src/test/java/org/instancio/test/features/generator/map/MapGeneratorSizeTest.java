@@ -15,13 +15,13 @@
  */
 package org.instancio.test.features.generator.map;
 
+import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.util.Constants;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -34,14 +34,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.Map;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
+import static org.instancio.test.support.asserts.Asserts.assertWithFailOnErrorEnabled;
 
 @FeatureTag({
         Feature.GENERATE,
@@ -108,18 +107,18 @@ class MapGeneratorSizeTest {
         }
 
         @Test
-        @SetSystemProperty(key = SystemProperties.FAIL_ON_ERROR, value = "true")
         void impossibleMapSizeWithFailOnErrorEnabled() {
-            final int size = 1000;
+            final int size = Gen.ints().range(1000, 1100).get();
             final InstancioApi<Map<Boolean, String>> api = Instancio.of(new TypeToken<Map<Boolean, String>>() {})
                     .generate(all(Map.class), gen -> gen.map().size(size));
 
-            assertThatThrownBy(api::create)
+            assertWithFailOnErrorEnabled(api::create)
                     .isExactlyInstanceOf(InstancioException.class)
-                    .hasMessage("Unable to populate Map<Boolean, String> with requested number of entries: " + size);
+                    .hasMessage("Unable to populate Map<Boolean, String> with %s entries." +
+                            "%nKey node:   Node[Boolean, depth=1, type=Boolean]" +
+                            "%nValue node: Node[String, depth=1, type=String]", size);
         }
     }
-
 
     private void assertSize(Function<MapGeneratorSpec<?, ?>, MapGeneratorSpec<?, ?>> fn, int expectedSize) {
         assertSizeBetween(fn, expectedSize, expectedSize);
