@@ -244,11 +244,16 @@ class InstancioEngine {
             }
 
             if (failedAdditions > Constants.FAILED_ADD_THRESHOLD) {
-                conditionalFailOnError(() -> {
-                    throw new InstancioException(
-                            "Unable to populate " + Format.withoutPackage(node.getType())
-                                    + " with requested number of entries: " + hint.generateEntries());
-                });
+                if (!keyNode.isCyclic() && !valueNode.isCyclic()) {
+                    conditionalFailOnError(() -> {
+                        final String errorMsg = String.format("Unable to populate %s with %s entries.%n"
+                                        + "Key node:   %s%n"
+                                        + "Value node: %s",
+                                Format.withoutPackage(node.getType()), hint.generateEntries(), keyNode, valueNode);
+
+                        throw new InstancioException(errorMsg);
+                    });
+                }
                 break;
             }
         }
@@ -417,16 +422,20 @@ class InstancioEngine {
                     failedAdditions++;
                 }
             } else {
-                // Avoid infinite loop (e.g. if value couldn't be generated)
+                // Avoid infinite loop when a value cannot be generated
                 failedAdditions++;
             }
 
             if (failedAdditions > Constants.FAILED_ADD_THRESHOLD) {
-                conditionalFailOnError(() -> {
-                    throw new InstancioException(
-                            "Unable to populate " + Format.withoutPackage(node.getType())
-                                    + " with requested number of elements: " + hint.generateElements());
-                });
+                if (!elementNode.isCyclic()) {
+                    conditionalFailOnError(() -> {
+                        final String errorMsg = String.format("Unable to populate %s with %s elements.%n" +
+                                        "Element node: %s",
+                                Format.withoutPackage(node.getType()), hint.generateElements(), elementNode);
+
+                        throw new InstancioException(errorMsg);
+                    });
+                }
                 break;
             }
         }
