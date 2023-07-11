@@ -33,7 +33,8 @@ public class NodeKindResolverFacade {
                 new NodeKindMapResolver(),
                 new NodeKindArrayResolver(),
                 new NodeKindRecordResolver(),
-                new NodeKindContainerResolver(Collections.unmodifiableList(containerFactories))
+                new NodeKindContainerResolver(Collections.unmodifiableList(containerFactories)),
+                new NodeKindJdkResolver()
         };
     }
 
@@ -44,6 +45,6 @@ public class NodeKindResolverFacade {
                 return resolve.get();
             }
         }
-        return NodeKind.DEFAULT;
+        return NodeKind.POJO;
     }
 }

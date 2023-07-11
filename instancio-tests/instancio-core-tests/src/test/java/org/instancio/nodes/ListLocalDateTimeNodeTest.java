@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class ListLocalDateTimeNodeTest extends NodeTestTemplate<List<LocalDateTi
         final InternalNode listNode = assertNode(rootNode)
                 .hasTargetClass(List.class)
                 .hasTypeMappedTo(List.class, "E", LocalDateTime.class)
+                .isOfKind(NodeKind.COLLECTION)
                 .hasChildrenOfSize(1)
                 .get();
 
@@ -37,6 +39,7 @@ public class ListLocalDateTimeNodeTest extends NodeTestTemplate<List<LocalDateTi
                 .hasParent(listNode)
                 .hasNullField()
                 .hasTargetClass(LocalDateTime.class)
+                .isOfKind(NodeKind.JDK)
                 .hasEmptyTypeMap();
     }
 }

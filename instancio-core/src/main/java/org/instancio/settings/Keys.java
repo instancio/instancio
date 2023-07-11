@@ -372,6 +372,54 @@ public final class Keys {
             "seed", Long.class, null, null, true);
 
     /**
+     * Specifies whether back references should be set for cyclic classes;
+     * default is {@code false} (cycles are terminated with {@code null});
+     * property name {@code set.back.references}.
+     *
+     * <p>For example, given the following classes:
+     * <pre>{@code
+     * class Order {
+     *     List<OrderItem> items;
+     * }
+     * class OrderItem {
+     *     Order order;
+     * }
+     * }</pre>
+     *
+     * <p>If {@code SET_BACK_REFERENCES} is disabled,
+     * creating an instance of {@code Order} would result in the
+     * {@code OrderItem.order} field being {@code null}:
+     *
+     * <pre>{@code
+     * Order order = Instancio.create(Order.class);
+     *
+     * assertThat(order.getItems()).allSatisfy(item ->
+     *     assertThat(item.getOrder()).isNull()
+     * );
+     * }</pre>
+     *
+     * <p>If {@code SET_BACK_REFERENCES} is enabled,
+     * creating an instance of {@code Order} would result in the
+     * {@code OrderItem.order} field being set to the parent order:
+     *
+     * <pre>{@code
+     * Settings settings = Settings.create().set(Keys.SET_BACK_REFERENCES, true);
+     * Order order = Instancio.of(Order.class)
+     *     .withSettings(settings)
+     *     .create();
+     *
+     * assertThat(order.getItems()).allSatisfy(item ->
+     *     assertThat(item.getOrder()).isSameAs(order)
+     * );
+     * }</pre>
+     *
+     * @since 3.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Boolean> SET_BACK_REFERENCES = register(
+            "set.back.references", Boolean.class, false);
+
+    /**
      * Specifies modifier exclusions for setter-methods;
      * default is {@code 0} (no exclusions);
      * property name {@code setter.exclude.modifier}.

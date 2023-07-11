@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,9 +29,11 @@ import java.util.OptionalLong;
 class PredefinedNodeCreator {
 
     private final NodeContext nodeContext;
+    private final NodeKindResolverFacade nodeKindResolverFacade;
 
-    PredefinedNodeCreator(final NodeContext nodeContext) {
+    PredefinedNodeCreator(final NodeContext nodeContext, final NodeKindResolverFacade nodeKindResolverFacade) {
         this.nodeContext = nodeContext;
+        this.nodeKindResolverFacade = nodeKindResolverFacade;
     }
 
     @Nullable
@@ -75,7 +78,7 @@ class PredefinedNodeCreator {
 
         result.setChildren(Collections.singletonList(InternalNode.builder()
                 .nodeContext(nodeContext)
-                .nodeKind(NodeKind.DEFAULT)
+                .nodeKind(nodeKindResolverFacade.getNodeKind(childType))
                 .type(childType)
                 .rawType(childType)
                 .targetClass(childType)

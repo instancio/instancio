@@ -46,6 +46,7 @@ class OptionalStringNodeTest extends NodeTestTemplate<OptionalString> {
         assertNode(getOnlyElement(optionalNode.getChildren()))
                 .hasParent(optionalNode)
                 .hasTargetClass(String.class)
+                .isOfKind(NodeKind.JDK)
                 .hasEmptyTypeMap()
                 .hasNoChildren();
     }

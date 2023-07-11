@@ -40,7 +40,7 @@ class OptionalIntNodeTest extends NodeTestTemplate<OptionalInt> {
 
         assertNode(rootNode.getOnlyChild())
                 .hasParent(rootNode)
-                .isOfKind(NodeKind.DEFAULT)
+                .isOfKind(NodeKind.JDK)
                 .hasTargetClass(int.class)
                 .hasType(int.class)
                 .hasRawType(int.class)

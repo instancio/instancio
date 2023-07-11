@@ -52,7 +52,7 @@ class NodeCreator {
         this.nodeContext = nodeContext;
         this.typeHelper = new TypeHelper(nodeContext);
         this.nodeKindResolverFacade = new NodeKindResolverFacade(nodeContext.getContainerFactories());
-        this.predefinedNodeCreator = new PredefinedNodeCreator(nodeContext);
+        this.predefinedNodeCreator = new PredefinedNodeCreator(nodeContext, nodeKindResolverFacade);
     }
 
     /**

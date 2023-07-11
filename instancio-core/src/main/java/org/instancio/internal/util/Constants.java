@@ -15,6 +15,9 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.generator.AfterGenerate;
+import org.instancio.generator.Hints;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -63,6 +66,8 @@ public final class Constants {
 
     public static final long DURATION_MIN_NANOS = 1;
     public static final long DURATION_MAX_NANOS = Duration.ofDays(1000).toNanos();
+
+    public static final Hints DO_NOT_MODIFY_HINT = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
 
     private Constants() {
         // non-instantiable
