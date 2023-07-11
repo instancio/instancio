@@ -29,11 +29,22 @@ public enum NodeKind {
     IGNORED,
 
     /**
-     * Fallback kind. A node of this kind could represent either a POJO class
-     * or a JDK type that is considered to be a leaf node, such as
-     * {@code String}, {@code LocalDate}, {@code BigDecimal}, etc.
+     * Represents POJO classes.
+     *
+     * @since 3.0.0
      */
-    DEFAULT,
+    POJO,
+
+    /**
+     * Represents JDK types such as {@code String}, {@code LocalDate},
+     * {@code BigDecimal}, etc (excluding collections and maps).
+     *
+     * @see #ARRAY
+     * @see #COLLECTION
+     * @see #MAP
+     * @since 3.0.0
+     */
+    JDK,
 
     /**
      * Represents an array.

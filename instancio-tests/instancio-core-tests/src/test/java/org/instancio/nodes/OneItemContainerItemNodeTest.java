@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.container.OneItemContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -31,6 +32,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
         assertNode(rootNode)
                 .hasTargetClass(OneItemContainer.class)
                 .hasTypeMappedTo(OneItemContainer.class, "T", "org.instancio.test.support.pojo.generics.basic.Item<java.lang.String>")
+                .isOfKind(NodeKind.POJO)
                 .hasChildrenOfSize(1);
 
         final String itemField = "item";
@@ -39,6 +41,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
                 .hasFieldName(itemField)
                 .hasTargetClass(Item.class)
                 .hasTypeMappedTo(Item.class, "K", "T")
+                .isOfKind(NodeKind.POJO)
                 .hasTypeMapWithSize(1)
                 .hasChildrenOfSize(1)
                 .get();
@@ -56,6 +59,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
                 .hasParent(nestedItem)
                 .hasFieldName("value")
                 .hasTargetClass(String.class)
+                .isOfKind(NodeKind.JDK)
                 .hasEmptyTypeMap()
                 .hasNoChildren();
     }

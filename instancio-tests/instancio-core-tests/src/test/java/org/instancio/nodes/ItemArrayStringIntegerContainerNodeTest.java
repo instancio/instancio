@@ -30,7 +30,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
     protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(ItemArrayContainer.class)
-                .isOfKind(NodeKind.DEFAULT)
+                .isOfKind(NodeKind.POJO)
                 .hasChildrenOfSize(2);
 
         // Item<X>[] itemArrayX

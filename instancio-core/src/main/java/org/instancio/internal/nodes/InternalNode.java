@@ -179,7 +179,7 @@ public final class InternalNode {
         InternalNode ancestor = parent;
 
         while (ancestor != null) {
-            if ((nodeKind == NodeKind.DEFAULT || nodeKind == NodeKind.RECORD)
+            if ((nodeKind == NodeKind.POJO || nodeKind == NodeKind.RECORD)
                     && Objects.equals(targetClass, ancestor.targetClass)
                     && Objects.equals(type, ancestor.type)) {
                 return true;

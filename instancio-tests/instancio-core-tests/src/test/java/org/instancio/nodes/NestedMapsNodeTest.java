@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.generics.NestedMaps;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -43,6 +44,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
                 .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Long.class)
                 .hasTypeMappedTo(Map.class, "V", Types.MAP_STRING_BOOLEAN.get())
+                .isOfKind(NodeKind.MAP)
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
                 .get();
@@ -60,6 +62,7 @@ class NestedMapsNodeTest extends NodeTestTemplate<NestedMaps<Long, String>> {
                 .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", "OKEY")
                 .hasTypeMappedTo(Map.class, "V", "java.util.Map<IKEY, java.lang.Boolean>")
+                .isOfKind(NodeKind.MAP)
                 .hasTypeMapWithSize(2)
                 .hasChildrenOfSize(2)
                 .get();

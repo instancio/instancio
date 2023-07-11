@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.generics.MapWithoutTypes;
 import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -32,6 +33,7 @@ class MapWithoutTypesNodeTest extends NodeTestTemplate<MapWithoutTypes> {
 
         assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("map")
+                .isOfKind(NodeKind.MAP)
                 .hasNoChildren();
     }
 }

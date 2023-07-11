@@ -1824,9 +1824,9 @@ The primary reasons for modifying this setting are:
 
 - **To improve the performance.**
 
-    The performance may be inadequate when generating a cyclic class structure,
-    where multiple classes reference each other. Consider reducing the maximum
-    depth value (and also, using `ignore()` to exclude certain objects).
+    The performance may be inadequate when generating data for large complex classes.
+    Consider reducing the maximum depth value in such cases
+    (and also, using `ignore()` to exclude certain objects).
 
 - **To generate data beyond the default maximum depth.**
 
@@ -1841,13 +1841,13 @@ from lowest to highest precedence.
 Using `instancio.properties` to define a new global maximum depth:
 
 ```properties
-max.depth=5
+max.depth=15
 ```
 
 Using {{Settings}} with `Keys.MAX_DEPTH` key.
 
 ```java
-Settings settings = Settings.create().set(Keys.MAX_DEPTH, 5);
+Settings settings = Settings.create().set(Keys.MAX_DEPTH, 15);
 Person person = Instancio.of(Person.class)
     .withSettings(settings)
     .create();
@@ -1857,9 +1857,85 @@ Using the API method {{withMaxDepth}}:
 
 ```java
 Person person = Instancio.of(Person.class)
-    .withMaxDepth(5)
+    .withMaxDepth(15)
     .create();
 ```
+
+## Cyclic Objects
+
+Data models often have circular relationships. A common example is a one-to-many relationship among JPA entities.
+Consider the following example where each `OrderItem` references the `Order` to which it belongs
+(getters and setters omitted for brevity):
+
+```java linenums="1"
+class Order {
+    Long id;
+    List<OrderItem> items;
+}
+
+class OrderItem {
+    Long id;
+    Order order;
+}
+```
+
+The default behaviour of Instancio is to terminate cycles with a `null` reference.
+For example, the following snippet will produce `OrderItem.order` references set to `null`:
+
+```java linenums="1"
+Order order = Instancio.create(Order.class);
+
+// Sample output:
+// Order(id=2132, items=[OrderItem(id=9318, order=null), OrderItem(id=6077, order=null)])
+```
+
+It is, however, possible to set a back-reference to the root object instead of generating `null`.
+One way to accomplish this is using the [`assign()`](#using-assign) API:
+
+```java linenums="1"
+Order order = Instancio.of(Order.class)
+    .assign(valueOf(root()).to(OrderItem::getOrder))
+    .create();
+
+assertThat(order.getItems()).allSatisfy(item ->
+    assertThat(item.getOrder()).isSameAs(order));
+```
+
+An alternative option is to assign back-references automatically using the `Keys.SET_BACK_REFERENCES` setting.
+The following snippet will produce the same result as the example above:
+
+```java linenums="1" hl_lines="1 4"
+Settings settings = Settings.create().set(Keys.SET_BACK_REFERENCES, true);
+
+Order order = Instancio.of(Order.class)
+    .withSettings(settings)
+    .create();
+```
+!!! attention ""
+    <lnum>1</lnum> Note that this setting must be enabled explicitly using `Settings` or `instancio.properties`
+
+
+When this setting is enabled, Instancio will set the `OrderItem.order` reference to a previously generated
+`Order` instance. In this example it happens to be the root object.
+
+It should be noted that in certain cases, enabling `SET_BACK_REFERENCES` may produce unwanted results.
+Consider the following example of creating an `OrderItem`:
+
+```java linenums="1"
+OrderItem item = Instancio.of(OrderItem.class)
+    .withSettings(Settings.create().set(Keys.SET_BACK_REFERENCES, true))
+    .create();
+```
+
+This will produce the following objects:
+
+``` mermaid
+graph LR
+  A[OrderItem] --> B[Order];
+  B --> C["List&lt;OrderItem&gt;"];
+```
+
+where **all** elements of `List<OrderItem>` are the **same instance** of the `OrderItem`.
 
 ## Seed
 
@@ -2160,6 +2236,7 @@ on.set.method.error=ASSIGN_FIELD
 on.set.method.not.found=ASSIGN_FIELD
 setter.style=SET
 seed=12345
+set.back.references=false
 short.max=10000
 short.min=1
 short.nullable=false

@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.generics.ListExtendsNumber;
 import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -30,15 +31,18 @@ class ListExtendsNumberNodeTest extends NodeTestTemplate<ListExtendsNumber> {
     protected void verify(InternalNode rootNode) {
         assertNode(rootNode)
                 .hasTargetClass(ListExtendsNumber.class)
-                .hasChildrenOfSize(1);
+                .hasChildrenOfSize(1)
+                .isOfKind(NodeKind.POJO);
 
         final InternalNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
                 .hasFieldName("list")
                 .hasChildrenOfSize(1)
                 .hasTargetClass(List.class)
+                .isOfKind(NodeKind.COLLECTION)
                 .get();
 
         assertNode(list.getOnlyChild())
-                .hasTargetClass(Number.class);
+                .hasTargetClass(Number.class)
+                .isOfKind(NodeKind.JDK);
     }
 }
