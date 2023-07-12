@@ -17,11 +17,11 @@ package org.instancio.internal.generator;
 
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
-import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.generator.specs.NullableGeneratorSpec;
+import org.instancio.internal.util.Constants;
 
 /**
  * Base class for all internal generators.
@@ -30,8 +30,6 @@ import org.instancio.generator.specs.NullableGeneratorSpec;
  */
 @InternalApi
 public abstract class AbstractGenerator<T> implements Generator<T>, NullableGeneratorSpec<T> {
-
-    private static final Hints DO_NOT_MODIFY_HINT = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
 
     private final GeneratorContext context;
     private boolean nullable;
@@ -91,6 +89,6 @@ public abstract class AbstractGenerator<T> implements Generator<T>, NullableGene
     public Hints hints() {
         // Default for internal generators since most generated types
         // are "value types" that don't have fields that need to be populated.
-        return DO_NOT_MODIFY_HINT;
+        return Constants.DO_NOT_MODIFY_HINT;
     }
 }

@@ -15,9 +15,7 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
-import org.instancio.generator.Hints;
 import org.instancio.internal.GeneratedObjectStore;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.context.ModelContext;
@@ -25,6 +23,7 @@ import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Fail;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -37,7 +36,6 @@ import java.util.function.Predicate;
 
 public class AssignmentNodeHandler implements NodeHandler {
     private static final Logger LOG = LoggerFactory.getLogger(AssignmentNodeHandler.class);
-    private static final Hints DO_NOT_MODIFY = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
 
     private final ModelContext<?> context;
     private final GeneratedObjectStore generatedObjectStore;
@@ -92,7 +90,7 @@ public class AssignmentNodeHandler implements NodeHandler {
                     // Since the same object instance is assigned to different fields,
                     // set this result to DO_NOT_MODIFY. The result will be populated
                     // based on the original hint
-                    return GeneratorResult.create(destinationResult, DO_NOT_MODIFY);
+                    return GeneratorResult.create(destinationResult, Constants.DO_NOT_MODIFY_HINT);
                 } else {
                     final Generator<?> generator = assignment.getGenerator();
                     return userSuppliedGeneratorProcessor.getGeneratorResult(node, generator);
