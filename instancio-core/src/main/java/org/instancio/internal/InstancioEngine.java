@@ -186,6 +186,8 @@ class InstancioEngine {
             return generatorResult;
         }
 
+        ApiValidator.validateValueIsAssignableToTargetClass(generatorResult.getValue(), Map.class, node);
+
         //noinspection unchecked
         final Map<Object, Object> map = (Map<Object, Object>) generatorResult.getValue();
         final InternalNode keyNode = node.getChildren().get(0);
@@ -234,6 +236,12 @@ class InstancioEngine {
             if ((mapKey != null || nullableKey)
                     && (mapValue != null || nullableValue || mapValueResult.hasEmitNullHint())) {
                 if (!map.containsKey(mapKey)) {
+                    ApiValidator.validateValueIsAssignableToElementNode(
+                            "error adding key to map", mapKey, node, keyNode);
+
+                    ApiValidator.validateValueIsAssignableToElementNode(
+                            "error adding value to map", mapValue, node, valueNode);
+
                     map.put(mapKey, mapValue);
                     entriesToGenerate--;
                 } else {
@@ -352,6 +360,9 @@ class InstancioEngine {
 
             // can't assign null values to primitive arrays
             if (!isPrimitiveArray || elementValue != null) {
+                ApiValidator.validateValueIsAssignableToElementNode(
+                        "array element type mismatch", elementValue, node, elementNode);
+
                 Array.set(arrayObj, i, elementValue);
             }
         }
@@ -369,6 +380,8 @@ class InstancioEngine {
         if (generatorResult.containsNull() || node.getChildren().isEmpty()) {
             return generatorResult;
         }
+
+        ApiValidator.validateValueIsAssignableToTargetClass(generatorResult.getValue(), Collection.class, node);
 
         //noinspection unchecked
         final Collection<Object> collection = (Collection<Object>) generatorResult.getValue();
@@ -413,6 +426,9 @@ class InstancioEngine {
                 }
 
                 if (canAdd && collection.add(elementValue)) {
+                    ApiValidator.validateValueIsAssignableToElementNode(
+                            "error adding element to collection", elementValue, node, elementNode);
+
                     elementsToGenerate--;
 
                 } else {

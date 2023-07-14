@@ -27,6 +27,7 @@ import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.StringUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.SettingKey;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +40,7 @@ import java.util.function.Supplier;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNestedGenerics;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNonGenericClass;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
+import static org.instancio.internal.util.Constants.NL;
 
 @SuppressWarnings("PMD.GodClass")
 public final class ApiValidator {
@@ -120,11 +122,11 @@ public final class ApiValidator {
 
         for (Type param : rootTypeParameters) {
             if (param instanceof Class<?>) {
-                final Class<Object> paramRawType = TypeUtils.getRawType(param);
+                final Class<?> rawType = (Class<?>) param;
 
-                if (paramRawType.getTypeParameters().length > 0) {
+                if (rawType.getTypeParameters().length > 0) {
                     final String classWithTypeParams = String.format("%s<%s>",
-                            paramRawType.getSimpleName(), Format.getTypeVariablesCsv(paramRawType));
+                            rawType.getSimpleName(), Format.getTypeVariablesCsv(rawType));
 
                     throw Fail.withUsageError(withTypeParametersNestedGenerics(classWithTypeParams));
                 }
@@ -273,6 +275,67 @@ public final class ApiValidator {
                     pw.getWrapper().getTargetClass().getSimpleName(),
                     pw.getPrimitive().getTargetClass().getSimpleName());
         }
+    }
+
+    public static void validateValueIsAssignableToTargetClass(
+            final Object value,
+            final Class<?> targetClass,
+            final InternalNode node) {
+
+        if (!targetClass.isAssignableFrom(value.getClass())) {
+            final StringBuilder sb = new StringBuilder("error assigning value due to incompatible types")
+                    .append(NL).append(NL);
+
+            appendTypeMismatchDetails(value, node, sb);
+            throw Fail.withUsageError(sb.toString());
+        }
+    }
+
+    public static void validateValueIsAssignableToElementNode(
+            final String errorMsg,
+            final Object value,
+            final InternalNode containerNode,
+            final InternalNode elementNode) {
+
+        if (value == null) {
+            return;
+        }
+
+        final Class<?> valueClass = value.getClass();
+
+
+        final Class<?> elementType = elementNode.getTargetClass();
+        final Class<?> targetClass = elementType.isPrimitive()
+                ? PrimitiveWrapperBiLookup.getEquivalent(elementType)
+                : elementType;
+
+        if (targetClass.isAssignableFrom(valueClass)) {
+            return;
+        }
+
+        final StringBuilder sb = new StringBuilder(errorMsg)
+                .append(": ").append(containerNode).append(NL).append(NL);
+
+        appendTypeMismatchDetails(value, elementNode, sb);
+        throw Fail.withUsageError(sb.toString());
+    }
+
+    private static void appendTypeMismatchDetails(
+            final Object value, final InternalNode node, final StringBuilder sb) {
+
+        final String nodeDescription = Format.formatNode(node);
+        final String argType = Format.withoutPackage(value.getClass());
+        final String argValue = StringUtils.quoteToString(value);
+
+        if (node.getField() == null) {
+            sb.append(" -> Target type ..............: ");
+        } else {
+            sb.append(" -> Target field .............: ");
+        }
+
+        sb.append(nodeDescription).append(NL)
+                .append(" -> Provided argument type ...: ").append(argType).append(NL)
+                .append(" -> Provided argument value ..: ").append(argValue);
     }
 
     private ApiValidator() {
