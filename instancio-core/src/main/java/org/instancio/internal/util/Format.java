@@ -16,6 +16,7 @@
 package org.instancio.internal.util;
 
 import org.instancio.Scope;
+import org.instancio.internal.nodes.InternalNode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -29,6 +30,12 @@ import static java.util.stream.Collectors.joining;
 
 public final class Format {
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
+
+    public static String formatNode(final InternalNode node) {
+        return node.getField() == null
+                ? withoutPackage(node.getType())
+                : formatField(node.getField());
+    }
 
     public static String formatField(final Field field) {
         return field == null ? null : String.format("%s %s.%s",

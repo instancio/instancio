@@ -66,10 +66,11 @@ final class GeneratorSupport {
 
         final Class<?> typeArg = TypeUtils.getGenericSuperclassTypeArgument(generator.getClass());
         if (typeArg != null) {
-            return type.isAssignableFrom(typeArg) ||
-                    PrimitiveWrapperBiLookup.findEquivalent(typeArg)
-                            .filter(type::isAssignableFrom)
-                            .isPresent();
+            if (type.isAssignableFrom(typeArg)) {
+                return true;
+            }
+            final Class<?> equivalent = PrimitiveWrapperBiLookup.getEquivalent(typeArg);
+            return equivalent != null && type.isAssignableFrom(equivalent);
         }
         // couldn't determine type arg ('this' is probably a lambda)
         return false;
