@@ -148,6 +148,16 @@ Feedback and bug reports are greatly appreciated. Please submit an
 [issue](https://github.com/instancio/instancio/issues) to report a bug,
 or if you have a question or a suggestion.
 
+# Extensions
+
+[instancio-jpa](https://github.com/Mobe91/instancio-jpa) is an extension created by
+[Moritz Becker](https://github.com/Mobe91) that can be used for integration tests.
+
+> Instancio-jpa is an extension on top of the Instancio library that enables the creation and population
+> of JPA entities including the subsequent persistence of these entities using JPA for the purpose of test
+> data generation in integration tests. The extension uses the JPA metamodel to yield a persistable object graph.
+> It further provides JPA based utilities that allows for straight forward persistence of the object graph.
+
 # Special thanks to
 
 [JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com) for supporting this project.
