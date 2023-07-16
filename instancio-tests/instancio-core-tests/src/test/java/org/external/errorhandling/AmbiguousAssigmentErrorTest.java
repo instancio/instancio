@@ -51,15 +51,25 @@ class AmbiguousAssigmentErrorTest extends AbstractErrorMessageTestTemplate {
                  -> The origin selector 'all(String)' matches multiple values.
                     It's not clear which of these values should be used:
 
-                    -> Match 1: Node[Address.address, depth=1, type=String]
-                       Ancestors:
-                       -> Node[Address, depth=0, type=Address]
+                 -> Match 1: field Address.address
 
-                    -> Match 2: Node[Address.city, depth=1, type=String]
-                       Ancestors:
-                       -> Node[Address, depth=0, type=Address]
+                    <1:Address: String address>
+                     └──<0:Address>
+
+                 -> Match 2: field Address.city
+
+                    <1:Address: String city>
+                     └──<0:Address>
+
+                Format: <depth:class: field>
 
                 There could be more matches. Evaluation stopped after the second match.
+                To print the node hierarchy, run Instancio in verbose() mode:
+
+                  Instancio.of(Example.class)
+                      // snip ...
+                      .verbose()
+                      .create();
 
                 To resolve the error, consider narrowing down the origin selector
                 so that it matches only one target. This can be done using:

@@ -15,10 +15,14 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.testsupport.fixtures.Nodes;
 import org.instancio.testsupport.fixtures.Types;
+import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -28,6 +32,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.scope;
+import static org.instancio.test.support.asserts.Asserts.assertEqualsIgnoringLineCarriage;
 
 class FormatTest {
 
@@ -92,5 +97,28 @@ class FormatTest {
         assertThat(Format.getTypeVariablesCsv(Object.class)).isEmpty();
         assertThat(Format.getTypeVariablesCsv(List.class)).isEqualTo("E");
         assertThat(Format.getTypeVariablesCsv(Map.class)).isEqualTo("K, V");
+    }
+
+    @Test
+    void nodePathToRoot() {
+        final NodeFactory nodeFactory = Nodes.nodeFactory();
+        final InternalNode person = nodeFactory.createRootNode(Person.class);
+
+        assertThat(Format.nodePathToRoot(person, "")).isEqualTo("<0:Person>");
+
+        final InternalNode address = NodeUtils.getChildNode(person, "address");
+        assertEqualsIgnoringLineCarriage(Format.nodePathToRoot(address, "  "),
+                """
+                          <1:Person: Address address>
+                           └──<0:Person>\
+                        """);
+
+        final InternalNode phoneNumbers = NodeUtils.getChildNode(address, "phoneNumbers");
+        assertEqualsIgnoringLineCarriage(Format.nodePathToRoot(phoneNumbers, " > "),
+                """
+                         > <2:Address: List<Phone> phoneNumbers>
+                         >  └──<1:Person: Address address>
+                         >      └──<0:Person>\
+                        """);
     }
 }

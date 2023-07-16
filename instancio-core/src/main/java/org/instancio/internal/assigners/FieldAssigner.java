@@ -17,6 +17,7 @@ package org.instancio.internal.assigners;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.AssignerErrorUtil;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.AssignmentType;
@@ -46,32 +47,32 @@ final class FieldAssigner implements Assigner {
         final Field field = node.getField();
 
         if (value != null) {
-            setField(target, field, value);
+            setField(node, target, value);
         } else if (!field.getType().isPrimitive()) { // can't assign null to a primitive
-            setField(target, field, null);
+            setField(node, target, null);
         }
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    private void setField(final Object target, final Field field, final Object value) {
+    private void setField(final InternalNode node, final Object target, final Object value) {
         try {
+            Field field = node.getField();
             field.setAccessible(true);
             field.set(target, value);
         } catch (IllegalArgumentException ex) {
             // Wrong type is being assigned to a field.
             // Always propagate type mismatch errors as it's most likely a user error.
-            final String msg = AssignerErrorUtil.getIncompatibleTypesErrorMessage(
-                    value, field, ex);
+            String msg = AssignerErrorUtil.getTypeMismatchErrorMessage(value, node, ex);
 
             throw Fail.withUsageError(msg, ex);
         } catch (Exception ex) {
-            handleError(field, value, ex);
+            handleError(node, value, ex);
         }
     }
 
-    private void handleError(final Field field, final Object value, final Exception ex) {
+    private void handleError(final InternalNode node, final Object value, final Exception ex) {
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
-
+        final Field field = node.getField();
         if (onSetFieldError == OnSetFieldError.FAIL) {
             final String msg = AssignerErrorUtil.incompatibleField(value, field, ex, settings);
             throw new InstancioApiException(msg, ex);

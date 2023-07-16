@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.assigners;
+package org.instancio.internal.util;
 
-import org.instancio.internal.util.Format;
-import org.instancio.internal.util.Sonar;
-import org.instancio.internal.util.StringUtils;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetFieldError;
@@ -31,37 +29,75 @@ import java.lang.reflect.Field;
 import static org.instancio.internal.util.Constants.NL;
 
 @SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
-final class AssignerErrorUtil {
+public final class AssignerErrorUtil {
     private static final int INITIAL_SB_SIZE = 1024;
 
     private AssignerErrorUtil() {
         // non-instantiable
     }
 
-    static String getIncompatibleTypesErrorMessage(
-            final Object value,
-            final Field field,
-            final Throwable cause) {
-
-        final String fieldName = Format.formatField(field);
-        final String argType = Format.withoutPackage(value.getClass());
-        final String argValue = StringUtils.quoteToString(value);
-        final Throwable rootCause = getRootCause(cause);
-
-        //noinspection StringBufferReplaceableByString
-        return new StringBuilder(INITIAL_SB_SIZE)
-                .append("error assigning value to field due to incompatible types").append(NL)
-                .append(NL)
-                .append(" -> Field ....................: ").append(fieldName).append(NL)
-                .append(" -> Provided argument type ...: ").append(argType).append(NL)
-                .append(" -> Provided argument value ..: ").append(argValue).append(NL)
-                .append(NL)
-                .append("Root cause:").append(NL)
-                .append(" -> ").append(rootCause)
-                .toString();
+    public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node) {
+        return getTypeMismatchErrorMessage(value, node, null);
     }
 
-    static String incompatibleField(
+    public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node, final Throwable cause) {
+        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE);
+
+        appendNodeDetails("error assigning value to: ", node, sb);
+        appendTypeMismatchDetails(value, node, sb);
+
+        if (cause != null) {
+            sb.append(NL).append(NL)
+                    .append("Root cause:").append(NL)
+                    .append(" -> ").append(getRootCause(cause));
+        }
+
+        return sb.toString();
+    }
+
+    public static String getContainerElementMismatchMessage(
+            final String errorMsg,
+            final Object value,
+            final InternalNode containerNode,
+            final InternalNode elementNode) {
+
+        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE);
+        appendNodeDetails(errorMsg + ": ", containerNode, sb);
+        appendTypeMismatchDetails(value, elementNode, sb);
+        return sb.toString();
+    }
+
+    private static void appendNodeDetails(final String errorHeader, final InternalNode node, final StringBuilder sb) {
+        sb.append(errorHeader)
+                .append(node.toDisplayString())
+                .append(" (depth=").append(node.getDepth()).append(')').append(NL).append(NL)
+                .append(" │ Path to root:").append(NL)
+                .append(Format.nodePathToRoot(node, " │   ")).append("   <-- Root").append(NL)
+                .append(" │").append(NL)
+                .append(" │ Format: <depth:class: field>").append(NL)
+                .append(NL).append(NL);
+    }
+
+    private static void appendTypeMismatchDetails(
+            final Object value, final InternalNode node, final StringBuilder sb) {
+
+        final String nodeDescription = Format.formatNode(node);
+        final String argType = Format.withoutPackage(value.getClass());
+        final String argValue = StringUtils.quoteToString(value);
+
+        sb.append("Type mismatch:").append(NL).append(NL);
+        if (node.getField() == null) {
+            sb.append(" -> Target type ..............: ");
+        } else {
+            sb.append(" -> Target field .............: ");
+        }
+
+        sb.append(nodeDescription).append(NL)
+                .append(" -> Provided argument type ...: ").append(argType).append(NL)
+                .append(" -> Provided argument value ..: ").append(argValue);
+    }
+
+    public static String incompatibleField(
             final Object value,
             final Field field,
             final Throwable cause,
@@ -80,7 +116,7 @@ final class AssignerErrorUtil {
                 .append(NL)
                 .append("Error assigning value to field:").append(NL)
                 .append(NL)
-                .append(" -> Field ....................: ").append(fieldName).append(NL)
+                .append(" -> Target field: ............: ").append(fieldName).append(NL)
                 .append(" -> Provided argument type ...: ").append(argType).append(NL)
                 .append(" -> Provided argument value ..: ").append(argValue).append(NL)
                 .append(NL)
@@ -92,7 +128,7 @@ final class AssignerErrorUtil {
                 .toString();
     }
 
-    static String setterNotFound(
+    public static String setterNotFound(
             final Field field,
             final String expectedMethodName,
             final Settings settings) {
@@ -123,7 +159,7 @@ final class AssignerErrorUtil {
                 .toString();
     }
 
-    static String getSetterInvocationErrorMessage(
+    public static String getSetterInvocationErrorMessage(
             final Object value,
             final String method,
             final Throwable cause,

@@ -37,7 +37,16 @@ class TypeMismatchWithMapFieldTest extends AbstractErrorMessageTestTemplate {
                 Error creating an object
                  -> at org.external.errorhandling.TypeMismatchWithMapFieldTest.methodUnderTest(TypeMismatchWithMapFieldTest.java:29)
 
-                Reason: error assigning value due to incompatible types
+                Reason: error assigning value to: field TwoMapsOfIntegerItemString.map1 (depth=1)
+
+                 │ Path to root:
+                 │   <1:TwoMapsOfIntegerItemString: Map<Integer, Item<String>> map1>
+                 │    └──<0:TwoMapsOfIntegerItemString>   <-- Root
+                 │
+                 │ Format: <depth:class: field>
+
+
+                Type mismatch:
 
                  -> Target field .............: Map TwoMapsOfIntegerItemString.map1
                  -> Provided argument type ...: String

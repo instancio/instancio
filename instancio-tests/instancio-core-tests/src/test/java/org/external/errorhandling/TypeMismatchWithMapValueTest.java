@@ -38,7 +38,16 @@ class TypeMismatchWithMapValueTest extends AbstractErrorMessageTestTemplate {
                 Error creating an object
                  -> at org.external.errorhandling.TypeMismatchWithMapValueTest.methodUnderTest(TypeMismatchWithMapValueTest.java:30)
 
-                Reason: error adding value to map: Node[TwoMapsOfIntegerItemString.map1, depth=1, type=Map<Integer, Item<String>>]
+                Reason: error adding value to map: field TwoMapsOfIntegerItemString.map1 (depth=1)
+
+                 │ Path to root:
+                 │   <1:TwoMapsOfIntegerItemString: Map<Integer, Item<String>> map1>
+                 │    └──<0:TwoMapsOfIntegerItemString>   <-- Root
+                 │
+                 │ Format: <depth:class: field>
+
+
+                Type mismatch:
 
                  -> Target type ..............: Item<String>
                  -> Provided argument type ...: String

@@ -37,7 +37,16 @@ class TypeMismatchWithCollectionFieldTest extends AbstractErrorMessageTestTempla
                 Error creating an object
                  -> at org.external.errorhandling.TypeMismatchWithCollectionFieldTest.methodUnderTest(TypeMismatchWithCollectionFieldTest.java:29)
 
-                Reason: error assigning value due to incompatible types
+                Reason: error assigning value to: field TwoListsOfInteger.list1 (depth=1)
+
+                 │ Path to root:
+                 │   <1:TwoListsOfInteger: List<Integer> list1>
+                 │    └──<0:TwoListsOfInteger>   <-- Root
+                 │
+                 │ Format: <depth:class: field>
+
+
+                Type mismatch:
 
                  -> Target field .............: List TwoListsOfInteger.list1
                  -> Provided argument type ...: String
