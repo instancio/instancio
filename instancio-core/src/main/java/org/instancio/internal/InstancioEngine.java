@@ -594,11 +594,16 @@ class InstancioEngine {
         if (generatorResult.containsNull() && hint.createFunction() != null) {
             final Object[] args = new Object[children.size()];
             for (int i = 0; i < children.size(); i++) {
-                final GeneratorResult childResult = createObject(children.get(i));
+                final InternalNode childNode = children.get(i);
+                final GeneratorResult childResult = createObject(childNode);
 
                 if (childResult.isDelayed()) {
                     return GeneratorResult.delayed();
                 }
+
+                ApiValidator.validateValueIsAssignableToElementNode(
+                        "error populating object due to incompatible types",
+                        childResult.getValue(), node, childNode);
 
                 args[i] = childResult.getValue();
             }

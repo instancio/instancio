@@ -57,9 +57,9 @@ class UnresolvedAssignmentErrorTest extends AbstractErrorMessageTestTemplate {
 
                 As a result, the following targets could not be assigned a value:
 
-                 -> field StringsAbc.b
-                 -> field StringsAbc.c
-                 -> field StringsAbc.a
+                 -> field StringsAbc.b (depth=1)
+                 -> field StringsAbc.c (depth=1)
+                 -> field StringsAbc.a (depth=1)
 
                 Possible causes:
 

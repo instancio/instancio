@@ -52,6 +52,13 @@ public final class Asserts {
         assertThat(nums).containsOnly(0);
     }
 
+    public static void assertEqualsIgnoringLineCarriage(final String actual, final String expected) {
+        assertThat(actual).isNotNull();
+
+        // Remove carriage return to prevent test failure on Windows
+        assertThat(actual.replace("\r", "")).isEqualTo(expected);
+    }
+
     public static void assertRange(final Numbers result, final BigDecimal min, final BigDecimal max) {
         assertThat(result.getPrimitiveByte()).isBetween(min.byteValue(), max.byteValue());
         assertThat(result.getPrimitiveShort()).isBetween(min.shortValue(), max.shortValue());

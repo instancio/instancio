@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.test.support.asserts.Asserts.assertEqualsIgnoringLineCarriage;
 
 class NodeStatsTest {
     private static final NodeFactory NODE_FACTORY = Nodes.nodeFactory();
@@ -127,7 +128,6 @@ class NodeStatsTest {
     }
 
     private static void assertTreeString(final NodeStats stats, final String expected) {
-        // remove carriage return to prevent test failure on Windows
-        assertThat(stats.getTreeString().replace("\r", "")).isEqualTo(expected);
+        assertEqualsIgnoringLineCarriage(stats.getTreeString(), expected);
     }
 }

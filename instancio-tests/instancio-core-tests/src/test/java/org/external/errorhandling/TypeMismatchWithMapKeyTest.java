@@ -37,7 +37,16 @@ class TypeMismatchWithMapKeyTest extends AbstractErrorMessageTestTemplate {
                 Error creating an object
                  -> at org.external.errorhandling.TypeMismatchWithMapKeyTest.methodUnderTest(TypeMismatchWithMapKeyTest.java:29)
 
-                Reason: error adding key to map: Node[TwoMapsOfIntegerItemString.map1, depth=1, type=Map<Integer, Item<String>>]
+                Reason: error adding key to map: field TwoMapsOfIntegerItemString.map1 (depth=1)
+
+                 │ Path to root:
+                 │   <1:TwoMapsOfIntegerItemString: Map<Integer, Item<String>> map1>
+                 │    └──<0:TwoMapsOfIntegerItemString>   <-- Root
+                 │
+                 │ Format: <depth:class: field>
+
+
+                Type mismatch:
 
                  -> Target type ..............: Integer
                  -> Provided argument type ...: String

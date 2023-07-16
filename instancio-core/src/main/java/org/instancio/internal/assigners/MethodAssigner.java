@@ -18,6 +18,7 @@ package org.instancio.internal.assigners;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.AssignerErrorUtil;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;

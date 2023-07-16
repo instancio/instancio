@@ -18,17 +18,16 @@ package org.external.errorhandling;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 
-import java.util.List;
+import java.util.Optional;
 
-import static org.instancio.Select.all;
-import static org.instancio.Select.scope;
+import static org.instancio.Select.allInts;
 
-class TypeMismatchWithNestedCollectionTest extends AbstractErrorMessageTestTemplate {
+class TypeMismatchWithContainerElementTest extends AbstractErrorMessageTestTemplate {
 
     @Override
     void methodUnderTest() {
-        Instancio.of(new TypeToken<List<List<String>>>() {})
-                .set(all(List.class).within(scope(List.class), scope(List.class)), "invalid arg")
+        Instancio.of(new TypeToken<Optional<Integer>>() {})
+                .set(allInts(), "invalid arg")
                 .create();
     }
 
@@ -38,20 +37,19 @@ class TypeMismatchWithNestedCollectionTest extends AbstractErrorMessageTestTempl
 
 
                 Error creating an object
-                 -> at org.external.errorhandling.TypeMismatchWithNestedCollectionTest.methodUnderTest(TypeMismatchWithNestedCollectionTest.java:32)
+                 -> at org.external.errorhandling.TypeMismatchWithContainerElementTest.methodUnderTest(TypeMismatchWithContainerElementTest.java:31)
 
-                Reason: error assigning value to: class List<String> (depth=1)
+                Reason: error populating object due to incompatible types: class Optional<Integer> (depth=0)
 
                  │ Path to root:
-                 │   <1:ArrayList>
-                 │    └──<0:ArrayList>   <-- Root
+                 │   <0:Optional>   <-- Root
                  │
                  │ Format: <depth:class: field>
 
 
                 Type mismatch:
 
-                 -> Target type ..............: List<String>
+                 -> Target type ..............: Integer
                  -> Provided argument type ...: String
                  -> Provided argument value ..: "invalid arg"
 

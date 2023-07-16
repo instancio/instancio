@@ -24,10 +24,10 @@ import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
+import org.instancio.internal.util.AssignerErrorUtil;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.StringUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.SettingKey;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +40,6 @@ import java.util.function.Supplier;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNestedGenerics;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNonGenericClass;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
-import static org.instancio.internal.util.Constants.NL;
 
 @SuppressWarnings("PMD.GodClass")
 public final class ApiValidator {
@@ -283,11 +282,8 @@ public final class ApiValidator {
             final InternalNode node) {
 
         if (!targetClass.isAssignableFrom(value.getClass())) {
-            final StringBuilder sb = new StringBuilder("error assigning value due to incompatible types")
-                    .append(NL).append(NL);
-
-            appendTypeMismatchDetails(value, node, sb);
-            throw Fail.withUsageError(sb.toString());
+            final String errorMsg = AssignerErrorUtil.getTypeMismatchErrorMessage(value, node);
+            throw Fail.withUsageError(errorMsg);
         }
     }
 
@@ -302,8 +298,6 @@ public final class ApiValidator {
         }
 
         final Class<?> valueClass = value.getClass();
-
-
         final Class<?> elementType = elementNode.getTargetClass();
         final Class<?> targetClass = elementType.isPrimitive()
                 ? PrimitiveWrapperBiLookup.getEquivalent(elementType)
@@ -313,29 +307,10 @@ public final class ApiValidator {
             return;
         }
 
-        final StringBuilder sb = new StringBuilder(errorMsg)
-                .append(": ").append(containerNode).append(NL).append(NL);
+        final String error = AssignerErrorUtil.getContainerElementMismatchMessage(
+                errorMsg, value, containerNode, elementNode);
 
-        appendTypeMismatchDetails(value, elementNode, sb);
-        throw Fail.withUsageError(sb.toString());
-    }
-
-    private static void appendTypeMismatchDetails(
-            final Object value, final InternalNode node, final StringBuilder sb) {
-
-        final String nodeDescription = Format.formatNode(node);
-        final String argType = Format.withoutPackage(value.getClass());
-        final String argValue = StringUtils.quoteToString(value);
-
-        if (node.getField() == null) {
-            sb.append(" -> Target type ..............: ");
-        } else {
-            sb.append(" -> Target field .............: ");
-        }
-
-        sb.append(nodeDescription).append(NL)
-                .append(" -> Provided argument type ...: ").append(argType).append(NL)
-                .append(" -> Provided argument value ..: ").append(argValue);
+        throw Fail.withUsageError(error);
     }
 
     private ApiValidator() {

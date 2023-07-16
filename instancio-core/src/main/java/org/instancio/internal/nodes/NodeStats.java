@@ -37,18 +37,17 @@ public final class NodeStats {
     }
 
     public static NodeStats compute(final InternalNode rootNode) {
-        final StringBuilder sb = new StringBuilder(SB_SIZE)
-                .append(toTreeNode(rootNode)).append(NL);
-
         final int[] stats = new int[2];
         stats[NUM_NODES] = 1; // root node
 
-        appendNode(rootNode, sb, stats, "");
+        final StringBuilder sb = new StringBuilder(SB_SIZE);
+        sb.append(Format.formatAsTreeNode(rootNode)).append(NL);
+        appendTreeLine(rootNode, sb, stats, "");
         return new NodeStats(sb.toString(), stats[NUM_NODES], stats[MAX_DEPTH]);
     }
 
     // Based on: https://github.com/kddnewton/tree
-    private static void appendNode(
+    private static void appendTreeLine(
             final InternalNode node, final StringBuilder sb, final int[] stats, final String prefix) {
 
         final List<InternalNode> children = node.getChildren();
@@ -60,38 +59,13 @@ public final class NodeStats {
             final InternalNode n = children.get(i);
 
             if (i == size - 1) {
-                sb.append(prefix).append(" └──").append(toTreeNode(n)).append(NL);
-                appendNode(n, sb, stats, prefix + "    ");
+                sb.append(prefix).append(" └──").append(Format.formatAsTreeNode(n)).append(NL);
+                appendTreeLine(n, sb, stats, prefix + "    ");
             } else {
-                sb.append(prefix).append(" ├──").append(toTreeNode(n)).append(NL);
-                appendNode(n, sb, stats, prefix + " │  ");
+                sb.append(prefix).append(" ├──").append(Format.formatAsTreeNode(n)).append(NL);
+                appendTreeLine(n, sb, stats, prefix + " │  ");
             }
         }
-    }
-
-    private static String toTreeNode(final InternalNode node) {
-        final StringBuilder sb = new StringBuilder(SB_SIZE)
-                .append('<').append(node.getDepth()).append(':');
-
-        if (node.getField() == null) {
-            sb.append(Format.withoutPackage(node.getTargetClass()));
-        } else {
-            sb.append(Format.withoutPackage(node.getParent().getTargetClass()))
-                    .append(": ")
-                    .append(Format.withoutPackage(node.getType()))
-                    .append(' ')
-                    .append(node.getField().getName());
-        }
-
-        if (node.isIgnored()) {
-            sb.append(" [IGNORED]");
-        }
-
-        if (node.isCyclic()) {
-            sb.append(" [CYCLIC]");
-        }
-
-        return sb.append('>').toString();
     }
 
     public String getTreeString() {

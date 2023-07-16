@@ -36,7 +36,15 @@ class TypeMismatchWithArrayElementTest extends AbstractErrorMessageTestTemplate 
                 Error creating an object
                  -> at org.external.errorhandling.TypeMismatchWithArrayElementTest.methodUnderTest(TypeMismatchWithArrayElementTest.java:28)
 
-                Reason: array element type mismatch: Node[Integer[], depth=0, type=Integer[]]
+                Reason: array element type mismatch: class Integer[] (depth=0)
+
+                 │ Path to root:
+                 │   <0:Integer[]>   <-- Root
+                 │
+                 │ Format: <depth:class: field>
+
+
+                Type mismatch:
 
                  -> Target type ..............: Integer
                  -> Provided argument type ...: String

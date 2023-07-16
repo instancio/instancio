@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.joining;
+import static org.instancio.internal.util.Constants.NL;
 
 public final class Format {
+    private static final int SB_SMALL = 60;
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
 
     public static String formatNode(final InternalNode node) {
@@ -36,6 +38,56 @@ public final class Format {
                 ? withoutPackage(node.getType())
                 : formatField(node.getField());
     }
+
+    public static String nodePathToRoot(final InternalNode node, final String prefix) {
+        String padding = "";
+
+        final StringBuilder sb = new StringBuilder(prefix)
+                .append(formatAsTreeNode(node));
+
+        for (InternalNode n = node.getParent(); n != null; n = n.getParent()) {
+            sb.append(NL)
+                    .append(prefix)
+                    .append(padding)
+                    .append(" └──")
+                    .append(formatAsTreeNode(n));
+
+            padding += "    "; // NOSONAR
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Formats given {@code node} as {@code <depth:class: field>}.
+     *
+     * <p>Example:
+     * <pre>{@code
+     * <2:Address: List<Phone> phoneNumbers>
+     * }</pre>
+     */
+    public static String formatAsTreeNode(final InternalNode node) {
+        final StringBuilder sb = new StringBuilder(SB_SMALL);
+        sb.append('<').append(node.getDepth()).append(':');
+
+        if (node.getField() == null) {
+            sb.append(Format.withoutPackage(node.getTargetClass()));
+        } else {
+            sb.append(Format.withoutPackage(node.getParent().getTargetClass()))
+                    .append(": ")
+                    .append(Format.withoutPackage(node.getType()))
+                    .append(' ')
+                    .append(node.getField().getName());
+        }
+
+        if (node.isIgnored()) {
+            sb.append(" [IGNORED]");
+        }
+        if (node.isCyclic()) {
+            sb.append(" [CYCLIC]");
+        }
+        return sb.append('>').toString();
+    }
+
 
     public static String formatField(final Field field) {
         return field == null ? null : String.format("%s %s.%s",

@@ -19,6 +19,7 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.DelayedNode;
 import org.instancio.internal.DelayedNodeQueue;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Format;
 
 import java.util.Set;
 
@@ -57,7 +58,9 @@ public final class AssignmentErrorUtil {
         delayedNodeQueue.stream()
                 .map(DelayedNode::getNode)
                 .distinct()
-                .forEach(node -> sb.append(" -> ").append(node.toDisplayString()).append(NL));
+                .forEach(node -> sb.append(" -> ").append(node.toDisplayString())
+                        .append(" (depth=").append(node.getDepth()).append(')')
+                        .append(NL));
 
         sb.append(NL)
                 .append("Possible causes:").append(NL)
@@ -92,17 +95,23 @@ public final class AssignmentErrorUtil {
                 .append(" -> The origin selector '").append(selector).append("' matches multiple values.").append(NL)
                 .append("    It's not clear which of these values should be used:").append(NL)
                 .append(NL)
-                .append("    -> Match 1: ").append(matchingNode1);
-
-        appendAncestors(sb, matchingNode1);
-
-        sb.append(NL)
-                .append("    -> Match 2: ").append(matchingNode2);
-
-        appendAncestors(sb, matchingNode2);
-
-        sb.append(NL)
+                .append(" -> Match 1: ").append(matchingNode1.toDisplayString()).append(NL)
+                .append(NL)
+                .append(Format.nodePathToRoot(matchingNode1, "    ")).append(NL)
+                .append(NL)
+                .append(" -> Match 2: ").append(matchingNode2.toDisplayString()).append(NL)
+                .append(NL)
+                .append(Format.nodePathToRoot(matchingNode2, "    ")).append(NL)
+                .append(NL)
+                .append("Format: <depth:class: field>").append(NL)
+                .append(NL)
                 .append("There could be more matches. Evaluation stopped after the second match.").append(NL)
+                .append("To print the node hierarchy, run Instancio in verbose() mode:").append(NL)
+                .append(NL)
+                .append("  Instancio.of(Example.class)").append(NL)
+                .append("      // snip ...").append(NL)
+                .append("      .verbose()").append(NL)
+                .append("      .create();").append(NL)
                 .append(NL)
                 .append("To resolve the error, consider narrowing down the origin selector").append(NL)
                 .append("so that it matches only one target. This can be done using:").append(NL)
@@ -114,19 +123,5 @@ public final class AssignmentErrorUtil {
                 .append("    https://www.instancio.org/user-guide/#selector-depth");
 
         return sb.toString();
-    }
-
-    private static void appendAncestors(final StringBuilder sb, final InternalNode node) {
-        if (node.getParent() == null) {
-            return;
-        }
-
-        sb.append(NL).append("       Ancestors:").append(NL);
-
-        InternalNode p = node.getParent();
-        while (p != null) {
-            sb.append("       -> ").append(p).append(NL);
-            p = p.getParent();
-        }
     }
 }

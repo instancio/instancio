@@ -37,9 +37,18 @@ class SetObjectOfInvalidTypeTest extends AbstractErrorMessageTestTemplate {
                 Error creating an object
                  -> at org.external.errorhandling.SetObjectOfInvalidTypeTest.methodUnderTest(SetObjectOfInvalidTypeTest.java:29)
 
-                Reason: error assigning value to field due to incompatible types
+                Reason: error assigning value to: field Person.name (depth=1)
 
-                 -> Field ....................: String Person.name
+                 │ Path to root:
+                 │   <1:Person: String name>
+                 │    └──<0:Person>   <-- Root
+                 │
+                 │ Format: <depth:class: field>
+
+
+                Type mismatch:
+
+                 -> Target field .............: String Person.name
                  -> Provided argument type ...: Integer
                  -> Provided argument value ..: 123
 

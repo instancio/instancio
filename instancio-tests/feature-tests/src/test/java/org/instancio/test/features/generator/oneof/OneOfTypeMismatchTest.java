@@ -67,7 +67,7 @@ class OneOfTypeMismatchTest {
     private void assertIncompatibleTypeError(final InstancioApi<Person> api) {
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("error assigning value to field due to incompatible types");
+                .hasMessageContaining("error assigning value");
     }
 
 }

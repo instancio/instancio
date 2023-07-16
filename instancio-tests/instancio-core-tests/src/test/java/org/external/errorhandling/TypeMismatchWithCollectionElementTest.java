@@ -37,7 +37,16 @@ class TypeMismatchWithCollectionElementTest extends AbstractErrorMessageTestTemp
                 Error creating an object
                  -> at org.external.errorhandling.TypeMismatchWithCollectionElementTest.methodUnderTest(TypeMismatchWithCollectionElementTest.java:29)
 
-                Reason: error adding element to collection: Node[ListInteger.list, depth=1, type=List<Integer>]
+                Reason: error adding element to collection: field ListInteger.list (depth=1)
+
+                 │ Path to root:
+                 │   <1:ListInteger: List<Integer> list>
+                 │    └──<0:ListInteger>   <-- Root
+                 │
+                 │ Format: <depth:class: field>
+
+
+                Type mismatch:
 
                  -> Target type ..............: Integer
                  -> Provided argument type ...: String
