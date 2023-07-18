@@ -15,8 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
-
 import java.io.Serializable;
 import java.util.function.Function;
 
@@ -31,6 +29,5 @@ import java.util.function.Function;
  * @see Select
  * @since 2.3.0
  */
-@ExperimentalApi
 public interface GetMethodSelector<T, R> extends TargetSelector, Function<T, R>, Serializable {
 }
