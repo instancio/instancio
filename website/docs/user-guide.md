@@ -2055,7 +2055,7 @@ or globally, using `instancio.properties`:
 bean.validation.enabled=true
 ```
 
-In addition, `jakarta.validation-api` or `validation-api` must be present on the classpath for the feature to be activated.
+In addition, `jakarta` or `javax` validation API must be present on the classpath for the feature to be activated.
 Instancio does not provide the dependency transitively:
 
 ```xml
@@ -2098,7 +2098,7 @@ Anything not listed is unsupported, including `*.List` annotations.
 
 - `@DecimalMax`
 - `@DecimalMin`
-- `@Digits` (`fraction()` is partially supported by `BigDecimal`, but not `float` or `double`)
+- `@Digits` (`fraction()` is supported by `BigDecimal`, but not `float` or `double`)
 - `@Email`
 - `@Future` (not supported by `MonthDay`)
 - `@FutureOrPresent` (delegates to `Future`)
