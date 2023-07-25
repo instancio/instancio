@@ -16,32 +16,32 @@
 package org.instancio.test.support.asserts;
 
 import org.instancio.test.support.pojo.person.Address;
-import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
+@SuppressWarnings("java:S5778")
 class ReflectionAssertTest {
 
     private static final String FOO = "foo";
 
     @Test
     void hasAllFieldsOfTypeSetToNull() {
-        final Person person = new Person();
-        person.setUuid(UUID.randomUUID());
-        assertThatObject(person).hasAllFieldsOfTypeSetToNull(String.class);
+        assertThatObject(new Address()).hasAllFieldsOfTypeSetToNull(String.class);
 
-        person.setName(FOO);
-        assertThatThrownBy(() -> assertThatObject(person).hasAllFieldsOfTypeSetToNull(String.class))
+        final Address address = Address.builder()
+                .country(FOO)
+                .build();
+
+        assertThatThrownBy(() -> assertThatObject(address).hasAllFieldsOfTypeSetToNull(String.class))
                 .isInstanceOf(AssertionError.class)
-                .hasMessageContaining("Expected 'Person.name' to be null, but was: 'foo'");
+                .hasMessageContaining("Expected 'Address.country' to be null, but was: 'foo'");
     }
 
     @Test

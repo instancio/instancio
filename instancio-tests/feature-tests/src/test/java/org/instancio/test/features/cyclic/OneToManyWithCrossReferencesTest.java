@@ -39,7 +39,7 @@ import static org.instancio.Select.all;
 class OneToManyWithCrossReferencesTest {
 
     @Test
-    @Timeout(3)
+    @Timeout(1)
     void defaultMaxDepth() {
         final ObjectA objectA = Instancio.create(ObjectA.class);
 
