@@ -17,7 +17,6 @@ package org.instancio.generator.specs;
 
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.internal.generator.misc.EmitGenerator;
 
 import java.util.Map;
 
@@ -82,7 +81,7 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * @return spec builder
      * @since 2.12.0
      */
-    EmitGenerator<T> shuffle();
+    EmitGeneratorSpec<T> shuffle();
 
     /**
      * Specifies that if any of the provided items were not emitted,
@@ -91,7 +90,7 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * @return spec builder
      * @since 2.12.0
      */
-    EmitGenerator<T> ignoreUnused();
+    EmitGeneratorSpec<T> ignoreUnused();
 
     /**
      * Specifies that {@code null} should be generated if an insufficient
@@ -100,7 +99,7 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * @return spec builder
      * @since 2.12.0
      */
-    EmitGenerator<T> whenEmptyEmitNull();
+    EmitGeneratorSpec<T> whenEmptyEmitNull();
 
     /**
      * Specifies that a random value should be generated if an insufficient
@@ -109,7 +108,7 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * @return spec builder
      * @since 2.12.0
      */
-    EmitGenerator<T> whenEmptyEmitRandom();
+    EmitGeneratorSpec<T> whenEmptyEmitRandom();
 
     /**
      * Specifies that an exception should be raised if an insufficient
@@ -118,5 +117,5 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * @return spec builder
      * @since 2.12.0
      */
-    EmitGenerator<T> whenEmptyThrowException();
+    EmitGeneratorSpec<T> whenEmptyThrowException();
 }
