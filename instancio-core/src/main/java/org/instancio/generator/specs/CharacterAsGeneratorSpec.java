@@ -16,7 +16,7 @@
 package org.instancio.generator.specs;
 
 /**
- * Generator spec for {@link Character} values
+ * Generator spec for {@code Character} values
  * that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0

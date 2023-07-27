@@ -16,7 +16,7 @@
 package org.instancio.generator.specs;
 
 /**
- * Generator spec for {@link Boolean} values
+ * Generator spec for {@code Boolean} values
  * that supports {@link AsGeneratorSpec}.
  *
  * @since 2.6.0
