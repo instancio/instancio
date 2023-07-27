@@ -89,9 +89,19 @@ However, this approach has a couple of drawbacks: it does not support nested gen
 
 ### Creating collections
 
-The builder API also supports creating collections using the following methods:
+Collections can be created using one of the following methods.
+These methods create a collection of random size, between 2 and 6 elements, inclusive:
 
 ``` java linenums="1" title="Collections API: using Class"
+Instancio.createList(Class<T> elementType)
+Instancio.createSet(Class<T> elementType)
+Instancio.createMap(Class<K> keyType, Class<V> valueType)
+```
+
+In addition, there is a builder API for creating a collection of a specified size.
+The builder API also supports customising properties of collection elements.
+
+``` java linenums="1" title="Collections builder API: using Class"
 Instancio.ofList(Class<T> elementType).create()
 Instancio.ofSet(Class<T> elementType).create()
 Instancio.ofMap(Class<K> keyType, Class<V> valueType).create()
@@ -99,7 +109,7 @@ Instancio.ofMap(Class<K> keyType, Class<V> valueType).create()
 
 If the element is a generic type, the following methods can be used instead:
 
-``` java linenums="1" title="Collections API: using TypeToken"
+``` java linenums="1" title="Collections builder API: using TypeToken"
 Instancio.ofList(TypeTokenSupplier<T> elementType).create()
 Instancio.ofSet(TypeTokenSupplier<T> elementType).create()
 Instancio.ofMap(TypeTokenSupplier<K> keyType, TypeTokenSupplier<V> valueType).create()
@@ -108,12 +118,14 @@ Instancio.ofMap(TypeTokenSupplier<K> keyType, TypeTokenSupplier<V> valueType).cr
 In addition, `ofList()` and `ofSet()` can be used to create collections
 from models:
 
-``` java linenums="1" title="Collections API: using Model"
+``` java linenums="1" title="Collections builder API: using Model"
 Instancio.ofList(Model<T> elementModel).create()
 Instancio.ofSet(Model<T> elementModel).create()
 ```
 
 ```java linenums="1" title="Examples"
+List<Person> list = Instancio.createList(Person.class);
+
 List<Person> list = Instancio.ofList(Person.class).size(10).create();
 
 List<Pair<String, Integer>> list = Instancio.ofList(new TypeToken<Pair<String, Integer>>() {}).create();
