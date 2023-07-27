@@ -20,6 +20,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.OfClassApiImpl;
 import org.instancio.internal.OfCollectionApiImpl;
 import org.instancio.internal.OfMapApiImpl;
+import org.instancio.settings.Keys;
 
 import java.util.Collection;
 import java.util.List;
@@ -150,6 +151,61 @@ public final class Instancio {
      */
     public static <T> T create(final Class<T> type) {
         return of(type).create();
+    }
+
+    /**
+     * Creates a {@link List} of random size.
+     *
+     * <p>Unless configured otherwise, the generated size will be between
+     * {@link Keys#COLLECTION_MIN_SIZE} and {@link Keys#COLLECTION_MAX_SIZE},
+     * inclusive.
+     *
+     * <p>To create a list of a specific size, use {@link #ofList(Class)}.
+     *
+     * @param elementType class to generate as list elements
+     * @param <T>         element type
+     * @return API builder reference
+     * @since 3.0.1
+     */
+    public static <T> List<T> createList(final Class<T> elementType) {
+        return ofList(elementType).create();
+    }
+
+    /**
+     * Creates a {@link Set} of random size.
+     *
+     * <p>Unless configured otherwise, the generated size will be between
+     * {@link Keys#COLLECTION_MIN_SIZE} and {@link Keys#COLLECTION_MAX_SIZE},
+     * inclusive.
+     *
+     * <p>To create a {@code Set} of a specific size, use {@link #ofSet(Class)}.
+     *
+     * @param elementType class to generate as set elements
+     * @param <T>         element type
+     * @return API builder reference
+     * @since 3.0.1
+     */
+    public static <T> Set<T> createSet(final Class<T> elementType) {
+        return ofSet(elementType).create();
+    }
+
+    /**
+     * Creates a {@link Map} of random size.
+     *
+     * <p>Unless configured otherwise, the generated size will be between
+     * {@link Keys#MAP_MIN_SIZE} and {@link Keys#MAP_MAX_SIZE}, inclusive.
+     *
+     * <p>To create a {@code Map} of a specific size, use {@link #ofMap(Class, Class)}.
+     *
+     * @param keyType   class to generate as map keys
+     * @param valueType class to generate as map values
+     * @param <K>       key type
+     * @param <V>       value type
+     * @return API builder reference
+     * @since 3.0.1
+     */
+    public static <K, V> Map<K, V> createMap(final Class<K> keyType, final Class<V> valueType) {
+        return ofMap(keyType, valueType).create();
     }
 
     /**
@@ -322,7 +378,7 @@ public final class Instancio {
     }
 
     /**
-     * Builder API for generating a {@link List} that allows customisation of generated values.
+     * Builder API for generating a {@link List} that allows customising generated values.
      *
      * @param elementType class to generate as list elements
      * @param <T>         element type
