@@ -21,6 +21,7 @@ import org.example.spi.CustomGeneratorProvider;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generator.Generator;
 import org.instancio.spi.InstancioSpiException;
@@ -35,6 +36,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -85,6 +87,16 @@ class GeneratorFromSpiTest {
                 .isBetween(CustomIntegerGenerator.MIN, CustomIntegerGenerator.MAX);
     }
 
+    /**
+     * @see CustomGeneratorProvider.ExceptionThrowingGenerator
+     */
+    @Test
+    void shouldPropagateExceptionThrownByGenerator() {
+        assertThatThrownBy(() -> Instancio.create(Field.class))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("exception thrown by a custom Generator or Supplier")
+                .hasRootCauseMessage("Expected error from SPI generator");
+    }
 
     /**
      * @see CustomGeneratorProvider.CustomAddressGenerator

@@ -37,6 +37,7 @@ import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.PhoneWithType;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -69,6 +70,7 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         put(Byte.class, new IntegerSequenceGenerator().as(Integer::byteValue));
         put(Address.class, new CustomAddressGenerator());
         put(Phone.class, new CustomPhoneGenerator());
+        put(Field.class, new ExceptionThrowingGenerator());
         put(FooRecord.class, (Generator<?>) random -> new FooRecord(FOO_RECORD_VALUE));
         put(InitCountingPojo.class, INIT_COUNTING_GENERATOR);
 
@@ -194,6 +196,13 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         @Override
         public InitCountingPojo generate(final Random random) {
             return new InitCountingPojo();
+        }
+    }
+
+    public static class ExceptionThrowingGenerator implements Generator<Field> {
+        @Override
+        public Field generate(final Random random) {
+            throw new RuntimeException("Expected error from SPI generator");
         }
     }
 }
