@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.beanvalidation.BeanValidationProcessor;
@@ -31,6 +32,8 @@ import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
 import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.Format;
 import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,8 +93,29 @@ class GeneratorFacade {
         return context.getRandom().diceRoll(precondition);
     }
 
-    @SuppressWarnings("PMD.CognitiveComplexity")
     GeneratorResult generateNodeValue(final InternalNode node) {
+        try {
+            GeneratorResult result = getGeneratorResult(node);
+            generatedPojoStore.putValue(node, result);
+            LOG.trace("{} - {}", node, result);
+            return result;
+        } catch (InstancioTerminatingException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            final String msg = String.format("exception thrown by a custom Generator or Supplier" +
+                            "%n%n" +
+                            " -> Could not generate value for: %s (depth=%s)" +
+                            "%n%n" +
+                            "%s",
+
+                    node.toDisplayString(), node.getDepth(), Format.nodePathToRoot(node, "    "));
+
+            throw Fail.withUsageError(msg, ex);
+        }
+    }
+
+    @SuppressWarnings("PMD.CognitiveComplexity")
+    private GeneratorResult getGeneratorResult(final InternalNode node) {
         GeneratorResult result = GeneratorResult.emptyResult();
 
         if (node.isIgnored()) {
@@ -119,10 +143,6 @@ class GeneratorFacade {
                 }
             }
         }
-
-        generatedPojoStore.putValue(node, result);
-
-        LOG.trace("{} - {}", node, result);
         return result;
     }
 }

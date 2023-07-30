@@ -42,7 +42,7 @@ class SupplyThrowsExceptionTest {
                 });
 
         assertThatThrownBy(api::create)
-                .hasMessageContaining("Exception thrown by a custom Generator or Supplier")
+                .hasMessageContaining("exception thrown by a custom Generator or Supplier")
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasRootCause(exception);
     }

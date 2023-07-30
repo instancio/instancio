@@ -15,14 +15,12 @@
  */
 package org.instancio.internal.handlers;
 
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.util.Fail;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -53,12 +51,6 @@ public class UserSuppliedGeneratorHandler implements NodeHandler {
             return GeneratorResult.emptyResult();
         }
 
-        try {
-            return userSuppliedGeneratorProcessor.getGeneratorResult(node, generatorOpt.get());
-        } catch (InstancioApiException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw Fail.withUsageError("Exception thrown by a custom Generator or Supplier", ex);
-        }
+        return userSuppliedGeneratorProcessor.getGeneratorResult(node, generatorOpt.get());
     }
 }
