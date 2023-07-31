@@ -15,48 +15,17 @@
  */
 package org.instancio.internal.util;
 
-import org.instancio.exception.InstancioTerminatingException;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import static org.instancio.internal.util.SystemProperties.shouldFailOnError;
-
 @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
-public final class ExceptionHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
+public final class ExceptionUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(ExceptionUtils.class);
 
-    private static final String SUPPRESSION_REASON = String.format(
-            "Suppressed error because system property '%s' is disabled", SystemProperties.FAIL_ON_ERROR);
-
-    private ExceptionHandler() {
+    private ExceptionUtils() {
         // non-instantiable
-    }
-
-    public static <T> Optional<T> conditionalFailOnError(final Supplier<T> supplier) {
-        try {
-            return Optional.ofNullable(supplier.get());
-        } catch (AssertionError | InstancioTerminatingException ex) {
-            throw ex;
-        } catch (Throwable ex) { //NOPMD
-            if (shouldFailOnError()) {
-                throw Fail.withInternalError(ex);
-            }
-            logSuppressed(ex);
-        }
-        return Optional.empty();
-    }
-
-    private static void logSuppressed(final Throwable t) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(SUPPRESSION_REASON, t);
-        } else {
-            LOG.debug("{}. {}: {}", SUPPRESSION_REASON, t.getClass().getName(), t.getMessage());
-        }
     }
 
     /**

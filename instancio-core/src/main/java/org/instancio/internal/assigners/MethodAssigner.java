@@ -18,7 +18,7 @@ package org.instancio.internal.assigners;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.util.AssignerErrorUtil;
+import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Optional;
 
-import static org.instancio.internal.util.ExceptionHandler.logException;
+import static org.instancio.internal.util.ExceptionUtils.logException;
 
 final class MethodAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(MethodAssigner.class);
@@ -122,7 +122,7 @@ final class MethodAssigner implements Assigner {
 
         if (onSetMethodError == OnSetMethodError.FAIL) {
             final String methodName = Format.formatMethod(method);
-            final String errorMsg = AssignerErrorUtil.getSetterInvocationErrorMessage(
+            final String errorMsg = ErrorMessageUtils.getSetterInvocationErrorMessage(
                     arg, methodName, ex, settings);
 
             throw new InstancioApiException(errorMsg, ex);
@@ -147,7 +147,7 @@ final class MethodAssigner implements Assigner {
         final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
 
         if (onSetMethodNotFound == OnSetMethodNotFound.FAIL) {
-            throw new InstancioApiException(AssignerErrorUtil.setterNotFound(
+            throw new InstancioApiException(ErrorMessageUtils.setterNotFound(
                     node.getField(), methodName, settings));
         }
 

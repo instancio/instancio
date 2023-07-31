@@ -27,7 +27,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.instancio.internal.util.ExceptionHandler.logException;
+import static org.instancio.internal.util.ExceptionUtils.logException;
 
 public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregorianCalendar> {
 

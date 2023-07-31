@@ -24,7 +24,7 @@ import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
-import org.instancio.internal.util.AssignerErrorUtil;
+import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ReflectionUtils;
@@ -282,7 +282,7 @@ public final class ApiValidator {
             final InternalNode node) {
 
         if (!targetClass.isAssignableFrom(value.getClass())) {
-            final String errorMsg = AssignerErrorUtil.getTypeMismatchErrorMessage(value, node);
+            final String errorMsg = ErrorMessageUtils.getTypeMismatchErrorMessage(value, node);
             throw Fail.withUsageError(errorMsg);
         }
     }
@@ -307,7 +307,7 @@ public final class ApiValidator {
             return;
         }
 
-        final String error = AssignerErrorUtil.getContainerElementMismatchMessage(
+        final String error = ErrorMessageUtils.getContainerElementMismatchMessage(
                 errorMsg, value, containerNode, elementNode);
 
         throw Fail.withUsageError(error);

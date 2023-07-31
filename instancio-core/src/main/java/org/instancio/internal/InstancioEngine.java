@@ -31,10 +31,10 @@ import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ArrayUtils;
+import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Fail;
-import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.instancio.internal.util.ExceptionHandler.conditionalFailOnError;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 /**
@@ -69,6 +68,7 @@ class InstancioEngine {
     private final GeneratorFacade generatorFacade;
     private final ModelContext<?> context;
     private final InternalNode rootNode;
+    private final ErrorHandler errorHandler;
     private final CallbackHandler callbackHandler;
     private final ContainerFactoriesHandler containerFactoriesHandler;
     private final GenerationListener[] listeners;
@@ -82,6 +82,7 @@ class InstancioEngine {
         InternalModelDump.printVerbose(model);
         context = model.getModelContext();
         rootNode = model.getRootNode();
+        errorHandler = new ErrorHandler(context);
         callbackHandler = new CallbackHandler(context);
         containerFactoriesHandler = new ContainerFactoriesHandler(context.getContainerFactories());
         generatedObjectStore = new GeneratedObjectStore(context);
@@ -95,7 +96,7 @@ class InstancioEngine {
 
     @SuppressWarnings("unchecked")
     <T> T createRootObject() {
-        return conditionalFailOnError(() -> {
+        return errorHandler.conditionalFailOnError(() -> {
             final GeneratorResult rootResult = createObject(rootNode); // NOPMD
             callbackHandler.invokeCallbacks();
             processDelayedNodes(true);
@@ -253,13 +254,10 @@ class InstancioEngine {
 
             if (failedAdditions > Constants.FAILED_ADD_THRESHOLD) {
                 if (!keyNode.isCyclic() && !valueNode.isCyclic()) {
-                    conditionalFailOnError(() -> {
-                        final String errorMsg = String.format("Unable to populate %s with %s entries.%n"
-                                        + "Key node:   %s%n"
-                                        + "Value node: %s",
-                                Format.withoutPackage(node.getType()), hint.generateEntries(), keyNode, valueNode);
-
-                        throw new InstancioException(errorMsg);
+                    errorHandler.conditionalFailOnError(() -> {
+                        throw Fail.withInternalError(
+                                ErrorMessageUtils.mapCouldNotBePopulated(
+                                        context, node, hint.generateEntries()));
                     });
                 }
                 break;
@@ -444,12 +442,10 @@ class InstancioEngine {
 
             if (failedAdditions > Constants.FAILED_ADD_THRESHOLD) {
                 if (!elementNode.isCyclic()) {
-                    conditionalFailOnError(() -> {
-                        final String errorMsg = String.format("Unable to populate %s with %s elements.%n" +
-                                        "Element node: %s",
-                                Format.withoutPackage(node.getType()), hint.generateElements(), elementNode);
-
-                        throw new InstancioException(errorMsg);
+                    errorHandler.conditionalFailOnError(() -> {
+                        throw Fail.withInternalError(
+                                ErrorMessageUtils.collectionCouldNotBePopulated(
+                                        context, node, hint.generateElements()));
                     });
                 }
                 break;
@@ -544,7 +540,7 @@ class InstancioEngine {
             delayedNodeQueue.removeRecord(node);
             return generatorResult;
         } catch (Exception ex) {
-            conditionalFailOnError(() -> {
+            errorHandler.conditionalFailOnError(() -> {
                 throw new InstancioException("Failed creating a record for: " + node, ex);
             });
         }

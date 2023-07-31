@@ -103,8 +103,8 @@ public final class Asserts {
     }
 
     /**
-     * Assert that no exception is thrown when {@code instancio.failOnError}
-     * system property is enabled.
+     * Assert that given {@code supplier} does not throw an exception
+     * when {@code instancio.failOnError} system property is enabled.
      */
     public static <T> T assertNoExceptionWithFailOnErrorEnabled(final Supplier<T> supplier) {
         final AtomicReference<T> resultHolder = new AtomicReference<>();

@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.instantiation;
 
-import org.instancio.internal.util.ExceptionHandler;
+import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.Sonar;
 
@@ -60,7 +60,7 @@ class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStr
         try {
             return (T) constructor.newInstance(args);
         } catch (Exception ex) {
-            ExceptionHandler.logException("Error instantiating {} using {}",
+            ExceptionUtils.logException("Error instantiating {} using {}",
                     ex, klass, getClass().getSimpleName());
 
             return null;

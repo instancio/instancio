@@ -15,8 +15,9 @@
  */
 package org.instancio.internal.util;
 
-import org.instancio.exception.InstancioException;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -28,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class TypeUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(TypeUtils.class);
 
     private TypeUtils() {
         // non-instantiable
@@ -72,9 +74,8 @@ public final class TypeUtils {
             final Type genericComponentType = ((GenericArrayType) type).getGenericComponentType();
             return getRawType(genericComponentType);
         }
-        ExceptionHandler.conditionalFailOnError(() -> {
-            throw new InstancioException("Unhandled type: " + type.getClass().getSimpleName());
-        });
+
+        LOG.warn("Unhandled type: {}", type.getClass().getSimpleName());
         return null;
     }
 

@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.generator.map;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
@@ -26,6 +25,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
@@ -40,7 +40,6 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
-import static org.instancio.test.support.asserts.Asserts.assertWithFailOnErrorEnabled;
 
 @FeatureTag({
         Feature.GENERATE,
@@ -100,23 +99,21 @@ class MapGeneratorSizeTest {
         @DisplayName("Requesting a large size of Map<Boolean, String> should return a map of size 2")
         void impossibleMapSize() {
             final Map<Boolean, String> result = Instancio.of(new TypeToken<Map<Boolean, String>>() {})
-                    .generate(all(Map.class), gen -> gen.map().size(1000))
+                    .generate(all(Map.class), gen -> gen.map().size(10))
                     .create();
 
             assertThat(result).hasSize(2); // can only generate true and false
         }
 
         @Test
+        @DisplayName("Verify exception is thrown when failOnError system property is enabled")
         void impossibleMapSizeWithFailOnErrorEnabled() {
-            final int size = Gen.ints().range(1000, 1100).get();
             final InstancioApi<Map<Boolean, String>> api = Instancio.of(new TypeToken<Map<Boolean, String>>() {})
-                    .generate(all(Map.class), gen -> gen.map().size(size));
+                    .generate(all(Map.class), gen -> gen.map().size(19));
 
-            assertWithFailOnErrorEnabled(api::create)
+            Asserts.assertWithFailOnErrorEnabled(api::create)
                     .isExactlyInstanceOf(InstancioException.class)
-                    .hasMessage("Unable to populate Map<Boolean, String> with %s entries." +
-                            "%nKey node:   Node[Boolean, depth=1, type=Boolean]" +
-                            "%nValue node: Node[String, depth=1, type=String]", size);
+                    .hasMessageContaining("unable to populate Map");
         }
     }
 

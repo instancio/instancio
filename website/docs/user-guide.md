@@ -2207,7 +2207,7 @@ Default settings can be overridden using `instancio.properties`.
 Instancio will automatically load this file from the root of the classpath.
 The following listing shows all the property keys that can be configured.
 
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 10 26 27 32 36 49"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 10 28 29 33 37 51"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -2224,6 +2224,7 @@ collection.nullable=false
 double.max=10000
 double.min=1
 double.nullable=false
+fail.on.error=false
 float.max=10000
 float.min=1
 float.nullable=false
@@ -2264,11 +2265,11 @@ subtype.java.util.SortedMap=java.util.TreeMap
 ```
 
 !!! attention ""
-    <lnum>1,10,26-27</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
+    <lnum>1,10,28-29</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
-    <lnum>32</lnum> Specifies the mode, either `STRICT` or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
-    <lnum>36</lnum> Specifies a global seed value.<br/>
-    <lnum>49</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>33</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
+    <lnum>37</lnum> Specifies a global seed value.<br/>
+    <lnum>51</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 
@@ -2458,6 +2459,97 @@ Instancio will attempt to use a constructor with the least number of parameters 
 If the last option also fails, then it resorts to JDK-specific approaches, such as using `sun.misc.Unsafe`.
 There may be situations where all the listed options fail, which would result in `null` values
 being generated. Using `TypeInstantiator` allows plugging in custom instantiation logic.
+
+# Troubleshooting
+
+## Debugging
+
+Instancio uses [SLF4J](https://www.slf4j.org) for logging. Most of the messages are logged
+at `DEBUG` or `TRACE` level. Logging information can be useful when Instancio produces an error
+or does not generate expected values.
+
+In addition to logging, the builder API provides the `verbose()` method that outputs
+current settings as well as the internal model containing the node hierarchy to
+standard output. For example:
+
+```java linenums="1"
+List<Phone> result = Instancio.ofList(Phone.class)
+    .verbose()
+    .create();
+```
+
+will produce (ignoring settings output for brevity):
+
+``` linenums="1"
+// snip...
+
+### Node hierarchy
+
+Format: <depth:class: field>
+
+<0:List>
+ └──<1:Phone>
+     ├──<2:Phone: String countryCode>
+     └──<2:Phone: String number>
+
+ -> Node max depth ........: 2
+ -> Model max depth .......: 8
+ -> Total nodes ...........: 4
+ -> Seed ..................: 2699444350509138652
+```
+!!! attention ""
+    <lnum>12</lnum> maximum depth of the object.<br/>
+    <lnum>13</lnum> configured maximum depth up to which values will be generated.<br/>
+    <lnum>14</lnum> total number of nodes the root type contains.<br/>
+    <lnum>15</lnum> seed that was used to populate the data.<br/>
+
+The `verbose()` method can be particularly useful when working with deep, complex class
+hierarchies that contain many fields, collections, and cyclic relationships.
+For example, some APIs such as `assign()` and `emit()` require that a given selector
+matches exactly one target. The node hierarchy can be used to troubleshoot cases
+where the selector happens to match more than one target. The visual representation
+makes it easier to fine-tune the selector by specifying selector [scope](#selector-scopes)
+or [depth](#selector-depth).
+
+
+## Error Handling
+
+The default behaviour of Instancio is to fully populate an object, up to a certain depth.
+In case of internal errors, Instancio will still attempt to return an object, though some
+fields or collections may not be fully populated.
+
+Consider the following somewhat contrived example:
+
+```java linenums="1" title="An impossible Set"
+Set<Boolean> set = Instancio.ofSet(Boolean.class)
+    .size(10)
+    .create();
+```
+
+Since  it is not possible to create a `Set` of 10 booleans, Instancio will generate a set of size 2,
+containing values `true` and `false`. However, internally, this use case will produce an exception
+that is suppressed by default. At `DEBUG` log level, Instancio will report the following:
+
+```
+Suppressed error because Keys.FAIL_ON_ERROR (fail.on.error) is disabled.
+-> To propagate the error, set Keys.FAIL_ON_ERROR setting to true.
+-> To display the stack trace, run in verbose() mode or with TRACE logging.
+
+org.instancio.exception.InstancioException: Internal error occurred creating an object.
+
+Internal errors are suppressed by default and
+can be ignored if not applicable to the current test
+ -> at com.example.ExampleTest(ExampleTest.java:123)
+
+Reason: unable to populate Collection of size 10: class Set<Boolean> (depth=0)
+```
+
+As the message suggests, the `Keys.FAIL_ON_ERROR` setting can be enabled to propagate
+internal errors. This can be done via the `Settings` API or configuration file:
+
+```properties title="instancio.properties"
+fail.on.error=true
+```
 
 
 # JUnit Jupiter Integration

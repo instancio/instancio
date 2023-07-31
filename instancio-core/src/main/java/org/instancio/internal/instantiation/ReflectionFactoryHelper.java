@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.instantiation;
 
-import org.instancio.internal.util.ExceptionHandler;
+import org.instancio.internal.util.ExceptionUtils;
 
 import java.lang.reflect.Constructor;
 
@@ -33,7 +33,7 @@ final class ReflectionFactoryHelper {
             final Constructor<T> ctor = getNewConstructorForSerialization(klass);
             return (T) ctor.newInstance();
         } catch (Exception ex) {
-            ExceptionHandler.logException(
+            ExceptionUtils.logException(
                     "Error instantiating {} via newConstructorForSerialization", ex, klass);
             return null;
         }

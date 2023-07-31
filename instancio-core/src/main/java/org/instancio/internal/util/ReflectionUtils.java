@@ -33,7 +33,7 @@ public final class ReflectionUtils {
         try {
             return Class.forName(fullyQualifiedName);
         } catch (Exception ex) {
-            ExceptionHandler.logException("Could not load class: '{}'", ex, fullyQualifiedName);
+            ExceptionUtils.logException("Could not load class: '{}'", ex, fullyQualifiedName);
             return null;
         }
     }

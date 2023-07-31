@@ -17,7 +17,7 @@ package org.instancio.internal.generator.net;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.util.ExceptionHandler;
+import org.instancio.internal.util.ExceptionUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -38,7 +38,7 @@ public class InetAddressGenerator extends AbstractURIGenerator<InetAddress> {
         try {
             return getLocalHost();
         } catch (UnknownHostException ex) {
-            ExceptionHandler.logException("Failed generating InetAddress", ex);
+            ExceptionUtils.logException("Failed generating InetAddress", ex);
             return null;
         }
     }

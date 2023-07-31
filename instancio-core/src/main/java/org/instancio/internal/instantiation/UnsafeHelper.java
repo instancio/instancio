@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.instantiation;
 
-import org.instancio.internal.util.ExceptionHandler;
+import org.instancio.internal.util.ExceptionUtils;
 
 import java.lang.reflect.Field;
 
@@ -44,7 +44,7 @@ final class UnsafeHelper {
         try {
             return (T) unsafe.allocateInstance(klass);
         } catch (Exception ex) {
-            ExceptionHandler.logException("Error instantiating {} using Unsafe", ex, klass);
+            ExceptionUtils.logException("Error instantiating {} using Unsafe", ex, klass);
             return null;
         }
     }
@@ -60,7 +60,7 @@ final class UnsafeHelper {
                 }
             }
         } catch (Throwable t) {
-            ExceptionHandler.logException("Error getting Unsafe", t);
+            ExceptionUtils.logException("Error getting Unsafe", t);
         }
         return null;
     }

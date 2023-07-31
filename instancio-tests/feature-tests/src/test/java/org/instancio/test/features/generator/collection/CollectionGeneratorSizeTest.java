@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.generator.collection;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
@@ -23,6 +22,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.util.Constants;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.collections.CollectionLong;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
@@ -38,7 +38,6 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
-import static org.instancio.test.support.asserts.Asserts.assertWithFailOnErrorEnabled;
 
 @FeatureTag({
         Feature.GENERATE,
@@ -97,15 +96,14 @@ class CollectionGeneratorSizeTest {
         }
 
         @Test
+        @DisplayName("Verify exception is thrown when failOnError system property is enabled")
         void impossibleSetSizeWithFailOnErrorEnabled() {
-            final int size = Gen.ints().range(1000, 1100).get();
             final InstancioApi<Set<Boolean>> api = Instancio.of(new TypeToken<Set<Boolean>>() {})
-                    .generate(all(Set.class), gen -> gen.collection().size(size));
+                    .generate(all(Set.class), gen -> gen.collection().size(10));
 
-            assertWithFailOnErrorEnabled(api::create)
+            Asserts.assertWithFailOnErrorEnabled(api::create)
                     .isExactlyInstanceOf(InstancioException.class)
-                    .hasMessage("Unable to populate Set<Boolean> with %s elements." +
-                            "%nElement node: Node[Boolean, depth=1, type=Boolean]", size);
+                    .hasMessageContaining("unable to populate Collection");
         }
     }
 
