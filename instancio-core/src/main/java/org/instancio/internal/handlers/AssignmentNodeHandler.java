@@ -62,9 +62,9 @@ public class AssignmentNodeHandler implements NodeHandler {
         // loop from the end so that the last matching assignment wins
         for (int i = assignments.size() - 1; i >= 0; i--) {
             final InternalAssignment assignment = assignments.get(i);
-            final GeneratorResult candidateValue = generatedObjectStore.getValue(assignment.getDestination());
+            final GeneratorResult candidateResult = generatedObjectStore.getValue(assignment.getDestination());
 
-            if (candidateValue == null) {
+            if (candidateResult == null) {
                 LOG.trace("Delayed result for {}", assignment.getDestination());
                 unresolvedAssignments.add(assignment);
                 return GeneratorResult.delayed();
@@ -72,16 +72,16 @@ public class AssignmentNodeHandler implements NodeHandler {
 
             unresolvedAssignments.remove(assignment);
 
-            LOG.trace("Value for destination {}: {}", assignment.getDestination(), candidateValue.getValue());
+            LOG.trace("Value for destination {}: {}", assignment.getDestination(), candidateResult.getValue());
 
             final Predicate<Object> predicate = assignment.getOriginPredicate();
 
-            if (predicate == null || isSatisfied(candidateValue.getValue(), predicate)) {
+            if (predicate == null || isSatisfied(candidateResult.getValue(), predicate)) {
 
                 // null generator means we're copying the result of one node to another
                 // i.e. assign valueOf(selectorA).to(selectorB)
                 if (assignment.getGenerator() == null) {
-                    Object destinationResult = candidateValue.getValue();
+                    Object destinationResult = candidateResult.getValue();
 
                     if (assignment.getValueMapper() != null) {
                         destinationResult = assignment.getValueMapper().apply(destinationResult);
