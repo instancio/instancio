@@ -2472,7 +2472,7 @@ In addition to logging, the builder API provides the `verbose()` method that out
 current settings as well as the internal model containing the node hierarchy to
 standard output. For example:
 
-```java linenums="1"
+```java linenums="1" hl_lines="2"
 List<Phone> result = Instancio.ofList(Phone.class)
     .verbose()
     .create();
