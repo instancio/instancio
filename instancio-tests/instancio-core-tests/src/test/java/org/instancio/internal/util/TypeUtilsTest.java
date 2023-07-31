@@ -17,11 +17,9 @@ package org.instancio.internal.util;
 
 import org.instancio.Random;
 import org.instancio.TypeToken;
-import org.instancio.exception.InstancioException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.text.TextPatternGenerator;
-import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfList;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfMap;
@@ -60,13 +58,7 @@ class TypeUtilsTest {
 
         @Test
         void withTypeVariable() {
-            assertThat(TypeUtils.getRawType(TYPE_VARIABLE))
-                    .as("Should not throw exception when %s is disabled", SystemProperties.FAIL_ON_ERROR)
-                    .isNull();
-
-            Asserts.assertWithFailOnErrorEnabled(() -> TypeUtils.getRawType(TYPE_VARIABLE))
-                    .isExactlyInstanceOf(InstancioException.class)
-                    .hasMessage("Unhandled type: %s", TYPE_VARIABLE.getClass().getSimpleName());
+            assertThat(TypeUtils.getRawType(TYPE_VARIABLE)).isNull();
         }
 
         @Test

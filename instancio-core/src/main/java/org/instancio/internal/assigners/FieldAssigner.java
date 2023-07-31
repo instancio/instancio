@@ -17,7 +17,7 @@ package org.instancio.internal.assigners;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.util.AssignerErrorUtil;
+import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.AssignmentType;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
-import static org.instancio.internal.util.ExceptionHandler.logException;
+import static org.instancio.internal.util.ExceptionUtils.logException;
 
 final class FieldAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(FieldAssigner.class);
@@ -62,7 +62,7 @@ final class FieldAssigner implements Assigner {
         } catch (IllegalArgumentException ex) {
             // Wrong type is being assigned to a field.
             // Always propagate type mismatch errors as it's most likely a user error.
-            String msg = AssignerErrorUtil.getTypeMismatchErrorMessage(value, node, ex);
+            String msg = ErrorMessageUtils.getTypeMismatchErrorMessage(value, node, ex);
 
             throw Fail.withUsageError(msg, ex);
         } catch (Exception ex) {
@@ -74,7 +74,7 @@ final class FieldAssigner implements Assigner {
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
         final Field field = node.getField();
         if (onSetFieldError == OnSetFieldError.FAIL) {
-            final String msg = AssignerErrorUtil.incompatibleField(value, field, ex, settings);
+            final String msg = ErrorMessageUtils.incompatibleField(value, field, ex, settings);
             throw new InstancioApiException(msg, ex);
         }
 

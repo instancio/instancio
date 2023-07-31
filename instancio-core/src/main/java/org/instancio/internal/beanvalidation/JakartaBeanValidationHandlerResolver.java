@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
+import static org.instancio.internal.util.ExceptionUtils.runIgnoringTheNoClassDefFoundError;
 
 /**
  * Contain {@link FieldAnnotationHandler}s for non-primary annotations from

@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
+import static org.instancio.internal.util.ExceptionUtils.runIgnoringTheNoClassDefFoundError;
 
 final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerResolver {
 

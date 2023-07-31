@@ -39,6 +39,18 @@ public final class Format {
                 : formatField(node.getField());
     }
 
+    public static String nodePathToRootBlock(final InternalNode node) {
+        //noinspection StringBufferReplaceableByString
+        return new StringBuilder()
+                .append(node.toDisplayString()).append(" (depth=").append(node.getDepth()).append(')').append(NL)
+                .append(NL)
+                .append(" │ Path to root:").append(NL)
+                .append(nodePathToRoot(node, " │   ")).append("   <-- Root").append(NL)
+                .append(" │").append(NL)
+                .append(" │ Format: <depth:class: field>")
+                .toString();
+    }
+
     public static String nodePathToRoot(final InternalNode node, final String prefix) {
         String padding = "";
 
@@ -70,11 +82,11 @@ public final class Format {
         sb.append('<').append(node.getDepth()).append(':');
 
         if (node.getField() == null) {
-            sb.append(Format.withoutPackage(node.getTargetClass()));
+            sb.append(withoutPackage(node.getTargetClass()));
         } else {
-            sb.append(Format.withoutPackage(node.getParent().getTargetClass()))
+            sb.append(withoutPackage(node.getParent().getTargetClass()))
                     .append(": ")
-                    .append(Format.withoutPackage(node.getType()))
+                    .append(withoutPackage(node.getType()))
                     .append(' ')
                     .append(node.getField().getName());
         }
@@ -140,7 +152,7 @@ public final class Format {
                 "  method invocation: %s%n" +
                 "  at %s";
         final String invocation = String.format("%s.%s( -> null <- )", invokedMethods, methodName);
-        final String at = Format.firstNonInstancioStackTraceLine(t);
+        final String at = firstNonInstancioStackTraceLine(t);
         return String.format(template, message, invocation, at);
     }
 

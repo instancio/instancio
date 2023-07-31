@@ -17,7 +17,7 @@ package org.instancio.internal.instantiation;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.spi.ProviderEntry;
-import org.instancio.internal.util.ExceptionHandler;
+import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.spi.InstancioServiceProvider;
 import org.slf4j.Logger;
@@ -60,7 +60,7 @@ public class Instantiator {
         } catch (InstancioApiException ex) {
             throw ex;
         } catch (Throwable ex) { //NOPMD catches java.lang.InstantiationError
-            ExceptionHandler.logException("{}: failed instantiating {}",
+            ExceptionUtils.logException("{}: failed instantiating {}",
                     ex, strategy.getClass().getSimpleName(), klass);
         }
         return null;

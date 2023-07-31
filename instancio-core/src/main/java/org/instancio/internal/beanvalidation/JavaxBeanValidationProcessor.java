@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
+import static org.instancio.internal.util.ExceptionUtils.runIgnoringTheNoClassDefFoundError;
 
 /**
  * Contain generator(s) for primary annotation(s) from {@code javax.validation.constraints} package.

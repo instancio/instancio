@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
@@ -29,10 +30,10 @@ import java.lang.reflect.Field;
 import static org.instancio.internal.util.Constants.NL;
 
 @SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
-public final class AssignerErrorUtil {
+public final class ErrorMessageUtils {
     private static final int INITIAL_SB_SIZE = 1024;
 
-    private AssignerErrorUtil() {
+    private ErrorMessageUtils() {
         // non-instantiable
     }
 
@@ -41,9 +42,10 @@ public final class AssignerErrorUtil {
     }
 
     public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node, final Throwable cause) {
-        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE);
+        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
+                .append("error assigning value to: ").append(Format.nodePathToRootBlock(node)).append(NL)
+                .append(NL).append(NL);
 
-        appendNodeDetails("error assigning value to: ", node, sb);
         appendTypeMismatchDetails(value, node, sb);
 
         if (cause != null) {
@@ -61,22 +63,74 @@ public final class AssignerErrorUtil {
             final InternalNode containerNode,
             final InternalNode elementNode) {
 
-        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE);
-        appendNodeDetails(errorMsg + ": ", containerNode, sb);
+        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
+                .append(errorMsg).append(": ").append(Format.nodePathToRootBlock(containerNode)).append(NL)
+                .append(NL).append(NL);
+
         appendTypeMismatchDetails(value, elementNode, sb);
         return sb.toString();
     }
 
-    private static void appendNodeDetails(final String errorHeader, final InternalNode node, final StringBuilder sb) {
-        sb.append(errorHeader)
-                .append(node.toDisplayString())
-                .append(" (depth=").append(node.getDepth()).append(')').append(NL).append(NL)
-                .append(" │ Path to root:").append(NL)
-                .append(Format.nodePathToRoot(node, " │   ")).append("   <-- Root").append(NL)
-                .append(" │").append(NL)
-                .append(" │ Format: <depth:class: field>").append(NL)
-                .append(NL).append(NL);
+    /**
+     * @see #mapCouldNotBePopulated(ModelContext, InternalNode, int)
+     */
+    public static String collectionCouldNotBePopulated(
+            final ModelContext<?> context,
+            final InternalNode node,
+            final int targetSize) {
+
+        //noinspection StringBufferReplaceableByString
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("unable to populate Collection of size ").append(targetSize).append(": ")
+                .append(Format.nodePathToRootBlock(node)).append(NL)
+                .append(NL).append(NL)
+                .append("Could not generate enough elements to populate the collection.").append(NL)
+                .append("This typically occurs with Sets when the number of potential values is").append(NL)
+                .append("limited and the target set cannot be generated due to duplicate values").append(NL)
+                .append("being generated (for example, when the element type is an enum).").append(NL)
+                .append(NL)
+                .append(" -> Target size: ").append(targetSize).append(NL)
+                .append(NL)
+                .append("    The size was either chosen randomly based on current settings,").append(NL)
+                .append("    or may have been specified explicitly via the API.").append(NL)
+                .append(NL)
+                .append(" -> Current size settings are").append(NL)
+                .append(NL)
+                .append("    Keys.COLLECTION_MIN_SIZE: ").append(context.getSettings().get(Keys.COLLECTION_MIN_SIZE)).append(NL)
+                .append("    Keys.COLLECTION_MAX_SIZE: ").append(context.getSettings().get(Keys.COLLECTION_MAX_SIZE)).append(NL)
+                .toString();
     }
+
+    /**
+     * @see #collectionCouldNotBePopulated(ModelContext, InternalNode, int)
+     */
+    public static String mapCouldNotBePopulated(
+            final ModelContext<?> context,
+            final InternalNode node,
+            final int targetSize) {
+
+        //noinspection StringBufferReplaceableByString
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("unable to populate Map of size ").append(targetSize).append(": ")
+                .append(Format.nodePathToRootBlock(node)).append(NL)
+                .append(NL).append(NL)
+                .append("Could not generate enough entries to populate the map.").append(NL)
+                .append("This occurs when the number of potential map keys is limited").append(NL)
+                .append("and the target map cannot be generated due to duplicate keys").append(NL)
+                .append("being generated (for example, when the map key is an enum).").append(NL)
+                .append(NL)
+                .append(" -> Target size: ").append(targetSize).append(NL)
+                .append(NL)
+                .append("    The size was either chosen randomly based on current settings,").append(NL)
+                .append("    or may have been specified explicitly via the API.").append(NL)
+                .append(NL)
+                .append(" -> Current size settings are").append(NL)
+                .append(NL)
+                .append("    Keys.MAP_MIN_SIZE: ").append(context.getSettings().get(Keys.MAP_MIN_SIZE)).append(NL)
+                .append("    Keys.MAP_MAX_SIZE: ").append(context.getSettings().get(Keys.MAP_MAX_SIZE)).append(NL)
+                .toString();
+    }
+
 
     private static void appendTypeMismatchDetails(
             final Object value, final InternalNode node, final StringBuilder sb) {

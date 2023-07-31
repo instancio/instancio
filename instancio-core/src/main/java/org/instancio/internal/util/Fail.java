@@ -50,6 +50,12 @@ public final class Fail {
         return new InstancioException(SUBMIT_BUG_REPORT_MSG, cause);
     }
 
+    public static InstancioException withInternalError(final String msg, final Object... args) {
+        final ErrorArgs errorArgs = unpackArgs(args);
+        final String fullErrorMsg = createInternalErrorMessage(msg, errorArgs);
+        return new InstancioException(fullErrorMsg, errorArgs.throwable);
+    }
+
     /**
      * Creates an exception caused by incorrect usage of the API.
      * This exception should be propagated to the user.
@@ -79,6 +85,20 @@ public final class Fail {
         return String.format("" +
                 "%n" +
                 "%nError creating an object" +
+                "%n -> at %s" +
+                "%n" +
+                "%nReason: %s" +
+                "%n" +
+                "%n", location, msgWithArgs);
+    }
+
+    private static String createInternalErrorMessage(final String msg, final ErrorArgs errorArgs) {
+        final String location = Format.firstNonInstancioStackTraceLine(new Throwable());
+        final String msgWithArgs = String.format(msg, errorArgs.args);
+        return String.format("Internal error occurred creating an object." +
+                "%n" +
+                "%nInternal errors are suppressed by default and" +
+                "%ncan be ignored if not applicable to the current test" +
                 "%n -> at %s" +
                 "%n" +
                 "%nReason: %s" +

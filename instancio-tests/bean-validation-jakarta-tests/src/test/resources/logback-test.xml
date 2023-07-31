@@ -35,7 +35,7 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="org.instancio.internal.util.ExceptionHandler" level="info"/>
+    <logger name="org.instancio.internal.util.ExceptionUtils" level="info"/>
 
     <root level="debug">
         <appender-ref ref="CONSOLE"/>

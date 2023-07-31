@@ -202,6 +202,16 @@ public final class Keys {
             "double.nullable", Boolean.class, false);
 
     /**
+     * Specifies whether internal exceptions should be propagated up;
+     * default is {@code false}; property name {@code fail.on.error}.
+     *
+     * @since 3.0.1
+     */
+    @ExperimentalApi
+    public static final SettingKey<Boolean> FAIL_ON_ERROR = register(
+            "fail.on.error", Boolean.class, false);
+
+    /**
      * Specifies minimum value for floats;
      * default is 1; property name {@code float.min}.
      */
