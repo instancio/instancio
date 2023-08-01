@@ -66,7 +66,7 @@ final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandl
         return map;
     }
 
-    private static class DigitsHandler extends AbstractDigitsHandler {
+    private static final class DigitsHandler extends AbstractDigitsHandler {
 
         @Override
         int getFraction(Annotation annotation) {
@@ -79,7 +79,7 @@ final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandl
         }
     }
 
-    private static class MinHandler extends AbstractMinHandler {
+    private static final class MinHandler extends AbstractMinHandler {
 
         @Override
         long getValue(Annotation annotation) {
@@ -87,7 +87,7 @@ final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandl
         }
     }
 
-    private static class MaxHandler extends AbstractMaxHandler {
+    private static final class MaxHandler extends AbstractMaxHandler {
 
         @Override
         long getValue(Annotation annotation) {
@@ -95,7 +95,7 @@ final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandl
         }
     }
 
-    private static class DecimalMinHandler extends AbstractDecimalMinHandler {
+    private static final class DecimalMinHandler extends AbstractDecimalMinHandler {
 
         @Override
         String getValue(Annotation annotation) {
@@ -103,7 +103,7 @@ final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandl
         }
     }
 
-    private static class DecimalMaxHandler extends AbstractDecimalMaxHandler {
+    private static final class DecimalMaxHandler extends AbstractDecimalMaxHandler {
 
         @Override
         String getValue(Annotation annotation) {
@@ -111,7 +111,7 @@ final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandl
         }
     }
 
-    private static class SizeHandler extends AbstractSizeHandler {
+    private static final class SizeHandler extends AbstractSizeHandler {
 
         @Override
         int getMin(Annotation annotation) {
@@ -124,7 +124,7 @@ final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandl
         }
     }
 
-    private static class Holder {
+    private static final class Holder {
         private static final JavaxBeanValidationHandlerResolver INSTANCE =
                 new JavaxBeanValidationHandlerResolver();
     }

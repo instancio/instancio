@@ -57,7 +57,7 @@ final class UnsafeInstantiationStrategy implements InstantiationStrategy {
         return isUnsafeAvailable;
     }
 
-    private static class Holder {
+    private static final class Holder {
         private static final InstantiationStrategy INSTANCE = new UnsafeInstantiationStrategy();
     }
 }

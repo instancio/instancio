@@ -322,7 +322,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
     }
 
     //@formatter:off
-    private static class EmptyMap<V> implements SelectorMap<V> {
+    private static final class EmptyMap<V> implements SelectorMap<V> {
         @Override public void put(TargetSelector targetSelector, V value) {
             throw new UnsupportedOperationException("Unmodifiable SelectorMap");
         }

@@ -256,7 +256,7 @@ public class StringGenerator extends AbstractGenerator<String> implements String
             this.mixedCaseChars = mixedCaseChars;
         }
 
-        private static class Chars {
+        private static final class Chars {
             private static final String DIGITS = "0123456789";
             private static final String ALPHABETIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
