@@ -53,7 +53,7 @@ final class ReflectionFactoryInstantiationStrategy implements InstantiationStrat
         return isReflectionFactoryAvailable;
     }
 
-    private static class Holder {
+    private static final class Holder {
         private static final InstantiationStrategy INSTANCE =
                 new ReflectionFactoryInstantiationStrategy();
     }

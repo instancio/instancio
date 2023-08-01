@@ -76,7 +76,7 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
         return handlerMap.get(annotation.annotationType());
     }
 
-    private static class DurationMinHandler implements FieldAnnotationHandler {
+    private static final class DurationMinHandler implements FieldAnnotationHandler {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
@@ -101,7 +101,7 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
         }
     }
 
-    private static class DurationMaxHandler implements FieldAnnotationHandler {
+    private static final class DurationMaxHandler implements FieldAnnotationHandler {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
@@ -127,7 +127,7 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
     }
 
     // Length is only applicable to character sequences
-    private static class LengthHandler implements FieldAnnotationHandler {
+    private static final class LengthHandler implements FieldAnnotationHandler {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
@@ -151,7 +151,7 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
         }
     }
 
-    private static class RangeHandler implements FieldAnnotationHandler {
+    private static final class RangeHandler implements FieldAnnotationHandler {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
@@ -183,7 +183,7 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
         }
     }
 
-    private static class UniqueElementsHandler implements FieldAnnotationHandler {
+    private static final class UniqueElementsHandler implements FieldAnnotationHandler {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
@@ -196,7 +196,7 @@ final class HibernateBeanValidationHandlerResolver implements AnnotationHandlerR
         }
     }
 
-    private static class Holder {
+    private static final class Holder {
         private static final HibernateBeanValidationHandlerResolver INSTANCE =
                 new HibernateBeanValidationHandlerResolver();
     }

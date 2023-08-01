@@ -212,7 +212,7 @@ public final class InternalSettings implements Settings {
     }
 
     // a hack to workaround generics... we know the type is valid since it's a numeric settings
-    private static class NumberCaster<T extends Number & Comparable<T>> {
+    private static final class NumberCaster<T extends Number & Comparable<T>> {
         @SuppressWarnings("unchecked")
         private T cast(final Object obj) {
             return (T) obj;

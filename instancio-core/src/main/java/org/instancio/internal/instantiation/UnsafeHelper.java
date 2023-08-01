@@ -65,7 +65,7 @@ final class UnsafeHelper {
         return null;
     }
 
-    private static class Holder {
+    private static final class Holder {
         private static final UnsafeHelper INSTANCE = new UnsafeHelper();
     }
 }
