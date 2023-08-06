@@ -52,7 +52,7 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
         return new String(res);
     }
 
-    private char getCheckDigit(final String payload) {
+    protected char getCheckDigit(final String payload) {
         int result = base() - modulo(payload);
         if (result == 10) {
             return treat10As();
@@ -63,7 +63,7 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
         }
     }
 
-    private int modulo(final String payload) {
+    protected int modulo(final String payload) {
         final String newPayload = direction() == Direction.RIGHT_TO_LEFT
                 ? new StringBuilder(payload).reverse().toString()
                 : payload;

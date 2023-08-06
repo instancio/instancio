@@ -2129,6 +2129,8 @@ Anything not listed is unsupported, including `*.List` annotations.
 
 ### Hibernate
 
+#### Standard
+
 - `@CreditCardNumber`
 - `@DurationMin`
 - `@DurationMax`
@@ -2143,6 +2145,11 @@ Anything not listed is unsupported, including `*.List` annotations.
 - `@URL` (`protocol`, `host`, `port` are supported; `regexp` not supported)
 - `@UUID`
 
+#### Polish
+
+- `@NIP`
+- `@PESEL`
+- `@REGON`
 
 # Configuration
 

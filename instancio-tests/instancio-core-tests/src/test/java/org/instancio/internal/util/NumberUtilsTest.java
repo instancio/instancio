@@ -17,11 +17,15 @@ package org.instancio.internal.util;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withPrecision;
@@ -88,6 +92,18 @@ class NumberUtilsTest {
         assertThat(NumberUtils.sumDigits(digits)).isEqualTo(result);
     }
 
+    @MethodSource("digitSource")
+    @ParameterizedTest
+    void toDigitInt(final int digitInt, final char digitChar) {
+        assertThat(NumberUtils.toDigitInt(digitChar)).isEqualTo(digitInt);
+    }
+
+    @MethodSource("digitSource")
+    @ParameterizedTest
+    void toDigitChar(final int digitInt, final char digitChar) {
+        assertThat(NumberUtils.toDigitChar(digitInt)).isEqualTo(digitChar);
+    }
+
     @ValueSource(classes = {
             byte.class, short.class, int.class, long.class,
             Byte.class, Short.class, Integer.class, Long.class,
@@ -120,5 +136,9 @@ class NumberUtilsTest {
         assertThat(result.doubleValue())
                 .as("Unexpected result converting %s to %s, expected: %s", fromDecimal, toNumber, expected)
                 .isEqualTo(expected, withPrecision(0.0000001));
+    }
+
+    private static Stream<Arguments> digitSource() {
+        return IntStream.range(0, 10).mapToObj(i -> Arguments.of(i, (char) (i + '0')));
     }
 }

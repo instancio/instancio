@@ -24,6 +24,9 @@ import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.UUID;
+import org.hibernate.validator.constraints.pl.NIP;
+import org.hibernate.validator.constraints.pl.PESEL;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.checksum.LuhnGenerator;
@@ -32,6 +35,9 @@ import org.instancio.internal.generator.checksum.Mod11Generator;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
+import org.instancio.internal.generator.domain.id.NipGenerator;
+import org.instancio.internal.generator.domain.id.PeselGenerator;
+import org.instancio.internal.generator.domain.id.RegonGenerator;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
@@ -45,6 +51,7 @@ import java.util.function.BiFunction;
 
 import static org.instancio.internal.util.ExceptionHandler.runIgnoringTheNoClassDefFoundError;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvider {
 
     private final HibernateBeanValidationHandlerResolver resolver =
@@ -84,6 +91,15 @@ final class HibernateBeanValidationProcessor extends AbstractBeanValidationProvi
         );
         runIgnoringTheNoClassDefFoundError(() ->
                 map.put(URL.class, ((annotation, context) -> getUrlGenerator((URL) annotation, context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(NIP.class, ((annotation, context) -> new NipGenerator(context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(PESEL.class, ((annotation, context) -> new PeselGenerator(context)))
+        );
+        runIgnoringTheNoClassDefFoundError(() ->
+                map.put(REGON.class, ((annotation, context) -> new RegonGenerator(context)))
         );
         return map;
     }
