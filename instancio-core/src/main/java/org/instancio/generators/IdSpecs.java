@@ -17,8 +17,14 @@ package org.instancio.generators;
 
 import org.instancio.generator.specs.EanSpec;
 import org.instancio.generator.specs.IsbnSpec;
+import org.instancio.generator.specs.NipSpec;
+import org.instancio.generator.specs.PeselSpec;
+import org.instancio.generator.specs.RegonSpec;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
+import org.instancio.internal.generator.domain.id.NipGenerator;
+import org.instancio.internal.generator.domain.id.PeselGenerator;
+import org.instancio.internal.generator.domain.id.RegonGenerator;
 
 /**
  * Provides generators for various types of identifiers.
@@ -45,5 +51,35 @@ public final class IdSpecs {
      */
     public IsbnSpec isbn() {
         return new IsbnGenerator();
+    }
+
+    /**
+     * Generates Polish VAT Identification Number (NIP).
+     *
+     * @return API builder reference
+     * @since 3.1.0
+     */
+    public NipSpec nip() {
+        return new NipGenerator();
+    }
+
+    /**
+     * Generates Polish National Identification Number (PESEL).
+     *
+     * @return API builder reference
+     * @since 3.1.0
+     */
+    public PeselSpec pesel() {
+        return new PeselGenerator();
+    }
+
+    /**
+     * Generates Polish Taxpayer Identification Number (REGON).
+     *
+     * @return API builder reference
+     * @since 3.1.0
+     */
+    public RegonSpec regon() {
+        return new RegonGenerator();
     }
 }

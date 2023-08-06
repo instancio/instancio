@@ -28,6 +28,8 @@ import java.util.function.Function;
 
 public final class NumberUtils {
 
+    private static final int RADIX_DECIMAL = 10;
+
     private static final BigDecimal HUNDRED = new BigDecimal(100);
 
     private static final Map<Class<?>, Number> NUMERIC_MIN_VALUES = new HashMap<>(80);
@@ -239,6 +241,14 @@ public final class NumberUtils {
             n /= 10;
         }
         return sum;
+    }
+
+    public static int toDigitInt(final char digit) {
+        return Character.digit(digit, RADIX_DECIMAL);
+    }
+
+    public static char toDigitChar(final int digit) {
+        return Character.forDigit(digit, RADIX_DECIMAL);
     }
 
     private static BigDecimal toBigDecimal(final Number n) {
