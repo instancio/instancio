@@ -29,6 +29,7 @@ import org.instancio.internal.generator.lang.StringBuilderGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.math.BigIntegerGenerator;
+import org.instancio.internal.generator.misc.NullGenerator;
 import org.instancio.internal.generator.net.InetAddressGenerator;
 import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
@@ -267,6 +268,20 @@ final class GeneratorResolverMaps {
         map.put(AtomicBoolean.class, AtomicBooleanGenerator.class);
         map.put(AtomicInteger.class, AtomicIntegerGenerator.class);
         map.put(AtomicLong.class, AtomicLongGenerator.class);
+
+        // unsupported
+        map.put(java.lang.reflect.Field.class, NullGenerator.class);
+        map.put(java.net.Inet6Address.class, NullGenerator.class);
+        map.put(java.net.InetSocketAddress.class, NullGenerator.class);
+        map.put(java.util.concurrent.CompletableFuture.class, NullGenerator.class);
+        map.put(java.util.concurrent.Semaphore.class, NullGenerator.class);
+        map.put(java.util.concurrent.atomic.AtomicIntegerArray.class, NullGenerator.class);
+        map.put(java.util.concurrent.atomic.AtomicLongArray.class, NullGenerator.class);
+        map.put(java.util.concurrent.atomic.AtomicMarkableReference.class, NullGenerator.class);
+        map.put(java.util.concurrent.atomic.AtomicReference.class, NullGenerator.class);
+        map.put(java.util.concurrent.atomic.AtomicReferenceArray.class, NullGenerator.class);
+        map.put(java.util.concurrent.atomic.AtomicStampedReference.class, NullGenerator.class);
+
         return Collections.unmodifiableMap(map);
     }
 
