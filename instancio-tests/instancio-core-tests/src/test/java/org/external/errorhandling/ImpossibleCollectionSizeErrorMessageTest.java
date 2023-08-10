@@ -59,10 +59,17 @@ class ImpossibleCollectionSizeErrorMessageTest extends AbstractErrorMessageTestT
 
                 Could not generate enough elements to populate the collection.
                 This typically occurs with Sets when the number of potential values is
-                limited and the target set cannot be generated due to duplicate values
-                being generated (for example, when the element type is an enum).
+                limited and the target set cannot be generated due to duplicate element
+                values, for example:
 
-                 -> Target size: 100
+                 -> The element type is an enum
+
+                 -> The element type is a POJO, but blank POJOs are being generated
+                    because the configured maximum depth has been reached
+
+                Model properties:
+
+                 -> Collection target size: 100
 
                     The size was either chosen randomly based on current settings,
                     or may have been specified explicitly via the API.
@@ -72,6 +79,14 @@ class ImpossibleCollectionSizeErrorMessageTest extends AbstractErrorMessageTestT
                     Keys.COLLECTION_MIN_SIZE: 2
                     Keys.COLLECTION_MAX_SIZE: 6
 
+                 -> Keys.MAX_DEPTH: 8
+
+                 -> Model max depth: 8
+
+                    Unless overridden using withMaxDepth() method,
+                    this value should be the same as Keys.MAX_DEPTH
+
+                For more information see: https://www.instancio.org/user-guide/#error-handling
 
                 """;
     }

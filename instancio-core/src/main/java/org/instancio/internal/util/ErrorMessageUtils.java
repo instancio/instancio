@@ -79,6 +79,8 @@ public final class ErrorMessageUtils {
             final InternalNode node,
             final int targetSize) {
 
+        final Settings settings = context.getSettings();
+
         //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("unable to populate Collection of size ").append(targetSize).append(": ")
@@ -86,18 +88,34 @@ public final class ErrorMessageUtils {
                 .append(NL).append(NL)
                 .append("Could not generate enough elements to populate the collection.").append(NL)
                 .append("This typically occurs with Sets when the number of potential values is").append(NL)
-                .append("limited and the target set cannot be generated due to duplicate values").append(NL)
-                .append("being generated (for example, when the element type is an enum).").append(NL)
+                .append("limited and the target set cannot be generated due to duplicate element").append(NL)
+                .append("values, for example:").append(NL)
                 .append(NL)
-                .append(" -> Target size: ").append(targetSize).append(NL)
+                .append(" -> The element type is an enum").append(NL)
+                .append(NL)
+                .append(" -> The element type is a POJO, but blank POJOs are being generated").append(NL)
+                .append("    because the configured maximum depth has been reached").append(NL)
+                .append(NL)
+                .append("Model properties:").append(NL)
+                .append(NL)
+                .append(" -> Collection target size: ").append(targetSize).append(NL)
                 .append(NL)
                 .append("    The size was either chosen randomly based on current settings,").append(NL)
                 .append("    or may have been specified explicitly via the API.").append(NL)
                 .append(NL)
                 .append(" -> Current size settings are").append(NL)
                 .append(NL)
-                .append("    Keys.COLLECTION_MIN_SIZE: ").append(context.getSettings().get(Keys.COLLECTION_MIN_SIZE)).append(NL)
-                .append("    Keys.COLLECTION_MAX_SIZE: ").append(context.getSettings().get(Keys.COLLECTION_MAX_SIZE)).append(NL)
+                .append("    Keys.COLLECTION_MIN_SIZE: ").append(settings.get(Keys.COLLECTION_MIN_SIZE)).append(NL)
+                .append("    Keys.COLLECTION_MAX_SIZE: ").append(settings.get(Keys.COLLECTION_MAX_SIZE)).append(NL)
+                .append(NL)
+                .append(" -> Keys.MAX_DEPTH: ").append(settings.get(Keys.MAX_DEPTH)).append(NL)
+                .append(NL)
+                .append(" -> Model max depth: ").append(context.getMaxDepth()).append(NL)
+                .append(NL)
+                .append("    Unless overridden using withMaxDepth() method,").append(NL)
+                .append("    this value should be the same as Keys.MAX_DEPTH").append(NL)
+                .append(NL)
+                .append("For more information see: https://www.instancio.org/user-guide/#error-handling")
                 .toString();
     }
 
@@ -109,6 +127,8 @@ public final class ErrorMessageUtils {
             final InternalNode node,
             final int targetSize) {
 
+        final Settings settings = context.getSettings();
+
         //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("unable to populate Map of size ").append(targetSize).append(": ")
@@ -116,18 +136,34 @@ public final class ErrorMessageUtils {
                 .append(NL).append(NL)
                 .append("Could not generate enough entries to populate the map.").append(NL)
                 .append("This occurs when the number of potential map keys is limited").append(NL)
-                .append("and the target map cannot be generated due to duplicate keys").append(NL)
-                .append("being generated (for example, when the map key is an enum).").append(NL)
+                .append("and the target map cannot be generated due to duplicate keys,").append(NL)
+                .append("for example:").append(NL)
                 .append(NL)
-                .append(" -> Target size: ").append(targetSize).append(NL)
+                .append(" -> The key type is an enum").append(NL)
+                .append(NL)
+                .append(" -> The key type is a POJO, but blank POJOs are being generated").append(NL)
+                .append("    because the configured maximum depth has been reached").append(NL)
+                .append(NL)
+                .append("Model properties:").append(NL)
+                .append(NL)
+                .append(" -> Map target size: ").append(targetSize).append(NL)
                 .append(NL)
                 .append("    The size was either chosen randomly based on current settings,").append(NL)
                 .append("    or may have been specified explicitly via the API.").append(NL)
                 .append(NL)
                 .append(" -> Current size settings are").append(NL)
                 .append(NL)
-                .append("    Keys.MAP_MIN_SIZE: ").append(context.getSettings().get(Keys.MAP_MIN_SIZE)).append(NL)
-                .append("    Keys.MAP_MAX_SIZE: ").append(context.getSettings().get(Keys.MAP_MAX_SIZE)).append(NL)
+                .append("    Keys.MAP_MIN_SIZE: ").append(settings.get(Keys.MAP_MIN_SIZE)).append(NL)
+                .append("    Keys.MAP_MAX_SIZE: ").append(settings.get(Keys.MAP_MAX_SIZE)).append(NL)
+                .append(NL)
+                .append(" -> Keys.MAX_DEPTH: ").append(settings.get(Keys.MAX_DEPTH)).append(NL)
+                .append(NL)
+                .append(" -> Model max depth: ").append(context.getMaxDepth()).append(NL)
+                .append(NL)
+                .append("    Unless overridden using withMaxDepth() method,").append(NL)
+                .append("    this value should be the same as Keys.MAX_DEPTH").append(NL)
+                .append(NL)
+                .append("For more information see: https://www.instancio.org/user-guide/#error-handling")
                 .toString();
     }
 
