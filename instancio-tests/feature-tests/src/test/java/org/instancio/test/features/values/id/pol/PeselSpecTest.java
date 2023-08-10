@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.values.id;
+package org.instancio.test.features.values.id.pol;
 
 import org.instancio.Gen;
 import org.instancio.generator.specs.PeselSpec;
@@ -34,7 +34,7 @@ class PeselSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected PeselSpec spec() {
-        return Gen.id().pesel();
+        return Gen.id().pol().pesel();
     }
 
     @Override

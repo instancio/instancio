@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.values.id;
+package org.instancio.test.features.values.id.pol;
 
 import org.instancio.Gen;
 import org.instancio.generator.specs.NipSpec;
@@ -28,7 +28,7 @@ class NipSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected NipSpec spec() {
-        return Gen.id().nip();
+        return Gen.id().pol().nip();
     }
 
     @Override

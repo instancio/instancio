@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.domain.id;
+package org.instancio.internal.generator.domain.id.pol;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class NipGeneratorTest extends AbstractGeneratorTestTemplate<String, NipGenerator> {
+class RegonGeneratorTest extends AbstractGeneratorTestTemplate<String, RegonGenerator> {
 
-    private final NipGenerator generator = new NipGenerator(getGeneratorContext());
+    private final RegonGenerator generator = new RegonGenerator(getGeneratorContext());
 
     @Override
     protected String getApiMethod() {
-        return "nip()";
+        return "regon()";
     }
 
     @Override
-    protected NipGenerator generator() {
+    protected RegonGenerator generator() {
         return generator;
     }
 
@@ -40,7 +40,7 @@ class NipGeneratorTest extends AbstractGeneratorTestTemplate<String, NipGenerato
 
         assertThat(result)
                 .containsOnlyDigits()
-                .hasSize(10);
+                .hasSize(9);
         // Actual validation is done in Hibernate bean validation tests
     }
 }
