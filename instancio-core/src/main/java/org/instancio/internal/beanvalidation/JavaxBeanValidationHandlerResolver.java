@@ -29,10 +29,11 @@ import static org.instancio.internal.util.ExceptionUtils.runIgnoringTheNoClassDe
  * <p>To get additional info about primary/non-primary annotations,
  * please read javadoc for {@link BeanValidationProcessor} class.
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandlerResolver {
 
     /*
-     * Note: this class should not import `org.hibernate.validator.constraints.*`
+     * Note: this class should not import `javax.validation.constraints.*`
      * to avoid class-not-found error if a constraint is not available on the classpath
      */
 
@@ -46,6 +47,8 @@ final class JavaxBeanValidationHandlerResolver extends CommonBeanValidationHandl
 
     private static Map<Class<?>, FieldAnnotationHandler> initHandlers() {
         final Map<Class<?>, FieldAnnotationHandler> map = new HashMap<>();
+        runIgnoringTheNoClassDefFoundError(() -> map.put(javax.validation.constraints.AssertFalse.class, new AssertBooleanHandler(false)));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(javax.validation.constraints.AssertTrue.class, new AssertBooleanHandler(true)));
         runIgnoringTheNoClassDefFoundError(() -> map.put(javax.validation.constraints.DecimalMax.class, new DecimalMaxHandler()));
         runIgnoringTheNoClassDefFoundError(() -> map.put(javax.validation.constraints.DecimalMin.class, new DecimalMinHandler()));
         runIgnoringTheNoClassDefFoundError(() -> map.put(javax.validation.constraints.Digits.class, new DigitsHandler()));

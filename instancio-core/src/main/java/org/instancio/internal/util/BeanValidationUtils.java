@@ -16,8 +16,9 @@
 package org.instancio.internal.util;
 
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.specs.BooleanGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
-import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
+import org.instancio.internal.generator.AbstractGenerator;
 
 import java.lang.reflect.Field;
 
@@ -72,9 +73,13 @@ public final class BeanValidationUtils {
     }
 
     public static void setNonNullablePrimitive(final GeneratorSpec<?> spec, final Field field) {
-        if (spec instanceof NumberGeneratorSpec<?> && field.getType().isPrimitive()) {
-            // prevent 0 being generated for nullable primitives,
-            ((AbstractRandomNumberGeneratorSpec<Number>) spec).nullable(false);
+        if (!field.getType().isPrimitive()) {
+            return;
+        }
+
+        // prevent '0' or 'false' being generated for nullable primitives
+        if (spec instanceof NumberGeneratorSpec<?> || spec instanceof BooleanGeneratorSpec) {
+            ((AbstractGenerator<?>) spec).nullable(false);
         }
     }
 }
