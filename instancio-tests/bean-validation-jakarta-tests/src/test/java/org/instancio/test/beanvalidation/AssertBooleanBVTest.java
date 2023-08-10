@@ -15,32 +15,32 @@
  */
 package org.instancio.test.beanvalidation;
 
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.CodePointLength;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.pojo.beanvalidation.AssertBooleanBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
-class UnsupportedAnnotationTest {
+class AssertBooleanBVTest {
 
-    private static class Pojo {
-
-        @NotNull
-        @CodePointLength(min = 123)
-        private String codePointLength;
+    @RepeatedTest(SAMPLE_SIZE_DD)
+    void assertFalse() {
+        final AssertBooleanBV.WithFalse result = Instancio.create(AssertBooleanBV.WithFalse.class);
+        assertThat(result.primitiveBoolean()).isFalse();
+        assertThat(result.booleanWrapper()).isEqualTo(Boolean.FALSE);
     }
 
-    @Test
-    void unsupportedAnnotationsShouldBeIgnored() {
-        final Pojo result = Instancio.create(Pojo.class);
-
-        assertThat(result).hasNoNullFieldsOrProperties();
+    @RepeatedTest(SAMPLE_SIZE_DD)
+    void assertTrue() {
+        final AssertBooleanBV.WithTrue result = Instancio.create(AssertBooleanBV.WithTrue.class);
+        assertThat(result.primitiveBoolean()).isTrue();
+        assertThat(result.booleanWrapper()).isEqualTo(Boolean.TRUE);
     }
 }

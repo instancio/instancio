@@ -27,6 +27,7 @@ import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
+import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
@@ -349,6 +350,26 @@ class CommonBeanValidationHandlerResolver implements AnnotationHandlerResolver {
 
             if (spec instanceof AbstractGenerator<?>) {
                 ((AbstractGenerator<?>) spec).nullable(false);
+            }
+        }
+    }
+
+    static final class AssertBooleanHandler implements FieldAnnotationHandler {
+        private final boolean generatedValue;
+
+        AssertBooleanHandler(final boolean generatedValue) {
+            this.generatedValue = generatedValue;
+        }
+
+        @Override
+        public void process(final Annotation annotation,
+                            final GeneratorSpec<?> spec,
+                            final Field field,
+                            final Class<?> fieldType) {
+
+            if (spec instanceof BooleanGenerator) {
+                ((BooleanGenerator) spec).probability(generatedValue ? 1 : 0);
+                BeanValidationUtils.setNonNullablePrimitive(spec, field);
             }
         }
     }

@@ -2108,6 +2108,8 @@ Anything not listed is unsupported, including `*.List` annotations.
 
 ### Jakarta or Javax
 
+- `@AssertFalse`
+- `@AssertTrue`
 - `@DecimalMax`
 - `@DecimalMin`
 - `@Digits` (`fraction()` is supported by `BigDecimal`, but not `float` or `double`)

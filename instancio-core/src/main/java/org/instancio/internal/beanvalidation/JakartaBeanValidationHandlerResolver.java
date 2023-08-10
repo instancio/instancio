@@ -29,6 +29,7 @@ import static org.instancio.internal.util.ExceptionUtils.runIgnoringTheNoClassDe
  * <p>To get additional info about primary/non-primary annotations,
  * please read javadoc for {@link BeanValidationProcessor} class.
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 final class JakartaBeanValidationHandlerResolver extends CommonBeanValidationHandlerResolver {
 
     /*
@@ -46,6 +47,8 @@ final class JakartaBeanValidationHandlerResolver extends CommonBeanValidationHan
 
     private static Map<Class<?>, FieldAnnotationHandler> initHandlers() {
         final Map<Class<?>, FieldAnnotationHandler> map = new HashMap<>();
+        runIgnoringTheNoClassDefFoundError(() -> map.put(jakarta.validation.constraints.AssertFalse.class, new AssertBooleanHandler(false)));
+        runIgnoringTheNoClassDefFoundError(() -> map.put(jakarta.validation.constraints.AssertTrue.class, new AssertBooleanHandler(true)));
         runIgnoringTheNoClassDefFoundError(() -> map.put(jakarta.validation.constraints.DecimalMax.class, new DecimalMaxHandler()));
         runIgnoringTheNoClassDefFoundError(() -> map.put(jakarta.validation.constraints.DecimalMin.class, new DecimalMinHandler()));
         runIgnoringTheNoClassDefFoundError(() -> map.put(jakarta.validation.constraints.Digits.class, new DigitsHandler()));
