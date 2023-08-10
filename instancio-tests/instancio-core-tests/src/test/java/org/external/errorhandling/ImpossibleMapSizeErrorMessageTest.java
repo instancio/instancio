@@ -59,10 +59,17 @@ class ImpossibleMapSizeErrorMessageTest extends AbstractErrorMessageTestTemplate
 
                 Could not generate enough entries to populate the map.
                 This occurs when the number of potential map keys is limited
-                and the target map cannot be generated due to duplicate keys
-                being generated (for example, when the map key is an enum).
+                and the target map cannot be generated due to duplicate keys,
+                for example:
 
-                 -> Target size: 100
+                 -> The key type is an enum
+
+                 -> The key type is a POJO, but blank POJOs are being generated
+                    because the configured maximum depth has been reached
+
+                Model properties:
+
+                 -> Map target size: 100
 
                     The size was either chosen randomly based on current settings,
                     or may have been specified explicitly via the API.
@@ -72,6 +79,14 @@ class ImpossibleMapSizeErrorMessageTest extends AbstractErrorMessageTestTemplate
                     Keys.MAP_MIN_SIZE: 2
                     Keys.MAP_MAX_SIZE: 6
 
+                 -> Keys.MAX_DEPTH: 8
+
+                 -> Model max depth: 8
+
+                    Unless overridden using withMaxDepth() method,
+                    this value should be the same as Keys.MAX_DEPTH
+
+                For more information see: https://www.instancio.org/user-guide/#error-handling
 
                 """;
     }
