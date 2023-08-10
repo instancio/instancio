@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.values.id;
+package org.instancio.test.features.values.id.pol;
 
 import org.instancio.Gen;
 import org.instancio.generator.specs.RegonSpec;
@@ -29,7 +29,7 @@ class RegonSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected RegonSpec spec() {
-        return Gen.id().regon();
+        return Gen.id().pol().regon();
     }
 
     @Override

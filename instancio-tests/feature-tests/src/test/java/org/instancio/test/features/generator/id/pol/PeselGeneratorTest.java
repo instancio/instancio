@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.generator.id;
+package org.instancio.test.features.generator.id.pol;
 
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Instancio;
@@ -48,7 +48,7 @@ class PeselGeneratorTest {
 
     @Test
     void pesel() {
-        final String result = create(gen -> gen.id().pesel());
+        final String result = create(gen -> gen.id().pol().pesel());
 
         assertThat(result)
                 .hasSize(11)
@@ -58,7 +58,7 @@ class PeselGeneratorTest {
     @Test
     void birthdate() {
         final LocalDate localDate = LocalDate.of(1990, 1, 1);
-        final String result = create(gen -> gen.id().pesel().birthdate(random -> localDate));
+        final String result = create(gen -> gen.id().pol().pesel().birthdate(random -> localDate));
 
         assertThat(result)
                 .containsOnlyDigits()
@@ -67,7 +67,7 @@ class PeselGeneratorTest {
 
     @Test
     void randomGendersShouldBeGeneratedByDefault() {
-        final Set<Integer> result = Stream.generate(() -> create(gen -> gen.id().pesel()))
+        final Set<Integer> result = Stream.generate(() -> create(gen -> gen.id().pol().pesel()))
                 .map(s -> toDigitInt(s.charAt(9)))
                 .limit(SAMPLE_SIZE_DD)
                 .collect(Collectors.toSet());
@@ -80,7 +80,7 @@ class PeselGeneratorTest {
 
     @Test
     void male() {
-        final String result = create(gen -> gen.id().pesel().male());
+        final String result = create(gen -> gen.id().pol().pesel().male());
         final int maleDigit = toDigitInt(result.charAt(9));
 
         assertThat(maleDigit).is(ODD_NUMBER);
@@ -88,7 +88,7 @@ class PeselGeneratorTest {
 
     @Test
     void female() {
-        final String result = create(gen -> gen.id().pesel().female());
+        final String result = create(gen -> gen.id().pol().pesel().female());
         final int femaleDigit = toDigitInt(result.charAt(9));
 
         assertThat(femaleDigit).is(EVEN_NUMBER);
@@ -96,7 +96,7 @@ class PeselGeneratorTest {
 
     @Test
     void nullable() {
-        final Stream<String> result = Stream.generate(() -> create(gen -> gen.id().pesel().nullable()))
+        final Stream<String> result = Stream.generate(() -> create(gen -> gen.id().pol().pesel().nullable()))
                 .limit(SAMPLE_SIZE_DDD);
 
         assertThat(result).containsNull();

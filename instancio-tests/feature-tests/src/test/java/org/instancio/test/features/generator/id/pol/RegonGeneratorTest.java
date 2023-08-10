@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.generator.id;
+package org.instancio.test.features.generator.id.pol;
 
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Instancio;
@@ -31,28 +31,46 @@ import static org.instancio.Select.root;
 
 @FeatureTag(Feature.GENERATOR)
 @ExtendWith(InstancioExtension.class)
-class NipGeneratorTest {
+class RegonGeneratorTest {
 
-    private static String create(final GeneratorSpecProvider<String> spec) {
+    private static String createRegon(final GeneratorSpecProvider<String> spec) {
         return Instancio.of(String.class)
                 .generate(root(), spec)
                 .create();
     }
 
     @Test
-    void nip() {
-        final String result = create(gen -> gen.id().nip());
+    void defaultRegonIsType9() {
+        final String result = createRegon(gen -> gen.id().pol().regon());
 
-        assertThat(result)
-                .hasSize(10)
-                .containsOnlyDigits();
+        assertRegon(result, 9);
+    }
+
+    @Test
+    void regon9() {
+        final String result = createRegon(gen -> gen.id().pol().regon().type9());
+
+        assertRegon(result, 9);
+    }
+
+    @Test
+    void regon14() {
+        final String result = createRegon(gen -> gen.id().pol().regon().type14());
+
+        assertRegon(result, 14);
     }
 
     @Test
     void nullable() {
-        final Stream<String> result = Stream.generate(() -> create(gen -> gen.id().nip().nullable()))
+        final Stream<String> result = Stream.generate(() -> createRegon(gen -> gen.id().pol().regon().nullable()))
                 .limit(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(result).containsNull();
+    }
+
+    private static void assertRegon(final String result, final int expectedSize) {
+        assertThat(result)
+                .hasSize(expectedSize)
+                .containsOnlyDigits();
     }
 }

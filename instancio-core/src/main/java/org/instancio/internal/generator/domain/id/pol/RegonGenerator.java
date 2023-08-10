@@ -13,40 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.domain.id;
+package org.instancio.internal.generator.domain.id.pol;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.NipSpec;
+import org.instancio.generator.specs.RegonSpec;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.support.Global;
 
 import java.util.List;
 
-public class NipGenerator extends WeightsModCheckGenerator implements NipSpec {
+public class RegonGenerator extends WeightsModCheckGenerator implements RegonSpec {
 
-    private static final List<Integer> NIP_WEIGHTS = CollectionUtils.asUnmodifiableList(6, 5, 7, 2, 3, 4, 5, 6, 7);
+    private RegonType type = RegonType.REGON9;
 
-    public NipGenerator() {
+    public RegonGenerator() {
         this(Global.generatorContext());
     }
 
-    public NipGenerator(final GeneratorContext context) {
+    public RegonGenerator(final GeneratorContext context) {
         super(context);
     }
 
     @Override
     public String apiMethod() {
-        return "nip()";
+        return "regon()";
     }
 
     @Override
-    public NipGenerator nullable() {
+    public RegonSpec type9() {
+        type = RegonType.REGON9;
+        return this;
+    }
+
+    @Override
+    public RegonSpec type14() {
+        type = RegonType.REGON14;
+        return this;
+    }
+
+    @Override
+    public RegonGenerator nullable() {
         super.nullable();
         return this;
     }
 
     @Override
     protected List<Integer> weights() {
-        return NIP_WEIGHTS;
+        return type.weights;
+    }
+
+    private enum RegonType {
+        REGON9(8, 9, 2, 3, 4, 5, 6, 7),
+        REGON14(2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8);
+
+        private final List<Integer> weights;
+
+        RegonType(final Integer... weights) {
+            this.weights = CollectionUtils.asUnmodifiableList(weights);
+        }
     }
 }

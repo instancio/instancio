@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.domain.id;
+package org.instancio.internal.generator.domain.id.pol;
 
+import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class RegonGeneratorTest extends AbstractGeneratorTestTemplate<String, RegonGenerator> {
+class PeselDateGeneratorTest extends AbstractGeneratorTestTemplate<String, PeselDateGenerator> {
 
-    private final RegonGenerator generator = new RegonGenerator(getGeneratorContext());
+    private final PeselDateGenerator generator = new PeselDateGenerator(getGeneratorContext());
 
     @Override
     protected String getApiMethod() {
-        return "regon()";
+        return null;
     }
 
     @Override
-    protected RegonGenerator generator() {
+    protected PeselDateGenerator generator() {
         return generator;
     }
 
@@ -40,7 +42,24 @@ class RegonGeneratorTest extends AbstractGeneratorTestTemplate<String, RegonGene
 
         assertThat(result)
                 .containsOnlyDigits()
-                .hasSize(9);
-        // Actual validation is done in Hibernate bean validation tests
+                .hasSize(6);
+    }
+
+    @Test
+    void shouldIgnoreNullLocalDateGenerator() {
+        final String result = generator.withLocalDate(null).generate(random);
+
+        assertThat(result)
+                .containsOnlyDigits()
+                .hasSize(6);
+    }
+
+    @Test
+    void localDateInvalidReturnValue() {
+        generator.withLocalDate(rand -> null);
+
+        assertThatThrownBy(() -> generator.generate(random))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("generated PESEL date must not be null");
     }
 }

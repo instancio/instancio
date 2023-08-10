@@ -48,7 +48,7 @@ class RegonBVTest {
     @Test
     void regon14() {
         final Stream<RegonBV> results = Instancio.of(RegonBV.class)
-                .generate(field(RegonBV::getRegon), gen -> gen.id().regon().type14())
+                .generate(field(RegonBV::getRegon), gen -> gen.id().pol().regon().type14())
                 .stream()
                 .limit(SAMPLE_SIZE_DDD);
 

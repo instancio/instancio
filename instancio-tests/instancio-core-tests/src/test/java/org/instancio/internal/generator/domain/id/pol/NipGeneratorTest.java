@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.domain.id;
+package org.instancio.internal.generator.domain.id.pol;
 
-import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PeselDateGeneratorTest extends AbstractGeneratorTestTemplate<String, PeselDateGenerator> {
+class NipGeneratorTest extends AbstractGeneratorTestTemplate<String, NipGenerator> {
 
-    private final PeselDateGenerator generator = new PeselDateGenerator(getGeneratorContext());
+    private final NipGenerator generator = new NipGenerator(getGeneratorContext());
 
     @Override
     protected String getApiMethod() {
-        return null;
+        return "nip()";
     }
 
     @Override
-    protected PeselDateGenerator generator() {
+    protected NipGenerator generator() {
         return generator;
     }
 
@@ -42,24 +40,7 @@ class PeselDateGeneratorTest extends AbstractGeneratorTestTemplate<String, Pesel
 
         assertThat(result)
                 .containsOnlyDigits()
-                .hasSize(6);
-    }
-
-    @Test
-    void shouldIgnoreNullLocalDateGenerator() {
-        final String result = generator.withLocalDate(null).generate(random);
-
-        assertThat(result)
-                .containsOnlyDigits()
-                .hasSize(6);
-    }
-
-    @Test
-    void localDateInvalidReturnValue() {
-        generator.withLocalDate(rand -> null);
-
-        assertThatThrownBy(() -> generator.generate(random))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("generated PESEL date must not be null");
+                .hasSize(10);
+        // Actual validation is done in Hibernate bean validation tests
     }
 }
