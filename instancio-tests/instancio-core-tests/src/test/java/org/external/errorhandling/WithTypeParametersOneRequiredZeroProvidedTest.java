@@ -34,7 +34,7 @@ class WithTypeParametersOneRequiredZeroProvidedTest extends AbstractErrorMessage
                 Error creating an object
                  -> at org.external.errorhandling.WithTypeParametersOneRequiredZeroProvidedTest.methodUnderTest(WithTypeParametersOneRequiredZeroProvidedTest.java:26)
 
-                Reason: invalid usage of withTypeParameters() method
+                Reason: incorrect type parameters specified
 
                  -> Class java.util.List requires 1 type parameter(s): [E]
                  -> The number of parameters provided was 0

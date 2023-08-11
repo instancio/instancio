@@ -35,7 +35,7 @@ class WithTypeParametersTwoRequiredThreeProvidedTest extends AbstractErrorMessag
                 Error creating an object
                  -> at org.external.errorhandling.WithTypeParametersTwoRequiredThreeProvidedTest.methodUnderTest(WithTypeParametersTwoRequiredThreeProvidedTest.java:27)
 
-                Reason: invalid usage of withTypeParameters() method
+                Reason: incorrect type parameters specified
 
                  -> Class java.util.Map requires 2 type parameter(s): [K, V]
                  -> The number of parameters provided was 3: [String, Integer, Long]
