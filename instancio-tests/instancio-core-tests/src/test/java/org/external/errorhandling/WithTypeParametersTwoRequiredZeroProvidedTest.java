@@ -33,7 +33,7 @@ class WithTypeParametersTwoRequiredZeroProvidedTest extends AbstractErrorMessage
                 Error creating an object
                  -> at org.external.errorhandling.WithTypeParametersTwoRequiredZeroProvidedTest.methodUnderTest(WithTypeParametersTwoRequiredZeroProvidedTest.java:25)
 
-                Reason: invalid usage of withTypeParameters() method
+                Reason: incorrect type parameters specified
 
                  -> Class org.instancio.test.support.pojo.generics.container.ItemContainer requires 2 type parameter(s): [X, Y]
                  -> The number of parameters provided was 0

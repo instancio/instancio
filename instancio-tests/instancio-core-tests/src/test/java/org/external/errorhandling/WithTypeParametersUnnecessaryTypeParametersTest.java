@@ -34,7 +34,7 @@ class WithTypeParametersUnnecessaryTypeParametersTest extends AbstractErrorMessa
                 Error creating an object
                  -> at org.external.errorhandling.WithTypeParametersUnnecessaryTypeParametersTest.methodUnderTest(WithTypeParametersUnnecessaryTypeParametersTest.java:26)
 
-                Reason: invalid usage of withTypeParameters() method
+                Reason: incorrect type parameters specified
                  -> class Person is not generic and does not require type parameters
 
                 """;

@@ -36,7 +36,7 @@ class WithTypeParametersNestedGenericsTest extends AbstractErrorMessageTestTempl
                 Error creating an object
                  -> at org.external.errorhandling.WithTypeParametersNestedGenericsTest.methodUnderTest(WithTypeParametersNestedGenericsTest.java:28)
 
-                Reason: invalid usage of withTypeParameters() method
+                Reason: incorrect type parameters specified
 
                   -> The argument List<E> is a generic class and also requires type parameter(s),
                      but this method does not support nested generics.

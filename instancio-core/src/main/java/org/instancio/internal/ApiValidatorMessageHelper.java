@@ -27,12 +27,12 @@ import static org.instancio.internal.util.Constants.NL;
 @SuppressWarnings("StringBufferReplaceableByString")
 final class ApiValidatorMessageHelper {
 
-    private static final String INVALID_USAGE_OF_WITH_TYPE_PARAMETERS =
-            "invalid usage of withTypeParameters() method";
+    private static final String INCORRECT_TYPE_PARAMETERS_SPECIFIED =
+            "incorrect type parameters specified";
 
     static String withTypeParametersNonGenericClass(final Class<?> rootClass) {
         return new StringBuilder()
-                .append(INVALID_USAGE_OF_WITH_TYPE_PARAMETERS).append(NL)
+                .append(INCORRECT_TYPE_PARAMETERS_SPECIFIED).append(NL)
                 .append(" -> class ").append(Format.withoutPackage(rootClass))
                 .append(" is not generic and does not require type parameters")
                 .toString();
@@ -96,7 +96,7 @@ final class ApiValidatorMessageHelper {
 
     static String withTypeParametersNestedGenerics(final String classWithTypeParams) {
         return new StringBuilder()
-                .append(INVALID_USAGE_OF_WITH_TYPE_PARAMETERS).append(NL)
+                .append(INCORRECT_TYPE_PARAMETERS_SPECIFIED).append(NL)
                 .append(NL)
                 .append("  -> The argument ").append(classWithTypeParams)
                 .append(" is a generic class and also requires type parameter(s),").append(NL)
@@ -121,7 +121,7 @@ final class ApiValidatorMessageHelper {
             final List<Type> rootTypeParameters) {
 
         final StringBuilder sb = new StringBuilder()
-                .append(INVALID_USAGE_OF_WITH_TYPE_PARAMETERS).append(NL)
+                .append(INCORRECT_TYPE_PARAMETERS_SPECIFIED).append(NL)
                 .append(NL)
                 .append(" -> Class ").append(rootClass.getName()).append(" requires ")
                 .append(rootClass.getTypeParameters().length).append(" type parameter(s): ")
