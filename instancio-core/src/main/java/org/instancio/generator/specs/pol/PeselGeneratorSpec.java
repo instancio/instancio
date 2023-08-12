@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.generator.specs.pol;
 
 import org.instancio.generator.Generator;
-import org.instancio.generator.ValueSpec;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 
 import java.time.LocalDate;
 
@@ -25,7 +25,33 @@ import java.time.LocalDate;
  *
  * @since 3.1.0
  */
-public interface PeselSpec extends ValueSpec<String>, PeselGeneratorSpec {
+public interface PeselGeneratorSpec extends NullableGeneratorSpec<String> {
+
+    /**
+     * Specifies a generator for the birthdate.
+     * If not specified, a random birthdate will be generated.
+     *
+     * @param localDateGenerator generator for the birthdate
+     * @return spec builder
+     * @since 3.1.0
+     */
+    PeselGeneratorSpec birthdate(Generator<LocalDate> localDateGenerator);
+
+    /**
+     * Specifies that male PESEL should be generated.
+     *
+     * @return spec builder
+     * @since 3.1.0
+     */
+    PeselGeneratorSpec male();
+
+    /**
+     * Specifies that female PESEL should be generated.
+     *
+     * @return spec builder
+     * @since 3.1.0
+     */
+    PeselGeneratorSpec female();
 
     /**
      * {@inheritDoc}
@@ -33,29 +59,5 @@ public interface PeselSpec extends ValueSpec<String>, PeselGeneratorSpec {
      * @since 3.1.0
      */
     @Override
-    PeselSpec birthdate(Generator<LocalDate> localDateGenerator);
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 3.1.0
-     */
-    @Override
-    PeselSpec male();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 3.1.0
-     */
-    @Override
-    PeselSpec female();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 3.1.0
-     */
-    @Override
-    PeselSpec nullable();
+    PeselGeneratorSpec nullable();
 }

@@ -13,28 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.values.id.pol;
+package org.instancio.internal.generator.domain.id.can;
 
-import org.instancio.Gen;
-import org.instancio.generator.specs.pol.NipSpec;
-import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
-import org.instancio.test.support.tags.Feature;
-import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@FeatureTag(Feature.VALUE_SPEC)
-class NipSpecTest extends AbstractValueSpecTestTemplate<String> {
+class SinGeneratorTest extends AbstractGeneratorTestTemplate<String, SinGenerator> {
+
+    private final SinGenerator generator = new SinGenerator(getGeneratorContext());
 
     @Override
-    protected NipSpec spec() {
-        return Gen.id().pol().nip();
+    protected String getApiMethod() {
+        return "sin()";
     }
 
     @Override
-    protected void assertDefaultSpecValue(final String actual) {
-        assertThat(actual)
+    protected SinGenerator generator() {
+        return generator;
+    }
+
+    @Test
+    void generate() {
+        final String result = generator.generate(random);
+
+        assertThat(result)
                 .containsOnlyDigits()
-                .hasSize(10);
+                .hasSize(9);
     }
 }

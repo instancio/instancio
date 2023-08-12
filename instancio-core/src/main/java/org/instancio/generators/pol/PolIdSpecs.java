@@ -15,9 +15,9 @@
  */
 package org.instancio.generators.pol;
 
-import org.instancio.generator.specs.NipSpec;
-import org.instancio.generator.specs.PeselSpec;
-import org.instancio.generator.specs.RegonSpec;
+import org.instancio.generator.specs.pol.NipSpec;
+import org.instancio.generator.specs.pol.PeselSpec;
+import org.instancio.generator.specs.pol.RegonSpec;
 import org.instancio.internal.generator.domain.id.pol.NipGenerator;
 import org.instancio.internal.generator.domain.id.pol.PeselGenerator;
 import org.instancio.internal.generator.domain.id.pol.RegonGenerator;

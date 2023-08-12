@@ -13,54 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.values.id.pol;
+package org.instancio.test.features.values.id.can;
 
 import org.instancio.Gen;
-import org.instancio.generator.specs.pol.PeselSpec;
+import org.instancio.generator.specs.can.SinSpec;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.internal.util.NumberUtils.toDigitInt;
-import static org.instancio.test.support.conditions.Conditions.EVEN_NUMBER;
-import static org.instancio.test.support.conditions.Conditions.ODD_NUMBER;
 
 @FeatureTag(Feature.VALUE_SPEC)
-class PeselSpecTest extends AbstractValueSpecTestTemplate<String> {
+class SinSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
-    protected PeselSpec spec() {
-        return Gen.id().pol().pesel();
+    protected SinSpec spec() {
+        return Gen.id().can().sin();
     }
 
     @Override
     protected void assertDefaultSpecValue(final String actual) {
         assertThat(actual)
                 .containsOnlyDigits()
-                .hasSize(11);
+                .hasSize(9);
     }
 
     @Test
-    void birthdate() {
-        final LocalDate localDate = LocalDate.of(1990, 1, 1);
-        assertThat(spec().birthdate(random -> localDate).get())
-                .containsOnlyDigits()
-                .startsWith("900101");
+    void temporary() {
+        assertThat(spec().temporary().get())
+                .matches("^9[0-9]{8}$");
     }
 
     @Test
-    void male() {
-        int maleDigit = toDigitInt(spec().male().get().charAt(9));
-        assertThat(maleDigit).is(ODD_NUMBER);
+    void permanent() {
+        assertThat(spec().permanent().get())
+                .matches("^[1-7][0-9]{8}$");
     }
 
     @Test
-    void female() {
-        int femaleDigit = toDigitInt(spec().female().get().charAt(9));
-        assertThat(femaleDigit).is(EVEN_NUMBER);
+    void separator() {
+        assertThat(spec().separator("-").get())
+                .matches("^\\d{3}-\\d{3}-\\d{3}$");
     }
 }

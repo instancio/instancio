@@ -18,7 +18,7 @@ package org.instancio.internal.generator.domain.id.pol;
 import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.PeselSpec;
+import org.instancio.generator.specs.pol.PeselSpec;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.support.Global;

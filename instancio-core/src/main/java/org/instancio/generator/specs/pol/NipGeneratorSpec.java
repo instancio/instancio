@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.generator.specs.pol;
 
-import org.instancio.generator.ValueSpec;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 
 /**
- * Spec for generating <a href="https://pl.wikipedia.org/wiki/REGON">Polish Taxpayer Identification Number (REGON)</a>.
+ * Spec for generating <a href="https://en.wikipedia.org/wiki/VAT_identification_number">
+ * Polish VAT Identification Number (NIP)</a>.
  *
  * @since 3.1.0
  */
-public interface RegonSpec extends ValueSpec<String>, RegonGeneratorSpec {
+public interface NipGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
      * {@inheritDoc}
@@ -30,21 +31,5 @@ public interface RegonSpec extends ValueSpec<String>, RegonGeneratorSpec {
      * @since 3.1.0
      */
     @Override
-    RegonSpec type9();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 3.1.0
-     */
-    @Override
-    RegonSpec type14();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 3.1.0
-     */
-    @Override
-    RegonSpec nullable();
+    NipGeneratorSpec nullable();
 }
