@@ -13,23 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
-
-import org.instancio.generator.ValueSpec;
-
 /**
- * Spec for generating <a href="https://en.wikipedia.org/wiki/VAT_identification_number">
- * Polish VAT Identification Number (NIP)</a>.
+ * Defines classes that provide access to built-in generators
+ * specific to Canada.
  *
  * @since 3.1.0
  */
-public interface NipSpec extends ValueSpec<String>, NipGeneratorSpec {
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 3.1.0
-     */
-    @Override
-    NipSpec nullable();
-}
+package org.instancio.generators.can;

@@ -19,6 +19,7 @@ package org.instancio.generators;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EanGeneratorSpec;
 import org.instancio.generator.specs.IsbnGeneratorSpec;
+import org.instancio.generators.can.CanIdGenerators;
 import org.instancio.generators.pol.PolIdGenerators;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
@@ -54,6 +55,16 @@ public class IdGenerators {
      */
     public IsbnGeneratorSpec isbn() {
         return new IsbnGenerator(context);
+    }
+
+    /**
+     * Provides access to identifier generators for Canada.
+     *
+     * @return built-in id generators for Canada
+     * @since 3.1.0
+     */
+    public CanIdGenerators can() {
+        return new CanIdGenerators(context);
     }
 
     /**

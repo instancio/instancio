@@ -16,7 +16,7 @@
 package org.instancio.internal.generator.domain.id.pol;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.NipSpec;
+import org.instancio.generator.specs.pol.NipSpec;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.support.Global;
 

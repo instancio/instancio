@@ -16,7 +16,7 @@
 package org.instancio.test.features.values.id.pol;
 
 import org.instancio.Gen;
-import org.instancio.generator.specs.RegonSpec;
+import org.instancio.generator.specs.pol.RegonSpec;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;

@@ -13,31 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.generator.specs.pol;
+
+import org.instancio.generator.ValueSpec;
 
 /**
- * Spec for generating <a href="https://pl.wikipedia.org/wiki/REGON">Polish Taxpayer Identification Number (REGON)</a>.
+ * Spec for generating <a href="https://en.wikipedia.org/wiki/VAT_identification_number">
+ * Polish VAT Identification Number (NIP)</a>.
  *
  * @since 3.1.0
  */
-public interface RegonGeneratorSpec extends NullableGeneratorSpec<String> {
-
-    /**
-     * Specifies that 9-digit REGON should be generated
-     * (default behaviour if the type is not specified).
-     *
-     * @return spec builder
-     * @since 3.1.0
-     */
-    RegonGeneratorSpec type9();
-
-    /**
-     * Specifies that 14-digit REGON should be generated.
-     *
-     * @return spec builder
-     * @since 3.1.0
-     */
-    RegonGeneratorSpec type14();
+public interface NipSpec extends ValueSpec<String>, NipGeneratorSpec {
 
     /**
      * {@inheritDoc}
@@ -45,5 +31,5 @@ public interface RegonGeneratorSpec extends NullableGeneratorSpec<String> {
      * @since 3.1.0
      */
     @Override
-    RegonGeneratorSpec nullable();
+    NipSpec nullable();
 }

@@ -13,21 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
-
 /**
- * Spec for generating <a href="https://en.wikipedia.org/wiki/VAT_identification_number">
- * Polish VAT Identification Number (NIP)</a>.
+ * Defines generator specs for Poland.
  *
  * @since 3.1.0
  */
-public interface NipGeneratorSpec extends NullableGeneratorSpec<String> {
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 3.1.0
-     */
-    @Override
-    NipGeneratorSpec nullable();
-}
+package org.instancio.generator.specs.pol;

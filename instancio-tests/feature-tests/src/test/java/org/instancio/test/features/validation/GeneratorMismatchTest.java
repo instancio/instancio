@@ -150,6 +150,19 @@ class GeneratorMismatchTest {
     @Test
     void assertIdGenerators() {
         assertMessageContains("ean()", gen -> gen.id().ean());
+        assertMessageContains("isbn()", gen -> gen.id().isbn());
+    }
+
+    @Test
+    void assertCanIdGenerators() {
+        assertMessageContains("sin()", gen -> gen.id().can().sin());
+    }
+
+    @Test
+    void assertPolIdGenerators() {
+        assertMessageContains("nip()", gen -> gen.id().pol().nip());
+        assertMessageContains("pesel()", gen -> gen.id().pol().pesel());
+        assertMessageContains("regon()", gen -> gen.id().pol().regon());
     }
 
     @Test

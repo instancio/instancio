@@ -13,44 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.generator.specs.pol;
 
-import org.instancio.generator.Generator;
-
-import java.time.LocalDate;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 
 /**
- * Spec for generating <a href="https://en.wikipedia.org/wiki/PESEL">Polish National Identification Number (PESEL)</a>.
+ * Spec for generating <a href="https://pl.wikipedia.org/wiki/REGON">Polish Taxpayer Identification Number (REGON)</a>.
  *
  * @since 3.1.0
  */
-public interface PeselGeneratorSpec extends NullableGeneratorSpec<String> {
+public interface RegonGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
-     * Specifies a generator for the birthdate.
-     * If not specified, a random birthdate will be generated.
-     *
-     * @param localDateGenerator generator for the birthdate
-     * @return spec builder
-     * @since 3.1.0
-     */
-    PeselGeneratorSpec birthdate(Generator<LocalDate> localDateGenerator);
-
-    /**
-     * Specifies that male PESEL should be generated.
+     * Specifies that 9-digit REGON should be generated
+     * (default behaviour if the type is not specified).
      *
      * @return spec builder
      * @since 3.1.0
      */
-    PeselGeneratorSpec male();
+    RegonGeneratorSpec type9();
 
     /**
-     * Specifies that female PESEL should be generated.
+     * Specifies that 14-digit REGON should be generated.
      *
      * @return spec builder
      * @since 3.1.0
      */
-    PeselGeneratorSpec female();
+    RegonGeneratorSpec type14();
 
     /**
      * {@inheritDoc}
@@ -58,5 +47,5 @@ public interface PeselGeneratorSpec extends NullableGeneratorSpec<String> {
      * @since 3.1.0
      */
     @Override
-    PeselGeneratorSpec nullable();
+    RegonGeneratorSpec nullable();
 }
