@@ -15,8 +15,10 @@
  */
 package org.instancio.generators;
 
+import org.instancio.generator.specs.LuhnSpec;
 import org.instancio.generator.specs.Mod10Spec;
 import org.instancio.generator.specs.Mod11Spec;
+import org.instancio.internal.generator.checksum.LuhnGenerator;
 import org.instancio.internal.generator.checksum.Mod10Generator;
 import org.instancio.internal.generator.checksum.Mod11Generator;
 
@@ -26,6 +28,16 @@ import org.instancio.internal.generator.checksum.Mod11Generator;
  * @since 2.16.0
  */
 public final class ChecksumSpecs {
+
+    /**
+     * Generates numbers that pass the Luhn checksum algorithm.
+     *
+     * @return API builder reference
+     * @since 3.1.0
+     */
+    public LuhnSpec luhn() {
+        return new LuhnGenerator();
+    }
 
     /**
      * Generates numbers that pass the Mod11 checksum algorithm.

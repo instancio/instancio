@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generator.checksum;
+package org.instancio.generator.specs;
 
-class LuhnGeneratorTest extends AbstractVariableLengthModCheckGeneratorTest<LuhnGenerator> {
+import org.instancio.generator.ValueSpec;
 
-    private final LuhnGenerator generator = new LuhnGenerator(getGeneratorContext());
+/**
+ * A spec for generating numbers that pass the Luhn checksum algorithm.
+ *
+ * @since 3.1.0
+ */
+public interface LuhnSpec extends LuhnGeneratorSpec, ValueSpec<String> {
 
     @Override
-    protected String getApiMethod() {
-        return "luhn()";
-    }
+    LuhnSpec length(int length);
 
     @Override
-    protected LuhnGenerator generator() {
-        return generator;
-    }
+    LuhnSpec length(int min, int max);
+
+    @Override
+    LuhnSpec startIndex(int startIndex);
+
+    @Override
+    LuhnSpec endIndex(int endIndex);
+
+    @Override
+    LuhnSpec checkDigitIndex(int checkDigitIndex);
+
+    @Override
+    LuhnSpec nullable();
 }

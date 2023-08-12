@@ -16,8 +16,16 @@
 package org.instancio.internal.generator.checksum;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.LuhnAsGeneratorSpec;
+import org.instancio.generator.specs.LuhnSpec;
+import org.instancio.support.Global;
 
-public class LuhnGenerator extends VariableLengthModCheckGenerator {
+public class LuhnGenerator extends VariableLengthModCheckGenerator
+        implements LuhnAsGeneratorSpec, LuhnSpec {
+
+    public LuhnGenerator() {
+        this(Global.generatorContext());
+    }
 
     public LuhnGenerator(final GeneratorContext context) {
         super(context);
@@ -25,7 +33,7 @@ public class LuhnGenerator extends VariableLengthModCheckGenerator {
 
     @Override
     public String apiMethod() {
-        return null;
+        return "luhn()";
     }
 
     @Override
@@ -37,6 +45,24 @@ public class LuhnGenerator extends VariableLengthModCheckGenerator {
     @Override
     public LuhnGenerator nullable(final boolean isNullable) {
         super.nullable(isNullable);
+        return this;
+    }
+
+    @Override
+    public LuhnGenerator length(final int length) {
+        super.length(length);
+        return this;
+    }
+
+    @Override
+    public LuhnGenerator length(final int min, final int max) {
+        super.length(min, max);
+        return this;
+    }
+
+    @Override
+    public LuhnGenerator checkDigitIndex(final int idx) {
+        super.checkDigitIndex(idx);
         return this;
     }
 
