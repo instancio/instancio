@@ -15,22 +15,25 @@
  */
 package org.instancio.test.beanvalidation;
 
+import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckBV.WithDefaults;
-import org.instancio.test.pojo.beanvalidation.LuhnCheckBV.WithStartEndAndCheckDigitIndices;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckBV.WithEndAndCheckDigitIndicesEqual;
+import org.instancio.test.pojo.beanvalidation.LuhnCheckBV.WithStartEndAndCheckDigitIndices;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckBV.WithStartEndIndices;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.util.HibernateValidatorUtil;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
@@ -72,5 +75,181 @@ class LuhnCheckBVTest {
                 .limit(SAMPLE_SIZE_DDD);
 
         assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+    }
+
+    @Nested
+    class LuhnGeneratorSpecTest {
+
+        @Test
+        void withDefaults() {
+            final Stream<WithDefaults> results = Instancio.of(WithDefaults.class)
+                    .generate(field(WithDefaults::getValue), gen -> gen.checksum().luhn())
+                    .stream()
+                    .limit(SAMPLE_SIZE_DDD);
+
+            assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+        }
+
+        @Test
+        void withStartEndIndices() {
+            final Stream<WithStartEndIndices> results = Instancio.of(WithStartEndIndices.class)
+                    .generate(field(WithStartEndIndices::getValue0), gen -> gen.checksum().luhn()
+                            .startIndex(0).endIndex(7))
+
+                    .generate(field(WithStartEndIndices::getValue1), gen -> gen.checksum().luhn()
+                            .startIndex(5).endIndex(10))
+
+                    .generate(field(WithStartEndIndices::getValue2), gen -> gen.checksum().luhn()
+                            .startIndex(1).endIndex(21))
+
+                    .generate(field(WithStartEndIndices::getValue3), gen -> gen.checksum().luhn()
+                            .startIndex(100).endIndex(105))
+
+                    .stream()
+                    .limit(SAMPLE_SIZE_DDD);
+
+            assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+        }
+
+        @Test
+        void withStartEndIndicesAndLength() {
+            final Stream<WithStartEndIndices> results = Instancio.of(WithStartEndIndices.class)
+                    .generate(field(WithStartEndIndices::getValue0), gen -> gen.checksum().luhn()
+                            .length(10)
+                            .startIndex(0).endIndex(7))
+
+                    .generate(field(WithStartEndIndices::getValue1), gen -> gen.checksum().luhn()
+                            .length(15, 20)
+                            .startIndex(5).endIndex(10))
+
+                    .generate(field(WithStartEndIndices::getValue2), gen -> gen.checksum().luhn()
+                            .length(25)
+                            .startIndex(1).endIndex(21))
+
+                    .generate(field(WithStartEndIndices::getValue3), gen -> gen.checksum().luhn()
+                            .length(106)
+                            .startIndex(100).endIndex(105))
+
+                    .stream()
+                    .limit(SAMPLE_SIZE_DDD);
+
+            assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+                HibernateValidatorUtil.assertValid(result);
+
+                assertThat(result.getValue0()).hasSize(10);
+                assertThat(result.getValue1()).hasSizeBetween(15, 20);
+                assertThat(result.getValue2()).hasSize(25);
+                assertThat(result.getValue3()).hasSize(106);
+            });
+        }
+
+        @Test
+        void withStartEndAndCheckDigitIndices() {
+            final Stream<WithStartEndAndCheckDigitIndices> results = Instancio.of(WithStartEndAndCheckDigitIndices.class)
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue0), gen -> gen.checksum().luhn()
+                            .startIndex(0).endIndex(7).checkDigitIndex(8))
+
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue1), gen -> gen.checksum().luhn()
+                            .startIndex(5).endIndex(10).checkDigitIndex(3))
+
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue2), gen -> gen.checksum().luhn()
+                            .startIndex(1).endIndex(21).checkDigitIndex(0))
+
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue3), gen -> gen.checksum().luhn()
+                            .startIndex(100).endIndex(105).checkDigitIndex(150))
+
+                    .stream()
+                    .limit(SAMPLE_SIZE_DDD);
+
+            assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+        }
+    }
+
+    @Nested
+    class LuhnSpecTest {
+
+        @Test
+        void withDefaults() {
+            final Stream<WithDefaults> results = Instancio.of(WithDefaults.class)
+                    .generate(field(WithDefaults::getValue), Gen.checksum().luhn())
+                    .stream()
+                    .limit(SAMPLE_SIZE_DDD);
+
+            assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+        }
+
+        @Test
+        void withStartEndIndices() {
+            final Stream<WithStartEndIndices> results = Instancio.of(WithStartEndIndices.class)
+                    .generate(field(WithStartEndIndices::getValue0), Gen.checksum().luhn()
+                            .startIndex(0).endIndex(7))
+
+                    .generate(field(WithStartEndIndices::getValue1), Gen.checksum().luhn()
+                            .startIndex(5).endIndex(10))
+
+                    .generate(field(WithStartEndIndices::getValue2), Gen.checksum().luhn()
+                            .startIndex(1).endIndex(21))
+
+                    .generate(field(WithStartEndIndices::getValue3), Gen.checksum().luhn()
+                            .startIndex(100).endIndex(105))
+
+                    .stream()
+                    .limit(SAMPLE_SIZE_DDD);
+
+            assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+        }
+
+        @Test
+        void withStartEndIndicesAndLength() {
+            final Stream<WithStartEndIndices> results = Instancio.of(WithStartEndIndices.class)
+                    .generate(field(WithStartEndIndices::getValue0), Gen.checksum().luhn()
+                            .length(10)
+                            .startIndex(0).endIndex(7))
+
+                    .generate(field(WithStartEndIndices::getValue1), Gen.checksum().luhn()
+                            .length(15, 20)
+                            .startIndex(5).endIndex(10))
+
+                    .generate(field(WithStartEndIndices::getValue2), Gen.checksum().luhn()
+                            .length(25)
+                            .startIndex(1).endIndex(21))
+
+                    .generate(field(WithStartEndIndices::getValue3), Gen.checksum().luhn()
+                            .length(106)
+                            .startIndex(100).endIndex(105))
+
+                    .stream()
+                    .limit(SAMPLE_SIZE_DDD);
+
+            assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+                HibernateValidatorUtil.assertValid(result);
+
+                assertThat(result.getValue0()).hasSize(10);
+                assertThat(result.getValue1()).hasSizeBetween(15, 20);
+                assertThat(result.getValue2()).hasSize(25);
+                assertThat(result.getValue3()).hasSize(106);
+            });
+        }
+
+        @Test
+        void withStartEndAndCheckDigitIndices() {
+            final Stream<WithStartEndAndCheckDigitIndices> results = Instancio.of(WithStartEndAndCheckDigitIndices.class)
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue0), Gen.checksum().luhn()
+                            .startIndex(0).endIndex(7).checkDigitIndex(8))
+
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue1), Gen.checksum().luhn()
+                            .startIndex(5).endIndex(10).checkDigitIndex(3))
+
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue2), Gen.checksum().luhn()
+                            .startIndex(1).endIndex(21).checkDigitIndex(0))
+
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue3), Gen.checksum().luhn()
+                            .startIndex(100).endIndex(105).checkDigitIndex(150))
+
+                    .stream()
+                    .limit(SAMPLE_SIZE_DDD);
+
+            assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+        }
     }
 }

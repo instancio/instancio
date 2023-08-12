@@ -856,6 +856,7 @@ Generators
 ├── optional()
 │
 ├── checksum()
+│   └── luhn()
 │   └── mod10()
 │   └── mod11()
 │

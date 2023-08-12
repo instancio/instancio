@@ -142,6 +142,7 @@ class GeneratorMismatchTest {
 
     @Test
     void assertChecksumGenerators() {
+        assertMessageContains("luhn()", gen -> gen.checksum().luhn());
         assertMessageContains("mod10()", gen -> gen.checksum().mod10());
         assertMessageContains("mod11()", gen -> gen.checksum().mod11());
     }

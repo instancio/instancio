@@ -21,5 +21,12 @@ import org.instancio.generator.GeneratorSpec;
 @InternalApi
 public interface InternalLengthGeneratorSpec<T> extends GeneratorSpec<T> {
 
+    /**
+     * Length of the value to generate.
+     *
+     * @param min minimum length (inclusive)
+     * @param max maximum length (inclusive)
+     * @return spec builder
+     */
     InternalLengthGeneratorSpec<T> length(int min, int max);
 }
