@@ -166,6 +166,11 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertUsaIdGenerators() {
+        assertMessageContains("ssn()", gen -> gen.id().usa().ssn());
+    }
+
+    @Test
     void assertBoolean() {
         assertMessageContains("booleans()", Generators::booleans);
     }

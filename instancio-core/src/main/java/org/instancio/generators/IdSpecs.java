@@ -19,6 +19,7 @@ import org.instancio.generator.specs.EanSpec;
 import org.instancio.generator.specs.IsbnSpec;
 import org.instancio.generators.can.CanIdSpecs;
 import org.instancio.generators.pol.PolIdSpecs;
+import org.instancio.generators.usa.UsaIdSpecs;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
 
@@ -52,7 +53,7 @@ public final class IdSpecs {
     /**
      * Provides identifier generators for Canada.
      *
-     * @return built-in identifier generators for Canada
+     * @return built-in identifier generators
      * @since 3.1.0
      */
     public CanIdSpecs can() {
@@ -62,10 +63,20 @@ public final class IdSpecs {
     /**
      * Provides identifier generators for Poland.
      *
-     * @return built-in identifier generators for Poland
+     * @return built-in identifier generators
      * @since 3.1.0
      */
     public PolIdSpecs pol() {
         return new PolIdSpecs();
+    }
+
+    /**
+     * Provides identifier generators for USA.
+     *
+     * @return built-in identifier generators
+     * @since 3.1.0
+     */
+    public UsaIdSpecs usa() {
+        return new UsaIdSpecs();
     }
 }
