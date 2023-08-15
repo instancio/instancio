@@ -16,9 +16,11 @@
 package org.instancio.test.features.generator.oneof;
 
 import org.instancio.Instancio;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -27,6 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
@@ -45,6 +48,16 @@ class OneOfCollectionGeneratorTest {
     }
 
     @Test
+    void oneOfWithNullChoice() {
+        final Stream<String> results = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen.oneOf(Arrays.asList("one", null)))
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD);
+
+        assertThat(results).containsOnly("one", null);
+    }
+
+    @Test
     void oneOfConsidersAllChoices() {
         final Set<String> results = new HashSet<>();
         final List<String> choices = Arrays.asList("one", "two", "three");
@@ -54,5 +67,17 @@ class OneOfCollectionGeneratorTest {
                     .create());
         }
         assertThat(results).containsAll(choices);
+    }
+
+    @Test
+    void oneOfNullable() {
+        final Set<String> choices = CollectionUtils.asSet("one");
+
+        final Stream<String> results = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen.oneOf(choices).nullable())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD);
+
+        assertThat(results).containsOnly("one", null);
     }
 }

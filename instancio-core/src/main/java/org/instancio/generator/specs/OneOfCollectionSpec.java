@@ -30,7 +30,7 @@ import java.util.Collection;
 public interface OneOfCollectionSpec<T> extends ValueSpec<T>, OneOfCollectionGeneratorSpec<T> {
 
     @Override
-    OneOfCollectionSpec<T> oneOf(Collection<T> values);
+    ValueSpec<T> oneOf(Collection<T> values);
 
     @Override
     default Model<T> toModel() {

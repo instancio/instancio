@@ -16,12 +16,12 @@
 package org.instancio.test.contract;
 
 import org.instancio.FieldSelectorBuilder;
-import org.instancio.TargetSelector;
+import org.instancio.GroupableSelector;
 import org.instancio.TypeSelectorBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
+import static org.instancio.test.support.asserts.ClassAssert.assertThatClass;
 
 class TerminalSelectorMethodsTest {
 
@@ -34,9 +34,10 @@ class TerminalSelectorMethodsTest {
     })
     @ParameterizedTest
     void atDepth(final Class<?> klass) {
-        methods().that().areDeclaredIn(klass)
-                .and().haveName("atDepth")
-                .should().haveRawReturnType(TargetSelector.class);
+        assertThatClass(klass)
+                .withMethodNameMatching("atDepth")
+                .hasSize(2)
+                .haveReturnType(GroupableSelector.class);
     }
 
 }

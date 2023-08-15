@@ -30,5 +30,5 @@ public interface NullableGeneratorSpec<T> extends GeneratorSpec<T> {
      *
      * @return spec builder
      */
-    NullableGeneratorSpec<T> nullable();
+    GeneratorSpec<T> nullable();
 }

@@ -25,13 +25,13 @@ import java.util.Collection;
  * @param <T> type of value
  * @since 1.0.1
  */
-public interface OneOfCollectionGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface OneOfCollectionGeneratorSpec<T> extends NullableGeneratorSpec<T> {
 
     /**
      * Selects a random value from the given choices.
      *
      * @param values from which a random value will be selected
-     * @return completed spec with no further methods
+     * @return spec builder
      * @since 1.0.1
      */
     GeneratorSpec<T> oneOf(Collection<T> values);

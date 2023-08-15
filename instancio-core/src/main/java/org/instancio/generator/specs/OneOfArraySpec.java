@@ -28,7 +28,7 @@ import org.instancio.internal.ApiValidator;
 public interface OneOfArraySpec<T> extends ValueSpec<T>, OneOfArrayGeneratorSpec<T> {
 
     @Override
-    OneOfArraySpec<T> oneOf(T... values);
+    ValueSpec<T> oneOf(T... values);
 
     @Override
     default Model<T> toModel() {
