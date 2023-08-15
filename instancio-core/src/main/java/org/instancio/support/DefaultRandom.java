@@ -21,6 +21,8 @@ import org.instancio.internal.random.RandomDataGenerator;
 import org.instancio.internal.util.Verify;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 @InternalApi
 public class DefaultRandom implements Random {
@@ -200,9 +202,18 @@ public class DefaultRandom implements Random {
     @Override
     public <T> T oneOf(final Collection<T> collection) {
         Verify.notEmpty(collection, "Collection must have at least one element");
-        return collection.stream()
-                .skip(intRange(0, collection.size() - 1))
-                .findFirst()
-                .orElse(null);
+
+        final int index = intRange(0, collection.size() - 1);
+
+        if (collection instanceof List<?>) {
+            return ((List<T>) collection).get(index);
+        }
+
+        Iterator<T> iter = collection.iterator();
+        for (int i = 0; i < index; i++) {
+            iter.next();
+        }
+
+        return iter.next();
     }
 }
