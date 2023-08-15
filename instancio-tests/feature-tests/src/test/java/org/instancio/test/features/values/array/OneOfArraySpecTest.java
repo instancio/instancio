@@ -17,7 +17,7 @@ package org.instancio.test.features.values.array;
 
 import org.instancio.Gen;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.specs.OneOfArraySpec;
+import org.instancio.generator.ValueSpec;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -34,7 +34,7 @@ class OneOfArraySpecTest extends AbstractValueSpecTestTemplate<String> {
     private static final String[] CHOICES = {"foo", "bar", "baz"};
 
     @Override
-    protected OneOfArraySpec<String> spec() {
+    protected ValueSpec<String> spec() {
         return Gen.oneOf(CHOICES);
     }
 
@@ -46,7 +46,7 @@ class OneOfArraySpecTest extends AbstractValueSpecTestTemplate<String> {
     @Test
     @Override
     protected void toModel() {
-        final OneOfArraySpec<String> spec = spec();
+        final ValueSpec<String> spec = spec();
         assertThatThrownBy(spec::toModel)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("oneOf() spec does not support toModel()");

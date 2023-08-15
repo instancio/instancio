@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.generator.ValueSpec;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.generator.specs.ByteSpec;
 import org.instancio.generator.specs.CharacterSpec;
@@ -26,8 +27,6 @@ import org.instancio.generator.specs.HashSpec;
 import org.instancio.generator.specs.IntegerSpec;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.NumericSequenceSpec;
-import org.instancio.generator.specs.OneOfArraySpec;
-import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.ShortSpec;
 import org.instancio.generator.specs.StringSpec;
 import org.instancio.generators.ChecksumSpecs;
@@ -207,7 +206,7 @@ public final class Gen {
      * @since 2.6.0
      */
     @SafeVarargs
-    public static <T> OneOfArraySpec<T> oneOf(final T... choices) {
+    public static <T> ValueSpec<T> oneOf(final T... choices) {
         return new OneOfArrayGenerator<T>().oneOf(choices);
     }
 
@@ -219,7 +218,7 @@ public final class Gen {
      * @return value spec builder
      * @since 2.6.0
      */
-    public static <T> OneOfCollectionSpec<T> oneOf(final Collection<T> choices) {
+    public static <T> ValueSpec<T> oneOf(final Collection<T> choices) {
         return new OneOfCollectionGenerator<T>().oneOf(choices);
     }
 

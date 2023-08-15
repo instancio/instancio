@@ -26,10 +26,9 @@ import org.instancio.generator.specs.EnumAsGeneratorSpec;
 import org.instancio.generator.specs.EnumSetGeneratorSpec;
 import org.instancio.generator.specs.HashAsGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 import org.instancio.generator.specs.NumberAsGeneratorSpec;
 import org.instancio.generator.specs.NumericSequenceAsGeneratorSpec;
-import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
-import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.OptionalGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.generator.array.ArrayGenerator;
@@ -216,7 +215,7 @@ public class Generators {
      * @return generator for making a selection
      */
     @SafeVarargs
-    public final <T> OneOfArrayGeneratorSpec<T> oneOf(T... choices) {
+    public final <T> NullableGeneratorSpec<T> oneOf(T... choices) {
         return new OneOfArrayGenerator<T>(context).oneOf(choices);
     }
 
@@ -227,7 +226,7 @@ public class Generators {
      * @param <T>     element type
      * @return generator for making a selection
      */
-    public final <T> OneOfCollectionGeneratorSpec<T> oneOf(Collection<T> choices) {
+    public final <T> NullableGeneratorSpec<T> oneOf(Collection<T> choices) {
         return new OneOfCollectionGenerator<T>(context).oneOf(choices);
     }
 
