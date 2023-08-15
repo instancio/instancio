@@ -16,6 +16,7 @@
 package org.instancio.support;
 
 import org.instancio.Random;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -26,6 +27,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -154,9 +156,20 @@ class DefaultRandomTest {
             final String[] array = {"foo"};
             assertThat(random.oneOf(array)).isEqualTo(array[0]);
         }
+
+        @Test
+        void oneOfArrayWithNullElement() {
+            final String[] values = {"foo", null};
+            final Set<String> results = new HashSet<>();
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                results.add(random.oneOf(values));
+            }
+            assertThat(results).containsExactlyInAnyOrder(values);
+        }
     }
 
     @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class OneOfCollectionTest {
 
         @Test
@@ -178,6 +191,22 @@ class DefaultRandomTest {
         void oneOfSingleElementCollection() {
             final Set<String> set = Collections.singleton("foo");
             assertThat(random.oneOf(set)).isEqualTo(set.iterator().next());
+        }
+
+        @MethodSource("oneOfCollectionWithNull")
+        @ParameterizedTest
+        void oneOfCollectionWithNullElement(final Collection<String> values) {
+            final Set<String> results = new HashSet<>();
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
+                results.add(random.oneOf(values));
+            }
+            assertThat(results).containsExactlyInAnyOrderElementsOf(values);
+        }
+
+        private Stream<Arguments> oneOfCollectionWithNull() {
+            return Stream.of(
+                    Arguments.of(CollectionUtils.asSet("foo", null)),
+                    Arguments.of(Arrays.asList("foo", null)));
         }
     }
 
