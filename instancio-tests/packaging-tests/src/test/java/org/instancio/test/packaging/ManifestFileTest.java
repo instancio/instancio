@@ -94,7 +94,13 @@ class ManifestFileTest {
                 "org.instancio.generator",
                 "org.instancio.generator.hints",
                 "org.instancio.generator.specs",
+                "org.instancio.generator.specs.can",
+                "org.instancio.generator.specs.pol",
+                "org.instancio.generator.specs.usa",
                 "org.instancio.generators",
+                "org.instancio.generators.can",
+                "org.instancio.generators.pol",
+                "org.instancio.generators.usa",
                 "org.instancio.settings",
                 "org.instancio.spi",
                 "org.instancio.support"
