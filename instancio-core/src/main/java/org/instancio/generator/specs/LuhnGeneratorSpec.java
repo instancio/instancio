@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * A spec for generating numbers that pass the Luhn checksum algorithm.
  *
@@ -34,7 +32,7 @@ import org.instancio.generator.GeneratorSpec;
  *
  * @since 3.1.0
  */
-public interface LuhnGeneratorSpec extends GeneratorSpec<String>, NullableGeneratorSpec<String> {
+public interface LuhnGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
      * Length of the number to generate (default value is {@code 16}).
