@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * A spec for generating numbers that pass the Mod11 checksum algorithm.
  *
@@ -26,7 +24,7 @@ import org.instancio.generator.GeneratorSpec;
  *
  * @since 2.16.0
  */
-public interface Mod11GeneratorSpec extends GeneratorSpec<String>, NullableGeneratorSpec<String> {
+public interface Mod11GeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
      * Length of the number to generate (default value is {@code 16}).

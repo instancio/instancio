@@ -15,14 +15,12 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * Generator spec for booleans.
  *
  * @since 2.0.0
  */
-public interface BooleanGeneratorSpec extends GeneratorSpec<Boolean>, NullableGeneratorSpec<Boolean> {
+public interface BooleanGeneratorSpec extends NullableGeneratorSpec<Boolean> {
 
     /**
      * Specifies the probability of generating {@code true}.
