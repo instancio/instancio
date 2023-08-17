@@ -17,11 +17,17 @@ package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.UUIDSpec;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.support.Global;
 
 import java.util.UUID;
 
-public class UUIDGenerator extends AbstractGenerator<UUID> {
+public class UUIDGenerator extends AbstractGenerator<UUID> implements UUIDSpec {
+
+    public UUIDGenerator() {
+        this(Global.generatorContext());
+    }
 
     public UUIDGenerator(final GeneratorContext context) {
         super(context);
@@ -29,7 +35,13 @@ public class UUIDGenerator extends AbstractGenerator<UUID> {
 
     @Override
     public String apiMethod() {
-        return null;
+        return "uuid()";
+    }
+
+    @Override
+    public UUIDGenerator nullable() {
+        super.nullable();
+        return this;
     }
 
     @Override

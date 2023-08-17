@@ -29,6 +29,7 @@ import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.generator.specs.ShortSpec;
 import org.instancio.generator.specs.StringSpec;
+import org.instancio.generator.specs.UUIDSpec;
 import org.instancio.generators.ChecksumSpecs;
 import org.instancio.generators.FinanceSpecs;
 import org.instancio.generators.IdSpecs;
@@ -53,6 +54,7 @@ import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.sequence.IntegerSequenceGenerator;
 import org.instancio.internal.generator.sequence.LongSequenceGenerator;
 import org.instancio.internal.generator.util.OneOfCollectionGenerator;
+import org.instancio.internal.generator.util.UUIDGenerator;
 
 import java.util.Collection;
 
@@ -280,6 +282,16 @@ public final class Gen {
      */
     public static TextSpecs text() {
         return new TextSpecs();
+    }
+
+    /**
+     * Generates {@code UUID} values.
+     *
+     * @return value spec builder
+     * @since 3.2.0
+     */
+    public static UUIDSpec uuid() {
+        return new UUIDGenerator();
     }
 
     /**
