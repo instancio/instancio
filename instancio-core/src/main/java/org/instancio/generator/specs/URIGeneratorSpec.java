@@ -16,7 +16,6 @@
 package org.instancio.generator.specs;
 
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorSpec;
 
 import java.net.URI;
 
@@ -25,7 +24,7 @@ import java.net.URI;
  *
  * @since 2.3.0
  */
-public interface URIGeneratorSpec extends GeneratorSpec<URI> {
+public interface URIGeneratorSpec extends NullableGeneratorSpec<URI> {
 
     /**
      * Generate a random scheme from the given choices.
@@ -106,4 +105,12 @@ public interface URIGeneratorSpec extends GeneratorSpec<URI> {
      * @since 2.3.0
      */
     URIGeneratorSpec fragment(Generator<String> fragmentGenerator);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 3.2.0
+     */
+    @Override
+    URIGeneratorSpec nullable();
 }

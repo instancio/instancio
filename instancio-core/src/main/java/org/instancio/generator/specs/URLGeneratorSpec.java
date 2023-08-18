@@ -16,7 +16,6 @@
 package org.instancio.generator.specs;
 
 import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorSpec;
 
 import java.net.URL;
 
@@ -25,7 +24,7 @@ import java.net.URL;
  *
  * @since 2.3.0
  */
-public interface URLGeneratorSpec extends GeneratorSpec<URL> {
+public interface URLGeneratorSpec extends NullableGeneratorSpec<URL> {
 
     /**
      * Generate a random protocol from the given choices.
@@ -76,4 +75,12 @@ public interface URLGeneratorSpec extends GeneratorSpec<URL> {
      * @since 2.3.0
      */
     URLGeneratorSpec file(Generator<String> fileGenerator);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 3.2.0
+     */
+    @Override
+    URLGeneratorSpec nullable();
 }

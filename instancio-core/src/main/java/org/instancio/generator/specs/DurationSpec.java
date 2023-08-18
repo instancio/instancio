@@ -38,4 +38,7 @@ public interface DurationSpec extends ValueSpec<Duration>, DurationGeneratorSpec
 
     @Override
     DurationSpec allowZero();
+
+    @Override
+    DurationSpec nullable();
 }

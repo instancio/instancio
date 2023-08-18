@@ -20,11 +20,14 @@ import org.instancio.InstancioApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -117,5 +120,17 @@ class URLGeneratorTest {
                 .create();
 
         assertThat(result).isEqualTo("ftp://host:1234/filename");
+    }
+
+    @Test
+    void nullable() {
+        final Stream<URL> results = Instancio.of(URL.class)
+                .generate(root(), gen -> gen.net().url().nullable())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD);
+
+        assertThat(results)
+                .containsNull()
+                .anyMatch(Objects::nonNull);
     }
 }
