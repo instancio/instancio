@@ -66,6 +66,8 @@ class ImpossibleMapSizeErrorMessageTest extends AbstractErrorMessageTestTemplate
 
                  -> The key type is a POJO, but blank POJOs are being generated
                     because the configured maximum depth has been reached
+                 
+                 -> The value is an Abstract class and no subtype is provided
 
                 Model properties:
 
