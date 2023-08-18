@@ -15,15 +15,13 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * Generator spec for {@link Enum Enums}.
  *
  * @param <E> enum type
  * @since 1.6.0
  */
-public interface EnumGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<E> {
+public interface EnumGeneratorSpec<E extends Enum<E>> extends NullableGeneratorSpec<E> {
 
     /**
      * Generate an enum while excluding the specified values.
@@ -37,10 +35,10 @@ public interface EnumGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<E> {
     EnumGeneratorSpec<E> excluding(E... values);
 
     /**
-     * Indicates that {@code null} value can be generated.
+     * {@inheritDoc}
      *
-     * @return spec builder
      * @since 1.6.0
      */
+    @Override
     EnumGeneratorSpec<E> nullable();
 }

@@ -22,7 +22,7 @@ import org.instancio.generator.GeneratorSpec;
  *
  * @since 1.5.0
  */
-public interface UUIDStringGeneratorSpec extends GeneratorSpec<String> {
+public interface UUIDStringGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
      * Generate UUID String in uppercase characters.
@@ -40,4 +40,11 @@ public interface UUIDStringGeneratorSpec extends GeneratorSpec<String> {
      */
     UUIDStringGeneratorSpec withoutDashes();
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 3.2.0
+     */
+    @Override
+    GeneratorSpec<String> nullable();
 }

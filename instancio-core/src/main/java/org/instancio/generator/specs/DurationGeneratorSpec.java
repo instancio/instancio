@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
 
@@ -25,7 +23,7 @@ import java.time.temporal.TemporalUnit;
  *
  * @since 1.5.4
  */
-public interface DurationGeneratorSpec extends GeneratorSpec<Duration> {
+public interface DurationGeneratorSpec extends NullableGeneratorSpec<Duration> {
 
     /**
      * Generate a {@link Duration} greater than or equal to the specified amount.
@@ -65,4 +63,12 @@ public interface DurationGeneratorSpec extends GeneratorSpec<Duration> {
      * @since 1.5.4
      */
     DurationGeneratorSpec allowZero();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 3.2.0
+     */
+    @Override
+    DurationGeneratorSpec nullable();
 }

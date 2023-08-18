@@ -20,11 +20,14 @@ import org.instancio.InstancioApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -133,5 +136,17 @@ class URIGeneratorTest {
                 .create();
 
         assertThat(result).isEqualTo("scheme://userInfo@host:1234/path?query#fragment");
+    }
+
+    @Test
+    void nullable() {
+        final Stream<URI> results = Instancio.of(URI.class)
+                .generate(root(), gen -> gen.net().uri().nullable())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD);
+
+        assertThat(results)
+                .containsNull()
+                .anyMatch(Objects::nonNull);
     }
 }

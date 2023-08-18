@@ -22,16 +22,20 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
+import static org.instancio.Select.root;
 
 @NonDeterministicTag
 @FeatureTag({Feature.GENERATE, Feature.ENUM_GENERATOR})
@@ -50,5 +54,17 @@ class EnumGeneratorTest {
                 .collect(Collectors.toSet());
 
         assertThat(results).containsOnly(Gender.OTHER, null);
+    }
+
+    @Test
+    void nullable() {
+        final Stream<Gender> results = Instancio.of(Gender.class)
+                .generate(root(), gen -> gen.enumOf(Gender.class).nullable())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD);
+
+        assertThat(results)
+                .containsNull()
+                .anyMatch(Objects::nonNull);
     }
 }
