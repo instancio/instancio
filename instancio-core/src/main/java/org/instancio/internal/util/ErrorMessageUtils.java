@@ -144,6 +144,8 @@ public final class ErrorMessageUtils {
                 .append(" -> The key type is a POJO, but blank POJOs are being generated").append(NL)
                 .append("    because the configured maximum depth has been reached").append(NL)
                 .append(NL)
+                .append(" -> The value is an Abstract class and no subtype is provided").append(NL)
+                .append(NL)
                 .append("Model properties:").append(NL)
                 .append(NL)
                 .append(" -> Map target size: ").append(targetSize).append(NL)
