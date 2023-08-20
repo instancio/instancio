@@ -66,8 +66,9 @@ class ImpossibleMapSizeErrorMessageTest extends AbstractErrorMessageTestTemplate
 
                  -> The key type is a POJO, but blank POJOs are being generated
                     because the configured maximum depth has been reached
-                 
-                 -> The value is an Abstract class and no subtype is provided
+
+                 -> The key or value is an abstract type and no subtype was specified.
+                    See https://www.instancio.org/user-guide/#subtype-mapping for details
 
                 Model properties:
 

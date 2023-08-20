@@ -27,6 +27,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
+import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -103,6 +104,14 @@ class MapGeneratorSizeTest {
                     .create();
 
             assertThat(result).hasSize(2); // can only generate true and false
+        }
+
+        @Test
+        @DisplayName("Since no subtype for abstract type is specified, an empty map is generated")
+        void mapWithAbstractTypeAsValue() {
+            final Map<String, StringHolderInterface> result = Instancio.createMap(String.class, StringHolderInterface.class);
+
+            assertThat(result).isEmpty();
         }
 
         @Test
