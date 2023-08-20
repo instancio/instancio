@@ -1422,15 +1422,24 @@ Person person = Instancio.of(Person.class)
 
 ## Subtype Mapping
 
-Subtype mapping allows mapping a type to its subtype.
+Subtype mapping allows mapping a type to its subtype. This can be used for:
 
-By default, Instancio does not attempt to resolve the implementation class if given an abstract type.
-Instead, the implementation class must be specified via the API, or a `null` value will be generated.
+- specifying an implementation class for an abstract class or interface
+- testing behaviour using different implementations
 
-In addition, subtype mapping can also be useful for verifying the behaviour
-of a class using different implementations.
+By default, Instancio does not resolve the implementation class of an abstract type.
+The only exceptions to this are JDK classes, such `List`, `Map`, `CharSequence`, etc,
+which default to `ArrayList`, `HashMap`, and `String`, respectively.
 
-The mapping can be specified using the `subtype()` method:
+For user-defined abstract types, the implementation class must be specified via the API.
+If not specified:
+
+- a `null` value will be generated where the abstract type is a field
+- an empty collection will be generated where the abstract type is collection element
+
+### Specifying Subtypes
+
+The mapping can be specified using the `subtype()` method provided by {{InstancioApi}}:
 
 ``` java
 subtype(TargetSelector selector, Class<?> subtype)

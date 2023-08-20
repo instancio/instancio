@@ -24,6 +24,7 @@ import org.instancio.internal.util.Constants;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.collections.CollectionLong;
+import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -93,6 +95,14 @@ class CollectionGeneratorSizeTest {
                     .create();
 
             assertThat(result).hasSize(2); // can only generate true and false
+        }
+
+        @Test
+        @DisplayName("Since no subtype for abstract type is specified, an empty list is generated")
+        void collectionWithAbstractTypeAsElement() {
+            final List<StringHolderInterface> result = Instancio.createList(StringHolderInterface.class);
+
+            assertThat(result).isEmpty();
         }
 
         @Test

@@ -67,6 +67,9 @@ class ImpossibleCollectionSizeErrorMessageTest extends AbstractErrorMessageTestT
                  -> The element type is a POJO, but blank POJOs are being generated
                     because the configured maximum depth has been reached
 
+                 -> The element is an abstract type and no subtype was specified.
+                    See https://www.instancio.org/user-guide/#subtype-mapping for details
+
                 Model properties:
 
                  -> Collection target size: 100
