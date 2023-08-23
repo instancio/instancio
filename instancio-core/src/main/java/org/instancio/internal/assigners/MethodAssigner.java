@@ -15,6 +15,14 @@
  */
 package org.instancio.internal.assigners;
 
+import static org.instancio.internal.util.ExceptionUtils.logException;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Optional;
+
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.nodes.InternalNode;
@@ -30,14 +38,6 @@ import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Optional;
-
-import static org.instancio.internal.util.ExceptionUtils.logException;
 
 final class MethodAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(MethodAssigner.class);
@@ -167,7 +167,7 @@ final class MethodAssigner implements Assigner {
             try {
                 return Optional.of(klass.getDeclaredMethod(methodName, field.getType()));
             } catch (NoSuchMethodException ex) {
-                if(Collection.class.isAssignableFrom( field.getType() )){
+                if (Collection.class.isAssignableFrom( field.getType() )) {
                     try {
                         return Optional.of(klass.getDeclaredMethod(methodName, Collection.class));
                     } catch ( NoSuchMethodException e ) {
