@@ -43,6 +43,7 @@ final class UserSuppliedGeneratorProcessor {
     private final ModelContext<?> context;
     private final GeneratorResolver generatorResolver;
     private final Instantiator instantiator;
+    private final EmitGeneratorHelper emitGeneratorHelper;
 
     UserSuppliedGeneratorProcessor(
             final ModelContext<?> context,
@@ -52,14 +53,14 @@ final class UserSuppliedGeneratorProcessor {
         this.context = context;
         this.generatorResolver = generatorResolver;
         this.instantiator = instantiator;
+        this.emitGeneratorHelper = new EmitGeneratorHelper(context);
     }
 
     GeneratorResult getGeneratorResult(final @NotNull InternalNode node, final Generator<?> g) {
         final Generator<?> generator = processGenerator(g, node);
 
         if (generator instanceof EmitGenerator) {
-            final EmitGeneratorHelper helper = new EmitGeneratorHelper(context);
-            return helper.getResult((EmitGenerator<?>) generator, node);
+            return emitGeneratorHelper.getResult((EmitGenerator<?>) generator, node);
         }
 
         final Hints hints = generator.hints();
