@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.handlers;
 
+import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
@@ -25,7 +26,14 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.instancio.internal.util.Constants.NL;
 
 class EmitGeneratorHelper {
 
@@ -37,6 +45,10 @@ class EmitGeneratorHelper {
 
     private final ModelContext<?> modelContext;
 
+    // Keep track of values emitted by a generator and nodes the values
+    // were assigned to for error reporting
+    private final Map<Generator<?>, Map<InternalNode, List<Object>>> generatorEmittedValues = new HashMap<>();
+
     EmitGeneratorHelper(final ModelContext<?> modelContext) {
         this.modelContext = modelContext;
     }
@@ -44,6 +56,14 @@ class EmitGeneratorHelper {
     GeneratorResult getResult(final EmitGenerator<?> generator, final InternalNode node) {
         if (generator.hasMore()) {
             final Object result = generator.generate(modelContext.getRandom());
+
+            final Map<InternalNode, List<Object>> emittedValues =
+                    generatorEmittedValues.computeIfAbsent(generator, k -> new LinkedHashMap<>());
+
+            generatorEmittedValues.put(generator, emittedValues);
+
+            final List<Object> values = emittedValues.computeIfAbsent(node, k -> new ArrayList<>());
+            values.add(result);
 
             return result == null
                     ? NULL_RESULT
@@ -58,16 +78,47 @@ class EmitGeneratorHelper {
             return GeneratorResult.emptyResult();
         }
 
-        // The error message isn't great. Ideally it should also report
-        // the selector, but it's not readily available here
-        throw Fail.withUsageError("no items left to emit() for " + getTargetDescription(node));
+        final Map<InternalNode, List<Object>> emittedValues =
+                generatorEmittedValues.getOrDefault(generator, Collections.emptyMap());
+
+        throw Fail.withUsageError(createdErrorMsg(node, emittedValues));
     }
 
-    private String getTargetDescription(final InternalNode node) {
-        final Field field = node.getField();
-        if (field != null) {
-            return "field " + field.getDeclaringClass().getSimpleName() + "." + field.getName();
+    private static String createdErrorMsg(final InternalNode node, final Map<InternalNode, List<Object>> emittedValues) {
+        final StringBuilder sb = new StringBuilder(1500);
+        sb.append("no item is available to emit() for node:").append(NL)
+                .append(NL)
+                .append(Format.nodePathToRootBlock(node)).append(NL)
+                .append(NL);
+
+        if (emittedValues.isEmpty()) {
+            sb.append("Please specify one or more values to emit()").append(NL)
+                    .append(NL)
+                    .append("    Example:").append(NL)
+                    .append("    List<Order> orders = Instancio.ofList(Order.class)").append(NL)
+                    .append("        .size(7)").append(NL)
+                    .append("        .generate(field(Order::getStatus), gen -> gen.emit()").append(NL)
+                    .append("                .items(OrderStatus.RECEIVED, OrderStatus.SHIPPED)").append(NL)
+                    .append("                .item(OrderStatus.COMPLETED, 3)").append(NL)
+                    .append("                .item(OrderStatus.CANCELLED, 2))").append(NL)
+                    .append("        .create();");
+        } else {
+            sb.append("Previously emitted values:").append(NL)
+                    .append(NL);
+
+            emittedValues.forEach((assignedNode, nodeValues) -> {
+                sb.append(" -> Node:   ").append(Format.formatAsTreeNode(assignedNode)).append(NL)
+                        .append("    Values: ").append(nodeValues).append(NL)
+                        .append(NL);
+            });
+
+            sb.append("Another value is required for:").append(NL)
+                    .append(NL)
+                    .append(" -> Node:   ").append(Format.formatAsTreeNode(node)).append(NL)
+                    .append(NL)
+                    .append("But there are no values left to emit.").append(NL)
+                    .append("Throwing exception because 'whenEmptyThrowException()' is enabled.");
         }
-        return "class " + Format.withoutPackage(node.getTargetClass());
+        return sb.toString();
     }
 }
