@@ -15,6 +15,9 @@
  */
 package org.instancio.test.support.pojo.assignment;
 
+import java.util.List;
+import java.util.Set;
+
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -29,6 +32,10 @@ public class SetterStyleProperty implements SetterStylePojo {
     private Boolean isBooleanWrapper;
     private boolean noIsPrefixBooleanProperty;
     private Boolean noIsPrefixBooleanPropertyWrapper;
+    private Set<String> stringSet;
+    private List<String> listSet;
+    private Set<String> stringSetWithCollectionSetter;
+    private List<String> stringListWithCollectionSetter;
 
     private boolean viaSetter_primitiveInt;
     private boolean viaSetter_integerWrapper;
@@ -37,6 +44,12 @@ public class SetterStyleProperty implements SetterStylePojo {
     private boolean viaSetter_isBooleanWrapper;
     private boolean viaSetter_noIsPrefixBooleanProperty;
     private boolean viaSetter_noIsPrefixBooleanPropertyWrapper;
+
+    private boolean viaSetter_stringSet;
+    private boolean viaSetter_listSet;
+    private boolean viaSetter_stringSetWithCollectionSetter;
+    private boolean viaSetter_stringListWithCollectionSetter;
+
 
     public void primitiveInt(final int primitiveInt) {
         this.primitiveInt = primitiveInt;
@@ -77,4 +90,5 @@ public class SetterStyleProperty implements SetterStylePojo {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
+
 }

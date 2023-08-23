@@ -45,4 +45,9 @@ public interface SetterStylePojo {
 
     boolean isViaSetter_noIsPrefixBooleanPropertyWrapper();
 
+    boolean  isViaSetter_stringSet();
+    boolean  isViaSetter_listSet();
+    boolean  isViaSetter_stringSetWithCollectionSetter();
+    boolean  isViaSetter_stringListWithCollectionSetter();
+
 }

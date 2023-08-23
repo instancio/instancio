@@ -15,6 +15,12 @@
  */
 package org.instancio.test.support.pojo.assignment;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -29,6 +35,11 @@ public class SetterStyleSet implements SetterStylePojo {
     private Boolean isBooleanWrapper;
     private boolean noIsPrefixBooleanProperty;
     private Boolean noIsPrefixBooleanPropertyWrapper;
+    private Set<String> stringSet;
+    private List<String> listSet;
+    private Set<String> stringSetWithCollectionSetter;
+    private List<String> stringListWithCollectionSetter;
+
 
     private boolean viaSetter_primitiveInt;
     private boolean viaSetter_integerWrapper;
@@ -37,6 +48,12 @@ public class SetterStyleSet implements SetterStylePojo {
     private boolean viaSetter_isBooleanWrapper;
     private boolean viaSetter_noIsPrefixBooleanProperty;
     private boolean viaSetter_noIsPrefixBooleanPropertyWrapper;
+    private boolean viaSetter_stringSet;
+    private boolean viaSetter_listSet;
+    private boolean viaSetter_stringSetWithCollectionSetter;
+    private boolean viaSetter_stringListWithCollectionSetter;
+
+
 
     public void setPrimitiveInt(final int primitiveInt) {
         this.primitiveInt = primitiveInt;
@@ -72,6 +89,27 @@ public class SetterStyleSet implements SetterStylePojo {
         this.noIsPrefixBooleanPropertyWrapper = noIsPrefixBooleanPropertyWrapper;
         viaSetter_noIsPrefixBooleanPropertyWrapper = true;
     }
+
+    public void setListSet( final List<String> listSet ) {
+        this.listSet = listSet;
+        viaSetter_listSet = true;
+    }
+
+    public void setStringSet( final Set<String> stringSet ) {
+        this.stringSet = stringSet;
+        viaSetter_stringSet = true;
+    }
+
+    public void setStringListWithCollectionSetter( final Collection<String> stringListWithCollectionSetter ) {
+        this.stringListWithCollectionSetter = new ArrayList<>( stringListWithCollectionSetter );
+        viaSetter_stringListWithCollectionSetter = true;
+    }
+
+    public void setStringSetWithCollectionSetter( final Collection<String> stringSetWithCollectionSetter ) {
+        this.stringSetWithCollectionSetter = new HashSet<>( stringSetWithCollectionSetter );
+        viaSetter_stringSetWithCollectionSetter = true;
+    }
+
 
     @Override
     public String toString() {

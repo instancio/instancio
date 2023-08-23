@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.Optional;
 
 import static org.instancio.internal.util.ExceptionUtils.logException;
@@ -162,11 +163,17 @@ final class MethodAssigner implements Assigner {
 
     private Optional<Method> resolveSetterMethod(final String methodName, final Field field) {
         if (methodName != null) {
+            final Class<?> klass = field.getDeclaringClass();
             try {
-                final Class<?> klass = field.getDeclaringClass();
                 return Optional.of(klass.getDeclaredMethod(methodName, field.getType()));
             } catch (NoSuchMethodException ex) {
-                logException("Resolved setter method '{}' for field '{}' does not exist", ex, methodName, Format.formatField(field));
+                if(Collection.class.isAssignableFrom( field.getType() )){
+                    try {
+                        return Optional.of(klass.getDeclaredMethod(methodName, Collection.class));
+                    } catch ( NoSuchMethodException e ) {
+                        logException("Resolved setter method '{}' for field '{}' does not exist", ex, methodName, Format.formatField(field));
+                    }
+                }
             }
         }
         return Optional.empty();

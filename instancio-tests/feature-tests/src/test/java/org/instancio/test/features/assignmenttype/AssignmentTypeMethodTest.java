@@ -15,6 +15,9 @@
  */
 package org.instancio.test.features.assignmenttype;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.instancio.Select.fields;
+
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.internal.util.SystemProperties;
@@ -32,10 +35,6 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatObject;
-import static org.instancio.Select.fields;
 
 @FeatureTag(Feature.ASSIGNMENT_TYPE)
 @ExtendWith(InstancioExtension.class)
@@ -91,5 +90,12 @@ class AssignmentTypeMethodTest {
         assertThat(result.isViaSetter_isBooleanWrapper()).isTrue();
         assertThat(result.isViaSetter_noIsPrefixBooleanProperty()).isTrue();
         assertThat(result.isViaSetter_noIsPrefixBooleanPropertyWrapper()).isTrue();
+
+
+        assertThat(result.isViaSetter_stringSet()).isTrue();
+        assertThat(result.isViaSetter_listSet()).isTrue();
+        assertThat(result.isViaSetter_stringSetWithCollectionSetter()).isTrue();
+        assertThat(result.isViaSetter_stringListWithCollectionSetter()).isTrue();
+
     }
 }
