@@ -2361,6 +2361,7 @@ of the JPA `@Column` annotation:
 import javax.persistence.Column;
 
 public class GeneratorProviderImpl implements GeneratorProvider {
+
     @Override
     public GeneratorSpec<?> getGenerator(final Node node, final Generators gen) {
         Field field = node.getField();
@@ -2409,6 +2410,83 @@ Phone phone = Instancio.of(Phone.class)
     .create();
 ```
 
+## `SetterMethodResolver`
+
+This interface is for providing custom resolution of setter methods from fields
+when `Keys.ASSIGNMENT_TYPE` is set to `AssignmentType.METHOD`:
+
+```java
+interface SetterMethodResolver {
+    Method getSetter(Node node);
+}
+```
+
+### Use Case
+
+Out of the box, Instancio can resolve setter methods from fields assuming method names
+follow standard naming conventions (see [Assignment Settings](#assignment-settings) for details).
+A custom `SetterMethodResolver` implementation allows tests to use `AssignmentType.METHOD`
+with applications that follow non-standard naming conventions.
+
+Consider the following example, where the POJO has a field prefixed with an underscore.
+The goal is to populate the POJO via the setter method as it contains some logic:
+
+```java linenums="1"
+class Pojo {
+    private String _value;
+
+    public String getValue() {
+        return _value;
+    }
+
+    public void setValue(String value) {
+        this._value = value.length() + ":" + value;
+    }
+}
+```
+
+However, the field name `_value` does not map to method name `setValue()`.
+Therefore, the setter will not be resolved, and the value will be populated
+via field assignment as a fallback. A custom `SetterMethodResolver` can be
+implemented to handle this case as shown below.
+
+```java linenums="1" title="Resolves setter method names for fields prefixed with an underscore " hl_lines="13 15"
+public class SetterMethodResolverImpl implements SetterMethodResolver {
+
+    @Override
+    public Method getSetter(Node node) {
+        Field field = node.getField();
+
+        // discard the '_' prefix
+        char[] ch = field.getName().substring(1).toCharArray();
+        ch[0] = Character.toUpperCase(ch[0]);
+
+        String methodName = "set" + new String(ch);
+
+        return Arrays.stream(field.getDeclaringClass().getDeclaredMethods())
+                .filter(m -> m.getName().equals(methodName))
+                .findFirst()
+                .orElse(null);
+    }
+}
+```
+!!! attention ""
+    <lnum>13</lnum> For brevity, matching is done by name only, ignoring parameter types.<br/>
+    <lnum>15</lnum> Returning `null` means built-in method resolvers will be used as a fallback.<br/>
+
+With the above in place, the `Pojo` can be created as follows:
+
+```java linenums="1"
+Settings settings = Settings.create()
+    .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD);
+
+Pojo pojo = Instancio.of(Pojo.class)
+    .withSettings(settings)
+    .create();
+
+// Sample output: Pojo[_value="5:EVHKT"]
+```
+
 ## `TypeResolver`
 
 This interface allows mapping a type to a subtype:
@@ -2449,6 +2527,7 @@ Using `TypeResolver`, the subtype can be resolved automatically:
 
 ```java linenums="1"
 public class TypeResolverImpl implements TypeResolver {
+
     @Override
     public Class<?> getSubtype(final Class<?> type) {
         if (type == Animal.class) {

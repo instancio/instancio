@@ -17,6 +17,7 @@ package org.instancio.internal.spi;
 
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioServiceProvider.GeneratorProvider;
+import org.instancio.spi.InstancioServiceProvider.SetterMethodResolver;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.ServiceProviderContext;
@@ -28,12 +29,18 @@ public final class Providers {
     private final List<ProviderEntry<GeneratorProvider>> generatorProviders;
     private final List<ProviderEntry<TypeResolver>> typeResolvers;
     private final List<ProviderEntry<TypeInstantiator>> typeInstantiators;
+    private final List<ProviderEntry<SetterMethodResolver>> setterMethodResolvers;
 
-    public Providers(final List<InstancioServiceProvider> spList, ServiceProviderContext context) {
+    public Providers(
+            final List<InstancioServiceProvider> spList,
+            final ServiceProviderContext context) {
+
         spList.forEach(sp -> sp.init(context));
+
         generatorProviders = ProviderEntry.from(spList, InstancioServiceProvider::getGeneratorProvider);
         typeResolvers = ProviderEntry.from(spList, InstancioServiceProvider::getTypeResolver);
         typeInstantiators = ProviderEntry.from(spList, InstancioServiceProvider::getTypeInstantiator);
+        setterMethodResolvers = ProviderEntry.from(spList, InstancioServiceProvider::getSetterMethodResolver);
     }
 
     public List<ProviderEntry<GeneratorProvider>> getGeneratorProviders() {
@@ -46,5 +53,9 @@ public final class Providers {
 
     public List<ProviderEntry<TypeInstantiator>> getTypeInstantiators() {
         return typeInstantiators;
+    }
+
+    public List<ProviderEntry<SetterMethodResolver>> getSetterMethodResolvers() {
+        return setterMethodResolvers;
     }
 }

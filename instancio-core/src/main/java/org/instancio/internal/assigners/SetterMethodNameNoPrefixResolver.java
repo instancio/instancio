@@ -17,7 +17,7 @@ package org.instancio.internal.assigners;
 
 import java.lang.reflect.Field;
 
-class SetterMethodNameNoPrefix implements MethodNameResolver {
+class SetterMethodNameNoPrefixResolver implements MethodNameResolver {
 
     @Override
     public String resolveFor(final Field field) {

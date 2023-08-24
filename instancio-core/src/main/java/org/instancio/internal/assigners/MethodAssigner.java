@@ -15,60 +15,54 @@
  */
 package org.instancio.internal.assigners;
 
+import org.instancio.Node;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeImpl;
+import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.ErrorMessageUtils;
-import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
-import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
+import org.instancio.spi.InstancioServiceProvider.SetterMethodResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Optional;
+import java.util.List;
 
 import static org.instancio.internal.util.ExceptionUtils.logException;
 
 final class MethodAssigner implements Assigner {
     private static final Logger LOG = LoggerFactory.getLogger(MethodAssigner.class);
 
-    private final Assigner fieldAssigner;
     private final Settings settings;
-    private final MethodNameResolver setterNameResolver;
     private final int excludedModifiers;
+    private final Assigner fieldAssigner;
+    private final DefaultSetterMethodResolver defaultSetterMethodResolver;
+    private final List<ProviderEntry<SetterMethodResolver>> setterMethodResolvers;
 
-    MethodAssigner(final Settings settings) {
+    MethodAssigner(
+            final Settings settings,
+            final List<ProviderEntry<SetterMethodResolver>> spiResolvers) {
+
         this.settings = settings;
-        this.setterNameResolver = getMethodNameResolver(settings.get(Keys.SETTER_STYLE));
-        this.fieldAssigner = new FieldAssigner(settings);
         this.excludedModifiers = settings.get(Keys.SETTER_EXCLUDE_MODIFIER);
+        this.fieldAssigner = new FieldAssigner(settings);
+        this.defaultSetterMethodResolver = new DefaultSetterMethodResolver(settings);
+        this.setterMethodResolvers = spiResolvers;
 
         LOG.trace("{}, {}, {}, {}", AssignmentType.METHOD,
                 settings.get(Keys.SETTER_STYLE),
                 settings.get(Keys.ON_SET_METHOD_NOT_FOUND),
                 settings.get(Keys.ON_SET_METHOD_ERROR));
-    }
-
-    private static MethodNameResolver getMethodNameResolver(final SetterStyle style) {
-        switch (style) {
-            case SET:
-                return new SetterMethodNameWithPrefixResolver("set");
-            case WITH:
-                return new SetterMethodNameWithPrefixResolver("with");
-            case PROPERTY:
-                return new SetterMethodNameNoPrefix();
-            default:
-                throw Fail.withFataInternalError("Unhandled setter style: %s", style);
-        }
     }
 
     @Override
@@ -87,13 +81,10 @@ final class MethodAssigner implements Assigner {
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    private void assignViaMethod(final InternalNode node, final Object target, final Object arg) {
-        final String methodName = setterNameResolver.resolveFor(node.getField());
-        final Optional<Method> methodOpt = resolveSetterMethod(methodName, node.getField());
+    private void assignViaMethod(final InternalNode internalNode, final Object target, final Object arg) {
+        final Method method = resolveSetterMethod(internalNode);
 
-        if (methodOpt.isPresent()) {
-            final Method method = methodOpt.get();
-
+        if (method != null) {
             if (AssignerUtil.isExcluded(method.getModifiers(), excludedModifiers)) {
                 return;
             }
@@ -104,11 +95,22 @@ final class MethodAssigner implements Assigner {
             } catch (IllegalAccessException ex) {
                 throw new InstancioException("Error setting value via method: " + method, ex);
             } catch (Exception ex) {
-                handleMethodInvocationError(node, target, arg, method, ex);
+                handleMethodInvocationError(internalNode, target, arg, method, ex);
             }
         } else {
-            handleMethodNotFoundError(node, target, arg, methodName);
+            handleMethodNotFoundError(internalNode, target, arg);
         }
+    }
+
+    private Method resolveSetterMethod(final InternalNode internalNode) {
+        final Node node = new NodeImpl(internalNode.getTargetClass(), internalNode.getField());
+        for (ProviderEntry<SetterMethodResolver> entry : setterMethodResolvers) {
+            final Method method = entry.getProvider().getSetter(node);
+            if (method != null) {
+                return method;
+            }
+        }
+        return defaultSetterMethodResolver.getSetter(internalNode);
     }
 
     private void handleMethodInvocationError(
@@ -141,34 +143,21 @@ final class MethodAssigner implements Assigner {
     private void handleMethodNotFoundError(
             final InternalNode node,
             final Object target,
-            final Object arg,
-            final String methodName) {
+            final Object arg) {
 
         final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
 
         if (onSetMethodNotFound == OnSetMethodNotFound.FAIL) {
-            throw new InstancioApiException(ErrorMessageUtils.setterNotFound(
-                    node.getField(), methodName, settings));
+            throw new InstancioApiException(ErrorMessageUtils.setterNotFound(node, settings));
         }
 
         if (onSetMethodNotFound == OnSetMethodNotFound.ASSIGN_FIELD) {
             LOG.trace("Could not resolve setter method, assigning value using field: {}", node.getField());
             fieldAssigner.assign(node, target, arg);
         } else if (onSetMethodNotFound == OnSetMethodNotFound.IGNORE) {
-            LOG.debug("{}: class {} has no setter method: {}", OnSetMethodNotFound.IGNORE,
-                    target.getClass().getName(), methodName);
+            LOG.debug("{}: could not resolve setter method for field: {}",
+                    OnSetMethodNotFound.IGNORE, node.getField());
         }
     }
 
-    private Optional<Method> resolveSetterMethod(final String methodName, final Field field) {
-        if (methodName != null) {
-            try {
-                final Class<?> klass = field.getDeclaringClass();
-                return Optional.of(klass.getDeclaredMethod(methodName, field.getType()));
-            } catch (NoSuchMethodException ex) {
-                logException("Resolved setter method '{}' for field '{}' does not exist", ex, methodName, Format.formatField(field));
-            }
-        }
-        return Optional.empty();
-    }
 }
