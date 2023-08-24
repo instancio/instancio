@@ -22,9 +22,11 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
+import java.lang.reflect.Method;
 import java.util.ServiceLoader;
 
 /**
@@ -34,6 +36,7 @@ import java.util.ServiceLoader;
  *   <li>generator mappings via {@link #getGeneratorProvider()}</li>
  *   <li>subtype mappings via {@link #getTypeResolver()}</li>
  *   <li>class instantiation logic via {@link #getTypeInstantiator()}</li>
+ *   <li>setter resolution via {@link #getSetterMethodResolver()}</li>
  * </ul>
  *
  * <p>All of the above are {@code default} methods that return {@code null}.
@@ -114,6 +117,17 @@ public interface InstancioServiceProvider {
      * @since 2.11.0
      */
     default TypeInstantiator getTypeInstantiator() {
+        return null;
+    }
+
+    /**
+     * Returns a {@code SetterMethodResolver} implementation.
+     *
+     * @return a custom setter method resolver, or {@code null} if not required
+     * @since 3.2.0
+     */
+    @ExperimentalApi
+    default SetterMethodResolver getSetterMethodResolver() {
         return null;
     }
 
@@ -216,5 +230,31 @@ public interface InstancioServiceProvider {
          * @since 2.11.0
          */
         Object instantiate(Class<?> type);
+    }
+
+    /**
+     * Resolves setter method based on a given node when
+     * {@link Keys#ASSIGNMENT_TYPE} is set to {@link AssignmentType#METHOD}.
+     *
+     * <p>An implementation of this interface can be returned
+     * via the {@link #getSetterMethodResolver()} method.
+     *
+     * @since 3.2.0
+     */
+    @ExperimentalApi
+    interface SetterMethodResolver {
+
+        /**
+         * Returns the setter method for the given {@code node}.
+         * If {@code null} is returned, Instancio will attempt to resolve
+         * the method using built-in resolvers based on the value of
+         * {@link Keys#SETTER_STYLE}.
+         *
+         * @param node to resolve the setter method for
+         * @return setter method or {@code null} if method was not resolved
+         * @since 3.2.0
+         */
+        @ExperimentalApi
+        Method getSetter(Node node);
     }
 }

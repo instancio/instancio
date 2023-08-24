@@ -224,12 +224,8 @@ public final class ErrorMessageUtils {
                 .toString();
     }
 
-    public static String setterNotFound(
-            final Field field,
-            final String expectedMethodName,
-            final Settings settings) {
-
-        final String fieldName = Format.formatField(field);
+    public static String setterNotFound(final InternalNode node, final Settings settings) {
+        final String fieldName = Format.formatField(node.getField());
         final SetterStyle setterStyle = settings.get(Keys.SETTER_STYLE);
         final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
 
@@ -245,7 +241,6 @@ public final class ErrorMessageUtils {
                 .append(NL)
                 .append("Using:").append(NL)
                 .append(" -> Keys.SETTER_STYLE = ").append(setterStyle).append(NL)
-                .append(" -> Expected method name: '").append(expectedMethodName).append('\'').append(NL)
                 .append(NL)
                 .append("To resolve the error, consider one of the following:").append(NL)
                 .append(" -> Add the expected setter method").append(NL)

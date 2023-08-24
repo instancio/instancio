@@ -20,17 +20,17 @@ import org.instancio.documentation.InternalApi;
 import java.lang.reflect.Field;
 
 /**
- * Resolves methods name for a given field.
+ * Resolves method name for a given field.
  *
  * @since 2.1.0
  */
 @InternalApi
-public interface MethodNameResolver {
+interface MethodNameResolver {
 
     /**
      * Resolves method name for the specified field.
      *
-     * @param field to resolve method fror
+     * @param field to resolve method for
      * @return resolved method name, or {@code null} if it could not be resolved
      */
     String resolveFor(Field field);

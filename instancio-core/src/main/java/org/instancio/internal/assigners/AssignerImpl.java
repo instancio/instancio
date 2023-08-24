@@ -58,7 +58,7 @@ public class AssignerImpl implements Assigner {
             return new FieldAssigner(settings);
         }
         if (assignment == AssignmentType.METHOD) {
-            return new MethodAssigner(settings);
+            return new MethodAssigner(settings, context.getServiceProviders().getSetterMethodResolvers());
         }
         throw Fail.withFataInternalError("Invalid assignment type: %s", assignment);
     }

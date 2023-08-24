@@ -47,7 +47,6 @@ class MethodAssignerOnSetMethodNotFoundTest extends AbstractErrorMessageTestTemp
 
                 Using:
                  -> Keys.SETTER_STYLE = SetterStyle.SET
-                 -> Expected method name: 'setValue'
 
                 To resolve the error, consider one of the following:
                  -> Add the expected setter method
