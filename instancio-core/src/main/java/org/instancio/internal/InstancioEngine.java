@@ -44,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
@@ -96,13 +97,27 @@ class InstancioEngine {
 
     @SuppressWarnings("unchecked")
     <T> T createRootObject() {
-        return errorHandler.conditionalFailOnError(() -> {
-            final GeneratorResult rootResult = createObject(rootNode); // NOPMD
-            callbackHandler.invokeCallbacks();
-            processDelayedNodes(true);
-            context.reportWarnings();
-            return (T) rootResult.getValue();
-        }).orElse(null);
+        return (T) errorHandler
+                .conditionalFailOnError(this::createRootObjectInternal)
+                .orElse(null);
+    }
+
+    private Object createRootObjectInternal() {
+        final GeneratorResult generatorResult = createObject(rootNode); // NOPMD
+        callbackHandler.invokeCallbacks();
+        processDelayedNodes(true);
+        context.reportWarnings();
+
+        if (generatorResult.isEmpty()) {
+            final Class<?> rootClass = rootNode.getTargetClass();
+
+            if (Modifier.isAbstract(rootClass.getModifiers())
+                    && !context.getSubtypeSelectorMap().getSubtype(rootNode).isPresent()) {
+                throw Fail.withUsageError(ErrorMessageUtils.abstractRootWithoutSubtype(rootClass));
+            }
+        }
+
+        return generatorResult.getValue();
     }
 
     private void processDelayedNodes(final boolean failOnUnprocessed) {
@@ -126,7 +141,6 @@ class InstancioEngine {
             throw Fail.withUnresolvedAssignment(msg);
         }
     }
-
 
     @NotNull
     private GeneratorResult createObject(final InternalNode node, final boolean isNullable) {

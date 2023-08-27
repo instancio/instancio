@@ -177,23 +177,24 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public T create() {
-        final InstancioEngine engine = new InstancioEngine(createModel());
-        return engine.createRootObject();
+        return createRootObject(createModel());
     }
-
 
     @Override
     public Result<T> asResult() {
         final InternalModel<T> model = createModel();
-        final InstancioEngine engine = new InstancioEngine(model);
-        return new Result<>(engine.createRootObject(), model.getModelContext().getRandom().getSeed());
+        final long seed = model.getModelContext().getRandom().getSeed();
+        return new Result<>(createRootObject(model), seed);
     }
-
 
     @Override
     public Stream<T> stream() {
         final InternalModel<T> model = createModel();
-        return Stream.generate(() -> new InstancioEngine(model).createRootObject());
+        return Stream.generate(() -> createRootObject(model));
+    }
+
+    private T createRootObject(final InternalModel<T> model) {
+        return new InstancioEngine(model).createRootObject();
     }
 
     private InternalModel<T> createModel() {
