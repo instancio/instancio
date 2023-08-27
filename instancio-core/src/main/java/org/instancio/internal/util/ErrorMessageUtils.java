@@ -71,6 +71,36 @@ public final class ErrorMessageUtils {
         return sb.toString();
     }
 
+    public static String abstractRootWithoutSubtype(final Class<?> klass) {
+        //noinspection StringBufferReplaceableByString
+        return new StringBuilder(1024)
+                .append("could not create an instance of ").append(klass).append(NL)
+                .append(NL)
+                .append("Cause:").append(NL)
+                .append(NL)
+                .append(" -> It is an abstract class and no subtype was provided").append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Specify the subtype using the builder API:").append(NL)
+                .append(NL)
+                .append("    AbstractPojo pojo = Instancio.of(AbstractPojo.class)").append(NL)
+                .append("        .subtype(all(AbstractPojo.class), ConcretePojo.class)").append(NL)
+                .append("        .create();").append(NL)
+                .append(NL)
+                .append(" -> Or alternatively, specify the subtype using Settings:").append(NL)
+                .append(NL)
+                .append("    Settings settings = Settings.create()").append(NL)
+                .append("        .mapType(AbstractPojo.class, ConcretePojo.class);").append(NL)
+                .append(NL)
+                .append("    AbstractPojo pojo = Instancio.of(AbstractPojo.class)").append(NL)
+                .append("        .withSettings(settings)").append(NL)
+                .append("        .create();").append(NL)
+                .append(NL)
+                .append("For more information see: https://www.instancio.org/user-guide/#subtype-mapping")
+                .toString();
+    }
+
     /**
      * @see #mapCouldNotBePopulated(ModelContext, InternalNode, int)
      */

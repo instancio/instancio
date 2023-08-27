@@ -1436,6 +1436,7 @@ If not specified:
 
 - a `null` value will be generated where the abstract type is a field
 - an empty collection will be generated where the abstract type is collection element
+- an exception will be thrown if root type is abstract and no subtype is specified
 
 ### Specifying Subtypes
 
