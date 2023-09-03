@@ -76,6 +76,7 @@
         <module>build-tools</module>
         <module>instancio-core</module>
         <module>instancio-junit</module>
+        <module>instancio-quickcheck</module>
         <module>instancio-guava</module>
         <module>instancio-tests</module>
     </modules>
@@ -457,6 +458,12 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
                 <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>

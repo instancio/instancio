@@ -33,6 +33,7 @@ public final class Sonar {
     public static final String STRING_LITERALS_DUPLICATED = "java:S1192";
     public static final String USE_INSTANCEOF = "java:S1872";
     public static final String FUNCTIONAL_INTERFACES_SHOULD_BE_SPECIALISED = "java:S4276";
+    public static final String USING_SLOW_REGEX = "java:S5852";
 
     private Sonar() {
         // non-instantiable

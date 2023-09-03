@@ -46,6 +46,11 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
+            <artifactId>instancio-quickcheck</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
             <artifactId>instancio-junit-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -113,6 +118,12 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>kotlin-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-quickcheck-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
