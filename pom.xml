@@ -62,7 +62,7 @@
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
         <version.jetbrains.annotations>24.0.1</version.jetbrains.annotations>
         <version.junit>5.10.0</version.junit>
-        <version.slf4j>2.0.7</version.slf4j>
+        <version.slf4j>2.0.9</version.slf4j>
     </properties>
 
     <issueManagement>
