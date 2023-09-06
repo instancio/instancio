@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Deploy"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Set up Maven Central Repository"
         uses: actions/setup-java@v3
         with:
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Verify snapshots JDK ${{ matrix.java }}"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Set up JDK"
         uses: actions/setup-java@v3
         with:
