@@ -60,13 +60,13 @@ class FormatTest {
 
     @Test
     void formatMethod() throws NoSuchMethodException {
-        assertThat(Format.formatMethod(Person.class.getMethod("setName", String.class)))
+        assertThat(Format.formatSetterMethod(Person.class.getMethod("setName", String.class)))
                 .isEqualTo("Person.setName(String)");
 
-        assertThat(Format.formatMethod(Nested1.Nested2.class.getMethod("setNested", String.class)))
+        assertThat(Format.formatSetterMethod(Nested1.Nested2.class.getMethod("setNested", String.class)))
                 .isEqualTo("FormatTest$Nested1$Nested2.setNested(String)");
 
-        assertThat(Format.formatMethod(null)).isNull();
+        assertThat(Format.formatSetterMethod(null)).isNull();
     }
 
     @Test

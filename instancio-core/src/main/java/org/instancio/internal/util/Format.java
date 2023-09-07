@@ -108,7 +108,13 @@ public final class Format {
                 field.getName());
     }
 
-    public static String formatMethod(final Method method) {
+    /**
+     * Formats given setter {@code method}.
+     *
+     * @param method setter method with exactly one argument
+     * @return method formatted as a string
+     */
+    public static String formatSetterMethod(final Method method) {
         return method == null ? null : String.format("%s.%s(%s)",
                 withoutPackage(method.getDeclaringClass()),
                 method.getName(),

@@ -123,7 +123,7 @@ final class MethodAssigner implements Assigner {
         final OnSetMethodError onSetMethodError = settings.get(Keys.ON_SET_METHOD_ERROR);
 
         if (onSetMethodError == OnSetMethodError.FAIL) {
-            final String methodName = Format.formatMethod(method);
+            final String methodName = Format.formatSetterMethod(method);
             final String errorMsg = ErrorMessageUtils.getSetterInvocationErrorMessage(
                     arg, methodName, ex, settings);
 
