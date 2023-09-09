@@ -101,8 +101,8 @@ Person marge = Instancio.of(simpsons)
 
 ## Documentation
 
-- [User guide](https://www.instancio.org/user-guide)
-- [Javadocs](https://javadoc.io/doc/org.instancio/instancio-core/latest/)
+- [User guide](https://www.instancio.org/user-guide) (instancio.org)
+- [Javadocs](https://javadoc.io/doc/org.instancio/instancio-core/latest/) (javadoc.io)
 
 ## Quickstart
 
@@ -118,7 +118,7 @@ git clone https://github.com/instancio/instancio-quickstart.git
 Version `3.2.0` is now available.
 A summary of new features is available in the [release notes](https://github.com/instancio/instancio/discussions/736).
 
-# Maven coordinates
+# Maven Coordinates
 
 If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
 
@@ -144,23 +144,25 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
 
 # Feedback
 
-Feedback and bug reports are greatly appreciated. Please submit an
-[issue](https://github.com/instancio/instancio/issues) to report a bug,
-or if you have a question or a suggestion.
+Feedback and bug reports are greatly appreciated!
 
-# Extensions
+- Please submit an [issue](https://github.com/instancio/instancio/issues) for bug reports and feature requests.
+- For general feedback or questions, please create a post in the [Discussions](https://github.com/instancio/instancio/discussions).
 
-[instancio-jpa](https://github.com/Mobe91/instancio-jpa) is an extension created by
-[Moritz Becker](https://github.com/Mobe91) that can be used for integration tests.
+Please check the [User Guide](https://www.instancio.org/user-guide), previous issues and discussions before creating a new one.
+
+# Third-party Extensions
+
+- [instancio-jpa](https://github.com/Mobe91/instancio-jpa) created by [Moritz Becker](https://github.com/Mobe91)
 
 > Instancio-jpa is an extension on top of the Instancio library that enables the creation and population
 > of JPA entities including the subsequent persistence of these entities using JPA for the purpose of test
-> data generation in integration tests. The extension uses the JPA metamodel to yield a persistable object graph.
-> It further provides JPA based utilities that allows for straight forward persistence of the object graph.
+> data generation in integration tests.
 
-# Special thanks to
+# Credits
 
-[JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com) for supporting this project.
+Thanks to [JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com)
+for supporting this project with their open source licenses.
 
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="120px" alt="JetBrains logo">
 
