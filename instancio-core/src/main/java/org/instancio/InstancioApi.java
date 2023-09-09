@@ -475,7 +475,7 @@ public interface InstancioApi<T> {
 
     /**
      * Specifies the maximum depth for populating an object.
-     * The root object is at depth 0. Children of the root
+     * The root object is at depth zero. Children of the root
      * object are at depth 1, grandchildren at depth 2, and so on.
      *
      * <p>Instancio will populate values up to the maximum depth.

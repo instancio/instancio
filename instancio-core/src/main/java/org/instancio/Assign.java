@@ -46,14 +46,33 @@ public final class Assign {
      * using {@code set()}, {@code supply()}, or {@code generate()} methods.
      *
      * <p>Example:
+     *
      * <pre>{@code
-     * Assign.valueOf(Message::getValue).set("Hello world");
+     * Assignment personName = Assign.valueOf(Person::getName).set("Homer Simpson");
+     *
+     * Person person = Instancio.of(Person.class)
+     *     .assign(personName)
+     *     .create();
      * }</pre>
+     *
+     * <p>This sets the {@code Person.name} field to "Homer Simpson".
+     * The above snippet is equivalent to:
+     *
+     * <pre>{@code
+     * Person person = Instancio.of(Person.class)
+     *     .set(Select.field(Person::getName), "Homer Simpson")
+     *     .create();
+     * }</pre>
+     *
+     * <p>The difference is that {@link InstancioApi#assign(Assignment...)}
+     * allows passing multiple assignments dynamically to the method since
+     * it accepts a vararg. This provides more flexibility when creating
+     * objects in different states.
      *
      * <h4>2. Assign {@code target} to another selector</h4>
      *
-     * <p>The second option allows assigning the value of the {@code target}
-     * to a destination selector:
+     * <p>The second variant of the builder allows assigning the value of
+     * the {@code target} to a destination selector:
      *
      * <pre>{@code
      * Assign.valueOf(origin).to(destination)
@@ -148,17 +167,28 @@ public final class Assign {
      *
      * <p>A destination will be set to a given value only if the corresponding
      * predicate is satisfied. If none of the predicates match, the value from
-     * the {@code elseSet} method will be set.
+     * the {@code else} branch will be set. Note that the {@code else} branch is
+     * optional. If it is not specified, a random value will be generated
+     * when none of the predicates match.
      *
      * <p>Example:
      * <pre>{@code
-     * Assignment assignment = Assign.given(field(Address::getCountry), field(Phone::getCountryCode))
+     * Assignment phoneCountryCode = Assign.given(field(Address::getCountry), field(Phone::getCountryCode))
      *     .set(When.isIn("Canada", "USA"), "+1")
      *     .set(When.is("Italy"), "+39")
      *     .set(When.is("Poland"), "+48")
      *     .set(When.is("Germany"), "+49")
      *     .elseSupply(() -> Assertions.fail("unexpected country"));
+     *
+     * Person person = Instancio.of(Person.class)
+     *     .generate(field(Address::getCountry), gen -> gen.oneOf("Canada", "Germany", "Italy", "Poland", "USA"))
+     *     .assign(phoneCountryCode)
+     *     .create();
      * }</pre>
+     *
+     * <p>In the above example, the generated country names should match one
+     * of the assignment predicates, therefore the assertion failure in
+     * {@code elseSupply()} should not be reachable, and could be omitted.
      *
      * @param origin      selector whose target the origin predicate
      *                    will be evaluated against
@@ -195,11 +225,23 @@ public final class Assign {
      *
      * <p>Example:
      * <pre>{@code
-     * Assignment assignment = Assign.given(Order::getStatus)
+     * Assignment orderFields = Assign.given(Order::getStatus)
      *     .is(OrderStatus.CANCELLED)
      *     .set(field(Order::getCancellationReason), "Shipping delays")
      *     .generate(field(Order::getCancellationDate), gen -> gen.temporal().localDate().past());
+     *
+     * List<Order> orders = Instancio.ofList(Order.class)
+     *     .size(20)
+     *     .assign(orderFields)
+     *     .create();
      * }</pre>
+     *
+     * <p>The above snippet will generate a list of random orders. If an order
+     * with a {@code CANCELLED} status is generated, the order will have
+     * the expected values as specified by the assignment. It is possible
+     * to specify different values for other order statuses. Since the example
+     * above does not specify this, for all other order statuses, random values
+     * will be generated.
      *
      * @param origin selector whose target the origin predicate will be evaluated against
      * @return builder for constructing a conditional assignment
