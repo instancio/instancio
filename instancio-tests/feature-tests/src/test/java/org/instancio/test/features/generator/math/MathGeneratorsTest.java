@@ -59,4 +59,22 @@ class MathGeneratorsTest {
                 .isBetween(BigDecimal.ZERO, BigDecimal.ONE)
                 .hasScaleOf(expectedScale);
     }
+
+    @Test
+    void bigDecimalWithPrecision() {
+        final int expectedPrecision = 20;
+        final int expectedScale = 9;
+
+        final SupportedMathTypes result = Instancio.of(SupportedMathTypes.class)
+                .generate(all(BigDecimal.class), gen -> gen.math().bigDecimal()
+                        .precision(expectedPrecision)
+                        .scale(expectedScale)
+                        // also verify that range() is ignored when precision is specified
+                        .range(BigDecimal.ZERO, BigDecimal.ONE))
+                .create();
+
+        assertThat(result.getBigDecimal()).hasScaleOf(expectedScale);
+        assertThat(result.getBigDecimal().precision()).isEqualTo(expectedPrecision);
+        assertThat(result.getBigDecimal()).isGreaterThan(BigDecimal.ONE);
+    }
 }

@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.ExperimentalApi;
+
 import java.math.BigDecimal;
 
 /**
@@ -40,4 +42,13 @@ public interface BigDecimalAsGeneratorSpec
 
     @Override
     BigDecimalAsGeneratorSpec scale(int scale);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 3.3.0
+     */
+    @Override
+    @ExperimentalApi
+    BigDecimalAsGeneratorSpec precision(int precision);
 }

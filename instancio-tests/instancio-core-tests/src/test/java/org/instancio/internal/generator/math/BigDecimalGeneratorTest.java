@@ -15,21 +15,28 @@
  */
 package org.instancio.internal.generator.math;
 
+import org.instancio.Random;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.NumberGeneratorSpecTestTemplate;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
+import org.instancio.test.support.util.Constants;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal> {
 
-    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
+    private final Random random = new DefaultRandom();
+    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), random);
 
     @Override
     protected AbstractRandomNumberGeneratorSpec<BigDecimal> createGenerator() {
@@ -55,7 +62,7 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
         final AbstractRandomNumberGeneratorSpec<BigDecimal> generator = getGenerator();
         generator.range(min, max);
 
-        final BigDecimal result = generator.generate(new DefaultRandom());
+        final BigDecimal result = generator.generate(random);
         assertThat(result)
                 .isNotNull()
                 .isGreaterThanOrEqualTo(min)
@@ -75,10 +82,75 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
         generator.range(min, max);
         generator.scale(20);
 
-        final BigDecimal result = generator.generate(new DefaultRandom());
+        final BigDecimal result = generator.generate(random);
         assertThat(result)
                 .isNotNull()
                 .isGreaterThanOrEqualTo(min)
                 .isLessThanOrEqualTo(max);
+    }
+
+    @Test
+    void nonPositiveScaleWithPrecision() {
+        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
+
+        for (int scale = -10; scale <= 0; scale++) {
+            for (int precision = 1; precision < 15; precision++) {
+
+                generator.scale(scale).precision(precision);
+
+                for (int i = 0; i < Constants.SAMPLE_SIZE_DDD; i++) {
+                    final BigDecimal result = generator.generate(random);
+
+                    assertThat(result).hasScaleOf(scale);
+
+                    assertThat(result.precision())
+                            .as("scale=%s, precision=%s, result=%s", scale, precision, result)
+                            .isEqualTo(precision);
+                }
+            }
+        }
+    }
+
+    @Test
+    void positiveScaleWithPrecision() {
+        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
+
+        for (int scale = 1; scale < 15; scale++) {
+            for (int precision = scale; precision < 15; precision++) {
+
+                generator.scale(scale).precision(precision);
+
+                for (int i = 0; i < Constants.SAMPLE_SIZE_DDD; i++) {
+                    final BigDecimal result = generator.generate(random);
+
+                    assertThat(result).hasScaleOf(scale);
+
+                    assertThat(result.precision())
+                            .as("scale=%s, precision=%s, result=%s", scale, precision, result)
+                            .isEqualTo(precision);
+                }
+            }
+        }
+    }
+
+    @Test
+    void scaleGreaterThanPrecisionShouldProduceAnError() {
+        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
+
+        generator.scale(5).precision(4);
+
+        assertThatThrownBy(() -> generator.generate(random))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("'precision' (4) must be greater than or equal to 'scale' (5)");
+    }
+
+    @ValueSource(ints = {-1, 0})
+    @ParameterizedTest
+    void nonPositivePrecisionShouldProduceAnError(final int precision) {
+        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
+
+        assertThatThrownBy(() -> generator.precision(precision))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("'precision' must be positive: %s", precision);
     }
 }
