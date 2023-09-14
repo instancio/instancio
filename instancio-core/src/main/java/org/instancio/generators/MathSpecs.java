@@ -33,6 +33,17 @@ public final class MathSpecs {
     /**
      * Generates {@link BigDecimal} values.
      *
+     * <p>The spec provides two options for customising generated values:
+     *
+     * <ul>
+     *   <li>Using the {@code min(BigDecimal)}, {@code max(BigDecimal}}, or
+     *       {@code range(BigDecimal, BigDecimal)} methods</li>
+     *   <li>Using the {@code precision(int)} method</li>
+     * </ul>
+     *
+     * <p>If precision is specified, then specifying the range
+     * will have no effect on generated values.
+     *
      * @return API builder reference
      * @since 2.6.0
      */

@@ -41,6 +41,12 @@ class BigDecimalSpecTest extends AbstractValueSpecTestTemplate<BigDecimal> {
     }
 
     @Test
+    void precision() {
+        final BigDecimal result = spec().precision(15).get();
+        assertThat(result.precision()).isEqualTo(15);
+    }
+
+    @Test
     void min() {
         final BigDecimal result = spec().min(new BigDecimal(Integer.MAX_VALUE)).get();
         assertThat(result).isGreaterThanOrEqualTo(new BigDecimal(Integer.MAX_VALUE));

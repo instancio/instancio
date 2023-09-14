@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.ExperimentalApi;
+
 import java.math.BigDecimal;
 
 /**
@@ -24,12 +26,38 @@ import java.math.BigDecimal;
  */
 public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Note that if {@link #precision(int)} is specified, then
+     * invoking {@link #min(BigDecimal)} or {@link #max(BigDecimal)}
+     * will have no effect on generated values.
+     *
+     * @see #precision(int)
+     */
     @Override
     BigDecimalGeneratorSpec min(BigDecimal min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Note that if {@link #precision(int)} is specified, then
+     * invoking {@link #min(BigDecimal)} or {@link #max(BigDecimal)}
+     * will have no effect on generated values.
+     *
+     * @see #precision(int)
+     */
     @Override
     BigDecimalGeneratorSpec max(BigDecimal max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Note that if {@link #precision(int)} is specified, then
+     * invoking this method will have no effect on generated values.
+     *
+     * @see #precision(int)
+     */
     @Override
     BigDecimalGeneratorSpec range(BigDecimal min, BigDecimal max);
 
@@ -38,11 +66,33 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
 
     /**
      * Scale of the generated {@link BigDecimal}.
+     * Generated values will have given {@code scale}
+     * as returned by {@link BigDecimal#scale()}
      *
-     * @param scale to set
+     * @param scale the scale of generated {@code BigDecimal} values
      * @return spec builder
      * @since 1.5.4
      */
     BigDecimalGeneratorSpec scale(int scale);
 
+    /**
+     * Precision of the generated {@link BigDecimal}.
+     * Generated values will have given {@code precision}
+     * as returned by {@link BigDecimal#precision()}
+     *
+     * <p>Note that if this method is invoked, then the following
+     * methods will have no effect on generated values:
+     *
+     * <ul>
+     *   <li>{@link #min(BigDecimal)}</li>
+     *   <li>{@link #min(BigDecimal)}</li>
+     *   <li>{@link #range(BigDecimal, BigDecimal)}</li>
+     * </ul>
+     *
+     * @param precision the precision of generated {@code BigDecimal} values
+     * @return spec builder
+     * @since 3.3.0
+     */
+    @ExperimentalApi
+    BigDecimalGeneratorSpec precision(int precision);
 }
