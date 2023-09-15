@@ -42,7 +42,11 @@ public interface NumberGeneratorSpec<T extends Number> extends NullableGenerator
     NumberGeneratorSpec<T> max(T max);
 
     /**
-     * Specifies the range for the generated number.
+     * Specifies the range for generated numbers.
+     *
+     * <p>The following examples use {@code int}, however the same
+     * principle applies to all numeric types, including
+     * {@code BigInteger} and {@code BigDecimal}.
      *
      * <p>This method can be invoked multiple times to specify several
      * ranges, for example, the following will generate a random value

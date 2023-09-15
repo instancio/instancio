@@ -21,6 +21,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.SupportedMathTypes;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -68,13 +69,68 @@ class MathGeneratorsTest {
         final SupportedMathTypes result = Instancio.of(SupportedMathTypes.class)
                 .generate(all(BigDecimal.class), gen -> gen.math().bigDecimal()
                         .precision(expectedPrecision)
-                        .scale(expectedScale)
-                        // also verify that range() is ignored when precision is specified
-                        .range(BigDecimal.ZERO, BigDecimal.ONE))
+                        .scale(expectedScale))
                 .create();
 
-        assertThat(result.getBigDecimal()).hasScaleOf(expectedScale);
-        assertThat(result.getBigDecimal().precision()).isEqualTo(expectedPrecision);
-        assertThat(result.getBigDecimal()).isGreaterThan(BigDecimal.ONE);
+        assertThat(result.getBigDecimal())
+                .hasScaleOf(expectedScale)
+                .extracting(BigDecimal::precision)
+                .isEqualTo(expectedPrecision);
+    }
+
+    /**
+     * precision() and range()/min()/max() are incompatible with each other.
+     * If used together, the last one wins.
+     */
+    @Nested
+    class BigDecimalPrecisionAndRangeOrderTest {
+
+        @Test
+        void rangeWins() {
+            final SupportedMathTypes result = Instancio.of(SupportedMathTypes.class)
+                    .generate(all(BigDecimal.class), gen -> gen.math().bigDecimal()
+                            .precision(20)
+                            .range(BigDecimal.ZERO, BigDecimal.ONE))
+                    .create();
+
+            assertThat(result.getBigDecimal()).isBetween(BigDecimal.ZERO, BigDecimal.ONE);
+        }
+
+        @Test
+        void minWins() {
+            final BigDecimal min = new BigDecimal("200000000000000");
+            final SupportedMathTypes result = Instancio.of(SupportedMathTypes.class)
+                    .generate(all(BigDecimal.class), gen -> gen.math().bigDecimal()
+                            .precision(20)
+                            .min(min))
+                    .create();
+
+            assertThat(result.getBigDecimal()).isGreaterThanOrEqualTo(min);
+        }
+
+        @Test
+        void maxWins() {
+            final BigDecimal max = new BigDecimal("-200000000000000");
+            final SupportedMathTypes result = Instancio.of(SupportedMathTypes.class)
+                    .generate(all(BigDecimal.class), gen -> gen.math().bigDecimal()
+                            .precision(20)
+                            .max(max))
+                    .create();
+
+            assertThat(result.getBigDecimal()).isLessThanOrEqualTo(max);
+        }
+
+        @Test
+        void precisionWins() {
+            final int expectedPrecision = 20;
+
+            final SupportedMathTypes result = Instancio.of(SupportedMathTypes.class)
+                    .generate(all(BigDecimal.class), gen -> gen.math().bigDecimal()
+                            .range(BigDecimal.ZERO, BigDecimal.ONE)
+                            .precision(expectedPrecision))
+                    .create();
+
+            assertThat(result.getBigDecimal().precision()).isEqualTo(expectedPrecision);
+        }
     }
 }

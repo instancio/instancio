@@ -29,11 +29,8 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
     /**
      * {@inheritDoc}
      *
-     * <p>Note that if {@link #precision(int)} is specified, then
-     * invoking {@link #min(BigDecimal)} or {@link #max(BigDecimal)}
-     * will have no effect on generated values.
-     *
-     * @see #precision(int)
+     * <p>Note that this method is incompatible with {@link #precision(int)}.
+     * For details, see {@link #precision(int)} javadoc.
      */
     @Override
     BigDecimalGeneratorSpec min(BigDecimal min);
@@ -41,11 +38,8 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
     /**
      * {@inheritDoc}
      *
-     * <p>Note that if {@link #precision(int)} is specified, then
-     * invoking {@link #min(BigDecimal)} or {@link #max(BigDecimal)}
-     * will have no effect on generated values.
-     *
-     * @see #precision(int)
+     * <p>Note that this method is incompatible with {@link #precision(int)}.
+     * For details, see {@link #precision(int)} javadoc.
      */
     @Override
     BigDecimalGeneratorSpec max(BigDecimal max);
@@ -53,10 +47,8 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
     /**
      * {@inheritDoc}
      *
-     * <p>Note that if {@link #precision(int)} is specified, then
-     * invoking this method will have no effect on generated values.
-     *
-     * @see #precision(int)
+     * <p>Note that this method is incompatible with {@link #precision(int)}.
+     * For details, see {@link #precision(int)} javadoc.
      */
     @Override
     BigDecimalGeneratorSpec range(BigDecimal min, BigDecimal max);
@@ -67,7 +59,9 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
     /**
      * Scale of the generated {@link BigDecimal}.
      * Generated values will have given {@code scale}
-     * as returned by {@link BigDecimal#scale()}
+     * as returned by {@link BigDecimal#scale()}.
+     *
+     * <p>If not specified, the default scale is {@code 2}.
      *
      * @param scale the scale of generated {@code BigDecimal} values
      * @return spec builder
@@ -78,16 +72,36 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
     /**
      * Precision of the generated {@link BigDecimal}.
      * Generated values will have given {@code precision}
-     * as returned by {@link BigDecimal#precision()}
+     * as returned by {@link BigDecimal#precision()}.
      *
-     * <p>Note that if this method is invoked, then the following
-     * methods will have no effect on generated values:
+     * <p>This method is incompatible with the following methods:
      *
      * <ul>
      *   <li>{@link #min(BigDecimal)}</li>
      *   <li>{@link #min(BigDecimal)}</li>
      *   <li>{@link #range(BigDecimal, BigDecimal)}</li>
      * </ul>
+     *
+     * <p>If this method is combined with any of the above,
+     * the last method takes precedence.
+     *
+     * <pre>{@code
+     * // Example 1: range() takes precedence as it is specified last
+     * BigDecimal result = Gen.math().bigDecimal()
+     *     .precision(5)
+     *     .range(BigDecimal.ZERO, BigDecimal.ONE)
+     *     .get();
+     *
+     * // Sample output: 0.81
+     *
+     * // Example 2: precision() takes precedence as it is specified last
+     * BigDecimal result = Gen.math().bigDecimal()
+     *     .range(BigDecimal.ZERO, BigDecimal.ONE)
+     *     .precision(5)
+     *     .get();
+     *
+     * // Sample output: 394.19
+     * }</pre>
      *
      * @param precision the precision of generated {@code BigDecimal} values
      * @return spec builder

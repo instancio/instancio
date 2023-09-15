@@ -44,6 +44,7 @@ class NumberGeneratorTest {
     private static final int MAX = 10;
     private static final int SAMPLE_SIZE = 10_000;
     private static final Settings settings = Settings.defaults()
+            .set(Keys.BIG_DECIMAL_SCALE, 5)
             .set(Keys.BYTE_MIN, (byte) MIN)
             .set(Keys.BYTE_MAX, (byte) MAX)
             .set(Keys.BYTE_NULLABLE, true)
