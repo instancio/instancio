@@ -21,6 +21,7 @@ import org.instancio.generator.specs.BigDecimalAsGeneratorSpec;
 import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
+import org.instancio.settings.Keys;
 import org.instancio.support.Global;
 
 import java.math.BigDecimal;
@@ -32,10 +33,9 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
 
     private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(0.000_01d);
     private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(10_000);
-    private static final int DEFAULT_SCALE = 5;
     private static final int PRECISION_NOT_SET = -1;
 
-    private int scale = DEFAULT_SCALE;
+    private int scale;
     private int precision = PRECISION_NOT_SET;
 
     public BigDecimalGenerator() {
@@ -49,6 +49,8 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     public BigDecimalGenerator(
             final GeneratorContext context, final BigDecimal min, final BigDecimal max, final boolean nullable) {
         super(context, min, max, nullable);
+
+        this.scale = context.getSettings().get(Keys.BIG_DECIMAL_SCALE);
     }
 
     @Override
@@ -72,18 +74,21 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     @Override
     public BigDecimalGenerator min(final BigDecimal min) {
         super.min(min);
+        unsetPrecision();
         return this;
     }
 
     @Override
     public BigDecimalGenerator max(final BigDecimal max) {
         super.max(max);
+        unsetPrecision();
         return this;
     }
 
     @Override
     public BigDecimalGenerator range(final BigDecimal min, final BigDecimal max) {
         super.range(min, max);
+        unsetPrecision();
         return this;
     }
 
@@ -97,6 +102,15 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     public BigDecimalGenerator nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
+    }
+
+    /**
+     * Since precision() is not compatible with min(), max(), and range() methods,
+     * if any of those methods are called, unset precision, in case it was set,
+     * to revert to range-based generation.
+     */
+    private void unsetPrecision() {
+        precision = PRECISION_NOT_SET;
     }
 
     @Override

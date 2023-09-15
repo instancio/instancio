@@ -15,6 +15,7 @@
  */
 package org.instancio.generators;
 
+import org.instancio.generator.specs.BigDecimalGeneratorSpec;
 import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.generator.specs.BigIntegerSpec;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
@@ -41,8 +42,7 @@ public final class MathSpecs {
      *   <li>Using the {@code precision(int)} method</li>
      * </ul>
      *
-     * <p>If precision is specified, then specifying the range
-     * will have no effect on generated values.
+     * <p>See {@link BigDecimalGeneratorSpec#precision(int)} for details.
      *
      * @return API builder reference
      * @since 2.6.0

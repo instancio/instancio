@@ -27,12 +27,30 @@ import java.math.BigDecimal;
  */
 public interface BigDecimalSpec extends ValueSpec<BigDecimal>, BigDecimalGeneratorSpec {
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Note that this method is incompatible with {@link #precision(int)}.
+     * For details, see {@link #precision(int)} javadoc.
+     */
     @Override
     BigDecimalSpec min(BigDecimal min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Note that this method is incompatible with {@link #precision(int)}.
+     * For details, see {@link #precision(int)} javadoc.
+     */
     @Override
     BigDecimalSpec max(BigDecimal max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Note that this method is incompatible with {@link #precision(int)}.
+     * For details, see {@link #precision(int)} javadoc.
+     */
     @Override
     BigDecimalSpec range(BigDecimal min, BigDecimal max);
 

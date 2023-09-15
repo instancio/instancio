@@ -118,6 +118,16 @@ public final class Keys {
             "bean.validation.enabled", Boolean.class, false);
 
     /**
+     * Specifies the {@code scale} for generating {@code BigDecimal};
+     * default is {@code 2}; property name {@code bigdecimal.scale}.
+     *
+     * @since 3.3.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Integer> BIG_DECIMAL_SCALE = register(
+            "bigdecimal.scale", Integer.class, 2);
+
+    /**
      * Specifies whether a {@code null} can be generated for Boolean type;
      * default is {@code false}; property name {@code boolean.nullable}.
      */
