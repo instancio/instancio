@@ -27,7 +27,15 @@
         <module name="EqualsHashCode"/>
         <module name="FinalClass"/>
         <module name="GenericWhitespace"/>
-        <module name="IllegalImport"/>
+        <module name="IllegalImport">
+            <property name="illegalPkgs" value="
+              jakarta.persistence,
+              jakarta.validation,
+              javax.persistence,
+              javax.validation,
+              org.hibernate,
+              sun.misc"/>
+        </module>
         <module name="Indentation">
             <property name="arrayInitIndent" value="8"/>
             <property name="basicOffset" value="4"/>
