@@ -104,6 +104,13 @@ class NumberUtilsTest {
         assertThat(NumberUtils.toDigitChar(digitInt)).isEqualTo(digitChar);
     }
 
+    @Test
+    void isZero() {
+        assertThat(NumberUtils.isZero(new BigDecimal("0"))).isTrue();
+        assertThat(NumberUtils.isZero(new BigDecimal("0.0000"))).isTrue();
+        assertThat(NumberUtils.isZero(new BigDecimal("0.00000001"))).isFalse();
+    }
+
     @ValueSource(classes = {
             byte.class, short.class, int.class, long.class,
             Byte.class, Short.class, Integer.class, Long.class,

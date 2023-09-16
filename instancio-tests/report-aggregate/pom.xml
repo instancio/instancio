@@ -82,6 +82,18 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
+            <artifactId>jpa-jakarta-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>jpa-javax-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
             <artifactId>default-package-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

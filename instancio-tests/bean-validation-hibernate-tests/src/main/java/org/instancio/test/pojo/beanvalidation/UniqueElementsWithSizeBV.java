@@ -34,12 +34,4 @@ public class UniqueElementsWithSizeBV {
         @UniqueElements
         private List<Character> list;
     }
-
-    @Data
-    public static class WithUnsupportedType {
-        // Unsupported type for @UniqueElements, the annotation should be ignored.
-        @NotNull
-        @UniqueElements
-        private String string;
-    }
 }

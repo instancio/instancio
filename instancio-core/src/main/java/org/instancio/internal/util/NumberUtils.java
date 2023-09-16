@@ -251,6 +251,10 @@ public final class NumberUtils {
         return Character.forDigit(digit, RADIX_DECIMAL);
     }
 
+    public static boolean isZero(final BigDecimal value) {
+        return value.compareTo(BigDecimal.ZERO) == 0;
+    }
+
     private static BigDecimal toBigDecimal(final Number n) {
         return n == null ? null : new BigDecimal(n.toString());
     }

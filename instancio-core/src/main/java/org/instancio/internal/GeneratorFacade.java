@@ -17,9 +17,8 @@ package org.instancio.internal;
 
 import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.annotation.AnnotationGeneratorSpecProcessor;
 import org.instancio.internal.assignment.InternalAssignment;
-import org.instancio.internal.beanvalidation.BeanValidationProcessor;
-import org.instancio.internal.beanvalidation.NoopBeanValidationProvider;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
@@ -34,7 +33,6 @@ import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
-import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +54,7 @@ class GeneratorFacade {
         final GeneratorContext generatorContext = new GeneratorContext(
                 context.getSettings(), context.getRandom());
 
-        final GeneratorSpecProcessor beanValidationProcessor = getGeneratorSpecProcessor();
+        final GeneratorSpecProcessor specProcessor = AnnotationGeneratorSpecProcessor.create(context);
 
         final GeneratorResolver generatorResolver = new GeneratorResolver(
                 generatorContext, context.getServiceProviders().getGeneratorProviders());
@@ -71,21 +69,15 @@ class GeneratorFacade {
         this.nodeHandlers = new NodeHandler[]{
                 assignmentNodeHandler,
                 userSuppliedGeneratorHandler,
-                new UsingGeneratorResolverHandler(context, generatorResolver, beanValidationProcessor),
-                new CollectionNodeHandler(context, beanValidationProcessor),
-                new MapNodeHandler(context, beanValidationProcessor),
+                new UsingGeneratorResolverHandler(context, generatorResolver, specProcessor),
+                new CollectionNodeHandler(context, specProcessor),
+                new MapNodeHandler(context, specProcessor),
                 new InstantiatingHandler(instantiator)
         };
     }
 
     Set<InternalAssignment> getUnresolvedAssignments() {
         return assignmentNodeHandler.getUnresolvedAssignments();
-    }
-
-    private GeneratorSpecProcessor getGeneratorSpecProcessor() {
-        final boolean isEnabled = context.getSettings().get(Keys.BEAN_VALIDATION_ENABLED);
-        LOG.trace("Keys.BEAN_VALIDATION_ENABLED={}", isEnabled);
-        return isEnabled ? new BeanValidationProcessor() : new NoopBeanValidationProvider();
     }
 
     private boolean shouldReturnNullForNullable(final InternalNode node) {
