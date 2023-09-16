@@ -36,6 +36,8 @@
         <module>api-contract-tests</module>
         <module>arch-tests</module>
         <module>kotlin-tests</module>
+        <module>jpa-javax-tests</module>
+        <module>jpa-jakarta-tests</module>
         <module>bean-validation-javax-tests</module>
         <module>bean-validation-jakarta-tests</module>
         <module>bean-validation-hibernate5-tests</module>

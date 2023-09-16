@@ -1,0 +1,57 @@
+/*
+ * Copyright 2022-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.instancio.internal.annotation;
+
+import java.lang.annotation.Annotation;
+
+/**
+ * Handler map for {@code jakarta.persistence.*}.
+ *
+ * <p>Avoid imports from this package to prevent class-not-found error
+ * if an annotation is not available on the classpath.
+ */
+final class JakartaPersistenceHandlerMap extends CommonPersistenceAnnotationHandlerMap {
+
+    JakartaPersistenceHandlerMap() {
+        put(() -> jakarta.persistence.Column.class, new ColumnHandler());
+    }
+
+    static AnnotationHandlerMap getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    private static final class ColumnHandler extends AbstractColumnHandler {
+
+        @Override
+        int getLength(final Annotation annotation) {
+            return ((jakarta.persistence.Column) annotation).length();
+        }
+
+        @Override
+        int getPrecision(final Annotation annotation) {
+            return ((jakarta.persistence.Column) annotation).precision();
+        }
+
+        @Override
+        int getScale(final Annotation annotation) {
+            return ((jakarta.persistence.Column) annotation).scale();
+        }
+    }
+
+    private static final class Holder {
+        private static final AnnotationHandlerMap INSTANCE = new JakartaPersistenceHandlerMap();
+    }
+}

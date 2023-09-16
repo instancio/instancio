@@ -2081,7 +2081,6 @@ long seed = result.getSeed(); // seed value that was used for populating the per
 Instancio can generate valid data based on Bean Validation annotations.
 This is an experimental feature and is disabled by default.
 
-
 The feature can be enabled via {{Settings}} using `Keys.BEAN_VALIDATION_ENABLED`,
 or globally, using `instancio.properties`:
 
@@ -2175,6 +2174,72 @@ Anything not listed is unsupported, including `*.List` annotations.
 - `@PESEL`
 - `@REGON`
 
+# JPA
+
+In addition to [Bean Validation](#bean-validation), Instancio supports generating data
+based on JPA `@Column` annotation. This is an experimental feature available from version `3.3.0`.
+It is disabled by default and can be enabled via {{Settings}} using `Keys.JPA_ENABLED`,
+or globally, using `instancio.properties`:
+
+```properties
+jpa.enabled=true
+```
+
+In addition, `jakarta` or `javax` API must be present on the classpath for the feature to be activated.
+Instancio does not provide the dependency transitively:
+
+```xml
+<dependency>
+    <groupId>jakarta.persistence</groupId>
+    <artifactId>jakarta.persistence-api</artifactId>
+    <version>${jakarta-persistence-api-version}</version>
+</dependency>
+```
+
+or
+
+```xml
+<dependency>
+    <groupId>javax.persistence</groupId>
+    <artifactId>javax.persistence-api</artifactId>
+    <version>${javax-persistence-api-version}</version>
+</dependency>
+```
+
+## Supported Attributes
+
+The following `@Column` attributes are suported:
+
+- `precision` -  supported by `BigDecimal` fields (with limitations described below)
+- `scale` - supported by `BigDecimal` fields
+- `length` - supported by `String` fields
+
+#### Limitations
+
+If used with `Keys.BEAN_VALIDATION_ENABLED`, Bean Validation annotations take precedence.
+For instance, the `precision` attribute is not honoured if a field is annotated with any of the following
+Bean Validation/Hibernate Validator annotations:
+
+- `@Min`, `@Max`
+- `@DecimalMin`, `@DecimalMax`
+- `@Negative`, `@NegativeOrZero`
+- `@Positive`, `@PositiveOrZero`
+- `@Range`
+
+To illustrate with an example, consider the following field declaration:
+
+```java linenums="1"
+@Column(precision = 5, scale = 3)
+@Min(1)
+@Max(7)
+private BigDecimal value;
+```
+
+`precision = 5, scale = 3` implies a range of `[10.000, 99.999]`,
+whereas the `@Min` and `@Max` limit the range to `[1, 7]`.
+Since the `@Min` and `@Max` annotations take precedence, the `precision` attribute will be ignored,
+and the generated `value` will be between `1.000` and `7.000`, inclusive, and have the specified scale of `3`.
+
 # Configuration
 
 Instancio configuration is encapsulated by the {{Settings}} class, a map of keys and corresponding values.
@@ -2238,11 +2303,12 @@ Default settings can be overridden using `instancio.properties`.
 Instancio will automatically load this file from the root of the classpath.
 The following listing shows all the property keys that can be configured.
 
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 10 28 29 33 37 51"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 29 30 35 43 53"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
 array.nullable=false
+bigdecimal.scale=2
 boolean.nullable=false
 byte.max=127
 byte.min=1
@@ -2262,6 +2328,7 @@ float.nullable=false
 integer.max=10000
 integer.min=1
 integer.nullable=false
+jpa.enabled=false
 long.max=10000
 long.min=1
 long.nullable=false
@@ -2296,11 +2363,11 @@ subtype.java.util.SortedMap=java.util.TreeMap
 ```
 
 !!! attention ""
-    <lnum>1,10,28-29</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
+    <lnum>1,11,29-30</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
-    <lnum>33</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
-    <lnum>37</lnum> Specifies a global seed value.<br/>
-    <lnum>51</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>35</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
+    <lnum>43</lnum> Specifies a global seed value.<br/>
+    <lnum>53</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 
@@ -2356,7 +2423,10 @@ for example:
 
 The main use case for implementing the `GeneratorProvider` is to have generators resolved automatically.
 For example, the following implementation generates maximum string length based on the `length` attribute
-of the JPA `@Column` annotation:
+of the JPA `@Column` annotation.
+
+!!! info "More on JPA"
+    From version `3.3.0` Instancio supports this functionality out-of-the-box. See the [JPA section](#jpa) for more details.
 
 ```java linenums="1" hl_lines="12 15"
 import javax.persistence.Column;

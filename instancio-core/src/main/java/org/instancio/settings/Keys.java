@@ -264,6 +264,17 @@ public final class Keys {
             "integer.nullable", Boolean.class, false);
 
     /**
+     * Specifies whether values should be generated based on
+     * JPA annotations, such as {@code @Column.length};
+     * default is {@code false}; property name {@code jpa.enabled}.
+     *
+     * @since 3.3.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Boolean> JPA_ENABLED = register(
+            "jpa.enabled", Boolean.class, false);
+
+    /**
      * Specifies minimum value for longs;
      * default is 1; property name {@code long.min}.
      */

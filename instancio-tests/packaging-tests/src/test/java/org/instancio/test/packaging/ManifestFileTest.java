@@ -41,21 +41,23 @@ class ManifestFileTest {
     private static final String IMPORT_PACKAGE = "Import-Package";
     private static final String MULTI_RELEASE = "Multi-Release";
 
-    // entries that end with "," are to assert that there is no version restriction
-    // (unless it's the last entry, then no comma is added)
-
     private static final String[] INSTANCIO_CORE_EXPECTED_IMPORTS = {
+            "jakarta.persistence;resolution:=optional",
             "jakarta.validation.constraints;resolution:=optional",
+            "javax.persistence;resolution:=optional",
+            "javax.validation.constraints;resolution:=optional",
             "javax.xml.datatype;resolution:=optional",
+            "org.hibernate.validator.constraints.pl;resolution:=optional",
             "org.hibernate.validator.constraints.time;resolution:=optional",
             "org.hibernate.validator.constraints;resolution:=optional",
             "org.instancio.documentation",
             "org.instancio.exception",
             "org.instancio.generator.specs",
             "org.instancio.spi",
-            "org.slf4j.helpers,",
             "org.slf4j,",
+            "org.slf4j.helpers,",
             "sun.misc;resolution:=optional",
+            "sun.reflect;resolution:=optional",
     };
 
     private static final String[] INSTANCIO_JUNIT_EXPECTED_IMPORTS = {

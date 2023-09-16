@@ -45,20 +45,6 @@ public final class ExceptionUtils {
         }
     }
 
-    /**
-     * Run the provided {@code action} ignoring the
-     * {@link NoClassDefFoundError} if it will be thrown.
-     *
-     * @param action the provided action
-     */
-    public static void runIgnoringTheNoClassDefFoundError(Runnable action) {
-        try {
-            action.run();
-        } catch (NoClassDefFoundError error) {
-            LOG.trace("Error is ignored: {}", error.toString());
-        }
-    }
-
     @VisibleForTesting
     static String getCausedBy(final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();

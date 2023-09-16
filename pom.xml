@@ -57,9 +57,11 @@
         </sonar.coverage.jacoco.xmlReportPaths>
         <latest.release.version>3.2.0</latest.release.version>
         <version.guava>32.1.1-jre</version.guava>
-        <version.jakarta.validation>3.0.2</version.jakarta.validation>
-        <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
+        <version.jakarta.persistence>3.1.0</version.jakarta.persistence>
+        <version.jakarta.validation>3.0.2</version.jakarta.validation>
+        <version.javax.persistence>2.2</version.javax.persistence>
+        <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.jetbrains.annotations>24.0.1</version.jetbrains.annotations>
         <version.junit>5.10.0</version.junit>
         <version.slf4j>2.0.9</version.slf4j>
@@ -406,9 +408,23 @@
                 <version>${version.slf4j}</version>
             </dependency>
             <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${version.jakarta.persistence}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
                 <groupId>jakarta.validation</groupId>
                 <artifactId>jakarta.validation-api</artifactId>
                 <version>${version.jakarta.validation}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>javax.persistence-api</artifactId>
+                <version>${version.javax.persistence}</version>
                 <scope>provided</scope>
                 <optional>true</optional>
             </dependency>
