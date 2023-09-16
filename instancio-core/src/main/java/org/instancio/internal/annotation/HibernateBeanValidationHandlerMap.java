@@ -35,9 +35,6 @@ import java.util.function.Function;
 
 /**
  * Handler map for {@code org.hibernate.validator.constraints.*}.
- *
- * <p>Avoid imports from this package to prevent class-not-found error
- * if an annotation is not available on the classpath.
  */
 final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
 
