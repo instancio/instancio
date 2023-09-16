@@ -58,7 +58,7 @@
         <latest.release.version>3.2.0</latest.release.version>
         <version.guava>32.1.1-jre</version.guava>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
-        <version.jakarta.persistence>3.1.0</version.jakarta.persistence>
+        <version.jakarta.persistence>3.0.0</version.jakarta.persistence>
         <version.jakarta.validation>3.0.2</version.jakarta.validation>
         <version.javax.persistence>2.2</version.javax.persistence>
         <version.javax.validation>2.0.1.Final</version.javax.validation>
