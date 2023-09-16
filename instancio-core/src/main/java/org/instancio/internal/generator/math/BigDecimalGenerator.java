@@ -31,12 +31,11 @@ import java.math.RoundingMode;
 public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal>
         implements BigDecimalSpec, BigDecimalAsGeneratorSpec {
 
-    private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(0.000_01d);
-    private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(10_000);
-    private static final int PRECISION_NOT_SET = -1;
+    private static final BigDecimal DEFAULT_MIN = new BigDecimal("0.01");
+    private static final BigDecimal DEFAULT_MAX = new BigDecimal("10000.00");
 
     private int scale;
-    private int precision = PRECISION_NOT_SET;
+    private int precision;
 
     public BigDecimalGenerator() {
         this(Global.generatorContext());
@@ -110,23 +109,19 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
      * to revert to range-based generation.
      */
     private void unsetPrecision() {
-        precision = PRECISION_NOT_SET;
+        precision = 0;
     }
 
     @Override
     protected BigDecimal tryGenerateNonNull(final Random random) {
-        // Generate value in the [min, max] range
-        if (precision == PRECISION_NOT_SET) {
+        // If precision is not set, generate a value in the [min, max] range
+        if (precision == 0) {
             final BigDecimal delta = getMax().subtract(getMin());
             final BigDecimal rndDelta = delta.multiply(BigDecimal.valueOf(random.doubleRange(0.01, 1)));
             return getMin().add(rndDelta).setScale(scale, RoundingMode.HALF_UP);
         }
 
         // Generate value based on specified precision
-
-        ApiValidator.isTrue(precision >= scale,
-                "'precision' (%s) must be greater than or equal to 'scale' (%s)", precision, scale);
-
         final char[] result;
 
         if (scale == 0) {
@@ -138,10 +133,12 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
         } else if (precision == scale) {
             result = generateWithEqualPrecisionAndScale(random);
             // result: '0.[1-9][0-9]{scale}'
-        } else {
+        } else if (precision > scale) {
             result = generateFractionalWithPrecisionGreaterThanScale(random);
-            // result: '[1-9]{integerSize}.[0-9]{scale}'
-            // where 'integerSize = precision - scale'
+            // result: '[1-9]{precision - scale}.[0-9]{scale}'
+        } else {
+            result = generateWithPrecisionLessThanScale(random);
+            // result: `0.[0]{scale - precision}[1-9]{precision}`
         }
 
         return new BigDecimal(
@@ -199,6 +196,20 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
 
         while (i < digits.length) {
             digits[i++] = zeroToNine(random);
+        }
+        return digits;
+    }
+
+    private char[] generateWithPrecisionLessThanScale(final Random random) {
+        final char[] digits = new char[scale + 1];
+        int i = 0;
+        digits[i++] = '.';
+
+        while (i <= scale - precision) {
+            digits[i++] = '0';
+        }
+        while (i < digits.length) {
+            digits[i++] = oneToNine(random);
         }
         return digits;
     }

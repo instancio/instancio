@@ -93,55 +93,22 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
     void nonPositiveScaleWithPrecision() {
         final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
 
-        for (int scale = -10; scale <= 0; scale++) {
-            for (int precision = 1; precision < 15; precision++) {
+        for (int precision = 1; precision < 20; precision++) {
+            for (int scale = -10; scale <= 20; scale++) {
 
-                generator.scale(scale).precision(precision);
-
-                for (int i = 0; i < Constants.SAMPLE_SIZE_DDD; i++) {
-                    final BigDecimal result = generator.generate(random);
-
-                    assertThat(result).hasScaleOf(scale);
-
-                    assertThat(result.precision())
-                            .as("scale=%s, precision=%s, result=%s", scale, precision, result)
-                            .isEqualTo(precision);
-                }
-            }
-        }
-    }
-
-    @Test
-    void positiveScaleWithPrecision() {
-        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
-
-        for (int scale = 1; scale < 15; scale++) {
-            for (int precision = scale; precision < 15; precision++) {
-
-                generator.scale(scale).precision(precision);
+                generator.precision(precision).scale(scale);
 
                 for (int i = 0; i < Constants.SAMPLE_SIZE_DDD; i++) {
                     final BigDecimal result = generator.generate(random);
 
-                    assertThat(result).hasScaleOf(scale);
-
-                    assertThat(result.precision())
-                            .as("scale=%s, precision=%s, result=%s", scale, precision, result)
+                    assertThat(result)
+                            .as("precision=%s, scale=%s, result=%s", scale, precision, result)
+                            .hasScaleOf(scale)
+                            .extracting(BigDecimal::precision)
                             .isEqualTo(precision);
                 }
             }
         }
-    }
-
-    @Test
-    void scaleGreaterThanPrecisionShouldProduceAnError() {
-        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
-
-        generator.scale(5).precision(4);
-
-        assertThatThrownBy(() -> generator.generate(random))
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("'precision' (4) must be greater than or equal to 'scale' (5)");
     }
 
     @ValueSource(ints = {-1, 0})
