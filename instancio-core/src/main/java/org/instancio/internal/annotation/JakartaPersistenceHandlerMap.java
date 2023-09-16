@@ -19,9 +19,6 @@ import java.lang.annotation.Annotation;
 
 /**
  * Handler map for {@code jakarta.persistence.*}.
- *
- * <p>Avoid imports from this package to prevent class-not-found error
- * if an annotation is not available on the classpath.
  */
 final class JakartaPersistenceHandlerMap extends CommonPersistenceAnnotationHandlerMap {
 

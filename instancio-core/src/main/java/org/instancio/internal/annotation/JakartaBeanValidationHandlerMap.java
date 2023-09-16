@@ -20,9 +20,6 @@ import java.math.BigDecimal;
 
 /**
  * Handler map for {@code jakarta.validation.constraints.*}.
- *
- * <p>Avoid imports from this package to prevent class-not-found error
- * if an annotation is not available on the classpath.
  */
 @SuppressWarnings("PMD.CouplingBetweenObjects")
 final class JakartaBeanValidationHandlerMap extends CommonBeanValidationHandlerMap {

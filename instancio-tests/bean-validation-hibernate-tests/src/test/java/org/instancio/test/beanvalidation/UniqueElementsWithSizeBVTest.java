@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
+import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -37,10 +37,10 @@ class UniqueElementsWithSizeBVTest {
     void uniqueElements() {
         final Stream<UniqueElementsWithSizeBV> results = Instancio.of(UniqueElementsWithSizeBV.class)
                 .stream()
-                .limit(SAMPLE_SIZE_DDD);
+                .limit(SAMPLE_SIZE_DD);
 
         assertThat(results)
-                .hasSize(SAMPLE_SIZE_DDD)
+                .hasSize(SAMPLE_SIZE_DD)
                 .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 }

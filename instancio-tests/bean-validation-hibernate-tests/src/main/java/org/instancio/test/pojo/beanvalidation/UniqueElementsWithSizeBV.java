@@ -22,16 +22,13 @@ import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
+@Data
 public class UniqueElementsWithSizeBV {
 
-    @Data
-    public static class WithList {
-        public static final int MIN_SIZE = 1;
-        public static final int MAX_SIZE = 2;
+    // should produce list containing true and false
 
-        @NotNull
-        @Size(min = MIN_SIZE, max = MAX_SIZE)
-        @UniqueElements
-        private List<Character> list;
-    }
+    @NotNull
+    @Size(min = 2, max = 2)
+    @UniqueElements
+    private List<Boolean> list;
 }
