@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.nodes;
 
-import jakarta.validation.constraints.NotNull;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
@@ -24,6 +23,7 @@ import org.instancio.internal.spi.InternalContainerFactoryProvider;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
