@@ -87,7 +87,7 @@ public interface InstancioServiceProvider {
      * <p>To avoid specifying the generator manually, the {@code Phone}
      * generator can be registered using the {@code GeneratorProvider}.
      * Once registered, the {@code Person} can be created without specifying
-     * the generator manually:
+     * the generator explicitly:
      *
      * <pre>{@code
      *   Person person = Instancio.create(Person.class); // uses Phone generator
