@@ -34,7 +34,7 @@ jobs:
       - name: "Set up JDK"
         uses: actions/setup-java@v3
         with:
-          distribution: "temurin"
+          distribution: "corretto"
           java-version: ${{ matrix.java }}
       - name: "Test"
         run: cd instancio-tests && mvn -B install
