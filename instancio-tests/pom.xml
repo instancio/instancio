@@ -11,6 +11,8 @@
     <name>Instancio Tests: Tests Parent</name>
 
     <properties>
+        <!-- prevents Mockito error when building with Java 21 -->
+        <argLine>-Dnet.bytebuddy.experimental=true</argLine>
         <maven.enforcer.require.java.version>8</maven.enforcer.require.java.version>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <maven.source.skip>true</maven.source.skip>
