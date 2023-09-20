@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
-public final class ErrorHandler {
+final class ErrorHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ErrorHandler.class);
 
     private static final String SUPPRESSION_REASON = String.format("" +

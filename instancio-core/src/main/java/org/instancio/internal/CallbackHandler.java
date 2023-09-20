@@ -29,13 +29,13 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CallbackHandler implements GenerationListener {
+class CallbackHandler implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(CallbackHandler.class);
 
     private final ModelContext<?> context;
     private final Map<InternalNode, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
 
-    public CallbackHandler(final ModelContext<?> context) {
+    CallbackHandler(final ModelContext<?> context) {
         this.context = context;
     }
 
@@ -56,7 +56,7 @@ public class CallbackHandler implements GenerationListener {
         }
     }
 
-    public void invokeCallbacks() {
+    void invokeCallbacks() {
         LOG.trace("Preparing to call {} callback(s)", resultsForCallbacks.size());
         resultsForCallbacks.forEach((node, results) -> {
             final List<OnCompleteCallback<?>> callbacks = getCallbacks(node);
