@@ -27,7 +27,7 @@ class NodeKindJdkResolver implements NodeKindResolver {
 
     @Override
     public Optional<NodeKind> resolve(final Class<?> targetClass) {
-        if (targetClass.isPrimitive()) {
+        if (targetClass.isPrimitive() || targetClass.isEnum()) {
             return Optional.of(NodeKind.JDK);
         }
 
