@@ -16,6 +16,7 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
@@ -37,6 +38,7 @@ class EnumSetOfGenderNodeTest extends NodeTestTemplate<EnumSet<Gender>> {
                 .hasDepth(1)
                 .hasNullField()
                 .hasTargetClass(Gender.class)
+                .isOfKind(NodeKind.JDK)
                 .hasNoChildren();
     }
 }

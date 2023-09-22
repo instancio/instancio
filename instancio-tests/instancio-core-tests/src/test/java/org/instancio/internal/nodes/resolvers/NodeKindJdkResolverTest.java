@@ -17,6 +17,7 @@ package org.instancio.internal.nodes.resolvers;
 
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.NodeKindResolver;
+import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -35,6 +36,7 @@ class NodeKindJdkResolverTest {
             Integer.class,
             String.class,
             LocalDate.class,
+            Gender.class, // enum
             Class.class,
             XMLGregorianCalendar.class
     })
