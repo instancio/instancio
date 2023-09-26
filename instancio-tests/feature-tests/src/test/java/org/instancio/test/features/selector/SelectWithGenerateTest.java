@@ -41,7 +41,8 @@ import static org.instancio.Select.field;
 @FeatureTag(Feature.SELECTOR)
 class SelectWithGenerateTest {
 
-    private static final long EXPECTED_VALUE = 2L;
+    // Use a negative number since randomly generated value are positive
+    private static final long EXPECTED_VALUE = -2L;
 
     @Test
     @DisplayName("Should select primitive but not wrapper")

@@ -101,7 +101,10 @@ public final class NodeFactory {
 
         final Type type = node.getType();
         if (type instanceof Class) {
-            children = createChildrenOfClass(node);
+            // do not reflect on JDK classes
+            children = node.is(NodeKind.JDK)
+                    ? Collections.emptyList()
+                    : createChildrenOfClass(node);
         } else if (type instanceof ParameterizedType) {
             children = createChildrenOfParameterizedType(node);
         } else if (type instanceof GenericArrayType) {
