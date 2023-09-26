@@ -150,7 +150,7 @@ class InstancioEngine {
 
         if (context.getRandom().diceRoll(isNullable)) {
             generatorResult = GeneratorResult.nullResult();
-        } else if (node.getChildren().isEmpty()) { // leaf - generate a value
+        } else if (node.is(NodeKind.JDK) || node.getChildren().isEmpty()) { // leaf - generate a value
             generatorResult = generateValue(node);
         } else if (node.is(NodeKind.ARRAY)) {
             generatorResult = generateArray(node);

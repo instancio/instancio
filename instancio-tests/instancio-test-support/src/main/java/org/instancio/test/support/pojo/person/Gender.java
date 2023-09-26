@@ -16,5 +16,20 @@
 package org.instancio.test.support.pojo.person;
 
 public enum Gender {
-    MALE, FEMALE, OTHER
+    MALE("Male"),
+    FEMALE("Female"),
+    OTHER("Other");
+
+    // When creating a node that represents an enum,
+    // the node should not have children,
+    // i.e. enum fields should be ignored
+    private final String description;
+
+    Gender(final String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
