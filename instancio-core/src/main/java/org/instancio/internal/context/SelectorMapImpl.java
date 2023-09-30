@@ -252,7 +252,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         return results;
     }
 
-    @SuppressWarnings(Sonar.COGNITIVE_COMPLEXITY_OF_METHOD)
+    @SuppressWarnings({Sonar.COGNITIVE_COMPLEXITY_OF_METHOD, "PMD.CyclomaticComplexity"})
     private static boolean selectorScopesMatchNodeHierarchy(
             final SelectorImpl candidate,
             final InternalNode targetNode) {
@@ -286,7 +286,9 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
                     if (scope.resolveField().equals(node.getField())) {
                         scope = (ScopeImpl) deq.pollLast();
                     }
-                } else if (node.getRawType().equals(scope.getTargetClass())) {
+                } else if (node.getRawType().equals(scope.getTargetClass())
+                        || node.getTargetClass().equals(scope.getTargetClass())) {
+
                     scope = (ScopeImpl) deq.pollLast();
                 }
             }

@@ -19,11 +19,16 @@ import org.instancio.Instancio;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Phone;
+import org.instancio.test.support.pojo.person.PhoneType;
+import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -74,6 +79,21 @@ class ScopeTest {
                 .isEqualTo(result.getFour())
                 .isNotEqualTo(result.getTwo())
                 .isNotEqualTo(result.getThree());
+    }
 
+    @Test
+    void scopeWithSubtype() {
+        final List<Phone> results = Instancio.ofList(Phone.class)
+                .size(Constants.SAMPLE_SIZE_DD)
+                .subtype(all(Phone.class), PhoneWithType.class)
+                .set(all(PhoneType.class).within(scope(PhoneWithType.class)), PhoneType.OTHER)
+                .create();
+
+        assertThat(results)
+                .hasOnlyElementsOfType(PhoneWithType.class)
+                .allSatisfy(result -> {
+                    PhoneWithType phoneWithType = (PhoneWithType) result;
+                    assertThat(phoneWithType.getPhoneType()).isEqualTo(PhoneType.OTHER);
+                });
     }
 }
