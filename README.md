@@ -47,7 +47,7 @@ List<Person> persons = Instancio.ofList(Person.class).size(10).create();
 2. Create streams of objects:
 
 ```java
-Stream<Person> persons = Instancio.stream(Person.class);
+Stream<Person> persons = Instancio.stream(Person.class).limit(5);
 ```
 
 3. Create generic types:
