@@ -15,8 +15,14 @@
  */
 package org.instancio.internal.settings;
 
+import org.instancio.generator.AfterGenerate;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
+import org.instancio.settings.OnSetFieldError;
+import org.instancio.settings.OnSetMethodError;
+import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.SetterStyle;
 import org.instancio.settings.SettingKey;
 
 import java.util.Collections;
@@ -51,7 +57,13 @@ final class SettingsSupport {
         fnMap.put(Float.class, Float::valueOf);
         fnMap.put(String.class, String::valueOf);
         fnMap.put(Double.class, Double::valueOf);
+        fnMap.put(AfterGenerate.class, AfterGenerate::valueOf);
+        fnMap.put(AssignmentType.class, AssignmentType::valueOf);
         fnMap.put(Mode.class, Mode::valueOf);
+        fnMap.put(OnSetFieldError.class, OnSetFieldError::valueOf);
+        fnMap.put(OnSetMethodError.class, OnSetMethodError::valueOf);
+        fnMap.put(OnSetMethodNotFound.class, OnSetMethodNotFound::valueOf);
+        fnMap.put(SetterStyle.class, SetterStyle::valueOf);
         return Collections.unmodifiableMap(fnMap);
     }
 
