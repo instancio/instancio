@@ -15,8 +15,19 @@
  */
 package org.instancio.internal.settings;
 
+import org.instancio.generator.AfterGenerate;
+import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
+import org.instancio.settings.OnSetFieldError;
+import org.instancio.settings.OnSetMethodError;
+import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.SetterStyle;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,6 +42,44 @@ class SettingsSupportTest {
         assertThat(SettingsSupport.getFunction(Long.class).apply("8")).isEqualTo(8L);
         assertThat(SettingsSupport.getFunction(Float.class).apply("10.8")).isEqualTo(10.8f);
         assertThat(SettingsSupport.getFunction(Double.class).apply("10.2")).isEqualTo(10.2d);
-        assertThat(SettingsSupport.getFunction(Mode.class).apply("LENIENT")).isEqualTo(Mode.LENIENT);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    <E extends Enum<E>> void verifyFunctionExistsForEveryEnumSetting() {
+        final Class<E>[] enumClasses = new Class[]{
+                AfterGenerate.class,
+                AssignmentType.class,
+                Mode.class,
+                OnSetFieldError.class,
+                OnSetMethodError.class,
+                OnSetMethodNotFound.class,
+                SetterStyle.class
+        };
+
+        for (Class<E> enumClass : enumClasses) {
+            final E enumValue = ReflectionUtils.getEnumValues(enumClass)[0];
+            final String enumName = enumValue.name();
+            final Function<String, E> fn = SettingsSupport.getFunction(enumClass);
+
+            assertThat(fn.apply(enumName)).isEqualTo(Enum.valueOf(enumClass, enumName));
+        }
+
+        final List<Class<E>> actualEnumClasses = getAllEnumKeyClasses();
+
+        assertThat(actualEnumClasses)
+                .as("'enumClasses' array should verify _all_ Keys of type Enum")
+                .containsExactlyInAnyOrder(enumClasses);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <E extends Enum<E>> List<Class<E>> getAllEnumKeyClasses() {
+        return Keys.all().stream()
+                .filter(k -> Enum.class.isAssignableFrom(k.type()))
+                .map(objectSettingKey -> {
+                    final Class<?> type = objectSettingKey.type();
+                    return (Class<E>) type;
+                })
+                .toList();
     }
 }
