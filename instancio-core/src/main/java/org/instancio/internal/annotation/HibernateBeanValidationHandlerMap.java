@@ -28,7 +28,6 @@ import org.instancio.internal.util.Range;
 import org.instancio.settings.Keys;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
@@ -54,8 +53,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof DurationGeneratorSpec) {
                 final org.hibernate.validator.constraints.time.DurationMin d =
@@ -79,8 +77,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof DurationGeneratorSpec) {
                 final org.hibernate.validator.constraints.time.DurationMax d =
@@ -105,8 +102,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             final org.hibernate.validator.constraints.Length length =
                     (org.hibernate.validator.constraints.Length) annotation;
@@ -129,14 +125,13 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             final org.hibernate.validator.constraints.Range range =
                     (org.hibernate.validator.constraints.Range) annotation;
 
             if (spec instanceof NumberGeneratorSpec<?>) {
-                final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(fieldType);
+                final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(targetClass);
 
                 final AbstractRandomNumberGeneratorSpec<Number> numSpec = (AbstractRandomNumberGeneratorSpec<Number>) spec;
                 numSpec
@@ -161,8 +156,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof CollectionGeneratorSpec<?>) {
                 ((CollectionGeneratorSpec<?>) spec).unique();

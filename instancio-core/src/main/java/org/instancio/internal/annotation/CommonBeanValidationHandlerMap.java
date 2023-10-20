@@ -36,7 +36,6 @@ import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.Keys;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.function.Function;
 
@@ -56,8 +55,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Field field,
-                                  final Class<?> fieldType) {
+                                  final Class<?> targetClass) {
 
             final int fraction = getFraction(annotation);
 
@@ -86,7 +84,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                     max = new BigDecimal("0." + StringUtils.repeat("9", fraction));
                 }
 
-                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(fieldType);
+                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
                 numSpec.min(converter.apply(min));
                 numSpec.max(converter.apply(max));
                 AnnotationUtils.setSpecNullableToFalse(spec);
@@ -106,11 +104,10 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Field field,
-                                  final Class<?> fieldType) {
+                                  final Class<?> targetClass) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
-                final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(fieldType);
+                final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(targetClass);
                 ((NumberGeneratorSpec<Number>) spec).min(fromLongConverter.apply(getValue(annotation)));
                 AnnotationUtils.setSpecNullableToFalse(spec);
             }
@@ -124,11 +121,10 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Field field,
-                                  final Class<?> fieldType) {
+                                  final Class<?> targetClass) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
-                final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(fieldType);
+                final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(targetClass);
                 ((NumberGeneratorSpec<Number>) spec).max(fromLongConverter.apply(getValue(annotation)));
                 AnnotationUtils.setSpecNullableToFalse(spec);
             }
@@ -142,12 +138,11 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Field field,
-                                  final Class<?> fieldType) {
+                                  final Class<?> targetClass) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final String value = getValue(annotation);
-                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(fieldType);
+                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
                 final BigDecimal min = new BigDecimal(value);
                 final AbstractRandomNumberGeneratorSpec<Number> numSpec = (AbstractRandomNumberGeneratorSpec<Number>) spec;
                 numSpec.min(converter.apply(min));
@@ -163,12 +158,11 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Field field,
-                                  final Class<?> fieldType) {
+                                  final Class<?> targetClass) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final String value = getValue(annotation);
-                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(fieldType);
+                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
                 final BigDecimal max = new BigDecimal(value);
                 ((NumberGeneratorSpec<Number>) spec).max(converter.apply(max));
                 AnnotationUtils.setSpecNullableToFalse(spec);
@@ -186,13 +180,12 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final NumberGeneratorSpec<Number> numSpec = (NumberGeneratorSpec<Number>) spec;
-                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(fieldType);
-                final Number numberMaxValue = NumberUtils.getMaxValue(fieldType);
+                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
+                final Number numberMaxValue = NumberUtils.getMaxValue(targetClass);
                 numSpec.min(converter.apply(min))
                         .max(converter.apply(new BigDecimal(numberMaxValue.toString())));
                 AnnotationUtils.setSpecNullableToFalse(spec);
@@ -210,13 +203,12 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final NumberGeneratorSpec<Number> numSpec = (NumberGeneratorSpec<Number>) spec;
-                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(fieldType);
-                final Number numberMinValue = NumberUtils.getMinValue(fieldType);
+                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
+                final Number numberMinValue = NumberUtils.getMinValue(targetClass);
                 numSpec.min(converter.apply(new BigDecimal(numberMinValue.toString())))
                         .max(converter.apply(max));
                 AnnotationUtils.setSpecNullableToFalse(spec);
@@ -228,8 +220,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof TemporalGeneratorSpec<?>) {
                 ((TemporalGeneratorSpec<?>) spec).past();
@@ -241,8 +232,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof TemporalGeneratorSpec<?>) {
                 ((TemporalGeneratorSpec<?>) spec).future();
@@ -259,8 +249,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Field field,
-                                  final Class<?> fieldType) {
+                                  final Class<?> targetClass) {
 
             if (spec instanceof StringGeneratorSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
@@ -295,8 +284,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof StringGenerator) {
                 final StringGenerator generator = (StringGenerator) spec;
@@ -326,8 +314,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             AnnotationUtils.setSpecNullableToFalse(spec);
         }
@@ -343,8 +330,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Field field,
-                            final Class<?> fieldType) {
+                            final Class<?> targetClass) {
 
             if (spec instanceof BooleanGenerator) {
                 ((BooleanGenerator) spec).probability(generatedValue ? 1 : 0);
