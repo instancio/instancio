@@ -34,11 +34,10 @@ interface FieldAnnotationHandler {
      *
      * @param annotation  annotation to process
      * @param spec        for customising generated values
-     * @param field       to which the annotation is applied
      * @param targetClass actual type that will be generated; provided for cases
      *                    where field is declared as a {@link java.lang.reflect.TypeVariable},
      *                    which would result in {@code Object} being returned by {@link Field#getType()}.
      * @since 2.7.0
      */
-    void process(Annotation annotation, GeneratorSpec<?> spec, Field field, Class<?> targetClass);
+    void process(Annotation annotation, GeneratorSpec<?> spec, Class<?> targetClass);
 }

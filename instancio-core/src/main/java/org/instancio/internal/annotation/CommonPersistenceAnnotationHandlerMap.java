@@ -22,7 +22,6 @@ import org.instancio.internal.util.Range;
 import org.instancio.settings.Keys;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 
 /**
  * Base class for {@code javax} and {@code jakarta} persistence annotations.
@@ -40,8 +39,7 @@ class CommonPersistenceAnnotationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Field field,
-                                  final Class<?> fieldType) {
+                                  final Class<?> targetClass) {
 
             if (spec instanceof StringGeneratorSpec) {
                 final int maxLength = getLength(annotation);

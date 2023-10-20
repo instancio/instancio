@@ -87,7 +87,7 @@ abstract class AbstractAnnotationConsumer implements AnnotationConsumer {
         for (Annotation annotation : annotations) {
             final FieldAnnotationHandler handler = annotationHandlerMap.get(annotation);
             if (handler != null) {
-                handler.process(annotation, spec, field, targetClass);
+                handler.process(annotation, spec, targetClass);
                 annotationMap.remove(annotation.annotationType());
             }
         }
