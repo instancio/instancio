@@ -18,6 +18,7 @@ package org.instancio.internal.settings;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.AssignmentType;
+import org.instancio.settings.BeanValidationTarget;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
 import org.instancio.settings.OnSetFieldError;
@@ -50,6 +51,7 @@ class SettingsSupportTest {
         final Class<E>[] enumClasses = new Class[]{
                 AfterGenerate.class,
                 AssignmentType.class,
+                BeanValidationTarget.class,
                 Mode.class,
                 OnSetFieldError.class,
                 OnSetMethodError.class,

@@ -61,7 +61,7 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
         final Class<?> targetClass = node.getTargetClass();
 
         LOG.trace("Using '{}' generator to create '{}'", generator.getClass().getSimpleName(), targetClass.getName());
-        beanValidationProcessors.process(generator, node.getTargetClass(), node.getField());
+        beanValidationProcessors.process(generator, node);
 
         final Object value = generator.generate(context.getRandom());
         final Object processed = stringPostProcessor.process(value, node, generator);

@@ -13,29 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.internal.annotation;
 
 import org.instancio.documentation.InternalApi;
-import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Method;
 
 /**
- * Processes generator specs prior to generating a value,
- * for example, in order to customise spec parameters.
+ * Resolves the getter method for a given node.
  *
- * @since 2.7.0
+ * @since 3.4.0
  */
 @InternalApi
-public interface GeneratorSpecProcessor {
+interface GetterMethodResolver {
 
-    /**
-     * Processes given generator spec.
-     *
-     * @param spec generator spec to process
-     * @param node to process
-     * @since 2.7.0
-     */
-    void process(@NotNull GeneratorSpec<?> spec,
-                 @NotNull InternalNode node);
+    Method getGetter(InternalNode node);
 }

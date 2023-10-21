@@ -111,11 +111,23 @@ public final class Keys {
      * annotations, if present;
      * default is {@code false}; property name {@code bean.validation.api.enabled}.
      *
+     * @see #BEAN_VALIDATION_TARGET
      * @since 2.7.0
      */
     @ExperimentalApi
     public static final SettingKey<Boolean> BEAN_VALIDATION_ENABLED = register(
             "bean.validation.enabled", Boolean.class, false);
+
+    /**
+     * Specifies whether Bean Validation annotations are declared on fields or getters;
+     * default is {@link BeanValidationTarget#FIELD}; property name {@code bean.validation.target}.
+     *
+     * @see #BEAN_VALIDATION_ENABLED
+     * @since 3.4.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<BeanValidationTarget> BEAN_VALIDATION_TARGET = register(
+            "bean.validation.target", BeanValidationTarget.class, BeanValidationTarget.FIELD);
 
     /**
      * Specifies the {@code scale} for generating {@code BigDecimal};

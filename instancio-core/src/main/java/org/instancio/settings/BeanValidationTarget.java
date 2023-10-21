@@ -13,29 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.settings;
 
-import org.instancio.documentation.InternalApi;
-import org.instancio.generator.GeneratorSpec;
-import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
+import org.instancio.documentation.ExperimentalApi;
+import org.instancio.internal.util.StringUtils;
 
 /**
- * Processes generator specs prior to generating a value,
- * for example, in order to customise spec parameters.
+ * A setting that specifies whether Bean Validation annotations
+ * are declared on fields or getters.
  *
- * @since 2.7.0
+ * @see Settings
+ * @see Keys#BEAN_VALIDATION_ENABLED
+ * @since 3.4.0
  */
-@InternalApi
-public interface GeneratorSpecProcessor {
+@ExperimentalApi
+public enum BeanValidationTarget {
 
     /**
-     * Processes given generator spec.
-     *
-     * @param spec generator spec to process
-     * @param node to process
-     * @since 2.7.0
+     * Indicates that constraints are specified on fields (default value).
      */
-    void process(@NotNull GeneratorSpec<?> spec,
-                 @NotNull InternalNode node);
+    FIELD,
+
+    /**
+     * Indicates that constraints are specified on getters.
+     */
+    GETTER;
+
+    @Override
+    public String toString() {
+        return StringUtils.enumToString(this);
+    }
 }

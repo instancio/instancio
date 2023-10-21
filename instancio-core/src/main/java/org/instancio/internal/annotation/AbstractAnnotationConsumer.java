@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,8 +60,7 @@ abstract class AbstractAnnotationConsumer implements AnnotationConsumer {
     @Override
     public final void consumeAnnotations(final AnnotationMap annotationMap,
                                          final GeneratorSpec<?> spec,
-                                         final Class<?> targetClass,
-                                         final Field field) {
+                                         final Class<?> targetClass) {
 
         final Annotation primaryAnnotation = annotationMap.removePrimary();
         final AnnotationHandlerMap annotationHandlerMap = getAnnotationHandlerMap();
@@ -78,8 +76,8 @@ abstract class AbstractAnnotationConsumer implements AnnotationConsumer {
             if (spec instanceof StringGenerator) {
                 ((StringGenerator) spec).setDelegate(actualGenerator);
             } else {
-                LOG.warn("Ignoring annotation {} on a non-string field: {}",
-                        primaryAnnotation.annotationType().getName(), field);
+                LOG.warn("Ignoring annotation {} applied to {}",
+                        primaryAnnotation.annotationType().getName(), targetClass);
             }
         }
 
