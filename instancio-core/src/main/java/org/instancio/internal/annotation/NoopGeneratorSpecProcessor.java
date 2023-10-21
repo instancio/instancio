@@ -17,17 +17,14 @@ package org.instancio.internal.annotation;
 
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.GeneratorSpecProcessor;
+import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Field;
 
 public final class NoopGeneratorSpecProcessor implements GeneratorSpecProcessor {
 
     @Override
     public void process(@NotNull final GeneratorSpec<?> spec,
-                        @NotNull final Class<?> targetClass,
-                        @Nullable final Field field) {
+                        @NotNull final InternalNode node) {
         // no-op
     }
 }

@@ -45,7 +45,7 @@ public class CollectionNodeHandler implements NodeHandler {
                     new GeneratorContext(context.getSettings(), context.getRandom()));
 
             generator.subtype(node.getTargetClass());
-            beanValidationProcessors.process(generator, node.getTargetClass(), node.getField());
+            beanValidationProcessors.process(generator, node);
             return GeneratorResult.create(generator.generate(context.getRandom()), generator.hints());
         }
         return GeneratorResult.emptyResult();

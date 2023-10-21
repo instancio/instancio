@@ -18,16 +18,15 @@ package org.instancio.internal.annotation;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.GeneratorSpecProcessor;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,36 +57,42 @@ public final class AnnotationGeneratorSpecProcessor implements GeneratorSpecProc
     private static final String HIBERNATE_VALIDATOR_CLASS = "org.hibernate.validator.HibernateValidator";
 
     private final List<AnnotationConsumer> annotationConsumers;
+    private final AnnotationExtractor annotationExtractor;
 
-    private AnnotationGeneratorSpecProcessor(final List<AnnotationConsumer> annotationConsumers) {
+    private AnnotationGeneratorSpecProcessor(
+            final ModelContext<?> context,
+            final List<AnnotationConsumer> annotationConsumers) {
+
         this.annotationConsumers = annotationConsumers;
+        this.annotationExtractor = new AnnotationExtractor(context);
     }
 
     public static GeneratorSpecProcessor create(final ModelContext<?> context) {
-        List<AnnotationConsumer> annotationConsumers = getAnnotationConsumers(context.getSettings());
+        final List<AnnotationConsumer> consumers = getAnnotationConsumers(context.getSettings());
 
-        return annotationConsumers.isEmpty()
+        return consumers.isEmpty()
                 ? new NoopGeneratorSpecProcessor()
-                : new AnnotationGeneratorSpecProcessor(annotationConsumers);
+                : new AnnotationGeneratorSpecProcessor(context, consumers);
     }
 
     @Override
     public void process(@NotNull final GeneratorSpec<?> spec,
-                        @NotNull final Class<?> targetClass,
-                        @Nullable final Field field) {
+                        @NotNull final InternalNode node) {
 
-        if (field == null) {
+        final Annotation[] annotations = annotationExtractor.getAnnotations(node);
+
+        if (annotations.length == 0) {
             return;
         }
 
-        final Annotation[] annotations = field.getDeclaredAnnotations();
+        final Class<?> targetClass = node.getTargetClass();
         final AnnotationMap annotationMap = new AnnotationMap(annotations);
 
         for (AnnotationConsumer provider : annotationConsumers) {
             for (Annotation annotation : annotations) {
                 if (provider.isPrimary(annotation.annotationType())) {
                     annotationMap.setPrimary(annotation);
-                    provider.consumeAnnotations(annotationMap, spec, targetClass, field);
+                    provider.consumeAnnotations(annotationMap, spec, targetClass);
                     break;
                 }
             }
@@ -95,9 +100,10 @@ public final class AnnotationGeneratorSpecProcessor implements GeneratorSpecProc
 
         // consume remaining annotations, if any
         for (AnnotationConsumer provider : annotationConsumers) {
-            provider.consumeAnnotations(annotationMap, spec, targetClass, field);
+            provider.consumeAnnotations(annotationMap, spec, targetClass);
         }
     }
+
 
     private static List<AnnotationConsumer> getAnnotationConsumers(final Settings settings) {
         final boolean jpaEnabled = settings.get(Keys.JPA_ENABLED);

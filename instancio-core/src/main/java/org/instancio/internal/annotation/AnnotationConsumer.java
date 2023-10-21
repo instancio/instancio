@@ -19,7 +19,6 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.generator.GeneratorSpec;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 
 /**
  * Provides support for customising generated values based on annotations.
@@ -54,11 +53,9 @@ interface AnnotationConsumer {
      * @param map         from which annotations will be consumed
      * @param spec        generator spec for the given field
      * @param targetClass type being generated
-     * @param field       the annotations are declared on
      * @since 2.7.0
      */
     void consumeAnnotations(AnnotationMap map,
                             GeneratorSpec<?> spec,
-                            Class<?> targetClass,
-                            Field field);
+                            Class<?> targetClass);
 }
