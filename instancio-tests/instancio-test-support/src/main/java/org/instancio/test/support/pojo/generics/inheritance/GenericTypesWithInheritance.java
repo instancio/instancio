@@ -42,6 +42,24 @@ public class GenericTypesWithInheritance {
     }
 
     @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = false)
+    public static class GenericLevel2<ID extends Serializable> extends EntityWithId<ID> {
+    }
+
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = false)
+    public static class GenericLevel3 extends GenericLevel2<Long> {
+    }
+
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = false)
+    public static class GenericLevel4 extends GenericLevel3 {
+    }
+
+    @Data
     public static class EntityWithId<ID extends Serializable> {
         ID id;
     }

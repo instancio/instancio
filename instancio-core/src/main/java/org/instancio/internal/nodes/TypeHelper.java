@@ -61,27 +61,31 @@ class TypeHelper {
     }
 
     Map<Type, Type> createSuperclassTypeMap(final Class<?> targetClass) {
-        Map<Type, Type> resultTypeMap = null;
+        Map<Type, Type> resultTypeMap = new HashMap<>();
 
-        Type supertype = targetClass.getGenericSuperclass();
+        traverseHierarchy(targetClass, resultTypeMap);
 
-        while (supertype instanceof ParameterizedType) {
-            if (resultTypeMap == null) {
-                resultTypeMap = new HashMap<>();
-            }
-
-            addTypeParameters((ParameterizedType) supertype, resultTypeMap);
-
-            final Class<?> rawSuper = TypeUtils.getRawType(supertype);
-            supertype = rawSuper.getGenericSuperclass();
-        }
-
-        if (resultTypeMap == null) {
+        if (resultTypeMap.isEmpty()) {
             return Collections.emptyMap();
         }
 
         LOG.trace("Created superclass type map: {}", resultTypeMap);
         return resultTypeMap;
+    }
+
+    private void traverseHierarchy(Class<?> clazz, Map<Type, Type> resultTypeMap) {
+        if (clazz == null || Object.class.equals(clazz)) {
+            return;
+        }
+
+        Type supertype = clazz.getGenericSuperclass();
+        if (supertype instanceof ParameterizedType) {
+            addTypeParameters((ParameterizedType) supertype, resultTypeMap);
+        }
+
+        if (supertype != null) {
+            traverseHierarchy(TypeUtils.getRawType(supertype), resultTypeMap);
+        }
     }
 
     /**
