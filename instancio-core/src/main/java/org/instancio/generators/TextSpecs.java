@@ -16,9 +16,9 @@
 package org.instancio.generators;
 
 import org.instancio.documentation.ExperimentalApi;
-import org.instancio.generator.ValueSpec;
 import org.instancio.generator.specs.CsvSpec;
 import org.instancio.generator.specs.LoremIpsumSpec;
+import org.instancio.generator.specs.TextPatternSpec;
 import org.instancio.generator.specs.UUIDStringSpec;
 import org.instancio.internal.generator.text.CsvGenerator;
 import org.instancio.internal.generator.text.LoremIpsumGenerator;
@@ -62,7 +62,7 @@ public final class TextSpecs {
      * @see TextGenerators#pattern(String)
      * @since 2.6.0
      */
-    public ValueSpec<String> pattern(final String pattern) {
+    public TextPatternSpec pattern(final String pattern) {
         return new TextPatternGenerator(pattern);
     }
 

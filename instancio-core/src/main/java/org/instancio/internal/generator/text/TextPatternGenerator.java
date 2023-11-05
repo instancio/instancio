@@ -17,14 +17,14 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.ValueSpec;
+import org.instancio.generator.specs.TextPatternSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Fail;
 import org.instancio.support.Global;
 
 public class TextPatternGenerator extends AbstractGenerator<String>
-        implements ValueSpec<String> {
+        implements TextPatternSpec {
 
     private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
             + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
@@ -43,6 +43,7 @@ public class TextPatternGenerator extends AbstractGenerator<String>
     private static final char DIGIT = 'd';
     private static final char HASH = '#';
     private final String pattern;
+    private boolean allowEmpty;
 
     public TextPatternGenerator(final String pattern) {
         this(Global.generatorContext(), pattern);
@@ -59,13 +60,24 @@ public class TextPatternGenerator extends AbstractGenerator<String>
     }
 
     @Override
+    public TextPatternSpec allowEmpty() {
+        allowEmpty = true;
+        return this;
+    }
+
+    @Override
     public TextPatternGenerator nullable() {
         super.nullable();
         return this;
     }
 
     @Override
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     protected String tryGenerateNonNull(final Random random) {
+        if (random.diceRoll(allowEmpty)) {
+            return "";
+        }
+
         final StringBuilder res = new StringBuilder(pattern.length());
         final char[] p = pattern.toCharArray();
 
