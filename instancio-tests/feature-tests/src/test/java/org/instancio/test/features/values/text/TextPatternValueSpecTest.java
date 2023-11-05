@@ -16,10 +16,14 @@
 package org.instancio.test.features.values.text;
 
 import org.instancio.Gen;
-import org.instancio.generator.ValueSpec;
+import org.instancio.generator.specs.TextPatternSpec;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,12 +31,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TextPatternValueSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
-    protected ValueSpec<String> spec() {
+    protected TextPatternSpec spec() {
         return Gen.text().pattern("#d#d#d");
     }
 
     @Override
     protected void assertDefaultSpecValue(final String actual) {
         assertThat(actual).hasSize(3).containsOnlyDigits();
+    }
+
+    @Test
+    void allowEmpty() {
+        final List<String> results = spec().allowEmpty().list(Constants.SAMPLE_SIZE_DDD);
+        assertThat(results).contains("");
     }
 }

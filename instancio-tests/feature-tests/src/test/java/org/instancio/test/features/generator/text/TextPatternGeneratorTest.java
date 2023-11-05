@@ -21,8 +21,11 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
@@ -38,5 +41,37 @@ class TextPatternGeneratorTest {
                 .create();
 
         assertThat(result.getValue()).matches("^Foo: [A-Z][a-z][0-9].$");
+    }
+
+    @Test
+    void allowEmpty() {
+        final Stream<String> results = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen.text().pattern("any").allowEmpty())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DDD);
+
+        assertThat(results).contains("");
+    }
+
+    @Test
+    void nullable() {
+        final Stream<String> results = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen.text().pattern("any").nullable())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DDD);
+
+        assertThat(results).containsNull();
+    }
+
+    @Test
+    void allowEmptyAndNullable() {
+        final Stream<String> results = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen.text().pattern("any").nullable().allowEmpty())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DDD);
+
+        assertThat(results)
+                .contains("")
+                .containsNull();
     }
 }
