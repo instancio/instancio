@@ -240,7 +240,7 @@ class InternalNodeTest {
             final InternalNode ignoredNode = NODE_FACTORY.createRootNode(Person.class)
                     .toBuilder().nodeKind(NodeKind.IGNORED).build();
 
-            assertThat(ignoredNode).hasToString("Node[IGNORED]");
+            assertThat(ignoredNode).hasToString("Node[Person, depth=0, type=Person, IGNORED]");
         }
     }
 
