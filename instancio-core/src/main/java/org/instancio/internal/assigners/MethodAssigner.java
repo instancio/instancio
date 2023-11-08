@@ -15,11 +15,9 @@
  */
 package org.instancio.internal.assigners;
 
-import org.instancio.Node;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Format;
@@ -102,15 +100,14 @@ final class MethodAssigner implements Assigner {
         }
     }
 
-    private Method resolveSetterMethod(final InternalNode internalNode) {
-        final Node node = new NodeImpl(internalNode.getTargetClass(), internalNode.getField());
+    private Method resolveSetterMethod(final InternalNode node) {
         for (ProviderEntry<SetterMethodResolver> entry : setterMethodResolvers) {
             final Method method = entry.getProvider().getSetter(node);
             if (method != null) {
                 return method;
             }
         }
-        return defaultSetterMethodResolver.getSetter(internalNode);
+        return defaultSetterMethodResolver.getSetter(node);
     }
 
     private void handleMethodInvocationError(

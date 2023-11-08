@@ -27,7 +27,6 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.Hints;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.sequence.IntegerSequenceGenerator;
-import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
@@ -109,11 +108,6 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
     private static class GeneratorProviderImpl implements GeneratorProvider {
         @Override
         public GeneratorSpec<?> getGenerator(final Node node, final Generators generators) {
-            if (node.getClass() != NodeImpl.class) {
-                // Verify that InternalNode implementation is not exposed via the SPI
-                throw new AssertionError("Unexpected Node implementation: " + node.getClass());
-            }
-
             if (node.getField() != null) {
                 // Set string length based on annotation attributes
                 final PersonName name = node.getField().getAnnotation(PersonName.class);

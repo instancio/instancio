@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.generator;
 
-import org.instancio.Node;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
@@ -23,7 +22,6 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeImpl;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
@@ -64,8 +62,7 @@ class GeneratorProviderFacade {
     }
 
     @SuppressWarnings("PMD.AvoidBranchingStatementAsLastInLoop")
-    private Generator<?> resolveViaSPI(final InternalNode internalNode) {
-        final Node node = new NodeImpl(internalNode.getTargetClass(), internalNode.getField());
+    private Generator<?> resolveViaSPI(final InternalNode node) {
 
         for (ProviderEntry<InstancioServiceProvider.GeneratorProvider> entry : providerEntries) {
             final GeneratorSpec<?> spec = entry.getProvider().getGenerator(node, generators);

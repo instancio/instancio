@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.Node;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class InternalNode {
+public final class InternalNode implements Node {
 
     private final NodeContext nodeContext;
     private final Type type;
@@ -128,6 +129,7 @@ public final class InternalNode {
      * @return target class represented by this node
      * @see #getRawType()
      */
+    @Override
     public Class<?> getTargetClass() {
         return targetClass;
     }
@@ -137,10 +139,12 @@ public final class InternalNode {
      *
      * @return field, if present, or {@code null}
      */
+    @Override
     public Field getField() {
         return field;
     }
 
+    @Override
     public InternalNode getParent() {
         return parent;
     }
@@ -223,20 +227,20 @@ public final class InternalNode {
 
     @Override
     public String toString() {
-        if (nodeKind == NodeKind.IGNORED) {
-            return "Node[IGNORED]";
-        }
         final String nodeName = field == null
                 ? Format.withoutPackage(targetClass)
                 : Format.withoutPackage(parent.targetClass) + '.' + field.getName();
 
-        //noinspection StringBufferReplaceableByString
-        return new StringBuilder().append("Node[")
-                .append(nodeName)
+        final StringBuilder sb = new StringBuilder(50)
+                .append("Node[").append(nodeName)
                 .append(", depth=").append(depth)
-                .append(", type=").append(Format.withoutPackage(type))
-                .append(']')
-                .toString();
+                .append(", type=").append(Format.withoutPackage(type));
+
+        if (nodeKind == NodeKind.IGNORED) {
+            sb.append(", IGNORED");
+        }
+
+        return sb.append(']').toString();
     }
 
     public String toDisplayString() {

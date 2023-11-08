@@ -61,4 +61,12 @@ public interface Node {
      */
     Field getField();
 
+    /**
+     * Returns the parent of this node,
+     * or {@code null} if this node is the root.
+     *
+     * @return parent of this node
+     * @since 3.5.0
+     */
+    Node getParent();
 }
