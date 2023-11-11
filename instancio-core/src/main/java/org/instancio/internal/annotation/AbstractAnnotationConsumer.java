@@ -18,7 +18,6 @@ package org.instancio.internal.annotation;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.util.Verify;
 import org.slf4j.Logger;
@@ -38,6 +37,12 @@ abstract class AbstractAnnotationConsumer implements AnnotationConsumer {
      * Maps primary annotation to a function that provides a generator for the given annotation
      */
     private final Map<Class<? extends Annotation>, AnnotationGeneratorFn> primaryAnnotations = new HashMap<>();
+
+    private final GeneratorContext generatorContext;
+
+    AbstractAnnotationConsumer(final GeneratorContext generatorContext) {
+        this.generatorContext = generatorContext;
+    }
 
     protected abstract AnnotationHandlerMap getAnnotationHandlerMap();
 
@@ -66,9 +71,7 @@ abstract class AbstractAnnotationConsumer implements AnnotationConsumer {
         final AnnotationHandlerMap annotationHandlerMap = getAnnotationHandlerMap();
 
         if (primaryAnnotation != null) {
-            final AbstractGenerator<?> suppliedGenerator = (AbstractGenerator<?>) spec;
-            final GeneratorContext context = suppliedGenerator.getContext();
-            final Generator<?> actualGenerator = resolveGenerator(primaryAnnotation, context);
+            final Generator<?> actualGenerator = resolveGenerator(primaryAnnotation, generatorContext);
 
             // Only string generator supports delegate generators.
             // An example would be delegating to the URLGenerator to handle

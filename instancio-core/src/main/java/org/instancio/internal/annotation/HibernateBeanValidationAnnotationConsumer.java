@@ -33,7 +33,9 @@ import org.jetbrains.annotations.NotNull;
 
 final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
 
-    HibernateBeanValidationAnnotationConsumer() {
+    HibernateBeanValidationAnnotationConsumer(final GeneratorContext generatorContext) {
+        super(generatorContext);
+
         register(() -> org.hibernate.validator.constraints.EAN.class,
                 (annotation, context) -> getEanGenerator(
                         (org.hibernate.validator.constraints.EAN) annotation, context)

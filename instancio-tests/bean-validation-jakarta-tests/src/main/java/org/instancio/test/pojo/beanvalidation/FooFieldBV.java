@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.annotation;
+package org.instancio.test.pojo.beanvalidation;
 
-import org.instancio.generator.GeneratorContext;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
-final class JavaxPersistenceAnnotationConsumer extends AbstractAnnotationConsumer {
+/**
+ * POJO for testing generator provider SPI with Bean Validation.
+ */
+public class FooFieldBV {
 
-    JavaxPersistenceAnnotationConsumer(final GeneratorContext generatorContext) {
-        super(generatorContext);
+    @Data
+    public static class WithNotNull {
+        @NotNull
+        private String foo;
     }
 
-    @Override
-    protected AnnotationHandlerMap getAnnotationHandlerMap() {
-        return JavaxPersistenceHandlerMap.getInstance();
+    @Data
+    public static class WithNotNullAndEmail {
+        @Email
+        @NotNull
+        private String foo;
     }
+
 }

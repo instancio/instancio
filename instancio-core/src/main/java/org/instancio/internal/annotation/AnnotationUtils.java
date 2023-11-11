@@ -28,7 +28,9 @@ final class AnnotationUtils {
     }
 
     static void setSpecNullableToFalse(final GeneratorSpec<?> spec) {
-        ((AbstractGenerator<?>) spec).nullable(false);
+        if (spec instanceof AbstractGenerator) {
+            ((AbstractGenerator<?>) spec).nullable(false);
+        }
     }
 
     /**

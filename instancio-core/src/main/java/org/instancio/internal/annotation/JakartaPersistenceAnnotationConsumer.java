@@ -15,7 +15,13 @@
  */
 package org.instancio.internal.annotation;
 
+import org.instancio.generator.GeneratorContext;
+
 final class JakartaPersistenceAnnotationConsumer extends AbstractAnnotationConsumer {
+
+    JakartaPersistenceAnnotationConsumer(final GeneratorContext generatorContext) {
+        super(generatorContext);
+    }
 
     @Override
     protected AnnotationHandlerMap getAnnotationHandlerMap() {
