@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.annotation;
 
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.GeneratorSpecProcessor;
 import org.instancio.internal.context.ModelContext;
@@ -68,7 +69,7 @@ public final class AnnotationGeneratorSpecProcessor implements GeneratorSpecProc
     }
 
     public static GeneratorSpecProcessor create(final ModelContext<?> context) {
-        final List<AnnotationConsumer> consumers = getAnnotationConsumers(context.getSettings());
+        final List<AnnotationConsumer> consumers = getAnnotationConsumers(context);
 
         return consumers.isEmpty()
                 ? new NoopGeneratorSpecProcessor()
@@ -105,7 +106,9 @@ public final class AnnotationGeneratorSpecProcessor implements GeneratorSpecProc
     }
 
 
-    private static List<AnnotationConsumer> getAnnotationConsumers(final Settings settings) {
+    private static List<AnnotationConsumer> getAnnotationConsumers(final ModelContext<?> modelContext) {
+        final Settings settings = modelContext.getSettings();
+        final GeneratorContext generatorContext = new GeneratorContext(settings, modelContext.getRandom());
         final boolean jpaEnabled = settings.get(Keys.JPA_ENABLED);
         final boolean beanValidationEnabled = settings.get(Keys.BEAN_VALIDATION_ENABLED);
 
@@ -120,22 +123,22 @@ public final class AnnotationGeneratorSpecProcessor implements GeneratorSpecProc
 
         if (jpaEnabled) {
             if (ReflectionUtils.loadClass(JAVAX_PERSISTENCE_CLASS) != null) {
-                result.add(new JavaxPersistenceAnnotationConsumer());
+                result.add(new JavaxPersistenceAnnotationConsumer(generatorContext));
             }
             if (ReflectionUtils.loadClass(JAKARTA_PERSISTENCE_CLASS) != null) {
-                result.add(new JakartaPersistenceAnnotationConsumer());
+                result.add(new JakartaPersistenceAnnotationConsumer(generatorContext));
             }
         }
 
         if (beanValidationEnabled) {
             if (ReflectionUtils.loadClass(HIBERNATE_VALIDATOR_CLASS) != null) {
-                result.add(new HibernateBeanValidationAnnotationConsumer());
+                result.add(new HibernateBeanValidationAnnotationConsumer(generatorContext));
             }
             if (ReflectionUtils.loadClass(JAKARTA_VALIDATOR_CLASS) != null) {
-                result.add(new JakartaBeanValidationAnnotationConsumer());
+                result.add(new JakartaBeanValidationAnnotationConsumer(generatorContext));
             }
             if (ReflectionUtils.loadClass(JAVAX_VALIDATOR_CLASS) != null) {
-                result.add(new JavaxBeanValidationAnnotationConsumer());
+                result.add(new JavaxBeanValidationAnnotationConsumer(generatorContext));
             }
         }
         return Collections.unmodifiableList(result);

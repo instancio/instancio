@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.annotation;
+package org.spi;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.domain.internet.EmailGenerator;
+import org.instancio.generator.Generator;
+import org.instancio.spi.InstancioServiceProvider;
 
-final class JakartaBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
+import java.lang.reflect.Field;
 
-    JakartaBeanValidationAnnotationConsumer(final GeneratorContext generatorContext) {
-        super(generatorContext);
-
-        register(() -> jakarta.validation.constraints.Email.class,
-                ((annotation, context) -> new EmailGenerator(context)));
-    }
+public class SampleSpi implements InstancioServiceProvider {
 
     @Override
-    protected AnnotationHandlerMap getAnnotationHandlerMap() {
-        return JakartaBeanValidationHandlerMap.getInstance();
+    public GeneratorProvider getGeneratorProvider() {
+        return (node, generators) -> {
+            Field field = node.getField();
+
+            if (field != null && field.getName().equals("foo")) {
+                return (Generator<?>) random -> "foo";
+            }
+            return null;
+        };
     }
+
 }
