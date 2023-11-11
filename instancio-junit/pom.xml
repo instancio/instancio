@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-parent</artifactId>
-        <version>3.5.1</version>
+        <version>3.5.2-SNAPSHOT</version>
     </parent>
     <artifactId>instancio-junit</artifactId>
     <packaging>bundle</packaging>
