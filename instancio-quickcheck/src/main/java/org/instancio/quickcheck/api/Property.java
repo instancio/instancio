@@ -15,17 +15,19 @@
  */
 package org.instancio.quickcheck.api;
 
+import org.instancio.documentation.ExperimentalApi;
+import org.junit.platform.commons.annotation.Testable;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.instancio.documentation.ExperimentalApi;
-import org.junit.platform.commons.annotation.Testable;
-
 /**
  * Denotes an individual property based test case.
+ *
+ * @since 3.6.0
  */
 @Testable
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
@@ -35,6 +37,8 @@ import org.junit.platform.commons.annotation.Testable;
 public @interface Property {
     /**
      * The number of samples to generate, default is 1000
+     *
+     * @since 3.6.0
      */
     int samples() default 1000;
 }

@@ -15,20 +15,22 @@
  */
 package org.instancio.quickcheck.api;
 
+import org.instancio.documentation.ExperimentalApi;
+import org.instancio.quickcheck.api.artbitrary.Arbitrary;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.instancio.documentation.ExperimentalApi;
-import org.instancio.quickcheck.api.artbitrary.Arbitrary;
-
 /**
- * Denotes the property to run the property based test case against. Optionally, the 
- * generator could be specified to provide the samples. 
+ * Denotes the property to run the property based test case against. Optionally, the
+ * generator could be specified to provide the samples.
+ *
+ * @since 3.6.0
  */
-@Target({ ElementType.ANNOTATION_TYPE, ElementType.PARAMETER })
+@Target({ElementType.ANNOTATION_TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ExperimentalApi
@@ -37,6 +39,8 @@ public @interface ForAll {
      * The generator to provide the samples (optional). The generator should be the
      * name of the method that is declared in the current test suite and returns the
      * instance of the {@link Arbitrary} that corresponds to the type of the property.
+     *
+     * @since 3.6.0
      */
     String value() default "";
 }

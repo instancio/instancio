@@ -15,30 +15,36 @@
  */
 package org.instancio.quickcheck.api.artbitrary;
 
-import java.util.stream.BaseStream;
-
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.quickcheck.internal.arbitrary.ArbitraryStream;
 
+import java.util.stream.BaseStream;
+
 /**
- * An extension point that allows providing a custom implementation strategy to 
+ * An extension point that allows providing a custom implementation strategy to
  * generate samples for a property under the test.
- * @param <T> the type of the property 
+ *
+ * @param <T> the type of the property
+ * @since 3.6.0
  */
 @ExperimentalApi
 @FunctionalInterface
 public interface Arbitrary<T> {
     /**
      * Returns the generator instance of a property under the test
+     *
      * @return the generator instance
+     * @since 3.6.0
      */
     ArbitraryGenerator<T> generator();
 
     /**
      * Creates the {@link Arbitrary} instance from the {@link BaseStream} instance.
-     * @param <A> the type of the property 
+     *
+     * @param <A>    the type of the property
      * @param stream the source {@link BaseStream} instance
      * @return an {@link Arbitrary} instance
+     * @since 3.6.0
      */
     static <A> Arbitrary<A> fromStream(BaseStream<A, ?> stream) {
         return () -> new ArbitraryStream<A>(stream);

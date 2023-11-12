@@ -20,14 +20,18 @@ import org.instancio.quickcheck.api.Property;
 
 /**
  * Custom sample generator for a property under the test. In general, the generator
- * is unbounded but the number of samples to generate is specified by the {@link Property} 
- * annotation. 
+ * is unbounded but the number of samples to generate is specified by the {@link Property}
+ * annotation.
+ *
+ * @since 3.6.0
  */
 @ExperimentalApi
 public interface ArbitraryGenerator<T> {
     /**
      * Returns next generated value
+     *
      * @return next generated value
+     * @since 3.6.0
      */
     T generate();
 }
