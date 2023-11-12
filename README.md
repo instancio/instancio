@@ -98,6 +98,7 @@ Person marge = Instancio.of(simpsons)
 - Flexible configuration options.
 - `InstancioExtension` for Junit 5 `@ExtendWith`.
 - Support for Guava via `instancio-guava` module (experimental)
+- Support for property-based testing via `instancio-quickcheck` module (experimental)
 
 ## Documentation
 

@@ -22,11 +22,12 @@ Since version `1.5.0` Instancio supports creating:
 The following dependencies are available from Maven central:
 
 
-| Dependency            | JPMS Module Name          | Description               |
-| --------------------- |---------------------------|---------------------------|
-| `instancio-core`      | `org.instancio.core`      | Core library              |
-| `instancio-junit`     | `org.instancio.junit`     | JUnit Jupiter integration |
-| `instancio-guava`     | `org.instancio.guava`     | Support for Google Guava  |
+| Dependency                  | JPMS Module Name                | Description               |
+| --------------------------- |---------------------------------|---------------------------|
+| `instancio-core`        | `org.instancio.core`        | Core library              |
+| `instancio-junit`       | `org.instancio.junit`       | JUnit Jupiter integration |
+| `instancio-guava`       | `org.instancio.guava`       | Support for Google Guava  |
+| `instancio-quickcheck` | `org.instancio.quickcheck` | Support for property-based testing |
 
 
 !!! warning "The `org.instancio:instancio` artifact on Maven central is an older dependency that should no longer be used."
@@ -80,3 +81,10 @@ Using `instancio-guava` requires the following dependencies on the classpath:
 
 - either `instancio-core` or `instancio-junit`
 - `com.google.guava:guava` version `23.1-jre` or higher
+
+### **`instancio-quickcheck`**
+
+Using `instancio-quickcheck` requires the following dependencies on the classpath:
+
+- either `instancio-core` or `instancio-junit`
+- JUnit 5 or above
