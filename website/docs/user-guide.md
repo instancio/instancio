@@ -2240,7 +2240,8 @@ whereas the `@Min` and `@Max` limit the range to `[1, 7]`.
 Since the `@Min` and `@Max` annotations take precedence, the `precision` attribute will be ignored,
 and the generated `value` will be between `1.000` and `7.000`, inclusive, and have the specified scale of `3`.
 
-# Property-Based Testing (experimental)
+# Quickcheck
+
 Instancio's rich data generation capabilities make it a perfect fit to offer a property-based testing, a novel flavour of writing test cases inspired by [QuickCheck: a lightweight tool for random testing of Haskell programs](https://dl.acm.org/doi/10.1145/351240.351266) paper. This style focuses on the automation of the testing of program properties using random input generation. Here is a sneak peek on a simple test case that uses Instancio's property-based testing experimental support. 
 
 ```java linenums="1"
