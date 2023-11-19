@@ -2242,40 +2242,42 @@ and the generated `value` will be between `1.000` and `7.000`, inclusive, and ha
 
 # Quickcheck
 
-Instancio's rich data generation capabilities make it a perfect fit to offer a property-based testing, a novel flavour of writing test cases inspired by [QuickCheck: a lightweight tool for random testing of Haskell programs](https://dl.acm.org/doi/10.1145/351240.351266) paper. This style focuses on the automation of the testing of program properties using random input generation. Here is a sneak peek on a simple test case that uses Instancio's property-based testing experimental support. 
+!!! warning "`instancio-quickcheck` is an experimental module"
+
+Instancio's data generation capabilities make it a perfect fit for property-based testing, a flavour of writing test cases inspired by [QuickCheck: a lightweight tool for random testing of Haskell programs](https://dl.acm.org/doi/10.1145/351240.351266) paper. This style focuses on automation of testing of program properties using random input generation. Here is a sneak peek on a simple test case that uses Instancio's property-based testing experimental support.
 
 ```java linenums="1"
-    @DisplayName("Test that each person has valid age")
-    @Property(samples = 100)
-    public void age(@ForAll Person p) {
-        assertThat(i.age()).isGreaterThan(0);
-    }
+@DisplayName("Test that each person has valid age")
+@Property(samples = 100)
+public void age(@ForAll Person p) {
+    assertThat(i.age()).isGreaterThan(0);
+}
 ```
 
-Alhough it looks pretty straigthfoward, to elaborate a bit: the test case verifies that one of the properties of the `Person` type (in this case `age` property) should be strictly positive number for any generated `Person` instance. To ensure that each generated `Person` instance satisfy this condition, the custom property generation strategy could be provided.
-
+The test case verifies that one of the properties of the `Person` type (in this case `age` property) should be a strictly positive number for any generated `Person` instance. To ensure that each generated `Person` instance satisfies this condition, a custom property generation strategy can be provided:
 
 ```java linenums="1"
-    @DisplayName("Test that each person has valid age")
-    @Property(samples = 100)
-    public void age(@ForAll("persons") Person p) {
-        assertThat(i.age()).isGreaterThan(0);
-    }
+@DisplayName("Test that each person has valid age")
+@Property(samples = 100)
+public void age(@ForAll("persons") Person p) {
+    assertThat(i.age()).isGreaterThan(0);
+}
 
-    public Arbitrary<Person> persons() {
-        return Arbitrary
-            .fromStream(Stream.generate(() -> Instancio
-                .of(Person.class)
-                .generate(Select.field(Person::age), gen -> gen.ints().min(1).max(150))
-                .create()));
-    }
+public Arbitrary<Person> persons() {
+    return Arbitrary
+        .fromStream(Stream.generate(() -> Instancio
+            .of(Person.class)
+            .generate(Select.field(Person::age), gen -> gen.ints().min(1).max(150))
+            .create()));
+}
 ```
 
-At the moment, Instancio's property-based testing has only basic capabilities implemented:
- - the `@Property` annotation denotes an individual test case with the possiblity to set the number of samples to generate for each property in question (the default value is `1000`)
- - the `@ForAll` annotation on test case method argument denotes the individual property to generate samples against with the possiblity to provide the custom generation strategy
+At the moment, Instancio's property-based testing offers only basic capabilities:
 
-The `Arbitrary<?>` interface hooks in custom generator strategies. The test engine inspects all accessible instance methods of the test class to find out the candidates for the properties under the test (using the generator name as a method name and expecting `Arbitrary<?>` instance as a return value).
+ - the `@Property` annotation denotes an individual test case with the possibility to set the number of samples to generate for each property in question (the default value is `1000`)
+ - the `@ForAll` annotation on test case method argument denotes the individual property to generate samples against with the possibility to provide a custom generation strategy
+
+The `Arbitrary<?>` interface hooks in custom generator strategies. The test engine inspects all accessible instance methods of the test class to find out the candidates for the properties under test (using the generator name as a method name and expecting `Arbitrary<?>` instance as a return value).
 
 # Configuration
 
