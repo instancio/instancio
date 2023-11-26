@@ -20,15 +20,15 @@ package org.instancio.generator.specs;
  *
  * @since 2.6.0
  */
-public interface TemporalAaGeneratorSpec<T>
+public interface TemporalAsGeneratorSpec<T>
         extends TemporalGeneratorSpec<T>, AsGeneratorSpec<T> {
 
     @Override
-    TemporalAaGeneratorSpec<T> past();
+    TemporalAsGeneratorSpec<T> past();
 
     @Override
-    TemporalAaGeneratorSpec<T> future();
+    TemporalAsGeneratorSpec<T> future();
 
     @Override
-    TemporalAaGeneratorSpec<T> range(T start, T end);
+    TemporalAsGeneratorSpec<T> range(T start, T end);
 }

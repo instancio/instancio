@@ -20,7 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.DurationGeneratorSpec;
 import org.instancio.generator.specs.MonthDayGeneratorSpec;
 import org.instancio.generator.specs.PeriodGeneratorSpec;
-import org.instancio.generator.specs.TemporalAaGeneratorSpec;
+import org.instancio.generator.specs.TemporalAsGeneratorSpec;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.internal.generator.sql.SqlDateGenerator;
 import org.instancio.internal.generator.sql.TimestampGenerator;
@@ -73,7 +73,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAaGeneratorSpec<Instant> instant() {
+    public TemporalAsGeneratorSpec<Instant> instant() {
         return new InstantGenerator(context);
     }
 
@@ -82,7 +82,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAaGeneratorSpec<LocalDate> localDate() {
+    public TemporalAsGeneratorSpec<LocalDate> localDate() {
         return new LocalDateGenerator(context);
     }
 
@@ -91,7 +91,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAaGeneratorSpec<LocalTime> localTime() {
+    public TemporalAsGeneratorSpec<LocalTime> localTime() {
         return new LocalTimeGenerator(context);
     }
 
@@ -100,7 +100,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAaGeneratorSpec<LocalDateTime> localDateTime() {
+    public TemporalAsGeneratorSpec<LocalDateTime> localDateTime() {
         return new LocalDateTimeGenerator(context);
     }
 
@@ -120,7 +120,7 @@ public class TemporalGenerators {
      * @return customised generator
      * @since 2.4.0
      */
-    public TemporalAaGeneratorSpec<OffsetTime> offsetTime() {
+    public TemporalAsGeneratorSpec<OffsetTime> offsetTime() {
         return new OffsetTimeGenerator(context);
     }
 
@@ -130,7 +130,7 @@ public class TemporalGenerators {
      * @return customised generator
      * @since 2.4.0
      */
-    public TemporalAaGeneratorSpec<OffsetDateTime> offsetDateTime() {
+    public TemporalAsGeneratorSpec<OffsetDateTime> offsetDateTime() {
         return new OffsetDateTimeGenerator(context);
     }
 
@@ -139,7 +139,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAaGeneratorSpec<ZonedDateTime> zonedDateTime() {
+    public TemporalAsGeneratorSpec<ZonedDateTime> zonedDateTime() {
         return new ZonedDateTimeGenerator(context);
     }
 
@@ -148,7 +148,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAaGeneratorSpec<YearMonth> yearMonth() {
+    public TemporalAsGeneratorSpec<YearMonth> yearMonth() {
         return new YearMonthGenerator(context);
     }
 
@@ -157,7 +157,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAaGeneratorSpec<Year> year() {
+    public TemporalAsGeneratorSpec<Year> year() {
         return new YearGenerator(context);
     }
 
