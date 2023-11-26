@@ -10,7 +10,7 @@ import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 
 @GenericsTag
-public class GenericLevelTest extends NodeTestTemplate<GenericLevel4> {
+public class GenericLevelNodeTest extends NodeTestTemplate<GenericLevel4> {
 
     @Override
     protected void verify(InternalNode rootNode) {
