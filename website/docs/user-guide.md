@@ -586,24 +586,7 @@ Select.fields(Predicate<Field> fieldPredicate).atDepth(Predicate<Integer> depthP
 Select.types(Predicate<Class> typePredicate).atDepth(Predicate<Integer> depthPredicate)
 ```
 
-Using depth is particularly useful for dealing with cyclic classes.
-Instancio does not support back-references. Instead, it detects and terminates cycles with a null reference.
-However, it is still possible it might generate an object structure as shown below:
-
-```
-A -> B -> C -> A -> null
-```
-
-Using `atDepth()` it is possible to prevent the last `A` from being generated:
-
-```java
-A a = Instancio.of(A.class)
-    .ignore(types().of(A.class).atDepth(depth -> depth > 0))
-    .create();
-```
-
-For remaining examples we wil use the following class structure
-to illustrate how selectors can target different nodes:
+We will use the following class structure for the examples:
 
 ```java
 Depth       Class
@@ -2088,38 +2071,45 @@ or globally, using `instancio.properties`:
 bean.validation.enabled=true
 ```
 
-In addition, `jakarta` or `javax` validation API must be present on the classpath for the feature to be activated.
-Instancio does not provide the dependency transitively:
+Instancio supports annotations from:
 
-```xml
-<dependency>
-    <groupId>jakarta.validation</groupId>
-    <artifactId>jakarta.validation-api</artifactId>
-    <version>${jakarta-validation-api-version}</version>
-</dependency>
-```
+- `jakarta.validation.constraints`
+- `javax.validation.constraints`
+- `org.hibernate.validator.constraints`
 
-or
+It will generate data based on the constraints, depending on what is available on the classpath.
+Instancio does not provide the dependencies transitively.
 
-```xml
-<dependency>
-    <groupId>javax.validation</groupId>
-    <artifactId>validation-api</artifactId>
-    <version>${javax-validation-api-version}</version>
-</dependency>
-```
+=== "`jakarta.validation`"
+    ```xml
+    <dependency>
+        <groupId>jakarta.validation</groupId>
+        <artifactId>jakarta.validation-api</artifactId>
+        <version>${jakarta-validation-api-version}</version>
+    </dependency>
+    ```
+=== "`javax.validation`"
+    ```xml
+    <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${javax-validation-api-version}</version>
+    </dependency>
+    ```
+=== "`hibernate`"
+    ```xml
+    <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${hibernate-validator-version}</version>
+    </dependency>
+    ```
 
-i.e. Instancio supports the constraint annotations from `jakarta.validation.constraints` and `javax.validation.constraints` packages.
+By default, Instancio reads annotations from fields. The behaviour can be customised to read annotations from
+getters instead. This can be done using the `Keys.BEAN_VALIDATION_TARGET` setting or `instancio.properties`:
 
-Optionally, Hibernate validator must be present on the classpath in order to use
-Hibernate-specific annotations:
-
-```xml
-<dependency>
-    <groupId>org.hibernate.validator</groupId>
-    <artifactId>hibernate-validator</artifactId>
-    <version>${hibernate-validator-version}</version>
-</dependency>
+```properties
+bean.validation.target=GETTER
 ```
 
 ## Supported Annotations
