@@ -55,7 +55,7 @@ public class Instantiator {
     @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
     private <T> T createInstance(final Class<T> klass, final InstantiationStrategy strategy) {
         try {
-            LOG.trace("{}: attempting to instantiate {}", strategy.getClass().getSimpleName(), klass);
+            LOG.trace("{}: attempting to instantiate {}", strategy.getClass(), klass);
             return strategy.createInstance(klass);
         } catch (InstancioApiException ex) {
             throw ex;
