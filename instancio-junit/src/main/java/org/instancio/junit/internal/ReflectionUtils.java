@@ -15,8 +15,6 @@
  */
 package org.instancio.junit.internal;
 
-import org.instancio.exception.InstancioException;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -42,7 +40,7 @@ public final class ReflectionUtils {
             field.setAccessible(true);
             return field.get(target);
         } catch (Exception ex) {
-            throw new InstancioException("Unable to get value from: " + field, ex);
+            return null;
         }
     }
 

@@ -16,10 +16,10 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.support.ThreadLocalRandom;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.support.ThreadLocalRandom;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -77,20 +77,23 @@ class InstancioExtensionWithSettingsAnnotationTest {
     }
 
     @Nested
+    @ExtendWith(InstancioExtension.class)
     class ParameterizedWithNonStaticSettingsFieldTest {
 
+        /**
+         * {@code ParameterizedTest} can only access a static instance of settings.
+         * If the settings instance is not static, an exception should be thrown.
+         */
         @WithSettings
         private final Settings nonStaticSettings = Settings.create();
 
         @ParameterizedTest
         @InstancioSource
-        @DisplayName("Expecting the test to fail without running")
-        @Disabled("Need to find a way to verify the error. JUnit's EngineTestKit swallows the exception.")
+        @Disabled("Need to find a way to assert the thrown exception")
         @SuppressWarnings(Sonar.ADD_ASSERTION)
         void verify(final String any) {
-            // Expected:  the test method to fail before getting a chance to run.
-            // Exception: InstancioApiException
-            // Message:   "If @WithSettings is used with a @ParameterizedTest, the Settings field must be static."
+            // Expected: InstancioApiException before the test method gets a chance to run.
+            // notifying the user that the Settings field must be static
         }
     }
 }
