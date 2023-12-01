@@ -30,7 +30,6 @@
 
     <modules>
         <module>instancio-test-support</module>
-        <module>instancio-junit-tests</module>
         <module>instancio-guava-tests</module>
         <module>instancio-quickcheck-tests</module>
         <module>feature-tests</module>
@@ -149,6 +148,7 @@
             </activation>
             <modules>
                 <module>instancio-core-tests</module>
+                <module>instancio-junit-tests</module>
                 <module>java17-tests</module>
                 <module>bean-validation-hibernate-tests</module>
                 <module>spi-tests</module>

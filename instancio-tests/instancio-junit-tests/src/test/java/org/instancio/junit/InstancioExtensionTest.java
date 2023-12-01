@@ -17,10 +17,10 @@ package org.instancio.junit;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.settings.Settings;
+import org.instancio.support.DefaultRandom;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
-import org.instancio.support.DefaultRandom;
-import org.instancio.settings.Settings;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,14 +101,22 @@ class InstancioExtensionTest {
     void moreThanOneFieldAnnotatedWithSettings() {
         doReturn(Optional.of(DummyWithTwoSettingsTest.class)).when(context).getTestClass();
 
-        // Method under test
+        final String expectedMsg = """
+                Error running test
+
+                Cause:
+                 -> Found more than one field annotated '@WithSettings'
+
+                    (1) private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings1
+                    (2) private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings2
+
+                Only one annotated Settings field is expected
+                """;
+
         assertThatThrownBy(() -> extension.beforeEach(context))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessageContainingAll(String.format("%nFound more than one field annotated '@WithSettings':%n%n"),
-                        String.format("private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings1%n"),
-                        "private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings2");
+                .hasMessage(expectedMsg);
     }
-
 
     @Test
     @DisplayName("Verify exception is thrown if @WithSettings is not on Settings field")
@@ -116,11 +124,19 @@ class InstancioExtensionTest {
         doReturn(Optional.of(DummyWithSettingsOnWrongFieldTypeTest.class)).when(context).getTestClass();
         doReturn(Optional.of(new DummyWithSettingsOnWrongFieldTypeTest())).when(context).getTestInstance();
 
-        // Method under test
+        final String expectedMsg = """
+                Error running test
+
+                Cause:
+                 -> @WithSettings must be annotated on a Settings field.
+
+                Found annotation on:
+                 -> private final java.lang.String org.instancio.junit.InstancioExtensionTest$DummyWithSettingsOnWrongFieldTypeTest.settings
+                """;
+
         assertThatThrownBy(() -> extension.beforeEach(context))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessageContainingAll(String.format("%n@WithSettings must be annotated on a Settings field.%n%n"),
-                        "Found annotation on: private final java.lang.String org.instancio.junit.InstancioExtensionTest$DummyWithSettingsOnWrongFieldTypeTest.settings");
+                .hasMessage(expectedMsg);
     }
 
     @Test
@@ -129,10 +145,42 @@ class InstancioExtensionTest {
         doReturn(Optional.of(DummyWithNullSettingsTest.class)).when(context).getTestClass();
         doReturn(Optional.of(new DummyWithNullSettingsTest())).when(context).getTestInstance();
 
-        // Method under test
+        final String expectedMsg = """
+                Error running test
+
+                Cause:
+                 -> @WithSettings must be annotated on a non-null field.
+
+                """;
+
         assertThatThrownBy(() -> extension.beforeEach(context))
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage(String.format("%n@WithSettings must be annotated on a non-null field."));
+                .hasMessage(expectedMsg);
+    }
+
+    /**
+     * Mimics a test class with a {@code ParameterizedTest} and a non-static
+     * {@code Settings} field (a JUnit extension can only access static fields
+     * when ParameterizedTest is executed).
+     */
+    @Test
+    @DisplayName("Verify exception is thrown if @WithSettings is on a non-static field")
+    void withNonStaticSettingsField() {
+        doReturn(Optional.of(DummyWithNonStaticSettingsTest.class)).when(context).getTestClass();
+        doReturn(Optional.empty()).when(context).getTestInstance();
+
+        final String expectedMsg = """
+                Error running test
+
+                Possible causes:
+                 -> @WithSettings must be annotated on a non-null field.
+                 -> If @WithSettings is used in a test class that contains a @ParameterizedTest,
+                    the annotated Settings field must be static.
+                """;
+
+        assertThatThrownBy(() -> extension.beforeEach(context))
+                .isInstanceOf(InstancioApiException.class)
+                .hasMessage(expectedMsg);
     }
 
     @Test
@@ -203,6 +251,11 @@ class InstancioExtensionTest {
         private final Settings settings1 = SETTINGS;
         @WithSettings
         private final Settings settings2 = SETTINGS;
+    }
+
+    static class DummyWithNonStaticSettingsTest {
+        @WithSettings
+        private Settings settings = SETTINGS;
     }
 
     static class DummyWithNullSettingsTest {

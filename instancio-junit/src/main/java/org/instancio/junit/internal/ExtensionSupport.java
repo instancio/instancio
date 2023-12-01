@@ -15,7 +15,6 @@
  */
 package org.instancio.junit.internal;
 
-import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Settings;
@@ -30,8 +29,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.joining;
 
 public final class ExtensionSupport {
 
@@ -86,9 +83,7 @@ public final class ExtensionSupport {
         final List<Field> fields = ReflectionUtils.getAnnotatedFields(testClass.get(), WithSettings.class);
 
         if (fields.size() > 1) {
-            throw new InstancioApiException(String.format(
-                    "%nFound more than one field annotated '@WithSettings':%n%n%s",
-                    fields.stream().map(Field::toString).collect(joining(System.lineSeparator()))));
+            throw Fail.multipleAnnotatedFields(fields);
 
         } else if (fields.size() == 1) {
             final Field field = fields.get(0);
@@ -99,18 +94,13 @@ public final class ExtensionSupport {
             final Object settings = ReflectionUtils.getFieldValue(field, testInstance.orElse(null));
 
             if (testInstance.isPresent() && settings == null) {
-                throw new InstancioApiException(String.format(
-                        "%n@WithSettings must be annotated on a non-null field."));
+                throw Fail.withSettingsOnNullField();
             }
             if (settings == null) {
-                throw new InstancioApiException(String.format(
-                        "%n@WithSettings must be annotated on a non-null field."
-                                + "%nIf @WithSettings is used with a @ParameterizedTest, the Settings field must be static."));
+                throw Fail.withSettingsOnNullOrNonStaticField();
             }
             if (!(settings instanceof Settings)) {
-                throw new InstancioApiException(String.format(
-                        "%n@WithSettings must be annotated on a Settings field."
-                                + "%n%nFound annotation on: %s", field));
+                throw Fail.withSettingsOnWrongFieldType(field);
             }
             threadLocalSettings.set((Settings) settings);
         }
