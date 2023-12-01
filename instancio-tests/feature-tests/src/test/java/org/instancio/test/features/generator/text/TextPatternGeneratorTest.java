@@ -18,6 +18,7 @@ package org.instancio.test.features.generator.text;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
 
 @FeatureTag({Feature.GENERATE, Feature.TEXT_PATTERN_GENERATOR})
@@ -41,6 +43,16 @@ class TextPatternGeneratorTest {
                 .create();
 
         assertThat(result.getValue()).matches("^Foo: [A-Z][a-z][0-9].$");
+    }
+
+    @Test
+    void patternAs() {
+        final IntegerHolder result = Instancio.of(IntegerHolder.class)
+                .generate(allInts(), gen -> gen.text().pattern("1#d").as(Integer::valueOf))
+                .create();
+
+        assertThat(result.getPrimitive()).isBetween(10, 19);
+        assertThat(result.getWrapper()).isBetween(10, 19);
     }
 
     @Test

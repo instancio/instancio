@@ -18,7 +18,7 @@ package org.instancio.generator.specs;
 /**
  * Generator spec for text patterns that supports {@link AsGeneratorSpec}.
  *
- * @since 3.4.2
+ * @since 3.6.1
  */
 public interface TextPatternAsGeneratorSpec
         extends TextPatternGeneratorSpec, AsGeneratorSpec<String> {
