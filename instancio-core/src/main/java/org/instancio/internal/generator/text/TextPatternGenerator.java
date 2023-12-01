@@ -17,6 +17,7 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.TextPatternAsGeneratorSpec;
 import org.instancio.generator.specs.TextPatternSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
@@ -24,7 +25,7 @@ import org.instancio.internal.util.Fail;
 import org.instancio.support.Global;
 
 public class TextPatternGenerator extends AbstractGenerator<String>
-        implements TextPatternSpec {
+        implements TextPatternSpec, TextPatternAsGeneratorSpec {
 
     private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
             + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
