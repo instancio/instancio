@@ -15,8 +15,10 @@
  */
 package org.instancio.quickcheck.internal.discovery;
 
+import static java.util.function.Predicate.isEqual;
 import static java.util.stream.Collectors.toCollection;
-import static org.junit.platform.commons.util.ReflectionUtils.findMethods;
+import static org.junit.platform.commons.support.ReflectionSupport.streamNestedClasses;
+import static org.junit.platform.commons.util.FunctionUtils.where;
 import static org.junit.platform.engine.support.discovery.SelectorResolver.Resolution.unresolved;
 
 import java.lang.reflect.Method;
@@ -29,10 +31,12 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.instancio.quickcheck.internal.descriptor.InstancioClassBasedTestDescriptor;
 import org.instancio.quickcheck.internal.descriptor.InstancioQuickcheckClassTestDescriptor;
+import org.instancio.quickcheck.internal.descriptor.InstancioQuickcheckNestedClassTestDescriptor;
 import org.instancio.quickcheck.internal.discovery.predicates.IsPropertyMethod;
 import org.instancio.quickcheck.internal.discovery.predicates.IsTestClassWithProperties;
-import org.junit.jupiter.engine.descriptor.ClassTestDescriptor;
+import org.junit.jupiter.engine.discovery.predicates.IsNestedTestClass;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.engine.DiscoverySelector;
 import org.junit.platform.engine.TestDescriptor;
@@ -46,7 +50,8 @@ import org.junit.platform.engine.support.discovery.SelectorResolver;
 class ClassSelectorResolver implements SelectorResolver {
     private final IsTestClassWithProperties isTestClassWithProperties = new IsTestClassWithProperties();
     private final IsPropertyMethod isPropertyMethod = new IsPropertyMethod();
-    
+    private final IsNestedTestClass isNestedTestClass = new IsNestedTestClass();
+
     private final Predicate<String> classNameFilter;
 
     ClassSelectorResolver(Predicate<String> classNameFilter) {
@@ -60,6 +65,9 @@ class ClassSelectorResolver implements SelectorResolver {
         // Nested tests are never filtered out
         if (isTestClassWithProperties.test(testClass) && classNameFilter.test(testClass.getName())) {
             return toResolution(context.addToParent(parent -> Optional.of(newClassTestDescriptor(parent, testClass))));
+        } else if (isNestedTestClass.test(testClass)) {
+            return toResolution(context.addToParent(() -> DiscoverySelectors.selectClass(testClass.getEnclosingClass()),
+                parent -> Optional.of(newNestedClassTestDescriptor(parent, testClass))));
         }
 
         return unresolved();
@@ -67,6 +75,10 @@ class ClassSelectorResolver implements SelectorResolver {
 
     @Override
     public Resolution resolve(NestedClassSelector selector, Context context) {
+        if (isNestedTestClass.test(selector.getNestedClass())) {
+            return toResolution(context.addToParent(() -> selectClass(selector.getEnclosingClasses()),
+                parent -> Optional.of(newNestedClassTestDescriptor(parent, selector.getNestedClass()))));
+        }
         return unresolved();
     }
 
@@ -74,33 +86,61 @@ class ClassSelectorResolver implements SelectorResolver {
     public Resolution resolve(UniqueIdSelector selector, Context context) {
         UniqueId uniqueId = selector.getUniqueId();
         UniqueId.Segment lastSegment = uniqueId.getLastSegment();
-        if (ClassTestDescriptor.SEGMENT_TYPE.equals(lastSegment.getType())) {
+        if (InstancioQuickcheckClassTestDescriptor.SEGMENT_TYPE.equals(lastSegment.getType())) {
             String className = lastSegment.getValue();
             return ReflectionUtils.tryToLoadClass(className).toOptional().filter(isTestClassWithProperties).map(
                 testClass -> toResolution(
                     context.addToParent(parent -> Optional.of(newClassTestDescriptor(parent, testClass))))).orElse(
                         unresolved());
         }
+        if (InstancioQuickcheckNestedClassTestDescriptor.SEGMENT_TYPE.equals(lastSegment.getType())) {
+            String simpleClassName = lastSegment.getValue();
+            return toResolution(context.addToParent(() -> DiscoverySelectors.selectUniqueId(uniqueId.removeLastSegment()), parent -> {
+                if (parent instanceof InstancioClassBasedTestDescriptor) {
+                    Class<?> parentTestClass = ((InstancioClassBasedTestDescriptor) parent).getTestClass();
+                    return ReflectionUtils.findNestedClasses(parentTestClass,
+                        isNestedTestClass.and(
+                            where(Class::getSimpleName, isEqual(simpleClassName)))).stream().findFirst().flatMap(
+                                testClass -> Optional.of(newNestedClassTestDescriptor(parent, testClass)));
+                }
+                return Optional.empty();
+            }));
+        }
         return unresolved();
     }
 
+    private InstancioQuickcheckNestedClassTestDescriptor newNestedClassTestDescriptor(TestDescriptor parent, Class<?> testClass) {
+        return new InstancioQuickcheckNestedClassTestDescriptor(parent.getUniqueId()
+            .append(InstancioQuickcheckNestedClassTestDescriptor.SEGMENT_TYPE, testClass.getName()), testClass);
+    }
+
     private InstancioQuickcheckClassTestDescriptor newClassTestDescriptor(TestDescriptor parent, Class<?> testClass) {
-        return new InstancioQuickcheckClassTestDescriptor(parent.getUniqueId().append(ClassTestDescriptor.SEGMENT_TYPE,
+        return new InstancioQuickcheckClassTestDescriptor(parent.getUniqueId().append(InstancioQuickcheckClassTestDescriptor.SEGMENT_TYPE,
             testClass.getName()), testClass);
     }
 
-    private Resolution toResolution(Optional<InstancioQuickcheckClassTestDescriptor> testDescriptor) {
+    private Resolution toResolution(Optional<? extends InstancioClassBasedTestDescriptor> testDescriptor) {
         return testDescriptor.map(it -> {
             Class<?> testClass = it.getTestClass();
             List<Class<?>> testClasses = new ArrayList<>(it.getEnclosingTestClasses());
             testClasses.add(testClass);
 
             return Resolution.match(Match.exact(it, () -> {
-                Stream<DiscoverySelector> methods = findMethods(testClass, isPropertyMethod).stream()
+                Stream<DiscoverySelector> methods = ReflectionUtils.findMethods(testClass, isPropertyMethod).stream()
                         .map(method -> selectMethod(testClasses, method));
-                return methods.collect(toCollection((Supplier<Set<DiscoverySelector>>) LinkedHashSet::new));
+                Stream<NestedClassSelector> nestedClasses = streamNestedClasses(testClass, isNestedTestClass)
+                        .map(nestedClass -> DiscoverySelectors.selectNestedClass(testClasses, nestedClass));
+                return Stream.concat(methods, nestedClasses).collect(toCollection((Supplier<Set<DiscoverySelector>>) LinkedHashSet::new));
             }));
         }).orElse(unresolved());
+    }
+
+    private DiscoverySelector selectClass(List<Class<?>> classes) {
+        if (classes.size() == 1) {
+            return DiscoverySelectors.selectClass(classes.get(0));
+        }
+        int lastIndex = classes.size() - 1;
+        return DiscoverySelectors.selectNestedClass(classes.subList(0, lastIndex), classes.get(lastIndex));
     }
 
     private DiscoverySelector selectMethod(List<Class<?>> classes, Method method) {

@@ -18,14 +18,28 @@ package org.instancio.quickcheck.internal.discovery.predicates;
 import java.util.function.Predicate;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.junit.jupiter.engine.discovery.predicates.IsNestedTestClass;
 import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ReflectionSupport;
+import org.junit.platform.commons.util.ReflectionUtils;
 
 @ExperimentalApi
 public class IsTestClassWithProperties implements Predicate<Class<?>> {
-    @Override
+    private final IsNestedTestClass isNestedTestClass = new IsNestedTestClass();
+    private final IsPotentialTestContainer isPotentialTestContainer = new IsPotentialTestContainer();
+    
     @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
+    @Override
     public boolean test(Class<?> candidate) {
-        return !ReflectionSupport.findMethods(candidate, new IsPropertyMethod(),  HierarchyTraversalMode.TOP_DOWN).isEmpty();
+        return isPotentialTestContainer.test(candidate) && 
+            (hasPropertyMethods(candidate) || hasNestedTests(candidate));
+    }
+    
+    private boolean hasPropertyMethods(Class<?> candidate) {
+        return !ReflectionSupport.findMethods(candidate, new IsPropertyMethod(), HierarchyTraversalMode.TOP_DOWN).isEmpty();
+    }
+    
+    private boolean hasNestedTests(Class<?> candidate) {
+        return !ReflectionUtils.findNestedClasses(candidate, isNestedTestClass).isEmpty();
     }
 }
