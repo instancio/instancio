@@ -32,8 +32,10 @@ import java.util.stream.Collectors;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.quickcheck.api.Property;
 import org.instancio.quickcheck.internal.arbitrary.ArbitrariesResolver;
+import org.instancio.quickcheck.internal.descriptor.InstancioClassBasedTestDescriptor;
 import org.instancio.quickcheck.internal.descriptor.InstancioQuickcheckTestMethodTestDescriptor;
 import org.instancio.quickcheck.internal.engine.PropertyConfiguration;
+import org.junit.platform.commons.JUnitException;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.engine.EngineExecutionListener;
 import org.junit.platform.engine.TestDescriptor;
@@ -117,9 +119,14 @@ public class InstancioQuickcheckTestTask implements TestTask {
 
             final PropertyConfiguration configuration = extractPropertyConfiguration(method);
             final List<Parameter> parameters = Arrays.stream(method.getParameters()).collect(Collectors.toList());
-            final Object instance = ReflectionUtils.newInstance(desc.getTestClass());
+
+            final Object instance = desc.getParent()
+                .filter(InstancioClassBasedTestDescriptor.class::isInstance)
+                .map(InstancioClassBasedTestDescriptor.class::cast)
+                .map(d -> d.createTestInstance())
+                .orElseThrow(() -> new JUnitException("Property method descriptors should have parent")); 
+
             final ArbitrariesResolver resolver = new ArbitrariesResolver(parameters,  executor.getConfiguration());
-            
             for (int i = 0; i < configuration.getSamples(); ++i) {
                 final Object[] args = resolver.resolve(instance);
                 ReflectionUtils.invokeMethod(method, instance, args);

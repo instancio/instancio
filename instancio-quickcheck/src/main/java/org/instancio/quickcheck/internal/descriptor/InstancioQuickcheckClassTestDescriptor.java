@@ -16,12 +16,20 @@
 package org.instancio.quickcheck.internal.descriptor;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.ClassSource;
 
 @ExperimentalApi
 public class InstancioQuickcheckClassTestDescriptor extends InstancioClassBasedTestDescriptor {
+    public static final String SEGMENT_TYPE = "class";
+
     public InstancioQuickcheckClassTestDescriptor(UniqueId uniqueId, Class<?> testClass) {
         super(uniqueId, testClass, DisplayNameUtils.determineDisplayName(testClass, DisplayNameUtils.createDisplayNameSupplierForClass(testClass)), ClassSource.from(testClass));
+    }
+    
+    @Override
+    public Object createTestInstance() {
+        return ReflectionUtils.newInstance(getTestClass());
     }
 }

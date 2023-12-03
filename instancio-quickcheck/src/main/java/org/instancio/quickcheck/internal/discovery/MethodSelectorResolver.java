@@ -34,6 +34,7 @@ import org.instancio.quickcheck.internal.discovery.predicates.IsPropertyMethod;
 import org.instancio.quickcheck.internal.discovery.predicates.IsTestClassWithProperties;
 import org.junit.jupiter.engine.descriptor.Filterable;
 import org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor;
+import org.junit.jupiter.engine.discovery.predicates.IsNestedTestClass;
 import org.junit.platform.commons.util.ClassUtils;
 import org.junit.platform.engine.DiscoverySelector;
 import org.junit.platform.engine.TestDescriptor;
@@ -45,7 +46,7 @@ import org.junit.platform.engine.discovery.UniqueIdSelector;
 import org.junit.platform.engine.support.discovery.SelectorResolver;
 
 class MethodSelectorResolver implements SelectorResolver {
-    private final Predicate<Class<?>> testClassPredicate = new IsTestClassWithProperties();
+    private final Predicate<Class<?>> testClassPredicate = new IsTestClassWithProperties().or(new IsNestedTestClass());
     private final IsPropertyMethod isPropertyMethod = new IsPropertyMethod();
 
 

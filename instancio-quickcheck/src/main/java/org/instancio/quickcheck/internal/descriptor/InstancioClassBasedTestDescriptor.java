@@ -60,6 +60,8 @@ public abstract class InstancioClassBasedTestDescriptor extends AbstractTestDesc
         return emptyList();
     }
 
+    public abstract Object createTestInstance();
+
     static Set<TestTag> getTags(AnnotatedElement element) {
         return findRepeatableAnnotations(element, Tag.class).stream()
             .map(Tag::value)
