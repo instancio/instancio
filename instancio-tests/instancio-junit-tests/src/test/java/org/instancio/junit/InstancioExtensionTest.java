@@ -15,6 +15,7 @@
  */
 package org.instancio.junit;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.settings.Settings;
@@ -113,9 +114,7 @@ class InstancioExtensionTest {
                 Only one annotated Settings field is expected
                 """;
 
-        assertThatThrownBy(() -> extension.beforeEach(context))
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage(expectedMsg);
+        assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
     }
 
     @Test
@@ -134,9 +133,7 @@ class InstancioExtensionTest {
                  -> private final java.lang.String org.instancio.junit.InstancioExtensionTest$DummyWithSettingsOnWrongFieldTypeTest.settings
                 """;
 
-        assertThatThrownBy(() -> extension.beforeEach(context))
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage(expectedMsg);
+        assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
     }
 
     @Test
@@ -153,9 +150,7 @@ class InstancioExtensionTest {
 
                 """;
 
-        assertThatThrownBy(() -> extension.beforeEach(context))
-                .isInstanceOf(InstancioApiException.class)
-                .hasMessage(expectedMsg);
+        assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
     }
 
     /**
@@ -178,9 +173,14 @@ class InstancioExtensionTest {
                     the annotated Settings field must be static.
                 """;
 
-        assertThatThrownBy(() -> extension.beforeEach(context))
+        assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
+    }
+
+    private static void assertApiExceptionWithMessage(final ThrowingCallable throwingCallable, final String expectedMsg) {
+        assertThatThrownBy(throwingCallable)
                 .isInstanceOf(InstancioApiException.class)
-                .hasMessage(expectedMsg);
+                .extracting(ex -> ex.getMessage().replace("\r", ""))
+                .isEqualTo(expectedMsg);
     }
 
     @Test
