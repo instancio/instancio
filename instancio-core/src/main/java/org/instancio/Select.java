@@ -278,8 +278,7 @@ public final class Select {
      * }</pre>
      * <p>
      * <b>Note:</b> for a method reference with a generic return type,
-     * the type must be specified explicitly, for example by assigning
-     * the method reference to a variable:
+     * the type must be specified explicitly, for example:
      * <p>
      *
      * <pre>{@code
@@ -291,6 +290,10 @@ public final class Select {
      *     }
      * }
      *
+     * // Option 1:
+     * Select.field(Item<String>::getValue)
+     *
+     * // Option 2:
      * GetMethodSelector<Item<String>, String> getterSelector = Item::getValue;
      * Select.field(getterSelector)
      * }</pre>
