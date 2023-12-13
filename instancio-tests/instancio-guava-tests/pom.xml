@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-tests</artifactId>
-        <version>3.6.1-SNAPSHOT</version>
+        <version>3.7.0</version>
     </parent>
     <artifactId>instancio-guava-tests</artifactId>
     <packaging>jar</packaging>
