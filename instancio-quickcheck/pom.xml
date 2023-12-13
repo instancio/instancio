@@ -8,7 +8,7 @@
     </parent>
     <artifactId>instancio-quickcheck</artifactId>
     <packaging>bundle</packaging>
-    <name>Instancio Property-Based Testing (Quickcheck) for JUnit 5 Support</name>
+    <name>Instancio Quickcheck for JUnit 5</name>
     <description>Instancio integration with JUnit 5 to support property-based testing (Quickcheck)</description>
 
     <build>
