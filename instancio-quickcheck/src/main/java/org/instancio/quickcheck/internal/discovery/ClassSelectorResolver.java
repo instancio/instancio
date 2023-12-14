@@ -17,7 +17,6 @@ package org.instancio.quickcheck.internal.discovery;
 
 import static java.util.function.Predicate.isEqual;
 import static java.util.stream.Collectors.toCollection;
-import static org.junit.platform.commons.support.ReflectionSupport.streamNestedClasses;
 import static org.junit.platform.commons.util.FunctionUtils.where;
 import static org.junit.platform.engine.support.discovery.SelectorResolver.Resolution.unresolved;
 
@@ -37,6 +36,7 @@ import org.instancio.quickcheck.internal.descriptor.InstancioQuickcheckNestedCla
 import org.instancio.quickcheck.internal.discovery.predicates.IsPropertyMethod;
 import org.instancio.quickcheck.internal.discovery.predicates.IsTestClassWithProperties;
 import org.junit.jupiter.engine.discovery.predicates.IsNestedTestClass;
+import org.junit.platform.commons.support.ReflectionSupport;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.engine.DiscoverySelector;
 import org.junit.platform.engine.TestDescriptor;
@@ -128,7 +128,9 @@ class ClassSelectorResolver implements SelectorResolver {
             return Resolution.match(Match.exact(it, () -> {
                 Stream<DiscoverySelector> methods = ReflectionUtils.findMethods(testClass, isPropertyMethod).stream()
                         .map(method -> selectMethod(testClasses, method));
-                Stream<NestedClassSelector> nestedClasses = streamNestedClasses(testClass, isNestedTestClass)
+                Stream<NestedClassSelector> nestedClasses = ReflectionSupport
+                        .findNestedClasses(testClass, isNestedTestClass)
+                        .stream()
                         .map(nestedClass -> DiscoverySelectors.selectNestedClass(testClasses, nestedClass));
                 return Stream.concat(methods, nestedClasses).collect(toCollection((Supplier<Set<DiscoverySelector>>) LinkedHashSet::new));
             }));
