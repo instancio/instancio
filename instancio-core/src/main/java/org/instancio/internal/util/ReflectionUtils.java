@@ -17,6 +17,8 @@ package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioException;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -24,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 
 public final class ReflectionUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
     private ReflectionUtils() {
         // non-instantiable
@@ -33,7 +36,7 @@ public final class ReflectionUtils {
         try {
             return Class.forName(fullyQualifiedName);
         } catch (Exception ex) {
-            ExceptionUtils.logException("Could not load class: '{}'", ex, fullyQualifiedName);
+            LOG.trace("Class not found: '{}'", fullyQualifiedName);
             return null;
         }
     }
