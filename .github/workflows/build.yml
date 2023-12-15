@@ -28,7 +28,7 @@ jobs:
           zstd -q -T0 target.tar
 
       - name: 'Upload target artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: target-artifact
           path: target.tar.zst
@@ -41,7 +41,7 @@ jobs:
           tar --zstd -cf repository.tar.zst instancio
 
       - name: 'Upload repository artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: repository-artifact
           path: ~/.m2/repository/org/repository.tar.zst
