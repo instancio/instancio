@@ -81,16 +81,25 @@ public final class Format {
         final StringBuilder sb = new StringBuilder(SB_SMALL);
         sb.append('<').append(node.getDepth()).append(':');
 
-        if (node.getField() == null) {
+        if (node.getField() == null && node.getSetter() == null) {
             sb.append(withoutPackage(node.getTargetClass()));
         } else {
-            sb.append(withoutPackage(node.getParent().getTargetClass()))
-                    .append(": ")
-                    .append(withoutPackage(node.getType()))
-                    .append(' ')
-                    .append(node.getField().getName());
-        }
+            sb.append(withoutPackage(node.getParent().getTargetClass())).append(": ");
 
+            if (node.getField() != null) {
+                sb.append(withoutPackage(node.getType()))
+                        .append(' ')
+                        .append(node.getField().getName());
+            }
+            if (node.getSetter() != null) {
+                if (node.getField() != null) {
+                    sb.append("; ");
+                }
+                final Type paramType = node.getSetter().getGenericParameterTypes()[0];
+                sb.append(node.getSetter().getName())
+                        .append('(').append(withoutPackage(paramType)).append(')');
+            }
+        }
         if (node.isIgnored()) {
             sb.append(" [IGNORED]");
         }

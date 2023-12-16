@@ -16,10 +16,16 @@
 package org.instancio.test.features.nullable;
 
 import org.instancio.Instancio;
-import org.instancio.test.support.pojo.basic.StringHolder;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodError;
+import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -35,6 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
+import static org.instancio.Select.setter;
 
 @FeatureTag({Feature.NULLABILITY, Feature.WITH_NULLABLE})
 class WithNullableTest {
@@ -43,14 +50,39 @@ class WithNullableTest {
 
     @Test
     void withField() {
-        final Stream<String> results = Stream.generate(() ->
-                        Instancio.of(StringHolder.class)
-                                .withNullable(allStrings())
-                                .create())
+        final Set<IntegerHolder> results = Instancio.of(IntegerHolder.class)
+                .withNullable(all(
+                        field(IntegerHolder::getPrimitive),
+                        field(IntegerHolder::getWrapper)))
+                .stream()
                 .limit(SAMPLE_SIZE)
-                .map(StringHolder::getValue);
+                .collect(toSet());
 
-        assertThat(results).containsNull();
+        assertThat(results)
+                .doesNotContainNull()
+                .anyMatch(r -> r.getWrapper() == null)
+                .anyMatch(r -> r.getPrimitive() == 0);
+    }
+
+    @Test
+    @RunWithMethodAssignmentOnly
+    void withMethod() {
+        final Set<IntegerHolder> results = Instancio.of(IntegerHolder.class)
+                .withSettings(Settings.create()
+                        .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+                        .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL)
+                        .set(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.FAIL))
+                .withNullable(all(
+                        setter(IntegerHolder::setPrimitive),
+                        setter(IntegerHolder::setWrapper)))
+                .stream()
+                .limit(SAMPLE_SIZE)
+                .collect(toSet());
+
+        assertThat(results)
+                .doesNotContainNull()
+                .anyMatch(r -> r.getWrapper() == null)
+                .anyMatch(r -> r.getPrimitive() == 0);
     }
 
     @Test

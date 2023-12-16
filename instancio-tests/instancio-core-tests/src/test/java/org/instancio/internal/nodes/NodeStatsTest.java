@@ -15,10 +15,14 @@
  */
 package org.instancio.internal.nodes;
 
-import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
+import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.TargetField;
+import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
+import org.instancio.test.support.pojo.dynamic.DynPhone;
 import org.instancio.test.support.pojo.misc.ClassWithoutFields;
 import org.instancio.test.support.pojo.misc.StringsDef;
 import org.instancio.test.support.pojo.misc.StringsGhi;
@@ -30,11 +34,14 @@ import java.util.Collections;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.asserts.Asserts.assertEqualsIgnoringLineCarriage;
 
 class NodeStatsTest {
     private static final NodeFactory NODE_FACTORY = Nodes.nodeFactory();
 
+    /**
+     * {@link Class#getDeclaredFields()} ()} does not guarantee the order of returned fields.
+     * But it seems the fields are always returned in the order they are declared.
+     */
     @Test
     void person() {
         final InternalNode node = NODE_FACTORY.createRootNode(Person.class);
@@ -43,26 +50,26 @@ class NodeStatsTest {
         final String expected = """
                 <0:Person>
                  ├──<1:Person: String finalField>
-                 ├──<1:Person: UUID uuid>
-                 ├──<1:Person: String name>
-                 ├──<1:Person: Address address>
-                 │   ├──<2:Address: String address>
-                 │   ├──<2:Address: String city>
-                 │   ├──<2:Address: String country>
-                 │   └──<2:Address: List<Phone> phoneNumbers>
+                 ├──<1:Person: UUID uuid; setUuid(UUID)>
+                 ├──<1:Person: String name; setName(String)>
+                 ├──<1:Person: Address address; setAddress(Address)>
+                 │   ├──<2:Address: String address; setAddress(String)>
+                 │   ├──<2:Address: String city; setCity(String)>
+                 │   ├──<2:Address: String country; setCountry(String)>
+                 │   └──<2:Address: List<Phone> phoneNumbers; setPhoneNumbers(List<Phone>)>
                  │       └──<3:Phone>
-                 │           ├──<4:Phone: String countryCode>
-                 │           └──<4:Phone: String number>
-                 ├──<1:Person: Gender gender>
-                 ├──<1:Person: int age>
-                 ├──<1:Person: LocalDateTime lastModified>
-                 ├──<1:Person: Date date>
-                 └──<1:Person: Pet[] pets>
+                 │           ├──<4:Phone: String countryCode; setCountryCode(String)>
+                 │           └──<4:Phone: String number; setNumber(String)>
+                 ├──<1:Person: Gender gender; setGender(Gender)>
+                 ├──<1:Person: int age; setAge(int)>
+                 ├──<1:Person: LocalDateTime lastModified; setLastModified(LocalDateTime)>
+                 ├──<1:Person: Date date; setDate(Date)>
+                 └──<1:Person: Pet[] pets; setPets(Pet[])>
                      └──<2:Pet>
-                         └──<3:Pet: String name>
+                         └──<3:Pet: String name; setName(String)>
                 """;
 
-        assertTreeString(stats, expected);
+        assertThat(stats.getTreeString()).isEqualToNormalizingNewlines(expected);
         assertThat(stats.getTotalNodes()).isEqualTo(19);
         assertThat(stats.getHeight()).isEqualTo(4);
     }
@@ -76,15 +83,21 @@ class NodeStatsTest {
                 <0:ClassWithoutFields>
                 """;
 
-        assertTreeString(stats, expected);
+        assertThat(stats.getTreeString()).isEqualToNormalizingNewlines(expected);
         assertThat(stats.getTotalNodes()).isOne();
         assertThat(stats.getHeight()).isZero();
     }
 
     @Test
     void withIgnoredNode() {
-        final Set<TargetSelector> ignored = Collections.singleton(Select.field(StringsGhi::getH));
+        final SelectorImpl fieldH = SelectorImpl.builder()
+                .target(new TargetField(ReflectionUtils.getField(StringsGhi.class, "h")))
+                .build();
+
+        final Set<TargetSelector> ignored = Collections.singleton(fieldH);
+
         final NodeContext ctx = Nodes.nodeContextBuilder()
+                .settings(Settings.defaults())
                 .ignoredSelectorMap(new BooleanSelectorMap(ignored))
                 .build();
 
@@ -104,7 +117,7 @@ class NodeStatsTest {
                      └──<2:StringsGhi: String i>
                 """;
 
-        assertTreeString(stats, expected);
+        assertThat(stats.getTreeString()).isEqualToNormalizingNewlines(expected);
         assertThat(stats.getTotalNodes()).isEqualTo(8);
         assertThat(stats.getHeight()).isEqualTo(2);
     }
@@ -116,18 +129,34 @@ class NodeStatsTest {
 
         final String expected = """
                 <0:MainPojo>
-                 ├──<1:MainPojo: Long id>
-                 └──<1:MainPojo: List<DetailPojo> detailPojos>
+                 ├──<1:MainPojo: Long id; setId(Long)>
+                 └──<1:MainPojo: List<DetailPojo> detailPojos; setDetailPojos(List<DetailPojo>)>
                      └──<2:DetailPojo>
-                         ├──<3:DetailPojo: Long id>
-                         ├──<3:DetailPojo: Long mainPojoId>
-                         └──<3:DetailPojo: MainPojo mainPojo [CYCLIC]>
+                         ├──<3:DetailPojo: Long id; setId(Long)>
+                         ├──<3:DetailPojo: Long mainPojoId; setMainPojoId(Long)>
+                         └──<3:DetailPojo: MainPojo mainPojo; setMainPojo(MainPojo) [CYCLIC]>
                 """;
 
-        assertTreeString(stats, expected);
+        assertThat(stats.getTreeString()).isEqualToNormalizingNewlines(expected);
     }
 
-    private static void assertTreeString(final NodeStats stats, final String expected) {
-        assertEqualsIgnoringLineCarriage(stats.getTreeString(), expected);
+    @Test
+    void dynPhone() {
+        final InternalNode node = NODE_FACTORY.createRootNode(DynPhone.class);
+        final NodeStats stats = NodeStats.compute(node);
+
+        final String expected = """
+                <0:DynPhone>
+                 ├──<1:DynPhone: Map<String, Object> data>
+                 │   ├──<2:String>
+                 │   └──<2:Object>
+                 ├──<1:DynPhone: setCountryCode(String)>
+                 └──<1:DynPhone: setNumber(String)>
+                """;
+
+        assertThat(stats.getTreeString()).isEqualToNormalizingNewlines(expected);
+        assertThat(stats.getTotalNodes()).isEqualTo(6);
+        assertThat(stats.getHeight()).isEqualTo(2);
     }
+
 }

@@ -21,12 +21,15 @@ import org.instancio.internal.util.Verify;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@SuppressWarnings("PMD.GodClass")
 public final class InternalNode implements Node {
 
     private final NodeContext nodeContext;
@@ -34,6 +37,7 @@ public final class InternalNode implements Node {
     private final Class<?> rawType;
     private final Class<?> targetClass;
     private final Field field;
+    private final Method setter;
     private final InternalNode parent;
     private final TypeMap typeMap;
     private final NodeKind nodeKind;
@@ -48,10 +52,14 @@ public final class InternalNode implements Node {
         rawType = builder.rawType;
         targetClass = builder.targetClass;
         field = builder.field;
+        setter = builder.setter;
         parent = builder.parent;
         children = builder.children == null ? Collections.emptyList() : Collections.unmodifiableList(builder.children);
         nodeKind = builder.nodeKind;
-        typeMap = new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap);
+        typeMap = builder.typeMap == null
+                ? new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap)
+                : new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap, builder.typeMap);
+
         depth = parent == null ? 0 : parent.depth + 1;
         cyclic = builder.cyclic;
     }
@@ -86,10 +94,12 @@ public final class InternalNode implements Node {
         builder.rawType = rawType;
         builder.targetClass = targetClass;
         builder.field = field;
+        builder.setter = setter;
         builder.parent = parent;
         builder.children = children;
         builder.nodeKind = nodeKind;
         builder.cyclic = cyclic;
+        builder.typeMap = typeMap;
         return builder;
     }
 
@@ -142,6 +152,16 @@ public final class InternalNode implements Node {
     @Override
     public Field getField() {
         return field;
+    }
+
+    /**
+     * Returns a setter associated with this node, or {@code null} if none.
+     *
+     * @return setter, if present, or {@code null}
+     */
+    @Override
+    public Method getSetter() {
+        return setter;
     }
 
     @Override
@@ -207,7 +227,8 @@ public final class InternalNode implements Node {
 
         return this.targetClass.equals(other.targetClass)
                 && this.type.equals(other.type)
-                && Objects.equals(this.field, other.field);
+                && Objects.equals(this.field, other.field)
+                && Objects.equals(this.setter, other.setter);
     }
 
     @Override
@@ -222,18 +243,30 @@ public final class InternalNode implements Node {
         int result = type.hashCode();
         result = 31 * result + targetClass.hashCode();
         result = 31 * result + (field != null ? field.hashCode() : 0);
+        result = 31 * result + (setter != null ? setter.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        final String nodeName = field == null
-                ? Format.withoutPackage(targetClass)
-                : Format.withoutPackage(parent.targetClass) + '.' + field.getName();
-
         final StringBuilder sb = new StringBuilder(50)
-                .append("Node[").append(nodeName)
-                .append(", depth=").append(depth)
+                .append("Node[");
+
+        if (field == null && setter == null) {
+            sb.append(Format.withoutPackage(targetClass));
+        } else {
+            if (field != null) {
+                sb.append(Format.withoutPackage(parent.targetClass)).append('.').append(field.getName());
+                if (setter != null) {
+                    sb.append(", ");
+                }
+            }
+            if (setter != null) {
+                sb.append(Format.formatSetterMethod(setter));
+            }
+        }
+
+        sb.append(", depth=").append(depth)
                 .append(", type=").append(Format.withoutPackage(type));
 
         if (nodeKind == NodeKind.IGNORED) {
@@ -248,16 +281,29 @@ public final class InternalNode implements Node {
             return "ignored";
         }
 
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder(32);
 
-        final String nodeName = field == null
-                ? Format.withoutPackage(type)
-                : Format.withoutPackage(parent.targetClass) + '.' + field.getName();
+        if (field == null && setter == null) {
+            return sb.append("class ").append(Format.withoutPackage(type)).toString();
+        }
 
-        if (field == null) {
-            sb.append("class ").append(nodeName);
-        } else {
-            sb.append("field ").append(nodeName);
+        if (field != null) {
+            sb.append("field ")
+                    .append(Format.withoutPackage(field.getDeclaringClass()))
+                    .append('.')
+                    .append(field.getName());
+        }
+        if (setter != null) {
+            if (field != null) {
+                sb.append(", ");
+            }
+            sb.append("setter ")
+                    .append(Format.withoutPackage(setter.getDeclaringClass()))
+                    .append('.')
+                    .append(setter.getName())
+                    .append('(')
+                    .append(setter.getParameterTypes()[0].getSimpleName())
+                    .append(')');
         }
 
         return sb.toString();
@@ -269,11 +315,15 @@ public final class InternalNode implements Node {
         private Class<?> rawType;
         private Class<?> targetClass;
         private Field field;
+        private Method setter;
         private InternalNode parent;
         private List<InternalNode> children;
         private NodeKind nodeKind;
         private boolean cyclic;
         private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
+        // only set when making toBuilder() copies
+        // might be worth refactoring
+        private TypeMap typeMap;
 
         private Builder() {
         }
@@ -298,8 +348,23 @@ public final class InternalNode implements Node {
             return this;
         }
 
-        public Builder field(@Nullable final Field field) {
+        public Builder member(@Nullable final Member member) {
+            if (member instanceof Field) {
+                return member((Field) member);
+            }
+            if (member instanceof Method) {
+                return member((Method) member);
+            }
+            return this;
+        }
+
+        public Builder member(@Nullable final Field field) {
             this.field = field;
+            return this;
+        }
+
+        public Builder member(@Nullable final Method setter) {
+            this.setter = setter;
             return this;
         }
 

@@ -24,11 +24,12 @@ import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
+import org.instancio.internal.selectors.UnusedSelectorDescription;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
-import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.SettingKey;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +41,7 @@ import java.util.function.Supplier;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNestedGenerics;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNonGenericClass;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
+import static org.instancio.internal.util.ErrorMessageUtils.createSetterSelectorWithFieldAssignmentErrorMessage;
 
 @SuppressWarnings("PMD.GodClass")
 public final class ApiValidator {
@@ -250,12 +252,6 @@ public final class ApiValidator {
         return depth;
     }
 
-    public static void validateField(final Class<?> declaringClass, final String fieldName, final String message) {
-        notNull(declaringClass, message);
-        notNull(fieldName, message);
-        isTrue(ReflectionUtils.isValidField(declaringClass, fieldName), message);
-    }
-
     public static void validateAssignmentOrigin(final TargetSelector selector) {
         ApiValidator.notNull(selector, "origin selector must not be null");
 
@@ -311,6 +307,17 @@ public final class ApiValidator {
                 errorMsg, value, containerNode, elementNode);
 
         throw Fail.withUsageError(error);
+    }
+
+    public static void failIfMethodSelectorIsUsedWithFieldAssignment(
+            final AssignmentType assignmentType,
+            final TargetSelector setMethodSelector) {
+
+        if (assignmentType == AssignmentType.FIELD && setMethodSelector != null) {
+            UnusedSelectorDescription desc = (UnusedSelectorDescription) setMethodSelector;
+
+            throw Fail.withUsageError(createSetterSelectorWithFieldAssignmentErrorMessage(desc.getDescription()));
+        }
     }
 
     private ApiValidator() {

@@ -80,6 +80,21 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
         return this;
     }
 
+    public NodeAssert hasNullSetter() {
+        isNotNull();
+        assertThat(actual.getSetter()).isNull();
+        return this;
+    }
+
+    public NodeAssert hasSetterName(String expectedName, Class<?> parameterType) {
+        isNotNull();
+        assertThat(actual.getSetter()).as("Setter method is null").isNotNull();
+        assertThat(actual.getSetter().getName()).isEqualTo(expectedName);
+        assertThat(actual.getSetter().getParameterCount()).isOne();
+        assertThat(actual.getSetter().getParameterTypes()[0]).isEqualTo(parameterType);
+        return this;
+    }
+
     public NodeAssert hasTypeMapWithSize(int expected) {
         isNotNull();
         assertThat(actual.getTypeMap().size())

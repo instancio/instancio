@@ -19,6 +19,8 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.cyclic.CyclicList;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
+import java.util.List;
+
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class CyclicListNodeTest extends NodeTestTemplate<CyclicList> {
@@ -29,5 +31,9 @@ class CyclicListNodeTest extends NodeTestTemplate<CyclicList> {
                 .hasTargetClass(CyclicList.class)
                 .hasDepth(0)
                 .hasChildrenOfSize(1);
+
+        assertNode(rootNode.getOnlyChild())
+                .hasFieldName("items")
+                .hasSetterName("setItems", List.class);
     }
 }

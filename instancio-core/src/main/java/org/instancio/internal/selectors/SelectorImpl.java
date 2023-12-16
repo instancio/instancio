@@ -34,10 +34,12 @@ import java.util.Objects;
 public final class SelectorImpl
         implements Selector, GroupableSelector, Flattener<TargetSelector>, UnusedSelectorDescription {
 
-    private static final SelectorImpl ROOT_SELECTOR = SelectorImpl.builder().depth(0).build();
+    private static final SelectorImpl ROOT_SELECTOR = SelectorImpl.builder()
+            .target(TargetRoot.INSTANCE)
+            .depth(0)
+            .build();
 
-    private final Class<?> targetClass;
-    private final String fieldName;
+    private final Target target;
     private final List<Scope> scopes;
     private final Selector parent;
     private final Throwable stackTraceHolder;
@@ -45,23 +47,21 @@ public final class SelectorImpl
     private int hash;
 
     /**
-     * Constructor.
+     * Three types of selectors can be created: field, method, class.
+     * Which arguments are provided depends on the type of selector.
      *
-     * @param targetClass      target class
-     * @param fieldName        field name, applicable to field selectors only
-     * @param scopes           scopes specified top-down, from outermost to innermost
+     * @param target           selector's target
+     * @param scopes           optional scopes specified top-down, from outermost to innermost
      * @param parent           required only for {@link PrimitiveAndWrapperSelectorImpl} for checking unused selectors
      * @param stackTraceHolder stacktrace for reporting locations of unused selectors
      */
-    private SelectorImpl(@Nullable final Class<?> targetClass,
-                         @Nullable final String fieldName,
+    private SelectorImpl(final Target target,
                          @NotNull final List<Scope> scopes,
                          @Nullable final Selector parent,
                          @NotNull final Throwable stackTraceHolder,
                          @Nullable final Integer depth) {
 
-        this.targetClass = targetClass;
-        this.fieldName = fieldName;
+        this.target = target;
         this.scopes = Collections.unmodifiableList(scopes);
         this.parent = parent;
         this.stackTraceHolder = stackTraceHolder;
@@ -70,23 +70,11 @@ public final class SelectorImpl
 
     private SelectorImpl(final Builder builder) {
         this(
-                builder.targetClass,
-                builder.fieldName,
+                builder.target,
                 ObjectUtils.defaultIfNull(builder.scopes, Collections.emptyList()),
                 builder.parent,
                 ObjectUtils.defaultIfNull(builder.stackTraceHolder, Throwable::new),
                 builder.depth);
-    }
-
-    public Builder toBuilder() {
-        Builder builder = new Builder();
-        builder.targetClass = this.targetClass;
-        builder.fieldName = this.fieldName;
-        builder.scopes = this.scopes;
-        builder.parent = this.parent;
-        builder.stackTraceHolder = this.stackTraceHolder;
-        builder.depth = this.depth;
-        return builder;
     }
 
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
@@ -95,8 +83,8 @@ public final class SelectorImpl
         return ROOT_SELECTOR;
     }
 
-    public boolean isRoot() {
-        return this == ROOT_SELECTOR;
+    public Target getTarget() {
+        return target;
     }
 
     public Throwable getStackTraceHolder() {
@@ -122,7 +110,7 @@ public final class SelectorImpl
 
     @Override
     public Scope toScope() {
-        return new ScopeImpl(targetClass, fieldName, depth);
+        return new ScopeImpl(target, depth);
     }
 
     @Override
@@ -138,43 +126,24 @@ public final class SelectorImpl
         return scopes;
     }
 
-    public boolean isFieldSelector() {
-        return fieldName != null;
-    }
-
     public Class<?> getTargetClass() {
-        return targetClass;
-    }
-
-    public String getFieldName() {
-        return fieldName;
+        return target.getTargetClass();
     }
 
     public Integer getDepth() {
         return depth;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Performs equality check with all fields except {@code parent} and {@code stackTraceHolder}.
-     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof SelectorImpl)) return false;
         final SelectorImpl that = (SelectorImpl) o;
-        return Objects.equals(targetClass, that.targetClass)
-                && Objects.equals(fieldName, that.fieldName)
+        return Objects.equals(target, that.target)
                 && Objects.equals(scopes, that.scopes)
                 && Objects.equals(depth, that.depth);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Calculates hashcode using all fields except {@code parent} and {@code stackTraceHolder}.
-     */
     @Override
     public int hashCode() {
         if (hash == 0) {
@@ -184,8 +153,7 @@ public final class SelectorImpl
     }
 
     private int computeHashCode() {
-        int result = targetClass == null ? 0 : targetClass.hashCode();
-        result = 31 * result + (fieldName == null ? 0 : fieldName.hashCode());
+        int result = target == null ? 0 : target.hashCode();
         result = 31 * result + scopes.hashCode();
         result = 31 * result + (depth == null ? 0 : depth.hashCode());
         return result;
@@ -193,34 +161,33 @@ public final class SelectorImpl
 
     @Override
     public String toString() {
-        if (isRoot()) return "root()";
+        if (parent instanceof PrimitiveAndWrapperSelectorImpl) {
+            return parent.toString();
+        }
+        if (target instanceof TargetRoot) {
+            return "root()";
+        }
 
         final StringBuilder sb = new StringBuilder();
+        sb.append(target);
 
-        if (parent instanceof PrimitiveAndWrapperSelectorImpl) {
-            sb.append(parent);
-        } else {
-            sb.append(isFieldSelector() ? "field(" : "all(");
-
-            if (targetClass != null) {
-                sb.append(targetClass.getSimpleName());
-            }
-            if (fieldName != null) {
-                if (targetClass != null) {
-                    sb.append(", ");
-                }
-                sb.append('"').append(fieldName).append('"');
-            }
-            sb.append(')');
-
-            // can only have depth or scopes, but not both
-            if (depth != null) {
-                sb.append(".atDepth(").append(depth).append(')');
-            } else if (!scopes.isEmpty()) {
-                sb.append(", ").append(Format.formatScopes(scopes));
-            }
+        if (depth != null) {
+            sb.append(".atDepth(").append(depth).append(')');
+        }
+        if (!scopes.isEmpty()) {
+            sb.append(", ").append(Format.formatScopes(scopes));
         }
         return sb.toString();
+    }
+
+    public Builder toBuilder() {
+        Builder builder = new Builder();
+        builder.target = this.target;
+        builder.scopes = this.scopes;
+        builder.parent = this.parent;
+        builder.stackTraceHolder = this.stackTraceHolder;
+        builder.depth = this.depth;
+        return builder;
     }
 
     public static Builder builder() {
@@ -228,8 +195,7 @@ public final class SelectorImpl
     }
 
     public static final class Builder {
-        private Class<?> targetClass;
-        private String fieldName;
+        private Target target;
         private List<Scope> scopes;
         private Selector parent;
         private Throwable stackTraceHolder;
@@ -238,13 +204,8 @@ public final class SelectorImpl
         private Builder() {
         }
 
-        public Builder targetClass(final Class<?> targetClass) {
-            this.targetClass = targetClass;
-            return this;
-        }
-
-        public Builder fieldName(final String fieldName) {
-            this.fieldName = fieldName;
+        public Builder target(final Target target) {
+            this.target = target;
             return this;
         }
 

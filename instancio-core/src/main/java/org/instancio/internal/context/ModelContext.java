@@ -28,15 +28,19 @@ import org.instancio.internal.RandomHelper;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.internal.selectors.SelectorProcessor;
+import org.instancio.internal.selectors.SetterSelectorHolder;
+import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.spi.InternalServiceProviderContext;
+import org.instancio.internal.spi.InternalServiceProviderImpl;
 import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
-import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.internal.util.Sonar;
+import org.instancio.internal.util.SystemProperties;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
+import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
 import org.instancio.settings.Settings;
@@ -61,17 +65,16 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap;
-import static org.instancio.internal.context.ModelContextHelper.preProcess;
+import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public final class ModelContext<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
-    private static final List<InternalContainerFactoryProvider> CONTAINER_FACTORIES =
+    private static final List<InternalServiceProvider> INTERNAL_SERVICE_PROVIDERS =
             CollectionUtils.combine(
-                    ServiceLoaders.loadAll(InternalContainerFactoryProvider.class),
-                    new InternalContainerFactoryProviderImpl());
-
+                    ServiceLoaders.loadAll(InternalServiceProvider.class),
+                    new InternalServiceProviderImpl());
 
     private final Providers providers;
     private final Type rootType;
@@ -134,12 +137,27 @@ public final class ModelContext<T> {
         if (Boolean.TRUE.equals(builder.lenient)) {
             settings.set(Keys.MODE, Mode.LENIENT);
         }
+
+        // The system property override is used for running
+        // feature-tests using both assignment types
+        final AssignmentType assignmentTypeOverride = SystemProperties.getAssignmentType();
+        if (assignmentTypeOverride != null) {
+            settings.set(Keys.ASSIGNMENT_TYPE, assignmentTypeOverride);
+        }
+
         LOG.trace("Resolved settings: {}", settings);
+
+        final SetterSelectorHolder holder = builder.getSetMethodSelectorHolder();
+
+        ApiValidator.failIfMethodSelectorIsUsedWithFieldAssignment(
+                settings.get(Keys.ASSIGNMENT_TYPE),
+                holder.getSetterSelector());
+
         return settings.lock();
     }
 
-    public List<InternalContainerFactoryProvider> getContainerFactories() {
-        return CONTAINER_FACTORIES;
+    public List<InternalServiceProvider> getInternalServiceProviders() {
+        return INTERNAL_SERVICE_PROVIDERS;
     }
 
     public Providers getServiceProviders() {
@@ -180,7 +198,7 @@ public final class ModelContext<T> {
     }
 
     public Integer getMaxDepth() {
-        return ObjectUtils.defaultIfNull(maxDepth, settings.get(Keys.MAX_DEPTH));
+        return defaultIfNull(maxDepth, settings.get(Keys.MAX_DEPTH));
     }
 
     public boolean isIgnored(final InternalNode node) {
@@ -271,6 +289,8 @@ public final class ModelContext<T> {
         private final Map<TargetSelector, List<Assignment>> assignmentSelectors = new LinkedHashMap<>();
         private final Set<TargetSelector> ignoredTargets = new LinkedHashSet<>();
         private final Set<TargetSelector> nullableTargets = new LinkedHashSet<>();
+        private final SetterSelectorHolder setMethodSelectorHolder = new SetterSelectorHolder();
+        private final SelectorProcessor selectorProcessor;
         private Settings settings;
         private Integer maxDepth;
         private Long seed;
@@ -280,6 +300,12 @@ public final class ModelContext<T> {
         private Builder(final Type rootType) {
             this.rootType = Verify.notNull(rootType, "Root type is null");
             this.rootClass = TypeUtils.getRawType(this.rootType);
+            this.selectorProcessor = new SelectorProcessor(
+                    rootClass, INTERNAL_SERVICE_PROVIDERS, setMethodSelectorHolder);
+        }
+
+        private SetterSelectorHolder getSetMethodSelectorHolder() {
+            return setMethodSelectorHolder;
         }
 
         public Builder<T> withRootTypeParameters(final List<Type> rootTypeParameters) {
@@ -288,15 +314,23 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withSubtype(final TargetSelector selector, final Class<?> subtype) {
-            this.subtypeSelectors.put(preProcess(selector, rootClass),
-                    ApiValidator.notNull(subtype, "subtype must not be null"));
+        private <V> Builder<T> putSelector(
+                final Map<TargetSelector, V> map,
+                final TargetSelector selector,
+                final V value) {
+
+            final List<TargetSelector> processed = selectorProcessor.process(selector);
+            processed.forEach(s -> map.put(s, value));
             return this;
         }
 
+        public Builder<T> withSubtype(final TargetSelector selector, final Class<?> subtype) {
+            ApiValidator.notNull(subtype, "subtype must not be null");
+            return putSelector(subtypeSelectors, selector, subtype);
+        }
+
         public Builder<T> withGenerator(final TargetSelector selector, final Generator<?> generator) {
-            this.generatorSelectors.put(preProcess(selector, rootClass), generator);
-            return this;
+            return putSelector(generatorSelectors, selector, generator);
         }
 
         public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
@@ -304,22 +338,20 @@ public final class ModelContext<T> {
         }
 
         public <V> Builder<T> withGeneratorSpec(final TargetSelector selector, final GeneratorSpecProvider<V> spec) {
-            this.generatorSpecSelectors.put(preProcess(selector, rootClass), spec);
-            return this;
+            return putSelector(generatorSpecSelectors, selector, spec);
         }
 
         public Builder<T> withOnCompleteCallback(final TargetSelector selector, final OnCompleteCallback<?> callback) {
-            this.onCompleteCallbacks.put(preProcess(selector, rootClass), callback);
-            return this;
+            return putSelector(onCompleteCallbacks, selector, callback);
         }
 
         public Builder<T> withIgnored(final TargetSelector selector) {
-            this.ignoredTargets.add(preProcess(selector, rootClass));
+            this.ignoredTargets.addAll(selectorProcessor.process(selector));
             return this;
         }
 
         public Builder<T> withNullable(final TargetSelector selector) {
-            this.nullableTargets.add(preProcess(selector, rootClass));
+            this.nullableTargets.addAll(selectorProcessor.process(selector));
             return this;
         }
 
@@ -340,17 +372,21 @@ public final class ModelContext<T> {
             final List<InternalAssignment> assignments = ((Flattener<InternalAssignment>) assignment).flatten();
 
             for (InternalAssignment a : assignments) {
-                final TargetSelector origin = preProcess(a.getOrigin(), rootClass);
-                final TargetSelector destination = preProcess(a.getDestination(), rootClass);
+                final List<TargetSelector> origin = selectorProcessor.process(a.getOrigin());
+                final List<TargetSelector> destinations = selectorProcessor.process(a.getDestination());
 
-                final Assignment processedAssignment = a.toBuilder()
-                        .origin(origin)
-                        .destination(destination)
-                        .build();
+                Verify.isTrue(origin.size() == 1, "Origin has multiple selectors");
 
-                this.assignmentSelectors
-                        .computeIfAbsent(destination, k -> new ArrayList<>())
-                        .add(processedAssignment);
+                for (TargetSelector destination : destinations) {
+                    final Assignment processedAssignment = a.toBuilder()
+                            .origin(origin.get(0))
+                            .destination(destination)
+                            .build();
+
+                    this.assignmentSelectors
+                            .computeIfAbsent(destination, k -> new ArrayList<>())
+                            .add(processedAssignment);
+                }
             }
         }
 

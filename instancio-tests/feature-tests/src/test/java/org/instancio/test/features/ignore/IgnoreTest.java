@@ -17,6 +17,9 @@ package org.instancio.test.features.ignore;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
@@ -27,6 +30,7 @@ import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +40,7 @@ import static org.instancio.Select.allShorts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
+import static org.instancio.Select.setter;
 import static org.instancio.Select.scope;
 
 @FeatureTag(Feature.IGNORE)
@@ -47,6 +52,20 @@ class IgnoreTest {
         final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
                 .ignore(field("stringValue"))
                 .ignore(field("intValue"))
+                .create();
+
+        assertThat(holder.getStringValue()).isEqualTo(ClassWithInitializedField.DEFAULT_STRING_FIELD_VALUE);
+        assertThat(holder.getIntValue()).isEqualTo(ClassWithInitializedField.DEFAULT_INT_FIELD_VALUE);
+    }
+
+    @Test
+    @RunWithMethodAssignmentOnly
+    @DisplayName("Ignored method should not be invoked so the original field value is retained")
+    void methodIsIgnored() {
+        final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)
+                .withSettings(Settings.create().set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD))
+                .ignore(setter(ClassWithInitializedField::setStringValue))
+                .ignore(setter(ClassWithInitializedField::setIntValue))
                 .create();
 
         assertThat(holder.getStringValue()).isEqualTo(ClassWithInitializedField.DEFAULT_STRING_FIELD_VALUE);

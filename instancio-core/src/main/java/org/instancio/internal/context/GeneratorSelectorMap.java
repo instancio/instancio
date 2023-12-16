@@ -79,11 +79,7 @@ class GeneratorSelectorMap {
 
     private void putAllGenerators(final Map<TargetSelector, Generator<?>> generatorMap) {
         for (Map.Entry<TargetSelector, Generator<?>> entry : generatorMap.entrySet()) {
-            final TargetSelector targetSelector = entry.getKey();
-            final Generator<?> generator = entry.getValue();
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                putGenerator(selector, generator);
-            }
+            putGenerator(entry.getKey(), entry.getValue());
         }
     }
 

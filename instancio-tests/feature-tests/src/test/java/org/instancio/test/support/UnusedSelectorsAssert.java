@@ -17,11 +17,8 @@ package org.instancio.test.support;
 
 import org.assertj.core.api.ThrowableAssert;
 import org.instancio.InstancioApi;
-import org.instancio.PredicateSelector;
-import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
-import org.instancio.internal.selectors.SelectorBuilder;
 
 import java.util.Set;
 
@@ -154,13 +151,11 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
     }
 
     private boolean isUnusedSelector(final TargetSelector selector, final Set<TargetSelector> selectors) {
-        if (selector instanceof Selector) {
-            return selectors.contains(selector);
-        } else if (selector instanceof PredicateSelector || selector instanceof SelectorBuilder) {
-            return selectors.stream()
-                    .map(Object::toString)
-                    .anyMatch(it -> it.equals(selector.toString()));
-        }
-        throw new AssertionError("Unreachable");
+        // We can't look up the selector in the Set use contains() because
+        // the passed in 'selector' is unprocessed, and equals() cannot be used
+        // to compare processed and unprocessed selectors
+        return selectors.stream()
+                .map(Object::toString)
+                .anyMatch(it -> it.equals(selector.toString()));
     }
 }

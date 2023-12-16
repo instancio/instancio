@@ -73,7 +73,8 @@ internal class KSelectorsTest {
     @FeatureTag(Feature.UNSUPPORTED)
     fun methodReferenceFromKotlinClass() {
         assertThatThrownBy {
-            field(KPhone::number)
+            Instancio.of(KPhone::class.java)
+                .set(field(KPhone::number), "foo")
         }.isExactlyInstanceOf(InstancioApiException::class.java)
             .hasMessageContainingAll(
                 "Unable to resolve the field from method reference",

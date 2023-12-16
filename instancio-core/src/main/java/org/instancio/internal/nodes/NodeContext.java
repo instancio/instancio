@@ -19,7 +19,7 @@ import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.SubtypeSelectorMap;
-import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
@@ -35,27 +35,33 @@ import java.util.Set;
 
 public final class NodeContext {
     private final int maxDepth;
+    private final Settings settings;
     private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final BooleanSelectorMap ignoredSelectorMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
     private final BooleanSelectorMap assignmentOriginSelectors;
     private final Map<Class<?>, Class<?>> subtypeMappingFromSettings;
     private final TypeResolverFacade typeResolverFacade;
-    private final List<InternalContainerFactoryProvider> containerFactories;
+    private final List<InternalServiceProvider> internalServiceProviders;
 
     private NodeContext(final Builder builder) {
         maxDepth = builder.maxDepth;
+        settings = builder.settings;
         rootTypeMap = builder.rootTypeMap;
         ignoredSelectorMap = builder.ignoredSelectorMap;
         subtypeSelectorMap = builder.subtypeSelectorMap;
         subtypeMappingFromSettings = builder.subtypeMappingFromSettings;
         assignmentOriginSelectors = builder.assignmentOriginSelectors;
-        containerFactories = builder.containerFactories;
+        internalServiceProviders = builder.internalServiceProviders;
         typeResolverFacade = new TypeResolverFacade(builder.providerEntries);
     }
 
     public int getMaxDepth() {
         return maxDepth;
+    }
+
+    public Settings getSettings() {
+        return settings;
     }
 
     public Map<TypeVariable<?>, Type> getRootTypeMap() {
@@ -94,8 +100,8 @@ public final class NodeContext {
         return ignoredSelectorMap.isTrue(node);
     }
 
-    public List<InternalContainerFactoryProvider> getContainerFactories() {
-        return containerFactories;
+    public List<InternalServiceProvider> getInternalServiceProviders() {
+        return internalServiceProviders;
     }
 
     public static Builder builder() {
@@ -104,12 +110,13 @@ public final class NodeContext {
 
     public static final class Builder {
         private int maxDepth;
+        private Settings settings;
         private Map<TypeVariable<?>, Type> rootTypeMap = Collections.emptyMap();
         private BooleanSelectorMap ignoredSelectorMap;
         private SubtypeSelectorMap subtypeSelectorMap;
         private BooleanSelectorMap assignmentOriginSelectors;
         private Map<Class<?>, Class<?>> subtypeMappingFromSettings = Collections.emptyMap();
-        private List<InternalContainerFactoryProvider> containerFactories = Collections.emptyList();
+        private List<InternalServiceProvider> internalServiceProviders = Collections.emptyList();
         private List<ProviderEntry<TypeResolver>> providerEntries = Collections.emptyList();
 
         private Builder() {
@@ -117,6 +124,11 @@ public final class NodeContext {
 
         public Builder maxDepth(final int maxDepth) {
             this.maxDepth = maxDepth;
+            return this;
+        }
+
+        public Builder settings(final Settings settings) {
+            this.settings = settings;
             return this;
         }
 
@@ -145,8 +157,8 @@ public final class NodeContext {
             return this;
         }
 
-        public Builder containerFactories(final List<InternalContainerFactoryProvider> containerFactories) {
-            this.containerFactories = containerFactories;
+        public Builder internalServiceProviders(final List<InternalServiceProvider> internalServiceProviders) {
+            this.internalServiceProviders = internalServiceProviders;
             return this;
         }
 

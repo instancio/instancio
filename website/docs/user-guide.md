@@ -195,11 +195,11 @@ Selectors are used to target fields and classes, for example in order to customi
 Instancio supports different types of selectors, all of which implement the {{TargetSelector}} interface.
 These types are:
 
-- regular selectors
-- method reference selector
-- predicate selectors
-- selector groups
-- convenience selectors
+- [regular selectors](#regular-selectors)
+- [method reference selector](#method-reference-selector)
+- [predicate selectors](#predicate-selectors)
+- [convenience selectors](#convenience-selectors)
+- [setter selectors](#setter-selectors)
 
 All of the above can be created using static methods from the {{Select}} class.
 
@@ -248,12 +248,12 @@ The mapping logic supports the following naming conventions:
 
 For example, all the following combinations of field and method names are supported:
 
-|Method name  |Field name  |Example|
-|-------------|------------|-------|
-|`getName()`  | `name`     |`field(Person::getName)`  -&gt; `field(Person.class, "name")`|
-|`name()`     | `name`     |`field(Person::name)`  -&gt; `field(Person.class, "name")`|
-|`isActive()` | `active`   |`field(Person::isActive)`  -&gt; `field(Person.class, "active")`|
-|`isActive()` | `isActive` |`field(Person::isActive)`  -&gt; `field(Person.class, "isActive")`|
+|Method name  |Field name  | Example                                                            |
+|-------------|------------|--------------------------------------------------------------------|
+|`getName()`  | `name`     | `field(Person::getName)`  -&gt; `field(Person.class, "name")`      |
+|`name()`     | `name`     | `field(Person::name)`  -&gt; `field(Person.class, "name")`         |
+|`isActive()` | `active`   | `field(Person::isActive)`  -&gt; `field(Person.class, "active")`   |
+|`isActive()` | `isActive` | `field(Person::isActive)`  -&gt; `field(Person.class, "isActive")` |
 
 For methods that follow other naming conventions, or situations where no method is available, regular field selectors can be used instead.
 
@@ -365,6 +365,42 @@ List<List<String>> result = Instancio.of(new TypeToken<List<List<String>>>() {})
 
 In this case, `all(List.class)` matches all lists except the outer list,
 because `root()` selector has higher precedence than other selectors.
+
+#### Setter selectors
+
+!!! info "Setter selectors are available since version `4.0.0`"
+
+Setter selectors allow targeting setter methods.
+These selectors can only be used if [Method Assignment](#assignment-settings) is enabled.
+
+``` java linenums="1"
+Select.setter(String methodName)
+Select.setter(Class<?> declaringClass, String methodName)
+Select.setter(Class<?> declaringClass, String methodName, Class<?> parameterType)
+```
+!!! attention ""
+    <lnum>1</lnum> Selects the setter by name, declared in the class being created.<br/>
+    <lnum>2</lnum> Selects the setter by name, declared in the specified class.<br/>
+    <lnum>3</lnum> Selects the setter by name and parameter type, declared in the specified class (for overloaded methods).<br/>
+
+!!! warning "Parameter type must be specified for overloaded methods."
+    Omitting the parameter type will lead to undefined behaviour.
+
+```java title="Examples"
+Select.setter(Person.class, "setName")
+Select.setter(Pojo.class, "setValue", String.class) // Pojo.setValue(String)
+Select.setter(Pojo.class, "setValue", Long.class)   // Pojo.setValue(Long)
+```
+
+In addition, a setter can be selected using the method reference selector:
+
+``` java linenums="1"
+Select.setter(SetMethodSelector<T, U> methodReference)
+```
+
+```java title="Example"
+Select.setter(Person::setName)
+```
 
 ### Selector Precedence
 
@@ -1751,27 +1787,38 @@ assertThat(person.getAddress().getCountry()).isEqualTo("USA"); // not overwritte
 ## Assignment Settings
 
 Assignment settings control whether values are assigned directly to fields (default behaviour)
-or via setter methods. There are a few {{Settings}} keys with enum values that control the behaviour.
+or via setter methods. There are a few setting {{Keys}} that control the behaviour.
 
-
-| `Keys` constant           | Enum class            |
-|---------------------------|-----------------------|
-| `ASSIGNMENT_TYPE`         | `AssignmentType`      |
-| `SETTER_STYLE`            | `SetterStyle`         |
-| `ON_SET_FIELD_ERROR`      | `OnSetFieldError`     |
-| `ON_SET_METHOD_ERROR`     | `OnSetMethodError`    |
-| `ON_SET_METHOD_NOT_FOUND` | `OnSetMethodNotFound` |
+| `Keys` constant           | Value type             | Default        | Description                                                   |
+|---------------------------|------------------------|----------------|---------------------------------------------------------------|
+| `ASSIGNMENT_TYPE`         | `AssignmentType`       | `FIELD`        | Should values be assigned via fields or setters               |
+| `SETTER_STYLE`            | `SetterStyle`          | `SET`          | Naming convention used for setters                            |
+| `ON_SET_FIELD_ERROR`      | `OnSetFieldError`      | `IGNORE`       | What should happen if field assignment fails                  |
+| `ON_SET_METHOD_ERROR`     | `OnSetMethodError`     | `ASSIGN_FIELD` | What should happen if method assignment fails                 |
+| `ON_SET_METHOD_NOT_FOUND` | `OnSetMethodNotFound`  | `ASSIGN_FIELD` | What should happen if a field does not have a matching setter |
+| `ON_SET_METHOD_UNMATCHED` | `OnSetMethodUnmatched` | `IGNORE`       | What should happen if a setter does not have a matching field |
+| `SETTER_EXCLUDE_MODIFIER` | `int`                  | `0` (none)     | Which setters should be ignored based on method modifiers     |
 
 To enable assignment via methods, `Keys.ASSIGNMENT_TYPE` can be set to `AssignmentType.METHOD`.
 This setting only applies to mutable fields because `final` fields cannot have setters.
 For non-static `final` fields Instancio will fall back to `AssignmentType.FIELD`.
 
-When enabled, Instancio will attempt to resolve setter names from field names using `SETTER_STYLE` setting.
+When method assignment is enabled, Instancio will attempt to resolve setter names from field names using `SETTER_STYLE` setting.
 This key's value is the `SetterStyle` enum that supports three naming conventions:
 
 - `SET` - standard setter prefix: `setFoo("value")`
 - `WITH` - for example: `withFoo("value")`
 - `PROPERTY` - no prefix: `foo("value")`
+
+There might be cases where a setter does not match any field using the configured naming convention.
+`ON_SET_METHOD_UNMATCHED` determines what happens in such cases.
+The default value is `OnSetMethodUnmatched.IGNORE`, therefore unmatched setters will not be invoked.
+The behaviour can be overridden by setting the value to `OnSetMethodUnmatched.INVOKE`.
+
+!!! warning "Special care must be taken when enabling unmatched setters in the presence of [overloaded setters](#overloaded-unmatched-setters)."
+
+`SETTER_EXCLUDE_MODIFIER` specifies whether setters with certain method modifiers should be ignored (by default, there are no exclusions).
+For example, using this setting it is possible to instruct Instancio to ignore private and package-private setters.
 
 The remaining `ON_SET_*` keys are used to control error-handling behaviour:
 
@@ -1788,7 +1835,6 @@ In addition, both `ON_SET_METHOD_*` settings can be configured to fall back to f
     An error caused by assigning an incompatible type is considered a user error and is never ignored.<br/><br/>
     For example, attempting to `set(allStrings(), 12345)` will always trigger an error
     regardless of the `ON_SET_FIELD_ERROR` setting.
-
 
 The following snippet illustrates how to create an object populated via setters.
 In this example, `SetterStyle.PROPERTY` is used since the `Phone` class has setters without the *set* prefix:
@@ -1826,6 +1872,218 @@ on.set.method.error=IGNORE
 ```
 
 See [Configuration](#configuration) for details.
+
+### Unmatched Setters
+
+When `Keys.ASSIGNMENT_TYPE` is set to `METHOD`, Instancio parses fields *and* setters declared by a class.
+In addition, it attempts to match each field to the corresponding setter using its name and parameter type.
+If a setter does not have a matching field, it is treated as *unmatched*.
+This can be illustrated using the following `Person` class.
+
+```java linenums="1"
+class Person {
+    private final Map<String, String> attributes = new HashMap<>();
+    private String name;
+
+    String getName() {
+        return name;
+    }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    String getFavouriteFood() {
+        return attributes.get("FAVOURITE_FOOD");
+    }
+
+    void setFavouriteFood(String favouriteFood) {
+        attributes.put("FAVOURITE_FOOD", favouriteFood);
+    }
+}
+```
+
+The class has the `setName(String)` method that matches the `String name` field. In addition,
+it has the `setFavouriteFood(String)` method. This setter is unmatched because it does not
+have a corresponding `String favouriteFood` field.
+
+| Field         | Setter                     |                  |
+|---------------|----------------------------|------------------|
+| `String name` | `setName(String)`          | Matched setter   |
+| `-`           | `setFavouriteFood(String)` | Unmatched setter |
+
+
+#### Using `OnSetMethodUnmatched.INVOKE`
+
+In the first example, we will create an object with the following settings and `verbose()` mode enabled:
+
+```java linenums="1" hl_lines="3-5"
+Person person = Instancio.of(Person.class)
+    .withSettings(Settings.create()
+            .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+            .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.IGNORE)
+            .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
+    .verbose()
+    .create();
+```
+!!! attention ""
+    <lnum>3</lnum> Assign values via setter methods instead of fields.<br/>
+    <lnum>4</lnum> Ignore fields that do not have a setter.<br/>
+    <lnum>5</lnum> Invoke unmatched setters.
+
+
+`verbose()` mode prints the node hierarchy to standard out:
+
+```
+<0:Person>
+ ├──<1:Person: Map<String, String> attributes>    // Field without a setter
+ │   ├──<2:String>  // map key
+ │   └──<2:String>  // map value
+ ├──<1:Person: String name; setName(String)>      // Field with a setter
+ └──<1:Person: setFavouriteFood(String)>          // Setter without a field (unmatched setter)
+```
+
+The following is a sample object generated by the snippet:
+
+```
+Person(name=OHARWES, attributes={FAVOURITE_FOOD=JRKB})
+```
+
+The `attributes` map was not populated with random entries because `ON_SET_METHOD_NOT_FOUND`
+was set to `OnSetMethodNotFound.IGNORE`. However, since `ON_SET_METHOD_UNMATCHED` was set to `OnSetMethodUnmatched.INVOKE`,
+Instancio invoked the `setFavouriteFood` method passing in a random value.
+Therefore, the map contains a `FAVOURITE_FOOD` entry.
+
+Next, we will set `ON_SET_METHOD_NOT_FOUND` to `OnSetMethodNotFound.ASSIGN_FIELD`, keeping everything else the same:
+
+```java linenums="1" hl_lines="4"
+Person person = Instancio.of(Person.class)
+    .withSettings(Settings.create()
+            .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+            .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.ASSIGN_FIELD)
+            .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
+    .verbose()
+    .create();
+```
+
+This time, a sample output might look as follows:
+
+```
+Person(name=EJH, attributes={YQJ=CDQVQVL, WTUHE=GWXZ, FAVOURITE_FOOD=XCF, TYLHQJ=GKDIH})
+```
+
+In the above example, Instancio generates a map with random values and assigns it directly
+via the field since it does not have a setter.
+`setFavouriteFood` is also invoked, which adds the `FAVOURITE_FOOD` entry to the map.
+
+#### Using `OnSetMethodUnmatched.IGNORE`
+
+In the next example, we modify the above snippet to set `ON_SET_METHOD_UNMATCHED` to `OnSetMethodUnmatched.IGNORE`:
+
+```java linenums="1" hl_lines="5"
+Person person = Instancio.of(Person.class)
+    .withSettings(Settings.create()
+            .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+            .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.IGNORE)
+            .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.IGNORE))
+    .verbose()
+    .create();
+```
+
+Since unmatched setters are ignored, the node hierarchy does not have the `<1:Person: setFavouriteFood(String)>` node:
+
+```
+<0:Person>
+ ├──<1:Person: Map<String, String> attributes>
+ │   ├──<2:String>
+ │   └──<2:String>
+ └──<1:Person: String name; setName(String)>
+```
+
+The sample output contains an empty map since the unmatched setter was not invoked:
+
+```
+Person(name=NQMNABNBM, attributes={})
+```
+
+If we modify the last example to set `Keys.ON_SET_METHOD_NOT_FOUND` to `OnSetMethodNotFound.ASSIGN_FIELD`,
+then the `attributes` map will be populated with random entries but no `FAVOURITE_FOOD`.
+
+
+#### Overloaded unmatched setters
+
+Special care must be taken when a field has more than one setter.
+Consider the following class with two `setValue` methods:
+
+```java linenums="1"
+class Pojo {
+    private int value;
+
+    int getValue() {
+        return value;
+    }
+
+    void setValue(int value) {
+        System.out.println("setValue(int) called with: " + value);
+        this.value = value;
+    }
+
+    void setValue(double value) {
+        System.out.println("setValue(double) called with: " + value);
+        this.value = (int) value;
+    }
+}
+```
+
+At first glance, the following example should produce the `value` field set to `123`:
+
+```java linenums="1"
+Pojo pojo = Instancio.of(Pojo.class)
+    .withSettings(Settings.create()
+            .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+            .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
+    .set(field(Pojo::getValue), 123)
+    .verbose()
+    .create();
+```
+
+However, running the snippet will produce the following output:
+
+```
+setValue(int) called with: 123
+setValue(double) called with: 7387.1580772
+```
+
+This is because `ON_SET_METHOD_UNMATCHED` is set to `OnSetMethodUnmatched.INVOKE`,
+which results in two nodes related to the `value` field:
+
+```
+<0:Pojo>
+ ├──<1:Pojo: int value; setValue(int)>      // field with matching setter
+ └──<1:Pojo: setValue(double)>              // unmatched setter without a field
+```
+
+Instancio would populate each of these nodes.
+Nodes that have fields are populated first, and nodes without fields (unmatched setters) are last.
+The reason for this is that unmatched setters often require fields to be initialised before being invoked
+(for instance, an unmatched setter might be adding an element to a collection).
+
+Therefore, for the above snippet to produce the expected value of `123`,
+the `setValue(double)` method would need to be ignored (or `ON_SET_METHOD_UNMATCHED` set to `OnSetMethodUnmatched.IGNORE`):
+
+```java linenums="1" hl_lines="6"
+Pojo pojo = Instancio.of(Pojo.class)
+    .withSettings(Settings.create()
+            .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+            .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
+    .set(field(Pojo::getValue), 123)
+    .ignore(setter(Pojo.class, "setValue", double.class))
+    .create();
+```
+!!! attention ""
+    <lnum>6</lnum> Because the method is overloaded, the selector `setter(Pojo.class, "setValue", double.class)`
+    must be used to specify the parameter explicitly, instead of the more concise `setter(Pojo::setValue)`.
+
 
 ## Maximum Depth Setting
 
@@ -2332,7 +2590,8 @@ Default settings can be overridden using `instancio.properties`.
 Instancio will automatically load this file from the root of the classpath.
 The following listing shows all the property keys that can be configured.
 
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 29 30 35 43 53"
+
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 29 30 35 44 54"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -2374,6 +2633,7 @@ assignment.type=FIELD
 on.set.field.error=IGNORE
 on.set.method.error=ASSIGN_FIELD
 on.set.method.not.found=ASSIGN_FIELD
+on.set.method.unmatched=IGNORE
 setter.style=SET
 seed=12345
 set.back.references=false
@@ -2395,8 +2655,8 @@ subtype.java.util.SortedMap=java.util.TreeMap
     <lnum>1,11,29-30</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
     <lnum>35</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
-    <lnum>43</lnum> Specifies a global seed value.<br/>
-    <lnum>53</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>44</lnum> Specifies a global seed value.<br/>
+    <lnum>54</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 

@@ -16,7 +16,6 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
-import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,11 +43,9 @@ public final class SubtypeSelectorMap {
     }
 
     private void putAll(final Map<TargetSelector, Class<?>> subtypes) {
-        subtypes.forEach((TargetSelector targetSelector, Class<?> subtype) -> {
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                selectorMap.put(selector, subtype);
-            }
-        });
+        for (Map.Entry<TargetSelector, Class<?>> entry : subtypes.entrySet()) {
+            selectorMap.put(entry.getKey(), entry.getValue());
+        }
     }
 
     Map<TargetSelector, Class<?>> getSubtypeSelectors() {

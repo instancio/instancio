@@ -17,7 +17,8 @@ package org.instancio.internal;
 
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalServiceProvider.InternalContainerFactoryProvider;
 
 import java.util.List;
 import java.util.function.Function;
@@ -25,10 +26,10 @@ import java.util.stream.Collectors;
 
 class ContainerFactoriesHandler {
 
-    private final List<InternalContainerFactoryProvider> providers;
+    private final List<InternalServiceProvider> internalServiceProviders;
 
-    ContainerFactoriesHandler(final List<InternalContainerFactoryProvider> providers) {
-        this.providers = providers;
+    ContainerFactoriesHandler(final List<InternalServiceProvider> providers) {
+        this.internalServiceProviders = providers;
     }
 
     /**
@@ -48,8 +49,13 @@ class ContainerFactoriesHandler {
                 .map(InternalNode::getTargetClass)
                 .collect(Collectors.toList());
 
-        for (InternalContainerFactoryProvider provider : providers) {
-            final Function<Object, ?> fn = provider.getMappingFunction(
+        for (InternalServiceProvider isp : internalServiceProviders) {
+            final InternalContainerFactoryProvider cfp = isp.getContainerFactoryProvider();
+            if (cfp == null) {
+                continue;
+            }
+
+            final Function<Object, ?> fn = cfp.getMappingFunction(
                     node.getTargetClass(), typeArgs);
 
             if (fn != null) {

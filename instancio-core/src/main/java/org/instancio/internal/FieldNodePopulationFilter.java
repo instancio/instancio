@@ -15,7 +15,6 @@
  */
 package org.instancio.internal;
 
-import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ReflectionUtils;
@@ -28,14 +27,11 @@ final class FieldNodePopulationFilter implements NodePopulationFilter {
                               final Object owner) {
 
         if (afterGenerate == AfterGenerate.POPULATE_NULLS) {
-            return ReflectionUtils.hasNonNullValue(node.getField(), owner);
+            return node.getField() != null && ReflectionUtils.hasNonNullValue(node.getField(), owner);
         }
 
         if (afterGenerate == AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES) {
-            if (node.getField() == null) {
-                throw new InstancioException("Node has a null field: " + node);
-            }
-            return ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(
+            return node.getField() != null && ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(
                     node.getField(), owner);
         }
 

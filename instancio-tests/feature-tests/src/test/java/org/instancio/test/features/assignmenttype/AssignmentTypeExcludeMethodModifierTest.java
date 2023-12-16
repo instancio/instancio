@@ -16,7 +16,6 @@
 package org.instancio.test.features.assignmenttype;
 
 import org.instancio.Instancio;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.AssignmentType;
@@ -27,16 +26,16 @@ import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWithMethodAssignmentOnly
 @FeatureTag(Feature.ASSIGNMENT_TYPE)
 @ExtendWith(InstancioExtension.class)
-@DisabledIfSystemProperty(named = SystemProperties.ASSIGNMENT_TYPE, matches = "FIELD")
 class AssignmentTypeExcludeMethodModifierTest {
 
     @WithSettings

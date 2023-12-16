@@ -18,6 +18,7 @@ package org.instancio.internal.util;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
+import org.instancio.test.support.pojo.assignment.NonSetter;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.pojo.person.Gender;
@@ -28,6 +29,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.AbstractList;
 import java.util.List;
 
@@ -83,6 +85,34 @@ class ReflectionUtilsTest {
         assertThatThrownBy(() -> ReflectionUtils.getEnumValues(null))
                 .isExactlyInstanceOf(InstancioException.class)
                 .hasMessage("Error getting enum values for: null");
+    }
+
+    @Test
+    void getSetMethodParameterType() throws NoSuchMethodException {
+        final Method setName = Person.class.getDeclaredMethod("setName", String.class);
+
+        assertThat(ReflectionUtils.getSetMethodParameterType(setName)).isEqualTo(String.class);
+
+        final Method setFoo = NonSetter.class.getDeclaredMethod("setFoo", int.class, int.class);
+
+        assertThatThrownBy(() -> ReflectionUtils.getSetMethodParameterType(setFoo))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Expected exactly 1 parameter, but got: 2");
+    }
+
+    @Test
+    void getSetterMethod() {
+        assertThat(ReflectionUtils.getSetterMethod(Person.class, "setName", String.class)).isNotNull();
+        assertThat(ReflectionUtils.getSetterMethod(Person.class, "setName", null)).isNotNull();
+
+        assertThatThrownBy(() -> ReflectionUtils.getSetterMethod(Person.class, "setName", int.class))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("Could not find method method 'setName(int)' declared by %s", Person.class);
+
+        final String invalidMethodName = "invalid-method-name";
+        assertThatThrownBy(() -> ReflectionUtils.getSetterMethod(Person.class, invalidMethodName, null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("Could not find method method '%s' declared by %s", invalidMethodName, Person.class);
     }
 
     @Test

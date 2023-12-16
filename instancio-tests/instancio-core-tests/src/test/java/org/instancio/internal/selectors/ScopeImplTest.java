@@ -16,7 +16,7 @@
 package org.instancio.internal.selectors;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
-import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.Select;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 
@@ -25,23 +25,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ScopeImplTest {
 
     @Test
-    void resolveField() {
-        final ScopeImpl scope = new ScopeImpl(Person.class, "name");
-        assertThat(scope.resolveField()).isEqualTo(ReflectionUtils.getField(Person.class, "name"));
-    }
-
-    @Test
     void verifyEqualsAndHashcode() {
-        EqualsVerifier.forClass(ScopeImpl.class).verify();
+        EqualsVerifier.forClass(ScopeImpl.class)
+                .withNonnullFields("target")
+                .verify();
     }
 
     @Test
     void verifyToString() {
-        assertThat(new ScopeImpl(String.class, null)).hasToString("scope(String)");
-        assertThat(new ScopeImpl(Person.class, "name")).hasToString("scope(Person, \"name\")");
+        assertThat(new ScopeImpl(new TargetClass(String.class), null))
+                .hasToString("scope(String)");
+
+        assertThat(Select.field("name").toScope())
+                .hasToString("scope(\"name\")");
+
+        assertThat(new ScopeImpl(new TargetFieldName(Person.class, "name"), null))
+                .hasToString("scope(Person, \"name\")");
+
+        assertThat(Select.setter(Person.class, "setName").toScope())
+                .hasToString("scope(Person, setName)");
+
+        assertThat(Select.setter(Person.class, "setName", String.class).toScope())
+                .hasToString("scope(Person, setName(String))");
 
         // with depth
-        assertThat(new ScopeImpl(String.class, null, 1)).hasToString("scope(String, atDepth(1))");
-        assertThat(new ScopeImpl(Person.class, "name", 2)).hasToString("scope(Person, \"name\", atDepth(2))");
+        assertThat(new ScopeImpl(new TargetClass(String.class), 1))
+                .hasToString("scope(String, atDepth(1))");
+
+        assertThat(new ScopeImpl(new TargetFieldName(Person.class, "name"), 2))
+                .hasToString("scope(Person, \"name\", atDepth(2))");
+
+        assertThat(Select.setter(Person.class, "setName", String.class).atDepth(3).toScope())
+                .hasToString("scope(Person, setName(String), atDepth(3))");
     }
 }

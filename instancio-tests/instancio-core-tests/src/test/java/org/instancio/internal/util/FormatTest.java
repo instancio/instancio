@@ -109,15 +109,15 @@ class FormatTest {
         final InternalNode address = NodeUtils.getChildNode(person, "address");
         assertEqualsIgnoringLineCarriage(Format.nodePathToRoot(address, "  "),
                 """
-                          <1:Person: Address address>
+                          <1:Person: Address address; setAddress(Address)>
                            └──<0:Person>\
                         """);
 
         final InternalNode phoneNumbers = NodeUtils.getChildNode(address, "phoneNumbers");
         assertEqualsIgnoringLineCarriage(Format.nodePathToRoot(phoneNumbers, " > "),
                 """
-                         > <2:Address: List<Phone> phoneNumbers>
-                         >  └──<1:Person: Address address>
+                         > <2:Address: List<Phone> phoneNumbers; setPhoneNumbers(List<Phone>)>
+                         >  └──<1:Person: Address address; setAddress(Address)>
                          >      └──<0:Person>\
                         """);
     }

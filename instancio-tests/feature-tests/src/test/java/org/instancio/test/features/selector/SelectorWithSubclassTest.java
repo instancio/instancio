@@ -17,39 +17,65 @@ package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.Selector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance.BaseClass;
 import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance.SubClass;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
+import static org.instancio.Select.setter;
 
 @FeatureTag({Feature.SELECTOR, Feature.SUPPLY})
 class SelectorWithSubclassTest {
 
     @Test
     @DisplayName("If field is defined in a parent class, need to specify the class explicitly")
-    void setParentClassFieldWithoutSpecifyingSelectorClass() {
-        final InstancioApi<SubClass> api = Instancio.of(SubClass.class)
-                .set(field("privateBaseClassField"), "foo");
+    void setParentClassFieldWithoutSpecifyingSelectorTargetClass() {
+        final String fieldName = "privateBaseClassField";
+        final Selector selector = field(fieldName);
+        final InstancioApi<SubClass> api = Instancio.of(SubClass.class);
 
-        assertThatThrownBy(api::create)
+        assertThatThrownBy(() -> api.set(selector, "foo"))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("invalid field 'privateBaseClassField'");
+                .hasMessageContaining("invalid field '%s' for %s", fieldName, SubClass.class);
     }
 
-    @Test
-    @DisplayName("Selecting value by specifying parent class and field")
-    void setParentClassFieldSpecifyingSelectorClass() {
-        final SubClass result = Instancio.of(SubClass.class)
-                .set(field(BaseClass.class, "privateBaseClassField"), "foo")
-                .create();
+    @Nested
+    class SetBaseClassFieldSelectorTest {
+        @Test
+        @DisplayName("Selecting value by specifying parent class and field")
+        void usingFieldSelector() {
+            final SubClass result = Instancio.of(SubClass.class)
+                    .set(field(BaseClass.class, "privateBaseClassField"), "foo")
+                    .create();
 
-        assertThat(result.getPrivateBaseClassField()).isEqualTo("foo");
+            assertThat(result.getPrivateBaseClassField()).isEqualTo("foo");
+        }
+
+        @Test
+        @RunWithMethodAssignmentOnly
+        @DisplayName("Selecting value by specifying parent class and method")
+        void usingMethodFieldSelector() {
+            final SubClass result = Instancio.of(SubClass.class)
+                    .withSettings(Settings.create()
+                            .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+                            .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL))
+                    .set(setter(BaseClass.class, "setPrivateBaseClassField"), "foo")
+                    .create();
+
+            assertThat(result.getPrivateBaseClassField()).isEqualTo("foo");
+        }
     }
 }

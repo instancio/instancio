@@ -19,13 +19,18 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.FieldSelectorBuilderImpl;
-import org.instancio.internal.selectors.MethodReferenceHelper;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.TargetClass;
+import org.instancio.internal.selectors.TargetFieldName;
+import org.instancio.internal.selectors.TargetGetterReference;
+import org.instancio.internal.selectors.TargetSetterName;
+import org.instancio.internal.selectors.TargetSetterReference;
 import org.instancio.internal.selectors.TypeSelectorBuilderImpl;
+import org.instancio.settings.Keys;
 
 import java.lang.reflect.Field;
 import java.util.function.Predicate;
@@ -179,7 +184,9 @@ public final class Select {
      */
     public static Selector all(final Class<?> type) {
         ApiValidator.notNull(type, "Class must not be null");
-        return SelectorImpl.builder().targetClass(type).build();
+        return SelectorImpl.builder()
+                .target(new TargetClass(type))
+                .build();
     }
 
     /**
@@ -218,13 +225,11 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector field(final Class<?> declaringClass, final String fieldName) {
-        final String className = declaringClass == null ? null : declaringClass.getCanonicalName(); // NOSONAR
-        ApiValidator.validateField(declaringClass, fieldName,
-                String.format("Invalid field selector: (%s, %s)", className, fieldName));
+        ApiValidator.notNull(declaringClass, "declaring class must not be null");
+        ApiValidator.notNull(fieldName, "field name must not be null");
 
         return SelectorImpl.builder()
-                .targetClass(declaringClass)
-                .fieldName(fieldName)
+                .target(new TargetFieldName(declaringClass, fieldName))
                 .build();
     }
 
@@ -249,7 +254,9 @@ public final class Select {
      */
     public static Selector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "field name must not be null");
-        return SelectorImpl.builder().fieldName(fieldName).build();
+        return SelectorImpl.builder()
+                .target(new TargetFieldName(null, fieldName))
+                .build();
     }
 
     /**
@@ -307,8 +314,108 @@ public final class Select {
      */
     @ExperimentalApi
     public static <T, R> Selector field(final GetMethodSelector<T, R> methodReference) {
-        ApiValidator.notNull(methodReference, "method reference must not be null");
-        return MethodReferenceHelper.resolve(methodReference);
+        ApiValidator.notNull(methodReference, "getter method reference must not be null");
+        return SelectorImpl.builder()
+                .target(new TargetGetterReference(methodReference))
+                .build();
+    }
+
+    /**
+     * Selects a setter by name declared in the class being created.
+     * The setter method must have exactly one parameter. Since this method
+     * resolves the setter by name only (ignoring the parameter type)
+     * it should only be used if there are no overloaded setters.
+     *
+     * <p>Example
+     * <pre>{@code
+     * Person person = Instancio.of(Person.class)
+     *     .ignore(setter("setFullName")) // Person.setFullName
+     *     .create();
+     * }</pre>
+     *
+     * <p><b>Note:</b> setter selectors can only be used if
+     * {@link Keys#ASSIGNMENT_TYPE} is set to {@code AssignmentType.METHOD}.
+     *
+     * @param methodName the name of the setter method to select
+     * @return a selector for given method
+     * @throws InstancioApiException if the root class has no method with the specified name
+     * @see #setter(Class, String)
+     * @see #setter(Class, String, Class)
+     * @since 4.0.0
+     */
+    @ExperimentalApi
+    public static Selector setter(final String methodName) {
+        return setter(null, methodName, null);
+    }
+
+    /**
+     * Selects a setter method by name in the specified class.
+     * The method must have exactly one parameter. Since this method resolves
+     * the setter by name only (ignoring the parameter type)
+     * it should only be used if there are no overloaded setters.
+     *
+     * <p><b>Note:</b> setter selectors can only be used if
+     * {@link Keys#ASSIGNMENT_TYPE} is set to {@code AssignmentType.METHOD}.
+     *
+     * @param declaringClass class declaring the method
+     * @param methodName     method name to select
+     * @return a selector for given method
+     * @throws InstancioApiException if the class has no method with the specified name
+     * @see #setter(String)
+     * @see #setter(SetMethodSelector)
+     * @since 4.0.0
+     */
+    @ExperimentalApi
+    public static Selector setter(final Class<?> declaringClass, final String methodName) {
+        return setter(declaringClass, methodName, null);
+    }
+
+    /**
+     * Selects a setter method by name and parameter type in the specified class.
+     *
+     * <p><b>Note:</b> setter selectors can only be used if
+     * {@link Keys#ASSIGNMENT_TYPE} is set to {@code AssignmentType.METHOD}.
+     *
+     * @param declaringClass class declaring the method
+     * @param methodName     method name to select
+     * @param parameterType  the parameter type of the setter
+     * @return a selector for given method
+     * @throws InstancioApiException if the class has no method with
+     *                               the specified name and parameter type
+     * @since 4.0.0
+     */
+    @ExperimentalApi
+    public static Selector setter(final Class<?> declaringClass, final String methodName, final Class<?> parameterType) {
+        ApiValidator.notNull(methodName, "method name must not be null");
+        return SelectorImpl.builder()
+                .target(new TargetSetterName(declaringClass, methodName, parameterType))
+                .build();
+    }
+
+    /**
+     * Selects a setter method based on the given method reference.
+     *
+     * <p>This selector resolves the class that declares the setter and
+     * the method name from the method reference. Since this method resolves
+     * the setter by name only (ignoring the parameter type)
+     * it should only be used if there are no overloaded setters.
+     *
+     * <p><b>Note:</b> setter selectors can only be used if
+     * {@link Keys#ASSIGNMENT_TYPE} is set to {@code AssignmentType.METHOD}.
+     *
+     * @param methodReference method reference from which the method will be resolved
+     * @param <T>             type declaring the method
+     * @param <U>             the argument type of the method
+     * @return a method selector matching the given method reference
+     * @see #setter(Class, String, Class)
+     * @since 4.0.0
+     */
+    @ExperimentalApi
+    public static <T, U> Selector setter(final SetMethodSelector<T, U> methodReference) {
+        ApiValidator.notNull(methodReference, "setter method reference must not be null");
+        return SelectorImpl.builder()
+                .target(new TargetSetterReference(methodReference))
+                .build();
     }
 
     /**
@@ -429,11 +536,7 @@ public final class Select {
      * @since 1.3.0
      */
     public static Scope scope(final Class<?> targetClass, final String fieldName) {
-        final String className = targetClass == null ? null : targetClass.getCanonicalName(); // NOSONAR
-        ApiValidator.validateField(targetClass, fieldName,
-                String.format("Invalid scope: (%s, %s)", className, fieldName));
-
-        return new ScopeImpl(targetClass, fieldName);
+        return new ScopeImpl(new TargetFieldName(targetClass, fieldName), null);
     }
 
     /**
@@ -464,7 +567,7 @@ public final class Select {
      */
     public static Scope scope(final Class<?> targetClass) {
         ApiValidator.notNull(targetClass, "Scope class must not be null");
-        return new ScopeImpl(targetClass, null);
+        return new ScopeImpl(new TargetClass(targetClass), null);
     }
 
     /**
@@ -482,11 +585,12 @@ public final class Select {
      * @since 3.0.0
      */
     public static <T, R> Scope scope(final GetMethodSelector<T, R> methodReference) {
-        ApiValidator.notNull(methodReference, "method reference must not be null");
-        return MethodReferenceHelper.resolve(methodReference).toScope();
+        ApiValidator.notNull(methodReference, "getter method reference must not be null");
+        return new ScopeImpl(new TargetGetterReference(methodReference), null);
     }
 
     private Select() {
         // non-instantiable
     }
+
 }

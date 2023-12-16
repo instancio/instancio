@@ -36,6 +36,11 @@ class MethodReferenceSelectorUnresolvedFieldTest extends AbstractErrorMessageTes
         return """
 
 
+                Error creating an object
+                 -> at org.external.errorhandling.MethodReferenceSelectorUnresolvedFieldTest.methodUnderTest(MethodReferenceSelectorUnresolvedFieldTest.java:31)
+
+                Reason:\s
+
                 Unable to resolve the field from method reference:
                 -> NonMatchingGetter::getBar
                    at org.external.errorhandling.MethodReferenceSelectorUnresolvedFieldTest.methodUnderTest(MethodReferenceSelectorUnresolvedFieldTest.java:31)
@@ -65,6 +70,8 @@ class MethodReferenceSelectorUnresolvedFieldTest extends AbstractErrorMessageTes
                    }
 
                    Usage: KSelect.field(SamplePojo::value)
+
+
                 """;
     }
 }

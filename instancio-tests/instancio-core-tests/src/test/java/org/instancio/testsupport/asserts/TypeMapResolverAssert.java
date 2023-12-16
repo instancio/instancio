@@ -35,7 +35,7 @@ public class TypeMapResolverAssert extends AbstractAssert<TypeMapResolverAssert,
     }
 
     public TypeMapResolverAssert hasTypeMapping(Class<?> klass, String typeVar, Type expectedMappedType) {
-        Type mappedType = actual.getActualType(getTypeVar(klass, typeVar));
+        Type mappedType = actual.get(getTypeVar(klass, typeVar));
         assertThat(mappedType)
                 .as("Wrong mapping for klass: %s, type variable: %s", klass.getName(), typeVar)
                 .isEqualTo(expectedMappedType);
@@ -43,7 +43,7 @@ public class TypeMapResolverAssert extends AbstractAssert<TypeMapResolverAssert,
     }
 
     public TypeMapResolverAssert hasTypeMapping(Class<?> klass, String typeVar, String expectedTypeName) {
-        Type mappedType = actual.getActualType(getTypeVar(klass, typeVar));
+        Type mappedType = actual.get(getTypeVar(klass, typeVar));
         assertThat(mappedType)
                 .as("Wrong mapping for klass: %s, type variable: %s", klass.getName(), typeVar)
                 .isNotNull()

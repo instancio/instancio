@@ -16,12 +16,17 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
-import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.Target;
+import org.instancio.internal.selectors.TargetClass;
+import org.instancio.internal.selectors.TargetField;
+import org.instancio.internal.selectors.TargetFieldName;
+import org.instancio.internal.selectors.TargetRoot;
+import org.instancio.internal.selectors.TargetSetter;
+import org.instancio.internal.selectors.TargetSetterName;
 
 import java.util.List;
 
@@ -55,37 +60,58 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     }
 
     public SelectorAssert hasNullField() {
-        assertThat(getAs(SelectorImpl.class).getFieldName()).isNull();
-        return this;
+        return hasFieldName(null);
     }
 
     public SelectorAssert hasFieldName(String expected) {
-        assertThat(getAs(SelectorImpl.class).getFieldName()).isEqualTo(expected);
+        final Target target = getAs(SelectorImpl.class).getTarget();
+        if (target instanceof TargetField) {
+            assertThat(((TargetField) target).getField().getName()).isEqualTo(expected);
+        } else {
+            assertThat(((TargetFieldName) target).getFieldName()).isEqualTo(expected);
+        }
+        return this;
+    }
+
+    public SelectorAssert hasMethodName(String expected) {
+        final Target target = getAs(SelectorImpl.class).getTarget();
+        if (target instanceof TargetSetter) {
+            assertThat(((TargetSetter) target).getSetter().getName()).isEqualTo(expected);
+        } else {
+            assertThat(((TargetSetterName) target).getMethodName()).isEqualTo(expected);
+        }
         return this;
     }
 
     public SelectorAssert isFieldSelector() {
-        assertThat(getAs(SelectorImpl.class).isFieldSelector()).isTrue();
-        return this;
+        return isOfType(TargetField.class);
+    }
+
+    public SelectorAssert isSetterSelector() {
+        return isOfType(TargetSetter.class);
     }
 
     public SelectorAssert isClassSelector() {
-        assertThat(getAs(SelectorImpl.class).isFieldSelector()).isFalse();
-        return hasNullField();
+        return isOfType(TargetClass.class);
+    }
+
+    private SelectorAssert isOfType(final Class<?> type) {
+        assertThat(getAs(SelectorImpl.class).getTarget()).isExactlyInstanceOf(type);
+        return this;
     }
 
     public SelectorAssert isRootSelector() {
         final SelectorImpl selector = getAs(SelectorImpl.class);
-        assertThat(selector.isRoot()).isTrue();
+        assertThat(selector.getTarget()).isExactlyInstanceOf(TargetRoot.class);
         assertThat(selector.getTargetClass()).isNull();
         assertThat(selector.getScopes()).isEmpty();
         assertThat(selector.getStackTraceHolder()).isNotNull();
-        return hasNullField();
+        return this;
     }
 
     public SelectorAssert isNotRootSelector() {
-        assertThat(getAs(SelectorImpl.class).isRoot()).isFalse();
-        return hasNullField();
+        assertThat(getAs(SelectorImpl.class).getTarget()).isNotInstanceOf(TargetRoot.class);
+        return this;
     }
 
     public SelectorAssert hasScopeSize(final int expected) {
@@ -133,14 +159,5 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
                 .isClassSelectorWithNoScope()
                 .hasTargetClass(wrapper);
         return this;
-    }
-
-    public SelectorAssert isSelectorGroupOfSize(final int expected) {
-        assertThat(getAs(SelectorGroupImpl.class).getSelectors()).hasSize(expected);
-        return this;
-    }
-
-    public List<GroupableSelector> getGroupedSelectors() {
-        return getAs(SelectorGroupImpl.class).getSelectors();
     }
 }

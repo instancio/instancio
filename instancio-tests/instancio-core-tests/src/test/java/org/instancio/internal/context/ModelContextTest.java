@@ -329,7 +329,7 @@ class ModelContextTest {
                 .hasSize(1)
                 .containsValue(Person.class);
 
-        assertThat(ctx.getContainerFactories()).isEqualTo(elementModel.getContainerFactories());
+        assertThat(ctx.getInternalServiceProviders()).isEqualTo(elementModel.getInternalServiceProviders());
         assertThat(ctx.getSubtypeSelectorMap().getSubtypeSelectors())
                 .isNotEmpty()
                 .isEqualTo(elementModel.getSubtypeSelectorMap().getSubtypeSelectors());

@@ -85,7 +85,7 @@ class InstancioEngine {
         rootNode = model.getRootNode();
         errorHandler = new ErrorHandler(context);
         callbackHandler = new CallbackHandler(context);
-        containerFactoriesHandler = new ContainerFactoriesHandler(context.getContainerFactories());
+        containerFactoriesHandler = new ContainerFactoriesHandler(context.getInternalServiceProviders());
         generatedObjectStore = new GeneratedObjectStore(context);
         generatorFacade = new GeneratorFacade(context, generatedObjectStore);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
@@ -130,7 +130,7 @@ class InstancioEngine {
                 i--;
                 delayedNodeQueue.addLast(entry);
             } else {
-                assignFieldValue(entry.getParentResult().getValue(), entry.getNode(), result);
+                assignValue(entry.getParentResult().getValue(), entry.getNode(), result);
             }
         }
 
@@ -582,7 +582,7 @@ class InstancioEngine {
             if (result.isDelayed()) {
                 delayedNodeQueue.addLast(new DelayedNode(child, generatorResult));
             } else {
-                assignFieldValue(value, child, result);
+                assignValue(value, child, result);
             }
         }
     }
@@ -646,7 +646,7 @@ class InstancioEngine {
         return containerFactoriesHandler.substituteResult(node, generatorResult);
     }
 
-    private void assignFieldValue(final Object parentResult, final InternalNode node, final GeneratorResult result) {
+    private void assignValue(final Object parentResult, final InternalNode node, final GeneratorResult result) {
         if (!result.isEmpty() && !result.isIgnored()) {
             assigner.assign(node, parentResult, result.getValue());
         }

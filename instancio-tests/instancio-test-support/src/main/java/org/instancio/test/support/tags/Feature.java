@@ -36,6 +36,7 @@ public enum Feature {
      * Tests for {@code AssignmentType} setting.
      */
     ASSIGNMENT_TYPE,
+    ASSIGNMENT_TYPE_METHOD,
     AS_GENERATOR_SPEC,
     AS_STRING_GENERATOR_SPEC,
     ATOMIC_GENERATOR,

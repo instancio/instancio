@@ -16,52 +16,46 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
-import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.Verify;
+import org.instancio.internal.util.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class ScopeImpl implements Scope {
-    private final Class<?> targetClass;
-    private final String fieldName;
+    private final Target target;
     private final Integer depth;
 
-    public ScopeImpl(@Nullable final Class<?> targetClass,
-                     @Nullable final String fieldName,
-                     @Nullable final Integer depth) {
-
-        this.targetClass = targetClass;
-        this.fieldName = fieldName;
+    public ScopeImpl(@NotNull final Target target, @Nullable final Integer depth) {
+        this.target = target;
         this.depth = depth;
     }
 
-    public ScopeImpl(@Nullable final Class<?> targetClass,
-                     @Nullable final String fieldName) {
-
-        this(targetClass, fieldName, null);
+    public Target getTarget() {
+        return target;
     }
 
     public Class<?> getTargetClass() {
-        return targetClass;
+        return target.getTargetClass();
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public Field getField() {
+        return ((TargetField) target).getField();
+    }
+
+    public String getMethodName() {
+        return ((TargetSetter) target).getSetter().getName();
+    }
+
+    public Class<?> getParameterType() {
+        return ((TargetSetter) target).getParameterType();
     }
 
     public Integer getDepth() {
         return depth;
-    }
-
-    public boolean isFieldScope() {
-        return fieldName != null;
-    }
-
-    public Field resolveField() {
-        Verify.state(isFieldScope(), "Invalid call to resolve field on Class scope: %s", this);
-        return ReflectionUtils.getField(targetClass, fieldName);
     }
 
     @Override
@@ -69,28 +63,48 @@ public final class ScopeImpl implements Scope {
         if (this == o) return true;
         if (!(o instanceof ScopeImpl)) return false;
         final ScopeImpl scope = (ScopeImpl) o;
-        return Objects.equals(targetClass, scope.targetClass)
-                && Objects.equals(fieldName, scope.fieldName)
+        return Objects.equals(target, scope.target)
                 && Objects.equals(depth, scope.depth);
     }
 
     @Override
     public int hashCode() {
-        int result = targetClass == null ? 0 : targetClass.hashCode();
-        result = 31 * result + (fieldName == null ? 0 : fieldName.hashCode());
+        int result = target.hashCode();
         result = 31 * result + (depth == null ? 0 : depth.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
-        String s = "scope(" + targetClass.getSimpleName();
-        if (fieldName != null) {
-            s += ", \"" + fieldName + '"';
+        final List<String> elements = new ArrayList<>(4);
+
+        if (target.getTargetClass() != null) {
+            elements.add(target.getTargetClass().getSimpleName());
+        }
+        if (target instanceof TargetField) {
+            TargetField t = (TargetField) target;
+            elements.add(StringUtils.quoteToString(t.getField().getName()));
+        }
+        if (target instanceof TargetFieldName) {
+            TargetFieldName t = (TargetFieldName) target;
+            elements.add(StringUtils.quoteToString(t.getFieldName()));
+        }
+        if (target instanceof TargetSetter) {
+            TargetSetter t = (TargetSetter) target;
+            String methodName = t.getSetter().getName();
+            elements.add(t.getParameterType() == null
+                    ? methodName
+                    : String.format("%s(%s)", methodName, t.getParameterType().getSimpleName()));
+        }
+        if (target instanceof TargetSetterName) {
+            TargetSetterName t = (TargetSetterName) target;
+            elements.add(t.getParameterType() == null
+                    ? t.getMethodName()
+                    : String.format("%s(%s)", t.getMethodName(), t.getParameterType().getSimpleName()));
         }
         if (depth != null) {
-            s += ", atDepth(" + depth + ')';
+            elements.add(String.format("atDepth(%s)", depth));
         }
-        return s + ')';
+        return "scope(" + String.join(", ", elements) + ')';
     }
 }

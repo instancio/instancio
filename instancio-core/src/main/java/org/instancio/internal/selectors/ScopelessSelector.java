@@ -18,28 +18,20 @@ package org.instancio.internal.selectors;
 import org.instancio.TargetSelector;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.Objects;
 
 public final class ScopelessSelector implements TargetSelector {
     private final Class<?> targetClass;
-    private final Field field;
+    private final Member member; // Field or Method
 
-    public ScopelessSelector(final Class<?> targetClass, @Nullable final Field field) {
+    public ScopelessSelector(final Class<?> targetClass, @Nullable final Member member) {
         this.targetClass = targetClass;
-        this.field = field;
+        this.member = member;
     }
 
     public ScopelessSelector(final Class<?> targetClass) {
         this(targetClass, null);
-    }
-
-    public Class<?> getTargetClass() {
-        return targetClass;
-    }
-
-    public Field getField() {
-        return field;
     }
 
     @Override
@@ -47,12 +39,14 @@ public final class ScopelessSelector implements TargetSelector {
         if (this == o) return true;
         if (!(o instanceof ScopelessSelector)) return false;
         final ScopelessSelector selector = (ScopelessSelector) o;
-        return Objects.equals(getTargetClass(), selector.getTargetClass())
-                && Objects.equals(getField(), selector.getField());
+        return Objects.equals(targetClass, selector.targetClass)
+                && Objects.equals(member, selector.member);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTargetClass(), getField());
+        int result = targetClass == null ? 0 : targetClass.hashCode();
+        result = 31 * result + (member == null ? 0 : member.hashCode());
+        return result;
     }
 }

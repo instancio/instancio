@@ -39,7 +39,7 @@ class SelectFieldInObjectProvidedBySupplierTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .withNullableSelector(field(Address::getCity),
+                .withNullableSelector(field(Address.class, "city"),
                         line(getClass(), 38));
     }
 }

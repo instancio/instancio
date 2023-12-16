@@ -19,7 +19,7 @@ import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.OptionalDouble;
@@ -38,15 +38,15 @@ class PredefinedNodeCreator {
 
     @Nullable
     InternalNode createFromTemplate(@NotNull final Type type,
-                                    @Nullable final Field field,
+                                    @Nullable final Member member,
                                     @Nullable final InternalNode parent) {
 
         if (type == OptionalInt.class) {
-            return createOptional(OptionalInt.class, int.class, field, parent);
+            return createOptional(OptionalInt.class, int.class, member, parent);
         } else if (type == OptionalLong.class) {
-            return createOptional(OptionalLong.class, long.class, field, parent);
+            return createOptional(OptionalLong.class, long.class, member, parent);
         } else if (type == OptionalDouble.class) {
-            return createOptional(OptionalDouble.class, double.class, field, parent);
+            return createOptional(OptionalDouble.class, double.class, member, parent);
         }
 
         return null;
@@ -63,13 +63,13 @@ class PredefinedNodeCreator {
     private InternalNode createOptional(
             final Class<?> type,
             final Class<?> childType,
-            final Field field,
+            final Member member,
             final InternalNode parent) {
 
         final InternalNode result = InternalNode.builder()
                 .nodeContext(nodeContext)
                 .nodeKind(NodeKind.CONTAINER)
-                .field(field)
+                .member(member)
                 .type(type)
                 .rawType(type)
                 .targetClass(type)

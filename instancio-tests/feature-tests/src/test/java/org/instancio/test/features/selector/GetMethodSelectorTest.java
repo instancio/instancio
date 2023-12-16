@@ -18,6 +18,7 @@ package org.instancio.test.features.selector;
 import org.instancio.GetMethodSelector;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.Selector;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
@@ -119,12 +120,18 @@ class GetMethodSelectorTest {
     void propertyStyleGetter() {
         final PropertyStylePojo expected = Instancio.create(PropertyStylePojo.class);
 
+        final GetMethodSelector<PropertyStylePojo, String> foo = PropertyStylePojo::foo;
+        final GetMethodSelector<PropertyStylePojo, Integer> bar = PropertyStylePojo::bar;
+        final GetMethodSelector<PropertyStylePojo, Boolean> isBaz = PropertyStylePojo::isBaz;
+        final GetMethodSelector<PropertyStylePojo, Boolean> haz = PropertyStylePojo::haz;
+        final GetMethodSelector<PropertyStylePojo, Boolean> hasGaz = PropertyStylePojo::hasGaz;
+
         final PropertyStylePojo result = Instancio.of(PropertyStylePojo.class)
-                .set(field(PropertyStylePojo::foo), expected.foo())
-                .set(field(PropertyStylePojo::bar), expected.bar())
-                .set(field(PropertyStylePojo::isBaz), expected.isBaz())
-                .set(field(PropertyStylePojo::haz), expected.haz())
-                .set(field(PropertyStylePojo::hasGaz), expected.hasGaz())
+                .set(foo, expected.foo())
+                .set(bar, expected.bar())
+                .set(isBaz, expected.isBaz())
+                .set(haz, expected.haz())
+                .set(hasGaz, expected.hasGaz())
                 .create();
 
         assertThat(result).isEqualTo(expected);
@@ -192,12 +199,11 @@ class GetMethodSelectorTest {
         @Test
         @FeatureTag(Feature.UNSUPPORTED)
         void usingGetterFromInterfaceNotSupported() {
-            final InstancioApi<ItemInterface<String>> api = Instancio.of(new TypeToken<ItemInterface<String>>() {})
-                    .subtype(all(ItemInterface.class), Item.class);
-
+            final InstancioApi<ItemInterface<String>> api = Instancio.of(new TypeToken<ItemInterface<String>>() {});
             final GetMethodSelector<ItemInterface<String>, String> getValueMethod = ItemInterface::getValue;
+            final Selector selector = field(getValueMethod);
 
-            assertThatThrownBy(() -> api.set(field(getValueMethod), "foo"))
+            assertThatThrownBy(() -> api.set(selector, "foo"))
                     .isExactlyInstanceOf(InstancioApiException.class)
                     .hasMessageContaining(String.format(
                             "Unable to resolve the field from method reference:%n" +
