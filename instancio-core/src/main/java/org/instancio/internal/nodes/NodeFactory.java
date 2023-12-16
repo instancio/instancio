@@ -16,9 +16,8 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
-import org.instancio.internal.reflect.DeclaredAndInheritedFieldsCollector;
-import org.instancio.internal.reflect.FieldCollector;
 import org.instancio.internal.util.ObjectUtils;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -26,13 +25,14 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -43,7 +43,7 @@ import java.util.Queue;
 public final class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
-    private final FieldCollector fieldCollector = new DeclaredAndInheritedFieldsCollector();
+    private final DeclaredAndInheritedMemberCollector memberCollector;
     private final NodeContext nodeContext;
     private final NodeCreator nodeCreator;
     private final TypeHelper typeHelper;
@@ -54,12 +54,13 @@ public final class NodeFactory {
         this.nodeCreator = new NodeCreator(nodeContext);
         this.typeHelper = new TypeHelper(nodeContext);
         this.originSelectorValidator = new OriginSelectorValidator(nodeContext);
+        this.memberCollector = new DeclaredAndInheritedMemberCollector(nodeContext.getSettings());
     }
 
     public InternalNode createRootNode(final Type type) {
         final InternalNode root = nodeCreator.createNode(type, null, null);
 
-        final Queue<InternalNode> nodeQueue = new LinkedList<>();
+        final Queue<InternalNode> nodeQueue = new ArrayDeque<>();
         nodeQueue.offer(root);
 
         while (!nodeQueue.isEmpty()) {
@@ -132,7 +133,7 @@ public final class NodeFactory {
 
             return createContainerNodeChildren(node, types);
         }
-        return createChildrenFromFields(targetClass, node);
+        return createChildrenFromMembers(node);
     }
 
     private List<InternalNode> createChildrenOfParameterizedType(final InternalNode node) {
@@ -140,7 +141,7 @@ public final class NodeFactory {
 
         return node.isContainer()
                 ? createContainerNodeChildren(node, type.getActualTypeArguments())
-                : createChildrenFromFields(node.getTargetClass(), node);
+                : createChildrenFromMembers(node);
     }
 
     private List<InternalNode> createChildrenOfGenericArrayNode(final InternalNode node) {
@@ -174,17 +175,48 @@ public final class NodeFactory {
         return results;
     }
 
-    private List<InternalNode> createChildrenFromFields(final Class<?> targetClass, final InternalNode parent) {
-        final List<Field> fields = fieldCollector.getFields(targetClass);
-        final List<InternalNode> list = new ArrayList<>(fields.size());
+    /**
+     * Creates children nodes in the following order:
+     *
+     * <ol>
+     *   <li>Fields (with matching setters, if any)</li>
+     *   <li>Unmatched setters (if any)</li>
+     * </ol>
+     *
+     * <p>The order ensures that fields will be populated before unmatched setters are invoked.
+     *
+     * @param node for which to create children
+     * @return a list of children
+     */
+    private List<InternalNode> createChildrenFromMembers(final InternalNode node) {
+        final ClassData classData = memberCollector.getClassData(node);
+        final List<InternalNode> children = new ArrayList<>();
 
-        for (Field f : fields) {
-            final Type type = ObjectUtils.defaultIfNull(f.getGenericType(), f.getType());
-            final InternalNode node = nodeCreator.createNode(type, f, parent);
-            if (node != null) {
-                list.add(node);
+        // Add fields
+        for (MemberPair memberPair : classData.getMemberPairs()) {
+            final Field field = memberPair.getField();
+            final Method setter = memberPair.getSetter();
+
+            // Since field is available, prefer field type over method
+            // parameter type to create the child node.
+            final Type type = ObjectUtils.defaultIfNull(field.getGenericType(), field.getType());
+            final InternalNode child = nodeCreator.createNode(type, field, setter, node);
+
+            if (child != null) {
+                children.add(child);
             }
         }
-        return list;
+
+        // Add setter methods without a corresponding field
+        for (Method method : classData.getUnmatchedSetters()) {
+            final Type type = ReflectionUtils.getSetMethodParameterType(method);
+            final InternalNode child = nodeCreator.createNode(type, /* field = */ null, method, node);
+
+            if (child != null) {
+                children.add(child);
+            }
+        }
+
+        return children;
     }
 }

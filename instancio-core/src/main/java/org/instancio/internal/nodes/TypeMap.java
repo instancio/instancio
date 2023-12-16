@@ -36,13 +36,21 @@ public final class TypeMap {
     private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final Map<Type, Type> typeVariableMap;
 
-    public TypeMap(final Type genericType, final Map<TypeVariable<?>, Type> rootTypeMap) {
-        this(genericType, rootTypeMap, Collections.emptyMap());
+    TypeMap(final Type genericType,
+            final Map<TypeVariable<?>, Type> rootTypeMap,
+            final Map<Type, Type> subtypeMappingTypeMap,
+            final TypeMap copyFrom) {
+
+        this.rootTypeMap = new HashMap<>(copyFrom.rootTypeMap);
+        this.rootTypeMap.putAll(rootTypeMap);
+
+        this.typeVariableMap = new HashMap<>(copyFrom.typeVariableMap);
+        this.typeVariableMap.putAll(buildTypeMap(genericType, subtypeMappingTypeMap));
     }
 
-    public TypeMap(final Type genericType,
-                   final Map<TypeVariable<?>, Type> rootTypeMap,
-                   final Map<Type, Type> subtypeMappingTypeMap) {
+    TypeMap(final Type genericType,
+            final Map<TypeVariable<?>, Type> rootTypeMap,
+            final Map<Type, Type> subtypeMappingTypeMap) {
 
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
         this.typeVariableMap = Collections.unmodifiableMap(buildTypeMap(genericType, subtypeMappingTypeMap));
@@ -54,10 +62,6 @@ public final class TypeMap {
 
     public Type getOrDefault(final Type type, final Type defaultValue) {
         return typeVariableMap.getOrDefault(type, defaultValue);
-    }
-
-    public Type getActualType(final Type type) {
-        return typeVariableMap.get(type);
     }
 
     public int size() {

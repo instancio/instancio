@@ -23,6 +23,7 @@ import org.instancio.settings.Mode;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.SettingKey;
 
@@ -65,6 +66,7 @@ final class SettingsSupport {
         fnMap.put(OnSetFieldError.class, OnSetFieldError::valueOf);
         fnMap.put(OnSetMethodError.class, OnSetMethodError::valueOf);
         fnMap.put(OnSetMethodNotFound.class, OnSetMethodNotFound::valueOf);
+        fnMap.put(OnSetMethodUnmatched.class, OnSetMethodUnmatched::valueOf);
         fnMap.put(SetterStyle.class, SetterStyle::valueOf);
         return Collections.unmodifiableMap(fnMap);
     }

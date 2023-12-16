@@ -42,14 +42,10 @@ class SelectorImplTest {
     @Test
     void root() {
         final SelectorImpl root = SelectorImpl.getRootSelector();
-        assertThat(root).hasAllNullFieldsOrPropertiesExcept("scopes", "stackTraceHolder", "depth", "hash");
-        assertThat(root.getScopes()).isEmpty();
-    }
+        assertThat(root).hasAllNullFieldsOrPropertiesExcept(
+                "target", "scopes", "stackTraceHolder", "depth", "hash");
 
-    @Test
-    void isRoot() {
-        assertThat(SelectorImpl.getRootSelector().isRoot()).isTrue();
-        assertThat(SelectorImpl.builder().build().isRoot()).isFalse();
+        assertThat(root.getScopes()).isEmpty();
     }
 
     @Test
@@ -60,7 +56,7 @@ class SelectorImplTest {
                 "org.instancio.Bar:3");
 
         final SelectorImpl selector = SelectorImpl.builder()
-                .targetClass(Foo.class)
+                .target(new TargetClass(Foo.class))
                 .stackTraceHolder(throwable)
                 .build();
 
@@ -83,14 +79,13 @@ class SelectorImplTest {
                 .hasFieldName("fooValue");
 
         ScopeAssert.assertScope(Select.all(Foo.class).toScope())
-                .hasTargetClass(Foo.class)
-                .hasNullField();
+                .hasTargetClass(Foo.class);
     }
 
     @Test
     void withinReturnsANewSelectorInstance() {
         final SelectorImpl selector = SelectorImpl.builder()
-                .targetClass(String.class)
+                .target(new TargetClass(String.class))
                 .build();
 
         final SelectorImpl scopedSelector = (SelectorImpl) selector.within(scope(StringHolder.class));
@@ -120,17 +115,36 @@ class SelectorImplTest {
         assertThat(Select.field(Person.class, "name"))
                 .hasToString("field(Person, \"name\")");
 
+        assertThat(Select.field(Person::getName))
+                .hasToString("field(Person::getName)");
+
         assertThat(Select.field(Phone.class, "number").atDepth(3))
                 .hasToString("field(Phone, \"number\").atDepth(3)");
 
         assertThat(Select.field(Phone.class, "number").within(scope(Address.class)))
                 .hasToString("field(Phone, \"number\"), scope(Address)");
 
+        assertThat(Select.field(Phone.class, "number").atDepth(3).within(
+                scope(Person.class), scope(Address.class)))
+                .hasToString("field(Phone, \"number\").atDepth(3), scope(Person), scope(Address)");
+
         assertThat(Select.field(Phone.class, "number").within(
                 scope(Person.class, "address"),
                 scope(Address.class)))
                 .hasToString(
                         "field(Phone, \"number\"), scope(Person, \"address\"), scope(Address)");
+
+        assertThat(Select.setter("setName"))
+                .hasToString("setter(\"setName\")");
+
+        assertThat(Select.setter(Person.class, "setName"))
+                .hasToString("setter(Person, \"setName\")");
+
+        assertThat(Select.setter(Person::setName))
+                .hasToString("setter(Person::setName)");
+
+        assertThat(Select.setter(Person.class, "setName", String.class))
+                .hasToString("setter(Person, \"setName(String)\")");
     }
 
     @Test
@@ -147,8 +161,7 @@ class SelectorImplTest {
         @Test
         void complete() {
             final SelectorImpl selector = SelectorImpl.builder()
-                    .targetClass(Person.class)
-                    .fieldName("name")
+                    .target(new TargetFieldName(Person.class, "name"))
                     .scopes(Collections.singletonList(scope(List.class)))
                     .depth(1)
                     .parent(SelectorImpl.builder().build())
@@ -211,7 +224,10 @@ class SelectorImplTest {
 
         @Test
         void equalsRootSelector() {
-            final SelectorImpl anotherRootInstance = SelectorImpl.builder().depth(0).build();
+            final SelectorImpl anotherRootInstance = SelectorImpl.builder()
+                    .target(TargetRoot.INSTANCE)
+                    .depth(0)
+                    .build();
 
             assertThat(Select.root())
                     .isEqualTo(Select.root())
@@ -221,7 +237,10 @@ class SelectorImplTest {
 
         @Test
         void hashCodeRootSelector() {
-            final SelectorImpl anotherRootInstance = SelectorImpl.builder().depth(0).build();
+            final SelectorImpl anotherRootInstance = SelectorImpl.builder()
+                    .target(TargetRoot.INSTANCE)
+                    .depth(0)
+                    .build();
 
             assertThat(Select.root())
                     .hasSameHashCodeAs(Select.root())

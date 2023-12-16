@@ -38,6 +38,7 @@ public class ListLocalDateTimeNodeTest extends NodeTestTemplate<List<LocalDateTi
         assertNode(listNode.getOnlyChild())
                 .hasParent(listNode)
                 .hasNullField()
+                .hasNullSetter()
                 .hasTargetClass(LocalDateTime.class)
                 .isOfKind(NodeKind.JDK)
                 .hasEmptyTypeMap();

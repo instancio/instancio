@@ -24,8 +24,13 @@ import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generator.Generator;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodUnmatched;
+import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioSpiException;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.dynamic.DynPhone;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
@@ -35,9 +40,12 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,12 +60,35 @@ class GeneratorFromSpiTest {
     private static class PersonPojo {
         @PersonName(min = 10, max = 10)
         String name;
+
+        @SuppressWarnings("unused") // used via reflection
+        private void setName(final String name) {
+            this.name = name;
+        }
+    }
+
+    @EnumSource(AssignmentType.class)
+    @ParameterizedTest
+    void processingCustomAnnotation(final AssignmentType assignmentType) {
+        final PersonPojo result = Instancio.of(PersonPojo.class)
+                .withSettings(Settings.create()
+                        .set(Keys.ASSIGNMENT_TYPE, assignmentType))
+                .create();
+
+        assertThat(result.name).hasSize(10);
     }
 
     @Test
-    void processingCustomAnnotation() {
-        final PersonPojo result = Instancio.create(PersonPojo.class);
-        assertThat(result.name).hasSize(10);
+    void withMethodAssignment() {
+        final DynPhone result = Instancio.of(DynPhone.class)
+                .withSettings(Settings.create()
+                        .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+                        .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
+                .ignore(all(Map.class)) // data Map
+                .create();
+
+        assertThat(result.getNumber()).isEqualTo(CustomGeneratorProvider.STRING_GENERATOR_VALUE);
+        assertThat(result.getCountryCode()).matches("\\+\\d{2}");
     }
 
     @Test
@@ -90,9 +121,14 @@ class GeneratorFromSpiTest {
     /**
      * @see CustomGeneratorProvider.ExceptionThrowingGenerator
      */
-    @Test
-    void shouldPropagateExceptionThrownByGenerator() {
-        assertThatThrownBy(() -> Instancio.create(Field.class))
+    @EnumSource(AssignmentType.class)
+    @ParameterizedTest
+    void shouldPropagateExceptionThrownByGenerator(final AssignmentType assignmentType) {
+        final InstancioApi<Field> api = Instancio.of(Field.class)
+                .withSettings(Settings.create()
+                        .set(Keys.ASSIGNMENT_TYPE, assignmentType));
+
+        assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("exception thrown by a custom Generator or Supplier")
                 .hasRootCauseMessage("Expected error from SPI generator");

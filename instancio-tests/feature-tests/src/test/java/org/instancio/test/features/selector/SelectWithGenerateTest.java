@@ -20,6 +20,10 @@ import org.instancio.InstancioApi;
 import org.instancio.Select;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generators.Generators;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.arrays.MiscArrays;
 import org.instancio.test.support.pojo.basic.LongHolder;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -27,6 +31,7 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +42,7 @@ import static org.instancio.Select.allInts;
 import static org.instancio.Select.allLongs;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
+import static org.instancio.Select.setter;
 
 @FeatureTag(Feature.SELECTOR)
 class SelectWithGenerateTest {
@@ -83,6 +89,26 @@ class SelectWithGenerateTest {
         final int expectedLength = 100;
         final Person result = Instancio.of(Person.class)
                 .generate(Select.all(field(Person::getName), field(Address::getCity)),
+                        gen -> gen.string().length(expectedLength))
+                .create();
+
+        assertThat(result.getName()).hasSize(expectedLength);
+        assertThat(result.getAddress().getCity()).hasSize(expectedLength);
+        assertThat(result.getAddress().getCountry().length()).isNotEqualTo(expectedLength);
+    }
+
+    @Test
+    @RunWithMethodAssignmentOnly
+    @DisplayName("Composite selector group with compatible types with method assignment")
+    void compositeSelectorGroupWithMethodAssignment() {
+        final int expectedLength = 100;
+        final Person result = Instancio.of(Person.class)
+                .withSettings(Settings.create()
+                        .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+                        .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL))
+                .generate(Select.all(
+                                setter(Person::setName),
+                                setter(Address::setCity)),
                         gen -> gen.string().length(expectedLength))
                 .create();
 

@@ -163,7 +163,7 @@ class FieldSelectorBuilderImplTest {
                 .type(type)
                 .rawType(type)
                 .targetClass(type)
-                .field(getField(type, field))
+                .member(getField(type, field))
                 .nodeContext(NodeContext.builder().build())
                 .build();
     }

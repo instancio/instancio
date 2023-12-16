@@ -389,12 +389,36 @@ public final class Keys {
      * Specifies what should happen if a setter method for a field cannot be resolved;
      * default is {@link OnSetMethodNotFound#ASSIGN_FIELD}; property name {@code on.set.method.not.found}.
      *
+     * <p>Warning: {@link OnSetMethodNotFound#FAIL} is not applied to {@code final} fields
+     * since a field declared as {@code final} cannot have a setter.
+     *
      * @see OnSetMethodNotFound
+     * @see #ON_SET_METHOD_UNMATCHED
      * @since 2.1.0
      */
     @ExperimentalApi
     public static final SettingKey<OnSetMethodNotFound> ON_SET_METHOD_NOT_FOUND = register(
             "on.set.method.not.found", OnSetMethodNotFound.class, OnSetMethodNotFound.ASSIGN_FIELD);
+
+    /**
+     * Specifies what should happen if a setter without a matching field is encountered;
+     * default is {@link OnSetMethodUnmatched#IGNORE}; property name {@code on.set.method.unmatched}.
+     *
+     * <p>This setting is only applicable if {@link #ASSIGNMENT_TYPE}
+     * is set to {@link AssignmentType#METHOD}.
+     *
+     * <p>The matching of fields and setter methods is based on the configured
+     * {@link #SETTER_STYLE} setting.
+     *
+     * @see OnSetMethodUnmatched
+     * @see #ASSIGNMENT_TYPE
+     * @see #ON_SET_METHOD_NOT_FOUND
+     * @see #SETTER_STYLE
+     * @since 4.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<OnSetMethodUnmatched> ON_SET_METHOD_UNMATCHED = register(
+            "on.set.method.unmatched", OnSetMethodUnmatched.class, OnSetMethodUnmatched.IGNORE);
 
     /**
      * Specifies whether initialised fields are allowed to be overwritten;

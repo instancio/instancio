@@ -37,6 +37,7 @@ class EnumSetOfGenderNodeTest extends NodeTestTemplate<EnumSet<Gender>> {
                 .hasParent(rootNode)
                 .hasDepth(1)
                 .hasNullField()
+                .hasNullSetter()
                 .hasTargetClass(Gender.class)
                 .isOfKind(NodeKind.JDK)
                 .hasNoChildren();

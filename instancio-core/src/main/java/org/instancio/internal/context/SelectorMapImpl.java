@@ -25,11 +25,16 @@ import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.ScopelessSelector;
 import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.Target;
+import org.instancio.internal.selectors.TargetClass;
+import org.instancio.internal.selectors.TargetField;
+import org.instancio.internal.selectors.TargetRoot;
+import org.instancio.internal.selectors.TargetSetter;
 import org.instancio.internal.util.Fail;
-import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,9 +49,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
 
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
 final class SelectorMapImpl<V> implements SelectorMap<V> {
     private static final boolean FIND_ONE_ONLY = true;
     private static final SelectorMap<?> EMPTY_MAP = new EmptyMap<>();
@@ -88,16 +94,27 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
     public void put(final TargetSelector targetSelector, final V value) {
         if (targetSelector instanceof SelectorImpl) {
             final SelectorImpl selector = (SelectorImpl) targetSelector;
+            final Target target = selector.getTarget();
 
             final ScopelessSelector scopeless;
 
-            if (selector.isRoot()) {
-                scopeless = SCOPELESS_ROOT;
-            } else if (selector.isFieldSelector()) {
-                final Field field = ReflectionUtils.getField(selector.getTargetClass(), selector.getFieldName());
-                scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
-            } else {
+            if (target instanceof TargetClass) {
                 scopeless = new ScopelessSelector(selector.getTargetClass());
+            } else if (target instanceof TargetField) {
+                final TargetField t = (TargetField) target;
+                final Field field = t.getField();
+
+                scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
+            } else if (target instanceof TargetSetter) {
+                final TargetSetter t = (TargetSetter) target;
+                final Method method = t.getSetter();
+
+                scopeless = new ScopelessSelector(method.getDeclaringClass(), method);
+            } else if (target instanceof TargetRoot) {
+                scopeless = SCOPELESS_ROOT;
+            } else {
+                // should not be reachable
+                throw Fail.withFataInternalError("Unhandled selector target: %s", target.getTargetClass());
             }
 
             selectors.put(selector, value);
@@ -107,9 +124,9 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             final PredicateSelectorImpl selector = (PredicateSelectorImpl) targetSelector;
             predicateSelectors.add(new PredicateSelectorEntry<>(selector, value));
         } else {
-            // Other types not expected because selectors should be
-            // pre-processed by ModelContext being adding to the selector map
-            throw Fail.withFataInternalError("Invalid selector type: " + targetSelector.getClass().getName());
+            // Should not be reachable because selectors should be processed
+            // into expected types before being added to the selector map.
+            throw Fail.withFataInternalError("Invalid selector type: %s", targetSelector.getClass().getName());
         }
     }
 
@@ -192,7 +209,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         // match one, consider the equivalent to be matched as well.
         if (selector.getParent() instanceof PrimitiveAndWrapperSelectorImpl) {
             final SelectorImpl equivalent = selector.toBuilder()
-                    .targetClass(PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass()))
+                    .target(new TargetClass(PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass())))
                     .build();
 
             unusedSelectors.remove(equivalent);
@@ -201,28 +218,38 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
     }
 
     /**
-     * Returns candidate selectors for the given node, with class selectors first and field selectors last.
+     * Returns candidate selectors for the given node.
+     * The order of the returned selectors matters (last one wins).
      *
      * @param node to look up selectors for
-     * @return list of selectors
+     * @return list of candidate selectors
      */
     private List<SelectorImpl> getCandidates(final InternalNode node) {
         if (node.getParent() == null && scopelessSelectors.containsKey(SCOPELESS_ROOT)) {
             return Collections.singletonList(scopelessSelectors.get(SCOPELESS_ROOT).get(0));
         }
 
-        final List<SelectorImpl> candidates = new ArrayList<>(
-                scopelessSelectors.getOrDefault(new ScopelessSelector(node.getRawType()), Collections.emptyList()));
+        final List<SelectorImpl> candidates = new ArrayList<>();
 
+        // Class selectors
+        candidates.addAll(scopelessSelectors.getOrDefault(new ScopelessSelector(node.getRawType()), emptyList()));
+
+        // Setter selectors
+        if (node.getSetter() != null) {
+            final ScopelessSelector key = new ScopelessSelector(
+                    node.getSetter().getDeclaringClass(), node.getSetter());
+
+            candidates.addAll(scopelessSelectors.getOrDefault(key, emptyList()));
+        }
+
+        // Field selectors last as they have the highest precedence
         if (node.getField() != null) {
             final ScopelessSelector key = new ScopelessSelector(
                     node.getField().getDeclaringClass(), node.getField());
 
-            final List<SelectorImpl> fieldSelectors = scopelessSelectors.getOrDefault(
-                    key, Collections.emptyList());
-
-            candidates.addAll(fieldSelectors);
+            candidates.addAll(scopelessSelectors.getOrDefault(key, emptyList()));
         }
+
         return candidates;
     }
 
@@ -232,7 +259,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             final boolean findOneOnly) {
 
         if (candidates.isEmpty()) {
-            return Collections.emptyList();
+            return emptyList();
         }
 
         final List<SelectorImpl> results = new ArrayList<>(3);
@@ -252,7 +279,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         return results;
     }
 
-    @SuppressWarnings({Sonar.COGNITIVE_COMPLEXITY_OF_METHOD, "PMD.CyclomaticComplexity"})
+    @SuppressWarnings({Sonar.COGNITIVE_COMPLEXITY_OF_METHOD, "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     private static boolean selectorScopesMatchNodeHierarchy(
             final SelectorImpl candidate,
             final InternalNode targetNode) {
@@ -280,15 +307,28 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             //  1. The precise matching is actually more restrictive
             //  2. It's inconsistent with the semantics of within(Scope) API,
             //     i.e. "match anywhere _within_ given scope" (at given depth or further)
+            boolean scopeMatched;
+
             if (scope.getDepth() == null || node.getDepth() >= scope.getDepth()) {
 
-                if (scope.isFieldScope()) {
-                    if (scope.resolveField().equals(node.getField())) {
-                        scope = (ScopeImpl) deq.pollLast();
-                    }
-                } else if (node.getRawType().equals(scope.getTargetClass())
-                        || node.getTargetClass().equals(scope.getTargetClass())) {
+                if (scope.getTarget() instanceof TargetField) {
+                    scopeMatched = node.getField() != null
+                            && scope.getTargetClass().equals(node.getField().getDeclaringClass())
+                            && scope.getField().equals(node.getField());
 
+                } else if (scope.getTarget() instanceof TargetSetter) {
+                    scopeMatched = node.getSetter() != null
+                            && scope.getTargetClass().equals(node.getSetter().getDeclaringClass())
+                            && scope.getMethodName().equals(node.getSetter().getName())
+                            && (scope.getParameterType() == null // param not specified
+                            || scope.getParameterType().equals(node.getSetter().getParameterTypes()[0]));
+
+                } else {
+                    scopeMatched = node.getRawType().equals(scope.getTargetClass())
+                            || node.getTargetClass().equals(scope.getTargetClass());
+                }
+
+                if (scopeMatched) {
                     scope = (ScopeImpl) deq.pollLast();
                 }
             }
@@ -331,7 +371,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         @Override public void forEach(BiConsumer<TargetSelector, V> action) { /* no-op */ }
         @Override public Set<TargetSelector> getUnusedKeys() { return Collections.emptySet(); }
         @Override public Optional<V> getValue(InternalNode node) { return Optional.empty(); }
-        @Override public List<V> getValues(InternalNode node) { return Collections.emptyList(); }
+        @Override public List<V> getValues(InternalNode node) { return emptyList(); }
         @Override public Set<TargetSelector> getSelectors(InternalNode node) { return Collections.emptySet(); }
     }
     //@formatter:on

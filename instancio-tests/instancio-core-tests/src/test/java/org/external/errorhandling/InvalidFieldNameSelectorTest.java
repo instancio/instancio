@@ -35,7 +35,7 @@ class InvalidFieldNameSelectorTest extends AbstractErrorMessageTestTemplate {
 
 
                 Error creating an object
-                 -> at org.external.errorhandling.InvalidFieldNameSelectorTest.methodUnderTest(InvalidFieldNameSelectorTest.java:29)
+                 -> at org.external.errorhandling.InvalidFieldNameSelectorTest.methodUnderTest(InvalidFieldNameSelectorTest.java:28)
 
                 Reason: invalid field 'some-invalid-field-name' for class org.instancio.test.support.pojo.person.Person
 

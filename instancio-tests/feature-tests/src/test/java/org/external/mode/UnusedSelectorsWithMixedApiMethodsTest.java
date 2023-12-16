@@ -59,7 +59,7 @@ class UnusedSelectorsWithMixedApiMethodsTest {
                 .ignoreSelector(field(Foo.class, "fooValue"), line(getClass(), l++))
                 .generatorSelector(field(Bar.class, "barValue"), line(getClass(), l++))
                 .generatorSelector(field(Baz.class, "bazValue"), line(getClass(), l++))
-                .generatorSelector(allStrings().within(field(Person::getAge).toScope()), line(getClass(), l++))
+                .generatorSelector(allStrings().within(field(Person.class, "age").toScope()), line(getClass(), l++))
                 .onCompleteSelector(all(LinkedList.class), line(getClass(), l++))
                 .withNullableSelector(all(SortedSet.class), line(getClass(), l++))
                 .subtypeSelector(all(CharSequence.class), line(getClass(), l));

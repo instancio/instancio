@@ -149,6 +149,7 @@
             <modules>
                 <module>instancio-core-tests</module>
                 <module>instancio-junit-tests</module>
+                <module>instancio-jooq-tests</module>
                 <module>java17-tests</module>
                 <module>bean-validation-hibernate-tests</module>
                 <module>spi-tests</module>

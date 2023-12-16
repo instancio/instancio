@@ -20,6 +20,10 @@ import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodUnmatched;
+import org.instancio.settings.Settings;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -37,6 +41,9 @@ public final class Nodes {
     public static NodeContext nodeContext() {
         return NodeContext.builder()
                 .maxDepth(Integer.MAX_VALUE)
+                .settings(Settings.defaults()
+                        .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+                        .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
                 .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
                 .subtypeSelectorMap(new SubtypeSelectorMap(
                         Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap()))

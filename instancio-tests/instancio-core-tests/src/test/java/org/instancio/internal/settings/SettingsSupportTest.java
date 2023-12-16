@@ -24,6 +24,7 @@ import org.instancio.settings.Mode;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.SetterStyle;
 import org.junit.jupiter.api.Test;
 
@@ -56,6 +57,7 @@ class SettingsSupportTest {
                 OnSetFieldError.class,
                 OnSetMethodError.class,
                 OnSetMethodNotFound.class,
+                OnSetMethodUnmatched.class,
                 SetterStyle.class
         };
 

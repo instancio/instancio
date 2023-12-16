@@ -15,7 +15,9 @@
  */
 package org.example.spi;
 
+import org.example.NonMatchingSetterPojo;
 import org.instancio.Node;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.spi.InstancioServiceProvider;
 
 import java.lang.reflect.Field;
@@ -31,7 +33,18 @@ public class CustomSetterMethodResolver implements InstancioServiceProvider {
     private static class SetterMethodResolverImpl implements SetterMethodResolver {
         @Override
         public Method getSetter(final Node node) {
+            if (node.getTargetClass().isRecord()) {
+                throw new AssertionError("Setter resolver should not be called for records!");
+            }
+
             final Field field = node.getField();
+
+            if (field.getDeclaringClass() == NonMatchingSetterPojo.class) {
+                if (field.getName().equals("value")) {
+                    return ReflectionUtils.getSetterMethod(
+                            field.getDeclaringClass(), "nonMatchingSetter", String.class);
+                }
+            }
 
             // discard the '_' prefix
             final char[] ch = field.getName().substring(1).toCharArray();

@@ -16,7 +16,6 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
-import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,12 +37,7 @@ final class TargetSelectorSelectorMap {
 
     private void putAll(final Map<TargetSelector, List<TargetSelector>> map) {
         for (Map.Entry<TargetSelector, List<TargetSelector>> entry : map.entrySet()) {
-            final TargetSelector targetSelector = entry.getKey();
-            final List<TargetSelector> assignments = entry.getValue();
-
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                selectorMap.put(selector, assignments);
-            }
+            selectorMap.put(entry.getKey(), entry.getValue());
         }
     }
 

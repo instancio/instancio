@@ -32,6 +32,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
@@ -44,6 +47,10 @@ class OnSetMethodNotFoundTest {
     @SuppressWarnings("unused")
     private static class WithoutSetter {
         private int value;
+    }
+
+    private static class FinalFieldWithoutSetter {
+        private final List<String> list = new ArrayList<>();
     }
 
     private static class BooleanWithIsMethod {
@@ -101,4 +108,20 @@ class OnSetMethodNotFoundTest {
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Setter method could not be resolved for field");
     }
+
+    /**
+     * {@code final} fields cannot have setters,
+     * so make sure not to fail in this case.
+     */
+    @Test
+    void onSetMethodNotFoundWithFinalField() {
+        final FinalFieldWithoutSetter result = Instancio.of(FinalFieldWithoutSetter.class)
+                .withSettings(Settings.create()
+                        .set(Keys.FAIL_ON_ERROR, true)
+                        .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL))
+                .create();
+
+        assertThat(result.list).isEmpty();
+    }
+
 }

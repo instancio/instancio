@@ -31,12 +31,14 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.ServiceProviderContext;
+import org.instancio.test.support.pojo.dynamic.DynPhone;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.PhoneWithType;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -115,6 +117,13 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
                     return generators.string()
                             .minLength(name.min())
                             .maxLength(name.max());
+                }
+            }
+            if (node.getSetter() != null) {
+                final Method setter = node.getSetter();
+
+                if (setter.getDeclaringClass() == DynPhone.class && setter.getName().equals("setCountryCode")) {
+                    return generators.string().prefix("+").digits().length(2);
                 }
             }
 

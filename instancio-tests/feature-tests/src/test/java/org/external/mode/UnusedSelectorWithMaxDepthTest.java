@@ -44,7 +44,7 @@ class UnusedSelectorWithMaxDepthTest {
         int l = 41;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(2)
-                .generatorSelector(field(Address::getPhoneNumbers), line(getClass(), l++))
-                .generatorSelector(field(Phone::getNumber), line(getClass(), l));
+                .generatorSelector(field(Address.class, "phoneNumbers"), line(getClass(), l++))
+                .generatorSelector(field(Phone.class, "number"), line(getClass(), l));
     }
 }

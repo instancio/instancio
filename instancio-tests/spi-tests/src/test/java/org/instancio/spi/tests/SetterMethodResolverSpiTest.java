@@ -15,12 +15,16 @@
  */
 package org.instancio.spi.tests;
 
+import org.example.FooRecord;
+import org.example.NonMatchingSetterPojo;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.MethodModifier;
+import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Test;
@@ -104,5 +108,35 @@ class SetterMethodResolverSpiTest {
         assertThat(result.value).isPositive();
         assertThat(result.viaSetter_value).isTrue();
 
+    }
+
+    /**
+     * {@link NonMatchingSetterPojo#nonMatchingSetter(String)} is unmatched
+     * as it doesn't match the field name. Since {@link Keys#ON_SET_METHOD_UNMATCHED}
+     * is set to true and {@link Keys#ON_SET_METHOD_NOT_FOUND} is set to FAIL,
+     * without the SPI, this test would fail.
+     */
+    @Test
+    void nonMatchingSetter() {
+        final NonMatchingSetterPojo result = Instancio.of(NonMatchingSetterPojo.class)
+                .withSettings(Settings.create()
+                        .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+                        .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.IGNORE)
+                        .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL))
+                .create();
+
+        assertThat(result.getValue()).isNotBlank();
+    }
+
+    @Test
+    void shouldNotResolveSettersForRecords() {
+        final FooRecord result = Instancio.of(FooRecord.class)
+                .withSettings(Settings.create()
+                        .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+                        .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.IGNORE)
+                        .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL))
+                .create();
+
+        assertThat(result.value()).isNotBlank();
     }
 }

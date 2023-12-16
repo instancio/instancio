@@ -18,6 +18,10 @@ package org.instancio.testsupport.asserts;
 import org.assertj.core.api.AbstractAssert;
 import org.instancio.Scope;
 import org.instancio.internal.selectors.ScopeImpl;
+import org.instancio.internal.selectors.TargetClass;
+import org.instancio.internal.selectors.TargetField;
+import org.instancio.internal.selectors.TargetFieldName;
+import org.instancio.internal.selectors.TargetSetter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,12 +48,34 @@ public class ScopeAssert extends AbstractAssert<ScopeAssert, Scope> {
     }
 
     public ScopeAssert hasNullField() {
-        assertThat(getAs(ScopeImpl.class).getFieldName()).isNull();
+        assertThat(getAs(ScopeImpl.class).getField()).isNull();
         return this;
     }
 
     public ScopeAssert hasFieldName(final String expected) {
-        assertThat(getAs(ScopeImpl.class).getFieldName()).isEqualTo(expected);
+        final ScopeImpl scope = getAs(ScopeImpl.class);
+        if (scope.getTarget() instanceof TargetField) {
+            assertThat(((TargetField) scope.getTarget()).getField().getName()).isEqualTo(expected);
+        } else {
+            assertThat(((TargetFieldName) scope.getTarget()).getFieldName()).isEqualTo(expected);
+        }
+        return this;
+    }
+
+    public ScopeAssert isFieldSelector() {
+        return isOfType(TargetField.class);
+    }
+
+    public ScopeAssert isSetterSelector() {
+        return isOfType(TargetSetter.class);
+    }
+
+    public ScopeAssert isClassSelector() {
+        return isOfType(TargetClass.class);
+    }
+
+    private ScopeAssert isOfType(final Class<?> type) {
+        assertThat(getAs(ScopeImpl.class).getTarget()).isExactlyInstanceOf(type);
         return this;
     }
 }

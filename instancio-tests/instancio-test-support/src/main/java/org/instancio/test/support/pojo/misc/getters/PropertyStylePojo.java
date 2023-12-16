@@ -32,20 +32,40 @@ public class PropertyStylePojo {
         return foo;
     }
 
+    public void foo(String foo) {
+        this.foo = foo;
+    }
+
     public int bar() {
         return bar;
+    }
+
+    public void bar(int bar) {
+        this.bar = bar;
     }
 
     public boolean isBaz() {
         return isBaz;
     }
 
+    public void isBaz(boolean isBaz) {
+        this.isBaz = isBaz;
+    }
+
     public boolean haz() {
         return haz;
     }
 
+    public void haz(boolean haz) {
+        this.haz = haz;
+    }
+
     public boolean hasGaz() {
         return hasGaz;
+    }
+
+    public void hasGaz(boolean hasGaz) {
+        this.hasGaz = hasGaz;
     }
 
     @Override

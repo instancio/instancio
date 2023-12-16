@@ -15,6 +15,9 @@
  */
 package org.external.mode;
 
+import org.instancio.Instancio;
+import org.instancio.InstancioApi;
+import org.instancio.Selector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
@@ -30,7 +33,10 @@ class MethodReferenceSelectorLambdaTest {
     @Test
     @SuppressWarnings("Convert2MethodRef")
     void methodReferenceSelectorDoesNotAcceptLambdaFunction() {
-        assertThatThrownBy(() -> field((StringHolder holder) -> holder.getValue()))
+        final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class);
+        final Selector selector = field((StringHolder holder) -> holder.getValue());
+
+        assertThatThrownBy(() -> api.set(selector, "foo"))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("Unable to resolve the field from method reference",
                         "The method reference is expressed as a lambda function",

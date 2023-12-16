@@ -19,14 +19,11 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
 import java.lang.reflect.Field;
-
-import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 public class AssignerImpl implements Assigner {
 
@@ -49,16 +46,13 @@ public class AssignerImpl implements Assigner {
 
     private static Assigner resolveAssigner(final ModelContext<?> context) {
         final Settings settings = context.getSettings();
-        final AssignmentType defaultAssignment = settings.get(Keys.ASSIGNMENT_TYPE);
-
-        // The system property is used for running the feature test suite using both assignment types
-        final AssignmentType assignment = defaultIfNull(SystemProperties.getAssignmentType(), defaultAssignment);
+        final AssignmentType assignment = settings.get(Keys.ASSIGNMENT_TYPE);
 
         if (assignment == AssignmentType.FIELD) {
             return new FieldAssigner(settings);
         }
         if (assignment == AssignmentType.METHOD) {
-            return new MethodAssigner(settings, context.getServiceProviders().getSetterMethodResolvers());
+            return new MethodAssigner(context);
         }
         throw Fail.withFataInternalError("Invalid assignment type: %s", assignment);
     }

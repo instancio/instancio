@@ -36,6 +36,9 @@ public enum OnSetMethodNotFound {
     /**
      * Fail by throwing {@link InstancioApiException}.
      *
+     * <p>Note that the exception is <b>not</b> thrown if a field
+     * is {@code final}, because a {@code final} field cannot have a setter.
+     *
      * @since 2.1.0
      */
     FAIL,

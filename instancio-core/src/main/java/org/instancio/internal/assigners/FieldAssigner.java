@@ -46,10 +46,9 @@ final class FieldAssigner implements Assigner {
     public void assign(final InternalNode node, final Object target, final Object value) {
         final Field field = node.getField();
 
-        if (value != null) {
+        // can't assign null to a primitive
+        if (field != null && (value != null || !field.getType().isPrimitive())) {
             setField(node, target, value);
-        } else if (!field.getType().isPrimitive()) { // can't assign null to a primitive
-            setField(node, target, null);
         }
     }
 

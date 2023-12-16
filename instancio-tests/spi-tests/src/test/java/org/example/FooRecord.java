@@ -16,4 +16,9 @@
 package org.example;
 
 public record FooRecord(String value) {
+
+    @SuppressWarnings("unused")
+    public void setValue(String value) {
+        throw new AssertionError("Setters should not be resolved for records!");
+    }
 }

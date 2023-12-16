@@ -18,4 +18,8 @@ package org.instancio.test.support.pojo.interfaces;
 public interface ItemInterface<T> {
 
     T getValue();
+
+    default void setValue(T obj) {
+
+    }
 }

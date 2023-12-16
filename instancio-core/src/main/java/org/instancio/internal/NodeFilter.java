@@ -19,15 +19,20 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodNotFound;
 
 final class NodeFilter implements NodePopulationFilter {
 
     private final NodePopulationFilter arrayNodeFilter = new ArrayElementNodePopulationFilter();
     private final NodePopulationFilter fieldNodeFilter = new FieldNodePopulationFilter();
+    private final boolean isMethodAssignment;
     private final ModelContext<?> context;
 
     NodeFilter(final ModelContext<?> context) {
         this.context = context;
+        this.isMethodAssignment = context.getSettings().get(Keys.ASSIGNMENT_TYPE) == AssignmentType.METHOD;
     }
 
     @Override
@@ -35,6 +40,16 @@ final class NodeFilter implements NodePopulationFilter {
         if (node.isIgnored() || afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
             return true;
         }
+
+        // If method assignment is enabled and there's no setter method, skip the node
+        if (isMethodAssignment && node.getSetter() == null && node.getField() != null) {
+            final OnSetMethodNotFound onSetMethodNotFound = context.getSettings().get(Keys.ON_SET_METHOD_NOT_FOUND);
+
+            if (onSetMethodNotFound == OnSetMethodNotFound.IGNORE) {
+                return true;
+            }
+        }
+
 
         // For APPLY_SELECTORS and remaining actions, if there is at least
         // one matching selector for this node, then it should not be skipped

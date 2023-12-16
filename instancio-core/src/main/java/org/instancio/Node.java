@@ -16,6 +16,7 @@
 package org.instancio;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
@@ -69,4 +70,12 @@ public interface Node {
      * @since 3.5.0
      */
     Node getParent();
+
+    /**
+     * Returns the setter of this node, if available.
+     *
+     * @return setter of this node, or {@code null} if the node has no setter
+     * @since 4.0.0
+     */
+    Method getSetter();
 }

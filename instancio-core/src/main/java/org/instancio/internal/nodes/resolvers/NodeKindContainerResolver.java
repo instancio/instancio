@@ -17,7 +17,8 @@ package org.instancio.internal.nodes.resolvers;
 
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.NodeKindResolver;
-import org.instancio.internal.spi.InternalContainerFactoryProvider;
+import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalServiceProvider.InternalContainerFactoryProvider;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -26,10 +27,10 @@ import java.util.Optional;
 
 class NodeKindContainerResolver implements NodeKindResolver {
 
-    private final List<InternalContainerFactoryProvider> containerFactories;
+    private final List<InternalServiceProvider> serviceProviders;
 
-    NodeKindContainerResolver(final List<InternalContainerFactoryProvider> containerFactories) {
-        this.containerFactories = containerFactories;
+    NodeKindContainerResolver(final List<InternalServiceProvider> serviceProviders) {
+        this.serviceProviders = serviceProviders;
     }
 
     @Override
@@ -45,8 +46,9 @@ class NodeKindContainerResolver implements NodeKindResolver {
     }
 
     private boolean isSpiDefinedContainer(final Class<?> targetClass) {
-        for (InternalContainerFactoryProvider p : containerFactories) {
-            if (p.isContainer(targetClass)) {
+        for (InternalServiceProvider p : serviceProviders) {
+            final InternalContainerFactoryProvider provider = p.getContainerFactoryProvider();
+            if (provider != null && provider.isContainer(targetClass)) {
                 return true;
             }
         }

@@ -26,5 +26,6 @@ public class ZeroArgSetter {
 
     @SuppressWarnings("unused")
     public void setValue() {
+        throw new AssertionError("Should not be invoked!");
     }
 }

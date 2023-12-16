@@ -18,6 +18,7 @@ package org.instancio.nodes;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance.EntityWithId;
 import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance.GenericPhoneHolderWithInheritance;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.PhoneType;
 import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.instancio.test.support.tags.GenericsTag;
@@ -60,6 +61,7 @@ class GenericPhoneHolderWithInheritanceNodeTest
                 .hasDepth(1)
                 .hasParent(rootNode)
                 .hasFieldName("phone")
+                .hasSetterName("setPhone", Phone.class)
                 .hasTargetClass(PhoneWithType.class)
                 .hasChildrenOfSize(3)
                 .get();
@@ -68,6 +70,7 @@ class GenericPhoneHolderWithInheritanceNodeTest
                 .hasDepth(2)
                 .hasParent(phoneWithType)
                 .hasFieldName("countryCode")
+                .hasSetterName("setCountryCode", String.class)
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
@@ -75,6 +78,7 @@ class GenericPhoneHolderWithInheritanceNodeTest
                 .hasDepth(2)
                 .hasParent(phoneWithType)
                 .hasFieldName("number")
+                .hasSetterName("setNumber", String.class)
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
@@ -82,6 +86,7 @@ class GenericPhoneHolderWithInheritanceNodeTest
                 .hasDepth(2)
                 .hasParent(phoneWithType)
                 .hasFieldName("phoneType")
+                .hasSetterName("setPhoneType", PhoneType.class)
                 .hasTargetClass(PhoneType.class)
                 .hasNoChildren();
     }

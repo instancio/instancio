@@ -23,7 +23,11 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class ReflectionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
@@ -52,13 +56,42 @@ public final class ReflectionUtils {
         }
     }
 
-    public static boolean isValidField(final Class<?> klass, final String fieldName) {
-        try {
-            klass.getDeclaredField(fieldName);
-            return true;
-        } catch (NoSuchFieldException ex) {
-            return false;
+    public static Type getSetMethodParameterType(final Method method) {
+        final Parameter[] p = method.getParameters();
+
+        Verify.isTrue(p.length == 1,
+                "Expected exactly 1 parameter, but got: %s", p.length);
+
+        return ObjectUtils.defaultIfNull(p[0].getParameterizedType(), p[0].getType());
+    }
+
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    public static Method getSetterMethod(final Class<?> klass, final String methodName, final Class<?> parameterType) {
+        if (parameterType == null) {
+
+            // getDeclaredMethods() order is not guaranteed.
+            // Need to sort to ensure reproducibility for a given seed.
+            final Optional<Method> first = Arrays.stream(klass.getDeclaredMethods())
+                    .filter(m -> m.getParameterCount() == 1 && m.getName().equals(methodName))
+                    .min(new SetterMethodComparator());
+
+            if (first.isPresent()) {
+                return first.get();
+            }
+
+        } else {
+            try {
+                return klass.getDeclaredMethod(methodName, parameterType);
+            } catch (NoSuchMethodException ex) {
+                // fail at the end
+            }
         }
+
+        final String method = parameterType == null
+                ? methodName
+                : String.format("%s(%s)", methodName, parameterType.getSimpleName());
+
+        throw Fail.withUsageError("Could not find method method '%s' declared by %s", method, klass);
     }
 
     public static Field getField(final Class<?> klass, final String fieldName) {
@@ -66,6 +99,17 @@ public final class ReflectionUtils {
             return klass.getDeclaredField(Verify.notNull(fieldName, "null field name"));
         } catch (NoSuchFieldException ex) {
             throw Fail.withUsageError("invalid field '" + fieldName + "' for " + klass, ex);
+        } catch (SecurityException ex) {
+            throw new InstancioException("Unable to access '" + fieldName + "' of " + klass, ex);
+        }
+    }
+
+    @Nullable
+    public static Field getFieldOrNull(final Class<?> klass, final String fieldName) {
+        try {
+            return klass.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException ex) {
+            return null;
         } catch (SecurityException ex) {
             throw new InstancioException("Unable to access '" + fieldName + "' of " + klass, ex);
         }

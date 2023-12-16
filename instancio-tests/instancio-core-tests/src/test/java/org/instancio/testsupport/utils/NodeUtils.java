@@ -29,4 +29,13 @@ public class NodeUtils {
                 .findAny()
                 .orElse(null);
     }
+
+    public static InternalNode getChildNode(InternalNode parent, String setterName, Class<?> parameterType) {
+        return parent.getChildren().stream()
+                .filter(it -> it.getSetter() != null
+                        && it.getSetter().getName().equals(setterName)
+                        && it.getSetter().getParameterTypes()[0].equals(parameterType))
+                .findAny()
+                .orElse(null);
+    }
 }

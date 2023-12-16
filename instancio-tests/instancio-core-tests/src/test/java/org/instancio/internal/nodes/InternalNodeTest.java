@@ -17,7 +17,12 @@ package org.instancio.internal.nodes;
 
 import org.instancio.TypeToken;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnSetMethodUnmatched;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.lists.ListString;
+import org.instancio.test.support.pojo.dynamic.MixedPojo;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.basic.Triplet;
@@ -43,8 +48,13 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 
 @NodeTag
 class InternalNodeTest {
-    private static final NodeContext NODE_CONTEXT = Nodes.nodeContext();
-    private static final NodeFactory NODE_FACTORY = Nodes.nodeFactory();
+    private static final NodeContext NODE_CONTEXT = Nodes.nodeContextBuilder()
+            .settings(Settings.defaults()
+                    .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
+                    .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
+            .build();
+
+    private static final NodeFactory NODE_FACTORY = new NodeFactory(NODE_CONTEXT);
 
     @Test
     void getNodeKind() {
@@ -75,7 +85,8 @@ class InternalNodeTest {
                 .rawType(List.class)
                 .targetClass(List.class)
                 .nodeKind(NodeKind.COLLECTION)
-                .field(ReflectionUtils.getField(ListString.class, "list"))
+                .member(ReflectionUtils.getField(ListString.class, "list"))
+                .member(ReflectionUtils.getSetterMethod(ListString.class, "setList", List.class))
                 .parent(parent)
                 .nodeContext(NODE_CONTEXT)
                 .children(children)
@@ -89,6 +100,7 @@ class InternalNodeTest {
         assertThat(copy.getRawType()).isEqualTo(node.getRawType());
         assertThat(copy.getTargetClass()).isEqualTo(node.getTargetClass());
         assertThat(copy.getField()).isEqualTo(node.getField());
+        assertThat(copy.getSetter()).isEqualTo(node.getSetter());
         assertThat(copy.getParent()).isEqualTo(node.getParent());
         assertThat(copy.getTypeMap()).isEqualTo(node.getTypeMap());
         assertThat(copy.getOnlyChild()).isEqualTo(node.getOnlyChild());
@@ -220,19 +232,34 @@ class InternalNodeTest {
                     .hasToString("Node[Person, depth=0, type=Person]");
 
             assertThat(getChildNode(personNode, "age"))
-                    .hasToString("Node[Person.age, depth=1, type=int]");
+                    .hasToString("Node[Person.age, Person.setAge(int), depth=1, type=int]");
 
             assertThat(getChildNode(personNode, "name"))
-                    .hasToString("Node[Person.name, depth=1, type=String]");
+                    .hasToString("Node[Person.name, Person.setName(String), depth=1, type=String]");
 
             assertThat(getChildNode(personNode, "address"))
-                    .hasToString("Node[Person.address, depth=1, type=Address]");
+                    .hasToString("Node[Person.address, Person.setAddress(Address), depth=1, type=Address]");
+
+            // without setter
+            assertThat(getChildNode(personNode, "finalField"))
+                    .hasToString("Node[Person.finalField, depth=1, type=String]");
 
             assertThat(NODE_FACTORY.createRootNode(String.class))
                     .hasToString("Node[String, depth=0, type=String]");
 
             assertThat(NODE_FACTORY.createRootNode(new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {}.get()))
                     .hasToString("Node[Pair, depth=0, type=Pair<Item<String>, Foo<List<Integer>>>]");
+        }
+
+        @Test
+        void setterWithoutField() {
+            final InternalNode rootNode = NODE_FACTORY.createRootNode(MixedPojo.class);
+
+            assertThat(rootNode)
+                    .hasToString("Node[MixedPojo, depth=0, type=MixedPojo]");
+
+            assertThat(getChildNode(rootNode, "setDynamicField", String.class))
+                    .hasToString("Node[MixedPojo.setDynamicField(String), depth=1, type=String]");
         }
 
         @Test
@@ -255,13 +282,20 @@ class InternalNodeTest {
                     .isEqualTo("class Person");
 
             assertThat(getChildNode(personNode, "age").toDisplayString())
-                    .isEqualTo("field Person.age");
+                    .isEqualTo("field Person.age, setter Person.setAge(int)");
+
+            assertThat(getChildNode(personNode, "finalField").toDisplayString())
+                    .isEqualTo("field Person.finalField");
 
             assertThat(NODE_FACTORY.createRootNode(String.class).toDisplayString())
                     .isEqualTo("class String");
 
             assertThat(NODE_FACTORY.createRootNode(new TypeToken<Pair<Item<String>, Foo<List<Integer>>>>() {}.get()).toDisplayString())
                     .isEqualTo("class Pair<Item<String>, Foo<List<Integer>>>");
+
+            final InternalNode mixedPojo = NODE_FACTORY.createRootNode(MixedPojo.class);
+            assertThat(getChildNode(mixedPojo, "setDynamicField", String.class).toDisplayString())
+                    .isEqualTo("setter MixedPojo.setDynamicField(String)");
         }
 
         @Test
