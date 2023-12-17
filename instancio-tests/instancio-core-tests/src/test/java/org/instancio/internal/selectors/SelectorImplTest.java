@@ -76,7 +76,7 @@ class SelectorImplTest {
     void toScope() {
         ScopeAssert.assertScope(Select.field(Foo.class, "fooValue").toScope())
                 .hasTargetClass(Foo.class)
-                .hasFieldName("fooValue");
+                .hasField("fooValue");
 
         ScopeAssert.assertScope(Select.all(Foo.class).toScope())
                 .hasTargetClass(Foo.class);

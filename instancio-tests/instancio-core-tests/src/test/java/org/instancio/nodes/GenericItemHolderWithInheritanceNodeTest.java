@@ -51,7 +51,7 @@ class GenericItemHolderWithInheritanceNodeTest
         assertNode(NodeUtils.getChildNode(rootNode, "id"))
                 .hasDepth(1)
                 .hasParent(rootNode)
-                .hasFieldName("id")
+                .hasField("id")
                 .hasTargetClass(Long.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren()
@@ -62,7 +62,7 @@ class GenericItemHolderWithInheritanceNodeTest
         final InternalNode item = assertNode(NodeUtils.getChildNode(rootNode, "item"))
                 .hasDepth(1)
                 .hasParent(rootNode)
-                .hasFieldName("item")
+                .hasField("item")
                 .hasTargetClass(Item.class)
                 .hasChildrenOfSize(1)
                 .get();
@@ -71,7 +71,7 @@ class GenericItemHolderWithInheritanceNodeTest
                 .hasDepth(2)
                 .hasParent(item)
                 .hasTargetClass(PhoneWithType.class)
-                .hasFieldName("value")
+                .hasField("value")
                 .hasTargetClass(PhoneWithType.class)
                 .hasChildrenOfSize(3)
                 .get();
@@ -79,21 +79,21 @@ class GenericItemHolderWithInheritanceNodeTest
         assertNode(NodeUtils.getChildNode(phoneWithType, "countryCode"))
                 .hasDepth(3)
                 .hasParent(phoneWithType)
-                .hasFieldName("countryCode")
+                .hasField("countryCode")
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(phoneWithType, "number"))
                 .hasDepth(3)
                 .hasParent(phoneWithType)
-                .hasFieldName("number")
+                .hasField("number")
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(phoneWithType, "phoneType"))
                 .hasDepth(3)
                 .hasParent(phoneWithType)
-                .hasFieldName("phoneType")
+                .hasField("phoneType")
                 .hasTargetClass(PhoneType.class)
                 .hasNoChildren();
     }

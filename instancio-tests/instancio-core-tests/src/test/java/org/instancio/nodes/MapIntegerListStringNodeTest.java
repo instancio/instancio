@@ -36,7 +36,7 @@ class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString
 
         final InternalNode map = assertNode(rootNode.getOnlyChild())
                 .hasParent(rootNode)
-                .hasFieldName("map")
+                .hasField("map")
                 .isOfKind(NodeKind.MAP)
                 .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Integer.class)

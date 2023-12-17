@@ -33,7 +33,7 @@ class MapIntegerArrayStringNodeTest extends NodeTestTemplate<MapIntegerArrayStri
 
         final InternalNode map = assertNode(rootNode.getOnlyChild())
                 .hasParent(rootNode)
-                .hasFieldName("map")
+                .hasField("map")
                 .hasTargetClass(Map.class)
                 .hasTypeMappedTo(Map.class, "K", Integer.class)
                 .hasTypeMappedTo(Map.class, "V", String[].class)

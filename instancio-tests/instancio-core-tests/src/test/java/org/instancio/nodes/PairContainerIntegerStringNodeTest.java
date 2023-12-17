@@ -34,7 +34,7 @@ class PairContainerIntegerStringNodeTest extends NodeTestTemplate<PairContainer<
         // Pair<X, Y> pairValue;
         final String pairValueFieldName = "pairValue";
         final InternalNode pairValue = assertNode(NodeUtils.getChildNode(rootNode, pairValueFieldName))
-                .hasFieldName(pairValueFieldName)
+                .hasField(pairValueFieldName)
                 .hasTargetClass(Pair.class)
                 .hasTypeName("org.instancio.test.support.pojo.generics.basic.Pair<X, Y>")
                 .hasTypeMappedTo(Pair.class, "L", "X")

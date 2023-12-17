@@ -35,28 +35,28 @@ class IndirectCircularRefNodeTest extends NodeTestTemplate<IndirectCircularRef> 
         final InternalNode startA = assertNode(rootNode.getOnlyChild())
                 .hasDepth(1)
                 .hasTargetClass(IndirectCircularRef.A.class)
-                .hasFieldName("startA")
+                .hasField("startA")
                 .hasChildrenOfSize(1)
                 .get();
 
         final InternalNode b = assertNode(startA.getOnlyChild())
                 .hasDepth(2)
                 .hasTargetClass(IndirectCircularRef.B.class)
-                .hasFieldName("b")
+                .hasField("b")
                 .hasChildrenOfSize(1)
                 .get();
 
         final InternalNode c = assertNode(b.getOnlyChild())
                 .hasDepth(3)
                 .hasTargetClass(IndirectCircularRef.C.class)
-                .hasFieldName("c")
+                .hasField("c")
                 .hasChildrenOfSize(1)
                 .get();
 
         assertNode(c.getOnlyChild())
                 .hasDepth(4)
                 .hasTargetClass(IndirectCircularRef.A.class)
-                .hasFieldName("endA")
+                .hasField("endA")
                 .hasNoChildren();
     }
 }

@@ -33,7 +33,7 @@ class CyclicListNodeTest extends NodeTestTemplate<CyclicList> {
                 .hasChildrenOfSize(1);
 
         assertNode(rootNode.getOnlyChild())
-                .hasFieldName("items")
-                .hasSetterName("setItems", List.class);
+                .hasField("items")
+                .hasSetter("setItems", List.class);
     }
 }
