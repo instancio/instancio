@@ -164,6 +164,8 @@ final class GeneratorResolverMaps {
         map.put(Map.class, HashMap.class);
         map.put(NavigableMap.class, TreeMap.class);
         map.put(SortedMap.class, TreeMap.class);
+
+        Java21GeneratorResolvers.putSubtypes(map);
         return Collections.unmodifiableMap(map);
     }
 
@@ -282,6 +284,7 @@ final class GeneratorResolverMaps {
         map.put(java.util.concurrent.atomic.AtomicReferenceArray.class, NullGenerator.class);
         map.put(java.util.concurrent.atomic.AtomicStampedReference.class, NullGenerator.class);
 
+        Java21GeneratorResolvers.putGenerators(map);
         return Collections.unmodifiableMap(map);
     }
 
