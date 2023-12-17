@@ -34,7 +34,7 @@ class ListExtendsNumberNodeTest extends NodeTestTemplate<ListExtendsNumber> {
                 .isOfKind(NodeKind.POJO);
 
         final InternalNode list = assertNode(rootNode.getOnlyChild())
-                .hasFieldName("list")
+                .hasField("list")
                 .hasChildrenOfSize(1)
                 .hasTargetClass(List.class)
                 .isOfKind(NodeKind.COLLECTION)

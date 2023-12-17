@@ -37,7 +37,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
         final String itemField = "item";
         final InternalNode item = assertNode(NodeUtils.getChildNode(rootNode, itemField))
                 .hasParent(rootNode)
-                .hasFieldName(itemField)
+                .hasField(itemField)
                 .hasTargetClass(Item.class)
                 .hasTypeMappedTo(Item.class, "K", "T")
                 .isOfKind(NodeKind.POJO)
@@ -47,7 +47,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
 
         final InternalNode nestedItem = assertNode(item.getOnlyChild())
                 .hasParent(item)
-                .hasFieldName("value")
+                .hasField("value")
                 .hasTargetClass(Item.class)
                 .hasTypeMappedTo(Item.class, "K", String.class)
                 .hasTypeMapWithSize(1)
@@ -56,7 +56,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
 
         assertNode(nestedItem.getOnlyChild())
                 .hasParent(nestedItem)
-                .hasFieldName("value")
+                .hasField("value")
                 .hasTargetClass(String.class)
                 .isOfKind(NodeKind.JDK)
                 .hasEmptyTypeMap()

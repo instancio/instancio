@@ -39,7 +39,7 @@ class ArrayOfStringSuppliersNodeTest extends NodeTestTemplate<ArrayOfStringSuppl
 
         final InternalNode array = assertNode(rootNode.getOnlyChild())
                 .hasDepth(1)
-                .hasFieldName("array")
+                .hasField("array")
                 .hasTargetClass(Supplier[].class)
                 .hasEmptyTypeMap()
                 .hasChildrenOfSize(1)

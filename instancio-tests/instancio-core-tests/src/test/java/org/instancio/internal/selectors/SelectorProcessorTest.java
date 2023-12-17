@@ -145,7 +145,7 @@ class SelectorProcessorTest {
         assertScope(scopes.get(1))
                 .isFieldSelector()
                 .hasTargetClass(Address.class)
-                .hasFieldName("phoneNumbers");
+                .hasField("phoneNumbers");
     }
 
     @Test
@@ -192,12 +192,12 @@ class SelectorProcessorTest {
         assertScope(scopes.get(0))
                 .isFieldSelector()
                 .hasTargetClass(Person.class)
-                .hasFieldName("address");
+                .hasField("address");
 
         assertScope(scopes.get(1))
                 .isFieldSelector()
                 .hasTargetClass(Address.class)
-                .hasFieldName("phoneNumbers");
+                .hasField("phoneNumbers");
     }
 
     @Test
@@ -221,7 +221,7 @@ class SelectorProcessorTest {
         assertScope(scopes.get(1))
                 .isFieldSelector()
                 .hasTargetClass(Bar.class)
-                .hasFieldName("barValue");
+                .hasField("barValue");
     }
 
     @Test
@@ -324,7 +324,7 @@ class SelectorProcessorTest {
 
             assertScope(((SelectorImpl) selector).getScopes().get(1))
                     .hasTargetClass(Bar.class)
-                    .hasFieldName("barValue");
+                    .hasField("barValue");
         });
     }
 

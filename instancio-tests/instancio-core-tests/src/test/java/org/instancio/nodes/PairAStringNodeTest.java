@@ -38,7 +38,7 @@ class PairAStringNodeTest extends NodeTestTemplate<PairAString<UUID>> {
 
         final InternalNode pair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
-                .hasFieldName(fieldName)
+                .hasField(fieldName)
                 .hasTargetClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", "A")
                 .hasTypeMappedTo(Pair.class, "R", String.class)
@@ -47,13 +47,13 @@ class PairAStringNodeTest extends NodeTestTemplate<PairAString<UUID>> {
                 .get();
 
         assertNode(NodeUtils.getChildNode(pair, "left"))
-                .hasFieldName("left")
+                .hasField("left")
                 .hasParent(pair)
                 .hasTargetClass(UUID.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(pair, "right"))
-                .hasFieldName("right")
+                .hasField("right")
                 .hasParent(pair)
                 .hasTargetClass(String.class)
                 .hasNoChildren();

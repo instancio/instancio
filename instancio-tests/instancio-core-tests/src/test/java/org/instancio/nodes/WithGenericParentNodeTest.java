@@ -43,7 +43,7 @@ class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
 
     private static void assertGenericParent(final InternalNode node) {
         assertNode(node)
-                .hasFieldName("genericParent")
+                .hasField("genericParent")
                 .hasTargetClass(GenericParent.class)
                 .hasTypeMappedTo(GenericParent.class, "PARENT", Long.class)
                 .hasTypeMapWithSize(1)
@@ -56,7 +56,7 @@ class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
 
     private static void assertGenericChild(final InternalNode node) {
         assertNode(node)
-                .hasFieldName("genericChild")
+                .hasField("genericChild")
                 .hasTargetClass(GenericChild.class)
                 .hasTypeMappedTo(GenericChild.class, "CHILD", String.class)
                 .hasTypeMappedTo(GenericParent.class, "PARENT", GenericChild.class, "CHILD")
@@ -74,7 +74,7 @@ class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
 
     private void assertGenericGrandChild(final InternalNode node) {
         assertNode(node)
-                .hasFieldName("genericGrandChild")
+                .hasField("genericGrandChild")
                 .hasTargetClass(GenericGrandChild.class)
                 .hasTypeMappedTo(GenericGrandChild.class, "GRANDCHILD", Month.class)
                 .hasTypeMappedTo(GenericChild.class, "CHILD", GenericGrandChild.class, "GRANDCHILD")

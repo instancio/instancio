@@ -73,7 +73,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
         return this;
     }
 
-    public NodeAssert hasFieldName(String expected) {
+    public NodeAssert hasField(String expected) {
         isNotNull();
         assertThat(actual.getField()).as("Field is null").isNotNull();
         assertThat(actual.getField().getName()).isEqualTo(expected);
@@ -86,7 +86,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
         return this;
     }
 
-    public NodeAssert hasSetterName(String expectedName, Class<?> parameterType) {
+    public NodeAssert hasSetter(String expectedName, Class<?> parameterType) {
         isNotNull();
         assertThat(actual.getSetter()).as("Setter method is null").isNotNull();
         assertThat(actual.getSetter().getName()).isEqualTo(expectedName);

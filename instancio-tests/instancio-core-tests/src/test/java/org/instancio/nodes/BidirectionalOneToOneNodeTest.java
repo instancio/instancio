@@ -36,7 +36,7 @@ class BidirectionalOneToOneNodeTest extends NodeTestTemplate<BidirectionalOneToO
         final InternalNode child = assertNode(NodeUtils.getChildNode(rootNode, "child"))
                 .hasDepth(1)
                 .hasParent(rootNode)
-                .hasFieldName("child")
+                .hasField("child")
                 .hasTargetClass(BidirectionalOneToOne.Child.class)
                 .hasChildrenOfSize(2)
                 .get();
@@ -44,14 +44,14 @@ class BidirectionalOneToOneNodeTest extends NodeTestTemplate<BidirectionalOneToO
         assertNode(NodeUtils.getChildNode(child, "childName"))
                 .hasDepth(2)
                 .hasParent(child)
-                .hasFieldName("childName")
+                .hasField("childName")
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(child, "parent"))
                 .hasDepth(2)
                 .hasParent(child)
-                .hasFieldName("parent")
+                .hasField("parent")
                 .hasTargetClass(BidirectionalOneToOne.Parent.class)
                 .isCyclic()
                 .hasNoChildren();

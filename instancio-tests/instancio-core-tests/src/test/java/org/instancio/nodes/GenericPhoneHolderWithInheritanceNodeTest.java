@@ -49,7 +49,7 @@ class GenericPhoneHolderWithInheritanceNodeTest
         assertNode(NodeUtils.getChildNode(rootNode, "id"))
                 .hasDepth(1)
                 .hasParent(rootNode)
-                .hasFieldName("id")
+                .hasField("id")
                 .hasTargetClass(Long.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren()
@@ -60,8 +60,8 @@ class GenericPhoneHolderWithInheritanceNodeTest
         final InternalNode phoneWithType = assertNode(NodeUtils.getChildNode(rootNode, "phone"))
                 .hasDepth(1)
                 .hasParent(rootNode)
-                .hasFieldName("phone")
-                .hasSetterName("setPhone", Phone.class)
+                .hasField("phone")
+                .hasSetter("setPhone", Phone.class)
                 .hasTargetClass(PhoneWithType.class)
                 .hasChildrenOfSize(3)
                 .get();
@@ -69,24 +69,24 @@ class GenericPhoneHolderWithInheritanceNodeTest
         assertNode(NodeUtils.getChildNode(phoneWithType, "countryCode"))
                 .hasDepth(2)
                 .hasParent(phoneWithType)
-                .hasFieldName("countryCode")
-                .hasSetterName("setCountryCode", String.class)
+                .hasField("countryCode")
+                .hasSetter("setCountryCode", String.class)
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(phoneWithType, "number"))
                 .hasDepth(2)
                 .hasParent(phoneWithType)
-                .hasFieldName("number")
-                .hasSetterName("setNumber", String.class)
+                .hasField("number")
+                .hasSetter("setNumber", String.class)
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(phoneWithType, "phoneType"))
                 .hasDepth(2)
                 .hasParent(phoneWithType)
-                .hasFieldName("phoneType")
-                .hasSetterName("setPhoneType", PhoneType.class)
+                .hasField("phoneType")
+                .hasSetter("setPhoneType", PhoneType.class)
                 .hasTargetClass(PhoneType.class)
                 .hasNoChildren();
     }

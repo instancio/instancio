@@ -31,7 +31,7 @@ class MapWithoutTypesNodeTest extends NodeTestTemplate<MapWithoutTypes> {
                 .hasChildrenOfSize(1);
 
         assertNode(rootNode.getOnlyChild())
-                .hasFieldName("map")
+                .hasField("map")
                 .isOfKind(NodeKind.MAP)
                 .hasNoChildren();
     }

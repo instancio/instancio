@@ -21,7 +21,6 @@ import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
 import org.instancio.internal.selectors.TargetFieldName;
-import org.instancio.internal.selectors.TargetSetter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,7 +51,7 @@ public class ScopeAssert extends AbstractAssert<ScopeAssert, Scope> {
         return this;
     }
 
-    public ScopeAssert hasFieldName(final String expected) {
+    public ScopeAssert hasField(final String expected) {
         final ScopeImpl scope = getAs(ScopeImpl.class);
         if (scope.getTarget() instanceof TargetField) {
             assertThat(((TargetField) scope.getTarget()).getField().getName()).isEqualTo(expected);
@@ -64,10 +63,6 @@ public class ScopeAssert extends AbstractAssert<ScopeAssert, Scope> {
 
     public ScopeAssert isFieldSelector() {
         return isOfType(TargetField.class);
-    }
-
-    public ScopeAssert isSetterSelector() {
-        return isOfType(TargetSetter.class);
     }
 
     public ScopeAssert isClassSelector() {

@@ -35,7 +35,7 @@ class ListListStringNodeTest extends NodeTestTemplate<ListListString> {
         // List<List<String>>
         final InternalNode outerListNode = assertNode(rootNode.getOnlyChild())
                 .hasChildrenOfSize(1)
-                .hasFieldName("nested")
+                .hasField("nested")
                 .hasType(Types.LIST_LIST_STRING.get())
                 .get();
 

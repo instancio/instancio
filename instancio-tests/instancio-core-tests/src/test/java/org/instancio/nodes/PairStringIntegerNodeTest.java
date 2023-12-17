@@ -35,7 +35,7 @@ class PairStringIntegerNodeTest extends NodeTestTemplate<Pair<String, Integer>> 
 
         // L left
         assertNode(NodeUtils.getChildNode(rootNode, "left"))
-                .hasFieldName("left")
+                .hasField("left")
                 .hasParent(rootNode)
                 .hasTargetClass(String.class)
                 .hasEmptyTypeMap()
@@ -43,7 +43,7 @@ class PairStringIntegerNodeTest extends NodeTestTemplate<Pair<String, Integer>> 
 
         // R right
         assertNode(NodeUtils.getChildNode(rootNode, "right"))
-                .hasFieldName("right")
+                .hasField("right")
                 .hasParent(rootNode)
                 .hasTargetClass(Integer.class)
                 .hasEmptyTypeMap()

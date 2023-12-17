@@ -29,7 +29,7 @@ public class GenericLevelNodeTest extends NodeTestTemplate<GenericLevel4> {
         assertNode(NodeUtils.getChildNode(rootNode, "id"))
                 .hasDepth(1)
                 .hasParent(rootNode)
-                .hasFieldName("id")
+                .hasField("id")
                 .hasTargetClass(Long.class)
                 .hasEmptyTypeMap()
                 .hasNoChildren()

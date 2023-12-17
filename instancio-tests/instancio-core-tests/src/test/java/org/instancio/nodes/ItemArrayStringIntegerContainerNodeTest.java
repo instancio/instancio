@@ -43,7 +43,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
     private void assertItemArrayX(InternalNode rootNode) {
         final String itemArrayField = "itemArrayX";
         final InternalNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
-                .hasFieldName(itemArrayField)
+                .hasField(itemArrayField)
                 .hasTargetClass(Item[].class)
                 .hasTypeName("org.instancio.test.support.pojo.generics.basic.Item<X>[]")
                 .hasChildrenOfSize(1)
@@ -56,7 +56,7 @@ class ItemArrayStringIntegerContainerNodeTest extends NodeTestTemplate<ItemArray
     private void assertItemArrayY(InternalNode rootNode) {
         final String itemArrayField = "itemArrayY";
         final InternalNode array = assertNode(NodeUtils.getChildNode(rootNode, itemArrayField))
-                .hasFieldName(itemArrayField)
+                .hasField(itemArrayField)
                 .hasTargetClass(Item[].class)
                 .hasTypeName("org.instancio.test.support.pojo.generics.basic.Item<Y>[]")
                 .hasChildrenOfSize(1)

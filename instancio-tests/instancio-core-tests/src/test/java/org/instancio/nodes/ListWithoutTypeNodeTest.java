@@ -30,7 +30,7 @@ class ListWithoutTypeNodeTest extends NodeTestTemplate<ListWithoutType> {
                 .hasChildrenOfSize(1);
 
         assertNode(rootNode.getOnlyChild())
-                .hasFieldName("list")
+                .hasField("list")
                 .hasNoChildren();
     }
 }

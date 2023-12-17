@@ -51,7 +51,7 @@ class TwoListsOfItemStringNodeTest extends NodeTestTemplate<TwoListsOfItemString
                 .hasChildrenOfSize(1);
 
         assertNode(list.getOnlyChild().getOnlyChild())
-                .hasFieldName("value")
+                .hasField("value")
                 .hasTargetClass(String.class)
                 .hasNoChildren();
     }

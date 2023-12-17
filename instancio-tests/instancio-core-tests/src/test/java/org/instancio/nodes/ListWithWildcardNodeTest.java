@@ -32,8 +32,8 @@ class ListWithWildcardNodeTest extends NodeTestTemplate<ListWithWildcard> {
                 .hasChildrenOfSize(1);
 
         final InternalNode list = assertNode(rootNode.getOnlyChild())
-                .hasFieldName("list")
-                .hasSetterName("setList", List.class)
+                .hasField("list")
+                .hasSetter("setList", List.class)
                 .hasChildrenOfSize(1)
                 .hasTargetClass(List.class)
                 .get();

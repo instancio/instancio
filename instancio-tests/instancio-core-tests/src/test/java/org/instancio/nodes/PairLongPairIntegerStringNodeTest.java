@@ -37,7 +37,7 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
 
         final InternalNode outerPair = assertNode(NodeUtils.getChildNode(rootNode, fieldName))
                 .hasParent(rootNode)
-                .hasFieldName(fieldName)
+                .hasField(fieldName)
                 .hasTargetClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", Long.class)
                 .hasTypeMappedTo(Pair.class, "R", Types.PAIR_INTEGER_STRING.get())
@@ -46,13 +46,13 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
                 .get();
 
         assertNode(NodeUtils.getChildNode(outerPair, "left"))
-                .hasFieldName("left")
+                .hasField("left")
                 .hasParent(outerPair)
                 .hasTargetClass(Long.class)
                 .hasNoChildren();
 
         final InternalNode innerPair = assertNode(NodeUtils.getChildNode(outerPair, "right"))
-                .hasFieldName("right")
+                .hasField("right")
                 .hasParent(outerPair)
                 .hasTargetClass(Pair.class)
                 .hasTypeMappedTo(Pair.class, "L", Integer.class)
@@ -66,13 +66,13 @@ class PairLongPairIntegerStringNodeTest extends NodeTestTemplate<PairLongPairInt
 
     private void assertInnerPair(InternalNode innerPair) {
         assertNode(NodeUtils.getChildNode(innerPair, "left"))
-                .hasFieldName("left")
+                .hasField("left")
                 .hasParent(innerPair)
                 .hasTargetClass(Integer.class)
                 .hasNoChildren();
 
         assertNode(NodeUtils.getChildNode(innerPair, "right"))
-                .hasFieldName("right")
+                .hasField("right")
                 .hasParent(innerPair)
                 .hasTargetClass(String.class)
                 .hasNoChildren();

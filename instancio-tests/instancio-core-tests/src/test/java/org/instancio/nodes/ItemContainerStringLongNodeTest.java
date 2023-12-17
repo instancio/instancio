@@ -34,7 +34,7 @@ class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<Str
         final String itemValueXField = "itemValueX";
         final InternalNode itemValueX = assertNode(NodeUtils.getChildNode(rootNode, itemValueXField))
                 .hasParent(rootNode)
-                .hasFieldName(itemValueXField)
+                .hasField(itemValueXField)
                 .hasTargetClass(Item.class)
                 .hasTypeMappedTo(Item.class, "K", "X")
                 .hasTypeMapWithSize(1)
@@ -43,14 +43,14 @@ class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<Str
 
         assertNode(itemValueX.getOnlyChild())
                 .hasParent(itemValueX)
-                .hasFieldName("value")
+                .hasField("value")
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
         final String itemValueYField = "itemValueY";
         final InternalNode itemValueY = assertNode(NodeUtils.getChildNode(rootNode, itemValueYField))
                 .hasParent(rootNode)
-                .hasFieldName(itemValueYField)
+                .hasField(itemValueYField)
                 .hasTargetClass(Item.class)
                 .hasTypeMappedTo(Item.class, "K", "Y")
                 .hasTypeMapWithSize(1)
@@ -59,7 +59,7 @@ class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<Str
 
         assertNode(itemValueY.getOnlyChild())
                 .hasParent(itemValueY)
-                .hasFieldName("value")
+                .hasField("value")
                 .hasTargetClass(Long.class)
                 .hasNoChildren();
     }

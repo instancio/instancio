@@ -35,7 +35,7 @@ class BaseClasSubClassInheritanceNodeTest extends NodeTestTemplate<BaseClassSubC
         final InternalNode subClass = assertNode(rootNode.getOnlyChild())
                 .hasDepth(1)
                 .hasTargetClass(SubClass.class)
-                .hasFieldName("subClass")
+                .hasField("subClass")
                 .hasChildrenOfSize(3) // includes superclass fields
                 .get();
 
