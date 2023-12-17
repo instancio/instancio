@@ -155,6 +155,15 @@
                 <module>spi-tests</module>
             </modules>
         </profile>
+        <profile>
+            <id>java-21</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <modules>
+                <module>java21-tests</module>
+            </modules>
+        </profile>
     </profiles>
 
 </project>
