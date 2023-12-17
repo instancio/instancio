@@ -16,7 +16,6 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
@@ -29,7 +28,7 @@ class IterableStringNodeTest extends NodeTestTemplate<Iterable<String>> {
                 .hasTargetClass(Iterable.class)
                 .hasChildrenOfSize(1);
 
-        assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        assertNode(rootNode.getOnlyChild())
                 .hasTargetClass(String.class)
                 .hasType(String.class)
                 .hasNoChildren()

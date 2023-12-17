@@ -30,7 +30,7 @@ import org.instancio.test.support.pojo.dynamic.DynPet;
 import org.instancio.test.support.pojo.dynamic.DynPhone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
+import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWithMethodAssignmentOnly
+@RunWith.MethodAssignmentOnly
 @FeatureTag({Feature.WITH_SEED, Feature.ASSIGNMENT_TYPE_METHOD})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(InstancioExtension.class)

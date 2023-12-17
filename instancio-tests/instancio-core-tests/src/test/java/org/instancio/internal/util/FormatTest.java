@@ -32,7 +32,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.scope;
-import static org.instancio.test.support.asserts.Asserts.assertEqualsIgnoringLineCarriage;
 
 class FormatTest {
 
@@ -107,14 +106,14 @@ class FormatTest {
         assertThat(Format.nodePathToRoot(person, "")).isEqualTo("<0:Person>");
 
         final InternalNode address = NodeUtils.getChildNode(person, "address");
-        assertEqualsIgnoringLineCarriage(Format.nodePathToRoot(address, "  "),
+        assertThat(Format.nodePathToRoot(address, "  ")).isEqualToNormalizingNewlines(
                 """
                           <1:Person: Address address; setAddress(Address)>
                            └──<0:Person>\
                         """);
 
         final InternalNode phoneNumbers = NodeUtils.getChildNode(address, "phoneNumbers");
-        assertEqualsIgnoringLineCarriage(Format.nodePathToRoot(phoneNumbers, " > "),
+        assertThat(Format.nodePathToRoot(phoneNumbers, " > ")).isEqualToNormalizingWhitespace(
                 """
                          > <2:Address: List<Phone> phoneNumbers; setPhoneNumbers(List<Phone>)>
                          >  └──<1:Person: Address address; setAddress(Address)>

@@ -22,12 +22,11 @@ import org.instancio.Selector;
 import org.instancio.SetMethodSelector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -37,7 +36,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisabledIfSystemProperty(named = SystemProperties.ASSIGNMENT_TYPE, matches = "METHOD")
+@RunWith.FieldAssignmentOnly
 @FeatureTag({Feature.ASSIGNMENT_TYPE, Feature.ASSIGNMENT_TYPE_METHOD})
 @ExtendWith(InstancioExtension.class)
 class FieldAssignmentUsingSetterSelectorTest {

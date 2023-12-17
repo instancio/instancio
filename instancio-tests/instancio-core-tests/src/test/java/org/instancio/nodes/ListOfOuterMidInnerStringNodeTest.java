@@ -24,7 +24,6 @@ import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import java.util.List;
 
-import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidInnerString> {
@@ -52,7 +51,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
     }
 
     private InternalNode assertRootListAndItsElement(InternalNode rootNode) {
-        final InternalNode rootList = assertNode(getOnlyElement(rootNode.getChildren()))
+        final InternalNode rootList = assertNode(rootNode.getOnlyChild())
                 .hasParent(rootNode)
                 .hasFieldName("rootList")
                 .hasTargetClass(List.class)
@@ -81,7 +80,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
     }
 
     private InternalNode assertOuterList(InternalNode rootListElement) {
-        final InternalNode outerList = assertNode(getOnlyElement(rootListElement.getChildren()))
+        final InternalNode outerList = assertNode(rootListElement.getOnlyChild())
                 .hasParent(rootListElement)
                 .hasFieldName("outerList")
                 .hasTargetClass(List.class)
@@ -102,7 +101,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
     }
 
     private InternalNode assertMidList(InternalNode outerElement) {
-        final InternalNode midList = assertNode(getOnlyElement(outerElement.getChildren()))
+        final InternalNode midList = assertNode(outerElement.getOnlyChild())
                 .hasParent(outerElement)
                 .hasFieldName("midList")
                 .hasTargetClass(List.class)
@@ -121,7 +120,7 @@ class ListOfOuterMidInnerStringNodeTest extends NodeTestTemplate<ListOfOuterMidI
     }
 
     private void assertInnerList(InternalNode midListElement) {
-        final InternalNode innerList = assertNode(getOnlyElement(midListElement.getChildren()))
+        final InternalNode innerList = assertNode(midListElement.getOnlyChild())
                 .hasParent(midListElement)
                 .hasFieldName("innerList")
                 .hasTargetClass(List.class)

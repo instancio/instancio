@@ -49,7 +49,6 @@ class IntegerSettingsTest {
     @DisplayName("Override MIN and MAX")
     void minMax() {
         final Settings overrides = settings.merge(Settings.create().set(Keys.STRING_NULLABLE, true));
-        final Set<Integer> results = new HashSet<>();
         for (int i = 0; i < 1000; i++) {
             final IntegerHolder result = Instancio.of(IntegerHolder.class).withSettings(overrides).create();
             assertThat(result.getPrimitive()).isBetween(MIN_VALUE, MAX_VALUE);

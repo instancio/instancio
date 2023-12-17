@@ -24,7 +24,6 @@ import org.instancio.testsupport.templates.NodeTestTemplate;
 import java.util.List;
 import java.util.Map;
 
-import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString> {
@@ -35,7 +34,7 @@ class MapIntegerListStringNodeTest extends NodeTestTemplate<MapIntegerListString
                 .hasTargetClass(MapIntegerListString.class)
                 .hasChildrenOfSize(1);
 
-        final InternalNode map = assertNode(getOnlyElement(rootNode.getChildren()))
+        final InternalNode map = assertNode(rootNode.getOnlyChild())
                 .hasParent(rootNode)
                 .hasFieldName("map")
                 .isOfKind(NodeKind.MAP)

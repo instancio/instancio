@@ -17,7 +17,6 @@ package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.ListWithWildcard;
-import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import java.util.List;
@@ -32,7 +31,7 @@ class ListWithWildcardNodeTest extends NodeTestTemplate<ListWithWildcard> {
                 .hasTargetClass(ListWithWildcard.class)
                 .hasChildrenOfSize(1);
 
-        final InternalNode list = assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        final InternalNode list = assertNode(rootNode.getOnlyChild())
                 .hasFieldName("list")
                 .hasSetterName("setList", List.class)
                 .hasChildrenOfSize(1)

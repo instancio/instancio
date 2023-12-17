@@ -17,7 +17,6 @@ package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.ListWithoutType;
-import org.instancio.test.support.util.CollectionUtils;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
@@ -30,7 +29,7 @@ class ListWithoutTypeNodeTest extends NodeTestTemplate<ListWithoutType> {
                 .hasTargetClass(ListWithoutType.class)
                 .hasChildrenOfSize(1);
 
-        assertNode(CollectionUtils.getOnlyElement(rootNode.getChildren()))
+        assertNode(rootNode.getOnlyChild())
                 .hasFieldName("list")
                 .hasNoChildren();
     }

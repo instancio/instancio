@@ -33,7 +33,7 @@ import org.junit.platform.engine.discovery.ClassNameFilter;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.testkit.engine.EngineTestKit;
 
-public class InstancioQuickcheckTestEngineTest {
+class InstancioQuickcheckTestEngineTest {
     @DisplayName("Run selected class that has no @Property methods")
     @Test
     void runSelectedClassNoAnnotatedMethods() {
@@ -376,12 +376,12 @@ public class InstancioQuickcheckTestEngineTest {
         protected class InstancioQuickcheckNestedTest {
             @Property(samples = 100)
             public void succeeding(@ForAll Integer i) {
-                assertThat(i).isGreaterThan(0);
+                assertThat(i).isPositive();
             }
             
             @Property(samples = 100)
             public void failing(@ForAll Integer i) {
-                assertThat(i % 2).isEqualTo(0);
+                assertThat(i % 2).isZero();
             }
         }
     }
@@ -393,7 +393,7 @@ public class InstancioQuickcheckTestEngineTest {
             protected class InstancioQuickcheckNestedTest {
                 @Property(samples = 100)
                 public void succeeding(@ForAll Integer i) {
-                    assertThat(i).isGreaterThan(0);
+                    assertThat(i).isPositive();
                 }
             }
         }
@@ -402,24 +402,24 @@ public class InstancioQuickcheckTestEngineTest {
     protected class InstancioQuickcheckInnerTest {
         @Property(samples = 100)
         public void succeeding(@ForAll Integer i) {
-            assertThat(i).isGreaterThan(0);
+            assertThat(i).isPositive();
         }
         
         @Property(samples = 100)
         public void failing(@ForAll Integer i) {
-            assertThat(i % 2).isEqualTo(0);
+            assertThat(i % 2).isZero();
         }
     }
 
     protected static class InstancioQuickcheckTest {
         @Property(samples = 100)
         public void succeeding(@ForAll Integer i) {
-            assertThat(i).isGreaterThan(0);
+            assertThat(i).isPositive();
         }
         
         @Property(samples = 100)
         public void failing(@ForAll Integer i) {
-            assertThat(i % 2).isEqualTo(0);
+            assertThat(i % 2).isZero();
         }
     }
 
@@ -427,7 +427,7 @@ public class InstancioQuickcheckTestEngineTest {
         @Property(samples = 100)
         @Timeout(1000)
         public void succeeding(@ForAll("positive") Integer i) {
-            assertThat(i).isGreaterThan(0);
+            assertThat(i).isPositive();
         }
         
         @SuppressWarnings("unused")
@@ -444,7 +444,7 @@ public class InstancioQuickcheckTestEngineTest {
         protected class InstancioQuickcheckNested1Test {
             @Property(samples = 100)
             public void succeeding(@ForAll Integer i) {
-                assertThat(i).isGreaterThan(0);
+                assertThat(i).isPositive();
             }
         }
         
@@ -452,7 +452,7 @@ public class InstancioQuickcheckTestEngineTest {
         protected class InstancioQuickcheckNested2Test {
             @Property(samples = 100)
             public void failing(@ForAll Integer i) {
-                assertThat(i % 2).isEqualTo(0);
+                assertThat(i % 2).isZero();
             }
         }
     }

@@ -29,12 +29,12 @@ public class InstancioQuickcheckTest {
     @DisplayName("Test positive integers")
     @Property(samples = 100)
     public void positiveIntegers(@ForAll Integer i) {
-        assertThat(i).isGreaterThan(0);
+        assertThat(i).isPositive();
     }
     
     @Property(samples = 100)
     public void oddIntegers(@ForAll("odds") Integer i) {
-        assertThat(i % 2).isEqualTo(0);
+        assertThat(i % 2).isZero();
     }
     
     public Arbitrary<Integer> odds() {
