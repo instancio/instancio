@@ -21,7 +21,6 @@ import org.instancio.test.support.pojo.generics.container.ItemContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 
-import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<String, Long>> {
@@ -42,7 +41,7 @@ class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<Str
                 .hasChildrenOfSize(1)
                 .get();
 
-        assertNode(getOnlyElement(itemValueX.getChildren()))
+        assertNode(itemValueX.getOnlyChild())
                 .hasParent(itemValueX)
                 .hasFieldName("value")
                 .hasTargetClass(String.class)
@@ -58,7 +57,7 @@ class ItemContainerStringLongNodeTest extends NodeTestTemplate<ItemContainer<Str
                 .hasChildrenOfSize(1)
                 .get();
 
-        assertNode(getOnlyElement(itemValueY.getChildren()))
+        assertNode(itemValueY.getOnlyChild())
                 .hasParent(itemValueY)
                 .hasFieldName("value")
                 .hasTargetClass(Long.class)

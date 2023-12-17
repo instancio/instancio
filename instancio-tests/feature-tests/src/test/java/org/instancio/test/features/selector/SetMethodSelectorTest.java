@@ -39,7 +39,7 @@ import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
+import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +50,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.setter;
 import static org.instancio.test.support.asserts.Asserts.assertAllNulls;
 
-@RunWithMethodAssignmentOnly
+@RunWith.MethodAssignmentOnly
 @FeatureTag({Feature.ASSIGNMENT_TYPE_METHOD, Feature.METHOD_REFERENCE_SELECTOR})
 @ExtendWith(InstancioExtension.class)
 class SetMethodSelectorTest {

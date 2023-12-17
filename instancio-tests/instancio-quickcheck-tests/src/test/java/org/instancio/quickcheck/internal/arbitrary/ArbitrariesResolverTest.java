@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.platform.engine.ConfigurationParameters;
 
-public class ArbitrariesResolverTest {
+class ArbitrariesResolverTest {
     private final DefaultInstancioQuickcheckConfiguration configuration = new DefaultInstancioQuickcheckConfiguration(new ConfigurationParameters() {
         @Override
         public int size() {
@@ -91,15 +91,15 @@ public class ArbitrariesResolverTest {
 
     private static class QuickcheckTest {
         public void unknown(@ForAll("odds") Integer i) {
-            assertThat(i % 2).isEqualTo(0);
+            assertThat(i % 2).isZero();
         }
         
         public void noninstantiable(@ForAll("noninstantiable") Integer i) {
-            assertThat(i % 2).isEqualTo(0);
+            assertThat(i % 2).isZero();
         }
 
         public void nullable(@ForAll("nullable") Integer i) {
-            assertThat(i % 2).isEqualTo(0);
+            assertThat(i % 2).isZero();
         }
 
         Arbitrary<Integer> nullable() {

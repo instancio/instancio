@@ -28,7 +28,7 @@ import org.instancio.test.support.pojo.dynamic.DynPerson;
 import org.instancio.test.support.pojo.dynamic.DynPhone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
+import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.setter;
 
-@RunWithMethodAssignmentOnly
+@RunWith.MethodAssignmentOnly
 @FeatureTag({Feature.ASSIGNMENT_TYPE_METHOD, Feature.ON_COMPLETE})
 @ExtendWith(InstancioExtension.class)
 class OnCompleteWithMethodSelectorTest {

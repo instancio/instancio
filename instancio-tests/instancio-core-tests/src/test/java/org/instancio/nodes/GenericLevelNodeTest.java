@@ -1,13 +1,13 @@
 package org.instancio.nodes;
 
-import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
-
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance;
 import org.instancio.test.support.pojo.generics.inheritance.GenericTypesWithInheritance.GenericLevel4;
 import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
+
+import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 @GenericsTag
 public class GenericLevelNodeTest extends NodeTestTemplate<GenericLevel4> {

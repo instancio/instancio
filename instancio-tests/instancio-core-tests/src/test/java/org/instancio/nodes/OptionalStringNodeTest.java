@@ -23,7 +23,6 @@ import org.instancio.testsupport.utils.NodeUtils;
 
 import java.util.Optional;
 
-import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class OptionalStringNodeTest extends NodeTestTemplate<OptionalString> {
@@ -43,7 +42,7 @@ class OptionalStringNodeTest extends NodeTestTemplate<OptionalString> {
                 .hasChildrenOfSize(1)
                 .get();
 
-        assertNode(getOnlyElement(optionalNode.getChildren()))
+        assertNode(optionalNode.getOnlyChild())
                 .hasParent(optionalNode)
                 .hasTargetClass(String.class)
                 .isOfKind(NodeKind.JDK)

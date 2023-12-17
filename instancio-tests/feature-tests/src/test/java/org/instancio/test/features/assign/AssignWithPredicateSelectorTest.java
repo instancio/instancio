@@ -32,7 +32,6 @@ import static org.instancio.Select.types;
 
 @FeatureTag({
         Feature.ASSIGN,
-        Feature.MODEL,
         Feature.PREDICATE_SELECTOR
 })
 @ExtendWith(InstancioExtension.class)

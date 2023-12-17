@@ -16,7 +16,6 @@
 package org.instancio.test.features.assignmenttype;
 
 import org.instancio.Instancio;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -24,15 +23,15 @@ import org.instancio.test.support.pojo.assignment.SetterStylePojo;
 import org.instancio.test.support.pojo.assignment.SetterStyleSet;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
 import static org.instancio.Select.fields;
 
 @FeatureTag(Feature.ASSIGNMENT_TYPE)
-@DisabledIfSystemProperty(named = SystemProperties.ASSIGNMENT_TYPE, matches = "METHOD")
+@RunWith.FieldAssignmentOnly
 class AssignmentTypeFieldTest {
 
     @Test

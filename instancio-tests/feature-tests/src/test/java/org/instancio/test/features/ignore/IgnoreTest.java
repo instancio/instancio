@@ -30,7 +30,7 @@ import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
+import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,8 +40,8 @@ import static org.instancio.Select.allShorts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
-import static org.instancio.Select.setter;
 import static org.instancio.Select.scope;
+import static org.instancio.Select.setter;
 
 @FeatureTag(Feature.IGNORE)
 class IgnoreTest {
@@ -59,7 +59,7 @@ class IgnoreTest {
     }
 
     @Test
-    @RunWithMethodAssignmentOnly
+    @RunWith.MethodAssignmentOnly
     @DisplayName("Ignored method should not be invoked so the original field value is retained")
     void methodIsIgnored() {
         final ClassWithInitializedField holder = Instancio.of(ClassWithInitializedField.class)

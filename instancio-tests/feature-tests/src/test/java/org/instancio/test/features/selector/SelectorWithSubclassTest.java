@@ -27,7 +27,7 @@ import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance.
 import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance.SubClass;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWithMethodAssignmentOnly;
+import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ class SelectorWithSubclassTest {
         }
 
         @Test
-        @RunWithMethodAssignmentOnly
+        @RunWith.MethodAssignmentOnly
         @DisplayName("Selecting value by specifying parent class and method")
         void usingMethodFieldSelector() {
             final SubClass result = Instancio.of(SubClass.class)

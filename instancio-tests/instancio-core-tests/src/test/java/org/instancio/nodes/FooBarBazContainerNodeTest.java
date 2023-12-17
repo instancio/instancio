@@ -22,7 +22,6 @@ import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.generics.foobarbaz.FooBarBazContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
-import org.junit.platform.commons.util.CollectionUtils;
 
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
@@ -35,7 +34,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                 .hasDepth(0)
                 .hasChildrenOfSize(1);
 
-        final InternalNode itemNode = CollectionUtils.getOnlyElement(rootNode.getChildren());
+        final InternalNode itemNode = rootNode.getOnlyChild();
         assertNode(itemNode)
                 .hasDepth(1)
                 .hasTargetClass(Foo.class)

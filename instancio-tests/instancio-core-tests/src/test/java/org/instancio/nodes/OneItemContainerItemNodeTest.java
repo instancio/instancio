@@ -22,7 +22,6 @@ import org.instancio.test.support.pojo.generics.container.OneItemContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 
-import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Item<String>>> {
@@ -46,7 +45,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
                 .hasChildrenOfSize(1)
                 .get();
 
-        final InternalNode nestedItem = assertNode(getOnlyElement(item.getChildren()))
+        final InternalNode nestedItem = assertNode(item.getOnlyChild())
                 .hasParent(item)
                 .hasFieldName("value")
                 .hasTargetClass(Item.class)
@@ -55,7 +54,7 @@ class OneItemContainerItemNodeTest extends NodeTestTemplate<OneItemContainer<Ite
                 .hasChildrenOfSize(1)
                 .get();
 
-        assertNode(getOnlyElement(nestedItem.getChildren()))
+        assertNode(nestedItem.getOnlyChild())
                 .hasParent(nestedItem)
                 .hasFieldName("value")
                 .hasTargetClass(String.class)

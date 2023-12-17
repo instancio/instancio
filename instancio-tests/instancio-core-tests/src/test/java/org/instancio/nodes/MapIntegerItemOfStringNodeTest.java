@@ -23,7 +23,6 @@ import org.instancio.testsupport.templates.NodeTestTemplate;
 
 import java.util.Map;
 
-import static org.instancio.test.support.util.CollectionUtils.getOnlyElement;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class MapIntegerItemOfStringNodeTest extends NodeTestTemplate<MapIntegerItemOfString> {
@@ -34,7 +33,7 @@ class MapIntegerItemOfStringNodeTest extends NodeTestTemplate<MapIntegerItemOfSt
                 .hasTargetClass(MapIntegerItemOfString.class)
                 .hasChildrenOfSize(1);
 
-        final InternalNode outerMap = assertNode(getOnlyElement(rootNode.getChildren()))
+        final InternalNode outerMap = assertNode(rootNode.getOnlyChild())
                 .hasParent(rootNode)
                 .hasFieldName("map")
                 .hasTargetClass(Map.class)
@@ -53,7 +52,7 @@ class MapIntegerItemOfStringNodeTest extends NodeTestTemplate<MapIntegerItemOfSt
                 .hasTargetClass(Item.class)
                 .hasChildrenOfSize(1);
 
-        assertNode(getOnlyElement(outerMap.getChildren().get(1).getChildren()))
+        assertNode(outerMap.getChildren().get(1).getOnlyChild())
                 .hasParent(outerMap.getChildren().get(1))
                 .hasTargetClass(String.class)
                 .hasNoChildren();

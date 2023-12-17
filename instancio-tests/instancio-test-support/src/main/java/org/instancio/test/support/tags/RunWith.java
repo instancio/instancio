@@ -21,14 +21,24 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * This annotation is for tests that must be run using METHOD assignment only.
+ * These annotations are for tests that must be run using
+ * either FIELD or METHOD assignment, but not both.
  *
  * <p>The feature-tests suite is executed twice: using field and method
  * assignments. This is done by setting assignment type via a system property.
- * There are certain tests, however, that can only be executed using method
- * assignment. Those tests must be disabled under "FIELD" assignment type.
+ * There are certain tests, however, that can only be executed using either
+ * field or method assignment, but not both.
  */
-@DisabledIfSystemProperty(named = "instancio.assignmentType", matches = "FIELD")
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RunWithMethodAssignmentOnly {
+public interface RunWith {
+
+    @DisabledIfSystemProperty(named = "instancio.assignmentType", matches = "FIELD")
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface MethodAssignmentOnly {
+    }
+
+    @DisabledIfSystemProperty(named = "instancio.assignmentType", matches = "METHOD")
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface FieldAssignmentOnly {
+    }
+
 }
