@@ -92,7 +92,7 @@ Person marge = Instancio.of(simpsons)
 ## Main Features
 
 - Fully reproducible data in case of test failures.
-- Support for generics, `record` and `sealed` classes.
+- Support for generics, `record` and `sealed` classes, Java 21 sequenced collections.
 - Support for defining custom generators.
 - Support for generating data based on Bean Validation annotations.
 - Flexible configuration options.
