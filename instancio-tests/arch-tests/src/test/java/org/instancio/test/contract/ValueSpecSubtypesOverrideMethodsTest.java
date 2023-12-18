@@ -51,7 +51,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -220,17 +219,13 @@ class ValueSpecSubtypesOverrideMethodsTest {
     private static boolean overrides(final Class<?> specClass, final Method superMethod) {
         return Arrays.stream(specClass.getDeclaredMethods())
                 .anyMatch(m -> m.getName().equals(superMethod.getName())
-                        && paramsEqual(superMethod.getParameters(), m.getParameters())
+                        // Not comparing parameter types because some superclass method parameters
+                        // are generic, and do not match subclass parameter types, e.g.:
+                        // - NumberGeneratorSpec<T extends Number> vs IntegerSpec: Number vs Integer
+                        // - TemporalGeneratorSpec<T> vs InstantSpec: Object vs Instant
+                        //
+                        // Method name + parameter count is good enough for this test.
+                        && superMethod.getParameterCount() == m.getParameterCount()
                         && m.getReturnType() == specClass);
-    }
-
-    private static boolean paramsEqual(final Parameter[] a, final Parameter[] b) {
-        // Not comparing parameter types because some superclass method parameters
-        // are generic, and do not match subclass parameter types, e.g.:
-        // - NumberGeneratorSpec<T extends Number> vs IntegerSpec: Number vs Integer
-        // - TemporalGeneratorSpec<T> vs InstantSpec: Object vs Instant
-        //
-        // Method name + parameter count is good enough for this test.
-        return a.length == b.length;
     }
 }
