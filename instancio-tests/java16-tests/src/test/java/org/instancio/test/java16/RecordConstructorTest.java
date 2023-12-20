@@ -17,20 +17,26 @@ package org.instancio.test.java16;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.pojo.misc.WithNonDefaultConstructorThrowingError;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
-class WithNonDefaultConstructorThrowingErrorTest {
+class RecordConstructorTest {
 
     @Test
-    void withNonDefaultConstructorThrowingError() {
-        final WithNonDefaultConstructorThrowingError result = Instancio.create(
-                WithNonDefaultConstructorThrowingError.class);
+    void shouldUseCanonicalConstructor() {
+        record SampleRecord(Integer value) {
 
-        assertThat(result).hasNoNullFieldsOrProperties();
+            @SuppressWarnings("unused")
+            SampleRecord(String value) {
+                this(Integer.valueOf(value));
+            }
+        }
+
+        final SampleRecord result = Instancio.create(SampleRecord.class);
+
+        assertThat(result.value()).isPositive();
     }
 }
