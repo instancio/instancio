@@ -791,9 +791,9 @@ mode=LENIENT
 
 Properties of an object created by Instancio can be customised using
 
-- `generate()`
-- `set()`
-- `supply()`
+- [`generate()`](#using-generate)
+- [`set()`](#using-set)
+- [`supply()`](#using-supply)
 
 methods defined in the {{InstancioApi}} class.
 
@@ -833,7 +833,8 @@ Each generator provides methods applicable to the type it generates, for example
 - `gen.longs().min(Long.MIN_VALUE)`
 - `gen.enumOf(MyEnum.class).excluding(MyEnum.FOO, MyEnum.BAR)`
 
-In addition, most generators can also return generated values as Strings, for example:
+In addition, most generators can also map values to a different type.
+For example, the following returns generated values as Strings:
 
 ``` java linenums="1"
 class Foo {
@@ -931,6 +932,8 @@ Generators
     └── usa()
         └── ssn()
 ```
+
+!!! info "The `io().file()` and `nio().path()` generators can save files on the filesystem."
 
 
 ### Using `set()`
