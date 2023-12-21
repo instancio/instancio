@@ -29,7 +29,6 @@ import org.junit.jupiter.params.support.AnnotationConsumer;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -57,7 +56,9 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
     }
 
     static Object[] createObjects(final Type[] types, final Random random, final Settings settings) {
-        return Arrays.stream(types).map(type -> createObject(type, random, settings)).collect(Collectors.toList()).toArray();
+        return Arrays.stream(types)
+                .map(type -> createObject(type, random, settings))
+                .toArray();
     }
 
     static Object createObject(final Type type, final Random random, final Settings settings) {

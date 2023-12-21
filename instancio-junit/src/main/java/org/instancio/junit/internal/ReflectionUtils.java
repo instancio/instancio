@@ -22,7 +22,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public final class ReflectionUtils {
+final class ReflectionUtils {
 
     private ReflectionUtils() {
         // non-instantiable
