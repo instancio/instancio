@@ -36,7 +36,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.instancio.quickcheck.junit</Export-Package>
+                        <Export-Package>org.instancio.quickcheck</Export-Package>
                         <Import-Package>
                             org.instancio.exception;version=!,
                             org.instancio.settings;version=!,
@@ -57,7 +57,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.instancio.junit</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.instancio.quickcheck</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.quickcheck.engine;
+package org.instancio.quickcheck.internal.engine;
 
-import java.util.concurrent.Future;
-
-import org.instancio.documentation.ExperimentalApi;
 import org.instancio.quickcheck.internal.config.InstancioQuickcheckConfiguration;
 import org.junit.platform.engine.EngineExecutionListener;
 import org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService;
 
-@ExperimentalApi
+import java.util.concurrent.Future;
+
 public class InstancioQuickcheckTestExecutor extends SameThreadHierarchicalTestExecutorService {
     private final InstancioQuickcheckConfiguration configuration;
 
@@ -30,7 +28,7 @@ public class InstancioQuickcheckTestExecutor extends SameThreadHierarchicalTestE
         super();
         this.configuration = configuration;
     }
-    
+
     public Future<Void> execute(InstancioQuickcheckEngineDescriptor descriptor, EngineExecutionListener listener) {
         return submit(createTestTask(descriptor, listener));
     }
@@ -38,7 +36,7 @@ public class InstancioQuickcheckTestExecutor extends SameThreadHierarchicalTestE
     private TestTask createTestTask(InstancioQuickcheckEngineDescriptor descriptor, EngineExecutionListener listener) {
         return new InstancioQuickcheckTestTask(descriptor, listener, this);
     }
-    
+
     public InstancioQuickcheckConfiguration getConfiguration() {
         return configuration;
     }

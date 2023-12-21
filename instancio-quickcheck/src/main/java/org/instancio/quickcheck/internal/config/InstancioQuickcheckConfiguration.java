@@ -15,9 +15,9 @@
  */
 package org.instancio.quickcheck.internal.config;
 
-import org.instancio.documentation.ExperimentalApi;
+import org.instancio.documentation.InternalApi;
 
-@ExperimentalApi
+@InternalApi
 public interface InstancioQuickcheckConfiguration {
     long seed();
 }

@@ -15,13 +15,6 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
-import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
-
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.DisplayNameGenerator.Standard;
@@ -30,22 +23,36 @@ import org.junit.platform.commons.logging.LoggerFactory;
 import org.junit.platform.commons.util.Preconditions;
 import org.junit.platform.commons.util.StringUtils;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
+
+/**
+ * This class is from the
+ * <a href="https://github.com/junit-team/junit5/">JUnit Jupiter</a> library.
+ *
+ * <p>This is a modified version of
+ * {@code org.junit.jupiter.engine.descriptor.DisplayNameUtils}.
+ */
 final class DisplayNameUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(DisplayNameUtils.class);
-    
+
     private DisplayNameUtils() {
     }
 
     static Supplier<String> createDisplayNameSupplierForClass(Class<?> testClass) {
-        return () -> getDisplayNameGenerator(testClass).generateDisplayNameForClass(testClass);
+        return () -> getDisplayNameGenerator().generateDisplayNameForClass(testClass);
     }
 
     static String determineDisplayNameForMethod(Class<?> testClass, Method testMethod) {
-        final DisplayNameGenerator generator = getDisplayNameGenerator(testClass);
+        final DisplayNameGenerator generator = getDisplayNameGenerator();
         return determineDisplayName(testMethod, () -> generator.generateDisplayNameForMethod(testClass, testMethod));
     }
 
-    static DisplayNameGenerator getDisplayNameGenerator(Class<?> testClass) {
+    static DisplayNameGenerator getDisplayNameGenerator() {
         return DisplayNameGenerator.getDisplayNameGenerator(Standard.class);
     }
 
@@ -59,9 +66,8 @@ final class DisplayNameUtils {
             // handling validation exceptions during the TestEngine discovery phase.
             if (StringUtils.isBlank(displayName)) {
                 LOGGER.warn(() -> String.format(
-                    "Configuration error: @DisplayName on [%s] must be declared with a non-empty value.", element));
-            }
-            else {
+                        "Configuration error: @DisplayName on [%s] must be declared with a non-empty value.", element));
+            } else {
                 return displayName;
             }
         }

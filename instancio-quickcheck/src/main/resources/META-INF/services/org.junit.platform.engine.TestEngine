@@ -1,1 +1,1 @@
-org.instancio.quickcheck.engine.InstancioQuickcheckTestEngine
+org.instancio.quickcheck.internal.engine.InstancioQuickcheckTestEngine

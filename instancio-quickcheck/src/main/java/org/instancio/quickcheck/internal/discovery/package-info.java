@@ -13,5 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/**
+ * Defines classes for discovering tests.
+ *
+ * @since 3.6.0
+ */
 package org.instancio.quickcheck.internal.discovery;

@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.quickcheck.engine;
+package org.instancio.quickcheck.internal.engine;
 
+import org.instancio.internal.util.Sonar;
+import org.instancio.quickcheck.api.Property;
+import org.instancio.quickcheck.internal.arbitrary.ArbitrariesResolver;
+import org.instancio.quickcheck.internal.descriptor.InstancioClassBasedTestDescriptor;
+import org.instancio.quickcheck.internal.descriptor.InstancioQuickcheckTestMethodTestDescriptor;
+import org.junit.platform.commons.JUnitException;
+import org.junit.platform.commons.util.ReflectionUtils;
+import org.junit.platform.engine.EngineExecutionListener;
+import org.junit.platform.engine.TestDescriptor;
+import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutorService.TestTask;
 import org.junit.platform.engine.support.hierarchical.Node.ExecutionMode;
-
-import static java.util.stream.Collectors.toCollection;
+import org.junit.platform.engine.support.hierarchical.ResourceLock;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -29,20 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.instancio.documentation.ExperimentalApi;
-import org.instancio.quickcheck.api.Property;
-import org.instancio.quickcheck.internal.arbitrary.ArbitrariesResolver;
-import org.instancio.quickcheck.internal.descriptor.InstancioClassBasedTestDescriptor;
-import org.instancio.quickcheck.internal.descriptor.InstancioQuickcheckTestMethodTestDescriptor;
-import org.instancio.quickcheck.internal.engine.PropertyConfiguration;
-import org.junit.platform.commons.JUnitException;
-import org.junit.platform.commons.util.ReflectionUtils;
-import org.junit.platform.engine.EngineExecutionListener;
-import org.junit.platform.engine.TestDescriptor;
-import org.junit.platform.engine.TestExecutionResult;
-import org.junit.platform.engine.support.hierarchical.ResourceLock;
+import static java.util.stream.Collectors.toCollection;
 
-@ExperimentalApi
 public class InstancioQuickcheckTestTask implements TestTask {
     private final Map<TestDescriptor, ResourceLock> resourceLocksByTestDescriptor = new HashMap<>();
     private final TestDescriptor descriptor;
@@ -79,7 +76,7 @@ public class InstancioQuickcheckTestTask implements TestTask {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingThrowable")
+    @SuppressWarnings({"PMD.AvoidCatchingThrowable", Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE})
     public void execute() {
         try {
             listener.executionStarted(descriptor);
@@ -90,8 +87,9 @@ public class InstancioQuickcheckTestTask implements TestTask {
             final List<InstancioQuickcheckTestTask> children = descriptor
                 .getChildren()
                 .stream()
-                .map(descriptor -> new InstancioQuickcheckTestTask(descriptor, listener, executor))
+                .map(desc -> new InstancioQuickcheckTestTask(desc, listener, executor))
                 .collect(toCollection(ArrayList::new));
+
             executor.invokeAll(children);
 
             reportCompletion();
@@ -123,8 +121,8 @@ public class InstancioQuickcheckTestTask implements TestTask {
             final Object instance = desc.getParent()
                 .filter(InstancioClassBasedTestDescriptor.class::isInstance)
                 .map(InstancioClassBasedTestDescriptor.class::cast)
-                .map(d -> d.createTestInstance())
-                .orElseThrow(() -> new JUnitException("Property method descriptors should have parent")); 
+                .map(InstancioClassBasedTestDescriptor::createTestInstance)
+                .orElseThrow(() -> new JUnitException("Property method descriptors should have parent"));
 
             final ArbitrariesResolver resolver = new ArbitrariesResolver(parameters,  executor.getConfiguration());
             for (int i = 0; i < configuration.getSamples(); ++i) {
