@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.quickcheck.engine;
+package org.instancio.quickcheck.internal.engine;
 
-import org.instancio.documentation.ExperimentalApi;
 import org.instancio.quickcheck.internal.config.InstancioQuickcheckConfiguration;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.EngineDescriptor;
 
-@ExperimentalApi
 public class InstancioQuickcheckEngineDescriptor extends EngineDescriptor {
     private final InstancioQuickcheckConfiguration configuration;
     
     public InstancioQuickcheckEngineDescriptor(final UniqueId uniqueId, final InstancioQuickcheckConfiguration
             configuration) {
-        super(uniqueId, "Instantio");
+        super(uniqueId, "Instancio");
         this.configuration = configuration;
     }
     

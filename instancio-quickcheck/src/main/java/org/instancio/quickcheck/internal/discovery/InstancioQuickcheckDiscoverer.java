@@ -16,7 +16,7 @@
 package org.instancio.quickcheck.internal.discovery;
 
 import org.instancio.documentation.ExperimentalApi;
-import org.instancio.quickcheck.engine.InstancioQuickcheckEngineDescriptor;
+import org.instancio.quickcheck.internal.engine.InstancioQuickcheckEngineDescriptor;
 import org.instancio.quickcheck.internal.discovery.predicates.IsTestClassWithProperties;
 import org.junit.platform.engine.EngineDiscoveryRequest;
 import org.junit.platform.engine.TestDescriptor;

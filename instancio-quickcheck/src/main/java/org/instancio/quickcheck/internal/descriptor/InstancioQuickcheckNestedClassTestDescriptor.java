@@ -15,24 +15,26 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
-import static java.util.Collections.emptyList;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.instancio.documentation.ExperimentalApi;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.ClassSource;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+
 @ExperimentalApi
 public class InstancioQuickcheckNestedClassTestDescriptor extends InstancioClassBasedTestDescriptor {
     public static final String SEGMENT_TYPE = "nested-class";
 
     public InstancioQuickcheckNestedClassTestDescriptor(UniqueId uniqueId, Class<?> testClass) {
-        super(uniqueId, testClass, DisplayNameUtils.getDisplayNameGenerator(testClass).generateDisplayNameForNestedClass(testClass),
-            ClassSource.from(testClass));
+        super(uniqueId,
+                testClass,
+                DisplayNameUtils.getDisplayNameGenerator().generateDisplayNameForNestedClass(testClass),
+                ClassSource.from(testClass));
     }
 
     @Override
@@ -46,7 +48,7 @@ public class InstancioQuickcheckNestedClassTestDescriptor extends InstancioClass
         }
         return emptyList();
     }
-    
+
     @Override
     public Object createTestInstance() {
         final List<Class<?>> parents = getEnclosingTestClasses();
@@ -57,7 +59,7 @@ public class InstancioQuickcheckNestedClassTestDescriptor extends InstancioClass
             return ReflectionUtils.newInstance(getTestClass(), parent);
         }
     }
-    
+
     private static Object createParentInstance(final Object parent, List<Class<?>> enclosed) {
         if (enclosed.isEmpty()) {
             return parent;
