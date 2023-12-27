@@ -103,7 +103,7 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
 
     /**
      * Specifies that a random value should be generated if an insufficient
-     * number of items were provided.
+     * number of items were provided (default behaviour).
      *
      * @return spec builder
      * @since 2.12.0

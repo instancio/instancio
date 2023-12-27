@@ -59,13 +59,11 @@ public final class ApiValidator {
             "%n%n\t// or the builder version" +
             "%n\tPerson person = Instancio.of(Person.class).create();";
 
-    public static <T> Class<T> validateRootClass(@Nullable final Class<T> klass) {
-        isTrue(klass != null,
+    public static void validateRootClass(@Nullable final Type type) {
+        isTrue(type != null,
                 "class must not be null"
                         + "%n -> Please provide a valid class%n"
                         + CREATE_CLASS_HELP);
-
-        return klass;
     }
 
     public static Type validateTypeToken(@Nullable final TypeTokenSupplier<?> typeTokenSupplier) {
@@ -89,6 +87,10 @@ public final class ApiValidator {
 
     public static <T> Class<T> validateOfSetElementType(final Class<T> elementType) {
         return validateOfCollectionElementType(elementType, "ofSet()");
+    }
+
+    public static <T> Class<T> validateOfCartesianProductElementType(final Class<T> elementType) {
+        return validateOfCollectionElementType(elementType, "ofCartesianProduct()");
     }
 
     public static <T> Class<T> validateOfCollectionElementType(final Class<T> elementType, final String method) {
