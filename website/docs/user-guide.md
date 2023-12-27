@@ -1152,7 +1152,7 @@ For example, `Assign.given(allStrings())` is acceptable for the following class
 because there is only one string that matches the selector:
 
 ```java
-class MyRecord(String string, Integer number) {}
+record MyRecord(String string, Integer number) {}
 ```
 
 but not for the following classes because `allStrings()` would match more than one string value:
@@ -1292,7 +1292,7 @@ The default value of the `AfterGenerate` hint can be overridden using `instancio
 !!! info
     Callbacks are always invoked on objects created by generators regardless of `AfterGenerate` value.
 
-**Method** `generate(TargetSelector, Function)` is for customising objects created by internal generators.
+**Method** `generate(TargetSelector, GeneratorSpecProvider)` is for customising objects created by internal generators.
 Such objects include value types (numbers, strings, dates) and data structures (collections, arrays).
 
 - matching selectors are **always** applied
