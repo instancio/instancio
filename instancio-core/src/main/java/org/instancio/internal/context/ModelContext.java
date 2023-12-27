@@ -298,7 +298,8 @@ public final class ModelContext<T> {
         private boolean verbose;
 
         private Builder(final Type rootType) {
-            this.rootType = Verify.notNull(rootType, "Root type is null");
+            ApiValidator.validateRootClass(rootType);
+            this.rootType = rootType;
             this.rootClass = TypeUtils.getRawType(this.rootType);
             this.selectorProcessor = new SelectorProcessor(
                     rootClass, INTERNAL_SERVICE_PROVIDERS, setMethodSelectorHolder);
@@ -330,14 +331,17 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> withGenerator(final TargetSelector selector, final Generator<?> generator) {
+            ApiValidator.validateGeneratorNotNull(generator);
             return putSelector(generatorSelectors, selector, generator);
         }
 
         public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
+            ApiValidator.validateSupplierNotNull(supplier);
             return withGenerator(selector, GeneratorDecorator.decorate(supplier));
         }
 
         public <V> Builder<T> withGeneratorSpec(final TargetSelector selector, final GeneratorSpecProvider<V> spec) {
+            ApiValidator.validateGenerateSecondArgument(spec);
             return putSelector(generatorSpecSelectors, selector, spec);
         }
 
@@ -356,11 +360,14 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> withMaxDepth(final int maxDepth) {
+            ApiValidator.isTrue(maxDepth >= 0, "Maximum depth must not be negative: %s", maxDepth);
             this.maxDepth = maxDepth;
             return this;
         }
 
         public Builder<T> withAssignments(final Assignment... assignments) {
+            ApiValidator.notNull(assignments, "assignments array must not be null");
+
             for (Assignment assignment : assignments) {
                 ApiValidator.notNull(assignment, "assignments array must not contain null");
                 processAssignment(assignment);

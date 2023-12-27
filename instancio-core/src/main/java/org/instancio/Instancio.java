@@ -15,8 +15,10 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.internal.ApiImpl;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.CartesianProductApiImpl;
 import org.instancio.internal.OfClassApiImpl;
 import org.instancio.internal.OfCollectionApiImpl;
 import org.instancio.internal.OfMapApiImpl;
@@ -325,7 +327,6 @@ public final class Instancio {
      * @return API builder reference
      */
     public static <T> InstancioOfClassApi<T> of(final Class<T> type) {
-        ApiValidator.validateRootClass(type);
         return new OfClassApiImpl<>(type);
     }
 
@@ -375,6 +376,84 @@ public final class Instancio {
      */
     public static <T> InstancioApi<T> of(final Model<T> model) {
         return new ApiImpl<>(model);
+    }
+
+    /**
+     * Generates the Cartesian product based on the values specified via the
+     * {@code with()} method. The Cartesian product is returned as
+     * a {@link List} in lexicographical order.
+     *
+     * <p>Example:
+     * <pre>{@code
+     * record Widget(String type, int num) {}
+     *
+     * List<Widget> results = Instancio.ofCartesianProduct(Widget.class)
+     *     .with(field(Widget::type), "FOO", "BAR", "BAZ")
+     *     .with(field(Widget::num), 1, 2, 3)
+     *     .list();
+     * }</pre>
+     *
+     * <p>This will produce the following list of {@code Widget} objects:
+     * <pre>
+     * [Widget[type=FOO, num=1],
+     *  Widget[type=FOO, num=2],
+     *  Widget[type=FOO, num=3],
+     *  Widget[type=BAR, num=1],
+     *  Widget[type=BAR, num=2],
+     *  Widget[type=BAR, num=3],
+     *  Widget[type=BAZ, num=1],
+     *  Widget[type=BAZ, num=2],
+     *  Widget[type=BAZ, num=3]]
+     * </pre>
+     *
+     * @param type to create
+     * @param <T>  the type of object
+     * @return API builder reference
+     * @see #ofCartesianProduct(Model)
+     * @see #ofCartesianProduct(TypeTokenSupplier)
+     * @since 4.0.0
+     */
+    @ExperimentalApi
+    public static <T> CartesianProductApi<T> ofCartesianProduct(final Class<T> type) {
+        return new CartesianProductApiImpl<>(ApiValidator.validateOfCartesianProductElementType(type));
+    }
+
+    /**
+     * Generates the Cartesian product based on the values specified via the
+     * {@code with()} method. The Cartesian product is returned as
+     * a {@link List} in lexicographical order.
+     *
+     * <p>See {@link #ofCartesianProduct(Class)} for an example.
+     *
+     * @param typeToken specifying the type to create
+     * @param <T>       the type of object
+     * @return API builder reference
+     * @see #ofCartesianProduct(Class)
+     * @see #ofCartesianProduct(Model)
+     * @since 4.0.0
+     */
+    @ExperimentalApi
+    public static <T> CartesianProductApi<T> ofCartesianProduct(final TypeTokenSupplier<T> typeToken) {
+        return new CartesianProductApiImpl<>(typeToken);
+    }
+
+    /**
+     * Generates the Cartesian product based on the values specified via the
+     * {@code with()} method. The Cartesian product is returned as
+     * a {@link List} in lexicographical order.
+     *
+     * <p>See {@link #ofCartesianProduct(Class)} for an example.
+     *
+     * @param model specifying generation parameters of the object to create
+     * @param <T>   the type of object
+     * @return API builder reference
+     * @see #ofCartesianProduct(Class)
+     * @see #ofCartesianProduct(TypeTokenSupplier)
+     * @since 4.0.0
+     */
+    @ExperimentalApi
+    public static <T> CartesianProductApi<T> ofCartesianProduct(final Model<T> model) {
+        return new CartesianProductApiImpl<>(model);
     }
 
     /**

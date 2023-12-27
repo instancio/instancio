@@ -67,7 +67,6 @@ public class ApiImpl<T> implements InstancioApi<T> {
             final TargetSelector selector,
             final GeneratorSpecProvider<V> gen) {
 
-        ApiValidator.validateGenerateSecondArgument(gen);
         modelContextBuilder.withGeneratorSpec(selector, gen);
         return this;
     }
@@ -77,7 +76,6 @@ public class ApiImpl<T> implements InstancioApi<T> {
             final TargetSelector selector,
             final GeneratorSpec<V> spec) {
 
-        ApiValidator.validateGenerateSecondArgument(spec);
         modelContextBuilder.withGenerator(selector, (Generator<T>) spec);
         return this;
     }
@@ -102,7 +100,6 @@ public class ApiImpl<T> implements InstancioApi<T> {
             final TargetSelector selector,
             final Generator<V> generator) {
 
-        ApiValidator.validateGeneratorNotNull(generator);
         modelContextBuilder.withGenerator(selector, generator);
         return this;
     }
@@ -112,7 +109,6 @@ public class ApiImpl<T> implements InstancioApi<T> {
             final TargetSelector selector,
             final Supplier<V> supplier) {
 
-        ApiValidator.validateSupplierNotNull(supplier);
         modelContextBuilder.withSupplier(selector, supplier);
         return this;
     }
@@ -128,7 +124,6 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public InstancioApi<T> assign(final Assignment... assignments) {
-        ApiValidator.notNull(assignments, "assignments array must not be null");
         modelContextBuilder.withAssignments(assignments);
         return this;
     }
@@ -141,7 +136,6 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public InstancioApi<T> withMaxDepth(final int maxDepth) {
-        ApiValidator.isTrue(maxDepth >= 0, "Maximum depth must not be negative: %s", maxDepth);
         modelContextBuilder.withMaxDepth(maxDepth);
         return this;
     }
@@ -198,6 +192,9 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     private InternalModel<T> createModel() {
-        return new InternalModel<>(modelContextBuilder.build());
+        final InternalModel<T> model = new InternalModel<>(modelContextBuilder.build());
+        // should happen only once even when the result is a Stream
+        InternalModelDump.printVerbose(model);
+        return model;
     }
 }

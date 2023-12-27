@@ -26,7 +26,7 @@ It uses a consistent seed value for each object graph it generates.
 Therefore, if a test fails against a given set of inputs, Instancio supports re-generating the same data set in order to reproduce the failed test.
 
 
-# Instancio API
+# Instancio Basics
 
 This section provides an overview of the API for creating and customising objects.
 
@@ -2318,6 +2318,66 @@ Person person = result.get();
 long seed = result.getSeed(); // seed value that was used for populating the person
 // snip...
 ```
+
+# Cartesian Product
+
+!!! warning "Experimental feature"
+
+Since `4.0.0` Instancio supports generating the Cartesian product using the following methods:
+
+``` java linenums="1" title="Cartesian Product API"
+Instancio.ofCartesianProduct(Class<T> type)
+Instancio.ofCartesianProduct(TypeTokenSupplier<T> supplier)
+Instancio.ofCartesianProduct(Model<T> model)
+```
+
+In addition, there are two new methods specific to the Cartesian product API:
+
+- `with(TargetSelector, Object...)` for specifying the inputs
+- `list()` for getting the results
+
+Consider the following example:
+
+```java linenums="1"
+record Widget(String type, int num) {}
+
+List<Widget> results = Instancio.ofCartesianProduct(Widget.class)
+    .with(field(Widget::type), "FOO", "BAR", "BAZ")
+    .with(field(Widget::num), 1, 2, 3)
+    .list();
+```
+
+This will produce a list containing 9 results in lexicographical order:
+
+```python
+[Widget[type=FOO, num=1],
+ Widget[type=FOO, num=2],
+ Widget[type=FOO, num=3],
+ Widget[type=BAR, num=1],
+ Widget[type=BAR, num=2],
+ Widget[type=BAR, num=3],
+ Widget[type=BAZ, num=1],
+ Widget[type=BAZ, num=2],
+ Widget[type=BAZ, num=3]]
+```
+
+### Limitations
+
+The selector passed to the `with()` method must match a single target.
+For example, the target cannot be a collection element:
+
+```java linenums="1"
+record Widget(String type, int num) {}
+record Container(List<Widget> widgets) {}
+
+List<Container> results = Instancio.ofCartesianProduct(Container.class)
+    .with(field(Widget::type), "FOO", "BAR", "BAZ")
+    .with(field(Widget::num), 1, 2, 3)
+    .list();
+}
+```
+
+The above will produce an error with a message: `"no item is available to emit()"`.
 
 
 # Bean Validation
