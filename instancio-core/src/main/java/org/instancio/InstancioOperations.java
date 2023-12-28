@@ -265,12 +265,26 @@ interface InstancioOperations<T> {
 
     /**
      * A callback that gets invoked after an object has been fully populated.
-     * <p>
-     * Example:
+     *
+     * <p>Example:
      * <pre>{@code
      * // Sets countryCode field on all instances of Phone to the specified value
      * Person person = Instancio.of(Person.class)
      *     .onComplete(all(Phone.class), (Phone phone) -> phone.setCountryCode("+1"))
+     *     .create();
+     * }</pre>
+     *
+     * <p><b>Note:</b> callbacks are never invoked on objects provided using:
+     *
+     * <ul>
+     *   <li>{@link #set(TargetSelector, Object)}</li>
+     *   <li>{@link #supply(TargetSelector, Supplier)}</li>
+     * </ul>
+     *
+     * <pre>{@code
+     * Person person = Instancio.of(Person.class)
+     *     .set(field(Phone::getCountryCode), "+1")
+     *     .onComplete(field(Phone::getCountryCode), ...) // will not be invoked!
      *     .create();
      * }</pre>
      *
