@@ -21,6 +21,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SuppressWarnings("UnusedReturnValue")
 public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
 
     private ClassAssert(final Class<?> klass) {
@@ -29,6 +32,21 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
 
     public static ClassAssert assertThatClass(final Class<?> actual) {
         return new ClassAssert(actual);
+    }
+
+    public ClassAssert hasNoMethodsNamed(final String... methodNames) {
+        assertThat(actual.getMethods())
+                .extracting(Method::getName)
+                .doesNotContain(methodNames);
+
+        return this;
+    }
+
+    public ClassAssert isNotAssignableFromOrTo(final Class<?> klass) {
+        assertThat(actual.isAssignableFrom(klass)).isFalse();
+        assertThat(klass.isAssignableFrom(actual)).isFalse();
+
+        return this;
     }
 
     public MethodsAssert withMethodsMatching(final Predicate<Method> predicate) {
