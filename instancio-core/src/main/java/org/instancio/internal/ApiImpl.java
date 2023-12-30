@@ -20,6 +20,7 @@ import org.instancio.GeneratorSpecProvider;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
+import org.instancio.Random;
 import org.instancio.Result;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
@@ -30,6 +31,8 @@ import org.instancio.settings.Settings;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -183,8 +186,24 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public Stream<T> stream() {
-        final InternalModel<T> model = createModel();
-        return Stream.generate(() -> createRootObject(model));
+        final AtomicBoolean modelDumped = new AtomicBoolean();
+        final AtomicLong nextSeed = new AtomicLong();
+
+        return Stream.generate(() -> {
+            final InternalModel<T> model = new InternalModel<>(modelContextBuilder.build());
+
+            // verbose() should print only once per stream()
+            if (modelDumped.compareAndSet(false, true)) {
+                InternalModelDump.printVerbose(model);
+            }
+
+            // Update seed for each stream element to avoid generating the same object
+            final Random random = model.getModelContext().getRandom();
+            nextSeed.set(random.longRange(1, Long.MAX_VALUE));
+
+            modelContextBuilder.withSeed(nextSeed.get());
+            return createRootObject(model);
+        });
     }
 
     private T createRootObject(final InternalModel<T> model) {
@@ -193,7 +212,6 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     private InternalModel<T> createModel() {
         final InternalModel<T> model = new InternalModel<>(modelContextBuilder.build());
-        // should happen only once even when the result is a Stream
         InternalModelDump.printVerbose(model);
         return model;
     }
