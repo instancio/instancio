@@ -83,7 +83,7 @@ class NumericSequenceGeneratorTest {
 
         @Test
         void streamWithGeneratorPerField() {
-            // Since the generator shared across all root objects created by stream(),
+            // Since the generator is shared across all root objects created by stream(),
             // the expected result is [1, 2, 3]
             final NumericSequenceSpec<Integer> primitiveSeq = Gen.intSeq();
             final NumericSequenceSpec<Integer> wrapperSeq = Gen.intSeq();

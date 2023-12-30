@@ -67,7 +67,7 @@ class EmitStreamTest {
                 .limit(items.length);
 
         assertThat(results)
-                .as("Should pick the first value from items for each root objectm and ignore the rest")
+                .as("Should pick the first value from items for each root object and ignore the rest")
                 .containsExactly("foo", "foo", "foo");
     }
 
