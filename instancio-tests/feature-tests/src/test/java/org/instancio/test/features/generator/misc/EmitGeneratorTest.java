@@ -175,9 +175,7 @@ class EmitGeneratorTest {
 
         final List<Integer> result = Instancio.ofList(Integer.class)
                 .size(values.size())
-                .generate(all(Integer.class), gen -> gen.emit()
-                        .items(values.toArray(new Integer[0]))
-                        .shuffle())
+                .generate(all(Integer.class), gen -> gen.emit().items(values).shuffle())
                 .create();
 
         assertThat(result)

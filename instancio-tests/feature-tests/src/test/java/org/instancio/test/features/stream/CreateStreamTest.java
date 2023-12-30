@@ -26,11 +26,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
@@ -134,18 +134,19 @@ class CreateStreamTest {
     void withSeed() {
         final long seed = Instancio.create(long.class);
 
-        final List<UUID> list1 = Instancio.of(UUID.class)
+        // Should produce distinct UUIDs
+        final Set<UUID> set1 = Instancio.of(UUID.class)
                 .withSeed(seed)
                 .stream()
                 .limit(LIMIT)
-                .collect(toList());
+                .collect(toSet());
 
-        final List<UUID> list2 = Instancio.of(UUID.class)
+        final Set<UUID> set2 = Instancio.of(UUID.class)
                 .withSeed(seed)
                 .stream()
                 .limit(LIMIT)
-                .collect(toList());
+                .collect(toSet());
 
-        assertThat(list1).isEqualTo(list2).hasSize(LIMIT);
+        assertThat(set1).isEqualTo(set2).hasSize(LIMIT);
     }
 }

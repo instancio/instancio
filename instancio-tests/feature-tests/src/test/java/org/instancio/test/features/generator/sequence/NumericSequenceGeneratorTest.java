@@ -15,7 +15,9 @@
  */
 package org.instancio.test.features.generator.sequence;
 
+import org.instancio.Gen;
 import org.instancio.Instancio;
+import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.generators.Generators;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
@@ -74,6 +76,43 @@ class NumericSequenceGeneratorTest {
 
             assertEachField123(result);
         }
+    }
+
+    @Nested
+    class NumericSequenceWithStreamTest {
+
+        @Test
+        void streamWithGeneratorPerField() {
+            // Since the generator shared across all root objects created by stream(),
+            // the expected result is [1, 2, 3]
+            final NumericSequenceSpec<Integer> primitiveSeq = Gen.intSeq();
+            final NumericSequenceSpec<Integer> wrapperSeq = Gen.intSeq();
+
+            final List<IntegerHolder> result = Instancio.of(IntegerHolder.class)
+                    .generate(field(IntegerHolder::getPrimitive), primitiveSeq)
+                    .generate(field(IntegerHolder::getWrapper), wrapperSeq)
+                    .stream()
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            assertEachField123(result);
+        }
+
+        @Test
+        void streamWithGeneratorSharedAcrossFields() {
+            // Shared by both fields
+            final NumericSequenceSpec<Integer> sharedSeq = Gen.intSeq();
+
+            final List<IntegerHolder> result = Instancio.of(IntegerHolder.class)
+                    .generate(field(IntegerHolder::getPrimitive), sharedSeq)
+                    .generate(field(IntegerHolder::getWrapper), sharedSeq)
+                    .stream()
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            assertThat(result).extracting(IntegerHolder::getPrimitive).containsExactly(1, 3, 5);
+            assertThat(result).extracting(IntegerHolder::getWrapper).containsExactly(2, 4, 6);
+        }
 
         @Test
         void stream() {
@@ -84,13 +123,11 @@ class NumericSequenceGeneratorTest {
                     .limit(3)
                     .collect(Collectors.toList());
 
-            assertEachField123(result);
+            // The sequence should start from 1 for each root object
+            assertThat(result).extracting(IntegerHolder::getPrimitive).containsExactly(1, 1, 1);
+            assertThat(result).extracting(IntegerHolder::getWrapper).containsExactly(1, 1, 1);
         }
 
-        private void assertEachField123(final List<IntegerHolder> result) {
-            assertThat(result).extracting(IntegerHolder::getPrimitive).containsExactly(1, 2, 3);
-            assertThat(result).extracting(IntegerHolder::getWrapper).containsExactly(1, 2, 3);
-        }
     }
 
     @Test
@@ -113,5 +150,10 @@ class NumericSequenceGeneratorTest {
 
         assertThat(result).extracting(IntegerHolder::getPrimitive).containsExactly(1, 3, 5);
         assertThat(result).extracting(IntegerHolder::getWrapper).containsExactly(2, 4, 6);
+    }
+
+    private static void assertEachField123(final List<IntegerHolder> result) {
+        assertThat(result).extracting(IntegerHolder::getPrimitive).containsExactly(1, 2, 3);
+        assertThat(result).extracting(IntegerHolder::getWrapper).containsExactly(1, 2, 3);
     }
 }

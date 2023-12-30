@@ -66,12 +66,15 @@ public interface InstancioApi<T> extends
      * <p>Example:
      * <pre>{@code
      * List<Person> persons = Instancio.of(Person.class)
+     *     .generate(field(Person::getAge), gen -> gen.ints().range(18, 100))
      *     .stream()
      *     .limit(5)
      *     .collect(Collectors.toList());
      * }</pre>
      *
      * <p><b>Warning:</b> {@code limit()} must be called to avoid an infinite loop.
+     *
+     * <p>All objects in the stream are independent of each other.
      *
      * @return an infinite stream of distinct object instances
      * @since 1.1.9
