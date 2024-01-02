@@ -150,6 +150,12 @@ public final class CollectionHint implements Hint<CollectionHint> {
         return shuffle;
     }
 
+    /**
+     * Indicates whether collection should contain unique elements.
+     *
+     * @return {@code true} if elements should be unique, {@code false} otherwise
+     * @since 2.8.0
+     */
     public boolean unique() {
         return unique;
     }
