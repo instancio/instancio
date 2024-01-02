@@ -312,7 +312,6 @@ public final class Select {
      * @see #field(Class, String)
      * @since 2.3.0
      */
-    @ExperimentalApi
     public static <T, R> Selector field(final GetMethodSelector<T, R> methodReference) {
         ApiValidator.notNull(methodReference, "getter method reference must not be null");
         return SelectorImpl.builder()
