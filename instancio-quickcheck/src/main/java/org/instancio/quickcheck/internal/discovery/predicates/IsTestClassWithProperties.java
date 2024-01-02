@@ -15,15 +15,13 @@
  */
 package org.instancio.quickcheck.internal.discovery.predicates;
 
-import java.util.function.Predicate;
-
-import org.instancio.documentation.ExperimentalApi;
 import org.junit.jupiter.engine.discovery.predicates.IsNestedTestClass;
 import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ReflectionSupport;
 import org.junit.platform.commons.util.ReflectionUtils;
 
-@ExperimentalApi
+import java.util.function.Predicate;
+
 public class IsTestClassWithProperties implements Predicate<Class<?>> {
     private final IsNestedTestClass isNestedTestClass = new IsNestedTestClass();
     private final IsPotentialTestContainer isPotentialTestContainer = new IsPotentialTestContainer();

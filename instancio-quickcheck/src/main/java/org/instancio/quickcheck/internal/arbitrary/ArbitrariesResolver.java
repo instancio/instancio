@@ -15,15 +15,7 @@
  */
 package org.instancio.quickcheck.internal.arbitrary;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
 import org.instancio.Instancio;
-import org.instancio.documentation.ExperimentalApi;
 import org.instancio.quickcheck.api.ForAll;
 import org.instancio.quickcheck.api.artbitrary.Arbitrary;
 import org.instancio.quickcheck.api.artbitrary.ArbitraryGenerator;
@@ -31,7 +23,13 @@ import org.instancio.quickcheck.internal.config.InstancioQuickcheckConfiguration
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.platform.commons.util.ReflectionUtils;
 
-@ExperimentalApi
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
 public class ArbitrariesResolver {
     private final List<Function<Object, ArbitraryGenerator<?>>> generators;
     

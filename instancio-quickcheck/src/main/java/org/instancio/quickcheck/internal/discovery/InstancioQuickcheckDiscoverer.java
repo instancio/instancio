@@ -15,14 +15,12 @@
  */
 package org.instancio.quickcheck.internal.discovery;
 
-import org.instancio.documentation.ExperimentalApi;
-import org.instancio.quickcheck.internal.engine.InstancioQuickcheckEngineDescriptor;
 import org.instancio.quickcheck.internal.discovery.predicates.IsTestClassWithProperties;
+import org.instancio.quickcheck.internal.engine.InstancioQuickcheckEngineDescriptor;
 import org.junit.platform.engine.EngineDiscoveryRequest;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.support.discovery.EngineDiscoveryRequestResolver;
 
-@ExperimentalApi
 public class InstancioQuickcheckDiscoverer {
     private static final EngineDiscoveryRequestResolver<InstancioQuickcheckEngineDescriptor> RESOLVER = EngineDiscoveryRequestResolver.<InstancioQuickcheckEngineDescriptor>builder()
         .addClassContainerSelectorResolver(new IsTestClassWithProperties())

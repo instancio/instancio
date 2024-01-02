@@ -15,13 +15,11 @@
  */
 package org.instancio.quickcheck.internal.discovery.predicates;
 
+import org.instancio.quickcheck.api.Property;
+
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
 
-import org.instancio.documentation.ExperimentalApi;
-import org.instancio.quickcheck.api.Property;
-
-@ExperimentalApi
 public class IsPropertyMethod implements Predicate<Method> {
     @Override
     public boolean test(Method method) {

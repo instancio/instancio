@@ -15,14 +15,12 @@
  */
 package org.instancio.quickcheck.internal.arbitrary;
 
-import java.util.Iterator;
-import java.util.stream.BaseStream;
-
-import org.instancio.documentation.ExperimentalApi;
 import org.instancio.quickcheck.api.artbitrary.ArbitraryGenerator;
 import org.junit.platform.commons.JUnitException;
 
-@ExperimentalApi
+import java.util.Iterator;
+import java.util.stream.BaseStream;
+
 public class ArbitraryStream<T> implements ArbitraryGenerator<T> {
     private final Iterator<T> iterator;
 

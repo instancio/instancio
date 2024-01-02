@@ -15,12 +15,10 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
-import org.instancio.documentation.ExperimentalApi;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.ClassSource;
 
-@ExperimentalApi
 public class InstancioQuickcheckClassTestDescriptor extends InstancioClassBasedTestDescriptor {
     public static final String SEGMENT_TYPE = "class";
 

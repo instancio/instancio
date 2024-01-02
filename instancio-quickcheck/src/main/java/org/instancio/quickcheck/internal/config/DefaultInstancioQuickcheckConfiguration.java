@@ -15,12 +15,10 @@
  */
 package org.instancio.quickcheck.internal.config;
 
-import java.util.function.Supplier;
-
-import org.instancio.documentation.ExperimentalApi;
 import org.junit.platform.engine.ConfigurationParameters;
 
-@ExperimentalApi
+import java.util.function.Supplier;
+
 public class DefaultInstancioQuickcheckConfiguration implements InstancioQuickcheckConfiguration {
     private final Supplier<Long> seed;
 

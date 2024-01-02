@@ -15,17 +15,6 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toCollection;
-import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
-
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.instancio.documentation.ExperimentalApi;
 import org.junit.jupiter.api.Tag;
 import org.junit.platform.commons.util.ClassUtils;
 import org.junit.platform.commons.util.Preconditions;
@@ -34,7 +23,16 @@ import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
 import org.junit.platform.engine.support.descriptor.MethodSource;
 
-@ExperimentalApi
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
+
 public class InstancioQuickcheckTestMethodTestDescriptor extends AbstractTestDescriptor {
     /**
      * Set of method-level tags; does not contain tags from parent.

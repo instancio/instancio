@@ -15,7 +15,6 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
-import org.instancio.documentation.ExperimentalApi;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.UniqueId;
@@ -26,7 +25,6 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-@ExperimentalApi
 public class InstancioQuickcheckNestedClassTestDescriptor extends InstancioClassBasedTestDescriptor {
     public static final String SEGMENT_TYPE = "nested-class";
 
