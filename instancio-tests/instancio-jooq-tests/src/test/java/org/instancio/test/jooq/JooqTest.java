@@ -14,7 +14,6 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +52,7 @@ class JooqTest {
         assertThat(results).isNotEmpty().allSatisfy(person -> {
             assertThat(person.getFirstName()).isEqualTo(firstName);
             assertThat(person.getPreferredName()).isEqualTo(firstName);
-            assertThat(person.getDob()).isBefore(LocalDate.now());
+            assertThat(person.getDob()).isInThePast();
         });
     }
 

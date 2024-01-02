@@ -90,7 +90,7 @@ class PredicateSelectorWithGenerateTest {
                     .generate(types().of(LocalDateTime.class), gen -> gen.temporal().localDateTime().past())
                     .create();
 
-            assertThat(result.getLastModified()).isBefore(LocalDateTime.now());
+            assertThat(result.getLastModified()).isInThePast();
         }
 
         @Test

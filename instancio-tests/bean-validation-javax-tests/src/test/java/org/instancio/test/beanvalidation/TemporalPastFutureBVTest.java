@@ -23,19 +23,12 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Calendar;
-import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,19 +40,19 @@ class TemporalPastFutureBVTest {
     void past() {
         final TemporalPastFutureBV.WithPast result = Instancio.create(TemporalPastFutureBV.WithPast.class);
 
-        assertThat(result.getInstant()).isBefore(Instant.now());
+        assertThat(result.getInstant()).isInThePast();
         assertThat(result.getLocalTime()).isBefore(LocalTime.now());
-        assertThat(result.getLocalDate()).isBefore(LocalDate.now());
-        assertThat(result.getLocalDateTime()).isBefore(LocalDateTime.now());
+        assertThat(result.getLocalDate()).isInThePast();
+        assertThat(result.getLocalDateTime()).isInThePast();
         ///assertThat(result.getMonthDay()).isLessThan(MonthDay.now()); // TODO
         assertThat(result.getOffsetTime()).isBefore(OffsetTime.now(ZoneOffset.UTC));
-        assertThat(result.getOffsetDateTime()).isBefore(OffsetDateTime.now());
-        assertThat(result.getZonedDateTime()).isBefore(ZonedDateTime.now());
+        assertThat(result.getOffsetDateTime()).isInThePast();
+        assertThat(result.getZonedDateTime()).isInThePast();
         assertThat(result.getYearMonth()).isLessThan(YearMonth.now());
         assertThat(result.getYear()).isLessThan(Year.now());
-        assertThat(result.getDate()).isBefore(new Date(System.currentTimeMillis()));
-        assertThat(result.getSqlDate()).isBefore(new java.sql.Date(System.currentTimeMillis()));
-        assertThat(result.getTimestamp()).isBefore(new Timestamp(System.currentTimeMillis()));
+        assertThat(result.getDate()).isInThePast();
+        assertThat(result.getSqlDate()).isInThePast();
+        assertThat(result.getTimestamp()).isInThePast();
         assertThat(result.getCalendar()).isLessThan(Calendar.getInstance());
     }
 
@@ -67,19 +60,19 @@ class TemporalPastFutureBVTest {
     void pastOrPresent() {
         final TemporalPastFutureBV.WithPastOrPresent result = Instancio.create(TemporalPastFutureBV.WithPastOrPresent.class);
 
-        assertThat(result.getInstant()).isBefore(Instant.now());
+        assertThat(result.getInstant()).isInThePast();
         assertThat(result.getLocalTime()).isBefore(LocalTime.now());
-        assertThat(result.getLocalDate()).isBefore(LocalDate.now());
-        assertThat(result.getLocalDateTime()).isBefore(LocalDateTime.now());
+        assertThat(result.getLocalDate()).isInThePast();
+        assertThat(result.getLocalDateTime()).isInThePast();
         ///assertThat(result.getMonthDay()).isLessThan(MonthDay.now()); // TODO
         assertThat(result.getOffsetTime()).isBefore(OffsetTime.now(ZoneOffset.UTC));
-        assertThat(result.getOffsetDateTime()).isBefore(OffsetDateTime.now());
-        assertThat(result.getZonedDateTime()).isBefore(ZonedDateTime.now());
+        assertThat(result.getOffsetDateTime()).isInThePast();
+        assertThat(result.getZonedDateTime()).isInThePast();
         assertThat(result.getYearMonth()).isLessThan(YearMonth.now());
         assertThat(result.getYear()).isLessThan(Year.now());
-        assertThat(result.getDate()).isBefore(new Date(System.currentTimeMillis()));
-        assertThat(result.getSqlDate()).isBefore(new java.sql.Date(System.currentTimeMillis()));
-        assertThat(result.getTimestamp()).isBefore(new Timestamp(System.currentTimeMillis()));
+        assertThat(result.getDate()).isInThePast();
+        assertThat(result.getSqlDate()).isInThePast();
+        assertThat(result.getTimestamp()).isInThePast();
         assertThat(result.getCalendar()).isLessThan(Calendar.getInstance());
     }
 
@@ -87,19 +80,19 @@ class TemporalPastFutureBVTest {
     void future() {
         final TemporalPastFutureBV.WithFuture result = Instancio.create(TemporalPastFutureBV.WithFuture.class);
 
-        assertThat(result.getInstant()).isAfter(Instant.now());
+        assertThat(result.getInstant()).isInTheFuture();
         assertThat(result.getLocalTime()).isAfter(LocalTime.now());
-        assertThat(result.getLocalDate()).isAfter(LocalDate.now());
-        assertThat(result.getLocalDateTime()).isAfter(LocalDateTime.now());
+        assertThat(result.getLocalDate()).isInTheFuture();
+        assertThat(result.getLocalDateTime()).isInTheFuture();
         //assertThat(result.getMonthDay()).isGreaterThan(MonthDay.now()); // TODO not supported for MonthDay
         assertThat(result.getOffsetTime()).isAfter(OffsetTime.now(ZoneOffset.UTC));
-        assertThat(result.getOffsetDateTime()).isAfter(OffsetDateTime.now());
-        assertThat(result.getZonedDateTime()).isAfter(ZonedDateTime.now());
+        assertThat(result.getOffsetDateTime()).isInTheFuture();
+        assertThat(result.getZonedDateTime()).isInTheFuture();
         assertThat(result.getYearMonth()).isGreaterThan(YearMonth.now());
         assertThat(result.getYear()).isGreaterThan(Year.now());
-        assertThat(result.getDate()).isAfter(new Date(System.currentTimeMillis()));
-        assertThat(result.getSqlDate()).isAfter(new java.sql.Date(System.currentTimeMillis()));
-        assertThat(result.getTimestamp()).isAfter(new Timestamp(System.currentTimeMillis()));
+        assertThat(result.getDate()).isInTheFuture();
+        assertThat(result.getSqlDate()).isInTheFuture();
+        assertThat(result.getTimestamp()).isInTheFuture();
         assertThat(result.getCalendar()).isGreaterThan(Calendar.getInstance());
     }
 
@@ -107,19 +100,19 @@ class TemporalPastFutureBVTest {
     void futureOrPresent() {
         final TemporalPastFutureBV.WithFutureOrPresent result = Instancio.create(TemporalPastFutureBV.WithFutureOrPresent.class);
 
-        assertThat(result.getInstant()).isAfter(Instant.now());
+        assertThat(result.getInstant()).isInTheFuture();
         assertThat(result.getLocalTime()).isAfter(LocalTime.now());
-        assertThat(result.getLocalDate()).isAfter(LocalDate.now());
-        assertThat(result.getLocalDateTime()).isAfter(LocalDateTime.now());
+        assertThat(result.getLocalDate()).isInTheFuture();
+        assertThat(result.getLocalDateTime()).isInTheFuture();
         //assertThat(result.getMonthDay()).isGreaterThan(MonthDay.now()); // TODO not supported for MonthDay
         assertThat(result.getOffsetTime()).isAfter(OffsetTime.now(ZoneOffset.UTC));
-        assertThat(result.getOffsetDateTime()).isAfter(OffsetDateTime.now());
-        assertThat(result.getZonedDateTime()).isAfter(ZonedDateTime.now());
+        assertThat(result.getOffsetDateTime()).isInTheFuture();
+        assertThat(result.getZonedDateTime()).isInTheFuture();
         assertThat(result.getYearMonth()).isGreaterThan(YearMonth.now());
         assertThat(result.getYear()).isGreaterThan(Year.now());
-        assertThat(result.getDate()).isAfter(new Date(System.currentTimeMillis()));
-        assertThat(result.getSqlDate()).isAfter(new java.sql.Date(System.currentTimeMillis()));
-        assertThat(result.getTimestamp()).isAfter(new Timestamp(System.currentTimeMillis()));
+        assertThat(result.getDate()).isInTheFuture();
+        assertThat(result.getSqlDate()).isInTheFuture();
+        assertThat(result.getTimestamp()).isInTheFuture();
         assertThat(result.getCalendar()).isGreaterThan(Calendar.getInstance());
     }
 }
