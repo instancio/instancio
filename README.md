@@ -80,12 +80,10 @@ Model<Person> simpsons = Instancio.of(Person.class)
 
 Person homer = Instancio.of(simpsons)
     .set(field(Person::getFirstName), "Homer")
-    .set(all(Gender.class), Gender.MALE)
     .create();
 
 Person marge = Instancio.of(simpsons)
     .set(field(Person::getFirstName), "Marge")
-    .set(all(Gender.class), Gender.FEMALE)
     .create();
 ```
 
