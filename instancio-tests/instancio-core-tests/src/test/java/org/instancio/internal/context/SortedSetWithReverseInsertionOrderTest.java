@@ -88,7 +88,7 @@ class SortedSetWithReverseInsertionOrderTest {
 
         @Test
         void toObjectArray() {
-            assertThatThrownBy(set::toArray)
+            assertThatThrownBy(() -> set.toArray())
                     .isInstanceOf(UnsupportedOperationException.class);
         }
 

@@ -19,7 +19,6 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
@@ -57,13 +56,13 @@ class CalendarGeneratorTest extends AbstractGeneratorTestTemplate<Calendar, Cale
     @Test
     void past() {
         generator.past();
-        assertThat(generator.generate(random).toInstant()).isBefore(Instant.now());
+        assertThat(generator.generate(random).toInstant()).isInThePast();
     }
 
     @Test
     void future() {
         generator.future();
-        assertThat(generator.generate(random).toInstant()).isAfter(Instant.now());
+        assertThat(generator.generate(random).toInstant()).isInTheFuture();
     }
 
     @Test
