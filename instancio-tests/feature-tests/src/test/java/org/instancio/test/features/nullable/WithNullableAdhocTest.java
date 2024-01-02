@@ -39,6 +39,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withinPercentage;
+import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
@@ -76,6 +77,24 @@ class WithNullableAdhocTest {
         assertThat(nullableCountryCode).containsNull();
         assertThat(nullablePhoneNumber).containsNull();
         assertThat(nonNullableResults).doesNotContainNull();
+    }
+
+    @Test
+    void nullableWithSetAndStream() {
+        final Set<IntegerHolder> results = Instancio.of(IntegerHolder.class)
+                .withNullable(all(
+                        field(IntegerHolder::getPrimitive),
+                        field(IntegerHolder::getWrapper)))
+                .set(field(IntegerHolder::getPrimitive), -123)
+                .set(field(IntegerHolder::getWrapper), -123)
+                .stream()
+                .limit(SAMPLE_SIZE)
+                .collect(toSet());
+
+        assertThat(results)
+                .doesNotContainNull()
+                .anyMatch(r -> r.getWrapper() == null)
+                .anyMatch(r -> r.getPrimitive() == 0);
     }
 
     @Test

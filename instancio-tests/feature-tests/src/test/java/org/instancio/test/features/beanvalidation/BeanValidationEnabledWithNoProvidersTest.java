@@ -16,6 +16,7 @@
 package org.instancio.test.features.beanvalidation;
 
 import org.instancio.Instancio;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -25,6 +26,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
 
 /**
@@ -35,8 +37,18 @@ import static org.assertj.core.api.Assertions.assertThatObject;
 @ExtendWith(InstancioExtension.class)
 class BeanValidationEnabledWithNoProvidersTest {
 
+    private static final String[] BEAN_VALIDATION_CLASSES = {
+            "javax.validation.Validation",
+            "jakarta.validation.Validation",
+            "org.hibernate.validator.HibernateValidator"
+    };
+
     @Test
     void shouldIgnoreBeanValidationSettingIfNoProviderIsAvailable() {
+        assertThat(BEAN_VALIDATION_CLASSES) // NOSONAR
+                .as("Precondition: the classes must not be on the classpath")
+                .allMatch(klass -> ReflectionUtils.loadClass(klass) == null);
+
         final Phone result = Instancio.of(Phone.class)
                 .withSettings(Settings.create().set(Keys.BEAN_VALIDATION_ENABLED, true))
                 .create();
