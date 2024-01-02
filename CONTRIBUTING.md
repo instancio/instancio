@@ -35,9 +35,10 @@ When writing code, consider the following:
   (No config file available for Eclipse yet).
 - Follow existing naming conventions.
 - Include only the necessary changes for the PR. Unrelated changes/refactoring can be submitted as a separate PR.
-- Update Javadocs when making changes to the public API. Include examples, if applicable. Do not include `@author` tags.
-  Once your changes are merged, your username will be listed on the Contributors page on GitHub.
-- Goes without saying: include tests :)
+- All public APIs should have a javadoc and a `@since` tag, including `package-info.java` for packages.
+  - Javadocs should include examples, if applicable.
+  - Do not include `@author` tags. Your username will appear on the Contributors page on GitHub after merge.
+- Goes without saying: add tests :) Ideally, tests should all conditional branches.
 - Squash all your commits into one and rebase your changes on top of main. Do not merge main into your feature branch.
 - Create a descriptive commit message.
 
