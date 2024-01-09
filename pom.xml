@@ -64,7 +64,7 @@
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.jetbrains.annotations>24.1.0</version.jetbrains.annotations>
         <version.junit>5.10.1</version.junit>
-        <version.slf4j>2.0.10</version.slf4j>
+        <version.slf4j>2.0.11</version.slf4j>
     </properties>
 
     <issueManagement>
