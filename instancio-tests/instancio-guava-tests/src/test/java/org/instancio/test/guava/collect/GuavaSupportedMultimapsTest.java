@@ -63,12 +63,7 @@ class GuavaSupportedMultimapsTest {
 
     @ParameterizedTest
     @MethodSource("args")
-    <M extends Multimap<UUID, String>> void verify(final TypeToken<M> type, final Class<?> expectedSubtype) {
-        verifyCreate(type, expectedSubtype);
-        verifyCreateWithSize(type, expectedSubtype);
-    }
-
-    private static <M extends Multimap<UUID, String>> void verifyCreate(final TypeToken<M> type, final Class<?> expectedSubtype) {
+    <M extends Multimap<UUID, String>> void verifyCreate(final TypeToken<M> type, final Class<?> expectedSubtype) {
         final Multimap<UUID, String> result = Instancio.create(type);
 
         assertThat(result)
@@ -78,7 +73,9 @@ class GuavaSupportedMultimapsTest {
         assertThat(result.size()).isBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
     }
 
-    private static <M extends Multimap<UUID, String>> void verifyCreateWithSize(final TypeToken<M> type, final Class<?> expectedSubtype) {
+    @ParameterizedTest
+    @MethodSource("args")
+    <M extends Multimap<UUID, String>> void verifyCreateWithSize(final TypeToken<M> type, final Class<?> expectedSubtype) {
         final int size = 5;
         final Multimap<UUID, String> result = Instancio.of(type)
                 .generate(root(), GenGuava.multimap().size(size))

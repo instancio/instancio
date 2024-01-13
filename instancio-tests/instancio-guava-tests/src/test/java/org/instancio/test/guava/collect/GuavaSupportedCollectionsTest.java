@@ -63,12 +63,7 @@ class GuavaSupportedCollectionsTest {
 
     @ParameterizedTest
     @MethodSource("args")
-    <C extends Collection<UUID>> void verify(final TypeToken<C> type, final Class<?> expectedSubtype) {
-        verifyCreate(type, expectedSubtype);
-        verifyCreateWithSize(type, expectedSubtype);
-    }
-
-    private static <C extends Collection<UUID>> void verifyCreate(final TypeToken<C> type, final Class<?> expectedSubtype) {
+    <C extends Collection<UUID>> void verifyCreate(final TypeToken<C> type, final Class<?> expectedSubtype) {
         final Collection<UUID> result = Instancio.create(type);
 
         assertThat(result)
@@ -77,7 +72,9 @@ class GuavaSupportedCollectionsTest {
                 .isInstanceOf(expectedSubtype);
     }
 
-    private static <C extends Collection<UUID>> void verifyCreateWithSize(final TypeToken<C> type, final Class<?> expectedSubtype) {
+    @ParameterizedTest
+    @MethodSource("args")
+    <C extends Collection<UUID>> void verifyCreateWithSize(final TypeToken<C> type, final Class<?> expectedSubtype) {
         final int size = 5;
         final UUID expected = Instancio.create(UUID.class);
         final Collection<UUID> result = Instancio.of(type)

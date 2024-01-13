@@ -24,11 +24,10 @@ import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
-    private static final Logger LOG = LoggerFactory.getLogger(MapGenerator.class);
     private static final Class<?> DEFAULT_MAP_TYPE = HashMap.class; // NOPMD
 
     protected int minSize;
@@ -141,8 +139,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
         try {
             return (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            LOG.debug("Error creating instance of: {}", mapType, ex);
-            return null; // NOPMD
+            throw Fail.withFataInternalError("Error creating instance of: {}", mapType, ex);
         }
     }
 

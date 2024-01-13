@@ -51,12 +51,7 @@ class GuavaSupportedMapsTest {
 
     @ParameterizedTest
     @MethodSource("args")
-    <M extends Map<UUID, String>> void verify(final TypeToken<M> type, final Class<?> expectedSubtype) {
-        verifyCreate(type, expectedSubtype);
-        verifyCreateWithSize(type, expectedSubtype);
-    }
-
-    private static <M extends Map<UUID, String>> void verifyCreate(final TypeToken<M> type, final Class<?> expectedSubtype) {
+    <M extends Map<UUID, String>> void verifyCreate(final TypeToken<M> type, final Class<?> expectedSubtype) {
         final Map<UUID, String> result = Instancio.create(type);
 
         assertThat(result)
@@ -65,7 +60,9 @@ class GuavaSupportedMapsTest {
                 .isInstanceOf(expectedSubtype);
     }
 
-    private static <M extends Map<UUID, String>> void verifyCreateWithSize(final TypeToken<M> type, final Class<?> expectedSubtype) {
+    @ParameterizedTest
+    @MethodSource("args")
+    <M extends Map<UUID, String>> void verifyCreateWithSize(final TypeToken<M> type, final Class<?> expectedSubtype) {
         final int size = 5;
         final UUID expectedKey = Instancio.create(UUID.class);
         final String expectedValue = Instancio.create(String.class);

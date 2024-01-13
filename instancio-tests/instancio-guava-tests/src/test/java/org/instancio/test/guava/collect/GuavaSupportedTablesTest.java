@@ -45,12 +45,7 @@ class GuavaSupportedTablesTest {
 
     @ParameterizedTest
     @MethodSource("args")
-    <T extends Table<UUID, String, Long>> void verify(final TypeToken<T> type, final Class<?> expectedSubtype) {
-        verifyCreate(type, expectedSubtype);
-        verifyCreateWithSize(type, expectedSubtype);
-    }
-
-    private static <T extends Table<UUID, String, Long>> void verifyCreate(final TypeToken<T> type, final Class<?> expectedSubtype) {
+    <T extends Table<UUID, String, Long>> void verifyCreate(final TypeToken<T> type, final Class<?> expectedSubtype) {
         final Table<UUID, String, Long> result = Instancio.create(type);
 
         assertThat(result)
@@ -60,7 +55,9 @@ class GuavaSupportedTablesTest {
         assertThat(result.size()).isBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
     }
 
-    private static <T extends Table<UUID, String, Long>> void verifyCreateWithSize(final TypeToken<T> type, final Class<?> expectedSubtype) {
+    @ParameterizedTest
+    @MethodSource("args")
+    <T extends Table<UUID, String, Long>> void verifyCreateWithSize(final TypeToken<T> type, final Class<?> expectedSubtype) {
         final int size = 5;
         final Table<UUID, String, Long> result = Instancio.of(type)
                 .generate(root(), GenGuava.table().size(size))

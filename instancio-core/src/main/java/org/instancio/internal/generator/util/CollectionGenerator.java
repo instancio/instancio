@@ -25,11 +25,10 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +36,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
-    private static final Logger LOG = LoggerFactory.getLogger(CollectionGenerator.class);
     private static final Class<?> DEFAULT_COLLECTION_TYPE = ArrayList.class; // NOPMD
 
     protected int minSize;
@@ -130,8 +128,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         try {
             return (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            LOG.debug("Error creating instance of: {}", collectionType, ex);
-            return null; // NOPMD
+            throw Fail.withFataInternalError("Error creating instance of: {}", collectionType, ex);
         }
     }
 
