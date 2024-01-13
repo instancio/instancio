@@ -25,7 +25,7 @@ public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
 
     public MapGeneratorSpecImpl(final GeneratorContext context) {
         super(context);
-        super.isDelegating = true;
+        setDelegating(true);
         // Type is either resolved from the field or specified explicitly
         // by the user via generator.subtype() method
         super.mapType = null; // NOPMD

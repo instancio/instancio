@@ -40,10 +40,9 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     protected int minSize;
     protected int maxSize;
-    protected boolean nullableKeys;
-    protected boolean nullableValues;
+    private boolean nullableKeys;
+    private boolean nullableValues;
     protected Class<?> mapType;
-    protected boolean isDelegating;
     private Map<K, V> withEntries;
     private List<K> withKeys;
 
@@ -156,7 +155,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
                         .build())
                 .with(InternalGeneratorHint.builder()
                         .targetClass(mapType)
-                        .delegating(isDelegating)
+                        .delegating(isDelegating())
                         .nullableResult(isNullable())
                         .build())
                 .build();

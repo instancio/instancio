@@ -24,12 +24,17 @@ import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.generator.Generator;
+import org.instancio.generators.Generators;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioSpiException;
+import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
+import org.instancio.test.support.pojo.collections.sets.SetInteger;
 import org.instancio.test.support.pojo.dynamic.DynPhone;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.PersonName;
@@ -40,10 +45,13 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -55,6 +63,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
 
+@ExtendWith(InstancioExtension.class)
 class GeneratorFromSpiTest {
 
     private static class PersonPojo {
@@ -299,6 +308,42 @@ class GeneratorFromSpiTest {
         final Byte[] expected = {1, 2, 3};
         assertThat(result).extracting("primitive").containsExactly(expected);
         assertThat(result).extracting("wrapper").containsExactly(expected);
+    }
+
+    /**
+     * Generator provider returning {@link Generators#collection()}.
+     */
+    @Test
+    void collectionSpec() {
+        final SetInteger result = Instancio.create(SetInteger.class);
+
+        assertThat(result.getSet())
+                .isExactlyInstanceOf(HashSet.class)
+                .hasSize(10);
+    }
+
+    /**
+     * Generator provider returning {@link Generators#map()}.
+     */
+    @Test
+    void mapSpecWithImmutableMap() {
+        final MapIntegerString result = Instancio.create(MapIntegerString.class);
+
+        assertThat(result.getMap())
+                .isExactlyInstanceOf(HashMap.class)
+                .hasSize(10);
+    }
+
+    /**
+     * Generator provider returning {@link Generators#array()}.
+     */
+    @Test
+    void arraySpec() {
+        final WithIntegerArray result = Instancio.create(WithIntegerArray.class);
+
+        assertThat(result.getValues())
+                .isExactlyInstanceOf(Integer[].class)
+                .hasSize(10);
     }
 
     // used via reflection

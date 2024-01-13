@@ -40,11 +40,10 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     protected int minSize;
     protected int maxSize;
-    protected boolean nullableElements;
-    protected boolean unique;
-    protected List<Object> withElements;
+    private boolean nullableElements;
+    private boolean unique;
+    private List<Object> withElements;
     protected Class<?> collectionType;
-    protected boolean isDelegating;
 
     public CollectionGenerator(final GeneratorContext context) {
         super(context);
@@ -145,7 +144,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
                         .build())
                 .with(InternalGeneratorHint.builder()
                         .targetClass(collectionType)
-                        .delegating(isDelegating)
+                        .delegating(isDelegating())
                         .nullableResult(isNullable())
                         .build())
                 .build();

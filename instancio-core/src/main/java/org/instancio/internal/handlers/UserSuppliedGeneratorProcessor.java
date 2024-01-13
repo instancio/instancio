@@ -86,23 +86,26 @@ final class UserSuppliedGeneratorProcessor {
             // Therefore, it's safe to overwrite the generator subtype
             // with node's targetClass
             ((ArrayGenerator<?>) generator).subtype(node.getTargetClass());
+        } else if (generator instanceof AbstractGenerator<?>) {
+            final AbstractGenerator<?> g = (AbstractGenerator<?>) generator;
+
+            if (!g.isDelegating()) {
+                return generator;
+            }
+
+            final Hints hints = generator.hints();
+            final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
+            final Generator<?> delegate = resolveDelegate(node, internalHint);
+
+            if (delegate instanceof AbstractGenerator<?>) {
+                final boolean nullable = ((AbstractGenerator<?>) generator).isNullable();
+                ((AbstractGenerator<?>) delegate).nullable(nullable);
+            }
+
+            return GeneratorDecorator.replaceHints(delegate, hints);
         }
 
-        final Hints hints = generator.hints();
-        final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
-
-        if (internalHint == null || !internalHint.isDelegating()) {
-            return generator;
-        }
-
-        final Generator<?> delegate = resolveDelegate(node, internalHint);
-
-        if (delegate instanceof AbstractGenerator<?>) {
-            final boolean nullable = ((AbstractGenerator<?>) generator).isNullable();
-            ((AbstractGenerator<?>) delegate).nullable(nullable);
-        }
-
-        return GeneratorDecorator.replaceHints(delegate, hints);
+        return generator;
     }
 
     @NotNull
