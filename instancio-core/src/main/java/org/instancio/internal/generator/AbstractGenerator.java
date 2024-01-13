@@ -33,6 +33,7 @@ public abstract class AbstractGenerator<T> implements Generator<T>, NullableGene
 
     private final GeneratorContext context;
     private boolean nullable;
+    private boolean isDelegating;
 
     protected AbstractGenerator(final GeneratorContext context) {
         this.context = context;
@@ -79,6 +80,20 @@ public abstract class AbstractGenerator<T> implements Generator<T>, NullableGene
 
     public final boolean isNullable() {
         return nullable;
+    }
+
+    /**
+     * Collection/map generators may delegate creating an instance
+     * to another generator because the collection type is not known
+     * to the original generator or the type provided by {@code subtype()}
+     * is an immutable collection.
+     */
+    protected final void setDelegating(final boolean delegating) {
+        isDelegating = delegating;
+    }
+
+    public final boolean isDelegating() {
+        return isDelegating;
     }
 
     public GeneratorContext getContext() {

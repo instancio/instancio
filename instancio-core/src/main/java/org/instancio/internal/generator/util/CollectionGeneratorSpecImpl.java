@@ -25,7 +25,7 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
 
     public CollectionGeneratorSpecImpl(final GeneratorContext context) {
         super(context);
-        super.isDelegating = true;
+        setDelegating(true);
         // Type is either resolved from the field or specified explicitly
         // by the user via generator.subtype() method
         super.collectionType = null; // NOPMD

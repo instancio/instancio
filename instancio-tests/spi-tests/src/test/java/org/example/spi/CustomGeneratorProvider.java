@@ -31,6 +31,9 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.ServiceProviderContext;
+import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
+import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
+import org.instancio.test.support.pojo.collections.sets.SetInteger;
 import org.instancio.test.support.pojo.dynamic.DynPhone;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.PersonName;
@@ -41,6 +44,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -111,6 +115,17 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         @Override
         public GeneratorSpec<?> getGenerator(final Node node, final Generators generators) {
             if (node.getField() != null) {
+
+                if (node.getParent().getTargetClass() == SetInteger.class && node.getField().getType() == Set.class) {
+                    return generators.collection().size(10);
+                }
+                if (node.getParent().getTargetClass() == WithIntegerArray.class && node.getField().getType() == Integer[].class) {
+                    return generators.array().length(10);
+                }
+                if (node.getParent().getTargetClass() == MapIntegerString.class && node.getField().getType() == Map.class) {
+                    return generators.map().size(10);
+                }
+
                 // Set string length based on annotation attributes
                 final PersonName name = node.getField().getAnnotation(PersonName.class);
                 if (name != null) {
