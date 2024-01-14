@@ -62,58 +62,58 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     }
 
     @Override
-    public MapGeneratorSpec<K, V> subtype(final Class<?> type) {
+    public MapGenerator<K, V> subtype(final Class<?> type) {
         this.mapType = ApiValidator.notNull(type, "type must not be null");
         return this;
     }
 
     @Override
-    public MapGeneratorSpec<K, V> size(final int size) {
+    public MapGenerator<K, V> size(final int size) {
         this.minSize = ApiValidator.validateSize(size);
         this.maxSize = size;
         return this;
     }
 
     @Override
-    public MapGeneratorSpec<K, V> minSize(final int size) {
+    public MapGenerator<K, V> minSize(final int size) {
         this.minSize = ApiValidator.validateSize(size);
         this.maxSize = NumberUtils.calculateNewMaxSize(maxSize, minSize);
         return this;
     }
 
     @Override
-    public MapGeneratorSpec<K, V> maxSize(final int size) {
+    public MapGenerator<K, V> maxSize(final int size) {
         this.maxSize = ApiValidator.validateSize(size);
         this.minSize = NumberUtils.calculateNewMinSize(minSize, maxSize);
         return this;
     }
 
     @Override
-    public MapGeneratorSpec<K, V> nullable() {
+    public MapGenerator<K, V> nullable() {
         super.nullable();
         return this;
     }
 
     @Override
-    public MapGeneratorSpec<K, V> nullable(final boolean isNullable) {
+    public MapGenerator<K, V> nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
     }
 
     @Override
-    public MapGeneratorSpec<K, V> nullableKeys() {
+    public MapGenerator<K, V> nullableKeys() {
         this.nullableKeys = true;
         return this;
     }
 
     @Override
-    public MapGeneratorSpec<K, V> nullableValues() {
+    public MapGenerator<K, V> nullableValues() {
         this.nullableValues = true;
         return this;
     }
 
     @Override
-    public MapGeneratorSpec<K, V> with(final K key, final V value) {
+    public MapGenerator<K, V> with(final K key, final V value) {
         if (withEntries == null) {
             withEntries = new HashMap<>();
         }
@@ -123,7 +123,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @SafeVarargs
     @Override
-    public final MapGeneratorSpec<K, V> withKeys(final K... keys) {
+    public final MapGenerator<K, V> withKeys(final K... keys) {
         ApiValidator.notEmpty(keys, "'map().withKeys(...)' must contain at least one key");
         if (withKeys == null) {
             withKeys = new ArrayList<>();
@@ -138,7 +138,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
         try {
             return (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            throw Fail.withFataInternalError("Error creating instance of: {}", mapType, ex);
+            throw Fail.withFataInternalError("Error creating instance of: %s", mapType, ex);
         }
     }
 

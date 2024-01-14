@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
+import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.settings.Keys;
@@ -34,30 +35,31 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.data.Percentage.withPercentage;
 
 @NonDeterministicTag
 @FeatureTag(Feature.SETTINGS)
 class MapGeneratorTest {
-
     private static final int MIN_SIZE = 101;
     private static final int MAX_SIZE = 102;
     private static final int SAMPLE_SIZE = 10_000;
     private static final int PERCENTAGE_THRESHOLD = 10;
-    private static final Settings settings = Settings.defaults()
-            .set(Keys.MAP_MIN_SIZE, MIN_SIZE)
-            .set(Keys.MAP_MAX_SIZE, MAX_SIZE)
-            .set(Keys.MAP_NULLABLE, true)
-            .set(Keys.MAP_KEYS_NULLABLE, true)
-            .set(Keys.MAP_VALUES_NULLABLE, true);
 
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private final MapGenerator<?, ?> generator = new MapGenerator<>(context);
+    private final Settings settings = Settings.defaults()
+            .set(Keys.MAP_MIN_SIZE, MIN_SIZE)
+            .set(Keys.MAP_MAX_SIZE, MAX_SIZE);
+
+    private final Random random = new DefaultRandom();
+    private final GeneratorContext context = new GeneratorContext(settings, random);
+
+    private MapGenerator<?, ?> generator() {
+        return new MapGenerator<>(context);
+    }
 
     @Test
     void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("map()");
+        assertThat(generator().apiMethod()).isEqualTo("map()");
     }
 
     @Test
@@ -65,6 +67,12 @@ class MapGeneratorTest {
     void generateNullableMap() {
         final Set<Object> results = new HashSet<>();
         final int[] counts = new int[2];
+
+        settings.set(Keys.MAP_NULLABLE, true)
+                .set(Keys.MAP_KEYS_NULLABLE, true)
+                .set(Keys.MAP_VALUES_NULLABLE, true);
+
+        final MapGenerator<?, ?> generator = generator();
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final Map<?, ?> result = generator.generate(random);
@@ -85,5 +93,16 @@ class MapGeneratorTest {
                 .nullableMapKeys(true)
                 .nullableMapValues(true)
                 .afterGenerate(AfterGenerate.POPULATE_ALL);
+    }
+
+    @Test
+    void shouldFailOnInstantiationError() {
+        final MapGenerator<?, ?> generator = generator().subtype(Map.class);
+
+        assertThatThrownBy(() -> generator.generate(random))
+                .isExactlyInstanceOf(InstancioTerminatingException.class)
+                .hasMessageContainingAll(
+                        "Please submit a bug report",
+                        "Error creating instance of: interface java.util.Map");
     }
 }
