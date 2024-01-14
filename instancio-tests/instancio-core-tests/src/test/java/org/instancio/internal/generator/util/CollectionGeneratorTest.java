@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
+import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.settings.Keys;
@@ -31,9 +32,11 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.data.Percentage.withPercentage;
 
 @NonDeterministicTag
@@ -43,19 +46,21 @@ class CollectionGeneratorTest {
     private static final int MAX_SIZE = 102;
     private static final int SAMPLE_SIZE = 10_000;
     private static final int PERCENTAGE_THRESHOLD = 10;
-    private static final Settings settings = Settings.defaults()
-            .set(Keys.COLLECTION_MIN_SIZE, MIN_SIZE)
-            .set(Keys.COLLECTION_MAX_SIZE, MAX_SIZE)
-            .set(Keys.COLLECTION_NULLABLE, true)
-            .set(Keys.COLLECTION_ELEMENTS_NULLABLE, true);
 
-    private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(settings, random);
-    private final CollectionGenerator<?> generator = new CollectionGenerator<>(context);
+    private final Settings settings = Settings.defaults()
+            .set(Keys.COLLECTION_MIN_SIZE, MIN_SIZE)
+            .set(Keys.COLLECTION_MAX_SIZE, MAX_SIZE);
+
+    private final Random random = new DefaultRandom();
+    private final GeneratorContext context = new GeneratorContext(settings, random);
+
+    private CollectionGenerator<?> generator() {
+        return new CollectionGenerator<>(context);
+    }
 
     @Test
     void apiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo("collection()");
+        assertThat(generator().apiMethod()).isEqualTo("collection()");
     }
 
     @Test
@@ -63,6 +68,11 @@ class CollectionGeneratorTest {
     void generateNullableCollection() {
         final Set<Object> results = new HashSet<>();
         final int[] counts = new int[2];
+
+        settings.set(Keys.COLLECTION_NULLABLE, true)
+                .set(Keys.COLLECTION_ELEMENTS_NULLABLE, true);
+
+        final CollectionGenerator<?> generator = generator();
 
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final Collection<?> result = generator.generate(random);
@@ -82,5 +92,16 @@ class CollectionGeneratorTest {
                 .collectionHintGenerateElementsIsBetween(MIN_SIZE, MAX_SIZE)
                 .nullableCollectionElements(true)
                 .afterGenerate(AfterGenerate.POPULATE_ALL);
+    }
+
+    @Test
+    void shouldFailOnInstantiationError() {
+        final CollectionGenerator<?> generator = generator().subtype(List.class);
+
+        assertThatThrownBy(() -> generator.generate(random))
+                .isExactlyInstanceOf(InstancioTerminatingException.class)
+                .hasMessageContainingAll(
+                        "Please submit a bug report",
+                        "Error creating instance of: interface java.util.List");
     }
 }

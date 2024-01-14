@@ -60,59 +60,59 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     }
 
     @Override
-    public CollectionGeneratorSpec<T> size(final int size) {
+    public CollectionGenerator<T> size(final int size) {
         this.minSize = ApiValidator.validateSize(size);
         this.maxSize = size;
         return this;
     }
 
     @Override
-    public CollectionGeneratorSpec<T> minSize(final int size) {
+    public CollectionGenerator<T> minSize(final int size) {
         this.minSize = ApiValidator.validateSize(size);
         this.maxSize = NumberUtils.calculateNewMaxSize(maxSize, minSize);
         return this;
     }
 
     @Override
-    public CollectionGeneratorSpec<T> maxSize(final int size) {
+    public CollectionGenerator<T> maxSize(final int size) {
         this.maxSize = ApiValidator.validateSize(size);
         this.minSize = NumberUtils.calculateNewMinSize(minSize, maxSize);
         return this;
     }
 
     @Override
-    public CollectionGeneratorSpec<T> nullable() {
+    public CollectionGenerator<T> nullable() {
         super.nullable();
         return this;
     }
 
     @Override
-    public CollectionGeneratorSpec<T> nullable(final boolean isNullable) {
+    public CollectionGenerator<T> nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
     }
 
     @Override
-    public CollectionGeneratorSpec<T> nullableElements() {
+    public CollectionGenerator<T> nullableElements() {
         this.nullableElements = true;
         return this;
     }
 
     @Override
-    public CollectionGeneratorSpec<T> subtype(final Class<?> type) {
+    public CollectionGenerator<T> subtype(final Class<?> type) {
         this.collectionType = ApiValidator.notNull(type, "type must not be null");
         return this;
     }
 
     @Override
-    public CollectionGeneratorSpec<T> unique() {
+    public CollectionGenerator<T> unique() {
         this.unique = true;
         return this;
     }
 
     @SafeVarargs
     @Override
-    public final CollectionGeneratorSpec<T> with(final T... elements) {
+    public final CollectionGenerator<T> with(final T... elements) {
         ApiValidator.notEmpty(elements, "'collection().with(...)' must contain at least one element");
         if (withElements == null) {
             withElements = new ArrayList<>();
@@ -127,7 +127,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         try {
             return (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            throw Fail.withFataInternalError("Error creating instance of: {}", collectionType, ex);
+            throw Fail.withFataInternalError("Error creating instance of: %s", collectionType, ex);
         }
     }
 
