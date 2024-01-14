@@ -43,7 +43,7 @@ class MethodAssignerOnSetMethodNotFoundTest extends AbstractErrorMessageTestTemp
                  -> Keys.ON_SET_METHOD_NOT_FOUND = OnSetMethodNotFound.FAIL
 
                 Setter method could not be resolved for field:
-                 -> int MethodAssignerOnSetMethodNotFoundTest$WithoutSetter.value
+                 -> int value (in org.external.errorhandling.MethodAssignerOnSetMethodNotFoundTest$WithoutSetter)
 
                 Using:
                  -> Keys.SETTER_STYLE = SetterStyle.SET

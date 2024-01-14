@@ -49,10 +49,10 @@ class FormatTest {
     @Test
     void formatField() {
         assertThat(Format.formatField(ReflectionUtils.getField(Person.class, "name")))
-                .isEqualTo("String Person.name");
+                .isEqualTo("String name (in org.instancio.test.support.pojo.person.Person)");
 
         assertThat(Format.formatField(ReflectionUtils.getField(Nested1.Nested2.class, "nested")))
-                .isEqualTo("String FormatTest$Nested1$Nested2.nested");
+                .isEqualTo("String nested (in org.instancio.internal.util.FormatTest$Nested1$Nested2)");
 
         assertThat(Format.formatField(null)).isNull();
     }

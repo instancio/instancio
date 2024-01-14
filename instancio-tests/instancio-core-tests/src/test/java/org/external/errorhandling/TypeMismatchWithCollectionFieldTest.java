@@ -48,7 +48,7 @@ class TypeMismatchWithCollectionFieldTest extends AbstractErrorMessageTestTempla
 
                 Type mismatch:
 
-                 -> Target field .............: List TwoListsOfInteger.list1
+                 -> Target field .............: List<Integer> list1 (in org.instancio.test.support.pojo.collections.lists.TwoListsOfInteger)
                  -> Provided argument type ...: String
                  -> Provided argument value ..: "invalid arg"
 

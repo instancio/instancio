@@ -111,10 +111,10 @@ public final class Format {
 
 
     public static String formatField(final Field field) {
-        return field == null ? null : String.format("%s %s.%s",
-                withoutPackage(field.getType()),
-                withoutPackage(field.getDeclaringClass()),
-                field.getName());
+        return field == null ? null : String.format("%s %s (in %s)",
+                withoutPackage(ObjectUtils.defaultIfNull(field.getGenericType(), field.getType())),
+                field.getName(),
+                field.getDeclaringClass().getName());
     }
 
     /**

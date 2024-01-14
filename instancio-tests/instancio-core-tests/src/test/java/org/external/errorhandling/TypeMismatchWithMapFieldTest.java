@@ -48,7 +48,7 @@ class TypeMismatchWithMapFieldTest extends AbstractErrorMessageTestTemplate {
 
                 Type mismatch:
 
-                 -> Target field .............: Map TwoMapsOfIntegerItemString.map1
+                 -> Target field .............: Map<Integer, Item<String>> map1 (in org.instancio.test.support.pojo.collections.maps.TwoMapsOfIntegerItemString)
                  -> Provided argument type ...: String
                  -> Provided argument value ..: "invalid arg"
 

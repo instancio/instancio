@@ -48,7 +48,7 @@ class SetObjectOfInvalidTypeTest extends AbstractErrorMessageTestTemplate {
 
                 Type mismatch:
 
-                 -> Target field .............: String Person.name
+                 -> Target field .............: String name (in org.instancio.test.support.pojo.person.Person)
                  -> Provided argument type ...: Integer
                  -> Provided argument value ..: 123
 
