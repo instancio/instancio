@@ -37,7 +37,7 @@ plugins:
 markdown_extensions:
   - toc:
       permalink: True
-      toc_depth: 2
+      toc_depth: 3
   - pymdownx.inlinehilite
   - pymdownx.highlight:
       anchor_linenums: true
