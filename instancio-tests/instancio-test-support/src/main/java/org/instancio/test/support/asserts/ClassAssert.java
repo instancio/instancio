@@ -19,7 +19,9 @@ import org.assertj.core.api.AbstractAssert;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,6 +40,16 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
         assertThat(actual.getMethods())
                 .extracting(Method::getName)
                 .doesNotContain(methodNames);
+
+        return this;
+    }
+
+    public ClassAssert hasOnlyMethodsNamed(final String... methodNames) {
+        final Set<String> actualMethods = Arrays.stream(actual.getMethods())
+                .map(Method::getName)
+                .collect(Collectors.toSet());
+
+        assertThat(actualMethods).containsOnly(methodNames);
 
         return this;
     }

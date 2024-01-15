@@ -53,7 +53,7 @@ class UnresolvedAssignmentErrorTest extends AbstractErrorMessageTestTemplate {
 
                  -> from [field(StringsAbc, "c")] to [field(StringsAbc, "a")]
                  -> from [field(StringsAbc, "a")] to [field(StringsAbc, "b")]
-                 -> from [field(StringsAbc, "b"), scope(StringsAbc)] to [field(StringsAbc, "c")]
+                 -> from [field(StringsAbc, "b").within(scope(StringsAbc))] to [field(StringsAbc, "c")]
 
                 As a result, the following targets could not be assigned a value:
 

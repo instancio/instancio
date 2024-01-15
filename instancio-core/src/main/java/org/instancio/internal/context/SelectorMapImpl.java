@@ -32,6 +32,8 @@ import org.instancio.internal.selectors.TargetRoot;
 import org.instancio.internal.selectors.TargetSetter;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -199,8 +201,12 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         return results;
     }
 
-    private static boolean isPredicateMatch(final InternalNode node, final PredicateSelectorEntry<?> entry) {
-        return entry.predicateSelector.getNodePredicate().test(node);
+    private static boolean isPredicateMatch(final InternalNode targetNode, final PredicateSelectorEntry<?> entry) {
+        return entry.predicateSelector.getNodePredicate().test(targetNode)
+                // Predicate selector depth is captured as a Predicate<Integer>
+                // and it is checked by getNodePredicate() above.
+                // Therefore, passing null below
+                && selectorScopesMatchNodeHierarchy(/*depth = */ null, entry.predicateSelector.getScopes(), targetNode);
     }
 
     private void markUsed(final SelectorImpl selector) {
@@ -272,7 +278,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             }
 
             final SelectorImpl candidate = candidates.get(i);
-            if (selectorScopesMatchNodeHierarchy(candidate, targetNode)) {
+            if (selectorScopesMatchNodeHierarchy(candidate.getDepth(), candidate.getScopes(), targetNode)) {
                 results.add(candidate);
             }
         }
@@ -281,16 +287,17 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
 
     @SuppressWarnings({Sonar.COGNITIVE_COMPLEXITY_OF_METHOD, "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     private static boolean selectorScopesMatchNodeHierarchy(
-            final SelectorImpl candidate,
-            final InternalNode targetNode) {
+            @Nullable final Integer candidateDepth,
+            @NotNull final List<Scope> candidateScopes,
+            @NotNull final InternalNode targetNode) {
 
-        if (candidate.getDepth() != null && candidate.getDepth() != targetNode.getDepth()) {
+        if (candidateDepth != null && candidateDepth != targetNode.getDepth()) {
             return false;
         }
-        if (candidate.getScopes().isEmpty()) {
+        if (candidateScopes.isEmpty()) {
             return true;
         }
-        final Deque<Scope> deq = new ArrayDeque<>(candidate.getScopes());
+        final Deque<Scope> deq = new ArrayDeque<>(candidateScopes);
         ScopeImpl scope = (ScopeImpl) deq.removeLast();
         InternalNode node = targetNode;
 

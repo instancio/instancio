@@ -463,7 +463,7 @@ therefore  `lenient()` mode must be enabled to prevent unused selector error
 
 ### Selector Scopes
 
-Regular selectors provide the `within(Scope... scopes)` method for fine-tuning the targets selectors should be applied to.
+Selectors provide the `within(Scope... scopes)` method for fine-tuning the targets selectors should be applied to.
 Instancio supports two types of scope:
 
 - Class-level scope: narrows down a selector to the specified class.

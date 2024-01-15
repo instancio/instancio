@@ -550,16 +550,6 @@ public final class Select {
      *     .create();
      * }</pre>
      *
-     * <p><b>Note:</b> scopes can only be applied to regular selectors.
-     * Predicate selectors, listed below, cannot be scoped.
-     *
-     * <ul>
-     *   <li>{@link #types()}</li>
-     *   <li>{@link #fields()}</li>
-     *   <li>{@link #types(Predicate)}</li>
-     *   <li>{@link #fields(Predicate)}</li>
-     * </ul>
-     *
      * @param targetClass of the scope
      * @return a scope for fine-tuning a selector
      * @since 1.3.0
