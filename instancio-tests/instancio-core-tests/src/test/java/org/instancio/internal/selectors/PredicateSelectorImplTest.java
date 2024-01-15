@@ -20,7 +20,9 @@ import org.instancio.PredicateSelector;
 import org.instancio.Select;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.Pojo;
 import org.instancio.testsupport.fixtures.Throwables;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +31,8 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -243,6 +247,30 @@ class PredicateSelectorImplTest {
                     .build();
 
             assertThat(selector).hasToString("types(Predicate<Class>).atDepth(Predicate<Integer>)");
+        }
+
+        @Test
+        void withinSingleScope() {
+            final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
+                    .typePredicate(o -> true)
+                    .scopes(Collections.singletonList(Select.scope(Phone.class)))
+                    .build();
+
+            assertThat(selector).hasToString(
+                    "types(Predicate<Class>).within(scope(Phone))");
+        }
+
+        @Test
+        void withinMultipleScopes() {
+            final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
+                    .typePredicate(o -> true)
+                    .scopes(Arrays.asList(
+                            Select.scope(Person.class),
+                            Select.scope(Phone.class)))
+                    .build();
+
+            assertThat(selector).hasToString(
+                    "types(Predicate<Class>).within(scope(Person), scope(Phone))");
         }
     }
 }

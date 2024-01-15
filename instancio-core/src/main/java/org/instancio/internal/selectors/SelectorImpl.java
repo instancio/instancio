@@ -175,7 +175,7 @@ public final class SelectorImpl
             sb.append(".atDepth(").append(depth).append(')');
         }
         if (!scopes.isEmpty()) {
-            sb.append(", ").append(Format.formatScopes(scopes));
+            sb.append(".within(").append(Format.formatScopes(scopes)).append(')');
         }
         return sb.toString();
     }

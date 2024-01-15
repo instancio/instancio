@@ -103,14 +103,10 @@ class ApiContractTest {
         assertThatClass(TypeSelectorBuilder.class).hasNoMethodsNamed("toScope");
     }
 
-    /**
-     * {@code Select.fields(p -> true).toScope()}
-     * {@code Select.types(p -> true).toScope()}
-     */
     @Test
-    @DisplayName("Predicate selector cannot be converted to scope")
-    void fieldsPredicateSelectorCannotBeConvertedToScope() {
-        assertThatClass(PredicateSelector.class).hasNoMethodsNamed("toScope");
+    @DisplayName("Methods supported by predicate selector")
+    void predicateSelectorSupportedMethods() {
+        assertThatClass(PredicateSelector.class).hasOnlyMethodsNamed("atDepth", "within");
     }
 
     /**

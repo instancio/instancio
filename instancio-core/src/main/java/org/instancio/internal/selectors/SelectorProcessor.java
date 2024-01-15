@@ -90,10 +90,12 @@ public final class SelectorProcessor {
             return Arrays.asList(ps.getPrimitive(), ps.getWrapper());
 
         } else if (selector instanceof PredicateSelectorImpl) {
-            // No processing required for predicate selectors.
-            // They don't support scopes and root class is not applicable to predicates.
-            return Collections.singletonList(selector);
+            final PredicateSelectorImpl ps = (PredicateSelectorImpl) selector;
+            final PredicateSelectorImpl processed = PredicateSelectorImpl.builder(ps)
+                    .scopes(createScopeWithRootClass(ps.getScopes()))
+                    .build();
 
+            return Collections.singletonList(processed);
         } else {
             // only remaining option is SelectorBuilder
             final SelectorBuilder builder = (SelectorBuilder) selector;

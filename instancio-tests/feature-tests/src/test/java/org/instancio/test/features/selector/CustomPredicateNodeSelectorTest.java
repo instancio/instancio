@@ -28,6 +28,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Collections;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +64,7 @@ class CustomPredicateNodeSelectorTest {
         private static final int PRIORITY = Integer.MAX_VALUE; // lowest priority
 
         AddressStringSelector(final Predicate<InternalNode> nodePredicate, final String apiInvocationDescription) {
-            super(PRIORITY, nodePredicate, /* depth = */ null, apiInvocationDescription, new Throwable());
+            super(PRIORITY, nodePredicate, Collections.emptyList(), /* depth = */ null, apiInvocationDescription, new Throwable());
         }
     }
 }

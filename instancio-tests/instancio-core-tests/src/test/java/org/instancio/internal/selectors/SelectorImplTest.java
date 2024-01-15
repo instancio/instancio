@@ -122,17 +122,17 @@ class SelectorImplTest {
                 .hasToString("field(Phone, \"number\").atDepth(3)");
 
         assertThat(Select.field(Phone.class, "number").within(scope(Address.class)))
-                .hasToString("field(Phone, \"number\"), scope(Address)");
+                .hasToString("field(Phone, \"number\").within(scope(Address))");
 
         assertThat(Select.field(Phone.class, "number").atDepth(3).within(
                 scope(Person.class), scope(Address.class)))
-                .hasToString("field(Phone, \"number\").atDepth(3), scope(Person), scope(Address)");
+                .hasToString("field(Phone, \"number\").atDepth(3).within(scope(Person), scope(Address))");
 
         assertThat(Select.field(Phone.class, "number").within(
                 scope(Person.class, "address"),
                 scope(Address.class)))
                 .hasToString(
-                        "field(Phone, \"number\"), scope(Person, \"address\"), scope(Address)");
+                        "field(Phone, \"number\").within(scope(Person, \"address\"), scope(Address))");
 
         assertThat(Select.setter("setName"))
                 .hasToString("setter(\"setName\")");

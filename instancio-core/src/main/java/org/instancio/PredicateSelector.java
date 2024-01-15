@@ -15,11 +15,23 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
+
 /**
  * A selector for matching targets using predicates.
  *
  * @see Select
  * @since 1.6.0
  */
-public interface PredicateSelector extends GroupableSelector, DepthSelector, DepthPredicateSelector {
+public interface PredicateSelector
+        extends GroupableSelector, DepthSelector, DepthPredicateSelector, WithinScope {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.1.0
+     */
+    @Override
+    @ExperimentalApi
+    GroupableSelector within(Scope... scopes);
 }

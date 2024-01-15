@@ -21,41 +21,13 @@ package org.instancio;
  *
  * @since 3.0.0
  */
-public interface ScopeableSelector extends GroupableSelector, ConvertibleToScope {
+public interface ScopeableSelector extends GroupableSelector, ConvertibleToScope, WithinScope {
 
     /**
-     * Specifies the scope for this selector in order to narrow
-     * down its target.
+     * {@inheritDoc}
      *
-     * <p>For example, given the following classes:
-     *
-     * <pre>{@code
-     * record Phone(String countryCode, String number) {}
-     *
-     * record Person(Phone home, Phone cell) {}
-     * }</pre>
-     *
-     * <p>setting {@code home} and {@code cell} phone numbers to different
-     * values would require differentiating between two
-     * {@code field(Phone::number)}  selectors. This can be achieved using
-     * scopes as follows:
-     *
-     * <pre>{@code
-     * Scope homePhone = field(Person::home).toScope();
-     * Scope cellPhone = field(Person::cell).toScope();
-     *
-     * Person person = Instancio.of(Person.class)
-     *     .set(field(Phone::number).within(homePhone), "777-88-99")
-     *     .set(field(Phone::number).within(cellPhone), "123-45-67")
-     *     .create();
-     * }</pre>
-     *
-     * <p>See <a href="https://instancio.org/user-guide/#selector-scopes">Selector Scopes</a>
-     * section of the user guide for details.
-     *
-     * @param scopes one or more scopes to apply
-     * @return a selector with the specified scope
      * @since 3.0.0
      */
+    @Override
     GroupableSelector within(Scope... scopes);
 }

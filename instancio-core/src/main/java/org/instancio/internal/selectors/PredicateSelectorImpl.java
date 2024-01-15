@@ -18,13 +18,17 @@ package org.instancio.internal.selectors;
 import org.instancio.DepthPredicateSelector;
 import org.instancio.GroupableSelector;
 import org.instancio.PredicateSelector;
+import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +47,7 @@ public class PredicateSelectorImpl
 
     private final int priority;
     private final Predicate<InternalNode> nodePredicate;
+    private final List<Scope> scopes;
     private final SelectorDepth selectorDepth;
     private final String apiInvocationDescription;
     private final Throwable stackTraceHolder;
@@ -50,12 +55,14 @@ public class PredicateSelectorImpl
     protected PredicateSelectorImpl(
             final int priority,
             final Predicate<InternalNode> nodePredicate,
+            final List<Scope> scopes,
             final SelectorDepth selectorDepth,
             final String apiInvocationDescription,
             final Throwable stackTraceHolder) {
 
         this.priority = priority;
         this.nodePredicate = nodePredicate;
+        this.scopes = Collections.unmodifiableList(scopes);
         this.selectorDepth = selectorDepth;
         this.apiInvocationDescription = apiInvocationDescription;
         this.stackTraceHolder = stackTraceHolder;
@@ -65,6 +72,7 @@ public class PredicateSelectorImpl
         this(
                 builder.priority,
                 builder.nodePredicate,
+                builder.scopes,
                 builder.selectorDepth,
                 defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION),
                 defaultIfNull(builder.stackTraceHolder, Throwable::new)
@@ -91,6 +99,11 @@ public class PredicateSelectorImpl
         return priority;
     }
 
+    @NotNull
+    public List<Scope> getScopes() {
+        return scopes;
+    }
+
     public Predicate<InternalNode> getNodePredicate() {
         return nodePredicate;
     }
@@ -106,14 +119,25 @@ public class PredicateSelectorImpl
     }
 
     @Override
+    public GroupableSelector within(final Scope... scopes) {
+        return builder(this).scopes(Arrays.asList(scopes)).build();
+    }
+
+    @Override
     public String toString() {
         String s = apiInvocationDescription;
+
+        // Note: currently predicate selector supports
+        // either atDepth() or within() but not both
         if (selectorDepth != null) {
             final String depth = selectorDepth.getDepth() == null
                     ? "Predicate<Integer>"
                     : selectorDepth.getDepth().toString();
 
             s += ".atDepth(" + depth + ")";
+        }
+        if (!scopes.isEmpty()) {
+            s += ".within(" + Format.formatScopes(scopes) + ")";
         }
         return s;
     }
@@ -126,6 +150,7 @@ public class PredicateSelectorImpl
         Builder builder = new Builder();
         builder.priority = copy.priority;
         builder.nodePredicate = copy.nodePredicate;
+        builder.scopes = copy.scopes;
         builder.apiInvocationDescription = copy.apiInvocationDescription;
         builder.stackTraceHolder = copy.stackTraceHolder;
         builder.selectorDepth = copy.selectorDepth;
@@ -135,6 +160,7 @@ public class PredicateSelectorImpl
     public static final class Builder {
         private int priority;
         private Predicate<InternalNode> nodePredicate = Objects::nonNull;
+        private List<Scope> scopes = new ArrayList<>(0);
         private SelectorDepth selectorDepth;
         private String apiInvocationDescription;
         private Throwable stackTraceHolder;
@@ -161,6 +187,11 @@ public class PredicateSelectorImpl
             if (this.apiInvocationDescription == null) {
                 this.apiInvocationDescription = "types(Predicate<Class>)";
             }
+            return this;
+        }
+
+        public Builder scopes(final List<Scope> scopes) {
+            this.scopes = scopes;
             return this;
         }
 
