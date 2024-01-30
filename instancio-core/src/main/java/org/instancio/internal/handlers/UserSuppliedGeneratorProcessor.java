@@ -56,6 +56,7 @@ final class UserSuppliedGeneratorProcessor {
         this.emitGeneratorHelper = new EmitGeneratorHelper(context);
     }
 
+    @NotNull
     GeneratorResult getGeneratorResult(final @NotNull InternalNode node, final Generator<?> g) {
         final Generator<?> generator = processGenerator(g, node);
 
