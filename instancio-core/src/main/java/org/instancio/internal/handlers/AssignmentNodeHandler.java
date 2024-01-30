@@ -62,6 +62,14 @@ public class AssignmentNodeHandler implements NodeHandler {
         // loop from the end so that the last matching assignment wins
         for (int i = assignments.size() - 1; i >= 0; i--) {
             final InternalAssignment assignment = assignments.get(i);
+            final Predicate<Object> predicate = assignment.getOriginPredicate();
+
+            // unconditional assignment
+            if (predicate == null && assignment.getGenerator() != null) {
+                final Generator<?> generator = assignment.getGenerator();
+                return userSuppliedGeneratorProcessor.getGeneratorResult(node, generator);
+            }
+
             final GeneratorResult candidateResult = generatedObjectStore.getValue(assignment.getDestination());
 
             if (candidateResult == null) {
@@ -73,8 +81,6 @@ public class AssignmentNodeHandler implements NodeHandler {
             unresolvedAssignments.remove(assignment);
 
             LOG.trace("Value for destination {}: {}", assignment.getDestination(), candidateResult.getValue());
-
-            final Predicate<Object> predicate = assignment.getOriginPredicate();
 
             if (predicate == null || isSatisfied(candidateResult.getValue(), predicate)) {
 
