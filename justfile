@@ -3,7 +3,7 @@ all:
     mvn clean install
 
 all-no-checks:
-    mvn clean install -Dpmd.skip -Dcpd.skip -Dcheckstyle.skip
+    mvn clean install -Dpmd.skip -Dcpd.skip -Dcheckstyle.skip -Danimal.sniffer.skip
 
 core:
     mvn install -f instancio-core/pom.xml
