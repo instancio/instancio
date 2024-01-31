@@ -17,15 +17,17 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.LocalTimeGeneratorAsSpec;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.support.Global;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.LocalTime;
+import java.time.temporal.TemporalUnit;
 
 public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
-        implements LocalTimeSpec {
+        implements LocalTimeSpec, LocalTimeGeneratorAsSpec {
 
     private static final int CUT_OFF_BUFFER_MINUTES = 1;
 
@@ -57,6 +59,12 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
     @Override
     public LocalTimeGenerator range(final LocalTime start, final LocalTime end) {
         super.range(start, end);
+        return this;
+    }
+
+    @Override
+    public LocalTimeGenerator truncatedTo(final TemporalUnit unit) {
+        super.truncatedTo(unit);
         return this;
     }
 
@@ -96,8 +104,10 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
 
     @Override
     protected LocalTime tryGenerateNonNull(final Random random) {
-        return LocalTime.ofNanoOfDay(random.longRange(
+        final LocalTime result = LocalTime.ofNanoOfDay(random.longRange(
                 min.toNanoOfDay(),
                 max.toNanoOfDay()));
+
+        return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }

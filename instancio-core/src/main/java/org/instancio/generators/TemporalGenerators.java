@@ -18,10 +18,16 @@ package org.instancio.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.DurationGeneratorSpec;
+import org.instancio.generator.specs.InstantGeneratorAsSpec;
+import org.instancio.generator.specs.LocalDateTimeGeneratorAsSpec;
+import org.instancio.generator.specs.LocalTimeGeneratorAsSpec;
 import org.instancio.generator.specs.MonthDayGeneratorSpec;
+import org.instancio.generator.specs.OffsetDateTimeGeneratorAsSpec;
+import org.instancio.generator.specs.OffsetTimeGeneratorAsSpec;
 import org.instancio.generator.specs.PeriodGeneratorSpec;
 import org.instancio.generator.specs.TemporalAsGeneratorSpec;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
+import org.instancio.generator.specs.ZonedDateTimeGeneratorAsSpec;
 import org.instancio.internal.generator.sql.SqlDateGenerator;
 import org.instancio.internal.generator.sql.TimestampGenerator;
 import org.instancio.internal.generator.time.DurationGenerator;
@@ -73,7 +79,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAsGeneratorSpec<Instant> instant() {
+    public InstantGeneratorAsSpec instant() {
         return new InstantGenerator(context);
     }
 
@@ -91,7 +97,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAsGeneratorSpec<LocalTime> localTime() {
+    public LocalTimeGeneratorAsSpec localTime() {
         return new LocalTimeGenerator(context);
     }
 
@@ -100,7 +106,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAsGeneratorSpec<LocalDateTime> localDateTime() {
+    public LocalDateTimeGeneratorAsSpec localDateTime() {
         return new LocalDateTimeGenerator(context);
     }
 
@@ -120,7 +126,7 @@ public class TemporalGenerators {
      * @return customised generator
      * @since 2.4.0
      */
-    public TemporalAsGeneratorSpec<OffsetTime> offsetTime() {
+    public OffsetTimeGeneratorAsSpec offsetTime() {
         return new OffsetTimeGenerator(context);
     }
 
@@ -130,7 +136,7 @@ public class TemporalGenerators {
      * @return customised generator
      * @since 2.4.0
      */
-    public TemporalAsGeneratorSpec<OffsetDateTime> offsetDateTime() {
+    public OffsetDateTimeGeneratorAsSpec offsetDateTime() {
         return new OffsetDateTimeGenerator(context);
     }
 
@@ -139,7 +145,7 @@ public class TemporalGenerators {
      *
      * @return customised generator
      */
-    public TemporalAsGeneratorSpec<ZonedDateTime> zonedDateTime() {
+    public ZonedDateTimeGeneratorAsSpec zonedDateTime() {
         return new ZonedDateTimeGenerator(context);
     }
 

@@ -17,6 +17,7 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.OffsetTimeGeneratorAsSpec;
 import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
@@ -25,9 +26,10 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.time.temporal.TemporalUnit;
 
 public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
-        implements OffsetTimeSpec {
+        implements OffsetTimeSpec, OffsetTimeGeneratorAsSpec {
 
     private static final int CUT_OFF_BUFFER_MINUTES = 1;
     private static final ZoneOffset ZONE_OFFSET = Constants.ZONE_OFFSET;
@@ -60,6 +62,12 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
     @Override
     public OffsetTimeGenerator range(final OffsetTime start, final OffsetTime end) {
         super.range(start, end);
+        return this;
+    }
+
+    @Override
+    public OffsetTimeGenerator truncatedTo(final TemporalUnit unit) {
+        super.truncatedTo(unit);
         return this;
     }
 
@@ -103,6 +111,7 @@ public class OffsetTimeGenerator extends JavaTimeTemporalGenerator<OffsetTime>
         int minute = random.intRange(min.getMinute(), max.getMinute());
         int second = random.intRange(min.getSecond(), max.getSecond());
         int nano = random.intRange(min.getNano(), max.getNano());
-        return OffsetTime.of(hour, minute, second, nano, ZONE_OFFSET);
+        final OffsetTime result = OffsetTime.of(hour, minute, second, nano, ZONE_OFFSET);
+        return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }

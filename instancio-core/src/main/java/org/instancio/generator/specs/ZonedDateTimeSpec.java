@@ -16,22 +16,42 @@
 package org.instancio.generator.specs;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalUnit;
 
 /**
  * Spec for generating {@link ZonedDateTime} values.
  *
  * @since 2.6.0
  */
-public interface ZonedDateTimeSpec extends TemporalSpec<ZonedDateTime> {
+public interface ZonedDateTimeSpec extends
+        TemporalSpec<ZonedDateTime>,
+        TruncatableTemporalSpec<ZonedDateTime> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     ZonedDateTimeSpec past();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     ZonedDateTimeSpec future();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     ZonedDateTimeSpec range(ZonedDateTime start, ZonedDateTime end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.2.0
+     */
+    @Override
+    ZonedDateTimeSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}

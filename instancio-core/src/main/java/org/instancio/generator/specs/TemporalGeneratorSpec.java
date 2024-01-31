@@ -52,5 +52,5 @@ public interface TemporalGeneratorSpec<T> extends NullableGeneratorSpec<T> {
      * @since 2.7.0
      */
     @Override
-    NullableGeneratorSpec<T> nullable();
+    TemporalGeneratorSpec<T> nullable();
 }

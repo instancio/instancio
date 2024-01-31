@@ -15,49 +15,45 @@
  */
 package org.instancio.generator.specs;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Spec for generating {@link Instant} values.
+ * Generator spec for {@link ZonedDateTime}.
  *
- * @since 2.6.0
+ * @since 4.2.0
  */
-public interface InstantSpec extends
-        TemporalSpec<Instant>,
-        TruncatableTemporalSpec<Instant> {
+public interface ZonedDateTimeGeneratorAsSpec extends
+        TemporalAsGeneratorSpec<ZonedDateTime>,
+        TruncatableTemporalSpec<ZonedDateTime> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantSpec past();
+    ZonedDateTimeGeneratorAsSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantSpec future();
+    ZonedDateTimeGeneratorAsSpec future();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantSpec range(Instant start, Instant end);
+    ZonedDateTimeGeneratorAsSpec range(ZonedDateTime start, ZonedDateTime end);
 
     /**
      * {@inheritDoc}
-     *
-     * @since 4.2.0
      */
     @Override
-    InstantSpec truncatedTo(TemporalUnit unit);
+    ZonedDateTimeGeneratorAsSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}
-     *
-     * @since 2.7.0
      */
     @Override
-    InstantSpec nullable();
+    ZonedDateTimeGeneratorAsSpec nullable();
 }

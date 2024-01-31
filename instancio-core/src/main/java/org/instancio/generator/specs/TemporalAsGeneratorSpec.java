@@ -23,12 +23,21 @@ package org.instancio.generator.specs;
 public interface TemporalAsGeneratorSpec<T>
         extends TemporalGeneratorSpec<T>, AsGeneratorSpec<T> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     TemporalAsGeneratorSpec<T> past();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     TemporalAsGeneratorSpec<T> future();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     TemporalAsGeneratorSpec<T> range(T start, T end);
 }

@@ -16,22 +16,42 @@
 package org.instancio.generator.specs;
 
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 
 /**
  * Spec for generating {@link LocalDateTime} values.
  *
  * @since 2.6.0
  */
-public interface LocalDateTimeSpec extends TemporalSpec<LocalDateTime> {
+public interface LocalDateTimeSpec extends
+        TemporalSpec<LocalDateTime>,
+        TruncatableTemporalSpec<LocalDateTime> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     LocalDateTimeSpec past();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     LocalDateTimeSpec future();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     LocalDateTimeSpec range(LocalDateTime start, LocalDateTime end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.2.0
+     */
+    @Override
+    LocalDateTimeSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}

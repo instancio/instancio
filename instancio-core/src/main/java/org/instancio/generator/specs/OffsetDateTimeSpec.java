@@ -16,22 +16,42 @@
 package org.instancio.generator.specs;
 
 import java.time.OffsetDateTime;
+import java.time.temporal.TemporalUnit;
 
 /**
  * Spec for generating {@link OffsetDateTime} values.
  *
  * @since 2.6.0
  */
-public interface OffsetDateTimeSpec extends TemporalSpec<OffsetDateTime> {
+public interface OffsetDateTimeSpec extends
+        TemporalSpec<OffsetDateTime>,
+        TruncatableTemporalSpec<OffsetDateTime> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     OffsetDateTimeSpec past();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     OffsetDateTimeSpec future();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     OffsetDateTimeSpec range(OffsetDateTime start, OffsetDateTime end);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.2.0
+     */
+    @Override
+    OffsetDateTimeSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}

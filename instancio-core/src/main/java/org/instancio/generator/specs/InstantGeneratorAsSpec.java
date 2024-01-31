@@ -19,45 +19,41 @@ import java.time.Instant;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Spec for generating {@link Instant} values.
+ * Generator spec for {@link java.time.Instant}.
  *
- * @since 2.6.0
+ * @since 4.2.0
  */
-public interface InstantSpec extends
-        TemporalSpec<Instant>,
+public interface InstantGeneratorAsSpec extends
+        TemporalAsGeneratorSpec<Instant>,
         TruncatableTemporalSpec<Instant> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantSpec past();
+    InstantGeneratorAsSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantSpec future();
+    InstantGeneratorAsSpec future();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantSpec range(Instant start, Instant end);
+    InstantGeneratorAsSpec range(Instant start, Instant end);
 
     /**
      * {@inheritDoc}
-     *
-     * @since 4.2.0
      */
     @Override
-    InstantSpec truncatedTo(TemporalUnit unit);
+    InstantGeneratorAsSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}
-     *
-     * @since 2.7.0
      */
     @Override
-    InstantSpec nullable();
+    InstantGeneratorAsSpec nullable();
 }

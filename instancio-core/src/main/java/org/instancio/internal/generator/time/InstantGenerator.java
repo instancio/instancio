@@ -17,15 +17,17 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.InstantGeneratorAsSpec;
 import org.instancio.generator.specs.InstantSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 import org.instancio.support.Global;
 
 import java.time.Instant;
+import java.time.temporal.TemporalUnit;
 
 public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
-        implements InstantSpec {
+        implements InstantGeneratorAsSpec, InstantSpec {
 
     private static final int MAX_NANO = 999_999_999;
     static final Instant DEFAULT_MIN = Constants.DEFAULT_MIN.atZone(Constants.ZONE_OFFSET).toInstant();
@@ -59,6 +61,12 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
     @Override
     public InstantGenerator range(final Instant start, final Instant end) {
         super.range(start, end);
+        return this;
+    }
+
+    @Override
+    public InstantGenerator truncatedTo(final TemporalUnit unit) {
+        super.truncatedTo(unit);
         return this;
     }
 
@@ -98,6 +106,7 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
             nano = random.intRange(0, MAX_NANO);
         }
 
-        return Instant.ofEpochSecond(sec, nano);
+        final Instant result = Instant.ofEpochSecond(sec, nano);
+        return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }

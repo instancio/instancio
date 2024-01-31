@@ -17,17 +17,19 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.ZonedDateTimeGeneratorAsSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 import org.instancio.support.Global;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalUnit;
 
 import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateTime>
-        implements ZonedDateTimeSpec {
+        implements ZonedDateTimeSpec, ZonedDateTimeGeneratorAsSpec {
 
     static final ZonedDateTime DEFAULT_MIN = Constants.DEFAULT_MIN.atZone(ZONE_OFFSET);
     static final ZonedDateTime DEFAULT_MAX = Constants.DEFAULT_MAX.atZone(ZONE_OFFSET);
@@ -68,6 +70,12 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     }
 
     @Override
+    public ZonedDateTimeGenerator truncatedTo(final TemporalUnit unit) {
+        super.truncatedTo(unit);
+        return this;
+    }
+
+    @Override
     public ZonedDateTimeGenerator nullable() {
         super.nullable();
         return this;
@@ -91,6 +99,7 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     @Override
     public ZonedDateTime tryGenerateNonNull(final Random random) {
         delegate.range(min.toInstant(), max.toInstant());
-        return ZonedDateTime.ofInstant(delegate.tryGenerateNonNull(random), ZONE_OFFSET);
+        final ZonedDateTime result = ZonedDateTime.ofInstant(delegate.tryGenerateNonNull(random), ZONE_OFFSET);
+        return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }
