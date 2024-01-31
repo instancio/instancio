@@ -21,6 +21,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 
 abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGenerator<T>
         implements TemporalAsGeneratorSpec<T> {
@@ -30,6 +31,7 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
 
     protected T min;
     protected T max;
+    protected TemporalUnit truncateTo;
 
     JavaTimeTemporalGenerator(final GeneratorContext context, final T min, final T max) {
         super(context);
@@ -64,6 +66,17 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
         min = ApiValidator.notNull(start, "Start parameter must not be null");
         max = ApiValidator.notNull(end, "End parameter must not be null");
         validateRange();
+        return this;
+    }
+
+    @Override
+    public TemporalAsGeneratorSpec<T> nullable() {
+        super.nullable();
+        return this;
+    }
+
+    TemporalAsGeneratorSpec<T> truncatedTo(final TemporalUnit unit) {
+        this.truncateTo = unit;
         return this;
     }
 }

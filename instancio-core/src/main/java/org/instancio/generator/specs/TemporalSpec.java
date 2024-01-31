@@ -26,12 +26,21 @@ import java.time.temporal.Temporal;
  */
 public interface TemporalSpec<T> extends ValueSpec<T>, TemporalGeneratorSpec<T> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     TemporalSpec<T> past();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     TemporalSpec<T> future();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     TemporalSpec<T> range(T start, T end);
 

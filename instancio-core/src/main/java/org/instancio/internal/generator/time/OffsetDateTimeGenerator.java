@@ -17,6 +17,7 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.OffsetDateTimeGeneratorAsSpec;
 import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
@@ -25,9 +26,10 @@ import org.instancio.support.Global;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.TemporalUnit;
 
 public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDateTime>
-        implements OffsetDateTimeSpec {
+        implements OffsetDateTimeSpec, OffsetDateTimeGeneratorAsSpec {
 
     private static final ZoneOffset ZONE_OFFSET = Constants.ZONE_OFFSET;
     static final OffsetDateTime DEFAULT_MIN = Constants.DEFAULT_MIN.atOffset(ZONE_OFFSET);
@@ -68,6 +70,12 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     }
 
     @Override
+    public OffsetDateTimeGenerator truncatedTo(final TemporalUnit unit) {
+        super.truncatedTo(unit);
+        return this;
+    }
+
+    @Override
     public OffsetDateTimeGenerator nullable() {
         super.nullable();
         return this;
@@ -91,7 +99,8 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     @Override
     protected OffsetDateTime tryGenerateNonNull(final Random random) {
         delegate.range(min.toLocalDateTime(), max.toLocalDateTime());
-        final LocalDateTime ldt = delegate.generate(random);
-        return ldt == null ? null : OffsetDateTime.of(ldt, ZONE_OFFSET);
+        final LocalDateTime ldt = delegate.tryGenerateNonNull(random);
+        final OffsetDateTime result = OffsetDateTime.of(ldt, ZONE_OFFSET);
+        return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }

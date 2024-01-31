@@ -16,10 +16,17 @@
 package org.instancio.test.features.values.temporal;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.instancio.generator.specs.InstantSpec;
+import org.instancio.generator.specs.LocalDateTimeSpec;
+import org.instancio.generator.specs.LocalTimeSpec;
+import org.instancio.generator.specs.OffsetDateTimeSpec;
+import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.generator.specs.TemporalSpec;
+import org.instancio.generator.specs.ZonedDateTimeSpec;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -31,7 +38,9 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Gen.temporal;
 
 @FeatureTag(Feature.VALUE_SPEC)
@@ -40,7 +49,7 @@ class TemporalSpecTest {
     @Nested
     class InstantValueSpecTest extends AbstractTemporalSpecTestTemplate<Instant> {
         @Override
-        protected TemporalSpec<Instant> spec() {
+        protected InstantSpec spec() {
             return temporal().instant();
         }
 
@@ -48,6 +57,15 @@ class TemporalSpecTest {
         Pair<Instant, Instant> getRangeFromNow() {
             final Instant now = Instant.now();
             return Pair.of(now, now.plusNanos(6000));
+        }
+
+        @Test
+        void truncatedTo() {
+            final Instant result = spec().truncatedTo(ChronoUnit.HOURS).get();
+            final ZonedDateTime zdt = result.atZone(ZoneOffset.UTC);
+
+            assertThat(zdt.getMinute()).isZero();
+            assertThat(zdt.getSecond()).isZero();
         }
     }
 
@@ -68,7 +86,7 @@ class TemporalSpecTest {
     @Nested
     class LocalDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<LocalDateTime> {
         @Override
-        protected TemporalSpec<LocalDateTime> spec() {
+        protected LocalDateTimeSpec spec() {
             return temporal().localDateTime();
         }
 
@@ -77,12 +95,20 @@ class TemporalSpecTest {
             final LocalDateTime now = LocalDateTime.now();
             return Pair.of(now, now.plusDays(400));
         }
+
+        @Test
+        void truncatedTo() {
+            final LocalDateTime result = spec().truncatedTo(ChronoUnit.HOURS).get();
+
+            assertThat(result.getMinute()).isZero();
+            assertThat(result.getSecond()).isZero();
+        }
     }
 
     @Nested
     class LocalTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<LocalTime> {
         @Override
-        protected TemporalSpec<LocalTime> spec() {
+        protected LocalTimeSpec spec() {
             return temporal().localTime();
         }
 
@@ -91,12 +117,20 @@ class TemporalSpecTest {
             final LocalTime now = LocalTime.now();
             return Pair.of(now, LocalTime.MAX);
         }
+
+        @Test
+        void truncatedTo() {
+            final LocalTime result = spec().truncatedTo(ChronoUnit.HOURS).get();
+
+            assertThat(result.getMinute()).isZero();
+            assertThat(result.getSecond()).isZero();
+        }
     }
 
     @Nested
     class OffsetDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<OffsetDateTime> {
         @Override
-        protected TemporalSpec<OffsetDateTime> spec() {
+        protected OffsetDateTimeSpec spec() {
             return temporal().offsetDateTime();
         }
 
@@ -105,12 +139,20 @@ class TemporalSpecTest {
             final OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
             return Pair.of(now, now.plusDays(400));
         }
+
+        @Test
+        void truncatedTo() {
+            final OffsetDateTime result = spec().truncatedTo(ChronoUnit.HOURS).get();
+
+            assertThat(result.getMinute()).isZero();
+            assertThat(result.getSecond()).isZero();
+        }
     }
 
     @Nested
     class OffsetTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<OffsetTime> {
         @Override
-        protected TemporalSpec<OffsetTime> spec() {
+        protected OffsetTimeSpec spec() {
             return temporal().offsetTime();
         }
 
@@ -118,6 +160,14 @@ class TemporalSpecTest {
         Pair<OffsetTime, OffsetTime> getRangeFromNow() {
             final OffsetTime now = OffsetTime.now(ZoneOffset.UTC);
             return Pair.of(now, OffsetTime.MAX);
+        }
+
+        @Test
+        void truncatedTo() {
+            final OffsetTime result = spec().truncatedTo(ChronoUnit.HOURS).get();
+
+            assertThat(result.getMinute()).isZero();
+            assertThat(result.getSecond()).isZero();
         }
     }
 
@@ -152,7 +202,7 @@ class TemporalSpecTest {
     @Nested
     class ZonedDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<ZonedDateTime> {
         @Override
-        protected TemporalSpec<ZonedDateTime> spec() {
+        protected ZonedDateTimeSpec spec() {
             return temporal().zonedDateTime();
         }
 
@@ -160,6 +210,14 @@ class TemporalSpecTest {
         Pair<ZonedDateTime, ZonedDateTime> getRangeFromNow() {
             final ZonedDateTime now = ZonedDateTime.now();
             return Pair.of(now, now.plusDays(400));
+        }
+
+        @Test
+        void truncatedTo() {
+            final ZonedDateTime result = spec().truncatedTo(ChronoUnit.HOURS).get();
+
+            assertThat(result.getMinute()).isZero();
+            assertThat(result.getSecond()).isZero();
         }
     }
 }

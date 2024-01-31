@@ -17,17 +17,19 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.LocalDateTimeGeneratorAsSpec;
 import org.instancio.generator.specs.LocalDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 import org.instancio.support.Global;
 
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 
 import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateTime>
-        implements LocalDateTimeSpec {
+        implements LocalDateTimeSpec, LocalDateTimeGeneratorAsSpec {
 
     static final LocalDateTime DEFAULT_MIN = Constants.DEFAULT_MIN;
     static final LocalDateTime DEFAULT_MAX = Constants.DEFAULT_MAX;
@@ -68,6 +70,12 @@ public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateT
     }
 
     @Override
+    public LocalDateTimeGenerator truncatedTo(final TemporalUnit unit) {
+        super.truncatedTo(unit);
+        return this;
+    }
+
+    @Override
     public LocalDateTimeGenerator nullable() {
         super.nullable();
         return this;
@@ -91,6 +99,7 @@ public class LocalDateTimeGenerator extends JavaTimeTemporalGenerator<LocalDateT
     @Override
     protected LocalDateTime tryGenerateNonNull(final Random random) {
         delegate.range(min.toInstant(ZONE_OFFSET), max.toInstant(ZONE_OFFSET));
-        return LocalDateTime.ofInstant(delegate.generate(random), ZONE_OFFSET);
+        final LocalDateTime result = LocalDateTime.ofInstant(delegate.generate(random), ZONE_OFFSET);
+        return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }

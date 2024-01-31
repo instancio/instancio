@@ -24,12 +24,21 @@ import java.time.LocalDate;
  */
 public interface LocalDateSpec extends TemporalSpec<LocalDate> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     LocalDateSpec past();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     LocalDateSpec future();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     LocalDateSpec range(LocalDate start, LocalDate end);
 

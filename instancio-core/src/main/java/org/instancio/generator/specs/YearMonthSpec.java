@@ -24,12 +24,21 @@ import java.time.YearMonth;
  */
 public interface YearMonthSpec extends TemporalSpec<YearMonth> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     YearMonthSpec past();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     YearMonthSpec future();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     YearMonthSpec range(YearMonth start, YearMonth end);
 

@@ -26,12 +26,21 @@ import java.time.Period;
  */
 public interface PeriodSpec extends ValueSpec<Period>, PeriodGeneratorSpec {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     PeriodSpec days(int min, int max);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     PeriodSpec months(int min, int max);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     PeriodSpec years(int min, int max);
 }

@@ -15,49 +15,24 @@
  */
 package org.instancio.generator.specs;
 
-import java.time.Instant;
+import org.instancio.generator.GeneratorSpec;
+
 import java.time.temporal.TemporalUnit;
 
 /**
- * Spec for generating {@link Instant} values.
+ * A spec for truncating temporal values.
  *
- * @since 2.6.0
+ * @param <T> temporal type
+ * @since 4.2.0
  */
-public interface InstantSpec extends
-        TemporalSpec<Instant>,
-        TruncatableTemporalSpec<Instant> {
+public interface TruncatableTemporalSpec<T> extends GeneratorSpec<T> {
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    InstantSpec past();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    InstantSpec future();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    InstantSpec range(Instant start, Instant end);
-
-    /**
-     * {@inheritDoc}
+     * Truncates generated values to the specified unit.
      *
+     * @param unit to truncate to
+     * @return spec builder
      * @since 4.2.0
      */
-    @Override
-    InstantSpec truncatedTo(TemporalUnit unit);
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.7.0
-     */
-    @Override
-    InstantSpec nullable();
+    GeneratorSpec<T> truncatedTo(TemporalUnit unit);
 }
