@@ -11,6 +11,39 @@
     <name>Instancio Core</name>
     <description>The standalone module of Instancio</description>
 
+    <profiles>
+        <profile>
+            <id>japicmp</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.siom79.japicmp</groupId>
+                        <artifactId>japicmp-maven-plugin</artifactId>
+                        <version>0.18.3</version>
+                        <configuration>
+                            <oldVersion>
+                                <dependency>
+                                    <groupId>${groupId}</groupId>
+                                    <artifactId>${artifactId}</artifactId>
+                                    <version>${latest.release.version}</version>
+                                    <type>jar</type>
+                                </dependency>
+                            </oldVersion>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>cmp</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>

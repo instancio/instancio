@@ -18,20 +18,37 @@ package org.instancio.api;
 import org.instancio.Assignment;
 import org.instancio.CartesianProductApi;
 import org.instancio.FieldSelectorBuilder;
+import org.instancio.GivenOrigin;
 import org.instancio.GivenOriginDestination;
+import org.instancio.GivenOriginDestinationAction;
 import org.instancio.GivenOriginPredicate;
+import org.instancio.GivenOriginPredicateAction;
 import org.instancio.GroupableSelector;
 import org.instancio.InstancioOfCollectionApi;
 import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
+import org.instancio.Select;
+import org.instancio.Selector;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.ValueOf;
+import org.instancio.ValueOfOriginDestination;
+import org.instancio.When;
+import org.instancio.generator.GeneratorSpec;
+import org.instancio.internal.util.Sonar;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Function;
+
+import static org.instancio.Assign.given;
+import static org.instancio.Assign.valueOf;
+import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ClassAssert.assertThatClass;
 
 /**
@@ -41,6 +58,16 @@ import static org.instancio.test.support.asserts.ClassAssert.assertThatClass;
  * for example when refactoring, or introducing new classes or functionality.
  */
 class ApiContractTest {
+
+    @Test
+    void generatorSpec() {
+        assertThatClass(GeneratorSpec.class).hasNoMethods();
+    }
+
+    @Test
+    void assignment() {
+        assertThatClass(Assignment.class).hasNoMethods();
+    }
 
     /**
      * <pre>{@code
@@ -187,5 +214,118 @@ class ApiContractTest {
     void methodsNotSupportedByCartesianProductApi() {
         assertThatClass(CartesianProductApi.class)
                 .hasNoMethodsNamed("create", "asResult", "toModel");
+    }
+
+    /**
+     * Not tests, but a bunch of statements to quickly catch potentially
+     * breaking changes when refactoring selector/assignment APIs.
+     *
+     * <p>For compatibility changes, build instancio-core
+     * with the {@code japicmp} profile.
+     */
+    @SuppressWarnings({Sonar.ADD_ASSERTION, "unused"})
+    @Nested
+    class ApiChangesTest {
+
+        @Nested
+        class SelectTest {
+            @Test
+            void selector() {
+                final Selector s1 = Select.allInts();
+                final Selector s2 = allStrings();
+                final Selector s3 = Select.all(String.class);
+                final Selector s4 = field("foo");
+            }
+
+            @Test
+            void selectorAtDepth() {
+                final ScopeableSelector ss1 = Select.allInts().atDepth(1);
+                final ScopeableSelector ss2 = allStrings().atDepth(1);
+                final ScopeableSelector ss3 = Select.all(String.class).atDepth(1);
+                final ScopeableSelector ss4 = field("foo").atDepth(1);
+            }
+
+            @Test
+            void selectorToScope() {
+                final Scope scope2 = allStrings().toScope();
+                final Scope scope3 = Select.all(String.class).toScope();
+                final Scope scope4 = field("foo").toScope();
+            }
+
+            @Test
+            void selectorAtDepthToScope() {
+                final Scope scope2 = allStrings().atDepth(1).toScope();
+                final Scope scope3 = Select.all(String.class).atDepth(1).toScope();
+                final Scope scope4 = field("foo").atDepth(1).toScope();
+            }
+
+            @Test
+            void predicateSelector() {
+                final PredicateSelector p1 = Select.fields(f -> true);
+                final PredicateSelector p2 = Select.types(f -> true);
+            }
+
+            @Test
+            void predicateSelectorAtDepth() {
+                final PredicateSelector p = Select.fields(f -> true);
+
+                final GroupableSelector gs1 = p.atDepth(1);
+                final GroupableSelector gs2 = p.atDepth(d -> d > 1);
+            }
+
+            @Test
+            void predicateSelectorBuilder() {
+                final FieldSelectorBuilder b1 = Select.fields();
+                final TypeSelectorBuilder b2 = Select.types();
+            }
+
+            @Test
+            void predicateSelectorBuilderAtDepth() {
+                final GroupableSelector gs1 = Select.fields().atDepth(1);
+                final GroupableSelector gs2 = Select.fields().atDepth(f -> true);
+                final GroupableSelector gs3 = Select.types().atDepth(1);
+                final GroupableSelector gs4 = Select.types().atDepth(t -> true);
+            }
+        }
+
+        @Nested
+        class AssignTest {
+            private final TargetSelector origin = field(StringHolder::getValue);
+            private final TargetSelector destination1 = allStrings();
+            private final TargetSelector destination2 = allStrings();
+
+            @Test
+            void givenOrigin() {
+                final GivenOrigin given = given(origin);
+
+                final GivenOriginPredicate requiredAction = given.is("foo");
+
+                final GivenOriginPredicateAction valueOfAction1 = requiredAction.set(destination1, null);
+                final GivenOriginPredicateAction valueOfAction2 = valueOfAction1.set(destination2, null);
+            }
+
+            @Test
+            void givenOriginDestination() {
+                final GivenOriginDestination given = given(origin, destination1);
+
+                final GivenOriginDestinationAction givenAction1 = given.set(When.is("foo"), "F");
+                final GivenOriginDestinationAction givenAction2 = givenAction1.set(When.is("bar"), "B");
+                final Assignment assignment = givenAction2.elseSet(null);
+            }
+
+
+            @Test
+            void valueOfTo() {
+                final ValueOf valueOf = valueOf(origin);
+                final ValueOfOriginDestination valueOfOriginDestination = valueOf.to(destination1);
+                final Assignment assignment = valueOfOriginDestination.as(Function.identity());
+            }
+
+            @Test
+            void valueOfSet() {
+                final ValueOf valueOf = valueOf(origin);
+                final Assignment assignment = valueOf.set("foo");
+            }
+        }
     }
 }

@@ -36,6 +36,11 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
         return new ClassAssert(actual);
     }
 
+    public ClassAssert hasNoMethods() {
+        assertThat(actual.getMethods()).isEmpty();
+        return this;
+    }
+
     public ClassAssert hasNoMethodsNamed(final String... methodNames) {
         assertThat(actual.getMethods())
                 .extracting(Method::getName)
