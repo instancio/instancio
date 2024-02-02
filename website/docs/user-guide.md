@@ -2780,7 +2780,7 @@ of the JPA `@Column` annotation.
 !!! info "More on JPA"
     From version `3.3.0` Instancio supports this functionality out-of-the-box. See the [JPA section](#jpa) for more details.
 
-```java linenums="1" hl_lines="12 15"
+```java linenums="1" hl_lines="13 16"
 import javax.persistence.Column;
 
 public class GeneratorProviderImpl implements GeneratorProvider {
@@ -2801,8 +2801,8 @@ public class GeneratorProviderImpl implements GeneratorProvider {
 }
 ```
 !!! attention ""
-    <lnum>12</lnum> Set maximum string length based on the `length` attribute.<br/>
-    <lnum>15</lnum> Returning `null` means a value will be generated using built-in generators.<br/>
+    <lnum>13</lnum> Set maximum string length based on the `length` attribute.<br/>
+    <lnum>16</lnum> Returning `null` means a value will be generated using built-in generators.<br/>
 
 Assuming the following entity:
 
@@ -2873,7 +2873,7 @@ Therefore, the setter will not be resolved, and the value will be populated
 via field assignment as a fallback. A custom `SetterMethodResolver` can be
 implemented to handle this case as shown below.
 
-```java linenums="1" title="Resolves setter method names for fields prefixed with an underscore " hl_lines="13 15"
+```java linenums="1" title="Resolves setter method names for fields prefixed with an underscore " hl_lines="13 16"
 public class SetterMethodResolverImpl implements SetterMethodResolver {
 
     @Override
@@ -2895,7 +2895,7 @@ public class SetterMethodResolverImpl implements SetterMethodResolver {
 ```
 !!! attention ""
     <lnum>13</lnum> For brevity, matching is done by name only, ignoring parameter types.<br/>
-    <lnum>15</lnum> Returning `null` means built-in method resolvers will be used as a fallback.<br/>
+    <lnum>16</lnum> Returning `null` means built-in method resolvers will be used as a fallback.<br/>
 
 With the above in place, the `Pojo` can be created as follows:
 
