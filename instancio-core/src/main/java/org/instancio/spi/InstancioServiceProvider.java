@@ -45,10 +45,19 @@ import java.util.ServiceLoader;
  * these methods may contain initialisation logic.
  *
  * <p>This class uses the {@link ServiceLoader} mechanism. Therefore,
- * implementations must be registered by placing a file named
- * {@code org.instancio.spi.InstancioServiceProvider} under
- * {@code /META-INF/services}. The file must contain the fully-qualified name
- * of the implementing class.
+ * implementations must be registered explicitly.
+ * <ul>
+ *   <li>
+ *     for a module using the Java module system by adding
+ *     {@code provides org.instancio.spi.InstancioServiceProvider with fully.qualified.ImplementationName;}
+ *   </li>
+ *   <li>
+ *     otherwise in non-modular code or when read by non-modular code,
+ *     by placing a file named {@code org.instancio.spi.InstancioServiceProvider} under
+ *    {@code /META-INF/services}; The file must contain the fully-qualified name
+ *     of the implementing class.
+ *   </li>
+ * </ul>
  *
  * <p><b>Note:</b> only {@link InstancioServiceProvider} (and not the interfaces
  * defined within it) can be registered via the {@code ServiceLoader}.

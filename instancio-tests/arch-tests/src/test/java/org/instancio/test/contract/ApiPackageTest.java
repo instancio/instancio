@@ -19,6 +19,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.documentation.InternalApi;
+import org.instancio.test.contract.condition.UnconditionalModuleExportCondition;
 import org.junit.jupiter.api.Test;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
@@ -34,6 +35,8 @@ class ApiPackageTest {
     };
 
     private static final JavaClasses classes = new ClassFileImporter().importPackages("org.instancio");
+
+    private static final UnconditionalModuleExportCondition beUnconditionallyExported = new UnconditionalModuleExportCondition();
 
     @Test
     void internalApisShouldResideWithinInternalPackage() {
@@ -67,6 +70,20 @@ class ApiPackageTest {
         noClasses().that().resideInAnyPackage(NON_PUBLIC_PACKAGES)
                 .and().arePublic()
                 .should().haveSimpleNameStartingWith("Instancio")
+                .check(classes);
+    }
+
+    @Test
+    void allPublicPackagesShouldBeUnconditionallyExported() {
+        classes().that().resideOutsideOfPackages(NON_PUBLIC_PACKAGES)
+                .should(beUnconditionallyExported)
+                .check(classes);
+    }
+
+    @Test
+    void noInternalPackageShouldBeUnconditionallyExported() {
+        noClasses().that().resideInAnyPackage(NON_PUBLIC_PACKAGES)
+                .should(beUnconditionallyExported)
                 .check(classes);
     }
 }

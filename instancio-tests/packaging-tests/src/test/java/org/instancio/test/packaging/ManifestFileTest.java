@@ -33,7 +33,6 @@ import static org.assertj.core.api.Assertions.fail;
 class ManifestFileTest {
 
     private static final String MANIFEST_MF_PATH = "META-INF/MANIFEST.MF";
-    private static final String AUTOMATIC_MODULE_NAME = "Automatic-Module-Name";
     private static final String BUNDLE_NAME = "Bundle-Name";
     private static final String BUNDLE_SYMBOLIC_NAME = "Bundle-SymbolicName";
     private static final String BUNDLE_DESCRIPTION = "Bundle-Description";
@@ -73,11 +72,9 @@ class ManifestFileTest {
 
     @Test
     void instancioCoreManifest() throws IOException {
-        final String moduleName = "org.instancio.core";
-        final Manifest manifest = getManifest(moduleName);
+        final String symbolicName = "org.instancio.core";
+        final Manifest manifest = getManifest(symbolicName);
         final Attributes attrs = manifest.getMainAttributes();
-
-        assertThat(attrs.getValue(BUNDLE_SYMBOLIC_NAME)).isEqualTo(moduleName);
 
         assertThat(attrs.getValue(BUNDLE_NAME))
                 .isEqualTo("Instancio Core");
@@ -111,11 +108,9 @@ class ManifestFileTest {
 
     @Test
     void instancioJUnitManifest() throws IOException {
-        final String moduleName = "org.instancio.junit";
-        final Manifest manifest = getManifest(moduleName);
+        final String symbolicName = "org.instancio.junit";
+        final Manifest manifest = getManifest(symbolicName);
         final Attributes attrs = manifest.getMainAttributes();
-
-        assertThat(attrs.getValue(BUNDLE_SYMBOLIC_NAME)).isEqualTo(moduleName);
 
         assertThat(attrs.getValue(BUNDLE_NAME))
                 .isEqualTo("Instancio JUnit 5 Support");
@@ -123,9 +118,7 @@ class ManifestFileTest {
         assertThat(attrs.getValue(BUNDLE_DESCRIPTION))
                 .isEqualTo("Instancio integration with JUnit 5");
 
-        assertThat(attrs.getValue(MULTI_RELEASE))
-                .as("instancio-junit is not a multi-release jar")
-                .isNull();
+        assertThat(attrs.getValue(MULTI_RELEASE)).isEqualTo("true");
 
         assertImports(attrs, INSTANCIO_JUNIT_EXPECTED_IMPORTS);
 
@@ -151,7 +144,7 @@ class ManifestFileTest {
                 .collect(Collectors.toSet());
     }
 
-    private Manifest getManifest(final String automaticModuleName) throws IOException {
+    private Manifest getManifest(final String symbolicName) throws IOException {
         final Enumeration<URL> resources = getClass().getClassLoader()
                 .getResources(MANIFEST_MF_PATH);
 
@@ -159,12 +152,12 @@ class ManifestFileTest {
             try (final InputStream is = resources.nextElement().openStream()) {
                 final Manifest manifest = new Manifest(is);
                 final Attributes attrs = manifest.getMainAttributes();
-                final String value = attrs.getValue(AUTOMATIC_MODULE_NAME);
-                if (automaticModuleName.equals(value)) {
+                final String value = attrs.getValue(BUNDLE_SYMBOLIC_NAME);
+                if (symbolicName.equals(value)) {
                     return manifest;
                 }
             }
         }
-        return fail("Manifest with module name '%s' not found", automaticModuleName);
+        return fail("Manifest with symbolic name '%s' not found", symbolicName);
     }
 }

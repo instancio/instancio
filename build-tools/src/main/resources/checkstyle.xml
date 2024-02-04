@@ -88,4 +88,7 @@
         <property name="headerFile" value="build-tools/src/main/resources/LicenseHeader/apache-licence-java-header.txt"/>
         <property name="fileExtensions" value="java"/>
     </module>
+    <module name="BeforeExecutionExclusionFileFilter">
+        <property name="fileNamePattern" value="module\-info\.java$"/>
+    </module>
 </module>
