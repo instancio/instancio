@@ -95,7 +95,16 @@ class CollectionGeneratorTest {
     }
 
     @Test
-    void shouldFailOnInstantiationError() {
+    void shouldNotFailOnInstantiationErrorByDefault() {
+        final CollectionGenerator<?> generator = generator().subtype(List.class);
+
+        assertThat(generator.generate(random)).isNull();
+    }
+
+    @Test
+    void shouldFailOnInstantiationErrorWhenFailOnErrorIsEnabled() {
+        settings.set(Keys.FAIL_ON_ERROR, true);
+
         final CollectionGenerator<?> generator = generator().subtype(List.class);
 
         assertThatThrownBy(() -> generator.generate(random))

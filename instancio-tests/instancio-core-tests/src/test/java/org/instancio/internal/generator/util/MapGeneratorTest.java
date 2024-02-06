@@ -96,7 +96,16 @@ class MapGeneratorTest {
     }
 
     @Test
-    void shouldFailOnInstantiationError() {
+    void shouldNotFailOnInstantiationErrorByDefault() {
+        final MapGenerator<?, ?> generator = generator().subtype(Map.class);
+
+        assertThat(generator.generate(random)).isNull();
+    }
+
+    @Test
+    void shouldFailOnInstantiationErrorWhenFailOnErrorIsEnabled() {
+        settings.set(Keys.FAIL_ON_ERROR, true);
+
         final MapGenerator<?, ?> generator = generator().subtype(Map.class);
 
         assertThatThrownBy(() -> generator.generate(random))

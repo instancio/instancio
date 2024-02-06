@@ -22,8 +22,10 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.ErrorHandler;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Sonar;
@@ -138,7 +140,13 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
         try {
             return (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            throw Fail.withFataInternalError("Error creating instance of: %s", mapType, ex);
+            final String msg = String.format("Error creating instance of: %s", mapType);
+
+            if (ErrorHandler.shouldFailOnError(getContext().getSettings())) {
+                throw Fail.withFataInternalError(msg, ex);
+            }
+            ExceptionUtils.logException(msg, ex);
+            return null; //NOPMD
         }
     }
 

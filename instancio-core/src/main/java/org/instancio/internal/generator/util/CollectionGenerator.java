@@ -22,9 +22,11 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.ErrorHandler;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Sonar;
@@ -127,7 +129,13 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         try {
             return (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            throw Fail.withFataInternalError("Error creating instance of: %s", collectionType, ex);
+            final String msg = String.format("Error creating instance of: %s", collectionType);
+
+            if (ErrorHandler.shouldFailOnError(getContext().getSettings())) {
+                throw Fail.withFataInternalError(msg, ex);
+            }
+            ExceptionUtils.logException(msg, ex);
+            return null; //NOPMD
         }
     }
 

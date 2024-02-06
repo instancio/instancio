@@ -22,6 +22,7 @@ import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
-final class ErrorHandler {
+public final class ErrorHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ErrorHandler.class);
 
     private static final String SUPPRESSION_REASON = String.format("" +
@@ -66,7 +67,7 @@ final class ErrorHandler {
         } catch (AssertionError | InstancioTerminatingException ex) {
             throw ex;
         } catch (Throwable ex) { //NOPMD
-            if (isShouldFailOnError()) {
+            if (shouldFailOnError()) {
                 throw Fail.withInternalError(ex);
             }
             logSuppressed(ex);
@@ -74,7 +75,11 @@ final class ErrorHandler {
         return Optional.empty();
     }
 
-    private boolean isShouldFailOnError() {
+    public static boolean shouldFailOnError(final Settings settings) {
+        return settings.get(Keys.FAIL_ON_ERROR) || SystemProperties.isFailOnErrorEnabled();
+    }
+
+    private boolean shouldFailOnError() {
         return isFailOnErrorSettingEnabled || SystemProperties.isFailOnErrorEnabled();
     }
 
