@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.selectors;
 
-import org.instancio.PredicateSelector;
+import org.instancio.Scope;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeContext;
@@ -23,15 +23,19 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Pet;
+import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.Pojo;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Select.fields;
+import static org.instancio.Select.scope;
 import static org.instancio.internal.util.ReflectionUtils.getField;
 
 class FieldSelectorBuilderImplTest {
@@ -120,6 +124,14 @@ class FieldSelectorBuilderImplTest {
         assertThatThrownBy(() -> selectorBuilder.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("depth must not be negative: -1");
+
+        assertThatThrownBy(() -> selectorBuilder.withScopes((Scope[]) null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("scopes must not be null.");
+
+        assertThatThrownBy(() -> selectorBuilder.withScopes((Scope) null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("scopes vararg must not contain null.");
     }
 
     @Nested
@@ -141,6 +153,17 @@ class FieldSelectorBuilderImplTest {
         }
 
         @Test
+        void within() {
+            final String result = selectorBuilder
+                    .atDepth(d -> true)
+                    .within(scope(Person.class), fields().ofType(Phone.class).toScope())
+                    .toString();
+
+            assertThat(result).isEqualTo("fields().atDepth(Predicate<Integer>)"
+                    + ".within(scope(Person), scope(fields().ofType(Phone)))");
+        }
+
+        @Test
         void full() {
             final String result = selectorBuilder
                     .named("name")
@@ -150,10 +173,12 @@ class FieldSelectorBuilderImplTest {
                     .annotated(Pojo.class)
                     .annotated(PersonName.class)
                     .atDepth(5)
+                    .within(scope(List.class))
                     .toString();
 
-            assertThat(result).isEqualTo("fields().named(\"name\").matching(\"regex\").ofType(String)" +
-                    ".declaredIn(Person).annotated(Pojo).annotated(PersonName).atDepth(5)");
+            assertThat(result).isEqualTo("fields().named(\"name\").matching(\"regex\").ofType(String)"
+                    + ".declaredIn(Person).annotated(Pojo).annotated(PersonName).atDepth(5)"
+                    + ".within(scope(List))");
         }
     }
 
@@ -169,7 +194,7 @@ class FieldSelectorBuilderImplTest {
     }
 
     private static Predicate<InternalNode> build(FieldSelectorBuilderImpl builder) {
-        final PredicateSelector predicateSelector = builder.build();
-        return ((PredicateSelectorImpl) predicateSelector).getNodePredicate();
+        final PredicateSelectorImpl predicateSelector = builder.build();
+        return predicateSelector.getNodePredicate();
     }
 }

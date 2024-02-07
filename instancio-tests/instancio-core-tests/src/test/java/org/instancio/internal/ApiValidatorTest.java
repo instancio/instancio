@@ -27,6 +27,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ApiValidatorTest {
 
     @Test
+    void doesNotContainNull() {
+        assertThatNoException()
+                .isThrownBy(() -> ApiValidator.doesNotContainNull(new String[]{"a"}, () -> "a message"));
+
+        assertThatThrownBy(() -> ApiValidator.doesNotContainNull(new String[]{null}, () -> "a message"))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("a message");
+    }
+
+    @Test
     void validateSubtype() {
         assertThatNoException().isThrownBy(() -> {
             ApiValidator.validateSubtype(Collection.class, Collection.class);

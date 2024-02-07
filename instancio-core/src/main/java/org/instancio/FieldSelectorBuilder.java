@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.TypeVariable;
 import java.util.function.Predicate;
@@ -37,7 +39,10 @@ import java.util.function.Predicate;
  * @see TargetSelector
  * @since 1.6.0
  */
-public interface FieldSelectorBuilder extends GroupableSelector, DepthSelector, DepthPredicateSelector {
+public interface FieldSelectorBuilder extends
+        DepthSelector,
+        DepthPredicateSelector,
+        ScopeableSelector {
 
     /**
      * Matches fields with the specified name.
@@ -116,7 +121,7 @@ public interface FieldSelectorBuilder extends GroupableSelector, DepthSelector, 
      * @since 2.14.0
      */
     @Override
-    GroupableSelector atDepth(int depth);
+    ScopeableSelector atDepth(int depth);
 
     /**
      * {@inheritDoc}
@@ -124,5 +129,23 @@ public interface FieldSelectorBuilder extends GroupableSelector, DepthSelector, 
      * @since 2.14.0
      */
     @Override
-    GroupableSelector atDepth(Predicate<Integer> atDepth);
+    ScopeableSelector atDepth(Predicate<Integer> atDepth);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.2.0
+     */
+    @Override
+    @ExperimentalApi
+    GroupableSelector within(Scope... scopes);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.2.0
+     */
+    @Override
+    @ExperimentalApi
+    Scope toScope();
 }

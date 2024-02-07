@@ -13,31 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio;
+package org.instancio.internal.selectors;
 
-/**
- * Represents regular field and class selectors,
- * including primitive and wrapper selectors.
- *
- * @see Select
- * @see TargetSelector
- * @since 1.2.0
- */
-public interface Selector extends DepthSelector, ScopeableSelector {
+import org.junit.jupiter.api.Test;
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 3.0.0
-     */
-    @Override
-    ScopeableSelector atDepth(int depth);
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.fields;
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 1.3.0
-     */
-    @Override
-    GroupableSelector within(Scope... scopes);
+class PredicateScopeImplTest {
+
+    @Test
+    void verifyToString() {
+        final PredicateScopeImpl scope = new PredicateScopeImpl(fields(f -> true));
+
+        assertThat(scope).hasToString("scope(fields(Predicate<Field>))");
+    }
 }

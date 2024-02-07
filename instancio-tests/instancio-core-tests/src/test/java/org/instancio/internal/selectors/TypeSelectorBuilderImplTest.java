@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.selectors;
 
-import org.instancio.PredicateSelector;
+import org.instancio.Scope;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeContext;
@@ -36,6 +36,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Select.fields;
+import static org.instancio.Select.scope;
 
 class TypeSelectorBuilderImplTest {
 
@@ -88,6 +90,14 @@ class TypeSelectorBuilderImplTest {
         assertThatThrownBy(() -> selectorBuilder.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("depth must not be negative: -1");
+
+        assertThatThrownBy(() -> selectorBuilder.withScopes((Scope[]) null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("scopes must not be null.");
+
+        assertThatThrownBy(() -> selectorBuilder.withScopes((Scope) null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("scopes vararg must not contain null.");
     }
 
     @Nested
@@ -109,6 +119,17 @@ class TypeSelectorBuilderImplTest {
         }
 
         @Test
+        void within() {
+            final String result = selectorBuilder
+                    .atDepth(d -> true)
+                    .within(scope(Person.class), fields().ofType(Phone.class).toScope())
+                    .toString();
+
+            assertThat(result).isEqualTo("types().atDepth(Predicate<Integer>)"
+                    + ".within(scope(Person), scope(fields().ofType(Phone)))");
+        }
+
+        @Test
         void full() {
             final String result = selectorBuilder
                     .of(Object.class)
@@ -117,10 +138,12 @@ class TypeSelectorBuilderImplTest {
                     .annotated(Pojo.class)
                     .annotated(PersonName.class)
                     .atDepth(5)
+                    .within(scope(List.class))
                     .toString();
 
-            assertThat(result).isEqualTo("types().of(Object).excluding(Foo).excluding(Bar)" +
-                    ".annotated(Pojo).annotated(PersonName).atDepth(5)");
+            assertThat(result).isEqualTo("types().of(Object).excluding(Foo).excluding(Bar)"
+                    + ".annotated(Pojo).annotated(PersonName).atDepth(5)"
+                    + ".within(scope(List))");
         }
     }
 
@@ -136,7 +159,7 @@ class TypeSelectorBuilderImplTest {
     }
 
     private static Predicate<InternalNode> build(TypeSelectorBuilderImpl builder) {
-        final PredicateSelector predicateSelector = builder.build();
-        return ((PredicateSelectorImpl) predicateSelector).getNodePredicate();
+        final PredicateSelectorImpl predicateSelector = builder.build();
+        return predicateSelector.getNodePredicate();
     }
 }

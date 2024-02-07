@@ -37,6 +37,6 @@ public interface DepthPredicateSelector {
      * @since 2.14.0
      */
     @ExperimentalApi
-    GroupableSelector atDepth(Predicate<Integer> predicate);
+    ScopeableSelector atDepth(Predicate<Integer> predicate);
 
 }

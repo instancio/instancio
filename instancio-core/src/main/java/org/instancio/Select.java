@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.FieldSelectorBuilderImpl;
+import org.instancio.internal.selectors.PredicateScopeImpl;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
@@ -576,6 +577,18 @@ public final class Select {
     public static <T, R> Scope scope(final GetMethodSelector<T, R> methodReference) {
         ApiValidator.notNull(methodReference, "getter method reference must not be null");
         return new ScopeImpl(new TargetGetterReference(methodReference), null);
+    }
+
+    /**
+     * Creates a scope from the given predicate selector.
+     *
+     * @param selector a predicate selector to use as the scope
+     * @return a scope for fine-tuning a selector
+     * @since 4.2.0
+     */
+    @ExperimentalApi
+    public static Scope scope(final PredicateSelector selector) {
+        return new PredicateScopeImpl(selector);
     }
 
     private Select() {

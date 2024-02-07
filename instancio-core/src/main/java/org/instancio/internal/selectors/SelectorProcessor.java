@@ -27,6 +27,7 @@ import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Verify;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -204,10 +205,15 @@ public final class SelectorProcessor {
 
         final List<Scope> results = new ArrayList<>(scopes.size());
         for (Scope s : scopes) {
-            final ScopeImpl scope = (ScopeImpl) s;
-            final Target unprocessed = scope.getTarget();
-            final Target processed = createTargetWithRootClass(unprocessed);
-            results.add(new ScopeImpl(processed, scope.getDepth()));
+            if (s instanceof ScopeImpl) {
+                final ScopeImpl scope = (ScopeImpl) s;
+                final Target unprocessed = scope.getTarget();
+                final Target processed = createTargetWithRootClass(unprocessed);
+                results.add(new ScopeImpl(processed, scope.getDepth()));
+            } else {
+                Verify.isTrue(s instanceof PredicateScopeImpl, "expected predicate scope");
+                results.add(s);
+            }
         }
         return results;
     }
