@@ -20,6 +20,7 @@ import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.PredicateScopeImpl;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
@@ -31,7 +32,6 @@ import org.instancio.internal.selectors.TargetField;
 import org.instancio.internal.selectors.TargetRoot;
 import org.instancio.internal.selectors.TargetSetter;
 import org.instancio.internal.util.Fail;
-import org.instancio.internal.util.Sonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -285,7 +285,6 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         return results;
     }
 
-    @SuppressWarnings({Sonar.COGNITIVE_COMPLEXITY_OF_METHOD, "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     private static boolean selectorScopesMatchNodeHierarchy(
             @Nullable final Integer candidateDepth,
             @NotNull final List<Scope> candidateScopes,
@@ -298,47 +297,18 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             return true;
         }
         final Deque<Scope> deq = new ArrayDeque<>(candidateScopes);
-        ScopeImpl scope = (ScopeImpl) deq.removeLast();
+        Scope scope = deq.removeLast();
         InternalNode node = targetNode;
 
         while (node != null) {
-            // Matching scope depth offers two implementation options:
-            //
-            // (A) node.getDepth() == scope.getDepth()
-            // (B) node.getDepth() >= scope.getDepth()
-            //
-            // (A) would result in exact matching between scope and node depth values.
-            // Although it seems like a good option and feels more intuitive, this approach
-            // has two disadvantages:
-            //
-            //  1. The precise matching is actually more restrictive
-            //  2. It's inconsistent with the semantics of within(Scope) API,
-            //     i.e. "match anywhere _within_ given scope" (at given depth or further)
-            boolean scopeMatched;
+            final boolean scopeMatched = scope instanceof ScopeImpl
+                    ? isRegularScopeMatch((ScopeImpl) scope, node)
+                    : isPredicateScopeMatch((PredicateScopeImpl) scope, node);
 
-            if (scope.getDepth() == null || node.getDepth() >= scope.getDepth()) {
-
-                if (scope.getTarget() instanceof TargetField) {
-                    scopeMatched = node.getField() != null
-                            && scope.getTargetClass().equals(node.getField().getDeclaringClass())
-                            && scope.getField().equals(node.getField());
-
-                } else if (scope.getTarget() instanceof TargetSetter) {
-                    scopeMatched = node.getSetter() != null
-                            && scope.getTargetClass().equals(node.getSetter().getDeclaringClass())
-                            && scope.getMethodName().equals(node.getSetter().getName())
-                            && (scope.getParameterType() == null // param not specified
-                            || scope.getParameterType().equals(node.getSetter().getParameterTypes()[0]));
-
-                } else {
-                    scopeMatched = node.getRawType().equals(scope.getTargetClass())
-                            || node.getTargetClass().equals(scope.getTargetClass());
-                }
-
-                if (scopeMatched) {
-                    scope = (ScopeImpl) deq.pollLast();
-                }
+            if (scopeMatched) {
+                scope = deq.pollLast();
             }
+
             if (scope == null) { // All scopes have been matched
                 return true;
             }
@@ -346,6 +316,47 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             node = node.getParent();
         }
         return false;
+    }
+
+    private static boolean isPredicateScopeMatch(final PredicateScopeImpl scope, final InternalNode node) {
+        return scope.getNodePredicate().test(node);
+    }
+
+    private static boolean isRegularScopeMatch(final ScopeImpl scope, final InternalNode node) {
+        boolean matched = false;
+
+        // For regular selectors, matching scope depth offers two implementation options:
+        //
+        // (A) node.getDepth() == scope.getDepth()
+        // (B) node.getDepth() >= scope.getDepth()
+        //
+        // (A) would result in exact matching between scope and node depth values.
+        // Although it seems like a good option and feels more intuitive, this approach
+        // has two disadvantages:
+        //
+        //  1. The precise matching is actually more restrictive
+        //  2. It's inconsistent with the semantics of within(Scope) API,
+        //     i.e. "match anywhere _within_ given scope" (at given depth or further)
+        if (scope.getDepth() == null || node.getDepth() >= scope.getDepth()) {
+
+            if (scope.getTarget() instanceof TargetField) {
+                matched = node.getField() != null
+                        && scope.getTargetClass().equals(node.getField().getDeclaringClass())
+                        && scope.getField().equals(node.getField());
+
+            } else if (scope.getTarget() instanceof TargetSetter) {
+                matched = node.getSetter() != null
+                        && scope.getTargetClass().equals(node.getSetter().getDeclaringClass())
+                        && scope.getMethodName().equals(node.getSetter().getName())
+                        && (scope.getParameterType() == null // param not specified
+                        || scope.getParameterType().equals(node.getSetter().getParameterTypes()[0]));
+
+            } else {
+                matched = node.getRawType().equals(scope.getTargetClass())
+                        || node.getTargetClass().equals(scope.getTargetClass());
+            }
+        }
+        return matched;
     }
 
     @Override

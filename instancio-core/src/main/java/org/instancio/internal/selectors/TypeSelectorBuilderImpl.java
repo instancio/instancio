@@ -15,11 +15,14 @@
  */
 package org.instancio.internal.selectors;
 
+import org.instancio.GroupableSelector;
+import org.instancio.Scope;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.util.Format;
 
 import java.lang.annotation.Annotation;
+
+import static org.instancio.internal.util.ErrorMessageUtils.selectorNotNullErrorMessage;
 
 public class TypeSelectorBuilderImpl
         extends PredicateSelectorBuilderTemplate<Class<?>>
@@ -37,7 +40,7 @@ public class TypeSelectorBuilderImpl
 
     @Override
     public TypeSelectorBuilder of(final Class<?> type) {
-        ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
+        ApiValidator.notNull(type, () -> selectorNotNullErrorMessage(
                 "type must not be null.",
                 "of", description().toString(), new Throwable()));
 
@@ -48,7 +51,7 @@ public class TypeSelectorBuilderImpl
 
     @Override
     public <A extends Annotation> TypeSelectorBuilder annotated(final Class<? extends A> annotation) {
-        ApiValidator.notNull(annotation, () -> Format.selectorErrorMessage(
+        ApiValidator.notNull(annotation, () -> selectorNotNullErrorMessage(
                 "type's declared annotation must not be null.",
                 "annotated", description().toString(), new Throwable()));
 
@@ -59,12 +62,23 @@ public class TypeSelectorBuilderImpl
 
     @Override
     public TypeSelectorBuilder excluding(final Class<?> type) {
-        ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
+        ApiValidator.notNull(type, () -> selectorNotNullErrorMessage(
                 "excluded type must not be null.",
                 "excluding", description().toString(), new Throwable()));
 
         addPredicate(klass -> klass != type);
         description().append(".excluding(").append(type.getSimpleName()).append(')');
         return this;
+    }
+
+    @Override
+    public GroupableSelector within(final Scope... scopes) {
+        withScopes(scopes);
+        return this;
+    }
+
+    @Override
+    public Scope toScope() {
+        return new PredicateScopeImpl(build());
     }
 }

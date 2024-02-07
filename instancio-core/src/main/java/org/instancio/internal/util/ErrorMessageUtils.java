@@ -383,6 +383,17 @@ public final class ErrorMessageUtils {
                 .toString();
     }
 
+    public static String selectorNotNullErrorMessage(
+            final String message, final String methodName, final String invokedMethods, final Throwable t) {
+        final String template = "%n" +
+                "  %s%n" +
+                "  method invocation: %s%n" +
+                "  at %s";
+        final String invocation = String.format("%s.%s( -> null <- )", invokedMethods, methodName);
+        final String at = Format.firstNonInstancioStackTraceLine(t);
+        return String.format(template, message, invocation, at);
+    }
+
     private static Throwable getRootCause(final Throwable t) {
         Throwable cause = t;
         while (cause.getCause() != null) {

@@ -17,6 +17,7 @@ package org.instancio.api;
 
 import org.instancio.Assignment;
 import org.instancio.CartesianProductApi;
+import org.instancio.DepthPredicateSelector;
 import org.instancio.FieldSelectorBuilder;
 import org.instancio.GivenOrigin;
 import org.instancio.GivenOriginDestination;
@@ -112,28 +113,10 @@ class ApiContractTest {
         assertThatClass(GroupableSelector.class).hasNoMethodsNamed("within");
     }
 
-    /**
-     * {@code Select.fields().toScope()}
-     */
-    @Test
-    @DisplayName("Fields predicate builder cannot be converted to scope")
-    void fieldsPredicateBuilderCannotBeConvertedToScope() {
-        assertThatClass(FieldSelectorBuilder.class).hasNoMethodsNamed("toScope");
-    }
-
-    /**
-     * {@code Select.types().toScope()}
-     */
-    @Test
-    @DisplayName("Types predicate builder cannot be converted to scope")
-    void typesPredicateBuilderCannotBeConvertedToScope() {
-        assertThatClass(TypeSelectorBuilder.class).hasNoMethodsNamed("toScope");
-    }
-
     @Test
     @DisplayName("Methods supported by predicate selector")
     void predicateSelectorSupportedMethods() {
-        assertThatClass(PredicateSelector.class).hasOnlyMethodsNamed("atDepth", "within");
+        assertThatClass(PredicateSelector.class).hasOnlyMethodsNamed("atDepth", "within", "toScope");
     }
 
     /**
@@ -171,7 +154,27 @@ class ApiContractTest {
     @Test
     @DisplayName("atDepth() cannot be called more than once")
     void atDepthCannotBeCalledMoreThanOnce() {
+        // Not allowing atDepth() to be chained more than once
+        // is especially important for predicate selectors,
+        // that express the depth condition, such as 'depth(3)',
+        // as an integer predicate: 'depth -> depth == 3'.
+        //
+        // Setting depth more than once would lead to hard-to-debug issues
+        // because the selector toString() would be,
+        // e.g. 'fields(Predicate<Field>).atDepth(3)',
+        // while the underlying predicate is comprised of multiple,
+        // potentially conflicting, depth conditions.
         assertThatClass(ScopeableSelector.class).hasNoMethodsNamed("atDepth");
+    }
+
+    @Test
+    void atDepthSupportedMethods() {
+        assertThatClass(ScopeableSelector.class).hasOnlyMethodsNamed("toScope", "within");
+    }
+
+    @Test
+    void depthPredicateSelectorSupportedMethods() {
+        assertThatClass(DepthPredicateSelector.class).hasOnlyMethodsNamed("atDepth");
     }
 
     /**
@@ -269,8 +272,27 @@ class ApiContractTest {
             void predicateSelectorAtDepth() {
                 final PredicateSelector p = Select.fields(f -> true);
 
+                // before 4.2.0
                 final GroupableSelector gs1 = p.atDepth(1);
                 final GroupableSelector gs2 = p.atDepth(d -> d > 1);
+
+                // from 4.2.0 returns ScopeableSelector
+                final ScopeableSelector ss1 = p.atDepth(1);
+                final ScopeableSelector ss2 = p.atDepth(d -> d > 1);
+            }
+
+            @Test
+            void predicateSelectorToScope() {
+                final PredicateSelector p = Select.fields(f -> true);
+
+                final Scope scope = p.toScope();
+            }
+
+            @Test
+            void predicateSelectorAtDepthToScope() {
+                final ScopeableSelector ss = Select.fields(f -> true).atDepth(1);
+
+                final Scope scope = ss.toScope();
             }
 
             @Test
@@ -280,11 +302,43 @@ class ApiContractTest {
             }
 
             @Test
+            void predicateSelectorBuilderToScope() {
+                final FieldSelectorBuilder b1 = Select.fields();
+                final TypeSelectorBuilder b2 = Select.types();
+
+                final Scope scope1 = b1.toScope();
+                final Scope scope2 = b2.toScope();
+            }
+
+            @Test
+            void predicateSelectorBuilderWithin() {
+                final FieldSelectorBuilder b1 = Select.fields();
+                final TypeSelectorBuilder b2 = Select.types();
+
+                final GroupableSelector within1 = b1.within();
+                final GroupableSelector within2 = b2.within();
+            }
+
+            @Test
             void predicateSelectorBuilderAtDepth() {
+                // before 4.2.0
                 final GroupableSelector gs1 = Select.fields().atDepth(1);
                 final GroupableSelector gs2 = Select.fields().atDepth(f -> true);
                 final GroupableSelector gs3 = Select.types().atDepth(1);
                 final GroupableSelector gs4 = Select.types().atDepth(t -> true);
+
+                // from 4.2.0
+                final ScopeableSelector ss1 = Select.fields().atDepth(1);
+                final ScopeableSelector ss2 = Select.fields().atDepth(f -> true);
+                final ScopeableSelector ss3 = Select.types().atDepth(1);
+                final ScopeableSelector ss4 = Select.types().atDepth(t -> true);
+            }
+
+            @Test
+            void predicateSelectorBuilderAtDepthToScope() {
+                final ScopeableSelector ss = Select.fields().atDepth(1);
+
+                final Scope scope = ss.toScope();
             }
         }
 

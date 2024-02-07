@@ -350,7 +350,6 @@ which is equivalent to using the following predicate:
 Select.fields(f -> f.getType() == Long.class && f.getDeclaredAnnotation(Id.class) != null)
 ```
 
-
 - **`Select.root()`**
 
 This method selects the root object. The following snippet creates nested lists,
@@ -468,6 +467,7 @@ Instancio supports two types of scope:
 
 - Class-level scope: narrows down a selector to the specified class.
 - Field-level scope: narrows down a selector to the specified field of the target class.
+- Predicate scope: narrows down a selector using a field or class predicate.
 
 To illustrate how scopes work we will assume the following structure for the `Person` class
 (getters and setters omitted).
@@ -516,6 +516,7 @@ Scopes can be created using:
 
 - `Select.scope()` static methods in the {{Select}} class
 - `Selector.toScope()` method provided by regular selectors
+- `PredicateSelector.toScope()` method provided by predicate selectors
 
 The first approach requires specifying the target class and, for field-level scopes, the name of the field:
 
@@ -523,27 +524,32 @@ The first approach requires specifying the target class and, for field-level sco
 Select.scope(Class<?> targetClass)
 Select.scope(Class<?> targetClass, String field)
 Select.scope(GetMethodSelector<T, R> methodReference)
+Select.scope(PredicateSelector selector)
 ```
 
 ``` java title="Examples"
 Select.scope(Phone.class);
 Select.scope(Person.class, "homeAddress");
 Select.scope(Person::getHomeAddress);
+Select.scope(type -> type == Address.class);
 ```
 
 The second approach is to create scopes from selectors using the `toScope()` method.
-This method is only available for regular (non-predicate) selectors.
 
 ``` java linenums="1"
 Select.all(Class<T> targetClass).toScope()
 Select.field(Class<T> targetClass, String field).toScope()
 Select.field(GetMethodSelector<T, R> methodReference).toScope()
+Select.fields(Predicate<Field> predicate).toScope()
+Select.types(Predicate<Class> predicate).toScope()
 ```
 
 ``` java title="Examples"
 Select.all(Phone.class).toScope();
 Select.field(Person.class, "homeAddress").toScope();
 Select.field(Person::getHomeAddress).toScope();
+Select.fields(field -> field.getName().equals("id")).toScope();
+Select.types(type -> type == Address.class).toScope();
 ```
 
 #### Examples of using scopes
@@ -650,7 +656,7 @@ record D(A a) {}
 
 In the first few examples, we will target class `A` at different levels:
 
-``` java title="Select the A at depth 1"
+``` java title="Select the <code>A</code> at depth 1"
 Root root = Instancio.of(Root.class)
     .set(all(A.class).atDepth(1), new A("Hello!"))
     .create();
@@ -660,19 +666,19 @@ Root root = Instancio.of(Root.class)
 
 Similar to the above, but omitting `Instancio.of()` for brevity:
 
-``` java title="Select the two A nodes at depth 2"
+``` java title="Select the two <code>A</code> nodes at depth 2"
 all(A.class).atDepth(2)
 
 => Root[a=A[value="FNPI"], b=B[a1=A[value="Hello!"], a2=A[value="Hello!"], c=C[a=A[value="IDLOM"], d=D[a=A[value="QXPW"]]]]]
 ```
 
-``` java title="Select the A nodes at depths 3 and 4 (and beyond, if any)"
+``` java title="Select the <code>A</code> nodes at depths 3 and 4 (and beyond, if any)"
 types().of(A.class).atDepth(depth -> depth > 2)
 
 => Root[a=A[value="MWAASZU"], b=B[a1=A[value="ODSRTG"], a2=A[value="TDG"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
 ```
 
-``` java title="Select all (four) A nodes reachable from B"
+``` java title="Select all (four) <code>A</code> nodes reachable from <code>B</code>"
 all(A.class).within(scope(B.class))
 
 => Root[a=A[value="GNDUXU"], b=B[a1=A[value="hello!"], a2=A[value="hello!"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
@@ -681,7 +687,7 @@ all(A.class).within(scope(B.class))
 The next example is targeting `allStrings()`, therefore the value is being set to `"Hello!"` instead of `new A("Hello!")`.
 This snippet targets all strings that are reachable from class `A`, but only if class `A` is at depth `3` or greater.
 
-``` java title="Select all Strings reachable from A nodes at depth 3 or greater" linenums="1" hl_lines="2"
+``` java title="Select all Strings reachable from <code>A</code> nodes at depth 3 or greater" linenums="1" hl_lines="2"
 Root root = Instancio.of(Root.class)
     .set(allStrings().within(all(A.class).atDepth(3).toScope()), "Hello!")
     .create();
@@ -694,7 +700,7 @@ Root root = Instancio.of(Root.class)
 
 The final example is targeting the field `A.value` but only within the `a1` field of class `B`:
 
-``` java title="Select 'A.value' of the 'a1' field"
+``` java title="Select <code>A.value</code> of the <code>a1</code> field"
 field(A::value).within(field(B::a1).toScope())
 
 => Root[a=A[value="DBOS"], b=B[a1=A[value="hello!"], a2=A[value="KFBWJL"], c=C[a=A[value="VLTNXF"], d=D[a=A[value="CDV"]]]]]

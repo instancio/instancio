@@ -43,7 +43,7 @@ import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParameter
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
 import static org.instancio.internal.util.ErrorMessageUtils.createSetterSelectorWithFieldAssignmentErrorMessage;
 
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.GodClass"})
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
@@ -231,6 +231,12 @@ public final class ApiValidator {
     public static <T> T notNull(@Nullable final T obj, final Supplier<String> supplier) {
         if (obj == null) throw Fail.withUsageError(supplier.get());
         return obj;
+    }
+
+    public static <T> void doesNotContainNull(final T[] array, final Supplier<String> supplier) {
+        for (T e : array) {
+            if (e == null) throw Fail.withUsageError(supplier.get());
+        }
     }
 
     public static void isTrue(final boolean condition, final String message, final Object... values) {

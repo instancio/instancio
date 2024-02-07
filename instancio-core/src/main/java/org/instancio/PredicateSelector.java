@@ -17,14 +17,18 @@ package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
 
+import java.util.function.Predicate;
+
 /**
  * A selector for matching targets using predicates.
  *
  * @see Select
  * @since 1.6.0
  */
-public interface PredicateSelector
-        extends GroupableSelector, DepthSelector, DepthPredicateSelector, WithinScope {
+public interface PredicateSelector extends
+        DepthSelector,
+        DepthPredicateSelector,
+        ScopeableSelector {
 
     /**
      * {@inheritDoc}
@@ -34,4 +38,25 @@ public interface PredicateSelector
     @Override
     @ExperimentalApi
     GroupableSelector within(Scope... scopes);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    ScopeableSelector atDepth(Predicate<Integer> predicate);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    ScopeableSelector atDepth(int depth);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.2.0
+     */
+    @Override
+    @ExperimentalApi
+    Scope toScope();
 }

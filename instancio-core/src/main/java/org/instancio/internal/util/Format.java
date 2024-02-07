@@ -160,17 +160,6 @@ public final class Format {
         return "<unknown location>";
     }
 
-    public static String selectorErrorMessage(
-            final String message, final String methodName, final String invokedMethods, final Throwable t) {
-        final String template = "%n" +
-                "  %s%n" +
-                "  method invocation: %s%n" +
-                "  at %s";
-        final String invocation = String.format("%s.%s( -> null <- )", invokedMethods, methodName);
-        final String at = firstNonInstancioStackTraceLine(t);
-        return String.format(template, message, invocation, at);
-    }
-
     private Format() {
         // non-instantiable
     }

@@ -16,11 +16,14 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.FieldSelectorBuilder;
+import org.instancio.GroupableSelector;
+import org.instancio.Scope;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.util.Format;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+
+import static org.instancio.internal.util.ErrorMessageUtils.selectorNotNullErrorMessage;
 
 public class FieldSelectorBuilderImpl
         extends PredicateSelectorBuilderTemplate<Field>
@@ -38,7 +41,7 @@ public class FieldSelectorBuilderImpl
 
     @Override
     public FieldSelectorBuilder named(final String fieldName) {
-        ApiValidator.notNull(fieldName, () -> Format.selectorErrorMessage(
+        ApiValidator.notNull(fieldName, () -> selectorNotNullErrorMessage(
                 "field name must not be null.",
                 "named", description().toString(), new Throwable()));
 
@@ -49,7 +52,7 @@ public class FieldSelectorBuilderImpl
 
     @Override
     public FieldSelectorBuilder matching(final String regex) {
-        ApiValidator.notNull(regex, () -> Format.selectorErrorMessage(
+        ApiValidator.notNull(regex, () -> selectorNotNullErrorMessage(
                 "regex must not be null.",
                 "matching", description().toString(), new Throwable()));
 
@@ -60,7 +63,7 @@ public class FieldSelectorBuilderImpl
 
     @Override
     public FieldSelectorBuilder ofType(final Class<?> fieldType) {
-        ApiValidator.notNull(fieldType, () -> Format.selectorErrorMessage(
+        ApiValidator.notNull(fieldType, () -> selectorNotNullErrorMessage(
                 "field type must not be null.",
                 "ofType", description().toString(), new Throwable()));
 
@@ -71,7 +74,7 @@ public class FieldSelectorBuilderImpl
 
     @Override
     public FieldSelectorBuilder declaredIn(final Class<?> type) {
-        ApiValidator.notNull(type, () -> Format.selectorErrorMessage(
+        ApiValidator.notNull(type, () -> selectorNotNullErrorMessage(
                 "declaring type must not be null.",
                 "declaredIn", description().toString(), new Throwable()));
 
@@ -82,12 +85,23 @@ public class FieldSelectorBuilderImpl
 
     @Override
     public <A extends Annotation> FieldSelectorBuilder annotated(final Class<? extends A> annotation) {
-        ApiValidator.notNull(annotation, () -> Format.selectorErrorMessage(
+        ApiValidator.notNull(annotation, () -> selectorNotNullErrorMessage(
                 "field's declared annotation must not be null.",
                 "annotated", description().toString(), new Throwable()));
 
         addPredicate(field -> field.getDeclaredAnnotation(annotation) != null);
         description().append(".annotated(").append(annotation.getSimpleName()).append(')');
         return this;
+    }
+
+    @Override
+    public GroupableSelector within(final Scope... scopes) {
+        withScopes(scopes);
+        return this;
+    }
+
+    @Override
+    public Scope toScope() {
+        return new PredicateScopeImpl(build());
     }
 }

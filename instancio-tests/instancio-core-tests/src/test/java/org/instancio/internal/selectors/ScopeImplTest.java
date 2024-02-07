@@ -57,5 +57,19 @@ class ScopeImplTest {
 
         assertThat(Select.setter(Person.class, "setName", String.class).atDepth(3).toScope())
                 .hasToString("scope(Person, setName(String), atDepth(3))");
+
+        // from predicate
+        assertThat(Select.fields(f -> true).atDepth(1).toScope())
+                .hasToString("scope(fields(Predicate<Field>).atDepth(1))");
+
+        assertThat(Select.types(t -> true).atDepth(1).toScope())
+                .hasToString("scope(types(Predicate<Class>).atDepth(1))");
+
+        // from predicate builder
+        assertThat(Select.fields().ofType(String.class).toScope())
+                .hasToString("scope(fields().ofType(String))");
+
+        assertThat(Select.types().of(String.class).toScope())
+                .hasToString("scope(types().of(String))");
     }
 }
