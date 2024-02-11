@@ -118,4 +118,14 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * @since 2.12.0
      */
     EmitGeneratorSpec<T> whenEmptyThrowException();
+
+    /**
+     * Specifies that the same items should be re-emitted again
+     * if provided items are exhausted.
+     *
+     * @return spec builder
+     * @since 4.3.0
+     */
+    EmitGeneratorSpec<T> whenEmptyRecycle();
+
 }

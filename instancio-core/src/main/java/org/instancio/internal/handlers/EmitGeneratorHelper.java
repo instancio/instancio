@@ -54,7 +54,7 @@ class EmitGeneratorHelper {
     }
 
     GeneratorResult getResult(final EmitGenerator<?> generator, final InternalNode node) {
-        if (generator.hasMore()) {
+        if (generator.hasMore() || generator.getWhenEmptyAction() == WhenEmptyAction.RECYCLE) {
             final Object result = generator.generate(modelContext.getRandom());
 
             final Map<InternalNode, List<Object>> emittedValues =

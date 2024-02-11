@@ -26,22 +26,28 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class EmitGenerator<T> extends AbstractGenerator<T>
         implements EmitGeneratorSpec<T> {
 
-    // Items to emit (may contain null elements)
+    // Keep a copy of the original items to support RECYCLE
+    private final List<T> originalItems = new ArrayList<>();
+
+    // Items to emit may contain null elements
     private final Queue<T> items = new LinkedList<>();
+
     private boolean shuffle;
     private boolean ignoreUnused;
     private WhenEmptyAction whenEmptyAction = WhenEmptyAction.EMIT_RANDOM;
 
     public enum WhenEmptyAction {
-        EMIT_NULL, EMIT_RANDOM, FAIL
+        EMIT_NULL, EMIT_RANDOM, RECYCLE, FAIL
     }
 
     public EmitGenerator(final GeneratorContext context) {
@@ -58,6 +64,7 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
     @Override
     public EmitGenerator<T> items(final T... items) {
         ApiValidator.notNull(items, "'items' array must not be null");
+        Collections.addAll(this.originalItems, items);
         Collections.addAll(this.items, items);
         return this;
     }
@@ -66,16 +73,21 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
     public EmitGeneratorSpec<T> items(final Iterable<? extends T> items) {
         ApiValidator.notNull(items, "'items' Iterable must not be null");
         for (T item : items) {
-            this.items.add(item);
+            addItem(item);
         }
         return this;
+    }
+
+    private void addItem(final T item) {
+        this.originalItems.add(item);
+        this.items.add(item);
     }
 
     @Override
     public EmitGenerator<T> item(final T item, final int n) {
         ApiValidator.isTrue(n >= 0, "Number of items must not be negative: " + n);
         for (int i = 0; i < n; i++) {
-            items.add(item);
+            addItem(item);
         }
         return this;
     }
@@ -110,6 +122,12 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
         return this;
     }
 
+    @Override
+    public EmitGeneratorSpec<T> whenEmptyRecycle() {
+        whenEmptyAction = WhenEmptyAction.RECYCLE;
+        return this;
+    }
+
     public WhenEmptyAction getWhenEmptyAction() {
         return whenEmptyAction;
     }
@@ -130,9 +148,11 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
     @SuppressWarnings("unchecked")
     protected T tryGenerateNonNull(final Random random) {
         if (items.isEmpty()) {
-            // isEmpty() check should be done by the caller,
-            // therefore, this branch should not be reachable
-            throw new InstancioException("Invalid call to emit() - no items available");
+            if (whenEmptyAction != WhenEmptyAction.RECYCLE) {
+                // caller should check state to ensure this exception isn't thrown
+                throw new InstancioException("Invalid call to emit() - no items available");
+            }
+            items.addAll(originalItems);
         }
 
         if (shuffle) {
