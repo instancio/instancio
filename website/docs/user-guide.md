@@ -886,6 +886,8 @@ Generators
 │   └── bigDecimal()
 │
 ├── net()
+│   ├── email()
+│   ├── ip4()
 │   ├── uri()
 │   └── url()
 │
