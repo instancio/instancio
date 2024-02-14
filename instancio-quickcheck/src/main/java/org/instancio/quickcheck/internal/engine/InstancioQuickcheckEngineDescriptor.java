@@ -21,13 +21,13 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor;
 
 public class InstancioQuickcheckEngineDescriptor extends EngineDescriptor {
     private final InstancioQuickcheckConfiguration configuration;
-    
+
     public InstancioQuickcheckEngineDescriptor(final UniqueId uniqueId, final InstancioQuickcheckConfiguration
             configuration) {
         super(uniqueId, "Instancio");
         this.configuration = configuration;
     }
-    
+
     public InstancioQuickcheckConfiguration getConfiguration() {
         return configuration;
     }

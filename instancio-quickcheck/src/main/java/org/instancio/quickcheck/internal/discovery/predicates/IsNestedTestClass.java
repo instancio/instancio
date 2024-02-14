@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.quickcheck.internal.discovery.predicates;
 
 import org.instancio.quickcheck.internal.util.ReflectionUtils;
+import org.junit.jupiter.api.Nested;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.function.Predicate;
 
@@ -25,27 +26,19 @@ import java.util.function.Predicate;
  * <a href="https://github.com/junit-team/junit5/">JUnit Jupiter</a> library.
  *
  * <p>This is a modified version of
- * {@code org.junit.jupiter.engine.discovery.predicates.IsPotentialTestContainer}.
+ * {@code org.junit.jupiter.engine.discovery.predicates.IsNestedTestClass}.
  */
-public class IsPotentialTestContainer implements Predicate<Class<?>> {
+public class IsNestedTestClass implements Predicate<Class<?>> {
 
-    @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
     @Override
+    @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation") // false positive
     public boolean test(Class<?> candidate) {
-        // Please do not collapse the following into a single statement.
-        if (ReflectionUtils.isPrivate(candidate)) {
-            return false;
-        }
-        if (ReflectionUtils.isAbstract(candidate)) {
-            return false;
-        }
-        if (candidate.isLocalClass()) {
-            return false;
-        }
-        if (candidate.isAnonymousClass()) {
-            return false;
-        }
-        return !ReflectionUtils.isInnerClass(candidate);
-    }
+        //please do not collapse into single return
+        final boolean isNotPrivate = !ReflectionUtils.isPrivate(candidate);
+        final boolean isInnerClass = ReflectionUtils.isInnerClass(candidate);
 
+        return isNotPrivate
+                && isInnerClass
+                && AnnotationSupport.isAnnotated(candidate, Nested.class);
+    }
 }

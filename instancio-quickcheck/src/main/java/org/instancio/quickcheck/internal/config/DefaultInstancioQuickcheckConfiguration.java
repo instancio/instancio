@@ -24,9 +24,9 @@ public class DefaultInstancioQuickcheckConfiguration implements InstancioQuickch
 
     public DefaultInstancioQuickcheckConfiguration(ConfigurationParameters parameters) {
         seed = parameters.get("seed")
-            .map(s -> Long.valueOf(s))
-            .map(s -> (Supplier<Long>) () -> s)
-            .orElseGet(() -> System::nanoTime);
+                .map(s -> Long.valueOf(s))
+                .map(s -> (Supplier<Long>) () -> s)
+                .orElseGet(() -> System::nanoTime);
     }
 
     @Override

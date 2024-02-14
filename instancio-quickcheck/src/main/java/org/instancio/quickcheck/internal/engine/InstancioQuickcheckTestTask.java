@@ -21,7 +21,7 @@ import org.instancio.quickcheck.internal.arbitrary.ArbitrariesResolver;
 import org.instancio.quickcheck.internal.descriptor.InstancioClassBasedTestDescriptor;
 import org.instancio.quickcheck.internal.descriptor.InstancioQuickcheckTestMethodTestDescriptor;
 import org.junit.platform.commons.JUnitException;
-import org.junit.platform.commons.util.ReflectionUtils;
+import org.junit.platform.commons.support.ReflectionSupport;
 import org.junit.platform.engine.EngineExecutionListener;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.TestExecutionResult;
@@ -52,7 +52,8 @@ public class InstancioQuickcheckTestTask implements TestTask {
         this.descriptor = descriptor;
         this.listener = listener;
         this.executor = executor;
-        this.finalizer = () -> { };
+        this.finalizer = () -> {
+        };
     }
 
     @Override
@@ -85,18 +86,17 @@ public class InstancioQuickcheckTestTask implements TestTask {
             executeInternal();
 
             final List<InstancioQuickcheckTestTask> children = descriptor
-                .getChildren()
-                .stream()
-                .map(desc -> new InstancioQuickcheckTestTask(desc, listener, executor))
-                .collect(toCollection(ArrayList::new));
+                    .getChildren()
+                    .stream()
+                    .map(desc -> new InstancioQuickcheckTestTask(desc, listener, executor))
+                    .collect(toCollection(ArrayList::new));
 
             executor.invokeAll(children);
 
             reportCompletion();
         } catch (final Throwable t) {
             reportFailure(t);
-        }
-        finally {
+        } finally {
             finalizer.run();
         }
     }
@@ -119,15 +119,15 @@ public class InstancioQuickcheckTestTask implements TestTask {
             final List<Parameter> parameters = Arrays.stream(method.getParameters()).collect(Collectors.toList());
 
             final Object instance = desc.getParent()
-                .filter(InstancioClassBasedTestDescriptor.class::isInstance)
-                .map(InstancioClassBasedTestDescriptor.class::cast)
-                .map(InstancioClassBasedTestDescriptor::createTestInstance)
-                .orElseThrow(() -> new JUnitException("Property method descriptors should have parent"));
+                    .filter(InstancioClassBasedTestDescriptor.class::isInstance)
+                    .map(InstancioClassBasedTestDescriptor.class::cast)
+                    .map(InstancioClassBasedTestDescriptor::createTestInstance)
+                    .orElseThrow(() -> new JUnitException("Property method descriptors should have parent"));
 
-            final ArbitrariesResolver resolver = new ArbitrariesResolver(parameters,  executor.getConfiguration());
+            final ArbitrariesResolver resolver = new ArbitrariesResolver(parameters, executor.getConfiguration());
             for (int i = 0; i < configuration.getSamples(); ++i) {
                 final Object[] args = resolver.resolve(instance);
-                ReflectionUtils.invokeMethod(method, instance, args);
+                ReflectionSupport.invokeMethod(method, instance, args);
             }
         }
     }
