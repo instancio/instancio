@@ -15,7 +15,7 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
-import org.junit.platform.commons.util.ReflectionUtils;
+import org.junit.platform.commons.support.ReflectionSupport;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.ClassSource;
 
@@ -25,9 +25,9 @@ public class InstancioQuickcheckClassTestDescriptor extends InstancioClassBasedT
     public InstancioQuickcheckClassTestDescriptor(UniqueId uniqueId, Class<?> testClass) {
         super(uniqueId, testClass, DisplayNameUtils.determineDisplayName(testClass, DisplayNameUtils.createDisplayNameSupplierForClass(testClass)), ClassSource.from(testClass));
     }
-    
+
     @Override
     public Object createTestInstance() {
-        return ReflectionUtils.newInstance(getTestClass());
+        return ReflectionSupport.newInstance(getTestClass());
     }
 }

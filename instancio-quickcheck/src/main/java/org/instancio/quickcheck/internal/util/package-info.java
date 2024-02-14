@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 /**
- * Provides internal utility classes.
+ * Provides utility classes.
+ *
+ * @since 4.3.0
  */
-package org.instancio.quickcheck.internal;
+package org.instancio.quickcheck.internal.util;

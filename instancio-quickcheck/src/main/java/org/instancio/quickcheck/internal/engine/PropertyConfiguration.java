@@ -17,11 +17,11 @@ package org.instancio.quickcheck.internal.engine;
 
 public class PropertyConfiguration {
     private final int samples;
-    
+
     public PropertyConfiguration(int samples) {
         this.samples = samples;
     }
-    
+
     public int getSamples() {
         return samples;
     }

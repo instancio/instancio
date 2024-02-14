@@ -34,8 +34,8 @@ public class ArbitraryStream<T> implements ArbitraryGenerator<T> {
             return iterator.next();
         } else {
             throw new JUnitException("The stream backed the Arbitrary generation "
-                + "has no more elements to generate. Please make sure the stream could generate "
-                + "at least the samples count.");
+                    + "has no more elements to generate. Please make sure the stream could generate "
+                    + "at least the samples count.");
         }
     }
 

@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Provides internal utility classes.
- */
-package org.instancio.quickcheck.internal;
+package org.instancio.quickcheck.internal.util;
+
+public final class StringUtils {
+
+    private StringUtils() {
+        // non-instantiable
+    }
+
+    @SuppressWarnings("PMD.InefficientEmptyStringCheck")
+    public static boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+}

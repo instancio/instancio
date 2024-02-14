@@ -15,7 +15,7 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
-import org.junit.platform.commons.util.ReflectionUtils;
+import org.junit.platform.commons.support.ReflectionSupport;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.ClassSource;
@@ -51,10 +51,10 @@ public class InstancioQuickcheckNestedClassTestDescriptor extends InstancioClass
     public Object createTestInstance() {
         final List<Class<?>> parents = getEnclosingTestClasses();
         if (parents.isEmpty()) {
-            return ReflectionUtils.newInstance(getTestClass());
+            return ReflectionSupport.newInstance(getTestClass());
         } else {
-            final Object parent = createParentInstance(ReflectionUtils.newInstance(parents.get(0)), parents.subList(1, parents.size()));
-            return ReflectionUtils.newInstance(getTestClass(), parent);
+            final Object parent = createParentInstance(ReflectionSupport.newInstance(parents.get(0)), parents.subList(1, parents.size()));
+            return ReflectionSupport.newInstance(getTestClass(), parent);
         }
     }
 
@@ -62,8 +62,8 @@ public class InstancioQuickcheckNestedClassTestDescriptor extends InstancioClass
         if (enclosed.isEmpty()) {
             return parent;
         } else {
-            return createParentInstance(ReflectionUtils.newInstance(enclosed.get(0), parent),
-                enclosed.subList(1, enclosed.size()));
+            return createParentInstance(ReflectionSupport.newInstance(enclosed.get(0), parent),
+                    enclosed.subList(1, enclosed.size()));
         }
     }
 }

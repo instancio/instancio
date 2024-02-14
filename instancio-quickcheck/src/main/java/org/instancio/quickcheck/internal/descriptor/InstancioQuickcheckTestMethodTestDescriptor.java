@@ -15,9 +15,9 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
+import org.instancio.quickcheck.internal.util.ClassUtils;
 import org.junit.jupiter.api.Tag;
-import org.junit.platform.commons.util.ClassUtils;
-import org.junit.platform.commons.util.Preconditions;
+import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.engine.TestTag;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
@@ -27,11 +27,11 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
-import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
 
 public class InstancioQuickcheckTestMethodTestDescriptor extends AbstractTestDescriptor {
     /**
@@ -47,7 +47,7 @@ public class InstancioQuickcheckTestMethodTestDescriptor extends AbstractTestDes
 
     InstancioQuickcheckTestMethodTestDescriptor(UniqueId uniqueId, String displayName, Class<?> testClass, Method testMethod) {
         super(uniqueId, displayName, MethodSource.from(testClass, testMethod));
-        this.testClass = Preconditions.notNull(testClass, "Class must not be null");
+        this.testClass = Objects.requireNonNull(testClass, "Class must not be null");
         this.testMethod = testMethod;
         this.tags = getTags(testMethod);
     }
@@ -71,7 +71,7 @@ public class InstancioQuickcheckTestMethodTestDescriptor extends AbstractTestDes
     @Override
     public String getLegacyReportingName() {
         return String.format("%s(%s)", testMethod.getName(),
-            ClassUtils.nullSafeToString(Class::getSimpleName, testMethod.getParameterTypes()));
+                ClassUtils.nullSafeToString(Class::getSimpleName, testMethod.getParameterTypes()));
     }
 
     @Override
@@ -80,10 +80,10 @@ public class InstancioQuickcheckTestMethodTestDescriptor extends AbstractTestDes
     }
 
     static Set<TestTag> getTags(AnnotatedElement element) {
-        return findRepeatableAnnotations(element, Tag.class).stream()
-            .map(Tag::value)
-            .filter(tag -> TestTag.isValid(tag))
-            .map(TestTag::create)
-            .collect(collectingAndThen(toCollection(LinkedHashSet::new), Collections::unmodifiableSet));
+        return AnnotationSupport.findRepeatableAnnotations(element, Tag.class).stream()
+                .map(Tag::value)
+                .filter(TestTag::isValid)
+                .map(TestTag::create)
+                .collect(collectingAndThen(toCollection(LinkedHashSet::new), Collections::unmodifiableSet));
     }
 }

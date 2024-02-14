@@ -15,20 +15,19 @@
  */
 package org.instancio.quickcheck.internal.descriptor;
 
+import org.instancio.quickcheck.internal.util.StringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.DisplayNameGenerator.Standard;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
-import org.junit.platform.commons.util.Preconditions;
-import org.junit.platform.commons.util.StringUtils;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
 
 /**
  * This class is from the
@@ -41,6 +40,7 @@ final class DisplayNameUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(DisplayNameUtils.class);
 
     private DisplayNameUtils() {
+        // non-instantiable
     }
 
     static Supplier<String> createDisplayNameSupplierForClass(Class<?> testClass) {
@@ -57,16 +57,15 @@ final class DisplayNameUtils {
     }
 
     static String determineDisplayName(AnnotatedElement element, Supplier<String> displayNameSupplier) {
-        Preconditions.notNull(element, "Annotated element must not be null");
-        Optional<DisplayName> displayNameAnnotation = findAnnotation(element, DisplayName.class);
+        Objects.requireNonNull(element, "Annotated element must not be null");
+        Optional<DisplayName> displayNameAnnotation = AnnotationSupport.findAnnotation(element, DisplayName.class);
         if (displayNameAnnotation.isPresent()) {
             String displayName = displayNameAnnotation.get().value().trim();
 
             // TODO [#242] Replace logging with precondition check once we have a proper mechanism for
             // handling validation exceptions during the TestEngine discovery phase.
             if (StringUtils.isBlank(displayName)) {
-                LOGGER.warn(() -> String.format(
-                        "Configuration error: @DisplayName on [%s] must be declared with a non-empty value.", element));
+                LOGGER.warn("Configuration error: @DisplayName on [{}] must be declared with a non-empty value.", element);
             } else {
                 return displayName;
             }

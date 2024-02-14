@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Provides internal utility classes.
- */
-package org.instancio.quickcheck.internal;
+package org.instancio.quickcheck.internal.util;
+
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class StringUtilsTest {
+
+    @Test
+    void isBlank() {
+        assertThat(StringUtils.isBlank(null)).isTrue();
+        assertThat(StringUtils.isBlank(" ")).isTrue();
+        assertThat(StringUtils.isBlank("")).isTrue();
+
+        assertThat(StringUtils.isBlank(" a ")).isFalse();
+        assertThat(StringUtils.isBlank("b")).isFalse();
+    }
+}

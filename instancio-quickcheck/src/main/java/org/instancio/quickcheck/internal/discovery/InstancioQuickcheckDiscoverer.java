@@ -23,11 +23,11 @@ import org.junit.platform.engine.support.discovery.EngineDiscoveryRequestResolve
 
 public class InstancioQuickcheckDiscoverer {
     private static final EngineDiscoveryRequestResolver<InstancioQuickcheckEngineDescriptor> RESOLVER = EngineDiscoveryRequestResolver.<InstancioQuickcheckEngineDescriptor>builder()
-        .addClassContainerSelectorResolver(new IsTestClassWithProperties())
-        .addSelectorResolver(context -> new ClassSelectorResolver(context.getClassNameFilter()))
-        .addSelectorResolver(context -> new MethodSelectorResolver())
-        .addTestDescriptorVisitor(context -> TestDescriptor::prune)
-        .build();
+            .addClassContainerSelectorResolver(new IsTestClassWithProperties())
+            .addSelectorResolver(context -> new ClassSelectorResolver(context.getClassNameFilter()))
+            .addSelectorResolver(context -> new MethodSelectorResolver())
+            .addTestDescriptorVisitor(context -> TestDescriptor::prune)
+            .build();
 
     public void resolveSelectors(EngineDiscoveryRequest request, InstancioQuickcheckEngineDescriptor engineDescriptor) {
         RESOLVER.resolve(request, engineDescriptor);

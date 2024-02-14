@@ -15,15 +15,21 @@
  */
 package org.instancio.quickcheck.internal.discovery;
 
+import org.instancio.internal.util.Sonar;
+import org.junit.platform.commons.support.ReflectionSupport;
+
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.instancio.internal.util.Sonar;
-import org.junit.platform.commons.util.Preconditions;
-import org.junit.platform.commons.util.ReflectionUtils;
-
+/**
+ * This class is from the
+ * <a href="https://github.com/junit-team/junit5/">JUnit Jupiter</a> library.
+ *
+ * <p>This is a modified version of
+ * {@code org.junit.jupiter.engine.discovery.MethodFinder}.
+ */
 final class MethodFinder {
     // Pattern: methodName(comma-separated list of parameter type names)
     @SuppressWarnings(Sonar.USING_SLOW_REGEX)
@@ -35,12 +41,14 @@ final class MethodFinder {
     static Optional<Method> findMethod(String methodSpecPart, Class<?> clazz) {
         Matcher matcher = METHOD_PATTERN.matcher(methodSpecPart);
 
-        Preconditions.condition(matcher.matches(),
-            () -> String.format("Method [%s] does not match pattern [%s]", methodSpecPart, METHOD_PATTERN));
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(String.format(
+                    "Method [%s] does not match pattern [%s]", methodSpecPart, METHOD_PATTERN));
+        }
 
         String methodName = matcher.group(1);
         String parameterTypeNames = matcher.group(2);
 
-        return ReflectionUtils.findMethod(clazz, methodName, parameterTypeNames);
+        return ReflectionSupport.findMethod(clazz, methodName, parameterTypeNames);
     }
 }

@@ -15,27 +15,12 @@
  */
 package org.instancio.quickcheck.internal.discovery;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectUniqueId;
-import static org.junit.platform.engine.support.discovery.SelectorResolver.Resolution.unresolved;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import org.instancio.quickcheck.internal.descriptor.InstancioClassBasedTestDescriptor;
 import org.instancio.quickcheck.internal.descriptor.InstancioQuickcheckTestMethodTestDescriptor;
+import org.instancio.quickcheck.internal.discovery.predicates.IsNestedTestClass;
 import org.instancio.quickcheck.internal.discovery.predicates.IsPropertyMethod;
 import org.instancio.quickcheck.internal.discovery.predicates.IsTestClassWithProperties;
-import org.junit.jupiter.engine.descriptor.Filterable;
-import org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor;
-import org.junit.jupiter.engine.discovery.predicates.IsNestedTestClass;
-import org.junit.platform.commons.util.ClassUtils;
+import org.instancio.quickcheck.internal.util.ClassUtils;
 import org.junit.platform.engine.DiscoverySelector;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.UniqueId;
@@ -45,10 +30,31 @@ import org.junit.platform.engine.discovery.NestedMethodSelector;
 import org.junit.platform.engine.discovery.UniqueIdSelector;
 import org.junit.platform.engine.support.discovery.SelectorResolver;
 
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import static java.util.Collections.emptyList;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectUniqueId;
+import static org.junit.platform.engine.support.discovery.SelectorResolver.Resolution.unresolved;
+
+/**
+ * This class is from the
+ * <a href="https://github.com/junit-team/junit5/">JUnit Jupiter</a> library.
+ *
+ * <p>This is a modified version of
+ * {@code org.junit.jupiter.engine.discovery.MethodSelectorResolver}.
+ */
 class MethodSelectorResolver implements SelectorResolver {
+    private static final String SEGMENT_TYPE = "method";
+
     private final Predicate<Class<?>> testClassPredicate = new IsTestClassWithProperties().or(new IsNestedTestClass());
     private final IsPropertyMethod isPropertyMethod = new IsPropertyMethod();
-
 
     @Override
     public Resolution resolve(MethodSelector selector, Context context) {
@@ -58,12 +64,12 @@ class MethodSelectorResolver implements SelectorResolver {
     @Override
     public Resolution resolve(NestedMethodSelector selector, Context context) {
         return resolve(context, selector.getEnclosingClasses(), selector.getNestedClass(), selector::getMethod,
-            Match::exact);
+                Match::exact);
     }
 
     private Resolution resolve(Context context, List<Class<?>> enclosingClasses, Class<?> testClass,
-            Supplier<Method> methodSupplier,
-            BiFunction<TestDescriptor, Supplier<Set<? extends DiscoverySelector>>, Match> matchFactory) {
+                               Supplier<Method> methodSupplier,
+                               BiFunction<TestDescriptor, Supplier<Set<? extends DiscoverySelector>>, Match> matchFactory) {
 
         if (!testClassPredicate.test(testClass)) {
             return unresolved();
@@ -71,9 +77,9 @@ class MethodSelectorResolver implements SelectorResolver {
 
         final Method method = methodSupplier.get();
         return resolve(enclosingClasses, testClass, method, context)
-            .map(testDescriptor -> matchFactory.apply(testDescriptor, expansionCallback(testDescriptor)))
-            .map(Resolution::match)
-            .orElse(unresolved());
+                .map(testDescriptor -> matchFactory.apply(testDescriptor, Collections::emptySet))
+                .map(Resolution::match)
+                .orElse(unresolved());
     }
 
     @Override
@@ -83,28 +89,11 @@ class MethodSelectorResolver implements SelectorResolver {
         return resolveUniqueIdIntoTestDescriptor(uniqueId, context)
             .map(testDescriptor -> {
                 boolean exactMatch = uniqueId.equals(testDescriptor.getUniqueId());
-                if (testDescriptor instanceof Filterable) {
-                    Filterable filterable = (Filterable) testDescriptor;
-                    if (exactMatch) {
-                        filterable.getDynamicDescendantFilter().allowAll();
-                    }
-                    else {
-                        filterable.getDynamicDescendantFilter().allowUniqueIdPrefix(uniqueId);
-                    }
-                }
-                return Resolution.match(exactMatch ? Match.exact(testDescriptor) : Match.partial(testDescriptor, expansionCallback(testDescriptor)));
+                return Resolution.match(exactMatch
+                        ? Match.exact(testDescriptor)
+                        : Match.partial(testDescriptor, Collections::emptySet));
             })
             .orElse(unresolved());
-    }
-
-    private Supplier<Set<? extends DiscoverySelector>> expansionCallback(TestDescriptor testDescriptor) {
-        return () -> {
-            if (testDescriptor instanceof Filterable) {
-                Filterable filterable = (Filterable) testDescriptor;
-                filterable.getDynamicDescendantFilter().allowAll();
-            }
-            return emptySet();
-        };
     }
 
     private Optional<TestDescriptor> resolve(List<Class<?>> enclosingClasses, Class<?> testClass, Method method, Context context) {
@@ -125,23 +114,19 @@ class MethodSelectorResolver implements SelectorResolver {
     private Optional<TestDescriptor> resolveUniqueIdIntoTestDescriptor(UniqueId uniqueId, Context context) {
         UniqueId.Segment lastSegment = uniqueId.getLastSegment();
 
-        if (TestMethodTestDescriptor.SEGMENT_TYPE.equals(lastSegment.getType())) {
-            return context.addToParent(() -> selectUniqueId(uniqueId.removeLastSegment()), parent -> {
-                String methodSpecPart = lastSegment.getValue();
-                Class<?> testClass = ((InstancioClassBasedTestDescriptor) parent).getTestClass();
-                return MethodFinder.findMethod(methodSpecPart, testClass)
-                    .filter(isPropertyMethod)
-                    .map(method -> createTestDescriptor(createUniqueId(method, parent), testClass, method));
-            });
-        }
-
-        return Optional.empty();
+        return context.addToParent(() -> selectUniqueId(uniqueId.removeLastSegment()), parent -> {
+            String methodSpecPart = lastSegment.getValue();
+            Class<?> testClass = ((InstancioClassBasedTestDescriptor) parent).getTestClass();
+            return MethodFinder.findMethod(methodSpecPart, testClass)
+                .filter(isPropertyMethod)
+                .map(method -> createTestDescriptor(createUniqueId(method, parent), testClass, method));
+        });
     }
 
     private UniqueId createUniqueId(Method method, TestDescriptor parent) {
         String methodId = String.format("%s(%s)", method.getName(),
             ClassUtils.nullSafeToString(method.getParameterTypes()));
-        return parent.getUniqueId().append(TestMethodTestDescriptor.SEGMENT_TYPE, methodId);
+        return parent.getUniqueId().append(SEGMENT_TYPE, methodId);
     }
 
     private TestDescriptor createTestDescriptor(UniqueId uniqueId, Class<?> testClass, Method method) {
