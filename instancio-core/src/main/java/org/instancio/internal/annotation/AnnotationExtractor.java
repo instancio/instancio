@@ -17,11 +17,15 @@ package org.instancio.internal.annotation;
 
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.settings.BeanValidationTarget;
 import org.instancio.settings.Keys;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.reflect.AnnotatedParameterizedType;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -41,7 +45,7 @@ final class AnnotationExtractor {
         final Field field = node.getField();
 
         if (field == null) {
-            return EMPTY_ANNOTATIONS;
+            return getTypeUseAnnotations(node);
         }
 
         if (beanValidationTarget == BeanValidationTarget.FIELD) {
@@ -51,5 +55,24 @@ final class AnnotationExtractor {
         // Get constraint annotations from the getter, if exists
         final Method getter = getterMethodResolver.getGetter(node);
         return getter == null ? EMPTY_ANNOTATIONS : getter.getDeclaredAnnotations();
+    }
+
+    /**
+     * Extract field's {@link ElementType#TYPE_USE} annotations,
+     * e.g. {@code Map<@Email String, @Negative Integer>}.
+     */
+    private static Annotation[] getTypeUseAnnotations(final InternalNode node) {
+        final Field parentField = node.getParent().getField();
+
+        if (parentField != null && parentField.getAnnotatedType() instanceof AnnotatedParameterizedType) {
+            final AnnotatedParameterizedType apt = (AnnotatedParameterizedType) parentField.getAnnotatedType();
+            final int childIndex = CollectionUtils.identityIndexOf(node, node.getParent().getChildren());
+
+            if (childIndex != -1) {
+                final AnnotatedType[] annotatedTypes = apt.getAnnotatedActualTypeArguments();
+                return annotatedTypes[childIndex].getAnnotations();
+            }
+        }
+        return EMPTY_ANNOTATIONS;
     }
 }

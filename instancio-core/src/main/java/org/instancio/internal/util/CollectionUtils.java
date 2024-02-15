@@ -16,6 +16,7 @@
 package org.instancio.internal.util;
 
 import org.instancio.Random;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -80,6 +81,17 @@ public final class CollectionUtils {
         final List<T> result = new ArrayList<>(list);
         Collections.addAll(result, values);
         return Collections.unmodifiableList(result);
+    }
+
+    // same as List.indexOf() but using '==' instead of equals()
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
+    public static int identityIndexOf(final Object obj, @NotNull final List<?> list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) == obj) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static <T> void shuffle(final Collection<T> collection, final Random random) {

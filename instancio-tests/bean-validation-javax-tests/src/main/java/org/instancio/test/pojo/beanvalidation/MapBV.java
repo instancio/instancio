@@ -15,58 +15,68 @@
  */
 package org.instancio.test.pojo.beanvalidation;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.UUID;
 
-public class CollectionSizeBV {
+public class MapBV {
 
     @Data
     public static class WithMinSize {
         @NotNull
         @Size(min = 8)
-        private Collection<String> value;
+        private Map<String, Long> value;
     }
 
     @Data
     public static class WithMinSizeZero {
         @NotNull
         @Size
-        private List<String> value;
+        private SortedMap<Integer, String> value;
     }
 
     @Data
     public static class WithMaxSize {
         @NotNull
         @Size(max = 1)
-        private Set<String> value;
+        private HashMap<UUID, BigDecimal> value;
     }
 
     @Data
     public static class WithMaxSizeZero {
         @NotNull
         @Size(max = 0)
-        private ArrayList<String> value;
+        private NavigableMap<Integer, String> value;
     }
 
     @Data
     public static class WithMinMaxSize {
         @NotNull
         @Size(min = 19, max = 20)
-        private Deque<String> value;
+        private TreeMap<String, Character> value;
     }
 
     @Data
     public static class WithMinMaxEqual {
         @NotNull
         @Size(min = 5, max = 5)
-        private Queue<String> value;
+        private Map<Long, Double> value;
+    }
+
+    @Data
+    public static class TypeUse {
+        @NotNull
+        private Map<
+                @NotNull @Digits(integer = 7, fraction = 5) CharSequence,
+                @NotNull @Digits(integer = 3, fraction = 2) CharSequence> value;
     }
 }
