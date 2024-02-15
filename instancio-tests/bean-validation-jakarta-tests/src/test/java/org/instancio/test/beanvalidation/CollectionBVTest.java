@@ -20,60 +20,67 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.test.pojo.beanvalidation.MapSizeBV;
+import org.instancio.test.pojo.beanvalidation.CollectionBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_D;
+import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
-class MapSizeBVTest {
+class CollectionBVTest {
 
     @WithSettings
     private final Settings settings = Settings.create()
             .set(Keys.STRING_NULLABLE, false)
-            .set(Keys.STRING_ALLOW_EMPTY, false)
-            .set(Keys.LONG_NULLABLE, false)
-            .set(Keys.CHARACTER_NULLABLE, false)
-            .set(Keys.DOUBLE_NULLABLE, false)
             .set(Keys.STRING_MAX_LENGTH, 10);
 
-    @Test
+    @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinSize() {
-        final MapSizeBV.WithMinSize result = Instancio.create(MapSizeBV.WithMinSize.class);
+        final CollectionBV.WithMinSize result = Instancio.create(CollectionBV.WithMinSize.class);
         assertThat(result.getValue()).hasSizeGreaterThanOrEqualTo(8);
     }
 
-    @Test
+    @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinSizeZeo() {
-        final MapSizeBV.WithMinSizeZero result = Instancio.create(MapSizeBV.WithMinSizeZero.class);
-        assertThat(result.getValue()).hasSizeBetween(0, Keys.MAP_MAX_SIZE.defaultValue());
+        final CollectionBV.WithMinSizeZero result = Instancio.create(CollectionBV.WithMinSizeZero.class);
+        assertThat(result.getValue()).hasSizeBetween(0, Keys.COLLECTION_MAX_SIZE.defaultValue());
     }
 
-    @Test
+    @RepeatedTest(SAMPLE_SIZE_DD)
     void withMaxSize() {
-        final MapSizeBV.WithMaxSize result = Instancio.create(MapSizeBV.WithMaxSize.class);
+        final CollectionBV.WithMaxSize result = Instancio.create(CollectionBV.WithMaxSize.class);
         assertThat(result.getValue()).hasSizeLessThanOrEqualTo(1);
     }
 
-    @Test
+    @RepeatedTest(SAMPLE_SIZE_DD)
     void withMaxSizeZero() {
-        final MapSizeBV.WithMaxSizeZero result = Instancio.create(MapSizeBV.WithMaxSizeZero.class);
+        final CollectionBV.WithMaxSizeZero result = Instancio.create(CollectionBV.WithMaxSizeZero.class);
         assertThat(result.getValue()).isEmpty();
     }
 
-    @Test
+    @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinMaxSize() {
-        final MapSizeBV.WithMinMaxSize result = Instancio.create(MapSizeBV.WithMinMaxSize.class);
+        final CollectionBV.WithMinMaxSize result = Instancio.create(CollectionBV.WithMinMaxSize.class);
         assertThat(result.getValue()).hasSizeBetween(19, 20);
     }
 
-    @Test
+    @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinMaxEqual() {
-        final MapSizeBV.WithMinMaxEqual result = Instancio.create(MapSizeBV.WithMinMaxEqual.class);
+        final CollectionBV.WithMinMaxEqual result = Instancio.create(CollectionBV.WithMinMaxEqual.class);
         assertThat(result.getValue()).hasSize(5);
+    }
+
+    @RepeatedTest(SAMPLE_SIZE_D)
+    void typeUse() {
+        final CollectionBV.TypeUse result = Instancio.create(CollectionBV.TypeUse.class);
+
+        assertThat(result.getValue())
+                .hasSize(3)
+                .allSatisfy(v -> assertThat(v).matches("\\d{7}\\.\\d{5}"));
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.instancio.test.pojo.beanvalidation;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -27,7 +28,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
-public class MapSizeBV {
+public class MapBV {
 
     @Data
     public static class WithMinSize {
@@ -69,5 +70,13 @@ public class MapSizeBV {
         @NotNull
         @Size(min = 5, max = 5)
         private Map<Long, Double> value;
+    }
+
+    @Data
+    public static class TypeUse {
+        @NotNull
+        private Map<
+                @NotNull @Digits(integer = 7, fraction = 5) CharSequence,
+                @NotNull @Digits(integer = 3, fraction = 2) CharSequence> value;
     }
 }

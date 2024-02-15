@@ -18,6 +18,7 @@ package org.instancio.internal.util;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.support.DefaultRandom;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -90,6 +92,24 @@ class CollectionUtilsTest {
         assertThat(CollectionUtils.combine(Arrays.asList(1, 2), 3)).containsExactly(1, 2, 3);
         assertThat(CollectionUtils.combine(Arrays.asList(1, 2))).containsExactly(1, 2);
         assertThat(CollectionUtils.combine(Collections.emptyList())).isEmpty();
+    }
+
+    @Test
+    void identityIndexOf() {
+        final StringHolder a = new StringHolder("x");
+        final StringHolder b = new StringHolder("x");
+        final StringHolder c = new StringHolder("x");
+        final StringHolder x = new StringHolder("x");
+        final List<StringHolder> list = Arrays.asList(c, a, null, b);
+
+        // precondition: all pass equals()
+        assertThat(a).isEqualTo(b).isEqualTo(c).isEqualTo(x);
+
+        assertThat(CollectionUtils.identityIndexOf(c, list)).isZero();
+        assertThat(CollectionUtils.identityIndexOf(a, list)).isOne();
+        assertThat(CollectionUtils.identityIndexOf(null, list)).isEqualTo(2);
+        assertThat(CollectionUtils.identityIndexOf(b, list)).isEqualTo(3);
+        assertThat(CollectionUtils.identityIndexOf(x, list)).isEqualTo(-1);
     }
 
     @Test

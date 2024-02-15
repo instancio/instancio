@@ -15,8 +15,9 @@
  */
 package org.instancio.test.pojo.beanvalidation;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public class CollectionSizeBV {
+public class CollectionBV {
 
     @Data
     public static class WithMinSize {
@@ -68,5 +69,12 @@ public class CollectionSizeBV {
         @NotNull
         @Size(min = 5, max = 5)
         private Queue<String> value;
+    }
+
+    @Data
+    public static class TypeUse {
+        @NotNull
+        @Size(min = 3, max = 3)
+        private Collection<@NotNull @Digits(integer = 7, fraction = 5) CharSequence> value;
     }
 }

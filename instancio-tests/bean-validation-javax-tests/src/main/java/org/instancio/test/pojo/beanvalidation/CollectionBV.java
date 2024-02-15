@@ -15,59 +15,66 @@
  */
 package org.instancio.test.pojo.beanvalidation;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.UUID;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
-public class MapSizeBV {
+public class CollectionBV {
 
     @Data
     public static class WithMinSize {
         @NotNull
         @Size(min = 8)
-        private Map<String, Long> value;
+        private Collection<String> value;
     }
 
     @Data
     public static class WithMinSizeZero {
         @NotNull
         @Size
-        private SortedMap<Integer, String> value;
+        private List<String> value;
     }
 
     @Data
     public static class WithMaxSize {
         @NotNull
         @Size(max = 1)
-        private HashMap<UUID, BigDecimal> value;
+        private Set<String> value;
     }
 
     @Data
     public static class WithMaxSizeZero {
         @NotNull
         @Size(max = 0)
-        private NavigableMap<Integer, String> value;
+        private ArrayList<String> value;
     }
 
     @Data
     public static class WithMinMaxSize {
         @NotNull
         @Size(min = 19, max = 20)
-        private TreeMap<String, Character> value;
+        private Deque<String> value;
     }
 
     @Data
     public static class WithMinMaxEqual {
         @NotNull
         @Size(min = 5, max = 5)
-        private Map<Long, Double> value;
+        private Queue<String> value;
+    }
+
+    @Data
+    public static class TypeUse {
+        @NotNull
+        @Size(min = 3, max = 3)
+        private Collection<@NotNull @Digits(integer = 7, fraction = 5) CharSequence> value;
     }
 }
