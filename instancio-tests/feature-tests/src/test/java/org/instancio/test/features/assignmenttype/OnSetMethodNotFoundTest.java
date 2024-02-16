@@ -80,8 +80,7 @@ class OnSetMethodNotFoundTest {
     @Test
     void assignViaField() {
         final WithoutSetter result = Instancio.of(WithoutSetter.class)
-                .withSettings(Settings.create()
-                        .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.ASSIGN_FIELD))
+                .withSetting(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.ASSIGN_FIELD)
                 .create();
 
         assertThat(result.value).isNotZero();
@@ -100,8 +99,7 @@ class OnSetMethodNotFoundTest {
     @Test
     void failOnError() {
         final InstancioApi<WithoutSetter> api = Instancio.of(WithoutSetter.class)
-                .withSettings(Settings.create()
-                        .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL));
+                .withSetting(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL);
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -115,9 +113,8 @@ class OnSetMethodNotFoundTest {
     @Test
     void onSetMethodNotFoundWithFinalField() {
         final FinalFieldWithoutSetter result = Instancio.of(FinalFieldWithoutSetter.class)
-                .withSettings(Settings.create()
-                        .set(Keys.FAIL_ON_ERROR, true)
-                        .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL))
+                .withSetting(Keys.FAIL_ON_ERROR, true)
+                .withSetting(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.FAIL)
                 .create();
 
         assertThat(result.list).isEmpty();

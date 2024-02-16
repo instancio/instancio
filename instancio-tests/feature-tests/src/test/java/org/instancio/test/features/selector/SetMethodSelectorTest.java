@@ -148,12 +148,11 @@ class SetMethodSelectorTest {
         final SetMethodSelector<PropertyStylePojo, Boolean> hasGaz = PropertyStylePojo::hasGaz;
 
         final PropertyStylePojo expected = Instancio.of(PropertyStylePojo.class)
-                .withSettings(Settings.create()
-                        .set(Keys.SETTER_STYLE, SetterStyle.PROPERTY))
+                .withSetting(Keys.SETTER_STYLE, SetterStyle.PROPERTY)
                 .create();
 
         final PropertyStylePojo result = Instancio.of(PropertyStylePojo.class)
-                .withSettings(Settings.create().set(Keys.SETTER_STYLE, SetterStyle.PROPERTY))
+                .withSetting(Keys.SETTER_STYLE, SetterStyle.PROPERTY)
                 .set(foo, expected.foo())
                 .set(setter(bar), expected.bar())
                 .set(setter(isBaz), expected.isBaz())

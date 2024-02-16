@@ -18,6 +18,7 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
 import java.util.function.Supplier;
@@ -200,6 +201,14 @@ public interface InstancioApi<T> extends
      */
     @Override
     InstancioApi<T> withMaxDepth(int maxDepth);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.4.0
+     */
+    @Override
+    <V> InstancioApi<T> withSetting(SettingKey<V> key, V value);
 
     /**
      * {@inheritDoc}

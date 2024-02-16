@@ -28,6 +28,7 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.reflect.ParameterizedTypeImpl;
 import org.instancio.internal.util.CartesianList;
+import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
 import java.lang.reflect.Type;
@@ -153,6 +154,12 @@ public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
     @Override
     public CartesianProductApi<T> withNullable(final TargetSelector selector) {
         modelContextBuilder.withNullable(selector);
+        return this;
+    }
+
+    @Override
+    public <V> CartesianProductApi<T> withSetting(final SettingKey<V> key, final V value) {
+        modelContextBuilder.withSetting(key, value);
         return this;
     }
 

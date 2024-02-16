@@ -18,6 +18,7 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
 import java.util.List;
@@ -189,6 +190,14 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     CartesianProductApi<T> withMaxDepth(int maxDepth);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.4.0
+     */
+    @Override
+    <V> CartesianProductApi<T> withSetting(SettingKey<V> key, V value);
 
     /**
      * {@inheritDoc}

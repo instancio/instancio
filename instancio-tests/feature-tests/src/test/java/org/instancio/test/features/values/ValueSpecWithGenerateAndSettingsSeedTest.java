@@ -19,7 +19,6 @@ import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -43,7 +42,7 @@ class ValueSpecWithGenerateAndSettingsSeedTest {
     void withGenerate() {
         final StringFields stringFields = Instancio.of(StringFields.class)
                 .generate(allStrings(), Gen.string().alphaNumeric())
-                .withSettings(Settings.create().set(Keys.SEED, SEED))
+                .withSetting(Keys.SEED, SEED)
                 .create();
 
         results.add(stringFields.getOne());

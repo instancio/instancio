@@ -73,9 +73,7 @@ class SetterMethodResolverSpiTest {
         return Instancio.of(klass)
                 // These are used for verification; we don't want to generate values for these flags
                 .ignore(fields().matching("viaSetter.*"))
-                .withSettings(Settings.create()
-                        .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
-                        .lock())
+                .withSetting(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
                 .toModel();
     }
 
@@ -90,8 +88,7 @@ class SetterMethodResolverSpiTest {
     @Test
     void shouldNotUserPrivateSetterMethodWhenExcluded() {
         final PojoA result = Instancio.of(createModel(PojoA.class))
-                .withSettings(Settings.create()
-                        .set(Keys.SETTER_EXCLUDE_MODIFIER, MethodModifier.PRIVATE))
+                .withSetting(Keys.SETTER_EXCLUDE_MODIFIER, MethodModifier.PRIVATE)
                 .create();
 
         assertThat(result._values).isNull();
@@ -101,8 +98,7 @@ class SetterMethodResolverSpiTest {
     @Test
     void shouldFallbackToBuiltInMethodResolver() {
         final PojoB result = Instancio.of(createModel(PojoB.class))
-                .withSettings(Settings.create()
-                        .set(Keys.SETTER_STYLE, SetterStyle.WITH))
+                .withSetting(Keys.SETTER_STYLE, SetterStyle.WITH)
                 .create();
 
         assertThat(result.value).isPositive();
