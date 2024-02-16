@@ -170,6 +170,11 @@ public final class InternalSettings implements Settings {
         return this;
     }
 
+    @Override
+    public boolean isLocked() {
+        return isLockedForModifications;
+    }
+
     private void checkLockedForModifications() {
         if (isLockedForModifications) {
             throw new UnsupportedOperationException("This instance of Settings has been locked and is read-only");

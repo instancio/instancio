@@ -27,6 +27,7 @@ import org.instancio.TypeTokenSupplier;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
 import java.lang.reflect.Type;
@@ -146,6 +147,12 @@ public class ApiImpl<T> implements InstancioApi<T> {
     @Override
     public InstancioApi<T> withNullable(final TargetSelector selector) {
         modelContextBuilder.withNullable(selector);
+        return this;
+    }
+
+    @Override
+    public <V> InstancioApi<T> withSetting(final SettingKey<V> key, final V value) {
+        modelContextBuilder.withSetting(key, value);
         return this;
     }
 

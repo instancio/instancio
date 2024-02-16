@@ -162,4 +162,13 @@ public interface Settings {
      */
     Settings lock();
 
+    /**
+     * Checks if this instance is locked for modifications.
+     *
+     * @return {@code true} if this instance is locked for modifications,
+     * {@code false} otherwise
+     * @see #lock()
+     * @since 4.4.0
+     */
+    boolean isLocked();
 }

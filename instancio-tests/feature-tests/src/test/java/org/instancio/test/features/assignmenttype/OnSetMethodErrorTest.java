@@ -47,8 +47,7 @@ class OnSetMethodErrorTest {
     @Test
     void assignViaField() {
         final SetterErrorPojo result = Instancio.of(SetterErrorPojo.class)
-                .withSettings(Settings.create()
-                        .set(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.ASSIGN_FIELD))
+                .withSetting(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.ASSIGN_FIELD)
                 .create();
 
         assertThat(result.getValue()).isNotZero();
@@ -57,8 +56,7 @@ class OnSetMethodErrorTest {
     @Test
     void ignoreError() {
         final SetterErrorPojo result = Instancio.of(SetterErrorPojo.class)
-                .withSettings(Settings.create()
-                        .set(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.IGNORE))
+                .withSetting(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.IGNORE)
                 .create();
 
         assertThat(result.getValue()).isZero();
@@ -68,8 +66,7 @@ class OnSetMethodErrorTest {
     void failOnError() {
         final InstancioApi<SetterErrorPojo> api = Instancio.of(SetterErrorPojo.class)
                 .set(allInts(), 123)
-                .withSettings(Settings.create()
-                        .set(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.FAIL));
+                .withSetting(Keys.ON_SET_METHOD_ERROR, OnSetMethodError.FAIL);
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)

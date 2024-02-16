@@ -43,6 +43,7 @@ import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
+import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.support.Global;
@@ -395,6 +396,16 @@ public final class ModelContext<T> {
                             .add(processedAssignment);
                 }
             }
+        }
+
+        public <V> Builder<T> withSetting(final SettingKey<V> key, final V value) {
+            if (settings == null) {
+                settings = Settings.create();
+            } else if (settings.isLocked()) {
+                settings = Settings.from(settings);
+            }
+            settings.set(key, value);
+            return this;
         }
 
         public Builder<T> withSettings(final Settings arg) {
