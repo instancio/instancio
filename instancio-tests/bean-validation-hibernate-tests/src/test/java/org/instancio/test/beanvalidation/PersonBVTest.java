@@ -17,6 +17,7 @@ package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.Keys;
 import org.instancio.test.pojo.beanvalidation.person.PersonBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -50,7 +51,9 @@ class PersonBVTest {
 
     @Test
     void personList() {
-        final List<PersonBV> results = Instancio.createList(PersonBV.class);
+        final List<PersonBV> results = Instancio.ofList(PersonBV.class)
+                .withSetting(Keys.COLLECTION_NULLABLE, false)
+                .create();
 
         assertThat(results)
                 .isNotEmpty()
