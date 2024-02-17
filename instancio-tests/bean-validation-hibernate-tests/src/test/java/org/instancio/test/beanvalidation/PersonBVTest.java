@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
+import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
@@ -36,7 +36,7 @@ class PersonBVTest {
 
     @Test
     void person() {
-        final int sampleSize = SAMPLE_SIZE_DDD;
+        final int sampleSize = SAMPLE_SIZE_DD;
 
         final List<PersonBV> results = Instancio.of(PersonBV.class)
                 .stream()
@@ -45,6 +45,15 @@ class PersonBVTest {
 
         assertThat(results)
                 .hasSize(sampleSize)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
+    }
+
+    @Test
+    void personList() {
+        final List<PersonBV> results = Instancio.createList(PersonBV.class);
+
+        assertThat(results)
+                .isNotEmpty()
                 .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 }

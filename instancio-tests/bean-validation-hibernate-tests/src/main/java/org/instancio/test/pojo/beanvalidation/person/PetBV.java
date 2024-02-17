@@ -16,6 +16,7 @@
 package org.instancio.test.pojo.beanvalidation.person;
 
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -27,6 +28,7 @@ public class PetBV {
     @Length(max = 10)
     private String name;
 
+    @Min(0)
     @Max(100)
     private int age;
 }

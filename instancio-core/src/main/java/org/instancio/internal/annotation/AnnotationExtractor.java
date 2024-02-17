@@ -62,7 +62,7 @@ final class AnnotationExtractor {
      * e.g. {@code Map<@Email String, @Negative Integer>}.
      */
     private static Annotation[] getTypeUseAnnotations(final InternalNode node) {
-        final Field parentField = node.getParent().getField();
+        final Field parentField = node.getParent() == null ? null : node.getParent().getField();
 
         if (parentField != null && parentField.getAnnotatedType() instanceof AnnotatedParameterizedType) {
             final AnnotatedParameterizedType apt = (AnnotatedParameterizedType) parentField.getAnnotatedType();
