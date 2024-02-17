@@ -145,7 +145,7 @@ public final class NumberUtils {
 
         BigDecimal newMaxBD = toBigDecimal(newMax);
 
-        if (newMaxBD.equals(BigDecimal.ZERO)) {
+        if (newMaxBD.compareTo(BigDecimal.ZERO) == 0) {
             newMaxBD = BigDecimal.ONE.negate();
         }
 
@@ -196,7 +196,7 @@ public final class NumberUtils {
 
         BigDecimal newMinBD = toBigDecimal(newMin);
 
-        if (newMinBD.equals(BigDecimal.ZERO)) {
+        if (newMinBD.compareTo(BigDecimal.ZERO) == 0) {
             newMinBD = BigDecimal.ONE;
         }
 
@@ -225,11 +225,11 @@ public final class NumberUtils {
         return fn.apply(newMaxBD);
     }
 
-    public static int calculateNewMinSize(@Nullable final Integer curMin, final Integer newMax) {
+    public static Integer calculateNewMinSize(@Nullable final Integer curMin, final Integer newMax) {
         return Math.max(0, calculateNewMin(curMin, newMax, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
     }
 
-    public static int calculateNewMaxSize(@Nullable final Integer curMax, final Integer newMin) {
+    public static Integer calculateNewMaxSize(@Nullable final Integer curMax, final Integer newMin) {
         return calculateNewMax(curMax, newMin, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
     }
 

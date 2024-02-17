@@ -60,7 +60,13 @@ public interface RangeAdjuster {
                 final Settings settings, final SettingKey<T> minSetting, final T newMax) {
 
             final T curMin = settings.get(minSetting);
-            final T newMin = NumberUtils.calculateNewMin(curMin, newMax, percentage);
+            final T newMin;
+
+            if (((InternalKey<T>) minSetting).allowsNegative()) {
+                newMin = NumberUtils.calculateNewMin(curMin, newMax, percentage);
+            } else {
+                newMin = (T) NumberUtils.calculateNewMinSize((Integer) curMin, (Integer) newMax);
+            }
             ((InternalSettings) settings).set(minSetting, newMin, false);
         }
     }
@@ -80,7 +86,12 @@ public interface RangeAdjuster {
                 final Settings settings, final SettingKey<T> maxSetting, final T newMin) {
 
             final T curMax = settings.get(maxSetting);
-            final T newMax = NumberUtils.calculateNewMax(curMax, newMin, percentage);
+            final T newMax;
+            if (((InternalKey<T>) maxSetting).allowsNegative()) {
+                newMax = NumberUtils.calculateNewMax(curMax, newMin, percentage);
+            } else {
+                newMax = (T) NumberUtils.calculateNewMaxSize((Integer) curMax, (Integer) newMin);
+            }
             ((InternalSettings) settings).set(maxSetting, newMax, false);
         }
     }

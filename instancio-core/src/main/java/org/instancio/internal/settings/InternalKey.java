@@ -32,18 +32,21 @@ public final class InternalKey<T>
     private final Object defaultValue;
     private final RangeAdjuster rangeAdjuster;
     private final boolean allowsNullValue;
+    private final boolean allowsNegative;
 
     public InternalKey(final String propertyKey,
                        final Class<?> type,
                        @Nullable final Object defaultValue,
                        @Nullable final RangeAdjuster rangeAdjuster,
-                       boolean allowsNullValue) {
+                       final boolean allowsNullValue,
+                       final boolean allowsNegative) {
 
         this.propertyKey = propertyKey;
         this.type = type;
         this.defaultValue = defaultValue;
         this.rangeAdjuster = rangeAdjuster;
         this.allowsNullValue = allowsNullValue;
+        this.allowsNegative = allowsNegative;
     }
 
     @Override
@@ -66,6 +69,10 @@ public final class InternalKey<T>
     @Override
     public boolean allowsNullValue() {
         return allowsNullValue;
+    }
+
+    public boolean allowsNegative() {
+        return allowsNegative;
     }
 
     @Override
@@ -137,7 +144,7 @@ public final class InternalKey<T>
             } else {
                 key = propertyKey;
             }
-            return new InternalKey<>(key, type, null, null, true);
+            return new InternalKey<>(key, type, null, null, true, false);
         }
     }
 }
