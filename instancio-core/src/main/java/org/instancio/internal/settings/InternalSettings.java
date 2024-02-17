@@ -74,7 +74,7 @@ public final class InternalSettings implements Settings {
                 if (settingKey == null) {
                     // If not defined in Keys, then this is a user-defined key
                     // Since the type is unknown, default to null
-                    settingKey = new InternalKey<>(key, null, null, null, true);
+                    settingKey = new InternalKey<>(key, null, null, null, true, false);
                     settings.set(settingKey, v);
                 } else {
                     settings.set(settingKey, convertValueToKeyType(settingKey, v));

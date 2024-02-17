@@ -243,6 +243,62 @@ class SettingsTest {
             assertThat(result.get(Keys.LONG_MAX)).isEqualTo(11);
         }
 
+        /**
+         * For size settings, if max is set to zero, min should auto-adjust to zero.
+         */
+        @Test
+        void minSizeShouldAutoAdjustToZeroIfMaxIsSetToToZero() {
+            final Map<SettingKey<Integer>, SettingKey<Integer>> sizeKeys = Map.of(
+                    Keys.ARRAY_MIN_LENGTH, Keys.ARRAY_MAX_LENGTH,
+                    Keys.COLLECTION_MIN_SIZE, Keys.COLLECTION_MAX_SIZE,
+                    Keys.MAP_MIN_SIZE, Keys.MAP_MAX_SIZE,
+                    Keys.STRING_MIN_LENGTH, Keys.STRING_MAX_LENGTH
+            );
+
+            sizeKeys.forEach((min, max) -> {
+                final Settings settings = Settings.create().set(max, 0);
+                final Settings merged = Settings.defaults().merge(settings);
+
+                assertThat(settings.get(min))
+                        .isEqualTo(settings.get(max))
+                        .isEqualTo(merged.get(min))
+                        .isEqualTo(merged.get(max))
+                        .isZero();
+            });
+        }
+
+        /**
+         * For numeric ranges, if max is set to zero, min should auto-adjust to a negative value.
+         */
+        @Test
+        void minSizeShouldAutoAdjustToNegativeIfMaxIsSetToToZero() {
+            final Settings settings = Settings.create()
+                    .set(Keys.BYTE_MAX, (byte) 0)
+                    .set(Keys.SHORT_MAX, (short) 0)
+                    .set(Keys.INTEGER_MAX, 0)
+                    .set(Keys.LONG_MAX, 0L)
+                    .set(Keys.FLOAT_MAX, 0f)
+                    .set(Keys.DOUBLE_MAX, 0d);
+
+            assertRange(settings, Keys.BYTE_MIN, Keys.BYTE_MAX, (byte) 0);
+            assertRange(settings, Keys.SHORT_MIN, Keys.SHORT_MAX, (short) 0);
+            assertRange(settings, Keys.INTEGER_MIN, Keys.INTEGER_MAX, 0);
+            assertRange(settings, Keys.LONG_MIN, Keys.LONG_MAX, 0L);
+            assertRange(settings, Keys.FLOAT_MIN, Keys.FLOAT_MAX, 0f);
+            assertRange(settings, Keys.DOUBLE_MIN, Keys.DOUBLE_MAX, 0d);
+        }
+
+        private static <T extends Number & Comparable<T>> void assertRange(
+                final Settings settings, final SettingKey<T> min, final SettingKey<T> max, final T zero) {
+
+            assertThat(settings.get(min)).isLessThan(zero);
+            assertThat(settings.get(max)).isEqualTo(zero);
+
+            final Settings merged = Settings.defaults().merge(settings);
+            assertThat(merged.get(min)).isLessThan(zero);
+            assertThat(merged.get(max)).isEqualTo(zero);
+        }
+
         @Test
         void setWithoutAutoAdjust() {
             final int minLength = 1000;
