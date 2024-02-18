@@ -29,6 +29,11 @@
                                     <type>jar</type>
                                 </dependency>
                             </oldVersion>
+                            <parameter>
+                                <excludes>
+                                    <exclude>org.instancio.internal</exclude>
+                                </excludes>
+                            </parameter>
                         </configuration>
                         <executions>
                             <execution>
