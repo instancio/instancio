@@ -205,7 +205,7 @@ public interface InstancioApi<T> extends
     /**
      * {@inheritDoc}
      *
-     * @since 4.4.0
+     * @since 4.3.1
      */
     @Override
     <V> InstancioApi<T> withSetting(SettingKey<V> key, V value);

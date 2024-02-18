@@ -194,7 +194,7 @@ public interface CartesianProductApi<T> extends
     /**
      * {@inheritDoc}
      *
-     * @since 4.4.0
+     * @since 4.3.1
      */
     @Override
     <V> CartesianProductApi<T> withSetting(SettingKey<V> key, V value);

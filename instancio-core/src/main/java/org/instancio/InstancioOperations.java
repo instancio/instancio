@@ -454,7 +454,7 @@ interface InstancioOperations<T> {
      * @return API builder reference
      * @see Keys
      * @see #withSettings(Settings)
-     * @since 4.4.0
+     * @since 4.3.1
      */
     <V> InstancioOperations<T> withSetting(SettingKey<V> key, V value);
 
