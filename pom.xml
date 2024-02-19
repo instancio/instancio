@@ -81,11 +81,13 @@
         <version.maven-enforcer-plugin>3.4.1</version.maven-enforcer-plugin>
         <version.maven-gpg-plugin>3.1.0</version.maven-gpg-plugin>
         <version.maven-jar-plugin>3.3.0</version.maven-jar-plugin>
-        <version.maven-source-plugin>3.3.0</version.maven-source-plugin>
         <version.maven-javadoc-plugin>3.6.3</version.maven-javadoc-plugin>
         <version.maven-pmd-plugin>3.21.2</version.maven-pmd-plugin>
         <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
+        <version.maven-site-plugin>3.12.1</version.maven-site-plugin>
+        <version.maven-source-plugin>3.3.0</version.maven-source-plugin>
         <version.sonar-maven-plugin>3.10.0.2594</version.sonar-maven-plugin>
+        <version.spotbugs-maven-plugin>4.8.3.1</version.spotbugs-maven-plugin>
         <version.versions-maven-plugin>2.16.2</version.versions-maven-plugin>
     </properties>
 
@@ -227,7 +229,9 @@
                                     </goals>
                                     <configuration>
                                         <target>
-                                            <move file="${project.basedir}/target/classes/module-info.class" todir="${project.basedir}/target/classes/META-INF/versions/9" failonerror="false" quiet="true" />
+                                            <move file="${project.basedir}/target/classes/module-info.class"
+                                                  todir="${project.basedir}/target/classes/META-INF/versions/9"
+                                                  failonerror="false" quiet="true"/>
                                         </target>
                                     </configuration>
                                 </execution>
@@ -272,7 +276,7 @@
                             </goals>
                             <configuration>
                                 <rules>
-                                    <dependencyConvergence />
+                                    <dependencyConvergence/>
                                     <requireJavaVersion>
                                         <version>${maven.enforcer.require.java.version}</version>
                                     </requireJavaVersion>
@@ -517,6 +521,21 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>${version.maven-ant-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${version.spotbugs-maven-plugin}</version>
+                    <configuration>
+                        <failOnError>true</failOnError>
+                        <threshold>Low</threshold>
+                        <effort>max</effort>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${version.maven-site-plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
