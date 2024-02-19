@@ -18,7 +18,7 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 
 /**
- * Allows specifying target depth.
+ * Allows specifying selector target's depth.
  *
  * @see DepthPredicateSelector
  * @see Selector

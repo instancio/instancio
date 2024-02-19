@@ -45,7 +45,7 @@ public interface AsGeneratorSpec<T> extends GeneratorSpec<T> {
      *
      * <p>Example:
      * <pre>{@code
-     *   record Log(String msg, long timestamp) {}
+     *   record LogEntry(String msg, long timestamp) {}
      *
      *   LogEntry result = Instancio.of(LogEntry.class)
      *     .generate(field(Log::timestamp), gen -> gen.temporal().instant().past().as(Instant::toEpochMilli))

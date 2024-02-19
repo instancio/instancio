@@ -20,6 +20,14 @@ import org.instancio.settings.Keys;
 /**
  * Provides support for lenient mode.
  *
+ * <p>Instancio supports two modes: strict and lenient, an idea inspired by
+ * Mockito's highly useful strict stubbing feature.
+ *
+ * <p>In strict mode, unused selectors will trigger an error. In lenient mode,
+ * unused selectors are ignored. By default, Instancio runs in strict mode.
+ * Strict mode can be disabled by invoking the {@link #lenient()} method
+ * or using the {@link Keys#MODE} setting.
+ *
  * @param <T> the type of object to create
  * @see Keys#MODE
  * @since 4.0.0
@@ -34,7 +42,7 @@ interface LenientMode<T> {
      *
      * <pre>{@code
      * Example example = Instancio.of(Example.class)
-     *     .withSettings(Settings.create().set(Keys.MODE, Mode.LENIENT))
+     *     .withSetting(Keys.MODE, Mode.LENIENT)
      *     .create();
      * }</pre>
      *

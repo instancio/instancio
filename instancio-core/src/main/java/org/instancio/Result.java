@@ -19,6 +19,17 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A result containing a created object and seed that was used for populating its values.
+ * A result can be obtained by calling the {@link InstancioApi#asResult()} method.
+ *
+ * <p>Example:
+ * <pre>{@code
+ * Result<Person> result = Instancio.of(Person.class)
+ *     .set(field(Person::getName), "Homer Simpson")
+ *     .asResult();
+ *
+ * Person person = result.get();
+ * long seed = result.getSeed();
+ * }</pre>
  *
  * @param <T> result type
  * @since 1.5.1

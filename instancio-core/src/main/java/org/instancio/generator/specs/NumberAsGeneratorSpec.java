@@ -19,6 +19,7 @@ package org.instancio.generator.specs;
  * Generator spec for {@link Number} types
  * that supports {@link AsGeneratorSpec}.
  *
+ * @param <T> type of number
  * @since 2.6.0
  */
 public interface NumberAsGeneratorSpec<T extends Number>

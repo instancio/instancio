@@ -374,20 +374,18 @@ interface InstancioOperations<T> {
      * allows specifying different destination selectors for a given origin:
      *
      * <pre>{@code
-     * Assignment[] assignments = {
-     *     Assign.given(Order::getStatus)
-     *             .is(OrderStatus.SHIPPED)
-     *             .supply(field(Order::getDeliveryDueDate), () -> LocalDate.now().plusDays(2)),
+     * Assignment shippedOrderAssignment = Assign.given(Order::getStatus)
+     *     .is(OrderStatus.SHIPPED)
+     *     .supply(field(Order::getDeliveryDueDate), () -> LocalDate.now().plusDays(2));
      *
-     *     Assign.given(Order::getStatus)
-     *             .is(OrderStatus.CANCELLED)
-     *             .set(field(Order::getCancellationReason), "Shipping delays")
-     *             .generate(field(Order::getCancellationDate), gen -> gen.temporal().instant().past())
-     * };
+     * Assignment cancelledOrderAssignment = Assign.given(Order::getStatus)
+     *      .is(OrderStatus.CANCELLED)
+     *      .set(field(Order::getCancellationReason), "Shipping delays")
+     *      .generate(field(Order::getCancellationDate), gen -> gen.temporal().instant().past());
      *
      * List<Order> orders = Instancio.ofList(Order.class)
      *     .generate(all(OrderStatus.class), gen -> gen.oneOf(OrderStatus.SHIPPED, OrderStatus.CANCELLED))
-     *     .assign(assignments)
+     *     .assign(shippedOrderAssignment, cancelledOrderAssignment)
      *     .create();
      * }</pre>
      *

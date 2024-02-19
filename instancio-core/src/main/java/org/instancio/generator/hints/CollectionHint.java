@@ -28,8 +28,8 @@ import java.util.StringJoiner;
 
 /**
  * This hint is for generators that create collections.
- * <p>
- * The responsibility of a generator is to provide an instance of a collection
+ *
+ * <p>The responsibility of a generator is to provide an instance of a collection
  * to the engine. The collection may be partially populated (with expected data).
  * The engine takes care of populating the collection with additional elements.
  *
@@ -37,9 +37,9 @@ import java.util.StringJoiner;
  *
  * <p>The goal is to set up a collection with a couple of <i>expected</i> objects
  * and let the engine populate the rest of the collection with random data.</p>
- * <p>
- * This can be achieved as follows:
- * <p>
+ *
+ * <p>This can be achieved as follows:
+ *
  * <pre>{@code
  * class PhonesGenerator implements Generator<List<Phone>> {
  *
@@ -77,8 +77,8 @@ import java.util.StringJoiner;
  *         .anyMatch(p -> p.getNumber().equals("111-222-3333") && p.getPhoneType() == PhoneType.CELL)
  *         .anyMatch(p -> p.getNumber().equals("111-444-5555") && p.getPhoneType() != null); // phoneType populated
  * }</pre>
- * <p>
- * Summary of results:
+ *
+ * <p>Summary of results:
  * <ul>
  *   <li>The generated collection contains our custom objects as well as generated phone objects.</li>
  *   <li>The {@code phoneType} field of "111-444-5555" has been populated since
@@ -183,10 +183,18 @@ public final class CollectionHint implements Hint<CollectionHint> {
                 .toString();
     }
 
+    /**
+     * Returns a builder for this hint type.
+     *
+     * @return hint builder
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Builder class for this hint.
+     */
     public static final class Builder {
         private int generateElements;
         private boolean nullableElements;

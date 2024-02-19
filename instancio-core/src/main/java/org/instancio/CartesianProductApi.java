@@ -27,6 +27,15 @@ import java.util.function.Supplier;
 /**
  * Provides an API for generating the Cartesian product.
  *
+ * <p>This class supports most of the Instancio API methods,
+ * but provides additional methods for generating the Cartesian product:
+ *
+ * <ul>
+ *   <li>{@link #with(TargetSelector, Object[])} for specifying product values
+ *       (see the method's Javadoc for an example)</li>
+ *   <li>{@link #list()} for obtaining the results as a list</li>
+ * </ul>
+ *
  * @param <T> type to create
  * @since 4.0.0
  */

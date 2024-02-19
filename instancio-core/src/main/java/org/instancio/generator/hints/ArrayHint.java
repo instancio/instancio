@@ -26,8 +26,8 @@ import java.util.StringJoiner;
 
 /**
  * This hint is for generators that create arrays.
- * <p>
- * The responsibility of a generator is to provide an instance of an array
+ *
+ * <p>The responsibility of a generator is to provide an instance of an array
  * to the engine. The array may be partially populated (with expected data).
  * The engine takes care of populating the uninitialised indices.
  *
@@ -37,8 +37,8 @@ import java.util.StringJoiner;
  * and let the engine populate the rest of the array with random data.
  * Once populated, the expected elements the array should be shuffled
  * to randomise the position of expected elements.</p>
- * <p>
- * This can be achieved as follows:
+ *
+ * <p>This can be achieved as follows:
  *
  * <pre>{@code
  *  class PhonesGenerator implements Generator<Phone[]> {
@@ -74,8 +74,8 @@ import java.util.StringJoiner;
  *          .anyMatch(p -> p.getNumber().equals("111-222-3333") && p.getPhoneType() == PhoneType.CELL)
  *          .anyMatch(p -> p.getNumber().equals("111-444-5555") && p.getPhoneType() != null); // phoneType populated
  * }</pre>
- * <p>
- * Summary of results:
+ * 
+ * <p>Summary of results:
  * <ul>
  *   <li>The generated array contains our custom objects as well as generated phone objects.</li>
  *   <li>The {@code phoneType} field of "111-444-5555" has been populated.</li>
@@ -153,10 +153,18 @@ public final class ArrayHint implements Hint<ArrayHint> {
                 .toString();
     }
 
+    /**
+     * Returns a builder for this hint type.
+     *
+     * @return hint builder
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Builder class for this hint.
+     */
     public static final class Builder {
         private boolean nullableElements;
         private boolean shuffle;

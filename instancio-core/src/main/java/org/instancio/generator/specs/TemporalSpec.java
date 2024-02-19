@@ -22,6 +22,7 @@ import java.time.temporal.Temporal;
 /**
  * Spec for generating {@link Temporal} types.
  *
+ * @param <T> temporal type
  * @since 2.6.0
  */
 public interface TemporalSpec<T> extends ValueSpec<T>, TemporalGeneratorSpec<T> {

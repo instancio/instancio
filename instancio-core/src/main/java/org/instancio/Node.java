@@ -15,6 +15,9 @@
  */
 package org.instancio;
 
+import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -72,7 +75,8 @@ public interface Node {
     Node getParent();
 
     /**
-     * Returns the setter of this node, if available.
+     * Returns the setter of this node, if available, <b>and</b> if
+     * {@link Keys#ASSIGNMENT_TYPE} is set to {@link AssignmentType#METHOD}.
      *
      * @return setter of this node, or {@code null} if the node has no setter
      * @since 4.0.0

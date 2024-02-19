@@ -23,6 +23,23 @@ package org.instancio;
  * An instance of a model can then be used for creating and customising objects
  * and other models.
  *
+ * <p>Example:
+ * <pre>{@code
+ * Model<Person> simpsons = Instancio.of(Person.class)
+ *     .set(field(Person::getLastName), "Simpson")
+ *     .set(field(Address::getCity), "Springfield")
+ *     .generate(field(Person::getAge), gen -> gen.ints().range(40, 50))
+ *     .toModel();
+ *
+ * Person homer = Instancio.of(simpsons)
+ *     .set(field(Person::getFirstName), "Homer")
+ *     .create();
+ *
+ * Person marge = Instancio.of(simpsons)
+ *     .set(field(Person::getFirstName), "Marge")
+ *     .create();
+ * }</pre>
+ *
  * @param <T> the type of object encapsulated by this model
  * @since 1.0.1
  */

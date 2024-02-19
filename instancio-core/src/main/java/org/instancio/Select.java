@@ -236,14 +236,13 @@ public final class Select {
 
     /**
      * Selects a field by name declared in the class being created.
-     * <p>
-     * Example
+     *
+     * <p>Example:
      * <pre>{@code
      * Person person = Instancio.of(Person.class)
      *     .ignore(field("fullName")) // Person.fullName
      *     .create();
      * }</pre>
-     * <p>
      *
      * @param fieldName field name to select
      * @return a selector for given field
@@ -284,10 +283,9 @@ public final class Select {
      * field(Person::name)     -> field(Person.class, "name")
      * field(Person::isActive) -> field(Person.class, "isActive")
      * }</pre>
-     * <p>
-     * <b>Note:</b> for a method reference with a generic return type,
+     *
+     * <p><b>Note:</b> for a method reference with a generic return type,
      * the type must be specified explicitly, for example:
-     * <p>
      *
      * <pre>{@code
      * class Item<T> {

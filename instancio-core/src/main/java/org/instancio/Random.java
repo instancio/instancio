@@ -20,6 +20,8 @@ import java.util.Collection;
 /**
  * Provides methods for generating random values such as numbers,
  * booleans, characters, and strings.
+ *
+ * @since 1.2.1
  */
 public interface Random {
 

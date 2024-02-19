@@ -22,6 +22,7 @@ import java.util.Optional;
 /**
  * Generator spec for {@link Optional}.
  *
+ * @param <T> the type of value
  * @since 2.14.0
  */
 public interface OptionalGeneratorSpec<T> extends GeneratorSpec<Optional<T>> {

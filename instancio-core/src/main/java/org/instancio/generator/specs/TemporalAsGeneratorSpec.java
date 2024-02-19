@@ -18,6 +18,7 @@ package org.instancio.generator.specs;
 /**
  * Generator spec for temporal values that supports {@link AsGeneratorSpec}.
  *
+ * @param <T> temporal type
  * @since 2.6.0
  */
 public interface TemporalAsGeneratorSpec<T>

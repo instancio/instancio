@@ -34,9 +34,6 @@ interface VerboseMode<T> {
      *   <li>seed used to create the object</li>
      * </ul>
      *
-     * <p>Note: {@code verbose()} information is only output when creating
-     * an object. This method has no effect when creating a {@link Model}.
-     *
      * <p><b>Warning:</b> this method has a significant performance impact.
      * It is recommended to remove the call to {@code verbose()} after
      * troubleshooting is complete.

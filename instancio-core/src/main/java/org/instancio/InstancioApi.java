@@ -56,6 +56,16 @@ public interface InstancioApi<T> extends
      * used to generate its values. The seed value can be used to reproduce
      * the same object again.
      *
+     * <p>Example:
+     * <pre>{@code
+     * Result<Person> result = Instancio.of(Person.class)
+     *     .set(field(Person::getName), "Homer Simpson")
+     *     .asResult();
+     *
+     * Person person = result.get();
+     * long seed = result.getSeed();
+     * }</pre>
+     *
      * @return result containing the created object
      * @since 1.5.1
      */

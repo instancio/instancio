@@ -35,7 +35,7 @@ import java.util.RandomAccess;
 
 /**
  * A copy of {@code com.google.common.collect.CartesianList} from
- * the <a href="https://github.com/google/guava>Guava</a> library.
+ * the <a href="https://github.com/google/guava">Guava</a> library.
  *
  * <p>This version was modified to use {@code ArrayList}
  * instead of {@code ImmutableList} to allow for {@code null} values.
@@ -79,12 +79,6 @@ public final class CartesianList<E> extends AbstractList<List<E>> implements Ran
      *   }
      * }
      * }</pre>
-     *
-     * <p>Note: the following describes the original behaviour in Guava.
-     * This version has been modified, so that an empty list is not supported.
-     * <p><strike>Note that if any input list is empty, the Cartesian product will also be empty. If no lists
-     * at all are provided (an empty list), the resulting Cartesian product has one element, an empty
-     * list (counter-intuitive, but mathematically consistent).</strike>
      *
      * <p><i>Performance notes:</i> while the cartesian product of lists of size {@code m, n, p} is a
      * list of size {@code m x n x p}, its actual memory consumption is much smaller. When the
