@@ -188,7 +188,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
     public Result<T> asResult() {
         final InternalModel<T> model = createModel();
         final long seed = model.getModelContext().getRandom().getSeed();
-        return new Result<>(createRootObject(model), seed);
+        return new InternalResult<>(createRootObject(model), seed);
     }
 
     @Override

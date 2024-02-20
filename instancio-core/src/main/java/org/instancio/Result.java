@@ -15,8 +15,6 @@
  */
 package org.instancio;
 
-import org.jetbrains.annotations.Nullable;
-
 /**
  * A result containing a created object and seed that was used for populating its values.
  * A result can be obtained by calling the {@link InstancioApi#asResult()} method.
@@ -31,17 +29,10 @@ import org.jetbrains.annotations.Nullable;
  * long seed = result.getSeed();
  * }</pre>
  *
- * @param <T> result type
+ * @param <T> the result type
  * @since 1.5.1
  */
-public final class Result<T> {
-    private final T object;
-    private final long seed;
-
-    public Result(@Nullable final T object, final long seed) {
-        this.object = object;
-        this.seed = seed;
-    }
+public interface Result<T> {
 
     /**
      * Returns the created object.
@@ -49,9 +40,7 @@ public final class Result<T> {
      * @return created object
      * @since 1.5.1
      */
-    public T get() {
-        return object;
-    }
+    T get();
 
     /**
      * Returns the seed that was used to populate the created object.
@@ -59,12 +48,5 @@ public final class Result<T> {
      * @return the seed
      * @since 1.5.1
      */
-    public long getSeed() {
-        return seed;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Result[seed=%s, object=%s]", seed, object);
-    }
+    long getSeed();
 }
