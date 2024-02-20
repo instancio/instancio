@@ -33,6 +33,8 @@ plugins:
   - macros
   - search
   - autolinks
+  - minify_html:
+      minify_css: true
 
 markdown_extensions:
   - toc:
