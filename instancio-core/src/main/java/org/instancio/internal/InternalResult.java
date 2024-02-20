@@ -13,20 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio;
+package org.instancio.internal;
 
-import org.junit.jupiter.api.Test;
+import org.instancio.Result;
+import org.jetbrains.annotations.Nullable;
 
-import static org.assertj.core.api.Assertions.assertThat;
+public final class InternalResult<T> implements Result<T> {
+    private final T object;
+    private final long seed;
 
-class ResultTest {
+    public InternalResult(@Nullable final T object, final long seed) {
+        this.object = object;
+        this.seed = seed;
+    }
 
-    @Test
-    void verifyToString() {
-        assertThat(new Result<>("foo", 123L))
-                .hasToString("Result[seed=123, object=foo]");
+    @Override
+    public T get() {
+        return object;
+    }
 
-        assertThat(new Result<>(null, 123L))
-                .hasToString("Result[seed=123, object=null]");
+    @Override
+    public long getSeed() {
+        return seed;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Result[seed=%s, object=%s]", seed, object);
     }
 }
