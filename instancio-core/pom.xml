@@ -23,13 +23,14 @@
                         <configuration>
                             <oldVersion>
                                 <dependency>
-                                    <groupId>${groupId}</groupId>
-                                    <artifactId>${artifactId}</artifactId>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
                                     <version>${latest.release.version}</version>
                                     <type>jar</type>
                                 </dependency>
                             </oldVersion>
                             <parameter>
+                                <onlyModified>true</onlyModified>
                                 <excludes>
                                     <exclude>org.instancio.internal</exclude>
                                 </excludes>
