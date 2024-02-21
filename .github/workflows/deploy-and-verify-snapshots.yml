@@ -37,4 +37,6 @@ jobs:
           distribution: "temurin"
           java-version: ${{ matrix.java }}
       - name: "Test"
-        run: cd instancio-tests && mvn -B install
+        # use the deployed snapshot of instancio-test-support
+        # because it cannot be compiled with Java 8
+        run: cd instancio-tests && mvn -B -pl -instancio-test-support verify
