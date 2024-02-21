@@ -22,6 +22,7 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.ArrayHint;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayOfStringAndPrimitiveFields;
 import org.instancio.test.support.pojo.misc.StringAndPrimitiveFields;
 import org.instancio.test.support.pojo.misc.StringFields;
@@ -30,6 +31,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.function.Predicate;
 
@@ -48,11 +50,12 @@ import static org.instancio.test.support.asserts.Asserts.assertNoZeroes;
         Feature.MODEL,
         Feature.SELECTOR
 })
+@ExtendWith(InstancioExtension.class)
 class CustomArrayGeneratorAfterGenerateAndSelectorsTest {
     private static final int INITIAL_SIZE = 5;
     private static final int OCCUPIED_INDEX = 2;
 
-    private static final int EXISTING_INT_ONE = 1;
+    private static final int EXISTING_INT_ONE = -100;
     private static final int INT_ONE_OVERRIDE = -1;
     private static final int INT_TWO_OVERRIDE = -2;
 
