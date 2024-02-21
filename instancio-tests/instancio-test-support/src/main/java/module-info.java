@@ -1,0 +1,43 @@
+open module org.instancio.test.support {
+    requires java.sql;
+    requires lombok;
+    requires org.apache.commons.lang3;
+    requires org.assertj.core;
+    requires org.junit.jupiter.api;
+    requires org.slf4j;
+
+    exports org.instancio.test.support.asserts;
+    exports org.instancio.test.support.conditions;
+    exports org.instancio.test.support.pojo.arrays;
+    exports org.instancio.test.support.pojo.arrays.object;
+    exports org.instancio.test.support.pojo.arrays.primitive;
+    exports org.instancio.test.support.pojo.assignment;
+    exports org.instancio.test.support.pojo.basic;
+    exports org.instancio.test.support.pojo.collections;
+    exports org.instancio.test.support.pojo.collections.lists;
+    exports org.instancio.test.support.pojo.collections.maps;
+    exports org.instancio.test.support.pojo.collections.sets;
+    exports org.instancio.test.support.pojo.containers;
+    exports org.instancio.test.support.pojo.cyclic;
+    exports org.instancio.test.support.pojo.cyclic.onetomany;
+    exports org.instancio.test.support.pojo.dynamic;
+    exports org.instancio.test.support.pojo.empty;
+    exports org.instancio.test.support.pojo.generics;
+    exports org.instancio.test.support.pojo.generics.arrayofsuppliers;
+    exports org.instancio.test.support.pojo.generics.basic;
+    exports org.instancio.test.support.pojo.generics.container;
+    exports org.instancio.test.support.pojo.generics.foobarbaz;
+    exports org.instancio.test.support.pojo.generics.inheritance;
+    exports org.instancio.test.support.pojo.generics.outermidinner;
+    exports org.instancio.test.support.pojo.immutable;
+    exports org.instancio.test.support.pojo.inheritance;
+    exports org.instancio.test.support.pojo.interfaces;
+    exports org.instancio.test.support.pojo.misc;
+    exports org.instancio.test.support.pojo.misc.getters;
+    exports org.instancio.test.support.pojo.nested;
+    exports org.instancio.test.support.pojo.performance;
+    exports org.instancio.test.support.pojo.performance.onetomany;
+    exports org.instancio.test.support.pojo.person;
+    exports org.instancio.test.support.tags;
+    exports org.instancio.test.support.util;
+}
