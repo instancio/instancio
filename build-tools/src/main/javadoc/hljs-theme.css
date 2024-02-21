@@ -1,0 +1,139 @@
+/*
+ * Copyright 2022-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* Railscasts-like style (c) Visoft, Inc. (Damien White) */
+
+.hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    background: #2b2b2b;
+    color: #dfe4e8;
+    /* added by us */
+    border-radius:8px;
+}
+
+.hljs-comment,
+.hljs-quote {
+    color: #8f8f8f;
+    font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag {
+    color: #cc7832;
+}
+
+.hljs-string {
+    color: #6a8759;
+}
+
+.hljs-number {
+    color: #6897bb;
+}
+
+.hljs-regexp,
+.hljs-template-variable {
+    color: #dfe4e8;
+}
+
+.hljs-variable {
+    color: #eeb868;
+}
+
+.hljs-operator {
+    color: #dfe4e8;
+}
+
+.hljs-subst {
+    color: #519f50;
+}
+
+.hljs-tag,
+.hljs-name {
+    color: #e8bf6a;
+}
+
+.hljs-type {
+    color: #eeb868;
+}
+.hljs-built_in {
+    color: #4e0f79;
+}
+.hljs-symbol,
+.hljs-bullet,
+.hljs-builtin-name,
+.hljs-attr,
+.hljs-link {
+    color: #ffc66d;
+}
+
+.hljs-params {
+    color: #d0d0ff;
+}
+
+.hljs-attribute {
+    color: #cda869;
+}
+
+.hljs-meta {
+    color: #bbb529;
+}
+
+.hljs-title {
+    color: #dfe4e8;
+}
+.hljs-section {
+    color: #ffc66d;
+}
+
+.function_ {
+    color: #ffc66d;
+}
+
+.hljs-addition {
+    background-color: #144212;
+    color: #ffffff;
+    display: inline-block;
+    width: 100%;
+}
+
+.hljs-deletion {
+    background-color: #600;
+    color: #ffffff;
+    display: inline-block;
+    width: 100%;
+}
+
+.hljs-selector-class {
+    color: #9b703f;
+}
+
+.hljs-selector-id {
+    color: #8b98ab;
+}
+
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: bold;
+}
+
+.hljs-link {
+    text-decoration: underline;
+}

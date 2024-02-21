@@ -1,0 +1,61 @@
+/*
+ * Copyright 2022-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* Adapted from AssertJ: https://github.com/assertj/assertj */
+
+:root {
+    /* body, block and code fonts */
+    --body-font-family: Verdana, Geneva, sans-serif;
+    --block-font-family: Verdana, Geneva, serif;
+    /* Text colors for body and block elements */
+    --body-text-color: #000000;
+    --block-text-color: #000000;
+    /* Background colors for various structural elements */
+    --body-background-color: #fefefe;
+    --section-background-color: #ddffd8;
+    --detail-background-color: #fefefe;
+    /* Colors for navigation bar and table captions */
+    --navbar-background-color: #232323;
+    --navbar-text-color: #fefefe;
+    /* Background color for subnavigation and various headers */
+    --subnav-background-color: #74d577;
+    /* Background and text colors for selected tabs and navigation items */
+    --selected-background-color: #4cae4f;
+    --selected-text-color: #000000;
+    --selected-link-color: #078603;
+    /* Background colors for generated tables */
+    --even-row-color: #fefefe;
+    --odd-row-color: #d7f6db;
+    /* Text color for page title */
+    --title-color: #000000;
+    /* Text colors for links */
+    --link-color: #198a07;
+    --link-color-active: #ff6e42;
+    /* Border colors for structural elements and user defined tables */
+    --border-color: #4cae4f;
+    /* Search input colors */
+    --search-input-background-color: #fefefe;
+}
+
+header a:link, header a:visited {
+    text-decoration:none;
+    color: #ffffff;
+    font-weight: bold;
+}
+header a[href]:hover, header a[href]:focus {
+    text-decoration:none;
+    color: #d2d2d2;
+}
