@@ -15,6 +15,15 @@
         <jacoco.skip>true</jacoco.skip>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>deploy-test-dependencies</id>
+            <properties>
+                <maven.deploy.skip>false</maven.deploy.skip>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
