@@ -28,6 +28,9 @@
         <version.mockito>4.11.0</version.mockito>
     </properties>
 
+    <!-- These test modules are run against Java 8 and higher.
+         Other test modules require Java 16 or higher (see profiles).
+     -->
     <modules>
         <module>instancio-test-support</module>
         <module>instancio-guava-tests</module>
@@ -35,7 +38,6 @@
         <module>feature-tests</module>
         <module>default-package-tests</module>
         <module>global-seed-tests</module>
-        <module>arch-tests</module>
         <module>kotlin-tests</module>
         <module>jpa-javax-tests</module>
         <module>jpa-jakarta-tests</module>
@@ -45,6 +47,42 @@
         <module>packaging-tests</module>
         <module>report-aggregate</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>java-16</id>
+            <activation>
+                <jdk>[16,)</jdk>
+            </activation>
+            <modules>
+                <module>java16-tests</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java-17</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <modules>
+                <module>instancio-core-tests</module>
+                <module>instancio-junit-tests</module>
+                <module>instancio-jooq-tests</module>
+                <module>java17-tests</module>
+                <module>bean-validation-hibernate-tests</module>
+                <module>spi-tests</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java-21</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <modules>
+                <module>java21-tests</module>
+                <module>arch-tests</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <build>
         <pluginManagement>
@@ -122,40 +160,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <profiles>
-        <profile>
-            <id>java-16</id>
-            <activation>
-                <jdk>[16,)</jdk>
-            </activation>
-            <modules>
-                <module>java16-tests</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>java-17</id>
-            <activation>
-                <jdk>[17,)</jdk>
-            </activation>
-            <modules>
-                <module>instancio-core-tests</module>
-                <module>instancio-junit-tests</module>
-                <module>instancio-jooq-tests</module>
-                <module>java17-tests</module>
-                <module>bean-validation-hibernate-tests</module>
-                <module>spi-tests</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>java-21</id>
-            <activation>
-                <jdk>[21,)</jdk>
-            </activation>
-            <modules>
-                <module>java21-tests</module>
-            </modules>
-        </profile>
-    </profiles>
 
 </project>
