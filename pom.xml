@@ -9,6 +9,10 @@
     <name>Instancio Parent</name>
     <description>Instancio is a library for auto-populating objects with random data.</description>
     <url>https://www.instancio.org</url>
+    <organization>
+        <name>Instancio</name>
+        <url>${project.url}</url>
+    </organization>
 
     <licenses>
         <license>
@@ -58,6 +62,7 @@
         <latest.release.version>4.3.1</latest.release.version>
         <version.guava>33.0.0-jre</version.guava>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
+        <version.highlight.js>11.9.0</version.highlight.js>
         <version.jakarta.persistence>3.0.0</version.jakarta.persistence>
         <version.jakarta.validation>3.0.2</version.jakarta.validation>
         <version.javax.persistence>2.2</version.javax.persistence>
@@ -389,6 +394,18 @@
                         <encoding>UTF-8</encoding>
                         <docencoding>UTF-8</docencoding>
                         <charset>UTF-8</charset>
+                        <additionalOptions>-html5 --allow-script-in-comments</additionalOptions>
+                        <nohelp>true</nohelp>
+                        <javadocDirectory>${maven.multiModuleProjectDirectory}/build-tools/src/main/javadoc</javadocDirectory>
+                        <addStylesheets>
+                            <stylesheet>instancio-theme.css</stylesheet>
+                            <stylesheet>hljs-theme.css</stylesheet>
+                        </addStylesheets>
+                        <bottom><![CDATA[
+                        Copyright &#169; {currentYear} <a href="https://www.instancio.org">Instancio</a>. All rights reserved.
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/${version.highlight.js}/highlight.min.js"></script>
+                        <script>hljs.configure({languages:['java']});hljs.initHighlightingOnLoad();</script>
+                        ]]></bottom>
                     </configuration>
                     <executions>
                         <execution>
