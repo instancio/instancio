@@ -44,6 +44,7 @@
         <module>bean-validation-javax-tests</module>
         <module>bean-validation-jakarta-tests</module>
         <module>bean-validation-hibernate5-tests</module>
+        <module>jpms-tests</module>
         <module>packaging-tests</module>
         <module>report-aggregate</module>
     </modules>
@@ -80,6 +81,7 @@
             <modules>
                 <module>java21-tests</module>
                 <module>arch-tests</module>
+                <module>jpms-tests</module>
             </modules>
         </profile>
     </profiles>
