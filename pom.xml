@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-parent</artifactId>
-    <version>4.3.2-SNAPSHOT</version>
+    <version>4.3.2</version>
     <packaging>pom</packaging>
 
     <name>Instancio Parent</name>
@@ -34,7 +34,7 @@
         <url>https://github.com/instancio/instancio</url>
         <connection>scm:git:https://github.com/instancio/instancio.git</connection>
         <developerConnection>scm:git:https://github.com/instancio/instancio.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>instancio-parent-4.3.2</tag>
     </scm>
 
     <distributionManagement>
@@ -59,7 +59,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
-        <latest.release.version>4.3.1</latest.release.version>
+        <latest.release.version>4.3.2</latest.release.version>
         <version.guava>33.0.0-jre</version.guava>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
         <version.highlight.js>11.9.0</version.highlight.js>
@@ -210,12 +210,7 @@
                                     </goals>
                                     <configuration>
                                         <target>
-                                            <move
-                                              file="${project.basedir}/target/classes/module-info.class"
-                                              todir="${project.basedir}/target/classes/META-INF/versions/9"
-                                              failonerror="false"
-                                              quiet="true"
-                                            />
+                                            <move file="${project.basedir}/target/classes/module-info.class" todir="${project.basedir}/target/classes/META-INF/versions/9" failonerror="false" quiet="true" />
                                         </target>
                                     </configuration>
                                 </execution>
@@ -260,7 +255,7 @@
                             </goals>
                             <configuration>
                                 <rules>
-                                    <dependencyConvergence/>
+                                    <dependencyConvergence />
                                     <requireJavaVersion>
                                         <version>${maven.enforcer.require.java.version}</version>
                                     </requireJavaVersion>
