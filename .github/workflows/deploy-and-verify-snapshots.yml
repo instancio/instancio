@@ -39,4 +39,4 @@ jobs:
       - name: "Test"
         # use the deployed snapshot of instancio-test-support
         # because it cannot be compiled with Java 8
-        run: cd instancio-tests && mvn -B -pl -:instancio-test-support,-:jpms-spi-impl verify
+        run: cd instancio-tests && mvn -B -pl -:instancio-test-support verify
