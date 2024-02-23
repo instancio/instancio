@@ -21,6 +21,8 @@
 
     <description>Instancio PMD rule set</description>
 
+    <exclude-pattern>.*/module-info.java</exclude-pattern>
+
     <rule ref="category/java/bestpractices.xml">
         <exclude name="AccessorClassGeneration"/>
         <exclude name="AccessorMethodGeneration"/>
