@@ -26,6 +26,9 @@
         <version.logback>1.3.12</version.logback>
         <version.lombok>1.18.30</version.lombok>
         <version.mockito>4.11.0</version.mockito>
+        <!-- plugins -->
+        <version.maven-failsafe-plugin>3.2.5</version.maven-failsafe-plugin>
+        <version.maven-surefire-plugin>3.2.5</version.maven-surefire-plugin>
     </properties>
 
     <!-- These test modules are run against Java 8 and higher.
@@ -91,7 +94,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.5</version>
+                    <version>${version.maven-surefire-plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
