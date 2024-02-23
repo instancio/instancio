@@ -18,6 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.FieldSelectorBuilder;
 import org.instancio.GroupableSelector;
 import org.instancio.Scope;
+import org.instancio.ScopeableSelector;
 import org.instancio.internal.ApiValidator;
 
 import java.lang.annotation.Annotation;
@@ -91,6 +92,12 @@ public class FieldSelectorBuilderImpl
 
         addPredicate(field -> field.getDeclaredAnnotation(annotation) != null);
         description().append(".annotated(").append(annotation.getSimpleName()).append(')');
+        return this;
+    }
+
+    @Override
+    public ScopeableSelector lenient() {
+        setLenient();
         return this;
     }
 

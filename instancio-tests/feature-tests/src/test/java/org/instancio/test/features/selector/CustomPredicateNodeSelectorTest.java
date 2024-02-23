@@ -64,7 +64,13 @@ class CustomPredicateNodeSelectorTest {
         private static final int PRIORITY = Integer.MAX_VALUE; // lowest priority
 
         AddressStringSelector(final Predicate<InternalNode> nodePredicate, final String apiInvocationDescription) {
-            super(PRIORITY, nodePredicate, Collections.emptyList(), /* depth = */ null, apiInvocationDescription, new Throwable());
+            super(PRIORITY,
+                    nodePredicate,
+                    Collections.emptyList(),
+                    /* depth = */ null,
+                    /* isLenient = */ false,
+                    apiInvocationDescription,
+                    new Throwable());
         }
     }
 }

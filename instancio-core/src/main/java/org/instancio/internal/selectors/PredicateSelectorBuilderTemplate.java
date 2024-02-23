@@ -34,6 +34,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
     private final List<Predicate<T>> predicates = new ArrayList<>(3);
     private final StringBuilder description = new StringBuilder(128);
     private List<Scope> scopes;
+    private boolean isLenient;
 
     PredicateSelectorBuilderTemplate() {
         description.append(apiMethod());
@@ -67,6 +68,10 @@ abstract class PredicateSelectorBuilderTemplate<T>
                 .build();
     }
 
+    protected final void setLenient() {
+        this.isLenient = true;
+    }
+
     protected final void withScopes(final Scope... scopes) {
         ApiValidator.notNull(scopes, () -> ErrorMessageUtils.selectorNotNullErrorMessage(
                 "scopes must not be null.",
@@ -94,6 +99,9 @@ abstract class PredicateSelectorBuilderTemplate<T>
         final PredicateSelectorImpl.Builder builder = createBuilder();
         if (scopes != null) {
             builder.scopes(scopes);
+        }
+        if (isLenient) {
+            builder.lenient();
         }
         return builder
                 .apiInvocationDescription(description.toString())

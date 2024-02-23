@@ -120,8 +120,10 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             }
 
             selectors.put(selector, value);
-            unusedSelectors.add(selector);
             scopelessSelectors.computeIfAbsent(scopeless, selectorList -> new ArrayList<>(3)).add(selector);
+            if (!selector.isLenient()) {
+                unusedSelectors.add(selector);
+            }
         } else if (targetSelector instanceof PredicateSelector) {
             final PredicateSelectorImpl selector = (PredicateSelectorImpl) targetSelector;
             predicateSelectors.add(new PredicateSelectorEntry<>(selector, value));
@@ -136,7 +138,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
     public Set<TargetSelector> getUnusedKeys() {
         final Set<TargetSelector> unused = new HashSet<>(unusedSelectors);
         for (PredicateSelectorEntry<?> entry : predicateSelectors) {
-            if (!entry.matched) {
+            if (!entry.matched && !entry.predicateSelector.isLenient()) {
                 unused.add(entry.predicateSelector);
             }
         }

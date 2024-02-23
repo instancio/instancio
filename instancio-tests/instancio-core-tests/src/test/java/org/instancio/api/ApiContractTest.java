@@ -26,6 +26,7 @@ import org.instancio.GivenOriginPredicate;
 import org.instancio.GivenOriginPredicateAction;
 import org.instancio.GroupableSelector;
 import org.instancio.InstancioOfCollectionApi;
+import org.instancio.LenientSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
@@ -85,12 +86,6 @@ class ApiContractTest {
         assertThatClass(SelectorGroup.class).hasNoMethodsNamed("within", "toScope");
     }
 
-    @Test
-    @DisplayName("Should not allow passing scope as a selector and vice versa")
-    void shouldNotAllowPassingScopeAsSelectorAndViceVersa() {
-        assertThatClass(TargetSelector.class).isNotAssignableFromOrTo(Scope.class);
-    }
-
     /**
      * {@code Select.all(Select.all(Select.field("foo")))}
      */
@@ -98,6 +93,32 @@ class ApiContractTest {
     @DisplayName("Nested groups not allowed")
     void nestedGroups() {
         assertThatClass(SelectorGroup.class).isNotAssignableFromOrTo(GroupableSelector.class);
+    }
+
+    @Test
+    @DisplayName("Should not allow passing scope as a selector and vice versa")
+    void shouldNotAllowPassingScopeAsSelectorAndViceVersa() {
+        assertThatClass(TargetSelector.class).isNotAssignableFromOrTo(Scope.class);
+    }
+
+    @Test
+    @DisplayName("Root selector should not expose any methods")
+    void targetSelectorShouldNotExposeAnyMethods() {
+        assertThatClass(TargetSelector.class).hasNoMethods();
+    }
+
+    /**
+     * E.g. {@code lenient()} should not allow the following usage:
+     *
+     * <pre>{@code
+     * all(Person.class).lenient().toScope();
+     * all(Person.class).lenient().within(...);
+     * }
+     */
+    @Test
+    @DisplayName("Lenient selector should not expose the lenient() method")
+    void lenientSelectorShouldOnlyExposeLenientMethod() {
+        assertThatClass(LenientSelector.class).hasOnlyMethodsNamed("lenient");
     }
 
     /**
@@ -114,9 +135,17 @@ class ApiContractTest {
     }
 
     @Test
-    @DisplayName("Methods supported by predicate selector")
+    @DisplayName("Methods supported by Selector")
+    void selectorSupportedMethods() {
+        assertThatClass(Selector.class)
+                .hasOnlyMethodsNamed("atDepth", "lenient", "within", "toScope");
+    }
+
+    @Test
+    @DisplayName("Methods supported by PredicateSelector")
     void predicateSelectorSupportedMethods() {
-        assertThatClass(PredicateSelector.class).hasOnlyMethodsNamed("atDepth", "within", "toScope");
+        assertThatClass(PredicateSelector.class)
+                .hasOnlyMethodsNamed("atDepth", "lenient", "within", "toScope");
     }
 
     /**
@@ -134,18 +163,9 @@ class ApiContractTest {
      * {@code Select.all(Select.allStrings()).atDepth(1)}
      */
     @Test
-    @DisplayName("GroupableSelector should not expose atDepth() method")
-    void groupableSelectorShouldNotExposeAtDepthMethod() {
-        assertThatClass(GroupableSelector.class).hasNoMethodsNamed("atDepth");
-    }
-
-    /**
-     * E.g. {@code Select.root().atDepth(1)}
-     */
-    @Test
-    @DisplayName("Root selector should not expose atDepth() method")
-    void targetSelectorShouldNotExposeAtDepthMethod() {
-        assertThatClass(TargetSelector.class).hasNoMethodsNamed("atDepth");
+    @DisplayName("GroupableSelector should only expose lenient() method")
+    void groupableSelectorShouldOnlyExposeLenientMethod() {
+        assertThatClass(GroupableSelector.class).hasOnlyMethodsNamed("lenient");
     }
 
     /**
@@ -168,8 +188,9 @@ class ApiContractTest {
     }
 
     @Test
-    void atDepthSupportedMethods() {
-        assertThatClass(ScopeableSelector.class).hasOnlyMethodsNamed("toScope", "within");
+    void scopeableSelectorSupportedMethods() {
+        assertThatClass(ScopeableSelector.class)
+                .hasOnlyMethodsNamed("lenient", "toScope", "within");
     }
 
     @Test

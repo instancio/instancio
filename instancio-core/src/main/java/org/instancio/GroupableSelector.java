@@ -21,5 +21,5 @@ package org.instancio;
  * @see Select
  * @since 1.3.0
  */
-public interface GroupableSelector extends TargetSelector {
+public interface GroupableSelector extends TargetSelector, LenientSelector {
 }

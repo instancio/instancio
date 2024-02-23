@@ -457,7 +457,8 @@ Address address = Instancio.of(Address.class)
 ```
 
 In this particular example, the first entry remains unused,
-therefore  `lenient()` mode must be enabled to prevent unused selector error
+which would cause an unused selector error.
+Therefore `lenient()` mode must be enabled to prevent the error
 (see [Selector Strictness](#selector-strictness)).
 
 ### Selector Scopes
@@ -765,31 +766,48 @@ with as much care as production code. Keeping the tests clean and concise makes 
 
 #### Lenient Mode
 
-While the strict mode is highly recommended, there is an option to switch to lenient mode.
-The lenient mode can be enabled using the `lenient()` method:
+While strict mode is highly recommended, Instancio provides a few options to disable
+checking for unused selectors. The following are the possible options, with the least recommended last: 
 
-``` java title="Setting lenient mode using builder API"
+1. At selector level, by marking an individual selector as lenient
+2. At object level, by treating all selectors as lenient
+3. Via {{Settings}}
+4. Globally via `instancio.properties`
+
+The first option is shown below, where the selector is marked as `lenient()`:
+
+```java title="Marking an individual selector as lenient"
 Person person = Instancio.of(Person.class)
-    // snip...
+    .set(fields().named("someFieldThatMayNotExist").lenient(), "some value")
+    .create();
+```
+
+The second option is to enable lenient mode for all selectors:
+
+``` java title="Setting lenient mode using the builder API"
+Person person = Instancio.of(Person.class)
+    .set(fields().named("someFieldThatMayNotExist"), "some value")
+    .set(fields().named("anotherFieldThatMayNotExist"), "another value")
     .lenient()
     .create();
 ```
 
-Or alternatively, it can be enabled via `Settings`:
+Alternatively, lenient mode can be enabled using `Settings`:
 
-``` java title="Setting lenient mode using Settings"
+``` java title="Setting lenient mode using <code>Settings</code>"
 Settings settings = Settings.create()
     .set(Keys.MODE, Mode.LENIENT);
 
 Person person = Instancio.of(Person.class)
     .withSettings(settings)
-    // snip...
+    // snip... same selectors as above
     .create();
 ```
 
-The lenient mode can also be enabled globally using [`instancio.properties`](#overriding-settings-using-a-properties-file):
+Lastly, lenient mode can also be enabled globally using [`instancio.properties`](#overriding-settings-using-a-properties-file).
+This is the least recommended option.
 
-``` java title="Setting lenient mode using properties file"
+``` java title="Setting lenient mode using <code>instancio.properties</code>"
 mode=LENIENT
 ```
 

@@ -16,6 +16,7 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
+import org.instancio.ScopeableSelector;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
@@ -64,6 +65,13 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
 
     public SelectorImpl getWrapper() {
         return wrapper;
+    }
+
+    @Override
+    public ScopeableSelector lenient() {
+        return new PrimitiveAndWrapperSelectorImpl(
+                primitive.toBuilder().lenient().build(),
+                wrapper.toBuilder().lenient().build());
     }
 
     @Override
