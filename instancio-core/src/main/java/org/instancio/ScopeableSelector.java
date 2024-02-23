@@ -21,7 +21,15 @@ package org.instancio;
  *
  * @since 3.0.0
  */
-public interface ScopeableSelector extends GroupableSelector, ConvertibleToScope, WithinScope {
+public interface ScopeableSelector extends GroupableSelector, ConvertibleToScope, LenientSelector, WithinScope {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.4.0
+     */
+    @Override
+    GroupableSelector lenient();
 
     /**
      * {@inheritDoc}

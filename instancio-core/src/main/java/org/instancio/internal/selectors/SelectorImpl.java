@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.GroupableSelector;
 import org.instancio.Scope;
+import org.instancio.ScopeableSelector;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
@@ -44,6 +45,7 @@ public final class SelectorImpl
     private final Selector parent;
     private final Throwable stackTraceHolder;
     private final Integer depth;
+    private final boolean isLenient;
     private int hash;
 
     /**
@@ -59,13 +61,15 @@ public final class SelectorImpl
                          @NotNull final List<Scope> scopes,
                          @Nullable final Selector parent,
                          @NotNull final Throwable stackTraceHolder,
-                         @Nullable final Integer depth) {
+                         @Nullable final Integer depth,
+                         final boolean isLenient) {
 
         this.target = target;
         this.scopes = Collections.unmodifiableList(scopes);
         this.parent = parent;
         this.stackTraceHolder = stackTraceHolder;
         this.depth = depth;
+        this.isLenient = isLenient;
     }
 
     private SelectorImpl(final Builder builder) {
@@ -74,7 +78,8 @@ public final class SelectorImpl
                 ObjectUtils.defaultIfNull(builder.scopes, Collections.emptyList()),
                 builder.parent,
                 ObjectUtils.defaultIfNull(builder.stackTraceHolder, Throwable::new),
-                builder.depth);
+                builder.depth,
+                builder.isLenient);
     }
 
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
@@ -96,6 +101,11 @@ public final class SelectorImpl
         return toBuilder()
                 .depth(ApiValidator.validateDepth(depth))
                 .build();
+    }
+
+    @Override
+    public ScopeableSelector lenient() {
+        return toBuilder().lenient().build();
     }
 
     @Override
@@ -132,6 +142,10 @@ public final class SelectorImpl
 
     public Integer getDepth() {
         return depth;
+    }
+
+    public boolean isLenient() {
+        return isLenient;
     }
 
     @Override
@@ -187,6 +201,7 @@ public final class SelectorImpl
         builder.parent = this.parent;
         builder.stackTraceHolder = this.stackTraceHolder;
         builder.depth = this.depth;
+        builder.isLenient = this.isLenient;
         return builder;
     }
 
@@ -200,6 +215,7 @@ public final class SelectorImpl
         private Selector parent;
         private Throwable stackTraceHolder;
         private Integer depth;
+        private boolean isLenient;
 
         private Builder() {
         }
@@ -226,6 +242,11 @@ public final class SelectorImpl
 
         public Builder depth(final Integer depth) {
             this.depth = depth;
+            return this;
+        }
+
+        public Builder lenient() {
+            this.isLenient = true;
             return this;
         }
 

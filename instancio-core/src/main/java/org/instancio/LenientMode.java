@@ -28,8 +28,13 @@ import org.instancio.settings.Keys;
  * Strict mode can be disabled by invoking the {@link #lenient()} method
  * or using the {@link Keys#MODE} setting.
  *
+ * <p>Strict mode can catch potential data setup problems, therefore disabling
+ * it is <b>not</b> recommended. A better alternative is to mark an individual
+ * selector as lenient using the {@link LenientSelector#lenient()} method.
+ *
  * @param <T> the type of object to create
  * @see Keys#MODE
+ * @see LenientSelector
  * @since 4.0.0
  */
 interface LenientMode<T> {

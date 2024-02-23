@@ -49,6 +49,7 @@ public class PredicateSelectorImpl
     private final Predicate<InternalNode> nodePredicate;
     private final List<Scope> scopes;
     private final SelectorDepth selectorDepth;
+    private final boolean isLenient;
     private final String apiInvocationDescription;
     private final Throwable stackTraceHolder;
 
@@ -57,6 +58,7 @@ public class PredicateSelectorImpl
             final Predicate<InternalNode> nodePredicate,
             final List<Scope> scopes,
             final SelectorDepth selectorDepth,
+            final boolean isLenient,
             final String apiInvocationDescription,
             final Throwable stackTraceHolder) {
 
@@ -64,6 +66,7 @@ public class PredicateSelectorImpl
         this.nodePredicate = nodePredicate;
         this.scopes = Collections.unmodifiableList(scopes);
         this.selectorDepth = selectorDepth;
+        this.isLenient = isLenient;
         this.apiInvocationDescription = apiInvocationDescription;
         this.stackTraceHolder = stackTraceHolder;
     }
@@ -74,6 +77,7 @@ public class PredicateSelectorImpl
                 builder.nodePredicate,
                 builder.scopes,
                 builder.selectorDepth,
+                builder.isLenient,
                 defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION),
                 defaultIfNull(builder.stackTraceHolder, Throwable::new)
         );
@@ -118,6 +122,15 @@ public class PredicateSelectorImpl
         return builder(this).depth(depthPredicate).build();
     }
 
+    public boolean isLenient() {
+        return isLenient;
+    }
+
+    @Override
+    public ScopeableSelector lenient() {
+        return builder(this).lenient().build();
+    }
+
     @Override
     public Scope toScope() {
         return new PredicateScopeImpl(this);
@@ -159,6 +172,7 @@ public class PredicateSelectorImpl
         builder.apiInvocationDescription = copy.apiInvocationDescription;
         builder.stackTraceHolder = copy.stackTraceHolder;
         builder.selectorDepth = copy.selectorDepth;
+        builder.isLenient = copy.isLenient;
         return builder;
     }
 
@@ -167,6 +181,7 @@ public class PredicateSelectorImpl
         private Predicate<InternalNode> nodePredicate = Objects::nonNull;
         private List<Scope> scopes = new ArrayList<>(0);
         private SelectorDepth selectorDepth;
+        private boolean isLenient;
         private String apiInvocationDescription;
         private Throwable stackTraceHolder;
 
@@ -206,6 +221,11 @@ public class PredicateSelectorImpl
 
         Builder depth(final Predicate<Integer> predicate) {
             return withDepth(new SelectorDepth(predicate));
+        }
+
+        Builder lenient() {
+            this.isLenient = true;
+            return this;
         }
 
         private Builder withDepth(final SelectorDepth selectorDepth) {

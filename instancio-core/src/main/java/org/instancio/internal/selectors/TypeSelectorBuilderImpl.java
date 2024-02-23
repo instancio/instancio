@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.GroupableSelector;
 import org.instancio.Scope;
+import org.instancio.ScopeableSelector;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.internal.ApiValidator;
 
@@ -68,6 +69,12 @@ public class TypeSelectorBuilderImpl
 
         addPredicate(klass -> klass != type);
         description().append(".excluding(").append(type.getSimpleName()).append(')');
+        return this;
+    }
+
+    @Override
+    public ScopeableSelector lenient() {
+        setLenient();
         return this;
     }
 
