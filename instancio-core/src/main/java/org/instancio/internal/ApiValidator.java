@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.Model;
+import org.instancio.Node;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
@@ -66,17 +67,15 @@ public final class ApiValidator {
                         + CREATE_CLASS_HELP);
     }
 
-    public static Type validateTypeToken(@Nullable final TypeTokenSupplier<?> typeTokenSupplier) {
-        isTrue(typeTokenSupplier != null,
-                "type token must not be null"
-                        + "%n -> Please provide a valid type token%n"
-                        + CREATE_TYPE_TOKEN_HELP);
+    public static Type validateTypeToken(final TypeTokenSupplier<?> typeTokenSupplier) {
+        notNull(typeTokenSupplier, "type token must not be null"
+                + "%n -> Please provide a valid type token%n"
+                + CREATE_TYPE_TOKEN_HELP);
 
         final Type type = typeTokenSupplier.get();
-        isTrue(type != null,
-                "type token must not return a null Type"
-                        + "%n -> Please provide a valid Type%n"
-                        + CREATE_TYPE_TOKEN_HELP);
+        notNull(type, "type token must not return a null Type"
+                + "%n -> Please provide a valid Type%n"
+                + CREATE_TYPE_TOKEN_HELP);
 
         return type;
     }
@@ -143,8 +142,8 @@ public final class ApiValidator {
                 "%n -> class '%s' is not a subtype of '%s'", to.getTypeName(), from.getTypeName()));
     }
 
-    public static void validateKeyValue(@Nullable final SettingKey<?> key, @Nullable final Object value) {
-        isTrue(key != null, "setting key must not be null");
+    public static void validateKeyValue(final SettingKey<?> key, @Nullable final Object value) {
+        notNull(key, "setting key must not be null");
         if (!key.allowsNullValue()) {
             isTrue(value != null, "setting value for key '%s' must not be null", key.propertyKey());
         }
@@ -160,7 +159,7 @@ public final class ApiValidator {
         return collection;
     }
 
-    public static void validateGeneratorUsage(final InternalNode node, final Generator<?> generator) {
+    public static void validateGeneratorUsage(final Node node, final Generator<?> generator) {
         final AbstractGenerator<?> absGen = GeneratorSupport.unpackGenerator(generator);
         if (absGen == null) return;
 
@@ -171,7 +170,7 @@ public final class ApiValidator {
         }
     }
 
-    private static String generateMismatchErrorMessageTemplate(final InternalNode node, final String apiMethodName) {
+    private static String generateMismatchErrorMessageTemplate(final Node node, final String apiMethodName) {
         return "the target type is incompatible with the generator"
                 + "%n -> Method '" + apiMethodName + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
                 + (node.getField() == null ? "" : "%n -> Field: " + node.getField());

@@ -15,24 +15,22 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
 public final class Verify {
 
-    public static <T> T notNull(@Nullable final T object, final String message, final Object... values) {
+    public static <T> T notNull(final T object, final String message, final Object... values) {
         return Objects.requireNonNull(object, () -> String.format(message, values));
     }
 
-    public static <T> T[] notEmpty(@Nullable final T[] array, final String message, final Object... values) {
+    public static <T> T[] notEmpty(final T[] array, final String message, final Object... values) {
         isTrue(array != null && array.length > 0, message, values);
         return array;
     }
 
-    public static <T> Collection<T> notEmpty(@Nullable final Collection<T> collection, final String message, final Object... values) {
+    public static <T> Collection<T> notEmpty(final Collection<T> collection, final String message, final Object... values) {
         isTrue(collection != null && !collection.isEmpty(), message, values);
         return collection;
     }
