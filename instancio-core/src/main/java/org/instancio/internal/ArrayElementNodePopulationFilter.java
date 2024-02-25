@@ -23,20 +23,26 @@ import org.jetbrains.annotations.Nullable;
 final class ArrayElementNodePopulationFilter implements NodePopulationFilter {
 
     @Override
-    public boolean shouldSkip(final InternalNode node,
-                              final AfterGenerate afterGenerate,
-                              @Nullable final Object owner) {
+    public NodeFilterResult filter(final InternalNode node,
+                                   final AfterGenerate afterGenerate,
+                                   @Nullable final Object owner) {
 
         if (afterGenerate == AfterGenerate.POPULATE_NULLS) {
-            return node.getRawType().isPrimitive() || owner != null;
+            return node.getRawType().isPrimitive() || owner != null
+                    ? NodeFilterResult.SKIP
+                    : NodeFilterResult.GENERATE;
         }
 
         if (afterGenerate == AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES) {
-            return ReflectionUtils.neitherNullNorPrimitiveWithDefaultValue(
-                    node.getRawType(),
-                    owner);
+            if (ReflectionUtils.neitherNullNorPrimitiveWithDefaultValue(node.getRawType(), owner)) {
+                return NodeFilterResult.SKIP;
+            } else {
+                return NodeFilterResult.GENERATE;
+            }
         }
 
-        return afterGenerate != AfterGenerate.POPULATE_ALL;
+        return afterGenerate == AfterGenerate.POPULATE_ALL
+                ? NodeFilterResult.GENERATE
+                : NodeFilterResult.SKIP;
     }
 }

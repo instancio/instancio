@@ -21,6 +21,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.test.support.pojo.assignment.NonSetter;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
+import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Nested;
@@ -149,8 +150,16 @@ class ReflectionUtilsTest {
 
         final Field fieldNotDeclaredByPerson = ReflectionUtils.getField(IntegerHolder.class, "primitive");
         assertThatThrownBy(() -> ReflectionUtils.getFieldValue(fieldNotDeclaredByPerson, person))
-                .isExactlyInstanceOf(InstancioException.class)
-                .hasMessage("Unable to get value from: private int org.instancio.test.support.pojo.basic.IntegerHolder.primitive");
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("unable to get value from field");
+    }
+
+    @Test
+    void tryGetFieldValueOrElseNull() {
+        final Field nameField = ReflectionUtils.getField(Person.class, "name");
+
+        assertThat(ReflectionUtils.tryGetFieldValueOrElseNull(nameField, new Address())).isNull();
+        assertThat(ReflectionUtils.tryGetFieldValueOrElseNull(nameField, null)).isNull();
     }
 
     @Test

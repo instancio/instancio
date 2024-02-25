@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
 
 import static org.instancio.internal.util.Constants.NL;
 
-@SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
+@SuppressWarnings({Sonar.STRING_LITERALS_DUPLICATED, "StringBufferReplaceableByString"})
 public final class ErrorMessageUtils {
     private static final int INITIAL_SB_SIZE = 1024;
 
@@ -37,7 +37,18 @@ public final class ErrorMessageUtils {
         // non-instantiable
     }
 
-    @SuppressWarnings("StringBufferReplaceableByString")
+    public static String unableToGetValueFromField(final Field field, final Object target) {
+        return new StringBuilder(300)
+                .append("unable to get value from field.").append(NL)
+                .append(NL)
+                .append(" -> Field........: ").append(field).append(NL)
+                .append(" -> Target type..: ").append(target.getClass()).append(NL)
+                .append(NL)
+                .append("If you think this is a bug, please submit a bug report including the stacktrace:").append(NL)
+                .append("https://github.com/instancio/instancio/issues")
+                .toString();
+    }
+
     public static String unableToResolveFieldFromMethodRef(final Class<?> targetClass, final String lambdaImplMethodName) {
         final String at = Format.firstNonInstancioStackTraceLine(new Throwable());
         return new StringBuilder(1024).append(NL).append(NL)
@@ -74,7 +85,6 @@ public final class ErrorMessageUtils {
     }
 
     public static String createSetterSelectorWithFieldAssignmentErrorMessage(final String selectorLocation) {
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder(512)
                 .append("setter() selector cannot be used with AssignmentType.FIELD:").append(NL)
                 .append(" -> ").append(selectorLocation).append(NL)
@@ -141,7 +151,6 @@ public final class ErrorMessageUtils {
     }
 
     public static String abstractRootWithoutSubtype(final Class<?> klass) {
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder(1024)
                 .append("could not create an instance of ").append(klass).append(NL)
                 .append(NL)
@@ -180,7 +189,6 @@ public final class ErrorMessageUtils {
 
         final Settings settings = context.getSettings();
 
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("unable to populate Collection of size ").append(targetSize).append(": ")
                 .append(Format.nodePathToRootBlock(node)).append(NL)
@@ -231,7 +239,6 @@ public final class ErrorMessageUtils {
 
         final Settings settings = context.getSettings();
 
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("unable to populate Map of size ").append(targetSize).append(": ")
                 .append(Format.nodePathToRootBlock(node)).append(NL)
@@ -303,7 +310,6 @@ public final class ErrorMessageUtils {
         final String argType = Format.withoutPackage(value.getClass());
         final String argValue = StringUtils.quoteToString(value);
 
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append(NL)
                 .append("Throwing exception because:").append(NL)
@@ -328,7 +334,6 @@ public final class ErrorMessageUtils {
         final SetterStyle setterStyle = settings.get(Keys.SETTER_STYLE);
         final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
 
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append(NL)
                 .append("Throwing exception because:").append(NL)
@@ -359,7 +364,6 @@ public final class ErrorMessageUtils {
         final String argType = value == null ? "n/a" : Format.withoutPackage(value.getClass());
         final String argValue = StringUtils.quoteToString(value);
 
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append(NL)
                 .append("Throwing exception because:").append(NL)

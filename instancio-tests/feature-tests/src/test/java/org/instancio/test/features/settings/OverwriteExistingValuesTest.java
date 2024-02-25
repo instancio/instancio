@@ -16,16 +16,14 @@
 package org.instancio.test.features.settings;
 
 import org.instancio.Instancio;
-import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allInts;
@@ -34,56 +32,44 @@ import static org.instancio.Select.allStrings;
 @FeatureTag({Feature.SETTINGS, Feature.OVERWRITE_EXISTING_VALUES})
 class OverwriteExistingValuesTest {
 
-    @Nested
-    class OverwriteExistingValuesEnabled {
+    private static final int OVERWRITE_INT = -1;
+    private static final String OVERWRITE_STRING = "foo";
 
-        @Test
-        void overwriteExistingValuesIsEnabledByDefault() {
-            final ClassWithInitializedField result = Instancio.create(ClassWithInitializedField.class);
-            assertThat(result.getIntValue()).isNotEqualTo(ClassWithInitializedField.DEFAULT_INT_FIELD_VALUE);
-            assertThat(result.getStringValue()).isNotEqualTo(ClassWithInitializedField.DEFAULT_STRING_FIELD_VALUE);
-        }
+    /**
+     * By default, {@link Keys#OVERWRITE_EXISTING_VALUES} should be {@code true}.
+     */
+    @Test
+    void shouldOverwriteInitialisedValuesWithRandomValuesByDefault() {
+        final ClassWithInitializedField result = Instancio.create(ClassWithInitializedField.class);
 
-        @Test
-        void overwriteInitialisedFieldUsingSelector() {
-            final int overwriteInt = -1;
-            final String overwriteString = "foo";
-
-            final ClassWithInitializedField result = Instancio.of(ClassWithInitializedField.class)
-                    .set(allInts(), overwriteInt)
-                    .set(allStrings(), overwriteString)
-                    .create();
-
-            assertThat(result.getIntValue()).isEqualTo(overwriteInt);
-            assertThat(result.getStringValue()).isEqualTo(overwriteString);
-        }
+        assertThat(result.getIntValue()).isNotEqualTo(ClassWithInitializedField.DEFAULT_INT_FIELD_VALUE);
+        assertThat(result.getStringValue()).isNotEqualTo(ClassWithInitializedField.DEFAULT_STRING_FIELD_VALUE);
     }
 
-    @Nested
-    @ExtendWith(InstancioExtension.class)
-    class OverwriteExistingValuesDisabled {
+    @Test
+    void shouldPreserveInitialisedValues() {
+        final ClassWithInitializedField result = Instancio.of(ClassWithInitializedField.class)
+                .withSettings(Settings.create().set(Keys.OVERWRITE_EXISTING_VALUES, false))
+                .create();
 
-        @WithSettings
-        private final Settings settings = Settings.create()
-                .set(Keys.OVERWRITE_EXISTING_VALUES, false);
+        assertThat(result.getIntValue()).isEqualTo(ClassWithInitializedField.DEFAULT_INT_FIELD_VALUE);
+        assertThat(result.getStringValue()).isEqualTo(ClassWithInitializedField.DEFAULT_STRING_FIELD_VALUE);
+    }
 
-        @Test
-        void shouldNotOverwriteExistingValues() {
-            final ClassWithInitializedField result = Instancio.create(ClassWithInitializedField.class);
+    /**
+     * Should be able to overwrite initialised fields using selectors
+     * regardless of the {@link Keys#OVERWRITE_EXISTING_VALUES} setting.
+     */
+    @ValueSource(booleans = {true, false})
+    @ParameterizedTest
+    void shouldOverwriteInitialisedValuesUsingSelectors(final boolean overwriteExistingValues) {
+        final ClassWithInitializedField result = Instancio.of(ClassWithInitializedField.class)
+                .withSettings(Settings.create().set(Keys.OVERWRITE_EXISTING_VALUES, overwriteExistingValues))
+                .set(allInts(), OVERWRITE_INT)
+                .set(allStrings(), OVERWRITE_STRING)
+                .create();
 
-            assertThat(result.getIntValue()).isEqualTo(ClassWithInitializedField.DEFAULT_INT_FIELD_VALUE);
-            assertThat(result.getStringValue()).isEqualTo(ClassWithInitializedField.DEFAULT_STRING_FIELD_VALUE);
-        }
-
-        @Test
-        void shouldNotOverwriteExistingValuesUsingSelectors() {
-            final ClassWithInitializedField result = Instancio.of(ClassWithInitializedField.class)
-                    .set(allInts(), -1)
-                    .set(allStrings(), "foo")
-                    .create();
-
-            assertThat(result.getIntValue()).isEqualTo(ClassWithInitializedField.DEFAULT_INT_FIELD_VALUE);
-            assertThat(result.getStringValue()).isEqualTo(ClassWithInitializedField.DEFAULT_STRING_FIELD_VALUE);
-        }
+        assertThat(result.getIntValue()).isEqualTo(OVERWRITE_INT);
+        assertThat(result.getStringValue()).isEqualTo(OVERWRITE_STRING);
     }
 }

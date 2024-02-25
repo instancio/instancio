@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.generator.custom;
 
+import lombok.Data;
 import org.assertj.core.api.Condition;
 import org.instancio.Instancio;
 import org.instancio.Random;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
 
 @FeatureTag({
@@ -115,22 +117,18 @@ class GeneratorAdhocTest {
     @Test
     @DisplayName("subtype() can be specified for object created by custom generator")
     void subtype() {
+        @Data
         class Container {
             StringHolderInterface holderOne;
             StringHolderInterface holderTwo;
-
-            void setHolderOne(final StringHolderInterface holderOne) {
-                this.holderOne = holderOne;
-            }
-
-            void setHolderTwo(final StringHolderInterface holderTwo) {
-                this.holderTwo = holderTwo;
-            }
         }
 
         final String expectedHolderOneValue = "one";
         final Container result = Instancio.of(Container.class)
                 .subtype(all(StringHolderInterface.class), StringHolder.class)
+                // Need to specify the subtype of holderOne explicitly to match
+                // the class in the custom generator so that we can resolve the fields
+                .subtype(field(Container::getHolderOne), StringHolderAlternativeImpl.class)
                 .supply(all(Container.class), new Generator<Container>() {
                     @Override
                     public Container generate(final Random random) {

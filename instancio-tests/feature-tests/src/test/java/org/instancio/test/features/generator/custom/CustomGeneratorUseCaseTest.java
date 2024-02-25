@@ -22,8 +22,6 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
@@ -43,11 +41,8 @@ import static org.instancio.Select.field;
  * additional random objects and add to the collection.
  * <p>
  * In addition, I want to have control over whether my custom objects
- *
- * <ol>
- *  <li>will have null fields populated or not</li>
- *  <li>will be modifiable using selectors or not</li>
- * </ol>
+ * will have null fields populated or not.
+ * Initialised values should be modifiable using selectors.
  *
  * <p>This leads to the following scenarios:</p>
  *
@@ -60,11 +55,7 @@ import static org.instancio.Select.field;
  *   - do NOT populate null fields in my objects
  *   - allow my custom values to be modified via selectors
  *
- *   Case 3:
- *   - populate null fields in my objects
- *   - do NOT allow my custom values to be modified via selectors
- *
- *   Case 4: allow all
+ *   Case 3: allow all
  *   - populate null fields in my objects
  *   - allow my custom values to be modified via selectors
  * </pre>
@@ -156,43 +147,13 @@ class CustomGeneratorUseCaseTest {
 
     /**
      * <pre>
-     *   Case 3:
-     *   - populate null fields in my objects
-     *   - do NOT allow my custom values to be modified via selectors
-     * </pre>
-     */
-    @Test
-    void case3() {
-        final Generator<?> generator = getGenerator(AfterGenerate.POPULATE_NULLS);
-
-        final Person person = Instancio.of(Person.class)
-                .supply(field(Address.class, "phoneNumbers"), generator)
-                .generate(allStrings(), gen -> gen.text().pattern(ALL_STRINGS_OVERRIDE))
-                .set(field(Phone.class, "countryCode"), COUNTRY_CODE_OVERRIDE)
-                .withSettings(Settings.create().set(Keys.OVERWRITE_EXISTING_VALUES, false))
-                .create();
-
-        assertThat(person.getAddress().getPhoneNumbers())
-                // my objects are populated
-                // my custom values are NOT overwritten by selectors
-                .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS)
-                .anyMatch(p -> p.getCountryCode().equals(MY_COUNTRY_CODE) && p.getNumber().equals(MY_NUMBER))
-                .anyMatch(p -> p.getCountryCode().equals(MY_COUNTRY_CODE) && p.getNumber().equals(ALL_STRINGS_OVERRIDE))
-                // generated objects are modified via selectors
-                .filteredOn(p -> !p.getCountryCode().equals(MY_COUNTRY_CODE))
-                .hasSize(2)
-                .allMatch(p -> p.getCountryCode().equals(COUNTRY_CODE_OVERRIDE) && p.getNumber().equals(ALL_STRINGS_OVERRIDE));
-    }
-
-    /**
-     * <pre>
-     *   Case 4: allow all
+     *   Case 3: allow all
      *   - populate null fields in my objects
      *   - allow my custom values to be modified via selectors
      * </pre>
      */
     @Test
-    void case4() {
+    void case3() {
         final Generator<?> generator = getGenerator(AfterGenerate.POPULATE_NULLS);
 
         final Person person = Instancio.of(Person.class)
@@ -205,5 +166,4 @@ class CustomGeneratorUseCaseTest {
                 .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS)
                 .allMatch(p -> p.getCountryCode().equals(COUNTRY_CODE_OVERRIDE) && p.getNumber().equals(ALL_STRINGS_OVERRIDE));
     }
-
 }

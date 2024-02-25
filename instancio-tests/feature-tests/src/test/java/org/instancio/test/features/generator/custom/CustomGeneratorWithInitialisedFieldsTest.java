@@ -137,7 +137,8 @@ class CustomGeneratorWithInitialisedFieldsTest {
 
     /**
      * If OVERWRITE_EXISTING_VALUES is disabled, initialised fields should NOT be
-     * overwritten by the engine or via selectors, regardless of AfterGenerate value.
+     * overwritten by the engine regardless of AfterGenerate value.
+     * Initialised fields can only be modified using a selector.
      */
     @Nested
     @ExtendWith(InstancioExtension.class)
@@ -151,9 +152,19 @@ class CustomGeneratorWithInitialisedFieldsTest {
                     .create());
         }
 
-        @EnumSource(value = AfterGenerate.class)
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.EXCLUDE, names = "DO_NOT_MODIFY")
         @ParameterizedTest
         void initialisedFieldShouldBeOverwrittenBySetSelector(final AfterGenerate afterGenerate) {
+            assertInitialisedFieldsOverwritten(Instancio.of(baseModel(afterGenerate))
+                    .withSettings(OVERWRITES_DISABLED)
+                    .set(allLongs(), SELECTOR_OVERRIDE)
+                    .lenient()
+                    .create());
+        }
+
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.INCLUDE, names = "DO_NOT_MODIFY")
+        @ParameterizedTest
+        void initialisedFieldShouldNotBeOverwrittenBySetSelector(final AfterGenerate afterGenerate) {
             assertInitialisedFieldsNotModified(Instancio.of(baseModel(afterGenerate))
                     .withSettings(OVERWRITES_DISABLED)
                     .set(allLongs(), SELECTOR_OVERRIDE)

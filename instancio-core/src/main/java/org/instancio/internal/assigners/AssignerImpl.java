@@ -18,30 +18,21 @@ package org.instancio.internal.assigners;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
-import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
-import java.lang.reflect.Field;
-
 public class AssignerImpl implements Assigner {
 
     private final Assigner delegate;
-    private final boolean overwriteExistingValues;
 
     public AssignerImpl(final ModelContext<?> context) {
         this.delegate = resolveAssigner(context);
-        this.overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
     }
 
     @Override
     public void assign(final InternalNode node, final Object target, final Object value) {
-        final Field field = node.getField();
-
-        if (overwriteExistingValues || !ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(field, target)) {
-            delegate.assign(node, target, value);
-        }
+        delegate.assign(node, target, value);
     }
 
     private static Assigner resolveAssigner(final ModelContext<?> context) {
