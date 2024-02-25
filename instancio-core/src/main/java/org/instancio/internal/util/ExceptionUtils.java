@@ -41,7 +41,7 @@ public final class ExceptionUtils {
         if (LOG.isTraceEnabled()) {
             LOG.trace(formatted, t);
         } else {
-            LOG.debug("{} [{}]", formatted, getCausedBy(t));
+            LOG.debug("{} {}", formatted, getCausedBy(t));
         }
     }
 

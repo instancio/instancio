@@ -28,8 +28,35 @@ interface NodePopulationFilter {
      * @param node          to evaluate
      * @param afterGenerate hint specifying action to take for the given object
      * @param owner         the object created from the parent of the {@code node}
-     * @return {@code true} if node should be skipped, {@code false} otherwise
+     * @return result indicating what the action should be
      */
-    boolean shouldSkip(InternalNode node, AfterGenerate afterGenerate, Object owner);
+    NodeFilterResult filter(InternalNode node, AfterGenerate afterGenerate, Object owner);
 
+    /**
+     * The result determines what should happen to a given node.
+     */
+    enum NodeFilterResult {
+
+        /**
+         * Skip the node - no value will be generated.
+         */
+        SKIP,
+
+        /**
+         * Generate a value for a given node.
+         */
+        GENERATE,
+
+        /**
+         * Populate an initialised object.
+         *
+         * <p>Applicable only to field nodes that are:
+         *
+         * <ul>
+         *   <li>not {@code null}, and</li>
+         *   <li>the field's value is a POJO, collection, map, or array</li>
+         * </ul>
+         */
+        POPULATE
+    }
 }

@@ -120,16 +120,16 @@ class CustomArrayOfPrimitivesGeneratorTest {
             names = {"APPLY_SELECTORS", "POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"})
     @DisplayName("Engine should apply selector, overwriting existing values")
     void applySelectors(final AfterGenerate afterGenerate) {
-        final int min = 100;
-        final int max = 101;
+        final int expected = 100;
+
         final int[] result = Instancio.of(int[].class)
                 .supply(types().of(int[].class), new ArrayGenerator(afterGenerate))
-                .generate(allInts(), gen -> gen.ints().range(min, max))
+                .set(allInts(), expected)
                 .create();
 
-        // should generate new value for allInts() (overwriting existing values)
+        // should set new value for allInts() (overwriting existing values)
         for (final int element : result) {
-            assertThat(element).isBetween(min, max);
+            assertThat(element).isEqualTo(expected);
         }
     }
 }

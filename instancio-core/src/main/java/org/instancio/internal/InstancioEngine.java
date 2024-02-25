@@ -21,6 +21,7 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.hints.ArrayHint;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
+import org.instancio.internal.NodePopulationFilter.NodeFilterResult;
 import org.instancio.internal.assigners.Assigner;
 import org.instancio.internal.assigners.AssignerImpl;
 import org.instancio.internal.assignment.AssignmentErrorUtil;
@@ -192,6 +193,48 @@ class InstancioEngine {
         return nodeResult;
     }
 
+    private void populateArray(final InternalNode node, final GeneratorResult result) {
+        final InternalNode elementNode = node.getOnlyChild();
+        if (elementNode.is(NodeKind.POJO)) {
+            final Object[] array = (Object[]) result.getValue();
+            for (Object element : array) {
+                final GeneratorResult elementResult = GeneratorResult.create(element, result.getHints());
+                populateChildren(elementNode.getChildren(), elementResult);
+            }
+        }
+    }
+
+    private void populateCollection(final InternalNode node, final GeneratorResult result) {
+        final InternalNode elementNode = node.getOnlyChild();
+        if (elementNode.is(NodeKind.POJO)) {
+            final Iterable<?> iterable = (Iterable<?>) result.getValue();
+            for (Object element : iterable) {
+                final GeneratorResult elementResult = GeneratorResult.create(element, result.getHints());
+                populateChildren(elementNode.getChildren(), elementResult);
+            }
+        }
+    }
+
+    private void populateMap(final InternalNode node, final GeneratorResult result) {
+        final InternalNode keyNode = node.getChildren().get(0);
+        final InternalNode valueNode = node.getChildren().get(1);
+        final Map<?, ?> map = (Map<?, ?>) result.getValue();
+
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            final Object k = entry.getKey();
+            final Object v = entry.getValue();
+
+            if (keyNode.is(NodeKind.POJO)) {
+                final GeneratorResult keyResult = GeneratorResult.create(k, result.getHints());
+                populateChildren(keyNode.getChildren(), keyResult);
+            }
+            if (valueNode.is(NodeKind.POJO)) {
+                final GeneratorResult valueResult = GeneratorResult.create(v, result.getHints());
+                populateChildren(valueNode.getChildren(), valueResult);
+            }
+        }
+    }
+
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private GeneratorResult generateMap(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);
@@ -344,7 +387,7 @@ class InstancioEngine {
                 populateChildren(elementNodeChildren, GeneratorResult.create(currentValue, hints));
             }
 
-            if (nodeFilter.shouldSkip(elementNode, action, currentValue)) {
+            if (nodeFilter.filter(elementNode, action, currentValue) == NodeFilterResult.SKIP) {
                 continue;
             }
 
@@ -482,6 +525,7 @@ class InstancioEngine {
         final GeneratorResult customRecord = generateValue(node);
 
         if (!customRecord.isEmpty()) {
+            populateChildren(node.getChildren(), customRecord);
             return customRecord;
         }
 
@@ -560,6 +604,7 @@ class InstancioEngine {
         return GeneratorResult.emptyResult();
     }
 
+    @SuppressWarnings("PMD.CognitiveComplexity")
     private void populateChildren(
             final List<InternalNode> children,
             final GeneratorResult generatorResult) {
@@ -568,20 +613,47 @@ class InstancioEngine {
             return;
         }
 
-        final Object value = generatorResult.getValue();
-        final AfterGenerate action = generatorResult.getHints().afterGenerate();
+        final Object parentObject = generatorResult.getValue();
+        final Hints hints = generatorResult.getHints();
+        final AfterGenerate action = hints.afterGenerate();
 
         for (final InternalNode child : children) {
-            if (nodeFilter.shouldSkip(child, action, value)) {
+            final NodeFilterResult filterResult = nodeFilter.filter(child, action, parentObject);
+
+            if (filterResult == NodeFilterResult.GENERATE) {
+                final GeneratorResult result = createObject(child);
+
+                if (result.isDelayed()) {
+                    delayedNodeQueue.addLast(new DelayedNode(child, generatorResult));
+                } else {
+                    assignValue(parentObject, child, result);
+                }
                 continue;
             }
 
-            final GeneratorResult result = createObject(child);
+            // Check if this field was initialised externally
+            final Object childObject = ReflectionUtils.tryGetFieldValueOrElseNull(child.getField(), parentObject);
 
-            if (result.isDelayed()) {
-                delayedNodeQueue.addLast(new DelayedNode(child, generatorResult));
-            } else {
-                assignValue(value, child, result);
+            if (childObject == null) {
+                continue;
+            }
+
+            final GeneratorResult childResult = GeneratorResult.create(childObject, hints);
+
+            // Add field value to the object store.
+            // This allows fields initialised externally to work with assign()
+            generatedObjectStore.objectCreated(child, childResult);
+
+            if (filterResult == NodeFilterResult.POPULATE) {
+                if (child.is(NodeKind.POJO)) {
+                    populateChildren(child.getChildren(), childResult);
+                } else if (child.is(NodeKind.COLLECTION)) {
+                    populateCollection(child, childResult);
+                } else if (child.is(NodeKind.MAP)) {
+                    populateMap(child, childResult);
+                } else if (child.is(NodeKind.ARRAY)) {
+                    populateArray(child, childResult);
+                }
             }
         }
     }

@@ -44,6 +44,12 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         super(actual, ReflectionAssert.class);
     }
 
+    /**
+     * Verifies that given object, including nested objects,
+     * collection elements, and so on, are fully-populated.
+     *
+     * <p><b>Note:</b> this method is quite slow!
+     */
     public static ReflectionAssert assertThatObject(Object actual) {
         return new ReflectionAssert(actual);
     }

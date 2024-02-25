@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.instancio.internal.util.ErrorMessageUtils.unableToGetValueFromField;
+
 public final class ReflectionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
@@ -116,10 +118,27 @@ public final class ReflectionUtils {
     }
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    public static Object tryGetFieldValueOrElseNull(final Field field, final Object target) {
+        try {
+            field.setAccessible(true);
+            return field.get(target);
+        } catch (Exception ex) {
+            final String objectType = target == null ? null : target.getClass().getTypeName();
+            final String msg = String.format("Error getting field value." +
+                    "%n -> Field ........: %s" +
+                    "%n -> Declared by ..: %s", field, objectType);
+            ExceptionUtils.logException(msg, ex);
+            return null;
+        }
+    }
+
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public static Object getFieldValue(final Field field, final Object target) {
         try {
             field.setAccessible(true);
             return field.get(target);
+        } catch (IllegalArgumentException ex) {
+            throw Fail.withUsageError(unableToGetValueFromField(field, target), ex);
         } catch (Exception ex) {
             throw new InstancioException("Unable to get value from: " + field, ex);
         }

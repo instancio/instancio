@@ -33,6 +33,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -335,7 +337,7 @@ class AfterGenerateTest {
         }
 
         @Test
-        @DisplayName("DO_NOT_MODIFY: object created by the generator cannot be customised")
+        @DisplayName("DO_NOT_MODIFY: object created by the generator preserves initialised values")
         void doNotModify() {
             final StringAndPrimitiveFields result = create(AfterGenerate.DO_NOT_MODIFY);
 
@@ -345,73 +347,76 @@ class AfterGenerateTest {
         }
 
         @Test
-        @DisplayName("APPLY_SELECTORS: generated values can be customised, but custom values not overwritten")
+        @DisplayName("APPLY_SELECTORS: generated values can be customised using selectors")
         void applySelectors() {
             final StringAndPrimitiveFields result = create(AfterGenerate.APPLY_SELECTORS);
 
-            assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
+            assertCustomValuesOverwrittenBySelectors(result);
             assertThat(result.getFour()).isNull();
             assertThat(result.getIntFour()).isZero();
         }
 
         @Test
-        @DisplayName("POPULATE_NULLS: generated values can be customised, but custom values not overwritten")
+        @DisplayName("POPULATE_NULLS: generated values can be customised using selectors")
         void populateNulls() {
             final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS);
 
-            assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
+            assertCustomValuesOverwrittenBySelectors(result);
             assertThat(result.getFour()).isNotNull();
             assertThat(result.getIntFour()).isZero();
         }
 
         @Test
-        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: generated values can be customised, but custom values not overwritten")
+        @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: generated values can be customised using selectors")
         void populateNullsAndDefaultPrimitives() {
             final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
-            assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
+            assertCustomValuesOverwrittenBySelectors(result);
             assertThat(result.getFour()).isNotNull();
             assertThat(result.getIntFour()).isNotZero();
         }
 
         @Test
-        @DisplayName("POPULATE_ALL: generated values can be customised, but custom values not overwritten")
+        @DisplayName("POPULATE_ALL: generated values can be customised using selectors")
         void populateAll() {
             final StringAndPrimitiveFields result = create(AfterGenerate.POPULATE_ALL);
 
-            assertCustomFieldsAreModifiedOnlyViaCallbacks(result);
+            assertCustomValuesOverwrittenBySelectors(result);
             assertThat(result.getFour()).isNotNull();
             assertThat(result.getIntFour()).isNotZero();
         }
     }
 
-    @Nested
-    class CustomiseUsingPredicateSelectorTest {
-
-        private final Model<StringAndPrimitiveFields> model = Instancio.of(StringAndPrimitiveFields.class)
+    @ValueSource(booleans = {true, false})
+    @ParameterizedTest
+    void shouldOverwriteInitialisedFieldUsingPredicateSelector(final boolean overwriteExistingValues) {
+        final StringAndPrimitiveFields result = Instancio.of(StringAndPrimitiveFields.class)
+                .withSettings(Settings.create().set(Keys.OVERWRITE_EXISTING_VALUES, overwriteExistingValues))
                 .supply(all(StringAndPrimitiveFields.class),
                         new StringAndPrimitiveFieldsGenerator(AfterGenerate.APPLY_SELECTORS))
                 .set(fields().ofType(String.class), "override")
                 .set(fields().ofType(int.class), -1)
-                .toModel();
+                .create();
 
-        @Test
-        void overwriteExistingValuesDisabled() {
-            final StringAndPrimitiveFields result = Instancio.of(model)
-                    .withSettings(DISABLE_OVERWRITES)
-                    .create();
+        assertThatObject(result).hasAllFieldsOfTypeEqualTo(String.class, "override");
+        assertThatObject(result).hasAllFieldsOfTypeEqualTo(int.class, -1);
 
-            assertCustomValuesNotModified(result);
-            assertThat(result.getFour()).isEqualTo("override");
-            assertThat(result.getIntFour()).isEqualTo(-1);
-        }
+        assertThatObject(result).hasAllFieldsOfTypeEqualTo(String.class, "override");
+        assertThatObject(result).hasAllFieldsOfTypeEqualTo(int.class, -1);
+    }
 
-        @Test
-        void overwriteExistingValuesEnabled() {
-            final StringAndPrimitiveFields result = Instancio.create(model);
-            assertThatObject(result).hasAllFieldsOfTypeEqualTo(String.class, "override");
-            assertThatObject(result).hasAllFieldsOfTypeEqualTo(int.class, -1);
-        }
+    private static void assertCustomValuesOverwrittenBySelectors(final StringAndPrimitiveFields result) {
+        assertThat(result.getOne()).isEqualTo(OVERRIDE_ONE);
+        assertThat(result.getTwo())
+                .as("onComplete should still be called")
+                .isEqualTo(OVERRIDE_TWO_VIA_CALLBACK);
+        assertThat(result.getThree()).isEqualTo(THREE);
+
+        assertThat(result.getIntOne()).isEqualTo(OVERRIDE_INT_ONE);
+        assertThat(result.getIntTwo())
+                .as("onComplete should still be called")
+                .isEqualTo(OVERRIDE_INT_TWO_VIA_CALLBACK);
+        assertThat(result.getIntThree()).isEqualTo(INT_THREE);
     }
 
     private static void assertCustomValuesNotModified(final StringAndPrimitiveFields result) {

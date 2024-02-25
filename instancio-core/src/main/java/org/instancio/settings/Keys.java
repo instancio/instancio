@@ -421,8 +421,52 @@ public final class Keys {
             "on.set.method.unmatched", OnSetMethodUnmatched.class, OnSetMethodUnmatched.IGNORE);
 
     /**
-     * Specifies whether initialised fields are allowed to be overwritten;
+     * Specifies whether initialised fields can be overwritten by the engine to random values;
      * default is {@code true}; property name {@code overwrite.existing.values}.
+     *
+     * <p>If this setting is set to {@code false}, then initialised values
+     * will not be overwritten by the engine, but they can still be
+     * overwritten via the API using a selector.
+     *
+     * <p>Below are a few examples based on the following class:
+     *
+     * <pre>{@code
+     * class Foo {
+     *     String value = "initial";
+     * }
+     * }</pre>
+     * <br/>
+     *
+     * <p><b>Example 1:</b> initialised value is overwritten with a random value
+     * because by default {@code OVERWRITE_EXISTING_VALUES} is {@code true}.
+     *
+     * <pre>{@code
+     * // Sample output: Foo[value=VEQHJ]
+     * Foo foo = Instancio.create(Foo.class);
+     * }</pre>
+     * <br/>
+     *
+     * <p><b>Example 2:</b> initialised value is preserved when
+     * {@code OVERWRITE_EXISTING_VALUES} is {@code false}.
+     *
+     * <pre>{@code
+     * // Output: Foo[value=initial]
+     * Foo foo = Instancio.of(Foo.class)
+     *     .set(Keys.OVERWRITE_EXISTING_VALUES, false)
+     *     .create();
+     * }</pre>
+     * <br/>
+     *
+     * <p><b>Example 3:</b> initialised value can be overwritten using a selector
+     * regardless of the {@code OVERWRITE_EXISTING_VALUES} setting.
+     *
+     * <pre>{@code
+     * // Output: Foo[value=Hello]
+     * Foo foo = Instancio.of(Foo.class)
+     *     .set(Keys.OVERWRITE_EXISTING_VALUES, false)
+     *     .set(field(Foo::getValue), "Hello")
+     *     .create();
+     * }</pre>
      *
      * @since 2.0.0
      */

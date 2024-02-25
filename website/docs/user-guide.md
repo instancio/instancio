@@ -1763,70 +1763,21 @@ the `AfterGenerate` hint.
 
 !!! info "Custom generators can also be specified using the [Instancio Service Provider Interface](#instancio-service-provider-interface)"
 
-### Modifying `overwrite.existing.values` setting
-
-Instancio configuration has a property `overwrite.existing.values` which by default is set to `true`.
-This results in the following behaviour.
-
-```java linenums="1" hl_lines="2 7" title="Example 1: the field is overwritten when creating an object"
-class Address {
-    private String country = "USA"; // default
-    // snip...
-}
-
-Person person = Instancio.create(Person.class);
-assertThat(person.getAddress().getCountry()).isNotEqualTo("USA"); // overwritten!
-```
-!!! attention ""
-    <lnum>7</lnum> the country is no longer "USA" as it was overwritten with a random value.<br/>
-
-
-```java linenums="1" hl_lines="4 10 13" title="Example 2: the field is overwritten by applying a selector"
-class AddressGenerator implements Generator<Address> {
-    @Override
-    public Address generate(Random random) {
-        return Address.builder().country("USA").build();
-    }
-}
-
-Person person = Instancio.of(Person.class)
-    .supply(all(Address.class), new AddressGenerator())
-    .set(field(Address.class, "country"), "Canada")
-    .create();
-
-assertThat(person.getAddress().getCountry()).isEqualTo("Canada"); // overwritten!
-```
-!!! attention ""
-    <lnum>13</lnum> The country was overwritten via the applied selector.<br/>
-
-
-To disallow overwriting of initialised fields, the `overwrite.existing.values` setting can be set to `false`.
-Using the last example to illustrate:
-
-```java linenums="1" hl_lines="4" title="Example 3: the initial field is preserved"
-Person person = Instancio.of(Person.class)
-    .supply(all(Address.class), new AddressGenerator())
-    .set(field(Address.class, "country"), "Canada")
-    .withSettings(Settings.create().set(Keys.OVERWRITE_EXISTING_VALUES, false))
-    .create();
-
-assertThat(person.getAddress().getCountry()).isEqualTo("USA"); // not overwritten!
-```
-
 ## Assignment Settings
 
 Assignment settings control whether values are assigned directly to fields (default behaviour)
 or via setter methods. There are a few setting {{Keys}} that control the behaviour.
 
-| `Keys` constant           | Value type             | Default        | Description                                                   |
-|---------------------------|------------------------|----------------|---------------------------------------------------------------|
-| `ASSIGNMENT_TYPE`         | `AssignmentType`       | `FIELD`        | Should values be assigned via fields or setters               |
-| `SETTER_STYLE`            | `SetterStyle`          | `SET`          | Naming convention used for setters                            |
-| `ON_SET_FIELD_ERROR`      | `OnSetFieldError`      | `IGNORE`       | What should happen if field assignment fails                  |
-| `ON_SET_METHOD_ERROR`     | `OnSetMethodError`     | `ASSIGN_FIELD` | What should happen if method assignment fails                 |
-| `ON_SET_METHOD_NOT_FOUND` | `OnSetMethodNotFound`  | `ASSIGN_FIELD` | What should happen if a field does not have a matching setter |
-| `ON_SET_METHOD_UNMATCHED` | `OnSetMethodUnmatched` | `IGNORE`       | What should happen if a setter does not have a matching field |
-| `SETTER_EXCLUDE_MODIFIER` | `int`                  | `0` (none)     | Which setters should be ignored based on method modifiers     |
+| `Keys` constant             | Value type             | Default        | Description                                                   |
+|-----------------------------|------------------------|----------------|---------------------------------------------------------------|
+| `ASSIGNMENT_TYPE`           | `AssignmentType`       | `FIELD`        | Should values be assigned via fields or setters               |
+| `SETTER_STYLE`              | `SetterStyle`          | `SET`          | Naming convention used for setters                            |
+| `ON_SET_FIELD_ERROR`        | `OnSetFieldError`      | `IGNORE`       | What should happen if field assignment fails                  |
+| `ON_SET_METHOD_ERROR`       | `OnSetMethodError`     | `ASSIGN_FIELD` | What should happen if method assignment fails                 |
+| `ON_SET_METHOD_NOT_FOUND`   | `OnSetMethodNotFound`  | `ASSIGN_FIELD` | What should happen if a field does not have a matching setter |
+| `ON_SET_METHOD_UNMATCHED`   | `OnSetMethodUnmatched` | `IGNORE`       | What should happen if a setter does not have a matching field |
+| `SETTER_EXCLUDE_MODIFIER`   | `int`                  | `0` (none)     | Which setters should be ignored based on method modifiers     |
+| `OVERWRITE_EXISTING_VALUES` | `boolean`              | `true`         | Should initialised fields be overwritten with random values   |
 
 To enable assignment via methods, `Keys.ASSIGNMENT_TYPE` can be set to `AssignmentType.METHOD`.
 This setting only applies to mutable fields because `final` fields cannot have setters.
@@ -2113,6 +2064,53 @@ Pojo pojo = Instancio.of(Pojo.class)
     <lnum>6</lnum> Because the method is overloaded, the selector `setter(Pojo.class, "setValue", double.class)`
     must be used to specify the parameter explicitly, instead of the more concise `setter(Pojo::setValue)`.
 
+### Initialised Fields
+
+The setting `Keys.OVERWRITE_EXISTING_VALUES` controls whether Instancio can overwrite initialised fields
+with random values. "Initialised" is defined as having a non-default value. Default values are:
+
+- `0` for `byte`, `short`, `int`, `long`, `float`, `double`, and `char`
+- `false` for `boolean`
+- `null` for `Object`
+
+Below are a few examples of how this setting
+works using the following class (getters and setters omitted):
+
+```java linenums="1"
+class Foo {
+    String value = "initial";
+}
+```
+
+By default, `OVERWRITE_EXISTING_VALUES` is set to `true`.
+As a result, Instancio overwrites initialised fields with random values.
+
+```java linenums="1" hl_lines="3" title="Default behaviour"
+Foo foo = Instancio.create(Foo.class);
+
+// Sample output: Foo[value=VEQHJ]
+```
+
+When `OVERWRITE_EXISTING_VALUES` is set to false `false`, the initialised value is preserved.
+
+```java linenums="1" hl_lines="2 5" title="Preserve initialised values"
+Foo foo = Instancio.of(Foo.class)
+    .set(Keys.OVERWRITE_EXISTING_VALUES, false)
+    .create();
+
+// Output: Foo[value=initial]
+```
+
+Finally, regardless of the `OVERWRITE_EXISTING_VALUES` setting, initialised values can be overwritten using a selector.
+
+```java linenums="1" hl_lines="3 6" title="Overwrite initialised value using a selector"
+Foo foo = Instancio.of(Foo.class)
+    .set(Keys.OVERWRITE_EXISTING_VALUES, false)
+    .set(field(Foo::getValue), "Hello")
+    .create();
+
+// Output: Foo[value=Hello]
+```
 
 ## Maximum Depth Setting
 

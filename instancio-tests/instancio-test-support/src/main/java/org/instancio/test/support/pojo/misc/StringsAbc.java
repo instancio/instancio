@@ -16,8 +16,12 @@
 package org.instancio.test.support.pojo.misc;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
+@SuperBuilder
+@NoArgsConstructor
 @SuppressWarnings("java:S1104")
 public class StringsAbc {
     public String a;

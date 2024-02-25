@@ -20,8 +20,25 @@ public final class Constants {
         // non-instantiable
     }
 
+    /**
+     * Default min array/collection size.
+     */
     public static final int MIN_SIZE = 2;
+
+    /**
+     * Default max array/collection size.
+     */
     public static final int MAX_SIZE = 6;
+
+    /**
+     * Default min for numeric types.
+     */
+    public static final int NUMERIC_MIN = 1;
+
+    /**
+     * Default max for numeric types.
+     */
+    public static final int NUMERIC_MAX = 10_000;
 
     public static final int SAMPLE_SIZE_D = 9;
     public static final int SAMPLE_SIZE_DD = 99;

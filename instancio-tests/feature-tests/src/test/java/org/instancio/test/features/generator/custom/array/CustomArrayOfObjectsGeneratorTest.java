@@ -27,12 +27,14 @@ import org.instancio.test.support.pojo.interfaces.ItemInterface;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.field;
 import static org.instancio.Select.types;
 
 @FeatureTag({
@@ -48,6 +50,7 @@ class CustomArrayOfObjectsGeneratorTest {
     private static final int ARRAY_SIZE = 3;
     private static final int POPULATED_INDEX = 1;
     private static final String ORIGINAL_VALUE = "original-value";
+    private static final String NEW_VALUE = "new-value";
 
     private static class ArrayGenerator implements Generator<ItemInterface<String>[]> {
         private final AfterGenerate afterGenerate;
@@ -123,6 +126,65 @@ class CustomArrayOfObjectsGeneratorTest {
             if (i != POPULATED_INDEX) {
                 assertThat(result[i]).isNull();
             }
+        }
+    }
+
+    /**
+     * Test applying a selector to array element's field
+     * using different {@link AfterGenerate} values.
+     */
+    @Nested
+    class ArrayElementFieldTest {
+
+        @Test
+        void doNotModify_shouldNotApplySelectorToArrayElementField() {
+            final AfterGenerate afterGenerate = AfterGenerate.DO_NOT_MODIFY;
+
+            final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
+                    .supply(types().of(ItemInterface[].class), new ArrayGenerator(afterGenerate))
+                    .subtype(all(ItemInterface.class), Item.class)
+                    .set(field(Item<String>::getValue), NEW_VALUE)
+                    .lenient() // since selector is not applied
+                    .create();
+
+            assertThat(result[POPULATED_INDEX].getValue()).isEqualTo(ORIGINAL_VALUE);
+
+            for (int i = 0; i < result.length; i++) {
+                if (i != POPULATED_INDEX) {
+                    assertThat(result[i]).isNull();
+                }
+            }
+        }
+
+        @Test
+        void applySelectors_shouldApplySelectorToArrayElementField_ButNotPopulateNullIndices() {
+            final AfterGenerate afterGenerate = AfterGenerate.APPLY_SELECTORS;
+
+            final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
+                    .supply(types().of(ItemInterface[].class), new ArrayGenerator(afterGenerate))
+                    .subtype(all(ItemInterface.class), Item.class)
+                    .set(field(Item<String>::getValue), NEW_VALUE)
+                    .create();
+
+            assertThat(result[POPULATED_INDEX].getValue()).isEqualTo(NEW_VALUE);
+
+            for (int i = 0; i < result.length; i++) {
+                if (i != POPULATED_INDEX) {
+                    assertThat(result[i]).isNull();
+                }
+            }
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = AfterGenerate.class, mode = EnumSource.Mode.EXCLUDE, names = {"DO_NOT_MODIFY", "APPLY_SELECTORS"})
+        void shouldPopulateNullIndicesAndApplySelectorToAllElements(final AfterGenerate afterGenerate) {
+            final ItemInterface<String>[] result = Instancio.of(new TypeToken<ItemInterface<String>[]>() {})
+                    .supply(types().of(ItemInterface[].class), new ArrayGenerator(afterGenerate))
+                    .subtype(all(ItemInterface.class), Item.class)
+                    .set(field(Item<String>::getValue), NEW_VALUE)
+                    .create();
+
+            assertThat(result).allMatch(r -> NEW_VALUE.equals(r.getValue()));
         }
     }
 }
