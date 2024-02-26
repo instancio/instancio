@@ -115,11 +115,11 @@ public final class AssignmentSelectorMap {
         g.init(context);
 
         final Generator<T> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
-        final InternalGeneratorHint internalHint = generator.hints().get(InternalGeneratorHint.class);
+        final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
 
-        Optional.ofNullable(internalHint)
-                .map(InternalGeneratorHint::targetClass)
-                .ifPresent(klass -> generatorSubtypeMap.put(assignment.getDestination(), klass));
+        if (hint != null && hint.targetClass() != null) {
+            generatorSubtypeMap.put(assignment.getDestination(), hint.targetClass());
+        }
 
         return generator;
     }

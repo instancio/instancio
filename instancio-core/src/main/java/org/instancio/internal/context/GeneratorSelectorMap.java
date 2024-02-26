@@ -89,11 +89,11 @@ class GeneratorSelectorMap {
         final Generator<?> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
         selectorMap.put(targetSelector, generator);
 
-        final InternalGeneratorHint internalHint = generator.hints().get(InternalGeneratorHint.class);
+        final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
 
-        Optional.ofNullable(internalHint)
-                .map(InternalGeneratorHint::targetClass)
-                .ifPresent(klass -> generatorSubtypeMap.put(targetSelector, klass));
+        if (hint != null && hint.targetClass() != null) {
+            generatorSubtypeMap.put(targetSelector, hint.targetClass());
+        }
     }
 
     SelectorMap<Generator<?>> getSelectorMap() {
