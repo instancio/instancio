@@ -92,7 +92,7 @@ public final class SelectorProcessor {
 
         } else if (selector instanceof PredicateSelectorImpl) {
             final PredicateSelectorImpl ps = (PredicateSelectorImpl) selector;
-            final PredicateSelectorImpl processed = PredicateSelectorImpl.builder(ps)
+            final PredicateSelectorImpl processed = ps.toBuilder()
                     .scopes(createScopeWithRootClass(ps.getScopes()))
                     .build();
 

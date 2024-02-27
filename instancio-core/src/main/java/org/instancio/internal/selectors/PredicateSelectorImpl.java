@@ -114,12 +114,12 @@ public class PredicateSelectorImpl
 
     @Override
     public ScopeableSelector atDepth(final int depth) {
-        return builder(this).depth(depth).build();
+        return toBuilder().depth(depth).build();
     }
 
     @Override
     public ScopeableSelector atDepth(final Predicate<Integer> depthPredicate) {
-        return builder(this).depth(depthPredicate).build();
+        return toBuilder().depth(depthPredicate).build();
     }
 
     public boolean isLenient() {
@@ -128,7 +128,7 @@ public class PredicateSelectorImpl
 
     @Override
     public ScopeableSelector lenient() {
-        return builder(this).lenient().build();
+        return toBuilder().lenient().build();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class PredicateSelectorImpl
 
     @Override
     public GroupableSelector within(final Scope... scopes) {
-        return builder(this).scopes(Arrays.asList(scopes)).build();
+        return toBuilder().scopes(Arrays.asList(scopes)).build();
     }
 
     @Override
@@ -160,20 +160,20 @@ public class PredicateSelectorImpl
         return s;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public Builder toBuilder() {
+        Builder builder = new Builder();
+        builder.priority = priority;
+        builder.nodePredicate = nodePredicate;
+        builder.scopes = scopes;
+        builder.apiInvocationDescription = apiInvocationDescription;
+        builder.stackTraceHolder = stackTraceHolder;
+        builder.selectorDepth = selectorDepth;
+        builder.isLenient = isLenient;
+        return builder;
     }
 
-    public static Builder builder(final PredicateSelectorImpl copy) {
-        Builder builder = new Builder();
-        builder.priority = copy.priority;
-        builder.nodePredicate = copy.nodePredicate;
-        builder.scopes = copy.scopes;
-        builder.apiInvocationDescription = copy.apiInvocationDescription;
-        builder.stackTraceHolder = copy.stackTraceHolder;
-        builder.selectorDepth = copy.selectorDepth;
-        builder.isLenient = copy.isLenient;
-        return builder;
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static final class Builder {
@@ -223,7 +223,7 @@ public class PredicateSelectorImpl
             return withDepth(new SelectorDepth(predicate));
         }
 
-        Builder lenient() {
+        public Builder lenient() {
             this.isLenient = true;
             return this;
         }

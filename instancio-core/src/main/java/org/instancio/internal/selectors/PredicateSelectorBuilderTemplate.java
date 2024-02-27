@@ -55,7 +55,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
     @Override
     public final ScopeableSelector atDepth(final int depth) {
         final PredicateSelectorImpl copy = build();
-        return PredicateSelectorImpl.builder(copy)
+        return copy.toBuilder()
                 .depth(depth)
                 .build();
     }
@@ -63,7 +63,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
     @Override
     public final ScopeableSelector atDepth(final Predicate<Integer> predicate) {
         final PredicateSelectorImpl copy = build();
-        return PredicateSelectorImpl.builder(copy)
+        return copy.toBuilder()
                 .depth(predicate)
                 .build();
     }
