@@ -28,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -61,6 +62,7 @@ class InternalModelDumpTest {
 
         final ModelContext<?> context = ModelContext.builder(Phone.class)
                 .withSeed(seed)
+                .withSupplier(field(Phone::getCountryCode), () -> "+123")
                 .verbose() // enable verbose
                 .build();
 
@@ -101,7 +103,7 @@ class InternalModelDumpTest {
                         """,
 
                 """
-                        ### Node hierarchy
+                        ### Nodes
 
                         Format: <depth:class: field>
 
@@ -113,8 +115,18 @@ class InternalModelDumpTest {
                          -> Model max depth .......: 8
                          -> Total nodes ...........: 3
                          -> Seed ..................: 123
+                        """,
+                """
+                        ### Selectors
 
-                        Done. The create() method that was run with verbose() enabled at:
+                        Selectors and matching nodes, if any:
+
+                         -> Method: generate(), set(), supply()
+                            - field(Phone, "countryCode")
+                               \\_ Node[Phone.countryCode, depth=1, type=String]
+
+                        ________________________________________________________________________________________
+                        Done. Reminder to remove verbose() from:
                         """
         );
     }
