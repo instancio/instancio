@@ -69,7 +69,7 @@ public final class NodeContext {
     }
 
     public Set<TargetSelector> getAssignmentOriginSelectors(final InternalNode node) {
-        return assignmentOriginSelectors.getOriginSelectors(node);
+        return assignmentOriginSelectors.getSelectorMap().getSelectors(node);
     }
 
     /**

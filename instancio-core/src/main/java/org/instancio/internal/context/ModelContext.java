@@ -194,6 +194,21 @@ public final class ModelContext<T> {
         }
     }
 
+    public Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> getSelectors(final InternalNode rootNode) {
+        final SelectorNodeMatchesCollector collector = SelectorNodeMatchesCollector.builder()
+                .ignoredSelectorMap(ignoredSelectorMap.getSelectorMap())
+                .nullableSelectorMap(nullableSelectorMap.getSelectorMap())
+                .onCompleteCallbackSelectorMap(onCompleteCallbackSelectorMap.getSelectorMap())
+                .subtypeSelectorMap(subtypeSelectorMap.getSelectorMap())
+                .generatorSelectorMap(generatorSelectorMap.getSelectorMap())
+                .assignmentOriginSelectorMap(assignmentSelectorMap.getOriginSelectors().getSelectorMap())
+                .assignmentDestinationSelectorMap(assignmentSelectorMap.getDestinationSelectors().getSelectorMap())
+                .build();
+
+        return collector.getNodeMatches(rootNode);
+    }
+
+
     public Type getRootType() {
         return rootType;
     }

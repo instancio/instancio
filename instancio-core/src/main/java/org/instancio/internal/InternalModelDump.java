@@ -15,11 +15,15 @@
  */
 package org.instancio.internal;
 
+import org.instancio.TargetSelector;
+import org.instancio.internal.context.ApiMethodSelector;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeStats;
 import org.instancio.internal.util.Format;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.instancio.internal.util.Constants.NL;
@@ -28,7 +32,7 @@ final class InternalModelDump {
 
     private final Consumer<String> consumer;
 
-    InternalModelDump(final Consumer<String> consumer) {
+    private InternalModelDump(final Consumer<String> consumer) {
         this.consumer = consumer;
     }
 
@@ -51,8 +55,7 @@ final class InternalModelDump {
         final NodeStats nodeStats = NodeStats.compute(rootNode);
         final String location = Format.firstNonInstancioStackTraceLine(new Throwable());
 
-        //noinspection StringBufferReplaceableByString
-        return new StringBuilder(10_000)
+        final StringBuilder sb = new StringBuilder(10_000)
                 .append(" _____              _                       _          __  __             _        _").append(NL)
                 .append("|_   _|            | |                     (_)        |  \\/  |           | |      | |").append(NL)
                 .append("  | |   _ __   ___ | |_  __ _  _ __    ___  _   ___   | \\  / |  ___    __| |  ___ | |").append(NL)
@@ -68,7 +71,7 @@ final class InternalModelDump {
                 .append(NL)
                 .append(context.getSettings()).append(NL)
                 .append(NL)
-                .append("### Node hierarchy").append(NL)
+                .append("### Nodes").append(NL)
                 .append(NL)
                 .append("Format: <depth:class: field>").append(NL)
                 .append(NL)
@@ -77,10 +80,42 @@ final class InternalModelDump {
                 .append(" -> Model max depth .......: ").append(context.getMaxDepth()).append(NL)
                 .append(" -> Total nodes ...........: ").append(nodeStats.getTotalNodes()).append(NL)
                 .append(" -> Seed ..................: ").append(context.getRandom().getSeed()).append(NL)
-                .append(NL)
-                .append("Done. The create() method that was run with verbose() enabled at:").append(NL)
+                .append(NL);
+
+        appendSelectorMatches(sb, model);
+
+        return sb
+                .append("________________________________________________________________________________________").append(NL)
+                .append("Done. Reminder to remove verbose() from:").append(NL)
                 .append(location).append(NL)
-                .append("________________________________________________________________________________________")
                 .toString();
+    }
+
+    private static void appendSelectorMatches(final StringBuilder sb, final InternalModel<?> model) {
+        final InternalNode rootNode = model.getRootNode();
+        final ModelContext<?> context = model.getModelContext();
+        final Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> map = context.getSelectors(rootNode);
+
+        sb.append("### Selectors").append(NL)
+                .append(NL)
+                .append("Selectors and matching nodes, if any:").append(NL)
+                .append(NL);
+
+        for (Map.Entry<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> entry : map.entrySet()) {
+            final Map<TargetSelector, Set<InternalNode>> selectorNodes = entry.getValue();
+
+            if (selectorNodes.isEmpty()) {
+                continue;
+            }
+
+            final ApiMethodSelector method = entry.getKey();
+            sb.append(" -> Method: ").append(method.getDescription()).append(NL);
+
+            selectorNodes.forEach((selector, nodes) -> {
+                sb.append("    - ").append(selector).append(NL);
+                nodes.forEach(node -> sb.append("       \\_ ").append(node).append(NL));
+                sb.append(NL);
+            });
+        }
     }
 }

@@ -38,7 +38,7 @@ import java.util.function.BiConsumer;
  * @param <V> value type
  */
 @InternalApi
-interface SelectorMap<V> {
+public interface SelectorMap<V> {
 
     /**
      * Returns all selectors that match given {@code node}.
