@@ -21,6 +21,8 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -34,6 +36,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@FeatureTag({Feature.SEED, Feature.WITH_SEED_ANNOTATION})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(InstancioExtension.class)
 class WithoutSeedAnnotationTest {

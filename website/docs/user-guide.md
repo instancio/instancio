@@ -2239,109 +2239,6 @@ graph LR
 
 where **all** elements of `List<OrderItem>` are the **same instance** of the `OrderItem`.
 
-## Seed
-
-Before creating an object, Instancio initialises a random seed value.
-This seed value is used internally by the pseudorandom number generator, that is, `java.util.Random`.
-Instancio ensures that the same instance of the random number generator is used throughout object creation, from start to finish.
-This means that Instancio can reproduce the same object again by using the same seed.
-This feature allows reproducing failed tests (see the section on [reproducing tests with JUnit](#reproducing-failed-tests)).
-
-In addition, Instancio handles classes like `UUID` and `LocalDateTime`,
-where a minor difference in values can cause an object equality check to fail.
-These classes are generated in such a way, that for a given seed value, the generated values will be the same.
-To illustrate with an example, we will use the following `SamplePojo` class.
-
-``` java linenums="1" title="Sample POJO"
-class SamplePojo {
-    private UUID uuid;
-    private LocalDateTime localDateTime;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SamplePojo)) return false;
-        SamplePojo p = (SamplePojo) o;
-        return uuid.equals(p.uuid) && localDateTime.equals(p.localDateTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid, localDateTime);
-    }
-}
-```
-
-By supplying the same seed value, the same object is generated:
-
-``` java linenums="1" title="Generating two SamplePojo instances with the same seed"
-final long seed = 123;
-
-SamplePojo pojo1 = Instancio.of(SamplePojo.class)
-    .withSeed(seed)
-    .create();
-
-SamplePojo pojo2 = Instancio.of(SamplePojo.class)
-    .withSeed(seed)
-    .create();
-
-assertThat(pojo1).isEqualTo(pojo2);
-```
-
-If the objects are printed, both produce the same output:
-
-```
-SamplePojo(
-  uuid=3bf992ad-1121-36a2-826d-94112bf1d82b,
-  localDateTime=2069-10-15T10:28:31.940
-)
-```
-
-!!! warning "While the generated values are the same, it is not recommended to write assertions using hard-coded values."
-
-### Specifying Seed Value
-
-By default, if no custom seed is specified, Instancio generates a random seed value.
-Therefore, each execution results in different outputs.
-This behaviour can be overridden by specifying a custom seed using any of the options below.
-These are ranked from lowest to highest precedence:
-
-- `instancio.properties` file
-- `@Seed` and `@WithSettings` annotations (when using [`InstancioExtension`](#junit-jupiter-integration) for  JUnit Jupiter)
-- [`Settings`](#overriding-settings-programmatically) class
-- {{withSeed}}  method of the builder API
-
-For example, if a seed value is specified in the properties file, then Instancio will use this seed to generate the data
-and each execution will result in the same data being generated.
-If another seed is specified using `withSeed()` method, then it will take precedence over the one from the properties file.
-
-``` java linenums="1" title="Example: instancio.properties"
-seed = 123
-```
-
-``` java linenums="1" title="Seed precedence" hl_lines="1 4"
-SamplePojo pojo1 = Instancio.create(SamplePojo.class);
-
-SamplePojo pojo2 = Instancio.of(SamplePojo.class)
-    .withSeed(456)
-    .create();
-```
-!!! attention ""
-    <lnum>1</lnum> `pojo1` generated using seed `123` specified in `instancio.properties`.<br/>
-    <lnum>4</lnum> `pojo2` generated using seed `456` since `withSeed()` has higher precedence.
-
-
-### Getting the Seed Value
-
-Sometimes it is necessary to get the seed value that was used to generate the data. One such example is for reproducing failed tests. If you are using JUnit 5, the seed value is reported automatically using the `InstancioExtension` (see [JUnit Jupiter integration](#junit-jupiter-integration)). If you are using JUnit 4, TestNG, or Instancio standalone, the seed value can be obtained by calling the `asResult()` method of the builder API. This returns a `Result` containing the created object and the seed value that was used to populate its values.
-
-
-``` java linenums="1" title="Example of using asResult()"
-Result<Person> result = Instancio.of(Person.class).asResult();
-Person person = result.get();
-long seed = result.getSeed(); // seed value that was used for populating the person
-// snip...
-```
 
 # Cartesian Product
 
@@ -3107,6 +3004,128 @@ internal errors. This can be done via the `Settings` API or configuration file:
 fail.on.error=true
 ```
 
+# Seed
+
+Before creating an object, Instancio initialises a random seed value.
+This seed value is used internally by the pseudorandom number generator, that is, `java.util.Random`.
+Instancio ensures that the same instance of the random number generator is used throughout object creation, from start to finish.
+This means that Instancio can reproduce the same object again by using the same seed.
+This feature allows reproducing failed tests (see the section on [reproducing tests with JUnit](#reproducing-failed-tests)).
+
+In addition, Instancio handles classes like `UUID` and `LocalDateTime`,
+where a minor difference in values can cause an object equality check to fail.
+These classes are generated in such a way, that for a given seed value, the generated values will be the same.
+To illustrate with an example, we will use the following `SamplePojo` class.
+
+``` java linenums="1" title="Sample POJO"
+class SamplePojo {
+    private UUID uuid;
+    private LocalDateTime localDateTime;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SamplePojo)) return false;
+        SamplePojo p = (SamplePojo) o;
+        return uuid.equals(p.uuid) && localDateTime.equals(p.localDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, localDateTime);
+    }
+}
+```
+
+By supplying the same seed value, the same object is generated:
+
+``` java linenums="1" title="Generating two SamplePojo instances with the same seed"
+final long seed = 123;
+
+SamplePojo pojo1 = Instancio.of(SamplePojo.class)
+    .withSeed(seed)
+    .create();
+
+SamplePojo pojo2 = Instancio.of(SamplePojo.class)
+    .withSeed(seed)
+    .create();
+
+assertThat(pojo1).isEqualTo(pojo2);
+```
+
+If the objects are printed, both produce the same output:
+
+```
+SamplePojo(
+  uuid=3bf992ad-1121-36a2-826d-94112bf1d82b,
+  localDateTime=2069-10-15T10:28:31.940
+)
+```
+
+!!! warning "While the generated values are the same, it is not recommended to write assertions using hard-coded values."
+
+## Specifying Seed Value
+
+By default, if no custom seed is specified, Instancio generates a random seed value.
+Therefore, each execution results in different outputs.
+This behaviour can be overridden by specifying a custom seed using any of the options below.
+These are ranked from highest to lowest precedence:
+
+1. {{withSeed}}  method of the builder API
+1. {{withSettings}} or {{withSetting}} method of the builder API using `Keys.SEED`
+1. `@WithSettings` annotations (requires [`InstancioExtension`](#junit-jupiter-integration))
+1. `@Seed` annotation  (requires [`InstancioExtension`](#junit-jupiter-integration))
+1. `instancio.properties` file
+1. randomly seed generated seed
+
+For example, if a seed value is specified in the properties file, then Instancio will use this seed
+to generate the data and each execution will result in the same data being generated. If another seed
+is specified using `withSeed()` method, then it will take precedence over the one from the properties file.
+
+``` java linenums="1" title="Example: instancio.properties"
+seed = 123
+```
+
+``` java linenums="1" title="Seed precedence" hl_lines="1 4"
+SamplePojo pojo1 = Instancio.create(SamplePojo.class);
+
+SamplePojo pojo2 = Instancio.of(SamplePojo.class)
+    .withSeed(456)
+    .create();
+```
+!!! attention ""
+<lnum>1</lnum> `pojo1` generated using seed `123` specified in `instancio.properties`.<br/>
+<lnum>4</lnum> `pojo2` generated using seed `456` since `withSeed()` has higher precedence.
+
+Precedence rules are summarised in the following table, where each number represents a seed value,
+and `R` represents a random seed.
+
+| Random<br>seed | `.properties` | `@Seed` | `@WithSettings` | `.withSettings()` | `.withSeed()` | Actual<br>seed |
+|:--------------:|:-------------:|:-------:|:---------------:|:-----------------:|:-------------:|:--------------:|
+|       R        |       5       |    4    |        3        |         2         |     **1**     |     **1**      |
+|       R        |       5       |    4    |        3        |       **2**       |       -       |     **2**      |
+|       R        |       5       |    4    |      **3**      |         -         |       -       |     **3**      |
+|       R        |       5       |  **4**  |        -        |         -         |       -       |     **4**      |
+|       R        |     **5**     |    -    |        -        |         -         |       -       |     **5**      |
+|     **R**      |       -       |    -    |        -        |         -         |       -       |     **R**      |
+
+
+## Getting the Seed Value
+
+Sometimes it is necessary to get the seed value that was used to generate the data. One such example
+is for reproducing failed tests. If you are using JUnit 5, the seed value is reported automatically
+using the `InstancioExtension` (see [JUnit Jupiter integration](#junit-jupiter-integration)). If you are using JUnit 4, TestNG,
+or Instancio standalone, the seed value can be obtained by calling the `asResult()` method of the builder API.
+This returns a `Result` containing the created object and the seed value that was used to populate its values.
+
+
+``` java linenums="1" title="Example of using asResult()"
+Result<Person> result = Instancio.of(Person.class).asResult();
+Person person = result.get();
+long seed = result.getSeed(); // seed value that was used for populating the person
+// snip...
+```
+
 
 # JUnit Jupiter Integration
 
@@ -3154,8 +3173,14 @@ class ExampleTest {
     <lnum>13</lnum> Uses seed value `8276`.<br/>
     <lnum>15</lnum> Seed value `8276` goes out of scope.
 
-!!! note
-    Even though `person1` and `person3` are created using the same seed value of `8276`, they are actually distinct objects, each containing different values. This is because the same instance of the random number generator is used throughout the test method.
+Even though `person1` and `person3` are created using the same seed value of `8276`,
+they are actually distinct objects, each containing different values. This is because
+the same instance of the random number generator is used throughout the test method.
+
+It should be noted that if the test fails, only the seed generated internally is reported
+(`8276` in the above example). Seeds specified via `withSeed()` or `Settings` are not reported
+since the value is already known.
+
 
 ### Test Failure Reporting
 

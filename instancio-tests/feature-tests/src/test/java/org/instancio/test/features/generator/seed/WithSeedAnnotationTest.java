@@ -18,12 +18,15 @@ package org.instancio.test.features.generator.seed;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
+import org.instancio.test.support.tags.Feature;
+import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@FeatureTag(Feature.SEED)
 @ExtendWith(InstancioExtension.class)
 class WithSeedAnnotationTest {
 

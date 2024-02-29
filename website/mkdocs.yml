@@ -89,10 +89,11 @@ extra:
   SettingKey:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/settings/SettingKey.html" target="_blank">SettingKey</a>'
   Settings:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/settings/Settings.html" target="_blank">Settings</a>'
   When:  '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/When.html" target="_blank">When</a>'
-  withMaxDepth: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withMaxDepth(int)" target="_blank">withMaxDepth(int depth)</a>'
+  withMaxDepth: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withMaxDepth(int)" target="_blank">withMaxDepth(int)</a>'
   withNullable: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withNullable(org.instancio.TargetSelector)" target="_blank">withNullable(TargetSelector)</a>'
-  withSeed: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSeed(int)" target="_blank">withSeed(int seed)</a>'
+  withSeed: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSeed(long)" target="_blank">withSeed(long)</a>'
   withSettings: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSettings(org.instancio.settings.Settings)" target="_blank">withSettings(Settings)</a>'
+  withSetting: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSetting(org.instancio.settings.SettingKey,V)" target="_blank">withSetting(SettingKey&lt;T&gt;, T)</a>'
   # JUnit
   InstancioExtension:  '<a href="https://javadoc.io/doc/org.instancio/instancio-junit/latest/org/instancio/junit/InstancioExtension.html" target="_blank">InstancioExtension</a>'
   InstancioSource:  '<a href="https://javadoc.io/doc/org.instancio/instancio-junit/latest/org/instancio/junit/InstancioSource.html" target="_blank">@InstancioSource</a>'
