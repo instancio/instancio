@@ -31,7 +31,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 
-@FeatureTag({Feature.GENERATE, Feature.VALUE_SPEC, Feature.SETTINGS})
+@FeatureTag({Feature.GENERATE, Feature.VALUE_SPEC, Feature.SEED, Feature.SETTINGS})
 @ExtendWith(InstancioExtension.class)
 class ValueSpecWithGenerateAndSettingsSeedTest {
 

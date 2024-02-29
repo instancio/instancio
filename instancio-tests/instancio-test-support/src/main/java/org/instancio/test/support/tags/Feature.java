@@ -92,6 +92,7 @@ public enum Feature {
     PREDICATE_SELECTOR,
     ROOT_SELECTOR,
     SCOPE,
+    SEED,
     SELECTOR,
     SELECT_GROUP,
     DEPTH_SELECTOR,
