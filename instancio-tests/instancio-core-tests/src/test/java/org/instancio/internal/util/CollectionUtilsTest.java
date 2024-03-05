@@ -89,9 +89,20 @@ class CollectionUtilsTest {
 
     @Test
     void combine() {
-        assertThat(CollectionUtils.combine(Arrays.asList(1, 2), 3)).containsExactly(1, 2, 3);
-        assertThat(CollectionUtils.combine(Arrays.asList(1, 2))).containsExactly(1, 2);
+        assertThat(CollectionUtils.combine(List.of(1, 2), 3)).containsExactly(1, 2, 3);
+        assertThat(CollectionUtils.combine(List.of(1, 2))).containsExactly(1, 2);
         assertThat(CollectionUtils.combine(Collections.emptyList())).isEmpty();
+    }
+
+    @Test
+    void flatMap() {
+        assertThat(CollectionUtils.flatMap(List.of())).isEmpty();
+
+        assertThat(CollectionUtils.flatMap(
+                List.of(List.of(1, 2, 3), List.of(4, 5, 6)))).containsExactly(1, 2, 3, 4, 5, 6);
+
+        assertThat(CollectionUtils.flatMap(
+                List.of(List.of(), List.of(4, 5, 6)))).containsExactly(4, 5, 6);
     }
 
     @Test
@@ -121,7 +132,7 @@ class CollectionUtilsTest {
 
     @Test
     void shuffleSingleElementCollection() {
-        final Collection<Object> collection = new HashSet<>(Collections.singleton("foo"));
+        final Collection<Object> collection = new HashSet<>(Set.of("foo"));
         CollectionUtils.shuffle(collection, random);
         assertThat(collection).containsOnly("foo");
     }
@@ -131,7 +142,7 @@ class CollectionUtilsTest {
     void shuffleList() {
         final Set<Collection<Object>> shuffledResults = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final Collection<Object> collection = new ArrayList<>(Arrays.asList("foo", "bar", "baz"));
+            final Collection<Object> collection = Arrays.asList("foo", "bar", "baz");
             CollectionUtils.shuffle(collection, random);
             shuffledResults.add(collection);
         }
@@ -143,7 +154,7 @@ class CollectionUtilsTest {
     void shuffleSet() {
         final Set<Collection<Object>> shuffledResults = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final Collection<Object> collection = new ArrayList<>(Arrays.asList("foo", "bar", "baz"));
+            final Collection<Object> collection = Arrays.asList("foo", "bar", "baz");
             CollectionUtils.shuffle(collection, random);
             shuffledResults.add(collection);
         }

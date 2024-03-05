@@ -83,6 +83,17 @@ public final class CollectionUtils {
         return Collections.unmodifiableList(result);
     }
 
+    public static <T> List<T> flatMap(List<List<T>> lists) {
+        if (lists.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<T> results = new ArrayList<>();
+        for (List<T> list : lists) {
+            results.addAll(list);
+        }
+        return results;
+    }
+
     // same as List.indexOf() but using '==' instead of equals()
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public static int identityIndexOf(final Object obj, @NotNull final List<?> list) {
