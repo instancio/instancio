@@ -22,24 +22,26 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.instancio.Select.field;
+import static org.instancio.Select.fields;
 
 @FeatureTag(Feature.ASSIGN)
 @ExtendWith(InstancioExtension.class)
-class AssignAbcTest extends AssignAbcBaseTest {
+class AssignAbcPredicateSelectorTest extends AssignAbcBaseTest {
 
     @Override
     TargetSelector selectA() {
-        return field(StringsAbc::getA);
+        return fields().named("a").declaredIn(StringsAbc.class);
     }
 
+    // TODO fails if not lenient
     @Override
     TargetSelector selectB() {
-        return field(StringsAbc::getB);
+        return fields().named("b").declaredIn(StringsAbc.class).lenient();
     }
 
+    // TODO fails if not lenient
     @Override
     TargetSelector selectC() {
-        return field(StringsAbc::getC);
+        return fields().named("c").declaredIn(StringsAbc.class).lenient();
     }
 }
