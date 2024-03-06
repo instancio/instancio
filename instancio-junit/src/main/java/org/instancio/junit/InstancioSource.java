@@ -27,20 +27,20 @@ import java.lang.annotation.Target;
 /**
  * Provides arguments for {@code @ParameterizedTest} methods.
  * Supports multiple arguments. Each argument will be a fully-populated instance.
- * <p>
- * Example:
- * <pre class="code"><code class="java">
  *
+ * <p>Example:
+ * <pre><code>
  * &#064;ExtendWith(InstancioExtension.class)
  * class ExampleTest {
- *
  *     &#064;ParameterizedTest
- *     <b>&#064;InstancioSource</b>
- *     void someTestMethod(Person person) {
- *         // ... use supplied person
+ *     &#064;InstancioSource
+ *     void someTestMethod(String s, int n, Person person) {
+ *         // ... use generated arguments
  *     }
  * }
  * </code></pre>
+ *
+ * @since 1.1.8
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

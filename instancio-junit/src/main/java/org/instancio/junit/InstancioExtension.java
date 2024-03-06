@@ -16,6 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.junit.internal.ExtensionSupport;
+import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
@@ -30,41 +31,58 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 /**
- * Instancio JUnit extension.
- * <p>
- * Adds support for reporting Random Number Generator's seed value
- * in case of a test failure. This allows the failed test to be reproduced
- * by re-running it with the same seed value.
- * <p>
- * For example, given the following test class:
+ * The Instancio JUnit extension adds support for additional
+ * features when using Instancio with JUnit Jupiter:
  *
- * <pre class="code"><code class="java">
- *     <b>&#064;ExtendWith(InstancioExtension.class)</b>
- *     class ExampleTest {
+ * <ul>
+ *   <li>reporting the seed value to allow reproducing failed tests</li>
+ *   <li>injecting {@link Settings} using {@link WithSettings @WithSettings} annotation</li>
+ *   <li>generating parameterized test arguments using {@link InstancioSource @InstancioSource}</li>
+ * </ul>
  *
- *         &#064;Test
- *         void verifyPerson() {
- *             Person person = Instancio.create(Person.class);
- *             // some test code...
- *             // ... some assertion fails
- *         }
+ * <h2>Reproducing failed tests</h2>
+ *
+ * <p>The extension generates a seed for each test method. When a test fails,
+ * the extension reports this seed in the output. Using the {@link Seed}
+ * annotation, the test can be re-run with the reported seed to reproduce
+ * the data that caused the failure.
+ *
+ * <p>For example, given the following test class:
+ *
+ * <pre><code>
+ * &#064;ExtendWith(InstancioExtension.class)
+ * class ExampleTest {
+ *
+ *     &#064;Test
+ *     void verifyPerson() {
+ *         Person person = Instancio.create(Person.class);
+ *         // some test code...
+ *         // ... some assertion fails
  *     }
+ * }
  * </code></pre>
- * <p>
- * The failed test will report the seed value that was used, for example:
- * <b>{@code "Test method 'verifyPerson' failed with seed: 12345"}</b>.
- * <p>
- * Subsequently, the failing test can be reproduced by annotating the test method
+ *
+ * <p>The failed test will report the seed value that was used, for example:
+ *
+ * <p><b>{@code "Test method 'verifyPerson' failed with seed: 12345"}</b>
+ *
+ * <p>Subsequently, the failing test can be reproduced by annotating the test method
  * with the {@link Seed} annotation:
  *
- * <pre class="code"><code class="java">
- *         &#064;Test
- *         <b>&#064;Seed(12345)</b> // will reproduce previously generated data
- *         void verifyPerson() {
- *             Person person = Instancio.create(Person.class);
- *             // snip...
- *         }
+ * <pre><code>
+ * &#064;Test
+ * &#064;Seed(12345) // will reproduce previously generated data
+ * void verifyPerson() {
+ *     Person person = Instancio.create(Person.class);
+ *     // snip...
+ * }
  * </code></pre>
+ *
+ * <p>See the
+ * <a href="https://www.instancio.org/user-guide/#junit-jupiter-integration">user guide</a>
+ * for more details.
+ *
+ * @since 1.1.0
  */
 public class InstancioExtension implements BeforeEachCallback, AfterEachCallback, AfterTestExecutionCallback {
 

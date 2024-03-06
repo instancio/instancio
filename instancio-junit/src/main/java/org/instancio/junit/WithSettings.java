@@ -15,6 +15,9 @@
  */
 package org.instancio.junit;
 
+import org.instancio.settings.Settings;
+import org.junit.jupiter.api.Nested;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,22 +25,31 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for supplying custom settings to a unit test.
- * <p>
- * This annotation must be placed on a {@link org.instancio.settings.Settings} fields.
+ * An annotation for supplying custom settings to a unit test class.
+ *
+ * <p>This annotation must be placed on a {@link Settings} field.
  * There can be at most one field annotated {@code @WithSettings} per test class.
  *
- * <pre class="code"><code class="java">
- *
+ * <pre><code>
  * &#064;ExtendWith(InstancioExtension.class)
  * class ExampleTest {
- *
- *     <b>&#064;WithSettings</b>
+ *     &#064;WithSettings
  *     private final Settings settings = Settings.create()
  *         .set(Keys.COLLECTION_MIN_SIZE, 50)
  *         .set(Keys.COLLECTION_MAX_SIZE, 100);
+ *
+ *     &#064;Test
+ *     void example() {
+ *
+ *     }
  * }
  * </code></pre>
+ *
+ * <p><b>Note</b>: when a {@link Settings} instance is annotated with
+ * {@code @WithSettings}, the specified settings are not automatically
+ * applied to {@link Nested} test classes.
+ *
+ * @since 1.1.1
  */
 @Documented
 @Target(ElementType.FIELD)
