@@ -20,6 +20,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
+import org.instancio.support.Seeds;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.DisplayName;
@@ -212,7 +213,7 @@ class InstancioExtensionTest {
 
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
         when(context.getTestMethod()).thenReturn(Optional.of(method));
-        when(threadLocalRandom.get()).thenReturn(new DefaultRandom(expectedSeed));
+        when(threadLocalRandom.get()).thenReturn(new DefaultRandom(expectedSeed, Seeds.Source.SEED_ANNOTATION));
 
         // Method under test
         extension.afterTestExecution(context);

@@ -16,6 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.junit.internal.ExtensionSupport;
+import org.instancio.support.DefaultRandom;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -107,12 +108,17 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
                 return;
             }
 
-            final long seed = threadLocalRandom.get().getSeed();
-            final String msg = String.format("Test method '%s' failed with seed: %d%n",
-                    testMethod.get().getName(), seed);
+            context.getStore(ExtensionContext.Namespace.create("x"));
 
-            context.publishReportEntry("Instancio", msg);
-            LOG.debug(msg);
+            // Should be safe to case. We don't  expect any other implementations of Random.
+            final DefaultRandom random = (DefaultRandom) threadLocalRandom.get();
+            final long seed = random.getSeed();
+
+            final String seedMsg = String.format("Test method '%s' failed with seed: %d (seed source: %s)%n",
+                    testMethod.get().getName(), seed, random.getSource().getDescription());
+
+            context.publishReportEntry("Instancio", seedMsg);
+            LOG.debug(seedMsg);
         }
     }
 }

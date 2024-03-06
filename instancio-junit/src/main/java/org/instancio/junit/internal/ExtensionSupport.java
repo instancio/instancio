@@ -17,6 +17,7 @@ package org.instancio.junit.internal;
 
 import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.Global;
@@ -55,18 +56,27 @@ public final class ExtensionSupport {
         if (testMethod.isPresent()) {
             final Seed seedAnnotation = testMethod.get().getAnnotation(Seed.class);
             final long seed;
+            final Seeds.Source source;
+            final Settings tlSettings = ThreadLocalSettings.getInstance().get();
+            final Long tlSeed = tlSettings == null ? null : tlSettings.get(Keys.SEED);
 
-            if (seedAnnotation != null) {
+            if (tlSeed != null) {
+                seed = tlSeed;
+                source = Seeds.Source.WITH_SETTINGS_ANNOTATION;
+            } else if (seedAnnotation != null) {
                 seed = seedAnnotation.value();
+                source = Seeds.Source.SEED_ANNOTATION;
             } else if (Global.getConfiguredRandom() != null) {
                 seed = Global.getConfiguredRandom().getSeed();
+                source = Seeds.Source.GLOBAL;
             } else {
                 seed = Seeds.randomSeed();
+                source = Seeds.Source.RANDOM;
             }
 
             // each test method gets a new instance of random to avoid
             // the state of the random leaking across tests
-            threadLocalRandom.set(new DefaultRandom(seed));
+            threadLocalRandom.set(new DefaultRandom(seed, source));
         }
     }
 

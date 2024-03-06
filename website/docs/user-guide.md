@@ -3203,8 +3203,18 @@ void verifyShippingAddress() {
 The failed test output will include the following message:
 
 ```
-Test method 'verifyShippingAddress' failed with seed: 8532
+Test method 'verifyShippingAddress' failed with seed: 8532 (seed source: random seed)
 ```
+
+The _seed source_ indicates whether the Instancio extension generated a random seed
+or used a seed provided by the user. The possible seed sources are listed below
+(see also [Specifying seed value](#specifying-seed-value)):
+
+- seed specified via `Settings` annotated with `@WithSettings`
+- seed specified using the `@Seed` annotation
+- random seed (default behaviour when an explicit seed is not specified)
+
+!!! warning "Seeds specified using {{withSeed}} or {{withSettings}} methods are not reported by the Instancio extension."
 
 The failed test can be reproduced by using the seed reported in the failure message.
 This can be done by placing the {{Seed}} annotation on the test method:

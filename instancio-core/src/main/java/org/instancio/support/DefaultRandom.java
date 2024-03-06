@@ -29,12 +29,13 @@ public class DefaultRandom implements Random {
 
     private final long seed;
     private final java.util.Random random;
+    private final Seeds.Source source;
 
     /**
      * Create an instance with a random seed value.
      */
     public DefaultRandom() {
-        this(Seeds.randomSeed());
+        this(Seeds.randomSeed(), Seeds.Source.RANDOM);
     }
 
     /**
@@ -42,14 +43,19 @@ public class DefaultRandom implements Random {
      *
      * @param seed for the random generator
      */
-    public DefaultRandom(final long seed) {
+    public DefaultRandom(final long seed, final Seeds.Source source) {
         this.seed = seed;
         this.random = new java.util.Random(seed); // NOSONAR
+        this.source = source;
     }
 
     @Override
     public long getSeed() {
         return seed;
+    }
+
+    public Seeds.Source getSource() {
+        return source;
     }
 
     @Override
