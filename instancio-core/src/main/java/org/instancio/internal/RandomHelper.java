@@ -17,7 +17,6 @@ package org.instancio.internal;
 
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
-import org.instancio.internal.util.ObjectUtils;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.Global;
 import org.instancio.support.Seeds;
@@ -48,14 +47,15 @@ public final class RandomHelper {
             @Nullable final Long withSeed) {
 
         if (withSeed != null) {
-            return new DefaultRandom(withSeed);
+            return new DefaultRandom(withSeed, Seeds.Source.MANUAL);
         }
 
+        // Based on instancio.properties seed, if defined
         final Random configuredRandom = Global.getConfiguredRandom();
 
         // This ensures we can override seed from the properties file using a custom Settings instance.
         if (settingsSeed != null && (configuredRandom == null || configuredRandom.getSeed() != settingsSeed)) {
-            return new DefaultRandom(settingsSeed);
+            return new DefaultRandom(settingsSeed, Seeds.Source.WITH_SETTINGS_BUILDER);
         }
 
         // If running under JUnit extension, use the Random instance supplied by the extension
@@ -63,7 +63,12 @@ public final class RandomHelper {
             return ThreadLocalRandom.getInstance().get();
         }
 
-        return ObjectUtils.defaultIfNull(configuredRandom, () -> new DefaultRandom(Seeds.randomSeed()));
+        if (configuredRandom != null) {
+            return configuredRandom;
+        }
+
+        // Random seed
+        return new DefaultRandom();
     }
 
     private RandomHelper() {

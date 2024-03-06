@@ -16,7 +16,6 @@
 package org.instancio.test.java16.assign;
 
 import org.instancio.Assignment;
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Selector;
@@ -111,8 +110,7 @@ class AssignAbcNestedRecordsTest {
     }
 
     private static Assignment[] shuffleArgs(final Assignment... assignments) {
-        final long seed = Gen.longs().get();
-        ArrayUtils.shuffle(assignments, new DefaultRandom(seed));
+        ArrayUtils.shuffle(assignments, new DefaultRandom());
         return assignments;
     }
 }

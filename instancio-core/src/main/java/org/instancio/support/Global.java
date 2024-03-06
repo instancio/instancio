@@ -32,7 +32,7 @@ public final class Global {
             .lock();
 
     private static final Random CONFIGURED_RANDOM = PROPERTIES_FILE_SETTINGS.get(Keys.SEED) == null
-            ? null : new DefaultRandom(PROPERTIES_FILE_SETTINGS.get(Keys.SEED));
+            ? null : new DefaultRandom(PROPERTIES_FILE_SETTINGS.get(Keys.SEED), Seeds.Source.GLOBAL);
 
     /**
      * Default settings overlaid with settings from {@code instancio.properties}.

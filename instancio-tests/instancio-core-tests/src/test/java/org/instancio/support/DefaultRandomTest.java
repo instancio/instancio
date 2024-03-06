@@ -59,6 +59,11 @@ class DefaultRandomTest {
     }
 
     @Test
+    void defaultSourceShouldBeRandom() {
+        assertThat(((DefaultRandom) random).getSource()).isEqualTo(Seeds.Source.RANDOM);
+    }
+
+    @Test
     void bounds() {
         assertThat(random.byteRange((byte) 1, (byte) 1)).isEqualTo((byte) 1);
         assertThat(random.shortRange((short) 1, (short) 1)).isEqualTo((short) 1);

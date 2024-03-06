@@ -28,6 +28,25 @@ import java.security.SecureRandom;
 @InternalApi
 public final class Seeds {
 
+    public enum Source {
+        MANUAL(".withSeed()"),
+        WITH_SETTINGS_BUILDER(".withSettings()"),
+        WITH_SETTINGS_ANNOTATION("@WithSettings"),
+        SEED_ANNOTATION("@Seed"),
+        GLOBAL("instancio.properties"),
+        RANDOM("random seed");
+
+        private final String description;
+
+        Source(final String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
+
     /**
      * Maximum bit length of the seed.
      *
