@@ -16,6 +16,22 @@ cd instancio
 mvn verify
 ```
 
+Currently, IntelliJ IDEA does not support multi-release projects very well
+(see [IDEA-168946](https://youtrack.jetbrains.com/issue/IDEA-168946/Add-support-for-building-Java-9-multi-release-jars)).
+
+If you encounter module-related errors when importing the project into the IDE,
+apply the following changes to all highlighted modules.
+Go to **`File -> Project Structure`**:
+
+ - set the **Language level** to Java 8
+ - exclude `module-info.java`
+
+!!! note
+    These changes are not permanent.
+    If IntelliJ reloads Maven modules, these changes will be lost and will need to be set again.
+
+![IntelliJ IDEA: Project Structure](assets/intellij-project-structure.png "IntelliJ IDEA: Project Structure")
+
 # Building the Website
 
 This site is built using <a href="https://www.mkdocs.org">MkDocs</a>
