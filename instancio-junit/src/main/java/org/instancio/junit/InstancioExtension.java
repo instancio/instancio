@@ -136,7 +136,7 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
                     testMethod.get().getName(), seed, random.getSource().getDescription());
 
             context.publishReportEntry("Instancio", seedMsg);
-            LOG.debug(seedMsg);
+            LOG.error(seedMsg);
         }
     }
 }
