@@ -37,6 +37,7 @@ import org.instancio.generators.IoSpecs;
 import org.instancio.generators.MathSpecs;
 import org.instancio.generators.NetSpecs;
 import org.instancio.generators.NioSpecs;
+import org.instancio.generators.SpatialSpecs;
 import org.instancio.generators.TemporalSpecs;
 import org.instancio.generators.TextSpecs;
 import org.instancio.internal.generator.array.OneOfArrayGenerator;
@@ -332,6 +333,16 @@ public final class Gen {
      */
     public static FinanceSpecs finance() {
         return new FinanceSpecs();
+    }
+
+    /**
+     * Provides spatial data related generators.
+     *
+     * @return built-in spatial data related generators
+     * @since 4.4.0
+     */
+    public static SpatialSpecs spatial() {
+        return new SpatialSpecs();
     }
 
     private Gen() {

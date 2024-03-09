@@ -422,4 +422,14 @@ public class Generators {
     public FinanceGenerators finance() {
         return new FinanceGenerators(context);
     }
+
+    /**
+     * Provides access to spatial data type related generators.
+     *
+     * @return built-in spatial data type related generators
+     * @since 4.4.0
+     */
+    public SpatialGenerators spatial() {
+        return new SpatialGenerators(context);
+    }
 }
