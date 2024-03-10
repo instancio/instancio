@@ -187,6 +187,29 @@ Map<UUID, Person> personMap = Instancio.of(new TypeToken<Person>() {})
 
 !!! warning "Since returned streams are infinite, `limit()` _must_ be called to avoid an infinite loop."
 
+### Creating Simple Values
+
+Instancio provides the `Gen` class for generating simple value types such as strings, numbers, dates, and so on.
+This class can generate:
+
+- a single value using `get()` method
+- a list of values using the `list(int)` method
+
+```java title="Generate a single value"
+URL url = Gen.net().url().get();
+
+String randomChoice = Gen.oneOf("foo", "bar", "baz").get();
+```
+
+```java title="Generate a list of values"
+List<LocalDate> pastDates = Gen.temporal().localDate().past().list(5);
+
+List<String> uuids = Gen.text().uuid().upperCase().withoutDashes().list(5);
+```
+
+!!! info "See [Built-in Generators](#built-in-generators) for a list of available generators"
+
+
 ## Selectors
 
 Selectors are used to target fields and classes, for example in order to customise generated values.
@@ -855,6 +878,8 @@ Each generator provides methods applicable to the type it generates, for example
 - `gen.longs().min(Long.MIN_VALUE)`
 - `gen.enumOf(MyEnum.class).excluding(MyEnum.FOO, MyEnum.BAR)`
 
+!!! info "See [Built-in Generators](#built-in-generators) for a list of available generators"
+
 In addition, most generators can also map values to a different type.
 For example, the following returns generated values as Strings:
 
@@ -869,96 +894,6 @@ Instancio.of(Foo.class)
     .generate(field("enumString"), gen -> gen.enumOf(MyEnum.class).as(e -> e.name().toUpperCase()))
     .create();
 ```
-
-The complete list of built-in generators:
-
-```css
-Generators
-│
-├── booleans()
-├── chars()
-├── bytes()
-├── shorts()
-├── ints()
-├── longs()
-├── floats()
-├── doubles()
-├── string()
-│
-├── array()
-├── collection()
-├── map()
-├── emit()
-├── enumOf(Class<E>)
-├── enumSet(Class<E>)
-│
-├── oneOf(Collection<T>)
-├── oneOf(T...)
-│
-├── optional()
-│
-├── math()
-│   ├── bigInteger()
-│   └── bigDecimal()
-│
-├── net()
-│   ├── email()
-│   ├── ip4()
-│   ├── uri()
-│   └── url()
-│
-├── io()
-│   └── file()
-│
-├── nio()
-│   └── path()
-│
-├── atomic()
-│   ├── atomicInteger()
-│   └── atomicLong()
-│
-├── temporal()
-│   ├── calendar()
-│   ├── date()
-│   ├── duration()
-│   ├── instant()
-│   ├── localDate()
-│   ├── localDateTime()
-│   ├── localTime()
-│   ├── offsetDateTime()
-│   ├── offsetTime()
-│   ├── period()
-│   ├── sqlDate()
-│   ├── timestamp()
-│   ├── year()
-│   ├── yearMonth()
-│   └── zonedDateTime()
-├── text()
-│   ├── csv()
-│   ├── loremIpsum()
-│   ├── pattern(String)
-│   └── uuid()
-│
-├── checksum()
-│   ├── luhn()
-│   ├── mod10()
-│   └── mod11()
-│
-└── id()
-    ├── ean()
-    ├── isbn()
-    ├── can()
-    │   └── sin()
-    ├── pol()
-    │   ├── nip()
-    │   ├── pesel()
-    │   └── regon()
-    └── usa()
-        └── ssn()
-```
-
-!!! info "The `io().file()` and `nio().path()` generators can save files on the filesystem."
-
 
 ### Using `set()`
 
@@ -3447,3 +3382,104 @@ class ExampleTest {
 It should be noted that using `@InstancioSource` has one important limitations in that generated objects cannot be customised.
 The only option is to customise generated values using [settings injection](#settings-injection).
 However, it is not possible to customise values on a per-field basis like with the builder API.
+
+# Appendix
+
+## Built-in Generators
+
+The following list of generators is available via the [`generate()`](#using-generate) method.
+
+Most of these generators are also available through the standalone [`Gen`](#creating-simple-values) class.
+
+```css
+Generators
+│
+├── booleans()
+├── chars()
+├── bytes()
+├── shorts()
+├── ints()
+├── longs()
+├── floats()
+├── doubles()
+├── string()
+│
+├── array()
+├── collection()
+├── map()
+├── emit()
+├── enumOf(Class<E>)
+├── enumSet(Class<E>)
+│
+├── oneOf(Collection<T>)
+├── oneOf(T...)
+│
+├── optional()
+│
+├── math()
+│   ├── bigInteger()
+│   └── bigDecimal()
+│
+├── net()
+│   ├── email()
+│   ├── ip4()
+│   ├── uri()
+│   └── url()
+│
+├── io()
+│   └── file()
+│
+├── nio()
+│   └── path()
+│
+├── atomic()
+│   ├── atomicInteger()
+│   └── atomicLong()
+│
+├── temporal()
+│   ├── calendar()
+│   ├── date()
+│   ├── duration()
+│   ├── instant()
+│   ├── localDate()
+│   ├── localDateTime()
+│   ├── localTime()
+│   ├── offsetDateTime()
+│   ├── offsetTime()
+│   ├── period()
+│   ├── sqlDate()
+│   ├── timestamp()
+│   ├── year()
+│   ├── yearMonth()
+│   └── zonedDateTime()
+├── text()
+│   ├── csv()
+│   ├── loremIpsum()
+│   ├── pattern(String)
+│   └── uuid()
+│
+├── checksum()
+│   ├── luhn()
+│   ├── mod10()
+│   └── mod11()
+│
+├── id()
+│   ├── ean()
+│   ├── isbn()
+│   ├── can()
+│   │   └── sin()
+│   ├── pol()
+│   │   ├── nip()
+│   │   ├── pesel()
+│   │   └── regon()
+│   └── usa()
+│       └── ssn()
+│
+└── spatial()
+    └── coordinate()
+        ├── lat()
+        └── lon()
+```
+
+!!! info "The `io().file()` and `nio().path()` generators can save files on the filesystem."
+
