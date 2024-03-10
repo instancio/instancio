@@ -380,14 +380,16 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             return "SelectorMap{}";
         }
 
-        final StringBuilder sb = new StringBuilder("SelectorMap{").append(NL);
+        final StringBuilder sb = new StringBuilder(1024)
+                .append("SelectorMap{")
+                .append(NL);
         for (Map.Entry<TargetSelector, V> entry : selectors.entrySet()) {
             sb.append("  [REGULAR] ").append(entry).append(NL);
         }
         for (PredicateSelectorEntry<V> it : predicateSelectors) {
             sb.append("  [PREDICATE] ").append(it.predicateSelector).append('=').append(it.value).append(NL);
         }
-        sb.append("}");
+        sb.append('}');
         return sb.toString();
     }
 
