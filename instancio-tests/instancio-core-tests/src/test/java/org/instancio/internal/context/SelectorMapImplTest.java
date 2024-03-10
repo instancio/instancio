@@ -215,16 +215,6 @@ class SelectorMapImplTest {
         return result;
     }
 
-    @Test
-    void emptyMapIsReadOnly() {
-        final Selector selector = allStrings();
-        final SelectorMap<Object> empty = SelectorMapImpl.emptyMap();
-
-        assertThatThrownBy(() -> empty.put(selector, "any"))
-                .isExactlyInstanceOf(UnsupportedOperationException.class)
-                .hasMessage("Unmodifiable SelectorMap");
-    }
-
     @Nested
     class ToStringTest {
         @Test

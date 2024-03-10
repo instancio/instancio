@@ -20,6 +20,7 @@ import org.instancio.PredicateSelector;
 import org.instancio.Select;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
@@ -37,6 +38,7 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.fields;
+import static org.instancio.Select.scope;
 import static org.instancio.Select.types;
 
 class PredicateSelectorImplTest {
@@ -194,19 +196,25 @@ class PredicateSelectorImplTest {
         }
 
         @Test
-        void fieldSelectorBuilder() {
-            final FieldSelectorBuilder builder = Select.fields().ofType(String.class);
-
-            assertThat(((SelectorBuilder) builder).build())
-                    .hasToString("fields().ofType(String)");
+        void predicateAtDepthWithinLenient() {
+            assertThat(types(t -> t == String.class).atDepth(1).within(scope(StringHolder.class)).lenient())
+                    .hasToString("types(Predicate<Class>).atDepth(1).within(scope(StringHolder)).lenient()");
         }
 
         @Test
-        void typeSelectorBuilder() {
-            final TypeSelectorBuilder selectorBuilder = types().of(String.class);
+        void fieldSelectorBuilderLenient() {
+            final FieldSelectorBuilder builder = (FieldSelectorBuilder) Select.fields().ofType(String.class).lenient();
+
+            assertThat(((SelectorBuilder) builder).build())
+                    .hasToString("fields().ofType(String).lenient()");
+        }
+
+        @Test
+        void typeSelectorBuilderLenient() {
+            final TypeSelectorBuilder selectorBuilder = (TypeSelectorBuilder) types().of(String.class).lenient();
 
             assertThat(((SelectorBuilder) selectorBuilder).build())
-                    .hasToString("types().of(String)");
+                    .hasToString("types().of(String).lenient()");
         }
 
         @Test
@@ -240,20 +248,22 @@ class PredicateSelectorImplTest {
         }
 
         @Test
-        void typePredicateWithPredicateDepth() {
+        void typePredicateWithPredicateDepthLnient() {
             final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
                     .typePredicate(o -> true)
                     .depth(d -> true)
+                    .lenient()
                     .build();
 
-            assertThat(selector).hasToString("types(Predicate<Class>).atDepth(Predicate<Integer>)");
+            assertThat(selector).hasToString(
+                    "types(Predicate<Class>).atDepth(Predicate<Integer>).lenient()");
         }
 
         @Test
         void withinSingleScope() {
             final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
                     .typePredicate(o -> true)
-                    .scopes(Collections.singletonList(Select.scope(Phone.class)))
+                    .scopes(Collections.singletonList(scope(Phone.class)))
                     .build();
 
             assertThat(selector).hasToString(
@@ -265,8 +275,8 @@ class PredicateSelectorImplTest {
             final PredicateSelectorImpl selector = PredicateSelectorImpl.builder()
                     .typePredicate(o -> true)
                     .scopes(Arrays.asList(
-                            Select.scope(Person.class),
-                            Select.scope(Phone.class)))
+                            scope(Person.class),
+                            scope(Phone.class)))
                     .build();
 
             assertThat(selector).hasToString(

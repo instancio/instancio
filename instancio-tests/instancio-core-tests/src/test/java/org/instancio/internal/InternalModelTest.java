@@ -19,18 +19,11 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.person.Person;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class InternalModelTest {
-
-    @Test
-    @DisplayName("Class should not be accessible by users")
-    void shouldNotBePublic() {
-        assertThat(InternalModel.class).isPackagePrivate();
-    }
 
     @Test
     void verifyToString() {

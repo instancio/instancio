@@ -16,6 +16,7 @@
 package org.instancio.test.features.scope;
 
 import org.instancio.Instancio;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Phone;
@@ -95,5 +96,19 @@ class ScopeTest {
                     PhoneWithType phoneWithType = (PhoneWithType) result;
                     assertThat(phoneWithType.getPhoneType()).isEqualTo(PhoneType.OTHER);
                 });
+    }
+
+    @Test
+    void shouldAllowConsecutiveScopesToMatchAGivenNode() {
+        final StringHolder result = Instancio.of(StringHolder.class)
+                .set(allStrings().within(
+                                scope(StringHolder.class),
+                                scope(StringHolder.class),
+                                scope(String.class),
+                                scope(String.class)),
+                        "foo")
+                .create();
+
+        assertThat(result.getValue()).isEqualTo("foo");
     }
 }

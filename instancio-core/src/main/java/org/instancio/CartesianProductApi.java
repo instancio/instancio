@@ -137,6 +137,15 @@ public interface CartesianProductApi<T> extends
     /**
      * {@inheritDoc}
      *
+     * @since 4.4.0
+     */
+    @Override
+    @ExperimentalApi
+    <V> CartesianProductApi<T> setModel(TargetSelector selector, Model<V> model);
+
+    /**
+     * {@inheritDoc}
+     *
      * @since 4.0.0
      */
     @Override

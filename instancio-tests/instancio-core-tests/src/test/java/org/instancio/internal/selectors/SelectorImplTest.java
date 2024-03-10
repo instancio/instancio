@@ -15,12 +15,16 @@
  */
 package org.instancio.internal.selectors;
 
+import org.instancio.GroupableSelector;
+import org.instancio.Scope;
+import org.instancio.ScopeableSelector;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.Flattener;
 import org.instancio.test.support.pojo.basic.StringHolder;
+import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
@@ -82,6 +86,23 @@ class SelectorImplTest {
                 .hasTargetClass(Foo.class);
     }
 
+    /**
+     * This usage shouldn't be possible using public APIs
+     * because {@link GroupableSelector} returned by
+     * {@link ScopeableSelector#within(Scope...)} does not
+     * have a {@code toScope()} method.
+     */
+    @Test
+    void selectorWithScopesToScope() {
+        final SelectorImpl selector = (SelectorImpl) Select
+                .field(Foo.class, "fooValue")
+                .within(scope(Bar.class));
+
+        ScopeAssert.assertScope(selector.toScope())
+                .hasTargetClass(Foo.class)
+                .hasField("fooValue");
+    }
+
     @Test
     void withinReturnsANewSelectorInstance() {
         final SelectorImpl selector = SelectorImpl.builder()
@@ -118,8 +139,8 @@ class SelectorImplTest {
         assertThat(Select.field(Person::getName))
                 .hasToString("field(Person::getName)");
 
-        assertThat(Select.field(Phone.class, "number").atDepth(3))
-                .hasToString("field(Phone, \"number\").atDepth(3)");
+        assertThat(Select.field(Phone.class, "number").atDepth(3).lenient())
+                .hasToString("field(Phone, \"number\").atDepth(3).lenient()");
 
         assertThat(Select.field(Phone.class, "number").within(scope(Address.class)))
                 .hasToString("field(Phone, \"number\").within(scope(Address))");
@@ -129,10 +150,11 @@ class SelectorImplTest {
                 .hasToString("field(Phone, \"number\").atDepth(3).within(scope(Person), scope(Address))");
 
         assertThat(Select.field(Phone.class, "number").within(
-                scope(Person.class, "address"),
-                scope(Address.class)))
+                        scope(Person.class, "address"),
+                        scope(Address.class))
+                .lenient())
                 .hasToString(
-                        "field(Phone, \"number\").within(scope(Person, \"address\"), scope(Address))");
+                        "field(Phone, \"number\").within(scope(Person, \"address\"), scope(Address)).lenient()");
 
         assertThat(Select.setter("setName"))
                 .hasToString("setter(\"setName\")");
@@ -143,8 +165,8 @@ class SelectorImplTest {
         assertThat(Select.setter(Person::setName))
                 .hasToString("setter(Person::setName)");
 
-        assertThat(Select.setter(Person.class, "setName", String.class))
-                .hasToString("setter(Person, \"setName(String)\")");
+        assertThat(Select.setter(Person.class, "setName", String.class).lenient())
+                .hasToString("setter(Person, \"setName(String)\").lenient()");
     }
 
     @Test

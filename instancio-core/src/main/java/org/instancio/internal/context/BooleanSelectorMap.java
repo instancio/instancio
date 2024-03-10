@@ -17,26 +17,24 @@ package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class BooleanSelectorMap {
 
-    private final Set<TargetSelector> targetSelectors;
-    private final SelectorMap<Boolean> selectorMap;
+    private final SelectorMap<Boolean> selectorMap = new SelectorMapImpl<>();
+    private final Set<TargetSelector> targetSelectors = new LinkedHashSet<>();
 
-    public BooleanSelectorMap(@NotNull final Set<TargetSelector> targetSelectors) {
-        this.targetSelectors = Collections.unmodifiableSet(targetSelectors);
-        this.selectorMap = targetSelectors.isEmpty() ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
-        putAll(targetSelectors);
+    public void putAll(final Set<TargetSelector> targetSelectors) {
+        for (TargetSelector targetSelector : targetSelectors) {
+            add(targetSelector);
+        }
     }
 
-    private void putAll(final Set<TargetSelector> targetSelectors) {
-        for (TargetSelector targetSelector : targetSelectors) {
-            selectorMap.put(targetSelector, true);
-        }
+    void add(final TargetSelector targetSelector) {
+        targetSelectors.add(targetSelector);
+        selectorMap.put(targetSelector, true);
     }
 
     public SelectorMap<Boolean> getSelectorMap() {

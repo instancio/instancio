@@ -17,35 +17,25 @@ package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public final class SubtypeSelectorMap {
 
-    private final Map<TargetSelector, Class<?>> subtypeSelectors;
-    private final SelectorMap<Class<?>> selectorMap;
+    private final SelectorMap<Class<?>> selectorMap = new SelectorMapImpl<>();
+    private final Map<TargetSelector, Class<?>> subtypeSelectors = new LinkedHashMap<>();
 
-    public SubtypeSelectorMap(
-            @NotNull final Map<TargetSelector, Class<?>> subtypeSelectors,
-            @NotNull final Map<TargetSelector, Class<?>> generatorSubtypeMap,
-            @NotNull final Map<TargetSelector, Class<?>> assignmentGeneratorSubtypeMap) {
-
-        this.subtypeSelectors = Collections.unmodifiableMap(subtypeSelectors);
-        this.selectorMap = subtypeSelectors.isEmpty() && generatorSubtypeMap.isEmpty() && assignmentGeneratorSubtypeMap.isEmpty()
-                ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
-
-        putAll(subtypeSelectors);
-        putAll(generatorSubtypeMap);
-        putAll(assignmentGeneratorSubtypeMap);
+    void putAll(final Map<TargetSelector, Class<?>> subtypes) {
+        for (Map.Entry<TargetSelector, Class<?>> entry : subtypes.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
-    private void putAll(final Map<TargetSelector, Class<?>> subtypes) {
-        for (Map.Entry<TargetSelector, Class<?>> entry : subtypes.entrySet()) {
-            selectorMap.put(entry.getKey(), entry.getValue());
-        }
+    void put(final TargetSelector key, final Class<?> value) {
+        subtypeSelectors.put(key, value);
+        selectorMap.put(key, value);
     }
 
     Map<TargetSelector, Class<?>> getSubtypeSelectors() {

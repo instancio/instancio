@@ -26,7 +26,6 @@ import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.Settings;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 
 public final class Nodes {
 
@@ -44,20 +43,18 @@ public final class Nodes {
                 .settings(Settings.defaults()
                         .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
                         .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
-                .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
-                .subtypeSelectorMap(new SubtypeSelectorMap(
-                        Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap()))
-                .assignmentOriginSelectors(new BooleanSelectorMap(Collections.emptySet()))
+                .ignoredSelectorMap(new BooleanSelectorMap())
+                .subtypeSelectorMap(new SubtypeSelectorMap())
+                .assignmentOriginSelectors(new BooleanSelectorMap())
                 .build();
     }
 
     public static NodeContext.Builder nodeContextBuilder() {
         return NodeContext.builder()
                 .maxDepth(Integer.MAX_VALUE)
-                .ignoredSelectorMap(new BooleanSelectorMap(Collections.emptySet()))
-                .subtypeSelectorMap(new SubtypeSelectorMap(
-                        Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap()))
-                .assignmentOriginSelectors(new BooleanSelectorMap(Collections.emptySet()));
+                .ignoredSelectorMap(new BooleanSelectorMap())
+                .subtypeSelectorMap(new SubtypeSelectorMap())
+                .assignmentOriginSelectors(new BooleanSelectorMap());
     }
 
     private Nodes() {

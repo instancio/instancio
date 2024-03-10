@@ -36,8 +36,11 @@ import java.util.function.Predicate;
 
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-public class PredicateSelectorImpl
-        implements PredicateSelector, Flattener<TargetSelector>, UnusedSelectorDescription {
+public class PredicateSelectorImpl implements
+        PredicateSelector,
+        Flattener<TargetSelector>,
+        UnusedSelectorDescription,
+        InternalSelector {
 
     private static final int FIELD_PRIORITY = 1;
     private static final int TYPE_PRIORITY = 2;
@@ -104,6 +107,7 @@ public class PredicateSelectorImpl
     }
 
     @NotNull
+    @Override
     public List<Scope> getScopes() {
         return scopes;
     }
@@ -145,8 +149,6 @@ public class PredicateSelectorImpl
     public String toString() {
         String s = apiInvocationDescription;
 
-        // Note: currently predicate selector supports
-        // either atDepth() or within() but not both
         if (selectorDepth != null) {
             final String depth = selectorDepth.getDepth() == null
                     ? "Predicate<Integer>"
@@ -156,6 +158,9 @@ public class PredicateSelectorImpl
         }
         if (!scopes.isEmpty()) {
             s += ".within(" + Format.formatScopes(scopes) + ")";
+        }
+        if (isLenient) {
+            s += ".lenient()";
         }
         return s;
     }

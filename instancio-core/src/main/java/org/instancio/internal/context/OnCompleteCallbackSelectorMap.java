@@ -18,27 +18,25 @@ package org.instancio.internal.context;
 import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 class OnCompleteCallbackSelectorMap {
 
-    private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks;
-    private final SelectorMap<OnCompleteCallback<?>> selectorMap;
+    private final SelectorMap<OnCompleteCallback<?>> selectorMap = new SelectorMapImpl<>();
+    private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks = new LinkedHashMap<>();
 
-    OnCompleteCallbackSelectorMap(@NotNull final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
-        this.onCompleteCallbacks = Collections.unmodifiableMap(callbacks);
-        this.selectorMap = callbacks.isEmpty() ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
-        putAll(callbacks);
+    void putAll(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
+        for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : callbacks.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
-    private void putAll(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
-        for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : callbacks.entrySet()) {
-            selectorMap.put(entry.getKey(), entry.getValue());
-        }
+    void put(final TargetSelector selector, final OnCompleteCallback<?> value) {
+        onCompleteCallbacks.put(selector, value);
+        selectorMap.put(selector, value);
     }
 
     public SelectorMap<OnCompleteCallback<?>> getSelectorMap() {

@@ -57,7 +57,6 @@ import static java.util.stream.Collectors.joining;
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
 final class SelectorMapImpl<V> implements SelectorMap<V> {
     private static final boolean FIND_ONE_ONLY = true;
-    private static final SelectorMap<?> EMPTY_MAP = new EmptyMap<>();
 
     // Root's target class is always null
     private static final ScopelessSelector SCOPELESS_ROOT = new ScopelessSelector(null);
@@ -72,11 +71,6 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
      */
     private final Set<PredicateSelectorEntry<V>> predicateSelectors = new SortedSetWithReverseInsertionOrder<>(
             Comparator.comparingInt((o -> o.predicateSelector.getPriority())));
-
-    @SuppressWarnings("unchecked")
-    public static <T> SelectorMap<T> emptyMap() {
-        return (SelectorMap<T>) EMPTY_MAP;
-    }
 
     @Override
     public void forEach(final BiConsumer<TargetSelector, V> action) {
@@ -186,6 +180,22 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         }
 
         return values;
+    }
+
+    @Override
+    public List<V> getValues(final TargetSelector selector) {
+        final List<V> results = new ArrayList<>();
+        final V v = selectors.get(selector);
+        if (v != null) {
+            results.add(v);
+        }
+
+        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+            if (entry.predicateSelector.equals(selector)) {
+                results.add(entry.value);
+            }
+        }
+        return results;
     }
 
     @Override
@@ -309,10 +319,13 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
 
             if (scopeMatched) {
                 scope = deq.pollLast();
-            }
 
-            if (scope == null) { // All scopes have been matched
-                return true;
+                if (scope == null) { // All scopes have been matched
+                    return true;
+                }
+
+                // allow consecutive scopes to match the same node
+                continue;
             }
 
             node = node.getParent();
@@ -382,17 +395,4 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             this.value = value;
         }
     }
-
-    //@formatter:off
-    private static final class EmptyMap<V> implements SelectorMap<V> {
-        @Override public void put(TargetSelector targetSelector, V value) {
-            throw new UnsupportedOperationException("Unmodifiable SelectorMap");
-        }
-        @Override public void forEach(BiConsumer<TargetSelector, V> action) { /* no-op */ }
-        @Override public Set<TargetSelector> getUnusedKeys() { return Collections.emptySet(); }
-        @Override public Optional<V> getValue(InternalNode node) { return Optional.empty(); }
-        @Override public List<V> getValues(InternalNode node) { return emptyList(); }
-        @Override public Set<TargetSelector> getSelectors(InternalNode node) { return Collections.emptySet(); }
-    }
-    //@formatter:on
 }

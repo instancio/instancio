@@ -126,12 +126,17 @@ class ApiContractTest {
      * Select.field("foo")
      *     .within(Select.scope(String.class))
      *     .within(Select.scope(String.class)) // second within() not allowed
+     *
+     * // Selectors that have scopes should not be allowed to be converted toScope()
+     * Select.field("foo")
+     *     .within(Select.scope(String.class))
+     *     .toScope() // not allowed!
      * }</pre>
      */
     @Test
-    @DisplayName("Chaining within() methods not allowed")
-    void cannotChainWithinMethods() {
-        assertThatClass(GroupableSelector.class).hasNoMethodsNamed("within");
+    @DisplayName("Groupable selectors should not allow these methods")
+    void groupableSelectorUnsupportedMethod() {
+        assertThatClass(GroupableSelector.class).hasNoMethodsNamed("within", "toScope");
     }
 
     @Test

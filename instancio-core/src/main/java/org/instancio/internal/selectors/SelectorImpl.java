@@ -32,8 +32,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public final class SelectorImpl
-        implements Selector, GroupableSelector, Flattener<TargetSelector>, UnusedSelectorDescription {
+public final class SelectorImpl implements
+        Selector,
+        GroupableSelector,
+        Flattener<TargetSelector>,
+        UnusedSelectorDescription,
+        InternalSelector {
 
     private static final SelectorImpl ROOT_SELECTOR = SelectorImpl.builder()
             .target(TargetRoot.INSTANCE)
@@ -132,6 +136,8 @@ public final class SelectorImpl
         return parent;
     }
 
+    @NotNull
+    @Override
     public List<Scope> getScopes() {
         return scopes;
     }
@@ -190,6 +196,9 @@ public final class SelectorImpl
         }
         if (!scopes.isEmpty()) {
             sb.append(".within(").append(Format.formatScopes(scopes)).append(')');
+        }
+        if (isLenient) {
+            sb.append(".lenient()");
         }
         return sb.toString();
     }
