@@ -92,7 +92,10 @@ class InstancioEngine {
         nodeFilter = new NodeFilter(context);
         assigner = new AssignerImpl(context);
         listeners = new GenerationListener[]{
-                callbackHandler, generatedObjectStore, new GeneratedNullValueListener(context)};
+                callbackHandler,
+                generatedObjectStore,
+                new GeneratedNullValueListener(context),
+                new SetModelValidatingListener(context)};
     }
 
     @SuppressWarnings("unchecked")

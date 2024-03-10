@@ -149,6 +149,15 @@ public interface InstancioApi<T> extends
     /**
      * {@inheritDoc}
      *
+     * @since 4.4.0
+     */
+    @Override
+    @ExperimentalApi
+    <V> InstancioApi<T> setModel(TargetSelector selector, Model<V> model);
+
+    /**
+     * {@inheritDoc}
+     *
      * @since 1.0.1
      */
     @Override

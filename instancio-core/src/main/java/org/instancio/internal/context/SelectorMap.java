@@ -73,4 +73,6 @@ public interface SelectorMap<V> {
      * @return all values for given node, or an empty list if none found
      */
     List<V> getValues(InternalNode node);
+
+    List<V> getValues(TargetSelector selector);
 }

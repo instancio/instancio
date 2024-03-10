@@ -15,6 +15,7 @@
  */
 package org.instancio;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
@@ -138,6 +139,59 @@ interface InstancioOperations<T> {
      * @since 4.0.0
      */
     <V> InstancioOperations<T> set(TargetSelector selector, V value);
+
+    /**
+     * Applies given {@code model} to the specified {@code selector}.
+     *
+     * <p>For example, given the following classes and {@link Model}:
+     *
+     * <pre>{@code
+     * record Foo(String value) {}
+     * record Container(Foo fooA, Foo fooB) {}
+     *
+     * Model<Foo> fooModel = Instancio.of(Foo.class)
+     *     .set(field(Foo::value), "foo")
+     *     .toModel();
+     * }</pre>
+     *
+     * <p>The model can be applied to a specific {@code Foo} field declared
+     * by the {@code Container}:
+     *
+     * <pre>{@code
+     * Container container = Instancio.of(Container.class)
+     *     .setModel(field(Container::fooA), fooModel)
+     *     .create();
+     * }</pre>
+     *
+     * <p>Alternatively, to apply the model to all instances of {@code Foo}:
+     *
+     * <pre>{@code
+     * Container container = Instancio.of(Container.class)
+     *     .setModel(all(Foo.class), fooModel)
+     *     .create();
+     * }</pre>
+     *
+     * <p><b>Note:</b> the following properties of the supplied model
+     * are <b>not</b> applied to the target object:
+     *
+     * <ul>
+     *   <li>{@link Settings}</li>
+     *   <li>{@code lenient()} mode</li>
+     *   <li>custom seed value</li>
+     * </ul>
+     *
+     * <p>See the
+     * <a href="https://www.instancio.org/user-guide/#using-setmodel">user guide</a>
+     * for further details.
+     *
+     * @param selector to which the model will be applied to
+     * @param model    to apply to the given selector's target
+     * @param <V>      the type of object this model represents
+     * @return API builder reference
+     * @since 4.4.0
+     */
+    @ExperimentalApi
+    <V> InstancioOperations<T> setModel(TargetSelector selector, Model<V> model);
 
     /**
      * Supplies an object using a {@link Supplier}.

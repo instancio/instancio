@@ -34,7 +34,7 @@ final class UnusedSelectorReporter {
     private final Set<TargetSelector> subtypes;
     private final Set<TargetSelector> assignmentOrigins;
     private final Set<TargetSelector> assignmentDestinations;
-
+    private final Set<TargetSelector> modelContexts;
 
     private UnusedSelectorReporter(final Builder builder) {
         maxDepth = builder.maxDepth;
@@ -45,6 +45,7 @@ final class UnusedSelectorReporter {
         subtypes = builder.subtypes;
         assignmentOrigins = builder.assignmentOrigins;
         assignmentDestinations = builder.assignmentDestinations;
+        modelContexts = builder.modelContexts;
     }
 
     static Builder builder() {
@@ -69,6 +70,7 @@ final class UnusedSelectorReporter {
         append(subtypes, sb, "selectors", "subtype()");
         append(assignmentOrigins, sb, "origin selectors", "assign()");
         append(assignmentDestinations, sb, "destination selectors", "assign()");
+        append(modelContexts, sb, "selectors", "setModel()");
 
         sb.append(NL)
                 .append("This error aims to highlight potential problems and help maintain clean test code.").append(NL)
@@ -147,7 +149,8 @@ final class UnusedSelectorReporter {
                 && callbacks.isEmpty()
                 && subtypes.isEmpty()
                 && assignmentOrigins.isEmpty()
-                && assignmentDestinations.isEmpty();
+                && assignmentDestinations.isEmpty()
+                && modelContexts.isEmpty();
     }
 
     private static String formatSelectors(final Set<TargetSelector> selectors) {
@@ -172,6 +175,7 @@ final class UnusedSelectorReporter {
         private Set<TargetSelector> subtypes;
         private Set<TargetSelector> assignmentOrigins;
         private Set<TargetSelector> assignmentDestinations;
+        private Set<TargetSelector> modelContexts;
 
         private Builder() {
         }
@@ -213,6 +217,11 @@ final class UnusedSelectorReporter {
 
         public Builder assignmentDestinations(final Set<TargetSelector> assignmentDestinations) {
             this.assignmentDestinations = assignmentDestinations;
+            return this;
+        }
+
+        public Builder modelContexts(final Set<TargetSelector> modelContexts) {
+            this.modelContexts = modelContexts;
             return this;
         }
 

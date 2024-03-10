@@ -28,8 +28,6 @@ Therefore, if a test fails against a given set of inputs, Instancio supports re-
 
 # Instancio Basics
 
-This section provides an overview of the API for creating and customising objects.
-
 ## Creating Objects
 
 The {{Instancio}} class is the entry point to the API.
@@ -1615,6 +1613,134 @@ This approach reduces duplication and simplifies data setup, especially for comp
 More details on the benefits of using models, including a sample project, are provided in the article
 [Creating object templates using Models](/articles/creating-object-templates-using-models/).
 
+### Using `setModel()`
+
+!!! info "This is an experimental API available since version 4.4.0"
+
+The method `setModel(TargetSelector, Model)` allows applying a model to another object using a selector.
+
+To illustrate with an example, we will assume the following classes:
+
+```java
+record Foo(String value) {}
+record Container(Foo fooA, Foo fooB) {}
+```
+
+Given a model of `Foo`:
+
+```java linenums="1"
+Model<Foo> fooModel = Instancio.of(Foo.class)
+    .set(field(Foo::value), "foo")
+    .toModel();
+```
+
+The model can be applied to a specific `Foo` field declared by the `Container`:
+
+```java linenums="1"
+Container container = Instancio.of(Container.class)
+    .setModel(field(Container::fooA), fooModel)
+    .create();
+
+// Sample output: Container[fooA=Foo[value="foo"], fooB=Foo[value="ANBQNR"]]
+```
+
+`setModel()` works by applying selectors defined within the model to the target object.
+In doing so, it narrows down the scope of selectors defined in the model, such as `field(Foo::value)`,
+to the model's target `field(Container::fooA)`, as shown in this diagram:
+
+<img src="/assets/setmodel-selector-scope.svg" alt="Selector scope applied by setModel()">
+
+In other words, the `Container` creation example is equivalent to:
+
+```java linenums="1" hl_lines="2"
+Container container = Instancio.of(Container.class)
+    .set(field(Foo::value).within(scope(Container::fooA)), "foo")
+    .create();
+```
+
+`setModel()` works for all Instancio API methods that accept `TargetSelector` as an argument,
+such as `assign()`, `generate()`, `ignore()`, and so on. However, the following properties of the `Model`
+are **not** applied to the target object:
+
+- `Settings`
+- `lenient()` mode
+- custom seed value, if any
+
+#### Overriding Selectors Defined by the `Model`
+
+When creating an object, it is possible to override selectors defined within the model.
+Building on the previous example, we can override `field(Foo::value)` as follows:
+
+```java linenums="1" hl_lines="3"
+Container container = Instancio.of(Container.class)
+    .setModel(field(Container::fooA), fooModel)
+    .set(field(Foo::value).within(scope(Container::fooA)), "bar")
+    .create();
+
+// Sample output: Container[fooA=Foo[value="bar"], fooB=Foo[value="ORVQFJF"]]
+```
+!!! attention ""
+    <lnum>3</lnum> This selector replaces the original selector defined by the `Model`.<br/>
+
+In this example, the overriding selector is the same as the model's selector (including the scope).
+If instead of:
+
+```java
+.set(field(Foo::value).within(scope(Container::fooA)), "bar")
+```
+
+we specify:
+
+```java
+.set(field(Foo::value), "bar")
+```
+
+Then the output will be:
+
+```
+Container[fooA=Foo[value="bar"], fooB=Foo[value="bar"]]
+```
+
+In addition, the original selector defined within the model will trigger an [unused selector](#selector-strictness) error.
+In such cases, the model's selector can be marked as `lenient()`:
+
+```java linenums="1" hl_lines="2"
+Model<Foo> fooModel = Instancio.of(Foo.class)
+    .set(field(Foo::value).lenient(), "foo")
+    .toModel();
+```
+
+The reason for the error is that there are now two different selectors that match the same node `Foo.value`.
+This can be verified by calling `verbose()`, which will output all the selectors and matching nodes:
+
+```java linenums="1" hl_lines="4"
+Container container = Instancio.of(Container.class)
+    .setModel(field(Container::fooA), fooModel)
+    .set(field(Foo::value).within(scope(Container::fooA)), "bar")
+    .verbose()
+    .create();
+```
+
+Will output:
+
+```hl_lines="4 7"
+Selectors and matching nodes, if any:
+
+ -> Method: generate(), set(), supply()
+    - field(Foo, "value")
+       \_ Node[Foo.value, depth=2, type=String]
+
+    - field(Foo, "value").within(scope(Container, "fooA")).lenient()
+       \_ Node[Foo.value, depth=2, type=String]
+
+```
+
+The output confirms that there are two different selectors matching the node `Foo.value`,
+therefore selector with the lowest precedence will the trigger unused selector error unless it is marked as `lenient()`.
+
+In summary, when a `Model` is provided to the `setModel()` method, the selectors defined
+within the model will be subject to the usual [selector precedence rules](#selector-precedence).
+
 ## Custom Generators
 
 Every type of object Instancio generates is through an implementation of the `Generator` interface.
@@ -2794,7 +2920,7 @@ Therefore, the setter will not be resolved, and the value will be populated
 via field assignment as a fallback. A custom `SetterMethodResolver` can be
 implemented to handle this case as shown below.
 
-```java linenums="1" title="Resolves setter method names for fields prefixed with an underscore " hl_lines="13 16"
+```java linenums="1" title="Resolves setter method names for fields prefixed with an underscore " hl_lines="14 16"
 public class SetterMethodResolverImpl implements SetterMethodResolver {
 
     @Override
@@ -2815,7 +2941,7 @@ public class SetterMethodResolverImpl implements SetterMethodResolver {
 }
 ```
 !!! attention ""
-    <lnum>13</lnum> For brevity, matching is done by name only, ignoring parameter types.<br/>
+    <lnum>14</lnum> For brevity, matching is done by name only, ignoring parameter types.<br/>
     <lnum>16</lnum> Returning `null` means built-in method resolvers will be used as a fallback.<br/>
 
 With the above in place, the `Pojo` can be created as follows:

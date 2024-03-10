@@ -17,6 +17,7 @@ package org.instancio.internal.context;
 
 import org.instancio.Assignment;
 import org.instancio.GeneratorSpecProvider;
+import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
 import org.instancio.TargetSelector;
@@ -24,6 +25,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
+import org.instancio.internal.InternalModel;
 import org.instancio.internal.RandomHelper;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
@@ -66,6 +68,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap;
+import static org.instancio.internal.context.SetModelSelectorHelper.applyModelSelectorScopes;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
@@ -85,10 +88,11 @@ public final class ModelContext<T> {
     private final Long seed;
     private final Random random;
     private final Settings settings;
-    private final BooleanSelectorMap ignoredSelectorMap;
-    private final BooleanSelectorMap nullableSelectorMap;
-    private final OnCompleteCallbackSelectorMap onCompleteCallbackSelectorMap;
-    private final SubtypeSelectorMap subtypeSelectorMap;
+    private final ModelContextSelectorMap modelContextSelectorMap = new ModelContextSelectorMap();
+    private final BooleanSelectorMap ignoredSelectorMap = new BooleanSelectorMap();
+    private final BooleanSelectorMap nullableSelectorMap = new BooleanSelectorMap();
+    private final OnCompleteCallbackSelectorMap onCompleteCallbackSelectorMap = new OnCompleteCallbackSelectorMap();
+    private final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap();
     private final GeneratorSelectorMap generatorSelectorMap;
     private final AssignmentSelectorMap assignmentSelectorMap;
     private final boolean verbose;
@@ -103,31 +107,41 @@ public final class ModelContext<T> {
 
         seed = builder.seed;
         maxDepth = builder.maxDepth;
+        verbose = builder.verbose;
         settings = createSettings(builder);
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
-        verbose = builder.verbose;
-
-        ignoredSelectorMap = new BooleanSelectorMap(builder.ignoredTargets);
-        nullableSelectorMap = new BooleanSelectorMap(builder.nullableTargets);
-        onCompleteCallbackSelectorMap = new OnCompleteCallbackSelectorMap(builder.onCompleteCallbacks);
-
         final GeneratorContext generatorContext = new GeneratorContext(settings, random);
+        generatorSelectorMap = new GeneratorSelectorMap(generatorContext);
+        assignmentSelectorMap = new AssignmentSelectorMap(generatorContext);
 
-        generatorSelectorMap = new GeneratorSelectorMap(
-                generatorContext,
-                builder.generatorSelectors,
-                builder.generatorSpecSelectors);
-
-        assignmentSelectorMap = new AssignmentSelectorMap(builder.assignmentSelectors, generatorContext);
-
-        subtypeSelectorMap = new SubtypeSelectorMap(
-                builder.subtypeSelectors,
-                generatorSelectorMap.getGeneratorSubtypeMap(),
-                assignmentSelectorMap.getGeneratorSubtypeMap());
+        initSelectorMaps(builder);
 
         providers = new Providers(
                 ServiceLoaders.loadAll(InstancioServiceProvider.class),
                 new InternalServiceProviderContext(settings, random));
+    }
+
+    private void initSelectorMaps(final Builder<T> builder) {
+        // Before initialising remaining selector maps, update this model
+        // with selectors from other models provided via setModel()
+        builder.modelContexts.forEach(this::copyToThisContext);
+
+        modelContextSelectorMap.putAll(builder.modelContexts);
+        ignoredSelectorMap.putAll(builder.ignoredTargets);
+        nullableSelectorMap.putAll(builder.nullableTargets);
+        onCompleteCallbackSelectorMap.putAll(builder.onCompleteCallbacks);
+        generatorSelectorMap.putAllGeneratorSpecs(builder.generatorSpecSelectors);
+        generatorSelectorMap.putAllGenerators(builder.generatorSelectors);
+        assignmentSelectorMap.putAll(builder.assignmentSelectors);
+
+        // subtype map must be last as it needs subtypes from assignment/generator spec subtypes
+        subtypeSelectorMap.putAll(builder.subtypeSelectors);
+        // subtypes from generators and assignments neeed to be added
+        // directly to the SubtypeSelectorMap.selectorMap,
+        // bypassing SubtypeSelectorMap.subtypeSelectors
+        // TODO this needs to be cleaned up/refactored
+        generatorSelectorMap.getGeneratorSubtypeMap().forEach((k, v) -> subtypeSelectorMap.getSelectorMap().put(k, v));
+        assignmentSelectorMap.getGeneratorSubtypeMap().forEach((k, v) -> subtypeSelectorMap.getSelectorMap().put(k, v));
     }
 
     private static Settings createSettings(final Builder<?> builder) {
@@ -188,6 +202,7 @@ public final class ModelContext<T> {
                     // confusing naming (origin selectors are the keys, which is what we need)
                     .assignmentOrigins(assignmentSelectorMap.getDestinationSelectors().getSelectorMap().getUnusedKeys())
                     .assignmentDestinations(assignmentSelectorMap.getSelectorMap().getUnusedKeys())
+                    .modelContexts(modelContextSelectorMap.getSelectorMap().getUnusedKeys())
                     .build();
 
             reporter.report();
@@ -243,6 +258,10 @@ public final class ModelContext<T> {
         return subtypeSelectorMap;
     }
 
+    public ModelContextSelectorMap getModelContextSelectorMap() {
+        return modelContextSelectorMap;
+    }
+
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public Map<TypeVariable<?>, Type> getRootTypeMap() {
         return rootTypeMap;
@@ -273,6 +292,7 @@ public final class ModelContext<T> {
         builder.subtypeSelectors.putAll(this.subtypeSelectorMap.getSubtypeSelectors());
         builder.onCompleteCallbacks.putAll(this.onCompleteCallbackSelectorMap.getOnCompleteCallbackSelectors());
         builder.assignmentSelectors.putAll(this.assignmentSelectorMap.getAssignmentSelectors());
+        builder.modelContexts.putAll(this.modelContextSelectorMap.getModelContextSelectors());
         return builder;
     }
 
@@ -303,6 +323,7 @@ public final class ModelContext<T> {
         private final Map<TargetSelector, Generator<?>> generatorSelectors = new LinkedHashMap<>();
         private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks = new LinkedHashMap<>();
         private final Map<TargetSelector, List<Assignment>> assignmentSelectors = new LinkedHashMap<>();
+        private final Map<TargetSelector, ModelContext<?>> modelContexts = new LinkedHashMap<>();
         private final Set<TargetSelector> ignoredTargets = new LinkedHashSet<>();
         private final Set<TargetSelector> nullableTargets = new LinkedHashSet<>();
         private final SetterSelectorHolder setMethodSelectorHolder = new SetterSelectorHolder();
@@ -459,6 +480,7 @@ public final class ModelContext<T> {
             subtypeSelectors.putAll(otherContext.subtypeSelectorMap.getSubtypeSelectors());
             onCompleteCallbacks.putAll(otherContext.onCompleteCallbackSelectorMap.getOnCompleteCallbackSelectors());
             assignmentSelectors.putAll(otherContext.assignmentSelectorMap.getAssignmentSelectors());
+            modelContexts.putAll(otherContext.modelContextSelectorMap.getModelContextSelectors());
 
             // Increment max depth to account for the additional layer added by the collection
             maxDepth = otherContext.maxDepth == null ? null : otherContext.maxDepth + 1;
@@ -469,8 +491,74 @@ public final class ModelContext<T> {
             return this;
         }
 
+        /**
+         * Copies (only) selectors from {@code otherContext} to this context.
+         * Other data, such as maxDepth, seed, and settings are <b>not</b> copied.
+         */
+        public void withModel(final TargetSelector modelSelector, final Model<?> model) {
+            final ModelContext<?> otherCtx = ((InternalModel<?>) model).getModelContext();
+            final List<TargetSelector> processedSelectors = selectorProcessor.process(modelSelector);
+
+            for (TargetSelector modelTarget : processedSelectors) {
+                modelContexts.put(modelTarget, otherCtx);
+
+            }
+        }
+
         public ModelContext<T> build() {
             return new ModelContext<>(this);
         }
+    }
+
+    private void copyToThisContext(final TargetSelector modelTarget, final ModelContext<?> otherCtx) {
+
+        otherCtx.generatorSelectorMap.getGeneratorSelectors().forEach((selector, generator) -> {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, selector);
+            generatorSelectorMap.putGenerator(resolvedSelector, generator);
+        });
+
+        otherCtx.generatorSelectorMap.getGeneratorSpecSelectors().forEach((selector, generator) -> {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, selector);
+            generatorSelectorMap.putGeneratorSpec(resolvedSelector, generator);
+        });
+
+        otherCtx.ignoredSelectorMap.getTargetSelectors().forEach(selector -> {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, selector);
+            ignoredSelectorMap.add(resolvedSelector);
+        });
+
+        otherCtx.nullableSelectorMap.getTargetSelectors().forEach(selector -> {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, selector);
+            nullableSelectorMap.add(resolvedSelector);
+        });
+
+        otherCtx.onCompleteCallbackSelectorMap.getOnCompleteCallbackSelectors().forEach((selector, callback) -> {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, selector);
+            onCompleteCallbackSelectorMap.put(resolvedSelector, callback);
+        });
+
+        otherCtx.assignmentSelectorMap.getAssignmentSelectors().forEach((selector, assignments) -> {
+            final List<Assignment> updatedAssignments = new ArrayList<>(assignments.size());
+
+            for (Assignment assignment : assignments) {
+                final InternalAssignment a = (InternalAssignment) assignment;
+                final TargetSelector updatedOrigin = applyModelSelectorScopes(modelTarget, a.getOrigin());
+                final TargetSelector updatedDestination = applyModelSelectorScopes(modelTarget, a.getDestination());
+                final InternalAssignment updatedAssignment = a.toBuilder()
+                        .origin(updatedOrigin)
+                        .destination(updatedDestination)
+                        .build();
+
+                updatedAssignments.add(updatedAssignment);
+            }
+
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, selector);
+            assignmentSelectorMap.put(resolvedSelector, updatedAssignments);
+        });
+
+        otherCtx.subtypeSelectorMap.getSubtypeSelectors().forEach((selector, subtype) -> {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, selector);
+            subtypeSelectorMap.put(resolvedSelector, subtype);
+        });
     }
 }

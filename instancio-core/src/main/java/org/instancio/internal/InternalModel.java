@@ -21,7 +21,7 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 
-final class InternalModel<T> implements Model<T> {
+public final class InternalModel<T> implements Model<T> {
 
     private final ModelContext<T> modelContext;
     private final InternalNode rootNode;
@@ -31,7 +31,7 @@ final class InternalModel<T> implements Model<T> {
         this.rootNode = createRootNode();
     }
 
-    ModelContext<T> getModelContext() {
+    public ModelContext<T> getModelContext() {
         return modelContext;
     }
 

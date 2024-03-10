@@ -21,7 +21,6 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
-import org.instancio.internal.Flattener;
 import org.instancio.internal.assignment.GeneratorHolder;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generator.InternalGeneratorHint;
@@ -38,48 +37,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public final class AssignmentSelectorMap {
+final class AssignmentSelectorMap {
 
     private final GeneratorContext context;
     private final AfterGenerate defaultAfterGenerate;
-    private final Map<TargetSelector, List<Assignment>> assignmentSelectors;
-    private final SelectorMap<List<InternalAssignment>> selectorMap;
-    private final BooleanSelectorMap originSelectors;
-    private final TargetSelectorSelectorMap destinationSelectors;
+    private final SelectorMap<List<InternalAssignment>> selectorMap = new SelectorMapImpl<>();
+    private final Map<TargetSelector, List<Assignment>> assignmentSelectors = new LinkedHashMap<>();
+    private final BooleanSelectorMap originSelectors = new BooleanSelectorMap();
+    private final TargetSelectorSelectorMap destinationSelectors = new TargetSelectorSelectorMap();
     private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
 
-    public AssignmentSelectorMap(
-            @NotNull final Map<TargetSelector, List<Assignment>> targetSelectors,
-            @NotNull final GeneratorContext context) {
-
+    AssignmentSelectorMap(@NotNull final GeneratorContext context) {
         this.context = context;
         this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
-        this.assignmentSelectors = Collections.unmodifiableMap(targetSelectors);
-        this.selectorMap = targetSelectors.isEmpty() ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
+    }
+
+    void putAll(final @NotNull Map<TargetSelector, List<Assignment>> targetSelectors) {
+        for (Map.Entry<TargetSelector, List<Assignment>> entry : targetSelectors.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    void put(final TargetSelector targetSelector, final List<Assignment> assignments) {
+        // source map: add as is
+        this.assignmentSelectors.put(targetSelector, assignments);
 
         // Maps an origin selector to a list of destination selectors.
         // When specifying an assignment, the destination selector may be a group
         // e.g. assign(given(origin).is("foo").set(Select.all(field("f1"), field("f2")))
         final Map<TargetSelector, List<TargetSelector>> originDestinationsMap = new HashMap<>();
 
-        for (Map.Entry<TargetSelector, List<Assignment>> entry : targetSelectors.entrySet()) {
-            final TargetSelector targetSelector = entry.getKey();
-            final List<InternalAssignment> assignments = processAssignments(entry.getValue());
+        final List<InternalAssignment> processedAssignments = processAssignments(assignments);
 
-            for (InternalAssignment a : assignments) {
-                final List<TargetSelector> destinations = originDestinationsMap.computeIfAbsent(
-                        a.getOrigin(), k -> new ArrayList<>());
+        for (InternalAssignment a : processedAssignments) {
+            final List<TargetSelector> destinations = originDestinationsMap.computeIfAbsent(
+                    a.getOrigin(), k -> new ArrayList<>());
 
-                destinations.add(a.getDestination());
-            }
-
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                selectorMap.put(selector, assignments);
-            }
+            destinations.add(a.getDestination());
         }
 
-        originSelectors = new BooleanSelectorMap(originDestinationsMap.keySet());
-        destinationSelectors = new TargetSelectorSelectorMap(originDestinationsMap);
+        selectorMap.put(targetSelector, processedAssignments);
+        originSelectors.putAll(originDestinationsMap.keySet());
+
+        for (Map.Entry<TargetSelector, List<TargetSelector>> entry : originDestinationsMap.entrySet()) {
+            final TargetSelector selector = entry.getKey();
+            final List<TargetSelector> destinations = entry.getValue();
+
+            List<List<TargetSelector>> currentDestinations = destinationSelectors.getSelectorMap().getValues(selector);
+
+            if (currentDestinations.isEmpty()) {
+                destinationSelectors.getSelectorMap().put(selector, destinations);
+            } else {
+                currentDestinations.forEach(currentList -> currentList.addAll(destinations));
+            }
+        }
     }
 
     private List<InternalAssignment> processAssignments(final List<Assignment> assignments) {

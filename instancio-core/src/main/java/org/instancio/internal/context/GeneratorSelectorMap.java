@@ -21,7 +21,6 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
-import org.instancio.internal.Flattener;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
@@ -39,51 +38,41 @@ class GeneratorSelectorMap {
 
     private final GeneratorContext context;
     private final AfterGenerate defaultAfterGenerate;
-    private final Map<TargetSelector, Generator<?>> generatorSelectors;
-    private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors;
-    private final SelectorMap<Generator<?>> selectorMap;
+    private final SelectorMap<Generator<?>> selectorMap = new SelectorMapImpl<>();
+    private final Map<TargetSelector, Generator<?>> generatorSelectors = new LinkedHashMap<>();
+    private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors = new LinkedHashMap<>();
     private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
+    private final Generators generators;
 
-    GeneratorSelectorMap(
-            @NotNull final GeneratorContext context,
-            @NotNull final Map<TargetSelector, Generator<?>> generatorSelectors,
-            @NotNull final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors) {
-
+    GeneratorSelectorMap(@NotNull final GeneratorContext context) {
         this.context = context;
+        this.generators = new Generators(context);
         this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
-        this.generatorSelectors = Collections.unmodifiableMap(generatorSelectors);
-        this.generatorSpecSelectors = Collections.unmodifiableMap(generatorSpecSelectors);
-
-        this.selectorMap = generatorSelectors.isEmpty() && generatorSpecSelectors.isEmpty()
-                ? SelectorMapImpl.emptyMap() : new SelectorMapImpl<>();
-
-        putAllGeneratorSpecs(generatorSpecSelectors);
-        putAllGenerators(generatorSelectors);
     }
 
-    private void putAllGeneratorSpecs(final Map<TargetSelector, GeneratorSpecProvider<?>> specs) {
-        final Generators generators = new Generators(context);
-
-        for (Map.Entry<TargetSelector, GeneratorSpecProvider<?>> entry : specs.entrySet()) {
-            final TargetSelector targetSelector = entry.getKey();
-            final GeneratorSpecProvider<?> genFn = entry.getValue();
-            for (TargetSelector selector : ((Flattener<TargetSelector>) targetSelector).flatten()) {
-                // Do not share generator instances between different selectors.
-                // For example, array generators are created for each component type.
-                // Therefore, using 'gen.array().length(10)' would fail when selectors are different for array types.
-                final Generator<?> generator = (Generator<?>) genFn.getSpec(generators);
-                putGenerator(selector, generator);
-            }
-        }
+    void putGenerator(final TargetSelector targetSelector, final Generator<?> generator) {
+        this.generatorSelectors.put(targetSelector, generator);
+        addToSelectorMap(targetSelector, generator);
     }
 
-    private void putAllGenerators(final Map<TargetSelector, Generator<?>> generatorMap) {
+    void putGeneratorSpec(final TargetSelector targetSelector, final GeneratorSpecProvider<?> genFn) {
+        this.generatorSpecSelectors.put(targetSelector, genFn);
+        addToSelectorMap(targetSelector, (Generator<?>) genFn.getSpec(generators));
+    }
+
+    void putAllGenerators(final Map<TargetSelector, Generator<?>> generatorMap) {
         for (Map.Entry<TargetSelector, Generator<?>> entry : generatorMap.entrySet()) {
             putGenerator(entry.getKey(), entry.getValue());
         }
     }
 
-    private void putGenerator(final TargetSelector targetSelector, final Generator<?> g) {
+    void putAllGeneratorSpecs(final Map<TargetSelector, GeneratorSpecProvider<?>> specs) {
+        for (Map.Entry<TargetSelector, GeneratorSpecProvider<?>> entry : specs.entrySet()) {
+            putGeneratorSpec(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void addToSelectorMap(final TargetSelector targetSelector, final Generator<?> g) {
         g.init(context);
 
         final Generator<?> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
