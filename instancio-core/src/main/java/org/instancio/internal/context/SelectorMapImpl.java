@@ -52,7 +52,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.joining;
+import static org.instancio.internal.util.Constants.NL;
 
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
 final class SelectorMapImpl<V> implements SelectorMap<V> {
@@ -376,13 +376,19 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
 
     @Override
     public String toString() {
-        if (selectors.isEmpty()) {
+        if (selectors.isEmpty() && predicateSelectors.isEmpty()) {
             return "SelectorMap{}";
         }
-        return String.format("SelectorMap:{%n%s%n}", selectors.entrySet()
-                .stream()
-                .map(Object::toString)
-                .collect(joining(System.lineSeparator())));
+
+        final StringBuilder sb = new StringBuilder("SelectorMap{").append(NL);
+        for (Map.Entry<TargetSelector, V> entry : selectors.entrySet()) {
+            sb.append("  [REGULAR] ").append(entry).append(NL);
+        }
+        for (PredicateSelectorEntry<V> it : predicateSelectors) {
+            sb.append("  [PREDICATE] ").append(it.predicateSelector).append('=').append(it.value).append(NL);
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
     private static final class PredicateSelectorEntry<V> {

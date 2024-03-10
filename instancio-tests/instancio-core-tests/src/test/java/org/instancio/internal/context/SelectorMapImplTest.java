@@ -226,11 +226,14 @@ class SelectorMapImplTest {
         void verifyToString() {
             put(Select.all(byte.class), "foo");
             put(Select.field(Phone.class, "number"), "bar");
+            put(Select.fields().named("countryCode").declaredIn(Phone.class), "baz");
 
-            assertThat(selectorMap).hasToString(String.format("SelectorMap:{%n" +
-                    "all(byte)=foo%n" +
-                    "field(Phone, \"number\")=bar%n" +
-                    "}"));
+            assertThat(selectorMap.toString()).isEqualToNormalizingNewlines("""
+                    SelectorMap{
+                      [REGULAR] all(byte)=foo
+                      [REGULAR] field(Phone, "number")=bar
+                      [PREDICATE] fields().named("countryCode").declaredIn(Phone)=baz
+                    }""");
         }
     }
 
