@@ -126,6 +126,7 @@ public class PredicateSelectorImpl implements
         return toBuilder().depth(depthPredicate).build();
     }
 
+    @Override
     public boolean isLenient() {
         return isLenient;
     }

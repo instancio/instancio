@@ -59,7 +59,7 @@ class SetModelOverlappingModelsTest {
      * Calling {@code setModel()} with the same model twice.
      */
     @Test
-    void overlappingModels() {
+    void overlappingModels2() {
         // must be lenient to avoid unused selector error
         final TargetSelector getH = field(StringsGhi::getH).lenient();
 
@@ -69,12 +69,14 @@ class SetModelOverlappingModelsTest {
 
         final Model<StringsDef> defModel = Instancio.of(StringsDef.class)
                 .set(field(StringsDef::getE), "e")
-                .setModel(all(StringsGhi.class), ghiModel) // ghi model 1
+                // set all(StringsGhi.class) to the model here and below
+                .setModel(all(StringsGhi.class).lenient(), ghiModel)
                 .toModel();
 
         final StringsAbc result = Instancio.of(StringsAbc.class)
                 .setModel(all(StringsDef.class), defModel)
-                .setModel(all(StringsGhi.class), ghiModel)  // ghi model 2
+                // set all(StringsGhi.class) to the model also here
+                .setModel(all(StringsGhi.class), ghiModel)
                 .create();
 
         assertThat(result.getDef().getE()).isEqualTo("e");

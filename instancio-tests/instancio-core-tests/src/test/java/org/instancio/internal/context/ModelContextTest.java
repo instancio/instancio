@@ -330,9 +330,9 @@ class ModelContextTest {
                 .containsValue(Person.class);
 
         assertThat(ctx.getInternalServiceProviders()).isEqualTo(elementModel.getInternalServiceProviders());
-        assertThat(ctx.getSubtypeSelectorMap().getSubtypeSelectors())
+        assertThat(ctx.getContextSource().getSubtypeMap())
                 .isNotEmpty()
-                .isEqualTo(elementModel.getSubtypeSelectorMap().getSubtypeSelectors());
+                .isEqualTo(elementModel.getContextSource().getSubtypeMap());
 
         assertThat(ctx.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
         assertThat(ctx.getRandom().getSeed()).isEqualTo(seed);

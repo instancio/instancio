@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.instancio.internal.selectors;
-
-import org.instancio.Scope;
-import org.instancio.ScopeableSelector;
-import org.instancio.documentation.InternalApi;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+package org.instancio.test.support.pojo.interfaces;
 
 /**
- * Internal selector class that exposes common methods
- * between {@link SelectorImpl} and {@link PredicateSelectorImpl}.
+ * This interface is used for verifying subtypes defined via {@code instancio.properties}.
+ *
+ * <p>This module's properties file has the following subtype mapping
+ * which should be picked up automatically when creating an instance
+ * of {@code PropertiesInterface}:
+ *
+ * <pre>{@code
+ * subtype.org.instancio.test.support.pojo.interfaces.PropertiesInterface=\
+ *   org.instancio.test.support.pojo.interfaces.PropertiesInterfaceImpl
+ * }</pre>
  */
-@InternalApi
-public interface InternalSelector extends ScopeableSelector {
+public interface PropertiesInterface {
 
-    @NotNull
-    List<Scope> getScopes();
-
-    boolean isLenient();
+    String getValue();
 }

@@ -61,7 +61,7 @@ class CollectionUtilsTest {
 
     @Test
     void asUnmodifiableList() {
-        assertThat(CollectionUtils.asUnmodifiableList(null)).isEmpty();
+        assertThat(CollectionUtils.asUnmodifiableList((String[]) null)).isEmpty();
         assertThat(CollectionUtils.asUnmodifiableList("foo", "bar")).containsExactly("foo", "bar");
     }
 

@@ -19,14 +19,12 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 public class ModelContextSelectorMap {
 
     private final SelectorMap<ModelContext<?>> selectorMap = new SelectorMapImpl<>();
-    private final Map<TargetSelector, ModelContext<?>> modelContexts = new LinkedHashMap<>();
 
     void putAll(final Map<TargetSelector, ModelContext<?>> modelContexts) {
         for (Map.Entry<TargetSelector, ModelContext<?>> entry : modelContexts.entrySet()) {
@@ -35,16 +33,11 @@ public class ModelContextSelectorMap {
     }
 
     void put(final TargetSelector selector, final ModelContext<?> value) {
-        this.modelContexts.put(selector, value);
         this.selectorMap.put(selector, value);
     }
 
     public SelectorMap<ModelContext<?>> getSelectorMap() {
         return selectorMap;
-    }
-
-    public Map<TargetSelector, ModelContext<?>> getModelContextSelectors() {
-        return modelContexts;
     }
 
     public ModelContext<?> getContext(final InternalNode node) {

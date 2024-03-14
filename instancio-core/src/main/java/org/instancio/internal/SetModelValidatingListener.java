@@ -42,7 +42,7 @@ class SetModelValidatingListener implements GenerationListener {
      */
     @Override
     public void objectCreated(final InternalNode node, final GeneratorResult result) {
-        final ModelContext<?> otherContext = context.getModelContextSelectorMap().getContext(node);
+        final ModelContext<?> otherContext = context.getSetModelSelectorMap().getContext(node);
 
         if (otherContext == null) {
             return;

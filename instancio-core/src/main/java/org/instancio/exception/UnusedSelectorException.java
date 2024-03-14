@@ -16,8 +16,11 @@
 package org.instancio.exception;
 
 import org.instancio.TargetSelector;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.util.Sonar;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,44 +31,17 @@ import java.util.Set;
 @SuppressWarnings({Sonar.NUMBER_OF_PARENTS, Sonar.GENERIC_WILDCARD_IN_RETURN})
 public class UnusedSelectorException extends InstancioApiException {
 
-    private final transient Set<TargetSelector> ignored;
-    private final transient Set<TargetSelector> nullable;
-    private final transient Set<TargetSelector> generators;
-    private final transient Set<TargetSelector> callbacks;
-    private final transient Set<TargetSelector> subtypes;
+    private final transient Map<ApiMethodSelector, Set<TargetSelector>> unusedSelectorMap;
 
     public UnusedSelectorException(
             final String message,
-            final Set<TargetSelector> ignored,
-            final Set<TargetSelector> nullable,
-            final Set<TargetSelector> generators,
-            final Set<TargetSelector> callbacks,
-            final Set<TargetSelector> subtypes) {
+            final Map<ApiMethodSelector, Set<TargetSelector>> unusedSelectorMap) {
+
         super(message);
-        this.ignored = ignored;
-        this.nullable = nullable;
-        this.generators = generators;
-        this.callbacks = callbacks;
-        this.subtypes = subtypes;
+        this.unusedSelectorMap = Collections.unmodifiableMap(unusedSelectorMap);
     }
 
-    public Set<TargetSelector> getIgnored() {
-        return ignored;
-    }
-
-    public Set<TargetSelector> getNullable() {
-        return nullable;
-    }
-
-    public Set<TargetSelector> getGenerators() {
-        return generators;
-    }
-
-    public Set<TargetSelector> getCallbacks() {
-        return callbacks;
-    }
-
-    public Set<TargetSelector> getSubtypes() {
-        return subtypes;
+    public Map<ApiMethodSelector, Set<TargetSelector>> getUnusedSelectorMap() {
+        return unusedSelectorMap;
     }
 }

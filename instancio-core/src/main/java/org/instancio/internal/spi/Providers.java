@@ -15,12 +15,14 @@
  */
 package org.instancio.internal.spi;
 
+import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioServiceProvider.GeneratorProvider;
 import org.instancio.spi.InstancioServiceProvider.SetterMethodResolver;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.ServiceProviderContext;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 
@@ -31,10 +33,12 @@ public final class Providers {
     private final List<ProviderEntry<TypeInstantiator>> typeInstantiators;
     private final List<ProviderEntry<SetterMethodResolver>> setterMethodResolvers;
 
-    public Providers(
-            final List<InstancioServiceProvider> spList,
-            final ServiceProviderContext context) {
+    public Providers(final ServiceProviderContext context) {
+        this(ServiceLoaders.loadAll(InstancioServiceProvider.class), context);
+    }
 
+    @VisibleForTesting
+    Providers(final List<InstancioServiceProvider> spList, final ServiceProviderContext context) {
         spList.forEach(sp -> sp.init(context));
 
         generatorProviders = ProviderEntry.from(spList, InstancioServiceProvider::getGeneratorProvider);

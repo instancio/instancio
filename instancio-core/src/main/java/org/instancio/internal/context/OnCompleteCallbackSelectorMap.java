@@ -18,15 +18,15 @@ package org.instancio.internal.context;
 import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Sonar;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 class OnCompleteCallbackSelectorMap {
 
     private final SelectorMap<OnCompleteCallback<?>> selectorMap = new SelectorMapImpl<>();
-    private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteCallbacks = new LinkedHashMap<>();
 
     void putAll(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
         for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : callbacks.entrySet()) {
@@ -35,16 +35,11 @@ class OnCompleteCallbackSelectorMap {
     }
 
     void put(final TargetSelector selector, final OnCompleteCallback<?> value) {
-        onCompleteCallbacks.put(selector, value);
         selectorMap.put(selector, value);
     }
 
     public SelectorMap<OnCompleteCallback<?>> getSelectorMap() {
         return selectorMap;
-    }
-
-    public Map<TargetSelector, OnCompleteCallback<?>> getOnCompleteCallbackSelectors() {
-        return onCompleteCallbacks;
     }
 
     List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {

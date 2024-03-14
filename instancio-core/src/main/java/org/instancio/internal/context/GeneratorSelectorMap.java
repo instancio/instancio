@@ -39,9 +39,7 @@ class GeneratorSelectorMap {
     private final GeneratorContext context;
     private final AfterGenerate defaultAfterGenerate;
     private final SelectorMap<Generator<?>> selectorMap = new SelectorMapImpl<>();
-    private final Map<TargetSelector, Generator<?>> generatorSelectors = new LinkedHashMap<>();
-    private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecSelectors = new LinkedHashMap<>();
-    private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
+    private final Map<TargetSelector, Class<?>> subtypeMap = new LinkedHashMap<>();
     private final Generators generators;
 
     GeneratorSelectorMap(@NotNull final GeneratorContext context) {
@@ -51,12 +49,10 @@ class GeneratorSelectorMap {
     }
 
     void putGenerator(final TargetSelector targetSelector, final Generator<?> generator) {
-        this.generatorSelectors.put(targetSelector, generator);
         addToSelectorMap(targetSelector, generator);
     }
 
     void putGeneratorSpec(final TargetSelector targetSelector, final GeneratorSpecProvider<?> genFn) {
-        this.generatorSpecSelectors.put(targetSelector, genFn);
         addToSelectorMap(targetSelector, (Generator<?>) genFn.getSpec(generators));
     }
 
@@ -81,7 +77,7 @@ class GeneratorSelectorMap {
         final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
 
         if (hint != null && hint.targetClass() != null) {
-            generatorSubtypeMap.put(targetSelector, hint.targetClass());
+            subtypeMap.put(targetSelector, hint.targetClass());
         }
     }
 
@@ -89,16 +85,8 @@ class GeneratorSelectorMap {
         return selectorMap;
     }
 
-    Map<TargetSelector, Generator<?>> getGeneratorSelectors() {
-        return generatorSelectors;
-    }
-
-    Map<TargetSelector, GeneratorSpecProvider<?>> getGeneratorSpecSelectors() {
-        return generatorSpecSelectors;
-    }
-
-    Map<TargetSelector, Class<?>> getGeneratorSubtypeMap() {
-        return Collections.unmodifiableMap(generatorSubtypeMap);
+    Map<TargetSelector, Class<?>> getSubtypeMap() {
+        return Collections.unmodifiableMap(subtypeMap);
     }
 
     Optional<Generator<?>> getGenerator(final InternalNode node) {

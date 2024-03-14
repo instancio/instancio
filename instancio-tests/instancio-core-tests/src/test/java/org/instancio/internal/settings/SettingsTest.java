@@ -16,7 +16,6 @@
 package org.instancio.internal.settings;
 
 import org.instancio.Instancio;
-import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.context.PropertiesLoader;
@@ -25,6 +24,8 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.interfaces.PropertiesInterface;
+import org.instancio.test.support.pojo.interfaces.PropertiesInterfaceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,8 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -316,8 +315,10 @@ class SettingsTest {
     @Test
     @DisplayName("Should use subtypes specified in instancio.properties")
     void subtypeMappingFromInstancioProperties() {
-        assertThat(Instancio.create(new TypeToken<SortedMap<String, Integer>>() {}))
-                .isExactlyInstanceOf(ConcurrentSkipListMap.class);
+        final PropertiesInterface result = Instancio.create(PropertiesInterface.class);
+
+        assertThat(result).isExactlyInstanceOf(PropertiesInterfaceImpl.class);
+        assertThat(result.getValue()).isNotBlank();
     }
 
     @Test

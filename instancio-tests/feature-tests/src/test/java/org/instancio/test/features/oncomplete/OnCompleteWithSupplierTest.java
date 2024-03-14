@@ -68,7 +68,7 @@ class OnCompleteWithSupplierTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(UnusedSelectorException.class)
-                .hasMessageContaining("Unused selectors in onComplete()")
+                .hasMessageContaining("Unused selector in: onComplete()")
                 .hasMessageContaining("all(String)");
 
         assertThat(callbacksCount.get()).isZero();

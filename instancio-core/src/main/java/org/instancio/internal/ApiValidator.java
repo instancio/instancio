@@ -110,7 +110,8 @@ public final class ApiValidator {
         return keyOrValueType;
     }
 
-    public static void validateTypeParameters(final Class<?> rootClass, final List<Type> rootTypeParameters) {
+    public static void validateTypeParameters(final Type rootType, final List<Type> rootTypeParameters) {
+        final Class<?> rootClass = TypeUtils.getRawType(rootType);
         final int typeVarsLength = rootClass.isArray()
                 ? rootClass.getComponentType().getTypeParameters().length
                 : rootClass.getTypeParameters().length;

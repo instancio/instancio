@@ -79,6 +79,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                         .to(StringsAbc::getC))
                 // lenient selectors should not be reported as unused
                 .set(Select.fields().named("bad-field-name").lenient(), 0)
+                .setModel(Select.types(t -> false), Instancio.of(String.class).toModel())
                 .withSetting(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
                 .create();
     }
@@ -89,7 +90,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
 
                 Found unused selectors referenced in the following methods:
 
-                 -> Unused selectors in ignore():
+                 -> Unused selector in: ignore()
                  1: all(YearMonth)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:62)
                  2: field(Bar, "barValue")
@@ -99,7 +100,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                  4: types(Predicate<Class>).within(scope(Person))
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:76)
 
-                 -> Unused selectors in withNullable():
+                 -> Unused selector in: withNullable()
                  1: all(BigDecimal)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:64)
                  2: field(Foo, "fooValue")
@@ -107,7 +108,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                  3: setter(Person, "setName(String)")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:66)
 
-                 -> Unused selectors in generate(), set(), or supply():
+                 -> Unused selector in: generate(), set(), supply()
                  1: all(Year).within(scope(types().of(Year)))
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:67)
                  2: field(Baz, "bazValue")
@@ -123,19 +124,23 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                  7: types().of(Timestamp)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:72)
 
-                 -> Unused selectors in onComplete():
+                 -> Unused selector in: onComplete()
                  1: all(ZonedDateTime)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:71)
                  2: field(IntegerHolder, "primitive")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:70)
 
-                 -> Unused origin selectors in assign():
+                 -> Unused selector in: assign() origin
                  1: field(StringsAbc, "a")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:78)
 
-                 -> Unused destination selectors in assign():
+                 -> Unused selector in: assign() destination
                  1: field(StringsAbc, "c")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:79)
+
+                 -> Unused selector in: setModel()
+                 1: types(Predicate<Class>)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:82)
 
                 This error aims to highlight potential problems and help maintain clean test code.
 

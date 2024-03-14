@@ -17,9 +17,11 @@ package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
 import org.instancio.internal.util.Sonar;
 
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
@@ -27,34 +29,17 @@ import static org.instancio.internal.util.Constants.NL;
 
 final class UnusedSelectorReporter {
     private final int maxDepth;
-    private final Set<TargetSelector> ignored;
-    private final Set<TargetSelector> nullable;
-    private final Set<TargetSelector> generators;
-    private final Set<TargetSelector> callbacks;
-    private final Set<TargetSelector> subtypes;
-    private final Set<TargetSelector> assignmentOrigins;
-    private final Set<TargetSelector> assignmentDestinations;
-    private final Set<TargetSelector> modelContexts;
+    private final SelectorNodeMatchesCollector collector;
 
-    private UnusedSelectorReporter(final Builder builder) {
-        maxDepth = builder.maxDepth;
-        ignored = builder.ignored;
-        nullable = builder.nullable;
-        generators = builder.generators;
-        callbacks = builder.callbacks;
-        subtypes = builder.subtypes;
-        assignmentOrigins = builder.assignmentOrigins;
-        assignmentDestinations = builder.assignmentDestinations;
-        modelContexts = builder.modelContexts;
-    }
-
-    static Builder builder() {
-        return new Builder();
+    UnusedSelectorReporter(final int maxDepth, final SelectorMaps selectorMaps) {
+        this.maxDepth = maxDepth;
+        this.collector = new SelectorNodeMatchesCollector(selectorMaps);
     }
 
     @SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
     void report() {
-        if (hasNoUnusedSelectors()) {
+        final Map<ApiMethodSelector, Set<TargetSelector>> unused = collector.getUnusedSelectors();
+        if (hasNoUnusedSelectors(unused)) {
             return;
         }
 
@@ -63,14 +48,14 @@ final class UnusedSelectorReporter {
                 .append("Found unused selectors referenced in the following methods:")
                 .append(NL);
 
-        append(ignored, sb, "selectors", "ignore()");
-        append(nullable, sb, "selectors", "withNullable()");
-        append(generators, sb, "selectors", "generate(), set(), or supply()");
-        append(callbacks, sb, "selectors", "onComplete()");
-        append(subtypes, sb, "selectors", "subtype()");
-        append(assignmentOrigins, sb, "origin selectors", "assign()");
-        append(assignmentDestinations, sb, "destination selectors", "assign()");
-        append(modelContexts, sb, "selectors", "setModel()");
+        append(unused, sb, ApiMethodSelector.IGNORE);
+        append(unused, sb, ApiMethodSelector.WITH_NULLABLE);
+        append(unused, sb, ApiMethodSelector.GENERATE);
+        append(unused, sb, ApiMethodSelector.ON_COMPLETE);
+        append(unused, sb, ApiMethodSelector.SUBTYPE);
+        append(unused, sb, ApiMethodSelector.ASSIGN_ORIGIN);
+        append(unused, sb, ApiMethodSelector.ASSIGN_DESTINATION);
+        append(unused, sb, ApiMethodSelector.SET_MODEL);
 
         sb.append(NL)
                 .append("This error aims to highlight potential problems and help maintain clean test code.").append(NL)
@@ -120,37 +105,32 @@ final class UnusedSelectorReporter {
                 .append("For more information see: https://www.instancio.org/user-guide/#selector-strictness")
                 .append(NL);
 
-        throw new UnusedSelectorException(sb.toString(), ignored, nullable, generators, callbacks, subtypes);
+        throw new UnusedSelectorException(sb.toString(), unused);
     }
 
     private static void append(
-            final Set<TargetSelector> selectors,
+            final Map<ApiMethodSelector, Set<TargetSelector>> map,
             final StringBuilder sb,
-            final String selectorDescription,
-            final String apiMethodName) {
+            final ApiMethodSelector apiMethod) {
 
+        final Set<TargetSelector> selectors = map.get(apiMethod);
         if (!selectors.isEmpty()) {
             sb.append(NL)
-                    .append(" -> Unused ")
-                    .append(selectorDescription)
-                    .append(" in ")
-                    .append(apiMethodName)
-                    .append(':')
+                    .append(" -> Unused selector in: ")
+                    .append(apiMethod.getDescription())
                     .append(NL)
                     .append(formatSelectors(selectors))
                     .append(NL);
         }
     }
 
-    private boolean hasNoUnusedSelectors() {
-        return ignored.isEmpty()
-                && nullable.isEmpty()
-                && generators.isEmpty()
-                && callbacks.isEmpty()
-                && subtypes.isEmpty()
-                && assignmentOrigins.isEmpty()
-                && assignmentDestinations.isEmpty()
-                && modelContexts.isEmpty();
+    private static boolean hasNoUnusedSelectors(final Map<ApiMethodSelector, Set<TargetSelector>> unusedSelectorMap) {
+        for (Set<TargetSelector> unusedSelectors : unusedSelectorMap.values()) {
+            if (!unusedSelectors.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static String formatSelectors(final Set<TargetSelector> selectors) {
@@ -164,69 +144,5 @@ final class UnusedSelectorReporter {
                 .sorted()
                 .map(it -> String.format(" %s: %s", count[0]++, it))
                 .collect(joining(NL));
-    }
-
-    public static final class Builder {
-        private int maxDepth;
-        private Set<TargetSelector> ignored;
-        private Set<TargetSelector> nullable;
-        private Set<TargetSelector> generators;
-        private Set<TargetSelector> callbacks;
-        private Set<TargetSelector> subtypes;
-        private Set<TargetSelector> assignmentOrigins;
-        private Set<TargetSelector> assignmentDestinations;
-        private Set<TargetSelector> modelContexts;
-
-        private Builder() {
-        }
-
-        public Builder maxDepth(final int maxDepth) {
-            this.maxDepth = maxDepth;
-            return this;
-        }
-
-        public Builder ignored(final Set<TargetSelector> ignored) {
-            this.ignored = ignored;
-            return this;
-        }
-
-        public Builder nullable(final Set<TargetSelector> nullable) {
-            this.nullable = nullable;
-            return this;
-        }
-
-        public Builder generators(final Set<TargetSelector> generators) {
-            this.generators = generators;
-            return this;
-        }
-
-        public Builder callbacks(final Set<TargetSelector> callbacks) {
-            this.callbacks = callbacks;
-            return this;
-        }
-
-        public Builder subtypes(final Set<TargetSelector> subtypes) {
-            this.subtypes = subtypes;
-            return this;
-        }
-
-        public Builder assignmentOrigins(final Set<TargetSelector> assignmentOrigins) {
-            this.assignmentOrigins = assignmentOrigins;
-            return this;
-        }
-
-        public Builder assignmentDestinations(final Set<TargetSelector> assignmentDestinations) {
-            this.assignmentDestinations = assignmentDestinations;
-            return this;
-        }
-
-        public Builder modelContexts(final Set<TargetSelector> modelContexts) {
-            this.modelContexts = modelContexts;
-            return this;
-        }
-
-        public UnusedSelectorReporter build() {
-            return new UnusedSelectorReporter(this);
-        }
     }
 }

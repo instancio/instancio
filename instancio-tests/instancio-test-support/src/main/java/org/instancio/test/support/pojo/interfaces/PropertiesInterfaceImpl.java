@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.instancio.test.support.pojo.interfaces;
 
-package org.instancio.internal.context;
+import lombok.Setter;
+import lombok.ToString;
 
-public enum ApiMethodSelector {
-    IGNORE("ignore()"),
-    WITH_NULLABLE("withNullable()"),
-    ON_COMPLETE("onComplete()"),
-    SUBTYPE("subtype()"),
-    GENERATE("generate(), set(), supply()"),
-    ASSIGN_ORIGIN("assign() origin selectors"),
-    ASSIGN_DESTINATION("assign() destination selectors");
+/**
+ * @see PropertiesInterface
+ */
+@Setter
+@ToString
+public class PropertiesInterfaceImpl implements PropertiesInterface {
 
-    private final String description;
+    private String value;
 
-    ApiMethodSelector(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
+    @Override
+    public String getValue() {
+        return value;
     }
 }

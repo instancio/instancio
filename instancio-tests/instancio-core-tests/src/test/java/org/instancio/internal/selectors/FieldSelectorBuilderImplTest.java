@@ -18,13 +18,13 @@ package org.instancio.internal.selectors;
 import org.instancio.Scope;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeContext;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.Pojo;
+import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -189,7 +189,7 @@ class FieldSelectorBuilderImplTest {
                 .rawType(type)
                 .targetClass(type)
                 .member(getField(type, field))
-                .nodeContext(NodeContext.builder().build())
+                .nodeContext(Nodes.nodeContext())
                 .build();
     }
 

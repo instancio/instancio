@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 
 import java.util.ArrayDeque;
@@ -34,17 +34,19 @@ final class SelectorNodeMatchesCollector {
     private final SelectorMap<?> onCompleteCallbackSelectorMap;
     private final SelectorMap<?> subtypeSelectorMap;
     private final SelectorMap<?> generatorSelectorMap;
-    private final SelectorMap<?> assignmentOriginSelectorMap;
-    private final SelectorMap<?> assignmentDestinationSelectorMap;
+    private final SelectorMap<?> assignDestinationToAssignmentsMap;
+    private final SelectorMap<?> assignOriginToDestinationSelectorsMap;
+    private final SelectorMap<?> setModelSelectorMap;
 
-    private SelectorNodeMatchesCollector(final Builder builder) {
-        ignoredSelectorMap = builder.ignoredSelectorMap;
-        nullableSelectorMap = builder.nullableSelectorMap;
-        onCompleteCallbackSelectorMap = builder.onCompleteCallbackSelectorMap;
-        subtypeSelectorMap = builder.subtypeSelectorMap;
-        generatorSelectorMap = builder.generatorSelectorMap;
-        assignmentOriginSelectorMap = builder.assignmentOriginSelectorMap;
-        assignmentDestinationSelectorMap = builder.assignmentDestinationSelectorMap;
+    SelectorNodeMatchesCollector(final SelectorMaps selectorMaps) {
+        this.ignoredSelectorMap = selectorMaps.getIgnoreSelectorMap().getSelectorMap();
+        this.nullableSelectorMap = selectorMaps.getWithNullableSelectorMap().getSelectorMap();
+        this.onCompleteCallbackSelectorMap = selectorMaps.getOnCompleteSelectorMap().getSelectorMap();
+        this.subtypeSelectorMap = selectorMaps.getSubtypeSelectorMap().getSelectorMap();
+        this.generatorSelectorMap = selectorMaps.getGeneratorSelectorMap().getSelectorMap();
+        this.assignDestinationToAssignmentsMap = selectorMaps.getAssignmentSelectorMap().getDestinationToAssignmentsMap();
+        this.assignOriginToDestinationSelectorsMap = selectorMaps.getAssignmentSelectorMap().getOriginToDestinationSelectorsMap();
+        this.setModelSelectorMap = selectorMaps.getSetModelSelectorMap().getSelectorMap();
     }
 
     public Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> getNodeMatches(final InternalNode rootNode) {
@@ -59,8 +61,9 @@ final class SelectorNodeMatchesCollector {
             collectNodes(map, ApiMethodSelector.ON_COMPLETE, node, onCompleteCallbackSelectorMap);
             collectNodes(map, ApiMethodSelector.SUBTYPE, node, subtypeSelectorMap);
             collectNodes(map, ApiMethodSelector.GENERATE, node, generatorSelectorMap);
-            collectNodes(map, ApiMethodSelector.ASSIGN_ORIGIN, node, assignmentOriginSelectorMap);
-            collectNodes(map, ApiMethodSelector.ASSIGN_DESTINATION, node, assignmentDestinationSelectorMap);
+            collectNodes(map, ApiMethodSelector.ASSIGN_DESTINATION, node, assignDestinationToAssignmentsMap);
+            collectNodes(map, ApiMethodSelector.ASSIGN_ORIGIN, node, assignOriginToDestinationSelectorsMap);
+            collectNodes(map, ApiMethodSelector.SET_MODEL, node, setModelSelectorMap);
             queue.addAll(node.getChildren());
         }
         return map;
@@ -77,65 +80,31 @@ final class SelectorNodeMatchesCollector {
 
         final Set<TargetSelector> selectors = selectorMap.getSelectors(node);
 
-        selectors.forEach(selector -> {
+        for (TargetSelector selector : selectors) {
             Set<InternalNode> nodes = selectorNodeMap.computeIfAbsent(selector, k -> new LinkedHashSet<>());
             nodes.add(node);
-        });
+        }
     }
 
-    public static Builder builder() {
-        return new Builder();
+    /**
+     * {@link SelectorMap} marks keys (selectors) that have an associated value
+     * when doing a lookup. Therefore, this method must be called after the root
+     * object has been created (all map lookups have been done).
+     */
+    public Map<ApiMethodSelector, Set<TargetSelector>> getUnusedSelectors() {
+        Map<ApiMethodSelector, Set<TargetSelector>> map = new EnumMap<>(ApiMethodSelector.class);
+        map.put(ApiMethodSelector.IGNORE, collectSelectors(ignoredSelectorMap));
+        map.put(ApiMethodSelector.WITH_NULLABLE, collectSelectors(nullableSelectorMap));
+        map.put(ApiMethodSelector.ON_COMPLETE, collectSelectors(onCompleteCallbackSelectorMap));
+        map.put(ApiMethodSelector.SUBTYPE, collectSelectors(subtypeSelectorMap));
+        map.put(ApiMethodSelector.GENERATE, collectSelectors(generatorSelectorMap));
+        map.put(ApiMethodSelector.ASSIGN_DESTINATION, collectSelectors(assignDestinationToAssignmentsMap));
+        map.put(ApiMethodSelector.ASSIGN_ORIGIN, collectSelectors(assignOriginToDestinationSelectorsMap));
+        map.put(ApiMethodSelector.SET_MODEL, collectSelectors(setModelSelectorMap));
+        return map;
     }
 
-    public static final class Builder {
-        private SelectorMap<?> ignoredSelectorMap;
-        private SelectorMap<?> nullableSelectorMap;
-        private SelectorMap<?> onCompleteCallbackSelectorMap;
-        private SelectorMap<?> subtypeSelectorMap;
-        private SelectorMap<?> generatorSelectorMap;
-        private SelectorMap<?> assignmentOriginSelectorMap;
-        private SelectorMap<?> assignmentDestinationSelectorMap;
-
-        private Builder() {
-        }
-
-        public Builder ignoredSelectorMap(final SelectorMap<?> ignoredSelectorMap) {
-            this.ignoredSelectorMap = ignoredSelectorMap;
-            return this;
-        }
-
-        public Builder nullableSelectorMap(final SelectorMap<?> nullableSelectorMap) {
-            this.nullableSelectorMap = nullableSelectorMap;
-            return this;
-        }
-
-        public Builder onCompleteCallbackSelectorMap(final SelectorMap<?> onCompleteCallbackSelectorMap) {
-            this.onCompleteCallbackSelectorMap = onCompleteCallbackSelectorMap;
-            return this;
-        }
-
-        public Builder subtypeSelectorMap(final SelectorMap<?> subtypeSelectorMap) {
-            this.subtypeSelectorMap = subtypeSelectorMap;
-            return this;
-        }
-
-        public Builder generatorSelectorMap(final SelectorMap<?> generatorSelectorMap) {
-            this.generatorSelectorMap = generatorSelectorMap;
-            return this;
-        }
-
-        public Builder assignmentOriginSelectorMap(final SelectorMap<?> assignmentOriginSelectorMap) {
-            this.assignmentOriginSelectorMap = assignmentOriginSelectorMap;
-            return this;
-        }
-
-        public Builder assignmentDestinationSelectorMap(final SelectorMap<?> assignmentDestinationSelectorMap) {
-            this.assignmentDestinationSelectorMap = assignmentDestinationSelectorMap;
-            return this;
-        }
-
-        public SelectorNodeMatchesCollector build() {
-            return new SelectorNodeMatchesCollector(this);
-        }
+    private static Set<TargetSelector> collectSelectors(final SelectorMap<?> selectorMap) {
+        return selectorMap.getUnusedKeys();
     }
 }

@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.nodes;
 
-import org.instancio.internal.context.BooleanSelectorMap;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.TargetField;
 import org.instancio.internal.util.ReflectionUtils;
@@ -28,8 +28,6 @@ import org.instancio.test.support.pojo.misc.StringsGhi;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -92,13 +90,10 @@ class NodeStatsTest {
                 .target(new TargetField(ReflectionUtils.getField(StringsGhi.class, "h")))
                 .build();
 
-        final BooleanSelectorMap ignoredSelectorMap = new BooleanSelectorMap();
-        ignoredSelectorMap.putAll(Collections.singleton(fieldH));
-
-        final NodeContext ctx = Nodes.nodeContextBuilder()
-                .settings(Settings.defaults())
-                .ignoredSelectorMap(ignoredSelectorMap)
-                .build();
+        final NodeContext ctx = new NodeContext(ModelContext.builder(StringsDef.class)
+                .withSettings(Settings.defaults())
+                .withIgnored(fieldH)
+                .build());
 
         final NodeFactory nodeFactory = new NodeFactory(ctx);
         final InternalNode node = nodeFactory.createRootNode(StringsDef.class);

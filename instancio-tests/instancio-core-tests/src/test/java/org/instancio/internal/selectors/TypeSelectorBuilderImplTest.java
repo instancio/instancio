@@ -18,7 +18,6 @@ package org.instancio.internal.selectors;
 import org.instancio.Scope;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeContext;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
@@ -26,6 +25,7 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.Pojo;
+import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -153,7 +153,7 @@ class TypeSelectorBuilderImplTest {
                         .type(type)
                         .rawType(type)
                         .targetClass(type)
-                        .nodeContext(NodeContext.builder().build())
+                        .nodeContext(Nodes.nodeContext())
                         .build())
                 .collect(Collectors.toList());
     }

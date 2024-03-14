@@ -48,7 +48,7 @@ public interface SelectorMap<V> {
      */
     Set<TargetSelector> getSelectors(InternalNode node);
 
-    void forEach(BiConsumer<TargetSelector, V> action);
+    void forEach(BiConsumer<TargetSelector, ? super V> action);
 
     void put(TargetSelector targetSelector, V value);
 

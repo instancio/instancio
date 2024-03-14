@@ -18,14 +18,12 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public final class SubtypeSelectorMap {
 
     private final SelectorMap<Class<?>> selectorMap = new SelectorMapImpl<>();
-    private final Map<TargetSelector, Class<?>> subtypeSelectors = new LinkedHashMap<>();
 
     void putAll(final Map<TargetSelector, Class<?>> subtypes) {
         for (Map.Entry<TargetSelector, Class<?>> entry : subtypes.entrySet()) {
@@ -34,12 +32,7 @@ public final class SubtypeSelectorMap {
     }
 
     void put(final TargetSelector key, final Class<?> value) {
-        subtypeSelectors.put(key, value);
         selectorMap.put(key, value);
-    }
-
-    Map<TargetSelector, Class<?>> getSubtypeSelectors() {
-        return subtypeSelectors;
     }
 
     SelectorMap<Class<?>> getSelectorMap() {
