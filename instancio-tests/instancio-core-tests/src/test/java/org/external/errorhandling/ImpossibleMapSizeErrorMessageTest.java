@@ -52,7 +52,7 @@ class ImpossibleMapSizeErrorMessageTest extends AbstractErrorMessageTestTemplate
                 Reason: unable to populate Map of size 100: class Map<Boolean, String> (depth=0)
 
                  │ Path to root:
-                 │   <0:HashMap>   <-- Root
+                 │   <0:Map>   <-- Root
                  │
                  │ Format: <depth:class: field>
 

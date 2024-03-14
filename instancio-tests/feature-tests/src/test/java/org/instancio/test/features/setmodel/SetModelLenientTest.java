@@ -67,7 +67,7 @@ class SetModelLenientTest {
 
             assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(UnusedSelectorException.class)
-                    .hasMessageContainingAll("Unused selectors", "allInts()");
+                    .hasMessageContainingAll("Unused selector", "allInts()");
         }
 
         /**
@@ -106,7 +106,7 @@ class SetModelLenientTest {
 
             assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(UnusedSelectorException.class)
-                    .hasMessageContainingAll("Unused selectors", "allInts()");
+                    .hasMessageContainingAll("Unused selector", "allInts()");
         }
 
         @Test

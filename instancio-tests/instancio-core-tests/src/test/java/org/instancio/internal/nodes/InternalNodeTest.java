@@ -17,10 +17,6 @@ package org.instancio.internal.nodes;
 
 import org.instancio.TypeToken;
 import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.settings.AssignmentType;
-import org.instancio.settings.Keys;
-import org.instancio.settings.OnSetMethodUnmatched;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.pojo.dynamic.MixedPojo;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -48,13 +44,8 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 
 @NodeTag
 class InternalNodeTest {
-    private static final NodeContext NODE_CONTEXT = Nodes.nodeContextBuilder()
-            .settings(Settings.defaults()
-                    .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
-                    .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
-            .build();
 
-    private static final NodeFactory NODE_FACTORY = new NodeFactory(NODE_CONTEXT);
+    private static final NodeFactory NODE_FACTORY = new NodeFactory(Nodes.nodeContext());
 
     @Test
     void getNodeKind() {
@@ -88,7 +79,7 @@ class InternalNodeTest {
                 .member(ReflectionUtils.getField(ListString.class, "list"))
                 .member(ReflectionUtils.getSetterMethod(ListString.class, "setList", List.class))
                 .parent(parent)
-                .nodeContext(NODE_CONTEXT)
+                .nodeContext(Nodes.nodeContext())
                 .children(children)
                 .cyclic()
                 .build();
@@ -119,9 +110,8 @@ class InternalNodeTest {
 
             InternalNode bazInteger = createNode(List.class, typeBazInteger);
             InternalNode bazString = createNode(List.class, typeBazString);
-            NodeContext nodeContext = NodeContext.builder().build();
             InternalNode bazIntegerClassNode = InternalNode.builder()
-                    .nodeContext(nodeContext)
+                    .nodeContext(Nodes.nodeContext())
                     .type(typeBazInteger.get())
                     .rawType(Baz.class)
                     .targetClass(Baz.class)
@@ -308,9 +298,8 @@ class InternalNodeTest {
     }
 
     private static InternalNode createNode(Class<?> klass, TypeToken<?> type) {
-        final NodeContext nodeContext = NodeContext.builder().build();
         return InternalNode.builder()
-                .nodeContext(nodeContext)
+                .nodeContext(Nodes.nodeContext())
                 .type(type.get())
                 .rawType(klass)
                 .targetClass(klass)

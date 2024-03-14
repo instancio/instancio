@@ -18,13 +18,11 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class BooleanSelectorMap {
 
     private final SelectorMap<Boolean> selectorMap = new SelectorMapImpl<>();
-    private final Set<TargetSelector> targetSelectors = new LinkedHashSet<>();
 
     public void putAll(final Set<TargetSelector> targetSelectors) {
         for (TargetSelector targetSelector : targetSelectors) {
@@ -33,16 +31,11 @@ public class BooleanSelectorMap {
     }
 
     void add(final TargetSelector targetSelector) {
-        targetSelectors.add(targetSelector);
         selectorMap.put(targetSelector, true);
     }
 
     public SelectorMap<Boolean> getSelectorMap() {
         return selectorMap;
-    }
-
-    public Set<TargetSelector> getTargetSelectors() {
-        return targetSelectors;
     }
 
     public boolean isTrue(final InternalNode node) {

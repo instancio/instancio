@@ -43,7 +43,7 @@ class EmitGeneratorNoItemsLeftToEmitErrorMessageTest extends AbstractErrorMessag
 
                  │ Path to root:
                  │   <1:String>
-                 │    └──<0:ArrayList>   <-- Root
+                 │    └──<0:List>   <-- Root
                  │
                  │ Format: <depth:class: field>
 

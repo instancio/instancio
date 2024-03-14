@@ -25,12 +25,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
 public final class CollectionUtils {
+
+    private static final int DEFAULT_INITIAL_CAPACITY = 4;
+
     private CollectionUtils() {
         // non-instantiable
     }
@@ -43,6 +47,26 @@ public final class CollectionUtils {
         return map == null || map.isEmpty();
     }
 
+    public static <T> List<T> asUnmodifiableList(final List<T> list) {
+        return list == null ? Collections.emptyList() : Collections.unmodifiableList(list);
+    }
+
+    public static <T> Set<T> asUnmodifiableSet(final Set<T> set) {
+        return set == null ? Collections.emptySet() : Collections.unmodifiableSet(set);
+    }
+
+    public static <K, V> Map<K, V> asUnmodifiableMap(final Map<K, V> map) {
+        return map == null ? Collections.emptyMap() : Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> newLinkedHashMapIfNull(final Map<K, V> map) {
+        return map != null ? map : new LinkedHashMap<>(DEFAULT_INITIAL_CAPACITY);
+    }
+
+    public static <T> Set<T> newLinkedHashSetIfNull(final Set<T> set) {
+        return set != null ? set : new LinkedHashSet<>(DEFAULT_INITIAL_CAPACITY);
+    }
+
     @SafeVarargs
     public static <T> List<T> asUnmodifiableList(final T... values) {
         return Collections.unmodifiableList(asArrayList(values));
@@ -51,7 +75,7 @@ public final class CollectionUtils {
     @SafeVarargs
     public static <T> List<T> asArrayList(final T... values) {
         return values == null
-                ? new ArrayList<>()
+                ? new ArrayList<>(DEFAULT_INITIAL_CAPACITY)
                 : new ArrayList<>(Arrays.asList(values));
     }
 

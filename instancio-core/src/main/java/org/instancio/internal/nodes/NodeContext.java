@@ -18,16 +18,15 @@ package org.instancio.internal.nodes;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.spi.InternalServiceProvider;
-import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,16 +43,16 @@ public final class NodeContext {
     private final TypeResolverFacade typeResolverFacade;
     private final List<InternalServiceProvider> internalServiceProviders;
 
-    private NodeContext(final Builder builder) {
-        maxDepth = builder.maxDepth;
-        settings = builder.settings;
-        rootTypeMap = builder.rootTypeMap;
-        ignoredSelectorMap = builder.ignoredSelectorMap;
-        subtypeSelectorMap = builder.subtypeSelectorMap;
-        subtypeMappingFromSettings = builder.subtypeMappingFromSettings;
-        assignmentOriginSelectors = builder.assignmentOriginSelectors;
-        internalServiceProviders = builder.internalServiceProviders;
-        typeResolverFacade = new TypeResolverFacade(builder.providerEntries);
+    public NodeContext(final ModelContext<?> modelContext) {
+        maxDepth = modelContext.getMaxDepth();
+        settings = modelContext.getSettings();
+        rootTypeMap = modelContext.getRootTypeMap();
+        ignoredSelectorMap = modelContext.getIgnoreSelectorMap();
+        subtypeSelectorMap = modelContext.getSubtypeSelectorMap();
+        assignmentOriginSelectors = modelContext.getAssignmentOriginSelectorMap();
+        subtypeMappingFromSettings = settings.getSubtypeMap();
+        internalServiceProviders = modelContext.getInternalServiceProviders();
+        typeResolverFacade = new TypeResolverFacade(modelContext.getServiceProviders().getTypeResolvers());
     }
 
     public int getMaxDepth() {
@@ -102,73 +101,5 @@ public final class NodeContext {
 
     public List<InternalServiceProvider> getInternalServiceProviders() {
         return internalServiceProviders;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static final class Builder {
-        private int maxDepth;
-        private Settings settings;
-        private Map<TypeVariable<?>, Type> rootTypeMap = Collections.emptyMap();
-        private BooleanSelectorMap ignoredSelectorMap;
-        private SubtypeSelectorMap subtypeSelectorMap;
-        private BooleanSelectorMap assignmentOriginSelectors;
-        private Map<Class<?>, Class<?>> subtypeMappingFromSettings = Collections.emptyMap();
-        private List<InternalServiceProvider> internalServiceProviders = Collections.emptyList();
-        private List<ProviderEntry<TypeResolver>> providerEntries = Collections.emptyList();
-
-        private Builder() {
-        }
-
-        public Builder maxDepth(final int maxDepth) {
-            this.maxDepth = maxDepth;
-            return this;
-        }
-
-        public Builder settings(final Settings settings) {
-            this.settings = settings;
-            return this;
-        }
-
-        public Builder rootTypeMap(final Map<TypeVariable<?>, Type> rootTypeMap) {
-            this.rootTypeMap = rootTypeMap;
-            return this;
-        }
-
-        public Builder ignoredSelectorMap(final BooleanSelectorMap ignoredSelectorMap) {
-            this.ignoredSelectorMap = ignoredSelectorMap;
-            return this;
-        }
-
-        public Builder subtypeSelectorMap(final SubtypeSelectorMap subtypeSelectorMap) {
-            this.subtypeSelectorMap = subtypeSelectorMap;
-            return this;
-        }
-
-        public Builder assignmentOriginSelectors(final BooleanSelectorMap assignmentOriginSelectors) {
-            this.assignmentOriginSelectors = assignmentOriginSelectors;
-            return this;
-        }
-
-        public Builder subtypeMappingFromSettings(final Map<Class<?>, Class<?>> subtypeMappingFromSettings) {
-            this.subtypeMappingFromSettings = subtypeMappingFromSettings;
-            return this;
-        }
-
-        public Builder internalServiceProviders(final List<InternalServiceProvider> internalServiceProviders) {
-            this.internalServiceProviders = internalServiceProviders;
-            return this;
-        }
-
-        public Builder providerEntries(final List<ProviderEntry<TypeResolver>> providerEntries) {
-            this.providerEntries = providerEntries;
-            return this;
-        }
-
-        public NodeContext build() {
-            return new NodeContext(this);
-        }
     }
 }

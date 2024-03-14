@@ -15,8 +15,7 @@
  */
 package org.instancio.testsupport.fixtures;
 
-import org.instancio.internal.context.BooleanSelectorMap;
-import org.instancio.internal.context.SubtypeSelectorMap;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
@@ -38,23 +37,14 @@ public final class Nodes {
     }
 
     public static NodeContext nodeContext() {
-        return NodeContext.builder()
-                .maxDepth(Integer.MAX_VALUE)
-                .settings(Settings.defaults()
+        final ModelContext<?> modelContext = ModelContext.builder(Object.class)
+                .withMaxDepth(Integer.MAX_VALUE)
+                .withSettings(Settings.create()
                         .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
                         .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
-                .ignoredSelectorMap(new BooleanSelectorMap())
-                .subtypeSelectorMap(new SubtypeSelectorMap())
-                .assignmentOriginSelectors(new BooleanSelectorMap())
                 .build();
-    }
 
-    public static NodeContext.Builder nodeContextBuilder() {
-        return NodeContext.builder()
-                .maxDepth(Integer.MAX_VALUE)
-                .ignoredSelectorMap(new BooleanSelectorMap())
-                .subtypeSelectorMap(new SubtypeSelectorMap())
-                .assignmentOriginSelectors(new BooleanSelectorMap());
+        return new NodeContext(modelContext);
     }
 
     private Nodes() {

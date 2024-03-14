@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.instancio.internal;
 
-package org.instancio.internal.selectors;
+public enum ApiMethodSelector {
+    ASSIGN_DESTINATION("assign() destination"),
+    ASSIGN_ORIGIN("assign() origin"),
+    GENERATE("generate(), set(), supply()"),
+    IGNORE("ignore()"),
+    ON_COMPLETE("onComplete()"),
+    SET_MODEL("setModel()"),
+    SUBTYPE("subtype()"),
+    WITH_NULLABLE("withNullable()");
 
-import org.instancio.Scope;
-import org.instancio.ScopeableSelector;
-import org.instancio.documentation.InternalApi;
-import org.jetbrains.annotations.NotNull;
+    private final String description;
 
-import java.util.List;
+    ApiMethodSelector(String description) {
+        this.description = description;
+    }
 
-/**
- * Internal selector class that exposes common methods
- * between {@link SelectorImpl} and {@link PredicateSelectorImpl}.
- */
-@InternalApi
-public interface InternalSelector extends ScopeableSelector {
-
-    @NotNull
-    List<Scope> getScopes();
-
-    boolean isLenient();
+    public String getDescription() {
+        return description;
+    }
 }

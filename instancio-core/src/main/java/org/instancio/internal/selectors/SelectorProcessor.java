@@ -54,8 +54,15 @@ public final class SelectorProcessor {
     }
 
     /**
-     * This method converts various types of selector {@link Target Targets}
-     * to {@link TargetClass}, {@link TargetField}, or {@link TargetSetter}.
+     * Processing a selector involves a few things, including:
+     *
+     * <ul>
+     *   <li>flattening selector groups</li>
+     *   <li>setting root class on selectors where the class was not specified
+     *       (e.g. {@code field("someField")})</li>
+     *   <li>converting various types of {@link Target Targets}
+     *       to {@link TargetClass}, {@link TargetField}, or {@link TargetSetter}.</li>
+     * </ul>
      *
      * @param selector to process
      * @return a processed selector

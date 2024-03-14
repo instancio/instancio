@@ -26,6 +26,7 @@ import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.settings.Keys;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,11 +42,10 @@ final class AssignmentSelectorMap {
 
     private final GeneratorContext context;
     private final AfterGenerate defaultAfterGenerate;
-    private final SelectorMap<List<InternalAssignment>> selectorMap = new SelectorMapImpl<>();
-    private final Map<TargetSelector, List<Assignment>> assignmentSelectors = new LinkedHashMap<>();
+    private final SelectorMap<List<InternalAssignment>> destinationToAssignmentsMap = new SelectorMapImpl<>();
+    private final SelectorMap<List<TargetSelector>> originToDestinationSelectorsMap = new SelectorMapImpl<>();
     private final BooleanSelectorMap originSelectors = new BooleanSelectorMap();
-    private final TargetSelectorSelectorMap destinationSelectors = new TargetSelectorSelectorMap();
-    private final Map<TargetSelector, Class<?>> generatorSubtypeMap = new LinkedHashMap<>();
+    private final Map<TargetSelector, Class<?>> subtypeMap = new LinkedHashMap<>();
 
     AssignmentSelectorMap(@NotNull final GeneratorContext context) {
         this.context = context;
@@ -59,9 +59,6 @@ final class AssignmentSelectorMap {
     }
 
     void put(final TargetSelector targetSelector, final List<Assignment> assignments) {
-        // source map: add as is
-        this.assignmentSelectors.put(targetSelector, assignments);
-
         // Maps an origin selector to a list of destination selectors.
         // When specifying an assignment, the destination selector may be a group
         // e.g. assign(given(origin).is("foo").set(Select.all(field("f1"), field("f2")))
@@ -76,17 +73,17 @@ final class AssignmentSelectorMap {
             destinations.add(a.getDestination());
         }
 
-        selectorMap.put(targetSelector, processedAssignments);
+        destinationToAssignmentsMap.put(targetSelector, processedAssignments);
         originSelectors.putAll(originDestinationsMap.keySet());
 
         for (Map.Entry<TargetSelector, List<TargetSelector>> entry : originDestinationsMap.entrySet()) {
             final TargetSelector selector = entry.getKey();
             final List<TargetSelector> destinations = entry.getValue();
 
-            List<List<TargetSelector>> currentDestinations = destinationSelectors.getSelectorMap().getValues(selector);
+            List<List<TargetSelector>> currentDestinations = originToDestinationSelectorsMap.getValues(selector);
 
             if (currentDestinations.isEmpty()) {
-                destinationSelectors.getSelectorMap().put(selector, destinations);
+                originToDestinationSelectorsMap.put(selector, destinations);
             } else {
                 currentDestinations.forEach(currentList -> currentList.addAll(destinations));
             }
@@ -129,38 +126,74 @@ final class AssignmentSelectorMap {
         final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
 
         if (hint != null && hint.targetClass() != null) {
-            generatorSubtypeMap.put(assignment.getDestination(), hint.targetClass());
+            subtypeMap.put(assignment.getDestination(), hint.targetClass());
         }
 
         return generator;
     }
 
     public List<InternalAssignment> getAssignments(final InternalNode node) {
-        final Optional<List<InternalAssignment>> value = selectorMap.getValue(node);
+        final Optional<List<InternalAssignment>> value = destinationToAssignmentsMap.getValue(node);
         return value.orElse(Collections.emptyList());
     }
 
+    /**
+     * Contains origin selectors.
+     *
+     * <pre>{@code
+     * // Given these assignments
+     * .assign(given(Origin::foo).satisfies(predicateA).set(field(Destination::bar), "val1"))
+     * .assign(given(Origin::foo).satisfies(predicateB).set(field(Destination::bar), "val2"))
+     *
+     * // This map will contain
+     * { key=field(Origin::foo) -> value=true }
+     * }</pre>
+     */
     BooleanSelectorMap getOriginSelectors() {
         return originSelectors;
     }
 
-    SelectorMap<List<InternalAssignment>> getSelectorMap() {
-        return selectorMap;
+    /**
+     * Maps a destination selector to a list of assignments with this destination.
+     *
+     * <pre>{@code
+     * // Given these assignments
+     * .assign(given(Origin::foo).satisfies(predicateA).set(field(Destination::bar), "val1"))
+     * .assign(given(Origin::foo).satisfies(predicateB).set(field(Destination::bar), "val2"))
+     *
+     * // This map will contain
+     * { key=field(Destination::bar) -> value=[
+     *     Assignment[origin=field(Origin::foo), destination=field(Destination::bar), predicate=predicateA, "val1"],
+     *     Assignment[origin=field(Origin::foo), destination=field(Destination::bar), predicate=predicateB, "val2"]]
+     * }
+     * }</pre>
+     */
+    SelectorMap<List<InternalAssignment>> getDestinationToAssignmentsMap() {
+        return destinationToAssignmentsMap;
     }
 
-    TargetSelectorSelectorMap getDestinationSelectors() {
-        return destinationSelectors;
-    }
-
-    Map<TargetSelector, List<Assignment>> getAssignmentSelectors() {
-        return assignmentSelectors;
+    /**
+     * Maps an origin selector to a list of destination selectors.
+     *
+     * <pre>{@code
+     * // Given these assignments
+     * .assign(given(Origin::foo).satisfies(predicateA).set(field(Destination::bar), "val1"))
+     * .assign(given(Origin::foo).satisfies(predicateB).set(field(Destination::bar), "val2"))
+     *
+     * // This map will contain
+     * { key=field(Destination::bar) -> value=[field(Destination::bar), field(Destination::bar)] }
+     * }</pre>
+     */
+    SelectorMap<List<TargetSelector>> getOriginToDestinationSelectorsMap() {
+        return originToDestinationSelectorsMap;
     }
 
     List<TargetSelector> getDestinationSelectors(final InternalNode node) {
-        return destinationSelectors.getTargetSelector(node);
+        List<List<TargetSelector>> values = originToDestinationSelectorsMap.getValues(node);
+        return CollectionUtils.flatMap(values);
     }
 
-    Map<TargetSelector, Class<?>> getGeneratorSubtypeMap() {
-        return generatorSubtypeMap;
+    Map<TargetSelector, Class<?>> getSubtypeMap() {
+        return Collections.unmodifiableMap(subtypeMap);
     }
 }

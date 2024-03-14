@@ -16,7 +16,6 @@
 package org.instancio.internal;
 
 import org.instancio.TargetSelector;
-import org.instancio.internal.context.ApiMethodSelector;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeStats;

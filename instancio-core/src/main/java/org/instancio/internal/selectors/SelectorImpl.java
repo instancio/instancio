@@ -150,6 +150,7 @@ public final class SelectorImpl implements
         return depth;
     }
 
+    @Override
     public boolean isLenient() {
         return isLenient;
     }

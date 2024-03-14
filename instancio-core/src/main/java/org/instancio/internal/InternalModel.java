@@ -40,18 +40,7 @@ public final class InternalModel<T> implements Model<T> {
     }
 
     private InternalNode createRootNode() {
-        final NodeContext nodeContext = NodeContext.builder()
-                .maxDepth(modelContext.getMaxDepth())
-                .settings(modelContext.getSettings())
-                .rootTypeMap(modelContext.getRootTypeMap())
-                .ignoredSelectorMap(modelContext.getIgnoredSelectorMap())
-                .subtypeSelectorMap(modelContext.getSubtypeSelectorMap())
-                .assignmentOriginSelectors(modelContext.getAssignmentOriginSelectorMap())
-                .subtypeMappingFromSettings(modelContext.getSettings().getSubtypeMap())
-                .internalServiceProviders(modelContext.getInternalServiceProviders())
-                .providerEntries(modelContext.getServiceProviders().getTypeResolvers())
-                .build();
-
+        final NodeContext nodeContext = new NodeContext(modelContext);
         final NodeFactory nodeFactory = new NodeFactory(nodeContext);
         return nodeFactory.createRootNode(modelContext.getRootType());
     }

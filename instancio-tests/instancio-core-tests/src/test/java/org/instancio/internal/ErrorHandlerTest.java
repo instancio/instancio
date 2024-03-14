@@ -15,7 +15,6 @@
  */
 package org.instancio.internal;
 
-import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.exception.InstancioTerminatingException;
@@ -36,7 +35,6 @@ import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.Collections;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -97,11 +95,10 @@ class ErrorHandlerTest {
         }
 
         private Stream<Arguments> shouldPropagateExceptions() {
-            final Set<TargetSelector> emptySet = Collections.emptySet();
             return Stream.of(
                     Arguments.of(INSTANCIO_API_EXCEPTION),
                     Arguments.of(new InstancioTerminatingException(EXCEPTION_MSG)),
-                    Arguments.of(new UnusedSelectorException(EXCEPTION_MSG, emptySet, emptySet, emptySet, emptySet, emptySet))
+                    Arguments.of(new UnusedSelectorException(EXCEPTION_MSG, Collections.emptyMap()))
             );
         }
     }

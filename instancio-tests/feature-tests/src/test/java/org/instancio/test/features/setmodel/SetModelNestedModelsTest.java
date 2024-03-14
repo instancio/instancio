@@ -98,7 +98,7 @@ class SetModelNestedModelsTest {
 
         // set field(Mid::getInner1) once here
         final Model<Mid> midModel = Instancio.of(Mid.class)
-                .setModel(field(Mid::getInner1), innerModel)
+                .setModel(field(Mid::getInner1).lenient(), innerModel)
                 .toModel();
 
         // set field(Mid::getInner1) also here
