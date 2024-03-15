@@ -22,28 +22,5 @@ jobs:
       - name: 'Build project'
         run: mvn -v && mvn -B clean install
 
-      - name: 'Prepare target artifact'
-        run: |
-          find -iname "*target" -type d -exec tar -rf target.tar {} \+
-          zstd -q -T0 target.tar
-
-      - name: 'Upload target artifact'
-        uses: actions/upload-artifact@v4
-        with:
-          name: target-artifact
-          path: target.tar.zst
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: 'Prepare repository artifact'
-        run: |
-          cd ~/.m2/repository/org
-          tar --zstd -cf repository.tar.zst instancio
-
-      - name: 'Upload repository artifact'
-        uses: actions/upload-artifact@v4
-        with:
-          name: repository-artifact
-          path: ~/.m2/repository/org/repository.tar.zst
-          if-no-files-found: error
-          retention-days: 1
+      - name: 'Prepare Sonar analysis'
+        uses: evaristegalois11/sonar-fork-analysis@v1
