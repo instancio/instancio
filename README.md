@@ -98,24 +98,15 @@ Person marge = Instancio.of(simpsons)
 - Support for Guava via `instancio-guava` module (experimental)
 - Support for property-based testing via `instancio-quickcheck` module (experimental)
 
-## Documentation
+## Getting Started
 
 - [User guide](https://www.instancio.org/user-guide) (instancio.org)
 - [Javadocs](https://javadoc.io/doc/org.instancio/instancio-core/latest/) (javadoc.io)
+- [Quickstart](https://github.com/instancio/instancio-quickstart) (github.com) sample Maven project with usage examples
 
-## Quickstart
-
-[Instancio Quickstart](https://github.com/instancio/instancio-quickstart) is the best way to get started.
-It is a sample (Maven) project that provides an overview of all the main features.
-
-```sh
-git clone https://github.com/instancio/instancio-quickstart.git
-```
-
-## Latest Release
-
-Version `4.4.0` is now available.
-A summary of new features is available in the [release notes](https://github.com/instancio/instancio/releases).
+  ```sh
+  git clone https://github.com/instancio/instancio-quickstart.git
+  ```
 
 # Maven Coordinates
 
@@ -125,7 +116,7 @@ If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
 <dependency>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-junit</artifactId>
-    <version>4.4.0</version>
+    <version>LATEST</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -136,7 +127,7 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
 <dependency>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-core</artifactId>
-    <version>4.4.0</version>
+    <version>LATEST</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -158,11 +149,19 @@ Please check the [User Guide](https://www.instancio.org/user-guide), previous is
 > of JPA entities including the subsequent persistence of these entities using JPA for the purpose of test
 > data generation in integration tests.
 
-# Credits
+# Sponsors
+
+If you like Instancio, please consider supporting its maintenance and development
+by becoming a [sponsor](https://github.com/sponsors/armandino).
+
+A big thank you to the current project sponsors:
+
+- [@BjarkeTornager](https://github.com/BjarkeTornager)
+- [@darthblonderss](https://github.com/darthblonderss)
 
 Thanks to [JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com)
 for supporting this project with their open source licenses.
 
-<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="120px" alt="JetBrains logo">
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="100px" alt="JetBrains logo">
 
-<img src="https://www.yourkit.com/images/yklogo.png" width="150px" alt="YourKit logo">
+<img src="https://www.yourkit.com/images/yklogo.png" width="140px" alt="YourKit logo">
