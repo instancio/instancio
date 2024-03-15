@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.instancio.internal.generator.GeneratorUtil.instantiateInternalGenerator;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
@@ -69,13 +68,13 @@ public class GeneratorResolver {
     }
 
     @SuppressWarnings("all")
-    public Optional<Generator<?>> get(final InternalNode node) {
+    public Generator<?> get(final InternalNode node) {
         final Class<?> klass = node.getTargetClass();
 
         // Generators provided by SPI take precedence over built-in generators
         final Generator<?> spiGenerator = getSpiGenerator(node);
         if (spiGenerator != null) {
-            return Optional.of(spiGenerator);
+            return spiGenerator;
         }
 
         Generator<?> generator = getBuiltInGenerator(klass);
@@ -89,7 +88,7 @@ public class GeneratorResolver {
                 generator = getGeneratorForLegacyClass(klass);
             }
         }
-        return Optional.ofNullable(generator);
+        return generator;
     }
 
     /**

@@ -20,9 +20,9 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.spi.InternalServiceProvider.InternalContainerFactoryProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 class ContainerFactoriesHandler {
 
@@ -44,10 +44,14 @@ class ContainerFactoriesHandler {
             final InternalNode node,
             final GeneratorResult result) {
 
-        final List<Class<?>> typeArgs = node.getChildren()
-                .stream()
-                .map(InternalNode::getTargetClass)
-                .collect(Collectors.toList());
+        if (internalServiceProviders.isEmpty()) {
+            return result;
+        }
+
+        final List<Class<?>> typeArgs = new ArrayList<>(node.getChildren().size());
+        for (InternalNode child : node.getChildren()) {
+            typeArgs.add(child.getTargetClass());
+        }
 
         for (InternalServiceProvider isp : internalServiceProviders) {
             final InternalContainerFactoryProvider cfp = isp.getContainerFactoryProvider();
@@ -55,8 +59,7 @@ class ContainerFactoriesHandler {
                 continue;
             }
 
-            final Function<Object, ?> fn = cfp.getMappingFunction(
-                    node.getTargetClass(), typeArgs);
+            final Function<Object, ?> fn = cfp.getMappingFunction(node.getTargetClass(), typeArgs);
 
             if (fn != null) {
                 final Object replacement = fn.apply(result.getValue());

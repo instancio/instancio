@@ -223,8 +223,8 @@ public final class ApiValidator {
         ApiValidator.isTrue(min.compareTo(max) <= 0, "start must not exceed end: %s, %s", min, max);
     }
 
-    public static <T> T notNull(@Nullable final T obj, final String message, final Object... values) {
-        if (obj == null) throw Fail.withUsageError(String.format(message, values));
+    public static <T> T notNull(@Nullable final T obj, final String message) {
+        if (obj == null) throw Fail.withUsageError(message);
         return obj;
     }
 

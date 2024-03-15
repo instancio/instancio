@@ -117,7 +117,7 @@ final class UserSuppliedGeneratorProcessor {
         final InternalNode actualNode = forClass == node.getTargetClass()
                 ? node : node.toBuilder().targetClass(forClass).build();
 
-        return generatorResolver.get(actualNode)
-                .orElse(new InstantiatingGenerator(instantiator, forClass));
+        final Generator<?> generator = generatorResolver.get(actualNode);
+        return generator == null ? new InstantiatingGenerator(instantiator, forClass) : generator;
     }
 }

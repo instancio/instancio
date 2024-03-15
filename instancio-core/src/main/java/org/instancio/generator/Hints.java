@@ -36,7 +36,7 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 public final class Hints {
 
     private final AfterGenerate afterGenerate;
-    private final Map<Class<?>, Object> hintMap;
+    private final Map<Class<?>, Hint<?>> hintMap;
 
     private Hints(final Builder builder) {
         afterGenerate = builder.afterGenerate;
@@ -82,7 +82,6 @@ public final class Hints {
      * @since 2.0.0
      */
     public <T extends Hint<T>> T get(final Class<T> hintType) {
-        ApiValidator.notNull(hintType, "Hint type must not be null");
         return hintType.cast(hintMap.get(hintType));
     }
 
@@ -100,7 +99,7 @@ public final class Hints {
      */
     public static final class Builder {
         private AfterGenerate afterGenerate;
-        private Map<Class<?>, Object> hintMap;
+        private Map<Class<?>, Hint<?>> hintMap;
 
         private Builder() {
         }
@@ -119,7 +118,6 @@ public final class Hints {
          * @since 2.0.0
          */
         public <T extends Hint<T>> Builder with(final T hint) {
-            ApiValidator.notNull(hint, "Hint must not be null");
             if (hintMap == null) {
                 hintMap = new HashMap<>();
             }

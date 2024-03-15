@@ -23,13 +23,8 @@ import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.Keys;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 public class UsingGeneratorResolverHandler implements NodeHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(UsingGeneratorResolverHandler.class);
 
     private final ModelContext<?> context;
     private final GeneratorResolver generatorResolver;
@@ -51,20 +46,16 @@ public class UsingGeneratorResolverHandler implements NodeHandler {
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final InternalNode node) {
-        final Optional<Generator<?>> generatorOpt = generatorResolver.get(node);
+        final Generator<?> generator = generatorResolver.get(node);
 
-        if (!generatorOpt.isPresent()) {
+        if (generator == null) {
             return GeneratorResult.emptyResult();
         }
 
-        final Generator<?> generator = generatorOpt.get();
         beanValidationProcessors.process(generator, node);
 
         final Object value = generator.generate(context.getRandom());
         final Object processed = stringPostProcessor.process(value, node, generator);
-        final GeneratorResult result = GeneratorResult.create(processed, generator.hints());
-
-        LOG.trace("Generated '{}' using {}", result, generator.getClass());
-        return result;
+        return GeneratorResult.create(processed, generator.hints());
     }
 }

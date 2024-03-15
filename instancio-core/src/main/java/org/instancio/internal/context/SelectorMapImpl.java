@@ -259,7 +259,6 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
      */
     private List<SelectorImpl> getCandidates(final InternalNode node) {
         if (node.getParent() == null && scopelessSelectors.containsKey(SCOPELESS_ROOT)) {
-            unusedSelectors.remove(SelectorImpl.getRootSelector());
             return Collections.singletonList(scopelessSelectors.get(SCOPELESS_ROOT).get(0));
         }
 

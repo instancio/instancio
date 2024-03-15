@@ -17,35 +17,27 @@ package org.instancio.internal.context;
 
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.TargetSelector;
-import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
-import org.instancio.internal.generator.InternalGeneratorHint;
-import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
-import org.instancio.settings.Keys;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 class GeneratorSelectorMap {
 
-    private final GeneratorContext context;
-    private final AfterGenerate defaultAfterGenerate;
+    private final GeneratorInitialiser generatorInitialiser;
     private final SelectorMap<Generator<?>> selectorMap = new SelectorMapImpl<>();
-    private final Map<TargetSelector, Class<?>> subtypeMap = new LinkedHashMap<>();
     private final Generators generators;
 
-    GeneratorSelectorMap(@NotNull final GeneratorContext context) {
-        this.context = context;
-        this.generators = new Generators(context);
-        this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
+    GeneratorSelectorMap(@NotNull final GeneratorContext generatorContext) {
+        this.generators = new Generators(generatorContext);
+        this.generatorInitialiser = new GeneratorInitialiser(generatorContext);
     }
 
     void putGenerator(final TargetSelector targetSelector, final Generator<?> generator) {
@@ -69,16 +61,8 @@ class GeneratorSelectorMap {
     }
 
     private void addToSelectorMap(final TargetSelector targetSelector, final Generator<?> g) {
-        g.init(context);
-
-        final Generator<?> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
+        final Generator<?> generator = generatorInitialiser.initGenerator(targetSelector, g);
         selectorMap.put(targetSelector, generator);
-
-        final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
-
-        if (hint != null && hint.targetClass() != null) {
-            subtypeMap.put(targetSelector, hint.targetClass());
-        }
     }
 
     SelectorMap<Generator<?>> getSelectorMap() {
@@ -86,7 +70,7 @@ class GeneratorSelectorMap {
     }
 
     Map<TargetSelector, Class<?>> getSubtypeMap() {
-        return Collections.unmodifiableMap(subtypeMap);
+        return Collections.unmodifiableMap(generatorInitialiser.getSubtypeMap());
     }
 
     Optional<Generator<?>> getGenerator(final InternalNode node) {

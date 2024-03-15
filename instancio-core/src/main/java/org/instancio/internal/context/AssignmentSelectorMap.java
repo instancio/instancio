@@ -17,39 +17,33 @@ package org.instancio.internal.context;
 
 import org.instancio.Assignment;
 import org.instancio.TargetSelector;
-import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
 import org.instancio.internal.assignment.GeneratorHolder;
 import org.instancio.internal.assignment.InternalAssignment;
-import org.instancio.internal.generator.InternalGeneratorHint;
-import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.CollectionUtils;
-import org.instancio.settings.Keys;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 final class AssignmentSelectorMap {
 
-    private final GeneratorContext context;
-    private final AfterGenerate defaultAfterGenerate;
+    private final GeneratorContext generatorContext;
+    private final GeneratorInitialiser generatorInitialiser;
     private final SelectorMap<List<InternalAssignment>> destinationToAssignmentsMap = new SelectorMapImpl<>();
     private final SelectorMap<List<TargetSelector>> originToDestinationSelectorsMap = new SelectorMapImpl<>();
     private final BooleanSelectorMap originSelectors = new BooleanSelectorMap();
-    private final Map<TargetSelector, Class<?>> subtypeMap = new LinkedHashMap<>();
 
-    AssignmentSelectorMap(@NotNull final GeneratorContext context) {
-        this.context = context;
-        this.defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
+    AssignmentSelectorMap(@NotNull final GeneratorContext generatorContext) {
+        this.generatorContext = generatorContext;
+        this.generatorInitialiser = new GeneratorInitialiser(generatorContext);
     }
 
     void putAll(final @NotNull Map<TargetSelector, List<Assignment>> targetSelectors) {
@@ -92,19 +86,24 @@ final class AssignmentSelectorMap {
 
     private List<InternalAssignment> processAssignments(final List<Assignment> assignments) {
         final List<InternalAssignment> processed = new ArrayList<>(assignments.size());
-        final Generators generators = new Generators(context);
+        final Generators generators = new Generators(generatorContext);
 
         for (Assignment c : assignments) {
             final InternalAssignment assignment = (InternalAssignment) c;
 
             if (assignment.getGeneratorHolder() != null) {
-                final Generator<?> generator = getGenerator(assignment, generators);
+                final GeneratorHolder holder = assignment.getGeneratorHolder();
+                final Generator<?> generator = holder.getGenerator() == null
+                        ? (Generator<?>) holder.getSpecProvider().getSpec(generators)
+                        : holder.getGenerator();
 
-                final InternalAssignment updated = assignment.toBuilder()
-                        .generator(generator)
+                final Generator<?> updatedGenerator = generatorInitialiser.initGenerator(assignment.getDestination(), generator);
+
+                final InternalAssignment updatedAssignment = assignment.toBuilder()
+                        .generator(updatedGenerator)
                         .build();
 
-                processed.add(updated);
+                processed.add(updatedAssignment);
             } else {
                 processed.add(assignment);
             }
@@ -113,26 +112,11 @@ final class AssignmentSelectorMap {
         return processed;
     }
 
-    private <T> Generator<T> getGenerator(final InternalAssignment assignment, final Generators generators) {
-        final GeneratorHolder holder = assignment.getGeneratorHolder();
-
-        final Generator<T> g = holder.getGenerator() == null
-                ? (Generator<T>) holder.getSpecProvider().getSpec(generators)
-                : holder.getGenerator();
-
-        g.init(context);
-
-        final Generator<T> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
-        final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
-
-        if (hint != null && hint.targetClass() != null) {
-            subtypeMap.put(assignment.getDestination(), hint.targetClass());
-        }
-
-        return generator;
+    Map<TargetSelector, Class<?>> getSubtypeMap() {
+        return Collections.unmodifiableMap(generatorInitialiser.getSubtypeMap());
     }
 
-    public List<InternalAssignment> getAssignments(final InternalNode node) {
+    List<InternalAssignment> getAssignments(final InternalNode node) {
         final Optional<List<InternalAssignment>> value = destinationToAssignmentsMap.getValue(node);
         return value.orElse(Collections.emptyList());
     }
@@ -191,9 +175,5 @@ final class AssignmentSelectorMap {
     List<TargetSelector> getDestinationSelectors(final InternalNode node) {
         List<List<TargetSelector>> values = originToDestinationSelectorsMap.getValues(node);
         return CollectionUtils.flatMap(values);
-    }
-
-    Map<TargetSelector, Class<?>> getSubtypeMap() {
-        return Collections.unmodifiableMap(subtypeMap);
     }
 }

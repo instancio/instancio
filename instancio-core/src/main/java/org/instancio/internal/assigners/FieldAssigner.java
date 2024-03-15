@@ -56,7 +56,9 @@ final class FieldAssigner implements Assigner {
     private void setField(final InternalNode node, final Object target, final Object value) {
         try {
             Field field = node.getField();
-            field.setAccessible(true);
+            if (!field.isAccessible()) { // NOSONAR
+                field.setAccessible(true);
+            }
             field.set(target, value);
         } catch (IllegalArgumentException ex) {
             // Wrong type is being assigned to a field.

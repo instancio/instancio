@@ -458,10 +458,11 @@ class InstancioEngine {
         final CollectionHint hint = defaultIfNull(hints.get(CollectionHint.class), CollectionHint.empty());
         final boolean nullableElements = hint.nullableElements();
         final boolean requireUnique = hint.unique();
-        final Set<Object> generated = new HashSet<>();
 
         int elementsToGenerate = hint.generateElements();
         int failedAdditions = 0;
+
+        final Set<Object> generated = new HashSet<>(elementsToGenerate);
 
         while (elementsToGenerate > 0) {
             generatedObjectStore.enterScope();
