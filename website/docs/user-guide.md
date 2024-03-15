@@ -1154,10 +1154,10 @@ It is possible to create an assignment based on address `city` and fields `count
 ```java linenums="1"
 Person person = Instancio.of(Person.class)
     .generate(field(Address::getCountry), gen -> gen.oneOf("France", "Italy", "Spain"))
-    .assign(given(field(Address::getCountry), field(Address::getCity)
+    .assign(given(field(Address::getCountry), field(Address::getCity))
         .set(When.is("France"), "Paris")
         .set(When.is("Italy"), "Rome")
-        .set(When.is("Spain"), "Madrid")
+        .set(When.is("Spain"), "Madrid"))
     .create();
 ```
 
