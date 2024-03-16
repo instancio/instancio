@@ -23,4 +23,4 @@ jobs:
         run: mvn -v && mvn -B clean install
 
       - name: 'Prepare Sonar analysis'
-        uses: evaristegalois11/sonar-fork-analysis@v1
+        uses: evaristegalois11/sonar-fork-analysis@v1 # Hey I know this guy :D
