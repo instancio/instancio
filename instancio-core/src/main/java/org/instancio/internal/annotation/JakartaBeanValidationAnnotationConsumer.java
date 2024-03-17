@@ -15,14 +15,11 @@
  */
 package org.instancio.internal.annotation;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 
 final class JakartaBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
 
-    JakartaBeanValidationAnnotationConsumer(final GeneratorContext generatorContext) {
-        super(generatorContext);
-
+    JakartaBeanValidationAnnotationConsumer() {
         register(() -> jakarta.validation.constraints.Email.class,
                 ((annotation, context) -> new EmailGenerator(context)));
     }

@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.handlers;
+package org.instancio.internal.generation;
 
 import org.instancio.generator.Generator;
-import org.instancio.internal.GeneratedObjectStore;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Fail;
@@ -34,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class AssignmentNodeHandler implements NodeHandler {
+class AssignmentNodeHandler implements NodeHandler {
     private static final Logger LOG = LoggerFactory.getLogger(AssignmentNodeHandler.class);
 
     private final ModelContext<?> context;
@@ -42,16 +39,14 @@ public class AssignmentNodeHandler implements NodeHandler {
     private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
     private final Set<InternalAssignment> unresolvedAssignments = new LinkedHashSet<>();
 
-    public AssignmentNodeHandler(
+    AssignmentNodeHandler(
             final ModelContext<?> context,
             final GeneratedObjectStore generatedObjectStore,
-            final GeneratorResolver generatorResolver,
-            final Instantiator instantiator) {
+            final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
 
         this.context = context;
         this.generatedObjectStore = generatedObjectStore;
-        this.userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
-                context, generatorResolver, instantiator);
+        this.userSuppliedGeneratorProcessor = userSuppliedGeneratorProcessor;
     }
 
     @NotNull
@@ -109,7 +104,7 @@ public class AssignmentNodeHandler implements NodeHandler {
         return GeneratorResult.emptyResult();
     }
 
-    public Set<InternalAssignment> getUnresolvedAssignments() {
+    Set<InternalAssignment> getUnresolvedAssignments() {
         return unresolvedAssignments;
     }
 

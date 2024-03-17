@@ -19,6 +19,7 @@ import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generation.GenerationListener;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;

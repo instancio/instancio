@@ -17,7 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
-import org.instancio.internal.util.Sonar;
+import org.instancio.internal.util.ReflectionUtils;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -33,12 +33,12 @@ final class MethodRef {
         this.methodName = methodName;
     }
 
-    @SuppressWarnings({Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED, "PMD.UseProperClassLoader"})
+    @SuppressWarnings("PMD.UseProperClassLoader")
     static MethodRef from(final Serializable methodRef) {
         try {
             final Class<?> methodRefClass = methodRef.getClass();
             final Method replaceMethod = methodRefClass.getDeclaredMethod("writeReplace");
-            replaceMethod.setAccessible(true);
+            ReflectionUtils.setAccessible(replaceMethod);
             final SerializedLambda lambda = (SerializedLambda) replaceMethod.invoke(methodRef);
             final String className = lambda.getImplClass().replace('/', '.');
             final ClassLoader classLoader = ObjectUtils.defaultIfNull(

@@ -29,19 +29,19 @@ import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-final class AnnotationExtractor {
+public final class AnnotationExtractor {
     private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
 
     private final BeanValidationTarget beanValidationTarget;
     private final GetterMethodResolver getterMethodResolver;
 
-    AnnotationExtractor(final ModelContext<?> context) {
+    public AnnotationExtractor(final ModelContext<?> context) {
         this.beanValidationTarget = context.getSettings().get(Keys.BEAN_VALIDATION_TARGET);
         this.getterMethodResolver = new GetterMethodResolverImpl();
     }
 
     @NotNull
-    Annotation[] getAnnotations(final InternalNode node) {
+    public Annotation[] getAnnotations(final InternalNode node) {
         final Field field = node.getField();
 
         if (field == null) {

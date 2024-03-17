@@ -13,41 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.handlers;
+package org.instancio.internal.generation;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.GeneratorSpecProcessor;
+import org.instancio.generator.Generator;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeKind;
+import org.instancio.settings.Keys;
 import org.jetbrains.annotations.NotNull;
 
-public class MapNodeHandler implements NodeHandler {
+class UsingGeneratorResolverHandler implements NodeHandler {
 
     private final ModelContext<?> context;
-    private final GeneratorSpecProcessor beanValidationProcessors;
+    private final GeneratorResolver generatorResolver;
+    private final GeneratedValuePostProcessor stringPostProcessor;
 
-    public MapNodeHandler(
+    UsingGeneratorResolverHandler(
             final ModelContext<?> context,
-            final GeneratorSpecProcessor beanValidationProcessors) {
+            final GeneratorResolver generatorResolver) {
 
         this.context = context;
-        this.beanValidationProcessors = beanValidationProcessors;
+        this.generatorResolver = generatorResolver;
+        this.stringPostProcessor = new StringPrefixingPostProcessor(
+                context.getSettings().get(Keys.STRING_FIELD_PREFIX_ENABLED));
     }
 
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final InternalNode node) {
-        if (node.is(NodeKind.MAP)) {
-            final MapGenerator<?, ?> generator = new MapGenerator<>(
-                    new GeneratorContext(context.getSettings(), context.getRandom()));
+        final Generator<?> generator = generatorResolver.get(node);
 
-            generator.subtype(node.getTargetClass());
-            beanValidationProcessors.process(generator, node);
-            return GeneratorResult.create(generator.generate(context.getRandom()), generator.hints());
+        if (generator == null) {
+            return GeneratorResult.emptyResult();
         }
-        return GeneratorResult.emptyResult();
+
+        final Object value = generator.generate(context.getRandom());
+        final Object processed = stringPostProcessor.process(value, node, generator);
+        return GeneratorResult.create(processed, generator.hints());
     }
 }

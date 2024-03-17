@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.annotation;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 
 final class JavaxBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
@@ -25,9 +24,7 @@ final class JavaxBeanValidationAnnotationConsumer extends AbstractAnnotationCons
         return JavaxBeanValidationHandlerMap.getInstance();
     }
 
-    JavaxBeanValidationAnnotationConsumer(final GeneratorContext generatorContext) {
-        super(generatorContext);
-
+    JavaxBeanValidationAnnotationConsumer() {
         register(() -> javax.validation.constraints.Email.class,
                 (annotation, context) -> new EmailGenerator(context));
     }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.handlers;
+package org.instancio.internal.generation;
 
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
@@ -23,6 +23,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.internal.generator.SpiGeneratorResolver;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
@@ -38,20 +39,23 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  * User-supplied generators may not have all the required information.
  * This class processes generators to ensure they can generate values correctly.
  */
-final class UserSuppliedGeneratorProcessor {
+public final class UserSuppliedGeneratorProcessor {
 
     private final ModelContext<?> context;
     private final GeneratorResolver generatorResolver;
+    private final SpiGeneratorResolver spiGeneratorResolver;
     private final Instantiator instantiator;
     private final EmitGeneratorHelper emitGeneratorHelper;
 
-    UserSuppliedGeneratorProcessor(
+    public UserSuppliedGeneratorProcessor(
             final ModelContext<?> context,
             final GeneratorResolver generatorResolver,
+            final SpiGeneratorResolver spiGeneratorResolver,
             final Instantiator instantiator) {
 
         this.context = context;
         this.generatorResolver = generatorResolver;
+        this.spiGeneratorResolver = spiGeneratorResolver;
         this.instantiator = instantiator;
         this.emitGeneratorHelper = new EmitGeneratorHelper(context);
     }
@@ -112,12 +116,19 @@ final class UserSuppliedGeneratorProcessor {
     @NotNull
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     private Generator<?> resolveDelegate(final InternalNode node, final InternalGeneratorHint internalHint) {
-        final Class<?> forClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
+        final Class<?> targetClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
 
-        final InternalNode actualNode = forClass == node.getTargetClass()
-                ? node : node.toBuilder().targetClass(forClass).build();
+        final InternalNode actualNode = targetClass == node.getTargetClass()
+                ? node : node.toBuilder().targetClass(targetClass).build();
 
-        final Generator<?> generator = generatorResolver.get(actualNode);
-        return generator == null ? new InstantiatingGenerator(instantiator, forClass) : generator;
+        Generator<?> generator = spiGeneratorResolver.getSpiGenerator(node);
+
+        if (generator == null) {
+            generator = generatorResolver.get(actualNode);
+        }
+        if (generator == null) {
+            generator = new InstantiatingGenerator(instantiator, targetClass);
+        }
+        return generator;
     }
 }

@@ -27,8 +27,4 @@ public class InstancioSpiException extends InstancioApiException {
     public InstancioSpiException(String message) {
         super(message);
     }
-
-    public InstancioSpiException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

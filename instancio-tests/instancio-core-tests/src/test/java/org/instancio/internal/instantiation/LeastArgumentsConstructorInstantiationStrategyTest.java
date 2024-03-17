@@ -69,6 +69,10 @@ class LeastArgumentsConstructorInstantiationStrategyTest {
             throw shouldNotBeInvoked;
         }
 
+        private WithMultipleConstructors(Builder builder) {
+            throw shouldNotBeInvoked;
+        }
+
         private WithMultipleConstructors(int i, Object o, Boolean b, Long l) {
             throw shouldNotBeInvoked;
         }
@@ -88,5 +92,7 @@ class LeastArgumentsConstructorInstantiationStrategyTest {
         private WithMultipleConstructors(int i, Object o, Boolean b, Long l, double d) {
             throw shouldNotBeInvoked;
         }
+
+        private static final class Builder {}
     }
 }

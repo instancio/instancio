@@ -16,6 +16,7 @@
 package org.instancio.internal.instantiation;
 
 import org.instancio.internal.util.ExceptionUtils;
+import org.instancio.internal.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 
@@ -53,7 +54,7 @@ final class UnsafeHelper {
         try {
             final Field[] fields = sun.misc.Unsafe.class.getDeclaredFields();
             for (Field field : fields) {
-                field.setAccessible(true);
+                ReflectionUtils.setAccessible(field);
                 final Object obj = field.get(null);
                 if (obj instanceof sun.misc.Unsafe) {
                     return (sun.misc.Unsafe) obj;

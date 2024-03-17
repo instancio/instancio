@@ -17,6 +17,7 @@ package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.util.IgnoreJRERequirement;
+import org.instancio.internal.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,7 @@ public final class RecordUtils {
             if (ctor == null) {
                 return null;
             }
-            ctor.setAccessible(true); // NOSONAR
+            ReflectionUtils.setAccessible(ctor);
             return (T) ctor.newInstance(args);
         } catch (Exception ex) {
             throw new InstancioException("Error creating a record: " + recordClass, ex);
@@ -56,7 +57,7 @@ public final class RecordUtils {
         try {
             return recordClass.getDeclaredConstructor(componentTypes);
         } catch (NoSuchMethodException ex) {
-            LOG.debug("Unable to resolve canonical constructor for record class '{}'", recordClass.getName());
+            LOG.debug("Unable to resolve canonical constructor for record ", recordClass);
             return null;
         }
     }

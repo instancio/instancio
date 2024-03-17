@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.internal.generation;
 
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.ModelContext;
@@ -43,23 +43,23 @@ public final class GeneratedObjectStore implements GenerationListener {
 
     private boolean hasNewValues;
 
-    GeneratedObjectStore(final ModelContext<?> context) {
+    public GeneratedObjectStore(final ModelContext<?> context) {
         this.context = context;
         enterScope(); // root object's scope
     }
 
-    boolean hasNewValues() {
+    public boolean hasNewValues() {
         final boolean tmp = hasNewValues;
         hasNewValues = false;
         return tmp;
     }
 
-    void enterScope() {
+    public void enterScope() {
         final Object scope = new Object();
         scopes.addLast(scope);
     }
 
-    void exitScope() {
+    public void exitScope() {
         final Object scope = scopes.removeLast();
         objectStore.remove(scope);
     }

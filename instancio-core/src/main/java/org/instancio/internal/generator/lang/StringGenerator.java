@@ -29,7 +29,9 @@ import org.instancio.support.Global;
 
 import java.util.Locale;
 
-public class StringGenerator extends AbstractGenerator<String> implements StringSpec {
+public class StringGenerator extends AbstractGenerator<String>
+        implements StringSpec, InternalLengthGeneratorSpec<String> {
+
     protected int minLength;
     protected int maxLength;
     private boolean allowEmpty;

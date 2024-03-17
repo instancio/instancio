@@ -23,6 +23,7 @@ import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
+import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Range;
 import org.instancio.settings.Keys;
@@ -110,13 +111,11 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
             final Range<Integer> range = AnnotationUtils.calculateRange(
                     length.min(), length.max(), Keys.STRING_MAX_LENGTH.defaultValue());
 
-            if (spec instanceof StringGeneratorSpec) {
-                final StringGeneratorSpec stringSpec = (StringGeneratorSpec) spec;
-                stringSpec.length(range.min(), range.max());
-
-                if (range.min() > 0) {
-                    stringSpec.allowEmpty(false);
-                }
+            if (spec instanceof InternalLengthGeneratorSpec<?>) {
+                ((InternalLengthGeneratorSpec<?>) spec).length(range.min(), range.max());
+            }
+            if (range.min() > 0 && spec instanceof StringGeneratorSpec) {
+                ((StringGeneratorSpec) spec).allowEmpty(false);
             }
         }
     }

@@ -13,29 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.internal.generation;
 
 import org.instancio.documentation.InternalApi;
-import org.instancio.generator.GeneratorSpec;
+import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Processes generator specs prior to generating a value,
- * for example, in order to customise spec parameters.
- *
- * @since 2.7.0
- */
 @InternalApi
-public interface GeneratorSpecProcessor {
+interface NodeHandler {
 
-    /**
-     * Processes given generator spec.
-     *
-     * @param spec generator spec to process
-     * @param node to process
-     * @since 2.7.0
-     */
-    void process(@NotNull GeneratorSpec<?> spec,
-                 @NotNull InternalNode node);
+    @NotNull
+    GeneratorResult getResult(@NotNull InternalNode node);
+
 }

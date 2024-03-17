@@ -41,15 +41,13 @@ import java.util.Map;
  * <p>
  * This map helps keep track of the {@code primary} annotation
  * and provides convenience methods for consuming annotations.
- *
- * @see AnnotationGeneratorSpecProcessor
  */
-class AnnotationMap {
+public class AnnotationMap {
 
     private final Map<Class<?>, Annotation> map;
     private Annotation primary;
 
-    AnnotationMap(final Annotation... annotations) {
+    public AnnotationMap(final Annotation... annotations) {
         this.map = CollectionUtils.asLinkedHashMap(Annotation::annotationType, annotations);
     }
 
@@ -63,7 +61,7 @@ class AnnotationMap {
         return values.isEmpty() ? Collections.emptyList() : new ArrayList<>(values);
     }
 
-    void setPrimary(final Annotation annotation) {
+    public void setPrimary(final Annotation annotation) {
         primary = annotation;
         map.remove(primary.annotationType());
     }

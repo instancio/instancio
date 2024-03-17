@@ -16,7 +16,11 @@
 package org.instancio.internal.annotation;
 
 import org.instancio.documentation.InternalApi;
+import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.internal.util.Sonar;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 
@@ -26,7 +30,7 @@ import java.lang.annotation.Annotation;
  * @since 2.7.0
  */
 @InternalApi
-interface AnnotationConsumer {
+public interface AnnotationConsumer {
 
     /**
      * Checks if the specified annotation type is marked as
@@ -58,4 +62,15 @@ interface AnnotationConsumer {
     void consumeAnnotations(AnnotationMap map,
                             GeneratorSpec<?> spec,
                             Class<?> targetClass);
+
+    /**
+     * Resolves a generator for the given primary annotation.
+     *
+     * @param annotation the primary annotation to resolve the generator for
+     * @param context    generator context
+     * @return resolved generator or {@code null}
+     */
+    @Nullable
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
+    Generator<?> resolveGenerator(Annotation annotation, GeneratorContext context);
 }

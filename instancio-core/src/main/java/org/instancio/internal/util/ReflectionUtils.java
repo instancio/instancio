@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -47,11 +48,19 @@ public final class ReflectionUtils {
         }
     }
 
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    public static <T extends AccessibleObject> T setAccessible(final T object) {
+        // ignore deprecation warning since we must be java 8 compatible
+        if (!object.isAccessible()) {
+            object.setAccessible(true);
+        }
+        return object;
+    }
+
     @SuppressWarnings("unchecked")
     public static <E extends Enum<E>> E[] getEnumValues(final Class<E> enumClass) {
         try {
-            Method m = enumClass.getDeclaredMethod("values");
-            m.setAccessible(true); // NOSONAR needed when Enum.values() is an empty array
+            Method m = setAccessible(enumClass.getDeclaredMethod("values"));
             return (E[]) m.invoke(null);
         } catch (Exception ex) {
             throw new InstancioException("Error getting enum values for: " + enumClass, ex);
@@ -117,10 +126,9 @@ public final class ReflectionUtils {
         }
     }
 
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public static Object tryGetFieldValueOrElseNull(final Field field, final Object target) {
         try {
-            field.setAccessible(true);
+            setAccessible(field);
             return field.get(target);
         } catch (Exception ex) {
             final String objectType = target == null ? null : target.getClass().getTypeName();
@@ -132,10 +140,9 @@ public final class ReflectionUtils {
         }
     }
 
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public static Object getFieldValue(final Field field, final Object target) {
         try {
-            field.setAccessible(true);
+            setAccessible(field);
             return field.get(target);
         } catch (IllegalArgumentException ex) {
             throw Fail.withUsageError(unableToGetValueFromField(field, target), ex);
@@ -148,7 +155,6 @@ public final class ReflectionUtils {
         return getFieldValue(field, object) != null;
     }
 
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public static boolean hasNonNullOrNonDefaultPrimitiveValue(final Field field, final Object object) {
         final Object fieldValue = getFieldValue(field, object);
         return neitherNullNorPrimitiveWithDefaultValue(field.getType(), fieldValue);

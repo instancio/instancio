@@ -13,29 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.internal.generation;
 
 import org.instancio.documentation.InternalApi;
-import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.generator.Generator;
 import org.instancio.internal.nodes.InternalNode;
 
 /**
- * Listener interface for classes interested in when an object has been created.
+ * Post-processor for generated values.
  *
- * @since 1.3.3
+ * @since 2.4.0
  */
 @InternalApi
-interface GenerationListener {
+interface GeneratedValuePostProcessor {
 
     /**
-     * Invoked when an object has been instantiated.
-     * The object may not yet be fully-populated.
+     * Processes the specified value.
      *
-     * @param node   for which the object has been created
-     * @param result containing either the object that was created, or
-     *               {@code null} if value is 'nullable' or could not
-     *               be generated.
-     * @since 1.3.3
+     * @param value     that was generated
+     * @param node      for which the value was generated
+     * @param generator that generated the value
+     * @return processed value, or the same value if no processing was done
      */
-    void objectCreated(InternalNode node, GeneratorResult result);
+    Object process(Object value, InternalNode node, Generator<?> generator);
 }
