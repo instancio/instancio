@@ -13,17 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.handlers;
-
-import org.instancio.documentation.InternalApi;
-import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
-
-@InternalApi
-public interface NodeHandler {
-
-    @NotNull
-    GeneratorResult getResult(@NotNull InternalNode node);
-
-}
+/**
+ * Contains internal classes for handling nodes.
+ */
+package org.instancio.internal.generation;

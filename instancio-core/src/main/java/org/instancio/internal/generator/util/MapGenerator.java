@@ -28,9 +28,11 @@ import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -138,7 +140,8 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Map<K, V> tryGenerateNonNull(final Random random) {
         try {
-            return (Map<K, V>) mapType.getDeclaredConstructor().newInstance();
+            Constructor<?> ctor = ReflectionUtils.setAccessible(mapType.getDeclaredConstructor());
+            return (Map<K, V>) ctor.newInstance();
         } catch (Exception ex) {
             final String msg = String.format("Error creating instance of: %s", mapType);
 

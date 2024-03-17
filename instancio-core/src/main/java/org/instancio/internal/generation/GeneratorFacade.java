@@ -13,79 +13,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.internal.generation;
 
 import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.annotation.AnnotationGeneratorSpecProcessor;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.handlers.AssignmentNodeHandler;
-import org.instancio.internal.handlers.CollectionNodeHandler;
-import org.instancio.internal.handlers.InstantiatingHandler;
-import org.instancio.internal.handlers.MapNodeHandler;
-import org.instancio.internal.handlers.NodeHandler;
-import org.instancio.internal.handlers.UserSuppliedGeneratorHandler;
-import org.instancio.internal.handlers.UsingGeneratorResolverHandler;
+import org.instancio.internal.generator.SpiGeneratorResolver;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
+import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-class GeneratorFacade {
+public class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
     private final ModelContext<?> context;
-    private final NodeHandler[] nodeHandlers;
     private final AssignmentNodeHandler assignmentNodeHandler;
     private final NodeHandler userSuppliedGeneratorHandler;
     private final GeneratedPojoStore generatedPojoStore;
+    private final List<NodeHandler> nodeHandlers = new ArrayList<>();
 
-    GeneratorFacade(final ModelContext<?> context, final GeneratedObjectStore generatedObjectStore) {
+    public GeneratorFacade(final ModelContext<?> context, final GeneratedObjectStore generatedObjectStore) {
         this.context = context;
         this.generatedPojoStore = GeneratedPojoStore.createStore(context);
 
         final GeneratorContext generatorContext = new GeneratorContext(
                 context.getSettings(), context.getRandom());
 
-        final GeneratorSpecProcessor specProcessor = AnnotationGeneratorSpecProcessor.create(context);
-
-        final GeneratorResolver generatorResolver = new GeneratorResolver(
-                generatorContext, context.getServiceProviders().getGeneratorProviders());
+        final GeneratorResolver generatorResolver = new GeneratorResolver(generatorContext);
+        final SpiGeneratorResolver spiGeneratorResolver = new SpiGeneratorResolver(
+                context, generatorContext, generatorResolver);
 
         final Instantiator instantiator = new Instantiator(
                 context.getServiceProviders().getTypeInstantiators());
 
+        final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
+                context, generatorResolver, spiGeneratorResolver, instantiator);
+
         assignmentNodeHandler = new AssignmentNodeHandler(
-                context, generatedObjectStore, generatorResolver, instantiator);
+                context, generatedObjectStore, userSuppliedGeneratorProcessor);
 
-        userSuppliedGeneratorHandler = new UserSuppliedGeneratorHandler(context, generatorResolver, instantiator);
-        this.nodeHandlers = new NodeHandler[]{
-                assignmentNodeHandler,
-                userSuppliedGeneratorHandler,
-                new UsingGeneratorResolverHandler(context, generatorResolver, specProcessor),
-                new CollectionNodeHandler(context, specProcessor),
-                new MapNodeHandler(context, specProcessor),
-                new InstantiatingHandler(instantiator)
-        };
+        userSuppliedGeneratorHandler = new UserSuppliedGeneratorHandler(
+                context, userSuppliedGeneratorProcessor);
+
+        final boolean annotationsEnabled = context.getSettings().get(Keys.BEAN_VALIDATION_ENABLED)
+                || context.getSettings().get(Keys.JPA_ENABLED);
+
+        // handlers in order of precedence, starting from highest
+        nodeHandlers.add(assignmentNodeHandler);
+        nodeHandlers.add(userSuppliedGeneratorHandler);
+        nodeHandlers.add(new SpiGeneratorNodeHandler(context, spiGeneratorResolver));
+        if (annotationsEnabled) {
+            nodeHandlers.add(new AnnotationNodeHandler(context, generatorResolver));
+        }
+        nodeHandlers.add(new UsingGeneratorResolverHandler(context, generatorResolver));
+        nodeHandlers.add(new InstantiatingHandler(instantiator));
     }
 
-    Set<InternalAssignment> getUnresolvedAssignments() {
-        return assignmentNodeHandler.getUnresolvedAssignments();
-    }
-
-    private boolean shouldReturnNullForNullable(final InternalNode node) {
-        final boolean precondition = context.isNullable(node);
-        return context.getRandom().diceRoll(precondition);
-    }
-
-    GeneratorResult generateNodeValue(final InternalNode node) {
+    public GeneratorResult generateNodeValue(final InternalNode node) {
         try {
             GeneratorResult result = getGeneratorResult(node);
             generatedPojoStore.putValue(node, result);
@@ -104,6 +99,11 @@ class GeneratorFacade {
 
             throw Fail.withUsageError(msg, ex);
         }
+    }
+
+    private boolean shouldReturnNullForNullable(final InternalNode node) {
+        final boolean precondition = context.isNullable(node);
+        return context.getRandom().diceRoll(precondition);
     }
 
     @SuppressWarnings("PMD.CognitiveComplexity")
@@ -136,5 +136,9 @@ class GeneratorFacade {
             }
         }
         return result;
+    }
+
+    public Set<InternalAssignment> getUnresolvedAssignments() {
+        return assignmentNodeHandler.getUnresolvedAssignments();
     }
 }

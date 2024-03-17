@@ -29,9 +29,11 @@ import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -127,7 +129,8 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     protected Collection<T> tryGenerateNonNull(final Random random) {
         try {
-            return (Collection<T>) collectionType.getDeclaredConstructor().newInstance();
+            Constructor<?> ctor = ReflectionUtils.setAccessible(collectionType.getDeclaredConstructor());
+            return (Collection<T>) ctor.newInstance();
         } catch (Exception ex) {
             final String msg = String.format("Error creating instance of: %s", collectionType);
 

@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.handlers;
+package org.instancio.internal.generation;
 
 import org.instancio.generator.Generator;
-import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.StringUtils;
 
@@ -32,7 +31,7 @@ class StringPrefixingPostProcessor implements GeneratedValuePostProcessor {
     public Object process(final Object value, final InternalNode node, final Generator<?> generator) {
         if (stringFieldPrefixEnabled
                 && node.getField() != null
-                && generator.getClass() == StringGenerator.class
+                && node.getTargetClass() == String.class
                 && !StringUtils.isEmpty((String) value)) {
 
             return node.getField().getName() + "_" + value;

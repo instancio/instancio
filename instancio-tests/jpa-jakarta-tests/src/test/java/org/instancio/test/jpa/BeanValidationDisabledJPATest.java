@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.beanvalidation;
+package org.instancio.test.jpa;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.pojo.beanvalidation.FooFieldBV;
+import org.instancio.settings.Keys;
+import org.instancio.test.pojo.jpa.ColumnLengthJPA;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -25,28 +26,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Tests for using custom generator provider implemented
- * in {@link org.spi.SampleSpi} with Bean Validation.
- */
-@FeatureTag(Feature.BEAN_VALIDATION)
+@FeatureTag(Feature.JPA)
 @ExtendWith(InstancioExtension.class)
-class FooFieldBVTest {
+class BeanValidationDisabledJPATest {
 
     @Test
-    void withNotNull() {
-        final FooFieldBV.WithNotNull result = Instancio.create(FooFieldBV.WithNotNull.class);
-        assertThat(result.getFoo()).isEqualTo("foo");
-    }
+    void withLength_beanValidationDisabled() {
+        final ColumnLengthJPA.WithLength result = Instancio.of(ColumnLengthJPA.WithLength.class)
+                .withSetting(Keys.BEAN_VALIDATION_ENABLED, false)
+                .create();
 
-    /**
-     * Test using a primary annotation, such as {@code @Email}.
-     */
-    @Test
-    void withNotNullAndEmail() {
-        final FooFieldBV.WithNotNullAndEmail result = Instancio.create(FooFieldBV.WithNotNullAndEmail.class);
-        // SPI should take precedence over Bean Validation
-        assertThat(result.getFoo()).isEqualTo("foo");
+        assertThat(result.getS1()).hasSizeLessThanOrEqualTo(1);
+        assertThat(result.getS2()).hasSizeLessThanOrEqualTo(2);
+        assertThat(result.getS3()).hasSizeLessThanOrEqualTo(Keys.STRING_MAX_LENGTH.defaultValue());
+        assertThat(result.getS4()).hasSizeLessThanOrEqualTo(Keys.STRING_MAX_LENGTH.defaultValue());
     }
-
 }

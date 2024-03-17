@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio.internal.generation;
 
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;

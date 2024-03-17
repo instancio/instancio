@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.handlers;
+package org.instancio.internal.generation;
 
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
@@ -24,7 +24,7 @@ import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.NotNull;
 
-public class InstantiatingHandler implements NodeHandler {
+class InstantiatingHandler implements NodeHandler {
 
     private static final Hints POPULATE_ALL_HINT = Hints.builder()
             .afterGenerate(AfterGenerate.POPULATE_ALL)
@@ -32,7 +32,7 @@ public class InstantiatingHandler implements NodeHandler {
 
     private final Instantiator instantiator;
 
-    public InstantiatingHandler(final Instantiator instantiator) {
+    InstantiatingHandler(final Instantiator instantiator) {
         this.instantiator = instantiator;
     }
 

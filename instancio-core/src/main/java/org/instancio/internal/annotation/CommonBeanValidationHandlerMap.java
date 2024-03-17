@@ -28,6 +28,7 @@ import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
+import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.util.NumberUtils;
@@ -251,16 +252,15 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                                   final GeneratorSpec<?> spec,
                                   final Class<?> targetClass) {
 
-            if (spec instanceof StringGeneratorSpec) {
+            if (spec instanceof InternalLengthGeneratorSpec<?>) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), Keys.STRING_MAX_LENGTH.defaultValue());
 
-                final StringGeneratorSpec stringSpec = (StringGeneratorSpec) spec;
-                stringSpec.length(range.min(), range.max());
-                if (getMin(annotation) > 0) {
-                    stringSpec.allowEmpty(false);
-                }
+                ((InternalLengthGeneratorSpec<?>) spec).length(range.min(), range.max());
 
+                if (range.min() > 0 && spec instanceof StringGeneratorSpec) {
+                    ((StringGeneratorSpec) spec).allowEmpty(false);
+                }
             } else if (spec instanceof CollectionGeneratorSpec<?>) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), Keys.COLLECTION_MAX_SIZE.defaultValue());

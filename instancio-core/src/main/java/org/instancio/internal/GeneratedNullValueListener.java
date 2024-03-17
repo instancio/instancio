@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generation.GenerationListener;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.Keys;

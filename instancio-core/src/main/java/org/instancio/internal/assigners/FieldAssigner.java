@@ -19,7 +19,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
-import org.instancio.internal.util.Sonar;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetFieldError;
@@ -52,13 +52,9 @@ final class FieldAssigner implements Assigner {
         }
     }
 
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     private void setField(final InternalNode node, final Object target, final Object value) {
         try {
-            Field field = node.getField();
-            if (!field.isAccessible()) { // NOSONAR
-                field.setAccessible(true);
-            }
+            Field field = ReflectionUtils.setAccessible(node.getField());
             field.set(target, value);
         } catch (IllegalArgumentException ex) {
             // Wrong type is being assigned to a field.

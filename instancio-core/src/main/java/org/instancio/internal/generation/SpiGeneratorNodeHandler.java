@@ -13,44 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.handlers;
+package org.instancio.internal.generation;
 
 import org.instancio.generator.Generator;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.instantiation.Instantiator;
+import org.instancio.internal.generator.SpiGeneratorResolver;
 import org.instancio.internal.nodes.InternalNode;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-public class UserSuppliedGeneratorHandler implements NodeHandler {
+class SpiGeneratorNodeHandler implements NodeHandler {
 
     private final ModelContext<?> modelContext;
-    private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
+    private final SpiGeneratorResolver spiGeneratorResolver;
 
-    public UserSuppliedGeneratorHandler(final ModelContext<?> modelContext,
-                                        final GeneratorResolver generatorResolver,
-                                        final Instantiator instantiator) {
+    SpiGeneratorNodeHandler(
+            final ModelContext<?> modelContext,
+            final SpiGeneratorResolver spiGeneratorResolver) {
+
         this.modelContext = modelContext;
-        this.userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
-                modelContext, generatorResolver, instantiator);
+        this.spiGeneratorResolver = spiGeneratorResolver;
     }
 
-    /**
-     * If the context has enough information to generate a value for the field, then do so.
-     * If not, return an empty {@link Optional} and proceed with the main generation flow.
-     */
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final InternalNode node) {
-        final Optional<Generator<?>> generatorOpt = modelContext.getGenerator(node);
+        final Generator<?> generator = spiGeneratorResolver.getSpiGenerator(node);
 
-        if (!generatorOpt.isPresent()) {
+        if (generator == null) {
             return GeneratorResult.emptyResult();
         }
 
-        return userSuppliedGeneratorProcessor.getGeneratorResult(node, generatorOpt.get());
+        final Object value = generator.generate(modelContext.getRandom());
+        return GeneratorResult.create(value, generator.hints());
     }
 }

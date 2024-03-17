@@ -22,7 +22,7 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.MethodUtils;
-import org.instancio.internal.util.Sonar;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodError;
@@ -58,7 +58,6 @@ final class MethodAssigner implements Assigner {
     }
 
     @Override
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public void assign(final InternalNode node, final Object target, final Object arg) {
         final Method method = getSetterMethod(node);
 
@@ -70,7 +69,7 @@ final class MethodAssigner implements Assigner {
             try {
                 // can't assign null to a primitive
                 if (arg != null || !method.getParameterTypes()[0].isPrimitive()) {
-                    method.setAccessible(true);
+                    ReflectionUtils.setAccessible(method);
                     method.invoke(target, arg);
                 }
             } catch (IllegalAccessException ex) {

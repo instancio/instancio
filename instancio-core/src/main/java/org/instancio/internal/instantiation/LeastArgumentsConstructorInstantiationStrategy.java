@@ -17,13 +17,12 @@ package org.instancio.internal.instantiation;
 
 import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.ObjectUtils;
-import org.instancio.internal.util.Sonar;
+import org.instancio.internal.util.ReflectionUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -37,19 +36,15 @@ class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStr
             !(c.getParameterCount() == 1 && "Builder".equals(c.getParameterTypes()[0].getSimpleName()));
 
     @Override
-    @SuppressWarnings({"unchecked", Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED})
+    @SuppressWarnings("unchecked")
     public <T> T createInstance(final Class<T> klass) {
-        final Optional<Constructor<?>> optCtor = Arrays.stream(klass.getDeclaredConstructors())
-                .filter(NON_ZERO_ARG.and(NOT_BUILDER))
-                .min(Comparator.comparingInt(Constructor::getParameterCount));
+        final Constructor<?> ctor = getConstructorWithLeastArgs(klass);
 
-        if (!optCtor.isPresent()) {
+        if (ctor == null) {
             return null;
         }
 
-        final Constructor<?> constructor = optCtor.get();
-        constructor.setAccessible(true);
-
+        final Constructor<?> constructor = ReflectionUtils.setAccessible(ctor);
         final Parameter[] params = constructor.getParameters();
         final Object[] args = new Object[params.length];
 
@@ -65,5 +60,19 @@ class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStr
 
             return null;
         }
+    }
+
+    @Nullable
+    private static <T> Constructor<?> getConstructorWithLeastArgs(final Class<T> klass) {
+        final Comparator<Constructor<?>> comparator = Comparator.comparingInt(Constructor::getParameterCount);
+        final Predicate<Constructor<?>> predicate = NON_ZERO_ARG.and(NOT_BUILDER);
+        Constructor<?> result = null;
+
+        for (Constructor<?> ctor : klass.getDeclaredConstructors()) {
+            if (predicate.test(ctor) && (result == null || comparator.compare(ctor, result) < 0)) {
+                result = ctor;
+            }
+        }
+        return result;
     }
 }
