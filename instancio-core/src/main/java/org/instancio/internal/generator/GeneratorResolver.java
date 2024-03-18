@@ -28,25 +28,27 @@ import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.instancio.internal.generator.GeneratorUtil.instantiateInternalGenerator;
 
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 public class GeneratorResolver {
 
     private final GeneratorContext context;
+    private final Map<Class<?>, Generator<?>> cache = new HashMap<>();
 
     public GeneratorResolver(final GeneratorContext context) {
         this.context = context;
     }
 
-    private static Generator<?> loadByClassName(
-            final GeneratorContext context,
-            final String generatorClassName) {
-
-        final Class<?> generatorClass = ReflectionUtils.loadClass(generatorClassName);
-        return instantiateInternalGenerator(generatorClass, context);
-    }
-
+    /**
+     * Returns a generator for the given {@code node}.
+     * This method returns a new generator instance on each call.
+     *
+     * @see #getCached(InternalNode)
+     */
     @SuppressWarnings("all")
     public Generator<?> get(final InternalNode node) {
         final Class<?> klass = node.getTargetClass();
@@ -70,6 +72,26 @@ public class GeneratorResolver {
     }
 
     /**
+     * Since this method returns a cached generator,
+     * callers must not update the generator's state.
+     *
+     * @see #get(InternalNode)
+     */
+    @SuppressWarnings("all")
+    public Generator<?> getCached(final InternalNode node) {
+        final Class<?> targetClass = node.getTargetClass();
+
+        Generator<?> generator = cache.get(targetClass);
+
+        if (generator == null) {
+            generator = get(node);
+            cache.put(targetClass, generator);
+        }
+
+        return generator;
+    }
+
+    /**
      * Java modules will not have these legacy classes unless explicitly
      * imported via e.g. "requires java.sql". In case the classes are not
      * available, load them by name to avoid class not found error
@@ -89,10 +111,33 @@ public class GeneratorResolver {
         return null;
     }
 
-    public Generator<?> getBuiltInGenerator(final Class<?> targetClass) {
+    private static Generator<?> loadByClassName(
+            final GeneratorContext context,
+            final String generatorClassName) {
+
+        final Class<?> generatorClass = ReflectionUtils.loadClass(generatorClassName);
+        return instantiateInternalGenerator(generatorClass, context);
+    }
+
+    /**
+     * Since this method returns a cached generator,
+     * callers must not update the generator's state.
+     */
+    public Generator<?> getCachedBuiltInGenerator(final Class<?> targetClass) {
+        Generator<?> generator = cache.get(targetClass);
+
+        if (generator == null) {
+            cache.put(targetClass, generator);
+            generator = getBuiltInGenerator(targetClass);
+        }
+
+        return generator;
+    }
+
+    private Generator<?> getBuiltInGenerator(final Class<?> targetClass) {
         final Class<?> genClass = GeneratorResolverMaps.getGenerator(targetClass);
         if (genClass == null) {
-            return null;
+            return getGeneratorForLegacyClass(targetClass);
         }
 
         final Generator<?> generator = instantiateInternalGenerator(genClass, context);

@@ -124,7 +124,7 @@ public final class UserSuppliedGeneratorProcessor {
         Generator<?> generator = spiGeneratorResolver.getSpiGenerator(node);
 
         if (generator == null) {
-            generator = generatorResolver.get(actualNode);
+            generator = generatorResolver.getCached(actualNode);
         }
         if (generator == null) {
             generator = new InstantiatingGenerator(instantiator, targetClass);

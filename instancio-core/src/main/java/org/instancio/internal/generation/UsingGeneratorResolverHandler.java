@@ -42,7 +42,7 @@ class UsingGeneratorResolverHandler implements NodeHandler {
     @NotNull
     @Override
     public GeneratorResult getResult(@NotNull final InternalNode node) {
-        final Generator<?> generator = generatorResolver.get(node);
+        final Generator<?> generator = generatorResolver.getCached(node);
 
         if (generator == null) {
             return GeneratorResult.emptyResult();

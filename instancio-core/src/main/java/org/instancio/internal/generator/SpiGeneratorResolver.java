@@ -93,7 +93,9 @@ public class SpiGeneratorResolver {
 
             final Hints hints = generator.hints();
             final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
-            final Generator<?> delegate = generatorResolver.getBuiltInGenerator(defaultIfNull(internalHint.targetClass(), node.getTargetClass()));
+            final Generator<?> delegate = generatorResolver.getCachedBuiltInGenerator(
+                    defaultIfNull(internalHint.targetClass(), node.getTargetClass()));
+
             if (delegate == null) {
                 return generator;
             }
