@@ -76,7 +76,7 @@
         <version.maven-antrun-plugin>3.1.0</version.maven-antrun-plugin>
         <version.maven-bundle-plugin>5.1.9</version.maven-bundle-plugin>
         <version.maven-checkstyle-plugin>3.3.1</version.maven-checkstyle-plugin>
-        <version.maven-compiler-plugin>3.11.0</version.maven-compiler-plugin>
+        <version.maven-compiler-plugin>3.13.0</version.maven-compiler-plugin>
         <version.maven-deploy-plugin>3.1.1</version.maven-deploy-plugin>
         <version.maven-enforcer-plugin>3.4.1</version.maven-enforcer-plugin>
         <version.maven-gpg-plugin>3.2.0</version.maven-gpg-plugin>
