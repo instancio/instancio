@@ -23,6 +23,14 @@ import org.jetbrains.annotations.NotNull;
 @InternalApi
 interface NodeHandler {
 
+    NodeHandler NOOP_HANDLER = new NodeHandler() {
+        @NotNull
+        @Override
+        public GeneratorResult getResult(@NotNull final InternalNode node) {
+            return GeneratorResult.emptyResult();
+        }
+    };
+
     @NotNull
     GeneratorResult getResult(@NotNull InternalNode node);
 

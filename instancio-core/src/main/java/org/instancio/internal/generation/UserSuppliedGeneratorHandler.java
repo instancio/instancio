@@ -23,17 +23,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-class UserSuppliedGeneratorHandler implements NodeHandler {
+final class UserSuppliedGeneratorHandler implements NodeHandler {
 
     private final ModelContext<?> modelContext;
     private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
 
-    UserSuppliedGeneratorHandler(
+    private UserSuppliedGeneratorHandler(
             final ModelContext<?> modelContext,
             final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
 
         this.modelContext = modelContext;
         this.userSuppliedGeneratorProcessor = userSuppliedGeneratorProcessor;
+    }
+
+    static NodeHandler create(final ModelContext<?> modelContext,
+                              final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
+        return modelContext.getSelectorMaps().hasGenerators()
+                ? new UserSuppliedGeneratorHandler(modelContext, userSuppliedGeneratorProcessor)
+                : NodeHandler.NOOP_HANDLER;
     }
 
     /**

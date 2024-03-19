@@ -30,22 +30,28 @@ import java.util.Queue;
  * of a node for which a null value was generated in order to prevent
  * false positive "unused selector" errors in strict mode.
  */
-class GeneratedNullValueListener implements GenerationListener {
+final class GeneratedNullValueListener implements GenerationListener {
     private final ModelContext<?> context;
-    private final boolean isLenientMode;
+    private final Queue<InternalNode> queue = new ArrayDeque<>();
 
-    GeneratedNullValueListener(final ModelContext<?> context) {
+    private GeneratedNullValueListener(final ModelContext<?> context) {
         this.context = context;
-        this.isLenientMode = context.getSettings().get(Keys.MODE) == Mode.LENIENT;
+    }
+
+    static GenerationListener create(final ModelContext<?> context) {
+        final boolean isLenient = context.getSettings().get(Keys.MODE) == Mode.LENIENT;
+
+        return isLenient || context.getSelectorMaps().allEmpty()
+                ? GenerationListener.NOOP_LISTENER
+                : new GeneratedNullValueListener(context);
     }
 
     @Override
     public void objectCreated(final InternalNode node, final GeneratorResult result) {
-        if (isLenientMode || !result.containsNull()) {
+        if (!result.containsNull()) {
             return;
         }
 
-        final Queue<InternalNode> queue = new ArrayDeque<>();
         queue.add(node);
 
         while (!queue.isEmpty()) {

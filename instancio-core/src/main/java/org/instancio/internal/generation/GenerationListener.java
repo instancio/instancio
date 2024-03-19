@@ -27,6 +27,10 @@ import org.instancio.internal.nodes.InternalNode;
 @InternalApi
 public interface GenerationListener {
 
+    GenerationListener NOOP_LISTENER = (node, result) -> {
+        // no-op
+    };
+
     /**
      * Invoked when an object has been instantiated.
      * The object may not yet be fully-populated.

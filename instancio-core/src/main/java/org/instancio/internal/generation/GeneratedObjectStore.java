@@ -19,6 +19,7 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +33,9 @@ import java.util.Map;
  * A store for keeping track of generated values for destination
  * selectors of assignments.
  */
-public final class GeneratedObjectStore implements GenerationListener {
+public class GeneratedObjectStore implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratedObjectStore.class);
+    private static final GeneratorResult EMPTY_RESULT = GeneratorResult.emptyResult();
 
     // A map containing "scope" objects as keys, and a Map of destination
     // selectors to generated objects as values.
@@ -43,9 +45,15 @@ public final class GeneratedObjectStore implements GenerationListener {
 
     private boolean hasNewValues;
 
-    public GeneratedObjectStore(final ModelContext<?> context) {
+    private GeneratedObjectStore(final ModelContext<?> context) {
         this.context = context;
         enterScope(); // root object's scope
+    }
+
+    public static GeneratedObjectStore create(final ModelContext<?> context) {
+        return context.getSelectorMaps().hasAssignments()
+                ? new GeneratedObjectStore(context)
+                : new NoopGeneratedObjectStore();
     }
 
     public boolean hasNewValues() {
@@ -100,4 +108,16 @@ public final class GeneratedObjectStore implements GenerationListener {
         destinationValues.put(selector, generatedValue);
         hasNewValues = true;
     }
+
+    //@formatter:off
+    @VisibleForTesting
+    static final class NoopGeneratedObjectStore extends GeneratedObjectStore {
+        NoopGeneratedObjectStore() { super(null); }
+        @Override public boolean hasNewValues() { return false; }
+        @Override public void enterScope() { /* no-op */ }
+        @Override public void exitScope() { /* no-op */ }
+        @Override public void objectCreated(InternalNode node, GeneratorResult result) { /* no-op */ }
+        @Override public GeneratorResult getValue(TargetSelector destination) { return EMPTY_RESULT; }
+    }
+    //@formatter:on
 }

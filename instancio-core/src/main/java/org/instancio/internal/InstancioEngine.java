@@ -87,9 +87,9 @@ class InstancioEngine {
         context = model.getModelContext();
         rootNode = model.getRootNode();
         errorHandler = new ErrorHandler(context);
-        callbackHandler = new CallbackHandler(context);
+        callbackHandler = CallbackHandler.create(context);
         containerFactoriesHandler = new ContainerFactoriesHandler(context.getInternalServiceProviders());
-        generatedObjectStore = new GeneratedObjectStore(context);
+        generatedObjectStore = GeneratedObjectStore.create(context);
         generatorFacade = new GeneratorFacade(context, generatedObjectStore);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         nodeFilter = new NodeFilter(context);
@@ -97,8 +97,8 @@ class InstancioEngine {
         listeners = new GenerationListener[]{
                 callbackHandler,
                 generatedObjectStore,
-                new GeneratedNullValueListener(context),
-                new SetModelValidatingListener(context)};
+                GeneratedNullValueListener.create(context),
+                SetModelValidatingListener.create(context)};
     }
 
     @SuppressWarnings("unchecked")
@@ -652,6 +652,7 @@ class InstancioEngine {
             generatedObjectStore.objectCreated(child, childResult);
 
             if (filterResult == NodeFilterResult.POPULATE) {
+
                 if (child.is(NodeKind.POJO)) {
                     populateChildren(child.getChildren(), childResult);
                 } else if (child.is(NodeKind.COLLECTION)) {
@@ -735,7 +736,7 @@ class InstancioEngine {
     }
 
     private void notifyListeners(final InternalNode node, final GeneratorResult result) {
-        if (!result.isEmpty() && !result.isDelayed() && !result.isIgnored()) {
+        if (result.isNormal() || result.isNull()) {
             for (GenerationListener listener : listeners) {
                 listener.objectCreated(node, result);
             }

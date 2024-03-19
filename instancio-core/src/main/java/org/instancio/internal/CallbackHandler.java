@@ -22,6 +22,7 @@ import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +37,14 @@ class CallbackHandler implements GenerationListener {
     private final ModelContext<?> context;
     private final Map<InternalNode, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
 
-    CallbackHandler(final ModelContext<?> context) {
+    private CallbackHandler(final ModelContext<?> context) {
         this.context = context;
+    }
+
+    static CallbackHandler create(final ModelContext<?> context) {
+        return context.getSelectorMaps().hasCallbacks()
+                ? new CallbackHandler(context)
+                : new NoopCallbackHandler();
     }
 
     @Override
@@ -106,4 +113,13 @@ class CallbackHandler implements GenerationListener {
             throw Fail.withUsageError(errorMsg, ex);
         }
     }
+
+    //@formatter:off
+    @VisibleForTesting
+    static final class NoopCallbackHandler extends CallbackHandler {
+        NoopCallbackHandler() { super(null); }
+        @Override public void objectCreated(final InternalNode node, final GeneratorResult result) { /* no-op */ }
+        @Override void invokeCallbacks() { /* no-op */ }
+    }
+    //@formatter:on
 }

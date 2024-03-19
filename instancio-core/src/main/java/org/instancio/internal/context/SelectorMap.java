@@ -75,4 +75,6 @@ public interface SelectorMap<V> {
     List<V> getValues(InternalNode node);
 
     List<V> getValues(TargetSelector selector);
+
+    boolean isEmpty();
 }
