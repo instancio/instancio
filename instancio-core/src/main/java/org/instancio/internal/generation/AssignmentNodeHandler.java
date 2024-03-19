@@ -23,9 +23,11 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Fail;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +41,7 @@ class AssignmentNodeHandler implements NodeHandler {
     private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
     private final Set<InternalAssignment> unresolvedAssignments = new LinkedHashSet<>();
 
-    AssignmentNodeHandler(
+    private AssignmentNodeHandler(
             final ModelContext<?> context,
             final GeneratedObjectStore generatedObjectStore,
             final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
@@ -47,6 +49,16 @@ class AssignmentNodeHandler implements NodeHandler {
         this.context = context;
         this.generatedObjectStore = generatedObjectStore;
         this.userSuppliedGeneratorProcessor = userSuppliedGeneratorProcessor;
+    }
+
+    static AssignmentNodeHandler create(
+            final ModelContext<?> context,
+            final GeneratedObjectStore generatedObjectStore,
+            final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
+
+        return context.getSelectorMaps().hasAssignments()
+                ? new AssignmentNodeHandler(context, generatedObjectStore, userSuppliedGeneratorProcessor)
+                : new NoopAssignmentNodeHandler();
     }
 
     @NotNull
@@ -117,6 +129,25 @@ class AssignmentNodeHandler implements NodeHandler {
                     object.getClass().getTypeName(), ex);
         } catch (Exception ex) {
             throw Fail.withUsageError("error invoking the predicate", ex);
+        }
+    }
+
+    @VisibleForTesting
+    static final class NoopAssignmentNodeHandler extends AssignmentNodeHandler {
+
+        private NoopAssignmentNodeHandler() {
+            super(null, null, null);
+        }
+
+        @NotNull
+        @Override
+        public GeneratorResult getResult(final @NotNull InternalNode node) {
+            return GeneratorResult.emptyResult();
+        }
+
+        @Override
+        Set<InternalAssignment> getUnresolvedAssignments() {
+            return Collections.emptySet();
         }
     }
 }

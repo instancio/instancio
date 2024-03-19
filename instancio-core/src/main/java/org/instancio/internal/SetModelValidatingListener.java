@@ -28,12 +28,18 @@ import org.instancio.internal.util.TypeUtils;
 
 import java.lang.reflect.Type;
 
-class SetModelValidatingListener implements GenerationListener {
+final class SetModelValidatingListener implements GenerationListener {
 
     private final ModelContext<?> context;
 
-    SetModelValidatingListener(final ModelContext<?> context) {
+    private SetModelValidatingListener(final ModelContext<?> context) {
         this.context = context;
+    }
+
+    static GenerationListener create(final ModelContext<?> context) {
+        return context.getSelectorMaps().hasSetModels()
+                ? new SetModelValidatingListener(context)
+                : GenerationListener.NOOP_LISTENER;
     }
 
     /**

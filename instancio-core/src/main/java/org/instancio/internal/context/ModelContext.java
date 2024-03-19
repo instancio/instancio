@@ -152,7 +152,7 @@ public final class ModelContext<T> {
     }
 
     void reportUnusedSelectorWarnings() {
-        if (settings.get(Keys.MODE) == Mode.STRICT) {
+        if (settings.get(Keys.MODE) == Mode.STRICT && !selectorMaps.allEmpty()) {
             new UnusedSelectorReporter(getMaxDepth(), selectorMaps).report();
         }
     }
@@ -184,6 +184,10 @@ public final class ModelContext<T> {
 
     public Integer getMaxDepth() {
         return defaultIfNull(maxDepth, settings.get(Keys.MAX_DEPTH));
+    }
+
+    public SelectorMaps getSelectorMaps() {
+        return selectorMaps;
     }
 
     public boolean isIgnored(final InternalNode node) {
@@ -444,7 +448,7 @@ public final class ModelContext<T> {
          * Copies (only) selectors from {@code otherContext} to this context.
          * Other data, such as maxDepth, seed, and settings are <b>not</b> copied.
          */
-        public void withModel(final TargetSelector modelSelector, final Model<?> model) {
+        public Builder<T> withModel(final TargetSelector modelSelector, final Model<?> model) {
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
             final ModelContext<?> otherCtx = ((InternalModel<?>) model).getModelContext();
             final List<TargetSelector> processedSelectors = selectorProcessor.process(modelSelector);
@@ -452,6 +456,7 @@ public final class ModelContext<T> {
             for (TargetSelector modelTarget : processedSelectors) {
                 setModelMap.put(modelTarget, otherCtx);
             }
+            return this;
         }
 
         private ModelContextSource getModelContextSource() {

@@ -39,22 +39,11 @@ class GeneratedPojoStore {
     }
 
     static GeneratedPojoStore createStore(final ModelContext<?> context) {
-        final boolean setBackReferences = context.getSettings().get(Keys.SET_BACK_REFERENCES);
-        return setBackReferences
+        final boolean backRefsEnabled = context.getSettings().get(Keys.SET_BACK_REFERENCES);
+
+        return backRefsEnabled
                 ? new GeneratedPojoStore()
                 : new NoopGeneratedPojoStore();
-    }
-
-    private static final class NoopGeneratedPojoStore extends GeneratedPojoStore {
-        @Override
-        GeneratorResult getParentObject(final InternalNode node) {
-            return GeneratorResult.emptyResult();
-        }
-
-        @Override
-        void putValue(final InternalNode node, final GeneratorResult result) {
-            // no-op
-        }
     }
 
     GeneratorResult getParentObject(final InternalNode node) {
@@ -77,6 +66,18 @@ class GeneratedPojoStore {
     void putValue(final InternalNode node, final GeneratorResult result) {
         if (node.is(NodeKind.POJO) && !result.containsNull()) {
             generatedPojos.put(node, result.getValue());
+        }
+    }
+
+    private static final class NoopGeneratedPojoStore extends GeneratedPojoStore {
+        @Override
+        GeneratorResult getParentObject(final InternalNode node) {
+            return GeneratorResult.emptyResult();
+        }
+
+        @Override
+        void putValue(final InternalNode node, final GeneratorResult result) {
+            // no-op
         }
     }
 }

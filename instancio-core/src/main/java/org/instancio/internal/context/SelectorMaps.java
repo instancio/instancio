@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static org.instancio.internal.context.SetModelSelectorHelper.applyModelSelectorScopes;
 
-final class SelectorMaps {
+public final class SelectorMaps {
 
     private final AssignmentSelectorMap assignmentSelectorMap;
     private final GeneratorSelectorMap generatorSelectorMap;
@@ -155,5 +155,31 @@ final class SelectorMaps {
 
     SubtypeSelectorMap getSubtypeSelectorMap() {
         return subtypeSelectorMap;
+    }
+
+    public boolean allEmpty() {
+        return !hasAssignments()
+                && !hasGenerators()
+                && !hasCallbacks()
+                && !hasSetModels()
+                && ignoreSelectorMap.getSelectorMap().isEmpty()
+                && withNullableSelectorMap.getSelectorMap().isEmpty()
+                && subtypeSelectorMap.getSelectorMap().isEmpty();
+    }
+
+    public boolean hasGenerators() {
+        return !generatorSelectorMap.getSelectorMap().isEmpty();
+    }
+
+    public boolean hasCallbacks() {
+        return !onCompleteSelectorMap.getSelectorMap().isEmpty();
+    }
+
+    public boolean hasAssignments() {
+        return !assignmentSelectorMap.getOriginSelectors().getSelectorMap().isEmpty();
+    }
+
+    public boolean hasSetModels() {
+        return !setModelSelectorMap.getSelectorMap().isEmpty();
     }
 }

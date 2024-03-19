@@ -60,11 +60,8 @@ public class GeneratorFacade {
         final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
                 context, generatorResolver, spiGeneratorResolver, instantiator);
 
-        assignmentNodeHandler = new AssignmentNodeHandler(
-                context, generatedObjectStore, userSuppliedGeneratorProcessor);
-
-        userSuppliedGeneratorHandler = new UserSuppliedGeneratorHandler(
-                context, userSuppliedGeneratorProcessor);
+        assignmentNodeHandler = AssignmentNodeHandler.create(context, generatedObjectStore, userSuppliedGeneratorProcessor);
+        userSuppliedGeneratorHandler = UserSuppliedGeneratorHandler.create(context, userSuppliedGeneratorProcessor);
 
         final boolean annotationsEnabled = context.getSettings().get(Keys.BEAN_VALIDATION_ENABLED)
                 || context.getSettings().get(Keys.JPA_ENABLED);

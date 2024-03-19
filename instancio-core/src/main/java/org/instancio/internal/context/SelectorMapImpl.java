@@ -186,6 +186,11 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return isEmpty;
+    }
+
+    @Override
     public List<V> getValues(final TargetSelector selector) {
         if (isEmpty) {
             return emptyList();

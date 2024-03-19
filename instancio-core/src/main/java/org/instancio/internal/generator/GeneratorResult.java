@@ -108,6 +108,14 @@ public final class GeneratorResult {
         return value == null;
     }
 
+    public boolean isNormal() {
+        return type == Type.NORMAL;
+    }
+
+    public boolean isNull() {
+        return type == Type.NULL;
+    }
+
     public boolean isEmpty() {
         return type == Type.EMPTY;
     }
