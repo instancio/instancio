@@ -15,18 +15,13 @@
  */
 package org.instancio.internal.selectors;
 
-import org.instancio.FieldSelectorBuilder;
 import org.instancio.GroupableSelector;
-import org.instancio.PredicateSelector;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
-import org.instancio.TypeSelectorBuilder;
 import org.instancio.internal.Flattener;
-import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -37,24 +32,11 @@ public final class SelectorGroupImpl implements SelectorGroup, Flattener<TargetS
     private final List<TargetSelector> flattened = new ArrayList<>();
 
     public SelectorGroupImpl(final GroupableSelector... selectors) {
-        this.selectors = Collections.unmodifiableList(Arrays.asList(selectors));
+        this.selectors = CollectionUtils.asUnmodifiableList(selectors);
 
         for (GroupableSelector selector : selectors) {
-            if (selector instanceof SelectorImpl
-                    || selector instanceof FieldSelectorBuilder
-                    || selector instanceof TypeSelectorBuilder
-                    || selector instanceof PredicateSelector) {
-                flattened.add(selector);
-            } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
-                flattened.addAll(((PrimitiveAndWrapperSelectorImpl) selector).flatten());
-            } else {
-                throw Fail.withFataInternalError("Unhandled selector: " + selector.getClass());
-            }
+            flattened.addAll(((Flattener<TargetSelector>) selector).flatten());
         }
-    }
-
-    public List<GroupableSelector> getSelectors() {
-        return selectors;
     }
 
     @Override

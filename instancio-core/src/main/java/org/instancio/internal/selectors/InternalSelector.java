@@ -18,7 +18,9 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
+import org.instancio.TargetSelector;
 import org.instancio.documentation.InternalApi;
+import org.instancio.internal.Flattener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -28,7 +30,7 @@ import java.util.List;
  * between {@link SelectorImpl} and {@link PredicateSelectorImpl}.
  */
 @InternalApi
-public interface InternalSelector extends ScopeableSelector {
+public interface InternalSelector extends ScopeableSelector, Flattener<TargetSelector> {
 
     @NotNull
     List<Scope> getScopes();

@@ -16,11 +16,9 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.GetMethodSelector;
-import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.SetMethodSelector;
 import org.instancio.TargetSelector;
-import org.instancio.internal.Flattener;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.spi.InternalServiceProvider.InternalGetterMethodFieldResolver;
 import org.instancio.internal.util.ErrorMessageUtils;
@@ -226,22 +224,12 @@ public final class SelectorProcessor {
     }
 
     private List<TargetSelector> processGroup(final SelectorGroupImpl selectorGroup) {
-        final List<TargetSelector> results = new ArrayList<>();
+        final List<TargetSelector> flattened = selectorGroup.flatten();
+        final List<TargetSelector> results = new ArrayList<>(flattened.size());
 
-        for (GroupableSelector groupMember : selectorGroup.getSelectors()) {
-
-            if (groupMember instanceof Flattener<?>) {
-                final List<TargetSelector> flattened = ((Flattener<TargetSelector>) groupMember).flatten();
-                for (TargetSelector selector : flattened) {
-                    results.addAll(process(selector));
-                }
-            } else {
-                // only remaining option is SelectorBuilder
-                final SelectorBuilder builder = (SelectorBuilder) groupMember;
-                results.add(builder.build());
-            }
+        for (TargetSelector selector : flattened) {
+            results.addAll(process(selector));
         }
         return results;
     }
-
 }
