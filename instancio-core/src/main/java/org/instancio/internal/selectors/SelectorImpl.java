@@ -21,7 +21,6 @@ import org.instancio.ScopeableSelector;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.Flattener;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,6 @@ import java.util.Objects;
 public final class SelectorImpl implements
         Selector,
         GroupableSelector,
-        Flattener<TargetSelector>,
         UnusedSelectorDescription,
         InternalSelector {
 

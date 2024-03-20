@@ -19,17 +19,20 @@ import org.instancio.DepthPredicateSelector;
 import org.instancio.DepthSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
+import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.Flattener;
 import org.instancio.internal.util.ErrorMessageUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 abstract class PredicateSelectorBuilderTemplate<T>
-        implements SelectorBuilder, DepthSelector, DepthPredicateSelector {
+        implements SelectorBuilder, DepthSelector, DepthPredicateSelector, Flattener<TargetSelector> {
 
     private final List<Predicate<T>> predicates = new ArrayList<>(3);
     private final StringBuilder description = new StringBuilder(128);
@@ -106,6 +109,11 @@ abstract class PredicateSelectorBuilderTemplate<T>
         return builder
                 .apiInvocationDescription(description.toString())
                 .build();
+    }
+
+    @Override
+    public List<TargetSelector> flatten() {
+        return Collections.singletonList(build());
     }
 
     @Override

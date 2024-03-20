@@ -20,7 +20,6 @@ import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.TargetSelector;
-import org.instancio.internal.Flattener;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
@@ -38,7 +37,6 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 public class PredicateSelectorImpl implements
         PredicateSelector,
-        Flattener<TargetSelector>,
         UnusedSelectorDescription,
         InternalSelector {
 
