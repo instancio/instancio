@@ -130,6 +130,14 @@ public final class Format {
                 withoutPackage(method.getParameterTypes()[0]));
     }
 
+    public static String methodNameWithParams(final Method method) {
+        final String params = Arrays.stream(method.getParameterTypes())
+                .map(Format::withoutPackage)
+                .collect(joining(", "));
+
+        return String.format("%s(%s)", method.getName(), params);
+    }
+
     public static String withoutPackage(final Type type) {
         return PACKAGE_PATTERN.matcher(type.getTypeName()).replaceAll("");
     }

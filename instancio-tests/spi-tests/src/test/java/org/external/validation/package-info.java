@@ -13,25 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.spi;
 
-import org.instancio.generator.Generator;
-import org.instancio.spi.InstancioServiceProvider;
-
-import java.lang.reflect.Field;
-
-public class SampleSpi implements InstancioServiceProvider {
-
-    @Override
-    public GeneratorProvider getGeneratorProvider() {
-        return (node, generators) -> {
-            Field field = node.getField();
-
-            if (field != null && field.getName().equals("foo")) {
-                return (Generator<?>) random -> "foo";
-            }
-            return null;
-        };
-    }
-
-}
+/**
+ * These tests are under {@code org.external} package because reported locations
+ * filter stacktrace elements containing {@code org.instancio}.
+ */
+package org.external.validation;

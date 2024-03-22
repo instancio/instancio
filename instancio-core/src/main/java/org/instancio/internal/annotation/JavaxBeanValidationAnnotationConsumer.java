@@ -25,7 +25,7 @@ final class JavaxBeanValidationAnnotationConsumer extends AbstractAnnotationCons
     }
 
     JavaxBeanValidationAnnotationConsumer() {
-        register(() -> javax.validation.constraints.Email.class,
+        putPrimary(() -> javax.validation.constraints.Email.class,
                 (annotation, context) -> new EmailGenerator(context));
     }
 }

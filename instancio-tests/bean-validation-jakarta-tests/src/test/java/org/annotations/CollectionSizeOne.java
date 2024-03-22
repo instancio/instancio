@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.annotation;
+package org.annotations;
 
-import org.instancio.internal.generator.domain.internet.EmailGenerator;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-final class JakartaBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
-
-    JakartaBeanValidationAnnotationConsumer() {
-        putPrimary(() -> jakarta.validation.constraints.Email.class,
-                ((annotation, context) -> new EmailGenerator(context)));
-    }
-
-    @Override
-    protected AnnotationHandlerMap getAnnotationHandlerMap() {
-        return JakartaBeanValidationHandlerMap.getInstance();
-    }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CollectionSizeOne {
 }

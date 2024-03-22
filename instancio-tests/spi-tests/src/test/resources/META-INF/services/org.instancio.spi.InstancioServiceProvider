@@ -1,3 +1,4 @@
 org.example.spi.CustomTypeProvider
 org.example.spi.CustomGeneratorProvider
 org.example.spi.CustomSetterMethodResolver
+org.example.spi.CustomAnnotationProcessor

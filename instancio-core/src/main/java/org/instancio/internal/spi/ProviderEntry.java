@@ -38,6 +38,10 @@ public final class ProviderEntry<P> {
             final List<InstancioServiceProvider> instancioServiceProviders,
             final Function<InstancioServiceProvider, P> fn) {
 
+        if (instancioServiceProviders.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         final List<ProviderEntry<P>> results = new ArrayList<>();
         for (InstancioServiceProvider it : instancioServiceProviders) {
 

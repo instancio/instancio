@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.generator.Generator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.AssignmentType;
@@ -25,9 +26,16 @@ import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import static org.instancio.internal.util.Constants.NL;
+import static org.instancio.internal.util.Format.formatField;
+import static org.instancio.internal.util.Format.formatNode;
+import static org.instancio.internal.util.Format.methodNameWithParams;
+import static org.instancio.internal.util.Format.nodePathToRootBlock;
+import static org.instancio.internal.util.Format.withoutPackage;
 
 @SuppressWarnings({Sonar.STRING_LITERALS_DUPLICATED, "StringBufferReplaceableByString"})
 public final class ErrorMessageUtils {
@@ -53,7 +61,7 @@ public final class ErrorMessageUtils {
         final String at = Format.firstNonInstancioStackTraceLine(new Throwable());
         return new StringBuilder(1024).append(NL).append(NL)
                 .append("Unable to resolve the field from method reference:").append(NL)
-                .append("-> ").append(Format.withoutPackage(targetClass)).append("::").append(lambdaImplMethodName).append(NL)
+                .append("-> ").append(withoutPackage(targetClass)).append("::").append(lambdaImplMethodName).append(NL)
                 .append("   at ").append(at).append(NL)
                 .append(NL)
                 .append("Potential causes:").append(NL)
@@ -122,7 +130,7 @@ public final class ErrorMessageUtils {
 
     public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node, final Throwable cause) {
         final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
-                .append("error assigning value to: ").append(Format.nodePathToRootBlock(node)).append(NL)
+                .append("error assigning value to: ").append(nodePathToRootBlock(node)).append(NL)
                 .append(NL).append(NL);
 
         appendTypeMismatchDetails(value, node, sb);
@@ -143,7 +151,7 @@ public final class ErrorMessageUtils {
             final InternalNode elementNode) {
 
         final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
-                .append(errorMsg).append(": ").append(Format.nodePathToRootBlock(containerNode)).append(NL)
+                .append(errorMsg).append(": ").append(nodePathToRootBlock(containerNode)).append(NL)
                 .append(NL).append(NL);
 
         appendTypeMismatchDetails(value, elementNode, sb);
@@ -191,7 +199,7 @@ public final class ErrorMessageUtils {
 
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("unable to populate Collection of size ").append(targetSize).append(": ")
-                .append(Format.nodePathToRootBlock(node)).append(NL)
+                .append(nodePathToRootBlock(node)).append(NL)
                 .append(NL).append(NL)
                 .append("Could not generate enough elements to populate the collection.").append(NL)
                 .append("This typically occurs with Sets when the number of potential values is").append(NL)
@@ -241,7 +249,7 @@ public final class ErrorMessageUtils {
 
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("unable to populate Map of size ").append(targetSize).append(": ")
-                .append(Format.nodePathToRootBlock(node)).append(NL)
+                .append(nodePathToRootBlock(node)).append(NL)
                 .append(NL).append(NL)
                 .append("Could not generate enough entries to populate the map.").append(NL)
                 .append("This occurs when the number of potential map keys is limited").append(NL)
@@ -283,8 +291,8 @@ public final class ErrorMessageUtils {
     private static void appendTypeMismatchDetails(
             final Object value, final InternalNode node, final StringBuilder sb) {
 
-        final String nodeDescription = Format.formatNode(node);
-        final String argType = Format.withoutPackage(value.getClass());
+        final String nodeDescription = formatNode(node);
+        final String argType = withoutPackage(value.getClass());
         final String argValue = StringUtils.quoteToString(value);
 
         sb.append("Type mismatch:").append(NL).append(NL);
@@ -306,8 +314,8 @@ public final class ErrorMessageUtils {
             final Settings settings) {
 
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
-        final String fieldName = Format.formatField(field);
-        final String argType = Format.withoutPackage(value.getClass());
+        final String fieldName = formatField(field);
+        final String argType = withoutPackage(value.getClass());
         final String argValue = StringUtils.quoteToString(value);
 
         return new StringBuilder(INITIAL_SB_SIZE)
@@ -330,7 +338,7 @@ public final class ErrorMessageUtils {
     }
 
     public static String setterNotFound(final InternalNode node, final Settings settings) {
-        final String fieldName = Format.formatField(node.getField());
+        final String fieldName = formatField(node.getField());
         final SetterStyle setterStyle = settings.get(Keys.SETTER_STYLE);
         final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
 
@@ -361,7 +369,7 @@ public final class ErrorMessageUtils {
             final Settings settings) {
 
         final OnSetMethodError onSetMethodError = settings.get(Keys.ON_SET_METHOD_ERROR);
-        final String argType = value == null ? "n/a" : Format.withoutPackage(value.getClass());
+        final String argType = value == null ? "n/a" : withoutPackage(value.getClass());
         final String argValue = StringUtils.quoteToString(value);
 
         return new StringBuilder(INITIAL_SB_SIZE)
@@ -396,6 +404,99 @@ public final class ErrorMessageUtils {
         final String invocation = String.format("%s.%s( -> null <- )", invokedMethods, methodName);
         final String at = Format.firstNonInstancioStackTraceLine(t);
         return String.format(template, message, invocation, at);
+    }
+
+    public static String invalidAnnotationHandlerMethod(
+            final Class<?> annotationProcessorClass,
+            final Method method,
+            final Annotation annotation,
+            final Generator<?> resolvedGenerator,
+            final InternalNode node) {
+
+        final Class<?>[] paramTypes = method.getParameterTypes();
+        final Class<?> specifiedGeneratorType = paramTypes.length < 2 ? null : paramTypes[1];
+        final boolean isValidSpec = specifiedGeneratorType != null
+                && resolvedGenerator.getClass().isAssignableFrom(specifiedGeneratorType);
+
+        final String resolvedGeneratorName = withoutPackage(resolvedGenerator.getClass());
+        final String specifiedGeneratorName = specifiedGeneratorType == null ? null : withoutPackage(specifiedGeneratorType);
+
+        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE);
+
+        appendAnnotationHandlerMessageHeading(sb, annotationProcessorClass, method);
+
+        sb.append(NL)
+                .append(" -> Annotation ...............: ").append(withoutPackage(annotation.annotationType())).append(NL)
+                .append(" -> Annotated type ...........: ").append(withoutPackage(node.getTargetClass())).append(NL)
+                .append(" -> Resolved generator spec ..: ").append(resolvedGeneratorName).append(NL)
+                .append(" -> Specified generator ......: ").append(specifiedGeneratorName);
+
+        if (!isValidSpec) {
+            sb.append(" (not valid)");
+        }
+        sb.append(NL)
+                .append(" -> Matched node .............: ").append(nodePathToRootBlock(node)).append(NL)
+                .append(NL)
+                .append("To resolve this issue:").append(NL)
+                .append(NL)
+                .append(" -> check if the annotated type is compatible with the annotation").append(NL)
+                .append(" -> update the @AnnotationHandler method signature by specifying the correct generator spec class").append(NL)
+                .append(NL);
+
+        appendAnnotationHandlerUsage(sb);
+
+        return sb.toString();
+    }
+
+    public static String annotationHandlerInvalidNumberOfParameters(
+            final Class<?> annotationProcessorClass,
+            final Method method) {
+
+        final Class<?>[] paramTypes = method.getParameterTypes();
+
+        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE);
+        appendAnnotationHandlerMessageHeading(sb, annotationProcessorClass, method);
+        sb.append(NL)
+                .append("Invalid number of method parameters: ").append(paramTypes.length).append(NL)
+                .append(NL);
+
+        appendAnnotationHandlerUsage(sb);
+        return sb.toString();
+    }
+
+    private static void appendAnnotationHandlerMessageHeading(
+            final StringBuilder sb,
+            final Class<?> annotationProcessorClass,
+            final Method method) {
+
+        sb.append("invalid @AnnotationHandler method defined by ").append(annotationProcessorClass.getName()).append(NL)
+                .append(NL)
+                .append("    @AnnotationHandler").append(NL)
+                .append("    ").append(methodNameWithParams(method)).append(NL);
+    }
+
+    private static void appendAnnotationHandlerUsage(final StringBuilder sb) {
+        sb.append("The accepted signatures for @AnnotationHandler methods are:").append(NL)
+                .append(NL)
+                .append(" -> void example(Annotation annotation, GeneratorSpec<?> spec)").append(NL)
+                .append(" -> void example(Annotation annotation, GeneratorSpec<?> spec, Node node)").append(NL)
+                .append(NL)
+                .append("where:").append(NL)
+                .append(NL)
+                .append(" - 'annotation' and 'spec' parameters can be subtypes of Annotation and GeneratorSpec, respectively.").append(NL)
+                .append(" - 'node' parameter is optional.").append(NL)
+                .append(NL)
+                .append("Example:").append(NL)
+                .append(NL)
+                .append("  @Retention(RetentionPolicy.RUNTIME)").append(NL)
+                .append("  public @interface HexString {").append(NL)
+                .append("      int length();").append(NL)
+                .append("  }").append(NL)
+                .append(NL)
+                .append("  @AnnotationHandler").append(NL)
+                .append("  void handleZipCode(HexString annotation, StringGeneratorSpec spec) {").append(NL)
+                .append("      spec.hex().length(annotation.length());").append(NL)
+                .append("  }");
     }
 
     private static Throwable getRootCause(final Throwable t) {

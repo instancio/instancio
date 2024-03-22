@@ -38,7 +38,7 @@ abstract class AbstractAnnotationConsumer implements AnnotationConsumer {
 
     protected abstract AnnotationHandlerMap getAnnotationHandlerMap();
 
-    final <A extends Annotation> void register(
+    final <A extends Annotation> void putPrimary(
             final Supplier<Class<A>> annotationTypeSupplier,
             final AnnotationGeneratorFn annotationGeneratorFn) {
 

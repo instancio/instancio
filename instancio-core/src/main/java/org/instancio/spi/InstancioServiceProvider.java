@@ -26,6 +26,11 @@ import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.ServiceLoader;
 
@@ -37,6 +42,7 @@ import java.util.ServiceLoader;
  *   <li>subtype mappings via {@link #getTypeResolver()}</li>
  *   <li>class instantiation logic via {@link #getTypeInstantiator()}</li>
  *   <li>setter resolution via {@link #getSetterMethodResolver()}</li>
+ *   <li>annotation processing via {@link #getAnnotationProcessor()}</li>
  * </ul>
  *
  * <p>All of the above are {@code default} methods that return {@code null}.
@@ -137,6 +143,17 @@ public interface InstancioServiceProvider {
      */
     @ExperimentalApi
     default SetterMethodResolver getSetterMethodResolver() {
+        return null;
+    }
+
+    /**
+     * Returns an {@code AnnotationProcessor} implementation.
+     *
+     * @return a custom annotation processor, or {@code null} if not required
+     * @since 4.5.0
+     */
+    @ExperimentalApi
+    default AnnotationProcessor getAnnotationProcessor() {
         return null;
     }
 
@@ -265,5 +282,62 @@ public interface InstancioServiceProvider {
          */
         @ExperimentalApi
         Method getSetter(Node node);
+    }
+
+    /**
+     * Allows customising generated values based on annotations.
+     *
+     * <p>This interface has no methods to implement. Instead, it relies on
+     * user-defined methods marked with the {@code @AnnotationHandler} annotation
+     * (see the {@link AnnotationHandler} Javadoc for an example).
+     *
+     * @see AnnotationHandler
+     * @since 4.5.0
+     */
+    @ExperimentalApi
+    interface AnnotationProcessor {
+
+        /**
+         * Denotes a method for handling annotations.
+         *
+         * <p>The accepted signatures for {@code @AnnotationHandler} methods are:
+         *
+         * <ul>
+         *   <li>{@code void example(Annotation annotation, GeneratorSpec<?> spec, Node node)}</li>
+         *   <li>{@code void example(Annotation annotation, GeneratorSpec<?> spec)}</li>
+         * </ul>
+         *
+         * <p>where:
+         *
+         * <ul>
+         *   <li>the {@code annotation} and {@code spec} parameters can be subtypes
+         *       of {@link Annotation} and {@link GeneratorSpec}, respectively</li>
+         *   <li>the {@code node} parameter is optional, and can be omitted
+         *       if it's not needed</li>
+         * </ul>
+         *
+         * <p>Example:
+         *
+         * <pre>{@code
+         * @Retention(RetentionPolicy.RUNTIME)
+         * public @interface HexString {
+         *     int length();
+         * }
+         *
+         * public class SampleAnnotationProcessor implements AnnotationProcessor {
+         *
+         *     @AnnotationHandler
+         *     void handleZipCode(HexString annotation, StringGeneratorSpec spec) {
+         *         spec.hex().length(annotation.length());
+         *     }
+         * }
+         * }</pre>
+         *
+         * @since 4.5.0
+         */
+        @ExperimentalApi
+        @Target(ElementType.METHOD)
+        @Retention(RetentionPolicy.RUNTIME)
+        @interface AnnotationHandler {}
     }
 }
