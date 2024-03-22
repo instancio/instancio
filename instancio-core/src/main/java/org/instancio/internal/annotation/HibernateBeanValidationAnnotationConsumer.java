@@ -34,47 +34,47 @@ import org.jetbrains.annotations.NotNull;
 final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
 
     HibernateBeanValidationAnnotationConsumer() {
-        register(() -> org.hibernate.validator.constraints.EAN.class,
+        putPrimary(() -> org.hibernate.validator.constraints.EAN.class,
                 (annotation, context) -> getEanGenerator(
                         (org.hibernate.validator.constraints.EAN) annotation, context)
         );
         // Instancio aims to support Hibernate validator 5.x, in which Email is not deprecated
         //noinspection deprecation
-        register(() -> org.hibernate.validator.constraints.Email.class, // NOSONAR
+        putPrimary(() -> org.hibernate.validator.constraints.Email.class, // NOSONAR
                 (annotation, context) -> new EmailGenerator(context));
 
-        register(() -> org.hibernate.validator.constraints.LuhnCheck.class,
+        putPrimary(() -> org.hibernate.validator.constraints.LuhnCheck.class,
                 (annotation, context) -> getLuhnGenerator(
                         (org.hibernate.validator.constraints.LuhnCheck) annotation, context));
 
-        register(() -> org.hibernate.validator.constraints.Mod10Check.class,
+        putPrimary(() -> org.hibernate.validator.constraints.Mod10Check.class,
                 (annotation, context) -> getMod10Generator(
                         (org.hibernate.validator.constraints.Mod10Check) annotation, context));
 
-        register(() -> org.hibernate.validator.constraints.Mod11Check.class,
+        putPrimary(() -> org.hibernate.validator.constraints.Mod11Check.class,
                 (annotation, context) -> getMod11Generator(
                         (org.hibernate.validator.constraints.Mod11Check) annotation, context));
 
-        register(() -> org.hibernate.validator.constraints.CreditCardNumber.class,
+        putPrimary(() -> org.hibernate.validator.constraints.CreditCardNumber.class,
                 (annotation, context) -> new CreditCardNumberGenerator(context));
 
-        register(() -> org.hibernate.validator.constraints.ISBN.class,
+        putPrimary(() -> org.hibernate.validator.constraints.ISBN.class,
                 (annotation, context) -> new IsbnGenerator(context));
 
-        register(() -> org.hibernate.validator.constraints.UUID.class,
+        putPrimary(() -> org.hibernate.validator.constraints.UUID.class,
                 (annotation, context) -> new UUIDGenerator(context));
 
-        register(() -> org.hibernate.validator.constraints.URL.class,
+        putPrimary(() -> org.hibernate.validator.constraints.URL.class,
                 (annotation, context) -> getUrlGenerator(
                         (org.hibernate.validator.constraints.URL) annotation, context));
 
-        register(() -> org.hibernate.validator.constraints.pl.NIP.class,
+        putPrimary(() -> org.hibernate.validator.constraints.pl.NIP.class,
                 (annotation, context) -> new NipGenerator(context));
 
-        register(() -> org.hibernate.validator.constraints.pl.PESEL.class,
+        putPrimary(() -> org.hibernate.validator.constraints.pl.PESEL.class,
                 (annotation, context) -> new PeselGenerator(context));
 
-        register(() -> org.hibernate.validator.constraints.pl.REGON.class,
+        putPrimary(() -> org.hibernate.validator.constraints.pl.REGON.class,
                 (annotation, context) -> new RegonGenerator(context));
     }
 

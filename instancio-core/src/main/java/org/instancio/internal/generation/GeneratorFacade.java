@@ -26,7 +26,6 @@ import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
-import org.instancio.settings.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,18 +62,20 @@ public class GeneratorFacade {
         assignmentNodeHandler = AssignmentNodeHandler.create(context, generatedObjectStore, userSuppliedGeneratorProcessor);
         userSuppliedGeneratorHandler = UserSuppliedGeneratorHandler.create(context, userSuppliedGeneratorProcessor);
 
-        final boolean annotationsEnabled = context.getSettings().get(Keys.BEAN_VALIDATION_ENABLED)
-                || context.getSettings().get(Keys.JPA_ENABLED);
-
         // handlers in order of precedence, starting from highest
-        nodeHandlers.add(assignmentNodeHandler);
-        nodeHandlers.add(userSuppliedGeneratorHandler);
-        nodeHandlers.add(new SpiGeneratorNodeHandler(context, spiGeneratorResolver));
-        if (annotationsEnabled) {
-            nodeHandlers.add(new AnnotationNodeHandler(context, generatorResolver));
+        addHandler(assignmentNodeHandler);
+        addHandler(userSuppliedGeneratorHandler);
+        addHandler(new SpiGeneratorNodeHandler(context, spiGeneratorResolver));
+        addHandler(AnnotationNodeHandler.create(context, generatorResolver));
+        addHandler(new UsingGeneratorResolverHandler(context, generatorResolver));
+        addHandler(new InstantiatingHandler(instantiator));
+    }
+
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
+    private void addHandler(final NodeHandler handler) {
+        if (handler != NodeHandler.NOOP_HANDLER) {
+            nodeHandlers.add(handler);
         }
-        nodeHandlers.add(new UsingGeneratorResolverHandler(context, generatorResolver));
-        nodeHandlers.add(new InstantiatingHandler(instantiator));
     }
 
     public GeneratorResult generateNodeValue(final InternalNode node) {
