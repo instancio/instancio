@@ -2723,8 +2723,9 @@ The {{InstancioServiceProvider}} interface allows customising how objects are cr
 It defines the following methods, which return `null` by default and can be overridden as needed:
 
 - `GeneratorProvider getGeneratorProvider()`
-- `TypeResolver getTypeResolver()`
 - `AnnotationProcessor getAnnotationProcessor()`
+- `SetterMethodResolver getSetterMethodResolver()`
+- `TypeResolver getTypeResolver()`
 - `TypeInstantiator getTypeInstantiator()`
 
 An implementation of `InstancioServiceProvider` can be registered by creating
@@ -2815,6 +2816,104 @@ Phone phone = Instancio.of(Phone.class)
     .generate(field(Phone::getNumber), gen -> gen.string().length(20))
     .create();
 ```
+
+## `AnnotationProcessor`
+
+!!! info "This is an experimental API available since version `4.5.0`"
+
+This interface allows processing custom annotations:
+
+```java
+interface AnnotationProcessor {
+    // no methods to implement
+}
+```
+
+It has no methods to implement. Instead, it relies on user-defined methods marked with
+the `@AnnotationHandler` annotation. The accepted signatures for `@AnnotationHandler` methods are:
+
+```java
+@AnnotationHandler
+void example(Annotation annotation, GeneratorSpec<?> spec, Node node)
+
+@AnnotationHandler
+void example(Annotation annotation, GeneratorSpec<?> spec)
+```
+
+The `annotation` and `spec` parameters can be subtypes `java.lang.annotation.Annotation`
+and `org.instancio.generator.GeneratorSpec`, respectively.
+The `node` parameter is optional, and can be omitted if it's not needed.
+
+### Use Case
+
+The main use case for implementing the `AnnotationProcessor` is to customise generated values
+based on custom annotations. Let's assume we have the following annotations and a POJO:
+
+```java linenums="1"  hl_lines="13 14"
+@Target({ElementType.FIELD, ElementType.TYPE_USE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Hex {
+    int length();
+}
+
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MapWithKeys {
+    String[] value();
+}
+
+class Pojo {
+    @MapWithKeys({"foo", "bar"})
+    private Map<String, @Hex(length = 10) String> map;
+}
+```
+!!! attention ""
+<lnum>13</lnum> The `@MapWithKeys` annotation specifies that a given `Map` must contain given keys.<br/>
+<lnum>14</lnum> the `@Hex` annotation denotes that a string must be a hexadecimal value of the specified `length()`.<br/>
+
+
+Our `Pojo` declares a `Map` that should contain hexadecimal strings as values.
+The keys can be arbitrary strings, but the map should contain `foo` and `bar`.
+To achieve this, we can implement an `AnnotationProcessor` as shown below.
+
+```java linenums="1" hl_lines="3 4 8 9"
+public class AnnotationProcessorImpl implements AnnotationProcessor {
+
+    @AnnotationHandler
+    void withKeys(MapWithKeys annotation, MapGeneratorSpec<String, ?> mapSpec) {
+        mapSpec.withKeys(annotation.values());
+    }
+
+    @AnnotationHandler
+    void hexString(Hex annotation, StringGeneratorSpec stringSpec) {
+        stringSpec.hex().length(annotation.length());
+    }
+}
+```
+!!! attention ""
+<lnum>3,8</lnum> methods must be annotated with `@AnnotationHandler`.<br/>
+<lnum>4,9</lnum> the third parameter (`Node`) is omitted as it's not needed in this example.<br/>
+
+Instancio will use methods marked with `@AnnotationHandler` to process the annotations.
+The first argument must be the annotation, and the second is the `GeneratorSpec`
+applicable to the annotated type (to find the specific spec interface, see the
+`org.instancio.generator.specs` package [Javadoc](https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/specs/package-summary.html)
+or the `org.instancio.generators.Generators` class).
+
+Once the above is in place, the following snippet:
+
+```java
+Pojo pojo = Instancio.create(Pojo.class);
+```
+
+should produce output similar to:
+
+```
+Pojo[map={bar=2F5E92847B, NGJKQBQ=25F845DB67, foo=824D732CAA, ODDVXUPESM=2EDB5EB46A}]
+```
+
+It should be noted that the `AnnotationProcessor` can only be used to customise
+existing generators. To define a custom `Generator` for a given annotation,
+use a custom [`GeneratorProvider`](#generatorprovider).
 
 ## `SetterMethodResolver`
 
@@ -2955,106 +3054,6 @@ assertThat(animal).isExactlyInstanceOf(Cat.class);
     Using `TypeResolver` it is also possible to resolve implementation classes
     via classpath scanning, for example, using a third-party library.
     For a sample implementation, see [`type-resolver-sample`](https://github.com/instancio/instancio-samples).
-
-
-## `AnnotationProcessor`
-
-!!! info "This is an experimental API available since version `4.5.0`"
-
-This interface allows processing custom annotations:
-
-```java
-interface AnnotationProcessor {
-    // no methods to implement
-}
-```
-
-It has no methods to implement. Instead, it relies on user-defined methods marked with
-the `@AnnotationHandler` annotation. The accepted signatures for `@AnnotationHandler` methods are:
-
-```java
-@AnnotationHandler
-void example(Annotation annotation, GeneratorSpec<?> spec, Node node)
-
-@AnnotationHandler
-void example(Annotation annotation, GeneratorSpec<?> spec)
-```
-
-The `annotation` and `spec` parameters can be subtypes `java.lang.annotation.Annotation`
-and `org.instancio.generator.GeneratorSpec`, respectively.
-The `node` parameter is optional, and can be omitted if it's not needed.
-
-### Use Case
-
-The main use case for implementing the `AnnotationProcessor` is to customise generated values
-based on custom annotations. Let's assume we have the following annotations and a POJO:
-
-```java linenums="1"  hl_lines="13 14"
-@Target({ElementType.FIELD, ElementType.TYPE_USE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Hex {
-    int length();
-}
-
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MapWithKeys {
-    String[] value();
-}
-
-class Pojo {
-    @MapWithKeys({"foo", "bar"})
-    private Map<String, @Hex(length = 10) String> map;
-}
-```
-!!! attention ""
-    <lnum>13</lnum> The `@MapWithKeys` annotation specifies that a given `Map` must contain given keys.<br/>
-    <lnum>14</lnum> the `@Hex` annotation denotes that a string must be a hexadecimal value of the specified `length()`.<br/>
-
-
-Our `Pojo` declares a `Map` that should contain hexadecimal strings as values.
-The keys can be arbitrary strings, but the map should contain `foo` and `bar`.
-To achieve this, we can implement an `AnnotationProcessor` as shown below.
-
-```java linenums="1" hl_lines="3 4 8 9"
-public class AnnotationProcessorImpl implements AnnotationProcessor {
-
-    @AnnotationHandler
-    void withKeys(MapWithKeys annotation, MapGeneratorSpec<String, ?> mapSpec) {
-        mapSpec.withKeys(annotation.values());
-    }
-
-    @AnnotationHandler
-    void hexString(Hex annotation, StringGeneratorSpec stringSpec) {
-        stringSpec.hex().length(annotation.length());
-    }
-}
-```
-!!! attention ""
-    <lnum>3,8</lnum> methods must be annotated with `@AnnotationHandler`.<br/>
-    <lnum>4,9</lnum> the third parameter (`Node`) is omitted as it's not needed in this example.<br/>
-
-Instancio will use methods marked with `@AnnotationHandler` to process the annotations.
-The first argument must be the annotation, and the second is the `GeneratorSpec`
-applicable to the annotated type (to find the specific spec interface, see the
-`org.instancio.generator.specs` package [Javadoc](https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/specs/package-summary.html)
-or the `org.instancio.generators.Generators` class).
-
-Once the above is in place, the following snippet:
-
-```java
-Pojo pojo = Instancio.create(Pojo.class);
-```
-
-should produce output similar to:
-
-```
-Pojo[map={bar=2F5E92847B, NGJKQBQ=25F845DB67, foo=824D732CAA, ODDVXUPESM=2EDB5EB46A}]
-```
-
-It should be noted that the `AnnotationProcessor` can only be used to customise
-existing generators. To define a custom `Generator` for a given annotation,
-use a custom [`GeneratorProvider`](#generatorprovider).
-
 
 ## `TypeInstantiator`
 
