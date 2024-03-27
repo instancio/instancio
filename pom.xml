@@ -462,6 +462,9 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <keyname>${gpg.keyname}</keyname>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
