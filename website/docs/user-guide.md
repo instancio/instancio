@@ -3302,6 +3302,23 @@ Since using Instancio validates your code against random inputs on each test run
 having the ability to reproduce failed tests with previously generated data becomes a necessity.
 Instancio supports this use case by reporting the seed value of a failed test in the failure message using JUnit's `publishReportEntry` mechanism.
 
+### Data Guarantees
+
+The library guarantees that the same data is generated for a given seed **and** version of the library.
+For this reason, making assertions against generated values is highly discouraged to avoid breaking changes.
+For example, the following test suffers from tight coupling with the random number generator implementation
+and may break when upgrading to a newer version of Instancio.
+
+```java linenums="1" hl_lines="5-7"
+Person person = Instancio.of(Person.class)
+    .withSeed(1234)
+    .create();
+
+// Not recommended!
+assertThat(person.getName()).isEqualTo("VEONRGF");
+assertThat(person.getPhoneNumbers()).hasSize(3);
+```
+
 ### Seed Lifecycle in a JUnit Jupiter Test
 
 Instancio initialises a seed value before each test method.
