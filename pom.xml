@@ -72,7 +72,7 @@
         <version.slf4j>2.0.12</version.slf4j>
         <!-- plugins -->
         <version.animal-sniffer-maven-plugin>1.23</version.animal-sniffer-maven-plugin>
-        <version.jacoco-maven-plugin>0.8.11</version.jacoco-maven-plugin>
+        <version.jacoco-maven-plugin>0.8.12</version.jacoco-maven-plugin>
         <version.maven-antrun-plugin>3.1.0</version.maven-antrun-plugin>
         <version.maven-bundle-plugin>5.1.9</version.maven-bundle-plugin>
         <version.maven-checkstyle-plugin>3.3.1</version.maven-checkstyle-plugin>
