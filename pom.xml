@@ -69,7 +69,7 @@
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.jetbrains.annotations>24.1.0</version.jetbrains.annotations>
         <version.junit>5.10.2</version.junit>
-        <version.slf4j>2.0.12</version.slf4j>
+        <version.slf4j>2.0.13</version.slf4j>
         <!-- plugins -->
         <version.animal-sniffer-maven-plugin>1.23</version.animal-sniffer-maven-plugin>
         <version.jacoco-maven-plugin>0.8.12</version.jacoco-maven-plugin>
