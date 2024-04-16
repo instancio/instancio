@@ -17,9 +17,11 @@ package org.instancio.test.features.assignmenttype;
 
 import org.instancio.Instancio;
 import org.instancio.internal.util.SystemProperties;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.assignment.SetterStylePojo;
 import org.instancio.test.support.pojo.assignment.SetterStyleSet;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
@@ -27,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.fields;
 
 @ClearSystemProperty(key = SystemProperties.ASSIGNMENT_TYPE)
+@ExtendWith(InstancioExtension.class)
 class AssignmentTypeSystemPropertyTest {
 
     @Test

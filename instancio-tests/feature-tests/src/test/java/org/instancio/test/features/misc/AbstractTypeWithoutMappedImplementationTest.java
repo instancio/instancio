@@ -16,11 +16,13 @@
 package org.instancio.test.features.misc;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.interfaces.MultipleInterfaceImpls;
 import org.instancio.test.support.pojo.interfaces.SingleInterfaceImpl;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Out of the box, Instancio does not attempt to resolve implementations of abstract types.
  */
 @FeatureTag(Feature.UNSUPPORTED)
+@ExtendWith(InstancioExtension.class)
 class AbstractTypeWithoutMappedImplementationTest {
 
     @Test

@@ -21,10 +21,12 @@ import org.instancio.TypeToken;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.InternalContainerHint;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.containers.BuildableList;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -37,6 +39,7 @@ import static org.instancio.Select.allStrings;
  * See {@link BuildableList} javadoc.
  */
 @FeatureTag({Feature.GENERATOR, Feature.CONTAINER_GENERATOR})
+@ExtendWith(InstancioExtension.class)
 class BuildableListTest {
 
     private static <T> Generator<BuildableList.Builder<T>> generator(final int numEntries) {

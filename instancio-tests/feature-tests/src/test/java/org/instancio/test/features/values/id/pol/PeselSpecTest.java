@@ -17,10 +17,12 @@ package org.instancio.test.features.values.id.pol;
 
 import org.instancio.Gen;
 import org.instancio.generator.specs.pol.PeselSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 
@@ -30,6 +32,7 @@ import static org.instancio.test.support.conditions.Conditions.EVEN_NUMBER;
 import static org.instancio.test.support.conditions.Conditions.ODD_NUMBER;
 
 @FeatureTag(Feature.VALUE_SPEC)
+@ExtendWith(InstancioExtension.class)
 class PeselSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override

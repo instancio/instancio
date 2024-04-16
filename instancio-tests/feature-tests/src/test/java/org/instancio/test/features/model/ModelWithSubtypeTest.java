@@ -17,6 +17,7 @@ package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.AddressExtension;
@@ -26,6 +27,7 @@ import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +37,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.types;
 
 @FeatureTag({Feature.MODEL, Feature.SUBTYPE})
+@ExtendWith(InstancioExtension.class)
 class ModelWithSubtypeTest {
 
     @Test

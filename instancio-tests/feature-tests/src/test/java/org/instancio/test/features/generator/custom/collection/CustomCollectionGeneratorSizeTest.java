@@ -22,6 +22,7 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
@@ -29,6 +30,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -44,6 +46,7 @@ import static org.instancio.Select.types;
         Feature.COLLECTION_GENERATOR_WITH_ELEMENTS,
         Feature.GENERATOR
 })
+@ExtendWith(InstancioExtension.class)
 class CustomCollectionGeneratorSizeTest {
 
     private static final String EXISTING_ELEMENT = "existing-element";

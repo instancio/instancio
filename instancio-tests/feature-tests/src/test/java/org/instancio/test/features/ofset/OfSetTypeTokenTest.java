@@ -17,17 +17,20 @@ package org.instancio.test.features.ofset;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.OF_SET)
+@ExtendWith(InstancioExtension.class)
 class OfSetTypeTokenTest {
 
     @Test

@@ -18,13 +18,16 @@ package org.instancio.test.features.values.math;
 import org.apache.commons.lang3.tuple.Pair;
 import org.instancio.Gen;
 import org.instancio.generator.specs.NumberSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractNumberSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigInteger;
 
 @FeatureTag(Feature.VALUE_SPEC)
+@ExtendWith(InstancioExtension.class)
 class BigIntegerValueSpecTest extends AbstractNumberSpecTestTemplate<BigInteger> {
 
     @Override

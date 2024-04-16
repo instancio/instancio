@@ -17,16 +17,19 @@ package org.instancio.test.features.values.math;
 
 import org.instancio.Gen;
 import org.instancio.generator.specs.BigDecimalSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.VALUE_SPEC)
+@ExtendWith(InstancioExtension.class)
 class BigDecimalSpecTest extends AbstractValueSpecTestTemplate<BigDecimal> {
 
     @Override

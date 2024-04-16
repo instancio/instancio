@@ -17,11 +17,13 @@ package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,6 +32,7 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.types;
 
 @FeatureTag({Feature.MODEL, Feature.ON_COMPLETE})
+@ExtendWith(InstancioExtension.class)
 class ModelWithOnCompleteCallbackTest {
 
     @Test

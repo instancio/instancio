@@ -17,10 +17,12 @@ package org.instancio.test.features.values.net;
 
 import org.instancio.Gen;
 import org.instancio.generator.specs.URISpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.net.URI;
 
@@ -28,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Gen.net;
 
 @FeatureTag(Feature.VALUE_SPEC)
+@ExtendWith(InstancioExtension.class)
 class URISpecTest extends AbstractValueSpecTestTemplate<URI> {
 
     @Override

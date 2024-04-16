@@ -23,10 +23,12 @@ import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.generator.specs.TemporalSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -44,6 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Gen.temporal;
 
 @FeatureTag(Feature.VALUE_SPEC)
+@ExtendWith(InstancioExtension.class)
 class TemporalSpecTest {
 
     @Nested

@@ -16,10 +16,12 @@
 package org.instancio.test.features.generator.as;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,6 +33,7 @@ import static org.instancio.Select.allLongs;
 import static org.instancio.Select.allStrings;
 
 @FeatureTag({Feature.GENERATOR, Feature.AS_GENERATOR_SPEC})
+@ExtendWith(InstancioExtension.class)
 class AsGeneratorSpecTest {
 
     @Test

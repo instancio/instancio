@@ -16,9 +16,11 @@
 package org.instancio.test.features.ofmap;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +36,7 @@ import static org.instancio.Select.root;
         Feature.GENERATOR_SPEC_NULLABLE,
         Feature.WITH_NULLABLE
 })
+@ExtendWith(InstancioExtension.class)
 class OfMapNullableTest {
 
     private static final int SAMPLE_SIZE = 500;

@@ -21,12 +21,14 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -45,6 +47,7 @@ import static org.instancio.Select.types;
         Feature.GENERATOR,
         Feature.AFTER_GENERATE
 })
+@ExtendWith(InstancioExtension.class)
 class CustomCollectionGeneratorTest {
 
     private static final long EXISTING_ELEMENT = -12345L;

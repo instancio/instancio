@@ -16,6 +16,7 @@
 package org.instancio.test.features.scope;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.pojo.person.PersonHolder;
@@ -28,6 +29,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
@@ -38,6 +40,7 @@ import static org.instancio.Select.scope;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 @FeatureTag({Feature.SELECTOR, Feature.SCOPE})
+@ExtendWith(InstancioExtension.class)
 class ScopeTest {
 
     @Test

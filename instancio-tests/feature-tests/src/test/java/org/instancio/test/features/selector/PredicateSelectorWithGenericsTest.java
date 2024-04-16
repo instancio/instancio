@@ -17,6 +17,7 @@ package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.tags.Feature;
@@ -24,6 +25,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.GenericsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.fields;
@@ -31,6 +33,7 @@ import static org.instancio.Select.types;
 
 @GenericsTag
 @FeatureTag(Feature.SELECTOR)
+@ExtendWith(InstancioExtension.class)
 class PredicateSelectorWithGenericsTest {
 
     private static final String EXPECTED_STRING = "foo";

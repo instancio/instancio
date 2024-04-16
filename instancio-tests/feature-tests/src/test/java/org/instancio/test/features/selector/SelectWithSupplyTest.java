@@ -20,6 +20,7 @@ import org.instancio.InstancioApi;
 import org.instancio.Select;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.LongHolder;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
@@ -27,6 +28,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,9 +39,10 @@ import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
 @FeatureTag(Feature.SELECTOR)
+@ExtendWith(InstancioExtension.class)
 class SelectWithSupplyTest {
 
-    private static final long EXPECTED_VALUE = 2L;
+    private static final long EXPECTED_VALUE = -2L;
 
     @Test
     @DisplayName("Should select primitive but not wrapper")

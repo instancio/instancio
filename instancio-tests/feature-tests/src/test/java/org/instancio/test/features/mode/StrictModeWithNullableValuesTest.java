@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeToken;
 import org.instancio.internal.util.Sonar;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayPerson;
 import org.instancio.test.support.pojo.collections.lists.ListPerson;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
@@ -33,6 +34,7 @@ import org.instancio.test.support.util.ArrayUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +61,7 @@ import static org.instancio.Select.field;
         Feature.WITH_NULLABLE
 })
 @NonDeterministicTag
+@ExtendWith(InstancioExtension.class)
 class StrictModeWithNullableValuesTest {
     private static final int SAMPLE_SIZE = 100;
 

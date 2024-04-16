@@ -18,10 +18,12 @@ package org.external.mode;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Select.field;
@@ -30,6 +32,7 @@ import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnuse
 import static org.instancio.test.support.UnusedSelectorsAssert.line;
 
 @FeatureTag({Feature.MODE, Feature.SELECTOR})
+@ExtendWith(InstancioExtension.class)
 class UnusedSelectorLocationRootFieldTest {
 
     @Test
@@ -46,7 +49,7 @@ class UnusedSelectorLocationRootFieldTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(expected, line(getClass(), 38));
+                .generatorSelector(expected, line(getClass(), 41));
     }
 
 }

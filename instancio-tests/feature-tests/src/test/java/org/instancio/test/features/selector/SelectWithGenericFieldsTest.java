@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.TargetSelector;
 import org.instancio.TypeToken;
 import org.instancio.internal.util.Sonar;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.ListExtendsItemInterface;
 import org.instancio.test.support.pojo.generics.ListExtendsNumber;
 import org.instancio.test.support.pojo.generics.ListExtendsPair;
@@ -34,6 +35,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.GenericsTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -50,6 +52,7 @@ import static org.instancio.Select.types;
 
 @GenericsTag
 @FeatureTag(Feature.SELECTOR)
+@ExtendWith(InstancioExtension.class)
 class SelectWithGenericFieldsTest {
 
     @Test

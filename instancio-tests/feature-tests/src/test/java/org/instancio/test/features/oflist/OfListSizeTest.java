@@ -18,11 +18,13 @@ package org.instancio.test.features.oflist;
 import org.instancio.Instancio;
 import org.instancio.InstancioOfCollectionApi;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
@@ -31,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatObject;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @FeatureTag(Feature.OF_LIST)
+@ExtendWith(InstancioExtension.class)
 class OfListSizeTest {
 
     @Test

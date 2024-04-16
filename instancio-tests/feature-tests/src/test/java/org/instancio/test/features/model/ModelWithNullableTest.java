@@ -17,11 +17,13 @@ package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +37,7 @@ import static org.instancio.Select.types;
 
 @NonDeterministicTag
 @FeatureTag({Feature.MODEL, Feature.WITH_NULLABLE})
+@ExtendWith(InstancioExtension.class)
 class ModelWithNullableTest {
 
     private static final int SAMPLE_SIZE = 500;

@@ -22,6 +22,7 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.lists.ListOfStringAndPrimitiveFields;
 import org.instancio.test.support.pojo.misc.StringAndPrimitiveFields;
 import org.instancio.test.support.pojo.misc.StringFields;
@@ -30,6 +31,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,7 @@ import static org.instancio.test.support.asserts.Asserts.assertNoZeroes;
         Feature.MODEL,
         Feature.SELECTOR
 })
+@ExtendWith(InstancioExtension.class)
 class CustomCollectionGeneratorAfterGenerateAndSelectorsTest {
     private static final int INITIAL_SIZE = 1;
     private static final int GENERATE_ELEMENTS_HINT = 5;

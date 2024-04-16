@@ -18,10 +18,12 @@ package org.instancio.test.features.generator.net;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.net.URL;
 import java.util.Objects;
@@ -35,6 +37,7 @@ import static org.assertj.core.data.Percentage.withPercentage;
 import static org.instancio.Select.root;
 
 @FeatureTag(Feature.URL_GENERATOR)
+@ExtendWith(InstancioExtension.class)
 class URLGeneratorTest {
     private static final int SAMPLE_SIZE = 200;
 

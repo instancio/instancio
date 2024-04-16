@@ -18,16 +18,19 @@ package org.instancio.test.features.generator.custom;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.generator.Generator;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfInteger;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.scope;
 
 @FeatureTag(Feature.GENERATOR)
+@ExtendWith(InstancioExtension.class)
 class CustomSpecLikeIntegerGeneratorTest {
 
     private static class SpecLikeGenerator implements Generator<Integer> {

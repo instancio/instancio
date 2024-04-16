@@ -17,14 +17,17 @@ package org.instancio.test.features.values.checksum;
 
 import org.instancio.Gen;
 import org.instancio.generator.specs.Mod11Spec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.VALUE_SPEC)
+@ExtendWith(InstancioExtension.class)
 class Mod11SpecTest extends AbstractValueSpecTestTemplate<String> {
 
     // Value may contain 'X' since it is the default treatCheck10As character

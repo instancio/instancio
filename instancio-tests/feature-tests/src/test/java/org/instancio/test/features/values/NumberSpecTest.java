@@ -17,9 +17,11 @@ package org.instancio.test.features.values;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.instancio.generator.specs.NumberSpec;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.instancio.Gen.bytes;
 import static org.instancio.Gen.doubles;
@@ -29,6 +31,7 @@ import static org.instancio.Gen.longs;
 import static org.instancio.Gen.shorts;
 
 @FeatureTag(Feature.VALUE_SPEC)
+@ExtendWith(InstancioExtension.class)
 class NumberSpecTest {
 
     @Nested

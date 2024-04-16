@@ -16,10 +16,12 @@
 package org.instancio.test.features.generator.util;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.misc.OptionalDoubleHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.OptionalDouble;
 
@@ -29,6 +31,7 @@ import static org.instancio.Select.allDoubles;
 import static org.instancio.Select.scope;
 
 @FeatureTag(Feature.GENERATOR)
+@ExtendWith(InstancioExtension.class)
 class OptionalDoubleGeneratorTest {
 
     @Test

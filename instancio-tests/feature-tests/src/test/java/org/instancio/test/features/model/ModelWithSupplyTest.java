@@ -17,10 +17,12 @@ package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allInts;
@@ -28,6 +30,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
 
 @FeatureTag({Feature.MODEL, Feature.SUPPLY})
+@ExtendWith(InstancioExtension.class)
 class ModelWithSupplyTest {
 
     @Test

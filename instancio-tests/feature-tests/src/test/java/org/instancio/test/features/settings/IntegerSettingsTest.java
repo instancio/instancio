@@ -16,6 +16,7 @@
 package org.instancio.test.features.settings;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
@@ -24,6 +25,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +33,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.SETTINGS)
+@ExtendWith(InstancioExtension.class)
 class IntegerSettingsTest {
 
     private static final int MIN_VALUE = 10000;

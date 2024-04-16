@@ -16,15 +16,18 @@
 package org.instancio.test.features.misc;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.misc.UninstantiableArrayElementType;
 import org.instancio.test.support.pojo.misc.UninstantiableCollectionElementType;
 import org.instancio.test.support.pojo.misc.UninstantiableFieldType;
 import org.instancio.test.support.pojo.misc.UninstantiableMapKeyValueType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(InstancioExtension.class)
 class UninstantiableTypeTest {
 
     @Test

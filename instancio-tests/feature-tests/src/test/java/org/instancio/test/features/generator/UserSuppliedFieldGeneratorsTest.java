@@ -16,6 +16,7 @@
 package org.instancio.test.features.generator;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.generics.foobarbaz.FooContainer;
 import org.instancio.test.support.pojo.person.Address;
@@ -25,6 +26,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -39,6 +41,7 @@ import static org.instancio.Select.field;
         Feature.SET,
         Feature.GENERATE,
         Feature.SUPPLY})
+@ExtendWith(InstancioExtension.class)
 class UserSuppliedFieldGeneratorsTest {
 
     @Test

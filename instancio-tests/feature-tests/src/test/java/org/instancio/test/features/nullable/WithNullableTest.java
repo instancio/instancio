@@ -16,6 +16,7 @@
 package org.instancio.test.features.nullable;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodError;
@@ -27,6 +28,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,6 +46,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.setter;
 
 @FeatureTag({Feature.NULLABILITY, Feature.WITH_NULLABLE})
+@ExtendWith(InstancioExtension.class)
 class WithNullableTest {
 
     private static final int SAMPLE_SIZE = 1000;

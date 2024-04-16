@@ -16,10 +16,12 @@
 package org.instancio.test.features.ofmap;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerItemOfString;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,6 +34,7 @@ import static org.instancio.Select.root;
 import static org.instancio.Select.scope;
 
 @FeatureTag({Feature.OF_MAP, Feature.ROOT_SELECTOR})
+@ExtendWith(InstancioExtension.class)
 class OfMapSelectorsTest {
 
     @Test

@@ -19,15 +19,18 @@ import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Selector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 
 @FeatureTag(Feature.METHOD_REFERENCE_SELECTOR)
+@ExtendWith(InstancioExtension.class)
 class MethodReferenceSelectorLambdaTest {
 
     @Test

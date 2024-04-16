@@ -17,6 +17,7 @@ package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.StringHolder;
@@ -24,6 +25,7 @@ import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Objects;
 import java.util.Set;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag({Feature.MODEL, Feature.SETTINGS})
+@ExtendWith(InstancioExtension.class)
 class ModelWithSettingsTest {
     private static final int INT_MIN = 1234;
     private static final int INT_MAX = 1235;
