@@ -17,11 +17,13 @@ package org.external.mode.usecases;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
@@ -29,6 +31,7 @@ import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnuse
 import static org.instancio.test.support.UnusedSelectorsAssert.line;
 
 @FeatureTag(Feature.MODE)
+@ExtendWith(InstancioExtension.class)
 class SameTargetUsingFieldAndClassSelectorsTest {
 
     @Test
@@ -40,6 +43,6 @@ class SameTargetUsingFieldAndClassSelectorsTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(all(Address.class), line(getClass(), 39));
+                .generatorSelector(all(Address.class), line(getClass(), 42));
     }
 }

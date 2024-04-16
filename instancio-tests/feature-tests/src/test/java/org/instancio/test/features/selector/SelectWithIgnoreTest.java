@@ -17,12 +17,14 @@ package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
 import org.instancio.Select;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -33,6 +35,7 @@ import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
 @FeatureTag(Feature.SELECTOR)
+@ExtendWith(InstancioExtension.class)
 class SelectWithIgnoreTest {
 
     @Test

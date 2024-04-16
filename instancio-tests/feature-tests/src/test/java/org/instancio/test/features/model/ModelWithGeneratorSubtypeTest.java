@@ -17,6 +17,7 @@ package org.instancio.test.features.model;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfItemString;
@@ -26,6 +27,7 @@ import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -44,6 +46,7 @@ import static org.instancio.Select.types;
         Feature.ARRAY_GENERATOR_SUBTYPE,
         Feature.COLLECTION_GENERATOR_SUBTYPE
 })
+@ExtendWith(InstancioExtension.class)
 class ModelWithGeneratorSubtypeTest {
 
     @Test

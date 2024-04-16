@@ -16,6 +16,7 @@
 package org.instancio.test.features.nullable;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.LongHolder;
@@ -28,6 +29,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,6 +49,7 @@ import static org.instancio.Select.scope;
 
 @NonDeterministicTag
 @FeatureTag({Feature.NULLABILITY, Feature.WITH_NULLABLE})
+@ExtendWith(InstancioExtension.class)
 class WithNullableAdhocTest {
 
     private static final int SAMPLE_SIZE = 500;

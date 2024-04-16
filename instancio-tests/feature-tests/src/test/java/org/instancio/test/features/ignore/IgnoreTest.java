@@ -17,6 +17,7 @@ package org.instancio.test.features.ignore;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -33,6 +34,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -44,6 +46,7 @@ import static org.instancio.Select.scope;
 import static org.instancio.Select.setter;
 
 @FeatureTag(Feature.IGNORE)
+@ExtendWith(InstancioExtension.class)
 class IgnoreTest {
 
     @Test

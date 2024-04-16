@@ -17,6 +17,7 @@ package org.instancio.test.features.generator.util;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.empty.EmptyEnum;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.misc.OptionalString;
@@ -24,6 +25,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -33,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatObject;
 import static org.instancio.Select.all;
 
 @FeatureTag(Feature.GENERATOR)
+@ExtendWith(InstancioExtension.class)
 class OptionalGeneratorTest {
 
     @Test

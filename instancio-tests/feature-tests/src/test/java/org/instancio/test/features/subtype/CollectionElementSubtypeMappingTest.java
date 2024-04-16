@@ -17,6 +17,7 @@ package org.instancio.test.features.subtype;
 
 import org.instancio.Instancio;
 import org.instancio.TargetSelector;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.basic.StringHolderAlternativeImpl;
 import org.instancio.test.support.pojo.collections.lists.ListLong;
@@ -32,6 +33,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -57,6 +59,7 @@ import static org.instancio.Select.types;
         Feature.COLLECTION_GENERATOR_SUBTYPE,
         Feature.SCOPE
 })
+@ExtendWith(InstancioExtension.class)
 class CollectionElementSubtypeMappingTest {
 
     @Test

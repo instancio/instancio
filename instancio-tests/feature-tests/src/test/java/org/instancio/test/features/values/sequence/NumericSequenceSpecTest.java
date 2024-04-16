@@ -17,8 +17,11 @@ package org.instancio.test.features.values.sequence;
 
 import org.instancio.Gen;
 import org.instancio.generator.specs.NumericSequenceSpec;
+import org.instancio.junit.InstancioExtension;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(InstancioExtension.class)
 class NumericSequenceSpecTest {
 
     @Nested

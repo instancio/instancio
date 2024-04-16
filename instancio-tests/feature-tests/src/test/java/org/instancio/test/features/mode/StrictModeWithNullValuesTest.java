@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.internal.util.Sonar;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
@@ -26,6 +27,7 @@ import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -53,6 +55,7 @@ import static org.instancio.Select.types;
 })
 // assertion not need; no "unused selector" error means test passed
 @SuppressWarnings(Sonar.ADD_ASSERTION)
+@ExtendWith(InstancioExtension.class)
 class StrictModeWithNullValuesTest {
 
     private static InstancioApi<Person> personWithNullAddress() {

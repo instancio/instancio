@@ -22,6 +22,8 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
+import org.instancio.junit.InstancioExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -31,6 +33,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
+@ExtendWith(InstancioExtension.class)
 class UnmodifiableCollectionGeneratorTest {
 
     private static final List<String> UNMODIFIABLE_LIST = Collections.emptyList();

@@ -17,6 +17,7 @@ package org.instancio.test.features.toscope;
 
 import org.instancio.ConvertibleToScope;
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfInteger;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Phone;
@@ -24,6 +25,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -38,6 +40,7 @@ import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 @FeatureTag(Feature.TO_SCOPE)
+@ExtendWith(InstancioExtension.class)
 class ToScopeTest {
 
     private static final String FOO = "foo";

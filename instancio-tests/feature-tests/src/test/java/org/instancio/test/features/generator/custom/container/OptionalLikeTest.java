@@ -21,16 +21,19 @@ import org.instancio.TypeToken;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.InternalContainerHint;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.containers.OptionalLike;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
 @FeatureTag({Feature.GENERATOR, Feature.CONTAINER_GENERATOR})
+@ExtendWith(InstancioExtension.class)
 class OptionalLikeTest {
 
     private static <T> Generator<OptionalLike<T>> generator() {

@@ -19,12 +19,14 @@ import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.Result;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.UUID;
 
@@ -38,6 +40,7 @@ import static org.instancio.Select.field;
  * Verify that create(Model) and create(Class) generate same values given the same seed.
  */
 @FeatureTag({Feature.MODEL, Feature.WITH_SEED})
+@ExtendWith(InstancioExtension.class)
 class CreateFromModelAndClassWithSeedTest {
 
     private static final long SEED = 123;

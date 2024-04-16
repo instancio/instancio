@@ -16,11 +16,13 @@
 package org.instancio.test.features.ofset;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -34,6 +36,7 @@ import static org.instancio.Select.root;
  * Most of the collection API is verified by {@link Feature#OF_LIST} tests.
  */
 @FeatureTag(Feature.OF_SET)
+@ExtendWith(InstancioExtension.class)
 class OfSetTest {
 
     @Test

@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Selector;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodNotFound;
@@ -31,6 +32,7 @@ import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,6 +40,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.setter;
 
 @FeatureTag({Feature.SELECTOR, Feature.SUPPLY})
+@ExtendWith(InstancioExtension.class)
 class SelectorWithSubclassTest {
 
     @Test

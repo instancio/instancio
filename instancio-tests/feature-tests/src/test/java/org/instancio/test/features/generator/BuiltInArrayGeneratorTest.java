@@ -19,6 +19,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
 import org.instancio.test.support.pojo.arrays.primitive.WithIntArray;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -28,12 +29,14 @@ import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
 @FeatureTag(Feature.GENERATE)
+@ExtendWith(InstancioExtension.class)
 class BuiltInArrayGeneratorTest {
     private static final int EXPECTED_LENGTH = RandomUtils.nextInt(0, 10);
 

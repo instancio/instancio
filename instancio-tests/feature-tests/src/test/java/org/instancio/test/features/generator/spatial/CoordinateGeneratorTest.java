@@ -43,7 +43,7 @@ public class CoordinateGeneratorTest {
     @Test
     void randomLatitudeByDefault() {
         final List<Double> coordinateList = Stream.generate(
-                () -> create(gen -> gen.spatial().coordinate()))
+                        () -> create(gen -> gen.spatial().coordinate()))
                 .limit(Constants.SAMPLE_SIZE_DDD)
                 .collect(Collectors.toList());
 

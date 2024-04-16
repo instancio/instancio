@@ -17,6 +17,7 @@ package org.instancio.test.features.settings;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
@@ -26,6 +27,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @NonDeterministicTag
 @FeatureTag(Feature.SETTINGS)
+@ExtendWith(InstancioExtension.class)
 class CollectionSettingsTest {
 
     private static final int SAMPLE_SIZE = 100;

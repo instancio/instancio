@@ -16,12 +16,14 @@
 package org.instancio.test.features.settings;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.ClassWithInitializedField;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -30,6 +32,7 @@ import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
 
 @FeatureTag({Feature.SETTINGS, Feature.OVERWRITE_EXISTING_VALUES})
+@ExtendWith(InstancioExtension.class)
 class OverwriteExistingValuesTest {
 
     private static final int OVERWRITE_INT = -1;

@@ -16,6 +16,7 @@
 package org.instancio.test.features.assignmenttype;
 
 import org.instancio.Instancio;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -25,6 +26,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
@@ -32,6 +34,7 @@ import static org.instancio.Select.fields;
 
 @FeatureTag(Feature.ASSIGNMENT_TYPE)
 @RunWith.FieldAssignmentOnly
+@ExtendWith(InstancioExtension.class)
 class AssignmentTypeFieldTest {
 
     @Test

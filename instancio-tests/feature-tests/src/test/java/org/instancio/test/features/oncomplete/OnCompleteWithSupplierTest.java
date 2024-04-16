@@ -18,11 +18,13 @@ package org.instancio.test.features.oncomplete;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.exception.UnusedSelectorException;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,6 +37,7 @@ import static org.instancio.Select.allStrings;
         Feature.SET,
         Feature.SUPPLY
 })
+@ExtendWith(InstancioExtension.class)
 class OnCompleteWithSupplierTest {
 
     private final AtomicInteger callbacksCount = new AtomicInteger();

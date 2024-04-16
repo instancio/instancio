@@ -22,10 +22,12 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfList;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.types;
 
 @FeatureTag({Feature.GENERATOR, Feature.COLLECTION_GENERATOR_SUBTYPE})
+@ExtendWith(InstancioExtension.class)
 class CustomCollectionWithNonGenericSubclassTest {
 
     private static final int GENERATE_ELEMENTS = 3;

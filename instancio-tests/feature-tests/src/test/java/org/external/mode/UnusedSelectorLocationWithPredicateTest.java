@@ -18,12 +18,14 @@ package org.external.mode;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Pojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Timestamp;
 
@@ -34,6 +36,7 @@ import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnuse
 import static org.instancio.test.support.UnusedSelectorsAssert.line;
 
 @FeatureTag({Feature.MODE, Feature.PREDICATE_SELECTOR})
+@ExtendWith(InstancioExtension.class)
 class UnusedSelectorLocationWithPredicateTest {
 
     @Test
@@ -46,7 +49,7 @@ class UnusedSelectorLocationWithPredicateTest {
                 .ignore(types(klass -> false))
                 .supply(fields(field -> false), () -> fail("not called"));
 
-        int l = 43;
+        int l = 46;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(5)
                 .generatorSelector(timestampSelector, line(getClass(), l++))

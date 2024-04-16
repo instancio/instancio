@@ -18,12 +18,14 @@ package org.external.mode;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Pojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Timestamp;
 
@@ -34,6 +36,7 @@ import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnuse
 import static org.instancio.test.support.UnusedSelectorsAssert.line;
 
 @FeatureTag({Feature.MODE, Feature.PREDICATE_SELECTOR})
+@ExtendWith(InstancioExtension.class)
 class UnusedSelectorLocationWithDepthTest {
 
     @Test
@@ -47,10 +50,10 @@ class UnusedSelectorLocationWithDepthTest {
                 .ignore(types(klass -> false).atDepth(o -> true))
                 .supply(fields(field -> false).atDepth(o -> true), () -> fail("not called"));
 
-        int l = 45;
+        int l = 48;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(5)
-                .generatorSelector(timestampSelector, line(getClass(), 41)) // Special case: selector assigned to variable
+                .generatorSelector(timestampSelector, line(getClass(), 44)) // Special case: selector assigned to variable
                 .ignoreSelector(types().annotated(Pojo.class).annotated(PersonName.class).atDepth(2), line(getClass(), l++))
                 .generatorSelector(fields().named("foo").atDepth(3), line(getClass(), l++))
                 .ignoreSelector(types(klass -> false).atDepth(o -> true), line(getClass(), l++))

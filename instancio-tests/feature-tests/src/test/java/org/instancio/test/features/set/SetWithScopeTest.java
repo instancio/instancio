@@ -17,6 +17,7 @@ package org.instancio.test.features.set;
 
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.arrays.TwoArraysOfItemString;
@@ -33,6 +34,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -47,6 +49,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
 @FeatureTag({Feature.SELECTOR, Feature.SET})
+@ExtendWith(InstancioExtension.class)
 class SetWithScopeTest {
 
     private static final String FOO = "foo";

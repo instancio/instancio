@@ -19,17 +19,20 @@ import org.instancio.FieldSelectorBuilder;
 import org.instancio.Select;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Pojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @FeatureTag({Feature.PREDICATE_SELECTOR, Feature.VALIDATION})
+@ExtendWith(InstancioExtension.class)
 class SelectorValidationLocationTest {
 
     @Test
@@ -44,7 +47,7 @@ class SelectorValidationLocationTest {
                         "field's declared annotation must not be null.",
                         "  method invocation: fields().ofType(Foo).declaredIn(Bar).annotated( -> null <- )",
                         "  at org.external.mode.SelectorValidationLocationTest.",
-                        "SelectorValidationLocationTest.java:41"));
+                        "SelectorValidationLocationTest.java:44"));
     }
 
     @Test
@@ -59,6 +62,6 @@ class SelectorValidationLocationTest {
                         "excluded type must not be null.",
                         "  method invocation: types().of(Foo).annotated(Pojo).excluding( -> null <- )",
                         "  at org.external.mode.SelectorValidationLocationTest.",
-                        "SelectorValidationLocationTest.java:56"));
+                        "SelectorValidationLocationTest.java:59"));
     }
 }

@@ -18,6 +18,7 @@ package org.instancio.test.features.oncomplete;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.TypeToken;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayPerson;
 import org.instancio.test.support.pojo.collections.lists.ListPerson;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
@@ -31,6 +32,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +46,7 @@ import static org.instancio.Select.scope;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @FeatureTag(Feature.ON_COMPLETE)
+@ExtendWith(InstancioExtension.class)
 class OnCompleteBasicTest {
     private static final String COUNTRY_CODE = "+1";
     private static final String HOMER = "Homer";

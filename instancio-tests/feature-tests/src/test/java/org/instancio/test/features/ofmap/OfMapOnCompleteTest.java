@@ -18,9 +18,11 @@ package org.instancio.test.features.ofmap;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -33,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
 
 @FeatureTag({Feature.OF_MAP, Feature.ON_COMPLETE})
+@ExtendWith(InstancioExtension.class)
 class OfMapOnCompleteTest {
 
     private static Stream<Arguments> selectors() {

@@ -17,15 +17,18 @@ package org.instancio.test.features.generator.net;
 
 import org.instancio.Instancio;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.root;
 
 @FeatureTag(Feature.GENERATOR)
+@ExtendWith(InstancioExtension.class)
 class Ip4GeneratorTest {
 
     @Test
