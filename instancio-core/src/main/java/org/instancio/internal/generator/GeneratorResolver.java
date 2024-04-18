@@ -99,14 +99,19 @@ public class GeneratorResolver {
     @Nullable
     @SuppressWarnings(Sonar.USE_INSTANCEOF)
     private Generator<?> getGeneratorForLegacyClass(final Class<?> klass) {
-        if ("java.sql.Date".equals(klass.getName())) {
+        final String className = klass.getName();
+
+        if ("java.sql.Date".equals(className)) {
             return loadByClassName(context, "org.instancio.internal.generator.sql.SqlDateGenerator");
         }
-        if ("java.sql.Timestamp".equals(klass.getName())) {
+        if ("java.sql.Timestamp".equals(className)) {
             return loadByClassName(context, "org.instancio.internal.generator.sql.TimestampGenerator");
         }
-        if ("javax.xml.datatype.XMLGregorianCalendar".equals(klass.getName())) {
+        if ("javax.xml.datatype.XMLGregorianCalendar".equals(className)) {
             return loadByClassName(context, "org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator");
+        }
+        if ("javax.xml.namespace.QName".equals(className)) {
+            return loadByClassName(context, "org.instancio.internal.generator.xml.QNameGenerator");
         }
         return null;
     }
