@@ -49,7 +49,7 @@ public class GeneratorResolver {
      *
      * @see #getCached(InternalNode)
      */
-    @SuppressWarnings("all")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public Generator<?> get(final InternalNode node) {
         final Class<?> klass = node.getTargetClass();
 
@@ -64,8 +64,6 @@ public class GeneratorResolver {
                 generator = new MapGenerator<>(context).subtype(node.getTargetClass());
             } else if (node.is(NodeKind.COLLECTION)) {
                 generator = new CollectionGenerator<>(context).subtype(node.getTargetClass());
-            } else {
-                generator = getGeneratorForLegacyClass(klass);
             }
         }
         return generator;
@@ -77,7 +75,7 @@ public class GeneratorResolver {
      *
      * @see #get(InternalNode)
      */
-    @SuppressWarnings("all")
+    @SuppressWarnings(Sonar.MAP_COMPUTE_IF_ABSENT)
     public Generator<?> getCached(final InternalNode node) {
         final Class<?> targetClass = node.getTargetClass();
 
@@ -128,12 +126,13 @@ public class GeneratorResolver {
      * Since this method returns a cached generator,
      * callers must not update the generator's state.
      */
+    @SuppressWarnings(Sonar.MAP_COMPUTE_IF_ABSENT)
     public Generator<?> getCachedBuiltInGenerator(final Class<?> targetClass) {
         Generator<?> generator = cache.get(targetClass);
 
         if (generator == null) {
-            cache.put(targetClass, generator);
             generator = getBuiltInGenerator(targetClass);
+            cache.put(targetClass, generator);
         }
 
         return generator;
