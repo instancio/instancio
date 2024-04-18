@@ -36,6 +36,8 @@ public final class Sonar {
     public static final String USING_SLOW_REGEX = "java:S5852";
     public static final String OVERRIDE_EQUALS = "java:S2160";
     public static final String TOO_MANY_PARAMETERS = "java:S107";
+    // avoid computeIfAbsent() in hot paths as it has a minor performance hit
+    public static final String MAP_COMPUTE_IF_ABSENT = "java:S3824";
 
     private Sonar() {
         // non-instantiable
