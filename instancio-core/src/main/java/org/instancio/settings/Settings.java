@@ -17,7 +17,6 @@ package org.instancio.settings;
 
 import org.instancio.internal.settings.InternalSettings;
 import org.instancio.internal.util.Constants;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -80,7 +79,7 @@ public interface Settings {
      * @param map to create settings from
      * @return a new instance of settings created from the given map
      */
-    static Settings from(@NotNull Map<Object, Object> map) {
+    static Settings from(Map<Object, Object> map) {
         return InternalSettings.from(map);
     }
 
@@ -90,7 +89,7 @@ public interface Settings {
      * @param other settings to create settings from
      * @return a new instance of settings
      */
-    static Settings from(@NotNull Settings other) {
+    static Settings from(Settings other) {
         return InternalSettings.from(other);
     }
 
@@ -100,7 +99,7 @@ public interface Settings {
      * @param other settings to merge
      * @return new instance of merged settings
      */
-    Settings merge(@NotNull Settings other);
+    Settings merge(Settings other);
 
     /**
      * Get setting value for given key.
@@ -109,7 +108,7 @@ public interface Settings {
      * @param <T> setting value type
      * @return value for given key, or {@code null} if none.
      */
-    <T> T get(@NotNull SettingKey<T> key);
+    <T> T get(SettingKey<T> key);
 
     /**
      * Set the setting with the given key to the specified value.
@@ -145,7 +144,7 @@ public interface Settings {
      * @param subtype the subtype class
      * @return this instance of settings
      */
-    Settings mapType(@NotNull Class<?> type, @NotNull Class<?> subtype);
+    Settings mapType(Class<?> type, Class<?> subtype);
 
     /**
      * Returns a read-only view of the subtype map.
