@@ -24,6 +24,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.instancio.Select.fields;
 
+/**
+ * This class defines lenient selectors because when multiple
+ * predicate selectors match a given target, the last selector
+ * wins and the other selector remains unused.
+ */
 @FeatureTag(Feature.ASSIGN)
 @ExtendWith(InstancioExtension.class)
 class AssignAbcPredicateSelectorTest extends AssignAbcBaseTest {
@@ -33,13 +38,11 @@ class AssignAbcPredicateSelectorTest extends AssignAbcBaseTest {
         return fields().named("a").declaredIn(StringsAbc.class);
     }
 
-    // TODO fails if not lenient
     @Override
     TargetSelector selectB() {
         return fields().named("b").declaredIn(StringsAbc.class).lenient();
     }
 
-    // TODO fails if not lenient
     @Override
     TargetSelector selectC() {
         return fields().named("c").declaredIn(StringsAbc.class).lenient();
