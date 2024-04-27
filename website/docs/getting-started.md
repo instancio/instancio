@@ -94,3 +94,14 @@ Using `instancio-quickcheck` requires the following dependencies on the classpat
     For this reason, it is only guaranteed to work with the JUnit version declared in the project's
     [pom.xml](https://github.com/instancio/instancio/blob/main/pom.xml).
     Support for older versions of Junit 5 is on a best-effort basis and is not guaranteed.
+
+### Versioning
+
+Instancio version numbers adhere to the `MAJOR.MINOR.PATCH` format.
+
+- Major versions are generally reserved for significant features and breaking changes.
+- Minor and Patch versions include bug fixes, smaller new features,
+  but may also include minor breaking changes.
+
+In other words, the project does **not** follow [Semantic Versioning](https://semver.org/),
+though the versioning scheme loosely resembles it.
