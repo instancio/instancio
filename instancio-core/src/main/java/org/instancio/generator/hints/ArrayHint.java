@@ -74,7 +74,7 @@ import java.util.StringJoiner;
  *          .anyMatch(p -> p.getNumber().equals("111-222-3333") && p.getPhoneType() == PhoneType.CELL)
  *          .anyMatch(p -> p.getNumber().equals("111-444-5555") && p.getPhoneType() != null); // phoneType populated
  * }</pre>
- * 
+ *
  * <p>Summary of results:
  * <ul>
  *   <li>The generated array contains our custom objects as well as generated phone objects.</li>

@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.nodes;
 
-import org.instancio.internal.util.SetterMethodComparator;
 import org.instancio.internal.util.MethodUtils;
+import org.instancio.internal.util.SetterMethodComparator;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodUnmatched;
