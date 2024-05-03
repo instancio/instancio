@@ -62,9 +62,21 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
     }
 
     @Override
-    public TemporalAsGeneratorSpec<T> range(final T start, final T end) {
-        min = ApiValidator.notNull(start, "Start parameter must not be null");
-        max = ApiValidator.notNull(end, "End parameter must not be null");
+    public TemporalAsGeneratorSpec<T> min(final T min) {
+        this.min = ApiValidator.notNull(min, "'min' must not be null");
+        return this;
+    }
+
+    @Override
+    public TemporalAsGeneratorSpec<T> max(final T max) {
+        this.max = ApiValidator.notNull(max, "'max' must not be null");
+        return this;
+    }
+
+    @Override
+    public TemporalAsGeneratorSpec<T> range(final T min, final T max) {
+        this.min = ApiValidator.notNull(min, "'min' must not be null");
+        this.max = ApiValidator.notNull(max, "'max' must not be null");
         validateRange();
         return this;
     }

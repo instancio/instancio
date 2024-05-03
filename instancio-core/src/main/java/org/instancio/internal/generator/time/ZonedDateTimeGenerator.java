@@ -64,8 +64,20 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     }
 
     @Override
-    public ZonedDateTimeGenerator range(final ZonedDateTime start, final ZonedDateTime end) {
-        super.range(start, end);
+    public ZonedDateTimeGenerator min(final ZonedDateTime min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public ZonedDateTimeGenerator max(final ZonedDateTime max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public ZonedDateTimeGenerator range(final ZonedDateTime min, final ZonedDateTime max) {
+        super.range(min, max);
         return this;
     }
 

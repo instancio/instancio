@@ -50,8 +50,20 @@ public class TimestampGenerator extends AbstractGenerator<Timestamp> implements 
     }
 
     @Override
-    public TimestampGenerator range(final Timestamp start, final Timestamp end) {
-        delegate.range(start.toInstant(), end.toInstant());
+    public TimestampGenerator min(final Timestamp min) {
+        delegate.min(min.toInstant());
+        return this;
+    }
+
+    @Override
+    public TimestampGenerator max(final Timestamp max) {
+        delegate.max(max.toInstant());
+        return this;
+    }
+
+    @Override
+    public TimestampGenerator range(final Timestamp min, final Timestamp max) {
+        delegate.range(min.toInstant(), max.toInstant());
         return this;
     }
 

@@ -43,7 +43,7 @@ public interface LocalTimeGeneratorAsSpec extends
      * {@inheritDoc}
      */
     @Override
-    LocalTimeGeneratorAsSpec range(LocalTime start, LocalTime end);
+    LocalTimeGeneratorAsSpec range(LocalTime min, LocalTime max);
 
     /**
      * {@inheritDoc}

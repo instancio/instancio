@@ -23,6 +23,7 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -52,5 +53,16 @@ class ZonedDateTimeGeneratorTest {
                 .create();
 
         assertThat(result).isZero();
+    }
+
+    @Test
+    void pastWithMin() {
+        final ZonedDateTime from = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
+
+        final ZonedDateTime result = Instancio.of(ZonedDateTime.class)
+                .generate(root(), gen -> gen.temporal().zonedDateTime().past().min(from))
+                .create();
+
+        assertThat(result).isBetween(from, ZonedDateTime.now());
     }
 }

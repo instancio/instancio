@@ -74,6 +74,20 @@ class TimestampGeneratorTest extends AbstractGeneratorTestTemplate<Timestamp, Ti
     }
 
     @Test
+    void min() {
+        final Timestamp min = Timestamp.valueOf(START);
+        generator.min(min);
+        assertThat(generator.generate(random)).isAfterOrEqualTo(min);
+    }
+
+    @Test
+    void max() {
+        final Timestamp max = Timestamp.valueOf(START);
+        generator.max(max);
+        assertThat(generator.generate(random)).isBeforeOrEqualTo(max);
+    }
+
+    @Test
     void range() {
         final Timestamp start = Timestamp.valueOf(START);
         final Timestamp end = Timestamp.valueOf(START.plusYears(1));

@@ -41,9 +41,25 @@ public interface InstantSpec extends
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    InstantSpec range(Instant start, Instant end);
+    InstantSpec min(Instant min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    InstantSpec max(Instant max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    InstantSpec range(Instant min, Instant max);
 
     /**
      * {@inheritDoc}

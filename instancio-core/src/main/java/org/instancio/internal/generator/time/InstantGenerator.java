@@ -59,8 +59,20 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
     }
 
     @Override
-    public InstantGenerator range(final Instant start, final Instant end) {
-        super.range(start, end);
+    public InstantGenerator min(final Instant min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public InstantGenerator max(final Instant max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public InstantGenerator range(final Instant min, final Instant max) {
+        super.range(min, max);
         return this;
     }
 

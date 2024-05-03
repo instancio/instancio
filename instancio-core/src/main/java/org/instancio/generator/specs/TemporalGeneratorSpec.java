@@ -38,13 +38,35 @@ public interface TemporalGeneratorSpec<T> extends NullableGeneratorSpec<T> {
     TemporalGeneratorSpec<T> future();
 
     /**
+     * Specifies the lower bound.
+     *
+     * @param min lower bound (inclusive)
+     * @return spec builder
+     * @see #range(Object, Object)
+     * @since 4.6.0
+     */
+    TemporalGeneratorSpec<T> min(T min);
+
+    /**
+     * Specifies the upper bound.
+     *
+     * @param max upper bound (inclusive)
+     * @return spec builder
+     * @see #range(Object, Object)
+     * @since 4.6.0
+     */
+    TemporalGeneratorSpec<T> max(T max);
+
+    /**
      * Generate a value within the given range.
      *
-     * @param start lower bound (inclusive)
-     * @param end   upper bound (inclusive)
+     * @param min lower bound (inclusive)
+     * @param max upper bound (inclusive)
      * @return spec builder
+     * @see #min(Object)
+     * @see #max(Object)
      */
-    TemporalGeneratorSpec<T> range(T start, T end);
+    TemporalGeneratorSpec<T> range(T min, T max);
 
     /**
      * {@inheritDoc}

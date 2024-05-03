@@ -50,8 +50,20 @@ public class DateGenerator extends AbstractGenerator<Date> implements TemporalGe
     }
 
     @Override
-    public DateGenerator range(final Date start, final Date end) {
-        delegate.range(start.toInstant(), end.toInstant());
+    public DateGenerator min(final Date min) {
+        delegate.min(min.toInstant());
+        return this;
+    }
+
+    @Override
+    public DateGenerator max(final Date max) {
+        delegate.max(max.toInstant());
+        return this;
+    }
+
+    @Override
+    public DateGenerator range(final Date min, final Date max) {
+        delegate.range(min.toInstant(), max.toInstant());
         return this;
     }
 

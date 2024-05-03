@@ -41,9 +41,25 @@ public interface LocalTimeSpec extends
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    LocalTimeSpec range(LocalTime start, LocalTime end);
+    LocalTimeSpec min(LocalTime min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    LocalTimeSpec max(LocalTime max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    LocalTimeSpec range(LocalTime min, LocalTime max);
 
     /**
      * {@inheritDoc}

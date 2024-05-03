@@ -38,9 +38,25 @@ public interface YearSpec extends TemporalSpec<Year> {
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    YearSpec range(Year start, Year end);
+    YearSpec min(Year min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    YearSpec max(Year max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    YearSpec range(Year min, Year max);
 
     /**
      * {@inheritDoc}

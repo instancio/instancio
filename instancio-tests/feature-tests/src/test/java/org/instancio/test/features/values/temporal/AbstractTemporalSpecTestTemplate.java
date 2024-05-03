@@ -47,6 +47,15 @@ abstract class AbstractTemporalSpecTestTemplate<T extends Temporal & Comparable<
     }
 
     @RepeatedTest(Constants.SAMPLE_SIZE_DD)
+    void minMax() {
+        final Pair<T, T> range = getRangeFromNow();
+
+        final T actual = spec().min(range.getLeft()).max(range.getRight()).get();
+
+        assertThat(actual).isBetween(range.getLeft(), range.getRight());
+    }
+
+    @RepeatedTest(Constants.SAMPLE_SIZE_DD)
     void range() {
         final Pair<T, T> range = getRangeFromNow();
 

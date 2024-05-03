@@ -56,4 +56,15 @@ class InstantGeneratorTest {
 
         assertThat(result).isZero();
     }
+
+    @Test
+    void pastWithMin() {
+        final Instant from = Instant.now().minusSeconds(60);
+
+        final Instant result = Instancio.of(Instant.class)
+                .generate(root(), gen -> gen.temporal().instant().past().min(from))
+                .create();
+
+        assertThat(result).isBetween(from, Instant.now());
+    }
 }

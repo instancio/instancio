@@ -41,9 +41,25 @@ public interface InstantGeneratorAsSpec extends
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    InstantGeneratorAsSpec range(Instant start, Instant end);
+    InstantGeneratorAsSpec min(Instant min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    InstantGeneratorAsSpec max(Instant max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    InstantGeneratorAsSpec range(Instant min, Instant max);
 
     /**
      * {@inheritDoc}

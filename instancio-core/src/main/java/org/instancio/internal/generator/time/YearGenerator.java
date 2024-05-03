@@ -56,8 +56,20 @@ public class YearGenerator extends JavaTimeTemporalGenerator<Year>
     }
 
     @Override
-    public YearGenerator range(final Year start, final Year end) {
-        super.range(start, end);
+    public YearGenerator min(final Year min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public YearGenerator max(final Year max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public YearGenerator range(final Year min, final Year max) {
+        super.range(min, max);
         return this;
     }
 

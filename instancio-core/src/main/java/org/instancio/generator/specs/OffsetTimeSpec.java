@@ -41,9 +41,25 @@ public interface OffsetTimeSpec extends
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    OffsetTimeSpec range(OffsetTime start, OffsetTime end);
+    OffsetTimeSpec min(OffsetTime min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    OffsetTimeSpec max(OffsetTime max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    OffsetTimeSpec range(OffsetTime min, OffsetTime max);
 
     /**
      * {@inheritDoc}
