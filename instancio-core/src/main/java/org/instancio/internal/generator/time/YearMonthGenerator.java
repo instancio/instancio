@@ -56,8 +56,20 @@ public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth>
     }
 
     @Override
-    public YearMonthGenerator range(final YearMonth start, final YearMonth end) {
-        super.range(start, end);
+    public YearMonthGenerator min(final YearMonth min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public YearMonthGenerator max(final YearMonth max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public YearMonthGenerator range(final YearMonth min, final YearMonth max) {
+        super.range(min, max);
         return this;
     }
 

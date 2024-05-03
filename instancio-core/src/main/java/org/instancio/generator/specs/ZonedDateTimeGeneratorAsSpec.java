@@ -41,9 +41,25 @@ public interface ZonedDateTimeGeneratorAsSpec extends
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    ZonedDateTimeGeneratorAsSpec range(ZonedDateTime start, ZonedDateTime end);
+    ZonedDateTimeGeneratorAsSpec min(ZonedDateTime min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    ZonedDateTimeGeneratorAsSpec max(ZonedDateTime max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    ZonedDateTimeGeneratorAsSpec range(ZonedDateTime min, ZonedDateTime max);
 
     /**
      * {@inheritDoc}

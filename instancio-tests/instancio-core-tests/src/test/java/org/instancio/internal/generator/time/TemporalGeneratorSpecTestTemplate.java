@@ -106,9 +106,37 @@ abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable
     void future() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             generator.future();
-            final T now = getNow();
             final T result = generator.generate(random);
             assertThat(result).isGreaterThanOrEqualTo(getNow());
+        }
+    }
+
+    @Test
+    void min() {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final T min = generator.generate(random);
+            generator.min(min);
+            final T result = generator.generate(random);
+            assertThat(result).isGreaterThanOrEqualTo(min);
+        }
+    }
+
+    @Test
+    void max() {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final T max = generator.generate(random);
+            generator.max(max);
+            final T result = generator.generate(random);
+            assertThat(result).isLessThanOrEqualTo(max);
+        }
+    }
+
+    @Test
+    final void smallestAllowedMinMax() {
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            final T start = getStart();
+            generator.min(start).max(start);
+            assertThat(generator.generate(random)).isEqualTo(start);
         }
     }
 

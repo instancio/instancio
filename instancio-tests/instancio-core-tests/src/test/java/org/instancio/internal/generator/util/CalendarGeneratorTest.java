@@ -76,6 +76,14 @@ class CalendarGeneratorTest extends AbstractGeneratorTestTemplate<Calendar, Cale
     }
 
     @Test
+    void minMax() {
+        final Calendar min = GregorianCalendar.from(START);
+        final Calendar max = GregorianCalendar.from(START.plusSeconds(10));
+        generator.min(min).max(max);
+        assertThat(generator.generate(random)).isBetween(min, max);
+    }
+
+    @Test
     void range() {
         final Calendar min = GregorianCalendar.from(START);
         final Calendar max = GregorianCalendar.from(START.plusSeconds(10));

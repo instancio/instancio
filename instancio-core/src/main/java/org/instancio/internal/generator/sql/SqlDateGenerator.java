@@ -50,8 +50,20 @@ public class SqlDateGenerator extends AbstractGenerator<Date> implements Tempora
     }
 
     @Override
-    public SqlDateGenerator range(final Date start, final Date end) {
-        delegate.range(start.toLocalDate(), end.toLocalDate());
+    public SqlDateGenerator min(final Date min) {
+        delegate.min(min.toLocalDate());
+        return this;
+    }
+
+    @Override
+    public SqlDateGenerator max(final Date max) {
+        delegate.max(max.toLocalDate());
+        return this;
+    }
+
+    @Override
+    public SqlDateGenerator range(final Date min, final Date max) {
+        delegate.range(min.toLocalDate(), max.toLocalDate());
         return this;
     }
 

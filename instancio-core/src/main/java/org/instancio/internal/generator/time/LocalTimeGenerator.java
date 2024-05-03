@@ -57,8 +57,20 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
     }
 
     @Override
-    public LocalTimeGenerator range(final LocalTime start, final LocalTime end) {
-        super.range(start, end);
+    public LocalTimeGenerator min(final LocalTime min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public LocalTimeGenerator max(final LocalTime max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public LocalTimeGenerator range(final LocalTime min, final LocalTime max) {
+        super.range(min, max);
         return this;
     }
 

@@ -41,9 +41,25 @@ public interface ZonedDateTimeSpec extends
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    ZonedDateTimeSpec range(ZonedDateTime start, ZonedDateTime end);
+    ZonedDateTimeSpec min(ZonedDateTime min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    ZonedDateTimeSpec max(ZonedDateTime max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    ZonedDateTimeSpec range(ZonedDateTime min, ZonedDateTime max);
 
     /**
      * {@inheritDoc}

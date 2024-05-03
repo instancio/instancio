@@ -64,8 +64,20 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     }
 
     @Override
-    public OffsetDateTimeGenerator range(final OffsetDateTime start, final OffsetDateTime end) {
-        super.range(start, end);
+    public OffsetDateTimeGenerator min(final OffsetDateTime min) {
+        super.min(min);
+        return this;
+    }
+
+    @Override
+    public OffsetDateTimeGenerator max(final OffsetDateTime max) {
+        super.max(max);
+        return this;
+    }
+
+    @Override
+    public OffsetDateTimeGenerator range(final OffsetDateTime min, final OffsetDateTime max) {
+        super.range(min, max);
         return this;
     }
 

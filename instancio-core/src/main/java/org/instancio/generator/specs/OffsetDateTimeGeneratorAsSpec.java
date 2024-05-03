@@ -41,9 +41,25 @@ public interface OffsetDateTimeGeneratorAsSpec extends
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    OffsetDateTimeGeneratorAsSpec range(OffsetDateTime start, OffsetDateTime end);
+    OffsetDateTimeGeneratorAsSpec min(OffsetDateTime min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    OffsetDateTimeGeneratorAsSpec max(OffsetDateTime max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    OffsetDateTimeGeneratorAsSpec range(OffsetDateTime min, OffsetDateTime max);
 
     /**
      * {@inheritDoc}

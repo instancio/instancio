@@ -52,10 +52,22 @@ public class CalendarGenerator extends AbstractGenerator<Calendar> implements Te
     }
 
     @Override
-    public CalendarGenerator range(final Calendar start, final Calendar end) {
+    public CalendarGenerator min(final Calendar min) {
+        delegate.min(ZonedDateTime.ofInstant(min.toInstant(), min.getTimeZone().toZoneId()));
+        return this;
+    }
+
+    @Override
+    public CalendarGenerator max(final Calendar max) {
+        delegate.max(ZonedDateTime.ofInstant(max.toInstant(), max.getTimeZone().toZoneId()));
+        return this;
+    }
+
+    @Override
+    public CalendarGenerator range(final Calendar min, final Calendar max) {
         delegate.range(
-                ZonedDateTime.ofInstant(start.toInstant(), start.getTimeZone().toZoneId()),
-                ZonedDateTime.ofInstant(end.toInstant(), end.getTimeZone().toZoneId()));
+                ZonedDateTime.ofInstant(min.toInstant(), min.getTimeZone().toZoneId()),
+                ZonedDateTime.ofInstant(max.toInstant(), max.getTimeZone().toZoneId()));
         return this;
     }
 

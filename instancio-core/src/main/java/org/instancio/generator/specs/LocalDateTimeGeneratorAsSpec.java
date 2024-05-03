@@ -43,7 +43,7 @@ public interface LocalDateTimeGeneratorAsSpec extends
      * {@inheritDoc}
      */
     @Override
-    LocalDateTimeGeneratorAsSpec range(LocalDateTime start, LocalDateTime end);
+    LocalDateTimeGeneratorAsSpec range(LocalDateTime min, LocalDateTime max);
 
     /**
      * {@inheritDoc}

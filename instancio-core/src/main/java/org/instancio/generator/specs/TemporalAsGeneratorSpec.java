@@ -38,7 +38,23 @@ public interface TemporalAsGeneratorSpec<T>
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    TemporalAsGeneratorSpec<T> range(T start, T end);
+    TemporalAsGeneratorSpec<T> min(T min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    TemporalAsGeneratorSpec<T> max(T max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    TemporalAsGeneratorSpec<T> range(T min, T max);
 }

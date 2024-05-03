@@ -53,4 +53,15 @@ class LocalDateTimeGeneratorTest {
 
         assertThat(result).isZero();
     }
+
+    @Test
+    void pastWithMin() {
+        final LocalDateTime from = LocalDateTime.now().minusMinutes(1);
+
+        final LocalDateTime result = Instancio.of(LocalDateTime.class)
+                .generate(root(), gen -> gen.temporal().localDateTime().past().min(from))
+                .create();
+
+        assertThat(result).isBetween(from, LocalDateTime.now());
+    }
 }

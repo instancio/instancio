@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,5 +53,16 @@ class OffsetDateTimeGeneratorTest {
                 .create();
 
         assertThat(result).isZero();
+    }
+
+    @Test
+    void pastWithMin() {
+        final OffsetDateTime from = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(1);
+
+        final OffsetDateTime result = Instancio.of(OffsetDateTime.class)
+                .generate(root(), gen -> gen.temporal().offsetDateTime().past().min(from))
+                .create();
+
+        assertThat(result).isBetween(from, OffsetDateTime.now());
     }
 }

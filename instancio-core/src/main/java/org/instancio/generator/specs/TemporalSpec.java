@@ -41,9 +41,25 @@ public interface TemporalSpec<T> extends ValueSpec<T>, TemporalGeneratorSpec<T> 
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    TemporalSpec<T> range(T start, T end);
+    TemporalSpec<T> min(T min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    TemporalSpec<T> max(T max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    TemporalSpec<T> range(T min, T max);
 
     /**
      * {@inheritDoc}

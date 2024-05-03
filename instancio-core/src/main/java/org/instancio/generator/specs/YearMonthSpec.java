@@ -38,9 +38,25 @@ public interface YearMonthSpec extends TemporalSpec<YearMonth> {
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    YearMonthSpec range(YearMonth start, YearMonth end);
+    YearMonthSpec min(YearMonth min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    YearMonthSpec max(YearMonth max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    YearMonthSpec range(YearMonth min, YearMonth max);
 
     /**
      * {@inheritDoc}

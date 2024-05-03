@@ -41,9 +41,25 @@ public interface LocalDateTimeSpec extends
 
     /**
      * {@inheritDoc}
+     *
+     * @since 4.6.0
      */
     @Override
-    LocalDateTimeSpec range(LocalDateTime start, LocalDateTime end);
+    LocalDateTimeSpec min(LocalDateTime min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    LocalDateTimeSpec max(LocalDateTime max);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    LocalDateTimeSpec range(LocalDateTime min, LocalDateTime max);
 
     /**
      * {@inheritDoc}

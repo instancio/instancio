@@ -74,6 +74,14 @@ class DateGeneratorTest extends AbstractGeneratorTestTemplate<Date, DateGenerato
     }
 
     @Test
+    void minMax() {
+        final Date min = Date.from(START);
+        final Date max = Date.from(START.plusSeconds(10));
+        generator.min(min).max(max);
+        assertThat(generator.generate(random)).isBetween(min, max);
+    }
+
+    @Test
     void range() {
         final Date min = Date.from(START);
         final Date max = Date.from(START.plusSeconds(10));

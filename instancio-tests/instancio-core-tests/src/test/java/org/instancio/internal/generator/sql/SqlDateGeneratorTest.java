@@ -72,6 +72,20 @@ class SqlDateGeneratorTest extends AbstractGeneratorTestTemplate<Date, SqlDateGe
     }
 
     @Test
+    void min() {
+        final Date min = Date.valueOf(START);
+        generator.min(min);
+        assertThat(generator.generate(random)).isAfterOrEqualTo(min);
+    }
+
+    @Test
+    void max() {
+        final Date max = Date.valueOf(START);
+        generator.max(max);
+        assertThat(generator.generate(random)).isBeforeOrEqualTo(max);
+    }
+
+    @Test
     void range() {
         final Date start = Date.valueOf(START);
         final Date end = Date.valueOf(START.plusYears(1));
