@@ -23,6 +23,7 @@ import org.instancio.Model;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
@@ -38,6 +39,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
+import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
@@ -358,4 +360,32 @@ class SetModelSelectorTest {
         assertThat(result.inner.item2).has(ONLY_FOOS);
     }
 
+    @Test
+    void primitiveSelector() {
+        final Model<Integer> model = Instancio.of(Integer.class)
+                .generate(all(int.class), gen -> gen.ints().range(-10, -1))
+                .toModel();
+
+        final IntegerHolder result = Instancio.of(IntegerHolder.class)
+                .setModel(all(int.class), model)
+                .create();
+
+        // The model should be applied to the primitive but not the wrapper type
+        assertThat(result.getPrimitive()).isBetween(-10, -1);
+        assertThat(result.getWrapper()).isPositive();
+    }
+
+    @Test
+    void primitiveWrapperSelector() {
+        final Model<Integer> model = Instancio.of(Integer.class)
+                .generate(allInts(), gen -> gen.ints().range(-10, -1))
+                .toModel();
+
+        final IntegerHolder result = Instancio.of(IntegerHolder.class)
+                .setModel(allInts(), model)
+                .create();
+
+        assertThat(result.getPrimitive()).isBetween(-10, -1);
+        assertThat(result.getWrapper()).isBetween(-10, -1);
+    }
 }

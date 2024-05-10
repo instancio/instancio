@@ -57,8 +57,11 @@ final class SetModelValidatingListener implements GenerationListener {
 
         final Type modelRootType = otherContext.getRootType();
         final Class<?> modelRawType = TypeUtils.getRawType(modelRootType);
+        final Class<?> targetClass = node.getTargetClass().isPrimitive()
+                ? PrimitiveWrapperBiLookup.getEquivalent(node.getTargetClass())
+                : node.getTargetClass();
 
-        if (!modelRawType.isAssignableFrom(node.getTargetClass())) {
+        if (!modelRawType.isAssignableFrom(targetClass)) {
             final String modelTypeName = Format.withoutPackage(modelRootType);
 
             throw Fail.withUsageError(
