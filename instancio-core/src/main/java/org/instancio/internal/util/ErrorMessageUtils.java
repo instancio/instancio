@@ -45,6 +45,30 @@ public final class ErrorMessageUtils {
         // non-instantiable
     }
 
+    public static String filterRetryLimitExceeded(final InternalNode node) {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("all generated values were rejected by the filter() predicate: ")
+                .append(nodePathToRootBlock(node)).append(NL)
+                .append(NL)
+                .append("Generation was abandoned after ")
+                .append(Constants.MAX_RETRIES).append(" attempts to avoid an infinite loop.")
+                .append(NL)
+                .append("To resolve this error, please update the predicate to ensure a value is accepted.")
+                .toString();
+    }
+
+    public static String filterPredicateErrorMessage(final Object value, final InternalNode node, final Throwable ex) {
+        final String argValue = StringUtils.quoteToString(value);
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("filter() predicate threw an exception").append(NL)
+                .append(" -> Value provided to predicate: ").append(argValue).append(NL)
+                .append(" -> Target node: ").append(nodePathToRootBlock(node)).append(NL)
+                .append(NL)
+                .append("Root cause:").append(NL)
+                .append(" -> ").append(getRootCause(ex))
+                .toString();
+    }
+
     public static String unableToGetValueFromField(final Field field, final Object target) {
         return new StringBuilder(300)
                 .append("unable to get value from field.").append(NL)
@@ -59,7 +83,7 @@ public final class ErrorMessageUtils {
 
     public static String unableToResolveFieldFromMethodRef(final Class<?> targetClass, final String lambdaImplMethodName) {
         final String at = Format.firstNonInstancioStackTraceLine(new Throwable());
-        return new StringBuilder(1024).append(NL).append(NL)
+        return new StringBuilder(INITIAL_SB_SIZE).append(NL).append(NL)
                 .append("Unable to resolve the field from method reference:").append(NL)
                 .append("-> ").append(withoutPackage(targetClass)).append("::").append(lambdaImplMethodName).append(NL)
                 .append("   at ").append(at).append(NL)
@@ -159,7 +183,7 @@ public final class ErrorMessageUtils {
     }
 
     public static String abstractRootWithoutSubtype(final Class<?> klass) {
-        return new StringBuilder(1024)
+        return new StringBuilder(INITIAL_SB_SIZE)
                 .append("could not create an instance of ").append(klass).append(NL)
                 .append(NL)
                 .append("Cause:").append(NL)

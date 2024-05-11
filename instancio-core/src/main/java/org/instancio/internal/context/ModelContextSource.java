@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableList;
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableMap;
@@ -39,18 +40,20 @@ final class ModelContextSource {
     private final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap;
     private final Map<TargetSelector, Generator<?>> generatorMap;
     private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap;
+    private final Map<TargetSelector, Predicate<?>> filterMap;
     private final Map<TargetSelector, List<Assignment>> assignmentMap;
     private final Map<TargetSelector, ModelContext<?>> setModelMap;
     private final Set<TargetSelector> ignoreSet;
     private final Set<TargetSelector> withNullableSet;
 
-    @SuppressWarnings(Sonar.TOO_MANY_PARAMETERS)
+    @SuppressWarnings({Sonar.TOO_MANY_PARAMETERS, "PMD.ExcessiveParameterList"})
     ModelContextSource(
             final List<Type> withTypeParametersList,
             final Map<TargetSelector, Class<?>> subtypeSelectors,
             final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap,
             final Map<TargetSelector, Generator<?>> generatorMap,
             final Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap,
+            final Map<TargetSelector, Predicate<?>> filterMap,
             final Map<TargetSelector, List<Assignment>> assignmentMap,
             final Map<TargetSelector, ModelContext<?>> setModelMap,
             final Set<TargetSelector> ignoreSet,
@@ -61,6 +64,7 @@ final class ModelContextSource {
         this.generatorSpecMap = asUnmodifiableMap(generatorSpecMap);
         this.generatorMap = asUnmodifiableMap(generatorMap);
         this.onCompleteMap = asUnmodifiableMap(onCompleteMap);
+        this.filterMap = asUnmodifiableMap(filterMap);
         this.assignmentMap = asUnmodifiableMap(assignmentMap);
         this.setModelMap = asUnmodifiableMap(setModelMap);
         this.ignoreSet = asUnmodifiableSet(ignoreSet);
@@ -85,6 +89,10 @@ final class ModelContextSource {
 
     Map<TargetSelector, OnCompleteCallback<?>> getOnCompleteMap() {
         return onCompleteMap;
+    }
+
+    Map<TargetSelector, Predicate<?>> getFilterMap() {
+        return filterMap;
     }
 
     Map<TargetSelector, List<Assignment>> getAssignmentMap() {

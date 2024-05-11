@@ -32,6 +32,7 @@ final class SelectorNodeMatchesCollector {
     private final SelectorMap<?> ignoredSelectorMap;
     private final SelectorMap<?> nullableSelectorMap;
     private final SelectorMap<?> onCompleteCallbackSelectorMap;
+    private final SelectorMap<?> filterSelectorMap;
     private final SelectorMap<?> subtypeSelectorMap;
     private final SelectorMap<?> generatorSelectorMap;
     private final SelectorMap<?> assignDestinationToAssignmentsMap;
@@ -42,6 +43,7 @@ final class SelectorNodeMatchesCollector {
         this.ignoredSelectorMap = selectorMaps.getIgnoreSelectorMap().getSelectorMap();
         this.nullableSelectorMap = selectorMaps.getWithNullableSelectorMap().getSelectorMap();
         this.onCompleteCallbackSelectorMap = selectorMaps.getOnCompleteSelectorMap().getSelectorMap();
+        this.filterSelectorMap = selectorMaps.getFilterSelectorMap().getSelectorMap();
         this.subtypeSelectorMap = selectorMaps.getSubtypeSelectorMap().getSelectorMap();
         this.generatorSelectorMap = selectorMaps.getGeneratorSelectorMap().getSelectorMap();
         this.assignDestinationToAssignmentsMap = selectorMaps.getAssignmentSelectorMap().getDestinationToAssignmentsMap();
@@ -59,6 +61,7 @@ final class SelectorNodeMatchesCollector {
             collectNodes(map, ApiMethodSelector.IGNORE, node, ignoredSelectorMap);
             collectNodes(map, ApiMethodSelector.WITH_NULLABLE, node, nullableSelectorMap);
             collectNodes(map, ApiMethodSelector.ON_COMPLETE, node, onCompleteCallbackSelectorMap);
+            collectNodes(map, ApiMethodSelector.FILTER, node, filterSelectorMap);
             collectNodes(map, ApiMethodSelector.SUBTYPE, node, subtypeSelectorMap);
             collectNodes(map, ApiMethodSelector.GENERATE, node, generatorSelectorMap);
             collectNodes(map, ApiMethodSelector.ASSIGN_DESTINATION, node, assignDestinationToAssignmentsMap);
@@ -96,6 +99,7 @@ final class SelectorNodeMatchesCollector {
         map.put(ApiMethodSelector.IGNORE, collectSelectors(ignoredSelectorMap));
         map.put(ApiMethodSelector.WITH_NULLABLE, collectSelectors(nullableSelectorMap));
         map.put(ApiMethodSelector.ON_COMPLETE, collectSelectors(onCompleteCallbackSelectorMap));
+        map.put(ApiMethodSelector.FILTER, collectSelectors(filterSelectorMap));
         map.put(ApiMethodSelector.SUBTYPE, collectSelectors(subtypeSelectorMap));
         map.put(ApiMethodSelector.GENERATE, collectSelectors(generatorSelectorMap));
         map.put(ApiMethodSelector.ASSIGN_DESTINATION, collectSelectors(assignDestinationToAssignmentsMap));

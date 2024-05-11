@@ -44,6 +44,7 @@ import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,6 +109,7 @@ class InstancioEngine {
                 .orElse(null);
     }
 
+    @Nullable
     private Object createRootObjectInternal() {
         final GeneratorResult generatorResult = createObject(rootNode); // NOPMD
         callbackHandler.invokeCallbacks();
@@ -152,6 +154,30 @@ class InstancioEngine {
     private GeneratorResult createObject(final InternalNode node, final boolean isNullable) {
         LOG.trace(" >> {}", node);
 
+        GeneratorResult generatorResult = doCreateObject(node, isNullable);
+
+        int retryCount = 0;
+
+        while (!context.isAccepted(node, generatorResult.getValue())) {
+            if (++retryCount > Constants.MAX_RETRIES) { // NOPMD
+                throw Fail.withUsageError(ErrorMessageUtils.filterRetryLimitExceeded(node));
+            }
+            generatorResult = doCreateObject(node, isNullable);
+        }
+
+        notifyListeners(node, generatorResult);
+
+        if (generatedObjectStore.hasNewValues()) {
+            processDelayedNodes(false);
+        }
+
+        LOG.trace("<< {} : {}", node, generatorResult);
+
+        return generatorResult;
+    }
+
+    @NotNull
+    private GeneratorResult doCreateObject(final InternalNode node, final boolean isNullable) {
         final GeneratorResult generatorResult;
 
         if (context.getRandom().diceRoll(isNullable)) {
@@ -173,15 +199,6 @@ class InstancioEngine {
         } else { // unreachable
             throw Fail.withFataInternalError("Unhandled node kind: '%s' for %s", node.getNodeKind(), node);
         }
-
-        notifyListeners(node, generatorResult);
-
-        if (generatedObjectStore.hasNewValues()) {
-            processDelayedNodes(false);
-        }
-
-        LOG.trace("<< {} : {}", node, generatorResult);
-
         return generatorResult;
     }
 
@@ -190,6 +207,7 @@ class InstancioEngine {
         return createObject(node, false);
     }
 
+    @NotNull
     private GeneratorResult generatePojo(final InternalNode node) {
         final GeneratorResult nodeResult = generateValue(node);
 
@@ -314,7 +332,7 @@ class InstancioEngine {
                 failedAdditions++;
             }
 
-            if (failedAdditions > Constants.FAILED_ADD_THRESHOLD) {
+            if (failedAdditions > Constants.MAX_RETRIES) {
                 if (!keyNode.isCyclic() && !valueNode.isCyclic()) {
                     errorHandler.conditionalFailOnError(() -> {
                         throw Fail.withInternalError(
@@ -412,7 +430,7 @@ class InstancioEngine {
                     && !hint.nullableElements()
                     && !elementResult.hasEmitNullHint()
                     && !context.isIgnored(elementNode)
-                    && failedAdditions < Constants.FAILED_ADD_THRESHOLD) {
+                    && failedAdditions < Constants.MAX_RETRIES) {
 
                 failedAdditions++;
                 elementValue = createObject(elementNode, false).getValue();
@@ -503,7 +521,7 @@ class InstancioEngine {
                 failedAdditions++;
             }
 
-            if (failedAdditions > Constants.FAILED_ADD_THRESHOLD) {
+            if (failedAdditions > Constants.MAX_RETRIES) {
                 if (!elementNode.isCyclic()) {
                     errorHandler.conditionalFailOnError(() -> {
                         throw Fail.withInternalError(

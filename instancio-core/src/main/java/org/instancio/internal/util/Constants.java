@@ -21,8 +21,6 @@ import org.instancio.generator.Hints;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Collection;
-import java.util.Map;
 
 public final class Constants {
 
@@ -34,10 +32,10 @@ public final class Constants {
     public static final int RANGE_ADJUSTMENT_PERCENTAGE = 50;
 
     /**
-     * Number of times {@link Collection#add(Object)} or {@link Map#put(Object, Object)}
-     * can be unsuccessful before population is aborted.
+     * The number of times generating an object for a given node
+     * can be retried until it is aborted.
      */
-    public static final int FAILED_ADD_THRESHOLD = 1000;
+    public static final int MAX_RETRIES = 1000;
 
     /**
      * Default min array/collection size.

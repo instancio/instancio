@@ -20,6 +20,7 @@ import org.instancio.CartesianProductApi;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
+import org.instancio.FilterPredicate;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
@@ -97,6 +98,15 @@ public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
             final OnCompleteCallback<V> callback) {
 
         modelContextBuilder.withOnCompleteCallback(selector, callback);
+        return this;
+    }
+
+    @Override
+    public <V> CartesianProductApi<T> filter(
+            final TargetSelector selector,
+            final FilterPredicate<V> predicate) {
+
+        modelContextBuilder.filter(selector, predicate);
         return this;
     }
 

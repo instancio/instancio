@@ -21,6 +21,7 @@ import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
+import org.instancio.FilterPredicate;
 import org.instancio.Result;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
@@ -90,6 +91,12 @@ public class ApiImpl<T> implements InstancioApi<T> {
             final OnCompleteCallback<V> callback) {
 
         modelContextBuilder.withOnCompleteCallback(selector, callback);
+        return this;
+    }
+
+    @Override
+    public <V> InstancioApi<T> filter(final TargetSelector selector, final FilterPredicate<V> predicate) {
+        modelContextBuilder.filter(selector, predicate);
         return this;
     }
 

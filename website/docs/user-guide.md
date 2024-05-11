@@ -970,15 +970,49 @@ Person person = Instancio.of(Person.class)
 Generators can be used for generating simple value types as well as building complex objects.
 They are described in more detail in the [Custom Generators](#custom-generators) section.
 
+---
+
+#### Summary of methods for customising objects
+
+
+**Methods** `set(TargetSelector, Object)` and `supply(TargetSelector, Supplier)` are for supplying objects *as is*.
+The provided objects are treated as read-only by the engine.
+The behaviour of these methods cannot be customised.
+
+- matching selectors will not be applied
+- the engine will not modify or populate any fields of the supplied object
+- callbacks are *not* invoked on objects provided by these methods
+
+**Method** `supply(TargetSelector, Generator)` is for creating objects using custom `Generator` implementations.
+This method offers configurable behaviour via the `AfterGenerate` hint.
+By default, the hint is set to `POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`, which implies:
+
+- matching selectors will be applied
+- the engine will populate `null` fields and primitive fields containing default values
+
+The default value of the `AfterGenerate` hint can be overridden using `instancio.properties` and {{Settings}}.
+
+!!! info
+Callbacks are always invoked on objects created by generators regardless of `AfterGenerate` value.
+
+**Method** `generate(TargetSelector, GeneratorSpecProvider)` is for customising objects created by internal generators.
+Such objects include value types (numbers, strings, dates) and data structures (collections, arrays).
+
+- matching selectors are **always** applied
+- matching callbacks are **always** invoked
+
+By default, the engine generates non-null values, unless specified otherwise.
+
+
 ### Using `assign()`
+
+!!! info "This is an experimental API available since version `3.0.0`"
 
 The assignment API allows customising an object by passing in one or more `Assignment` objects as a vararg:
 
 ```java
 InstancioApi<T> assign(Assignment... assignments);
 ```
-
-!!! info "This is an experimental API available since version `3.0.0`"
 
 Assignments can be created using static methods provided by the {{Assign}} class.
 It provides three entry-point methods for creating an assignment:
@@ -1226,39 +1260,58 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
----
+### Using `filter()`
 
-#### Summary of methods for customising objects
+!!! info "This is an experimental API available since version 4.6.0"
+
+This method can be used to filter generated values using a predicate.
+If the predicate evaluates to `false` for a given value, Instancio will generate a new value.
+The new value will also be tested against the predicate, and so on.
+
+A simple example is to generate a list of even numbers:
+
+```java title="Example: generate even numbers" linenums="1"
+List<Integer> evenNumbers = Instancio.ofList(Integer.class)
+    .filter(allInts(), (Integer i) -> i % 2 == 0)
+    .create();
+```
+
+A more realistic use case is to  ensure that certain fields of a generated
+object have unique values. For instance, we may want to generate a list of `Person`
+objects with unique string and numeric values. If the `Person` contains numeric IDs,
+this will ensure that the generated ID values are distinct across all instances:
+
+```java title="Example: generate an object with unique values" linenums="1" hl_lines="5"
+Set<?> generatedValues = new HashSet<>();
+
+List<Person> persons = Instancio.ofList(Person.class)
+    .size(100)
+    .filter(all(allInts(), allLongs(), allStrings()), generatedValues::add)
+    .create();
+```
+!!! attention ""
+    <lnum>5</lnum> Generate distinct ints, longs and strings by rejecting duplicates.<br/>
 
 
-**Methods** `set(TargetSelector, Object)` and `supply(TargetSelector, Supplier)` are for supplying objects *as is*.
-The provided objects are treated as read-only by the engine.
-The behaviour of these methods cannot be customised.
+It should be noted that using the `filter()` method can be inefficient if the probability
+of generating a random value that would be rejected by the predicate is high.
+This is because a value that does not satisfy the predicate must be generated again.
+This results in many values being generated and discarded.
 
-- matching selectors will not be applied
-- the engine will not modify or populate any fields of the supplied object
-- callbacks are *not* invoked on objects provided by these methods
- 
-**Method** `supply(TargetSelector, Generator)` is for creating objects using custom `Generator` implementations.
-This method offers configurable behaviour via the `AfterGenerate` hint.
-By default, the hint is set to `POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`, which implies:
+!!! warning "Maximum retries"
+    An exception will be thrown if the number of retries to generate a value for a given node exceeds `1000`.
 
-- matching selectors will be applied
-- the engine will populate `null` fields and primitive fields containing default values
+In addition. it is not recommended to use `filter()` with POJOs or collections. For example,
+if `isActive()` returns `false` in the following snippet, the entire `User` object will be generated from scratch:
 
-The default value of the `AfterGenerate` hint can be overridden using `instancio.properties` and {{Settings}}.
+```java title="Not recommended!" linenums="1"
+List<User> users = Instancio.ofList(User.class)
+    .filter(all(User.class), (User user) -> user.isActive())
+    .create();
+```
 
-!!! info
-    Callbacks are always invoked on objects created by generators regardless of `AfterGenerate` value.
-
-**Method** `generate(TargetSelector, GeneratorSpecProvider)` is for customising objects created by internal generators.
-Such objects include value types (numbers, strings, dates) and data structures (collections, arrays).
-
-- matching selectors are **always** applied
-- matching callbacks are **always** invoked
-
-By default, the engine generates non-null values, unless specified otherwise.
-
+Therefore, customising objects using other APIs, such as [`generate()`](#using-generate)
+should be preferred over `filter()`, if possible.
 
 ### Ignoring Fields or Classes
 
