@@ -41,7 +41,7 @@ public interface GivenOriginDestination {
      * <p>This method provides the same functionality as the top-level API:
      * {@link InstancioApi#generate(TargetSelector, GeneratorSpecProvider)}
      *
-     * @param predicate that must be satisfied by the predicate
+     * @param predicate that must be satisfied by a value matching the origin selector
      * @param gen       provider of customisable built-in generators (also known as specs)
      * @param <S>       the type of object the predicate is evaluated against
      * @param <T>       the type of object to generate
@@ -56,7 +56,7 @@ public interface GivenOriginDestination {
      * <p>This method provides the same functionality as the top-level API:
      * {@link InstancioApi#generate(TargetSelector, GeneratorSpec)}
      *
-     * @param predicate that must be satisfied by the predicate
+     * @param predicate that must be satisfied by a value matching the origin selector
      * @param spec      generator spec for generating values
      * @param <S>       the type of object the predicate is evaluated against
      * @param <T>       the type of object to generate
@@ -71,7 +71,7 @@ public interface GivenOriginDestination {
      * <p>This method provides the same functionality as the top-level API:
      * {@link InstancioApi#set(TargetSelector, Object)}
      *
-     * @param predicate that must be satisfied by the predicate
+     * @param predicate that must be satisfied by a value matching the origin selector
      * @param value     value to set
      * @param <S>       the type of object the predicate is evaluated against
      * @param <T>       the type of object to set
@@ -86,7 +86,7 @@ public interface GivenOriginDestination {
      * <p>This method provides the same functionality as the top-level API:
      * {@link InstancioApi#supply(TargetSelector, Generator)}
      *
-     * @param predicate that must be satisfied by the predicate
+     * @param predicate that must be satisfied by a value matching the origin selector
      * @param generator for generating values
      * @param <S>       the type of object the predicate is evaluated against
      * @param <T>       the type of object to generate
@@ -101,7 +101,7 @@ public interface GivenOriginDestination {
      * <p>This method provides the same functionality as the top-level API:
      * {@link InstancioApi#supply(TargetSelector, Supplier)}
      *
-     * @param predicate that must be satisfied by the predicate
+     * @param predicate that must be satisfied by a value matching the origin selector
      * @param supplier  for supplying values
      * @param <S>       the type of object the predicate is evaluated against
      * @param <T>       the type of object to supply
