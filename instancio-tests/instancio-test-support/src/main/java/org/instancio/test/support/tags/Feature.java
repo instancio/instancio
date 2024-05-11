@@ -57,6 +57,7 @@ public enum Feature {
     EMIT_GENERATOR,
     ENUM_GENERATOR,
     FILE_GENERATOR,
+    FILTER,
     GENERATE,  // API generate() method
     GENERATOR,
     GENERATOR_SPEC_NULLABLE,

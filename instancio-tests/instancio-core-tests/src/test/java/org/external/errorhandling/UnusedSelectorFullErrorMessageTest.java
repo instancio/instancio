@@ -80,6 +80,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                 // lenient selectors should not be reported as unused
                 .set(Select.fields().named("bad-field-name").lenient(), 0)
                 .setModel(Select.types(t -> false), Instancio.of(String.class).toModel())
+                .filter(Select.all(Bar.class), bar -> false)
                 .withSetting(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
                 .create();
     }
@@ -141,6 +142,10 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                  -> Unused selector in: setModel()
                  1: types(Predicate<Class>)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:82)
+
+                 -> Unused selector in: filter()
+                 1: all(Bar)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:83)
 
                 This error aims to highlight potential problems and help maintain clean test code.
 

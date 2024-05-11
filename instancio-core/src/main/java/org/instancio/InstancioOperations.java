@@ -352,6 +352,45 @@ interface InstancioOperations<T> {
     <V> InstancioOperations<T> onComplete(TargetSelector selector, OnCompleteCallback<V> callback);
 
     /**
+     * Filters generated values using given {@code predicate}.
+     * If a value is rejected, a new value will be generated,
+     * which will also be tested against the {@code predicate}.
+     * If no value is accepted after {@code 1000} attempts,
+     * an exception will be thrown.
+     *
+     * <p>A simple example is to generate a list of even numbers:
+     * <pre>{@code
+     * List<Integer> evenNumbers = Instancio.ofList(Integer.class)
+     *     .filter(allInts(), (Integer i) -> i % 2 == 0)
+     *     .create();
+     * }</pre>
+     *
+     * <p>Another use case is to ensure all values within a generated
+     * object are unique. For instance, the following snippet generates
+     * a list of {@code Person} objects with unique string and numeric values:
+     * <pre>{@code
+     * Set<?> generatedValues = new HashSet<>();
+     *
+     * List<Person> persons = Instancio.ofList(Person.class)
+     *     .size(100)
+     *     .filter(all(allInts(), allLongs(), allStrings()), generatedValues::add)
+     *     .create();
+     * }</pre>
+     *
+     * <p>Note that customising objects using this method is less efficient
+     * than {@link #generate(TargetSelector, GeneratorSpecProvider)}.
+     * The latter should be preferred where possible.
+     *
+     * @param selector  for fields and/or classes this method should be applied to
+     * @param predicate that must be satisfied by the generated value
+     * @param <V>       the type of object the predicate is evaluated against
+     * @return API builder reference
+     * @since 4.6.0
+     */
+    @ExperimentalApi
+    <V> InstancioOperations<T> filter(TargetSelector selector, FilterPredicate<V> predicate);
+
+    /**
      * Maps target field or class to the given subtype. This can be used
      * in the following cases:
      *

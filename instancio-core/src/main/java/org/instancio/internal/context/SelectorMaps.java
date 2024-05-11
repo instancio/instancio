@@ -26,6 +26,7 @@ import org.instancio.internal.assignment.InternalAssignment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static org.instancio.internal.context.SetModelSelectorHelper.applyModelSelectorScopes;
 
@@ -37,6 +38,7 @@ public final class SelectorMaps {
     private final BooleanSelectorMap withNullableSelectorMap = new BooleanSelectorMap();
     private final ModelContextSelectorMap setModelSelectorMap = new ModelContextSelectorMap();
     private final OnCompleteCallbackSelectorMap onCompleteSelectorMap = new OnCompleteCallbackSelectorMap();
+    private final PredicateSelectorMap filterSelectorMap = new PredicateSelectorMap();
     private final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap();
 
     SelectorMaps(final GeneratorContext generatorContext) {
@@ -55,6 +57,7 @@ public final class SelectorMaps {
         ignoreSelectorMap.putAll(contextSource.getIgnoreSet());
         withNullableSelectorMap.putAll(contextSource.getWithNullableSet());
         onCompleteSelectorMap.putAll(contextSource.getOnCompleteMap());
+        filterSelectorMap.putAll(contextSource.getFilterMap());
         generatorSelectorMap.putAllGeneratorSpecs(contextSource.getGeneratorSpecMap());
         generatorSelectorMap.putAllGenerators(contextSource.getGeneratorMap());
         assignmentSelectorMap.putAll(contextSource.getAssignmentMap());
@@ -92,6 +95,11 @@ public final class SelectorMaps {
         for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : src.getOnCompleteMap().entrySet()) {
             final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
             onCompleteSelectorMap.put(resolvedSelector, entry.getValue());
+        }
+
+        for (Map.Entry<TargetSelector, Predicate<?>> entry : src.getFilterMap().entrySet()) {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            filterSelectorMap.put(resolvedSelector, entry.getValue());
         }
 
         for (Map.Entry<TargetSelector, List<Assignment>> entry : src.getAssignmentMap().entrySet()) {
@@ -153,6 +161,10 @@ public final class SelectorMaps {
         return onCompleteSelectorMap;
     }
 
+    PredicateSelectorMap getFilterSelectorMap() {
+        return filterSelectorMap;
+    }
+
     SubtypeSelectorMap getSubtypeSelectorMap() {
         return subtypeSelectorMap;
     }
@@ -161,6 +173,7 @@ public final class SelectorMaps {
         return !hasAssignments()
                 && !hasGenerators()
                 && !hasCallbacks()
+                && !hasFilters()
                 && !hasSetModels()
                 && ignoreSelectorMap.getSelectorMap().isEmpty()
                 && withNullableSelectorMap.getSelectorMap().isEmpty()
@@ -173,6 +186,10 @@ public final class SelectorMaps {
 
     public boolean hasCallbacks() {
         return !onCompleteSelectorMap.getSelectorMap().isEmpty();
+    }
+
+    public boolean hasFilters() {
+        return !filterSelectorMap.getSelectorMap().isEmpty();
     }
 
     public boolean hasAssignments() {

@@ -197,6 +197,17 @@ class ModelContextTest {
     }
 
     @Test
+    void withFilter() {
+        ModelContext<?> ctx = ModelContext.builder(Person.class)
+                .filter(all(Collection.class), o -> true)
+                .filter(all(List.class), o -> false)
+                .build();
+
+        assertThat(ctx.isAccepted(mockNode(Collection.class), "any value")).isTrue();
+        assertThat(ctx.isAccepted(mockNode(List.class), "any value")).isFalse();
+    }
+
+    @Test
     void nullSubtype() {
         final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
         final Selector allLists = all(List.class);

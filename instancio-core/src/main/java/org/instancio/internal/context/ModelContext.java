@@ -38,6 +38,8 @@ import org.instancio.internal.spi.InternalServiceProviderContext;
 import org.instancio.internal.spi.InternalServiceProviderImpl;
 import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.ErrorMessageUtils;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.SystemProperties;
@@ -63,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Collections.unmodifiableMap;
@@ -198,6 +201,18 @@ public final class ModelContext<T> {
         return selectorMaps.getWithNullableSelectorMap().isTrue(node);
     }
 
+    public boolean isAccepted(final InternalNode node, final Object value) {
+        Predicate<Object> predicate = selectorMaps.getFilterSelectorMap().getPredicate(node);
+        if (predicate == null) {
+            return true;
+        }
+        try {
+            return predicate.test(value);
+        } catch (Exception ex) {
+            throw Fail.withUsageError(ErrorMessageUtils.filterPredicateErrorMessage(value, node, ex));
+        }
+    }
+
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public Optional<Generator<?>> getGenerator(final InternalNode node) {
         return selectorMaps.getGeneratorSelectorMap().getGenerator(node);
@@ -248,6 +263,7 @@ public final class ModelContext<T> {
         builder.generatorSpecMap = new LinkedHashMap<>(this.contextSource.getGeneratorSpecMap());
         builder.subtypeMap = new LinkedHashMap<>(this.contextSource.getSubtypeMap());
         builder.onCompleteMap = new LinkedHashMap<>(this.contextSource.getOnCompleteMap());
+        builder.filterMap = new LinkedHashMap<>(this.contextSource.getFilterMap());
         builder.assignmentMap = new LinkedHashMap<>(this.contextSource.getAssignmentMap());
         builder.setModelMap = new LinkedHashMap<>(this.contextSource.getSetModelMap());
         return builder;
@@ -265,6 +281,7 @@ public final class ModelContext<T> {
         private Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap;
         private Map<TargetSelector, Generator<?>> generatorMap;
         private Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap;
+        private Map<TargetSelector, Predicate<?>> filterMap;
         private Map<TargetSelector, List<Assignment>> assignmentMap;
         private Map<TargetSelector, ModelContext<?>> setModelMap;
         private Set<TargetSelector> ignoreSet;
@@ -332,6 +349,12 @@ public final class ModelContext<T> {
         public Builder<T> withOnCompleteCallback(final TargetSelector selector, final OnCompleteCallback<?> callback) {
             onCompleteMap = CollectionUtils.newLinkedHashMapIfNull(onCompleteMap);
             return addSelector(onCompleteMap, selector, callback);
+        }
+
+        public Builder<T> filter(final TargetSelector selector, final Predicate<?> predicate) {
+            ApiValidator.notNull(predicate, "predicate must not be null");
+            filterMap = CollectionUtils.newLinkedHashMapIfNull(filterMap);
+            return addSelector(filterMap, selector, predicate);
         }
 
         public Builder<T> withIgnored(final TargetSelector selector) {
@@ -432,6 +455,7 @@ public final class ModelContext<T> {
             generatorSpecMap = new LinkedHashMap<>(src.getGeneratorSpecMap());
             subtypeMap = new LinkedHashMap<>(src.getSubtypeMap());
             onCompleteMap = new LinkedHashMap<>(src.getOnCompleteMap());
+            filterMap = new LinkedHashMap<>(src.getFilterMap());
             assignmentMap = new LinkedHashMap<>(src.getAssignmentMap());
             setModelMap = new LinkedHashMap<>(src.getSetModelMap());
 
@@ -466,6 +490,7 @@ public final class ModelContext<T> {
                     generatorSpecMap,
                     generatorMap,
                     onCompleteMap,
+                    filterMap,
                     assignmentMap,
                     setModelMap,
                     ignoreSet,

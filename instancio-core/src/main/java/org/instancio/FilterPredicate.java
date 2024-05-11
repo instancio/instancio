@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal;
+package org.instancio;
 
-public enum ApiMethodSelector {
-    ASSIGN_DESTINATION("assign() destination"),
-    ASSIGN_ORIGIN("assign() origin"),
-    GENERATE("generate(), set(), supply()"),
-    IGNORE("ignore()"),
-    ON_COMPLETE("onComplete()"),
-    FILTER("filter()"),
-    SET_MODEL("setModel()"),
-    SUBTYPE("subtype()"),
-    WITH_NULLABLE("withNullable()");
+import org.instancio.documentation.ExperimentalApi;
 
-    private final String description;
+import java.util.function.Predicate;
 
-    ApiMethodSelector(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
+/**
+ * A predicate for testing values using the
+ * {@link InstancioOperations#filter(TargetSelector, FilterPredicate)}
+ * method.
+ *
+ * @param <T> the type being tested
+ * @since 4.6.0
+ */
+@ExperimentalApi
+@FunctionalInterface
+public interface FilterPredicate<T> extends Predicate<T> {
 }

@@ -199,6 +199,15 @@ public interface InstancioApi<T> extends
     /**
      * {@inheritDoc}
      *
+     * @since 4.6.0
+     */
+    @Override
+    @ExperimentalApi
+    <V> InstancioApi<T> filter(TargetSelector selector, FilterPredicate<V> predicate);
+
+    /**
+     * {@inheritDoc}
+     *
      * @since 1.4.0
      */
     @Override

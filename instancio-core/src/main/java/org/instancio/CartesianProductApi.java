@@ -187,6 +187,15 @@ public interface CartesianProductApi<T> extends
     /**
      * {@inheritDoc}
      *
+     * @since 4.6.0
+     */
+    @Override
+    @ExperimentalApi
+    <V> CartesianProductApi<T> filter(TargetSelector selector, FilterPredicate<V> predicate);
+
+    /**
+     * {@inheritDoc}
+     *
      * @since 4.0.0
      */
     @Override
