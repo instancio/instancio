@@ -16,12 +16,12 @@
 package org.instancio.internal;
 
 import org.instancio.Assignment;
+import org.instancio.FilterPredicate;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
-import org.instancio.FilterPredicate;
 import org.instancio.Result;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;

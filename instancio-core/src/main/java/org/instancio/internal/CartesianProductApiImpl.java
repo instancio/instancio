@@ -17,10 +17,10 @@ package org.instancio.internal;
 
 import org.instancio.Assignment;
 import org.instancio.CartesianProductApi;
+import org.instancio.FilterPredicate;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
-import org.instancio.FilterPredicate;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;

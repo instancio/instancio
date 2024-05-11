@@ -33,8 +33,8 @@ import java.util.Map;
  * A store for keeping track of generated values for destination
  * selectors of assignments.
  */
-public class GeneratedObjectStore implements GenerationListener {
-    private static final Logger LOG = LoggerFactory.getLogger(GeneratedObjectStore.class);
+public class AssigmentObjectStore implements GenerationListener {
+    private static final Logger LOG = LoggerFactory.getLogger(AssigmentObjectStore.class);
     private static final GeneratorResult EMPTY_RESULT = GeneratorResult.emptyResult();
 
     // A map containing "scope" objects as keys, and a Map of destination
@@ -45,15 +45,15 @@ public class GeneratedObjectStore implements GenerationListener {
 
     private boolean hasNewValues;
 
-    private GeneratedObjectStore(final ModelContext<?> context) {
+    private AssigmentObjectStore(final ModelContext<?> context) {
         this.context = context;
         enterScope(); // root object's scope
     }
 
-    public static GeneratedObjectStore create(final ModelContext<?> context) {
+    public static AssigmentObjectStore create(final ModelContext<?> context) {
         return context.getSelectorMaps().hasAssignments()
-                ? new GeneratedObjectStore(context)
-                : new NoopGeneratedObjectStore();
+                ? new AssigmentObjectStore(context)
+                : new NoopAssigmentObjectStore();
     }
 
     public boolean hasNewValues() {
@@ -111,8 +111,8 @@ public class GeneratedObjectStore implements GenerationListener {
 
     //@formatter:off
     @VisibleForTesting
-    static final class NoopGeneratedObjectStore extends GeneratedObjectStore {
-        NoopGeneratedObjectStore() { super(null); }
+    static final class NoopAssigmentObjectStore extends AssigmentObjectStore {
+        NoopAssigmentObjectStore() { super(null); }
         @Override public boolean hasNewValues() { return false; }
         @Override public void enterScope() { /* no-op */ }
         @Override public void exitScope() { /* no-op */ }

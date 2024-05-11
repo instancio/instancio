@@ -26,7 +26,7 @@ import org.instancio.internal.assigners.Assigner;
 import org.instancio.internal.assigners.AssignerImpl;
 import org.instancio.internal.assignment.AssignmentErrorUtil;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.generation.GeneratedObjectStore;
+import org.instancio.internal.generation.AssigmentObjectStore;
 import org.instancio.internal.generation.GenerationListener;
 import org.instancio.internal.generation.GeneratorFacade;
 import org.instancio.internal.generator.ContainerAddFunction;
@@ -81,7 +81,7 @@ class InstancioEngine {
     private final AfterGenerate defaultAfterGenerate;
     private final NodeFilter nodeFilter;
     private final Assigner assigner;
-    private final GeneratedObjectStore generatedObjectStore;
+    private final AssigmentObjectStore assigmentObjectStore;
     private final DelayedNodeQueue delayedNodeQueue = new DelayedNodeQueue();
 
     InstancioEngine(InternalModel<?> model) {
@@ -90,14 +90,14 @@ class InstancioEngine {
         errorHandler = new ErrorHandler(context);
         callbackHandler = CallbackHandler.create(context);
         containerFactoriesHandler = new ContainerFactoriesHandler(context.getInternalServiceProviders());
-        generatedObjectStore = GeneratedObjectStore.create(context);
-        generatorFacade = new GeneratorFacade(context, generatedObjectStore);
+        assigmentObjectStore = AssigmentObjectStore.create(context);
+        generatorFacade = new GeneratorFacade(context, assigmentObjectStore);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         nodeFilter = new NodeFilter(context);
         assigner = new AssignerImpl(context);
         listeners = new GenerationListener[]{
                 callbackHandler,
-                generatedObjectStore,
+                assigmentObjectStore,
                 GeneratedNullValueListener.create(context),
                 SetModelValidatingListener.create(context)};
     }
@@ -167,7 +167,7 @@ class InstancioEngine {
 
         notifyListeners(node, generatorResult);
 
-        if (generatedObjectStore.hasNewValues()) {
+        if (assigmentObjectStore.hasNewValues()) {
             processDelayedNodes(false);
         }
 
@@ -298,10 +298,10 @@ class InstancioEngine {
 
         while (entriesToGenerate > 0) {
 
-            generatedObjectStore.enterScope();
+            assigmentObjectStore.enterScope();
             final GeneratorResult mapKeyResult = createObject(keyNode, nullableKey);
             final GeneratorResult mapValueResult = createObject(valueNode, nullableValue);
-            generatedObjectStore.exitScope();
+            assigmentObjectStore.exitScope();
 
             if (mapKeyResult.isDelayed() || mapValueResult.isDelayed()) {
                 return GeneratorResult.delayed();
@@ -415,9 +415,9 @@ class InstancioEngine {
                 continue;
             }
 
-            generatedObjectStore.enterScope();
+            assigmentObjectStore.enterScope();
             final GeneratorResult elementResult = createObject(elementNode, hint.nullableElements());
-            generatedObjectStore.exitScope();
+            assigmentObjectStore.exitScope();
 
             if (elementResult.isDelayed()) {
                 return GeneratorResult.delayed();
@@ -486,9 +486,9 @@ class InstancioEngine {
         final Set<Object> generated = new HashSet<>(elementsToGenerate);
 
         while (elementsToGenerate > 0) {
-            generatedObjectStore.enterScope();
+            assigmentObjectStore.enterScope();
             final GeneratorResult elementResult = createObject(elementNode, nullableElements);
-            generatedObjectStore.exitScope();
+            assigmentObjectStore.exitScope();
 
             if (elementResult.isDelayed()) {
                 return GeneratorResult.delayed();
@@ -667,7 +667,7 @@ class InstancioEngine {
 
             // Add field value to the object store.
             // This allows fields initialised externally to work with assign()
-            generatedObjectStore.objectCreated(child, childResult);
+            assigmentObjectStore.objectCreated(child, childResult);
 
             if (filterResult == NodeFilterResult.POPULATE) {
 
@@ -725,12 +725,12 @@ class InstancioEngine {
             for (int i = 0; i < hint.generateEntries(); i++) {
                 final Object[] args = new Object[children.size()];
 
-                generatedObjectStore.enterScope();
+                assigmentObjectStore.enterScope();
                 for (int j = 0; j < children.size(); j++) {
                     final GeneratorResult childResult = createObject(children.get(j));
                     args[j] = childResult.getValue();
                 }
-                generatedObjectStore.exitScope();
+                assigmentObjectStore.exitScope();
                 addFunction.addTo(generatorResult.getValue(), args);
             }
         }

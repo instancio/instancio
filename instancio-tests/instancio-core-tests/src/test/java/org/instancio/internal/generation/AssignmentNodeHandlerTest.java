@@ -24,7 +24,7 @@ import static org.instancio.Select.all;
 
 class AssignmentNodeHandlerTest {
     // required ctor args but not needed for the test
-    private final GeneratedObjectStore objectStore = null;
+    private final AssigmentObjectStore objectStore = null;
     private final UserSuppliedGeneratorProcessor generatorProcessor = null;
 
     @Test

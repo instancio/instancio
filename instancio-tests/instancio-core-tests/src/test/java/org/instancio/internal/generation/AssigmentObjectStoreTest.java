@@ -22,14 +22,14 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
-class GeneratedObjectStoreTest {
+class AssigmentObjectStoreTest {
 
     @Test
     void createShouldReturnNoopClass_whenModelContextHasNoAssignments() {
         final ModelContext<Object> ctx = ModelContext.builder(String.class).build();
-        final GeneratedObjectStore result = GeneratedObjectStore.create(ctx);
+        final AssigmentObjectStore result = AssigmentObjectStore.create(ctx);
 
-        assertThat(result).isExactlyInstanceOf(GeneratedObjectStore.NoopGeneratedObjectStore.class);
+        assertThat(result).isExactlyInstanceOf(AssigmentObjectStore.NoopAssigmentObjectStore.class);
     }
 
     @Test
@@ -38,8 +38,8 @@ class GeneratedObjectStoreTest {
                 .withAssignments(Assign.valueOf(String.class).to(all(String.class)))
                 .build();
 
-        final GeneratedObjectStore result = GeneratedObjectStore.create(ctx);
+        final AssigmentObjectStore result = AssigmentObjectStore.create(ctx);
 
-        assertThat(result).isExactlyInstanceOf(GeneratedObjectStore.class);
+        assertThat(result).isExactlyInstanceOf(AssigmentObjectStore.class);
     }
 }
