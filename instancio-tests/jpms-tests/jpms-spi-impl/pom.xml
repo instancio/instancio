@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>jpms-tests</artifactId>
-        <version>4.6.0</version>
+        <version>4.6.1-SNAPSHOT</version>
     </parent>
     <artifactId>jpms-spi-impl</artifactId>
     <name>Instancio tests: JPMS Sample SPI implementation</name>
