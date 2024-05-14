@@ -186,6 +186,7 @@ public class StringGenerator extends AbstractGenerator<String>
         return this;
     }
 
+    // Hot path - benchmark when making changes.
     @Override
     public String tryGenerateNonNull(final Random random) {
         if (delegate != null) {
@@ -197,8 +198,15 @@ public class StringGenerator extends AbstractGenerator<String>
         }
 
         final int length = random.intRange(minLength, maxLength);
-        final char[] chars = getStringCharacters();
-        String result = random.stringOf(length, chars);
+        final char[] fromChars = getStringCharacters();
+        final char[] s = new char[length];
+
+        for (int i = 0; i < length; i++) {
+            s[i] = fromChars[random.intRange(0, fromChars.length - 1)];
+        }
+
+        String result = new String(s);
+
         if (prefix != null) {
             result = prefix + result;
         }
