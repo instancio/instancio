@@ -41,6 +41,7 @@ import static org.instancio.internal.util.Constants.NUMERIC_MIN;
  * @see Settings
  * @since 1.1.10
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public final class Keys {
 
     private static final RangeAdjuster MIN_ADJUSTER = RangeAdjuster.MIN_ADJUSTER;
@@ -628,6 +629,16 @@ public final class Keys {
      */
     public static final SettingKey<Boolean> STRING_NULLABLE = registerRequiredNonAdjustable(
             "string.nullable", Boolean.class, false);
+
+    /**
+     * Specifies the String type to generate;
+     * default is {@link StringType#ALPHABETIC}; property name {@code string.type}.
+     *
+     * @since 4.7.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<StringType> STRING_TYPE = registerRequiredNonAdjustable(
+            "string.type", StringType.class, StringType.ALPHABETIC);
 
     // Note: keys must be collected after all keys have been initialised
     private static final Map<String, SettingKey<?>> SETTING_KEY_MAP = Collections.unmodifiableMap(settingKeyMap());

@@ -27,11 +27,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.lang.Character.UnicodeBlock;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.test.support.asserts.StringAssertExtras.assertString;
 
 @FeatureTag(Feature.VALUE_SPEC)
 class StringSpecTest extends AbstractValueSpecTestTemplate<String> {
@@ -66,6 +68,29 @@ class StringSpecTest extends AbstractValueSpecTestTemplate<String> {
         assertThat(spec().mixedCase().length(20).get()).isMixedCase();
         assertThat(spec().alphaNumeric().length(20).get()).isAlphanumeric();
         assertThat(spec().digits().get()).containsOnlyDigits();
+    }
+
+    @Test
+    void unicode() {
+        final int expectedSize = 1000;
+
+        assertString(spec().unicode().length(expectedSize).get())
+                .hasUnicodeBlockCountGreaterThan(10)
+                .hasCodePointCount(expectedSize);
+    }
+
+    @Test
+    void unicodeBlocks() {
+        final int expectedSize = 1000;
+
+        final String result = spec().length(expectedSize)
+                .unicode(UnicodeBlock.CYRILLIC, UnicodeBlock.EMOTICONS, UnicodeBlock.GOTHIC)
+                .get();
+
+        assertString(result)
+                .hasCodePointCount(expectedSize)
+                .hasUnicodeBlockCount(3)
+                .hasCodePointsFrom(UnicodeBlock.CYRILLIC, UnicodeBlock.EMOTICONS, UnicodeBlock.GOTHIC);
     }
 
     @Test

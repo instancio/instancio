@@ -57,6 +57,13 @@ public final class Constants {
      */
     public static final int NUMERIC_MAX = 10_000;
 
+    /**
+     * Maximum code point for generating Unicode strings (planes 0-3, inclusive).
+     *
+     * <p>See: <a href="https://en.wikipedia.org/wiki/Plane_(Unicode)">Plane (Unicode)</a>
+     */
+    public static final int MAX_CODE_POINT = 0x3FFFF;
+
     public static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
 
     public static final LocalDateTime DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0);

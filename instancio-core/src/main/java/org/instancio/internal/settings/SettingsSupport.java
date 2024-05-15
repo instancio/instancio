@@ -26,6 +26,7 @@ import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.SettingKey;
+import org.instancio.settings.StringType;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,6 +69,7 @@ final class SettingsSupport {
         fnMap.put(OnSetMethodNotFound.class, OnSetMethodNotFound::valueOf);
         fnMap.put(OnSetMethodUnmatched.class, OnSetMethodUnmatched::valueOf);
         fnMap.put(SetterStyle.class, SetterStyle::valueOf);
+        fnMap.put(StringType.class, StringType::valueOf);
         return Collections.unmodifiableMap(fnMap);
     }
 

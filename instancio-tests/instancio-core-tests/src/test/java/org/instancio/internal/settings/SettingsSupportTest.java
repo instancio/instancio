@@ -26,6 +26,7 @@ import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.SetterStyle;
+import org.instancio.settings.StringType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -58,7 +59,8 @@ class SettingsSupportTest {
                 OnSetMethodError.class,
                 OnSetMethodNotFound.class,
                 OnSetMethodUnmatched.class,
-                SetterStyle.class
+                SetterStyle.class,
+                StringType.class
         };
 
         for (Class<E> enumClass : enumClasses) {

@@ -19,6 +19,8 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.settings.StringType;
+import org.instancio.test.support.asserts.StringAssertExtras;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.tags.Feature;
@@ -31,6 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.allStrings;
 
 @FeatureTag(Feature.SETTINGS)
 @ExtendWith(InstancioExtension.class)
@@ -82,5 +85,16 @@ class StringSettingsTest {
         assertThat(result.getList()).doesNotContainNull();
     }
 
+    @Test
+    void unicode() {
+        final int expectedSize = 1000;
+        final String result = Instancio.of(String.class)
+                .withSetting(Keys.STRING_TYPE, StringType.UNICODE)
+                .generate(allStrings(), gen -> gen.string().length(expectedSize))
+                .create();
 
+        StringAssertExtras.assertString(result)
+                .hasUnicodeBlockCountGreaterThan(10)
+                .hasCodePointCount(expectedSize);
+    }
 }
