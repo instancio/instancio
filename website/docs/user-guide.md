@@ -2689,7 +2689,7 @@ Instancio will automatically load this file from the root of the classpath.
 The following listing shows all the property keys that can be configured.
 
 
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 29 30 35 44 54"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 29 30 35 44 55"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -2743,6 +2743,7 @@ string.field.prefix.enabled=false
 string.max.length=10
 string.min.length=3
 string.nullable=false
+string.type=ALPHABETIC
 subtype.java.util.Collection=java.util.ArrayList
 subtype.java.util.List=java.util.ArrayList
 subtype.java.util.Map=java.util.HashMap
@@ -2754,7 +2755,7 @@ subtype.java.util.SortedMap=java.util.TreeMap
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
     <lnum>35</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
     <lnum>44</lnum> Specifies a global seed value.<br/>
-    <lnum>54</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>55</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 

@@ -22,13 +22,20 @@ import org.instancio.generator.specs.StringSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
+import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.internal.util.UnicodeBlocks;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("PMD.GodClass")
 public class StringGenerator extends AbstractGenerator<String>
         implements StringSpec, InternalLengthGeneratorSpec<String> {
 
@@ -37,8 +44,9 @@ public class StringGenerator extends AbstractGenerator<String>
     private boolean allowEmpty;
     private String prefix;
     private String suffix;
-    private StringType stringType = StringType.ALPHABETIC;
+    private StringType stringType;
     private StringCase stringCase = StringCase.UPPER;
+    private List<Character.UnicodeBlock> unicodeBlocks = Collections.emptyList();
 
     /**
      * Delegate for internal use only. It is used to support Bean Validation.
@@ -59,6 +67,7 @@ public class StringGenerator extends AbstractGenerator<String>
         this.maxLength = settings.get(Keys.STRING_MAX_LENGTH);
         super.nullable(settings.get(Keys.STRING_NULLABLE));
         this.allowEmpty = settings.get(Keys.STRING_ALLOW_EMPTY);
+        this.stringType = StringType.values()[settings.get(Keys.STRING_TYPE).ordinal()];
     }
 
     public final int getMinLength() {
@@ -186,6 +195,13 @@ public class StringGenerator extends AbstractGenerator<String>
         return this;
     }
 
+    @Override
+    public StringGenerator unicode(Character.UnicodeBlock... blocks) {
+        stringType = StringType.UNICODE;
+        unicodeBlocks = Arrays.asList(blocks);
+        return this;
+    }
+
     // Hot path - benchmark when making changes.
     @Override
     public String tryGenerateNonNull(final Random random) {
@@ -197,15 +213,7 @@ public class StringGenerator extends AbstractGenerator<String>
             return "";
         }
 
-        final int length = random.intRange(minLength, maxLength);
-        final char[] fromChars = getStringCharacters();
-        final char[] s = new char[length];
-
-        for (int i = 0; i < length; i++) {
-            s[i] = fromChars[random.intRange(0, fromChars.length - 1)];
-        }
-
-        String result = new String(s);
+        String result = generateString(random);
 
         if (prefix != null) {
             result = prefix + result;
@@ -214,6 +222,55 @@ public class StringGenerator extends AbstractGenerator<String>
             result = result + suffix;
         }
         return result;
+    }
+
+    @NotNull
+    private String generateString(final Random random) {
+        final int length = random.intRange(minLength, maxLength);
+
+        return stringType == StringType.UNICODE
+                ? generateUnicodeString(random, length)
+                : generateAsciiString(random, length);
+    }
+
+    @NotNull
+    private String generateAsciiString(final Random random, final int length) {
+        final char[] fromChars = getStringCharacters();
+        final char[] s = new char[length];
+
+        for (int i = 0; i < length; i++) {
+            s[i] = fromChars[random.intRange(0, fromChars.length - 1)];
+        }
+
+        return new String(s);
+    }
+
+    @SuppressWarnings("PMD.AvoidReassigningLoopVariables")
+    private String generateUnicodeString(final Random random, final int length) {
+        final StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; ) {
+            final int codePoint = getCodePoint(random);
+            int type = Character.getType(codePoint);
+            if (type == Character.PRIVATE_USE
+                    || type == Character.SURROGATE
+                    || type == Character.UNASSIGNED) {
+                continue;
+            }
+
+            sb.appendCodePoint(codePoint);
+            i++; // NOSONAR
+        }
+        return sb.toString();
+    }
+
+    private int getCodePoint(final Random random) {
+        if (unicodeBlocks.isEmpty()) {
+            return random.intRange(0, Constants.MAX_CODE_POINT);
+        }
+        final Character.UnicodeBlock block = random.oneOf(unicodeBlocks);
+        final UnicodeBlocks.BlockRange range = UnicodeBlocks.getInstance().getRange(block);
+        return random.intRange(range.min(), range.max());
     }
 
     private char[] getStringCharacters() {
@@ -253,7 +310,11 @@ public class StringGenerator extends AbstractGenerator<String>
         HEX(
                 Chars.LC_HEX,
                 Chars.UC_HEX,
-                Chars.MC_HEX);
+                Chars.MC_HEX),
+        UNICODE(
+                new char[0],
+                new char[0],
+                new char[0]);
 
         final char[] lowerCaseChars;
         final char[] upperCaseChars;

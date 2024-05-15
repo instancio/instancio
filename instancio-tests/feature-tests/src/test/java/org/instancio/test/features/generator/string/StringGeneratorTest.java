@@ -21,6 +21,7 @@ import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.asserts.StringAssertExtras;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.lang.Character.UnicodeBlock;
 import java.math.BigInteger;
 import java.util.Set;
 import java.util.function.Function;
@@ -185,6 +187,36 @@ class StringGeneratorTest {
                         .containsPattern(LCASE_CHARS)
                         .containsPattern(UCASE_CHARS)
                         .containsPattern(DIGIT_CHARS);
+            }
+        }
+
+        @Nested
+        class UnicodeTest {
+            @Test
+            void unicode() {
+                final int length = 100_000;
+                final String result = create(s -> s.unicode().length(length));
+
+                StringAssertExtras.assertString(result)
+                        //Since we're generating a large string, we should have at least 150 blocks
+                        .hasUnicodeBlockCountGreaterThan(150)
+                        .hasCodePointCount(length);
+            }
+
+            @Test
+            void unicodeBlocks() {
+                final int length = 100;
+                final String result = create(s -> s.unicode(UnicodeBlock.CYRILLIC, UnicodeBlock.EMOTICONS).length(length));
+
+                StringAssertExtras.assertString(result)
+                        .hasUnicodeBlockCount(2)
+                        .hasCodePointCount(length)
+                        .hasCodePointsFrom(UnicodeBlock.CYRILLIC, UnicodeBlock.EMOTICONS);
+            }
+
+            @Test
+            void lengthZero() {
+                assertThat(create(s -> s.unicode().length(0))).isEmpty();
             }
         }
     }

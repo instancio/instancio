@@ -15,6 +15,7 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.ValueSpec;
 
 /**
@@ -73,4 +74,13 @@ public interface StringSpec extends ValueSpec<String>, StringGeneratorSpec {
      */
     @Override
     StringSpec hex();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.7.0
+     */
+    @Override
+    @ExperimentalApi
+    StringSpec unicode(Character.UnicodeBlock... blocks);
 }
