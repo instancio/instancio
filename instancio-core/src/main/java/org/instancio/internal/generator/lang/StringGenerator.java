@@ -41,6 +41,7 @@ public class StringGenerator extends AbstractGenerator<String>
 
     protected int minLength;
     protected int maxLength;
+    private long sequence;
     private boolean allowEmpty;
     private String prefix;
     private String suffix;
@@ -226,6 +227,9 @@ public class StringGenerator extends AbstractGenerator<String>
 
     @NotNull
     private String generateString(final Random random) {
+        if (stringType == StringType.NUMERIC_SEQUENCE) {
+            return String.valueOf(++sequence);
+        }
         final int length = random.intRange(minLength, maxLength);
 
         return stringType == StringType.UNICODE
@@ -311,10 +315,10 @@ public class StringGenerator extends AbstractGenerator<String>
                 Chars.LC_HEX,
                 Chars.UC_HEX,
                 Chars.MC_HEX),
-        UNICODE(
-                new char[0],
-                new char[0],
-                new char[0]);
+
+        NUMERIC_SEQUENCE(),
+
+        UNICODE();
 
         final char[] lowerCaseChars;
         final char[] upperCaseChars;
@@ -325,6 +329,10 @@ public class StringGenerator extends AbstractGenerator<String>
             this.lowerCaseChars = lowerCaseChars;
             this.upperCaseChars = upperCaseChars;
             this.mixedCaseChars = mixedCaseChars;
+        }
+
+        StringType() {
+            this(new char[0], new char[0], new char[0]);
         }
 
         private static final class Chars {

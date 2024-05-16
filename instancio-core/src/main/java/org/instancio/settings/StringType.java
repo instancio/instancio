@@ -20,6 +20,7 @@ import org.instancio.documentation.ExperimentalApi;
 /**
  * A setting that specifies the type of {@code String} to generate.
  *
+ * @see Keys#STRING_TYPE
  * @since 4.7.0
  */
 @ExperimentalApi
@@ -44,6 +45,7 @@ public enum StringType {
     /**
      * Represents a string that consists of digits {@code [0-9]}.
      *
+     * @see #NUMERIC_SEQUENCE
      * @since 4.7.0
      */
     DIGITS,
@@ -55,6 +57,15 @@ public enum StringType {
      * @since 4.7.0
      */
     HEX,
+
+    /**
+     * Represents a string sequence that starts from {@code "1"}
+     * and increments by one.
+     *
+     * @see #DIGITS
+     * @since 4.7.0
+     */
+    NUMERIC_SEQUENCE,
 
     /**
      * Represents a Unicode string that consists of random
