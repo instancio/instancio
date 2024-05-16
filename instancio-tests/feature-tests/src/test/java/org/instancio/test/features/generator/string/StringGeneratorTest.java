@@ -21,8 +21,10 @@ import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.settings.StringType;
 import org.instancio.test.support.asserts.StringAssertExtras;
 import org.instancio.test.support.pojo.basic.StringHolder;
+import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
@@ -31,6 +33,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.Character.UnicodeBlock;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -108,6 +111,23 @@ class StringGeneratorTest {
         @Test
         void digits() {
             assertThat(create(StringGeneratorSpec::digits)).containsOnlyDigits();
+        }
+
+        @Test
+        void numericSequence() {
+            final List<StringFields> result = Instancio.ofList(StringFields.class)
+                    .size(2)
+                    .withSetting(Keys.STRING_TYPE, StringType.NUMERIC_SEQUENCE)
+                    .create();
+
+            assertThat(result.get(0).getOne()).isEqualTo("1");
+            assertThat(result.get(0).getTwo()).isEqualTo("2");
+            assertThat(result.get(0).getThree()).isEqualTo("3");
+            assertThat(result.get(0).getFour()).isEqualTo("4");
+            assertThat(result.get(1).getOne()).isEqualTo("5");
+            assertThat(result.get(1).getTwo()).isEqualTo("6");
+            assertThat(result.get(1).getThree()).isEqualTo("7");
+            assertThat(result.get(1).getFour()).isEqualTo("8");
         }
 
         @Nested

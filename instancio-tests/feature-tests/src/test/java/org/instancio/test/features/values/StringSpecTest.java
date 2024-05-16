@@ -21,6 +21,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.settings.StringType;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.Character.UnicodeBlock;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -103,7 +105,7 @@ class StringSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Nested
     @ExtendWith(InstancioExtension.class)
-    class DisallowEmpty {
+    class DisallowEmptyTest {
 
         @WithSettings
         private final Settings settings = Settings.create()
@@ -114,6 +116,24 @@ class StringSpecTest extends AbstractValueSpecTestTemplate<String> {
             final List<String> results = spec().allowEmpty(false).list(500);
 
             assertThat(results).hasSize(500).doesNotContain("");
+        }
+    }
+
+    @Nested
+    @ExtendWith(InstancioExtension.class)
+    class NumericSequenceTest {
+
+        @WithSettings
+        private final Settings settings = Settings.create()
+                .set(Keys.STRING_TYPE, StringType.NUMERIC_SEQUENCE);
+
+        @Test
+        void numericSequence() {
+            final List<String> results = spec().list(500);
+
+            assertThat(results).isEqualTo(IntStream.rangeClosed(1, 500)
+                    .mapToObj(String::valueOf)
+                    .collect(Collectors.toList()));
         }
     }
 }
