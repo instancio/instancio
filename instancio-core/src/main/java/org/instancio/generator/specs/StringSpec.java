@@ -81,6 +81,14 @@ public interface StringSpec extends ValueSpec<String>, StringGeneratorSpec {
      * @since 4.7.0
      */
     @Override
+    StringSpec numericSequence();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.7.0
+     */
+    @Override
     @ExperimentalApi
     StringSpec unicode(Character.UnicodeBlock... blocks);
 }

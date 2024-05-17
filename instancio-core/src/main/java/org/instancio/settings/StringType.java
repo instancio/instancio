@@ -16,9 +16,17 @@
 package org.instancio.settings;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.generator.specs.StringGeneratorSpec;
 
 /**
  * A setting that specifies the type of {@code String} to generate.
+ * String type can be set using the {@link Keys#STRING_TYPE}:
+ *
+ * <pre>{@code
+ * Person person = Instancio.of(Person.class)
+ *     .withSetting(Keys.STRING_TYPE, StringType.ALPHANUMERIC) // all strings alphanumeric
+ *     .create();
+ * }</pre>
  *
  * @see Keys#STRING_TYPE
  * @since 4.7.0
@@ -38,6 +46,9 @@ public enum StringType {
      * Represents an alphanumeric string, uppercase by default,
      * that consists of characters {@code [0-9A-Z]}.
      *
+     * <p>The equivalent string generator spec method is
+     * {@link StringGeneratorSpec#alphaNumeric()}.
+     *
      * @since 4.7.0
      */
     ALPHANUMERIC,
@@ -45,7 +56,9 @@ public enum StringType {
     /**
      * Represents a string that consists of digits {@code [0-9]}.
      *
-     * @see #NUMERIC_SEQUENCE
+     * <p>The equivalent string generator spec method is
+     * {@link StringGeneratorSpec#digits()}.
+     *
      * @since 4.7.0
      */
     DIGITS,
@@ -53,6 +66,9 @@ public enum StringType {
     /**
      * Represents a hexadecimal string, uppercase by default,
      * that consists of characters {@code [0-9A-F]}
+     *
+     * <p>The equivalent string generator spec method is
+     * {@link StringGeneratorSpec#hex()}.
      *
      * @since 4.7.0
      */
@@ -62,7 +78,9 @@ public enum StringType {
      * Represents a string sequence that starts from {@code "1"}
      * and increments by one.
      *
-     * @see #DIGITS
+     * <p>The equivalent string generator spec method is
+     * {@link StringGeneratorSpec#numericSequence()}.
+     *
      * @since 4.7.0
      */
     NUMERIC_SEQUENCE,
@@ -76,6 +94,9 @@ public enum StringType {
      *   <li>{@link Character#SURROGATE}</li>
      *   <li>{@link Character#UNASSIGNED}</li>
      * </ul>
+     *
+     * <p>The equivalent string generator spec method is
+     * {@link StringGeneratorSpec#unicode(Character.UnicodeBlock...)}.
      *
      * @since 4.7.0
      */
