@@ -45,16 +45,36 @@ import static org.instancio.Select.scope;
 @ExtendWith(InstancioExtension.class)
 class SetModelAssignTest {
 
-    private static @Data class Inner {
-        String a;
-        String b;
-    }
-
-    private static @Data class Outer {
-        Inner inner1;
-        Inner inner2;
-    }
+    //@formatter:off
+    private static @Data class Inner { String a; String b; }
+    private static @Data class Outer { Inner inner1; Inner inner2; }
     //@formatter:on
+
+    @Test
+    void assignWithModelSelectorScopes() {
+        final String expectedValue = "-value-";
+        final Scope inner1Scope = scope(Outer::getInner1);
+        final Scope inner2Scope = scope(Outer::getInner2);
+
+        // Scopes should be redundant for this model, but this usage should be supported
+        final Model<Inner> innerModel = Instancio.of(Inner.class)
+                .set(field(Inner::getA).within(inner1Scope), expectedValue)
+                // assignment within inner1
+                .assign(valueOf(field(Inner::getA).within(inner1Scope)).to(field(Inner::getB).within(inner1Scope)))
+                .toModel();
+
+
+        final Outer result = Instancio.of(Outer.class)
+                .setModel(field(Outer::getInner1), innerModel)
+                // assign inner1 field values to inner2
+                .assign(valueOf(field(Inner::getA).within(inner1Scope)).to(field(Inner::getA).within(inner2Scope)))
+                .assign(valueOf(field(Inner::getB).within(inner1Scope)).to(field(Inner::getB).within(inner2Scope)))
+                .create();
+
+        assertThat(result.inner1.a).isEqualTo(result.inner1.b)
+                .isEqualTo(result.inner2.a).isEqualTo(result.inner2.b)
+                .isEqualTo(expectedValue);
+    }
 
     @Nested
     class AssignWithinModelTest {
@@ -114,7 +134,7 @@ class SetModelAssignTest {
     class AssignAcrossModelTest {
 
         /**
-         * Direction of assignment: values from Model to object being created.
+         * Direction of assignment: values from the Model to the object being created.
          */
         @Test
         void assignFromModelToObject() {
@@ -143,7 +163,7 @@ class SetModelAssignTest {
         }
 
         /**
-         * Direction of assignment: values object being created to Model.
+         * Direction of assignment: values from the object being created to the Model.
          */
         @Test
         void assignFromObjectToModel() {
