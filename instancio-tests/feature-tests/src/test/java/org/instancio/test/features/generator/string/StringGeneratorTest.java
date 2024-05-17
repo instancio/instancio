@@ -21,7 +21,6 @@ import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.settings.StringType;
 import org.instancio.test.support.asserts.StringAssertExtras;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.misc.StringFields;
@@ -117,7 +116,7 @@ class StringGeneratorTest {
         void numericSequence() {
             final List<StringFields> result = Instancio.ofList(StringFields.class)
                     .size(2)
-                    .withSetting(Keys.STRING_TYPE, StringType.NUMERIC_SEQUENCE)
+                    .generate(allStrings(), gen -> gen.string().numericSequence())
                     .create();
 
             assertThat(result.get(0).getOne()).isEqualTo("1");

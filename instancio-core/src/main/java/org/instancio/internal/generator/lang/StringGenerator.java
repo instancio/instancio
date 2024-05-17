@@ -197,6 +197,12 @@ public class StringGenerator extends AbstractGenerator<String>
     }
 
     @Override
+    public StringGenerator numericSequence() {
+        stringType = StringType.NUMERIC_SEQUENCE;
+        return this;
+    }
+
+    @Override
     public StringGenerator unicode(Character.UnicodeBlock... blocks) {
         stringType = StringType.UNICODE;
         unicodeBlocks = Arrays.asList(blocks);
