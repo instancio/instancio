@@ -19,7 +19,6 @@ import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.Selector;
-import org.instancio.TargetSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
@@ -31,11 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public final class SelectorImpl implements
-        Selector,
-        GroupableSelector,
-        UnusedSelectorDescription,
-        InternalSelector {
+public final class SelectorImpl extends BaseSelector implements Selector, GroupableSelector {
 
     private static final SelectorImpl ROOT_SELECTOR = SelectorImpl.builder()
             .target(TargetRoot.INSTANCE)
@@ -43,11 +38,8 @@ public final class SelectorImpl implements
             .build();
 
     private final Target target;
-    private final List<Scope> scopes;
     private final Selector parent;
-    private final Throwable stackTraceHolder;
     private final Integer depth;
-    private final boolean isLenient;
     private int hash;
 
     /**
@@ -66,12 +58,10 @@ public final class SelectorImpl implements
                          @Nullable final Integer depth,
                          final boolean isLenient) {
 
+        super(scopes, stackTraceHolder, isLenient);
         this.target = target;
-        this.scopes = Collections.unmodifiableList(scopes);
         this.parent = parent;
-        this.stackTraceHolder = stackTraceHolder;
         this.depth = depth;
-        this.isLenient = isLenient;
     }
 
     private SelectorImpl(final Builder builder) {
@@ -94,10 +84,6 @@ public final class SelectorImpl implements
         return target;
     }
 
-    public Throwable getStackTraceHolder() {
-        return stackTraceHolder;
-    }
-
     @Override
     public Selector atDepth(final int depth) {
         return toBuilder()
@@ -111,11 +97,6 @@ public final class SelectorImpl implements
     }
 
     @Override
-    public String getDescription() {
-        return String.format("%s%n    at %s", this, Format.firstNonInstancioStackTraceLine(stackTraceHolder));
-    }
-
-    @Override
     public Selector within(@NotNull final Scope... scopes) {
         return toBuilder().scopes(Arrays.asList(scopes)).build();
     }
@@ -125,19 +106,8 @@ public final class SelectorImpl implements
         return new ScopeImpl(target, depth);
     }
 
-    @Override
-    public List<TargetSelector> flatten() {
-        return Collections.singletonList(this);
-    }
-
     public Selector getParent() {
         return parent;
-    }
-
-    @NotNull
-    @Override
-    public List<Scope> getScopes() {
-        return scopes;
     }
 
     public Class<?> getTargetClass() {
@@ -149,18 +119,13 @@ public final class SelectorImpl implements
     }
 
     @Override
-    public boolean isLenient() {
-        return isLenient;
-    }
-
-    @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof SelectorImpl)) return false;
         final SelectorImpl that = (SelectorImpl) o;
-        return Objects.equals(target, that.target)
-                && Objects.equals(scopes, that.scopes)
-                && Objects.equals(depth, that.depth);
+        return Objects.equals(getTarget(), that.getTarget())
+                && Objects.equals(getScopes(), that.getScopes())
+                && Objects.equals(getDepth(), that.getDepth());
     }
 
     @Override
@@ -172,9 +137,9 @@ public final class SelectorImpl implements
     }
 
     private int computeHashCode() {
-        int result = target == null ? 0 : target.hashCode();
-        result = 31 * result + scopes.hashCode();
-        result = 31 * result + (depth == null ? 0 : depth.hashCode());
+        int result = getTarget().hashCode();
+        result = 31 * result + getScopes().hashCode();
+        result = 31 * result + (getDepth() == null ? 0 : getDepth().hashCode());
         return result;
     }
 
@@ -193,10 +158,10 @@ public final class SelectorImpl implements
         if (depth != null) {
             sb.append(".atDepth(").append(depth).append(')');
         }
-        if (!scopes.isEmpty()) {
-            sb.append(".within(").append(Format.formatScopes(scopes)).append(')');
+        if (!getScopes().isEmpty()) {
+            sb.append(".within(").append(Format.formatScopes(getScopes())).append(')');
         }
-        if (isLenient) {
+        if (isLenient()) {
             sb.append(".lenient()");
         }
         return sb.toString();
@@ -205,11 +170,11 @@ public final class SelectorImpl implements
     public Builder toBuilder() {
         Builder builder = new Builder();
         builder.target = this.target;
-        builder.scopes = this.scopes;
+        builder.scopes = this.getScopes();
         builder.parent = this.parent;
-        builder.stackTraceHolder = this.stackTraceHolder;
+        builder.stackTraceHolder = this.getStackTraceHolder();
         builder.depth = this.depth;
-        builder.isLenient = this.isLenient;
+        builder.isLenient = this.isLenient();
         return builder;
     }
 

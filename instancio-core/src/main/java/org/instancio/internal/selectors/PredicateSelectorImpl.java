@@ -19,26 +19,20 @@ import org.instancio.GroupableSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
-import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-public class PredicateSelectorImpl implements
-        PredicateSelector,
-        UnusedSelectorDescription,
-        InternalSelector {
+public class PredicateSelectorImpl extends BaseSelector implements PredicateSelector {
 
     private static final int FIELD_PRIORITY = 1;
     private static final int TYPE_PRIORITY = 2;
@@ -48,11 +42,8 @@ public class PredicateSelectorImpl implements
 
     private final int priority;
     private final Predicate<InternalNode> nodePredicate;
-    private final List<Scope> scopes;
     private final SelectorDepth selectorDepth;
-    private final boolean isLenient;
     private final String apiInvocationDescription;
-    private final Throwable stackTraceHolder;
 
     protected PredicateSelectorImpl(
             final int priority,
@@ -63,13 +54,11 @@ public class PredicateSelectorImpl implements
             final String apiInvocationDescription,
             final Throwable stackTraceHolder) {
 
+        super(scopes, stackTraceHolder, isLenient);
         this.priority = priority;
         this.nodePredicate = nodePredicate;
-        this.scopes = Collections.unmodifiableList(scopes);
         this.selectorDepth = selectorDepth;
-        this.isLenient = isLenient;
         this.apiInvocationDescription = apiInvocationDescription;
-        this.stackTraceHolder = stackTraceHolder;
     }
 
     private PredicateSelectorImpl(final Builder builder) {
@@ -80,18 +69,7 @@ public class PredicateSelectorImpl implements
                 builder.selectorDepth,
                 builder.isLenient,
                 defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION),
-                defaultIfNull(builder.stackTraceHolder, Throwable::new)
-        );
-    }
-
-    @Override
-    public List<TargetSelector> flatten() {
-        return Collections.singletonList(this);
-    }
-
-    @Override
-    public String getDescription() {
-        return String.format("%s%n    at %s", this, Format.firstNonInstancioStackTraceLine(stackTraceHolder));
+                defaultIfNull(builder.stackTraceHolder, Throwable::new));
     }
 
     /**
@@ -102,12 +80,6 @@ public class PredicateSelectorImpl implements
      */
     public int getPriority() {
         return priority;
-    }
-
-    @NotNull
-    @Override
-    public List<Scope> getScopes() {
-        return scopes;
     }
 
     public Predicate<InternalNode> getNodePredicate() {
@@ -122,11 +94,6 @@ public class PredicateSelectorImpl implements
     @Override
     public ScopeableSelector atDepth(final Predicate<Integer> depthPredicate) {
         return toBuilder().depth(depthPredicate).build();
-    }
-
-    @Override
-    public boolean isLenient() {
-        return isLenient;
     }
 
     @Override
@@ -155,10 +122,10 @@ public class PredicateSelectorImpl implements
 
             s += ".atDepth(" + depth + ")";
         }
-        if (!scopes.isEmpty()) {
-            s += ".within(" + Format.formatScopes(scopes) + ")";
+        if (!getScopes().isEmpty()) {
+            s += ".within(" + Format.formatScopes(getScopes()) + ")";
         }
-        if (isLenient) {
+        if (isLenient()) {
             s += ".lenient()";
         }
         return s;
@@ -168,11 +135,11 @@ public class PredicateSelectorImpl implements
         Builder builder = new Builder();
         builder.priority = priority;
         builder.nodePredicate = nodePredicate;
-        builder.scopes = scopes;
+        builder.scopes = getScopes();
         builder.apiInvocationDescription = apiInvocationDescription;
-        builder.stackTraceHolder = stackTraceHolder;
+        builder.stackTraceHolder = getStackTraceHolder();
         builder.selectorDepth = selectorDepth;
-        builder.isLenient = isLenient;
+        builder.isLenient = isLenient();
         return builder;
     }
 
