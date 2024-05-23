@@ -58,7 +58,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
                          @Nullable final Integer depth,
                          final boolean isLenient) {
 
-        super(scopes, stackTraceHolder, isLenient);
+        super(scopes, stackTraceHolder, isLenient, /*isHiddenFromVerboseOutput*/ false);
         this.target = target;
         this.parent = parent;
         this.depth = depth;

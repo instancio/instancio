@@ -156,6 +156,12 @@ public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
     }
 
     @Override
+    public CartesianProductApi<T> withBlank(final TargetSelector selector) {
+        modelContextBuilder.withBlank(selector);
+        return this;
+    }
+
+    @Override
     public CartesianProductApi<T> withSeed(final long seed) {
         modelContextBuilder.withSeed(seed);
         return this;

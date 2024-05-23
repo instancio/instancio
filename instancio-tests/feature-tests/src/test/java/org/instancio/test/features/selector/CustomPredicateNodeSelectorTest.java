@@ -69,6 +69,7 @@ class CustomPredicateNodeSelectorTest {
                     Collections.emptyList(),
                     /* depth = */ null,
                     /* isLenient = */ false,
+                    /* isHiddenFromVerboseOutput = */ false,
                     apiInvocationDescription,
                     new Throwable());
         }

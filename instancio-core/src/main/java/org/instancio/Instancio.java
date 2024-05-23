@@ -156,6 +156,54 @@ public final class Instancio {
     }
 
     /**
+     * Creates a blank object of the specified class.
+     *
+     * <p>The created object will have the following properties:
+     *
+     * <ul>
+     *   <li>value fields (strings, numbers, dates, etc) are {@code null}</li>
+     *   <li>arrays, collections, and maps are empty</li>
+     *   <li>nested POJOs are blank</li>
+     * </ul>
+     *
+     * <p>For example, assuming the following POJO:
+     *
+     * <pre>{@code
+     * class Person {
+     *     String name;
+     *     LocalDate dateOfBirth;
+     *     List<Phone> phoneNumbers;
+     *     Address address;
+     * }
+     * }</pre>
+     *
+     * <p>Creating a blank {@code Person} object will produce:
+     *
+     * <pre>{@code
+     * Person person = Instancio.createBlank(Person.class);
+     *
+     * // Output:
+     * // Person[
+     * //   name=null,
+     * //   dateOfBirth=null,
+     * //   phoneNumbers=[] // empty List
+     * //   address=Address[street=null, city=null, country=null] // blank nested POJO
+     * // ]
+     * }</pre>
+     *
+     * @param type the type of blank object to create
+     * @param <T>  the type of object
+     * @return a blank object of the specified type
+     * @see InstancioOperations#withBlank(TargetSelector)
+     * @see #ofBlank(Class)
+     * @since 4.7.0
+     */
+    @ExperimentalApi
+    public static <T> T createBlank(final Class<T> type) {
+        return ofBlank(type).create();
+    }
+
+    /**
      * Creates a {@link List} of random size.
      *
      * <p>Unless configured otherwise, the generated size will be between
@@ -328,6 +376,52 @@ public final class Instancio {
      */
     public static <T> InstancioOfClassApi<T> of(final Class<T> type) {
         return new OfClassApiImpl<>(type);
+    }
+
+    /**
+     * Builder version of the {@link #createBlank(Class)} method
+     * that allows customisation of generated values.
+     *
+     * <p>For example, assuming the following POJO:
+     *
+     * <pre>{@code
+     * class Person {
+     *     String name;
+     *     LocalDate dateOfBirth;
+     *     List<Phone> phoneNumbers;
+     *     Address address;
+     * }
+     * }</pre>
+     *
+     * <p>The snippet below will create a blank {@code Person} object
+     * with two initialised fields:
+     *
+     * <pre>{@code
+     * Person person = Instancio.ofBlank(Person.class)
+     *     .set(field(Address::getCountry), "Canada")
+     *     .generate(field(Person::getDateOfBirth), gen -> gen.temporal().localDate().past())
+     *     .create()
+     *
+     * // Sample output:
+     * // Person[
+     * //   name=null,
+     * //   dateOfBirth=1990-12-29,
+     * //   phoneNumbers=[]
+     * //   address=Address[street=null, city=null, country=Canada]
+     * //]
+     * }</pre>
+     *
+     * @param type the type of blank object to create
+     * @param <T>  the type of object
+     * @return API builder reference
+     * @see InstancioOperations#withBlank(TargetSelector)
+     * @since 4.7.0
+     */
+    @ExperimentalApi
+    public static <T> InstancioOfClassApi<T> ofBlank(final Class<T> type) {
+        final InstancioOfClassApi<T> api = new OfClassApiImpl<>(type);
+        api.withBlank(Select.root());
+        return api;
     }
 
     /**

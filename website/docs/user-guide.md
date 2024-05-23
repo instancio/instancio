@@ -210,6 +210,43 @@ List<String> uuids = Gen.text().uuid().upperCase().withoutDashes().list(5);
 !!! info "See [Built-in Generators](#built-in-generators) for a list of available generators"
 
 
+### Creating Blank Objects
+
+!!! info "This is an experimental API available since version `4.7.0`"
+
+In addition to creating fully-populated objects, Instancio provides
+an API for creating blank objects using the following methods:
+
+``` java title="Shorthand method"
+Instancio.createBlank(Class<T> type)
+```
+
+``` java title="Builder API"
+Instancio.ofBlank(Class<T> type).create()
+```
+
+Blank objects have value fields (such as strings, numbers, dates) set to `null`
+and nested POJO references initialised to blank POJOs.
+The following is a simple example that assumes a `Person` class with
+a `name` and `address` fields:
+
+``` java linenums="1" title="Examples of creating blank objects"
+Person person = Instancio.createBlank(Person.class);
+
+// Output:
+// Person[name=null, address=Address[street=null, city=null, country=null]]
+
+Person person = Instancio.ofBlank(Person.class)
+    .set(field(Address::getCountry), "Canada")
+    .create();
+
+// Output:
+// Person[name=null, address=Address[street=null, city=null, country=Canada]]
+```
+
+See the documentation for [`withBlank(TargetSelector)`](#using-withblank) method
+for more details on blank objects.
+
 ## Selectors
 
 Selectors are used to target fields and classes, for example in order to customise generated values.
@@ -1312,6 +1349,80 @@ List<User> users = Instancio.ofList(User.class)
 
 Therefore, customising objects using other APIs, such as [`generate()`](#using-generate)
 should be preferred over `filter()`, if possible.
+
+### Using `withBlank()`
+
+!!! info "This is an experimental API available since version 4.7.0"
+
+This method can be used to initialise certain parts of an object to be blank using selectors.
+Its behaviour is the same as the methods below (which can be used for creating a blank **root object**):
+
+- `Instancio.createBlank(Class<T>)`
+- `Instancio.ofBlank(Class<T>)`
+
+Blank objects have the following properties:
+
+- value fields (such as strings, numbers, dates) are `null`
+- arrays, collections, and maps are empty
+- references to POJOs are initialised to blank objects
+
+For example, assuming the `Person` class below (getters and setters omitted):
+
+```java linenums="1"
+class Person {
+    String name;
+    LocalDate dateOfBirth;
+    List<Phone> phoneNumbers;
+    Address address;
+}
+```
+
+The following snippet
+
+```java linenums="1" hl_lines="1"
+Person person = Instancio.of(Person.class)
+    .withBlank(field(Person::getPhoneNumbers))
+    .withBlank(all(Address.class))
+    .create();
+```
+!!! attention ""
+    <lnum>1</lnum> We use `of(Person.class)` and **not** `ofBlank(Person.class)`, as the latter would create a blank root object.<br/>
+
+will produce a partially blank object, where only the `name` and `dateOfBirth` fields are populated with random values.
+The `address` field has been set to a blank object and `phoneNumbers` to an empty `List`:
+
+```
+// Person[
+//   name=NOBXGV,
+//   dateOfBirth=2022-03-18,
+//   phoneNumbers=[]
+//   address=Address[street=null, city=null, country=null]
+// ]
+```
+
+Blank objects can be customised further if needed. For example, we can set the country field to "Canada",
+generate a collection of blank phones of size `2`, and set the `countryCode` to `+1` as shown below:
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+    .withBlank(field(Person::getPhoneNumbers))
+    .withBlank(all(Address.class))
+    .generate(field(Person::getPhoneNumbers), gen -> gen.collection().size(2))
+    .set(field(Phone::getCountryCode), "+1")
+    .set(field(Address::getCountry), "Canada")
+    .create();
+
+// Sample output:
+// Person[
+//   name=GLTJXQM,
+//   dateOfBirth=2029-04-06,
+//   phoneNumbers=[
+//       Phone[countryCode=+1,number=<null>],
+//       Phone[countryCode=+1,number=<null>]]
+//   address=Address[street=null, city=null, country=Canada]
+// ]
+```
+
 
 ### Ignoring Fields or Classes
 

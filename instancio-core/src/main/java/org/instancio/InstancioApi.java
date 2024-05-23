@@ -208,6 +208,15 @@ public interface InstancioApi<T> extends
     /**
      * {@inheritDoc}
      *
+     * @since 4.7.0
+     */
+    @Override
+    @ExperimentalApi
+    InstancioApi<T> withBlank(TargetSelector selector);
+
+    /**
+     * {@inheritDoc}
+     *
      * @since 1.4.0
      */
     @Override
