@@ -22,6 +22,7 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.MethodUtils;
+import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
@@ -61,24 +62,24 @@ final class MethodAssigner implements Assigner {
     public void assign(final InternalNode node, final Object target, final Object arg) {
         final Method method = getSetterMethod(node);
 
-        if (method != null) {
-            if (MethodUtils.isExcluded(method.getModifiers(), excludedModifiers)) {
-                return;
-            }
-
-            try {
-                // can't assign null to a primitive
-                if (arg != null || !method.getParameterTypes()[0].isPrimitive()) {
-                    ReflectionUtils.setAccessible(method);
-                    method.invoke(target, arg);
-                }
-            } catch (IllegalAccessException ex) {
-                throw new InstancioException("Error setting value via method: " + method, ex);
-            } catch (Exception ex) {
-                handleMethodInvocationError(node, target, arg, method, ex);
-            }
-        } else {
+        if (method == null) {
             handleMethodNotFoundError(node, target, arg);
+            return;
+        }
+        if (MethodUtils.isExcluded(method.getModifiers(), excludedModifiers)) {
+            return;
+        }
+
+        final Class<?> parameterType = method.getParameterTypes()[0];
+        final Object value = arg == null ? ObjectUtils.defaultValue(parameterType) : arg;
+
+        try {
+            ReflectionUtils.setAccessible(method);
+            method.invoke(target, value);
+        } catch (IllegalAccessException ex) {
+            throw new InstancioException("Error setting value via method: " + method, ex);
+        } catch (Exception ex) {
+            handleMethodInvocationError(node, target, value, method, ex);
         }
     }
 

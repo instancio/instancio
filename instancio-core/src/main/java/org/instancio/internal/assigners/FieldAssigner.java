@@ -19,6 +19,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
@@ -47,14 +48,17 @@ final class FieldAssigner implements Assigner {
         final Field field = node.getField();
 
         // can't assign null to a primitive
-        if (field != null && (value != null || !field.getType().isPrimitive())) {
+        if (field != null) {
             setField(node, target, value);
         }
     }
 
-    private void setField(final InternalNode node, final Object target, final Object value) {
+    private void setField(final InternalNode node, final Object target, final Object arg) {
+        final Field field = node.getField();
+        final Object value = arg == null ? ObjectUtils.defaultValue(field.getType()) : arg;
+
         try {
-            Field field = ReflectionUtils.setAccessible(node.getField());
+            ReflectionUtils.setAccessible(field);
             field.set(target, value);
         } catch (IllegalArgumentException ex) {
             // Wrong type is being assigned to a field.
