@@ -187,29 +187,6 @@ Map<UUID, Person> personMap = Instancio.of(new TypeToken<Person>() {})
 
 !!! warning "Since returned streams are infinite, `limit()` _must_ be called to avoid an infinite loop."
 
-### Creating Simple Values
-
-Instancio provides the `Gen` class for generating simple value types such as strings, numbers, dates, and so on.
-This class can generate:
-
-- a single value using `get()` method
-- a list of values using the `list(int)` method
-
-```java title="Generate a single value"
-URL url = Gen.net().url().get();
-
-String randomChoice = Gen.oneOf("foo", "bar", "baz").get();
-```
-
-```java title="Generate a list of values"
-List<LocalDate> pastDates = Gen.temporal().localDate().past().list(5);
-
-List<String> uuids = Gen.text().uuid().upperCase().withoutDashes().list(5);
-```
-
-!!! info "See [Built-in Generators](#built-in-generators) for a list of available generators"
-
-
 ### Creating Blank Objects
 
 !!! info "This is an experimental API available since version `4.7.0`"
@@ -246,6 +223,28 @@ Person person = Instancio.ofBlank(Person.class)
 
 See the documentation for [`withBlank(TargetSelector)`](#using-withblank) method
 for more details on blank objects.
+
+### Creating Simple Values
+
+Instancio provides the `Gen` class for generating simple value types such as strings, numbers, dates, and so on.
+This class can generate:
+
+- a single value using `get()` method
+- a list of values using the `list(int)` method
+
+```java title="Generate a single value"
+URL url = Gen.net().url().get();
+
+String randomChoice = Gen.oneOf("foo", "bar", "baz").get();
+```
+
+```java title="Generate a list of values"
+List<LocalDate> pastDates = Gen.temporal().localDate().past().list(5);
+
+List<String> uuids = Gen.text().uuid().upperCase().withoutDashes().list(5);
+```
+
+!!! info "See [Built-in Generators](#built-in-generators) for a list of available generators"
 
 ## Selectors
 
@@ -1424,7 +1423,7 @@ Person person = Instancio.of(Person.class)
 ```
 
 
-### Ignoring Fields or Classes
+### Using `ignore()`
 
 By default, Instancio will attempt to populate every non-static field value.
 The `ignore` method can be used where this is not desirable:
