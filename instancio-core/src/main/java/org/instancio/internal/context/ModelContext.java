@@ -20,6 +20,8 @@ import org.instancio.GeneratorSpecProvider;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
+import org.instancio.Scope;
+import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
@@ -31,6 +33,8 @@ import org.instancio.internal.RandomHelper;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.BlankSelectors;
+import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.SelectorProcessor;
 import org.instancio.internal.selectors.SetterSelectorHolder;
 import org.instancio.internal.spi.InternalServiceProvider;
@@ -63,6 +67,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -432,6 +437,30 @@ public final class ModelContext<T> {
         public Builder<T> withSeed(final long seed) {
             this.seed = seed;
             return this;
+        }
+
+        public Builder<T> withBlank(final TargetSelector selector) {
+            if (Objects.equals(selector, Select.root())) {
+                withBlankTargets(); // special case for root selector (no scopes)
+            } else {
+                final List<TargetSelector> processedSelectors = selectorProcessor.process(selector);
+
+                for (TargetSelector processedSelector : processedSelectors) {
+                    final InternalSelector target = (InternalSelector) processedSelector;
+                    final Scope[] effectiveScopes = CollectionUtils.combine(target.getScopes(), target.toScope())
+                            .toArray(new Scope[0]);
+
+                    withBlankTargets(effectiveScopes);
+                }
+            }
+            return this;
+        }
+
+        private void withBlankTargets(final Scope... scopes) {
+            withSupplier(BlankSelectors.leafSelector().within(scopes), () -> null);
+            withGeneratorSpec(BlankSelectors.collectionSelector().within(scopes).lenient(), gen -> gen.collection().size(0));
+            withGeneratorSpec(BlankSelectors.mapSelector().within(scopes).lenient(), gen -> gen.map().size(0));
+            withGeneratorSpec(BlankSelectors.arraySelector().within(scopes).lenient(), gen -> gen.array().length(0));
         }
 
         public Builder<T> lenient() {

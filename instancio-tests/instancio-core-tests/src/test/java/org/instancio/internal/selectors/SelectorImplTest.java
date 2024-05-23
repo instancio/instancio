@@ -47,7 +47,7 @@ class SelectorImplTest {
     void root() {
         final SelectorImpl root = SelectorImpl.getRootSelector();
         assertThat(root).hasAllNullFieldsOrPropertiesExcept(
-                "target", "scopes", "stackTraceHolder", "depth", "hash", "isLenient");
+                "target", "scopes", "stackTraceHolder", "depth", "hash", "isLenient", "isHiddenFromVerboseOutput");
 
         assertThat(root.getScopes()).isEmpty();
     }

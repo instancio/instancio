@@ -51,10 +51,11 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
             final List<Scope> scopes,
             final SelectorDepth selectorDepth,
             final boolean isLenient,
+            final boolean isHiddenFromVerboseOutput,
             final String apiInvocationDescription,
             final Throwable stackTraceHolder) {
 
-        super(scopes, stackTraceHolder, isLenient);
+        super(scopes, stackTraceHolder, isLenient, isHiddenFromVerboseOutput);
         this.priority = priority;
         this.nodePredicate = nodePredicate;
         this.selectorDepth = selectorDepth;
@@ -68,6 +69,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
                 builder.scopes,
                 builder.selectorDepth,
                 builder.isLenient,
+                builder.isHiddenFromVerboseOutput,
                 defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION),
                 defaultIfNull(builder.stackTraceHolder, Throwable::new));
     }
@@ -80,6 +82,10 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
      */
     public int getPriority() {
         return priority;
+    }
+
+    protected final String getApiInvocationDescription() {
+        return apiInvocationDescription;
     }
 
     public Predicate<InternalNode> getNodePredicate() {
@@ -140,6 +146,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
         builder.stackTraceHolder = getStackTraceHolder();
         builder.selectorDepth = selectorDepth;
         builder.isLenient = isLenient();
+        builder.isHiddenFromVerboseOutput = isHiddenFromVerboseOutput();
         return builder;
     }
 
@@ -153,6 +160,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
         private List<Scope> scopes = new ArrayList<>(0);
         private SelectorDepth selectorDepth;
         private boolean isLenient;
+        private boolean isHiddenFromVerboseOutput;
         private String apiInvocationDescription;
         private Throwable stackTraceHolder;
 

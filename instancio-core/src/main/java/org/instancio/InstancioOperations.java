@@ -585,4 +585,38 @@ interface InstancioOperations<T> {
      * @since 4.0.0
      */
     InstancioOperations<T> withSeed(long seed);
+
+    /**
+     * Specifies that a blank object should be generated for the selected target.
+     *
+     * <p>A blank object has the following properties:
+     *
+     * <ul>
+     *   <li>value fields (strings, numbers, dates, etc) are {@code null}</li>
+     *   <li>arrays, collections, and maps are empty</li>
+     *   <li>nested POJOs are blank</li>
+     * </ul>
+     *
+     * <p>Example:
+     * <pre>{@code
+     * Person person = Instancio.of(Person.class)
+     *     .withBlank(field(Person::getAddress))
+     *     .create();
+     *
+     * // Output:
+     * // Person[
+     * //   name="GNQTXA",
+     * //   dateOfBirth=1988-04-09,
+     * //   address=Address[street=null, city=null, country=null] // blank Address
+     * //]
+     * }</pre>
+     *
+     * @param selector for fields and/or classes this method should be applied to
+     * @return API builder reference
+     * @see Instancio#createBlank(Class)
+     * @see Instancio#ofBlank(Class)
+     * @since 4.7.0
+     */
+    @ExperimentalApi
+    InstancioOperations<T> withBlank(TargetSelector selector);
 }

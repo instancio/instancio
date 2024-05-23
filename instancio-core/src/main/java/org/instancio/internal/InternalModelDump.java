@@ -19,11 +19,15 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeStats;
+import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.util.Format;
+import org.instancio.internal.util.StringUtils;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.instancio.internal.util.Constants.NL;
 
@@ -107,14 +111,29 @@ final class InternalModelDump {
                 continue;
             }
 
-            final ApiMethodSelector method = entry.getKey();
-            sb.append(" -> Method: ").append(method.getDescription()).append(NL);
+            final String section = selectorNodes.entrySet().stream()
+                    .map(e -> {
+                        final InternalSelector selector = (InternalSelector) e.getKey();
 
-            selectorNodes.forEach((selector, nodes) -> {
-                sb.append("    - ").append(selector).append(NL);
-                nodes.forEach(node -> sb.append("       \\_ ").append(node).append(NL));
-                sb.append(NL);
-            });
+                        if (!selector.isHiddenFromVerboseOutput()) {
+                            final StringBuilder tmp = new StringBuilder();
+                            tmp.append("    - ").append(selector).append(NL);
+
+                            final Set<InternalNode> nodes = e.getValue();
+                            nodes.forEach(node -> tmp.append("       \\_ ").append(node).append(NL));
+                            tmp.append(NL);
+                            return tmp.toString();
+                        }
+                        return null;
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.joining(""));
+
+            if (!StringUtils.isBlank(section)) {
+                final ApiMethodSelector method = entry.getKey();
+                sb.append(" -> Method: ").append(method.getDescription()).append(NL);
+                sb.append(section);
+            }
         }
     }
 }

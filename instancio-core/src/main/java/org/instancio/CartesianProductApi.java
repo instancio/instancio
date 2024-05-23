@@ -196,6 +196,15 @@ public interface CartesianProductApi<T> extends
     /**
      * {@inheritDoc}
      *
+     * @since 4.7.0
+     */
+    @Override
+    @ExperimentalApi
+    CartesianProductApi<T> withBlank(TargetSelector selector);
+
+    /**
+     * {@inheritDoc}
+     *
      * @since 4.0.0
      */
     @Override

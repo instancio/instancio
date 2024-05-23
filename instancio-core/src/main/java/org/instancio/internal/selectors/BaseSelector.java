@@ -28,11 +28,18 @@ abstract class BaseSelector implements UnusedSelectorDescription, InternalSelect
     private final List<Scope> scopes;
     private final Throwable stackTraceHolder;
     private final boolean isLenient;
+    private final boolean isHiddenFromVerboseOutput;
 
-    BaseSelector(final List<Scope> scopes, final Throwable stackTraceHolder, final boolean isLenient) {
+    BaseSelector(
+            final List<Scope> scopes,
+            final Throwable stackTraceHolder,
+            final boolean isLenient,
+            final boolean isHiddenFromVerboseOutput) {
+
         this.scopes = Collections.unmodifiableList(scopes);
         this.stackTraceHolder = stackTraceHolder;
         this.isLenient = isLenient;
+        this.isHiddenFromVerboseOutput = isHiddenFromVerboseOutput;
     }
 
     @NotNull
@@ -49,6 +56,11 @@ abstract class BaseSelector implements UnusedSelectorDescription, InternalSelect
     @Override
     public final boolean isLenient() {
         return isLenient;
+    }
+
+    @Override
+    public final boolean isHiddenFromVerboseOutput() {
+        return isHiddenFromVerboseOutput;
     }
 
     @Override

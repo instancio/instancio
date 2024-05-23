@@ -146,6 +146,12 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
+    public InstancioApi<T> withBlank(final TargetSelector selector) {
+        modelContextBuilder.withBlank(selector);
+        return this;
+    }
+
+    @Override
     public InstancioApi<T> withSeed(final long seed) {
         modelContextBuilder.withSeed(seed);
         return this;

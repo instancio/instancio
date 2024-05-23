@@ -16,6 +16,7 @@
 
 package org.instancio.internal.selectors;
 
+import org.instancio.InstancioApi;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.TargetSelector;
@@ -36,4 +37,10 @@ public interface InternalSelector extends ScopeableSelector, Flattener<TargetSel
     List<Scope> getScopes();
 
     boolean isLenient();
+
+    /**
+     * Specifies whether this selector should be reported in
+     * the output produced by {@link InstancioApi#verbose()}.
+     */
+    boolean isHiddenFromVerboseOutput();
 }
