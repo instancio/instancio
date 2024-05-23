@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.blank;
+package org.instancio.test.features.set;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.WithSettings;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.LongHolderWithDefaults;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -27,18 +24,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.allLongs;
 
-@FeatureTag(Feature.BLANK)
+@FeatureTag(Feature.SET)
 @ExtendWith(InstancioExtension.class)
-class BlankWithInitialisedFieldsTest {
-
-    @WithSettings
-    private final Settings settings = Settings.create()
-            .set(Keys.FAIL_ON_ERROR, true);
+class SetInitialisedFieldsTest {
 
     @Test
-    void createBlank() {
-        final LongHolderWithDefaults result = Instancio.createBlank(LongHolderWithDefaults.class);
+    void shouldOverwriteInitialisedFields() {
+        final LongHolderWithDefaults result = Instancio.of(LongHolderWithDefaults.class)
+                .set(allLongs(), null)
+                .create();
 
         assertThat(result.getPrimitive()).isZero();
         assertThat(result.getWrapper()).isNull();
