@@ -45,7 +45,7 @@ class BlankRecordTest {
     @Test
     void blankRecordWithSelector() {
         final PersonRecord result = Instancio.of(PersonRecord.class)
-                .withBlank(all(PhoneRecord.class))
+                .setBlank(all(PhoneRecord.class))
                 .create();
 
         assertThat(result.name()).isNotBlank();

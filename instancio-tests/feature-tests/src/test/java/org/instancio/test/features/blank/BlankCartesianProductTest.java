@@ -42,11 +42,11 @@ class BlankCartesianProductTest {
             .set(Keys.FAIL_ON_ERROR, true);
 
     @Test
-    void cartesianProduct_withBlankRoot() {
+    void setBlankRoot() {
         final List<StringsAbc> results = Instancio.ofCartesianProduct(StringsAbc.class)
+                .setBlank(root())
                 .with(field(StringsAbc::getA), "A")
                 .with(field(StringsAbc::getB), "B1", "B2")
-                .withBlank(root())
                 .list();
 
         assertThat(results).allSatisfy(result -> {
@@ -59,11 +59,11 @@ class BlankCartesianProductTest {
     }
 
     @Test
-    void cartesianProduct_withBlankNestedPojo() {
+    void setBlankNestedPojo() {
         final List<StringsAbc> results = Instancio.ofCartesianProduct(StringsAbc.class)
+                .setBlank(field(StringsAbc::getDef))
                 .with(field(StringsAbc::getA), "A")
                 .with(field(StringsAbc::getB), "B1", "B2")
-                .withBlank(field(StringsAbc::getDef))
                 .list();
 
         assertThat(results).allSatisfy(result -> {

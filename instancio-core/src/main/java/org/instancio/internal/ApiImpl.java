@@ -146,8 +146,8 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> withBlank(final TargetSelector selector) {
-        modelContextBuilder.withBlank(selector);
+    public InstancioApi<T> setBlank(final TargetSelector selector) {
+        modelContextBuilder.setBlank(selector);
         return this;
     }
 

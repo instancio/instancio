@@ -194,7 +194,7 @@ public final class Instancio {
      * @param type the type of blank object to create
      * @param <T>  the type of object
      * @return a blank object of the specified type
-     * @see InstancioOperations#withBlank(TargetSelector)
+     * @see InstancioOperations#setBlank(TargetSelector)
      * @see #ofBlank(Class)
      * @since 4.7.0
      */
@@ -414,13 +414,13 @@ public final class Instancio {
      * @param type the type of blank object to create
      * @param <T>  the type of object
      * @return API builder reference
-     * @see InstancioOperations#withBlank(TargetSelector)
+     * @see InstancioOperations#setBlank(TargetSelector)
      * @since 4.7.0
      */
     @ExperimentalApi
     public static <T> InstancioOfClassApi<T> ofBlank(final Class<T> type) {
         final InstancioOfClassApi<T> api = new OfClassApiImpl<>(type);
-        api.withBlank(Select.root());
+        api.setBlank(Select.root());
         return api;
     }
 

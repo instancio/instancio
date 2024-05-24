@@ -45,30 +45,30 @@ import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
 /**
- * Tests for {@link InstancioApi#withBlank(TargetSelector)}.
+ * Tests for {@link InstancioApi#setBlank(TargetSelector)}.
  */
 @FeatureTag(Feature.BLANK)
 @ExtendWith(InstancioExtension.class)
-class WithBlankTest {
+class SetBlankTest {
 
     @WithSettings
     private final Settings settings = Settings.create()
             .set(Keys.FAIL_ON_ERROR, true);
 
     @Test
-    void withBlankField_valueType() {
+    void setBlankField_valueType() {
         final StringFields result = Instancio.of(StringFields.class)
-                .withBlank(field(StringFields::getOne))
-                .withBlank(field(StringFields::getThree))
+                .setBlank(field(StringFields::getOne))
+                .setBlank(field(StringFields::getThree))
                 .create();
 
         assertThat(result).hasNoNullFieldsOrPropertiesExcept("one", "three");
     }
 
     @Test
-    void withBlankField_collectionOfValueType() {
+    void setBlankField_collectionOfValueType() {
         final TwoListsOfLong result = Instancio.of(TwoListsOfLong.class)
-                .withBlank(field(TwoListsOfLong::getList1))
+                .setBlank(field(TwoListsOfLong::getList1))
                 .create();
 
         assertThat(result.getList1()).isEmpty();
@@ -76,9 +76,9 @@ class WithBlankTest {
     }
 
     @Test
-    void withBlankFieldCollectionOfPojo() {
+    void setBlankFieldCollectionOfPojo() {
         final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                .withBlank(field(TwoListsOfItemString::getList1))
+                .setBlank(field(TwoListsOfItemString::getList1))
                 .create();
 
         assertThat(result.getList1()).isEmpty();
@@ -87,9 +87,9 @@ class WithBlankTest {
     }
 
     @Test
-    void withBlankFieldCollectionOfPojoAndCollectionOfSizeOverride() {
+    void setBlankFieldCollectionOfPojoAndCollectionOfSizeOverride() {
         final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                .withBlank(field(TwoListsOfItemString::getList1))
+                .setBlank(field(TwoListsOfItemString::getList1))
                 .generate(field(TwoListsOfItemString::getList1), gen -> gen.collection().size(2))
                 .create();
 
@@ -101,7 +101,7 @@ class WithBlankTest {
     }
 
     @Test
-    void withBlankNestedPojo() {
+    void setBlankNestedPojo() {
         @Getter
         class Container {
             // This should be blank
@@ -113,7 +113,7 @@ class WithBlankTest {
         }
 
         final Container result = Instancio.of(Container.class)
-                .withBlank(field(Container::getNestedPojo))
+                .setBlank(field(Container::getNestedPojo))
                 .create();
 
         assertBlankPojo(result.nestedPojo);

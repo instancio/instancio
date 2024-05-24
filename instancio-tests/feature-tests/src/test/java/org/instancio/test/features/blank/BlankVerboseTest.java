@@ -60,9 +60,9 @@ class BlankVerboseTest {
     @RunWith.FieldAssignmentOnly
     void verbose() {
         Instancio.ofBlank(Person.class)
-                .withBlank(all(Address.class))
-                .withBlank(field(Address::getCity))
-                .withBlank(fields().named("country"))
+                .setBlank(all(Address.class))
+                .setBlank(field(Address::getCity))
+                .setBlank(fields().named("country"))
                 .verbose()
                 .create();
 

@@ -600,7 +600,7 @@ interface InstancioOperations<T> {
      * <p>Example:
      * <pre>{@code
      * Person person = Instancio.of(Person.class)
-     *     .withBlank(field(Person::getAddress))
+     *     .setBlank(field(Person::getAddress))
      *     .create();
      *
      * // Output:
@@ -618,5 +618,5 @@ interface InstancioOperations<T> {
      * @since 4.7.0
      */
     @ExperimentalApi
-    InstancioOperations<T> withBlank(TargetSelector selector);
+    InstancioOperations<T> setBlank(TargetSelector selector);
 }

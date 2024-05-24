@@ -221,7 +221,7 @@ Person person = Instancio.ofBlank(Person.class)
 // Person[name=null, address=Address[street=null, city=null, country=Canada]]
 ```
 
-See the documentation for [`withBlank(TargetSelector)`](#using-withblank) method
+See the documentation for [`setBlank(TargetSelector)`](#using-setblank) method
 for more details on blank objects.
 
 ### Creating Simple Values
@@ -1349,7 +1349,7 @@ List<User> users = Instancio.ofList(User.class)
 Therefore, customising objects using other APIs, such as [`generate()`](#using-generate)
 should be preferred over `filter()`, if possible.
 
-### Using `withBlank()`
+### Using `setBlank()`
 
 !!! info "This is an experimental API available since version 4.7.0"
 
@@ -1380,8 +1380,8 @@ The following snippet
 
 ```java linenums="1" hl_lines="1"
 Person person = Instancio.of(Person.class)
-    .withBlank(field(Person::getPhoneNumbers))
-    .withBlank(all(Address.class))
+    .setBlank(field(Person::getPhoneNumbers))
+    .setBlank(all(Address.class))
     .create();
 ```
 !!! attention ""
@@ -1404,8 +1404,8 @@ generate a collection of blank phones of size `2`, and set the `countryCode` to 
 
 ```java linenums="1"
 Person person = Instancio.of(Person.class)
-    .withBlank(field(Person::getPhoneNumbers))
-    .withBlank(all(Address.class))
+    .setBlank(field(Person::getPhoneNumbers))
+    .setBlank(all(Address.class))
     .generate(field(Person::getPhoneNumbers), gen -> gen.collection().size(2))
     .set(field(Phone::getCountryCode), "+1")
     .set(field(Address::getCountry), "Canada")

@@ -439,9 +439,9 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withBlank(final TargetSelector selector) {
+        public Builder<T> setBlank(final TargetSelector selector) {
             if (Objects.equals(selector, Select.root())) {
-                withBlankTargets(); // special case for root selector (no scopes)
+                setBlankTargets(); // special case for root selector (no scopes)
             } else {
                 final List<TargetSelector> processedSelectors = selectorProcessor.process(selector);
 
@@ -450,13 +450,13 @@ public final class ModelContext<T> {
                     final Scope[] effectiveScopes = CollectionUtils.combine(target.getScopes(), target.toScope())
                             .toArray(new Scope[0]);
 
-                    withBlankTargets(effectiveScopes);
+                    setBlankTargets(effectiveScopes);
                 }
             }
             return this;
         }
 
-        private void withBlankTargets(final Scope... scopes) {
+        private void setBlankTargets(final Scope... scopes) {
             withSupplier(BlankSelectors.leafSelector().within(scopes), () -> null);
             withGeneratorSpec(BlankSelectors.collectionSelector().within(scopes).lenient(), gen -> gen.collection().size(0));
             withGeneratorSpec(BlankSelectors.mapSelector().within(scopes).lenient(), gen -> gen.map().size(0));
