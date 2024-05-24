@@ -32,6 +32,8 @@ import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.ServiceProviderContext;
 import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
+import org.instancio.test.support.pojo.collections.lists.ListInteger;
+import org.instancio.test.support.pojo.collections.maps.MapIntegerItemOfString;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
 import org.instancio.test.support.pojo.collections.sets.SetInteger;
 import org.instancio.test.support.pojo.dynamic.DynPhone;
@@ -43,8 +45,11 @@ import org.instancio.test.support.pojo.person.PhoneWithType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -115,6 +120,14 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         @Override
         public GeneratorSpec<?> getGenerator(final Node node, final Generators generators) {
             if (node.getField() != null) {
+
+                // Ensure collection/map generators work with subtype()
+                if (node.getParent().getTargetClass() == ListInteger.class && node.getField().getType() == List.class) {
+                    return generators.collection().subtype(LinkedList.class);
+                }
+                if (node.getParent().getTargetClass() == MapIntegerItemOfString.class && node.getField().getType() == Map.class) {
+                    return generators.map().subtype(TreeMap.class);
+                }
 
                 if (node.getParent().getTargetClass() == SetInteger.class && node.getField().getType() == Set.class) {
                     return generators.collection().size(10);

@@ -18,6 +18,7 @@ package org.instancio.internal.generator.util;
 import org.instancio.Random;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.util.ReflectionUtils;
 
 import java.util.Collection;
 
@@ -32,7 +33,11 @@ public class CollectionGeneratorSpecImpl<T> extends CollectionGenerator<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Collection<T> tryGenerateNonNull(final Random random) {
+        if (collectionType != null) {
+            return (Collection<T>) ReflectionUtils.newInstance(collectionType);
+        }
         throw new InstancioException(getClass() + " should delegate to another generator");
     }
 }
