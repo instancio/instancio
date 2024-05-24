@@ -18,6 +18,7 @@ package org.instancio.internal.generator.util;
 import org.instancio.Random;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.util.ReflectionUtils;
 
 import java.util.Map;
 
@@ -32,7 +33,11 @@ public class MapGeneratorSpecImpl<K, V> extends MapGenerator<K, V> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<K, V> tryGenerateNonNull(final Random random) {
+        if (mapType != null) {
+            return (Map<K, V>) ReflectionUtils.newInstance(mapType);
+        }
         throw new InstancioException(getClass() + " should delegate to another generator");
     }
 }

@@ -33,6 +33,8 @@ import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioSpiException;
 import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.collections.lists.ListInteger;
+import org.instancio.test.support.pojo.collections.maps.MapIntegerItemOfString;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerString;
 import org.instancio.test.support.pojo.collections.sets.SetInteger;
 import org.instancio.test.support.pojo.dynamic.DynPhone;
@@ -52,8 +54,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -332,6 +336,23 @@ class GeneratorFromSpiTest {
         assertThat(result.getMap())
                 .isExactlyInstanceOf(HashMap.class)
                 .hasSize(10);
+    }
+
+    @Nested
+    class SpecsWithSubtypeTest {
+        @Test
+        void collectionSpecWithSubtype() {
+            final ListInteger result = Instancio.create(ListInteger.class);
+
+            assertThat(result.getList()).isExactlyInstanceOf(LinkedList.class);
+        }
+
+        @Test
+        void mapSpecWithSubtype() {
+            final MapIntegerItemOfString result = Instancio.create(MapIntegerItemOfString.class);
+
+            assertThat(result.getMap()).isExactlyInstanceOf(TreeMap.class);
+        }
     }
 
     /**
