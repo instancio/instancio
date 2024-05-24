@@ -200,7 +200,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    CartesianProductApi<T> withBlank(TargetSelector selector);
+    CartesianProductApi<T> setBlank(TargetSelector selector);
 
     /**
      * {@inheritDoc}

@@ -61,24 +61,24 @@ class BlankModelTest {
     }
 
     @Test
-    void createFromModel_withBlankObject() {
+    void createFromModel_setBlankRootObject() {
         final Model<StringHolder> model = Instancio.of(StringHolder.class).toModel();
 
         final StringHolder result = Instancio.of(model)
-                .withBlank(root())
+                .setBlank(root())
                 .create();
 
         assertThat(result.getValue()).isNull();
     }
 
     @Test
-    void createFromModelWithSelector_withBlankObject() {
+    void createFromModelWithSelector_setRootBlankObject() {
         final Model<StringHolder> model = Instancio.of(StringHolder.class)
                 .set(fields().named("value"), "foo")
                 .toModel();
 
         final StringHolder result = Instancio.of(model)
-                .withBlank(root())
+                .setBlank(root())
                 .create();
 
         assertThat(result.getValue()).isEqualTo("foo");

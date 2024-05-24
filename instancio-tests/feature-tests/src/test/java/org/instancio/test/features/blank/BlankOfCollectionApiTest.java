@@ -54,7 +54,7 @@ class BlankOfCollectionApiTest {
     @Test
     void ofList() {
         final List<StringHolder> results = Instancio.ofList(StringHolder.class)
-                .withBlank(all(StringHolder.class))
+                .setBlank(all(StringHolder.class))
                 .create();
 
         assertThat(results).isNotEmpty()
@@ -64,7 +64,7 @@ class BlankOfCollectionApiTest {
     @Test
     void ofListWithSelector() {
         final List<StringHolder> results = Instancio.ofList(StringHolder.class)
-                .withBlank(all(StringHolder.class))
+                .setBlank(all(StringHolder.class))
                 .set(field(StringHolder::getValue), "foo")
                 .create();
 
@@ -79,7 +79,7 @@ class BlankOfCollectionApiTest {
                 // disable FAIL_ON_ERROR because we can't populate a set with more than
                 // one element (by default, min size is 2, which would result an an error)
                 .withSetting(Keys.FAIL_ON_ERROR, false)
-                .withBlank(all(StringHolder.class))
+                .setBlank(all(StringHolder.class))
                 .create();
 
         assertThat(results.keySet()).hasSize(1)
@@ -92,7 +92,7 @@ class BlankOfCollectionApiTest {
                 // disable FAIL_ON_ERROR because we can't populate a set with more than
                 // one element (by default, min size is 2, which would result an an error)
                 .withSetting(Keys.FAIL_ON_ERROR, false)
-                .withBlank(all(StringHolder.class))
+                .setBlank(all(StringHolder.class))
                 .create();
 
         assertThat(results).hasSize(1)
@@ -102,7 +102,7 @@ class BlankOfCollectionApiTest {
     @Test
     void ofSet_withFailOnErrorEnabled() {
         final InstancioApi<Set<StringHolder>> api = Instancio.ofSet(StringHolder.class)
-                .withBlank(all(StringHolder.class));
+                .setBlank(all(StringHolder.class));
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioException.class)

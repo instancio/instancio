@@ -212,7 +212,7 @@ public interface InstancioApi<T> extends
      */
     @Override
     @ExperimentalApi
-    InstancioApi<T> withBlank(TargetSelector selector);
+    InstancioApi<T> setBlank(TargetSelector selector);
 
     /**
      * {@inheritDoc}

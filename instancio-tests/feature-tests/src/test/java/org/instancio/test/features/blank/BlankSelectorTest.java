@@ -55,7 +55,7 @@ class BlankSelectorTest {
     @Test
     void rootSelector() {
         final StringHolder result = Instancio.of(StringHolder.class)
-                .withBlank(root())
+                .setBlank(root())
                 .create();
 
         assertThat(result.getValue()).isNull();
@@ -64,7 +64,7 @@ class BlankSelectorTest {
     @Test
     void classSelector_nestedPojo() {
         final StringsAbc result = Instancio.of(StringsAbc.class)
-                .withBlank(all(StringsDef.class))
+                .setBlank(all(StringsDef.class))
                 .create();
 
         assertThat(result.a).isNotBlank();
@@ -77,7 +77,7 @@ class BlankSelectorTest {
     @Test
     void classSelector_collectionElementPojo() {
         final Person result = Instancio.of(Person.class)
-                .withBlank(all(Phone.class))
+                .setBlank(all(Phone.class))
                 .create();
 
         // blank elements
@@ -93,7 +93,7 @@ class BlankSelectorTest {
     @Test
     void classSelector_withScope() {
         final TwoListsOfItemString result = Instancio.of(TwoListsOfItemString.class)
-                .withBlank(all(Item.class).within(scope(TwoListsOfItemString::getList2)))
+                .setBlank(all(Item.class).within(scope(TwoListsOfItemString::getList2)))
                 .create();
 
         assertThat(result.getList1()).isNotEmpty().allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
@@ -103,7 +103,7 @@ class BlankSelectorTest {
     @Test
     void classSelector_withDepth() {
         final StringsAbc result = Instancio.of(StringsAbc.class)
-                .withBlank(types().atDepth(d -> d > 1))
+                .setBlank(types().atDepth(d -> d > 1))
                 .create();
 
         assertThat(result.a).isNotBlank();
@@ -120,7 +120,7 @@ class BlankSelectorTest {
                 field(MainPojo::getDetailPojos).within(scope(MainPojoContainer::getMainPojo2)));
 
         final MainPojoContainer result = Instancio.of(MainPojoContainer.class)
-                .withBlank(group)
+                .setBlank(group)
                 .create();
 
         assertThat(result.getMainPojo1().getId()).isNull();
@@ -136,7 +136,7 @@ class BlankSelectorTest {
     @Test
     void unmatchedBlankSelector_shouldBeSilentlyIgnored() {
         final StringHolder result = Instancio.of(StringHolder.class)
-                .withBlank(allInts())
+                .setBlank(allInts())
                 .create();
 
         assertThat(result.getValue()).isNotBlank();
