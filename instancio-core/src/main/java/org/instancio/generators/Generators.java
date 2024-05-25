@@ -285,11 +285,12 @@ public class Generators {
     }
 
     /**
-     * Emits provided items. This generator would typically be used
-     * to generate collections containing different expected values.
+     * Emits provided items to a selector's target.
+     * The main use case for this generator us to customise fields
+     * of collection elements.
      *
-     * <p>The following example generates a list of 7 orders with different
-     * statuses: 1 received, 1 shipped, 3 completed, and 2 cancelled.
+     * <p>For example, the snippet below generates a list of 7 orders with
+     * different statuses: 1 received, 1 shipped, 3 completed, and 2 cancelled.
      *
      * <pre>{@code
      *   List<Order> orders = Instancio.ofList(Order.class)
@@ -301,26 +302,36 @@ public class Generators {
      *     .create();
      * }</pre>
      *
+     * <p>Note that the number of items being emitted is equal to the
+     * collection size. If there are not enough items to emit for
+     * a given collection size, then by default, random values will be
+     * generated. This behaviour can be customised using the following methods:
+     *
+     * <ul>
+     *  <li>{@link EmitGeneratorSpec#whenEmptyEmitNull()}</li>
+     *  <li>{@link EmitGeneratorSpec#whenEmptyEmitRandom()} (default behaviour)</li>
+     *  <li>{@link EmitGeneratorSpec#whenEmptyRecycle()} (reuse items)</li>
+     *  <li>{@link EmitGeneratorSpec#whenEmptyThrowException()}</li>
+     * </ul>
+     *
      * <p>If the selector target is a group, then each selector will
      * have its own copy of items, for example:
      *
      * <pre>{@code
-     *   // Given
-     *   class FooBar {
-     *       String foo;
-     *       String bar;
-     *   }
+     * // Given
+     * record FooBar(String foo, String bar) {}
      *
-     *   TargetSelector fooAndBarFields = Select.all(
-     *       field(FooBar::getFoo),
-     *       field(FooBar::getBar));
+     * TargetSelector selectorGroup = Select.all(
+     *     field(FooBar::foo),
+     *     field(FooBar::bar)
+     * );
      *
-     *   // When
-     *   FooBar result = Instancio.of(FooBar.class)
-     *       .generate(fooAndBarFields, gen -> gen.emit().items("BAZ"))
-     *       .create();
+     * // When
+     * FooBar result = Instancio.of(FooBar.class)
+     *     .generate(selectorGroup, gen -> gen.emit().items("BAZ"))
+     *     .create();
      *
-     *   // Then => FooBar[foo=BAZ, bar=BAZ]
+     * // Output: FooBar[foo=BAZ, bar=BAZ]
      * }</pre>
      *
      * <p><b>Warning:</b> special care must be taken to ensure that the

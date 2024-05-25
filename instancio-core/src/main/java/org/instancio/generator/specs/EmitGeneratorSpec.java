@@ -64,16 +64,16 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * <p>This method can be invoked multiple times and combined
      * with {@link #items(Object[])}.
      *
-     * @param item to emit, {@code null} allowed
-     *             unless the target is a {@link Map} key
-     * @param n    number of times the item should be emitted;
-     *             must not be negative
+     * @param item      to emit, {@code null} allowed
+     *                  unless the target is a {@link Map} key
+     * @param emitCount number of times the item should be emitted;
+     *                  must not be negative
      * @return spec builder
      * @see #items(Object[])
      * @see #items(Iterable)
      * @since 2.12.0
      */
-    EmitGeneratorSpec<T> item(T item, int n);
+    EmitGeneratorSpec<T> item(T item, int emitCount);
 
     /**
      * Specifies that items should be emitted in random order.

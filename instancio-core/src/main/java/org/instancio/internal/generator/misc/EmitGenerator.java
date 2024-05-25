@@ -84,9 +84,9 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
     }
 
     @Override
-    public EmitGenerator<T> item(final T item, final int n) {
-        ApiValidator.isTrue(n >= 0, "Number of items must not be negative: " + n);
-        for (int i = 0; i < n; i++) {
+    public EmitGenerator<T> item(final T item, final int emitCount) {
+        ApiValidator.isTrue(emitCount >= 0, "Emit count must not be negative: " + emitCount);
+        for (int i = 0; i < emitCount; i++) {
             addItem(item);
         }
         return this;
