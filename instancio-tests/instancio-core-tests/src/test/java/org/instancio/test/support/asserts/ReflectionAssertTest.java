@@ -110,7 +110,7 @@ class ReflectionAssertTest {
 
     private static Address createAddressFilledWithFoo() {
         return Address.builder()
-                .address(FOO)
+                .street(FOO)
                 .city(FOO)
                 .country(FOO)
                 .phoneNumbers(Arrays.asList(

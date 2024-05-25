@@ -39,7 +39,7 @@ public class PersonCreationTest extends CreationTestTemplate<Person> {
 
         assertThat(result.getAddress()).isNotNull()
                 .satisfies(address -> {
-                    assertThat(address.getAddress()).isNotBlank();
+                    assertThat(address.getStreet()).isNotBlank();
                     assertThat(address.getCity()).isNotBlank();
                     assertThat(address.getCountry()).isNotBlank();
                     assertThat(address.getPhoneNumbers())

@@ -71,7 +71,7 @@ class WithNullableAdhocTest {
             nullableCountryCode.addAll(phoneNumbers.stream().map(Phone::getCountryCode).collect(toSet()));
             nullablePhoneNumber.addAll(phoneNumbers.stream().map(Phone::getNumber).collect(toSet()));
             nonNullableResults.add(person.getName());
-            nonNullableResults.add(address.getAddress());
+            nonNullableResults.add(address.getStreet());
             nonNullableResults.add(address.getCity());
             nonNullableResults.add(address.getCountry());
             nonNullableResults.addAll(Arrays.stream(person.getPets()).map(Pet::getName).collect(toSet()));

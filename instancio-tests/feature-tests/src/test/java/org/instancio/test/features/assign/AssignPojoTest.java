@@ -75,7 +75,7 @@ class AssignPojoTest {
                 .isSameAs(address);
 
         // should be populated due to default generator hint
-        assertThat(address.getAddress()).isNotBlank();
+        assertThat(address.getStreet()).isNotBlank();
         assertThat(address.getCity()).isNotBlank();
         assertThat(address.getCountry()).isNotBlank();
         assertThat(address.getPhoneNumbers()).isNotEmpty();

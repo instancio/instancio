@@ -30,7 +30,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @Pojo
 public class Address {
-    private String address;
+    private String street;
     private String city;
     private String country;
     private List<Phone> phoneNumbers;

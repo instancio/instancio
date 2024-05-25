@@ -51,9 +51,9 @@ class AmbiguousAssigmentErrorTest extends AbstractErrorMessageTestTemplate {
                  -> The origin selector 'all(String)' matches multiple values.
                     It's not clear which of these values should be used:
 
-                 -> Match 1: field Address.address
+                 -> Match 1: field Address.street
 
-                    <1:Address: String address>
+                    <1:Address: String street>
                      └──<0:Address>
 
                  -> Match 2: field Address.city

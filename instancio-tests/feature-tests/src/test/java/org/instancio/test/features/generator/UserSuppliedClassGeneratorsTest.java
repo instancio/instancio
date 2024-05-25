@@ -66,7 +66,7 @@ class UserSuppliedClassGeneratorsTest {
 
         assertThat(person.getName()).isEqualTo(expectedName);
         assertThat(person.getAddress().getCity()).startsWith(prefix);
-        assertThat(person.getAddress().getAddress()).startsWith(prefix);
+        assertThat(person.getAddress().getStreet()).startsWith(prefix);
         assertThat(person.getAddress().getCountry()).startsWith(prefix);
 
         person.getAddress().getPhoneNumbers().forEach(phone -> {

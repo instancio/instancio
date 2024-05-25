@@ -49,7 +49,7 @@ class NodeStatsTest {
                  ├──<1:Person: UUID uuid; setUuid(UUID)>
                  ├──<1:Person: String name; setName(String)>
                  ├──<1:Person: Address address; setAddress(Address)>
-                 │   ├──<2:Address: String address; setAddress(String)>
+                 │   ├──<2:Address: String street; setStreet(String)>
                  │   ├──<2:Address: String city; setCity(String)>
                  │   ├──<2:Address: String country; setCountry(String)>
                  │   └──<2:Address: List<Phone> phoneNumbers; setPhoneNumbers(List<Phone>)>

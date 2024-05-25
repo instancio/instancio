@@ -157,7 +157,7 @@ class IgnoreTest {
                 .create();
 
         assertThat(person.getName()).isNotNull();
-        assertThat(person.getAddress().getAddress()).isNull();
+        assertThat(person.getAddress().getStreet()).isNull();
         assertThat(person.getAddress().getCity()).isNull();
         assertThat(person.getAddress().getCountry()).isNull();
         assertThat(person.getAddress().getPhoneNumbers()).extracting(Phone::getNumber).containsOnlyNulls();

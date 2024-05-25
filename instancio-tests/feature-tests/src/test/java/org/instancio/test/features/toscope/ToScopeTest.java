@@ -95,7 +95,7 @@ class ToScopeTest {
     }
 
     private static void assertExpectedStrings(final Address result) {
-        assertThat(result.getAddress()).isNotEqualTo(FOO);
+        assertThat(result.getStreet()).isNotEqualTo(FOO);
         assertThat(result.getCity()).isNotEqualTo(FOO);
         assertThat(result.getCountry()).isNotEqualTo(FOO);
         assertThat(result.getPhoneNumbers()).allSatisfy(phone ->
