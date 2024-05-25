@@ -545,8 +545,7 @@ class InstancioEngine {
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private GeneratorResult generateRecord(final InternalNode node) {
-        // Handle the case where user supplies a generator for creating a record.
-        // This could be a regular generator or an assignment generator.
+        // Handle the case where user supplies a generator for creating a record,
         final GeneratorResult customRecord = generateValue(node);
 
         if (!customRecord.isEmpty()) {
@@ -558,10 +557,8 @@ class InstancioEngine {
         final Object[] args = new Object[children.size()];
         final Class<?>[] ctorArgs = RecordUtils.getComponentTypes(node.getTargetClass());
 
-        // There may have been a cyclic node structure that was terminated with a null node.
-        // If we don't have enough arguments for the record's constructor, simply return null.
         if (ctorArgs.length != args.length) {
-            LOG.debug("Record {} has {} constructor arguments, but got {}",
+            LOG.debug("Record {} has {} constructor arguments, but the node has {} children. Returning a null result",
                     node.getTargetClass(), ctorArgs.length, args.length);
 
             return GeneratorResult.nullResult();

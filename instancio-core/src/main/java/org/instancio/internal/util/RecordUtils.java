@@ -27,13 +27,11 @@ public final class RecordUtils {
 
     @SuppressWarnings("unused")
     public static <T> T instantiate(final Class<T> recordClass, final Object... args) {
-        // no-op implementation until java 16
-        return null;
+        throw new IllegalStateException("Should not be invoked");
     }
 
     @SuppressWarnings({"PMD.ReturnEmptyCollectionRatherThanNull", "unused"})
     public static Class<?>[] getComponentTypes(final Class<?> recordClass) {
-        // no-op implementation until java 16
-        return null; // NOSONAR
+        throw new IllegalStateException("Should not be invoked");
     }
 }
