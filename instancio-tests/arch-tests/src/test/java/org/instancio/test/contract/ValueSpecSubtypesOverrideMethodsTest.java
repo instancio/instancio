@@ -45,7 +45,6 @@ import org.instancio.generator.specs.UUIDStringSpec;
 import org.instancio.generator.specs.YearMonthSpec;
 import org.instancio.generator.specs.YearSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
-import org.instancio.internal.util.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -169,7 +168,7 @@ class ValueSpecSubtypesOverrideMethodsTest {
      */
     private static void assertSpecOverridesSuperMethods(final Class<?> specClass, final String... excludedMethods) {
         final List<Method> superMethods = getMethodsFromParentInterfaces(
-                specClass, CollectionUtils.asSet(excludedMethods));
+                specClass, Arrays.stream(excludedMethods).collect(Collectors.toSet()));
 
         assertSpecOverridesAll(specClass, superMethods);
     }
@@ -192,8 +191,7 @@ class ValueSpecSubtypesOverrideMethodsTest {
         // These are terminal methods from ValueSpec
         // They return a result and don't need to be overridden
         // We're only interested in builder methods used for chaining API calls
-        final Set<String> exclusions = new HashSet<>(
-                CollectionUtils.asSet("get", "list", "map", "stream", "toModel"));
+        final Set<String> exclusions = new HashSet<>(List.of("get", "list", "map", "stream", "toModel"));
 
         exclusions.addAll(excludedMethods);
 
@@ -201,7 +199,7 @@ class ValueSpecSubtypesOverrideMethodsTest {
         for (Class<?> interfaceClass : specClass.getInterfaces()) {
             final List<Method> filtered = Arrays.stream(interfaceClass.getDeclaredMethods())
                     .filter(m -> !exclusions.contains(m.getName()) && !m.getName().contains("jacoco"))
-                    .collect(Collectors.toList());
+                    .toList();
 
             methods.addAll(filtered);
         }

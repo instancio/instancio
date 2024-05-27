@@ -32,8 +32,8 @@ module org.instancio.core {
     exports org.instancio.internal.generator.domain.internet to org.instancio.guava;
     exports org.instancio.internal.generator.util to org.instancio.guava;
     exports org.instancio.internal.spi to org.instancio.guava;
+    exports org.instancio.internal.util to org.instancio.guava, org.instancio.junit, org.instancio.quickcheck;
     exports org.instancio.support to org.instancio.junit;
-    exports org.instancio.internal.util to org.instancio.guava, org.instancio.junit, org.instancio.quickcheck, org.instancio.test.contract;
 
     uses org.instancio.spi.InstancioServiceProvider;
 
