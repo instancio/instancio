@@ -114,7 +114,7 @@ class SettingsTest {
     }
 
     @Test
-    void getSetEnum() {
+    void enumSetting() {
         final Settings settings = Settings.create().set(Keys.MODE, Mode.LENIENT);
         assertThat(settings.get(Keys.MODE)).isEqualTo(Mode.LENIENT);
     }

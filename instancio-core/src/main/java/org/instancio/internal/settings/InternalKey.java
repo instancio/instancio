@@ -34,6 +34,17 @@ public final class InternalKey<T>
     private final boolean allowsNullValue;
     private final boolean allowsNegative;
 
+    /**
+     * Constructor.
+     *
+     * @param propertyKey used for {@code instancio.properties}
+     * @param type the type of the key
+     * @param defaultValue optional default devalue
+     * @param rangeAdjuster an adjuster for range settings, such as min/max
+     * @param allowsNullValue whether this setting can be {@code null}
+     * @param allowsNegative whether range can be negative;
+     *                       only needed if {@code rangeAdjuster} is specified
+     */
     public InternalKey(final String propertyKey,
                        final Class<?> type,
                        @Nullable final Object defaultValue,
@@ -54,14 +65,14 @@ public final class InternalKey<T>
         return propertyKey;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public Class<T> type() {
         return (Class<T>) type;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public T defaultValue() {
         return (T) defaultValue;
     }

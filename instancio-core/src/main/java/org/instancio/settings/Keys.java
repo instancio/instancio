@@ -480,8 +480,8 @@ public final class Keys {
      *
      * @since 1.5.1
      */
-    public static final SettingKey<Long> SEED = registerOptionalNonAdjustable(
-            "seed", Long.class, null);
+    public static final SettingKey<Long> SEED = register(
+            "seed", Long.class, null, null, true, true);
 
     /**
      * Specifies whether back references should be set for cyclic classes;
@@ -713,14 +713,6 @@ public final class Keys {
             final boolean allowsNegative) {
 
         return register(propertyKey, type, defaultValue, rangeAdjuster, false, allowsNegative);
-    }
-
-    private static <T> SettingKey<T> registerOptionalNonAdjustable(
-            @NotNull final String key,
-            @NotNull final Class<T> type,
-            @Nullable final Object defaultValue) {
-
-        return register(key, type, defaultValue, null, true, false);
     }
 
     private static <T> SettingKey<T> registerRequiredNonAdjustable(
