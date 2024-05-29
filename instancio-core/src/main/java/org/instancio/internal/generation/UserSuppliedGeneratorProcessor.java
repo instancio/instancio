@@ -27,8 +27,6 @@ import org.instancio.internal.generator.SpiGeneratorResolver;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
-import org.instancio.internal.generator.misc.InstantiatingGenerator;
-import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
 import org.jetbrains.annotations.NotNull;
@@ -44,19 +42,16 @@ public final class UserSuppliedGeneratorProcessor {
     private final ModelContext<?> context;
     private final GeneratorResolver generatorResolver;
     private final SpiGeneratorResolver spiGeneratorResolver;
-    private final Instantiator instantiator;
     private final EmitGeneratorHelper emitGeneratorHelper;
 
     public UserSuppliedGeneratorProcessor(
             final ModelContext<?> context,
             final GeneratorResolver generatorResolver,
-            final SpiGeneratorResolver spiGeneratorResolver,
-            final Instantiator instantiator) {
+            final SpiGeneratorResolver spiGeneratorResolver) {
 
         this.context = context;
         this.generatorResolver = generatorResolver;
         this.spiGeneratorResolver = spiGeneratorResolver;
-        this.instantiator = instantiator;
         this.emitGeneratorHelper = new EmitGeneratorHelper(context);
     }
 
@@ -125,9 +120,6 @@ public final class UserSuppliedGeneratorProcessor {
 
         if (generator == null) {
             generator = generatorResolver.getCached(actualNode);
-        }
-        if (generator == null) {
-            generator = new InstantiatingGenerator(instantiator, targetClass);
         }
         return generator;
     }

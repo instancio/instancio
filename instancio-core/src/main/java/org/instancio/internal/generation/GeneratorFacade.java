@@ -22,7 +22,6 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.SpiGeneratorResolver;
-import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
@@ -53,11 +52,8 @@ public class GeneratorFacade {
         final SpiGeneratorResolver spiGeneratorResolver = new SpiGeneratorResolver(
                 context, generatorContext, generatorResolver);
 
-        final Instantiator instantiator = new Instantiator(
-                context.getServiceProviders().getTypeInstantiators());
-
         final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
-                context, generatorResolver, spiGeneratorResolver, instantiator);
+                context, generatorResolver, spiGeneratorResolver);
 
         assignmentNodeHandler = AssignmentNodeHandler.create(context, assigmentObjectStore, userSuppliedGeneratorProcessor);
         userSuppliedGeneratorHandler = UserSuppliedGeneratorHandler.create(context, userSuppliedGeneratorProcessor);
@@ -68,7 +64,7 @@ public class GeneratorFacade {
         addHandler(new SpiGeneratorNodeHandler(context, spiGeneratorResolver));
         addHandler(AnnotationNodeHandler.create(context, generatorResolver));
         addHandler(new UsingGeneratorResolverHandler(context, generatorResolver));
-        addHandler(new InstantiatingHandler(instantiator));
+        addHandler(new InstantiatingHandler(context));
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals")

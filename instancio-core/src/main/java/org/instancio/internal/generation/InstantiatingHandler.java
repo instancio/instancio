@@ -17,6 +17,7 @@ package org.instancio.internal.generation;
 
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
@@ -32,8 +33,9 @@ class InstantiatingHandler implements NodeHandler {
 
     private final Instantiator instantiator;
 
-    InstantiatingHandler(final Instantiator instantiator) {
-        this.instantiator = instantiator;
+    InstantiatingHandler(final ModelContext<?> context) {
+        this.instantiator = new Instantiator(context.getServiceProviders().getTypeInstantiators());
+
     }
 
     @NotNull
