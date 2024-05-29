@@ -17,6 +17,7 @@ package org.instancio.spi.tests;
 
 import org.example.FooRecord;
 import org.example.generator.CustomIntegerGenerator;
+import org.example.generator.CustomListOfPojosGenerator;
 import org.example.spi.CustomGeneratorProvider;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
@@ -373,4 +374,37 @@ class GeneratorFromSpiTest {
         private byte primitive;
         private Byte wrapper;
     }
+
+    @Nested
+    class CustomListOfPojoGeneratorTest {
+        @Test
+        void create() {
+            final CustomListOfPojosGenerator.Container results = Instancio.create(CustomListOfPojosGenerator.Container.class);
+
+            assertThat(results.getList())
+                    .hasSize(1)
+                    .allSatisfy(pojo -> assertThat(pojo.getValue()).isNotNull());
+        }
+
+        @Test
+        void ignoreList() {
+            final CustomListOfPojosGenerator.Container results = Instancio.of(CustomListOfPojosGenerator.Container.class)
+                    .ignore(field(CustomListOfPojosGenerator.Container::getList))
+                    .create();
+
+            assertThat(results.getList()).isNull();
+        }
+
+        @Test
+        void ignorePojo() {
+            final CustomListOfPojosGenerator.Container results = Instancio.of(CustomListOfPojosGenerator.Container.class)
+                    .ignore(all(CustomListOfPojosGenerator.Pojo.class))
+                    .create();
+
+            assertThat(results.getList())
+                    .hasSize(1)
+                    .allMatch(pojo -> pojo.getValue() == null);
+        }
+    }
+
 }

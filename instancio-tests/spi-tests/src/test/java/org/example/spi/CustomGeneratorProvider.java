@@ -17,6 +17,7 @@ package org.example.spi;
 
 import org.example.FooRecord;
 import org.example.generator.CustomIntegerGenerator;
+import org.example.generator.CustomListOfPojosGenerator;
 import org.instancio.Gen;
 import org.instancio.Node;
 import org.instancio.Random;
@@ -121,22 +122,29 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         public GeneratorSpec<?> getGenerator(final Node node, final Generators generators) {
             if (node.getField() != null) {
 
+                final Class<?> parentClass = node.getParent().getTargetClass();
+                final Class<?> fieldType = node.getField().getType();
+
                 // Ensure collection/map generators work with subtype()
-                if (node.getParent().getTargetClass() == ListInteger.class && node.getField().getType() == List.class) {
+                if (parentClass == ListInteger.class && fieldType == List.class) {
                     return generators.collection().subtype(LinkedList.class);
                 }
-                if (node.getParent().getTargetClass() == MapIntegerItemOfString.class && node.getField().getType() == Map.class) {
+                if (parentClass == MapIntegerItemOfString.class && fieldType == Map.class) {
                     return generators.map().subtype(TreeMap.class);
                 }
 
-                if (node.getParent().getTargetClass() == SetInteger.class && node.getField().getType() == Set.class) {
+                if (parentClass == SetInteger.class && fieldType == Set.class) {
                     return generators.collection().size(10);
                 }
-                if (node.getParent().getTargetClass() == WithIntegerArray.class && node.getField().getType() == Integer[].class) {
+                if (parentClass == WithIntegerArray.class && fieldType == Integer[].class) {
                     return generators.array().length(10);
                 }
-                if (node.getParent().getTargetClass() == MapIntegerString.class && node.getField().getType() == Map.class) {
+                if (parentClass == MapIntegerString.class && fieldType == Map.class) {
                     return generators.map().size(10);
+                }
+
+                if (parentClass == CustomListOfPojosGenerator.Container.class && fieldType == List.class) {
+                    return new CustomListOfPojosGenerator();
                 }
 
                 // Set string length based on annotation attributes
