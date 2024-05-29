@@ -32,7 +32,7 @@ final class ReflectionFactoryHelper {
         try {
             final Constructor<T> ctor = getNewConstructorForSerialization(klass);
             return (T) ctor.newInstance();
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             ExceptionUtils.logException(
                     "Error instantiating {} via newConstructorForSerialization", ex, klass);
             return null;

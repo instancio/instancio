@@ -16,6 +16,7 @@
 package org.instancio.internal.instantiation;
 
 import org.instancio.test.support.pojo.misc.WithNonDefaultConstructorThrowingError;
+import org.instancio.test.support.pojo.misc.WithStaticInitializerThrowingError;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,5 +29,13 @@ class ReflectionFactoryHelperTest {
                 WithNonDefaultConstructorThrowingError.class);
 
         assertThat(result).isNotNull();
+    }
+
+    @Test
+    void shouldReturnNullIfInstantiationFails() {
+        final WithStaticInitializerThrowingError result = ReflectionFactoryHelper.createInstance(
+                WithStaticInitializerThrowingError.class);
+
+        assertThat(result).isNull();
     }
 }
