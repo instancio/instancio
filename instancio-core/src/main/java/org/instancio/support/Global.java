@@ -50,7 +50,15 @@ public final class Global {
     }
 
     public static GeneratorContext generatorContext() {
-        return new GeneratorContext(resolveSettings(), CONFIGURED_RANDOM);
+        final Random random;
+        if (CONFIGURED_RANDOM != null) {
+            random = CONFIGURED_RANDOM;
+        } else if (ThreadLocalRandom.getInstance().get() != null) {
+            random = ThreadLocalRandom.getInstance().get();
+        } else {
+            random = new DefaultRandom(); // random seed
+        }
+        return new GeneratorContext(resolveSettings(), random);
     }
 
     private static Settings resolveSettings() {

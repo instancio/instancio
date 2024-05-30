@@ -16,6 +16,7 @@
 package org.instancio.test.features.generator.seed;
 
 import org.instancio.Instancio;
+import org.instancio.Result;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
 import org.instancio.test.support.tags.Feature;
@@ -37,7 +38,10 @@ class WithSeedAnnotationTest {
     @Seed(SEED)
     @DisplayName("Verify string created from @Seed(...) value")
     void assertStringCreatedFromSuppliedSeed() {
-        assertThat(Instancio.create(String.class)).isEqualTo(EXPECTED_RANDOM_STRING);
+        final Result<String> result = Instancio.of(String.class).asResult();
+
+        assertThat(result.getSeed()).isEqualTo(SEED);
+        assertThat(result.get()).isEqualTo(EXPECTED_RANDOM_STRING);
     }
 
     @Test
@@ -53,15 +57,18 @@ class WithSeedAnnotationTest {
     @Seed(SEED)
     @DisplayName("withSeed() should take precedence over the @Seed annotation")
     void modelSeedShouldTakePrecedenceOverSeedAnnotation() {
-        final String result1 = Instancio.create(String.class);
+        final Result<String> result1 = Instancio.of(String.class).asResult();
 
         final long otherSeed = 4567;
-        final String result2 = Instancio.of(String.class)
+        final Result<String> result2 = Instancio.of(String.class)
                 .withSeed(otherSeed)
-                .create();
+                .asResult();
 
-        assertThat(result1)
+        assertThat(result1.getSeed()).isEqualTo(SEED);
+        assertThat(result2.getSeed()).isEqualTo(otherSeed);
+
+        assertThat(result1.get())
                 .isEqualTo(EXPECTED_RANDOM_STRING)
-                .isNotEqualTo(result2);
+                .isNotEqualTo(result2.get());
     }
 }

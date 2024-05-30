@@ -18,6 +18,7 @@ package org.instancio.test.features.values;
 import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -33,13 +34,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ValueSpecWithSettingsAnnotationSeedTest {
 
     private static final long EXPECTED_SEED = -1L;
+    private static final String EXPECTED_VALUE = "VJFOW";
 
     @WithSettings
     private static final Settings settings = Settings.create()
             .set(Keys.SEED, EXPECTED_SEED);
 
+    @Seed(EXPECTED_SEED)
     @Test
-    void shouldBeGeneratedUsingExpectedSeed() {
+    void gen_shouldGenerateUsingAnnotationSeed() {
+        final String result = Gen.string().get();
+
+        assertThat(result).isEqualTo(EXPECTED_VALUE);
+    }
+
+    @Seed(EXPECTED_SEED)
+    @Test
+    void create_shouldGenerateUsingAnnotationSeed() {
+        final String result = Instancio.create(String.class);
+
+        assertThat(result).isEqualTo(EXPECTED_VALUE);
+    }
+
+    @Test
+    void shouldGenerateTheSameValues1() {
         final String expected = Instancio.of(String.class)
                 .withSeed(EXPECTED_SEED)
                 .create();
@@ -47,5 +65,13 @@ class ValueSpecWithSettingsAnnotationSeedTest {
         final String actual = Gen.string().get();
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void shouldGenerateTheSameValues2() {
+        final String first = Gen.string().get();
+        final String second = Gen.string().get();
+
+        assertThat(first).isEqualTo(second);
     }
 }
