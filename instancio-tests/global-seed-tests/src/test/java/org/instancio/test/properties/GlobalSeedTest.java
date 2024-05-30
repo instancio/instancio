@@ -15,6 +15,7 @@
  */
 package org.instancio.test.properties;
 
+import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Result;
 import org.instancio.settings.Keys;
@@ -90,6 +91,17 @@ class GlobalSeedTest {
         assertThat(s1.get())
                 .as("Distinct values should be generated")
                 .isNotEqualTo(s2.get());
+    }
+
+    @Test
+    @DisplayName("(d) Global seed from properties file using Gen")
+    void seedFromPropertiesUsingGen() {
+        final String s1 = Gen.string().get();
+        final String s2 = Gen.string().get();
+
+        assertThat(s1)
+                .as("Distinct values should be generated")
+                .isNotEqualTo(s2);
     }
 
 }
