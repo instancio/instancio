@@ -3399,27 +3399,8 @@ These are ranked from highest to lowest precedence:
 1. {{withSettings}} or {{withSetting}} method of the builder API using `Keys.SEED`
 1. `@WithSettings` annotations (requires [`InstancioExtension`](#junit-jupiter-integration))
 1. `@Seed` annotation  (requires [`InstancioExtension`](#junit-jupiter-integration))
-1. `instancio.properties` file
-1. randomly seed generated seed
-
-For example, if a seed value is specified in the properties file, then Instancio will use this seed
-to generate the data and each execution will result in the same data being generated. If another seed
-is specified using `withSeed()` method, then it will take precedence over the one from the properties file.
-
-``` java linenums="1" title="Example: instancio.properties"
-seed = 123
-```
-
-``` java linenums="1" title="Seed precedence" hl_lines="1 4"
-SamplePojo pojo1 = Instancio.create(SamplePojo.class);
-
-SamplePojo pojo2 = Instancio.of(SamplePojo.class)
-    .withSeed(456)
-    .create();
-```
-!!! attention ""
-<lnum>1</lnum> `pojo1` generated using seed `123` specified in `instancio.properties`.<br/>
-<lnum>4</lnum> `pojo2` generated using seed `456` since `withSeed()` has higher precedence.
+1. `instancio.properties` file (see [Global Seed](#global-seed) for details)
+1. random seed
 
 Precedence rules are summarised in the following table, where each number represents a seed value,
 and `R` represents a random seed.
@@ -3433,6 +3414,71 @@ and `R` represents a random seed.
 |       R        |     **5**     |    -    |        -        |         -         |       -       |     **5**      |
 |     **R**      |       -       |    -    |        -        |         -         |       -       |     **R**      |
 
+
+### Global Seed
+
+A global seed can be specified in `instancio.properties` using the `seed` property key:
+
+```properties
+seed=9283754
+```
+
+There are some important differences in how the global seed works depending on whether
+tests declare the `InstancioExtension`.
+
+#### Global Seed Without the `InstancioExtension`
+
+When tests are run without the extension, the same `Random` instance is used across all test classes and methods.
+Therefore, generated data is affected by the order in which test methods are run.
+
+Let's assume the configured seed in the properties file produces the following output if `test1` is run first:
+
+```java linenums="1"
+class ExampleTest {
+    @Test
+    void test1() {
+        String s1 = Instancio.create(String.class); // Output: "FCGVRXSUU"
+    }
+
+    @Test
+    void test2() {
+        String s2 = Instancio.create(String.class); // Output: "OCNVRBX"
+    }
+}
+```
+
+If `test2` were to run first, then `s2` will be `FCGVRXSUU` and `s1` will be `OCNVRBX`.
+
+In short, when using the global seed _without_ the `InstancioExtension`, the generated data is static for:
+
+- a given test method, or
+- a set of test methods that are run in a particular order
+
+For this reason, using a global seed without the extension is not recommended,
+as it makes it harder to reproduce the data in case of test failure.
+
+#### Global Seed With the `InstancioExtension`
+
+When using the extension, each test method gets its own instance of `Random` initialised
+with the seed from the properties file. As a result, generated data is not affected by the order
+in which test methods are run.
+
+For example, the following snippet will always produce the same output:
+
+```java linenums="1" hl_lines="1"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+    @Test
+    void T1() {
+        String t1 = Instancio.create(String.class); // Output: "FCGVRXSUU"
+    }
+
+    @Test
+    void T2() {
+        String t2 = Instancio.create(String.class); // Output: "FCGVRXSUU"
+    }
+}
+```
 
 ## Getting the Seed Value
 

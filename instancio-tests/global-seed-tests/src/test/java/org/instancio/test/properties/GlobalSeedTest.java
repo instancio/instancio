@@ -18,12 +18,22 @@ package org.instancio.test.properties;
 import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Result;
+import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,6 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * </ul>
  */
 @FeatureTag({Feature.GLOBAL_SEED, Feature.WITH_SEED})
+// Do not use InstancioExtension at the top-level test class
 class GlobalSeedTest {
 
     @Test
@@ -104,4 +115,76 @@ class GlobalSeedTest {
                 .isNotEqualTo(s2);
     }
 
+    /**
+     * Without the extension, all test methods share the same instance
+     * of random, therefore test methods produce different results.
+     */
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class WithoutInstancioExtensionTest { // No InstancioExtension!
+
+        private final Set<String> generatedValues = new HashSet<>();
+
+        @Order(1)
+        @Test
+        void testA() {
+            final Result<String> result = Instancio.of(String.class).asResult();
+            assertThat(result.getSeed()).isEqualTo(TestConstants.GLOBAL_SEED);
+
+            generatedValues.add(result.get());
+        }
+
+        @Order(2)
+        @Test
+        void testB() {
+            final Result<String> result = Instancio.of(String.class).asResult();
+            assertThat(result.getSeed()).isEqualTo(TestConstants.GLOBAL_SEED);
+
+            generatedValues.add(result.get());
+        }
+
+        @Order(3)
+        @Test
+        void verify() {
+            assertThat(generatedValues).hasSize(2);
+        }
+    }
+
+    /**
+     * With the extension, each test method should get its own instance
+     * of random, therefore each method produces identical results.
+     */
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    @ExtendWith(InstancioExtension.class) // with extension
+    class WithInstancioExtensionTest {
+
+        private final Set<String> generatedValues = new HashSet<>();
+
+        @Order(1)
+        @Test
+        void testA() {
+            final Result<String> result = Instancio.of(String.class).asResult();
+            assertThat(result.getSeed()).isEqualTo(TestConstants.GLOBAL_SEED);
+
+            generatedValues.add(result.get());
+        }
+
+        @Order(2)
+        @Test
+        void testB() {
+            final Result<String> result = Instancio.of(String.class).asResult();
+            assertThat(result.getSeed()).isEqualTo(TestConstants.GLOBAL_SEED);
+
+            generatedValues.add(result.get());
+        }
+
+        @Order(3)
+        @Test
+        void verify() {
+            assertThat(generatedValues).hasSize(1);
+        }
+    }
 }
