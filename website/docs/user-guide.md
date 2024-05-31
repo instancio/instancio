@@ -3415,6 +3415,56 @@ and `R` represents a random seed.
 |     **R**      |       -       |    -    |        -        |         -         |       -       |     **R**      |
 
 
+### `@WithSettings` seed
+
+When a seed is specified via `@WithSettings`, all objects generated
+within the test class are created using the given seed.
+For this reason, if two objects of the same type are created, both instances will be identical, for example:
+
+```java linenums="1"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+            .set(Keys.SEED, 12345L);
+
+    @Test
+    void example() {
+        Pojo pojo1 = Instancio.create(Pojo.class);
+        Pojo pojo2 = Instancio.create(Pojo.class);
+
+        assertThat(pojo1).isEqualTo(pojo2);
+    }
+}
+```
+
+This is because the above snippet is equivalent to:
+
+```java linenums="1"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @Test
+    void example() {
+        Settings settings = Settings.create()
+                .set(Keys.SEED, 12345L);
+
+        Pojo pojo1 = Instancio.of(Pojo.class)
+                .withSettings(settings)
+                .create();
+
+        Pojo pojo2 = Instancio.of(Pojo.class)
+                .withSettings(settings)
+                .create();
+
+        assertThat(pojo1).isEqualTo(pojo2);
+    }
+}
+```
+
+
+
 ### Global Seed
 
 A global seed can be specified in `instancio.properties` using the `seed` property key:
@@ -3778,6 +3828,7 @@ Generators
 │   ├── year()
 │   ├── yearMonth()
 │   └── zonedDateTime()
+│
 ├── text()
 │   ├── csv()
 │   ├── loremIpsum()
@@ -3788,6 +3839,9 @@ Generators
 │   ├── luhn()
 │   ├── mod10()
 │   └── mod11()
+│
+├── finance()
+│   └── creditCard()
 │
 ├── id()
 │   ├── ean()
