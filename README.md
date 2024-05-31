@@ -91,12 +91,11 @@ Person marge = Instancio.of(simpsons)
 
 - Fully reproducible data in case of test failures.
 - Support for generics, `record` and `sealed` classes, Java 21 sequenced collections.
+- Data generation based on JPA and Bean Validation annotations (Hibernate, jakarta, javax).
+- Flexible configuration options and SPIs.
 - Support for defining custom generators.
-- Support for generating data based on Bean Validation annotations.
-- Flexible configuration options.
 - `InstancioExtension` for Junit 5 `@ExtendWith`.
-- Support for Guava via `instancio-guava` module (experimental)
-- Support for property-based testing via `instancio-quickcheck` module (experimental)
+- Object population via fields and setters.
 
 ## Getting Started
 
