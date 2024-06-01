@@ -189,7 +189,7 @@ Map<UUID, Person> personMap = Instancio.of(new TypeToken<Person>() {})
 
 ### Creating Blank Objects
 
-!!! info "This is an experimental API available since version `4.7.0`"
+!!! info "Experimental API `@since 4.7.0`"
 
 In addition to creating fully-populated objects, Instancio provides
 an API for creating blank objects using the following methods:
@@ -1042,7 +1042,7 @@ By default, the engine generates non-null values, unless specified otherwise.
 
 ### Using `assign()`
 
-!!! info "This is an experimental API available since version `3.0.0`"
+!!! info "Experimental API `@since 3.0.0`"
 
 The assignment API allows customising an object by passing in one or more `Assignment` objects as a vararg:
 
@@ -1298,7 +1298,7 @@ Person person = Instancio.of(Person.class)
 
 ### Using `filter()`
 
-!!! info "This is an experimental API available since version 4.6.0"
+!!! info "Experimental API `@since 4.6.0`"
 
 This method can be used to filter generated values using a predicate.
 If the predicate evaluates to `false` for a given value, Instancio will generate a new value.
@@ -1352,7 +1352,7 @@ should be preferred over `filter()`, if possible.
 
 ### Using `withUnique()`
 
-!!! info "This is an experimental API available since version 4.8.0"
+!!! info "Experimental API `@since 4.8.0`"
 
 This method can be used to generate unique values for a given selector's targets.
 Assuming the following class:
@@ -1403,7 +1403,7 @@ List<Boolean> results = Instancio.ofList(Boolean.class)
 
 ### Using `setBlank()`
 
-!!! info "This is an experimental API available since version 4.7.0"
+!!! info "Experimental API `@since 4.7.0`"
 
 This method can be used to initialise certain parts of an object to be blank using selectors.
 Its behaviour is the same as the methods below (which can be used for creating a blank **root object**):
@@ -1764,7 +1764,7 @@ More details on the benefits of using models, including a sample project, are pr
 
 ### Using `setModel()`
 
-!!! info "This is an experimental API available since version 4.4.0"
+!!! info "Experimental API `@since 4.4.0`"
 
 The method `setModel(TargetSelector, Model)` allows applying a model to another object using a selector.
 
@@ -2517,7 +2517,7 @@ where **all** elements of `List<OrderItem>` are the **same instance** of the `Or
 
 # Cartesian Product
 
-!!! info "This is an experimental API available since version `4.0.0`"
+!!! info "Experimental API `@since 4.0.0`"
 
 The following methods are the entry points for generating the Cartesian product:
 
@@ -3035,7 +3035,7 @@ Phone phone = Instancio.of(Phone.class)
 
 ## `AnnotationProcessor`
 
-!!! info "This is an experimental API available since version `4.5.0`"
+!!! info "Experimental API `@since 4.5.0`"
 
 This interface allows processing custom annotations:
 
