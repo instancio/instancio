@@ -37,7 +37,7 @@ class CartesianProductIgnoreTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .ignore(field(IntegerHolder::getWrapper))
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(2)

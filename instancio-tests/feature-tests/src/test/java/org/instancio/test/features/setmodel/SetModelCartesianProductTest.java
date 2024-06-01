@@ -46,7 +46,7 @@ class SetModelCartesianProductTest {
         final List<StringsAbc> results = Instancio.ofCartesianProduct(StringsAbc.class)
                 .setModel(all(StringsDef.class), model)
                 .with(field(StringsAbc::getA), "a")
-                .list();
+                .create();
 
         assertThat(results).hasSize(1).allSatisfy(result -> {
             assertThat(result.getA()).isEqualTo("a");

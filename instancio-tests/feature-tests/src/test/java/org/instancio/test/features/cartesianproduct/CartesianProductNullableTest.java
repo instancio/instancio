@@ -46,7 +46,7 @@ class CartesianProductNullableTest {
                 .with(field(IntegerHolder::getPrimitive), range)
                 .with(field(IntegerHolder::getWrapper), range)
                 .withNullable(allInts())
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(range.length * range.length)
@@ -64,7 +64,7 @@ class CartesianProductNullableTest {
                 .with(field(IntegerHolder::getWrapper), range)
                 .withNullable(allInts())
                 .withSettings(Settings.create().set(Keys.COLLECTION_ELEMENTS_NULLABLE, true))
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(range.length * range.length)

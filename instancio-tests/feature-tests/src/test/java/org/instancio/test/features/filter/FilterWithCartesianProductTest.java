@@ -39,7 +39,7 @@ class FilterWithCartesianProductTest {
                 .with(field(StringFields::getOne), "one")
                 .with(field(StringFields::getTwo), "two")
                 .filter(all(field(StringFields::getThree), field(StringFields::getFour)), (String s) -> s.length() == 5)
-                .list();
+                .create();
 
         assertThat(results)
                 .singleElement()

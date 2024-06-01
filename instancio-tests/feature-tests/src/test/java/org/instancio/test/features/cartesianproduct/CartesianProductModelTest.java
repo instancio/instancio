@@ -47,7 +47,7 @@ class CartesianProductModelTest {
         final List<Person> results = Instancio.ofCartesianProduct(model)
                 .with(field(Person::getGender), Gender.MALE, Gender.FEMALE)
                 .with(field(Person::getAge), 30, 40)
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(4)

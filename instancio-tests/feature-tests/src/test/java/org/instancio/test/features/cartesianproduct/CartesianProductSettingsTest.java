@@ -43,7 +43,7 @@ class CartesianProductSettingsTest {
                 .with(field(StringAndPrimitiveFields::getIntOne), INT_ONE)
                 .with(field(StringAndPrimitiveFields::getIntTwo), INT_TWO)
                 .withSetting(Keys.STRING_MAX_LENGTH, 1)
-                .list();
+                .create();
 
         assertResults(results);
     }
@@ -54,7 +54,7 @@ class CartesianProductSettingsTest {
                 .with(field(StringAndPrimitiveFields::getIntOne), INT_ONE)
                 .with(field(StringAndPrimitiveFields::getIntTwo), INT_TWO)
                 .withSettings(Settings.create().set(Keys.STRING_MAX_LENGTH, 1))
-                .list();
+                .create();
 
         assertResults(results);
     }

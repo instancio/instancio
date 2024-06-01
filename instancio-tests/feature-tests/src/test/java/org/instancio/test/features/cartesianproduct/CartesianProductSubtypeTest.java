@@ -42,7 +42,7 @@ class CartesianProductSubtypeTest {
         final List<NumberHolder> results = Instancio.ofCartesianProduct(NumberHolder.class)
                 .with(field(NumberHolder::getX), 1, 2, 3)
                 .subtype(field(NumberHolder::getY), Long.class)
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(3)

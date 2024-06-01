@@ -44,7 +44,7 @@ class CartesianProductOnCompleteTest {
                 .with(field(Person::getGender), Gender.FEMALE, Gender.MALE)
                 .with(field(Person::getAge), 30, 40)
                 .onComplete(field(Person::getGender), (Gender g) -> genders.add(g))
-                .list();
+                .create();
 
         assertThat(genders).containsExactly(Gender.FEMALE, Gender.FEMALE, Gender.MALE, Gender.MALE);
     }
@@ -57,7 +57,7 @@ class CartesianProductOnCompleteTest {
                 .with(field(Person::getGender), Gender.FEMALE, Gender.MALE)
                 .with(field(Person::getAge), 30, 40)
                 .onComplete(all(Person.class), val -> callbackCount.incrementAndGet())
-                .list();
+                .create();
 
         assertThat(callbackCount).hasValue(4);
     }

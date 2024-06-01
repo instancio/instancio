@@ -134,10 +134,10 @@ Map<UUID, Address> map = Instancio.ofMap(UUID.class, Address.class).size(3)
 
 // Create from a model
 Model<Person> personModel = Instancio.of(Person.class)
-    .ignore(field(Person:getAge))
+    .ignore(field(Person::getAge))
     .toModel();
 
-Set<Person> set = Instancio.ofSet(personModel).size(5).create()
+Set<Person> set = Instancio.ofSet(personModel).size(5).create();
 ```
 
 Specifying the collection size is optional.
@@ -2466,9 +2466,9 @@ where **all** elements of `List<OrderItem>` are the **same instance** of the `Or
 
 # Cartesian Product
 
-!!! warning "Experimental feature"
+!!! info "This is an experimental API available since version `4.0.0`"
 
-Since `4.0.0` Instancio supports generating the Cartesian product using the following methods:
+The following methods are the entry points for generating the Cartesian product:
 
 ``` java linenums="1" title="Cartesian Product API"
 Instancio.ofCartesianProduct(Class<T> type)
@@ -2476,12 +2476,13 @@ Instancio.ofCartesianProduct(TypeTokenSupplier<T> supplier)
 Instancio.ofCartesianProduct(Model<T> model)
 ```
 
-In addition, there are two new methods specific to the Cartesian product API:
+Inputs can be specified using the following method:
 
-- `with(TargetSelector, Object...)` for specifying the inputs
-- `list()` for getting the results
+```java
+with(TargetSelector, Object...)
+```
 
-Consider the following example:
+As an example, consider the snippet below.
 
 ```java linenums="1"
 record Widget(String type, int num) {}
@@ -2489,7 +2490,7 @@ record Widget(String type, int num) {}
 List<Widget> results = Instancio.ofCartesianProduct(Widget.class)
     .with(field(Widget::type), "FOO", "BAR", "BAZ")
     .with(field(Widget::num), 1, 2, 3)
-    .list();
+    .create();
 ```
 
 This will produce a list containing 9 results in lexicographical order:
@@ -2518,7 +2519,7 @@ record Container(List<Widget> widgets) {}
 List<Container> results = Instancio.ofCartesianProduct(Container.class)
     .with(field(Widget::type), "FOO", "BAR", "BAZ")
     .with(field(Widget::num), 1, 2, 3)
-    .list();
+    .create();
 }
 ```
 

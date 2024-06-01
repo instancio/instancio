@@ -44,7 +44,7 @@ class CartesianProductAssignTest {
                 .with(field(IntegerHolder::getWrapper), 3, 4)
                 .assign(valueOf(IntegerHolder::getPrimitive).set(8))
                 .assign(valueOf(IntegerHolder::getWrapper).set(9))
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(8, 8, 8, 8);
         assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(9, 9, 9, 9);
@@ -57,7 +57,7 @@ class CartesianProductAssignTest {
                 .with(field(IntegerHolder::getWrapper), null, null) // placeholders to be overwritten by assign()
                 .assign(given(IntegerHolder::getPrimitive).is(1).set(field(IntegerHolder::getWrapper), 10))
                 .assign(given(IntegerHolder::getPrimitive).is(2).set(field(IntegerHolder::getWrapper), 20))
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1, 1, 2, 2);
         assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(10, 10, 20, 20);

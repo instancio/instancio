@@ -204,7 +204,7 @@ public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
     }
 
     @Override
-    public List<T> list() {
+    public List<T> create() {
         final List<List<Object>> cartesianInputs = new ArrayList<>();
         for (CartesianValues rangeValue : cartesianValues) {
             cartesianInputs.add(rangeValue.values);

@@ -53,7 +53,7 @@ class CartesianProductVerboseTest {
         Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .verbose()
-                .list();
+                .create();
 
         assertThat(outputStreamCaptor)
                 .asString()

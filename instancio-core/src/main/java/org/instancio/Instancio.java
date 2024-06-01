@@ -484,7 +484,7 @@ public final class Instancio {
      * List<Widget> results = Instancio.ofCartesianProduct(Widget.class)
      *     .with(field(Widget::type), "FOO", "BAR", "BAZ")
      *     .with(field(Widget::num), 1, 2, 3)
-     *     .list();
+     *     .create();
      * }</pre>
      *
      * <p>This will produce the following list of {@code Widget} objects:

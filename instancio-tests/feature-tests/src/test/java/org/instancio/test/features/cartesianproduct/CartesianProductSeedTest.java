@@ -57,7 +57,7 @@ class CartesianProductSeedTest {
         first = Instancio.ofCartesianProduct(new TypeToken<Triplet<Boolean, Boolean, UUID>>() {})
                 .with(field(Triplet.class, "left"), true, false)
                 .with(field(Triplet.class, "mid"), true, false)
-                .list();
+                .create();
 
         final Set<UUID> uuids = first.stream().map(Triplet::getRight).collect(Collectors.toSet());
         assertThat(uuids)
@@ -81,7 +81,7 @@ class CartesianProductSeedTest {
         final List<Triplet<Boolean, Boolean, UUID>> result = Instancio.ofCartesianProduct(new TypeToken<Triplet<Boolean, Boolean, UUID>>() {})
                 .with(field(Triplet.class, "left"), true, false)
                 .with(field(Triplet.class, "mid"), true, false)
-                .list();
+                .create();
 
         assertThat(result).isEqualTo(first);
     }
@@ -94,7 +94,7 @@ class CartesianProductSeedTest {
                 .withSeed(SEED)
                 .with(field(Triplet.class, "left"), true, false)
                 .with(field(Triplet.class, "mid"), true, false)
-                .list();
+                .create();
 
         assertThat(result).isEqualTo(first);
     }
@@ -107,7 +107,7 @@ class CartesianProductSeedTest {
                 .withSettings(Settings.create().set(Keys.SEED, SEED))
                 .with(field(Triplet.class, "left"), true, false)
                 .with(field(Triplet.class, "mid"), true, false)
-                .list();
+                .create();
 
         assertThat(result).isEqualTo(first);
     }

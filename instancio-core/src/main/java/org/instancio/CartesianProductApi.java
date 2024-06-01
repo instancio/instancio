@@ -33,7 +33,7 @@ import java.util.function.Supplier;
  * <ul>
  *   <li>{@link #with(TargetSelector, Object[])} for specifying product values
  *       (see the method's Javadoc for an example)</li>
- *   <li>{@link #list()} for obtaining the results as a list</li>
+ *   <li>{@link #create()} for obtaining the results as a list</li>
  * </ul>
  *
  * @param <T> type to create
@@ -48,7 +48,7 @@ public interface CartesianProductApi<T> extends
     /**
      * Sets a range of values for generating the Cartesian product.
      * The results are returned as a list in lexicographical order
-     * using the {@link #list()} method.
+     * using the {@link #create()} method.
      *
      * <p>Example:
      * <pre>{@code
@@ -57,7 +57,7 @@ public interface CartesianProductApi<T> extends
      * List<Widget> results = Instancio.ofCartesianProduct(Widget.class)
      *     .with(field(Widget::type), "FOO", "BAR", "BAZ")
      *     .with(field(Widget::num), 1, 2, 3)
-     *     .list();
+     *     .create();
      * }</pre>
      *
      * <p>This will produce the following list of {@code Widget} objects:
@@ -84,7 +84,7 @@ public interface CartesianProductApi<T> extends
      * List<Container> results = Instancio.ofCartesianProduct(Container.class)
      *     .with(field(Widget::type), "FOO", "BAR", "BAZ")
      *     .with(field(Widget::num), 1, 2, 3)
-     *     .list();
+     *     .create();
      * }</pre>
      *
      * <p>The above will produce an error with a message:
@@ -108,7 +108,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @ExperimentalApi
-    List<T> list();
+    List<T> create();
 
     /**
      * {@inheritDoc}

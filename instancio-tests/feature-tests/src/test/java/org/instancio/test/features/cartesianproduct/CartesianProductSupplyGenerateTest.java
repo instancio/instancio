@@ -38,7 +38,7 @@ class CartesianProductSupplyGenerateTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .generate(field(IntegerHolder::getWrapper), gen -> gen.ints().max(-1))
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(2)
@@ -52,7 +52,7 @@ class CartesianProductSupplyGenerateTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .generate(field(IntegerHolder::getWrapper), Gen.ints().range(-1, -1))
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(2)
@@ -66,7 +66,7 @@ class CartesianProductSupplyGenerateTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .supply(field(IntegerHolder::getWrapper), () -> -1)
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(2)
@@ -80,7 +80,7 @@ class CartesianProductSupplyGenerateTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .supply(field(IntegerHolder::getWrapper), random -> -1)
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(2)
