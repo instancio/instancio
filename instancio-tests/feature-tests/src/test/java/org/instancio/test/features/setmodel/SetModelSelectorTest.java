@@ -137,7 +137,7 @@ class SetModelSelectorTest {
                             fields().declaredIn(Inner.class).matching("^item\\d$").atDepth(d -> d == 2),
                             fields(f -> f.getType() == Item.class).atDepth(2)
                     )
-                    .list();
+                    .create();
 
             return pairs.stream().map(pair -> Arguments.of(pair.getStringSelector(), pair.getModelSelector()));
         }
@@ -200,7 +200,7 @@ class SetModelSelectorTest {
                             fields().declaredIn(Inner.class).matching("item2").atDepth(d -> d == 2),
                             fields(f -> f.getDeclaringClass() == Inner.class && f.getName().equals("item2"))
                     )
-                    .list();
+                    .create();
 
             return pairs.stream().map(pair -> Arguments.of(pair.getStringSelector(), pair.getModelSelector()));
         }
@@ -256,7 +256,7 @@ class SetModelSelectorTest {
                             fields().declaredIn(Inner.class).named("item2"),
                             fields(f -> f.getDeclaringClass() == Inner.class && f.getName().equals("item2"))
                     )
-                    .list();
+                    .create();
 
             return pairs.stream().map(pair -> Arguments.of(pair.getStringSelector(), pair.getModelSelector()));
         }
@@ -313,7 +313,7 @@ class SetModelSelectorTest {
                             fields().declaredIn(Outer.class).named("item"),
                             fields(f -> f.getDeclaringClass() == Outer.class && f.getName().equals("item"))
                     )
-                    .list();
+                    .create();
 
             return pairs.stream().map(pair -> Arguments.of(pair.getStringSelector(), pair.getModelSelector()));
         }

@@ -57,7 +57,7 @@ class CartesianProductSelectorTest {
     void withAllInts() {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(allInts(), 1, 2)
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1, 2);
         assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(1, 2);
@@ -69,7 +69,7 @@ class CartesianProductSelectorTest {
                 .with(all(
                         field(IntegerHolder::getPrimitive),
                         field(IntegerHolder::getWrapper)), 1, 2)
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1, 2);
         assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(1, 2);
@@ -80,7 +80,7 @@ class CartesianProductSelectorTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(types().of(int.class), 1, 2)
                 .with(types().of(Integer.class), 3, 4)
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1, 1, 2, 2);
         assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(3, 4, 3, 4);
@@ -94,7 +94,7 @@ class CartesianProductSelectorTest {
                 .with(types().of(Integer.class), 3, 4)
                 .set(field(IntegerHolder::getWrapper), 9)
                 .lenient()
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1, 1, 2, 2);
         assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(9, 9, 9, 9);
@@ -110,7 +110,7 @@ class CartesianProductSelectorTest {
                         .set(Keys.ON_SET_METHOD_NOT_FOUND, OnSetMethodNotFound.IGNORE))
                 .with(setter(DynPerson::setName), "foo", "bar")
                 .with(setter(DynPerson::setAge), 30, 40)
-                .list();
+                .create();
 
         assertThat(results).extracting(DynPerson::getName).containsExactly("foo", "foo", "bar", "bar");
         assertThat(results).extracting(DynPerson::getAge).containsExactly(30, 40, 30, 40);
@@ -120,7 +120,7 @@ class CartesianProductSelectorTest {
     void withRootSelector() {
         final List<DynPerson> results = Instancio.ofCartesianProduct(DynPerson.class)
                 .set(root(), null)
-                .list();
+                .create();
 
         assertThat(results).isNull();
     }
@@ -132,7 +132,7 @@ class CartesianProductSelectorTest {
                 .with(field(IntegerHolder::getWrapper), 3, 4);
 
 
-        assertThatThrownBy(api::list)
+        assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("no item is available to emit()");
     }
@@ -143,7 +143,7 @@ class CartesianProductSelectorTest {
         final List<TwoIntegerHolders> results = Instancio.ofCartesianProduct(TwoIntegerHolders.class)
                 .with(field(IntegerHolder::getPrimitive).within(scope(TwoIntegerHolders::getTwo)), -1, -2)
                 .with(field(IntegerHolder::getWrapper).within(scope(TwoIntegerHolders::getTwo)), -3, -4)
-                .list();
+                .create();
 
         assertThat(results)
                 .extracting(r -> r.getTwo().getPrimitive())

@@ -47,7 +47,7 @@ class BlankCartesianProductTest {
                 .setBlank(root())
                 .with(field(StringsAbc::getA), "A")
                 .with(field(StringsAbc::getB), "B1", "B2")
-                .list();
+                .create();
 
         assertThat(results).allSatisfy(result -> {
             assertThatObject(result.def).hasAllFieldsOfTypeSetToNull(String.class);
@@ -64,7 +64,7 @@ class BlankCartesianProductTest {
                 .setBlank(field(StringsAbc::getDef))
                 .with(field(StringsAbc::getA), "A")
                 .with(field(StringsAbc::getB), "B1", "B2")
-                .list();
+                .create();
 
         assertThat(results).allSatisfy(result -> {
             assertThatObject(result.def).hasAllFieldsOfTypeSetToNull(String.class);

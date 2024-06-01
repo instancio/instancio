@@ -242,7 +242,7 @@ class ApiContractTest {
     @Test
     void methodsNotSupportedByCartesianProductApi() {
         assertThatClass(CartesianProductApi.class)
-                .hasNoMethodsNamed("create", "asResult", "toModel");
+                .hasNoMethodsNamed("asResult", "toModel");
     }
 
     /**

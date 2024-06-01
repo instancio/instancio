@@ -83,7 +83,7 @@ class CustomerGeneratorRecordWithNullFieldTest {
         return Instancio.ofCartesianProduct(new TypeToken<Pair<Boolean, AfterGenerate>>() {})
                 .with(allBooleans(), true, false)
                 .with(all(AfterGenerate.class), AfterGenerate.values())
-                .list()
+                .create()
                 .stream()
                 .map(pair -> Arguments.of(pair.getLeft(), pair.getRight()));
     }

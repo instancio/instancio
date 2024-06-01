@@ -58,7 +58,7 @@ class CartesianProductTest {
     @DisplayName("When no values are specified, should return a single object")
     void withNoValues() {
         final List<StringHolder> results = Instancio.ofCartesianProduct(StringHolder.class)
-                .list();
+                .create();
 
         assertThat(results).singleElement().hasNoNullFieldsOrProperties();
     }
@@ -70,7 +70,7 @@ class CartesianProductTest {
         final List<Triplet<PhoneType, Integer, Boolean>> results = Instancio.ofCartesianProduct(
                         new TypeToken<Triplet<PhoneType, Integer, Boolean>>() {})
                 .with(allInts(), expectedInts)
-                .list();
+                .create();
 
         assertThat(results)
                 .allSatisfy(e -> assertThat(e).hasNoNullFieldsOrProperties())
@@ -85,7 +85,7 @@ class CartesianProductTest {
         final List<Triplet<PhoneType, Integer, Boolean>> results = Instancio.ofCartesianProduct(
                         new TypeToken<Triplet<PhoneType, Integer, Boolean>>() {})
                 .with(all(Integer.class), expectedInts)
-                .list();
+                .create();
 
         assertThat(results)
                 .allSatisfy(e -> assertThat(e).hasNoNullFieldsOrProperties())
@@ -100,7 +100,7 @@ class CartesianProductTest {
                 .with(all(PhoneType.class), PhoneType.CELL, PhoneType.HOME, PhoneType.WORK)
                 .with(allInts(), 1, 2)
                 .with(allBooleans(), true, false)
-                .list();
+                .create();
 
         assertThat(results)
                 .extracting(Triplet::getLeft)
@@ -124,7 +124,7 @@ class CartesianProductTest {
                 .with(field(StringsAbc::getA), "a1", "a2")
                 .with(field(StringsDef::getE), "d1", "d2", "d3")
                 .with(field(StringsGhi::getI), "i1", "i2")
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(2 * 3 * 2)
@@ -155,7 +155,7 @@ class CartesianProductTest {
                 // custom values
                 .set(field(Person::getName), expectedName)
                 .generate(field(Person::getDate), gen -> gen.temporal().date().past())
-                .list();
+                .create();
 
         assertThat(results)
                 .hasSize(6) // 3 genders x 2 age values
@@ -182,7 +182,7 @@ class CartesianProductTest {
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .with(field(IntegerHolder::getWrapper), 3, 4)
                 .set(field(IntegerHolder::getPrimitive), 8)
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive)
                 .as("Should overwrites [1, 1, 2, 2]")
@@ -217,7 +217,7 @@ class CartesianProductTest {
                 // duplicate selectors
                 .with(field(IntegerHolder::getPrimitive), 5, 6)
                 .with(field(IntegerHolder::getWrapper), 7, 8)
-                .list();
+                .create();
 
         assertThat(results).hasSize(16);
 
@@ -236,7 +236,7 @@ class CartesianProductTest {
                 .with(field(IntegerHolder::getPrimitive), range)
                 .with(field(IntegerHolder::getWrapper), range);
 
-        assertThatThrownBy(api::list)
+        assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Cartesian product too large; must have size at most Integer.MAX_VALUE");
     }
@@ -246,7 +246,7 @@ class CartesianProductTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2, 3)
                 .generate(field(IntegerHolder::getWrapper), gen -> gen.emit().items(5, 6, 7))
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1, 2, 3);
         assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(5, 6, 7);
@@ -257,7 +257,7 @@ class CartesianProductTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2, 3)
                 .generate(field(IntegerHolder::getWrapper), gen -> gen.intSeq().start(5))
-                .list();
+                .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1, 2, 3);
         assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(5, 6, 7);
@@ -281,7 +281,7 @@ class CartesianProductTest {
                 .with(field(SingleValueHolder::getValue), 1, 2)
                 .with(field(Person::getName), "foo", "bar") // invalid selector
                 .lenient()
-                .list();
+                .create();
 
         // Ideally, it would return [1, 2]
         assertThat(results)
@@ -307,7 +307,7 @@ class CartesianProductTest {
             final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                     .withMaxDepth(2)
                     .with(field(IntegerHolder::getPrimitive), 1, 2)
-                    .list();
+                    .create();
 
             assertThat(results)
                     .extracting(IntegerHolder::getPrimitive)
@@ -320,7 +320,7 @@ class CartesianProductTest {
                     .withMaxDepth(1)
                     .with(field(IntegerHolder::getPrimitive), 1, 2);
 
-            assertThatThrownBy(api::list)
+            assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(UnusedSelectorException.class)
                     .hasMessageContaining("field(IntegerHolder, \"primitive\")");
         }
@@ -359,7 +359,7 @@ class CartesianProductTest {
         void withSingleNullObject() {
             final List<Pair<Integer, Boolean>> results = Instancio.ofCartesianProduct(new TypeToken<Pair<Integer, Boolean>>() {})
                     .with(allInts(), (Object) null)
-                    .list();
+                    .create();
 
             assertThat(results)
                     .hasSize(1)
@@ -374,7 +374,7 @@ class CartesianProductTest {
             final List<Pair<Integer, Boolean>> results = Instancio.ofCartesianProduct(new TypeToken<Pair<Integer, Boolean>>() {})
                     .with(allInts(), null, null)
                     .with(allBooleans(), null, null)
-                    .list();
+                    .create();
 
             assertThat(results)
                     .hasSize(4)
