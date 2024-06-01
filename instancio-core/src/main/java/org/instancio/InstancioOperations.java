@@ -365,18 +365,6 @@ interface InstancioOperations<T> {
      *     .create();
      * }</pre>
      *
-     * <p>Another use case is to ensure all values within a generated
-     * object are unique. For instance, the following snippet generates
-     * a list of {@code Person} objects with unique string and numeric values:
-     * <pre>{@code
-     * Set<?> generatedValues = new HashSet<>();
-     *
-     * List<Person> persons = Instancio.ofList(Person.class)
-     *     .size(100)
-     *     .filter(all(allInts(), allLongs(), allStrings()), generatedValues::add)
-     *     .create();
-     * }</pre>
-     *
      * <p>Note that customising objects using this method is less efficient
      * than {@link #generate(TargetSelector, GeneratorSpecProvider)}.
      * The latter should be preferred where possible.
@@ -619,4 +607,58 @@ interface InstancioOperations<T> {
      */
     @ExperimentalApi
     InstancioOperations<T> setBlank(TargetSelector selector);
+
+    /**
+     * Specifies that the given selector's target(s) should have unique values.
+     *
+     * <p>Example:
+     * <pre>{@code
+     * record Data(int foo, int bar) {}
+     *
+     * List<Data> results = Instancio.ofList(Data.class)
+     *     .size(100)
+     *     .withUnique(field(Data::foo))
+     *     .create();
+     * }</pre>
+     *
+     * <p>The above snippet generates a list of {@code Data} instances
+     * with unique {@code foo} values. Note that values will be unique
+     * across all targets that match the selector. For instance,
+     * the following usages:
+     *
+     * <ul>
+     *   <li>{@code withUnique(allInts())}</li>
+     *   <li>{@code withUnique(all(field(Data::foo), field(Data::bar))}</li>
+     * </ul>
+     *
+     * would result in unique values for {@code foo} and {@code bar}
+     * with no overlap (i.e. {@code foo} and {@code bar} are disjoint).
+     * To generate unique values per field (with potential overlap),
+     * the {@code withUnique()} method must be specified per field:
+     *
+     * <pre>{@code
+     * List<Data> results = Instancio.ofList(Data.class)
+     *     .size(100)
+     *     .withUnique(field(Data::foo)) // e.g. { 601, 42, 573, ...}
+     *     .withUnique(field(Data::bar)) // e.g. { 888, 251, 42, ...}
+     *     .create();
+     * }</pre>
+     *
+     * <p>If it is impossible to generate a sufficient number of
+     * unique values after a certain number of attempts,
+     * an exception will be thrown:
+     *
+     * <pre>{@code
+     * List<Boolean> results = Instancio.ofList(Boolean.class)
+     *     .size(10) // will fail as it's impossible to generate 10 unique booleans
+     *     .withUnique(allBooleans())
+     *     .create();
+     * }</pre>
+     *
+     * @param selector for fields and/or classes this method should be applied to
+     * @return API builder reference
+     * @since 4.8.0
+     */
+    @ExperimentalApi
+    InstancioOperations<T> withUnique(TargetSelector selector);
 }

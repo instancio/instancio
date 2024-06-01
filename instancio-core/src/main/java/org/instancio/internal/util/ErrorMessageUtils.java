@@ -47,13 +47,17 @@ public final class ErrorMessageUtils {
 
     public static String filterRetryLimitExceeded(final InternalNode node) {
         return new StringBuilder(INITIAL_SB_SIZE)
-                .append("all generated values were rejected by the filter() predicate: ")
-                .append(nodePathToRootBlock(node)).append(NL)
+                .append("could not generate a sufficient number of values").append(NL)
                 .append(NL)
-                .append("Generation was abandoned after ")
-                .append(Constants.MAX_RETRIES).append(" attempts to avoid an infinite loop.")
+                .append(" -> Generation was abandoned after ").append(Constants.MAX_RETRIES)
+                .append(" attempts to avoid an infinite loop.").append(NL)
                 .append(NL)
-                .append("To resolve this error, please update the predicate to ensure a value is accepted.")
+                .append("Possible causes:").append(NL)
+                .append(NL)
+                .append(" -> filter() predicate rejected too many generated values, exceeding the retry limit").append(NL)
+                .append(" -> withUnique() method unable to generate a sufficient number of values").append(NL)
+                .append(NL)
+                .append("Selector target: ").append(nodePathToRootBlock(node))
                 .toString();
     }
 

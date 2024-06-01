@@ -279,4 +279,13 @@ public interface InstancioApi<T> extends
     @Override
     @ExperimentalApi
     InstancioApi<T> verbose();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.8.0
+     */
+    @Override
+    @ExperimentalApi
+    InstancioApi<T> withUnique(TargetSelector selector);
 }

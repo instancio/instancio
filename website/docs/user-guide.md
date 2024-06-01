@@ -1312,7 +1312,7 @@ List<Integer> evenNumbers = Instancio.ofList(Integer.class)
     .create();
 ```
 
-A more realistic use case is to  ensure that certain fields of a generated
+A more realistic use case is to ensure that certain fields of a generated
 object have unique values. For instance, we may want to generate a list of `Person`
 objects with unique string and numeric values. If the `Person` contains numeric IDs,
 this will ensure that the generated ID values are distinct across all instances:
@@ -1328,6 +1328,7 @@ List<Person> persons = Instancio.ofList(Person.class)
 !!! attention ""
     <lnum>5</lnum> Generate distinct ints, longs and strings by rejecting duplicates.<br/>
 
+!!! info "This is how [`withUnique()`](#using-withunique) API is implemented."
 
 It should be noted that using the `filter()` method can be inefficient if the probability
 of generating a random value that would be rejected by the predicate is high.
@@ -1348,6 +1349,57 @@ List<User> users = Instancio.ofList(User.class)
 
 Therefore, customising objects using other APIs, such as [`generate()`](#using-generate)
 should be preferred over `filter()`, if possible.
+
+### Using `withUnique()`
+
+!!! info "This is an experimental API available since version 4.8.0"
+
+This method can be used to generate unique values for a given selector's targets.
+Assuming the following class:
+
+```java
+record Data(int foo, int bar) {}
+```
+
+The snippet below will generate a list of `Data` instances with unique `foo` values:
+
+```java linenums="1"
+List<Data> results = Instancio.ofList(Data.class)
+    .size(100)
+    .withUnique(field(Data::foo))
+    .create();
+```
+
+Note that the values will be unique across _all_ targets that match the selector.
+For instance, the following usages:
+
+- `withUnique(allInts())`
+- `withUnique(all(field(Data::foo), field(Data::bar))`
+
+would result in unique values for `foo` and `bar` with no overlap (i.e. `foo` and `bar` are disjoint).
+To generate unique values per field (with potential overlap), the `withUnique()`method must be specified per field:
+
+```java linenums="1" hl_lines="3 4"
+List<Data> results = Instancio.ofList(Data.class)
+    .size(100)
+    .withUnique(field(Data::foo)) // e.g. { 601, 42, 573, ...}
+    .withUnique(field(Data::bar)) // e.g. { 888, 251, 42, ...}
+    .create();
+```
+!!! attention ""
+    <lnum>3-4</lnum> Note that the value `42` was generated for both fields.<br/>
+
+If it is impossible to generate a sufficient number of  unique values after a certain number of attempts,
+an exception will be thrown:
+
+```java linenums="1" hl_lines="2 3"
+List<Boolean> results = Instancio.ofList(Boolean.class)
+    .size(10)
+    .withUnique(allBooleans())
+    .create();
+```
+!!! attention ""
+    <lnum>2-3</lnum> Will fail as it's impossible to generate 10 unique booleans.<br/>
 
 ### Using `setBlank()`
 
@@ -1421,7 +1473,6 @@ Person person = Instancio.of(Person.class)
 //   address=Address[street=null, city=null, country=Canada]
 // ]
 ```
-
 
 ### Using `ignore()`
 

@@ -16,6 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.Assignment;
+import org.instancio.FilterPredicate;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
@@ -63,6 +64,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -77,7 +79,7 @@ import static java.util.Collections.unmodifiableMap;
 import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
 public final class ModelContext<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
@@ -360,6 +362,17 @@ public final class ModelContext<T> {
             ApiValidator.notNull(predicate, "predicate must not be null");
             filterMap = CollectionUtils.newLinkedHashMapIfNull(filterMap);
             return addSelector(filterMap, selector, predicate);
+        }
+
+        public Builder<T> withUnique(final TargetSelector selector) {
+            return filter(selector, new FilterPredicate<Object>() {
+                final Set<Object> generatedValues = new HashSet<>();
+
+                @Override
+                public boolean test(final Object obj) {
+                    return generatedValues.add(obj);
+                }
+            });
         }
 
         public Builder<T> withIgnored(final TargetSelector selector) {

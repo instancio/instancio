@@ -152,6 +152,12 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
+    public InstancioApi<T> withUnique(final TargetSelector selector) {
+        modelContextBuilder.withUnique(selector);
+        return this;
+    }
+
+    @Override
     public InstancioApi<T> withSeed(final long seed) {
         modelContextBuilder.withSeed(seed);
         return this;
