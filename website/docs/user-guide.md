@@ -2748,45 +2748,6 @@ whereas the `@Min` and `@Max` limit the range to `[1, 7]`.
 Since the `@Min` and `@Max` annotations take precedence, the `precision` attribute will be ignored,
 and the generated `value` will be between `1.000` and `7.000`, inclusive, and have the specified scale of `3`.
 
-# Quickcheck
-
-!!! warning "`instancio-quickcheck` is an experimental module"
-
-Instancio's data generation capabilities make it a perfect fit for property-based testing, a flavour of writing test cases inspired by [QuickCheck: a lightweight tool for random testing of Haskell programs](https://dl.acm.org/doi/10.1145/351240.351266) paper. This style focuses on automation of testing of program properties using random input generation. Here is a sneak peek on a simple test case that uses Instancio's property-based testing experimental support.
-
-```java linenums="1"
-@DisplayName("Test that each person has valid age")
-@Property(samples = 100)
-public void age(@ForAll Person p) {
-    assertThat(i.age()).isGreaterThan(0);
-}
-```
-
-The test case verifies that one of the properties of the `Person` type (in this case `age` property) should be a strictly positive number for any generated `Person` instance. To ensure that each generated `Person` instance satisfies this condition, a custom property generation strategy can be provided:
-
-```java linenums="1"
-@DisplayName("Test that each person has valid age")
-@Property(samples = 100)
-public void age(@ForAll("persons") Person p) {
-    assertThat(i.age()).isGreaterThan(0);
-}
-
-public Arbitrary<Person> persons() {
-    return Arbitrary
-        .fromStream(Stream.generate(() -> Instancio
-            .of(Person.class)
-            .generate(Select.field(Person::age), gen -> gen.ints().min(1).max(150))
-            .create()));
-}
-```
-
-At the moment, Instancio's property-based testing offers only basic capabilities:
-
- - the `@Property` annotation denotes an individual test case with the possibility to set the number of samples to generate for each property in question (the default value is `1000`)
- - the `@ForAll` annotation on test case method argument denotes the individual property to generate samples against with the possibility to provide a custom generation strategy
-
-The `Arbitrary<?>` interface hooks in custom generator strategies. The test engine inspects all accessible instance methods of the test class to find out the candidates for the properties under test (using the generator name as a method name and expecting `Arbitrary<?>` instance as a return value).
-
 # Configuration
 
 Instancio configuration is encapsulated by the {{Settings}} class, a map of keys and corresponding values.
@@ -3810,6 +3771,71 @@ class ExampleTest {
 It should be noted that using `@InstancioSource` has one important limitations in that generated objects cannot be customised.
 The only option is to customise generated values using [settings injection](#settings-injection).
 However, it is not possible to customise values on a per-field basis like with the builder API.
+
+# Quickcheck
+
+!!! warning "`instancio-quickcheck` is an experimental module"
+
+The `instancio-quickcheck` module adds support for property-based testing, a flavour of writing test cases inspired
+by [QuickCheck: a lightweight tool for random testing of Haskell programs](https://dl.acm.org/doi/10.1145/351240.351266) paper. This style focuses on automation
+of testing of program properties using random input generation. Below is a sneak peek at a simple test case utilising
+Instancio's experimental property-based testing support.
+
+```java linenums="1"
+@Property(samples = 100)
+void roundTripSerialization(@ForAll Person person) {
+    byte[] b = mapper.serialize(person);
+    Person deserialized = mapper.deserialize(b);
+    assertThat(deserialized).usingRecursiveComparison().isEqualTo(person);
+}
+```
+
+This test verifies that the `mapper` object can correctly serialise and deserialise objects.
+By running the test 100 times with different, randomly generated (and fully populated) `Person` instances,
+it ensures the accuracy of the serialization logic across a wide range of input data.
+
+Since Instancio generates fully populated objects by default, we can enhance test coverage by making the data optional.
+This approach ensures that the mapper can also handle the following inputs:
+
+- `null` references
+- empty collections
+- empty strings
+- arbitrary Unicode characters
+
+To achieve this, we can customise the generated `Person` instances using an `Arbitrary` as shown below.
+
+```java linenums="1" hl_lines="2 6"
+@Property(samples = 100)
+void roundTripSerialization(@ForAll("persons") Person person) {
+    // same as before
+}
+
+private Arbitrary<Person> persons() {
+    Stream<Person> stream = Instancio.of(Person.class)
+        .withNullable(fields())
+        .generate(types().of(Collection.class), gen -> gen.collection().minSize(0).maxSize(1000))
+        .generate(allStrings(), gen -> gen.string().length(0, 100).unicode().allowEmpty())
+        .stream();
+
+    return Arbitrary.fromStream(stream);
+}
+```
+!!! attention ""
+    <lnum>2,6</lnum> The `@ForAll("persons")` attribute refers the method name `persons()`.<br/>
+
+Currently, the `instancio-quickcheck` module offers only basic capabilities:
+
+- The `@Property` annotation denotes an individual test case that allows specifying
+the number of samples to generate for each property (the default value is `1000`).
+- The `@ForAll` annotation on a test case method argument denotes the property for which
+to generate samples and allows providing a custom generation strategy.
+
+The `Arbitrary<T>` interface is used to hook in custom generator strategies.
+The test engine inspects all accessible instance methods of the test class to identify
+candidates for the properties under test, using the generator name as the method name
+and expecting an `Arbitrary<T>` instance as the return value.
+
+---
 
 # Appendix
 
