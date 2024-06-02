@@ -3841,9 +3841,13 @@ and expecting an `Arbitrary<T>` instance as the return value.
 
 ## Built-in Generators
 
-The following list of generators is available via the [`generate()`](#using-generate) method.
-
+The list of generators provided below is available via the [`generate()`](#using-generate) method.
 Most of these generators are also available through the standalone [`Gen`](#creating-simple-values) class.
+Each one offers customisation options relevant to the class it generates, for example `bigDecimal().scale(5)`.
+
+!!! tip
+    See the <a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/specs/package-summary.html" target="_blank">
+    `org.instancio.generator.specs` package Javadocs</a> for methods offered by the built-in generators below.
 
 ```css
 Generators
