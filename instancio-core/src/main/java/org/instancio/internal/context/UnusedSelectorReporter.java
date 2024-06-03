@@ -56,7 +56,7 @@ final class UnusedSelectorReporter {
         append(unused, sb, ApiMethodSelector.ASSIGN_ORIGIN);
         append(unused, sb, ApiMethodSelector.ASSIGN_DESTINATION);
         append(unused, sb, ApiMethodSelector.SET_MODEL);
-        append(unused, sb, ApiMethodSelector.FILTER);
+        append(unused, sb, ApiMethodSelector.FILTER_WITH_UNIQUE);
 
         sb.append(NL)
                 .append("This error aims to highlight potential problems and help maintain clean test code.").append(NL)

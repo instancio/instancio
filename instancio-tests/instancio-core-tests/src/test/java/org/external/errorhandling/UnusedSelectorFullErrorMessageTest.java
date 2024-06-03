@@ -81,6 +81,10 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                 .set(Select.fields().named("bad-field-name").lenient(), 0)
                 .setModel(Select.types(t -> false), Instancio.of(String.class).toModel())
                 .filter(Select.all(Bar.class), bar -> false)
+                // setBlank() selectors are marked as lenient and should not appear in unused selector error message
+                .setBlank(Select.all(Bar.class))
+                // withUnique() is implemented using filter()
+                .withUnique(Select.all(YearMonth.class))
                 .withSetting(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
                 .create();
     }
@@ -109,7 +113,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                  3: setter(Person, "setName(String)")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:66)
 
-                 -> Unused selector in: generate(), set(), supply()
+                 -> Unused selector in: generate(), set(), or supply()
                  1: all(Year).within(scope(types().of(Year)))
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:67)
                  2: field(Baz, "bazValue")
@@ -143,9 +147,11 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                  1: types(Predicate<Class>)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:82)
 
-                 -> Unused selector in: filter()
+                 -> Unused selector in: filter() or withUnique()
                  1: all(Bar)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:83)
+                 2: all(YearMonth)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:87)
 
                 This error aims to highlight potential problems and help maintain clean test code.
 

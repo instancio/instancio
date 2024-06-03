@@ -1875,7 +1875,7 @@ Will output:
 ```hl_lines="4 7"
 Selectors and matching nodes, if any:
 
- -> Method: generate(), set(), supply()
+ -> Method: generate(), set(), or supply()
     - field(Foo, "value")
        \_ Node[Foo.value, depth=2, type=String]
 

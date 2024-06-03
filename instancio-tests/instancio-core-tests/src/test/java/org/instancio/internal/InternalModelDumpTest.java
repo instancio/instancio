@@ -121,7 +121,7 @@ class InternalModelDumpTest {
 
                         Selectors and matching nodes, if any:
 
-                         -> Method: generate(), set(), supply()
+                         -> Method: generate(), set(), or supply()
                             - field(Phone, "countryCode")
                                \\_ Node[Phone.countryCode, depth=1, type=String]
 
