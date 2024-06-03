@@ -15,9 +15,9 @@
  */
 package org.instancio.junit;
 
+import lombok.Setter;
 import org.junit.jupiter.params.ParameterizedTest;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,6 +29,7 @@ class InstancioSourceTest {
     @InstancioSource
     @ParameterizedTest
     void zeroArg() {
+        assertThat(0).isZero(); // NOSONAR
     }
 
     @InstancioSource
@@ -82,78 +83,35 @@ class InstancioSourceTest {
         assertThat(entity).usingRecursiveComparison().isNotEqualTo(dto);
     }
 
+    @Setter
     static class First {
         String foo;
-
-        void setFoo(final String foo) {
-            this.foo = foo;
-        }
     }
 
+    @Setter
     static class Second {
         String bar;
-
-        void setBar(final String bar) {
-            this.bar = bar;
-        }
     }
 
+    @Setter
     static class Generic<T, E> {
         T first;
         List<E> second;
-
-        public void setFirst(final T first) {
-            this.first = first;
-        }
-
-        public void setSecond(final List<E> second) {
-            this.second = second;
-        }
     }
 
+    @Setter
     static class Entity {
         int id;
         boolean valid;
         String name;
         UUID group;
-
-        public void setId(final int id) {
-            this.id = id;
-        }
-
-        public void setValid(final boolean valid) {
-            this.valid = valid;
-        }
-
-        public void setName(final String name) {
-            this.name = name;
-        }
-
-        public void setGroup(final UUID group) {
-            this.group = group;
-        }
     }
 
+    @Setter
     static class Dto {
         int id;
         boolean valid;
         String name;
         UUID group;
-
-        public void setId(final int id) {
-            this.id = id;
-        }
-
-        public void setValid(final boolean valid) {
-            this.valid = valid;
-        }
-
-        public void setName(final String name) {
-            this.name = name;
-        }
-
-        public void setGroup(final UUID group) {
-            this.group = group;
-        }
     }
 }
