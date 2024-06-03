@@ -18,10 +18,10 @@ package org.instancio.internal;
 public enum ApiMethodSelector {
     ASSIGN_DESTINATION("assign() destination"),
     ASSIGN_ORIGIN("assign() origin"),
-    GENERATE("generate(), set(), supply()"),
+    GENERATE("generate(), set(), or supply()"),
     IGNORE("ignore()"),
     ON_COMPLETE("onComplete()"),
-    FILTER("filter()"),
+    FILTER_WITH_UNIQUE("filter() or withUnique()"),
     SET_MODEL("setModel()"),
     SUBTYPE("subtype()"),
     WITH_NULLABLE("withNullable()");

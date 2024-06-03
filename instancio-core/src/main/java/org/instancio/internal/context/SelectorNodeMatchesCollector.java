@@ -61,7 +61,7 @@ final class SelectorNodeMatchesCollector {
             collectNodes(map, ApiMethodSelector.IGNORE, node, ignoredSelectorMap);
             collectNodes(map, ApiMethodSelector.WITH_NULLABLE, node, nullableSelectorMap);
             collectNodes(map, ApiMethodSelector.ON_COMPLETE, node, onCompleteCallbackSelectorMap);
-            collectNodes(map, ApiMethodSelector.FILTER, node, filterSelectorMap);
+            collectNodes(map, ApiMethodSelector.FILTER_WITH_UNIQUE, node, filterSelectorMap);
             collectNodes(map, ApiMethodSelector.SUBTYPE, node, subtypeSelectorMap);
             collectNodes(map, ApiMethodSelector.GENERATE, node, generatorSelectorMap);
             collectNodes(map, ApiMethodSelector.ASSIGN_DESTINATION, node, assignDestinationToAssignmentsMap);
@@ -99,7 +99,7 @@ final class SelectorNodeMatchesCollector {
         map.put(ApiMethodSelector.IGNORE, collectSelectors(ignoredSelectorMap));
         map.put(ApiMethodSelector.WITH_NULLABLE, collectSelectors(nullableSelectorMap));
         map.put(ApiMethodSelector.ON_COMPLETE, collectSelectors(onCompleteCallbackSelectorMap));
-        map.put(ApiMethodSelector.FILTER, collectSelectors(filterSelectorMap));
+        map.put(ApiMethodSelector.FILTER_WITH_UNIQUE, collectSelectors(filterSelectorMap));
         map.put(ApiMethodSelector.SUBTYPE, collectSelectors(subtypeSelectorMap));
         map.put(ApiMethodSelector.GENERATE, collectSelectors(generatorSelectorMap));
         map.put(ApiMethodSelector.ASSIGN_DESTINATION, collectSelectors(assignDestinationToAssignmentsMap));
