@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.InstancioApi;
+import org.instancio.Random;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.ModelContext;
@@ -35,6 +36,7 @@ import java.util.Set;
 public final class NodeContext {
     private final int maxDepth;
     private final Settings settings;
+    private final Random random;
     private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final BooleanSelectorMap ignoredSelectorMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
@@ -46,6 +48,7 @@ public final class NodeContext {
     public NodeContext(final ModelContext<?> modelContext) {
         maxDepth = modelContext.getMaxDepth();
         settings = modelContext.getSettings();
+        random = modelContext.getRandom();
         rootTypeMap = modelContext.getRootTypeMap();
         ignoredSelectorMap = modelContext.getIgnoreSelectorMap();
         subtypeSelectorMap = modelContext.getSubtypeSelectorMap();
@@ -61,6 +64,10 @@ public final class NodeContext {
 
     public Settings getSettings() {
         return settings;
+    }
+
+    public Random getRandom() {
+        return random;
     }
 
     public Map<TypeVariable<?>, Type> getRootTypeMap() {

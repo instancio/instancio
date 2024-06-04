@@ -162,7 +162,12 @@ public final class ReflectionUtils {
     }
 
     public static boolean isArrayOrConcrete(final Class<?> klass) {
-        return klass.isArray() || (!klass.isInterface() && !Modifier.isAbstract(klass.getModifiers()));
+        return klass.isArray() || !isInterfaceOrAbstract(klass);
+    }
+
+    public static boolean isInterfaceOrAbstract(final Class<?> klass) {
+        final int modifiers = klass.getModifiers();
+        return Modifier.isInterface(modifiers) || Modifier.isAbstract(modifiers);
     }
 
     public static boolean neitherNullNorPrimitiveWithDefaultValue(final Class<?> type, @Nullable final Object value) {
