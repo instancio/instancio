@@ -19,6 +19,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.instancio.internal.util.Format;
+import org.instancio.internal.util.SealedClassUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
@@ -35,6 +36,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -183,6 +185,10 @@ class NodeCreator {
                 LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getName());
             }
             return subtype;
+        }
+        if (SealedClassUtils.isSealedAbstractType(node.getTargetClass()) && !node.isContainer()) {
+            final List<Class<?>> impls = SealedClassUtils.getSealedClassImplementations(node.getTargetClass());
+            return Optional.of(nodeContext.getRandom().oneOf(impls));
         }
         return Optional.ofNullable(resolveSubtypeFromAncestors(node));
     }

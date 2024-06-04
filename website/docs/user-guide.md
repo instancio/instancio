@@ -1622,16 +1622,19 @@ Subtype mapping allows mapping a type to its subtype. This can be used for:
 - specifying an implementation class for an abstract class or interface
 - testing behaviour using different implementations
 
-By default, Instancio does not resolve the implementation class of an abstract type.
-The only exceptions to this are JDK classes, such `List`, `Map`, `CharSequence`, etc,
-which default to `ArrayList`, `HashMap`, and `String`, respectively.
+By default, Instancio does not resolve implementation classes of an abstract type.
+The only exceptions to this are:
+
+- JDK classes, such `List`, `Map`, `CharSequence`, etc.
+  (which default to `ArrayList`, `HashMap`, and `String`, respectively).
+- `sealed` interfaces and abstract classes (which default to a random implementation).
 
 For user-defined abstract types, the implementation class must be specified via the API.
 If not specified:
 
 - a `null` value will be generated where the abstract type is a field
-- an empty collection will be generated where the abstract type is collection element
-- an exception will be thrown if root type is abstract and no subtype is specified
+- an empty collection will be generated if the abstract type is a collection element
+- an exception will be thrown if the root type is abstract and no subtype is specified
 
 ### Specifying Subtypes
 
