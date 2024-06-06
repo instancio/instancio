@@ -19,6 +19,10 @@ import org.instancio.Assignment;
 import org.instancio.Instancio;
 import org.instancio.When;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.misc.StringFields;
+import org.instancio.test.support.pojo.misc.StringsAbc;
+import org.instancio.test.support.pojo.misc.StringsDef;
+import org.instancio.test.support.pojo.misc.StringsGhi;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
@@ -27,6 +31,7 @@ import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -234,5 +239,60 @@ class AssignAdhocPersonTest {
         assertThat(address.getPhoneNumbers())
                 .extracting(Phone::getCountryCode)
                 .containsOnly(countryCode);
+    }
+
+    /**
+     * Set value of a field based on multiple other fields.
+     */
+    @Nested
+    class MultipleDependentFieldsTest {
+
+        @Test
+        void stringFields_assignFieldOne() {
+            final Function<StringFields, String> valueFn = o ->
+                    String.format("%s %s %s", o.getTwo(), o.getThree(), o.getFour());
+
+            final StringFields result = Instancio.of(StringFields.class)
+                    .assign(valueOf(StringFields.class).to(StringFields::getOne).as(valueFn))
+                    .create();
+
+            assertThat(result.getOne()).isEqualTo(valueFn.apply(result));
+        }
+
+        @Test
+        void stringsAbc_assignFieldC() {
+            final Function<StringsAbc, String> valueFn = o ->
+                    String.format("%s %s %s", o.getA(), o.getDef().getD(), o.getDef().getGhi().getI());
+
+            final StringsAbc result = Instancio.of(StringsAbc.class)
+                    .assign(valueOf(StringsAbc.class).to(StringsAbc::getC).as(valueFn))
+                    .create();
+
+            assertThat(result.getC()).isEqualTo(valueFn.apply(result));
+        }
+
+        @Test
+        void stringsAbc_assignFieldE() {
+            final Function<StringsAbc, String> valueFn = o ->
+                    String.format("%s %s %s", o.getC(), o.getDef().getF(), o.getDef().getGhi().getH());
+
+            final StringsAbc result = Instancio.of(StringsAbc.class)
+                    .assign(valueOf(StringsAbc.class).to(StringsDef::getE).as(valueFn))
+                    .create();
+
+            assertThat(result.getDef().getE()).isEqualTo(valueFn.apply(result));
+        }
+
+        @Test
+        void stringsAbc_assignFieldI() {
+            final Function<StringsAbc, String> valueFn = o ->
+                    String.format("%s %s %s", o.getA(), o.getDef().getD(), o.getDef().getGhi().getH());
+
+            final StringsAbc result = Instancio.of(StringsAbc.class)
+                    .assign(valueOf(StringsAbc.class).to(StringsGhi::getI).as(valueFn))
+                    .create();
+
+            assertThat(result.getDef().getGhi().getI()).isEqualTo(valueFn.apply(result));
+        }
     }
 }
