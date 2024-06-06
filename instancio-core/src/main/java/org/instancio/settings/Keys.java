@@ -631,6 +631,16 @@ public final class Keys {
             "string.nullable", Boolean.class, false);
 
     /**
+     * Specifies the case of generated strings;
+     * default is {@link StringCase#UPPER}; property name {@code string.case}.
+     *
+     * @since 4.8.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<StringCase> STRING_CASE = registerRequiredNonAdjustable(
+            "string.case", StringCase.class, StringCase.UPPER);
+
+    /**
      * Specifies the String type to generate;
      * default is {@link StringType#ALPHABETIC}; property name {@code string.type}.
      *

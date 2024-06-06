@@ -46,7 +46,7 @@ public class StringGenerator extends AbstractGenerator<String>
     private String prefix;
     private String suffix;
     private StringType stringType;
-    private StringCase stringCase = StringCase.UPPER;
+    private StringCase stringCase;
     private List<Character.UnicodeBlock> unicodeBlocks = Collections.emptyList();
 
     /**
@@ -68,6 +68,7 @@ public class StringGenerator extends AbstractGenerator<String>
         this.maxLength = settings.get(Keys.STRING_MAX_LENGTH);
         super.nullable(settings.get(Keys.STRING_NULLABLE));
         this.allowEmpty = settings.get(Keys.STRING_ALLOW_EMPTY);
+        this.stringCase = StringCase.values()[settings.get(Keys.STRING_CASE).ordinal()];
         this.stringType = StringType.values()[settings.get(Keys.STRING_TYPE).ordinal()];
     }
 

@@ -20,7 +20,7 @@ import org.instancio.generator.specs.StringGeneratorSpec;
 
 /**
  * A setting that specifies the type of {@code String} to generate.
- * String type can be set using the {@link Keys#STRING_TYPE}:
+ * String type can be set using the {@link Keys#STRING_TYPE} setting:
  *
  * <pre>{@code
  * Person person = Instancio.of(Person.class)
