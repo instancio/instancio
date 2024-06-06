@@ -26,6 +26,7 @@ import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.SettingKey;
+import org.instancio.settings.StringCase;
 import org.instancio.settings.StringType;
 
 import java.util.Collections;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 final class SettingsSupport {
 
     private static final Map<Class<?>, Function<String, Object>> VALUE_OF_FUNCTIONS = createValueOfFunctionsMap();
@@ -69,6 +71,7 @@ final class SettingsSupport {
         fnMap.put(OnSetMethodNotFound.class, OnSetMethodNotFound::valueOf);
         fnMap.put(OnSetMethodUnmatched.class, OnSetMethodUnmatched::valueOf);
         fnMap.put(SetterStyle.class, SetterStyle::valueOf);
+        fnMap.put(StringCase.class, StringCase::valueOf);
         fnMap.put(StringType.class, StringType::valueOf);
         return Collections.unmodifiableMap(fnMap);
     }

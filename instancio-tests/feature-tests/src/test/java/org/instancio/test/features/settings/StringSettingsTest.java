@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.settings.StringCase;
 import org.instancio.settings.StringType;
 import org.instancio.test.support.asserts.StringAssertExtras;
 import org.instancio.test.support.pojo.basic.StringHolder;
@@ -26,8 +27,11 @@ import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -96,5 +100,88 @@ class StringSettingsTest {
         StringAssertExtras.assertString(result)
                 .hasUnicodeBlockCountGreaterThan(10)
                 .hasCodePointCount(expectedSize);
+    }
+
+    @Nested
+    class StringCaseTest {
+
+        private String createString(StringType stringType, StringCase stringCase) {
+            return Instancio.of(String.class)
+                    .withSetting(Keys.STRING_TYPE, stringType)
+                    .withSetting(Keys.STRING_CASE, stringCase)
+                    .create();
+        }
+
+        @Nested
+        class AlphabeticTest {
+            @Test
+            void lowercase() {
+                assertThat(createString(StringType.ALPHABETIC, StringCase.LOWER)).matches("[a-z]+");
+            }
+
+            @Test
+            void mixedCase() {
+                assertThat(createString(StringType.ALPHABETIC, StringCase.MIXED)).matches("[a-zA-Z]+");
+            }
+
+            @Test
+            void uppercase() {
+                assertThat(createString(StringType.ALPHABETIC, StringCase.UPPER)).matches("[A-Z]+");
+            }
+        }
+
+        @Nested
+        class HexTest {
+            @Test
+            void lowercase() {
+                assertThat(createString(StringType.HEX, StringCase.LOWER)).matches("[0-9a-f]+");
+            }
+
+            @Test
+            void mixedCase() {
+                assertThat(createString(StringType.HEX, StringCase.MIXED)).matches("[0-9a-fA-F]+");
+            }
+
+            @Test
+            void uppercase() {
+                assertThat(createString(StringType.HEX, StringCase.UPPER)).matches("[0-9A-F]+");
+            }
+        }
+
+        @Nested
+        class AlphanumericTest {
+            @Test
+            void lowercase() {
+                assertThat(createString(StringType.ALPHANUMERIC, StringCase.LOWER)).matches("[0-9a-z]+");
+            }
+
+            @Test
+            void mixedCase() {
+                assertThat(createString(StringType.ALPHANUMERIC, StringCase.MIXED)).matches("[0-9a-zA-Z]+");
+            }
+
+            @Test
+            void uppercase() {
+                assertThat(createString(StringType.ALPHANUMERIC, StringCase.UPPER)).matches("[0-9A-Z]+");
+            }
+        }
+
+        @EnumSource(StringCase.class)
+        @ParameterizedTest
+        void caseShouldBeIgnoredForDigits(final StringCase stringCase) {
+            assertThat(createString(StringType.DIGITS, stringCase)).matches("[0-9]+");
+        }
+
+        @EnumSource(StringCase.class)
+        @ParameterizedTest
+        void caseShouldBeIgnoredForNumericSequence(final StringCase stringCase) {
+            assertThat(createString(StringType.NUMERIC_SEQUENCE, stringCase)).isEqualTo("1");
+        }
+
+        @EnumSource(StringCase.class)
+        @ParameterizedTest
+        void caseShouldBeIgnoredForUnicode(final StringCase stringCase) {
+            assertThat(createString(StringType.UNICODE, stringCase)).isNotEmpty();
+        }
     }
 }

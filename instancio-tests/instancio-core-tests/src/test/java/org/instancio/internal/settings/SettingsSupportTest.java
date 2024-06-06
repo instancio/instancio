@@ -26,6 +26,7 @@ import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.SetterStyle;
+import org.instancio.settings.StringCase;
 import org.instancio.settings.StringType;
 import org.junit.jupiter.api.Test;
 
@@ -60,6 +61,7 @@ class SettingsSupportTest {
                 OnSetMethodNotFound.class,
                 OnSetMethodUnmatched.class,
                 SetterStyle.class,
+                StringCase.class,
                 StringType.class
         };
 
