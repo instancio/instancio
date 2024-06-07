@@ -29,7 +29,11 @@ public enum Feature {
     ARRAY_GENERATOR_SUBTYPE,
     ARRAY_GENERATOR_WITH,
     /**
-     * Tests for {@code assign()} API.
+     * Tests for {@code as(Function)}.
+     */
+    AS,
+    /**
+     * Tests for {@code assign()}.
      */
     ASSIGN,
     /**
