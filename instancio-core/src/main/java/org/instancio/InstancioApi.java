@@ -21,6 +21,7 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -70,6 +71,38 @@ public interface InstancioApi<T> extends
      * @since 1.5.1
      */
     Result<T> asResult();
+
+    /**
+     * A convenience method for mapping the result (as returned by the
+     * {@link #create()} method) to another object using a {@code function}.
+     *
+     * <p>For example, this method can be used to return the result
+     * as JSON or other formats:
+     *
+     * <pre>{@code
+     * String json = Instancio.of(Person.class).as(json());
+     * }</pre>
+     *
+     * where {@code json()} is a user-defined method implemented
+     * using the preferred library, e.g. using Jackson:
+     *
+     * <pre>{@code
+     * public static <T> Function<T, String> json() {
+     *     return result -> new ObjectMapper()
+     *             .writerWithDefaultPrettyPrinter()
+     *             .writeValueAsString(result);
+     * }
+     * }</pre>
+     *
+     * @param function the function for mapping the result
+     * @param <R> the type of object the result is mapped to
+     * @return the object returned by applying the mapping function to the result
+     * @since 4.8.0
+     */
+    @ExperimentalApi
+    default <R> R as(Function<T, R> function) {
+        return function.apply(create());
+    }
 
     /**
      * Creates an infinite stream of distinct, fully populated object instances.
