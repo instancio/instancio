@@ -29,11 +29,14 @@ import java.lang.annotation.Target;
  * generator could be specified to provide the samples.
  *
  * @since 3.6.0
+ * @deprecated the {@code instancio-quickcheck} module is deprecated
+ *             and will be removed in version 5.
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ExperimentalApi
+@Deprecated
 public @interface ForAll {
     /**
      * The generator to provide the samples (optional). The generator should be the

@@ -26,9 +26,12 @@ import java.util.stream.BaseStream;
  *
  * @param <T> the type of the property
  * @since 3.6.0
+ * @deprecated the {@code instancio-quickcheck} module is deprecated
+ *             and will be removed in version 5.
  */
 @ExperimentalApi
 @FunctionalInterface
+@Deprecated
 public interface Arbitrary<T> {
     /**
      * Returns the generator instance of a property under the test
