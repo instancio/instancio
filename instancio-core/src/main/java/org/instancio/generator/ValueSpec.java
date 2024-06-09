@@ -100,15 +100,30 @@ public interface ValueSpec<T> extends GeneratorSpec<T> {
     }
 
     /**
+     * Maps the generated value using the specified {@code function}.
+     *
+     * @param function mapping function
+     * @param <R> result type
+     * @return the result of the mapping function
+     * @since 4.8.0
+     */
+    default <R> R as(final Function<T, R> function) {
+        return function.apply(get());
+    }
+
+    /**
      * Maps the generated value using the specified function.
      *
-     * @param fn  mapping function
+     * @param function mapping function
      * @param <R> result type
      * @return the result of the mapping function
      * @since 2.6.0
+     * @deprecated this method is deprecated and will be removed in version 5;
+     *             use the {@link #as(Function)} method instead.
      */
-    default <R> R map(final Function<T, R> fn) {
-        return fn.apply(get());
+    @Deprecated
+    default <R> R map(final Function<T, R> function) {
+        return as(function);
     }
 
     /**

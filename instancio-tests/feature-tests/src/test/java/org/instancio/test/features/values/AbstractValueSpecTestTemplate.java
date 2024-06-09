@@ -59,6 +59,12 @@ public abstract class AbstractValueSpecTestTemplate<T> {
     }
 
     @Test
+    protected final void as() {
+        final String result = spec().as(Object::toString);
+        assertThat(result).isNotBlank();
+    }
+
+    @Test
     protected final void map() {
         final String result = spec().map(Object::toString);
         assertThat(result).isNotBlank();
