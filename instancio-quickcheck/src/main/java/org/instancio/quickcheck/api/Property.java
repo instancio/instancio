@@ -28,7 +28,10 @@ import java.lang.annotation.Target;
  * Denotes an individual property based test case.
  *
  * @since 3.6.0
+ * @deprecated the {@code instancio-quickcheck} module is deprecated
+ *             and will be removed in version 5.
  */
+@Deprecated
 @Testable
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

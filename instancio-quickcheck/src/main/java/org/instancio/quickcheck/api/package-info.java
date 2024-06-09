@@ -17,5 +17,8 @@
  * Defines top-level public-facing APIs.
  *
  * @since 3.6.0
+ * @deprecated the {@code instancio-quickcheck} module is deprecated
+ *             and will be removed in version 5.
  */
+@Deprecated
 package org.instancio.quickcheck.api;

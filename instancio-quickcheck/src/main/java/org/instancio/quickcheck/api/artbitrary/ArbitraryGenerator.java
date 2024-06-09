@@ -24,8 +24,11 @@ import org.instancio.quickcheck.api.Property;
  * annotation.
  *
  * @since 3.6.0
+ * @deprecated the {@code instancio-quickcheck} module is deprecated
+ *             and will be removed in version 5.
  */
 @ExperimentalApi
+@Deprecated
 public interface ArbitraryGenerator<T> {
     /**
      * Returns next generated value

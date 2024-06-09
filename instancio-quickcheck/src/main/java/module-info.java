@@ -1,3 +1,8 @@
+/**
+ * @deprecated the {@code instancio-quickcheck} module is deprecated
+ *             and will be removed in version 5.
+ */
+@Deprecated
 module org.instancio.quickcheck {
   requires transitive org.instancio.core;
 

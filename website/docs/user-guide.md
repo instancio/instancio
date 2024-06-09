@@ -3778,7 +3778,7 @@ However, it is not possible to customise values on a per-field basis like with t
 
 # Quickcheck
 
-!!! warning "`instancio-quickcheck` is an experimental module"
+!!! warning "`instancio-quickcheck` is deprecated and will be removed in version 5."
 
 The `instancio-quickcheck` module adds support for property-based testing, a flavour of writing test cases inspired
 by [QuickCheck: a lightweight tool for random testing of Haskell programs](https://dl.acm.org/doi/10.1145/351240.351266) paper. This style focuses on automation
