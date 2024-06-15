@@ -16,7 +16,6 @@
 package org.instancio.test.features.values;
 
 import org.instancio.Gen;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.specs.EnumSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Gender;
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @FeatureTag(Feature.VALUE_SPEC)
 @ExtendWith(InstancioExtension.class)
@@ -42,14 +40,5 @@ class EnumSpecTest extends AbstractValueSpecTestTemplate<Gender> {
         final Gender result = spec().excluding(Gender.FEMALE, Gender.MALE).get();
 
         assertThat(result).isEqualTo(Gender.OTHER);
-    }
-
-    @Test
-    @Override
-    protected void toModel() {
-        final EnumSpec<Gender> spec = spec();
-        assertThatThrownBy(spec::toModel)
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("enumOf() spec does not support toModel()");
     }
 }

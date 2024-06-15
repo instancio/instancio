@@ -15,9 +15,7 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.Model;
 import org.instancio.generator.ValueSpec;
-import org.instancio.internal.ApiValidator;
 
 /**
  * Spec for generating enums.
@@ -43,16 +41,4 @@ public interface EnumSpec<E extends Enum<E>> extends ValueSpec<E>, EnumGenerator
      */
     @Override
     EnumSpec<E> nullable();
-
-    /**
-     * <b>{@code toModel()} is not supported by this spec.</b>
-     *
-     * <p>{@inheritDoc}
-     *
-     * @since 2.12.0
-     */
-    @Override
-    default Model<E> toModel() {
-        return ApiValidator.valueSpecDoesNotSupportToModel("enumOf()");
-    }
 }

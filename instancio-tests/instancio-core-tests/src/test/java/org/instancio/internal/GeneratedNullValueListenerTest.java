@@ -16,7 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.Assign;
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generation.GenerationListener;
 import org.junit.jupiter.api.Test;
@@ -79,7 +79,7 @@ class GeneratedNullValueListenerTest {
                         .build()),
 
                 Arguments.of(ModelContext.builder(String.class)
-                        .withModel(allStrings(), Gen.string().toModel())
+                        .withModel(allStrings(), Instancio.of(String.class).toModel())
                         .build()),
 
                 Arguments.of(ModelContext.builder(String.class)
