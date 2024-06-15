@@ -15,45 +15,61 @@
  */
 package org.instancio.generator.specs;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Generator spec for {@link LocalDateTime}.
+ * Generator spec for {@link ZonedDateTime}.
  *
  * @since 4.2.0
  */
-public interface LocalDateTimeGeneratorAsSpec extends
-        TemporalAsGeneratorSpec<LocalDateTime>,
-        TruncatableTemporalSpec<LocalDateTime> {
+public interface ZonedDateTimeGeneratorSpec extends
+        TemporalGeneratorSpec<ZonedDateTime>,
+        TruncatableTemporalGeneratorSpec<ZonedDateTime> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalDateTimeGeneratorAsSpec past();
+    ZonedDateTimeGeneratorSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalDateTimeGeneratorAsSpec future();
+    ZonedDateTimeGeneratorSpec future();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    ZonedDateTimeGeneratorSpec min(ZonedDateTime min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    ZonedDateTimeGeneratorSpec max(ZonedDateTime max);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalDateTimeGeneratorAsSpec range(LocalDateTime min, LocalDateTime max);
+    ZonedDateTimeGeneratorSpec range(ZonedDateTime min, ZonedDateTime max);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalDateTimeGeneratorAsSpec truncatedTo(TemporalUnit unit);
+    ZonedDateTimeGeneratorSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalDateTimeGeneratorAsSpec nullable();
+    ZonedDateTimeGeneratorSpec nullable();
 }

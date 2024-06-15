@@ -19,14 +19,9 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.DoubleSpec;
 import org.instancio.settings.Keys;
-import org.instancio.support.Global;
 
 public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec<Double>
         implements DoubleSpec {
-
-    public DoubleGenerator() {
-        this(Global.generatorContext());
-    }
 
     public DoubleGenerator(final GeneratorContext context) {
         super(context,

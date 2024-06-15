@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.net;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.URLSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -34,7 +34,7 @@ class URLSpecTest extends AbstractValueSpecTestTemplate<URL> {
 
     @Override
     protected URLSpec spec() {
-        return Gen.net().url();
+        return Instancio.gen().net().url();
     }
 
     @Test

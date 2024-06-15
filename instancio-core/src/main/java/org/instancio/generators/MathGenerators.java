@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.BigDecimalAsGeneratorSpec;
 import org.instancio.generator.specs.BigDecimalGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
-import org.instancio.internal.generator.math.BigDecimalGenerator;
-import org.instancio.internal.generator.math.BigIntegerGenerator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -29,22 +24,14 @@ import java.math.BigInteger;
 /**
  * Contains built-in generators for {@code java.math} classes.
  */
-public class MathGenerators {
-
-    private final GeneratorContext context;
-
-    MathGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface MathGenerators {
 
     /**
      * Customises generated {@link BigInteger} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public NumberGeneratorSpec<BigInteger> bigInteger() {
-        return new BigIntegerGenerator(context);
-    }
+    NumberGeneratorSpec<BigInteger> bigInteger();
 
     /**
      * Customises generated {@link BigDecimal} values.
@@ -59,9 +46,7 @@ public class MathGenerators {
      *
      * <p>See {@link BigDecimalGeneratorSpec#precision(int)} for details.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public BigDecimalAsGeneratorSpec bigDecimal() {
-        return new BigDecimalGenerator(context);
-    }
+    BigDecimalGeneratorSpec bigDecimal();
 }

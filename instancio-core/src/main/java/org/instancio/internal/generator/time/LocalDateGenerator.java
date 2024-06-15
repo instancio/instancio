@@ -20,7 +20,6 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
-import org.instancio.support.Global;
 
 import java.time.LocalDate;
 
@@ -31,10 +30,6 @@ public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate>
 
     static final LocalDate DEFAULT_MIN = Constants.DEFAULT_MIN.toLocalDate();
     static final LocalDate DEFAULT_MAX = Constants.DEFAULT_MAX.toLocalDate();
-
-    public LocalDateGenerator() {
-        this(Global.generatorContext());
-    }
 
     public LocalDateGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX);

@@ -15,15 +15,10 @@
  */
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.EmailAsGeneratorSpec;
+import org.instancio.generator.specs.EmailGeneratorSpec;
 import org.instancio.generator.specs.Ip4GeneratorSpec;
-import org.instancio.generator.specs.URIAsGeneratorSpec;
-import org.instancio.generator.specs.URLAsGeneratorSpec;
-import org.instancio.internal.generator.domain.internet.EmailGenerator;
-import org.instancio.internal.generator.domain.internet.Ip4Generator;
-import org.instancio.internal.generator.net.URIGenerator;
-import org.instancio.internal.generator.net.URLGenerator;
+import org.instancio.generator.specs.URIGeneratorSpec;
+import org.instancio.generator.specs.URLGeneratorSpec;
 
 import java.net.URI;
 import java.net.URL;
@@ -33,13 +28,7 @@ import java.net.URL;
  *
  * @since 2.3.0
  */
-public class NetGenerators {
-
-    private final GeneratorContext context;
-
-    public NetGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface NetGenerators {
 
     /**
      * Customises generated {@link URI} objects.
@@ -47,9 +36,7 @@ public class NetGenerators {
      * @return generator spec
      * @since 2.3.0
      */
-    public URIAsGeneratorSpec uri() {
-        return new URIGenerator(context);
-    }
+    URIGeneratorSpec uri();
 
     /**
      * Customises generated email addresses.
@@ -57,9 +44,7 @@ public class NetGenerators {
      * @return generator spec
      * @since 2.11.0
      */
-    public EmailAsGeneratorSpec email() {
-        return new EmailGenerator(context);
-    }
+    EmailGeneratorSpec email();
 
     /**
      * Generates IPv4 address.
@@ -67,9 +52,7 @@ public class NetGenerators {
      * @return generator spec
      * @since 2.12.0
      */
-    public Ip4GeneratorSpec ip4() {
-        return new Ip4Generator(context);
-    }
+    Ip4GeneratorSpec ip4();
 
     /**
      * Customises generated {@link URL} objects.
@@ -77,7 +60,5 @@ public class NetGenerators {
      * @return generator spec
      * @since 2.3.0
      */
-    public URLAsGeneratorSpec url() {
-        return new URLGenerator(context);
-    }
+    URLGeneratorSpec url();
 }

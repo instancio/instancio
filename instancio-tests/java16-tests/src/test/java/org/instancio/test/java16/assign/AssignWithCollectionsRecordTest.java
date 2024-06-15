@@ -16,7 +16,6 @@
 package org.instancio.test.java16.assign;
 
 import org.instancio.Assign;
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.When;
 import org.instancio.test.support.java16.record.AddressRecord;
@@ -37,8 +36,8 @@ class AssignWithCollectionsRecordTest {
 
     @Test
     void recordCollectionElement() {
-        final String city1 = Gen.string().length(16).get();
-        final String city2 = Gen.string().length(16).get();
+        final String city1 = Instancio.gen().string().length(16).get();
+        final String city2 = Instancio.gen().string().length(16).get();
 
         final List<AddressRecord> results = Instancio.ofList(AddressRecord.class)
                 .generate(field(AddressRecord::city), gen -> gen.oneOf(city1, city2))

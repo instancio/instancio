@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EanGeneratorSpec;
 import org.instancio.generator.specs.IsbnGeneratorSpec;
 import org.instancio.generators.can.CanIdGenerators;
 import org.instancio.generators.pol.PolIdGenerators;
 import org.instancio.generators.usa.UsaIdGenerators;
-import org.instancio.internal.generator.domain.id.EanGenerator;
-import org.instancio.internal.generator.domain.id.IsbnGenerator;
 
 /**
  * Contains built-in generators for various types of identifiers.
  *
  * @since 2.11.0
  */
-public class IdGenerators {
-
-    private final GeneratorContext context;
-
-    public IdGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface IdGenerators {
 
     /**
      * Generates European Article Number (EAN).
@@ -44,9 +34,7 @@ public class IdGenerators {
      * @return API builder reference
      * @since 2.11.0
      */
-    public EanGeneratorSpec ean() {
-        return new EanGenerator(context);
-    }
+    EanGeneratorSpec ean();
 
     /**
      * Generates ISBN numbers.
@@ -54,9 +42,7 @@ public class IdGenerators {
      * @return API builder reference
      * @since 2.11.0
      */
-    public IsbnGeneratorSpec isbn() {
-        return new IsbnGenerator(context);
-    }
+    IsbnGeneratorSpec isbn();
 
     /**
      * Provides access to identifier generators for Canada.
@@ -64,9 +50,7 @@ public class IdGenerators {
      * @return built-in id generators
      * @since 3.1.0
      */
-    public CanIdGenerators can() {
-        return new CanIdGenerators(context);
-    }
+    CanIdGenerators can();
 
     /**
      * Provides access to identifier generators for Poland.
@@ -74,9 +58,7 @@ public class IdGenerators {
      * @return built-in id generators
      * @since 3.1.0
      */
-    public PolIdGenerators pol() {
-        return new PolIdGenerators(context);
-    }
+    PolIdGenerators pol();
 
     /**
      * Provides access to identifier generators for the USA.
@@ -84,7 +66,5 @@ public class IdGenerators {
      * @return built-in id generators
      * @since 3.1.0
      */
-    public UsaIdGenerators usa() {
-        return new UsaIdGenerators(context);
-    }
+    UsaIdGenerators usa();
 }

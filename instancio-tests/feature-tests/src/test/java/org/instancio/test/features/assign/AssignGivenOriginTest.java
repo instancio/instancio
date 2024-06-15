@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.assign;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.generator.Generator;
 import org.instancio.generator.ValueSpec;
@@ -68,7 +67,7 @@ class AssignGivenOriginTest {
 
     @Test
     void generateWithValueSpec() {
-        final ValueSpec<String> spec = Gen.text().pattern("I");
+        final ValueSpec<String> spec = Instancio.gen().text().pattern("I");
 
         final StringsGhi result = Instancio.of(StringsGhi.class)
                 .assign(given(StringsGhi::getG).satisfies(s -> true)

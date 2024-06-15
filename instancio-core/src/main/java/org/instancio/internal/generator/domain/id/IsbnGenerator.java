@@ -18,13 +18,8 @@ package org.instancio.internal.generator.domain.id;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.IsbnSpec;
 import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
-import org.instancio.support.Global;
 
 public class IsbnGenerator extends BaseModCheckGenerator implements IsbnSpec {
-
-    public IsbnGenerator() {
-        super(Global.generatorContext());
-    }
 
     public IsbnGenerator(final GeneratorContext context) {
         super(context);

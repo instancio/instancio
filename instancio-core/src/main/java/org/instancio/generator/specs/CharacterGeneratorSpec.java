@@ -15,14 +15,12 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * Generator spec for characters.
  *
  * @since 2.0.0
  */
-public interface CharacterGeneratorSpec extends GeneratorSpec<Character> {
+public interface CharacterGeneratorSpec extends AsGeneratorSpec<Character> {
 
     /**
      * Range of characters to generate.

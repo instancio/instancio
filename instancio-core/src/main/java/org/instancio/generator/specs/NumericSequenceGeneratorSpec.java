@@ -27,7 +27,7 @@ import java.util.function.UnaryOperator;
  */
 @ExperimentalApi
 public interface NumericSequenceGeneratorSpec<T extends Number & Comparable<T>>
-        extends NullableGeneratorSpec<T> {
+        extends AsGeneratorSpec<T>, NullableGeneratorSpec<T> {
 
     /**
      * Specifies the starting value of the sequence.

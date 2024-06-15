@@ -24,30 +24,57 @@ import org.instancio.generator.ValueSpec;
  */
 public interface Mod11Spec extends Mod11GeneratorSpec, ValueSpec<String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec length(int length);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec threshold(int threshold);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec startIndex(int startIndex);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec endIndex(int endIndex);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec checkDigitIndex(int checkDigitIndex);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec treatCheck10As(char treatCheck10As);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec treatCheck11As(char treatCheck11As);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec leftToRight();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Mod11Spec nullable();
 }

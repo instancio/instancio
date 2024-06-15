@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.id.pol;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.pol.NipSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -31,7 +31,7 @@ class NipSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected NipSpec spec() {
-        return Gen.id().pol().nip();
+        return Instancio.gen().id().pol().nip();
     }
 
     @Override

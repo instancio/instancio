@@ -18,44 +18,35 @@ package org.instancio.generators.pol;
 import org.instancio.generator.specs.pol.NipSpec;
 import org.instancio.generator.specs.pol.PeselSpec;
 import org.instancio.generator.specs.pol.RegonSpec;
-import org.instancio.internal.generator.domain.id.pol.NipGenerator;
-import org.instancio.internal.generator.domain.id.pol.PeselGenerator;
-import org.instancio.internal.generator.domain.id.pol.RegonGenerator;
 
 /**
  * Provides generators for Polish identifiers.
  *
- * @since 3.1.0
+ * @since 5.0.0
  */
-public final class PolIdSpecs {
+public interface PolIdSpecs extends PolIdGenerators {
 
     /**
-     * Generates Polish VAT Identification Number (NIP).
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public NipSpec nip() {
-        return new NipGenerator();
-    }
+    @Override
+    NipSpec nip();
 
     /**
-     * Generates Polish National Identification Number (PESEL).
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public PeselSpec pesel() {
-        return new PeselGenerator();
-    }
+    @Override
+    PeselSpec pesel();
 
     /**
-     * Generates Polish Taxpayer Identification Number (REGON).
+     *{@inheritDoc}
      *
-     * @return API builder reference
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public RegonSpec regon() {
-        return new RegonGenerator();
-    }
+    @Override
+    RegonSpec regon();
 }

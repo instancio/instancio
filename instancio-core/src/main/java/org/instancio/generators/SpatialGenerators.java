@@ -15,29 +15,20 @@
  */
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CoordinateGeneratorSpec;
-import org.instancio.internal.generator.domain.spatial.CoordinateGenerator;
 
 /**
  * Contains built-in spatial generators.
  *
  * @since 4.4.0
  */
-public class SpatialGenerators {
-
-    private final GeneratorContext context;
-
-    public SpatialGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface SpatialGenerators {
 
     /**
-     * Customises generated latitudinal and longitudinal values
+     * Customises generated latitudinal and longitudinal values.
      *
-     * @return customised generator
+     * @return API builder reference
+     * @since 4.4.0
      */
-    public CoordinateGeneratorSpec coordinate() {
-        return new CoordinateGenerator(context);
-    }
+    CoordinateGeneratorSpec coordinate();
 }

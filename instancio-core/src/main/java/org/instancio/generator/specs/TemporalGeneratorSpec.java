@@ -21,7 +21,9 @@ package org.instancio.generator.specs;
  * @param <T> temporal type
  * @since 1.1.2
  */
-public interface TemporalGeneratorSpec<T> extends NullableGeneratorSpec<T> {
+public interface TemporalGeneratorSpec<T> extends
+        AsGeneratorSpec<T>,
+        NullableGeneratorSpec<T> {
 
     /**
      * Generate a value in the past.

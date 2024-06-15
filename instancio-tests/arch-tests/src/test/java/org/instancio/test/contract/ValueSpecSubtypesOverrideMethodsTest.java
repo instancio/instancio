@@ -70,7 +70,7 @@ import static org.assertj.core.api.Assertions.fail;
  * interfaces can be chained together, for example:
  *
  * <pre>
- *   Gen.string().prefix("foo").get();
+ *   Instancio.gen().string().prefix("foo").get();
  * </pre>
  *
  * <p>where {@code prefix()} is from {@code StringGeneratorSpec} and {@code get()}

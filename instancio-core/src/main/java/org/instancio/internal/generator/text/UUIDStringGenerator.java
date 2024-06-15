@@ -20,7 +20,6 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.UUIDStringSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
-import org.instancio.support.Global;
 
 import java.util.Locale;
 
@@ -30,10 +29,6 @@ public class UUIDStringGenerator extends AbstractGenerator<String> implements UU
     private boolean isWithoutDashes;
 
     private final UUIDGenerator delegate;
-
-    public UUIDStringGenerator() {
-        this(Global.generatorContext());
-    }
 
     public UUIDStringGenerator(final GeneratorContext context) {
         super(context);

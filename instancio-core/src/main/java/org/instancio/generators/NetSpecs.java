@@ -19,59 +19,43 @@ import org.instancio.generator.specs.EmailSpec;
 import org.instancio.generator.specs.Ip4Spec;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.generator.specs.URLSpec;
-import org.instancio.internal.generator.domain.internet.EmailGenerator;
-import org.instancio.internal.generator.domain.internet.Ip4Generator;
-import org.instancio.internal.generator.net.URIGenerator;
-import org.instancio.internal.generator.net.URLGenerator;
-
-import java.net.URI;
-import java.net.URL;
 
 /**
  * Provides generators for {@code java.net} classes.
  *
- * @since 2.6.0
+ * @since 5.0.0
  */
-public final class NetSpecs {
+public interface NetSpecs extends NetGenerators {
 
     /**
-     * Generates email addresses.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.11.0
+     * @since 5.0.0
      */
-    public EmailSpec email() {
-        return new EmailGenerator();
-    }
+    @Override
+    EmailSpec email();
 
     /**
-     * Generates IPv4 addresses.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.12.0
+     * @since 5.0.0
      */
-    public Ip4Spec ip4() {
-        return new Ip4Generator();
-    }
+    @Override
+    Ip4Spec ip4();
 
     /**
-     * Generates {@link URI} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public URISpec uri() {
-        return new URIGenerator();
-    }
+    @Override
+    URISpec uri();
 
     /**
-     * Generates {@link URL} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public URLSpec url() {
-        return new URLGenerator();
-    }
-
+    @Override
+    URLSpec url();
 }

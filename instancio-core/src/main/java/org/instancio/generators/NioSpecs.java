@@ -16,24 +16,19 @@
 package org.instancio.generators;
 
 import org.instancio.generator.specs.PathSpec;
-import org.instancio.internal.generator.nio.file.PathGenerator;
-
-import java.nio.file.Path;
 
 /**
  * Provides generators for {@code java.nio} classes.
  *
- * @since 2.6.0
+ * @since 5.0.0
  */
-public final class NioSpecs {
+public interface NioSpecs extends NioGenerators {
 
     /**
-     * Generates {@link Path} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     *  @since 5.0.0
      */
-    public PathSpec path() {
-        return new PathGenerator();
-    }
+    @Override
+    PathSpec path(String... subdirectories);
 }

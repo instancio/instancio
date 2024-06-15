@@ -21,7 +21,6 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.pol.PeselSpec;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.NumberUtils;
-import org.instancio.support.Global;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,10 +32,6 @@ public class PeselGenerator extends WeightsModCheckGenerator implements PeselSpe
 
     private final PeselDateGenerator peselDateGenerator;
     private Gender gender;
-
-    public PeselGenerator() {
-        this(Global.generatorContext());
-    }
 
     public PeselGenerator(final GeneratorContext context) {
         super(context);

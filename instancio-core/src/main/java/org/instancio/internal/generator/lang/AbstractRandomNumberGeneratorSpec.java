@@ -17,7 +17,7 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.NumberAsGeneratorSpec;
+import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Range;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
-        extends AbstractGenerator<T> implements NumberAsGeneratorSpec<T> {
+        extends AbstractGenerator<T> implements NumberGeneratorSpec<T> {
 
     private T min;
     private T max;
@@ -50,31 +50,31 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public NumberAsGeneratorSpec<T> min(final T min) {
+    public NumberGeneratorSpec<T> min(final T min) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         return this;
     }
 
     @Override
-    public NumberAsGeneratorSpec<T> max(final T max) {
+    public NumberGeneratorSpec<T> max(final T max) {
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
     }
 
     @Override
-    public NumberAsGeneratorSpec<T> nullable() {
+    public NumberGeneratorSpec<T> nullable() {
         super.nullable();
         return this;
     }
 
     @Override
-    public NumberAsGeneratorSpec<T> nullable(final boolean isNullable) {
+    public NumberGeneratorSpec<T> nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
     }
 
     @Override
-    public NumberAsGeneratorSpec<T> range(final T min, final T max) {
+    public NumberGeneratorSpec<T> range(final T min, final T max) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         rangeStack.add(Range.of(min, max));

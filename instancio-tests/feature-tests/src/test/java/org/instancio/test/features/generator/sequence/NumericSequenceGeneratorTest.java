@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.generator.sequence;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.generators.Generators;
@@ -85,8 +84,8 @@ class NumericSequenceGeneratorTest {
         void streamWithGeneratorPerField() {
             // Since the generator is shared across all root objects created by stream(),
             // the expected result is [1, 2, 3]
-            final NumericSequenceSpec<Integer> primitiveSeq = Gen.intSeq();
-            final NumericSequenceSpec<Integer> wrapperSeq = Gen.intSeq();
+            final NumericSequenceSpec<Integer> primitiveSeq = Instancio.gen().intSeq();
+            final NumericSequenceSpec<Integer> wrapperSeq = Instancio.gen().intSeq();
 
             final List<IntegerHolder> result = Instancio.of(IntegerHolder.class)
                     .generate(field(IntegerHolder::getPrimitive), primitiveSeq)
@@ -101,7 +100,7 @@ class NumericSequenceGeneratorTest {
         @Test
         void streamWithGeneratorSharedAcrossFields() {
             // Shared by both fields
-            final NumericSequenceSpec<Integer> sharedSeq = Gen.intSeq();
+            final NumericSequenceSpec<Integer> sharedSeq = Instancio.gen().intSeq();
 
             final List<IntegerHolder> result = Instancio.of(IntegerHolder.class)
                     .generate(field(IntegerHolder::getPrimitive), sharedSeq)

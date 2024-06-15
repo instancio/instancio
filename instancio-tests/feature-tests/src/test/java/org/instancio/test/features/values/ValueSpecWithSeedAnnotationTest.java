@@ -15,10 +15,10 @@
  */
 package org.instancio.test.features.values;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
+import org.instancio.settings.Keys;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.RepeatedTest;
@@ -40,14 +40,14 @@ class ValueSpecWithSeedAnnotationTest {
     @Seed(SEED)
     @RepeatedTest(10)
     void value1() {
-        results.add(Gen.string().get());
+        results.add(Instancio.gen().string().get());
         assertThat(results).hasSize(1);
     }
 
     @Seed(SEED)
     @RepeatedTest(10)
     void value2() {
-        results.add(Gen.string().get());
+        results.add(Instancio.gen().string().get());
         assertThat(results).hasSize(1);
     }
 
@@ -55,7 +55,18 @@ class ValueSpecWithSeedAnnotationTest {
     @Test
     void produceDifferentValues() {
         final String s1 = Instancio.create(String.class);
-        final String s2 = Gen.string().get();
+        final String s2 = Instancio.gen().string().get();
         assertThat(s1).isNotEqualTo(s2);
+    }
+
+    @Seed(SEED)
+    @Test
+    void withSetting_shouldTakePrecedenceOverSeedAnnotation() {
+        final String s = Instancio.gen()
+                .withSetting(Keys.SEED, -999L)
+                .string()
+                .get();
+
+        assertThat(s).isNotIn(results);
     }
 }

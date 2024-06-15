@@ -17,13 +17,13 @@ package org.instancio.internal.generator.sql;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.TemporalGeneratorSpec;
+import org.instancio.generator.specs.TemporalSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.time.InstantGenerator;
 
 import java.sql.Timestamp;
 
-public class TimestampGenerator extends AbstractGenerator<Timestamp> implements TemporalGeneratorSpec<Timestamp> {
+public class TimestampGenerator extends AbstractGenerator<Timestamp> implements TemporalSpec<Timestamp> {
 
     private final InstantGenerator delegate;
 

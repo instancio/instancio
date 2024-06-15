@@ -16,7 +16,7 @@
 package org.instancio.test.features.values.math;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.NumberSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractNumberSpecTestTemplate;
@@ -32,7 +32,7 @@ class BigIntegerValueSpecTest extends AbstractNumberSpecTestTemplate<BigInteger>
 
     @Override
     protected NumberSpec<BigInteger> spec() {
-        return Gen.math().bigInteger();
+        return Instancio.gen().math().bigInteger();
     }
 
     @Override

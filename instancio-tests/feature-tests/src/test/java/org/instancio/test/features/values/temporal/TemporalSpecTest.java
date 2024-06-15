@@ -16,6 +16,7 @@
 package org.instancio.test.features.values.temporal;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.InstantSpec;
 import org.instancio.generator.specs.LocalDateTimeSpec;
 import org.instancio.generator.specs.LocalTimeSpec;
@@ -43,7 +44,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.temporal;
 
 @FeatureTag(Feature.VALUE_SPEC)
 @ExtendWith(InstancioExtension.class)
@@ -53,7 +53,7 @@ class TemporalSpecTest {
     class InstantValueSpecTest extends AbstractTemporalSpecTestTemplate<Instant> {
         @Override
         protected InstantSpec spec() {
-            return temporal().instant();
+            return Instancio.gen().temporal().instant();
         }
 
         @Override
@@ -76,7 +76,7 @@ class TemporalSpecTest {
     class LocalDateValueSpecTest extends AbstractTemporalSpecTestTemplate<LocalDate> {
         @Override
         protected TemporalSpec<LocalDate> spec() {
-            return temporal().localDate();
+            return Instancio.gen().temporal().localDate();
         }
 
         @Override
@@ -90,7 +90,7 @@ class TemporalSpecTest {
     class LocalDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<LocalDateTime> {
         @Override
         protected LocalDateTimeSpec spec() {
-            return temporal().localDateTime();
+            return Instancio.gen().temporal().localDateTime();
         }
 
         @Override
@@ -112,7 +112,7 @@ class TemporalSpecTest {
     class LocalTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<LocalTime> {
         @Override
         protected LocalTimeSpec spec() {
-            return temporal().localTime();
+            return Instancio.gen().temporal().localTime();
         }
 
         @Override
@@ -134,7 +134,7 @@ class TemporalSpecTest {
     class OffsetDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<OffsetDateTime> {
         @Override
         protected OffsetDateTimeSpec spec() {
-            return temporal().offsetDateTime();
+            return Instancio.gen().temporal().offsetDateTime();
         }
 
         @Override
@@ -156,7 +156,7 @@ class TemporalSpecTest {
     class OffsetTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<OffsetTime> {
         @Override
         protected OffsetTimeSpec spec() {
-            return temporal().offsetTime();
+            return Instancio.gen().temporal().offsetTime();
         }
 
         @Override
@@ -178,7 +178,7 @@ class TemporalSpecTest {
     class YearValueSpecTest extends AbstractTemporalSpecTestTemplate<Year> {
         @Override
         protected TemporalSpec<Year> spec() {
-            return temporal().year();
+            return Instancio.gen().temporal().year();
         }
 
         @Override
@@ -192,7 +192,7 @@ class TemporalSpecTest {
     class YearMonthValueSpecTest extends AbstractTemporalSpecTestTemplate<YearMonth> {
         @Override
         protected TemporalSpec<YearMonth> spec() {
-            return temporal().yearMonth();
+            return Instancio.gen().temporal().yearMonth();
         }
 
         @Override
@@ -206,7 +206,7 @@ class TemporalSpecTest {
     class ZonedDateTimeValueSpecTest extends AbstractTemporalSpecTestTemplate<ZonedDateTime> {
         @Override
         protected ZonedDateTimeSpec spec() {
-            return temporal().zonedDateTime();
+            return Instancio.gen().temporal().zonedDateTime();
         }
 
         @Override

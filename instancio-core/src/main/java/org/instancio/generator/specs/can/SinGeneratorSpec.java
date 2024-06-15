@@ -15,6 +15,7 @@
  */
 package org.instancio.generator.specs.can;
 
+import org.instancio.generator.specs.AsGeneratorSpec;
 import org.instancio.generator.specs.NullableGeneratorSpec;
 
 /**
@@ -23,7 +24,9 @@ import org.instancio.generator.specs.NullableGeneratorSpec;
  *
  * @since 3.1.0
  */
-public interface SinGeneratorSpec extends NullableGeneratorSpec<String> {
+public interface SinGeneratorSpec extends
+        AsGeneratorSpec<String>,
+        NullableGeneratorSpec<String> {
 
     /**
      * Generates a permanent card number with

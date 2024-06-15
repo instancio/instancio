@@ -31,6 +31,7 @@ import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.SupplierAdapter;
+import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
@@ -170,7 +171,7 @@ class ModelContextTest {
     @Test
     void withGeneratorSpecs() {
         final GeneratorContext genContext = new GeneratorContext(Settings.defaults(), mock(Random.class));
-        final Generators generators = new Generators(genContext);
+        final Generators generators = new BuiltInGenerators(genContext);
 
         final ArrayGeneratorSpec<Object> petsSpec = generators.array().subtype(Pet[].class).length(3);
 

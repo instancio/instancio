@@ -24,7 +24,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Gen.ints;
+import static org.instancio.Instancio.gen;
 
 class EmailGeneratorTest extends AbstractGeneratorTestTemplate<String, EmailGenerator> {
 
@@ -60,8 +60,8 @@ class EmailGeneratorTest extends AbstractGeneratorTestTemplate<String, EmailGene
 
     @RepeatedTest(100)
     void lengthRange() {
-        final int min = ints().range(7, 20).get();
-        final int max = min + ints().range(0, 20).get();
+        final int min = gen().ints().range(7, 20).get();
+        final int max = min + gen().ints().range(0, 20).get();
 
         generator.length(min, max);
 

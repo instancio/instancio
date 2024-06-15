@@ -16,19 +16,13 @@
 package org.instancio.test.features.values;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.NumberSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import static org.instancio.Gen.bytes;
-import static org.instancio.Gen.doubles;
-import static org.instancio.Gen.floats;
-import static org.instancio.Gen.ints;
-import static org.instancio.Gen.longs;
-import static org.instancio.Gen.shorts;
 
 @FeatureTag(Feature.VALUE_SPEC)
 @ExtendWith(InstancioExtension.class)
@@ -38,7 +32,7 @@ class NumberSpecTest {
     class ByteSpecTest extends AbstractNumberSpecTestTemplate<Byte> {
         @Override
         protected NumberSpec<Byte> spec() {
-            return bytes();
+            return Instancio.gen().bytes();
         }
 
         @Override
@@ -51,7 +45,7 @@ class NumberSpecTest {
     class ShortSpecTest extends AbstractNumberSpecTestTemplate<Short> {
         @Override
         protected NumberSpec<Short> spec() {
-            return shorts();
+            return Instancio.gen().shorts();
         }
 
         @Override
@@ -64,7 +58,7 @@ class NumberSpecTest {
     class IntegerSpecTest extends AbstractNumberSpecTestTemplate<Integer> {
         @Override
         protected NumberSpec<Integer> spec() {
-            return ints();
+            return Instancio.gen().ints();
         }
 
         @Override
@@ -77,7 +71,7 @@ class NumberSpecTest {
     class LongSpecTest extends AbstractNumberSpecTestTemplate<Long> {
         @Override
         protected NumberSpec<Long> spec() {
-            return longs();
+            return Instancio.gen().longs();
         }
 
         @Override
@@ -90,7 +84,7 @@ class NumberSpecTest {
     class FloatSpecTest extends AbstractNumberSpecTestTemplate<Float> {
         @Override
         protected NumberSpec<Float> spec() {
-            return floats();
+            return Instancio.gen().floats();
         }
 
         @Override
@@ -103,7 +97,7 @@ class NumberSpecTest {
     class DoubleSpecTest extends AbstractNumberSpecTestTemplate<Double> {
         @Override
         protected NumberSpec<Double> spec() {
-            return doubles();
+            return Instancio.gen().doubles();
         }
 
         @Override

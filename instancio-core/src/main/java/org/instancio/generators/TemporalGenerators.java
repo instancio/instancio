@@ -13,37 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.DurationGeneratorSpec;
-import org.instancio.generator.specs.InstantGeneratorAsSpec;
-import org.instancio.generator.specs.LocalDateTimeGeneratorAsSpec;
-import org.instancio.generator.specs.LocalTimeGeneratorAsSpec;
+import org.instancio.generator.specs.InstantGeneratorSpec;
+import org.instancio.generator.specs.LocalDateTimeGeneratorSpec;
+import org.instancio.generator.specs.LocalTimeGeneratorSpec;
 import org.instancio.generator.specs.MonthDayGeneratorSpec;
-import org.instancio.generator.specs.OffsetDateTimeGeneratorAsSpec;
-import org.instancio.generator.specs.OffsetTimeGeneratorAsSpec;
+import org.instancio.generator.specs.OffsetDateTimeGeneratorSpec;
+import org.instancio.generator.specs.OffsetTimeGeneratorSpec;
 import org.instancio.generator.specs.PeriodGeneratorSpec;
-import org.instancio.generator.specs.TemporalAsGeneratorSpec;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
-import org.instancio.generator.specs.ZonedDateTimeGeneratorAsSpec;
-import org.instancio.internal.generator.sql.SqlDateGenerator;
-import org.instancio.internal.generator.sql.TimestampGenerator;
-import org.instancio.internal.generator.time.DurationGenerator;
-import org.instancio.internal.generator.time.InstantGenerator;
-import org.instancio.internal.generator.time.LocalDateGenerator;
-import org.instancio.internal.generator.time.LocalDateTimeGenerator;
-import org.instancio.internal.generator.time.LocalTimeGenerator;
-import org.instancio.internal.generator.time.MonthDayGenerator;
-import org.instancio.internal.generator.time.OffsetDateTimeGenerator;
-import org.instancio.internal.generator.time.OffsetTimeGenerator;
-import org.instancio.internal.generator.time.PeriodGenerator;
-import org.instancio.internal.generator.time.YearGenerator;
-import org.instancio.internal.generator.time.YearMonthGenerator;
-import org.instancio.internal.generator.time.ZonedDateTimeGenerator;
-import org.instancio.internal.generator.util.CalendarGenerator;
-import org.instancio.internal.generator.util.DateGenerator;
+import org.instancio.generator.specs.ZonedDateTimeGeneratorSpec;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -59,165 +40,125 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
-
 /**
  * Contains built-in temporal generators.
  *
  * @since 1.4.0
  */
-@SuppressWarnings("PMD.ExcessiveImports")
-public class TemporalGenerators {
-
-    private final GeneratorContext context;
-
-    public TemporalGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface TemporalGenerators {
 
     /**
      * Customises generated {@link Instant} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public InstantGeneratorAsSpec instant() {
-        return new InstantGenerator(context);
-    }
+    InstantGeneratorSpec instant();
 
     /**
      * Customises generated {@link LocalDate} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public TemporalAsGeneratorSpec<LocalDate> localDate() {
-        return new LocalDateGenerator(context);
-    }
+    TemporalGeneratorSpec<LocalDate> localDate();
 
     /**
      * Customises generated {@link LocalTime} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public LocalTimeGeneratorAsSpec localTime() {
-        return new LocalTimeGenerator(context);
-    }
+    LocalTimeGeneratorSpec localTime();
 
     /**
      * Customises generated {@link LocalDateTime} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public LocalDateTimeGeneratorAsSpec localDateTime() {
-        return new LocalDateTimeGenerator(context);
-    }
+    LocalDateTimeGeneratorSpec localDateTime();
 
     /**
      * Customises generated {@link MonthDay} values.
      *
-     * @return customised generator
+     * @return API builder reference
      * @since 2.3.0
      */
-    public MonthDayGeneratorSpec monthDay() {
-        return new MonthDayGenerator(context);
-    }
+    MonthDayGeneratorSpec monthDay();
 
     /**
      * Customises generated {@link OffsetTime} values.
      *
-     * @return customised generator
+     * @return API builder reference
      * @since 2.4.0
      */
-    public OffsetTimeGeneratorAsSpec offsetTime() {
-        return new OffsetTimeGenerator(context);
-    }
+    OffsetTimeGeneratorSpec offsetTime();
 
     /**
      * Customises generated {@link OffsetDateTime} values.
      *
-     * @return customised generator
+     * @return API builder reference
      * @since 2.4.0
      */
-    public OffsetDateTimeGeneratorAsSpec offsetDateTime() {
-        return new OffsetDateTimeGenerator(context);
-    }
+    OffsetDateTimeGeneratorSpec offsetDateTime();
 
     /**
      * Customises generated {@link ZonedDateTime} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public ZonedDateTimeGeneratorAsSpec zonedDateTime() {
-        return new ZonedDateTimeGenerator(context);
-    }
+    ZonedDateTimeGeneratorSpec zonedDateTime();
 
     /**
      * Customises generated {@link YearMonth} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public TemporalAsGeneratorSpec<YearMonth> yearMonth() {
-        return new YearMonthGenerator(context);
-    }
+    TemporalGeneratorSpec<YearMonth> yearMonth();
 
     /**
      * Customises generated {@link Year} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public TemporalAsGeneratorSpec<Year> year() {
-        return new YearGenerator(context);
-    }
+    TemporalGeneratorSpec<Year> year();
 
     /**
      * Customises returned {@link java.time.Duration} value.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public DurationGeneratorSpec duration() {
-        return new DurationGenerator(context);
-    }
+    DurationGeneratorSpec duration();
 
     /**
      * Customises returned {@link java.time.Period} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public PeriodGeneratorSpec period() {
-        return new PeriodGenerator(context);
-    }
+    PeriodGeneratorSpec period();
 
     /**
      * Customises generated {@link Date} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public TemporalGeneratorSpec<Date> date() {
-        return new DateGenerator(context);
-    }
+    TemporalGeneratorSpec<Date> date();
 
     /**
      * Customises generated {@link java.sql.Date} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public TemporalGeneratorSpec<java.sql.Date> sqlDate() {
-        return new SqlDateGenerator(context);
-    }
+    TemporalGeneratorSpec<java.sql.Date> sqlDate();
 
     /**
      * Customises generated {@link Timestamp} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public TemporalGeneratorSpec<Timestamp> timestamp() {
-        return new TimestampGenerator(context);
-    }
+    TemporalGeneratorSpec<Timestamp> timestamp();
 
     /**
      * Customises generated {@link Calendar} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public TemporalGeneratorSpec<Calendar> calendar() {
-        return new CalendarGenerator(context);
-    }
+    TemporalGeneratorSpec<Calendar> calendar();
 }

@@ -17,15 +17,13 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.CharacterAsGeneratorSpec;
 import org.instancio.generator.specs.CharacterSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
-import org.instancio.support.Global;
 
 public class CharacterGenerator extends AbstractGenerator<Character>
-        implements CharacterSpec, CharacterAsGeneratorSpec {
+        implements CharacterSpec {
 
     private char min = 'A';
     private char max = 'Z';
@@ -33,10 +31,6 @@ public class CharacterGenerator extends AbstractGenerator<Character>
     public CharacterGenerator(final GeneratorContext context) {
         super(context);
         super.nullable(context.getSettings().get(Keys.CHARACTER_NULLABLE));
-    }
-
-    public CharacterGenerator() {
-        this(Global.generatorContext());
     }
 
     @Override

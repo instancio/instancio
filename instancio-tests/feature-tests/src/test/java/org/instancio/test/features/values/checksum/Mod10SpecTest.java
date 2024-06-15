@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.checksum;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.Mod10Spec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class Mod10SpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected Mod10Spec spec() {
-        return Gen.checksum().mod10();
+        return Instancio.gen().checksum().mod10();
     }
 
     @Override

@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.values;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
@@ -42,7 +41,7 @@ class ValuesWithGenerateAndSeedAnnotationTest {
     @RepeatedTest(10)
     void valueSpecWithGenerate() {
         final StringFields stringFields = Instancio.of(StringFields.class)
-                .generate(allStrings(), Gen.string().alphaNumeric())
+                .generate(allStrings(), Instancio.gen().string().alphaNumeric())
                 .create();
 
         results.add(stringFields.getOne());

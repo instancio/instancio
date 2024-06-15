@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.sequence;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.junit.InstancioExtension;
 import org.junit.jupiter.api.Nested;
@@ -28,7 +28,7 @@ class NumericSequenceSpecTest {
     class IntegerSequenceTest extends AbstractNumericSequenceSpecTestTemplate<Integer> {
         @Override
         protected NumericSequenceSpec<Integer> spec() {
-            return Gen.intSeq();
+            return Instancio.gen().intSeq();
         }
     }
 
@@ -36,7 +36,7 @@ class NumericSequenceSpecTest {
     class LongSequenceTest extends AbstractNumericSequenceSpecTestTemplate<Long> {
         @Override
         protected NumericSequenceSpec<Long> spec() {
-            return Gen.longSeq();
+            return Instancio.gen().longSeq();
         }
     }
 }

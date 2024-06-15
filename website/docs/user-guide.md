@@ -226,22 +226,22 @@ for more details on blank objects.
 
 ### Creating Simple Values
 
-Instancio provides the `Gen` class for generating simple value types such as strings, numbers, dates, and so on.
+Instancio provides the `Instancio.gen()` method for generating simple value types such as strings, numbers, dates, and so on.
 This class can generate:
 
 - a single value using `get()` method
 - a list of values using the `list(int)` method
 
 ```java title="Generate a single value"
-URL url = Gen.net().url().get();
+URL url = Instancio.gen().net().url().get();
 
-String randomChoice = Gen.oneOf("foo", "bar", "baz").get();
+String randomChoice = Instancio.gen().oneOf("foo", "bar", "baz").get();
 ```
 
 ```java title="Generate a list of values"
-List<LocalDate> pastDates = Gen.temporal().localDate().past().list(5);
+List<LocalDate> pastDates = Instancio.gen().temporal().localDate().past().list(5);
 
-List<String> uuids = Gen.text().uuid().upperCase().withoutDashes().list(5);
+List<String> uuids = Instancio.gen().text().uuid().upperCase().withoutDashes().list(5);
 ```
 
 !!! info "See [Built-in Generators](#built-in-generators) for a list of available generators"

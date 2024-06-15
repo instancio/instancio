@@ -17,14 +17,15 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.MonthDayGeneratorSpec;
+import org.instancio.generator.specs.MonthDaySpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 
 import java.time.Month;
 import java.time.MonthDay;
 
-public class MonthDayGenerator extends AbstractGenerator<MonthDay> implements MonthDayGeneratorSpec {
+public class MonthDayGenerator extends AbstractGenerator<MonthDay>
+        implements MonthDaySpec {
 
     private MonthDay min = MonthDay.of(1, 1);
     private MonthDay max = MonthDay.of(12, 31);
@@ -39,23 +40,29 @@ public class MonthDayGenerator extends AbstractGenerator<MonthDay> implements Mo
     }
 
     @Override
-    public MonthDayGeneratorSpec min(final MonthDay min) {
+    public MonthDayGenerator min(final MonthDay min) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         return this;
     }
 
     @Override
-    public MonthDayGeneratorSpec max(final MonthDay max) {
+    public MonthDayGenerator max(final MonthDay max) {
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
     }
 
     @Override
-    public MonthDayGeneratorSpec range(final MonthDay min, final MonthDay max) {
+    public MonthDayGenerator range(final MonthDay min, final MonthDay max) {
         this.min = ApiValidator.notNull(min, "MonthDay start must not be null");
         this.max = ApiValidator.notNull(max, "MonthDay end must not be null");
         ApiValidator.isTrue(min.compareTo(max) <= 0,
                 "start must not exceed end: %s, %s", this.min, this.max);
+        return this;
+    }
+
+    @Override
+    public MonthDayGenerator nullable() {
+        super.nullable();
         return this;
     }
 

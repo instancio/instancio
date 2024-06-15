@@ -17,7 +17,7 @@ package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.TemporalGeneratorSpec;
+import org.instancio.generator.specs.TemporalSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.time.ZonedDateTimeGenerator;
 
@@ -25,7 +25,7 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class CalendarGenerator extends AbstractGenerator<Calendar> implements TemporalGeneratorSpec<Calendar> {
+public class CalendarGenerator extends AbstractGenerator<Calendar> implements TemporalSpec<Calendar> {
 
     private final ZonedDateTimeGenerator delegate;
 

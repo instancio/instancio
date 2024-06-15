@@ -20,7 +20,9 @@ package org.instancio.generator.specs;
  *
  * @since 3.4.2
  */
-public interface TextPatternGeneratorSpec extends NullableGeneratorSpec<String> {
+public interface TextPatternGeneratorSpec extends
+        AsGeneratorSpec<String>,
+        NullableGeneratorSpec<String> {
 
     /**
      * Indicates that an empty string can be generated.

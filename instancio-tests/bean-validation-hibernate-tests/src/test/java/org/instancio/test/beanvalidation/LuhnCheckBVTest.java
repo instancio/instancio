@@ -15,7 +15,6 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckBV.WithDefaults;
@@ -33,6 +32,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Instancio.gen;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 
@@ -171,7 +171,7 @@ class LuhnCheckBVTest {
         @Test
         void withDefaults() {
             final Stream<WithDefaults> results = Instancio.of(WithDefaults.class)
-                    .generate(field(WithDefaults::getValue), Gen.checksum().luhn())
+                    .generate(field(WithDefaults::getValue), gen().checksum().luhn())
                     .stream()
                     .limit(SAMPLE_SIZE_DDD);
 
@@ -181,16 +181,16 @@ class LuhnCheckBVTest {
         @Test
         void withStartEndIndices() {
             final Stream<WithStartEndIndices> results = Instancio.of(WithStartEndIndices.class)
-                    .generate(field(WithStartEndIndices::getValue0), Gen.checksum().luhn()
+                    .generate(field(WithStartEndIndices::getValue0), gen().checksum().luhn()
                             .startIndex(0).endIndex(7))
 
-                    .generate(field(WithStartEndIndices::getValue1), Gen.checksum().luhn()
+                    .generate(field(WithStartEndIndices::getValue1), gen().checksum().luhn()
                             .startIndex(5).endIndex(10))
 
-                    .generate(field(WithStartEndIndices::getValue2), Gen.checksum().luhn()
+                    .generate(field(WithStartEndIndices::getValue2), gen().checksum().luhn()
                             .startIndex(1).endIndex(21))
 
-                    .generate(field(WithStartEndIndices::getValue3), Gen.checksum().luhn()
+                    .generate(field(WithStartEndIndices::getValue3), gen().checksum().luhn()
                             .startIndex(100).endIndex(105))
 
                     .stream()
@@ -202,19 +202,19 @@ class LuhnCheckBVTest {
         @Test
         void withStartEndIndicesAndLength() {
             final Stream<WithStartEndIndices> results = Instancio.of(WithStartEndIndices.class)
-                    .generate(field(WithStartEndIndices::getValue0), Gen.checksum().luhn()
+                    .generate(field(WithStartEndIndices::getValue0), gen().checksum().luhn()
                             .length(10)
                             .startIndex(0).endIndex(7))
 
-                    .generate(field(WithStartEndIndices::getValue1), Gen.checksum().luhn()
+                    .generate(field(WithStartEndIndices::getValue1), gen().checksum().luhn()
                             .length(15, 20)
                             .startIndex(5).endIndex(10))
 
-                    .generate(field(WithStartEndIndices::getValue2), Gen.checksum().luhn()
+                    .generate(field(WithStartEndIndices::getValue2), gen().checksum().luhn()
                             .length(25)
                             .startIndex(1).endIndex(21))
 
-                    .generate(field(WithStartEndIndices::getValue3), Gen.checksum().luhn()
+                    .generate(field(WithStartEndIndices::getValue3), gen().checksum().luhn()
                             .length(106)
                             .startIndex(100).endIndex(105))
 
@@ -234,16 +234,16 @@ class LuhnCheckBVTest {
         @Test
         void withStartEndAndCheckDigitIndices() {
             final Stream<WithStartEndAndCheckDigitIndices> results = Instancio.of(WithStartEndAndCheckDigitIndices.class)
-                    .generate(field(WithStartEndAndCheckDigitIndices::getValue0), Gen.checksum().luhn()
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue0), gen().checksum().luhn()
                             .startIndex(0).endIndex(7).checkDigitIndex(8))
 
-                    .generate(field(WithStartEndAndCheckDigitIndices::getValue1), Gen.checksum().luhn()
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue1), gen().checksum().luhn()
                             .startIndex(5).endIndex(10).checkDigitIndex(3))
 
-                    .generate(field(WithStartEndAndCheckDigitIndices::getValue2), Gen.checksum().luhn()
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue2), gen().checksum().luhn()
                             .startIndex(1).endIndex(21).checkDigitIndex(0))
 
-                    .generate(field(WithStartEndAndCheckDigitIndices::getValue3), Gen.checksum().luhn()
+                    .generate(field(WithStartEndAndCheckDigitIndices::getValue3), gen().checksum().luhn()
                             .startIndex(100).endIndex(105).checkDigitIndex(150))
 
                     .stream()

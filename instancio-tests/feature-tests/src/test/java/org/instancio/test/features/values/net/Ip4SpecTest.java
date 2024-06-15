@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.net;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.Ip4Spec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class Ip4SpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected Ip4Spec spec() {
-        return Gen.net().ip4();
+        return Instancio.gen().net().ip4();
     }
 
     @Override

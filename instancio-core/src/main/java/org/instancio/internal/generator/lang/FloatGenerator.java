@@ -19,14 +19,9 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.FloatSpec;
 import org.instancio.settings.Keys;
-import org.instancio.support.Global;
 
 public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<Float>
         implements FloatSpec {
-
-    public FloatGenerator() {
-        this(Global.generatorContext());
-    }
 
     public FloatGenerator(final GeneratorContext context) {
         super(context,

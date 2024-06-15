@@ -87,7 +87,7 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
      *
      * <pre>{@code
      * // Example 1: range() takes precedence as it is specified last
-     * BigDecimal result = Gen.math().bigDecimal()
+     * BigDecimal result = Instancio.gen().math().bigDecimal()
      *     .precision(5)
      *     .range(BigDecimal.ZERO, BigDecimal.ONE)
      *     .get();
@@ -95,7 +95,7 @@ public interface BigDecimalGeneratorSpec extends NumberGeneratorSpec<BigDecimal>
      * // Sample output: 0.81
      *
      * // Example 2: precision() takes precedence as it is specified last
-     * BigDecimal result = Gen.math().bigDecimal()
+     * BigDecimal result = Instancio.gen().math().bigDecimal()
      *     .range(BigDecimal.ZERO, BigDecimal.ONE)
      *     .precision(5)
      *     .get();

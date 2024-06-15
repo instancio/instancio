@@ -24,9 +24,15 @@ import org.instancio.generator.ValueSpec;
  */
 public interface TextPatternSpec extends ValueSpec<String>, TextPatternGeneratorSpec {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     TextPatternSpec allowEmpty();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     TextPatternSpec nullable();
 }

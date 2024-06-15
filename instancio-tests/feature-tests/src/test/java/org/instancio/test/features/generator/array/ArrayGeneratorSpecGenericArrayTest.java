@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.generator.array;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.internal.util.Constants;
@@ -35,7 +34,7 @@ import static org.instancio.Select.field;
 @ExtendWith(InstancioExtension.class)
 class ArrayGeneratorSpecGenericArrayTest {
 
-    private static final int SIZE = Gen.ints().range(0, 3).get();
+    private static final int SIZE = Instancio.gen().ints().range(0, 3).get();
 
     @Test
     void create() {

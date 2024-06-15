@@ -21,15 +21,10 @@ import org.instancio.generator.specs.Ip4Spec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Fail;
-import org.instancio.support.Global;
 
 public class Ip4Generator extends AbstractGenerator<String> implements Ip4Spec {
 
     private String cidr;
-
-    public Ip4Generator() {
-        this(Global.generatorContext());
-    }
 
     public Ip4Generator(final GeneratorContext context) {
         super(context);

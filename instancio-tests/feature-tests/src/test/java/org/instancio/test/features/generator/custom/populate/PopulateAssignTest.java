@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.generator.custom.populate;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.generator.AfterGenerate;
@@ -54,7 +53,7 @@ class PopulateAssignTest {
     @Nested
     class AssignWithCollectionsTest {
         private final Supplier<StringsAbc> supplier = () -> StringsAbc.builder()
-                .a(Gen.oneOf("A1", "A2").get())
+                .a(Instancio.gen().oneOf("A1", "A2").get())
                 .def(StringsDef.builder()
                         .f("F")
                         .build())

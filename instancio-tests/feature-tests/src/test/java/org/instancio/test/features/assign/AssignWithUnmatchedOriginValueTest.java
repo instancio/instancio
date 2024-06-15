@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.assign;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.misc.StringFields;
@@ -38,7 +37,7 @@ class AssignWithUnmatchedOriginValueTest {
      */
     @Test
     void unmatched() {
-        final String unmatchedOriginValue = Gen.string().length(20).get();
+        final String unmatchedOriginValue = Instancio.gen().string().length(20).get();
         final String destinationValue = "2";
 
         final StringFields result = Instancio.of(StringFields.class)

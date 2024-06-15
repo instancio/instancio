@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.internal.generators;
 
-/**
- * Spec for {@link Enum Enums} that supports {@link AsGeneratorSpec}.
- *
- * @param <E> enum type
- * @since 2.12.0
- */
-public interface EnumAsGeneratorSpec<E extends Enum<E>>
-        extends AsGeneratorSpec<E>, EnumGeneratorSpec<E> {
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.PathSpec;
+import org.instancio.generators.NioSpecs;
+import org.instancio.internal.generator.nio.file.PathGenerator;
 
-    @SuppressWarnings("unchecked")
+final class NioSpecsImpl implements NioSpecs {
+
+    private final GeneratorContext context;
+
+    NioSpecsImpl(final GeneratorContext context) {
+        this.context = context;
+    }
+
     @Override
-    EnumAsGeneratorSpec<E> excluding(E... values);
-
-    @Override
-    EnumAsGeneratorSpec<E> nullable();
+    public PathSpec path(final String... subdirectories) {
+        return new PathGenerator(context, subdirectories);
+    }
 }

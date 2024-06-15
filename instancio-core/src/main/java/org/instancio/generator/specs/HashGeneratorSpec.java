@@ -20,7 +20,9 @@ package org.instancio.generator.specs;
  *
  * @since 2.11.0
  */
-public interface HashGeneratorSpec extends NullableGeneratorSpec<String> {
+public interface HashGeneratorSpec extends
+        AsGeneratorSpec<String>,
+        NullableGeneratorSpec<String> {
 
     /**
      * Specifies that an MD5 hash should be generated.

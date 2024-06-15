@@ -16,24 +16,19 @@
 package org.instancio.generators;
 
 import org.instancio.generator.specs.FileSpec;
-import org.instancio.internal.generator.io.FileGenerator;
-
-import java.io.File;
 
 /**
  * Provides generators for {@code java.io} classes.
  *
- * @since 2.6.0
+ * @since 5.0.0
  */
-public final class IoSpecs {
+public interface IoSpecs extends IoGenerators {
 
     /**
-     * Generates {@link File} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public FileSpec file() {
-        return new FileGenerator();
-    }
+    @Override
+    FileSpec file(String... subdirectories);
 }

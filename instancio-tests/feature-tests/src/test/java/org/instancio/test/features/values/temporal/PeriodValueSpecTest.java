@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.temporal;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.PeriodSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -39,7 +39,7 @@ class PeriodValueSpecTest extends AbstractValueSpecTestTemplate<Period> {
 
     @Override
     protected PeriodSpec spec() {
-        return Gen.temporal().period();
+        return Instancio.gen().temporal().period();
     }
 
     @Test

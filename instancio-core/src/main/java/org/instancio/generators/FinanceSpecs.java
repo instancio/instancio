@@ -16,25 +16,19 @@
 package org.instancio.generators;
 
 import org.instancio.generator.specs.CreditCardSpec;
-import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 
 /**
  * Provides finance-related generators.
  *
- * @since 2.11.0
+ * @since 5.0.0
  */
-public final class FinanceSpecs {
+public interface FinanceSpecs extends FinanceGenerators {
 
     /**
-     * Generates credit card numbers.
+     * {@inheritDoc}
      *
-     * <p>By default, either a Visa or MasterCard will be generated.
-     *
-     * @return API builder reference
-     * @since 2.11.0
+     * @since 5.0.0
      */
-    public CreditCardSpec creditCard() {
-        return new CreditCardNumberGenerator();
-    }
-
+    @Override
+    CreditCardSpec creditCard();
 }

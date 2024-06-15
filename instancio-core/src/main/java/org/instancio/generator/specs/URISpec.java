@@ -27,30 +27,57 @@ import java.net.URI;
  */
 public interface URISpec extends ValueSpec<URI>, URIGeneratorSpec {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec scheme(String... schemes);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec userInfo(String userInfo);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec host(Generator<String> hostGenerator);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec port(int port);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec randomPort();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec path(Generator<String> pathGenerator);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec query(Generator<String> queryGenerator);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec fragment(Generator<String> fragmentGenerator);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     URISpec nullable();
 }

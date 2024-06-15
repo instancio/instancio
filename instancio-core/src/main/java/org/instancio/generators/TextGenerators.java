@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators;
 
 import org.instancio.documentation.ExperimentalApi;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CsvGeneratorSpec;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
-import org.instancio.generator.specs.TextPatternAsGeneratorSpec;
+import org.instancio.generator.specs.TextPatternGeneratorSpec;
 import org.instancio.generator.specs.UUIDStringGeneratorSpec;
-import org.instancio.internal.generator.text.CsvGenerator;
-import org.instancio.internal.generator.text.LoremIpsumGenerator;
-import org.instancio.internal.generator.text.TextPatternGenerator;
-import org.instancio.internal.generator.text.UUIDStringGenerator;
 
 /**
  * Contains built-in text generators.
  *
  * @since 1.1.9
  */
-public class TextGenerators {
-
-    private final GeneratorContext context;
-
-    public TextGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface TextGenerators {
 
     /**
      * Generates CSV.
@@ -47,9 +35,7 @@ public class TextGenerators {
      * @since 2.12.0
      */
     @ExperimentalApi
-    public CsvGeneratorSpec csv() {
-        return new CsvGenerator(context);
-    }
+    CsvGeneratorSpec csv();
 
     /**
      * Generates "Lorem ipsum" text.
@@ -57,9 +43,7 @@ public class TextGenerators {
      * @return lorem ipsum text generator
      * @since 1.5.3
      */
-    public LoremIpsumGeneratorSpec loremIpsum() {
-        return new LoremIpsumGenerator(context);
-    }
+    LoremIpsumGeneratorSpec loremIpsum();
 
     /**
      * Generates a random string based on the specified pattern template.
@@ -85,9 +69,7 @@ public class TextGenerators {
      * @return string pattern generator
      * @since 1.1.9
      */
-    public TextPatternAsGeneratorSpec pattern(final String pattern) {
-        return new TextPatternGenerator(context, pattern);
-    }
+    TextPatternGeneratorSpec pattern(String pattern);
 
     /**
      * Generates a {@code UUID} value as a string. By default, the generated
@@ -96,7 +78,5 @@ public class TextGenerators {
      * @return {@code UUID} string generator
      * @since 1.5.0
      */
-    public UUIDStringGeneratorSpec uuid() {
-        return new UUIDStringGenerator(context);
-    }
+    UUIDStringGeneratorSpec uuid();
 }

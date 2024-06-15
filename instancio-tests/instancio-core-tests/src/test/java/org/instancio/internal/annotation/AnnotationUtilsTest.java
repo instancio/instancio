@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.annotation;
 
+import org.instancio.Instancio;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Range;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.ints;
 
 class AnnotationUtilsTest {
 
@@ -31,7 +31,7 @@ class AnnotationUtilsTest {
     @Test
     void minAndMaxAreZero() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final int maxLimit = ints().range(0, 100).get();
+            final int maxLimit = Instancio.gen().ints().range(0, 100).get();
             final Range<Integer> result = AnnotationUtils.calculateRange(0, 0, maxLimit);
             assertThat(result.min()).isEqualTo(result.max()).isZero();
         }
@@ -40,8 +40,8 @@ class AnnotationUtilsTest {
     @Test
     void minIsZeroAndMaxIsVeryLarge() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final int veryMaxLarge = ints().range(Integer.MAX_VALUE - 10000, Integer.MAX_VALUE).get();
-            final int maxLimit = ints().range(1, 1000).get();
+            final int veryMaxLarge = Instancio.gen().ints().range(Integer.MAX_VALUE - 10000, Integer.MAX_VALUE).get();
+            final int maxLimit = Instancio.gen().ints().range(1, 1000).get();
 
             final Range<Integer> result = AnnotationUtils.calculateRange(0, veryMaxLarge, maxLimit);
             assertThat(result.min()).isOne();
@@ -52,8 +52,8 @@ class AnnotationUtilsTest {
     @Test
     void minIsLessThanHalfOfMax() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final int min = ints().range(2, 100).get();
-            final int max = min + min + ints().range(2, 5).get();
+            final int min = Instancio.gen().ints().range(2, 100).get();
+            final int max = min + min + Instancio.gen().ints().range(2, 5).get();
 
             // maxLimit argument is irrelevant for this test
             // (it is calculated internally)
@@ -71,10 +71,10 @@ class AnnotationUtilsTest {
     void minIsEqualToOrGreaterThanHalfOfMax() {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final int minLimit = 6;
-            final int min = ints().range(minLimit, 100).get();
-            final int max = min * 2 - ints().range(0, minLimit).get();
+            final int min = Instancio.gen().ints().range(minLimit, 100).get();
+            final int max = min * 2 - Instancio.gen().ints().range(0, minLimit).get();
             // irrelevant for this test
-            final int maxLimit = ints().range(Integer.MIN_VALUE, Integer.MAX_VALUE).get();
+            final int maxLimit = Instancio.gen().ints().range(Integer.MIN_VALUE, Integer.MAX_VALUE).get();
 
             final Range<Integer> result = AnnotationUtils.calculateRange(min, max, maxLimit);
             assertThat(result.min()).isEqualTo(min);
@@ -86,8 +86,8 @@ class AnnotationUtilsTest {
     @ParameterizedTest
     void minSizeIsOne(final int min) {
         for (int i = 0; i < SAMPLE_SIZE; i++) {
-            final int max = ints().range(2, 100).get();
-            final int maxLimit = ints().range(2, 100).get();
+            final int max = Instancio.gen().ints().range(2, 100).get();
+            final int maxLimit = Instancio.gen().ints().range(2, 100).get();
 
             final int expectedMin = 1;
             final int expectedMax = Math.min(max, maxLimit);

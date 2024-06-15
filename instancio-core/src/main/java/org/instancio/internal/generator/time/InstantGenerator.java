@@ -17,25 +17,19 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.InstantGeneratorAsSpec;
 import org.instancio.generator.specs.InstantSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
-import org.instancio.support.Global;
 
 import java.time.Instant;
 import java.time.temporal.TemporalUnit;
 
 public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
-        implements InstantGeneratorAsSpec, InstantSpec {
+        implements InstantSpec {
 
     private static final int MAX_NANO = 999_999_999;
     static final Instant DEFAULT_MIN = Constants.DEFAULT_MIN.atZone(Constants.ZONE_OFFSET).toInstant();
     static final Instant DEFAULT_MAX = Constants.DEFAULT_MAX.atZone(Constants.ZONE_OFFSET).toInstant();
-
-    public InstantGenerator() {
-        this(Global.generatorContext());
-    }
 
     public InstantGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX);

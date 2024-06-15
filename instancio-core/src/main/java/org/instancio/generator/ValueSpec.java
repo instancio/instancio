@@ -15,14 +15,9 @@
  */
 package org.instancio.generator;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.Random;
-import org.instancio.internal.RandomHelper;
-import org.instancio.internal.util.ObjectUtils;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
-import org.instancio.support.Global;
-import org.instancio.support.ThreadLocalSettings;
+import org.instancio.internal.generator.AbstractGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +26,29 @@ import java.util.stream.Stream;
 
 /**
  * A spec for generating simple value types, such as strings, numbers,
- * dates, and so on.
+ * dates, and so on. Note that this interface is not intended to be
+ * implemented by users. Instead, instances of this class can be
+ * created using the {@link Instancio#gen()} method, which provides
+ * a shorthand API for generating values:
  *
- * <p>Provides support for generating values using the shorthand API:
- *
+ * <p>Example:
  * <pre>{@code
- *   String str = Gen.string().length(10).prefix("foo").get();
- *   List<BigDecimal> list = Gen.math().bigDecimal().list(10);
+ * ValueSpec<String> spec = Instancio.gen().string().digits().length(5).prefix("FOO-");
+ *
+ * // Each call to get() will generate a random value, e.g.
+ * String s1 = spec.get(); // Sample output: FOO-55025
+ * String s2 = spec.get(); // Sample output: FOO-72941
  * }</pre>
  *
- * <p>where {@link Gen} is the entry point for generating various types of values.
+ * <p>In addition, value specs can generate lists of values:
  *
- * @param <T> type of value
+ * <pre>{@code
+ * List<BigDecimal> list = Instancio.gen().math().bigDecimal().scale(3).list(4);
+ *
+ * // Sample output: [5233.423, 8510.780, 3306.888, 172.187]
+ * }</pre>
+ *
+ * @param <T> the type of generated values
  * @since 2.6.0
  */
 public interface ValueSpec<T> extends GeneratorSpec<T> {
@@ -55,14 +61,7 @@ public interface ValueSpec<T> extends GeneratorSpec<T> {
      */
     @SuppressWarnings("unchecked")
     default T get() {
-        final Settings settings = ObjectUtils.defaultIfNull(
-                ThreadLocalSettings.getInstance().get(),
-                Global::getPropertiesFileSettings);
-
-        // Shorthand API does not support withSeed() method
-        final Random random = RandomHelper.resolveRandom(
-                settings.get(Keys.SEED), /* withSeed = */ null);
-
+        final Random random = ((AbstractGenerator<?>) this).getContext().random();
         return ((Generator<T>) this).generate(random);
     }
 

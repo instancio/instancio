@@ -24,6 +24,7 @@ import org.instancio.generators.Generators;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.Sonar;
@@ -52,7 +53,7 @@ public class SpiGeneratorResolver {
             final GeneratorResolver generatorResolver) {
 
         this.generatorContext = generatorContext;
-        this.generators = new Generators(generatorContext);
+        this.generators = new BuiltInGenerators(generatorContext);
         this.generatorResolver = generatorResolver;
         this.providerEntries = modelContext.getServiceProviders().getGeneratorProviders();
         this.afterGenerate = modelContext.getSettings().get(Keys.AFTER_GENERATE_HINT);

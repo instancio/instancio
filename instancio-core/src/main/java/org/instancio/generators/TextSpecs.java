@@ -20,60 +20,44 @@ import org.instancio.generator.specs.CsvSpec;
 import org.instancio.generator.specs.LoremIpsumSpec;
 import org.instancio.generator.specs.TextPatternSpec;
 import org.instancio.generator.specs.UUIDStringSpec;
-import org.instancio.internal.generator.text.CsvGenerator;
-import org.instancio.internal.generator.text.LoremIpsumGenerator;
-import org.instancio.internal.generator.text.TextPatternGenerator;
-import org.instancio.internal.generator.text.UUIDStringGenerator;
 
 /**
  * Provides text generators.
  *
- * @since 2.6.0
+ * @since 5.0.0
  */
-public final class TextSpecs {
+public interface TextSpecs extends TextGenerators {
 
     /**
-     * Generates CSV.
+     * {@inheritDoc}
      *
-     * @return CSV generator
-     * @since 2.12.0
+     * @since 5.0.0
      */
+    @Override
     @ExperimentalApi
-    public CsvSpec csv() {
-        return new CsvGenerator();
-    }
+    CsvSpec csv();
 
     /**
-     * Generates "Lorem ipsum" text.
+     * {@inheritDoc}
      *
-     * @return lorem ipsum text generator
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public LoremIpsumSpec loremIpsum() {
-        return new LoremIpsumGenerator();
-    }
+    @Override
+    LoremIpsumSpec loremIpsum();
 
     /**
-     * Generates text based on the specified pattern.
+     * {@inheritDoc}
      *
-     * <p>For pattern documentation, see: {@link TextGenerators#pattern(String)}.
-     *
-     * @return text pattern generator
-     * @see TextGenerators#pattern(String)
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public TextPatternSpec pattern(final String pattern) {
-        return new TextPatternGenerator(pattern);
-    }
+    @Override
+    TextPatternSpec pattern(String pattern);
 
     /**
-     * Generates a {@code UUID} value as a string. By default, the generated
-     * string is formatted as {@link java.util.UUID#toString()}.
+     * {@inheritDoc}
      *
-     * @return {@code UUID} string generator
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public UUIDStringSpec uuid() {
-        return new UUIDStringGenerator();
-    }
+    @Override
+    UUIDStringSpec uuid();
 }

@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.internal.generators;
 
-/**
- * Generator spec for {@code Character} values
- * that supports {@link AsGeneratorSpec}.
- *
- * @since 2.6.0
- */
-public interface CharacterAsGeneratorSpec
-        extends CharacterGeneratorSpec, AsGeneratorSpec<Character> {
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.usa.SsnSpec;
+import org.instancio.generators.usa.UsaIdSpecs;
+import org.instancio.internal.generator.domain.id.usa.SsnGenerator;
+
+final class UsaIdSpecsImpl implements UsaIdSpecs {
+
+    private final GeneratorContext context;
+
+    UsaIdSpecsImpl(final GeneratorContext context) {
+        this.context = context;
+    }
 
     @Override
-    CharacterAsGeneratorSpec range(char min, char max);
-
-    @Override
-    CharacterAsGeneratorSpec nullable();
+    public SsnSpec ssn() {
+        return new SsnGenerator(context);
+    }
 }

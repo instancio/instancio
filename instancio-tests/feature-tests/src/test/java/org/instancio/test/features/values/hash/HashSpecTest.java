@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.hash;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.HashSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class HashSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected HashSpec spec() {
-        return Gen.hash();
+        return Instancio.gen().hash();
     }
 
     @Override

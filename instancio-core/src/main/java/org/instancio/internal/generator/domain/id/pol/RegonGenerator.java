@@ -18,17 +18,12 @@ package org.instancio.internal.generator.domain.id.pol;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.pol.RegonSpec;
 import org.instancio.internal.util.CollectionUtils;
-import org.instancio.support.Global;
 
 import java.util.List;
 
 public class RegonGenerator extends WeightsModCheckGenerator implements RegonSpec {
 
     private RegonType type = RegonType.REGON9;
-
-    public RegonGenerator() {
-        this(Global.generatorContext());
-    }
 
     public RegonGenerator(final GeneratorContext context) {
         super(context);

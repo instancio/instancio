@@ -15,7 +15,6 @@
  */
 package org.instancio.test.java17;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.util.Constants;
@@ -68,7 +67,7 @@ class SealedAbstractTypeTest {
 
     @Test
     void abstractTypeWithSubtype_shouldUseTheSpecifiedSubtype() {
-        final Class<?> expectedSubtype = Gen.oneOf(SealedInterfaceImpl1.class, SealedInterfaceImpl2.class).get();
+        final Class<?> expectedSubtype = Instancio.gen().oneOf(SealedInterfaceImpl1.class, SealedInterfaceImpl2.class).get();
 
         final List<SealedInterfaceA> results = Instancio.of(SealedInterfaceA.class)
                 .subtype(all(SealedInterfaceA.class), expectedSubtype)

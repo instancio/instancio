@@ -32,7 +32,9 @@ package org.instancio.generator.specs;
  *
  * @since 3.1.0
  */
-public interface LuhnGeneratorSpec extends NullableGeneratorSpec<String> {
+public interface LuhnGeneratorSpec extends
+        AsGeneratorSpec<String>,
+        NullableGeneratorSpec<String> {
 
     /**
      * Length of the number to generate (default value is {@code 16}).

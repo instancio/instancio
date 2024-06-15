@@ -21,7 +21,9 @@ package org.instancio.generator.specs;
  * @param <T> type of number
  * @since 1.0.1
  */
-public interface NumberGeneratorSpec<T extends Number> extends NullableGeneratorSpec<T> {
+public interface NumberGeneratorSpec<T extends Number> extends
+        AsGeneratorSpec<T>,
+        NullableGeneratorSpec<T> {
 
     /**
      * Specifies the lower bound.

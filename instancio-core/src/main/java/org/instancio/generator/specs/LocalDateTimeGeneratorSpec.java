@@ -15,39 +15,45 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.Generator;
-
-import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 
 /**
- * Generator spec for {@link URI} values that supports {@link AsGeneratorSpec}.
+ * Generator spec for {@link LocalDateTime}.
  *
- * @since 2.6.0
+ * @since 4.2.0
  */
-public interface URIAsGeneratorSpec
-        extends URIGeneratorSpec, AsGeneratorSpec<URI> {
+public interface LocalDateTimeGeneratorSpec extends
+        TemporalGeneratorSpec<LocalDateTime>,
+        TruncatableTemporalGeneratorSpec<LocalDateTime> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    URIAsGeneratorSpec scheme(String... schemes);
+    LocalDateTimeGeneratorSpec past();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    URIAsGeneratorSpec userInfo(String userInfo);
+    LocalDateTimeGeneratorSpec future();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    URIAsGeneratorSpec host(Generator<String> hostGenerator);
+    LocalDateTimeGeneratorSpec range(LocalDateTime min, LocalDateTime max);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    URIAsGeneratorSpec port(int port);
+    LocalDateTimeGeneratorSpec truncatedTo(TemporalUnit unit);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    URIAsGeneratorSpec randomPort();
-
-    @Override
-    URIAsGeneratorSpec path(Generator<String> pathGenerator);
-
-    @Override
-    URIAsGeneratorSpec query(Generator<String> queryGenerator);
-
-    @Override
-    URIAsGeneratorSpec fragment(Generator<String> fragmentGenerator);
+    LocalDateTimeGeneratorSpec nullable();
 }

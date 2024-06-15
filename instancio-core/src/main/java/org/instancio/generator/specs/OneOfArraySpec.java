@@ -26,5 +26,6 @@ import org.instancio.generator.ValueSpec;
 public interface OneOfArraySpec<T> extends ValueSpec<T>, OneOfArrayGeneratorSpec<T> {
 
     @Override
+    @SuppressWarnings("unchecked")
     ValueSpec<T> oneOf(T... values);
 }

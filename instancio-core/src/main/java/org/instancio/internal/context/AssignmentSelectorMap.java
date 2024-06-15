@@ -22,6 +22,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
 import org.instancio.internal.assignment.GeneratorHolder;
 import org.instancio.internal.assignment.InternalAssignment;
+import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +87,7 @@ final class AssignmentSelectorMap {
 
     private List<InternalAssignment> processAssignments(final List<Assignment> assignments) {
         final List<InternalAssignment> processed = new ArrayList<>(assignments.size());
-        final Generators generators = new Generators(generatorContext);
+        final Generators generators = new BuiltInGenerators(generatorContext);
 
         for (Assignment c : assignments) {
             final InternalAssignment assignment = (InternalAssignment) c;

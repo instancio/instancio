@@ -15,37 +15,46 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.Generator;
-import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.ValueSpec;
 
-import java.io.InputStream;
+import java.time.MonthDay;
 
 /**
- * Generator spec for path values that supports {@link AsGeneratorSpec}.
+ * Generator spec for {@link MonthDay} types.
  *
- * @since 2.6.0
+ * @since 5.0.0
  */
-public interface PathAsGeneratorSpec<T>
-        extends PathGeneratorSpec<T>, AsGeneratorSpec<T> {
+public interface MonthDaySpec extends ValueSpec<MonthDay>, MonthDayGeneratorSpec {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
     @Override
-    PathAsGeneratorSpec<T> name(Generator<String> nameGenerator);
+    MonthDaySpec min(MonthDay min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
     @Override
-    PathAsGeneratorSpec<T> prefix(String prefix);
+    MonthDaySpec max(MonthDay max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
     @Override
-    PathAsGeneratorSpec<T> suffix(String suffix);
+    MonthDaySpec range(MonthDay min, MonthDay max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
     @Override
-    PathAsGeneratorSpec<T> tmp();
-
-    @Override
-    GeneratorSpec<T> createDirectory();
-
-    @Override
-    GeneratorSpec<T> createFile();
-
-    @Override
-    GeneratorSpec<T> createFile(InputStream content);
+    MonthDaySpec nullable();
 }

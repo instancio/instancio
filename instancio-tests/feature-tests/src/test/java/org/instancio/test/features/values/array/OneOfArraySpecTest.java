@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.array;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.ValueSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -35,7 +35,7 @@ class OneOfArraySpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected ValueSpec<String> spec() {
-        return Gen.oneOf(CHOICES);
+        return Instancio.gen().oneOf(CHOICES);
     }
 
     @Override

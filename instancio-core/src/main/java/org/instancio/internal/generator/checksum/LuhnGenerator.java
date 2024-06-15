@@ -16,16 +16,10 @@
 package org.instancio.internal.generator.checksum;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.LuhnAsGeneratorSpec;
 import org.instancio.generator.specs.LuhnSpec;
-import org.instancio.support.Global;
 
 public class LuhnGenerator extends VariableLengthModCheckGenerator
-        implements LuhnAsGeneratorSpec, LuhnSpec {
-
-    public LuhnGenerator() {
-        this(Global.generatorContext());
-    }
+        implements LuhnSpec {
 
     public LuhnGenerator(final GeneratorContext context) {
         super(context);

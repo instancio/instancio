@@ -20,7 +20,6 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.YearSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
-import org.instancio.support.Global;
 
 import java.time.Year;
 
@@ -29,10 +28,6 @@ public class YearGenerator extends JavaTimeTemporalGenerator<Year>
 
     static final Year DEFAULT_MIN = Year.of(Constants.DEFAULT_MIN.getYear());
     static final Year DEFAULT_MAX = Year.of(Constants.DEFAULT_MAX.getYear());
-
-    public YearGenerator() {
-        this(Global.generatorContext());
-    }
 
     public YearGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX);

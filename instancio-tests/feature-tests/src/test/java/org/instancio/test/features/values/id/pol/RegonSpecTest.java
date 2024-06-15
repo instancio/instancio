@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.id.pol;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.pol.RegonSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class RegonSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected RegonSpec spec() {
-        return Gen.id().pol().regon();
+        return Instancio.gen().id().pol().regon();
     }
 
     @Override

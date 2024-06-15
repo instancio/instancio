@@ -17,7 +17,6 @@ package org.instancio.internal.generator.sequence;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.NumericSequenceAsGeneratorSpec;
 import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
@@ -27,7 +26,7 @@ import java.util.function.UnaryOperator;
 
 public abstract class AbstractNumericSequenceGenerator<T extends Number & Comparable<T>>
         extends AbstractGenerator<T>
-        implements NumericSequenceSpec<T>, NumericSequenceAsGeneratorSpec<T> {
+        implements NumericSequenceSpec<T> {
 
     private T seq;
     private Function<T, T> next;

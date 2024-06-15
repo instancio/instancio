@@ -18,7 +18,6 @@ package org.instancio.internal.generator.nio.file;
 import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.PathAsGeneratorSpec;
 import org.instancio.generator.specs.PathSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
@@ -26,7 +25,6 @@ import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.IOUtils;
 import org.instancio.internal.util.StringUtils;
-import org.instancio.support.Global;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,8 +37,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 
-public class PathGenerator extends AbstractGenerator<Path>
-        implements PathSpec, PathAsGeneratorSpec<Path> {
+public class PathGenerator extends AbstractGenerator<Path> implements PathSpec {
 
     private static final int DEFAULT_NAME_LENGTH = 16;
 
@@ -55,10 +52,6 @@ public class PathGenerator extends AbstractGenerator<Path>
     private Generator<String> nameGenerator;
     private CreatePathType createPathType;
     private InputStream inputStream;
-
-    public PathGenerator() {
-        this(Global.generatorContext());
-    }
 
     // Required constructor to instantiating generator via reflection
     public PathGenerator(final GeneratorContext context) {

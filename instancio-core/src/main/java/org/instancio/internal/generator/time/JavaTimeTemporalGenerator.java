@@ -16,7 +16,7 @@
 package org.instancio.internal.generator.time;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.TemporalAsGeneratorSpec;
+import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 
@@ -24,7 +24,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
 
 abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGenerator<T>
-        implements TemporalAsGeneratorSpec<T> {
+        implements TemporalGeneratorSpec<T> {
 
     private final T defaultMin;
     private final T defaultMax;
@@ -48,33 +48,33 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
     abstract void validateRange();
 
     @Override
-    public TemporalAsGeneratorSpec<T> past() {
+    public TemporalGeneratorSpec<T> past() {
         min = defaultMin;
         max = getLatestPast();
         return this;
     }
 
     @Override
-    public TemporalAsGeneratorSpec<T> future() {
+    public TemporalGeneratorSpec<T> future() {
         min = getEarliestFuture();
         max = defaultMax;
         return this;
     }
 
     @Override
-    public TemporalAsGeneratorSpec<T> min(final T min) {
+    public TemporalGeneratorSpec<T> min(final T min) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         return this;
     }
 
     @Override
-    public TemporalAsGeneratorSpec<T> max(final T max) {
+    public TemporalGeneratorSpec<T> max(final T max) {
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
     }
 
     @Override
-    public TemporalAsGeneratorSpec<T> range(final T min, final T max) {
+    public TemporalGeneratorSpec<T> range(final T min, final T max) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         validateRange();
@@ -82,12 +82,12 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
     }
 
     @Override
-    public TemporalAsGeneratorSpec<T> nullable() {
+    public TemporalGeneratorSpec<T> nullable() {
         super.nullable();
         return this;
     }
 
-    TemporalAsGeneratorSpec<T> truncatedTo(final TemporalUnit unit) {
+    TemporalGeneratorSpec<T> truncatedTo(final TemporalUnit unit) {
         this.truncateTo = unit;
         return this;
     }

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.id.can;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.can.SinSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class SinSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected SinSpec spec() {
-        return Gen.id().can().sin();
+        return Instancio.gen().id().can().sin();
     }
 
     @Override

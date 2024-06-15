@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.LuhnAsGeneratorSpec;
-import org.instancio.generator.specs.Mod10AsGeneratorSpec;
-import org.instancio.generator.specs.Mod11AsGeneratorSpec;
-import org.instancio.internal.generator.checksum.LuhnGenerator;
-import org.instancio.internal.generator.checksum.Mod10Generator;
-import org.instancio.internal.generator.checksum.Mod11Generator;
+import org.instancio.generator.specs.LuhnGeneratorSpec;
+import org.instancio.generator.specs.Mod10GeneratorSpec;
+import org.instancio.generator.specs.Mod11GeneratorSpec;
 
 /**
  * Contains built-in generators for checksum-valid numbers.
  *
  * @since 2.16.0
  */
-public class ChecksumGenerators {
-
-    private final GeneratorContext context;
-
-    public ChecksumGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface ChecksumGenerators {
 
     /**
      * Generates numbers that pass the Luhn checksum algorithm.
@@ -43,9 +32,7 @@ public class ChecksumGenerators {
      * @return API builder reference
      * @since 3.1.0
      */
-    public LuhnAsGeneratorSpec luhn() {
-        return new LuhnGenerator(context);
-    }
+    LuhnGeneratorSpec luhn();
 
     /**
      * Generates numbers that pass the Mod10 checksum algorithm.
@@ -53,9 +40,7 @@ public class ChecksumGenerators {
      * @return API builder reference
      * @since 2.16.0
      */
-    public Mod10AsGeneratorSpec mod10() {
-        return new Mod10Generator(context);
-    }
+    Mod10GeneratorSpec mod10();
 
     /**
      * Generates numbers that pass the Mod11 checksum algorithm.
@@ -63,7 +48,5 @@ public class ChecksumGenerators {
      * @return API builder reference
      * @since 2.16.0
      */
-    public Mod11AsGeneratorSpec mod11() {
-        return new Mod11Generator(context);
-    }
+    Mod11GeneratorSpec mod11();
 }

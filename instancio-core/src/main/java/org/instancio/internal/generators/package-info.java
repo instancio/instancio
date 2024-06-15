@@ -13,27 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
-
 /**
- * Generator spec for {@link Number} types
- * that supports {@link AsGeneratorSpec}.
- *
- * @param <T> type of number
- * @since 2.6.0
+ * Implementations classes for {@code org.instancio.generators}.
  */
-public interface NumberAsGeneratorSpec<T extends Number>
-        extends NumberGeneratorSpec<T>, AsGeneratorSpec<T> {
-
-    @Override
-    NumberAsGeneratorSpec<T> min(T min);
-
-    @Override
-    NumberAsGeneratorSpec<T> max(T max);
-
-    @Override
-    NumberAsGeneratorSpec<T> range(T min, T max);
-
-    @Override
-    NumberAsGeneratorSpec<T> nullable();
-}
+package org.instancio.internal.generators;

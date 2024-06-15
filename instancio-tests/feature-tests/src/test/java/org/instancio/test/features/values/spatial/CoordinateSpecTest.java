@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.spatial;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.CoordinateSpec;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.VALUE_SPEC)
-public class CoordinateSpecTest extends AbstractValueSpecTestTemplate<Double> {
+class CoordinateSpecTest extends AbstractValueSpecTestTemplate<Double> {
     @Override
     protected CoordinateSpec spec() {
-        return Gen.spatial().coordinate();
+        return Instancio.gen().spatial().coordinate();
     }
 
     @Test

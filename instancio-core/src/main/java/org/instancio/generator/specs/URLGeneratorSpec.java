@@ -24,7 +24,9 @@ import java.net.URL;
  *
  * @since 2.3.0
  */
-public interface URLGeneratorSpec extends NullableGeneratorSpec<URL> {
+public interface URLGeneratorSpec extends
+        AsGeneratorSpec<URL>,
+        NullableGeneratorSpec<URL> {
 
     /**
      * Generate a random protocol from the given choices.

@@ -24,7 +24,9 @@ package org.instancio.generator.specs;
  *
  * @since 2.16.0
  */
-public interface Mod10GeneratorSpec extends NullableGeneratorSpec<String> {
+public interface Mod10GeneratorSpec extends
+        AsGeneratorSpec<String>,
+        NullableGeneratorSpec<String> {
 
     /**
      * Length of the number to generate (default value is {@code 16}).

@@ -17,7 +17,6 @@ package org.instancio.test.java16.assign;
 
 import lombok.Data;
 import org.instancio.Assign;
-import org.instancio.Gen;
 import org.instancio.GivenOriginPredicateAction;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
@@ -235,7 +234,7 @@ class AssignPojoAndRecordTest {
 
     @RepeatedTest(Constants.SAMPLE_SIZE_D)
     void givenPojoAListContains_thenRecList() {
-        final String element = Gen.oneOf("foo", "xyz").get();
+        final String element = Instancio.gen().oneOf("foo", "xyz").get();
 
         final Root result = Instancio.of(Root.class)
                 .generate(field(PojoA::getList), gen -> gen.collection().with(element))

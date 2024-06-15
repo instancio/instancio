@@ -45,7 +45,7 @@ import static org.instancio.Select.all;
 
 @FeatureTag({Feature.GENERATE, Feature.TEMPORAL_GENERATOR})
 @ExtendWith(InstancioExtension.class)
-class TemporalGeneratorsTest {
+class TemporalGeneratorsImplTest {
 
     @Test
     void generate() {

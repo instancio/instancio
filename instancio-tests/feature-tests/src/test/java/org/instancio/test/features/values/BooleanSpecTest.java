@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
@@ -31,7 +31,7 @@ class BooleanSpecTest extends AbstractValueSpecTestTemplate<Boolean> {
 
     @Override
     protected BooleanSpec spec() {
-        return Gen.booleans();
+        return Instancio.gen().booleans();
     }
 
     @Test

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.id;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.EanSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class EanSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected EanSpec spec() {
-        return Gen.id().ean();
+        return Instancio.gen().id().ean();
     }
 
     @Override

@@ -19,15 +19,10 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.UUIDSpec;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.support.Global;
 
 import java.util.UUID;
 
 public class UUIDGenerator extends AbstractGenerator<UUID> implements UUIDSpec {
-
-    public UUIDGenerator() {
-        this(Global.generatorContext());
-    }
 
     public UUIDGenerator(final GeneratorContext context) {
         super(context);

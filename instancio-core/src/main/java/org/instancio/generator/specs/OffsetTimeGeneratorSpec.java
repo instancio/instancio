@@ -15,37 +15,29 @@
  */
 package org.instancio.generator.specs;
 
-import java.time.Instant;
+import java.time.OffsetTime;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Generator spec for {@link java.time.Instant}.
+ * Generator spec for {@link OffsetTime}.
  *
  * @since 4.2.0
  */
-public interface InstantGeneratorAsSpec extends
-        TemporalAsGeneratorSpec<Instant>,
-        TruncatableTemporalSpec<Instant> {
+public interface OffsetTimeGeneratorSpec extends
+        TemporalGeneratorSpec<OffsetTime>,
+        TruncatableTemporalGeneratorSpec<OffsetTime> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantGeneratorAsSpec past();
+    OffsetTimeGeneratorSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantGeneratorAsSpec future();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 4.6.0
-     */
-    @Override
-    InstantGeneratorAsSpec min(Instant min);
+    OffsetTimeGeneratorSpec future();
 
     /**
      * {@inheritDoc}
@@ -53,23 +45,31 @@ public interface InstantGeneratorAsSpec extends
      * @since 4.6.0
      */
     @Override
-    InstantGeneratorAsSpec max(Instant max);
+    OffsetTimeGeneratorSpec min(OffsetTime min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    OffsetTimeGeneratorSpec max(OffsetTime max);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantGeneratorAsSpec range(Instant min, Instant max);
+    OffsetTimeGeneratorSpec range(OffsetTime min, OffsetTime max);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantGeneratorAsSpec truncatedTo(TemporalUnit unit);
+    OffsetTimeGeneratorSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    InstantGeneratorAsSpec nullable();
+    OffsetTimeGeneratorSpec nullable();
 }

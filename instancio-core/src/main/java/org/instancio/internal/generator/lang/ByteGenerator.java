@@ -19,14 +19,9 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ByteSpec;
 import org.instancio.settings.Keys;
-import org.instancio.support.Global;
 
 public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<Byte>
         implements ByteSpec {
-
-    public ByteGenerator() {
-        this(Global.generatorContext());
-    }
 
     public ByteGenerator(final GeneratorContext context) {
         super(context,

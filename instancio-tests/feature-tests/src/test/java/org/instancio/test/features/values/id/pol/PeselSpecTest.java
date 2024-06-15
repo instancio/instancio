@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.id.pol;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.pol.PeselSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -37,7 +37,7 @@ class PeselSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected PeselSpec spec() {
-        return Gen.id().pol().pesel();
+        return Instancio.gen().id().pol().pesel();
     }
 
     @Override

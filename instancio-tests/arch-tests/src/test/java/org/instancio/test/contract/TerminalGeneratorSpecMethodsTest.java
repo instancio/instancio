@@ -24,7 +24,6 @@ import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
-import org.instancio.generator.specs.PathAsGeneratorSpec;
 import org.instancio.generator.specs.PathGeneratorSpec;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -58,10 +57,9 @@ class TerminalGeneratorSpecMethodsTest {
                 .haveReturnType(GeneratorSpec.class);
     }
 
-    @ValueSource(classes = {PathGeneratorSpec.class, PathAsGeneratorSpec.class})
-    @ParameterizedTest
-    void path(final Class<?> specClass) {
-        assertThatClass(specClass)
+    @Test
+    void path() {
+        assertThatClass(PathGeneratorSpec.class)
                 .withMethodsMatching(m -> m.getName().startsWith("create"))
                 .hasSize(3)
                 .haveReturnType(GeneratorSpec.class);

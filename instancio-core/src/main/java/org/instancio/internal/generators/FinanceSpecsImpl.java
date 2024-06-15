@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.internal.generators;
 
-import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.CreditCardSpec;
+import org.instancio.generators.FinanceSpecs;
+import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 
-import java.time.temporal.TemporalUnit;
+final class FinanceSpecsImpl implements FinanceSpecs {
 
-/**
- * A spec for truncating temporal values.
- *
- * @param <T> temporal type
- * @since 4.2.0
- */
-public interface TruncatableTemporalSpec<T> extends GeneratorSpec<T> {
+    private final GeneratorContext context;
 
-    /**
-     * Truncates generated values to the specified unit.
-     *
-     * @param unit to truncate to
-     * @return spec builder
-     * @since 4.2.0
-     */
-    GeneratorSpec<T> truncatedTo(TemporalUnit unit);
+    FinanceSpecsImpl(final GeneratorContext context) {
+        this.context = context;
+    }
+
+    @Override
+    public CreditCardSpec creditCard() {
+        return new CreditCardNumberGenerator(context);
+    }
+
 }

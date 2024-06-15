@@ -15,49 +15,29 @@
  */
 package org.instancio.generators;
 
-import org.instancio.generator.specs.BigDecimalGeneratorSpec;
 import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.generator.specs.BigIntegerSpec;
-import org.instancio.internal.generator.math.BigDecimalGenerator;
-import org.instancio.internal.generator.math.BigIntegerGenerator;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * Provides generators for {@code java.math} classes.
  *
- * @since 2.6.0
+ * @since 5.0.0
  */
-public final class MathSpecs {
+public interface MathSpecs extends MathGenerators {
 
     /**
-     * Generates {@link BigDecimal} values.
+     * {@inheritDoc}
      *
-     * <p>The spec provides two options for customising generated values:
-     *
-     * <ul>
-     *   <li>Using the {@code min(BigDecimal)}, {@code max(BigDecimal}}, or
-     *       {@code range(BigDecimal, BigDecimal)} methods</li>
-     *   <li>Using the {@code precision(int)} method</li>
-     * </ul>
-     *
-     * <p>See {@link BigDecimalGeneratorSpec#precision(int)} for details.
-     *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public BigDecimalSpec bigDecimal() {
-        return new BigDecimalGenerator();
-    }
+    @Override
+    BigDecimalSpec bigDecimal();
 
     /**
-     * Generates {@link BigInteger} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public BigIntegerSpec bigInteger() {
-        return new BigIntegerGenerator();
-    }
+    @Override
+    BigIntegerSpec bigInteger();
 }
