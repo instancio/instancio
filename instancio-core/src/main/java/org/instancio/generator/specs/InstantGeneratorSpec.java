@@ -15,45 +15,61 @@
  */
 package org.instancio.generator.specs;
 
-import java.time.LocalTime;
+import java.time.Instant;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Generator spec for {@link LocalTime}.
+ * Generator spec for {@link java.time.Instant}.
  *
  * @since 4.2.0
  */
-public interface LocalTimeGeneratorAsSpec extends
-        TemporalAsGeneratorSpec<LocalTime>,
-        TruncatableTemporalSpec<LocalTime> {
+public interface InstantGeneratorSpec extends
+        TemporalGeneratorSpec<Instant>,
+        TruncatableTemporalGeneratorSpec<Instant> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalTimeGeneratorAsSpec past();
+    InstantGeneratorSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalTimeGeneratorAsSpec future();
+    InstantGeneratorSpec future();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    InstantGeneratorSpec min(Instant min);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 4.6.0
+     */
+    @Override
+    InstantGeneratorSpec max(Instant max);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalTimeGeneratorAsSpec range(LocalTime min, LocalTime max);
+    InstantGeneratorSpec range(Instant min, Instant max);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalTimeGeneratorAsSpec truncatedTo(TemporalUnit unit);
+    InstantGeneratorSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    LocalTimeGeneratorAsSpec nullable();
+    InstantGeneratorSpec nullable();
 }

@@ -17,29 +17,23 @@ package org.instancio.internal.generator.math;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.BigDecimalAsGeneratorSpec;
 import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
 import org.instancio.settings.Keys;
-import org.instancio.support.Global;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal>
-        implements BigDecimalSpec, BigDecimalAsGeneratorSpec {
+        implements BigDecimalSpec {
 
     private static final BigDecimal DEFAULT_MIN = new BigDecimal("0.01");
     private static final BigDecimal DEFAULT_MAX = new BigDecimal("10000.00");
 
     private int scale;
     private int precision;
-
-    public BigDecimalGenerator() {
-        this(Global.generatorContext());
-    }
 
     public BigDecimalGenerator(final GeneratorContext context) {
         this(context, DEFAULT_MIN, DEFAULT_MAX, false);

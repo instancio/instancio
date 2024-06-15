@@ -17,12 +17,10 @@ package org.instancio.internal.generator.domain.internet;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.EmailAsGeneratorSpec;
 import org.instancio.generator.specs.EmailSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
-import org.instancio.support.Global;
 
 import java.util.Locale;
 
@@ -31,16 +29,12 @@ import java.util.Locale;
  * with {@code @Email} annotation from Jakarta Bean Validation API.
  */
 public class EmailGenerator extends AbstractGenerator<String>
-        implements EmailSpec, EmailAsGeneratorSpec, InternalLengthGeneratorSpec<String> {
+        implements EmailSpec, InternalLengthGeneratorSpec<String> {
 
     private static final String[] TLDS = {"com", "edu", "net", "org"};
 
     private int minLength = 7;
     private int maxLength = 24;
-
-    public EmailGenerator() {
-        super(Global.generatorContext());
-    }
 
     public EmailGenerator(final GeneratorContext context) {
         super(context);

@@ -15,7 +15,6 @@
  */
 package org.instancio.test.java17.generator;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
@@ -59,7 +58,7 @@ class CustomerGeneratorRecordWithNullFieldTest {
     private Model<Container> model(final boolean overwriteExistingValues, final AfterGenerate afterGenerate) {
         // Default AfterGenerate setting shouldn't matter since the Generator hint should take precedence.
         // Using a random value to ensure this is correct.
-        final AfterGenerate defaultAfterGenerate = Gen.enumOf(AfterGenerate.class).get();
+        final AfterGenerate defaultAfterGenerate = Instancio.gen().enumOf(AfterGenerate.class).get();
 
         return Instancio.of(Container.class)
                 .withSettings(Settings.create()

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.generator.seed;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
@@ -30,7 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * These tests use {@link Gen#string()} standalone.
+ * These tests use {@code Instancio.gen().string()} standalone.
  *
  * <p>These tests verify seed precedence based on the table below.
  * {@code instancio.properties} tests are not included since
@@ -73,8 +73,8 @@ class ValueSpecUsedStandaloneSeedTest {
         @Seed(SEED_ANNOTATION)
         @RepeatedTest(2)
         void seedAnnotationWins() {
-            final String result1 = Gen.string().length(STR_LENGTH).get();
-            final String result2 = Gen.string().length(STR_LENGTH).get();
+            final String result1 = Instancio.gen().string().length(STR_LENGTH).get();
+            final String result2 = Instancio.gen().string().length(STR_LENGTH).get();
 
             assertThat(result1).isEqualTo(RESULT_ANNOTATION);
 
@@ -86,8 +86,8 @@ class ValueSpecUsedStandaloneSeedTest {
 
         @RepeatedTest(2)
         void randomSeedWins() {
-            final String result1 = Gen.string().length(STR_LENGTH).get();
-            final String result2 = Gen.string().length(STR_LENGTH).get();
+            final String result1 = Instancio.gen().string().length(STR_LENGTH).get();
+            final String result2 = Instancio.gen().string().length(STR_LENGTH).get();
 
             assertThat(result1).isNotBlank();
 
@@ -112,8 +112,8 @@ class ValueSpecUsedStandaloneSeedTest {
         @Seed(SEED_ANNOTATION)
         @RepeatedTest(2)
         void withSettingsAnnotationWins1() {
-            final String result1 = Gen.string().length(STR_LENGTH).get();
-            final String result2 = Gen.string().length(STR_LENGTH).get();
+            final String result1 = Instancio.gen().string().length(STR_LENGTH).get();
+            final String result2 = Instancio.gen().string().length(STR_LENGTH).get();
 
             assertThat(result1).isEqualTo(RESULT_WITH_SETTINGS_ANNOTATION);
             assertThat(result2).isEqualTo(RESULT_WITH_SETTINGS_ANNOTATION);
@@ -122,8 +122,8 @@ class ValueSpecUsedStandaloneSeedTest {
         // Does not have @Seed
         @RepeatedTest(2)
         void withSettingsAnnotationWins2() {
-            final String result1 = Gen.string().length(STR_LENGTH).get();
-            final String result2 = Gen.string().length(STR_LENGTH).get();
+            final String result1 = Instancio.gen().string().length(STR_LENGTH).get();
+            final String result2 = Instancio.gen().string().length(STR_LENGTH).get();
 
             assertThat(result1).isEqualTo(RESULT_WITH_SETTINGS_ANNOTATION);
             assertThat(result2).isEqualTo(RESULT_WITH_SETTINGS_ANNOTATION);

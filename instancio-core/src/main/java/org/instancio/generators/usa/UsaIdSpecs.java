@@ -16,22 +16,19 @@
 package org.instancio.generators.usa;
 
 import org.instancio.generator.specs.usa.SsnSpec;
-import org.instancio.internal.generator.domain.id.usa.SsnGenerator;
 
 /**
  * Provides generators for USA identifiers.
  *
- * @since 3.1.0
+ * @since 5.0.0
  */
-public final class UsaIdSpecs {
+public interface UsaIdSpecs extends UsaIdGenerators {
 
     /**
-     * Generates Social Security Number (SSN).
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public SsnSpec ssn() {
-        return new SsnGenerator();
-    }
+    @Override
+    SsnSpec ssn();
 }

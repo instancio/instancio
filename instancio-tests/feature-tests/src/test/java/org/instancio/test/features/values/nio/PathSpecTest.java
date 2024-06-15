@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.nio;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.PathSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -36,7 +36,7 @@ class PathSpecTest extends AbstractValueSpecTestTemplate<Path> {
 
     @Override
     protected PathSpec spec() {
-        return Gen.nio().path();
+        return Instancio.gen().nio().path();
     }
 
     @Test
@@ -76,5 +76,12 @@ class PathSpecTest extends AbstractValueSpecTestTemplate<Path> {
         final InputStream is = new ByteArrayInputStream("foo".getBytes());
         final Path actual = spec().tmp().createFile(is).get();
         assertThat(actual).hasContent("foo");
+    }
+
+    @Test
+    void subdirectories() {
+        final Path actual = Instancio.gen().nio().path("foo", "bar").get();
+
+        assertThat(actual.toFile()).hasParent("foo/bar");
     }
 }

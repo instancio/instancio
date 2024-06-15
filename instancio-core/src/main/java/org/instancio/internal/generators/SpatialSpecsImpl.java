@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.internal.generators;
 
-/**
- * Generator spec for {@code Boolean} values
- * that supports {@link AsGeneratorSpec}.
- *
- * @since 2.6.0
- */
-public interface BooleanAsGeneratorSpec
-        extends BooleanGeneratorSpec, AsGeneratorSpec<Boolean> {
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.CoordinateSpec;
+import org.instancio.generators.SpatialSpecs;
+import org.instancio.internal.generator.domain.spatial.CoordinateGenerator;
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.11.0
-     */
-    @Override
-    BooleanGeneratorSpec probability(double probability);
+final class SpatialSpecsImpl implements SpatialSpecs {
+
+    private final GeneratorContext context;
+
+    SpatialSpecsImpl(final GeneratorContext context) {
+        this.context = context;
+    }
 
     @Override
-    BooleanAsGeneratorSpec nullable();
+    public CoordinateSpec coordinate() {
+        return new CoordinateGenerator(context);
+    }
+
 }

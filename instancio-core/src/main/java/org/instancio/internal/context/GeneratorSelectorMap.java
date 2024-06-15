@@ -20,6 +20,7 @@ import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
+import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +37,7 @@ class GeneratorSelectorMap {
     private final Generators generators;
 
     GeneratorSelectorMap(@NotNull final GeneratorContext generatorContext) {
-        this.generators = new Generators(generatorContext);
+        this.generators = new BuiltInGenerators(generatorContext);
         this.generatorInitialiser = new GeneratorInitialiser(generatorContext);
     }
 

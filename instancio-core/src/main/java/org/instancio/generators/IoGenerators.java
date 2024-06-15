@@ -15,10 +15,7 @@
  */
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.PathAsGeneratorSpec;
 import org.instancio.generator.specs.PathGeneratorSpec;
-import org.instancio.internal.generator.io.FileGenerator;
 
 import java.io.File;
 import java.io.InputStream;
@@ -28,18 +25,12 @@ import java.io.InputStream;
  *
  * @since 2.2.0
  */
-public class IoGenerators {
-
-    private final GeneratorContext context;
-
-    public IoGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface IoGenerators {
 
     /**
      * Generator for {@link File} objects.
-     * <p>
-     * Note that files or directories will <b>not</b> be created in the file
+     *
+     * <p>Note that files or directories will <b>not</b> be created in the file
      * system unless one of the following methods is invoked:
      *
      * <ul>
@@ -48,11 +39,10 @@ public class IoGenerators {
      *   <li>{@link PathGeneratorSpec#createDirectory()}</li>
      * </ul>
      *
-     * @param subdirectories zero or more directories that will form the file path
+     * @param subdirectories optional parameter for specifying one or more
+     *                       parent directories of the generated files
      * @return generator spec for files
      * @since 2.2.0
      */
-    public PathAsGeneratorSpec<File> file(final String... subdirectories) {
-        return new FileGenerator(context, subdirectories);
-    }
+    PathGeneratorSpec<File> file(String... subdirectories);
 }

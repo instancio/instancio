@@ -16,13 +16,11 @@
 package org.instancio.internal.generator.checksum;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.Mod11AsGeneratorSpec;
 import org.instancio.generator.specs.Mod11Spec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.support.Global;
 
 public class Mod11Generator extends VariableLengthModCheckGenerator
-        implements Mod11AsGeneratorSpec, Mod11Spec {
+        implements Mod11Spec {
 
     private static final int DEFAULT_THRESHOLD = Integer.MAX_VALUE;
     private static final char DEFAULT_TREAT_10_AS = 'X';
@@ -32,10 +30,6 @@ public class Mod11Generator extends VariableLengthModCheckGenerator
     private char treatCheck10As = DEFAULT_TREAT_10_AS;
     private char treatCheck11As = DEFAULT_TREAT_11_AS;
     private Direction direction = Direction.RIGHT_TO_LEFT;
-
-    public Mod11Generator() {
-        super(Global.generatorContext());
-    }
 
     public Mod11Generator(final GeneratorContext context) {
         super(context);

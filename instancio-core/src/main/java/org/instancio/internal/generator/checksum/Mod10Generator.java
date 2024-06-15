@@ -16,23 +16,17 @@
 package org.instancio.internal.generator.checksum;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.Mod10AsGeneratorSpec;
 import org.instancio.generator.specs.Mod10Spec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.support.Global;
 
 public class Mod10Generator extends VariableLengthModCheckGenerator
-        implements Mod10AsGeneratorSpec, Mod10Spec {
+        implements Mod10Spec {
 
     private static final int DEFAULT_MULTIPLIER = 3;
     private static final int DEFAULT_WEIGHT = 1;
 
     private int multiplier = DEFAULT_MULTIPLIER;
     private int weight = DEFAULT_WEIGHT;
-
-    public Mod10Generator() {
-        super(Global.generatorContext());
-    }
 
     public Mod10Generator(final GeneratorContext context) {
         super(context);

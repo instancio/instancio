@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators.can;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.can.SinAsGeneratorSpec;
-import org.instancio.internal.generator.domain.id.can.SinGenerator;
+import org.instancio.generator.specs.can.SinGeneratorSpec;
 
 /**
  * Contains built-in generators for Canadian identifiers.
  *
  * @since 3.1.0
  */
-public class CanIdGenerators {
-
-    private final GeneratorContext context;
-
-    public CanIdGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface CanIdGenerators {
 
     /**
      * Generates Social Insurance Number (SIN).
@@ -39,7 +30,5 @@ public class CanIdGenerators {
      * @return API builder reference
      * @since 3.1.0
      */
-    public SinAsGeneratorSpec sin() {
-        return new SinGenerator(context);
-    }
+    SinGeneratorSpec sin();
 }

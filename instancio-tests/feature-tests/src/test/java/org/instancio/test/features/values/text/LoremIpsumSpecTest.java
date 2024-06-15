@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.text;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.LoremIpsumSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class LoremIpsumSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected LoremIpsumSpec spec() {
-        return Gen.text().loremIpsum();
+        return Instancio.gen().text().loremIpsum();
     }
 
     @Test

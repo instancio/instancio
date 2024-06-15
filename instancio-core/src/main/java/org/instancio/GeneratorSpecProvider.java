@@ -29,9 +29,9 @@ import org.instancio.generators.Generators;
 public interface GeneratorSpecProvider<V> {
 
     /**
-     * Returns a customised generator spec.
+     * Returns a generator spec.
      *
-     * @param gen specs available out of the box
+     * @param gen an object containing specs available out of the box
      * @return generator spec
      */
     GeneratorSpec<V> getSpec(Generators gen);

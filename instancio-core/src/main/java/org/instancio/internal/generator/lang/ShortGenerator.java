@@ -19,14 +19,9 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ShortSpec;
 import org.instancio.settings.Keys;
-import org.instancio.support.Global;
 
 public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<Short>
         implements ShortSpec {
-
-    public ShortGenerator() {
-        this(Global.generatorContext());
-    }
 
     public ShortGenerator(final GeneratorContext context) {
         super(context,

@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.generator.domain.finance;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.test.support.util.Constants;
@@ -41,7 +41,7 @@ class CreditCardNumberGeneratorTest extends AbstractGeneratorTestTemplate<String
 
     @RepeatedTest(Constants.SAMPLE_SIZE_DDD)
     void generate() {
-        final CCTypeImpl cardType = Gen.oneOf(CCTypeImpl.values()).get();
+        final CCTypeImpl cardType = Instancio.gen().oneOf(CCTypeImpl.values()).get();
 
         final String[] prefixes = cardType.getPrefixes().stream()
                 .map(Object::toString)

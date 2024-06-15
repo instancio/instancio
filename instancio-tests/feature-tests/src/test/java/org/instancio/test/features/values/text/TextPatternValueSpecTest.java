@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.text;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.TextPatternSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -35,7 +35,7 @@ class TextPatternValueSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected TextPatternSpec spec() {
-        return Gen.text().pattern("#d#d#d");
+        return Instancio.gen().text().pattern("#d#d#d");
     }
 
     @Override

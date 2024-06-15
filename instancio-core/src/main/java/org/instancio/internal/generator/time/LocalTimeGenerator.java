@@ -17,23 +17,17 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.LocalTimeGeneratorAsSpec;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.support.Global;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.LocalTime;
 import java.time.temporal.TemporalUnit;
 
 public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
-        implements LocalTimeSpec, LocalTimeGeneratorAsSpec {
+        implements LocalTimeSpec {
 
     private static final int CUT_OFF_BUFFER_MINUTES = 1;
-
-    public LocalTimeGenerator() {
-        this(Global.generatorContext());
-    }
 
     public LocalTimeGenerator(final GeneratorContext context) {
         super(context, LocalTime.MIN, LocalTime.MAX);

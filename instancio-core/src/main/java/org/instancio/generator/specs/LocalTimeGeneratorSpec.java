@@ -15,61 +15,45 @@
  */
 package org.instancio.generator.specs;
 
-import java.time.OffsetDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Generator spec for {@link OffsetDateTime}.
+ * Generator spec for {@link LocalTime}.
  *
  * @since 4.2.0
  */
-public interface OffsetDateTimeGeneratorAsSpec extends
-        TemporalAsGeneratorSpec<OffsetDateTime>,
-        TruncatableTemporalSpec<OffsetDateTime> {
+public interface LocalTimeGeneratorSpec extends
+        TemporalGeneratorSpec<LocalTime>,
+        TruncatableTemporalGeneratorSpec<LocalTime> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    OffsetDateTimeGeneratorAsSpec past();
+    LocalTimeGeneratorSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    OffsetDateTimeGeneratorAsSpec future();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 4.6.0
-     */
-    @Override
-    OffsetDateTimeGeneratorAsSpec min(OffsetDateTime min);
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 4.6.0
-     */
-    @Override
-    OffsetDateTimeGeneratorAsSpec max(OffsetDateTime max);
+    LocalTimeGeneratorSpec future();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    OffsetDateTimeGeneratorAsSpec range(OffsetDateTime min, OffsetDateTime max);
+    LocalTimeGeneratorSpec range(LocalTime min, LocalTime max);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    OffsetDateTimeGeneratorAsSpec truncatedTo(TemporalUnit unit);
+    LocalTimeGeneratorSpec truncatedTo(TemporalUnit unit);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    OffsetDateTimeGeneratorAsSpec nullable();
+    LocalTimeGeneratorSpec nullable();
 }

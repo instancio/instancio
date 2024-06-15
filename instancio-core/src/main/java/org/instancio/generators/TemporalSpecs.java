@@ -20,151 +20,151 @@ import org.instancio.generator.specs.InstantSpec;
 import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.generator.specs.LocalDateTimeSpec;
 import org.instancio.generator.specs.LocalTimeSpec;
+import org.instancio.generator.specs.MonthDaySpec;
 import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.generator.specs.PeriodSpec;
+import org.instancio.generator.specs.TemporalSpec;
 import org.instancio.generator.specs.YearMonthSpec;
 import org.instancio.generator.specs.YearSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
-import org.instancio.internal.generator.time.DurationGenerator;
-import org.instancio.internal.generator.time.InstantGenerator;
-import org.instancio.internal.generator.time.LocalDateGenerator;
-import org.instancio.internal.generator.time.LocalDateTimeGenerator;
-import org.instancio.internal.generator.time.LocalTimeGenerator;
-import org.instancio.internal.generator.time.OffsetDateTimeGenerator;
-import org.instancio.internal.generator.time.OffsetTimeGenerator;
-import org.instancio.internal.generator.time.PeriodGenerator;
-import org.instancio.internal.generator.time.YearGenerator;
-import org.instancio.internal.generator.time.YearMonthGenerator;
-import org.instancio.internal.generator.time.ZonedDateTimeGenerator;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.Period;
-import java.time.Year;
-import java.time.YearMonth;
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Provides generators for {@code java.time} classes.
  *
- * @since 2.6.0
+ * @since 5.0.0
  */
-@SuppressWarnings("PMD.ExcessiveImports")
-public final class TemporalSpecs {
+public interface TemporalSpecs extends TemporalGenerators {
 
     /**
-     * Generates {@link Duration} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.9.0
+     * @since 5.0.0
      */
-    public DurationSpec duration() {
-        return new DurationGenerator();
-    }
+    @Override
+    DurationSpec duration();
 
     /**
-     * Generates {@link Instant} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public InstantSpec instant() {
-        return new InstantGenerator();
-    }
+    @Override
+    InstantSpec instant();
 
     /**
-     * Generates {@link LocalDate} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public LocalDateSpec localDate() {
-        return new LocalDateGenerator();
-    }
+    @Override
+    LocalDateSpec localDate();
 
     /**
-     * Generates {@link LocalDateTime} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public LocalDateTimeSpec localDateTime() {
-        return new LocalDateTimeGenerator();
-    }
+    @Override
+    LocalDateTimeSpec localDateTime();
 
     /**
-     * Generates {@link LocalTime} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public LocalTimeSpec localTime() {
-        return new LocalTimeGenerator();
-    }
+    @Override
+    LocalTimeSpec localTime();
 
     /**
-     * Generates {@link OffsetDateTime} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public OffsetDateTimeSpec offsetDateTime() {
-        return new OffsetDateTimeGenerator();
-    }
+    @Override
+    OffsetDateTimeSpec offsetDateTime();
 
     /**
-     * Generates {@link OffsetTime} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public OffsetTimeSpec offsetTime() {
-        return new OffsetTimeGenerator();
-    }
+    @Override
+    OffsetTimeSpec offsetTime();
 
     /**
-     * Generates {@link Period} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.9.0
+     * @since 5.0.0
      */
-    public PeriodSpec period() {
-        return new PeriodGenerator();
-    }
+    @Override
+    PeriodSpec period();
 
     /**
-     * Generates {@link Year} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public YearSpec year() {
-        return new YearGenerator();
-    }
+    @Override
+    YearSpec year();
 
     /**
-     * Generates {@link YearMonth} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public YearMonthSpec yearMonth() {
-        return new YearMonthGenerator();
-    }
+    @Override
+    YearMonthSpec yearMonth();
 
     /**
-     * Generates {@link ZonedDateTime} values.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.6.0
+     * @since 5.0.0
      */
-    public ZonedDateTimeSpec zonedDateTime() {
-        return new ZonedDateTimeGenerator();
-    }
+    @Override
+    ZonedDateTimeSpec zonedDateTime();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
+    @Override
+    MonthDaySpec monthDay();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
+    @Override
+    TemporalSpec<Date> date();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
+    @Override
+    TemporalSpec<java.sql.Date> sqlDate();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
+    @Override
+    TemporalSpec<Timestamp> timestamp();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
+    @Override
+    TemporalSpec<Calendar> calendar();
 }

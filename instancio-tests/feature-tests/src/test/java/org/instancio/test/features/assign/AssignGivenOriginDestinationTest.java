@@ -17,7 +17,6 @@ package org.instancio.test.features.assign;
 
 import org.instancio.Assign;
 import org.instancio.Assignment;
-import org.instancio.Gen;
 import org.instancio.GivenOriginDestinationAction;
 import org.instancio.Instancio;
 import org.instancio.generator.GeneratorSpec;
@@ -54,7 +53,7 @@ class AssignGivenOriginDestinationTest {
                 Arguments.of(assignGiven().elseSet(ODD)),
                 Arguments.of(assignGiven().elseSupply(() -> ODD)),
                 Arguments.of(assignGiven().elseSupply(random -> random.oneOf(ODD))),
-                Arguments.of(assignGiven().elseGenerate(Gen.text().pattern(ODD))),
+                Arguments.of(assignGiven().elseGenerate(Instancio.gen().text().pattern(ODD))),
                 Arguments.of(assignGiven().elseGenerate(gen -> gen.text().pattern(ODD)))
         );
     }
@@ -102,7 +101,7 @@ class AssignGivenOriginDestinationTest {
 
     @Test
     void generateWithGeneratorSpec() {
-        final GeneratorSpec<String> spec = Gen.text().pattern("I");
+        final GeneratorSpec<String> spec = Instancio.gen().text().pattern("I");
 
         final StringsGhi result = Instancio.of(StringsGhi.class)
                 .assign(Assign.given(field(StringsGhi::getG), field(StringsGhi::getI))

@@ -18,7 +18,7 @@ package org.example.spi;
 import org.example.FooRecord;
 import org.example.generator.CustomIntegerGenerator;
 import org.example.generator.CustomListOfPojosGenerator;
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.Node;
 import org.instancio.Random;
 import org.instancio.generator.AfterGenerate;
@@ -32,6 +32,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.ServiceProviderContext;
+import org.instancio.support.Global;
 import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
 import org.instancio.test.support.pojo.collections.lists.ListInteger;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerItemOfString;
@@ -77,8 +78,8 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         put(Pattern.class, new PatternGeneratorFromSpi());
         put(int.class, new CustomIntegerGenerator());
         put(Integer.class, new CustomIntegerGenerator());
-        put(byte.class, new IntegerSequenceGenerator().as(Integer::byteValue));
-        put(Byte.class, new IntegerSequenceGenerator().as(Integer::byteValue));
+        put(byte.class, new IntegerSequenceGenerator(Global.generatorContext()).as(Integer::byteValue));
+        put(Byte.class, new IntegerSequenceGenerator(Global.generatorContext()).as(Integer::byteValue));
         put(Address.class, new CustomAddressGenerator());
         put(Phone.class, new CustomPhoneGenerator());
         put(Field.class, new ExceptionThrowingGenerator());
@@ -200,7 +201,7 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
     }
 
     public static class CustomPhoneGenerator implements Generator<Phone> {
-        public static final String NUMBER = Gen.string().digits().get();
+        public static final String NUMBER = Instancio.gen().string().digits().get();
 
         @Override
         public Phone generate(final Random random) {
@@ -209,7 +210,7 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
     }
 
     public static class PhoneWithTypeGenerator implements Generator<PhoneWithType> {
-        public static final String NUMBER = Gen.string().digits().get();
+        public static final String NUMBER = Instancio.gen().string().digits().get();
 
         @Override
         public PhoneWithType generate(final Random random) {

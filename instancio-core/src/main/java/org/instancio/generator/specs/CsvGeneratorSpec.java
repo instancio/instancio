@@ -15,6 +15,7 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.Instancio;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
@@ -53,12 +54,12 @@ public interface CsvGeneratorSpec extends GeneratorSpec<String> {
     /**
      * Specifies the column name and the generator spec for producing the values.
      *
-     * <p>This method can be used with {@link org.instancio.Gen}, for example:
+     * <p>This method can be used with {@link Instancio#gen()}, for example:
      *
      * <pre>{@code
-     *   String csv = Gen.text().csv()
-     *      .column("productCode", Gen.string().length(5))
-     *      .column("quantity", Gen.ints().range(1, 100))
+     *   String csv = Instancio.gen().text().csv()
+     *      .column("productCode", Instancio.gen().string().length(5))
+     *      .column("quantity", Instancio.gen().ints().range(1, 100))
      *      .get();
      * }</pre>
      *
@@ -120,9 +121,9 @@ public interface CsvGeneratorSpec extends GeneratorSpec<String> {
      * <p>For example, to specify that only strings should be wrapped:
      *
      * <pre>{@code
-     *   String csv = Gen.text().csv()
-     *      .column("column1", Gen.string())
-     *      .column("column2", Gen.ints())
+     *   String csv = Instancio.gen().text().csv()
+     *      .column("column1", Instancio.gen().string())
+     *      .column("column2", Instancio.gen().ints())
      *      .wrapWith("\"")
      *      .wrapIf(value -> value instanceof String)
      *      .get()

@@ -25,7 +25,8 @@ import java.time.temporal.TemporalUnit;
  */
 public interface InstantSpec extends
         TemporalSpec<Instant>,
-        TruncatableTemporalSpec<Instant> {
+        InstantGeneratorSpec,
+        TruncatableTemporalGeneratorSpec<Instant> {
 
     /**
      * {@inheritDoc}

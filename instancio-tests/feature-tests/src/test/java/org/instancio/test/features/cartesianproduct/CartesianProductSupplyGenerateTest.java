@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.cartesianproduct;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
@@ -51,7 +50,7 @@ class CartesianProductSupplyGenerateTest {
     void generateWithGeneratorSpec() {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
-                .generate(field(IntegerHolder::getWrapper), Gen.ints().range(-1, -1))
+                .generate(field(IntegerHolder::getWrapper), Instancio.gen().ints().range(-1, -1))
                 .create();
 
         assertThat(results)

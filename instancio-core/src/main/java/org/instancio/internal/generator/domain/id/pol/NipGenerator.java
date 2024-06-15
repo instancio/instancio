@@ -18,17 +18,12 @@ package org.instancio.internal.generator.domain.id.pol;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.pol.NipSpec;
 import org.instancio.internal.util.CollectionUtils;
-import org.instancio.support.Global;
 
 import java.util.List;
 
 public class NipGenerator extends WeightsModCheckGenerator implements NipSpec {
 
     private static final List<Integer> NIP_WEIGHTS = CollectionUtils.asUnmodifiableList(6, 5, 7, 2, 3, 4, 5, 6, 7);
-
-    public NipGenerator() {
-        this(Global.generatorContext());
-    }
 
     public NipGenerator(final GeneratorContext context) {
         super(context);

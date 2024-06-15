@@ -17,11 +17,9 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.ZonedDateTimeGeneratorAsSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
-import org.instancio.support.Global;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalUnit;
@@ -29,16 +27,12 @@ import java.time.temporal.TemporalUnit;
 import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateTime>
-        implements ZonedDateTimeSpec, ZonedDateTimeGeneratorAsSpec {
+        implements ZonedDateTimeSpec {
 
     static final ZonedDateTime DEFAULT_MIN = Constants.DEFAULT_MIN.atZone(ZONE_OFFSET);
     static final ZonedDateTime DEFAULT_MAX = Constants.DEFAULT_MAX.atZone(ZONE_OFFSET);
 
     private final InstantGenerator delegate;
-
-    public ZonedDateTimeGenerator() {
-        this(Global.generatorContext());
-    }
 
     public ZonedDateTimeGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX);

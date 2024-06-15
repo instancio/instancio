@@ -16,13 +16,8 @@
 package org.instancio.internal.generator.sequence;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.support.Global;
 
 public class IntegerSequenceGenerator extends AbstractNumericSequenceGenerator<Integer> {
-
-    public IntegerSequenceGenerator() {
-        this(Global.generatorContext());
-    }
 
     public IntegerSequenceGenerator(final GeneratorContext context) {
         super(context);

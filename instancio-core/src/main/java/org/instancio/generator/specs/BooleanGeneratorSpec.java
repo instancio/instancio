@@ -20,7 +20,9 @@ package org.instancio.generator.specs;
  *
  * @since 2.0.0
  */
-public interface BooleanGeneratorSpec extends NullableGeneratorSpec<Boolean> {
+public interface BooleanGeneratorSpec extends
+        AsGeneratorSpec<Boolean>,
+        NullableGeneratorSpec<Boolean> {
 
     /**
      * Specifies the probability of generating {@code true}.

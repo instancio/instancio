@@ -20,63 +20,51 @@ import org.instancio.generator.specs.IsbnSpec;
 import org.instancio.generators.can.CanIdSpecs;
 import org.instancio.generators.pol.PolIdSpecs;
 import org.instancio.generators.usa.UsaIdSpecs;
-import org.instancio.internal.generator.domain.id.EanGenerator;
-import org.instancio.internal.generator.domain.id.IsbnGenerator;
 
 /**
  * Provides generators for various types of identifiers.
  *
- * @since 2.11.0
+ * @since 5.0.0
  */
-public final class IdSpecs {
+public interface IdSpecs extends IdGenerators {
 
     /**
-     * Generates European Article Number (EAN).
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.11.0
+     * @since 5.0.0
      */
-    public EanSpec ean() {
-        return new EanGenerator();
-    }
+    @Override
+    EanSpec ean();
 
     /**
-     * Generates ISBN numbers.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.11.0
+     * @since 5.0.0
      */
-    public IsbnSpec isbn() {
-        return new IsbnGenerator();
-    }
+    @Override
+    IsbnSpec isbn();
 
     /**
-     * Provides identifier generators for Canada.
+     * {@inheritDoc}
      *
-     * @return built-in identifier generators
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public CanIdSpecs can() {
-        return new CanIdSpecs();
-    }
+    @Override
+    CanIdSpecs can();
 
     /**
-     * Provides identifier generators for Poland.
+     * {@inheritDoc}
      *
-     * @return built-in identifier generators
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public PolIdSpecs pol() {
-        return new PolIdSpecs();
-    }
+    @Override
+    PolIdSpecs pol();
 
     /**
-     * Provides identifier generators for USA.
+     * {@inheritDoc}
      *
-     * @return built-in identifier generators
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public UsaIdSpecs usa() {
-        return new UsaIdSpecs();
-    }
+    @Override
+    UsaIdSpecs usa();
 }

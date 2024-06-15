@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -43,7 +43,7 @@ class ValueSpecRandomSeedTest {
     @RepeatedTest(SAMPLE_SIZE)
     void shouldGenerateDifferentValues() {
         final int length = 50;
-        final String result = Gen.string().length(length).get();
+        final String result = Instancio.gen().string().length(length).get();
         assertThat(result).isNotBlank().hasSizeGreaterThanOrEqualTo(length);
         results.add(result);
     }

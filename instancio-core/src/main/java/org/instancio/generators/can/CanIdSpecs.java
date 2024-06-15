@@ -16,22 +16,19 @@
 package org.instancio.generators.can;
 
 import org.instancio.generator.specs.can.SinSpec;
-import org.instancio.internal.generator.domain.id.can.SinGenerator;
 
 /**
  * Provides generators for Canadian identifiers.
  *
- * @since 3.1.0
+ * @since 5.0.0
  */
-public final class CanIdSpecs {
+public interface CanIdSpecs extends CanIdGenerators {
 
     /**
-     * Generates Social Insurance Number (SIN).
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public SinSpec sin() {
-        return new SinGenerator();
-    }
+    @Override
+    SinSpec sin();
 }

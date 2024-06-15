@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -40,6 +40,6 @@ class ValueSpecWithSettingsAnnotationTest {
 
     @Test
     void shouldHaveLengthSpecifiedByTheSettings() {
-        assertThat(Gen.string().get()).hasSize(EXPECTED_LENGTH);
+        assertThat(Instancio.gen().string().get()).hasSize(EXPECTED_LENGTH);
     }
 }

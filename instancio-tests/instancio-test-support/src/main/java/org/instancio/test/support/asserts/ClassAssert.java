@@ -16,6 +16,7 @@
 package org.instancio.test.support.asserts;
 
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.SoftAssertions;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -38,6 +39,16 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
 
     public ClassAssert hasNoMethods() {
         assertThat(actual.getMethods()).isEmpty();
+        return this;
+    }
+
+    public ClassAssert hasAllMethodsSatisfying(final Predicate<Method> predicate) {
+        final SoftAssertions softly = new SoftAssertions();
+
+        Arrays.stream(actual.getMethods())
+                .forEach(method -> softly.assertThat(method).matches(predicate));
+
+        softly.assertAll();
         return this;
     }
 

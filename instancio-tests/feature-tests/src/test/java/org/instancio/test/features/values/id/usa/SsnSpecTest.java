@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.id.usa;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.usa.SsnSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class SsnSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected SsnSpec spec() {
-        return Gen.id().usa().ssn();
+        return Instancio.gen().id().usa().ssn();
     }
 
     @Override

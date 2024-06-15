@@ -19,7 +19,6 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.BigIntegerSpec;
 import org.instancio.internal.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
-import org.instancio.support.Global;
 
 import java.math.BigInteger;
 
@@ -28,10 +27,6 @@ public class BigIntegerGenerator extends AbstractRandomComparableNumberGenerator
 
     private static final BigInteger DEFAULT_MIN = BigInteger.ONE;
     private static final BigInteger DEFAULT_MAX = BigInteger.valueOf(Long.MAX_VALUE);
-
-    public BigIntegerGenerator() {
-        this(Global.generatorContext());
-    }
 
     public BigIntegerGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX, false);

@@ -17,21 +17,15 @@ package org.instancio.internal.generator.domain.spatial;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.CoordinateGeneratorSpec;
 import org.instancio.generator.specs.CoordinateSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.lang.DoubleGenerator;
-import org.instancio.support.Global;
 
-public class CoordinateGenerator extends AbstractGenerator<Double> implements CoordinateSpec, CoordinateGeneratorSpec {
+public class CoordinateGenerator extends AbstractGenerator<Double> implements CoordinateSpec {
 
     private final DoubleGenerator delegate;
 
     private CoordinateType type = CoordinateType.LATITUDE;
-
-    public CoordinateGenerator() {
-        this(Global.generatorContext());
-    }
 
     public CoordinateGenerator(final GeneratorContext context) {
         super(context);

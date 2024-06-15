@@ -17,21 +17,15 @@ package org.instancio.internal.generator.domain.id.can;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.can.SinAsGeneratorSpec;
 import org.instancio.generator.specs.can.SinSpec;
 import org.instancio.internal.generator.checksum.LuhnGenerator;
-import org.instancio.support.Global;
 
-public class SinGenerator extends LuhnGenerator implements SinAsGeneratorSpec, SinSpec {
+public class SinGenerator extends LuhnGenerator implements SinSpec {
 
     private static final int SIN_LENGTH = 9;
 
     private Type type;
     private String separator;
-
-    public SinGenerator() {
-        this(Global.generatorContext());
-    }
 
     public SinGenerator(final GeneratorContext context) {
         super(context);

@@ -22,7 +22,6 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
-import org.instancio.support.Global;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -34,10 +33,6 @@ public class DurationGenerator extends AbstractGenerator<Duration> implements Du
     private Duration max = Duration.of(Constants.DURATION_MAX_NANOS, ChronoUnit.NANOS);
 
     private boolean allowZero;
-
-    public DurationGenerator() {
-        this(Global.generatorContext());
-    }
 
     public DurationGenerator(final GeneratorContext context) {
         super(context);

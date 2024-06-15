@@ -25,7 +25,8 @@ import java.time.temporal.TemporalUnit;
  */
 public interface OffsetDateTimeSpec extends
         TemporalSpec<OffsetDateTime>,
-        TruncatableTemporalSpec<OffsetDateTime> {
+        OffsetDateTimeGeneratorSpec,
+        TruncatableTemporalGeneratorSpec<OffsetDateTime> {
 
     /**
      * {@inheritDoc}

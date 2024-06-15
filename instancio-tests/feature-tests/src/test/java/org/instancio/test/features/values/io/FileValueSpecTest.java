@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.io;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.FileSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -36,7 +36,7 @@ class FileValueSpecTest extends AbstractValueSpecTestTemplate<File> {
 
     @Override
     protected FileSpec spec() {
-        return Gen.io().file();
+        return Instancio.gen().io().file();
     }
 
     @Test
@@ -76,5 +76,12 @@ class FileValueSpecTest extends AbstractValueSpecTestTemplate<File> {
         final InputStream is = new ByteArrayInputStream("foo".getBytes());
         final File actual = spec().tmp().createFile(is).get();
         assertThat(actual).hasContent("foo");
+    }
+
+    @Test
+    void subdirectories() {
+        final File actual = Instancio.gen().io().file("foo", "bar").get();
+
+        assertThat(actual).hasParent("foo/bar");
     }
 }

@@ -28,7 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * to provide a convenience method for generating a list:
  *
  * <pre>{@code
- * List<UUID> uuids = Gen.uuid().list(10);
+ * List<UUID> uuids = Instancio.gen().uuid().list(10);
  * }</pre>
  *
  * <p>But it is not exposed via {@code generate()} method

@@ -25,7 +25,8 @@ import java.time.temporal.TemporalUnit;
  */
 public interface LocalTimeSpec extends
         TemporalSpec<LocalTime>,
-        TruncatableTemporalSpec<LocalTime> {
+        LocalTimeGeneratorSpec,
+        TruncatableTemporalGeneratorSpec<LocalTime> {
 
     /**
      * {@inheritDoc}

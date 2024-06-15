@@ -20,7 +20,6 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LoremIpsumSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.support.Global;
 
 import static org.instancio.internal.util.StringUtils.capitalise;
 
@@ -41,10 +40,6 @@ public class LoremIpsumGenerator extends AbstractGenerator<String>
 
     private int words = DEFAULT_WORDS;
     private int paragraphs = DEFAULT_PARAGRAPHS;
-
-    public LoremIpsumGenerator() {
-        this(Global.generatorContext());
-    }
 
     public LoremIpsumGenerator(final GeneratorContext context) {
         super(context);

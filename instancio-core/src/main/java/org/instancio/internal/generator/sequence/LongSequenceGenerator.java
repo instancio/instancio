@@ -16,13 +16,8 @@
 package org.instancio.internal.generator.sequence;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.support.Global;
 
 public class LongSequenceGenerator extends AbstractNumericSequenceGenerator<Long> {
-
-    public LongSequenceGenerator() {
-        this(Global.generatorContext());
-    }
 
     public LongSequenceGenerator(final GeneratorContext context) {
         super(context);

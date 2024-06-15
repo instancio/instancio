@@ -19,14 +19,9 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.settings.Keys;
-import org.instancio.support.Global;
 
 public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<Long>
         implements LongSpec {
-
-    public LongGenerator() {
-        this(Global.generatorContext());
-    }
 
     public LongGenerator(final GeneratorContext context) {
         super(context,

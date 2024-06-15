@@ -17,23 +17,16 @@ package org.instancio.internal.generator.domain.id.usa;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.usa.SsnGeneratorSpec;
 import org.instancio.generator.specs.usa.SsnSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.StringUtils;
-import org.instancio.support.Global;
 import org.jetbrains.annotations.VisibleForTesting;
 
-public class SsnGenerator extends AbstractGenerator<String>
-        implements SsnGeneratorSpec, SsnSpec {
+public class SsnGenerator extends AbstractGenerator<String> implements SsnSpec {
 
     private static final int SSN_LENGTH = 9;
 
     private String separator;
-
-    public SsnGenerator() {
-        this(Global.generatorContext());
-    }
 
     public SsnGenerator(final GeneratorContext context) {
         super(context);

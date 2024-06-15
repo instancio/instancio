@@ -20,17 +20,12 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.support.Global;
 
 import java.util.Collection;
 
 public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements OneOfCollectionSpec<T> {
 
     private Collection<T> values;
-
-    public OneOfCollectionGenerator() {
-        this(Global.generatorContext());
-    }
 
     public OneOfCollectionGenerator(final GeneratorContext context) {
         super(context);

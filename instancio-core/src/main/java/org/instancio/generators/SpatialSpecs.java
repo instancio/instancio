@@ -16,22 +16,19 @@
 package org.instancio.generators;
 
 import org.instancio.generator.specs.CoordinateSpec;
-import org.instancio.internal.generator.domain.spatial.CoordinateGenerator;
 
 /**
  * Provides spatial data related generators.
  *
- * @since 4.4.0
+ * @since 5.0.0
  */
-public final class SpatialSpecs {
+public interface SpatialSpecs extends SpatialGenerators {
 
     /**
-     * Customises generated latitudinal and longitudinal values
+     * {@inheritDoc}
      *
-     * @return customised generator
+     * @since 5.0.0
      */
-    public CoordinateSpec coordinate() {
-        return new CoordinateGenerator();
-    }
-
+    @Override
+    CoordinateSpec coordinate();
 }

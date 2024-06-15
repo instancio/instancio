@@ -19,7 +19,6 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.IntegerSpec;
 import org.instancio.settings.Keys;
-import org.instancio.support.Global;
 
 public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpec<Integer>
         implements IntegerSpec {
@@ -29,10 +28,6 @@ public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpe
                 context.getSettings().get(Keys.INTEGER_MIN),
                 context.getSettings().get(Keys.INTEGER_MAX),
                 context.getSettings().get(Keys.INTEGER_NULLABLE));
-    }
-
-    public IntegerGenerator() {
-        this(Global.generatorContext());
     }
 
     @Override

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.temporal;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.DurationSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -37,7 +37,7 @@ class DurationValueSpecTest extends AbstractValueSpecTestTemplate<Duration> {
 
     @Override
     protected DurationSpec spec() {
-        return Gen.temporal().duration();
+        return Instancio.gen().temporal().duration();
     }
 
     @Test

@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.checksum;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.LuhnSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class LuhnSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected LuhnSpec spec() {
-        return Gen.checksum().luhn();
+        return Instancio.gen().checksum().luhn();
     }
 
     @Override

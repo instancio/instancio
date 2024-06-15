@@ -19,10 +19,25 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.ValueSpec;
-import org.instancio.generator.specs.AsGeneratorSpec;
+import org.instancio.generators.AtomicGenerators;
+import org.instancio.generators.ChecksumGenerators;
+import org.instancio.generators.FinanceGenerators;
+import org.instancio.generators.Generators;
+import org.instancio.generators.IdGenerators;
+import org.instancio.generators.IoGenerators;
+import org.instancio.generators.NioGenerators;
+import org.instancio.generators.SpatialGenerators;
+import org.instancio.generators.TemporalGenerators;
+import org.instancio.generators.TextGenerators;
+import org.instancio.generators.can.CanIdGenerators;
+import org.instancio.generators.pol.PolIdGenerators;
+import org.instancio.generators.usa.UsaIdGenerators;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static org.instancio.test.support.asserts.ClassAssert.assertThatClass;
 
 class SpecInheritanceAndNamingTest {
 
@@ -53,14 +68,27 @@ class SpecInheritanceAndNamingTest {
     }
 
     /**
-     * Value specs should not expose methods defined by {@link AsGeneratorSpec},
-     * since they return {@link GeneratorSpec} and not String.
+     * The return type of methods declared by  {@link Generators}
+     * (and friends) should not be a {@link ValueSpec}.
      */
-    @Test
-    void valueSpecsShouldNotImplementAsGeneratorSpec() {
-        classes()
-                .that().resideInAPackage("..specs..").and().areAssignableTo(ValueSpec.class)
-                .should().notBeAssignableTo(AsGeneratorSpec.class)
-                .check(classes);
+    @ValueSource(classes = {
+            Generators.class,
+            AtomicGenerators.class,
+            ChecksumGenerators.class,
+            IoGenerators.class,
+            NioGenerators.class,
+            TemporalGenerators.class,
+            TextGenerators.class,
+            FinanceGenerators.class,
+            SpatialGenerators.class,
+            IdGenerators.class,
+            CanIdGenerators.class,
+            PolIdGenerators.class,
+            UsaIdGenerators.class
+    })
+    @ParameterizedTest
+    void generatorsShouldNotReturnValueSpecs(final Class<?> klass) {
+        assertThatClass(klass).hasAllMethodsSatisfying(method ->
+                !ValueSpec.class.isAssignableFrom(method.getReturnType()));
     }
 }

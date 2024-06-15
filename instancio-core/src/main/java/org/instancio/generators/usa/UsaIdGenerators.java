@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators.usa;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.usa.SsnGeneratorSpec;
-import org.instancio.internal.generator.domain.id.usa.SsnGenerator;
 
 /**
  * Contains built-in generators for USA identifiers.
  *
  * @since 3.1.0
  */
-public class UsaIdGenerators {
-
-    private final GeneratorContext context;
-
-    public UsaIdGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface UsaIdGenerators {
 
     /**
      * Generates Social Security Number (SSN).
@@ -39,7 +30,5 @@ public class UsaIdGenerators {
      * @return API builder reference
      * @since 3.1.0
      */
-    public SsnGeneratorSpec ssn() {
-        return new SsnGenerator(context);
-    }
+    SsnGeneratorSpec ssn();
 }

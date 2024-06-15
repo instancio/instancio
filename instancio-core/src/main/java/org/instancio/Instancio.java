@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.internal.ApiImpl;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.CartesianProductApiImpl;
+import org.instancio.internal.GenApiImpl;
 import org.instancio.internal.OfClassApiImpl;
 import org.instancio.internal.OfCollectionApiImpl;
 import org.instancio.internal.OfMapApiImpl;
@@ -664,6 +665,34 @@ public final class Instancio {
         return new OfMapApiImpl(Map.class,
                 ApiValidator.validateTypeToken(keyTypeToken),
                 ApiValidator.validateTypeToken(valueTypeToken));
+    }
+
+    /**
+     * A shorthand API for generating simple value types,
+     * such as strings, numbers, dates, etc.
+     *
+     * <p>This API supports generating a single value:
+     *
+     * <pre>{@code
+     * URL url = Instancio.gen().net().url().get();
+     *
+     * String randomChoice = Instancio.gen().oneOf("foo", "bar", "baz").get();
+     * }</pre>
+     *
+     * <p>as  well as generating a list of values:
+     *
+     * <pre>{@code
+     * List<LocalDate> pastDates = Instancio.gen().temporal().localDate().past().list(5);
+     *
+     * List<String> uuids = Instancio.gen().text().uuid().upperCase().withoutDashes().list(5);
+     * }</pre>
+     *
+     * @return API builder reference
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static InstancioGenApi gen() {
+        return new GenApiImpl();
     }
 
     @SuppressWarnings("unchecked")

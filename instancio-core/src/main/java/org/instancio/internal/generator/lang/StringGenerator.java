@@ -27,7 +27,6 @@ import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.UnicodeBlocks;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.support.Global;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -55,10 +54,6 @@ public class StringGenerator extends AbstractGenerator<String>
      * which is then converted {@code toString()}.
      */
     private Generator<?> delegate;
-
-    public StringGenerator() {
-        this(Global.generatorContext());
-    }
 
     public StringGenerator(final GeneratorContext context) {
         super(context);

@@ -25,7 +25,8 @@ import java.time.temporal.TemporalUnit;
  */
 public interface ZonedDateTimeSpec extends
         TemporalSpec<ZonedDateTime>,
-        TruncatableTemporalSpec<ZonedDateTime> {
+        ZonedDateTimeGeneratorSpec,
+        TruncatableTemporalGeneratorSpec<ZonedDateTime> {
 
     /**
      * {@inheritDoc}

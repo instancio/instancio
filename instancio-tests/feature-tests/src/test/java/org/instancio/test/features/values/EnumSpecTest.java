@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.EnumSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Gender;
@@ -32,7 +32,7 @@ class EnumSpecTest extends AbstractValueSpecTestTemplate<Gender> {
 
     @Override
     protected EnumSpec<Gender> spec() {
-        return Gen.enumOf(Gender.class);
+        return Instancio.gen().enumOf(Gender.class);
     }
 
     @Test

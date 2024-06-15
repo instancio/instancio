@@ -18,7 +18,6 @@ package org.instancio.test.guava.collect;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.instancio.Assign;
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.internal.util.Constants;
@@ -38,7 +37,6 @@ import static org.instancio.Select.allLongs;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.root;
-import static org.instancio.Assign.given;
 import static org.instancio.guava.GenGuava.table;
 
 @ExtendWith(InstancioExtension.class)
@@ -137,7 +135,7 @@ class GuavaTableTest {
 
     @RepeatedTest(10)
     void assignmentAcrossTables() {
-        final String expected = Gen.oneOf("foo1", "bar1").get();
+        final String expected = Instancio.gen().oneOf("foo1", "bar1").get();
 
         final TableHolder result = Instancio.of(TableHolder.class)
                 .set(allStrings().within(field("table1").toScope()), expected)

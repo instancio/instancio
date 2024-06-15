@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.text;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.UUIDStringSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class UUIDStringSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected UUIDStringSpec spec() {
-        return Gen.text().uuid();
+        return Instancio.gen().text().uuid();
     }
 
     @Test

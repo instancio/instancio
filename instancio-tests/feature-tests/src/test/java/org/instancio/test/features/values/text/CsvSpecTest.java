@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.text;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.CsvSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -32,7 +32,7 @@ class CsvSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected CsvSpec spec() {
-        return Gen.text().csv().column("col1", random -> "val1");
+        return Instancio.gen().text().csv().column("col1", random -> "val1");
     }
 
     @Test
@@ -59,7 +59,7 @@ class CsvSpecTest extends AbstractValueSpecTestTemplate<String> {
         final String result = spec()
                 .noHeader()
                 .rows(1)
-                .column("col2", Gen.booleans().probability(1))
+                .column("col2", Instancio.gen().booleans().probability(1))
                 .get();
 
         assertThat(result).isEqualTo("val1,true");

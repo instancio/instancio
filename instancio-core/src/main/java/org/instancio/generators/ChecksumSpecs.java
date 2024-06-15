@@ -18,44 +18,35 @@ package org.instancio.generators;
 import org.instancio.generator.specs.LuhnSpec;
 import org.instancio.generator.specs.Mod10Spec;
 import org.instancio.generator.specs.Mod11Spec;
-import org.instancio.internal.generator.checksum.LuhnGenerator;
-import org.instancio.internal.generator.checksum.Mod10Generator;
-import org.instancio.internal.generator.checksum.Mod11Generator;
 
 /**
  * Provides generators for checksum-valid numbers.
  *
- * @since 2.16.0
+ * @since 5.0.0
  */
-public final class ChecksumSpecs {
+public interface ChecksumSpecs extends ChecksumGenerators {
 
     /**
-     * Generates numbers that pass the Luhn checksum algorithm.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 3.1.0
+     * @since 5.0.0
      */
-    public LuhnSpec luhn() {
-        return new LuhnGenerator();
-    }
+    @Override
+    LuhnSpec luhn();
 
     /**
-     * Generates numbers that pass the Mod11 checksum algorithm.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.16.0
+     * @since 5.0.0
      */
-    public Mod10Spec mod10() {
-        return new Mod10Generator();
-    }
+    @Override
+    Mod10Spec mod10();
 
     /**
-     * Generates numbers that pass the Mod11 checksum algorithm.
+     * {@inheritDoc}
      *
-     * @return API builder reference
-     * @since 2.16.0
+     * @since 5.0.0
      */
-    public Mod11Spec mod11() {
-        return new Mod11Generator();
-    }
+    @Override
+    Mod11Spec mod11();
 }

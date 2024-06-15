@@ -16,7 +16,6 @@
 package org.instancio.test.features.assign;
 
 import org.instancio.Assignment;
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.When;
 import org.instancio.generator.Generator;
@@ -59,7 +58,7 @@ class AssignValueOfTest {
         return Stream.of(
                 Arguments.of(valueOf(StringsGhi::getH).set(EXPECTED)),
                 Arguments.of(valueOf(StringsGhi::getH).generate(gen -> gen.oneOf(EXPECTED))),
-                Arguments.of(valueOf(StringsGhi::getH).generate(Gen.oneOf(EXPECTED))),
+                Arguments.of(valueOf(StringsGhi::getH).generate(Instancio.gen().oneOf(EXPECTED))),
                 Arguments.of(valueOf(StringsGhi::getH).supply(supplier)),
                 Arguments.of(valueOf(StringsGhi::getH).supply(generator)));
     }

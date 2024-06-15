@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.stream;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
@@ -54,7 +53,7 @@ class CreateStreamVerboseTest {
      */
     @Test
     void verbose() {
-        final long seed = Gen.longs().get();
+        final long seed = Instancio.gen().longs().get();
 
         final List<Integer> results = Instancio.of(Integer.class)
                 .withSeed(seed)

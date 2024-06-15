@@ -20,7 +20,9 @@ package org.instancio.generator.specs;
  *
  * @since 2.11.0
  */
-public interface EmailGeneratorSpec extends NullableGeneratorSpec<String> {
+public interface EmailGeneratorSpec extends
+        AsGeneratorSpec<String>,
+        NullableGeneratorSpec<String> {
 
     /**
      * Specifies email address length.

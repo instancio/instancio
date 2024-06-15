@@ -13,32 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generator.specs;
+package org.instancio.internal.generators;
 
-import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.can.SinSpec;
+import org.instancio.generators.can.CanIdSpecs;
+import org.instancio.internal.generator.domain.id.can.SinGenerator;
 
-import java.net.URL;
+final class CanIdSpecsImpl implements CanIdSpecs {
 
-/**
- * Generator spec for {@link URL} values that supports {@link AsGeneratorSpec}.
- *
- * @since 2.6.0
- */
-public interface URLAsGeneratorSpec
-        extends URLGeneratorSpec, AsGeneratorSpec<URL> {
+    private final GeneratorContext context;
 
-    @Override
-    URLAsGeneratorSpec protocol(String... protocols);
+    CanIdSpecsImpl(final GeneratorContext context) {
+        this.context = context;
+    }
 
     @Override
-    URLAsGeneratorSpec port(int port);
-
-    @Override
-    URLAsGeneratorSpec randomPort();
-
-    @Override
-    URLAsGeneratorSpec host(Generator<String> hostGenerator);
-
-    @Override
-    URLAsGeneratorSpec file(Generator<String> fileGenerator);
+    public SinSpec sin() {
+        return new SinGenerator(context);
+    }
 }

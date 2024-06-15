@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.generator.seed;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Result;
 import org.instancio.junit.InstancioExtension;
@@ -33,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 
 /**
- * These tests use {@link Gen#string()} as an argument
+ * These tests use {@code Instancio.gen().string()} as an argument
  * to {@code generate()} method.
  *
  * <p>These tests verify seed precedence based on the table below.
@@ -84,13 +83,13 @@ class ValueSpecUsedAsGeneratorSeedTest {
             final Result<String> result1 = Instancio.of(String.class)
                     .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
                     .withSeed(SEED_WITH_SEED)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             final Result<String> result2 = Instancio.of(String.class)
                     .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
                     .withSeed(SEED_WITH_SEED)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             assertThat(result1.getSeed()).isEqualTo(SEED_WITH_SEED);
@@ -105,12 +104,12 @@ class ValueSpecUsedAsGeneratorSeedTest {
         void withSettingBuilderWins() {
             final Result<String> result1 = Instancio.of(String.class)
                     .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             final Result<String> result2 = Instancio.of(String.class)
                     .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             assertThat(result1.getSeed()).isEqualTo(SEED_WITH_SETTINGS_BUILDER);
@@ -124,11 +123,11 @@ class ValueSpecUsedAsGeneratorSeedTest {
         @RepeatedTest(2)
         void seedAnnotationWins() {
             final Result<String> result1 = Instancio.of(String.class)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             final Result<String> result2 = Instancio.of(String.class)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             assertThat(result1.getSeed()).isEqualTo(SEED_ANNOTATION);
@@ -144,11 +143,11 @@ class ValueSpecUsedAsGeneratorSeedTest {
         @RepeatedTest(2)
         void randomSeedWins() {
             final Result<String> result1 = Instancio.of(String.class)
-                    .generate(allStrings(), Gen.string().length(7))
+                    .generate(allStrings(), Instancio.gen().string().length(7))
                     .asResult();
 
             final Result<String> result2 = Instancio.of(String.class)
-                    .generate(allStrings(), Gen.string().length(7))
+                    .generate(allStrings(), Instancio.gen().string().length(7))
                     .asResult();
 
             assertThat(result1.getSeed()).isPositive();
@@ -178,13 +177,13 @@ class ValueSpecUsedAsGeneratorSeedTest {
             final Result<String> result1 = Instancio.of(String.class)
                     .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
                     .withSeed(SEED_WITH_SEED)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             final Result<String> result2 = Instancio.of(String.class)
                     .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
                     .withSeed(SEED_WITH_SEED)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             assertThat(result1.getSeed()).isEqualTo(SEED_WITH_SEED);
@@ -199,12 +198,12 @@ class ValueSpecUsedAsGeneratorSeedTest {
         void withSettingBuilderWins() {
             final Result<String> result1 = Instancio.of(String.class)
                     .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             final Result<String> result2 = Instancio.of(String.class)
                     .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             assertThat(result1.getSeed()).isEqualTo(SEED_WITH_SETTINGS_BUILDER);
@@ -219,11 +218,11 @@ class ValueSpecUsedAsGeneratorSeedTest {
         @RepeatedTest(2)
         void withSettingsAnnotationWins1() {
             final Result<String> result1 = Instancio.of(String.class)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             final Result<String> result2 = Instancio.of(String.class)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             assertThat(result1.getSeed()).isEqualTo(SEED_WITH_SETTINGS_ANNOTATION);
@@ -238,11 +237,11 @@ class ValueSpecUsedAsGeneratorSeedTest {
         @RepeatedTest(2)
         void withSettingsAnnotationWins2() {
             final Result<String> result1 = Instancio.of(String.class)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             final Result<String> result2 = Instancio.of(String.class)
-                    .generate(allStrings(), Gen.string().length(STR_LENGTH))
+                    .generate(allStrings(), Instancio.gen().string().length(STR_LENGTH))
                     .asResult();
 
             assertThat(result1.getSeed()).isEqualTo(SEED_WITH_SETTINGS_ANNOTATION);

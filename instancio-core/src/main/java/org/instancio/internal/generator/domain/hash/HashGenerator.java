@@ -17,21 +17,15 @@ package org.instancio.internal.generator.domain.hash;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.HashAsGeneratorSpec;
 import org.instancio.generator.specs.HashSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
-import org.instancio.support.Global;
 
 public class HashGenerator extends AbstractGenerator<String>
-        implements HashSpec, HashAsGeneratorSpec {
+        implements HashSpec {
 
     private final StringGenerator delegate;
     private Type type = Type.MD5;
-
-    public HashGenerator() {
-        this(Global.generatorContext());
-    }
 
     public HashGenerator(final GeneratorContext context) {
         super(context);

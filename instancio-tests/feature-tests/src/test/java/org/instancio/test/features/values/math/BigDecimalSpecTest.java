@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.math;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -34,7 +34,7 @@ class BigDecimalSpecTest extends AbstractValueSpecTestTemplate<BigDecimal> {
 
     @Override
     protected BigDecimalSpec spec() {
-        return Gen.math().bigDecimal();
+        return Instancio.gen().math().bigDecimal();
     }
 
     @Test

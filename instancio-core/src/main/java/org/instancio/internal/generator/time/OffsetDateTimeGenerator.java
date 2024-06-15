@@ -17,11 +17,9 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.OffsetDateTimeGeneratorAsSpec;
 import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
-import org.instancio.support.Global;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -29,17 +27,13 @@ import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
 
 public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDateTime>
-        implements OffsetDateTimeSpec, OffsetDateTimeGeneratorAsSpec {
+        implements OffsetDateTimeSpec {
 
     private static final ZoneOffset ZONE_OFFSET = Constants.ZONE_OFFSET;
     static final OffsetDateTime DEFAULT_MIN = Constants.DEFAULT_MIN.atOffset(ZONE_OFFSET);
     static final OffsetDateTime DEFAULT_MAX = Constants.DEFAULT_MAX.atOffset(ZONE_OFFSET);
 
     private final LocalDateTimeGenerator delegate;
-
-    public OffsetDateTimeGenerator() {
-        this(Global.generatorContext());
-    }
 
     public OffsetDateTimeGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX);

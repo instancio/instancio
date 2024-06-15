@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.model;
 
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.generator.specs.StringSpec;
@@ -36,7 +35,7 @@ class ModelWithValueSpecTest {
     @Test
     void valueSpec() {
         final Model<Phone> model = Instancio.of(Phone.class)
-                .generate(field(Phone::getNumber), Gen.string().digits())
+                .generate(field(Phone::getNumber), Instancio.gen().string().digits())
                 .toModel();
 
         final Phone result = Instancio.create(model);
@@ -46,7 +45,7 @@ class ModelWithValueSpecTest {
 
     @Test
     void modifyingSpecAfterPassingToModel() {
-        final StringSpec phoneNumber = Gen.string().digits();
+        final StringSpec phoneNumber = Instancio.gen().string().digits();
 
         final Model<Phone> model = Instancio.of(Phone.class)
                 .generate(field(Phone::getNumber), phoneNumber)

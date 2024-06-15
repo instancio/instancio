@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CreditCardGeneratorSpec;
-import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 
 /**
  * Contains built-in finance-related generators.
  *
  * @since 2.11.0
  */
-public class FinanceGenerators {
-
-    private final GeneratorContext context;
-
-    public FinanceGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface FinanceGenerators {
 
     /**
      * Generates credit card numbers.
@@ -41,7 +32,5 @@ public class FinanceGenerators {
      * @return API builder reference
      * @since 2.11.0
      */
-    public CreditCardGeneratorSpec creditCard() {
-        return new CreditCardNumberGenerator(context);
-    }
+    CreditCardGeneratorSpec creditCard();
 }

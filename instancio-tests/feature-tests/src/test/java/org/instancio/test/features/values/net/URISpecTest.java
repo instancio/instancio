@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values.net;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
@@ -27,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Gen.net;
 
 @FeatureTag(Feature.VALUE_SPEC)
 @ExtendWith(InstancioExtension.class)
@@ -35,36 +34,36 @@ class URISpecTest extends AbstractValueSpecTestTemplate<URI> {
 
     @Override
     protected URISpec spec() {
-        return Gen.net().uri();
+        return Instancio.gen().net().uri();
     }
 
     @Test
     void scheme() {
-        assertThat(net().uri().scheme("scheme").get()).hasScheme("scheme");
+        assertThat(spec().scheme("scheme").get()).hasScheme("scheme");
     }
 
     @Test
     void userInfo() {
-        assertThat(net().uri().userInfo("foo").get()).hasUserInfo("foo");
+        assertThat(spec().userInfo("foo").get()).hasUserInfo("foo");
     }
 
     @Test
     void host() {
-        assertThat(net().uri().host(r -> "foo").get()).hasHost("foo");
+        assertThat(spec().host(r -> "foo").get()).hasHost("foo");
     }
 
     @Test
     void port() {
-        assertThat(net().uri().port(1234).get()).hasPort(1234);
+        assertThat(spec().port(1234).get()).hasPort(1234);
     }
 
     @Test
     void query() {
-        assertThat(net().uri().query(r -> "foo").get()).hasQuery("foo");
+        assertThat(spec().query(r -> "foo").get()).hasQuery("foo");
     }
 
     @Test
     void fragment() {
-        assertThat(net().uri().fragment(r -> "foo").get()).hasFragment("foo");
+        assertThat(spec().fragment(r -> "foo").get()).hasFragment("foo");
     }
 }

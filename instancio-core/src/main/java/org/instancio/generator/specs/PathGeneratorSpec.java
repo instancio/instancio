@@ -29,7 +29,7 @@ import java.nio.file.Path;
  *
  * @since 2.1.0
  */
-public interface PathGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface PathGeneratorSpec<T> extends AsGeneratorSpec<T> {
 
     /**
      * Generator for the file or directory name.

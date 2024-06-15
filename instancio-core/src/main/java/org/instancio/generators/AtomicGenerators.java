@@ -16,10 +16,7 @@
 
 package org.instancio.generators;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.NumberGeneratorSpec;
-import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
-import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -27,29 +24,19 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Contains built-in generators for {@code java.util.concurrent.atomic} classes.
  */
-public class AtomicGenerators {
-
-    private final GeneratorContext context;
-
-    AtomicGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface AtomicGenerators {
 
     /**
      * Customises generated {@link AtomicInteger} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public NumberGeneratorSpec<AtomicInteger> atomicInteger() {
-        return new AtomicIntegerGenerator(context);
-    }
+    NumberGeneratorSpec<AtomicInteger> atomicInteger();
 
     /**
      * Customises generated {@link AtomicLong} values.
      *
-     * @return customised generator
+     * @return API builder reference
      */
-    public NumberGeneratorSpec<AtomicLong> atomicLong() {
-        return new AtomicLongGenerator(context);
-    }
+    NumberGeneratorSpec<AtomicLong> atomicLong();
 }

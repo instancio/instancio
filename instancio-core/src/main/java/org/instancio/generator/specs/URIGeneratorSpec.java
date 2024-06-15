@@ -24,7 +24,9 @@ import java.net.URI;
  *
  * @since 2.3.0
  */
-public interface URIGeneratorSpec extends NullableGeneratorSpec<URI> {
+public interface URIGeneratorSpec extends
+        AsGeneratorSpec<URI>,
+        NullableGeneratorSpec<URI> {
 
     /**
      * Generate a random scheme from the given choices.

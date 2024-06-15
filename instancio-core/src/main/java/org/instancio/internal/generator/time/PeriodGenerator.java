@@ -20,11 +20,11 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.PeriodSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.support.Global;
 
 import java.time.Period;
 
-public class PeriodGenerator extends AbstractGenerator<Period> implements PeriodSpec {
+public class PeriodGenerator extends AbstractGenerator<Period>
+        implements PeriodSpec {
 
     private static final int DEFAULT_MIN_DAYS = 1;
     private static final int DEFAULT_MAX_DAYS = 365;
@@ -35,10 +35,6 @@ public class PeriodGenerator extends AbstractGenerator<Period> implements Period
     private int maxMonths;
     private int minYears;
     private int maxYears;
-
-    public PeriodGenerator() {
-        this(Global.generatorContext());
-    }
 
     public PeriodGenerator(final GeneratorContext context) {
         super(context);

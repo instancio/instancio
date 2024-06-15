@@ -22,7 +22,6 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.CsvSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
-import org.instancio.support.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +46,6 @@ public class CsvGenerator extends AbstractGenerator<String> implements CsvSpec {
             this.name = name;
             this.generator = generator;
         }
-    }
-
-    public CsvGenerator() {
-        this(Global.generatorContext());
     }
 
     public CsvGenerator(final GeneratorContext context) {

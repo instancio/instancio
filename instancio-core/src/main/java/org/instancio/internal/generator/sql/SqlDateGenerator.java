@@ -17,13 +17,13 @@ package org.instancio.internal.generator.sql;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.generator.specs.TemporalGeneratorSpec;
+import org.instancio.generator.specs.TemporalSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.time.LocalDateGenerator;
 
 import java.sql.Date;
 
-public class SqlDateGenerator extends AbstractGenerator<Date> implements TemporalGeneratorSpec<Date> {
+public class SqlDateGenerator extends AbstractGenerator<Date> implements TemporalSpec<Date> {
 
     private final LocalDateGenerator delegate;
 

@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.instancio.generators.pol;
 
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.pol.NipGeneratorSpec;
 import org.instancio.generator.specs.pol.PeselGeneratorSpec;
 import org.instancio.generator.specs.pol.RegonGeneratorSpec;
-import org.instancio.internal.generator.domain.id.pol.NipGenerator;
-import org.instancio.internal.generator.domain.id.pol.PeselGenerator;
-import org.instancio.internal.generator.domain.id.pol.RegonGenerator;
 
 /**
  * Contains built-in generators for Polish identifiers.
  *
  * @since 3.1.0
  */
-public class PolIdGenerators {
-
-    private final GeneratorContext context;
-
-    public PolIdGenerators(final GeneratorContext context) {
-        this.context = context;
-    }
+public interface PolIdGenerators {
 
     /**
      * Generates Polish VAT Identification Number (NIP).
@@ -43,9 +32,7 @@ public class PolIdGenerators {
      * @return API builder reference
      * @since 3.1.0
      */
-    public NipGeneratorSpec nip() {
-        return new NipGenerator(context);
-    }
+    NipGeneratorSpec nip();
 
     /**
      * Generates Polish National Identification Number (PESEL).
@@ -53,9 +40,7 @@ public class PolIdGenerators {
      * @return API builder reference
      * @since 3.1.0
      */
-    public PeselGeneratorSpec pesel() {
-        return new PeselGenerator(context);
-    }
+    PeselGeneratorSpec pesel();
 
     /**
      * Generates Polish Taxpayer Identification Number (REGON).
@@ -63,7 +48,5 @@ public class PolIdGenerators {
      * @return API builder reference
      * @since 3.1.0
      */
-    public RegonGeneratorSpec regon() {
-        return new RegonGenerator(context);
-    }
+    RegonGeneratorSpec regon();
 }

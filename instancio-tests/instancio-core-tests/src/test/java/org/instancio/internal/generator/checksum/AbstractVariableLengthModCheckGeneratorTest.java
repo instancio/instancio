@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.generator.checksum;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.util.Constants;
@@ -54,14 +54,14 @@ abstract class AbstractVariableLengthModCheckGeneratorTest<G extends VariableLen
         final int sampleSize = 100_000;
 
         for (int i = 0; i < sampleSize; i++) {
-            final int startIdx = Gen.ints().range(0, 10).get();
-            final int endIdx = startIdx + Gen.ints().range(2, 10).get();
+            final int startIdx = Instancio.gen().ints().range(0, 10).get();
+            final int endIdx = startIdx + Instancio.gen().ints().range(2, 10).get();
 
-            final int checkIdx = startIdx == 0 || Gen.booleans().get()
+            final int checkIdx = startIdx == 0 || Instancio.gen().booleans().get()
                     ? endIdx
-                    : Gen.ints().range(0, startIdx - 1).get();
+                    : Instancio.gen().ints().range(0, startIdx - 1).get();
 
-            final int size = endIdx + Gen.ints().range(1, 10).get();
+            final int size = endIdx + Instancio.gen().ints().range(1, 10).get();
 
             generator
                     .startIndex(startIdx)

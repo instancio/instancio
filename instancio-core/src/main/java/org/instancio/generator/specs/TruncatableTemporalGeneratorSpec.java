@@ -15,17 +15,24 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.generator.GeneratorSpec;
+
+import java.time.temporal.TemporalUnit;
+
 /**
- * Generator spec for text patterns that supports {@link AsGeneratorSpec}.
+ * A spec for truncating temporal values.
  *
- * @since 3.6.1
+ * @param <T> temporal type
+ * @since 4.2.0
  */
-public interface TextPatternAsGeneratorSpec
-        extends TextPatternGeneratorSpec, AsGeneratorSpec<String> {
+interface TruncatableTemporalGeneratorSpec<T> extends GeneratorSpec<T> {
 
-    @Override
-    TextPatternGeneratorSpec allowEmpty();
-
-    @Override
-    TextPatternGeneratorSpec nullable();
+    /**
+     * Truncates generated values to the specified unit.
+     *
+     * @param unit to truncate to
+     * @return spec builder
+     * @since 4.2.0
+     */
+    GeneratorSpec<T> truncatedTo(TemporalUnit unit);
 }

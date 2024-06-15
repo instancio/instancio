@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.values;
 
-import org.instancio.Gen;
+import org.instancio.Instancio;
 import org.instancio.generator.specs.StringSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
@@ -40,7 +40,7 @@ class StringSpecTest extends AbstractValueSpecTestTemplate<String> {
 
     @Override
     protected StringSpec spec() {
-        return Gen.string();
+        return Instancio.gen().string();
     }
 
     @Test
