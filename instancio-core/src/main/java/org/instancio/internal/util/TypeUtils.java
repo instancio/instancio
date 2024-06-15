@@ -25,6 +25,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -134,5 +135,10 @@ public final class TypeUtils {
             return genericSuperclass.getActualTypeArguments();
         }
         return new Type[0];
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T, C extends Collection<T>> Class<C> cast(final Class<?> collectionClass) {
+        return (Class<C>) collectionClass;
     }
 }

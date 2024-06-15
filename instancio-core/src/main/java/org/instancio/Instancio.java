@@ -25,11 +25,12 @@ import org.instancio.internal.OfCollectionApiImpl;
 import org.instancio.internal.OfMapApiImpl;
 import org.instancio.settings.Keys;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import static org.instancio.internal.util.TypeUtils.cast;
 
 /**
  * Instancio API for creating instances of a class.
@@ -693,10 +694,5 @@ public final class Instancio {
     @ExperimentalApi
     public static InstancioGenApi gen() {
         return new GenApiImpl();
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T, C extends Collection<T>> Class<C> cast(final Class<?> collectionClass) {
-        return (Class<C>) collectionClass;
     }
 }
