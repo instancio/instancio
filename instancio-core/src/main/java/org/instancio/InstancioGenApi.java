@@ -17,7 +17,6 @@ package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generators.ValueSpecs;
-import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
@@ -28,32 +27,23 @@ import org.instancio.settings.Settings;
  * @since 5.0.0
  */
 @ExperimentalApi
-public interface InstancioGenApi extends ValueSpecs {
+public interface InstancioGenApi extends InstancioWithSettingsApi, ValueSpecs {
 
     /**
-     * Override default {@link Settings} for generating values.
-     * The {@link Settings} class supports various parameters, such as
-     * collection sizes, string lengths, numeric ranges, and so on.
-     * For a list of overridable settings, refer to the {@link Keys} class.
+     * {@inheritDoc}
      *
-     * @param settings the settings to use for generating values
-     * @return API builder reference
      * @since 5.0.0
      */
+    @Override
     @ExperimentalApi
     InstancioGenApi withSettings(Settings settings);
 
     /**
-     * Override setting for the given {@code key} with the specified {@code value}.
+     * {@inheritDoc}
      *
-     * @param key   the setting key to override
-     * @param value the setting value
-     * @param <V>   the setting value type
-     * @return API builder reference
-     * @see Keys
-     * @see #withSettings(Settings)
      * @since 5.0.0
      */
+    @Override
     @ExperimentalApi
     <V> InstancioGenApi withSetting(SettingKey<V> key, V value);
 }

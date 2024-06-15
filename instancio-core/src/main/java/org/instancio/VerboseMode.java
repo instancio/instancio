@@ -20,10 +20,9 @@ import org.instancio.settings.Settings;
 /**
  * Provides support for verbose mode.
  *
- * @param <T> the type of object to create
  * @since 4.0.0
  */
-interface VerboseMode<T> {
+interface VerboseMode {
 
     /**
      * Outputs debug information to {@code System.out}. This includes:
@@ -41,6 +40,6 @@ interface VerboseMode<T> {
      * @return API builder reference
      * @since 4.0.0
      */
-    VerboseMode<T> verbose();
+    VerboseMode verbose();
 
 }
