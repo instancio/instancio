@@ -16,7 +16,6 @@
 package org.instancio.test.features.setmodel;
 
 import lombok.Data;
-import org.instancio.Gen;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.junit.InstancioExtension;
@@ -24,12 +23,8 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -48,16 +43,12 @@ class SetModelNestedModelsTest {
 
     private static final String INNER_VALUE = "-inner-";
 
-    private static Stream<Arguments> stringModel() {
-        return Stream.of(
-                Arguments.of(Gen.text().pattern(INNER_VALUE).toModel()),
-                Arguments.of(Instancio.of(String.class).set(allStrings(), INNER_VALUE).toModel())
-        );
-    }
+    @Test
+    void deeplyNestedSetModels() {
+        final Model<String> stringModel = Instancio.of(String.class)
+                .set(allStrings(), INNER_VALUE)
+                .toModel();
 
-    @MethodSource("stringModel")
-    @ParameterizedTest
-    void deeplyNestedSetModels(final Model<String> stringModel) {
         final Model<Inner> innerModel = Instancio.of(Inner.class)
                 .setModel(allStrings(), stringModel)
                 .toModel();

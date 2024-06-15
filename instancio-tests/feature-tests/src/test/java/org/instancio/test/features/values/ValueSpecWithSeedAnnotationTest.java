@@ -17,7 +17,6 @@ package org.instancio.test.features.values;
 
 import org.instancio.Gen;
 import org.instancio.Instancio;
-import org.instancio.Model;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
 import org.instancio.test.support.tags.Feature;
@@ -49,14 +48,6 @@ class ValueSpecWithSeedAnnotationTest {
     @RepeatedTest(10)
     void value2() {
         results.add(Gen.string().get());
-        assertThat(results).hasSize(1);
-    }
-
-    @Seed(SEED)
-    @RepeatedTest(10)
-    void value3() {
-        final Model<String> model = Gen.string().toModel();
-        results.add(Instancio.create(model));
         assertThat(results).hasSize(1);
     }
 

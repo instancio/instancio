@@ -16,12 +16,9 @@
 package org.instancio.generator;
 
 import org.instancio.Gen;
-import org.instancio.Instancio;
-import org.instancio.Model;
 import org.instancio.Random;
 import org.instancio.internal.RandomHelper;
 import org.instancio.internal.util.ObjectUtils;
-import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
@@ -31,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import static org.instancio.Select.all;
 
 /**
  * A spec for generating simple value types, such as strings, numbers,
@@ -109,26 +104,6 @@ public interface ValueSpec<T> extends GeneratorSpec<T> {
      */
     default <R> R map(final Function<T, R> fn) {
         return fn.apply(get());
-    }
-
-    /**
-     * Returns the spec as a {@link Model}.
-     *
-     * <p>Example:
-     * <pre>{@code
-     *   Model<String> stringModel = Gen.string().length(10).digits().toModel();
-     *   String result = Instancio.create(stringModel);
-     * }</pre>
-     *
-     * @return spec as a model
-     * @since 2.6.0
-     */
-    @SuppressWarnings("unchecked")
-    default Model<T> toModel() {
-        final Class<T> typeArg = (Class<T>) TypeUtils.getGenericSuperclassTypeArgument(getClass());
-        return Instancio.of(typeArg)
-                .generate(all(typeArg), this)
-                .toModel();
     }
 
     /**

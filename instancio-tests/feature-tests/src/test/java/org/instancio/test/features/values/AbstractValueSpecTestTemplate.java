@@ -16,8 +16,6 @@
 package org.instancio.test.features.values;
 
 import org.assertj.core.api.Assertions;
-import org.instancio.Instancio;
-import org.instancio.Model;
 import org.instancio.generator.ValueSpec;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -84,12 +82,5 @@ public abstract class AbstractValueSpecTestTemplate<T> {
         assertThat(results)
                 .hasSize(size)
                 .allSatisfy(this::assertDefaultSpecValue);
-    }
-
-    @Test
-    protected void toModel() {
-        final Model<T> model = spec().toModel();
-        final T result = Instancio.create(model);
-        assertDefaultSpecValue(result);
     }
 }

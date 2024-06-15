@@ -16,19 +16,16 @@
 package org.instancio.test.features.values.array;
 
 import org.instancio.Gen;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.ValueSpec;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.features.values.AbstractValueSpecTestTemplate;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @FeatureTag(Feature.VALUE_SPEC)
 @ExtendWith(InstancioExtension.class)
@@ -44,14 +41,5 @@ class OneOfArraySpecTest extends AbstractValueSpecTestTemplate<String> {
     @Override
     protected void assertDefaultSpecValue(final String actual) {
         assertThat(actual).isIn(Arrays.asList(CHOICES));
-    }
-
-    @Test
-    @Override
-    protected void toModel() {
-        final ValueSpec<String> spec = spec();
-        assertThatThrownBy(spec::toModel)
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("oneOf() spec does not support toModel()");
     }
 }
