@@ -27,7 +27,6 @@ The following dependencies are available from Maven central:
 | `instancio-core`        | `org.instancio.core`        | Core library                       |
 | `instancio-junit`       | `org.instancio.junit`       | JUnit Jupiter integration          |
 | `instancio-guava`       | `org.instancio.guava`       | Support for Google Guava           |
-| `instancio-quickcheck`  | `org.instancio.quickcheck`  | Support for property-based testing |
 
 
 !!! warning "The `org.instancio:instancio` artifact on Maven central is an older dependency that should no longer be used."
@@ -81,19 +80,6 @@ Using `instancio-guava` requires the following dependencies on the classpath:
 
 - either `instancio-core` or `instancio-junit`
 - `com.google.guava:guava` version `23.1-jre` or higher
-
-### **`instancio-quickcheck`**
-
-Using `instancio-quickcheck` requires the following dependencies on the classpath:
-
-- either `instancio-core` or `instancio-junit`
-- JUnit 5 version `5.10.1` or above
-
-!!! note
-    Since `instancio-quickcheck` implements a JUnit 5 engine, it relies on a number of JUnit APIs.
-    For this reason, it is only guaranteed to work with the JUnit version declared in the project's
-    [pom.xml](https://github.com/instancio/instancio/blob/main/pom.xml).
-    Support for older versions of Junit 5 is on a best-effort basis and is not guaranteed.
 
 ### Versioning
 

@@ -18,7 +18,6 @@
         <module>jpms-standalone-tests</module>
         <module>jpms-spi-impl</module>
         <module>jpms-spi-tests</module>
-        <module>jpms-quickcheck-tests</module>
         <module>jpms-bean-validation-jakarta-tests</module>
         <module>jpms-bean-validation-hibernate-tests</module>
         <module>jpms-guava-tests</module>
