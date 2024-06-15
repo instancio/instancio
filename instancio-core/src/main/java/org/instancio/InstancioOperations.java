@@ -22,7 +22,6 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
-import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
 import java.util.ArrayList;
@@ -523,33 +522,6 @@ interface InstancioOperations<T> {
      * @since 4.0.0
      */
     InstancioOperations<T> withMaxDepth(int maxDepth);
-
-    /**
-     * Override setting for the given {@code key} with the specified {@code value}.
-     *
-     * @param key   the setting key to override
-     * @param value the setting value
-     * @param <V>   the setting value type
-     * @return API builder reference
-     * @see Keys
-     * @see #withSettings(Settings)
-     * @since 4.3.1
-     */
-    <V> InstancioOperations<T> withSetting(SettingKey<V> key, V value);
-
-    /**
-     * Override default {@link Settings} for generating values.
-     * The {@link Settings} class supports various parameters, such as
-     * collection sizes, string lengths, numeric ranges, and so on.
-     * For a list of overridable settings, refer to the {@link Keys} class.
-     *
-     * @param settings to use
-     * @return API builder reference
-     * @see Keys
-     * @see #withSetting(SettingKey, Object)
-     * @since 4.0.0
-     */
-    InstancioOperations<T> withSettings(Settings settings);
 
     /**
      * Sets the seed value for the random number generator. If the seed is not specified,

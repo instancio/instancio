@@ -32,12 +32,11 @@ import org.instancio.settings.Keys;
  * it is <b>not</b> recommended. A better alternative is to mark an individual
  * selector as lenient using the {@link LenientSelector#lenient()} method.
  *
- * @param <T> the type of object to create
  * @see Keys#MODE
  * @see LenientSelector
  * @since 4.0.0
  */
-interface LenientMode<T> {
+interface LenientMode {
 
     /**
      * Disables strict mode in which unused selectors trigger an error.
@@ -54,5 +53,5 @@ interface LenientMode<T> {
      * @return API builder reference
      * @since 4.0.0
      */
-    LenientMode<T> lenient();
+    LenientMode lenient();
 }
