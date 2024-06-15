@@ -38,7 +38,6 @@
         <module>instancio-test-support</module>
         <module>feature-tests</module>
         <module>instancio-guava-tests</module>
-        <module>instancio-quickcheck-tests</module>
         <module>default-package-tests</module>
         <module>global-seed-tests</module>
         <module>kotlin-tests</module>
