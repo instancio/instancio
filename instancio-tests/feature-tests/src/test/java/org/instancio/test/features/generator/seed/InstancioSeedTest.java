@@ -26,6 +26,7 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -217,4 +218,28 @@ class InstancioSeedTest {
             assertThat(result2.get()).isEqualTo(RESULT_WITH_SETTINGS_ANNOTATION);
         }
     }
+
+    @Nested
+    class WithSeedMethodOrderTest {
+
+        @Test
+        void methodOrderShouldNotMatter() {
+            final Result<String> result1 = Instancio.of(String.class)
+                    .withSeed(SEED_WITH_SEED) // withSeed() first
+                    .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
+                    .asResult();
+
+            final Result<String> result2 = Instancio.of(String.class)
+                    .withSetting(Keys.SEED, SEED_WITH_SETTINGS_BUILDER)
+                    .withSeed(SEED_WITH_SEED) // withSeed() last
+                    .asResult();
+
+            assertThat(result1.getSeed()).isEqualTo(SEED_WITH_SEED);
+            assertThat(result1.get()).isEqualTo(RESULT_WITH_SEED);
+
+            assertThat(result2.getSeed()).isEqualTo(SEED_WITH_SEED);
+            assertThat(result2.get()).isEqualTo(RESULT_WITH_SEED);
+        }
+    }
+
 }
