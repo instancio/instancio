@@ -30,15 +30,29 @@ public interface ValueOfOriginDestination extends Assignment {
 
     /**
      * Specifies a function for mapping the value of the
-     * origin selector to another type.
+     * origin selector to another value.
      *
      * @param valueMapper a function for mapping the origin value
      * @param <T>         the origin value type
      * @param <R>         the destination value type
      * @return continuation of the builder for optionally specifying a predicate
      * @since 3.0.0
+     * @see #as(RandomFunction)
      */
     <T, R> ValueOfOriginDestinationPredicate as(Function<T, R> valueMapper);
+
+    /**
+     * Specifies a function for mapping the value of the
+     * origin selector to another (randomised) value.
+     *
+     * @param valueMapper a function for mapping the origin value
+     * @param <T>         the origin value type
+     * @param <R>         the destination value type
+     * @return continuation of the builder for optionally specifying a predicate
+     * @since 5.0.0
+     * @see #as(Function)
+     */
+    <T, R> ValueOfOriginDestinationPredicate as(RandomFunction<T, R> valueMapper);
 
     /**
      * A predicate that must be satisfied by the value matched

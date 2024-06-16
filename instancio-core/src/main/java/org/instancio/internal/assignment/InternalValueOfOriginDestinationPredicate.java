@@ -16,13 +16,13 @@
 package org.instancio.internal.assignment;
 
 import org.instancio.Assignment;
+import org.instancio.RandomFunction;
 import org.instancio.TargetSelector;
 import org.instancio.ValueOfOriginDestinationPredicate;
 import org.instancio.internal.Flattener;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class InternalValueOfOriginDestinationPredicate
@@ -30,14 +30,14 @@ public class InternalValueOfOriginDestinationPredicate
 
     private final TargetSelector origin;
     private final TargetSelector destination;
-    private final Function<?, ?> valueMapper;
+    private final RandomFunction<?, ?> valueMapper;
     private Predicate<?> predicate;
 
     public InternalValueOfOriginDestinationPredicate(
             final TargetSelector origin,
             final TargetSelector destination,
             final Predicate<?> predicate,
-            final Function<?, ?> valueMapper) {
+            final RandomFunction<?, ?> valueMapper) {
 
         this.origin = origin;
         this.destination = destination;

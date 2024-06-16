@@ -97,7 +97,7 @@ class AssignmentNodeHandler implements NodeHandler {
                     Object destinationResult = candidateResult.getValue();
 
                     if (assignment.getValueMapper() != null) {
-                        destinationResult = assignment.getValueMapper().apply(destinationResult);
+                        destinationResult = assignment.getValueMapper().apply(destinationResult, context.getRandom());
                     }
 
                     // Since the same object instance is assigned to different fields,

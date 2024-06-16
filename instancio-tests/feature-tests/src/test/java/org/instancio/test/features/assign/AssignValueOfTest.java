@@ -17,9 +17,11 @@ package org.instancio.test.features.assign;
 
 import org.instancio.Assignment;
 import org.instancio.Instancio;
+import org.instancio.Random;
 import org.instancio.When;
 import org.instancio.generator.Generator;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.instancio.test.support.pojo.misc.StringsAbc;
 import org.instancio.test.support.pojo.misc.StringsDef;
@@ -91,6 +93,17 @@ class AssignValueOfTest {
                 .create();
 
         assertThat(result.def.e).isEqualTo("prefix-" + result.def.ghi.h);
+    }
+
+    @Test
+    void valueOfAsRandom() {
+        final IntegerHolder result = Instancio.of(IntegerHolder.class)
+                .assign(valueOf(IntegerHolder::getPrimitive)
+                        .to(IntegerHolder::getWrapper)
+                        .as((Integer source, Random random) -> source + random.oneOf(1, -1)))
+                .create();
+
+        assertThat(result.getWrapper()).isIn(result.getPrimitive() + 1, result.getPrimitive() - 1);
     }
 
     @Test
