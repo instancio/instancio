@@ -17,6 +17,7 @@ package org.instancio.internal.assignment;
 
 import org.instancio.Assignment;
 import org.instancio.TargetSelector;
+import org.instancio.RandomFunction;
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Generator;
 import org.instancio.internal.ApiValidator;
@@ -24,7 +25,6 @@ import org.instancio.internal.Flattener;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 @InternalApi
@@ -34,7 +34,7 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
     private final TargetSelector destination;
     private final GeneratorHolder generatorHolder;
     private final Generator<?> generator;
-    private final Function<?, ?> valueMapper;
+    private final RandomFunction<?, ?> valueMapper;
 
     private InternalAssignment(final Builder builder) {
         origin = builder.origin;
@@ -68,8 +68,8 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
     }
 
     @SuppressWarnings("unchecked")
-    public <S, T> Function<S, T> getValueMapper() {
-        return (Function<S, T>) valueMapper;
+    public <S, T> RandomFunction<S, T> getValueMapper() {
+        return (RandomFunction<S, T>) valueMapper;
     }
 
     @Override
@@ -98,7 +98,7 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
         private TargetSelector destination;
         private GeneratorHolder generatorHolder;
         private Generator<?> generator;
-        private Function<?, ?> valueMapper;
+        private RandomFunction<?, ?> valueMapper;
 
         private Builder() {
         }
@@ -128,7 +128,7 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
             return this;
         }
 
-        public Builder valueMapper(final Function<?, ?> valueMapper) {
+        public Builder valueMapper(final RandomFunction<?, ?> valueMapper) {
             this.valueMapper = valueMapper;
             return this;
         }

@@ -16,6 +16,8 @@
 package org.instancio.internal.assignment;
 
 import org.instancio.Assignment;
+import org.instancio.Random;
+import org.instancio.RandomFunction;
 import org.instancio.TargetSelector;
 import org.instancio.ValueOfOriginDestination;
 import org.instancio.ValueOfOriginDestinationPredicate;
@@ -32,7 +34,7 @@ public class InternalValueOfOriginDestination
     private final TargetSelector origin;
     private final TargetSelector destination;
     private Predicate<?> predicate;
-    private Function<?, ?> valueMapper;
+    private RandomFunction<?, ?> valueMapper;
 
     public InternalValueOfOriginDestination(final TargetSelector origin, final TargetSelector destination) {
         this.origin = origin;
@@ -40,7 +42,13 @@ public class InternalValueOfOriginDestination
     }
 
     @Override
-    public <T, R> ValueOfOriginDestinationPredicate as(final Function<T, R> valueMapper) {
+    public <T, R> ValueOfOriginDestinationPredicate as(final Function<T, R> f) {
+        this.valueMapper = (T arg, Random random) -> f.apply(arg);
+        return new InternalValueOfOriginDestinationPredicate(origin, destination, predicate, valueMapper);
+    }
+
+    @Override
+    public <T, R> ValueOfOriginDestinationPredicate as(final RandomFunction<T, R> valueMapper) {
         this.valueMapper = valueMapper;
         return new InternalValueOfOriginDestinationPredicate(origin, destination, predicate, valueMapper);
     }
