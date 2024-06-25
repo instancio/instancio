@@ -16,10 +16,12 @@
 package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioException;
+import org.instancio.schema.DataSpec;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -27,12 +29,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static org.instancio.internal.util.ErrorMessageUtils.unableToGetValueFromField;
 
+@SuppressWarnings("PMD.GodClass")
 public final class ReflectionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
@@ -75,6 +80,15 @@ public final class ReflectionUtils {
                 "Expected exactly 1 parameter, but got: %s", p.length);
 
         return ObjectUtils.defaultIfNull(p[0].getParameterizedType(), p[0].getType());
+    }
+
+    @Nullable
+    public static Method getZeroArgMethod(final Class<?> klass, final String name) {
+        try {
+            return klass.getMethod(name);
+        } catch (NoSuchMethodException ex) {
+            return null;
+        }
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
@@ -184,10 +198,34 @@ public final class ReflectionUtils {
         }
     }
 
+    public static List<Method> getMethodsAnnotated(
+            final Class<?> target,
+            final Class<? extends Annotation> annotationClass) {
+
+        final List<Method> results = new ArrayList<>();
+        for (Method method : target.getDeclaredMethods()) {
+            if (method.getDeclaredAnnotation(annotationClass) != null) {
+                results.add(method);
+            }
+        }
+        return results;
+    }
+
+    @Nullable
+    public static Method getDataSpecMethod(final Class<?> klass, final String propertyName) {
+        for (Method method : klass.getMethods()) {
+            final DataSpec dataSpec = method.getDeclaredAnnotation(DataSpec.class);
+            if (dataSpec != null && dataSpec.propertyName().equals(propertyName)) {
+                return method;
+            }
+        }
+        return null;
+    }
+
     public static <T> T newInstance(final Class<T> klass) {
         try {
             final Constructor<T> ctor = klass.getDeclaredConstructor();
-            return ctor.newInstance();
+            return setAccessible(ctor).newInstance();
         } catch (Exception ex) {
             throw new InstancioException("Error instantiating " + klass, ex);
         }

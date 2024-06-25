@@ -28,6 +28,7 @@ import org.instancio.TypeTokenSupplier;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.schema.Schema;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
@@ -154,6 +155,12 @@ public class ApiImpl<T> implements InstancioApi<T> {
     @Override
     public InstancioApi<T> withUnique(final TargetSelector selector) {
         modelContextBuilder.withUnique(selector);
+        return this;
+    }
+
+    @Override
+    public <S extends Schema> InstancioApi<T> withSchema(final TargetSelector selector, final S schema) {
+        modelContextBuilder.withSchema(selector, schema);
         return this;
     }
 

@@ -29,6 +29,7 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.reflect.ParameterizedTypeImpl;
 import org.instancio.internal.util.CartesianList;
+import org.instancio.schema.Schema;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
@@ -158,6 +159,12 @@ public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
     @Override
     public CartesianProductApi<T> setBlank(final TargetSelector selector) {
         modelContextBuilder.setBlank(selector);
+        return this;
+    }
+
+    @Override
+    public <S extends Schema> CartesianProductApi<T> withSchema(final TargetSelector selector, final S schema) {
+        modelContextBuilder.withSchema(selector, schema);
         return this;
     }
 

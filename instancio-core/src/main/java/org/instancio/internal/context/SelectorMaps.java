@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.assignment.InternalAssignment;
+import org.instancio.schema.Schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public final class SelectorMaps {
     private final BooleanSelectorMap ignoreSelectorMap = new BooleanSelectorMap();
     private final BooleanSelectorMap withNullableSelectorMap = new BooleanSelectorMap();
     private final ModelContextSelectorMap setModelSelectorMap = new ModelContextSelectorMap();
+    private final SchemaSelectorMap schemaSelectorMap = new SchemaSelectorMap();
     private final OnCompleteCallbackSelectorMap onCompleteSelectorMap = new OnCompleteCallbackSelectorMap();
     private final PredicateSelectorMap filterSelectorMap = new PredicateSelectorMap();
     private final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap();
@@ -54,6 +56,7 @@ public final class SelectorMaps {
         }
 
         setModelSelectorMap.putAll(contextSource.getSetModelMap());
+        schemaSelectorMap.putAll(contextSource.getSchemaMap());
         ignoreSelectorMap.putAll(contextSource.getIgnoreSet());
         withNullableSelectorMap.putAll(contextSource.getWithNullableSet());
         onCompleteSelectorMap.putAll(contextSource.getOnCompleteMap());
@@ -68,9 +71,14 @@ public final class SelectorMaps {
         subtypeSelectorMap.putAll(assignmentSelectorMap.getSubtypeMap());
     }
 
-    @SuppressWarnings("PMD.NPathComplexity")
+    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     private void copyToThisContext(final TargetSelector modelTarget, final ModelContext<?> otherCtx) {
         final ModelContextSource src = otherCtx.getContextSource();
+
+        for (Map.Entry<TargetSelector, Schema> entry : src.getSchemaMap().entrySet()) {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            schemaSelectorMap.put(resolvedSelector, entry.getValue());
+        }
 
         for (Map.Entry<TargetSelector, Generator<?>> entry : src.getGeneratorMap().entrySet()) {
             final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
@@ -157,6 +165,10 @@ public final class SelectorMaps {
         return setModelSelectorMap;
     }
 
+    SchemaSelectorMap getSchemaSelectorMap() {
+        return schemaSelectorMap;
+    }
+
     OnCompleteCallbackSelectorMap getOnCompleteSelectorMap() {
         return onCompleteSelectorMap;
     }
@@ -175,6 +187,7 @@ public final class SelectorMaps {
                 && !hasCallbacks()
                 && !hasFilters()
                 && !hasSetModels()
+                && schemaSelectorMap.getSelectorMap().isEmpty()
                 && ignoreSelectorMap.getSelectorMap().isEmpty()
                 && withNullableSelectorMap.getSelectorMap().isEmpty()
                 && subtypeSelectorMap.getSelectorMap().isEmpty();

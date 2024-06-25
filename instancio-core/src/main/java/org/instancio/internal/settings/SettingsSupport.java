@@ -18,6 +18,8 @@ package org.instancio.internal.settings;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.BeanValidationTarget;
+import org.instancio.settings.SchemaDataEndStrategy;
+import org.instancio.settings.SchemaDataAccess;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
 import org.instancio.settings.OnSetFieldError;
@@ -65,6 +67,8 @@ final class SettingsSupport {
         fnMap.put(AfterGenerate.class, AfterGenerate::valueOf);
         fnMap.put(AssignmentType.class, AssignmentType::valueOf);
         fnMap.put(BeanValidationTarget.class, BeanValidationTarget::valueOf);
+        fnMap.put(SchemaDataEndStrategy.class, SchemaDataEndStrategy::valueOf);
+        fnMap.put(SchemaDataAccess.class, SchemaDataAccess::valueOf);
         fnMap.put(Mode.class, Mode::valueOf);
         fnMap.put(OnSetFieldError.class, OnSetFieldError::valueOf);
         fnMap.put(OnSetMethodError.class, OnSetMethodError::valueOf);

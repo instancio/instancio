@@ -50,6 +50,7 @@ import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
+import org.instancio.schema.Schema;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
@@ -225,6 +226,10 @@ public final class ModelContext<T> {
         return selectorMaps.getGeneratorSelectorMap().getGenerator(node);
     }
 
+    public void putGenerator(TargetSelector selector, Generator<?> generator) {
+        selectorMaps.getGeneratorSelectorMap().putGenerator(selector, generator);
+    }
+
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {
         return selectorMaps.getOnCompleteSelectorMap().getCallbacks(node);
@@ -240,6 +245,10 @@ public final class ModelContext<T> {
 
     public ModelContextSelectorMap getSetModelSelectorMap() {
         return selectorMaps.getSetModelSelectorMap();
+    }
+
+    public Schema getSchema(final InternalNode node) {
+        return selectorMaps.getSchemaSelectorMap().getSchema(node);
     }
 
     public List<InternalAssignment> getAssignments(final InternalNode node) {
@@ -273,6 +282,7 @@ public final class ModelContext<T> {
         builder.filterMap = new LinkedHashMap<>(this.contextSource.getFilterMap());
         builder.assignmentMap = new LinkedHashMap<>(this.contextSource.getAssignmentMap());
         builder.setModelMap = new LinkedHashMap<>(this.contextSource.getSetModelMap());
+        builder.schemaMap = new LinkedHashMap<>(this.contextSource.getSchemaMap());
         return builder;
     }
 
@@ -291,6 +301,7 @@ public final class ModelContext<T> {
         private Map<TargetSelector, Predicate<?>> filterMap;
         private Map<TargetSelector, List<Assignment>> assignmentMap;
         private Map<TargetSelector, ModelContext<?>> setModelMap;
+        private Map<TargetSelector, Schema> schemaMap;
         private Set<TargetSelector> ignoreSet;
         private Set<TargetSelector> withNullableSet;
         private Settings settings;
@@ -373,6 +384,11 @@ public final class ModelContext<T> {
                     return generatedValues.add(obj);
                 }
             });
+        }
+
+        public <S extends Schema> Builder<T> withSchema(final TargetSelector selector, final S schema) {
+            schemaMap = CollectionUtils.newLinkedHashMapIfNull(schemaMap);
+            return addSelector(schemaMap, selector, schema);
         }
 
         public Builder<T> withIgnored(final TargetSelector selector) {
@@ -500,6 +516,7 @@ public final class ModelContext<T> {
             filterMap = new LinkedHashMap<>(src.getFilterMap());
             assignmentMap = new LinkedHashMap<>(src.getAssignmentMap());
             setModelMap = new LinkedHashMap<>(src.getSetModelMap());
+            schemaMap = new LinkedHashMap<>(src.getSchemaMap());
 
             // Increment max depth to account for the additional layer added by the collection
             maxDepth = otherContext.maxDepth == null ? null : otherContext.maxDepth + 1;
@@ -535,6 +552,7 @@ public final class ModelContext<T> {
                     filterMap,
                     assignmentMap,
                     setModelMap,
+                    schemaMap,
                     ignoreSet,
                     withNullableSet);
         }

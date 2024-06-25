@@ -18,10 +18,12 @@ package org.instancio.internal.nodes;
 import org.instancio.InstancioApi;
 import org.instancio.Random;
 import org.instancio.TargetSelector;
+import org.instancio.generator.Generator;
 import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.context.SubtypeSelectorMap;
 import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.schema.Schema;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class NodeContext {
+    private final ModelContext<?> modelContext;
     private final int maxDepth;
     private final Settings settings;
     private final Random random;
@@ -46,6 +49,7 @@ public final class NodeContext {
     private final List<InternalServiceProvider> internalServiceProviders;
 
     public NodeContext(final ModelContext<?> modelContext) {
+        this.modelContext = modelContext;
         maxDepth = modelContext.getMaxDepth();
         settings = modelContext.getSettings();
         random = modelContext.getRandom();
@@ -78,6 +82,10 @@ public final class NodeContext {
         return assignmentOriginSelectors.getSelectorMap().getSelectors(node);
     }
 
+    void putGenerator(final TargetSelector selector, final Generator<?> generator) {
+        modelContext.putGenerator(selector, generator);
+    }
+
     /**
      * Returns subtype for the given node, if one is available.
      *
@@ -108,5 +116,9 @@ public final class NodeContext {
 
     public List<InternalServiceProvider> getInternalServiceProviders() {
         return internalServiceProviders;
+    }
+
+    public Schema getSchema(final InternalNode node) {
+        return modelContext.getSchema(node);
     }
 }

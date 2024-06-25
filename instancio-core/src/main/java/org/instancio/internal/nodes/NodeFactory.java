@@ -48,6 +48,7 @@ public final class NodeFactory {
     private final NodeCreator nodeCreator;
     private final TypeHelper typeHelper;
     private final OriginSelectorValidator originSelectorValidator;
+    private final SchemaGeneratorsHandler schemaGeneratorsHandler;
 
     public NodeFactory(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
@@ -55,6 +56,7 @@ public final class NodeFactory {
         this.typeHelper = new TypeHelper(nodeContext);
         this.originSelectorValidator = new OriginSelectorValidator(nodeContext);
         this.memberCollector = new DeclaredAndInheritedMemberCollector(nodeContext.getSettings());
+        this.schemaGeneratorsHandler = new SchemaGeneratorsHandler(nodeContext);
     }
 
     public InternalNode createRootNode(final Type type) {
@@ -75,6 +77,8 @@ public final class NodeFactory {
             final List<InternalNode> children = createChildren(node);
             node.setChildren(children);
             nodeQueue.addAll(children);
+            // must be done after children have been set
+            schemaGeneratorsHandler.applySchemaGenerators(node);
         }
         return root;
     }

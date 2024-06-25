@@ -24,6 +24,7 @@ module org.instancio.core {
     exports org.instancio.generators.can;
     exports org.instancio.generators.pol;
     exports org.instancio.generators.usa;
+    exports org.instancio.schema;
     exports org.instancio.settings;
     exports org.instancio.spi;
 

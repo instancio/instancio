@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
+import org.instancio.schema.Schema;
 import org.instancio.settings.SettingKey.SettingKeyBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -473,6 +474,53 @@ public final class Keys {
      */
     public static final SettingKey<Boolean> OVERWRITE_EXISTING_VALUES = registerRequiredNonAdjustable(
             "overwrite.existing.values", Boolean.class, true);
+
+    /**
+     * Specifies whether {@link Schema} data is retrieved sequentially or randomly;
+     * default is {@link SchemaDataAccess#SEQUENTIAL}; property name {@code schema.data.access}.
+     *
+     * @see SchemaDataAccess
+     * @see #SCHEMA_DATA_END_STRATEGY
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<SchemaDataAccess> SCHEMA_DATA_ACCESS = registerRequiredNonAdjustable(
+            "schema.data.access", SchemaDataAccess.class, SchemaDataAccess.SEQUENTIAL);
+
+    /**
+     * Specifies the behaviour when {@link Schema} end of data has been reached
+     * (only applicable if {@link #SCHEMA_DATA_ACCESS} is set to {@link SchemaDataAccess#SEQUENTIAL});
+     * default is {@link SchemaDataEndStrategy#FAIL}; property name {@code schema.data.end.strategy}.
+     *
+     * @see SchemaDataEndStrategy
+     * @see #SCHEMA_DATA_ACCESS
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<SchemaDataEndStrategy> SCHEMA_DATA_END_STRATEGY = registerRequiredNonAdjustable(
+            "schema.data.end.strategy", SchemaDataEndStrategy.class, SchemaDataEndStrategy.FAIL);
+
+    /**
+     * Specifies the tag key for a {@link Schema};
+     * default is {@code "tag"}; property name {@code schema.tag.key}.
+     *
+     * @see #SCHEMA_TAG_VALUE
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<String> SCHEMA_TAG_KEY = registerRequiredNonAdjustable(
+            "schema.tag.key", String.class, "tag");
+
+    /**
+     * Specifies the default tag value for a {@link Schema};
+     * default is {@code null} (includes all tags); property name {@code schema.tag.value}.
+     *
+     * @see #SCHEMA_TAG_KEY
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<String> SCHEMA_TAG_VALUE = register(
+            "schema.tag.value", String.class, null, null, true, false);
 
     /**
      * Specifies the seed value;

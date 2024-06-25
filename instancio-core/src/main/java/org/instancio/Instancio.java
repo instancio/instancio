@@ -23,6 +23,8 @@ import org.instancio.internal.GenApiImpl;
 import org.instancio.internal.OfClassApiImpl;
 import org.instancio.internal.OfCollectionApiImpl;
 import org.instancio.internal.OfMapApiImpl;
+import org.instancio.internal.OfSchemaApiImpl;
+import org.instancio.schema.Schema;
 import org.instancio.settings.Keys;
 
 import java.util.List;
@@ -694,5 +696,34 @@ public final class Instancio {
     @ExperimentalApi
     public static InstancioGenApi gen() {
         return new GenApiImpl();
+    }
+
+    /**
+     * Creates a schema of the specified type.
+     *
+     * @param type the class that defines a schema
+     * @param <S> the type of schema
+     * @return API builder reference
+     * @see #ofSchema(Class)
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static <S extends Schema> S createSchema(final Class<S> type) {
+        return new OfSchemaApiImpl<>(type).create();
+    }
+
+    /**
+     * Builder version of {@link #createSchema(Class)}
+     * that allows customising the schema's properties.
+     *
+     * @param type the class that defines a schema
+     * @param <S> the type of schema
+     * @return API builder reference
+     * @see #createSchema(Class)
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static <S extends Schema> InstancioOfSchemaApi<S> ofSchema(final Class<S> type) {
+        return new OfSchemaApiImpl<>(type);
     }
 }

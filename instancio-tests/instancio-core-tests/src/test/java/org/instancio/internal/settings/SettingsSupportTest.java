@@ -19,6 +19,8 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.BeanValidationTarget;
+import org.instancio.settings.SchemaDataEndStrategy;
+import org.instancio.settings.SchemaDataAccess;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
 import org.instancio.settings.OnSetFieldError;
@@ -55,6 +57,8 @@ class SettingsSupportTest {
                 AfterGenerate.class,
                 AssignmentType.class,
                 BeanValidationTarget.class,
+                SchemaDataEndStrategy.class,
+                SchemaDataAccess.class,
                 Mode.class,
                 OnSetFieldError.class,
                 OnSetMethodError.class,

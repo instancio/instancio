@@ -21,6 +21,7 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.instancio.schema.Schema;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
@@ -581,6 +582,79 @@ interface InstancioOperations<T> {
     InstancioOperations<T> setBlank(TargetSelector selector);
 
     /**
+     * Applies given {@code schema} to the specified {@code selector}.
+     * The selector's target must be a POJO or a Java {@code record}.
+     * Properties from the schema will be automatically mapped to the
+     * selected object.
+     *
+     * <p>For example, we can generate instances of the following record:
+     *
+     * <pre>{@code
+     * record Person(String firstName, String lastName, String fullName,
+     *               int age, String username, String email) {}
+     * }</pre>
+     *
+     * <p>using data from a CSV file (formatted for readability):
+     *
+     * <pre>
+     * firstName, lastName, age, username
+     * John,      Doe,      24,  john_doe
+     * Alice,     Smith,    55,  alice_s
+     * # more entries...
+     * </pre>
+     *
+     * <p>by defining the following schema:
+     *
+     * <pre>{@code
+     * @SchemaResource(path = "persons.csv")
+     * interface PersonSchema extends Schema {
+     *
+     *     @TemplateSpec("${firstName} ${lastName}")
+     *     SchemaSpec<String> fullName();
+     *
+     *     SchemaSpec<Integer> age();
+     *
+     *     @GeneratedSpec(CustomEmailGenerator.class)
+     *     SchemaSpec<String> email();
+     * }
+     * }</pre>
+     *
+     * <p>and applying the schema using the {@code all(Person.class)} selector.
+     *
+     * <pre>{@code
+     * Schema personSchema = Instancio.createSchema(PersonSchema.class);
+     *
+     * List<Person> persons = Instancio.ofList(Person.class)
+     *     .withSchema(all(Person.class), personSchema)
+     *     .create();
+     * }</pre>
+     *
+     * <p>Data from CSV will be mapped to {@code Person} fields
+     * by matching field names to property names in the data file.
+     *
+     * <ul>
+     *   <li>Note that {@code PersonSchema} does not need to declare
+     *      {@code firstName()} and {@code lastName()} methods
+     *      (they are mapped automatically).</li>
+     *   <li>The {@code age()} method needs to be declared by the schema
+     *       to map the value to an integer.</li>
+     *   <li>Lastly, {@code fullName()} and {@code email()} can also
+     *       be mapped to the {@code Person} object, even though
+     *       these are generated and are not present in the data file.</li>
+     * </ul>
+     *
+     * @param selector for fields and/or classes this method should be applied to
+     * @param schema   to apply to the selector
+     * @param <S>      the type of schema
+     * @return API builder reference
+     * @see Instancio#createSchema(Class)
+     * @see Schema
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    <S extends Schema> InstancioOperations<T> withSchema(TargetSelector selector, S schema);
+
+    /**
      * Specifies that the given selector's target(s) should have unique values.
      *
      * <p>Example:
@@ -602,7 +676,7 @@ interface InstancioOperations<T> {
      *   <li>{@code withUnique(allInts())}</li>
      *   <li>{@code withUnique(all(field(Data::foo), field(Data::bar))}</li>
      * </ul>
-     *
+     * <p>
      * would result in unique values for {@code foo} and {@code bar}
      * with no overlap (i.e. {@code foo} and {@code bar} are disjoint).
      * To generate unique values per field (with potential overlap),

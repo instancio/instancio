@@ -18,6 +18,7 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.schema.Schema;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
@@ -83,7 +84,7 @@ public interface InstancioApi<T> extends
      * <pre>{@code
      * String json = Instancio.of(Person.class).as(json());
      * }</pre>
-     *
+     * <p>
      * where {@code json()} is a user-defined method implemented
      * using the preferred library, e.g. using Jackson:
      *
@@ -96,7 +97,7 @@ public interface InstancioApi<T> extends
      * }</pre>
      *
      * @param function the function for mapping the result
-     * @param <R> the type of object the result is mapped to
+     * @param <R>      the type of object the result is mapped to
      * @return the object returned by applying the mapping function to the result
      * @since 4.8.0
      */
@@ -313,6 +314,15 @@ public interface InstancioApi<T> extends
     @Override
     @ExperimentalApi
     InstancioApi<T> verbose();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
+    @Override
+    @ExperimentalApi
+    <S extends Schema> InstancioApi<T> withSchema(TargetSelector selector, S schema);
 
     /**
      * {@inheritDoc}

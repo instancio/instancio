@@ -225,7 +225,8 @@ public final class InternalNode implements Node {
         if (o == null || getClass() != o.getClass()) return false;
         final InternalNode other = (InternalNode) o;
 
-        return this.targetClass.equals(other.targetClass)
+        return this.depth == other.depth
+                && this.targetClass.equals(other.targetClass)
                 && this.type.equals(other.type)
                 && Objects.equals(this.field, other.field)
                 && Objects.equals(this.setter, other.setter);
@@ -244,6 +245,7 @@ public final class InternalNode implements Node {
         result = 31 * result + targetClass.hashCode();
         result = 31 * result + (field != null ? field.hashCode() : 0);
         result = 31 * result + (setter != null ? setter.hashCode() : 0);
+        result = 31 * result + depth;
         return result;
     }
 

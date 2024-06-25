@@ -18,26 +18,37 @@ package org.instancio.internal.util;
 import org.instancio.generator.Generator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.schema.SpecMethod;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
+import org.instancio.settings.SchemaDataAccess;
+import org.instancio.settings.SchemaDataEndStrategy;
 import org.instancio.settings.SetterStyle;
+import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Locale;
 
 import static org.instancio.internal.util.Constants.NL;
 import static org.instancio.internal.util.Format.formatField;
+import static org.instancio.internal.util.Format.formatMethod;
 import static org.instancio.internal.util.Format.formatNode;
 import static org.instancio.internal.util.Format.methodNameWithParams;
 import static org.instancio.internal.util.Format.nodePathToRootBlock;
 import static org.instancio.internal.util.Format.withoutPackage;
 
-@SuppressWarnings({Sonar.STRING_LITERALS_DUPLICATED, "StringBufferReplaceableByString"})
+@SuppressWarnings({
+        Sonar.STRING_LITERALS_DUPLICATED,
+        "PMD.AvoidDuplicateLiterals",
+        "StringBufferReplaceableByString"
+})
 public final class ErrorMessageUtils {
     private static final int INITIAL_SB_SIZE = 1024;
 
@@ -525,6 +536,183 @@ public final class ErrorMessageUtils {
                 .append("  void handleZipCode(HexString annotation, StringGeneratorSpec spec) {").append(NL)
                 .append("      spec.hex().length(annotation.length());").append(NL)
                 .append("  }");
+    }
+
+    public static String invalidStringTemplate(final String pattern, final String reason) {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("invalid pattern").append(NL)
+                .append(" -> \"").append(pattern).append('"').append(NL)
+                .append(NL)
+                .append("Reason: ").append(reason)
+                .toString();
+    }
+
+    public static String schemaComponentMethodNotFound(
+            final Class<?> schemaClass,
+            final SpecMethod specMethodDeclaringTheAnnotation) {
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("invalid method name 'badName' specified by the `@DerivedSpec.fromSpec` attribute in schema class:").append(NL)
+                .append(NL)
+                .append(" -> ").append(schemaClass.getName()).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Check the annotation attributes of the following method:").append(NL)
+                .append(NL)
+                .append(formatMethod(specMethodDeclaringTheAnnotation.getMethod()))
+                .toString();
+    }
+
+    public static String schemaWithoutDataSource(final Class<?> schemaClass) {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("no data source provided for schema ").append(schemaClass.getName()).append(NL)
+                .append(NL)
+                .append("To resolve this error, please specify a data source using any of the options below.").append(NL)
+                .append(NL)
+                .append(" -> Via the @SchemaResource annotation:").append(NL)
+                .append(NL)
+                .append("    @SchemaResource(path = \"path/to/data/sample.csv\")").append(NL)
+                .append("    interface SampleSchema extends Schema { ... }").append(NL)
+                .append(NL)
+                .append(" -> Using the schema builder API:").append(NL)
+                .append(NL)
+                .append("    import org.instancio.schema.DataSource;").append(NL)
+                .append(NL)
+                .append("    SampleSchema schema = Instancio.ofSchema(SampleSchema.class)").append(NL)
+                .append("        .withDataSource(myDataSource)").append(NL)
+                .append("        .create();")
+                .toString();
+    }
+
+    public static String schemaWithInvalidMethodName(
+            final Class<?> schemaClass,
+            final String invalidPropertyName,
+            final Collection<String> availableProperties) {
+
+        final String properties = String.join(", ", availableProperties);
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("unmatched spec method '").append(invalidPropertyName)
+                .append("()' declared by the schema class").append(NL)
+                .append(NL)
+                .append(" -> ").append(schemaClass.getName()).append(NL)
+                .append(NL)
+                .append("The property name '").append(invalidPropertyName)
+                .append("' does not map to any property in the data:").append(NL)
+                .append(NL)
+                .append(" -> [").append(properties).append(']')
+                .toString();
+    }
+
+    public static String schemaDataEnd(
+            final Class<?> schemaClass,
+            final Settings settings) {
+
+        final String dataAccessKey = keyDesc(Keys.SCHEMA_DATA_ACCESS);
+        final String dataEndKey = keyDesc(Keys.SCHEMA_DATA_END_STRATEGY);
+        final String currentDataAccess = enumValueDesc(settings.get(Keys.SCHEMA_DATA_ACCESS));
+        final String curentDataEndStrategy = enumValueDesc(settings.get(Keys.SCHEMA_DATA_END_STRATEGY));
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("reached end of data for schema class").append(NL)
+                .append(NL)
+                .append(" -> ").append(schemaClass.getName()).append(NL)
+                .append(NL)
+                .append("The error was triggered because of the following settings:").append(NL)
+                .append(NL)
+                .append(" -> ").append(dataAccessKey).append(" ........: ").append(currentDataAccess).append(NL)
+                .append(" -> ").append(dataEndKey).append(" ..: ").append(curentDataEndStrategy).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Ensure the data source provides a sufficient number of records").append(NL)
+                .append(" -> Set ").append(dataEndKey).append(" to ")
+                .append(enumValueDesc(SchemaDataEndStrategy.RECYCLE)).append(NL)
+                .append(" -> Set ").append(dataAccessKey).append(" to ")
+                .append(enumValueDesc(SchemaDataAccess.RANDOM)).append(NL)
+                .append(NL)
+                .append("Note that the last two options may result in duplicate values being produced.")
+                .toString();
+    }
+
+    public static String invalidCombinatorMethod(
+            final Class<?> schemaClass,
+            final Class<?> combinatorProviderClass) {
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("could not resolve @CombinatorMethod for spec method 'xAndY()' declared by the schema class").append(NL)
+                .append(NL)
+                .append(" -> ").append(schemaClass.getName()).append(NL)
+                .append(NL)
+                .append("CombinatorProvider implementation:").append(NL)
+                .append(NL)
+                .append(" -> ").append(combinatorProviderClass.getName()).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Ensure the CombinatorProvider implementation contains").append(NL)
+                .append("    at least one method annotated with @CombinatorMethod.").append(NL)
+                .append(NL)
+                .append(" -> If the CombinatorProvider contains more than one @CombinatorMethod").append(NL)
+                .append("    specify the method name in the '@DerivedSpec.method' attribute.").append(NL)
+                .append(NL)
+                .append(" -> Ensure the @CombinatorMethod has an argument for every property name").append(NL)
+                .append("    specified in the '@DerivedSpec.fromSpec' attribute.")
+                .toString();
+    }
+
+    public static String invalidSpecMethod(final Method method) {
+        return new StringBuilder()
+                .append("invalid spec method '").append(method.getName())
+                .append("()' declared by the schema class").append(NL)
+                .append(NL)
+                .append(" -> ").append(method.getDeclaringClass().getName()).append(NL)
+                .append(NL)
+                .append(formatMethod(method)).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Ensure the spec method returns a SchemaSpec<T>").append(NL)
+                .append("    (where T is not a parameterized type)").append(NL)
+                .append(NL)
+                .append("    // Example").append(NL)
+                .append("    SchemaSpec<Integer> age();")
+                .toString();
+    }
+
+    public static String errorInvokingCombinatorMethod(
+            final Class<?> schemaClass,
+            final Class<?> combinatorProviderClass,
+            final Method combinatorMethod,
+            final Exception ex) {
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("exception thrown by spec method 'fromX()' declared by the schema class:").append(NL)
+                .append(NL)
+                .append(" -> ").append(schemaClass.getName()).append(NL)
+                .append(NL)
+                .append("The error was caused by calling the method declared by ")
+                .append(withoutPackage(combinatorProviderClass)).append(':').append(NL)
+                .append(NL)
+                .append(formatMethod(combinatorMethod)).append(NL)
+                .append(NL)
+                .append("Root cause: ").append(getRootCause(ex)).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Check that the spec properties specified in '@DerivedProperty.fromSpec' attribute").append(NL)
+                .append("    match the number of arguments and parameter types defined by the @CombinatorMethod")
+                .toString();
+    }
+
+    private static String keyDesc(final SettingKey<?> key) {
+        final String keyName = key.propertyKey().replace('.', '_').toUpperCase(Locale.ROOT);
+        return "Keys." + keyName;
+    }
+
+    private static String enumValueDesc(final Enum<?> e) {
+        return String.format("%s.%s", e.getClass().getSimpleName(), e.name());
     }
 
     private static Throwable getRootCause(final Throwable t) {
