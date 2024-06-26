@@ -186,7 +186,8 @@ class NodeCreator {
             }
             return subtype;
         }
-        if (SealedClassUtils.isSealedAbstractType(node.getTargetClass()) && !node.isContainer()) {
+        if (SealedClassUtils.isSealedAbstractType(node.getTargetClass())
+                && (node.is(NodeKind.POJO) || node.is(NodeKind.RECORD))) {
             final List<Class<?>> impls = SealedClassUtils.getSealedClassImplementations(node.getTargetClass());
             return Optional.of(nodeContext.getRandom().oneOf(impls));
         }
