@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-el</artifactId>
-            <version>10.1.7</version>
+            <version>9.0.90</version>
         </dependency>
         <!-- validation-api is also needed because Hibernate declares it as 'provided' -->
         <dependency>
