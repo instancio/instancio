@@ -175,7 +175,6 @@ public interface Generators extends CommonGeneratorSpecs {
      *
      * @param <T> the type of value
      * @return API builder reference
-     *
      * @since 2.14.0
      */
     <T> OptionalGeneratorSpec<T> optional();

@@ -27,7 +27,7 @@ public interface NioSpecs extends NioGenerators {
     /**
      * {@inheritDoc}
      *
-     *  @since 5.0.0
+     * @since 5.0.0
      */
     @Override
     PathSpec path(String... subdirectories);

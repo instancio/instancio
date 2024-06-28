@@ -31,7 +31,7 @@ public interface RandomFunction<T, R> {
     /**
      * Applies this function to the given {@code input}.
      *
-     * @param input the function input
+     * @param input  the function input
      * @param random instance for randomising the result
      * @return the function result
      * @since 5.0.0

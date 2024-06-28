@@ -39,10 +39,12 @@ public interface InstancioApi<T> extends
 
     /**
      * Creates a new instance of a class and populates it with data.
-     * <p>
-     * Example:
+     *
+     * <p>Example:
      * <pre>{@code
-     * Person person = Instancio.of(Person.class).create();
+     * Person person = Instancio.of(Person.class)
+     *     // snip...
+     *     .create();
      * }</pre>
      * <p>
      * The returned object will have all its fields populated with random data,
@@ -83,7 +85,7 @@ public interface InstancioApi<T> extends
      * <pre>{@code
      * String json = Instancio.of(Person.class).as(json());
      * }</pre>
-     *
+     * <p>
      * where {@code json()} is a user-defined method implemented
      * using the preferred library, e.g. using Jackson:
      *
@@ -96,7 +98,7 @@ public interface InstancioApi<T> extends
      * }</pre>
      *
      * @param function the function for mapping the result
-     * @param <R> the type of object the result is mapped to
+     * @param <R>      the type of object the result is mapped to
      * @return the object returned by applying the mapping function to the result
      * @since 4.8.0
      */
@@ -128,8 +130,8 @@ public interface InstancioApi<T> extends
 
     /**
      * Creates a model containing all the information for populating a class.
-     * <p>
-     * The model can be useful when class population needs to be customised
+     *
+     * <p>The model can be useful when class population needs to be customised
      * and the customisations need to be re-used in different parts of the code.
      *
      * <p>Example:

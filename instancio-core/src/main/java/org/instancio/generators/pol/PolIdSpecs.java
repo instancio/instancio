@@ -43,7 +43,7 @@ public interface PolIdSpecs extends PolIdGenerators {
     PeselSpec pesel();
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      *
      * @since 5.0.0
      */

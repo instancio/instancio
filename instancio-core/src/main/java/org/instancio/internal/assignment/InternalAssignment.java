@@ -16,8 +16,8 @@
 package org.instancio.internal.assignment;
 
 import org.instancio.Assignment;
-import org.instancio.TargetSelector;
 import org.instancio.RandomFunction;
+import org.instancio.TargetSelector;
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Generator;
 import org.instancio.internal.ApiValidator;

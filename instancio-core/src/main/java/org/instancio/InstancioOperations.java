@@ -602,7 +602,7 @@ interface InstancioOperations<T> {
      *   <li>{@code withUnique(allInts())}</li>
      *   <li>{@code withUnique(all(field(Data::foo), field(Data::bar))}</li>
      * </ul>
-     *
+     * <p>
      * would result in unique values for {@code foo} and {@code bar}
      * with no overlap (i.e. {@code foo} and {@code bar} are disjoint).
      * To generate unique values per field (with potential overlap),

@@ -36,8 +36,8 @@ public interface ValueOfOriginDestination extends Assignment {
      * @param <T>         the origin value type
      * @param <R>         the destination value type
      * @return continuation of the builder for optionally specifying a predicate
-     * @since 3.0.0
      * @see #as(RandomFunction)
+     * @since 3.0.0
      */
     <T, R> ValueOfOriginDestinationPredicate as(Function<T, R> valueMapper);
 
@@ -49,8 +49,8 @@ public interface ValueOfOriginDestination extends Assignment {
      * @param <T>         the origin value type
      * @param <R>         the destination value type
      * @return continuation of the builder for optionally specifying a predicate
-     * @since 5.0.0
      * @see #as(Function)
+     * @since 5.0.0
      */
     <T, R> ValueOfOriginDestinationPredicate as(RandomFunction<T, R> valueMapper);
 

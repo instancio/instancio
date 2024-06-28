@@ -37,13 +37,13 @@ public final class InternalKey<T>
     /**
      * Constructor.
      *
-     * @param propertyKey used for {@code instancio.properties}
-     * @param type the type of the key
-     * @param defaultValue optional default devalue
-     * @param rangeAdjuster an adjuster for range settings, such as min/max
+     * @param propertyKey     used for {@code instancio.properties}
+     * @param type            the type of the key
+     * @param defaultValue    optional default devalue
+     * @param rangeAdjuster   an adjuster for range settings, such as min/max
      * @param allowsNullValue whether this setting can be {@code null}
-     * @param allowsNegative whether range can be negative;
-     *                       only needed if {@code rangeAdjuster} is specified
+     * @param allowsNegative  whether range can be negative;
+     *                        only needed if {@code rangeAdjuster} is specified
      */
     public InternalKey(final String propertyKey,
                        final Class<?> type,
