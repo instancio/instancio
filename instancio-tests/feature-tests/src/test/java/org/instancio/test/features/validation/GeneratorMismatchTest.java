@@ -171,6 +171,11 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertBraIdGenerators() {
+        assertMessageContains("cpf()", gen -> gen.id().bra().cpf());
+    }
+
+    @Test
     void assertBoolean() {
         assertMessageContains("booleans()", Generators::booleans);
     }

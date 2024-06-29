@@ -17,6 +17,7 @@ package org.instancio.generators;
 
 import org.instancio.generator.specs.EanGeneratorSpec;
 import org.instancio.generator.specs.IsbnGeneratorSpec;
+import org.instancio.generators.bra.BraIdGenerators;
 import org.instancio.generators.can.CanIdGenerators;
 import org.instancio.generators.pol.PolIdGenerators;
 import org.instancio.generators.usa.UsaIdGenerators;
@@ -67,4 +68,12 @@ public interface IdGenerators {
      * @since 3.1.0
      */
     UsaIdGenerators usa();
+
+    /**
+     * Provides access to identifier generators for Brazil.
+     *
+     * @return built-in id generators
+     * @since 5.0.0
+     */
+    BraIdGenerators bra();
 }
