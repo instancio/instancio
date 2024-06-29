@@ -19,6 +19,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EanSpec;
 import org.instancio.generator.specs.IsbnSpec;
 import org.instancio.generators.IdSpecs;
+import org.instancio.generators.bra.BraIdSpecs;
 import org.instancio.generators.can.CanIdSpecs;
 import org.instancio.generators.pol.PolIdSpecs;
 import org.instancio.generators.usa.UsaIdSpecs;
@@ -56,5 +57,10 @@ final class IdSpecsImpl implements IdSpecs {
     @Override
     public UsaIdSpecs usa() {
         return new UsaIdSpecsImpl(context);
+    }
+
+    @Override
+    public BraIdSpecs bra() {
+        return new BraIdSpecsImpl(context);
     }
 }

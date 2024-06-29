@@ -22,6 +22,7 @@ import org.instancio.internal.generator.checksum.Mod11Generator;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
+import org.instancio.internal.generator.domain.id.bra.CpfGenerator;
 import org.instancio.internal.generator.domain.id.pol.NipGenerator;
 import org.instancio.internal.generator.domain.id.pol.PeselGenerator;
 import org.instancio.internal.generator.domain.id.pol.RegonGenerator;
@@ -76,6 +77,9 @@ final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotation
 
         putPrimary(() -> org.hibernate.validator.constraints.pl.REGON.class,
                 (annotation, context) -> new RegonGenerator(context));
+
+        putPrimary(() -> org.hibernate.validator.constraints.br.CPF.class,
+                (annotation, context) -> new CpfGenerator(context));
     }
 
     @Override
