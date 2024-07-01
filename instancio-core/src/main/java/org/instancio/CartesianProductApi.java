@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.SettingKey;
@@ -210,6 +211,15 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     CartesianProductApi<T> subtype(TargetSelector selector, Class<?> subtype);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
+    @Override
+    @ExperimentalApi
+    CartesianProductApi<T> withFeed(TargetSelector selector, Feed feed);
 
     /**
      * {@inheritDoc}

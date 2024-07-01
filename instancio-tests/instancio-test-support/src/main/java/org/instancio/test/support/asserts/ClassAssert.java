@@ -19,6 +19,7 @@ import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.SoftAssertions;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -74,6 +75,13 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
         assertThat(actual.isAssignableFrom(klass)).isFalse();
         assertThat(klass.isAssignableFrom(actual)).isFalse();
 
+        return this;
+    }
+
+    public ClassAssert isNotPublic() {
+        assertThat(Modifier.isPublic(actual.getModifiers()))
+                .as("%s should not be public", actual.getSimpleName())
+                .isFalse();
         return this;
     }
 

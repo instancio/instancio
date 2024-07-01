@@ -17,6 +17,7 @@ package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.feed.Feed;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
@@ -493,6 +494,73 @@ interface InstancioOperations<T> {
      * @since 4.0.0
      */
     InstancioOperations<T> assign(Assignment... assignments);
+
+    /**
+     * Applies given {@code feed} to the specified {@code selector}.
+     * The selector's target must be a POJO or a Java {@code record}.
+     * Properties from the feed will be automatically mapped to the
+     * selected object.
+     *
+     * <p>For example, we can generate instances of the following record:
+     *
+     * <pre>{@code
+     * record Person(String firstName, String lastName, String fullName,
+     *               int age, String username, String email) {}
+     * }</pre>
+     *
+     * <p>using data from a CSV file (formatted for readability):
+     *
+     * <pre>
+     * firstName, lastName, age, username
+     * John,      Doe,      24,  john_doe
+     * Alice,     Smith,    55,  alice_s
+     * # more entries...
+     * </pre>
+     *
+     * <p>by defining the following feed:
+     *
+     * <pre>{@code
+     * @FeedSource(path = "persons.csv")
+     * interface PersonFeed extends Feed {
+     *
+     *     @TemplateSpec("${firstName} ${lastName}")
+     *     FeedSpec<String> fullName();
+     *
+     *     @GeneratedSpec(CustomEmailGenerator.class)
+     *     FeedSpec<String> email();
+     * }
+     * }</pre>
+     *
+     * <p>and applying the feed using the {@code all(Person.class)} selector.
+     *
+     * <pre>{@code
+     * Feed personFeed = Instancio.createFeed(PersonFeed.class);
+     *
+     * List<Person> persons = Instancio.ofList(Person.class)
+     *     .withFeed(all(Person.class), personFeed)
+     *     .create();
+     * }</pre>
+     *
+     * <p>Data from CSV will be mapped to {@code Person} fields
+     * by matching field names to property names in the data file.
+     *
+     * <ul>
+     *   <li>Note that {@code PersonFeed} does not need to declare
+     *      {@code firstName()} and {@code lastName()} methods
+     *      (they are mapped automatically).</li>
+     *   <li>{@code fullName()} and {@code email()} can also
+     *       be mapped to the {@code Person} object, even though
+     *       these are generated and are not present in the data file.</li>
+     * </ul>
+     *
+     * @param selector for fields and/or classes this method should be applied to
+     * @param feed     to apply to the selector
+     * @return API builder reference
+     * @see Instancio#createFeed(Class)
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    InstancioOperations<T> withFeed(TargetSelector selector, Feed feed);
 
     /**
      * Specifies the maximum depth for populating an object.

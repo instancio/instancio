@@ -16,9 +16,11 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.feed.Feed;
 import org.instancio.internal.ApiImpl;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.CartesianProductApiImpl;
+import org.instancio.internal.FeedApiImpl;
 import org.instancio.internal.GenApiImpl;
 import org.instancio.internal.OfClassApiImpl;
 import org.instancio.internal.OfCollectionApiImpl;
@@ -694,5 +696,34 @@ public final class Instancio {
     @ExperimentalApi
     public static InstancioGenApi gen() {
         return new GenApiImpl();
+    }
+
+    /**
+     * Creates a feed of the specified type.
+     *
+     * @param type the class that defines a feed
+     * @param <F>  the type of feed
+     * @return API builder reference
+     * @see #ofFeed(Class)
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static <F extends Feed> F createFeed(final Class<F> type) {
+        return new FeedApiImpl<>(type).create();
+    }
+
+    /**
+     * Builder version of {@link #createFeed(Class)}
+     * that allows customising the feed's properties.
+     *
+     * @param type the class that defines a feed
+     * @param <F>  the type of feed
+     * @return API builder reference
+     * @see #createFeed(Class)
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static <F extends Feed> InstancioFeedApi<F> ofFeed(final Class<F> type) {
+        return new FeedApiImpl<>(type);
     }
 }

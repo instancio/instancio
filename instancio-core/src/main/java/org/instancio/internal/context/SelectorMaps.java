@@ -19,6 +19,7 @@ import org.instancio.Assignment;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
+import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.assignment.InternalAssignment;
@@ -37,6 +38,7 @@ public final class SelectorMaps {
     private final BooleanSelectorMap ignoreSelectorMap = new BooleanSelectorMap();
     private final BooleanSelectorMap withNullableSelectorMap = new BooleanSelectorMap();
     private final ModelContextSelectorMap setModelSelectorMap = new ModelContextSelectorMap();
+    private final FeedSelectorMap feedSelectorMap = new FeedSelectorMap();
     private final OnCompleteCallbackSelectorMap onCompleteSelectorMap = new OnCompleteCallbackSelectorMap();
     private final PredicateSelectorMap filterSelectorMap = new PredicateSelectorMap();
     private final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap();
@@ -54,6 +56,7 @@ public final class SelectorMaps {
         }
 
         setModelSelectorMap.putAll(contextSource.getSetModelMap());
+        feedSelectorMap.putAll(contextSource.getFeedMap());
         ignoreSelectorMap.putAll(contextSource.getIgnoreSet());
         withNullableSelectorMap.putAll(contextSource.getWithNullableSet());
         onCompleteSelectorMap.putAll(contextSource.getOnCompleteMap());
@@ -68,9 +71,14 @@ public final class SelectorMaps {
         subtypeSelectorMap.putAll(assignmentSelectorMap.getSubtypeMap());
     }
 
-    @SuppressWarnings("PMD.NPathComplexity")
+    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     private void copyToThisContext(final TargetSelector modelTarget, final ModelContext<?> otherCtx) {
         final ModelContextSource src = otherCtx.getContextSource();
+
+        for (Map.Entry<TargetSelector, Feed> entry : src.getFeedMap().entrySet()) {
+            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            feedSelectorMap.put(resolvedSelector, entry.getValue());
+        }
 
         for (Map.Entry<TargetSelector, Generator<?>> entry : src.getGeneratorMap().entrySet()) {
             final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
@@ -157,6 +165,10 @@ public final class SelectorMaps {
         return setModelSelectorMap;
     }
 
+    FeedSelectorMap getFeedSelectorMap() {
+        return feedSelectorMap;
+    }
+
     OnCompleteCallbackSelectorMap getOnCompleteSelectorMap() {
         return onCompleteSelectorMap;
     }
@@ -175,6 +187,7 @@ public final class SelectorMaps {
                 && !hasCallbacks()
                 && !hasFilters()
                 && !hasSetModels()
+                && feedSelectorMap.getSelectorMap().isEmpty()
                 && ignoreSelectorMap.getSelectorMap().isEmpty()
                 && withNullableSelectorMap.getSelectorMap().isEmpty()
                 && subtypeSelectorMap.getSelectorMap().isEmpty();

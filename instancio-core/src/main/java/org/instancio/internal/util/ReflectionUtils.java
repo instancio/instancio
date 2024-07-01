@@ -33,6 +33,7 @@ import java.util.Optional;
 
 import static org.instancio.internal.util.ErrorMessageUtils.unableToGetValueFromField;
 
+@SuppressWarnings("PMD.GodClass")
 public final class ReflectionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
@@ -75,6 +76,15 @@ public final class ReflectionUtils {
                 "Expected exactly 1 parameter, but got: %s", p.length);
 
         return ObjectUtils.defaultIfNull(p[0].getParameterizedType(), p[0].getType());
+    }
+
+    @Nullable
+    public static Method getZeroArgMethod(final Class<?> klass, final String name) {
+        try {
+            return klass.getMethod(name);
+        } catch (NoSuchMethodException ex) {
+            return null;
+        }
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
@@ -187,7 +197,7 @@ public final class ReflectionUtils {
     public static <T> T newInstance(final Class<T> klass) {
         try {
             final Constructor<T> ctor = klass.getDeclaredConstructor();
-            return ctor.newInstance();
+            return setAccessible(ctor).newInstance();
         } catch (Exception ex) {
             throw new InstancioException("Error instantiating " + klass, ex);
         }
