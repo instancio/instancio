@@ -32,7 +32,12 @@ public interface BraIdSpecs extends BraIdGenerators {
      */
     @Override
     CpfSpec cpf();
-
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
     @Override
     CnpjSpec cnpj();
 }
