@@ -16,8 +16,10 @@
 package org.instancio.internal.generators;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.specs.bra.CnpjSpec;
 import org.instancio.generator.specs.bra.CpfSpec;
 import org.instancio.generators.bra.BraIdSpecs;
+import org.instancio.internal.generator.domain.id.bra.CnpjGenerator;
 import org.instancio.internal.generator.domain.id.bra.CpfGenerator;
 
 public class BraIdSpecsImpl implements BraIdSpecs {
@@ -31,5 +33,10 @@ public class BraIdSpecsImpl implements BraIdSpecs {
     @Override
     public CpfSpec cpf() {
         return new CpfGenerator(context);
+    }
+
+    @Override
+    public CnpjSpec cnpj() {
+        return new CnpjGenerator(context);
     }
 }

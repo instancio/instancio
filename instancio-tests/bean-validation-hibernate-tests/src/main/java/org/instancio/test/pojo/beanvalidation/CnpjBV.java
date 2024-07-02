@@ -13,31 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators.bra;
+package org.instancio.test.pojo.beanvalidation;
 
-import org.instancio.generator.specs.bra.CnpjGeneratorSpec;
-import org.instancio.generator.specs.bra.CpfGeneratorSpec;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.br.CNPJ;
 
-/**
- * Contains built-in generators for Brazilian identifiers.
- *
- * @since 5.0.0
- */
-public interface BraIdGenerators {
+public class CnpjBV {
 
-    /**
-     * Generates Cadastro de Pessoa Fisica (CPF).
-     *
-     * @return API builder reference
-     * @since 5.0.0
-     */
-    CpfGeneratorSpec cpf();
-
-    /**
-     * Generates Cadastro Nacional de Pessoas Jurídicas (CNPJ).
-     *
-     * @return API builder reference
-     * @since 5.0.0
-     */
-    CnpjGeneratorSpec cnpj();
+    @CNPJ
+    @NotNull
+    private String cnpj;
 }

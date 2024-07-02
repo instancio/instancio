@@ -22,6 +22,7 @@ import org.instancio.internal.generator.checksum.Mod11Generator;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
+import org.instancio.internal.generator.domain.id.bra.CnpjGenerator;
 import org.instancio.internal.generator.domain.id.bra.CpfGenerator;
 import org.instancio.internal.generator.domain.id.pol.NipGenerator;
 import org.instancio.internal.generator.domain.id.pol.PeselGenerator;
@@ -32,6 +33,7 @@ import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
 
     HibernateBeanValidationAnnotationConsumer() {
@@ -80,6 +82,9 @@ final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotation
 
         putPrimary(() -> org.hibernate.validator.constraints.br.CPF.class,
                 (annotation, context) -> new CpfGenerator(context));
+
+        putPrimary(() -> org.hibernate.validator.constraints.br.CNPJ.class,
+                (annotation, context) -> new CnpjGenerator(context));
     }
 
     @Override
