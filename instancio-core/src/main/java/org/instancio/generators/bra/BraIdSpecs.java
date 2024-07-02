@@ -15,6 +15,7 @@
  */
 package org.instancio.generators.bra;
 
+import org.instancio.generator.specs.bra.CnpjSpec;
 import org.instancio.generator.specs.bra.CpfSpec;
 
 /**
@@ -31,4 +32,7 @@ public interface BraIdSpecs extends BraIdGenerators {
      */
     @Override
     CpfSpec cpf();
+
+    @Override
+    CnpjSpec cnpj();
 }
