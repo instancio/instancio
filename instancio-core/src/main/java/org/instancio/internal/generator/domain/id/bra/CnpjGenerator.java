@@ -59,13 +59,13 @@ public class CnpjGenerator extends AbstractGenerator<String> implements CnpjSpec
     }
 
     /**
-     * Formats the given CNPJ using the following pattern: @code{xx.xxx.xxx/xxxx-xx}
+     * Formats the given CNPJ using the following pattern: {@code xx.xxx.xxx/xxxx-xx}
      *
      * @param baseCNPJ The base CNPJ
      * @param digits  The verifier digits
      * @return The CPF formatted
      */
-    String format(String baseCNPJ, String digits) {
+    private String format(String baseCNPJ, String digits) {
         return baseCNPJ.substring(0, 2) +
                 '.' +
                 baseCNPJ.substring(2, 5) +

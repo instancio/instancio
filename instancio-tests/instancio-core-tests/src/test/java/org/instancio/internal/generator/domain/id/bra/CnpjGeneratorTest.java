@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CnpjGeneratorTest extends AbstractGeneratorTestTemplate<String, CnpjGenerator> {
+class CnpjGeneratorTest extends AbstractGeneratorTestTemplate<String, CnpjGenerator> {
 
     private final CnpjGenerator generator = new CnpjGenerator(getGeneratorContext());
 

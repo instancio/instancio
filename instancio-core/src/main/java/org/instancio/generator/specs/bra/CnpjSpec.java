@@ -19,7 +19,7 @@ import org.instancio.generator.ValueSpec;
 
 /**
  * Spec for generating <a href="https://en.wikipedia.org/wiki/CNPJ">
- * Brazilian 'Cadastro Nacional de Pessoas Jurídicas' </a> (CNPJ).
+ * Brazilian 'Cadastro Nacional de Pessoas Jurídicas'</a> (CNPJ).
  *
  * @since 5.0.0
  */
