@@ -24,6 +24,7 @@ public enum ApiMethodSelector {
     FILTER_WITH_UNIQUE("filter() or withUnique()"),
     SET_MODEL("setModel()"),
     SUBTYPE("subtype()"),
+    WITH_FEED("withFeed()"),
     WITH_NULLABLE("withNullable()");
 
     private final String description;

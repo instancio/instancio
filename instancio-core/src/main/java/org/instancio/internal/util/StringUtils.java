@@ -18,7 +18,11 @@ package org.instancio.internal.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import static org.instancio.internal.util.ErrorMessageUtils.invalidStringTemplate;
 
 public final class StringUtils {
 
@@ -33,6 +37,15 @@ public final class StringUtils {
     @NotNull
     public static String trimToEmpty(@Nullable final String s) {
         return s == null ? "" : s.trim();
+    }
+
+    @Nullable
+    public static String trimToNull(@Nullable final String s) {
+        if (s == null) {
+            return null;
+        }
+        final String trimmed = s.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     @Nullable
@@ -92,6 +105,38 @@ public final class StringUtils {
             return '"' + str + '"';
         }
         return str;
+    }
+
+    /**
+     * Extracts properties keys from a string template, e.g. given
+     * the string {@code "${foo} and ${bar}"} returns {@code ["foo", "bar"]}.
+     */
+    public static List<String> getTemplateKeys(final String pattern) {
+        final List<String> results = new ArrayList<>();
+
+        final int length = pattern.length();
+        int i = 0;
+
+        while (i < length) {
+            if (pattern.charAt(i) == '$' && i + 1 < length && pattern.charAt(i + 1) == '{') {
+                final int j = pattern.indexOf("}", i + 2);
+
+                if (j == -1) {
+                    throw Fail.withUsageError(invalidStringTemplate(
+                            pattern, "unterminated placeholder"));
+                }
+                final String key = pattern.substring(i + 2, j);
+                if (key.isEmpty() || key.contains("${")) {
+                    final String reason = String.format("invalid key \"${%s}\"", key);
+                    throw Fail.withUsageError(invalidStringTemplate(pattern, reason));
+                }
+                results.add(key);
+                i = j + 1;
+            } else {
+                i++;
+            }
+        }
+        return results;
     }
 
     private StringUtils() {

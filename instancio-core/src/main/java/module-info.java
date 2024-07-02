@@ -14,6 +14,7 @@ module org.instancio.core {
     exports org.instancio;
     exports org.instancio.documentation;
     exports org.instancio.exception;
+    exports org.instancio.feed;
     exports org.instancio.generator;
     exports org.instancio.generator.hints;
     exports org.instancio.generator.specs;

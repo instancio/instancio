@@ -23,6 +23,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -140,5 +141,18 @@ public final class TypeUtils {
     @SuppressWarnings("unchecked")
     public static <T, C extends Collection<T>> Class<C> cast(final Class<?> collectionClass) {
         return (Class<C>) collectionClass;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> getFirstTypeArg(final Type type) {
+        if (type instanceof Class<?>) {
+            return (Class<T>) type;
+        }
+
+        final Type firstArg = ((ParameterizedType) type).getActualTypeArguments()[0];
+        if (firstArg instanceof TypeVariable<?>) {
+            return TypeUtils.getRawType(type);
+        }
+        return getFirstTypeArg(firstArg);
     }
 }

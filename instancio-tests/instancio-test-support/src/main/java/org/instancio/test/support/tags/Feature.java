@@ -60,6 +60,7 @@ public enum Feature {
     CYCLIC,
     EMIT_GENERATOR,
     ENUM_GENERATOR,
+    FEED,
     FILE_GENERATOR,
     FILTER,
     GENERATE,  // API generate() method
@@ -121,6 +122,7 @@ public enum Feature {
     VALIDATION,
     VALUE_SPEC,
     SET_MODEL,
+    WITH_FEED,
     WITH_NULLABLE,
     WITH_SEED,
     WITH_SEED_ANNOTATION,

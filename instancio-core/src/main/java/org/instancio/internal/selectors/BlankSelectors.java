@@ -18,13 +18,13 @@ package org.instancio.internal.selectors;
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
+import org.instancio.internal.util.Constants;
 
 import java.util.Collections;
 import java.util.function.Predicate;
 
 @InternalApi
 public final class BlankSelectors {
-    private static final int PRIORITY = Integer.MAX_VALUE; // lowest priority
 
     private static final InternalSelector ARRAY_SELECTOR = new BlankSelector(
             node -> node.is(NodeKind.ARRAY), "arraySelector()");
@@ -60,7 +60,7 @@ public final class BlankSelectors {
 
     private static final class BlankSelector extends PredicateSelectorImpl {
         private BlankSelector(final Predicate<InternalNode> predicate, final String description) {
-            super(PRIORITY,
+            super(Constants.BLANK_SELECTOR_PRIORITY,
                     predicate,
                     Collections.emptyList(),
                     /* depth = */ null,

@@ -19,6 +19,7 @@ import org.instancio.Assignment;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
+import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.internal.util.Sonar;
 
@@ -43,6 +44,7 @@ final class ModelContextSource {
     private final Map<TargetSelector, Predicate<?>> filterMap;
     private final Map<TargetSelector, List<Assignment>> assignmentMap;
     private final Map<TargetSelector, ModelContext<?>> setModelMap;
+    private final Map<TargetSelector, Feed> feedMap;
     private final Set<TargetSelector> ignoreSet;
     private final Set<TargetSelector> withNullableSet;
 
@@ -56,6 +58,7 @@ final class ModelContextSource {
             final Map<TargetSelector, Predicate<?>> filterMap,
             final Map<TargetSelector, List<Assignment>> assignmentMap,
             final Map<TargetSelector, ModelContext<?>> setModelMap,
+            final Map<TargetSelector, Feed> feedMap,
             final Set<TargetSelector> ignoreSet,
             final Set<TargetSelector> withNullableSet) {
 
@@ -67,6 +70,7 @@ final class ModelContextSource {
         this.filterMap = asUnmodifiableMap(filterMap);
         this.assignmentMap = asUnmodifiableMap(assignmentMap);
         this.setModelMap = asUnmodifiableMap(setModelMap);
+        this.feedMap = asUnmodifiableMap(feedMap);
         this.ignoreSet = asUnmodifiableSet(ignoreSet);
         this.withNullableSet = asUnmodifiableSet(withNullableSet);
     }
@@ -101,6 +105,10 @@ final class ModelContextSource {
 
     Map<TargetSelector, ModelContext<?>> getSetModelMap() {
         return setModelMap;
+    }
+
+    Map<TargetSelector, Feed> getFeedMap() {
+        return feedMap;
     }
 
     Set<TargetSelector> getIgnoreSet() {

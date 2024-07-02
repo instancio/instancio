@@ -1,0 +1,2 @@
+string,_boolean,character,_byte,_short,integer,_long,_double,_float,bigInteger,bigDecimal,instant,localTime,localDate,localDateTime,offsetTime,offsetDateTime,zonedDateTime,yearMonth,year,uuid,gender
+foo bar,true,Z,1,2,3,4,5.1,6.1,12345,12345.6789,2071-10-04T08:48:21.499609989Z,06:50:07.871441943,2048-12-24,2036-03-19T19:18:52.725994144,18:16:16.814320739Z,1975-12-04T07:34:43.807103492Z,2003-07-23T23:16:10.568513867Z,2045-05,1991,5d418896-acf5-439e-902d-86a6c6fca4ae,FEMALE
