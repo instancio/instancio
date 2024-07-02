@@ -13,31 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators.bra;
+package org.instancio.generator.specs.bra;
 
-import org.instancio.generator.specs.bra.CnpjGeneratorSpec;
-import org.instancio.generator.specs.bra.CpfGeneratorSpec;
+import org.instancio.generator.ValueSpec;
 
 /**
- * Contains built-in generators for Brazilian identifiers.
+ * Spec for generating <a href="https://en.wikipedia.org/wiki/CNPJ">
+ * Brazilian 'Cadastro Nacional de Pessoas Jurídicas'</a> (CNPJ).
  *
  * @since 5.0.0
  */
-public interface BraIdGenerators {
+public interface CnpjSpec extends CnpjGeneratorSpec, ValueSpec<String> {
 
     /**
-     * Generates Cadastro de Pessoa Fisica (CPF).
+     * {@inheritDoc}
      *
-     * @return API builder reference
      * @since 5.0.0
      */
-    CpfGeneratorSpec cpf();
+    @Override
+    CnpjSpec formatted();
 
     /**
-     * Generates Cadastro Nacional de Pessoas Jurídicas (CNPJ).
+     * {@inheritDoc}
      *
-     * @return API builder reference
      * @since 5.0.0
      */
-    CnpjGeneratorSpec cnpj();
+    @Override
+    CnpjSpec nullable();
 }

@@ -13,31 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators.bra;
+package org.instancio.generator.specs.bra;
 
-import org.instancio.generator.specs.bra.CnpjGeneratorSpec;
-import org.instancio.generator.specs.bra.CpfGeneratorSpec;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 
 /**
- * Contains built-in generators for Brazilian identifiers.
+ * Spec for generating <a href="https://en.wikipedia.org/wiki/CNPJ">
+ * Brazilian 'Cadastro Nacional de Pessoas Jurídicas'</a> (CNPJ).
  *
  * @since 5.0.0
  */
-public interface BraIdGenerators {
+public interface CnpjGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
-     * Generates Cadastro de Pessoa Fisica (CPF).
+     * Format the CNPJ output.
+     * By default, the output is not formatted: {@code '123456780000199'}
+     * In case the formatted is called, the result will be formatted as follows: {@code '12.345.678/00001-99'}
      *
-     * @return API builder reference
+     * @return spec builder
      * @since 5.0.0
      */
-    CpfGeneratorSpec cpf();
+    CnpjGeneratorSpec formatted();
 
     /**
-     * Generates Cadastro Nacional de Pessoas Jurídicas (CNPJ).
+     * {@inheritDoc}
      *
-     * @return API builder reference
      * @since 5.0.0
      */
-    CnpjGeneratorSpec cnpj();
+    @Override
+    CnpjGeneratorSpec nullable();
 }

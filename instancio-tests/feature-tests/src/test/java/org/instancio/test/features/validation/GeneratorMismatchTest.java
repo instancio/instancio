@@ -173,6 +173,7 @@ class GeneratorMismatchTest {
     @Test
     void assertBraIdGenerators() {
         assertMessageContains("cpf()", gen -> gen.id().bra().cpf());
+        assertMessageContains("cnpj()", gen -> gen.id().bra().cnpj());
     }
 
     @Test
