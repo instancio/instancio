@@ -20,15 +20,19 @@ import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TimestampGeneratorTest extends AbstractGeneratorTestTemplate<Timestamp, TimestampGenerator> {
 
-    private static final LocalDateTime START = LocalDateTime.of(
-            1970, 1, 1, 0, 0, 1, 999999999);
+    private static final Instant START = LocalDateTime.of(
+            1970, 1, 1, 0, 0, 1, 999999999)
+            .atZone(ZoneOffset.UTC).toInstant();
 
     private static final boolean INCLUSIVE = true;
 
@@ -46,7 +50,7 @@ class TimestampGeneratorTest extends AbstractGeneratorTestTemplate<Timestamp, Ti
 
     @Test
     void smallestAllowedRange() {
-        final Timestamp start = Timestamp.valueOf(START);
+        final Timestamp start = Timestamp.from(START);
         generator.range(start, start);
         assertThat(generator.generate(random)).isEqualTo(start);
     }
@@ -65,8 +69,8 @@ class TimestampGeneratorTest extends AbstractGeneratorTestTemplate<Timestamp, Ti
 
     @Test
     void validateRange() {
-        final Timestamp start = Timestamp.valueOf(START);
-        final Timestamp end = Timestamp.valueOf(START.minusNanos(1));
+        final Timestamp start = Timestamp.from(START);
+        final Timestamp end = Timestamp.from(START.minusNanos(1));
 
         assertThatThrownBy(() -> generator.range(start, end))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -75,22 +79,22 @@ class TimestampGeneratorTest extends AbstractGeneratorTestTemplate<Timestamp, Ti
 
     @Test
     void min() {
-        final Timestamp min = Timestamp.valueOf(START);
+        final Timestamp min = Timestamp.from(START);
         generator.min(min);
         assertThat(generator.generate(random)).isAfterOrEqualTo(min);
     }
 
     @Test
     void max() {
-        final Timestamp max = Timestamp.valueOf(START);
+        final Timestamp max = Timestamp.from(START);
         generator.max(max);
         assertThat(generator.generate(random)).isBeforeOrEqualTo(max);
     }
 
     @Test
     void range() {
-        final Timestamp start = Timestamp.valueOf(START);
-        final Timestamp end = Timestamp.valueOf(START.plusYears(1));
+        final Timestamp start = Timestamp.from(START);
+        final Timestamp end = Timestamp.from(START.plus(365, ChronoUnit.DAYS));
         generator.range(start, end);
         assertThat(generator.generate(random)).isBetween(start, end, INCLUSIVE, INCLUSIVE);
     }
