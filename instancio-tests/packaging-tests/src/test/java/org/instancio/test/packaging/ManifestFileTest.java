@@ -101,6 +101,7 @@ class ManifestFileTest {
                 "org.instancio.generators.pol",
                 "org.instancio.generators.usa",
                 "org.instancio.generators.bra",
+                "org.instancio.generators.rus",
                 "org.instancio.settings",
                 "org.instancio.spi",
                 "org.instancio.support"

@@ -21,11 +21,13 @@ module org.instancio.core {
     exports org.instancio.generator.specs.pol;
     exports org.instancio.generator.specs.usa;
     exports org.instancio.generator.specs.bra;
+    exports org.instancio.generator.specs.rus;
     exports org.instancio.generators;
     exports org.instancio.generators.can;
     exports org.instancio.generators.pol;
     exports org.instancio.generators.usa;
     exports org.instancio.generators.bra;
+    exports org.instancio.generators.rus;
     exports org.instancio.settings;
     exports org.instancio.spi;
 

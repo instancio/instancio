@@ -20,6 +20,7 @@ import org.instancio.generator.specs.IsbnGeneratorSpec;
 import org.instancio.generators.bra.BraIdGenerators;
 import org.instancio.generators.can.CanIdGenerators;
 import org.instancio.generators.pol.PolIdGenerators;
+import org.instancio.generators.rus.RusIdGenerators;
 import org.instancio.generators.usa.UsaIdGenerators;
 
 /**
@@ -76,4 +77,12 @@ public interface IdGenerators {
      * @since 5.0.0
      */
     BraIdGenerators bra();
+
+    /**
+     * Provides access to identifier generators for Russia.
+     *
+     * @return built-in id generators
+     * @since 5.0.0
+     */
+    RusIdGenerators rus();
 }

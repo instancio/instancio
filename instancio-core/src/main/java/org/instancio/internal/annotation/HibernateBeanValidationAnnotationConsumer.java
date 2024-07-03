@@ -27,6 +27,7 @@ import org.instancio.internal.generator.domain.id.bra.CpfGenerator;
 import org.instancio.internal.generator.domain.id.pol.NipGenerator;
 import org.instancio.internal.generator.domain.id.pol.PeselGenerator;
 import org.instancio.internal.generator.domain.id.pol.RegonGenerator;
+import org.instancio.internal.generator.domain.id.rus.InnGenerator;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
@@ -85,6 +86,10 @@ final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotation
 
         putPrimary(() -> org.hibernate.validator.constraints.br.CNPJ.class,
                 (annotation, context) -> new CnpjGenerator(context));
+
+        putPrimary(() -> org.hibernate.validator.constraints.ru.INN.class,
+                (annotation, context) -> getInnGenerator(
+                        (org.hibernate.validator.constraints.ru.INN) annotation, context));
     }
 
     @Override
@@ -167,6 +172,21 @@ final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotation
         if (mod11.checkDigitIndex() != -1) {
             generator.checkDigitIndex(mod11.checkDigitIndex());
         }
+        return generator;
+    }
+
+    private static InnGenerator getInnGenerator(
+            final org.hibernate.validator.constraints.ru.INN inn,
+            final GeneratorContext context) {
+
+        final InnGenerator generator = new InnGenerator(context);
+
+        if (inn.type() == org.hibernate.validator.constraints.ru.INN.Type.INDIVIDUAL) {
+            generator.individual();
+        } else if (inn.type() == org.hibernate.validator.constraints.ru.INN.Type.JURIDICAL) {
+            generator.juridical();
+        }
+
         return generator;
     }
 }

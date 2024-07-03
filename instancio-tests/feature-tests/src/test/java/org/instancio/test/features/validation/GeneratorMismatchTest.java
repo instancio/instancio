@@ -177,6 +177,11 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    void assertRusIdGenerators() {
+        assertMessageContains("inn()", gen -> gen.id().rus().inn());
+    }
+
+    @Test
     void assertBoolean() {
         assertMessageContains("booleans()", Generators::booleans);
     }
