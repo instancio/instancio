@@ -20,6 +20,7 @@ import org.instancio.generator.specs.IsbnSpec;
 import org.instancio.generators.bra.BraIdSpecs;
 import org.instancio.generators.can.CanIdSpecs;
 import org.instancio.generators.pol.PolIdSpecs;
+import org.instancio.generators.rus.RusIdSpecs;
 import org.instancio.generators.usa.UsaIdSpecs;
 
 /**
@@ -76,4 +77,12 @@ public interface IdSpecs extends IdGenerators {
      */
     @Override
     BraIdSpecs bra();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
+    @Override
+    RusIdSpecs rus();
 }

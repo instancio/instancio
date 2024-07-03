@@ -22,6 +22,7 @@ import org.instancio.generators.IdSpecs;
 import org.instancio.generators.bra.BraIdSpecs;
 import org.instancio.generators.can.CanIdSpecs;
 import org.instancio.generators.pol.PolIdSpecs;
+import org.instancio.generators.rus.RusIdSpecs;
 import org.instancio.generators.usa.UsaIdSpecs;
 import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
@@ -62,5 +63,10 @@ final class IdSpecsImpl implements IdSpecs {
     @Override
     public BraIdSpecs bra() {
         return new BraIdSpecsImpl(context);
+    }
+
+    @Override
+    public RusIdSpecs rus() {
+        return new RusIdSpecsImpl(context);
     }
 }
