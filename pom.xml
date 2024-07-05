@@ -519,18 +519,6 @@
                             </goals>
                         </execution>
                     </executions>
-                    <dependencies>
-                        <!-- Animal sniffer 1.23 uses asm 9.4, which does not support java 21.
-                             Overriding the dependency to asm 9.5 (or higher) solves the problem.
-                             See: https://asm.ow2.io/versions.html
-                             This can be removed once a new version of animal sniffer is released.
-                         -->
-                        <dependency>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm</artifactId>
-                            <version>9.7</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
