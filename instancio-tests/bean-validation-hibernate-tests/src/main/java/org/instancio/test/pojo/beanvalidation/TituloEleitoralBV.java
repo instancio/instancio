@@ -13,40 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators.bra;
+package org.instancio.test.pojo.beanvalidation;
 
-import org.instancio.generator.specs.bra.CnpjSpec;
-import org.instancio.generator.specs.bra.CpfSpec;
-import org.instancio.generator.specs.bra.TituloEleitoralSpec;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.br.TituloEleitoral;
 
-/**
- * Provides generators for Brazilian identifiers.
- *
- * @since 5.0.0
- */
-public interface BraIdSpecs extends BraIdGenerators {
+public class TituloEleitoralBV {
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
+    @TituloEleitoral
+    @NotNull
+    public String tituloEleitoral;
+
     @Override
-    CpfSpec cpf();
-    
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
-    @Override
-    CnpjSpec cnpj();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
-    @Override
-    TituloEleitoralSpec tituloEleitoral();
+    public String toString() {
+        return "TituloEleitoralBV [tituloEleitoral="+tituloEleitoral+"]";
+    }
 }
