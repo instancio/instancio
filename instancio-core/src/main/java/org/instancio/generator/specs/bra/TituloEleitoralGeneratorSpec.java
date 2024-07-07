@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators.bra;
+package org.instancio.generator.specs.bra;
 
-import org.instancio.generator.specs.bra.CnpjSpec;
-import org.instancio.generator.specs.bra.CpfSpec;
-import org.instancio.generator.specs.bra.TituloEleitoralSpec;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 
 /**
- * Provides generators for Brazilian identifiers.
+ * Spec for generating <a href="https://pt.wikipedia.org/wiki/T%C3%ADtulo_de_eleitor">
+ * Brazilian 'Titulo de Eleitor'</a> .
  *
  * @since 5.0.0
  */
-public interface BraIdSpecs extends BraIdGenerators {
+public interface TituloEleitoralGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
      * {@inheritDoc}
@@ -32,21 +31,5 @@ public interface BraIdSpecs extends BraIdGenerators {
      * @since 5.0.0
      */
     @Override
-    CpfSpec cpf();
-    
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
-    @Override
-    CnpjSpec cnpj();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
-    @Override
-    TituloEleitoralSpec tituloEleitoral();
+    TituloEleitoralGeneratorSpec nullable();
 }

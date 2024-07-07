@@ -17,6 +17,7 @@ package org.instancio.generators.bra;
 
 import org.instancio.generator.specs.bra.CnpjGeneratorSpec;
 import org.instancio.generator.specs.bra.CpfGeneratorSpec;
+import org.instancio.generator.specs.bra.TituloEleitoralGeneratorSpec;
 
 /**
  * Contains built-in generators for Brazilian identifiers.
@@ -40,4 +41,12 @@ public interface BraIdGenerators {
      * @since 5.0.0
      */
     CnpjGeneratorSpec cnpj();
+
+    /**
+     * Generates Titulo Eleitoral
+     *
+     * @return API builder reference
+     * @since 5.0.0
+     */
+    TituloEleitoralGeneratorSpec tituloEleitoral();
 }

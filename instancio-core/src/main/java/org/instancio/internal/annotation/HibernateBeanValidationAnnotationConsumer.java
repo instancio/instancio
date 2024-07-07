@@ -24,6 +24,7 @@ import org.instancio.internal.generator.domain.id.EanGenerator;
 import org.instancio.internal.generator.domain.id.IsbnGenerator;
 import org.instancio.internal.generator.domain.id.bra.CnpjGenerator;
 import org.instancio.internal.generator.domain.id.bra.CpfGenerator;
+import org.instancio.internal.generator.domain.id.bra.TituloEleitoralGenerator;
 import org.instancio.internal.generator.domain.id.pol.NipGenerator;
 import org.instancio.internal.generator.domain.id.pol.PeselGenerator;
 import org.instancio.internal.generator.domain.id.pol.RegonGenerator;
@@ -86,6 +87,9 @@ final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotation
 
         putPrimary(() -> org.hibernate.validator.constraints.br.CNPJ.class,
                 (annotation, context) -> new CnpjGenerator(context));
+
+        putPrimary(() -> org.hibernate.validator.constraints.br.TituloEleitoral.class,
+                (annotation, context) -> new TituloEleitoralGenerator(context));
 
         putPrimary(() -> org.hibernate.validator.constraints.ru.INN.class,
                 (annotation, context) -> getInnGenerator(
