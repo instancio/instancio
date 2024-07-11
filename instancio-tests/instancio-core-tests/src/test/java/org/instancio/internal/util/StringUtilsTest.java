@@ -15,11 +15,15 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.exception.InstancioApiException;
 import org.instancio.test.support.pojo.person.Gender;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,6 +54,13 @@ class StringUtilsTest {
         assertThat(StringUtils.trimToEmpty(null)).isEmpty();
         assertThat(StringUtils.trimToEmpty(" ")).isEmpty();
         assertThat(StringUtils.trimToEmpty(" foo ")).isEqualTo("foo");
+    }
+
+    @Test
+    void trimToNull() {
+        assertThat(StringUtils.trimToNull(null)).isNull();
+        assertThat(StringUtils.trimToNull("\n \r\n   \t")).isNull();
+        assertThat(StringUtils.trimToNull(" foo ")).isEqualTo("foo");
     }
 
     @Test
@@ -107,5 +118,48 @@ class StringUtilsTest {
         assertThat(StringUtils.startsWithAny("foo", "")).isTrue();
         assertThat(StringUtils.startsWithAny("foo", "x", "f", "y")).isTrue();
         assertThat(StringUtils.startsWithAny("foo", "x", "foo")).isTrue();
+    }
+
+    @Nested
+    class GetTemplatePropertiesTest {
+
+        @Test
+        void getTemplateKeys() {
+            assertResult("${a}", "a");
+            assertResult("${a}${b}", "a", "b");
+            assertResult("${a} ${b} ${a} ${c}", "a", "b", "a", "c");
+            assertResult(" $ { } $$ {{} ${a}} \t {${b} \n ${c} ", "a", "b", "c");
+            assertResult("${foo} and ${bar}", "foo", "bar");
+
+            final String[] empty = {};
+            assertResult("$(foo)", empty);
+        }
+
+        @Test
+        void empty() {
+            assertThatThrownBy(() -> StringUtils.getTemplateKeys("${}"))
+                    .isExactlyInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("invalid key \"${}\"");
+        }
+
+        @Test
+        void nested() {
+            assertThatThrownBy(() -> StringUtils.getTemplateKeys("${a} ${foo {${bar}} ${b}"))
+                    .isExactlyInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("invalid key \"${foo {${bar}\"");
+        }
+
+        @ValueSource(strings = {"${", "${foo} ${bar"})
+        @ParameterizedTest
+        void unterminated(final String template) {
+            assertThatThrownBy(() -> StringUtils.getTemplateKeys(template))
+                    .isExactlyInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("unterminated placeholder");
+        }
+
+        private void assertResult(final String input, final String... expectedKeys) {
+            final List<String> results = StringUtils.getTemplateKeys(input);
+            assertThat(results).containsExactly(expectedKeys);
+        }
     }
 }

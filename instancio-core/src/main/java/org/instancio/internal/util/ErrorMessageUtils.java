@@ -15,29 +15,42 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.feed.DataSource;
+import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.feed.SpecMethod;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.AssignmentType;
+import org.instancio.settings.FeedDataAccess;
+import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.SetterStyle;
+import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Locale;
 
 import static org.instancio.internal.util.Constants.NL;
 import static org.instancio.internal.util.Format.formatField;
+import static org.instancio.internal.util.Format.formatMethodWithFence;
 import static org.instancio.internal.util.Format.formatNode;
 import static org.instancio.internal.util.Format.methodNameWithParams;
 import static org.instancio.internal.util.Format.nodePathToRootBlock;
 import static org.instancio.internal.util.Format.withoutPackage;
 
-@SuppressWarnings({Sonar.STRING_LITERALS_DUPLICATED, "StringBufferReplaceableByString"})
+@SuppressWarnings({
+        Sonar.STRING_LITERALS_DUPLICATED,
+        "PMD.AvoidDuplicateLiterals",
+        "StringBufferReplaceableByString"
+})
 public final class ErrorMessageUtils {
     private static final int INITIAL_SB_SIZE = 1024;
 
@@ -187,11 +200,32 @@ public final class ErrorMessageUtils {
     }
 
     public static String abstractRootWithoutSubtype(final Class<?> klass) {
-        return new StringBuilder(INITIAL_SB_SIZE)
+        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
                 .append("could not create an instance of ").append(klass).append(NL)
                 .append(NL)
                 .append("Cause:").append(NL)
-                .append(NL)
+                .append(NL);
+
+        if (Feed.class.isAssignableFrom(klass)) {
+            return sb.append(" -> The specified class is an instance of ")
+                    .append(Feed.class.getName()).append(NL)
+                    .append(NL)
+                    .append("To resolve this error:").append(NL)
+                    .append(NL)
+                    .append(" -> Use the createFeed(Class) method:").append(NL)
+                    .append(NL)
+                    .append("    ExampleFeed feed = Instancio.createFeed(ExampleFeed.class);").append(NL)
+                    .append(NL)
+                    .append(" -> Or the builder API:").append(NL)
+                    .append(NL)
+                    .append("    ExampleFeed feed = Instancio.of(ExampleFeed.class)").append(NL)
+                    .append("        // snip ...").append(NL)
+                    .append("        .create();").append(NL)
+                    .toString();
+        }
+
+
+        return sb
                 .append(" -> It is an abstract class and no subtype was provided").append(NL)
                 .append(NL)
                 .append("To resolve this error:").append(NL)
@@ -525,6 +559,235 @@ public final class ErrorMessageUtils {
                 .append("  void handleZipCode(HexString annotation, StringGeneratorSpec spec) {").append(NL)
                 .append("      spec.hex().length(annotation.length());").append(NL)
                 .append("  }");
+    }
+
+    public static String invalidStringTemplate(final String pattern, final String reason) {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("invalid pattern").append(NL)
+                .append(" -> \"").append(pattern).append('"').append(NL)
+                .append(NL)
+                .append("Reason: ").append(reason)
+                .toString();
+    }
+
+    public static String feedComponentMethodNotFound(
+            final Class<?> feedClass,
+            final String componentMethodName,
+            final SpecMethod specMethodDeclaringTheAnnotation) {
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("invalid method name '").append(componentMethodName)
+                .append("' specified by the `@FunctionSpec.params` attribute in feed class:").append(NL)
+                .append(NL)
+                .append(" -> ").append(feedClass.getName()).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Check the annotation attributes of the following method:").append(NL)
+                .append(NL)
+                .append(formatMethodWithFence(specMethodDeclaringTheAnnotation.getMethod()))
+                .toString();
+    }
+
+    public static String jacksonNotOnClasspathErrorMessage() {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("JSON feeds require 'jackson-databind' (not included with Instancio) to be on the classpath").append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Add the following dependency:").append(NL)
+                .append(NL)
+                .append("    https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-databind")
+                .toString();
+    }
+
+    public static String feedDataSourceIoErrorMessage(final DataSource dataSource, final Exception ex) {
+        final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
+                .append("failed loading feed data").append(NL);
+
+        if (dataSource.getName() != null) {
+            sb.append(NL)
+                    .append(" -> Source: ").append(dataSource.getName()).append(NL);
+        }
+        return sb.append(NL)
+                .append("Root cause:").append(NL)
+                .append(NL)
+                .append(" -> ").append(getRootCause(ex))
+                .toString();
+    }
+
+    public static String feedWithoutDataSource(final Class<?> feedClass) {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("no data source provided for feed ").append(feedClass.getName()).append(NL)
+                .append(NL)
+                .append("To resolve this error, please specify a data source using any of the options below.").append(NL)
+                .append(NL)
+                .append(" -> Via the @Feed.Source annotation:").append(NL)
+                .append(NL)
+                .append("    @Feed.Source(resource = \"path/to/data/sample.csv\")").append(NL)
+                .append("    interface SampleFeed extends Feed { ... }").append(NL)
+                .append(NL)
+                .append(" -> Using the builder API:").append(NL)
+                .append(NL)
+                .append("    import org.instancio.feed.DataSource;").append(NL)
+                .append(NL)
+                .append("    SampleFeed feed = Instancio.ofFeed(SampleFeed.class)").append(NL)
+                .append("        .withDataSource(myDataSource)").append(NL)
+                .append("        .create();")
+                .toString();
+    }
+
+    public static String feedWithInvalidMethodName(
+            final Class<?> feedClass,
+            final String invalidPropertyName,
+            final Collection<String> availableProperties) {
+
+        final String properties = String.join(", ", availableProperties);
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("unmatched spec method '").append(invalidPropertyName)
+                .append("()' declared by the feed class").append(NL)
+                .append(NL)
+                .append(" -> ").append(feedClass.getName()).append(NL)
+                .append(NL)
+                .append("The property name '").append(invalidPropertyName)
+                .append("' does not map to any property in the data:").append(NL)
+                .append(NL)
+                .append(" -> [").append(properties).append(']')
+                .toString();
+    }
+
+    public static String feedDataEnd(
+            final Class<?> feedClass,
+            final Settings settings) {
+
+        final String dataAccessKey = keyDesc(Keys.FEED_DATA_ACCESS);
+        final String dataEndKey = keyDesc(Keys.FEED_DATA_END_ACTION);
+        final String currentDataAccess = enumValueDesc(settings.get(Keys.FEED_DATA_ACCESS));
+        final String curentDataEndStrategy = enumValueDesc(settings.get(Keys.FEED_DATA_END_ACTION));
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("reached end of data for feed class").append(NL)
+                .append(NL)
+                .append(" -> ").append(feedClass.getName()).append(NL)
+                .append(NL)
+                .append("The error was triggered because of the following settings:").append(NL)
+                .append(NL)
+                .append(" -> ").append(dataAccessKey).append(" ......: ").append(currentDataAccess).append(NL)
+                .append(" -> ").append(dataEndKey).append(" ..: ").append(curentDataEndStrategy).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Ensure the data source provides a sufficient number of records").append(NL)
+                .append(" -> Set ").append(dataEndKey).append(" to ")
+                .append(enumValueDesc(FeedDataEndAction.RECYCLE)).append(NL)
+                .append(" -> Set ").append(dataAccessKey).append(" to ")
+                .append(enumValueDesc(FeedDataAccess.RANDOM)).append(NL)
+                .append(NL)
+                .append("Note that the last two options may result in duplicate values being produced.")
+                .toString();
+    }
+
+    public static String invalidFunctionSpecHandlerMethod(
+            final Class<?> feedClass,
+            final Class<?> providerClass,
+            final SpecMethod parentSpecMethod) {
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("the following FunctionProvider implementation should contain exactly one method:").append(NL)
+                .append(NL)
+                .append(" -> ").append(providerClass.getName()).append(NL)
+                .append(NL)
+                .append("The provider is referenced by:").append(NL)
+                .append(NL)
+                .append(formatMethodWithFence(parentSpecMethod.getMethod())).append(NL)
+                .append(NL)
+                .append("declared by the feed class:").append(NL)
+                .append(NL)
+                .append(" -> ").append(feedClass.getName()).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Verify that the provider class contains exactly one method.").append(NL)
+                .append(NL)
+                .append(" -> Ensure the number of parameters and parameter types match the").append(NL)
+                .append("    parameters declared by the '@SpecFunction.params' attribute.").append(NL)
+                .toString();
+    }
+
+    public static String invalidSpecMethod(final Method method) {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("invalid spec method '").append(method.getName())
+                .append("()' declared by the feed class").append(NL)
+                .append(NL)
+                .append(" -> ").append(method.getDeclaringClass().getName()).append(NL)
+                .append(NL)
+                .append(formatMethodWithFence(method)).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Ensure the spec method returns a FeedSpec<T>").append(NL)
+                .append(NL)
+                .append("    // Example").append(NL)
+                .append("    FeedSpec<Integer> age();")
+                .toString();
+    }
+
+    public static String errorMappingStringToTargetType(
+            final String propertyKey,
+            final String value,
+            final Exception ex) {
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("error mapping String value to target type").append(NL)
+                .append(NL)
+                .append(" -> Property name ..: \"").append(propertyKey).append('"').append(NL)
+                .append(" -> Value ..........: \"").append(value).append('"').append(NL)
+                .append(NL)
+                .append("Root cause: ").append(getRootCause(ex))
+                .toString();
+    }
+
+    public static String errorInvokingFunctionSpecHandlerMethod(
+            final Class<?> feedClass,
+            final Class<?> providerClass,
+            final SpecMethod parentSpecMethod,
+            final Method specFunctionHandler,
+            final Exception ex) {
+
+        final String methodName = specFunctionHandler.getName();
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("exception thrown by spec method '")
+                .append(parentSpecMethod.getMethod().getName())
+                .append("()' declared by the feed class:").append(NL)
+                .append(NL)
+                .append(" -> ").append(feedClass.getName()).append(NL)
+                .append(NL)
+                .append("The error was caused by calling the method declared by ")
+                .append(withoutPackage(providerClass)).append(':').append(NL)
+                .append(NL)
+                .append(formatMethodWithFence(specFunctionHandler)).append(NL)
+                .append(NL)
+                .append("Root cause: ").append(getRootCause(ex)).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Verify that the spec properties specified by the '@FunctionSpec.params' attribute").append(NL)
+                .append("    match the number of parameters and parameter types defined by the '")
+                .append(methodName).append("' method").append(NL)
+                .append(NL)
+                .append(" -> Ensure the method does not throw an exception")
+                .toString();
+    }
+
+    private static String keyDesc(final SettingKey<?> key) {
+        final String keyName = key.propertyKey().replace('.', '_').toUpperCase(Locale.ROOT);
+        return "Keys." + keyName;
+    }
+
+    private static String enumValueDesc(final Enum<?> e) {
+        return String.format("%s.%s", e.getClass().getSimpleName(), e.name());
     }
 
     private static Throwable getRootCause(final Throwable t) {

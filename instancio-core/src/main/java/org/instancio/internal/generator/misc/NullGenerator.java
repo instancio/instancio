@@ -16,10 +16,11 @@
 package org.instancio.internal.generator.misc;
 
 import org.instancio.Random;
+import org.instancio.feed.FeedSpec;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
 
-public class NullGenerator extends AbstractGenerator<Object> {
+public class NullGenerator<T> extends AbstractGenerator<T> implements FeedSpec<T> {
 
     public NullGenerator(final GeneratorContext context) {
         super(context);
@@ -31,7 +32,13 @@ public class NullGenerator extends AbstractGenerator<Object> {
     }
 
     @Override
-    protected Object tryGenerateNonNull(final Random random) {
+    public NullGenerator<T> nullable() {
+        super.nullable();
+        return this;
+    }
+
+    @Override
+    protected T tryGenerateNonNull(final Random random) {
         return null;
     }
 }

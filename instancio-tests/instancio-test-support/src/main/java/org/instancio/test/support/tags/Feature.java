@@ -20,6 +20,7 @@ package org.instancio.test.support.tags;
  */
 public enum Feature {
     AFTER_GENERATE,
+    APPLY_FEED,
     ARRAY_GENERATOR_LENGTH,
     ARRAY_GENERATOR_MAX_LENGTH,
     ARRAY_GENERATOR_MIN_LENGTH,
@@ -60,6 +61,7 @@ public enum Feature {
     CYCLIC,
     EMIT_GENERATOR,
     ENUM_GENERATOR,
+    FEED,
     FILE_GENERATOR,
     FILTER,
     GENERATE,  // API generate() method

@@ -38,6 +38,7 @@ import org.instancio.TypeSelectorBuilder;
 import org.instancio.ValueOf;
 import org.instancio.ValueOfOriginDestination;
 import org.instancio.When;
+import org.instancio.feed.Feed;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.util.Sonar;
 import org.instancio.test.support.pojo.basic.StringHolder;
@@ -47,6 +48,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.given;
 import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.allStrings;
@@ -406,6 +408,19 @@ class ApiContractTest {
                 final ValueOf valueOf = valueOf(origin);
                 final Assignment assignment = valueOf.set("foo");
             }
+        }
+    }
+
+    @Nested
+    class FeedApiTest {
+        @Test
+        void feedSpecAccessorsInterfaceShouldNotBePublic() {
+            // Feed extends FeedSpecAccessors which is package-private
+            // as we don't want to expose this interface as a public API
+            final Class<?> superclass = Feed.class.getInterfaces()[0];
+
+            assertThat(superclass.getName()).isEqualTo("org.instancio.feed.FeedSpecAccessors");
+            assertThatClass(superclass).isNotPublic();
         }
     }
 }

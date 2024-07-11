@@ -15,7 +15,9 @@
  */
 package org.instancio.junit;
 
-import lombok.Setter;
+import org.instancio.feed.Feed;
+import org.instancio.feed.FeedSpec;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 
 import java.util.List;
@@ -46,15 +48,6 @@ class InstancioSourceTest {
 
     @InstancioSource
     @ParameterizedTest
-    void twoArgs(final First first, final Second second) {
-        assertThat(first).isNotNull();
-        assertThat(second).isNotNull();
-        assertThat(first.foo).isNotBlank();
-        assertThat(second.bar).isNotBlank();
-    }
-
-    @InstancioSource
-    @ParameterizedTest
     void list(final List<String> list) {
         assertThat(list).isNotEmpty().allSatisfy(s -> assertThat(s).isNotBlank());
     }
@@ -67,51 +60,77 @@ class InstancioSourceTest {
         assertThat(map.values()).allSatisfy(i -> assertThat(i).isNotZero());
     }
 
-    @InstancioSource
-    @ParameterizedTest
-    void customGeneric(final Generic<String, UUID> arg) {
-        assertThat(arg).isNotNull();
-        assertThat(arg.first).isNotBlank();
-        assertThat(arg.second).isNotEmpty().doesNotContainNull();
+    @Nested
+    class DifferentTypesWithSameFieldsTest {
+        //@formatter:off
+        private static class Entity { int id; boolean valid; String name; UUID group; }
+        private static class Dto    { int id; boolean valid; String name; UUID group; }
+        //@formatter:on
+
+        @InstancioSource
+        @ParameterizedTest
+        void differentTypesWithSameFields(final Entity entity, final Dto dto) {
+            assertThat(entity).isNotNull();
+            assertThat(dto).isNotNull();
+            assertThat(entity).usingRecursiveComparison().isNotEqualTo(dto);
+        }
     }
 
-    @InstancioSource
-    @ParameterizedTest
-    void differentTypesWithSameFields(final Entity entity, final Dto dto) {
-        assertThat(entity).isNotNull();
-        assertThat(dto).isNotNull();
-        assertThat(entity).usingRecursiveComparison().isNotEqualTo(dto);
+    @Nested
+    class TwoArgsTest {
+        //@formatter:off
+        private static class First  { String foo; }
+        private static class Second { String bar; }
+        //@formatter:on
+
+        @InstancioSource
+        @ParameterizedTest
+        void twoArgs(final First first, final Second second) {
+            assertThat(first).isNotNull();
+            assertThat(second).isNotNull();
+            assertThat(first.foo).isNotBlank();
+            assertThat(second.bar).isNotBlank();
+        }
     }
 
-    @Setter
-    static class First {
-        String foo;
+    @Nested
+    class GenericsTest {
+        private static class Generic<T, E> {
+            T first;
+            List<E> second;
+        }
+
+        @InstancioSource
+        @ParameterizedTest
+        void customGeneric(final Generic<String, UUID> arg) {
+            assertThat(arg).isNotNull();
+            assertThat(arg.first).isNotBlank();
+            assertThat(arg.second).isNotEmpty().doesNotContainNull();
+        }
     }
 
-    @Setter
-    static class Second {
-        String bar;
-    }
+    @Nested
+    class FeedTest {
+        private static class Pojo {
+            String value;
+        }
 
-    @Setter
-    static class Generic<T, E> {
-        T first;
-        List<E> second;
-    }
+        @Feed.Source(string = "id\n123")
+        private interface SampleFeed extends Feed {
+            FeedSpec<Integer> id();
+        }
 
-    @Setter
-    static class Entity {
-        int id;
-        boolean valid;
-        String name;
-        UUID group;
-    }
+        @InstancioSource
+        @ParameterizedTest
+        void feedSpec(final SampleFeed feed) {
+            assertThat(feed.id().get()).isEqualTo(123);
+        }
 
-    @Setter
-    static class Dto {
-        int id;
-        boolean valid;
-        String name;
-        UUID group;
+        @InstancioSource
+        @ParameterizedTest
+        void feedSpecAndPojo(final SampleFeed feed, final Pojo pojo) {
+            assertThat(feed.id().get()).isEqualTo(123);
+            assertThat(pojo.value).isNotBlank();
+        }
     }
 }

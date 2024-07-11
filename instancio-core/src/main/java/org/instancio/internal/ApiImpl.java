@@ -25,6 +25,8 @@ import org.instancio.Random;
 import org.instancio.Result;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
+import org.instancio.feed.Feed;
+import org.instancio.feed.FeedProvider;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
@@ -154,6 +156,18 @@ public class ApiImpl<T> implements InstancioApi<T> {
     @Override
     public InstancioApi<T> withUnique(final TargetSelector selector) {
         modelContextBuilder.withUnique(selector);
+        return this;
+    }
+
+    @Override
+    public InstancioApi<T> applyFeed(final TargetSelector selector, final Feed feed) {
+        modelContextBuilder.applyFeed(selector, feed);
+        return this;
+    }
+
+    @Override
+    public InstancioApi<T> applyFeed(final TargetSelector selector, final FeedProvider provider) {
+        modelContextBuilder.applyFeed(selector, provider);
         return this;
     }
 

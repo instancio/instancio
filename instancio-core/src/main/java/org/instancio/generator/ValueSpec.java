@@ -22,6 +22,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -51,7 +52,7 @@ import java.util.stream.Stream;
  * @param <T> the type of generated values
  * @since 2.6.0
  */
-public interface ValueSpec<T> extends GeneratorSpec<T> {
+public interface ValueSpec<T> extends GeneratorSpec<T>, Supplier<T> {
 
     /**
      * Generates a single value.
@@ -60,6 +61,7 @@ public interface ValueSpec<T> extends GeneratorSpec<T> {
      * @since 2.6.0
      */
     @SuppressWarnings("unchecked")
+    @Override
     default T get() {
         final Random random = ((AbstractGenerator<?>) this).getContext().random();
         return ((Generator<T>) this).generate(random);

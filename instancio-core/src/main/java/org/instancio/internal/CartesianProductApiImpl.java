@@ -24,6 +24,8 @@ import org.instancio.OnCompleteCallback;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
+import org.instancio.feed.Feed;
+import org.instancio.feed.FeedProvider;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
@@ -158,6 +160,18 @@ public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
     @Override
     public CartesianProductApi<T> setBlank(final TargetSelector selector) {
         modelContextBuilder.setBlank(selector);
+        return this;
+    }
+
+    @Override
+    public CartesianProductApi<T> applyFeed(final TargetSelector selector, final Feed feed) {
+        modelContextBuilder.applyFeed(selector, feed);
+        return this;
+    }
+
+    @Override
+    public CartesianProductApi<T> applyFeed(final TargetSelector selector, final FeedProvider provider) {
+        modelContextBuilder.applyFeed(selector, provider);
         return this;
     }
 

@@ -16,6 +16,7 @@
 package org.instancio.internal;
 
 public enum ApiMethodSelector {
+    APPLY_FEED("applyFeed()"),
     ASSIGN_DESTINATION("assign() destination"),
     ASSIGN_ORIGIN("assign() origin"),
     GENERATE("generate(), set(), or supply()"),

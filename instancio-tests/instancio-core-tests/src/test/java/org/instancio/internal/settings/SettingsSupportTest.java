@@ -19,6 +19,10 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.BeanValidationTarget;
+import org.instancio.settings.FeedDataAccess;
+import org.instancio.settings.FeedDataEndAction;
+import org.instancio.settings.FeedDataTrim;
+import org.instancio.settings.FeedFormatType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
 import org.instancio.settings.OnSetFieldError;
@@ -55,6 +59,10 @@ class SettingsSupportTest {
                 AfterGenerate.class,
                 AssignmentType.class,
                 BeanValidationTarget.class,
+                FeedDataAccess.class,
+                FeedDataEndAction.class,
+                FeedDataTrim.class,
+                FeedFormatType.class,
                 Mode.class,
                 OnSetFieldError.class,
                 OnSetMethodError.class,

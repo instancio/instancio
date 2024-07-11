@@ -20,9 +20,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class NullGeneratorTest extends AbstractGeneratorTestTemplate<Object, NullGenerator> {
+class NullGeneratorTest extends AbstractGeneratorTestTemplate<Object, NullGenerator<Object>> {
 
-    private final NullGenerator generator = new NullGenerator(getGeneratorContext());
+    private final NullGenerator<Object> generator = new NullGenerator<>(getGeneratorContext());
 
     @Override
     protected String getApiMethod() {
@@ -30,7 +30,7 @@ class NullGeneratorTest extends AbstractGeneratorTestTemplate<Object, NullGenera
     }
 
     @Override
-    protected NullGenerator generator() {
+    protected NullGenerator<Object> generator() {
         return generator;
     }
 

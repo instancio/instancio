@@ -64,6 +64,17 @@ public final class Constants {
      */
     public static final int MAX_CODE_POINT = 0x3FFFF;
 
+    /**
+     * Internal selector with the lowest priority.
+     */
+    public static final int BLANK_SELECTOR_PRIORITY = Integer.MAX_VALUE;
+
+    /**
+     * Higher priority than blank selectors to allow overriding blank
+     * fields with the data from a feed.
+     */
+    public static final int FEED_SELECTOR_PRIORITY = BLANK_SELECTOR_PRIORITY - 1;
+
     public static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
 
     public static final LocalDateTime DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0);
