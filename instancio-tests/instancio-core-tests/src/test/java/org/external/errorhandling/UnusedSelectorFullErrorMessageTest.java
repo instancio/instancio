@@ -22,6 +22,7 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
+import org.instancio.feed.Feed;
 import org.instancio.generators.Generators;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
@@ -85,6 +86,9 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                 .setBlank(Select.all(Bar.class))
                 // withUnique() is implemented using filter()
                 .withUnique(Select.all(YearMonth.class))
+                .applyFeed(Select.all(String.class), Instancio.ofFeed(Feed.class)
+                        .withDataSource(source -> source.ofString("value\nfoo"))
+                        .create())
                 .withSetting(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
                 .create();
     }
@@ -97,61 +101,65 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
 
                  -> Unused selector in: ignore()
                  1: all(YearMonth)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:62)
-                 2: field(Bar, "barValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:63)
+                 2: field(Bar, "barValue")
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:64)
                  3: types().annotated(Pojo).annotated(PersonName)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:74)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:75)
                  4: types(Predicate<Class>).within(scope(Person))
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:76)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:77)
 
                  -> Unused selector in: withNullable()
                  1: all(BigDecimal)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:64)
-                 2: field(Foo, "fooValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:65)
-                 3: setter(Person, "setName(String)")
+                 2: field(Foo, "fooValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:66)
+                 3: setter(Person, "setName(String)")
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:67)
 
                  -> Unused selector in: generate(), set(), or supply()
                  1: all(Year).within(scope(types().of(Year)))
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:67)
-                 2: field(Baz, "bazValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:68)
-                 3: field(StringHolder, "value")
+                 2: field(Baz, "bazValue")
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:69)
+                 3: field(StringHolder, "value")
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:70)
                  4: fields().named("foo")
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:75)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:76)
                  5: fields(Predicate<Field>)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:77)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:78)
                  6: setter(Person, "setAge(int)")
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:73)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:74)
                  7: types().of(Timestamp)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:72)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:73)
 
                  -> Unused selector in: onComplete()
                  1: all(ZonedDateTime)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:71)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:72)
                  2: field(IntegerHolder, "primitive")
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:70)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:71)
 
                  -> Unused selector in: assign() origin
                  1: field(StringsAbc, "a")
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:78)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:79)
 
                  -> Unused selector in: assign() destination
                  1: field(StringsAbc, "c")
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:79)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:80)
 
                  -> Unused selector in: setModel()
                  1: types(Predicate<Class>)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:82)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:83)
 
                  -> Unused selector in: filter() or withUnique()
                  1: all(Bar)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:83)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:84)
                  2: all(YearMonth)
-                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:87)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:88)
+
+                 -> Unused selector in: applyFeed()
+                 1: all(String)
+                    at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:89)
 
                 This error aims to highlight potential problems and help maintain clean test code.
 

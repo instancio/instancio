@@ -16,6 +16,7 @@
 package org.instancio.settings;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.feed.Feed;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
@@ -473,6 +474,75 @@ public final class Keys {
      */
     public static final SettingKey<Boolean> OVERWRITE_EXISTING_VALUES = registerRequiredNonAdjustable(
             "overwrite.existing.values", Boolean.class, true);
+
+    /**
+     * Specifies whether {@link Feed} data is retrieved sequentially or randomly;
+     * default is {@link FeedDataAccess#SEQUENTIAL}; property name {@code feed.data.access}.
+     *
+     * @see FeedDataAccess
+     * @see #FEED_DATA_END_ACTION
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<FeedDataAccess> FEED_DATA_ACCESS = registerRequiredNonAdjustable(
+            "feed.data.access", FeedDataAccess.class, FeedDataAccess.SEQUENTIAL);
+
+    /**
+     * Specifies the behaviour when {@link Feed} end of data has been reached
+     * (only applicable if {@link #FEED_DATA_ACCESS} is set to {@link FeedDataAccess#SEQUENTIAL});
+     * default is {@link FeedDataEndAction#FAIL}; property name {@code feed.data.end.action}.
+     *
+     * @see FeedDataEndAction
+     * @see #FEED_DATA_ACCESS
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<FeedDataEndAction> FEED_DATA_END_ACTION = registerRequiredNonAdjustable(
+            "feed.data.end.action", FeedDataEndAction.class, FeedDataEndAction.FAIL);
+
+    /**
+     * Specifies the trimming mode for feed data;
+     * default is {@link FeedDataTrim#UNQUOTED}; property name {@code feed.data.trim}.
+     *
+     * @see FeedDataTrim
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<FeedDataTrim> FEED_DATA_TRIM = registerRequiredNonAdjustable(
+            "feed.data.trim", FeedDataTrim.class, FeedDataTrim.UNQUOTED);
+
+    /**
+     * Specifies the feed format type;
+     * default is {@link FeedFormatType#CSV}; property name {@code feed.format.type}.
+     *
+     * @see FeedFormatType
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<FeedFormatType> FEED_FORMAT_TYPE = registerRequiredNonAdjustable(
+            "feed.format.type", FeedFormatType.class, FeedFormatType.CSV);
+
+    /**
+     * Specifies the tag key for a {@link Feed};
+     * default is {@code null}; property name {@code feed.tag.key}.
+     *
+     * @see #FEED_TAG_VALUE
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<String> FEED_TAG_KEY = register(
+            "feed.tag.key", String.class, null, null, true, false);
+
+    /**
+     * Specifies the default tag value for a {@link Feed};
+     * default is {@code null} (includes all tags); property name {@code feed.tag.value}.
+     *
+     * @see #FEED_TAG_KEY
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<String> FEED_TAG_VALUE = register(
+            "feed.tag.value", String.class, null, null, true, false);
 
     /**
      * Specifies the seed value;

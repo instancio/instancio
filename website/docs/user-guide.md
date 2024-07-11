@@ -226,20 +226,28 @@ for more details on blank objects.
 
 ### Creating Simple Values
 
-Instancio provides the `Instancio.gen()` method for generating simple value types such as strings, numbers, dates, and so on.
-This class can generate:
+Instancio offers the `Instancio.gen()` method to generate simple value types
+like strings, numbers, and dates. This method serves as the entry point for
+accessing built-in generators. All generators available through `Instancio.gen()`
+implement the {{ ValueSpec }} interface, which provides the following methods:
 
-- a single value using `get()` method
-- a list of values using the `list(int)` method
+| Method           | Description                                                         |
+|------------------|---------------------------------------------------------------------|
+| `get()`          | generates a single value                                            |
+| `list(int size)` | generates a list of values of given size                            |
+| `stream()`       | generates an infinite stream of values (requires calling `limit()`) |
+| `map(Function)`  | returns the value after applying the function                       |
+| `nullable()`     | indicates that a `null` may be generated                            |
 
-```java title="Generate a single value"
+
+```java linenums="1" title="Usage examples"
 URL url = Instancio.gen().net().url().get();
 
-String randomChoice = Instancio.gen().oneOf("foo", "bar", "baz").get();
-```
+URI uri = Instancio.gen().net().uri().nullable().get();
 
-```java title="Generate a list of values"
-List<LocalDate> pastDates = Instancio.gen().temporal().localDate().past().list(5);
+String randomChoice = Instancio.gen().oneOf("foo", "bar", "baz").get();
+
+List<LocalDate> dates = Instancio.gen().temporal().localDate().future().list(5);
 
 List<String> uuids = Instancio.gen().text().uuid().upperCase().withoutDashes().list(5);
 ```
@@ -2751,6 +2759,679 @@ whereas the `@Min` and `@Max` limit the range to `[1, 7]`.
 Since the `@Min` and `@Max` annotations take precedence, the `precision` attribute will be ignored,
 and the generated `value` will be between `1.000` and `7.000`, inclusive, and have the specified scale of `3`.
 
+# Data Feeds
+
+!!! info "Experimental API `@since 5.0.0`"
+
+Some tests are better expressed when test data is defined in an external resource.
+This is especially true when tests require a large or complex dataset, making it impractical
+to define the data within the test class. The {{ Feed }} interface has been added to simplify working
+with data from external sources.
+
+There are several methods for creating a feed, detailed in the following sections.
+For demonstration purposes, we will use a `persons.csv` file located at the root
+of the classpath (e.g., `src/test/resources/persons.csv`):
+
+!!! info "The sample data is referenced in all subsequent examples."
+
+```csv title="persons.csv (formatted for clarity)"
+firstName, lastName, dateOfBirth, gender
+John,      Doe,      2001-11-22,  MALE
+Alice,     Smith,    1977-07-15,  FEMALE
+Bob,       Brown,    1999-12-01,  MALE
+# snip...
+```
+
+and the `Person` class defined as:
+
+```java linenums="1"
+// Getters and setters omitted for brevity
+class Person {
+    Long id;
+    String firstName;
+    String lastName;
+    LocalDate dateOfBirth;
+    Gender gender;
+}
+```
+
+## Using `applyFeed()`
+
+The `applyFeed()` method allows creating a feed using the `FeedProvider` API
+and mapping the feed data to a POJO or a `record` using a selector:
+
+```java linenums="1"
+applyFeed(TargetSelector, FeedProvider)
+```
+
+Here's an example that maps data from the `persons.csv` file to `Person` objects:
+
+```java linenums="1"
+List<Person> persons = Instancio.ofList(Person.class)
+    .size(10)
+    .applyFeed(all(Person.class), feed -> feed.ofResource("persons.csv"))
+    .create();
+
+// Output:
+// [Person[id=1083, firstName="John", lastName="Doe", dateOfBirth=2001-11-22, gender=MALE],
+//  Person[id=9485, firstName="Alice", lastName="Smith", dateOfBirth=1977-07-15, gender=FEMALE],
+//  Person[id=3576, firstName="Bob", lastName="Brown", dateOfBirth=1999-12-01, gender=MALE],
+//  ...snip...]
+```
+
+The mapping works as follows:
+
+- Data properties are mapped to matching field names declared by the class.
+- Data properties that do not map to any field declared by the class are ignored.
+- Class fields that do not have a corresponding property in the data file are populated
+with random values (such as the `id` field in the previous example).
+
+## Custom Feeds
+
+Custom feeds can be created by extending the {{ Feed }} interface:
+
+```java linenums="1"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {}
+```
+
+Defining a custom feed allows reusing it across multiple tests,
+avoiding the need to hard-code the file name:
+
+```java linenums="1" hl_lines="2"
+List<Person> persons = Instancio.ofList(Person.class)
+    .applyFeed(all(Person.class), feed -> feed.of(PersonFeed.class))
+    .create();
+```
+
+In addition to passing the` PersonFeed` class to the `applyFeed()` method,
+we can also instantiate an instance of the feed using the methods below.
+The first method is a shorthand API, while the second is a builder that can be used
+to customise an instance of a feed:
+
+
+```java linenums="1"
+Instancio.createFeed(Class<F> feedClass)
+Instancio.ofFeed(Class<F> feedClass).create()
+```
+
+```java linenums="1" title="An example of creating a feed instance"
+PersonFeed personFeed = Instancio.createFeed(PersonFeed.class);
+```
+
+While `PersonFeed` does not declare any methods, it inherits several convenience methods
+from `Feed` for accessing specific data properties, such as the `lastName`.
+For example, to create an instance of the `PersonFeed` and populate only the last names:
+
+```java linenums="1" hl_lines="1 4"
+PersonFeed personFeed = Instancio.createFeed(PersonFeed.class);
+
+List<Person> persons = Instancio.ofList(Person.class)
+    .generate(field(Person::getLastName), personFeed.stringSpec("lastName"))
+    .create();
+```
+
+The `stringSpec()` method is an example of a "feed spec",
+which will be described in more detail in the next section.
+
+## Feed Specs
+
+The `Feed` interface provides various methods for retrieving data.
+These methods return a `FeedSpec<T>` and automatically convert values to the specified type `T`
+(see [Default String Conversion](#default-string-conversion) for the list of supported types):
+
+```java
+FeedSpec<String> stringSpec(String propertyName);
+FeedSpec<Boolean> booleanSpec(String propertyName);
+FeedSpec<Integer> intSpec(String propertyName);
+// ...
+```
+
+!!! note "From here on, we will refer to methods that return a `FeedSpec` as _feed specs_."
+
+In addition to the built-in methods, Instancio supports defining custom feed specs.
+By convention, method names automatically map to the corresponding properties in the data feed.
+
+```java linenums="1"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+
+    FeedSpec<String> lastName();
+
+    FeedSpec<Integer> age();
+}
+```
+
+By declaring an explicit method such as `lastName()`, we can avoid calling
+`stringSpec("lastName")` with a hard-coded property name.
+
+```java linenums="1" hl_lines="4"
+PersonFeed personFeed = Instancio.createFeed(PersonFeed.class);
+
+List<Person> persons = Instancio.ofList(Person.class)
+    .generate(field(Person::getLastName), personFeed.lastName())
+    .create();
+```
+
+To summarise, feed data can be accessed using:
+
+- built-in feed spec methods: `stringSpec("lastName")`, `intSpec("age")`
+- user-defined feed spec methods: `lastName()`, `age()`
+
+### Using Feed Specs
+
+The `FeedSpec` type supports a couple of different use cases.
+Under the hood, the `FeedSpec` type is an implementation of a `Generator`.
+Therefore, it can be passed to the `supply()` and `generate()` methods as demonstrated earlier.
+Moreover, the `FeedSpec` interface extends {{ ValueSpec }}, which
+provides methods such as `get()` and `list()` for generating values:
+
+```java linenums="1"
+PersonFeed personFeed = Instancio.createFeed(PersonFeed.class);
+
+String firstName = personFeed.firstName().get(); // John
+
+List<String> firstNamesList = personFeed.firstName().list(10); // [John, Alice, Bob, ...]
+
+int yearOfBirth = personFeed.dateOfBirth().map(LocalDate::getYear);
+```
+
+!!! info "See [Creating Simple Values](#creating-simple-values) for a summary of `ValueSpec` methods."
+
+In addition, feed spec methods support the following annotations:
+
+- [`@DataSpec`](#dataspec)
+- [`@TemplateSpec`](#templatespec)
+- [`@GeneratedSpec`](#generatedspec)
+- [`@FunctionSpec`](#functionspec)
+- [`@WithStringMapper`](#withstringmapper)
+- [`@WithPostProcessor`](#withpostprocessor)
+- [`@NullableSpec`](#nullablespec)
+
+### `@DataSpec`
+
+This annotation allows mapping a data property using the annotation attribute instead
+of the spec method name. This decouples method names from specific data properties:
+
+```java linenums="1" hl_lines="3"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+    @DataSpec("lastName")
+    FeedSpec<String> surname();
+}
+```
+!!! attention ""
+    <lnum>3</lnum> Specifies that the `surname()` method corresponds to the `lastName` property in the data feed.
+
+This approach removes the requirement for method names to match exact data property names.
+
+### `@TemplateSpec`
+
+The `@TemplateSpec` annotation enables the definition of spec methods using string templates with `${placeholders}`:
+
+```java linenums="1" hl_lines="6"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+    @DataSpec("lastName")
+    FeedSpec<String> surname();
+
+    @TemplateSpec("Hello ${firstName} ${surname}")
+    FeedSpec<String> greeting();
+}
+```
+
+In the example above, placeholders like `${firstName}` and `${surname}` can directly map
+to data properties or other feed spec method names.
+
+When invoking the `greeting()` method with the `persons.csv` data defined earlier,
+it produces the following output:
+
+```java linenums="1"
+PersonFeed personFeed = Instancio.createFeed(PersonFeed.class);
+
+personFeed().greeting().get(); // Hello John Doe
+personFeed().greeting().get(); // Hello Alice Smith
+// snip...
+```
+
+### `@GeneratedSpec`
+
+The `@GeneratedSpec` annotation allows defining feed specs that generate data not present
+in the data file, but rather by using a specified generator.
+
+Here's an example using `@GeneratedSpec` to generate random `lastModified` values that are in the past:
+
+```java linenums="1" hl_lines="4"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+
+    @GeneratedSpec(PastInstantGenerator.class)
+    FeedSpec<Instant> lastModified();
+
+    class PastInstantGenerator implements Generator<Instant> {
+        @Override
+        public Instant generate(Random random) {
+            long nanosAgo = random.longRange(1, Long.MAX_VALUE);
+            return Instant.now().minusNanos(nanosAgo);
+        }
+    }
+}
+```
+
+In this example, the `lastModified()` method in `PersonFeed` uses `@GeneratedSpec`
+to specify `PastInstantGenerator` as the generator for `Instant` values.
+This approach allows for generation of data that complements existing data in the feed.
+
+### `@FunctionSpec`
+
+The `@FunctionSpec` annotation enables combining inputs from one or more data properties
+or spec methods to produce a result using a specified `FunctionProvider`.
+It has two attributes:
+
+- `params` - specifies the names of data properties or spec methods used as inputs.
+- `provider` - refers to a class implementing `FunctionProvider`, which processes inputs and returns a result.
+
+For example, the following snippet generates a person's bio from
+the `firstName`, `lastName`, and `dateOfBirth` properties:
+
+```java linenums="1" hl_lines="4 9"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+
+    @FunctionSpec(params = {"firstName", "lastName", "dateOfBirth"}, provider = BioProvider.class)
+    FeedSpec<String> bio();
+
+    class BioProvider implements FunctionProvider {
+
+        String describePerson(String firstName, String lastName, LocalDate dateOfBirth) {
+            int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
+            return String.format("%s %s is %d years old", firstName, lastName, age);
+        }
+    }
+}
+```
+
+The `@FunctionSpec.provider` annotation attribute is a reference to a class implementing the `FunctionProvider`.
+The `FunctionProvider` implementations must have exactly one method matching the `@FunctionSpec.params`.
+
+Additionally, `org.instancio.Random` can be declared as the last parameter if randomisation is required.
+For instance, the method declared by `BioProvider` can also be defined as:
+
+```java linenums="1"
+String describePerson(String firstName, String lastName, LocalDate dateOfBirth, Random random) {
+    // ...
+}
+```
+
+where the `random` instance can be used to randomise the output (if necessary) with the usual
+reproducibility guarantees.
+
+!!! warning "If `Random` is declared, it must be the last parameter."
+
+### `@WithStringMapper`
+
+This annotation allows you to specify a custom `Function` for converting string
+values to a type that is not supported out of the box.
+
+For example, suppose we need a specific property as a byte array:
+
+```java linenums="1" hl_lines="4 5"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+
+    @WithStringMapper(StringByteArrayMapper.class)
+    FeedSpec<byte[]> firstName();
+
+    class StringByteArrayMapper implements Function<String, ByteArray> {
+        public String process(String input) {
+            return input.getBytes();
+        }
+    }
+}
+```
+!!! attention ""
+    <lnum>4</lnum> Specifies the function class for the mapping.<br/>
+    <lnum>5</lnum> The type `byte[]` is the type returned by the mapping function.<br/>
+
+`@WithStringMapper` can also be used with methods annotated with `@DataSpec`:
+
+```java linenums="1" hl_lines="4 8"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+
+    FeedSpec<String> firstName();
+
+    @WithStringMapper(StringByteArrayMapper.class)
+    @DataSpec("firstName")
+    FeedSpec<byte[]> firstNameAsBytes();
+}
+```
+
+!!! warning "`@WithStringMapper` is ignored when applied to `@FunctionSpec`, `@GeneratedSpec`, or `@TemplateSpec` spec methods."
+
+
+### `@WithPostProcessor`
+
+This annotation enables post-processing of values returned by feed specs using
+an implementation of the `PostProcessor` interface:
+
+```java linenums="1"
+public interface PostProcessor<T> {
+    T process(T input, Random random);
+}
+```
+
+Using the `PersonFeed` as an example, a post-processor can be used to convert names to uppercase:
+
+```java linenums="1"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+
+    @WithPostProcessor(UpperCaseConverter.class)
+    FeedSpec<String> firstName();
+
+    class UpperCaseConverter implements PostProcessor<String> {
+        public String process(String input, Random random) {
+            return input.toUpperCase();
+        }
+    }
+}
+```
+
+Invoking the `firstName()` method using the `persons.csv` defined earlier produces
+the following output:
+
+```java linenums="1"
+PersonFeed personFeed = Instancio.createFeed(PersonFeed.class);
+
+personFeed().firstName().list(3); // [JOHN, ALICE, BOB]
+```
+
+The `@WithPostProcessor` annotation can be combined with any other annotation
+described earlier. In addition, a spec method can define multiple post-processors.
+This is shown in the following example, where two post-processors
+are applied to the `@TemplateSpec`:
+
+```java linenums="1"
+@WithPostProcessor({UpperCaseConverter.class, QuoteAppener.class})
+@TemplateSpec("${firstName} ${lastName}")
+FeedSpec<String> fullName();
+```
+
+The above snippet will result in the following output:
+
+```java linenums="1"
+personFeed().fullName().list(3); // ["JOHN DOE", "ALICE SMITH", "BOB BROWN"]
+```
+
+!!! info "Post-processors can also be used for fuzzing the data using the `Random` instance provided as the second argument."
+
+
+### `@NullableSpec`
+
+The `@NullableSpec` annotation is used to indicate that specific feed specs can return null values.
+This annotation can be combined with any of the other annotations mentioned earlier.
+When a feed spec is marked as nullable, its corresponding method may randomly produce null values.
+For example:
+
+```java linenums="1"
+@NullableSpec
+FeedSpec<Gender> gender();
+```
+
+Invoking the `gender()` method may yield results like:
+
+```java linenums="1"
+personFeed().gender().get(); // MALE
+personFeed().gender().get(); // null
+// snip...
+```
+
+This allows for variability in data generation scenarios where `null` values are valid or desired outputs.
+
+## Feed Configuration
+
+This section outlines configuration options available for feeds.
+Configuration can be specified through (in order of precedence, from highest to lowest):
+
+- **Builder API** during feed creation.
+- **Annotations** within a custom feed interface.
+- **Settings** via the `Settings` class or `instancio.properties`.
+
+### Feed Data Source
+
+All feeds require a data source to be specified.
+For custom feeds that extend the `Feed` interface, this can be achieved using the `@Feed.Source` annotation.
+Alternatively, the data source can be specified (or overridden) using the builder API.
+This table summarises the options:
+
+| `@Feed.Source`<br/> attribute | Builder API       | Description                                  |
+|-------------------------------|-------------------|----------------------------------------------|
+| `string`                      | `ofString()`      | Provides data as a `String`                  |
+| `file`                        | `ofFile()`        | Specifies the path to a file                 |
+| `resource`                    | `ofResource()`    | Refers to a classpath resource               |
+| `-`                           | `ofInputStream()` | Provides data as an `InputStream`            |
+| `-`                           | `of(Class)`       | Uses a custom Feed class with `@Feed.Source` |
+
+It's important to note that the builder API can override the data source specified by `@Feed.Source`.
+For example, consider the `PersonFeed` interface defined with a default resource:
+
+```java linenums="1" hl_lines="1"
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+    // feed spec methods...
+}
+```
+
+To reuse `PersonFeed` with an alternative data source:
+
+```java linenums="1" hl_lines="2 6"
+PersonFeed personFeed = Instancio.ofFeed(PersonFeed.class)
+    .withDataSource(source -> source.ofResource("another-persons.csv"))
+    .create();
+
+List<Person> persons = Instancio.ofList(Person.class)
+    .applyFeed(all(Person.class), personFeed)
+    .create();
+```
+!!! attention ""
+    <lnum>2</lnum> Specify an alternative resource.<br/>
+    <lnum>6</lnum> `Person` data will be populated using `another-persons.csv`.<br/>
+
+
+The `applyFeed()` method also supports specifying the data source directly,
+without creating a custom `Feed` class:
+
+```java linenums="1"
+Path feedPath = Paths.get("/path/to/persons.csv");
+
+Person person = Instancio.of(Person.class)
+    .applyFeed(all(Person.class), feed -> feed.ofFile(feedPath))
+    .create();
+```
+
+### Feed Data Access
+
+All the examples above produced feed data in the same order as they are defined
+in the `persons.csv` data file. This behaviour is controlled by the
+`Keys.FEED_DATA_ACCESS` setting which offers two options:
+
+- `FeedDataAccess.RANDOM` - data is provided in random order.
+- `FeedDataAccess.SEQUENTIAL` - data is provided in the order it appears in the feed (default behaviour).
+
+The default setting can be configured via `Settings` or globally in `instancio.properties`.
+
+!!! tip "When `SEQUENTIAL` mode is selected, consider setting `Keys.FEED_DATA_END_ACTION` to define how the end of the data feed should be handled."
+
+When extending the `Feed` interface, the behaviour can be specified using the `@Feed.DataAccess` annotation,
+which takes precedence over settings:
+
+```java linenums="1" hl_lines="1"
+@Feed.DataAccess(FeedDataAccess.RANDOM)
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {}
+```
+
+Additionally, the behaviour can be overridden using the builder API when creating a feed instance.
+This method allows overriding the value set via settings or annotations:
+
+```java linenums="1" hl_lines="2"
+PersonFeed personFeed = Instancio.ofFeed(PersonFeed.class)
+    .dataAccess(FeedDataAccess.RANDOM)
+    .create();
+```
+
+Similarly, when using `applyFeed()`, the same method is available for specifying data access behaviour:
+
+```java linenums="1" hl_lines="3"
+Person person = Instancio.of(Person.class)
+        .applyFeed(all(Person.class), feed -> feed.of(PersonFeed.class)
+                .dataAccess(FeedDataAccess.RANDOM))
+    .create();
+```
+
+### Feed Data End
+
+This setting determines the behaviour when the end of the feed is reached while generating data.
+It applies only if `Keys.FEED_DATA_ACCESS` is set to `FeedDataAccess.SEQUENTIAL`.
+There are two supported values:
+
+- `FeedDataEndAction.FAIL` - throws an exception when the end of the feed is reached.
+- `FeedDataEndAction.RECYCLE` - recycles the data, starting from the beginning of the feed. 
+
+You can also specify this behaviour using the builder API:
+
+```java linenums="1" hl_lines="2"
+PersonFeed personFeed = Instancio.ofFeed(PersonFeed.class)
+    .onDataEnd(FeedDataEndAction.RECYCLE)
+    .create();
+```
+
+Similarly, when using the `applyFeed()` method, you can specify the data end action:
+
+```java linenums="1" hl_lines="3"
+Person person = Instancio.of(Person.class)
+        .applyFeed(all(Person.class), feed -> feed.of(PersonFeed.class)
+                .onDataEnd(FeedDataEndAction.RECYCLE))
+    .create();
+```
+
+### Feed Data Format
+
+Instancio supports data feeds in both CSV and JSON formats. Using JSON feeds requires
+`jackson-databind` to be included in your project's dependencies (Instancio does
+not provide this dependency transitively):
+
+```xml
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>${jackson-databind-version}</version>
+</dependency>
+```
+
+By default, Instancio uses `CSV` as the data format. However, you can modify this behavior
+using the `Keys.FEED_FORMAT_TYPE` setting.
+
+To specify the data format for a custom feed interface, you can use the `@Feed.FormatType` annotation:
+
+```java linenums="1" hl_lines="1"
+@Feed.FormatType(FeedFormatType.JSON)
+@Feed.Source(resource = "persons.json")
+interface PersonFeed extends Feed {}
+```
+
+Alternatively, the format can be set using the builder API:
+
+```java linenums="1" hl_lines="2"
+PersonFeed personFeed = Instancio.ofFeed(PersonFeed.class)
+    .formatType(FeedFormatType.JSON)
+    .create();
+```
+
+or using the `applyFeed()` method:
+
+```java linenums="1" hl_lines="3"
+Person person = Instancio.of(Person.class)
+    .applyFeed(all(Person.class), feed -> feed.of(PersonFeed.class)
+                .formatType(FeedFormatType.JSON))
+    .create();
+```
+
+#### Format Options
+
+The CSV format allows for configuring various options to customise how data is interpreted:
+
+- Delimiter Character: Specifies the character used to separate fields in the CSV data.
+- Comment Prefix: Defines the prefix used to identify comment lines within the CSV data.
+- Whitespace Trimming: Controls whether leading and trailing whitespace around fields should be trimmed.
+
+These options enable defining data in a customised CSV format, as shown in the example below:
+
+```java linenums="1"
+String data = """
+    | firstName  | lastName  | dateOfBirth  | gender |
+    |------------|-----------|--------------|--------|
+    | John       | Doe       | 2001-11-22   | MALE   |
+    | Alice      | Smith     | 1977-07-15   | FEMALE |
+    | Bob        | Brown     | 1999-12-01   | MALE   |
+    |- snip...
+    """;
+
+Feed personFeed = Instancio.ofFeed(Feed.class)
+    .withDataSource(source -> source.ofString(data))
+    .formatOptions(format -> format.csv()
+            .commentPrefix("|-")
+            .delimiter('|'))
+    .create();
+```
+
+!!! tip "The `formatOptions()` method is also available when using the `applyFeed()` builder API."
+
+### Feed Tags
+
+Feeds in Instancio support tagging, which allows grouping data by a specific _tag key_
+and filtering it by _tag values_.
+
+For feeds that extend the `Feed` interface, you can specify the tag key using the `@Feed.TagKey` annotation:
+
+```java linenums="1" hl_lines="1"
+@Feed.TagKey("gender")
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {}
+```
+
+With the tag key defined, you can generate a list of `Person` objects,
+filtering for those where the `gender` tag value is `FEMALE`, for example:
+
+```java linenums="1" hl_lines="3"
+List<Person> persons = Instancio.ofList(Person.class)
+    .applyFeed(all(Person.class), feed -> feed.of(PersonFeed.class)
+            .withTagValue("FEMALE"))
+    .create();
+
+// Output:
+// [Person[id=9485, firstName="Alice", lastName="Smith", dateOfBirth=1977-07-15, gender=FEMALE],
+//  ...snip...]
+```
+
+You can also specify the tag key using the builder API,
+which overrides the `@Feed.TagKey` annotation (if present):
+
+```java linenums="1" hl_lines="3 4"
+List<Person> persons = Instancio.ofList(Person.class)
+    .applyFeed(all(Person.class), feed -> feed.of(PersonFeed.class)
+            .withTagKey("gender")
+            .withTagValue("FEMALE"))
+    .create();
+```
+
+In addition, Instancio provides settings (`Keys.FEED_TAG_KEY` and `Keys.FEED_TAG_VALUE`)
+to configure default tag key and value settings, which can be overridden as needed.
+By default, these settings are `null`.
+
+!!! tip "If the feed includes an 'id' column, tagging allows selecting specific records based on their 'id'."
+
 # Configuration
 
 Instancio configuration is encapsulated by the {{Settings}} class, a map of keys and corresponding values.
@@ -3746,7 +4427,7 @@ class ExampleTest {
 Instancio supports `@WithSettings` placed on static and non-static fields.
 However, if the test class contains a `@ParameterizedTest` method, then the settings field *must be static*.
 
-## Arguments Source
+## Parameterized Tests
 
 Using the {{InstancioSource}} annotation it is possible to have arguments provided directly to a `@ParameterizedTest` test method.
 This works with a single argument and multiple arguments, each class representing one argument.
@@ -3776,9 +4457,47 @@ It should be noted that using `@InstancioSource` has one important limitations i
 The only option is to customise generated values using [settings injection](#settings-injection).
 However, it is not possible to customise values on a per-field basis like with the builder API.
 
+`@InstancioSource` can also be used to with [data feeds](#data-feeds).
+For example, assuming we have a custom `PersonFeed`:
+
+```java linenums="1"
+@ParameterizedTest
+@InstancioSource
+void feedExample(PersonFeed feed) {
+    // snip...
+}
+```
+
 ---
 
 # Appendix
+
+## Default String Conversion
+
+| Type             | Conversion Function     | Sample Input                             |
+|------------------|-------------------------|------------------------------------------|
+| `String`         | `Function.identity()`   | -                                        |
+| `Enum`           | `Enum::valueOf`         | -                                        |
+| `Character`      | `s -> s.charAt(0)`      | `"Example"` -&gt; `'E'`                  |
+| `Boolean`        | `Boolean::valueOf`      | `"true"` or `"false"`                    |
+| `Integer`        | `Integer::valueOf`      | `"123"`                                  |
+| `Long`           | `Long::valueOf`         | `"123"`                                  |
+| `Byte`           | `Byte::valueOf`         | `"123"`                                  |
+| `Short`          | `Short::valueOf`        | `"123"`                                  |
+| `Float`          | `Float::valueOf`        | `"123.5"`                                |
+| `Double`         | `Double::valueOf`       | `"123.5"`                                |
+| `BigInteger`     | `BigInteger::new`       | `"123"`                                  |
+| `BigDecimal`     | `BigDecimal::new`       | `"123.5"`                                |
+| `Instant`        | `Instant::parse`        | `"2071-10-04T08:48:21.499609989Z"`       |
+| `LocalTime`      | `LocalTime::parse`      | `"06:50:07.871441943"`                   |
+| `LocalDate`      | `LocalDate::parse`      | `"2048-12-24"`                           |
+| `LocalDateTime`  | `LocalDateTime::parse`  | `"2036-03-19T19:18:52.725994144"`        |
+| `OffsetTime`     | `OffsetTime::parse`     | `"18:16:16.814320739Z"`                  |
+| `OffsetDateTime` | `OffsetDateTime::parse` | `"1975-12-04T07:34:43.807103492Z"`       |
+| `ZonedDateTime`  | `ZonedDateTime::parse`  | `"2003-07-23T23:16:10.568513867Z"`       |
+| `YearMonth`      | `YearMonth::parse`      | `"2045-05"`                              |
+| `Year`           | `Year::parse`           | `"1991"`                                 |
+| `UUID`           | `UUID::fromString`      | `"5d418896-acf5-439e-902d-86a6c6fca4ae"` |
 
 ## Built-in Generators
 

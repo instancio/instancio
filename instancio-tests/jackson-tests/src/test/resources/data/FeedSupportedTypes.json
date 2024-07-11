@@ -1,0 +1,26 @@
+[
+  {
+    "string": "foo bar",
+    "_boolean": true,
+    "character": "Z",
+    "_byte": 1,
+    "_short": 2,
+    "integer": 3,
+    "_long": 4,
+    "_double": 5.1,
+    "_float": 6.1,
+    "bigInteger": 12345,
+    "bigDecimal": 12345.6789,
+    "instant": "2071-10-04T08:48:21.499609989Z",
+    "localTime": "06:50:07.871441943",
+    "localDate": "2048-12-24",
+    "localDateTime": "2036-03-19T19:18:52.725994144",
+    "offsetTime": "18:16:16.814320739Z",
+    "offsetDateTime": "1975-12-04T07:34:43.807103492Z",
+    "zonedDateTime": "2003-07-23T23:16:10.568513867Z",
+    "yearMonth": "2045-05",
+    "year": "1991",
+    "uuid": "5d418896-acf5-439e-902d-86a6c6fca4ae",
+    "gender": "FEMALE"
+  }
+]

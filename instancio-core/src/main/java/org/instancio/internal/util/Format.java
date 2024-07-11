@@ -20,6 +20,7 @@ import org.instancio.internal.nodes.InternalNode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
@@ -29,8 +30,10 @@ import java.util.regex.Pattern;
 import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.util.Constants.NL;
 
+@SuppressWarnings("StringBufferReplaceableByString")
 public final class Format {
     private static final int SB_SMALL = 60;
+    private static final String METHOD_PADDING = "  │ ";
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
 
     public static String formatNode(final InternalNode node) {
@@ -130,6 +133,26 @@ public final class Format {
                 withoutPackage(method.getParameterTypes()[0]));
     }
 
+    public static String formatMethodWithFence(final Method method) {
+        final StringBuilder sb = new StringBuilder(SB_SMALL);
+        final String params = Arrays.stream(method.getGenericParameterTypes())
+                .map(Format::withoutPackage)
+                .collect(joining(", "));
+
+        sb.append(METHOD_PADDING).append(Format.withoutPackage(method.getGenericReturnType()))
+                .append(' ').append(method.getName())
+                .append('(').append(params).append(')');
+
+        if (Modifier.isAbstract(method.getModifiers())) {
+            sb.append(';');
+        } else {
+            sb.append(" {").append(NL)
+                    .append(METHOD_PADDING).append("    ...").append(NL)
+                    .append(METHOD_PADDING).append('}');
+        }
+        return sb.toString();
+    }
+
     public static String methodNameWithParams(final Method method) {
         final String params = Arrays.stream(method.getParameterTypes())
                 .map(Format::withoutPackage)
@@ -161,7 +184,9 @@ public final class Format {
     public static String firstNonInstancioStackTraceLine(final Throwable throwable) {
         for (StackTraceElement element : throwable.getStackTrace()) {
             final String className = element.getClassName();
-            if (!className.startsWith("org.instancio") && !className.startsWith("java.")) {
+            if (!className.startsWith("org.instancio")
+                    && !className.startsWith("java.")
+                    && !className.contains("$Proxy")) {
                 return element.toString();
             }
         }

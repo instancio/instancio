@@ -17,8 +17,12 @@ package org.instancio.junit.internal;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.InstancioFeedApi;
 import org.instancio.Random;
+import org.instancio.feed.Feed;
+import org.instancio.internal.util.TypeUtils;
 import org.instancio.junit.InstancioSource;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
@@ -61,13 +65,26 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
                 .toArray();
     }
 
+    @SuppressWarnings("rawtypes")
     static Object createObject(final Type type, final Random random, final Settings settings) {
-        final InstancioApi<?> api = Instancio.of(() -> type);
-        if (settings != null) {
-            api.withSettings(settings);
+        final Class rawType = TypeUtils.getRawType(type);
+
+        if (Feed.class.isAssignableFrom(rawType)) {
+            final InstancioFeedApi<?> api = Instancio.ofFeed(rawType);
+            if (settings != null) {
+                api.withSettings(settings);
+            }
+            return api
+                    .withSetting(Keys.SEED, random.longRange(1, Long.MAX_VALUE))
+                    .create();
+        } else {
+            final InstancioApi<?> api = Instancio.of(() -> type);
+            if (settings != null) {
+                api.withSettings(settings);
+            }
+            return api
+                    .withSeed(random.longRange(1, Long.MAX_VALUE))
+                    .create();
         }
-        return api
-                .withSeed(random.longRange(1, Long.MAX_VALUE))
-                .create();
     }
 }

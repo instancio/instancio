@@ -19,13 +19,16 @@ import org.instancio.Assignment;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.OnCompleteCallback;
 import org.instancio.TargetSelector;
+import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.util.Sonar;
 
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableList;
@@ -43,6 +46,7 @@ final class ModelContextSource {
     private final Map<TargetSelector, Predicate<?>> filterMap;
     private final Map<TargetSelector, List<Assignment>> assignmentMap;
     private final Map<TargetSelector, ModelContext<?>> setModelMap;
+    private final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap;
     private final Set<TargetSelector> ignoreSet;
     private final Set<TargetSelector> withNullableSet;
 
@@ -56,6 +60,7 @@ final class ModelContextSource {
             final Map<TargetSelector, Predicate<?>> filterMap,
             final Map<TargetSelector, List<Assignment>> assignmentMap,
             final Map<TargetSelector, ModelContext<?>> setModelMap,
+            final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap,
             final Set<TargetSelector> ignoreSet,
             final Set<TargetSelector> withNullableSet) {
 
@@ -67,6 +72,7 @@ final class ModelContextSource {
         this.filterMap = asUnmodifiableMap(filterMap);
         this.assignmentMap = asUnmodifiableMap(assignmentMap);
         this.setModelMap = asUnmodifiableMap(setModelMap);
+        this.feedMap = asUnmodifiableMap(feedMap);
         this.ignoreSet = asUnmodifiableSet(ignoreSet);
         this.withNullableSet = asUnmodifiableSet(withNullableSet);
     }
@@ -101,6 +107,10 @@ final class ModelContextSource {
 
     Map<TargetSelector, ModelContext<?>> getSetModelMap() {
         return setModelMap;
+    }
+
+    Map<TargetSelector, Function<GeneratorContext, Feed>> getFeedMap() {
+        return feedMap;
     }
 
     Set<TargetSelector> getIgnoreSet() {

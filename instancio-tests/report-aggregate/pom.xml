@@ -179,6 +179,12 @@
                 </dependency>
                 <dependency>
                     <groupId>org.instancio</groupId>
+                    <artifactId>jackson-tests</artifactId>
+                    <version>${project.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.instancio</groupId>
                     <artifactId>arch-tests</artifactId>
                     <version>${project.version}</version>
                     <scope>test</scope>

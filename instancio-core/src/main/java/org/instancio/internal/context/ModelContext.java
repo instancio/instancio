@@ -24,6 +24,8 @@ import org.instancio.Random;
 import org.instancio.Scope;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
+import org.instancio.feed.Feed;
+import org.instancio.feed.FeedProvider;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiMethodSelector;
@@ -32,6 +34,8 @@ import org.instancio.internal.Flattener;
 import org.instancio.internal.InternalModel;
 import org.instancio.internal.RandomHelper;
 import org.instancio.internal.assignment.InternalAssignment;
+import org.instancio.internal.feed.InternalFeedContext;
+import org.instancio.internal.feed.InternalFeedProxy;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.BlankSelectors;
@@ -72,6 +76,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -225,6 +230,10 @@ public final class ModelContext<T> {
         return selectorMaps.getGeneratorSelectorMap().getGenerator(node);
     }
 
+    public void putGenerator(TargetSelector selector, Generator<?> generator) {
+        selectorMaps.getGeneratorSelectorMap().putGenerator(selector, generator);
+    }
+
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {
         return selectorMaps.getOnCompleteSelectorMap().getCallbacks(node);
@@ -240,6 +249,10 @@ public final class ModelContext<T> {
 
     public ModelContextSelectorMap getSetModelSelectorMap() {
         return selectorMaps.getSetModelSelectorMap();
+    }
+
+    public SelectorMap<Feed> getFeedSelectorMap() {
+        return selectorMaps.getFeedSelectorMap().getSelectorMap();
     }
 
     public List<InternalAssignment> getAssignments(final InternalNode node) {
@@ -273,6 +286,7 @@ public final class ModelContext<T> {
         builder.filterMap = new LinkedHashMap<>(this.contextSource.getFilterMap());
         builder.assignmentMap = new LinkedHashMap<>(this.contextSource.getAssignmentMap());
         builder.setModelMap = new LinkedHashMap<>(this.contextSource.getSetModelMap());
+        builder.feedMap = new LinkedHashMap<>(this.contextSource.getFeedMap());
         return builder;
     }
 
@@ -291,6 +305,7 @@ public final class ModelContext<T> {
         private Map<TargetSelector, Predicate<?>> filterMap;
         private Map<TargetSelector, List<Assignment>> assignmentMap;
         private Map<TargetSelector, ModelContext<?>> setModelMap;
+        private Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap;
         private Set<TargetSelector> ignoreSet;
         private Set<TargetSelector> withNullableSet;
         private Settings settings;
@@ -373,6 +388,30 @@ public final class ModelContext<T> {
                     return generatedValues.add(obj);
                 }
             });
+        }
+
+        public Builder<T> applyFeed(final TargetSelector selector, final Feed feed) {
+            return addFeedFunction(selector, generatorCtx -> feed);
+        }
+
+        public Builder<T> applyFeed(final TargetSelector selector, final FeedProvider provider) {
+            return addFeedFunction(selector, generatorCtx -> {
+                final FeedProvider.FeedBuilderFactory factory = new FeedProvider.FeedBuilderFactory() {};
+                final InternalFeedContext.Builder<?> builder =
+                        (InternalFeedContext.Builder<?>) provider.get(factory);
+
+                return InternalFeedProxy.forClass(builder
+                        .withGeneratorContext(generatorCtx)
+                        .build());
+            });
+        }
+
+        private Builder<T> addFeedFunction(
+                final TargetSelector selector,
+                final Function<GeneratorContext, Feed> feedFn) {
+
+            feedMap = CollectionUtils.newLinkedHashMapIfNull(feedMap);
+            return addSelector(feedMap, selector, feedFn);
         }
 
         public Builder<T> withIgnored(final TargetSelector selector) {
@@ -500,6 +539,7 @@ public final class ModelContext<T> {
             filterMap = new LinkedHashMap<>(src.getFilterMap());
             assignmentMap = new LinkedHashMap<>(src.getAssignmentMap());
             setModelMap = new LinkedHashMap<>(src.getSetModelMap());
+            feedMap = new LinkedHashMap<>(src.getFeedMap());
 
             // Increment max depth to account for the additional layer added by the collection
             maxDepth = otherContext.maxDepth == null ? null : otherContext.maxDepth + 1;
@@ -535,6 +575,7 @@ public final class ModelContext<T> {
                     filterMap,
                     assignmentMap,
                     setModelMap,
+                    feedMap,
                     ignoreSet,
                     withNullableSet);
         }

@@ -38,6 +38,7 @@ final class SelectorNodeMatchesCollector {
     private final SelectorMap<?> assignDestinationToAssignmentsMap;
     private final SelectorMap<?> assignOriginToDestinationSelectorsMap;
     private final SelectorMap<?> setModelSelectorMap;
+    private final SelectorMap<?> feedSelectorMap;
 
     SelectorNodeMatchesCollector(final SelectorMaps selectorMaps) {
         this.ignoredSelectorMap = selectorMaps.getIgnoreSelectorMap().getSelectorMap();
@@ -49,6 +50,7 @@ final class SelectorNodeMatchesCollector {
         this.assignDestinationToAssignmentsMap = selectorMaps.getAssignmentSelectorMap().getDestinationToAssignmentsMap();
         this.assignOriginToDestinationSelectorsMap = selectorMaps.getAssignmentSelectorMap().getOriginToDestinationSelectorsMap();
         this.setModelSelectorMap = selectorMaps.getSetModelSelectorMap().getSelectorMap();
+        this.feedSelectorMap = selectorMaps.getFeedSelectorMap().getSelectorMap();
     }
 
     public Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> getNodeMatches(final InternalNode rootNode) {
@@ -67,6 +69,7 @@ final class SelectorNodeMatchesCollector {
             collectNodes(map, ApiMethodSelector.ASSIGN_DESTINATION, node, assignDestinationToAssignmentsMap);
             collectNodes(map, ApiMethodSelector.ASSIGN_ORIGIN, node, assignOriginToDestinationSelectorsMap);
             collectNodes(map, ApiMethodSelector.SET_MODEL, node, setModelSelectorMap);
+            collectNodes(map, ApiMethodSelector.APPLY_FEED, node, feedSelectorMap);
             queue.addAll(node.getChildren());
         }
         return map;
@@ -105,6 +108,7 @@ final class SelectorNodeMatchesCollector {
         map.put(ApiMethodSelector.ASSIGN_DESTINATION, collectSelectors(assignDestinationToAssignmentsMap));
         map.put(ApiMethodSelector.ASSIGN_ORIGIN, collectSelectors(assignOriginToDestinationSelectorsMap));
         map.put(ApiMethodSelector.SET_MODEL, collectSelectors(setModelSelectorMap));
+        map.put(ApiMethodSelector.APPLY_FEED, collectSelectors(feedSelectorMap));
         return map;
     }
 

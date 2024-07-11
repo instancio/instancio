@@ -27,8 +27,8 @@
     </build>
 
     <!-- Note: core tests should NOT import any optional dependencies,
-         such as bean validation jars. This module contains tests
-         that verify the absence of class-not-found errors when
+         such as JPA, Bean Validation, or Jackson. This module contains
+         tests that verify the absence of class-not-found errors when
          optional dependencies are absent.
     -->
     <dependencies>
