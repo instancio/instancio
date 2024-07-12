@@ -4244,6 +4244,17 @@ long seed = result.getSeed(); // seed value that was used for populating the per
 // snip...
 ```
 
+In addition, seed values can be logged by setting the following class to `TRACE`:
+
+```
+org.instancio.support.Seeds
+```
+
+This will create a log message for every generated root object created via the API:
+
+```
+Generating org.example.Pojo with seed 1473150975436346185 (seed source: RANDOM)
+```
 
 # JUnit Jupiter Integration
 

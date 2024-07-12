@@ -240,7 +240,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
             // verbose() should print only once per stream()
             if (modelDumped.compareAndSet(false, true)) {
-                InternalModelDump.printVerbose(model);
+                ModelReporter.report(model);
             }
 
             // Update seed for each stream element to avoid generating the same object
@@ -258,7 +258,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     private InternalModel<T> createModel() {
         final InternalModel<T> model = new InternalModel<>(modelContextBuilder.build());
-        InternalModelDump.printVerbose(model);
+        ModelReporter.report(model);
         return model;
     }
 }
