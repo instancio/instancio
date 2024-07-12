@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import org.instancio.Random;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
@@ -22,6 +23,7 @@ import org.instancio.internal.nodes.NodeStats;
 import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.StringUtils;
+import org.instancio.support.Seeds;
 
 import java.util.Map;
 import java.util.Objects;
@@ -31,17 +33,24 @@ import java.util.stream.Collectors;
 
 import static org.instancio.internal.util.Constants.NL;
 
-final class InternalModelDump {
+final class ModelReporter {
 
     private final Consumer<String> consumer;
 
-    private InternalModelDump(final Consumer<String> consumer) {
+    private ModelReporter(final Consumer<String> consumer) {
         this.consumer = consumer;
     }
 
     @SuppressWarnings("PMD.SystemPrintln")
+    static void report(final InternalModel<?> model) {
+        final Random random = model.getModelContext().getRandom();
+        Seeds.logSeed(random, model.getRootNode().getType());
+        printVerbose(model);
+    }
+
+    @SuppressWarnings("PMD.SystemPrintln")
     static void printVerbose(final InternalModel<?> model) {
-        InternalModelDump modelDump = new InternalModelDump(System.out::println); // NOSONAR
+        ModelReporter modelDump = new ModelReporter(System.out::println); // NOSONAR
         modelDump.consume(model);
     }
 

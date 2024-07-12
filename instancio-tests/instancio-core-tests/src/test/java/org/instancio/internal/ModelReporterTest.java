@@ -35,13 +35,13 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
-class InternalModelDumpTest {
+class ModelReporterTest {
 
     @Mock
     private Consumer<String> mockConsumer;
 
     @InjectMocks
-    private InternalModelDump internalModelDump;
+    private ModelReporter modelReporter;
 
     @Test
     void consumeWithTraceLoggingAndVerboseModeNotEnabled() {
@@ -50,7 +50,7 @@ class InternalModelDumpTest {
 
         doReturn(context).when(mockModel).getModelContext();
 
-        internalModelDump.consume(mockModel);
+        modelReporter.consume(mockModel);
 
         verifyNoInteractions(mockConsumer);
         verifyNoMoreInteractions(mockModel);
@@ -68,7 +68,7 @@ class InternalModelDumpTest {
 
         final InternalModel<?> model = new InternalModel<>(context);
 
-        internalModelDump.consume(model);
+        modelReporter.consume(model);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 
         verify(mockConsumer).accept(captor.capture());

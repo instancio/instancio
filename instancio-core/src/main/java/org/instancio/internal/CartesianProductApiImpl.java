@@ -247,7 +247,7 @@ public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
         modelContextBuilder.withGeneratorSpec(Select.root(), gen -> gen.collection().size(combinations.size()));
 
         final InternalModel<T> model = new InternalModel<>(modelContextBuilder.build());
-        InternalModelDump.printVerbose(model);
+        ModelReporter.report(model);
 
         return new InstancioEngine(model).createRootObject();
     }
