@@ -16,17 +16,20 @@
 package org.external.errorhandling;
 
 import org.instancio.Instancio;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedSpec;
 import org.instancio.feed.FunctionProvider;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class FeedFunctionProviderMethodIllegalArgumentsTest extends AbstractErrorMessageTestTemplate {
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class FeedFunctionProviderMethodIllegalArgumentsTest {
 
     @Feed.Source(string = "x\n1")
     private interface SampleFeed extends Feed {
-        FeedSpec<Integer> x();
 
         @FunctionSpec(params = {"x"}, provider = SampleFunction.class)
         FeedSpec<Integer> fromX();
@@ -40,41 +43,35 @@ class FeedFunctionProviderMethodIllegalArgumentsTest extends AbstractErrorMessag
         }
     }
 
-    @Override
+    @Test
     void methodUnderTest() {
-        Instancio.createFeed(SampleFeed.class)
-                .fromX()
-                .get();
+        final SampleFeed feed = Instancio.createFeed(SampleFeed.class);
+        final FeedSpec<Integer> spec = feed.fromX();
+
+        assertThatThrownBy(spec::get)
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("""
+                        Reason: exception thrown by spec method 'fromX()' declared by the feed class:
+
+                         -> org.external.errorhandling.FeedFunctionProviderMethodIllegalArgumentsTest$SampleFeed
+
+                        The error was caused by calling the method declared by FeedFunctionProviderMethodIllegalArgumentsTest$SampleFunction:
+
+                          │ List<Integer> processX(String, Long, List<String>) {
+                          │     ...
+                          │ }
+                        """)
+                // Note: the IllegalArgumentException message varies with Java version,
+                // therefore, we cannot do an equality assertion for the entire message
+                // as it will fail when tests are run against JDK 17+.
+                .hasMessageContaining("Root cause: java.lang.IllegalArgumentException")
+                .hasMessageContaining("""
+                        To resolve this error:
+
+                         -> Verify that the spec properties specified by the '@FunctionSpec.params' attribute
+                            match the number of parameters and parameter types defined by the 'processX' method
+
+                         -> Ensure the method does not throw an exception
+                        """);
     }
-
-    @Override
-    String expectedMessage() {
-        return """
-
-
-                Error creating an object
-                 -> at org.external.errorhandling.FeedFunctionProviderMethodIllegalArgumentsTest.methodUnderTest(FeedFunctionProviderMethodIllegalArgumentsTest.java:47)
-
-                Reason: exception thrown by spec method 'fromX()' declared by the feed class:
-
-                 -> org.external.errorhandling.FeedFunctionProviderMethodIllegalArgumentsTest$SampleFeed
-
-                The error was caused by calling the method declared by FeedFunctionProviderMethodIllegalArgumentsTest$SampleFunction:
-
-                  │ List<Integer> processX(String, Long, List<String>) {
-                  │     ...
-                  │ }
-
-                Root cause: java.lang.IllegalArgumentException: wrong number of arguments: 1 expected: 3
-
-                To resolve this error:
-
-                 -> Verify that the spec properties specified by the '@FunctionSpec.params' attribute
-                    match the number of parameters and parameter types defined by the 'processX' method
-
-                 -> Ensure the method does not throw an exception
-
-                """;
-    }
-
 }
