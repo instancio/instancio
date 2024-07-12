@@ -62,7 +62,7 @@ public class CnpjGenerator extends AbstractGenerator<String> implements CnpjSpec
      * Formats the given CNPJ using the following pattern: {@code xx.xxx.xxx/xxxx-xx}
      *
      * @param baseCNPJ The base CNPJ
-     * @param digits  The verifier digits
+     * @param digits   The verifier digits
      * @return The CPF formatted
      */
     private String format(String baseCNPJ, String digits) {
@@ -90,7 +90,7 @@ public class CnpjGenerator extends AbstractGenerator<String> implements CnpjSpec
     /**
      * Generates the second CNPJ digit verifier
      *
-     * @param baseCnpj    The base random CNPJ
+     * @param baseCnpj   The base random CNPJ
      * @param firstDigit The first CNPJ digit verifier
      * @return the second CNPJ verifier
      */

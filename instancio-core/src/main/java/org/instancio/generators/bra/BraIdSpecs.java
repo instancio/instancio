@@ -33,7 +33,7 @@ public interface BraIdSpecs extends BraIdGenerators {
      */
     @Override
     CpfSpec cpf();
-    
+
     /**
      * {@inheritDoc}
      *

@@ -27,6 +27,7 @@ public interface InnGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
      * Generate an individual INN.
+     *
      * @return spec builder
      * @since 5.0.0
      */
@@ -34,6 +35,7 @@ public interface InnGeneratorSpec extends NullableGeneratorSpec<String> {
 
     /**
      * Generate a juridical INN.
+     *
      * @return spec builder
      * @since 5.0.0
      */

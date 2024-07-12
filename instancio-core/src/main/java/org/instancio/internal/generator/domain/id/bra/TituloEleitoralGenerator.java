@@ -43,7 +43,7 @@ public class TituloEleitoralGenerator extends AbstractGenerator<String> implemen
     protected String tryGenerateNonNull(Random random) {
         String baseTitulo = random.digits(TITULO_LENGTH);
         int firstDigitVerifier = generateFirstDigit(baseTitulo);
-        int stateCode = random.intRange(1,                                             28);
+        int stateCode = random.intRange(1, 28);
         int secondDigitVerifier = generateSecondDigit(firstDigitVerifier, stateCode);
         return baseTitulo + (stateCode < 10 ? "0" + stateCode : stateCode) + firstDigitVerifier + secondDigitVerifier;
     }
@@ -63,7 +63,7 @@ public class TituloEleitoralGenerator extends AbstractGenerator<String> implemen
      * Generates the second Titulo Eleitoral digit verifier
      *
      * @param firstDigit The first Titulo Eleitoral digit verifier
-     * @param stateCode The state code of the Titulo Eleitoral
+     * @param stateCode  The state code of the Titulo Eleitoral
      * @return the second Titulo Eleitoral verifier
      */
     private int generateSecondDigit(int firstDigit, int stateCode) {

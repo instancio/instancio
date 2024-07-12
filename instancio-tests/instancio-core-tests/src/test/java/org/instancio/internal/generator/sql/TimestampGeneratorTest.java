@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TimestampGeneratorTest extends AbstractGeneratorTestTemplate<Timestamp, TimestampGenerator> {
 
     private static final Instant START = LocalDateTime.of(
-            1970, 1, 1, 0, 0, 1, 999999999)
+                    1970, 1, 1, 0, 0, 1, 999999999)
             .atZone(ZoneOffset.UTC).toInstant();
 
     private static final boolean INCLUSIVE = true;
