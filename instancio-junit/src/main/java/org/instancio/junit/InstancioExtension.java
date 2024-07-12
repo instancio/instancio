@@ -126,8 +126,6 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
                 return;
             }
 
-            context.getStore(ExtensionContext.Namespace.create("x"));
-
             // Should be safe to case. We don't  expect any other implementations of Random.
             final DefaultRandom random = (DefaultRandom) threadLocalRandom.get();
             final long seed = random.getSeed();
