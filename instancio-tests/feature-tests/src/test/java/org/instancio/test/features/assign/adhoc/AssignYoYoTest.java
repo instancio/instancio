@@ -22,7 +22,8 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.Test;
+import org.instancio.test.support.util.Constants;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +33,7 @@ import static org.instancio.Select.field;
 @ExtendWith(InstancioExtension.class)
 class AssignYoYoTest {
 
-    @Test
+    @RepeatedTest(Constants.SAMPLE_SIZE_DD)
     void yoYo() {
         //@formatter:off
         @Data class L4 { String m, n, o; }
@@ -44,7 +45,7 @@ class AssignYoYoTest {
 
         // c->o, o->b, b->n, n->a, a->m, m->d, d->j,
         // j->e, e->k, k->f, f->l, l->i, i->g, g->h
-        final Assignment[] assignments = {
+        final Assignment[] assignments = Instancio.gen().shuffle(
                 Assign.given(L0::getC).is("C").set(field(L4::getO), "O"),
                 Assign.given(L4::getO).is("O").set(field(L0::getB), "B"),
                 Assign.given(L0::getB).is("B").set(field(L4::getN), "N"),
@@ -59,7 +60,7 @@ class AssignYoYoTest {
                 Assign.given(L3::getL).is("L").set(field(L2::getI), "I"),
                 Assign.given(L2::getI).is("I").set(field(L2::getG), "G"),
                 Assign.given(L2::getG).is("G").set(field(L2::getH), "H")
-        };
+        ).get().toArray(new Assignment[0]);
 
         final L0 result = Instancio.of(L0.class)
                 .set(field(L0::getC), "C")

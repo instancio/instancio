@@ -20,23 +20,18 @@ import org.instancio.Assignment;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Selector;
-import org.instancio.internal.util.ArrayUtils;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.pojo.misc.StringsAbc;
 import org.instancio.test.support.pojo.misc.StringsDef;
 import org.instancio.test.support.pojo.misc.StringsGhi;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
@@ -86,25 +81,51 @@ class AssignSpiralTest {
      *  +--------------< i <-------+
      * </pre>
      */
-    @MethodSource("spiralInArgs")
-    @ParameterizedTest
-    void spiralIn(final List<Assignment> assignments) {
-        final InstancioApi<StringsAbc> api = Instancio.of(StringsAbc.class)
-                .set(A, A_VAL);
+    private static final Assignment[] SPIRAL_IN_ASSIGNMENTS = {
+            Assign.given(A).is(A_VAL).set(I, I_VAL),
+            Assign.given(I).is(I_VAL).set(B, B_VAL),
+            Assign.given(B).is(B_VAL).set(H, H_VAL),
+            Assign.given(H).is(H_VAL).set(C, C_VAL),
+            Assign.given(C).is(C_VAL).set(G, G_VAL),
+            Assign.given(G).is(G_VAL).set(D, D_VAL),
+            Assign.given(D).is(D_VAL).set(F, F_VAL),
+            Assign.given(F).is(F_VAL).set(E, E_VAL)
+    };
 
-        assignments.forEach(api::assign);
+    private static final Assignment[] SPIRAL_OUT_ASSIGNMENTS = {
+            Assign.given(E).is(E_VAL).set(F, F_VAL),
+            Assign.given(F).is(F_VAL).set(D, D_VAL),
+            Assign.given(D).is(D_VAL).set(G, G_VAL),
+            Assign.given(G).is(G_VAL).set(C, C_VAL),
+            Assign.given(C).is(C_VAL).set(H, H_VAL),
+            Assign.given(H).is(H_VAL).set(B, B_VAL),
+            Assign.given(B).is(B_VAL).set(I, I_VAL),
+            Assign.given(I).is(I_VAL).set(A, A_VAL)};
+
+
+    @RepeatedTest(Constants.SAMPLE_SIZE_DDD)
+    void spiralIn() {
+        final Collection<Assignment> assignments = Instancio.gen()
+                .shuffle(SPIRAL_IN_ASSIGNMENTS)
+                .get();
+
+        final InstancioApi<StringsAbc> api = Instancio.of(StringsAbc.class)
+                .set(A, A_VAL)
+                .assign(assignments.toArray(new Assignment[0]));
 
         assertValues(api.create());
     }
 
-    @MethodSource("spiralInArgs")
-    @ParameterizedTest
-    void spiralInWithOfList(final List<Assignment> assignments) {
+    @RepeatedTest(Constants.SAMPLE_SIZE_DD)
+    void spiralInWithOfList() {
+        final Collection<Assignment> assignments = Instancio.gen()
+                .shuffle(SPIRAL_IN_ASSIGNMENTS)
+                .get();
+
         final InstancioApi<List<StringsAbc>> api = Instancio.ofList(StringsAbc.class)
                 .size(Constants.SAMPLE_SIZE_DDD)
-                .set(A, A_VAL);
-
-        assignments.forEach(api::assign);
+                .set(A, A_VAL)
+                .assign(assignments.toArray(new Assignment[0]));
 
         final List<StringsAbc> results = api.create();
 
@@ -115,58 +136,33 @@ class AssignSpiralTest {
      * Starting from a known value at {@code e},
      * spiral outward assigning expected values.
      */
-    @MethodSource("spiralOutArgs")
-    @ParameterizedTest
-    void spiralOut(final List<Assignment> assignments) {
-        final InstancioApi<StringsAbc> api = Instancio.of(StringsAbc.class)
-                .set(E, E_VAL);
+    @RepeatedTest(Constants.SAMPLE_SIZE_DDD)
+    void spiralOut() {
+        final Collection<Assignment> assignments = Instancio.gen()
+                .shuffle(SPIRAL_OUT_ASSIGNMENTS)
+                .get();
 
-        assignments.forEach(api::assign);
+        final InstancioApi<StringsAbc> api = Instancio.of(StringsAbc.class)
+                .set(E, E_VAL)
+                .assign(assignments.toArray(new Assignment[0]));
 
         assertValues(api.create());
     }
 
-    @MethodSource("spiralOutArgs")
-    @ParameterizedTest
-    void spiralOutWithOfList(final List<Assignment> assignments) {
+    @RepeatedTest(Constants.SAMPLE_SIZE_DD)
+    void spiralOutWithOfList() {
+        final Collection<Assignment> assignments = Instancio.gen()
+                .shuffle(SPIRAL_OUT_ASSIGNMENTS)
+                .get();
+
         final InstancioApi<List<StringsAbc>> api = Instancio.ofList(StringsAbc.class)
                 .size(Constants.SAMPLE_SIZE_DDD)
-                .set(E, E_VAL);
-
-        assignments.forEach(api::assign);
+                .set(E, E_VAL)
+                .assign(assignments.toArray(new Assignment[0]));
 
         final List<StringsAbc> results = api.create();
 
         results.forEach(this::assertValues);
-    }
-
-    private static Stream<Arguments> spiralInArgs() {
-        return shuffleArgs(
-                Assign.given(A).is(A_VAL).set(I, I_VAL),
-                Assign.given(I).is(I_VAL).set(B, B_VAL),
-                Assign.given(B).is(B_VAL).set(H, H_VAL),
-                Assign.given(H).is(H_VAL).set(C, C_VAL),
-                Assign.given(C).is(C_VAL).set(G, G_VAL),
-                Assign.given(G).is(G_VAL).set(D, D_VAL),
-                Assign.given(D).is(D_VAL).set(F, F_VAL),
-                Assign.given(F).is(F_VAL).set(E, E_VAL));
-    }
-
-    private static Stream<Arguments> spiralOutArgs() {
-        return shuffleArgs(
-                Assign.given(E).is(E_VAL).set(F, F_VAL),
-                Assign.given(F).is(F_VAL).set(D, D_VAL),
-                Assign.given(D).is(D_VAL).set(G, G_VAL),
-                Assign.given(G).is(G_VAL).set(C, C_VAL),
-                Assign.given(C).is(C_VAL).set(H, H_VAL),
-                Assign.given(H).is(H_VAL).set(B, B_VAL),
-                Assign.given(B).is(B_VAL).set(I, I_VAL),
-                Assign.given(I).is(I_VAL).set(A, A_VAL));
-    }
-
-    private static Stream<Arguments> shuffleArgs(final Assignment... assignments) {
-        ArrayUtils.shuffle(assignments, new DefaultRandom());
-        return Stream.of(Arguments.of(Arrays.asList(assignments)));
     }
 
     private void assertValues(final StringsAbc result) {
