@@ -31,6 +31,7 @@ import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.ShortSpec;
+import org.instancio.generator.specs.ShuffleSpec;
 import org.instancio.generator.specs.StringSpec;
 import org.instancio.generator.specs.UUIDSpec;
 import org.instancio.generators.ChecksumSpecs;
@@ -145,6 +146,17 @@ public final class GenApiImpl implements InstancioGenApi {
     @Override
     public <T> OneOfCollectionSpec<T> oneOf(final Collection<T> choices) {
         return generators().oneOf(choices);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> ShuffleSpec<T> shuffle(final T... array) {
+        return generators().shuffle(array);
+    }
+
+    @Override
+    public <T> ShuffleSpec<T> shuffle(final Collection<T> collection) {
+        return generators().shuffle(collection);
     }
 
     @Override

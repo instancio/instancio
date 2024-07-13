@@ -35,6 +35,7 @@ import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.OptionalGeneratorSpec;
 import org.instancio.generator.specs.ShortSpec;
+import org.instancio.generator.specs.ShuffleSpec;
 import org.instancio.generator.specs.StringSpec;
 import org.instancio.generator.specs.UUIDSpec;
 import org.instancio.generators.AtomicGenerators;
@@ -49,6 +50,7 @@ import org.instancio.generators.NioSpecs;
 import org.instancio.generators.SpatialSpecs;
 import org.instancio.generators.TemporalSpecs;
 import org.instancio.generators.TextSpecs;
+import org.instancio.generators.ValueSpecs;
 import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.array.OneOfArrayGenerator;
 import org.instancio.internal.generator.domain.hash.HashGenerator;
@@ -65,6 +67,7 @@ import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.sequence.IntegerSequenceGenerator;
 import org.instancio.internal.generator.sequence.LongSequenceGenerator;
+import org.instancio.internal.generator.shuffle.ShuffleGenerator;
 import org.instancio.internal.generator.util.CollectionGeneratorSpecImpl;
 import org.instancio.internal.generator.util.EnumSetGenerator;
 import org.instancio.internal.generator.util.MapGeneratorSpecImpl;
@@ -75,7 +78,7 @@ import org.instancio.internal.generator.util.UUIDGenerator;
 import java.util.Collection;
 
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
-public final class BuiltInGenerators implements Generators {
+public final class BuiltInGenerators implements Generators, ValueSpecs {
 
     private final GeneratorContext context;
 
@@ -165,6 +168,19 @@ public final class BuiltInGenerators implements Generators {
     }
 
     @Override
+    @SafeVarargs
+    public final <T> ShuffleSpec<T> shuffle(final T... array) {
+        // Available only via Instancio.gen()
+        return new ShuffleGenerator<T>(context).shuffle(array);
+    }
+
+    @Override
+    public <T> ShuffleSpec<T> shuffle(final Collection<T> collection) {
+        // Available only via Instancio.gen()
+        return new ShuffleGenerator<T>(context).shuffle(collection);
+    }
+
+    @Override
     public <T> OptionalGeneratorSpec<T> optional() {
         return new OptionalGenerator<>(context);
     }
@@ -245,8 +261,9 @@ public final class BuiltInGenerators implements Generators {
         return new SpatialSpecsImpl(context);
     }
 
-    // not exposed via Generators interface since there's nothing to customise
+    @Override
     public UUIDSpec uuid() {
+        // not exposed via Generators interface since there's nothing to customise
         return new UUIDGenerator(context);
     }
 }

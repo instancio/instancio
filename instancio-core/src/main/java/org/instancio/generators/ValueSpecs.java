@@ -16,6 +16,7 @@
 package org.instancio.generators;
 
 import org.instancio.Instancio;
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.generator.specs.ByteSpec;
 import org.instancio.generator.specs.CharacterSpec;
@@ -29,6 +30,7 @@ import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.ShortSpec;
+import org.instancio.generator.specs.ShuffleSpec;
 import org.instancio.generator.specs.StringSpec;
 import org.instancio.generator.specs.UUIDSpec;
 
@@ -154,6 +156,29 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      */
     @Override
     <T> OneOfCollectionSpec<T> oneOf(Collection<T> choices);
+
+    /**
+     * Creates a copy of the specified array and shuffles its elements.
+     *
+     * @param array containing the elements to shuffle
+     * @param <T>   the element type
+     * @return API builder reference
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    @SuppressWarnings("unchecked")
+    <T> ShuffleSpec<T> shuffle(T... array);
+
+    /**
+     * Creates a copy of the specified collection and shuffles its elements.
+     *
+     * @param collection containing the elements to shuffle
+     * @param <T>        the element type
+     * @return API builder reference
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    <T> ShuffleSpec<T> shuffle(Collection<T> collection);
 
     /**
      * {@inheritDoc}
