@@ -3496,7 +3496,7 @@ Instancio will automatically load this file from the root of the classpath.
 The following listing shows all the property keys that can be configured.
 
 
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 29 30 35 44 56"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 30 31 36 45 57"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -3518,6 +3518,7 @@ fail.on.error=false
 float.max=10000
 float.min=1
 float.nullable=false
+instancio.source.samples=100
 integer.max=10000
 integer.min=1
 integer.nullable=false
@@ -3559,11 +3560,11 @@ subtype.java.util.SortedMap=java.util.TreeMap
 ```
 
 !!! attention ""
-    <lnum>1,11,29-30</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
+    <lnum>1,11,30-31</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
-    <lnum>35</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
-    <lnum>44</lnum> Specifies a global seed value.<br/>
-    <lnum>56</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>36</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
+    <lnum>45</lnum> Specifies a global seed value.<br/>
+    <lnum>57</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 
@@ -4440,8 +4441,9 @@ However, if the test class contains a `@ParameterizedTest` method, then the sett
 
 ## Parameterized Tests
 
-Using the {{InstancioSource}} annotation it is possible to have arguments provided directly to a `@ParameterizedTest` test method.
-This works with a single argument and multiple arguments, each class representing one argument.
+The {{ InstancioSource }} annotation allows you to provide arguments directly to
+a `@ParameterizedTest` method. This works for both single and multiple arguments,
+with each class representing one argument.
 
 !!! warning "Using `@ParameterizedTest` requires the `junit-jupiter-params` dependency."
     See <a href="https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-setup" target="_blank">JUnit documentation for details</a>.
@@ -4464,11 +4466,7 @@ class ExampleTest {
 }
 ```
 
-It should be noted that using `@InstancioSource` has one important limitations in that generated objects cannot be customised.
-The only option is to customise generated values using [settings injection](#settings-injection).
-However, it is not possible to customise values on a per-field basis like with the builder API.
-
-`@InstancioSource` can also be used to with [data feeds](#data-feeds).
+`@InstancioSource` can also be used with [data feeds](#data-feeds).
 For example, assuming we have a custom `PersonFeed`:
 
 ```java linenums="1"
@@ -4476,6 +4474,39 @@ For example, assuming we have a custom `PersonFeed`:
 @InstancioSource
 void feedExample(PersonFeed feed) {
     // snip...
+}
+```
+
+Methods annotated with `@InstancioSource` will execute multiple times, each time
+with a new set of random inputs to ensure better test coverage. The number of
+iterations can be configured using the `Keys.INSTANCIO_SOURCE_SAMPLES` setting,
+which defaults to `100`. In the following example, all test methods annotated
+with `@InstancioSource` in this test class will run `500` times:
+
+``` java linenums="1" hl_lines="5"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @WithSettings
+    private static final Settings settings = Settings.create()
+        .set(Keys.INSTANCIO_SOURCE_SAMPLES, 500);
+
+    @ParameterizedTest
+    @InstancioSource
+    void example(Person person) {
+        // ...
+    }
+}
+```
+
+Additionally, this can be overridden for a specific
+test method using the annotation's `samples` attribute:
+
+```java linenums="1" hl_lines="2"
+@ParameterizedTest
+@InstancioSource(samples = 250)
+void example(Person person) {
+    // will run this test method 250 times
 }
 ```
 

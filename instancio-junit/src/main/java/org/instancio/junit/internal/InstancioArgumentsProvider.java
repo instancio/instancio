@@ -24,6 +24,7 @@ import org.instancio.internal.util.TypeUtils;
 import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.support.Global;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -40,9 +41,11 @@ import java.util.stream.Stream;
  */
 public class InstancioArgumentsProvider implements ArgumentsProvider, AnnotationConsumer<InstancioSource> {
 
+    private InstancioSource instancioSource;
+
     @Override
     public void accept(final InstancioSource instancioSource) {
-        // no-op - don't need anything from ths annotation
+        this.instancioSource = instancioSource;
     }
 
     @Override
@@ -55,8 +58,23 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
         final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
         final Type[] paramTypes = context.getRequiredTestMethod().getGenericParameterTypes();
-        final Object[] args = createObjects(paramTypes, random, settings);
-        return Stream.of(Arguments.of(args));
+        final int samples = getNumberOfSamples(settings);
+        return Stream
+                .generate(() -> Arguments.of(createObjects(paramTypes, random, settings)))
+                .limit(samples);
+    }
+
+    private int getNumberOfSamples(Settings threadLocalSettings) {
+        if (instancioSource.samples() > 0) {
+            return instancioSource.samples();
+        }
+        if (threadLocalSettings != null) {
+            final Integer samples = threadLocalSettings.get(Keys.INSTANCIO_SOURCE_SAMPLES);
+            if (samples != null) {
+                return samples;
+            }
+        }
+        return Global.getPropertiesFileSettings().get(Keys.INSTANCIO_SOURCE_SAMPLES);
     }
 
     static Object[] createObjects(final Type[] types, final Random random, final Settings settings) {

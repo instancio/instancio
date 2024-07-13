@@ -41,7 +41,7 @@ class InstancioArgumentsProviderTest {
 
     private final InstancioArgumentsProvider provider = new InstancioArgumentsProvider();
 
-    @InstancioSource
+    @InstancioSource(samples = 1)
     private void dummy() {
     }
 

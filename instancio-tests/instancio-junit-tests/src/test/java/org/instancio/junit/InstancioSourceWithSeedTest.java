@@ -46,7 +46,7 @@ class InstancioSourceWithSeedTest {
             .set(Keys.STRING_MIN_LENGTH, STRING_MIN_LENGTH);
 
     @Seed(SEED)
-    @InstancioSource
+    @InstancioSource(samples = 1)
     @ParameterizedTest
     @DisplayName("Parameterized test: generate value using seed")
     void parameterizedWithSeed(final String value) {
@@ -65,7 +65,7 @@ class InstancioSourceWithSeedTest {
     }
 
     @NonDeterministicTag("Assuming the random seed will not be equal to the SEED constant")
-    @InstancioSource
+    @InstancioSource(samples = 1)
     @ParameterizedTest
     void withSettings(final StringHolder holder) {
         LOG.debug("ThreadLocalRandom seed: {}", ThreadLocalRandom.getInstance().get().getSeed());
