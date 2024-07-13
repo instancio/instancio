@@ -47,6 +47,11 @@ public final class CollectionUtils {
         return map == null || map.isEmpty();
     }
 
+    @SafeVarargs
+    public static <T> List<T> asUnmodifiableList(final T... values) {
+        return Collections.unmodifiableList(asArrayList(values));
+    }
+
     public static <T> List<T> asUnmodifiableList(final List<T> list) {
         return list == null ? Collections.emptyList() : Collections.unmodifiableList(list);
     }
@@ -65,11 +70,6 @@ public final class CollectionUtils {
 
     public static <T> Set<T> newLinkedHashSetIfNull(final Set<T> set) {
         return set != null ? set : new LinkedHashSet<>(DEFAULT_INITIAL_CAPACITY);
-    }
-
-    @SafeVarargs
-    public static <T> List<T> asUnmodifiableList(final T... values) {
-        return Collections.unmodifiableList(asArrayList(values));
     }
 
     @SafeVarargs
