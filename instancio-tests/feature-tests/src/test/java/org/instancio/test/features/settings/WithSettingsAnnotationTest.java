@@ -60,7 +60,7 @@ class WithSettingsAnnotationTest {
         assertThat(Instancio.create(int.class)).isEqualTo(-1);
     }
 
-    @InstancioSource
+    @InstancioSource(samples = 5)
     @ParameterizedTest
     void withSettingsWithParameterizedTest(int value) {
         assertThat(value).isEqualTo(-1);

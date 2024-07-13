@@ -28,31 +28,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class InstancioSourceTest {
 
-    @InstancioSource
+    @InstancioSource(samples = 1)
     @ParameterizedTest
     void zeroArg() {
         assertThat(0).isZero(); // NOSONAR
     }
 
-    @InstancioSource
+    @InstancioSource(samples = 5)
     @ParameterizedTest
     void oneArg(final String arg) {
         assertThat(arg).isNotBlank();
     }
 
-    @InstancioSource
+    @InstancioSource(samples = 5)
     @ParameterizedTest
     void twoArgsSameType(final String first, final String second) {
         assertThat(first).isNotBlank().isNotEqualTo(second);
     }
 
-    @InstancioSource
+    @InstancioSource(samples = 5)
     @ParameterizedTest
     void list(final List<String> list) {
         assertThat(list).isNotEmpty().allSatisfy(s -> assertThat(s).isNotBlank());
     }
 
-    @InstancioSource
+    @InstancioSource(samples = 5)
     @ParameterizedTest
     void map(final Map<String, Integer> map) {
         assertThat(map).isNotEmpty();
@@ -67,7 +67,7 @@ class InstancioSourceTest {
         private static class Dto    { int id; boolean valid; String name; UUID group; }
         //@formatter:on
 
-        @InstancioSource
+        @InstancioSource(samples = 5)
         @ParameterizedTest
         void differentTypesWithSameFields(final Entity entity, final Dto dto) {
             assertThat(entity).isNotNull();
@@ -83,7 +83,7 @@ class InstancioSourceTest {
         private static class Second { String bar; }
         //@formatter:on
 
-        @InstancioSource
+        @InstancioSource(samples = 5)
         @ParameterizedTest
         void twoArgs(final First first, final Second second) {
             assertThat(first).isNotNull();
@@ -100,7 +100,7 @@ class InstancioSourceTest {
             List<E> second;
         }
 
-        @InstancioSource
+        @InstancioSource(samples = 5)
         @ParameterizedTest
         void customGeneric(final Generic<String, UUID> arg) {
             assertThat(arg).isNotNull();
@@ -120,13 +120,13 @@ class InstancioSourceTest {
             FeedSpec<Integer> id();
         }
 
-        @InstancioSource
+        @InstancioSource(samples = 5)
         @ParameterizedTest
         void feedSpec(final SampleFeed feed) {
             assertThat(feed.id().get()).isEqualTo(123);
         }
 
-        @InstancioSource
+        @InstancioSource(samples = 5)
         @ParameterizedTest
         void feedSpecAndPojo(final SampleFeed feed, final Pojo pojo) {
             assertThat(feed.id().get()).isEqualTo(123);

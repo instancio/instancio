@@ -15,34 +15,48 @@
  */
 package org.instancio.junit;
 
-import org.instancio.feed.Feed;
-import org.instancio.feed.FeedSpec;
-import org.instancio.settings.FeedDataEndAction;
+import org.instancio.Instancio;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(InstancioExtension.class)
-class InstancioSourceFeedWithSettingsAnnotationTest {
+class InstancioSourceSamplesWithSettingsTest {
+
+    private static final int NUM_SAMPLES = Instancio.gen().ints().range(1, 50).get();
 
     @WithSettings
     private static final Settings settings = Settings.create()
-            .set(Keys.FEED_DATA_END_ACTION, FeedDataEndAction.RECYCLE);
+            .set(Keys.INSTANCIO_SOURCE_SAMPLES, NUM_SAMPLES);
 
-    @Feed.Source(string = "id\n123")
-    private interface SampleFeed extends Feed {
-        FeedSpec<Integer> id();
+    private final Set<UUID> results = new HashSet<>();
+
+    @Order(1)
+    @InstancioSource
+    @ParameterizedTest
+    void first(final UUID uuid) {
+        assertThat(uuid).isNotNull();
+
+        results.add(uuid);
     }
 
-    @InstancioSource(samples = 5)
-    @ParameterizedTest
-    void feedSpec(final SampleFeed feed) {
-        assertThat(feed.id().get()).isEqualTo(123);
-        assertThat(feed.id().get())
-                .as("Repeated calls should recycle the data")
-                .isEqualTo(123);
+    @Order(2)
+    @Test
+    void second() {
+        assertThat(results).hasSize(NUM_SAMPLES);
     }
 }
