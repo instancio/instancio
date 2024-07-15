@@ -17,6 +17,7 @@ package org.instancio.test.properties;
 
 import org.instancio.Instancio;
 import org.instancio.Result;
+import org.instancio.junit.Generate;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
@@ -135,5 +136,13 @@ class GlobalSeedWithInstancioExtensionTest {
         assertThat(s1.getSeed())
                 .isEqualTo(s2.getSeed())
                 .isEqualTo(TestConstants.GLOBAL_SEED);
+    }
+
+    @Test
+    @DisplayName("(f) using @Generate")
+    void generate(@Generate String s1, @Generate String s2) {
+        assertThat(s1)
+                .as("Distinct values should be generated")
+                .isNotEqualTo(s2);
     }
 }

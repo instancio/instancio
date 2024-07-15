@@ -15,12 +15,7 @@
  */
 package org.instancio.junit.internal;
 
-import org.instancio.Instancio;
-import org.instancio.InstancioApi;
-import org.instancio.InstancioFeedApi;
 import org.instancio.Random;
-import org.instancio.feed.Feed;
-import org.instancio.internal.util.TypeUtils;
 import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -39,7 +34,8 @@ import java.util.stream.Stream;
 /**
  * A provider that generates arguments for {@link InstancioSource}.
  */
-public class InstancioArgumentsProvider implements ArgumentsProvider, AnnotationConsumer<InstancioSource> {
+public class InstancioSourceArgumentsProvider
+        implements ArgumentsProvider, AnnotationConsumer<InstancioSource> {
 
     private InstancioSource instancioSource;
 
@@ -79,30 +75,7 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
 
     static Object[] createObjects(final Type[] types, final Random random, final Settings settings) {
         return Arrays.stream(types)
-                .map(type -> createObject(type, random, settings))
+                .map(type -> ExtensionObjectFactory.createObject(type, random, settings))
                 .toArray();
-    }
-
-    @SuppressWarnings("rawtypes")
-    static Object createObject(final Type type, final Random random, final Settings settings) {
-        final Class rawType = TypeUtils.getRawType(type);
-
-        if (Feed.class.isAssignableFrom(rawType)) {
-            final InstancioFeedApi<?> api = Instancio.ofFeed(rawType);
-            if (settings != null) {
-                api.withSettings(settings);
-            }
-            return api
-                    .withSetting(Keys.SEED, random.longRange(1, Long.MAX_VALUE))
-                    .create();
-        } else {
-            final InstancioApi<?> api = Instancio.of(() -> type);
-            if (settings != null) {
-                api.withSettings(settings);
-            }
-            return api
-                    .withSeed(random.longRange(1, Long.MAX_VALUE))
-                    .create();
-        }
     }
 }

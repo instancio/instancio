@@ -15,6 +15,11 @@
  */
 package org.instancio.junit;
 
+import org.instancio.Instancio;
+import org.instancio.Random;
+import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.junit.internal.ExtensionObjectFactory;
 import org.instancio.junit.internal.ExtensionSupport;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
@@ -24,10 +29,15 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.Optional;
 
 /**
@@ -84,7 +94,11 @@ import java.util.Optional;
  *
  * @since 1.1.0
  */
-public class InstancioExtension implements BeforeEachCallback, AfterEachCallback, AfterTestExecutionCallback {
+public class InstancioExtension implements
+        BeforeEachCallback,
+        AfterEachCallback,
+        AfterTestExecutionCallback,
+        ParameterResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstancioExtension.class);
     private final ThreadLocalRandom threadLocalRandom;
@@ -100,7 +114,6 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
     }
 
     // Constructor used by unit test only
-    @SuppressWarnings("unused")
     InstancioExtension(final ThreadLocalRandom threadLocalRandom,
                        final ThreadLocalSettings threadLocalSettings) {
         this.threadLocalRandom = threadLocalRandom;
@@ -108,8 +121,20 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
     }
 
     @Override
-    public void beforeEach(final ExtensionContext context) {
+    public void beforeEach(final ExtensionContext context) throws IllegalAccessException {
         ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
+
+        final Object testInstance = context.getRequiredTestInstance();
+
+        for (Field field : testInstance.getClass().getDeclaredFields()) {
+            if (field.getDeclaredAnnotation(Generate.class) == null) {
+                continue;
+            }
+            if (Modifier.isStatic(field.getModifiers())) {
+                throw Fail.withUsageError("@Generated annotation is not supported for static fields");
+            }
+            setGeneratedFieldValue(testInstance, field);
+        }
     }
 
     @Override
@@ -136,5 +161,38 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
             context.publishReportEntry("Instancio", seedMsg);
             LOG.error(seedMsg);
         }
+    }
+
+    @Override
+    public boolean supportsParameter(
+            final ParameterContext parameterContext,
+            final ExtensionContext extensionContext) {
+
+        return parameterContext.isAnnotated(Generate.class) &&
+                // Exclude InstancioSource methods (which can generate arguments) to avoid the
+                // "Discovered multiple competing ParameterResolvers for parameter" error
+                !extensionContext.getTestMethod()
+                        .map(m -> m.getDeclaredAnnotation(InstancioSource.class))
+                        .isPresent();
+
+    }
+
+    @Override
+    public Object resolveParameter(
+            final ParameterContext parameterContext,
+            final ExtensionContext extensionContext) {
+
+        final Parameter parameter = parameterContext.getParameter();
+        return Instancio.create(parameter::getParameterizedType);
+    }
+
+    private static void setGeneratedFieldValue(final Object testInstance, final Field field)
+            throws IllegalAccessException {
+
+        final Random random = ThreadLocalRandom.getInstance().get();
+        final Settings settings = ThreadLocalSettings.getInstance().get();
+
+        final Object fieldValue = ExtensionObjectFactory.createObject(field.getGenericType(), random, settings);
+        ReflectionUtils.setAccessible(field).set(testInstance, fieldValue); //NOSONAR
     }
 }

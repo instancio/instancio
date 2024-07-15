@@ -23,13 +23,13 @@ import org.instancio.support.DefaultRandom;
 import org.instancio.support.Seeds;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -69,27 +69,35 @@ class InstancioExtensionTest {
     @Captor
     private ArgumentCaptor<Settings> settingsCaptor;
 
-    @InjectMocks
     private InstancioExtension extension;
+
+    @BeforeEach
+    void setUp() {
+        extension = new InstancioExtension(threadLocalRandom, threadLocalSettings);
+    }
 
     @Test
     @DisplayName("Verify @Seed annotation's value is passed to thread local")
     void beforeEachWithSeedAnnotation() throws Exception {
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
         doReturn(Optional.of(method)).when(context).getTestMethod();
+        doReturn(new DummyTest()).when(context).getRequiredTestInstance();
 
         // Method under test
         extension.beforeEach(context);
 
         verify(threadLocalRandom).set(randomCaptor.capture());
-        assertThat(randomCaptor.getValue().getSeed()).isEqualTo(SEED_ANNOTATION_VALUE);
+        final DefaultRandom random = (DefaultRandom) randomCaptor.getValue();
+        assertThat(random.getSeed()).isEqualTo(SEED_ANNOTATION_VALUE);
+        assertThat(random.getSource()).isEqualTo(Seeds.Source.SEED_ANNOTATION);
     }
 
     @Test
     @DisplayName("Verify annotated Settings are passed to thread local")
-    void beforeEachWithSettingsAnnotation() {
+    void beforeEachWithSettingsAnnotation() throws IllegalAccessException {
         doReturn(Optional.of(DummyTest.class)).when(context).getTestClass();
         doReturn(Optional.of(new DummyTest())).when(context).getTestInstance();
+        doReturn(new DummyTest()).when(context).getRequiredTestInstance();
 
         // Method under test
         extension.beforeEach(context);
@@ -189,12 +197,15 @@ class InstancioExtensionTest {
     void beforeEachWithoutSeedAnnotation() throws Exception {
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITHOUT_SEED_ANNOTATION);
         doReturn(Optional.of(method)).when(context).getTestMethod();
+        doReturn(new DummyTest()).when(context).getRequiredTestInstance();
 
         // Method under test
         extension.beforeEach(context);
 
         verify(threadLocalRandom).set(randomCaptor.capture());
-        assertThat(randomCaptor.getValue().getSeed()).isNotEqualTo(SEED_ANNOTATION_VALUE);
+        final DefaultRandom random = (DefaultRandom) randomCaptor.getValue();
+        assertThat(random.getSeed()).isNotEqualTo(SEED_ANNOTATION_VALUE);
+        assertThat(random.getSource()).isEqualTo(Seeds.Source.RANDOM);
     }
 
     @Test
@@ -235,6 +246,7 @@ class InstancioExtensionTest {
         verifyNoInteractions(threadLocalSettings);
     }
 
+    @SuppressWarnings("unused")
     static class DummyTest {
         @WithSettings
         private final Settings settings = SETTINGS;

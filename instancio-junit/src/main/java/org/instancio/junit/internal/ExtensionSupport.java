@@ -27,7 +27,6 @@ import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,32 +51,32 @@ public final class ExtensionSupport {
             final ExtensionContext context,
             final ThreadLocalRandom threadLocalRandom) {
 
-        final Optional<Method> testMethod = context.getTestMethod();
-        if (testMethod.isPresent()) {
-            final Seed seedAnnotation = testMethod.get().getAnnotation(Seed.class);
-            final long seed;
-            final Seeds.Source source;
-            final Settings tlSettings = ThreadLocalSettings.getInstance().get();
-            final Long tlSeed = tlSettings == null ? null : tlSettings.get(Keys.SEED);
+        final Seed seedAnnotation = context.getTestMethod()
+                .map(m -> m.getAnnotation(Seed.class))
+                .orElse(null);
 
-            if (tlSeed != null) {
-                seed = tlSeed;
-                source = Seeds.Source.WITH_SETTINGS_ANNOTATION;
-            } else if (seedAnnotation != null) {
-                seed = seedAnnotation.value();
-                source = Seeds.Source.SEED_ANNOTATION;
-            } else if (Global.getConfiguredRandom() != null) {
-                seed = Global.getConfiguredRandom().getSeed();
-                source = Seeds.Source.GLOBAL;
-            } else {
-                seed = Seeds.randomSeed();
-                source = Seeds.Source.RANDOM;
-            }
+        final long seed;
+        final Seeds.Source source;
+        final Settings tlSettings = ThreadLocalSettings.getInstance().get();
+        final Long tlSeed = tlSettings == null ? null : tlSettings.get(Keys.SEED);
 
-            // each test method gets a new instance of random to avoid
-            // the state of the random leaking across tests
-            threadLocalRandom.set(new DefaultRandom(seed, source));
+        if (tlSeed != null) {
+            seed = tlSeed;
+            source = Seeds.Source.WITH_SETTINGS_ANNOTATION;
+        } else if (seedAnnotation != null) {
+            seed = seedAnnotation.value();
+            source = Seeds.Source.SEED_ANNOTATION;
+        } else if (Global.getConfiguredRandom() != null) {
+            seed = Global.getConfiguredRandom().getSeed();
+            source = Seeds.Source.GLOBAL;
+        } else {
+            seed = Seeds.randomSeed();
+            source = Seeds.Source.RANDOM;
         }
+
+        // each test method gets a new instance of random to avoid
+        // the state of the random leaking across tests
+        threadLocalRandom.set(new DefaultRandom(seed, source));
     }
 
     @SuppressWarnings({"java:S3011", "PMD.CyclomaticComplexity"})

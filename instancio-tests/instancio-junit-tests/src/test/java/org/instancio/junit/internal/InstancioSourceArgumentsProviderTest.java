@@ -37,9 +37,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class InstancioArgumentsProviderTest {
+class InstancioSourceArgumentsProviderTest {
 
-    private final InstancioArgumentsProvider provider = new InstancioArgumentsProvider();
+    private final InstancioSourceArgumentsProvider provider = new InstancioSourceArgumentsProvider();
 
     @InstancioSource(samples = 1)
     private void dummy() {
@@ -47,7 +47,7 @@ class InstancioArgumentsProviderTest {
 
     @Test
     void typesProvidedByTheAnnotationShouldBeIgnored() throws Exception {
-        final Method method = InstancioArgumentsProviderTest.class.getDeclaredMethod("dummy");
+        final Method method = InstancioSourceArgumentsProviderTest.class.getDeclaredMethod("dummy");
         final InstancioSource instancioSource = method.getAnnotation(InstancioSource.class);
         final ExtensionContext mockContext = mock(ExtensionContext.class);
         when(mockContext.getTestMethod()).thenReturn(Optional.of(method));
@@ -72,7 +72,7 @@ class InstancioArgumentsProviderTest {
                 .set(Keys.LONG_MIN, Long.MIN_VALUE)
                 .set(Keys.LONG_MAX, Long.MAX_VALUE);
 
-        final Object[] results = InstancioArgumentsProvider.createObjects(types, random, settings);
+        final Object[] results = InstancioSourceArgumentsProvider.createObjects(types, random, settings);
 
         assertThat(results).hasExactlyElementsOfTypes(types);
         assertThat(new HashSet<>(Arrays.asList(results)))
