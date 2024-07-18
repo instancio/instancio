@@ -33,7 +33,7 @@ module org.instancio.core {
     exports org.instancio.settings;
     exports org.instancio.spi;
 
-    exports org.instancio.internal to org.instancio.guava;
+    exports org.instancio.internal to org.instancio.junit, org.instancio.guava;
     exports org.instancio.internal.generator to org.instancio.guava;
     exports org.instancio.internal.generator.domain.internet to org.instancio.guava;
     exports org.instancio.internal.generator.util to org.instancio.guava;

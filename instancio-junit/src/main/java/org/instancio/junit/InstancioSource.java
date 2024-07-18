@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.documentation.ExperimentalApi;
-import org.instancio.junit.internal.InstancioArgumentsProvider;
+import org.instancio.junit.internal.InstancioSourceArgumentsProvider;
 import org.instancio.settings.Keys;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
@@ -52,7 +52,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@ArgumentsSource(InstancioArgumentsProvider.class)
+@ArgumentsSource(InstancioSourceArgumentsProvider.class)
 public @interface InstancioSource {
 
     /**

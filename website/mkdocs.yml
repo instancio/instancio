@@ -110,6 +110,7 @@ extra:
   withSettings: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSettings(org.instancio.settings.Settings)" target="_blank">withSettings(Settings)</a>'
   withSetting: '<a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/InstancioApi.html#withSetting(org.instancio.settings.SettingKey,V)" target="_blank">withSetting(SettingKey&lt;T&gt;, T)</a>'
   # JUnit
+  Given:  '<a href="https://javadoc.io/doc/org.instancio/instancio-junit/latest/org/instancio/junit/Given.html" target="_blank">@Given</a>'
   InstancioExtension:  '<a href="https://javadoc.io/doc/org.instancio/instancio-junit/latest/org/instancio/junit/InstancioExtension.html" target="_blank">InstancioExtension</a>'
   InstancioSource:  '<a href="https://javadoc.io/doc/org.instancio/instancio-junit/latest/org/instancio/junit/InstancioSource.html" target="_blank">@InstancioSource</a>'
   Seed:  '<a href="https://javadoc.io/doc/org.instancio/instancio-junit/latest/org/instancio/junit/Seed.html" target="_blank">@Seed</a>'

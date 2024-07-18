@@ -15,13 +15,9 @@
  */
 package org.instancio.junit.internal;
 
-import org.instancio.Instancio;
-import org.instancio.InstancioApi;
-import org.instancio.InstancioFeedApi;
 import org.instancio.Random;
-import org.instancio.feed.Feed;
-import org.instancio.internal.util.TypeUtils;
 import org.instancio.junit.InstancioSource;
+import org.instancio.junit.ObjectCreator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
@@ -32,14 +28,18 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.AnnotationConsumer;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
  * A provider that generates arguments for {@link InstancioSource}.
  */
-public class InstancioArgumentsProvider implements ArgumentsProvider, AnnotationConsumer<InstancioSource> {
+public class InstancioSourceArgumentsProvider
+        implements ArgumentsProvider, AnnotationConsumer<InstancioSource> {
 
     private InstancioSource instancioSource;
 
@@ -57,10 +57,11 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
 
         final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
-        final Type[] paramTypes = context.getRequiredTestMethod().getGenericParameterTypes();
+        final Parameter[] parameters = context.getRequiredTestMethod().getParameters();
         final int samples = getNumberOfSamples(settings);
+
         return Stream
-                .generate(() -> Arguments.of(createObjects(paramTypes, random, settings)))
+                .generate(() -> Arguments.of(createObjects(parameters, random, settings)))
                 .limit(samples);
     }
 
@@ -77,32 +78,16 @@ public class InstancioArgumentsProvider implements ArgumentsProvider, Annotation
         return Global.getPropertiesFileSettings().get(Keys.INSTANCIO_SOURCE_SAMPLES);
     }
 
-    static Object[] createObjects(final Type[] types, final Random random, final Settings settings) {
-        return Arrays.stream(types)
-                .map(type -> createObject(type, random, settings))
+    private static Object[] createObjects(final Parameter[] parameters, final Random random, final Settings settings) {
+        return Arrays.stream(parameters)
+                .map(param -> {
+                    final Type targetType = param.getParameterizedType();
+                    final List<Annotation> annotations = ReflectionUtils.collectionAnnotations(param);
+                    final ElementAnnotations elementAnnotations = new ElementAnnotations(annotations);
+                    return new ObjectCreator(settings, random)
+                            .createObject(param, targetType, elementAnnotations);
+
+                })
                 .toArray();
-    }
-
-    @SuppressWarnings("rawtypes")
-    static Object createObject(final Type type, final Random random, final Settings settings) {
-        final Class rawType = TypeUtils.getRawType(type);
-
-        if (Feed.class.isAssignableFrom(rawType)) {
-            final InstancioFeedApi<?> api = Instancio.ofFeed(rawType);
-            if (settings != null) {
-                api.withSettings(settings);
-            }
-            return api
-                    .withSetting(Keys.SEED, random.longRange(1, Long.MAX_VALUE))
-                    .create();
-        } else {
-            final InstancioApi<?> api = Instancio.of(() -> type);
-            if (settings != null) {
-                api.withSettings(settings);
-            }
-            return api
-                    .withSeed(random.longRange(1, Long.MAX_VALUE))
-                    .create();
-        }
     }
 }
