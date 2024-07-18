@@ -15,17 +15,40 @@
  */
 package org.instancio.junit.internal;
 
+import org.instancio.internal.util.Sonar;
+
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-final class ReflectionUtils {
+public final class ReflectionUtils {
 
     private ReflectionUtils() {
         // non-instantiable
+    }
+
+    public static <T> T newInstance(final Class<T> klass) {
+        return org.instancio.internal.util.ReflectionUtils.newInstance(klass);
+    }
+
+    public static List<Annotation> collectionAnnotations(final AnnotatedElement element) {
+        final Annotation[] annotations = element.getDeclaredAnnotations();
+        final List<Annotation> results = new ArrayList<>();
+        for (Annotation annotation : annotations) {
+            final Class<? extends Annotation> type = annotation.annotationType();
+
+            if (!type.getPackage().getName().startsWith("java.")) {
+                results.add(annotation);
+                results.addAll(collectionAnnotations(type));
+            }
+        }
+        return results;
     }
 
     static List<Field> getAnnotatedFields(final Class<?> klass, final Class<? extends Annotation> annotation) {
@@ -44,4 +67,8 @@ final class ReflectionUtils {
         }
     }
 
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    public static <T extends AccessibleObject> T setAccessible(final T object) {
+        return org.instancio.internal.util.ReflectionUtils.setAccessible(object);
+    }
 }

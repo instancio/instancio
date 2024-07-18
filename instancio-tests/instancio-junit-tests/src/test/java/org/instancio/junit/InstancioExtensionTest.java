@@ -18,29 +18,35 @@ package org.instancio.junit;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.internal.ElementAnnotations;
+import org.instancio.junit.internal.FieldAnnotationMap;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.Seeds;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -50,7 +56,6 @@ import static org.mockito.Mockito.when;
 class InstancioExtensionTest {
 
     private static final long SEED_ANNOTATION_VALUE = -2345212;
-    private static final String METHOD_WITHOUT_SEED_ANNOTATION = "methodWithoutSeedAnnotation";
     private static final String METHOD_WITH_SEED_ANNOTATION = "methodWithSeedAnnotation";
     private static final Settings SETTINGS = Settings.defaults();
 
@@ -69,27 +74,58 @@ class InstancioExtensionTest {
     @Captor
     private ArgumentCaptor<Settings> settingsCaptor;
 
-    @InjectMocks
     private InstancioExtension extension;
+
+    @BeforeEach
+    void setUp() {
+        extension = new InstancioExtension(threadLocalRandom, threadLocalSettings);
+    }
+
+    @Test
+    void supportsParameterReturnsShouldForConstructor() throws NoSuchMethodException {
+        final ParameterContext parameterContext = mock(ParameterContext.class);
+        final Constructor<DummyTest> constructor = DummyTest.class.getConstructor();
+        doReturn(constructor).when(parameterContext).getDeclaringExecutable();
+
+        final boolean result = extension.supportsParameter(parameterContext, null);
+
+        assertThat(result).isFalse();
+    }
 
     @Test
     @DisplayName("Verify @Seed annotation's value is passed to thread local")
     void beforeEachWithSeedAnnotation() throws Exception {
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
         doReturn(Optional.of(method)).when(context).getTestMethod();
+        doReturn(DummyTest.class).when(context).getRequiredTestClass();
+
+        final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
+        doReturn(store).when(context).getStore(create("org.instancio"));
+        doReturn(new FieldAnnotationMap(DummyTest.class))
+                .when(store)
+                .get("annotationMap", FieldAnnotationMap.class);
 
         // Method under test
         extension.beforeEach(context);
 
         verify(threadLocalRandom).set(randomCaptor.capture());
-        assertThat(randomCaptor.getValue().getSeed()).isEqualTo(SEED_ANNOTATION_VALUE);
+        final DefaultRandom random = (DefaultRandom) randomCaptor.getValue();
+        assertThat(random.getSeed()).isEqualTo(SEED_ANNOTATION_VALUE);
+        assertThat(random.getSource()).isEqualTo(Seeds.Source.SEED_ANNOTATION);
     }
 
     @Test
     @DisplayName("Verify annotated Settings are passed to thread local")
-    void beforeEachWithSettingsAnnotation() {
+    void beforeEachWithSettingsAnnotation() throws IllegalAccessException {
         doReturn(Optional.of(DummyTest.class)).when(context).getTestClass();
         doReturn(Optional.of(new DummyTest())).when(context).getTestInstance();
+        doReturn(DummyTest.class).when(context).getRequiredTestClass();
+
+        final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
+        doReturn(store).when(context).getStore(create("org.instancio"));
+        doReturn(new FieldAnnotationMap(DummyTest.class))
+                .when(store)
+                .get("annotationMap", FieldAnnotationMap.class);
 
         // Method under test
         extension.beforeEach(context);
@@ -185,24 +221,15 @@ class InstancioExtensionTest {
     }
 
     @Test
-    @DisplayName("If @Seed annotation is absent, should use a random seed")
-    void beforeEachWithoutSeedAnnotation() throws Exception {
-        final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITHOUT_SEED_ANNOTATION);
-        doReturn(Optional.of(method)).when(context).getTestMethod();
-
-        // Method under test
-        extension.beforeEach(context);
-
-        verify(threadLocalRandom).set(randomCaptor.capture());
-        assertThat(randomCaptor.getValue().getSeed()).isNotEqualTo(SEED_ANNOTATION_VALUE);
-    }
-
-    @Test
-    @DisplayName("Thread locals should be cleared after each test method")
+    @DisplayName("Resources should be cleared after each test method")
     void afterEach() {
+        ExtensionContext.Store store = mock(ExtensionContext.Store.class);
+        doReturn(store).when(context).getStore(create("org.instancio"));
+
         extension.afterEach(context);
         verify(threadLocalRandom).remove();
         verify(threadLocalSettings).remove();
+        verify(store).remove("elementAnnotations", ElementAnnotations.class);
     }
 
     @Test
@@ -212,7 +239,7 @@ class InstancioExtensionTest {
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
 
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
-        when(context.getTestMethod()).thenReturn(Optional.of(method));
+        when(context.getRequiredTestMethod()).thenReturn(method);
         when(threadLocalRandom.get()).thenReturn(new DefaultRandom(expectedSeed, Seeds.Source.SEED_ANNOTATION));
 
         // Method under test
@@ -235,9 +262,13 @@ class InstancioExtensionTest {
         verifyNoInteractions(threadLocalSettings);
     }
 
+    @SuppressWarnings("unused")
     static class DummyTest {
         @WithSettings
         private final Settings settings = SETTINGS;
+
+        public DummyTest() {
+        }
 
         @Seed(SEED_ANNOTATION_VALUE)
         void methodWithSeedAnnotation() {

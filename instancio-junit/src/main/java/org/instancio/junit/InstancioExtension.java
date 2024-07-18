@@ -15,20 +15,38 @@
  */
 package org.instancio.junit;
 
+import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.Sonar;
+import org.instancio.junit.internal.ElementAnnotations;
 import org.instancio.junit.internal.ExtensionSupport;
+import org.instancio.junit.internal.FieldAnnotationMap;
+import org.instancio.junit.internal.ReflectionUtils;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
+import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Optional;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.util.List;
+
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 
 /**
  * The Instancio JUnit extension adds support for additional
@@ -38,29 +56,30 @@ import java.util.Optional;
  *   <li>reporting the seed value to allow reproducing failed tests</li>
  *   <li>injecting {@link Settings} using {@link WithSettings @WithSettings} annotation</li>
  *   <li>generating parameterized test arguments using {@link InstancioSource @InstancioSource}</li>
+ *   <li>injecting fields and method parameters using {@link Given @Given}  aannotation</li>
  * </ul>
  *
  * <h2>Reproducing failed tests</h2>
  *
  * <p>The extension generates a seed for each test method. When a test fails,
- * the extension reports this seed in the output. Using the {@link Seed}
+ * the extension reports this seed in the output. Using the {@link Seed @Seed}
  * annotation, the test can be re-run with the reported seed to reproduce
  * the data that caused the failure.
  *
  * <p>For example, given the following test class:
  *
- * <pre><code>
- * &#064;ExtendWith(InstancioExtension.class)
+ * <pre>{@code
+ * @ExtendWith(InstancioExtension.class)
  * class ExampleTest {
  *
- *     &#064;Test
+ *     @Test
  *     void verifyPerson() {
  *         Person person = Instancio.create(Person.class);
  *         // some test code...
  *         // ... some assertion fails
  *     }
  * }
- * </code></pre>
+ * }</pre>
  *
  * <p>The failed test will report the seed value that was used, for example:
  *
@@ -69,14 +88,14 @@ import java.util.Optional;
  * <p>Subsequently, the failing test can be reproduced by annotating the test method
  * with the {@link Seed} annotation:
  *
- * <pre><code>
- * &#064;Test
- * &#064;Seed(12345) // will reproduce previously generated data
+ * <pre>{@code
+ * @Test
+ * @Seed(12345) // will reproduce previously generated data
  * void verifyPerson() {
  *     Person person = Instancio.create(Person.class);
  *     // snip...
  * }
- * </code></pre>
+ * }</pre>
  *
  * <p>See the
  * <a href="https://www.instancio.org/user-guide/#junit-jupiter-integration">user guide</a>
@@ -84,9 +103,20 @@ import java.util.Optional;
  *
  * @since 1.1.0
  */
-public class InstancioExtension implements BeforeEachCallback, AfterEachCallback, AfterTestExecutionCallback {
+@SuppressWarnings("PMD.ExcessiveImports")
+public class InstancioExtension implements
+        BeforeAllCallback,
+        BeforeEachCallback,
+        AfterAllCallback,
+        AfterEachCallback,
+        AfterTestExecutionCallback,
+        ParameterResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstancioExtension.class);
+    private static final Namespace INSTANCIO = create("org.instancio");
+    private static final String ELEMENT_ANNOTATIONS = "elementAnnotations";
+    private static final String ANNOTATION_MAP = "annotationMap";
+
     private final ThreadLocalRandom threadLocalRandom;
     private final ThreadLocalSettings threadLocalSettings;
 
@@ -100,7 +130,6 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
     }
 
     // Constructor used by unit test only
-    @SuppressWarnings("unused")
     InstancioExtension(final ThreadLocalRandom threadLocalRandom,
                        final ThreadLocalSettings threadLocalSettings) {
         this.threadLocalRandom = threadLocalRandom;
@@ -108,33 +137,126 @@ public class InstancioExtension implements BeforeEachCallback, AfterEachCallback
     }
 
     @Override
-    public void beforeEach(final ExtensionContext context) {
+    public void beforeAll(final ExtensionContext context) {
+        final Class<?> testClass = context.getRequiredTestClass();
+
+        context.getStore(INSTANCIO)
+                .put(ANNOTATION_MAP, new FieldAnnotationMap(testClass));
+    }
+
+    @Override
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    public void beforeEach(final ExtensionContext context) throws IllegalAccessException {
         ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
+
+        final FieldAnnotationMap annotationMap = context.getStore(INSTANCIO)
+                .get(ANNOTATION_MAP, FieldAnnotationMap.class);
+
+        for (Field field : context.getRequiredTestClass().getDeclaredFields()) {
+            final List<Annotation> annotations = annotationMap.get(field);
+
+            if (!containsAnnotation(annotations, Given.class)) {
+                continue;
+            }
+            if (Modifier.isStatic(field.getModifiers())) {
+                throw Fail.withUsageError("@Given annotation is not supported for static fields");
+            }
+
+            final Object testInstance = context.getRequiredTestInstance();
+            final ElementAnnotations elementAnnotations = new ElementAnnotations(annotations);
+            final Object fieldValue = new ObjectCreator(threadLocalSettings.get(), threadLocalRandom.get())
+                    .createObject(field, field.getGenericType(), elementAnnotations);
+
+            ReflectionUtils.setAccessible(field).set(testInstance, fieldValue);
+        }
+    }
+
+    @Override
+    public void afterAll(final ExtensionContext context) {
+        context.getStore(INSTANCIO).remove(ANNOTATION_MAP, FieldAnnotationMap.class);
     }
 
     @Override
     public void afterEach(final ExtensionContext context) {
         threadLocalRandom.remove();
         threadLocalSettings.remove();
+        context.getStore(INSTANCIO).remove(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
     }
 
     @Override
     public void afterTestExecution(final ExtensionContext context) {
         if (context.getExecutionException().isPresent()) {
-            final Optional<Method> testMethod = context.getTestMethod();
-            if (!testMethod.isPresent()) {
-                return;
-            }
+            final Method testMethod = context.getRequiredTestMethod();
 
             // Should be safe to case. We don't  expect any other implementations of Random.
             final DefaultRandom random = (DefaultRandom) threadLocalRandom.get();
             final long seed = random.getSeed();
 
             final String seedMsg = String.format("Test method '%s' failed with seed: %d (seed source: %s)%n",
-                    testMethod.get().getName(), seed, random.getSource().getDescription());
+                    testMethod.getName(), seed, random.getSource().getDescription());
 
             context.publishReportEntry("Instancio", seedMsg);
             LOG.error(seedMsg);
         }
+    }
+
+    /**
+     * For methods, JUnit invokes (1) beforeEach(), (2) resolveParameter()
+     * For constructors, the order is reverse. As a result, when
+     * resolveParameter() is called, the setup logic hasn't been run yet.
+     * For this reason, constructor parameters are not supported.
+     */
+    @Override
+    public boolean supportsParameter(
+            final ParameterContext parameterContext,
+            final ExtensionContext extensionContext) {
+
+        if (parameterContext.getDeclaringExecutable() instanceof Constructor) {
+            return false;
+        }
+
+        final Parameter parameter = parameterContext.getParameter();
+        final List<Annotation> annotations = ReflectionUtils.collectionAnnotations(parameter);
+
+        final boolean supportsParameter = containsAnnotation(annotations, Given.class) &&
+                // Exclude InstancioSource methods (which can generate arguments) to avoid the
+                // "Discovered multiple competing ParameterResolvers for parameter" error
+                !extensionContext.getTestMethod()
+                        .map(m -> m.getDeclaredAnnotation(InstancioSource.class))
+                        .isPresent();
+
+        if (supportsParameter) {
+            extensionContext.getStore(INSTANCIO)
+                    .put(ELEMENT_ANNOTATIONS, new ElementAnnotations(annotations));
+        }
+        return supportsParameter;
+    }
+
+    @Override
+    public Object resolveParameter(
+            final ParameterContext parameterContext,
+            final ExtensionContext extensionContext) {
+
+        final Parameter parameter = parameterContext.getParameter();
+
+        final ElementAnnotations elementAnnotations = extensionContext.getStore(INSTANCIO)
+                .get(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
+
+        final Type targetType = parameter.getParameterizedType();
+
+        return new ObjectCreator(threadLocalSettings.get(), threadLocalRandom.get())
+                .createObject(parameter, targetType, elementAnnotations);
+    }
+
+    private static boolean containsAnnotation(
+            final List<Annotation> annotations,
+            final Class<? extends Annotation> annotationType) {
+
+        for (Annotation a : annotations) {
+            if (a.annotationType() == annotationType) {
+                return true;
+            }
+        }
+        return false;
     }
 }

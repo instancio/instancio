@@ -4259,23 +4259,280 @@ Generating org.example.Pojo with seed 1473150975436346185 (seed source: RANDOM)
 
 # JUnit Jupiter Integration
 
-Instancio supports JUnit 5 via the {{InstancioExtension}} and can be used in combination with extensions from other testing frameworks.
-The extension adds a few useful features, such as
+Instancio supports JUnit 5 through the {{InstancioExtension}}, which provides several useful features:
 
-- the ability to use {{InstancioSource}} with `@ParameterizedTest` methods,
-- injection of custom settings using {{WithSettings}},
-- and most importantly support for reproducing failed tests using the {{Seed}} annotation.
+- Injection of fields and method parameters using the `@Given` annotation
+- Ability to use `@InstancioSource` with `@ParameterizedTest` methods
+- Injection of custom settings using the `@WithSettings` annotation
+- Support for reproducing failed tests using the `@Seed` annotation
+
+## `@Given` Injection
+
+!!! info "Experimental API `@since 5.0.0`"
+
+The {{Given}} annotation can be used to inject generated values into fields and method parameters:
+
+```java linenums="1" hl_lines="4 5"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @Given
+    private Person person;
+
+    @Test
+    void example() {
+        System.out.println(person);
+        // Sample output:
+        // Person[firstName=BVERADS, lastName=UYBQNZ]
+    }
+}
+```
+
+Under the hood, the extension will execute `Instancio.create(Person.class)` and inject
+the result into the annotated field.
+
+The `@Given` annotation can also be used to add parameters to `@Test` methods:
+
+```java linenums="1"
+@Test
+void example(@Given String string, @Given List<Integer> numbers) {
+    // ...
+}
+```
+
+Additionally, the `@Given` annotation can supplement `@ParameterizedTest` methods
+with additional arguments. In the following example, the `value` parameter is provided
+by the `@ValueSource`, while the `number` is provided by Instancio:
+
+```java linenums="1"
+@ValueSource(strings = {"foo", "bar"})
+@ParameterizedTest
+void example(String value, @Given Integer number) {
+    // Sample output:
+    // [1] value=foo, number=167
+    // [2] value=bar, number=9873
+}
+```
+
+Moreover, the `@Given` annotation supports injecting `Supplier` and `Stream` objects:
+
+```java linenums="1"
+@Test
+void withSupplier(@Given Supplier<Integer> supplier) {
+    // Sample output:
+    Integer i1 = supplier.get(); // 3463
+    Integer i2 = supplier.get(); // 935
+}
+
+@Test
+void withStream(@Given Stream<Integer> stream) {
+    List<Integer> list = stream.limit(3).toList();
+    // Sample output: [250, 7044, 3256]
+}
+```
+
+### Using Custom `InstanceProvder`
+
+The `@Given` annotation can accept one or more `InstanceProvider` classes
+to provide customised values. The `InstanceProvider` interface is defined as follows:
+
+```java linenums="1"
+public interface InstanceProvider {
+    Object provide(ElementContext context);
+}
+```
+
+The `ElementContext` class provides information about the annotated element
+(`java.lang.reflect.Field` or `java.lang.reflect.Parameter`) as well as an instance
+of `Random` for generating reproducible random values.
+
+For example, to generate a product code consisting of 3 letters followed by 5 digits (e.g. `ABC12345`):
+
+```java linenums="1"
+class ProductCodeProvider implements InstanceProvider {
+    @Override
+    public Object provide(ElementContext context) {
+        Random random = context.random();
+        return random.upperCaseAlphabetic(3) + random.digits(5);
+    }
+}
+```
+
+You can use this class with the `@Given` annotation to generate product codes:
+
+```java linenums="1"
+@Test
+void example(@Given(ProductCodeProvider.class) String productCode) {
+    // ...
+}
+```
+
+If a provider is widely used across many tests, consider defining a custom annotation:
+
+```java linenums="1" hl_lines="3 4"
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+@Given(ProductCodeProvider.class)
+@interface GivenProductCode {
+}
+```
+
+Sample usage:
+
+```java linenums="1"
+@Test
+void example(@GivenProductCode String productCode) {
+    // ...
+}
+```
+
+!!! note "Using multiple providers"
+    When multiple providers are specified, e.g. `@Given({Provider1.class, Provider2.class})`
+    Instancio will choose providers randomly from the specified classes.
+
+
+## Parameterized Tests
+
+The {{InstancioSource}} annotation allows you to provide arguments directly to
+a `@ParameterizedTest` method. This works for both single and multiple arguments,
+with each class representing one argument.
+
+!!! warning "Using `@ParameterizedTest` requires the `junit-jupiter-params` dependency."
+    See <a href="https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-setup" target="_blank">JUnit documentation for details</a>.
+
+``` java linenums="1" title="Using @InstancioSource with @ParameterizedTest"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @ParameterizedTest
+    @InstancioSource
+    void singleArgument(Person person) {
+        // snip...
+    }
+
+    @ParameterizedTest
+    @InstancioSource
+    void multipleArguments(Foo foo, Bar bar, Baz baz) {
+        // snip...
+    }
+}
+```
+
+`@InstancioSource` can also be used with [data feeds](#data-feeds).
+For example, assuming we have a custom `PersonFeed`:
+
+```java linenums="1"
+@ParameterizedTest
+@InstancioSource
+void feedExample(PersonFeed feed) {
+    // snip...
+}
+```
+
+Methods annotated with `@InstancioSource` will execute multiple times, each time
+with a new set of random inputs to ensure better test coverage. The number of
+iterations can be configured using the `Keys.INSTANCIO_SOURCE_SAMPLES` setting,
+which defaults to `100`. In the following example, all test methods annotated
+with `@InstancioSource` in this test class will run `500` times:
+
+``` java linenums="1" hl_lines="5"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @WithSettings
+    private static final Settings settings = Settings.create()
+        .set(Keys.INSTANCIO_SOURCE_SAMPLES, 500);
+
+    @ParameterizedTest
+    @InstancioSource
+    void example(Person person) {
+        // ...
+    }
+}
+```
+
+!!! warning "New behaviour since version `5.0.0`. In prior versions, `@InstancioSource` methods executed only once."
+
+Additionally, this can be overridden for a specific
+test method using the annotation's `samples` attribute:
+
+```java linenums="1" hl_lines="2"
+@ParameterizedTest
+@InstancioSource(samples = 250)
+void example(Person person) {
+    // will run this test method 250 times
+}
+```
+
+## Settings Injection
+
+The `InstancioExtension` also adds support for injecting {{Settings}} into a test class.
+The injected settings will be used by every test method within the class.
+This can be done using the {{WithSettings}} annotation.
+
+``` java linenums="1" title="Injecting Settings into a test class" hl_lines="4 10"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+        .set(Keys.COLLECTION_MIN_SIZE, 10);
+
+    @Test
+    void example() {
+        Person person = Instancio.create(Person.class);
+
+        assertThat(person.getPhoneNumbers())
+            .hasSizeGreaterThanOrEqualTo(10);
+    }
+}
+```
+!!! attention ""
+    <lnum>4</lnum> Inject custom settings to be used by every test method within the class.<br/>
+    <lnum>10</lnum> Every object will be created using the injected settings.
+
+!!! warning "There can be only one field annotated `@WithSettings` per test class."
+
+Instancio also supports overriding the injected settings using the `withSettings` method as shown below.
+The settings provided via the method take precedence over the injected settings (see [Settings Precedence](#settings-precedence) for further information).
+
+``` java linenums="1" title="Overriding injecting Settings" hl_lines="11"
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+        .set(Keys.COLLECTION_MIN_SIZE, 10);
+
+    @Test
+    void overrideInjectedSettings() {
+        Person person = Instancio.of(Person.class)
+            .withSettings(Settings.create()
+                .set(Keys.COLLECTION_MAX_SIZE, 3))
+            .create();
+
+        assertThat(person.getPhoneNumbers())
+            .as("Injected settings can be overridden")
+            .hasSizeLessThanOrEqualTo(3);
+    }
+}
+```
+!!! attention ""
+    <lnum>11</lnum> Settings passed to the builder method take precedence over the injected settings.
+
+Instancio supports `@WithSettings` placed on static and non-static fields.
+However, if the test class contains a `@ParameterizedTest` method, then the settings field *must be static*.
 
 ## Reproducing Failed Tests
 
-Since using Instancio validates your code against random inputs on each test run,
-having the ability to reproduce failed tests with previously generated data becomes a necessity.
-Instancio supports this use case by reporting the seed value of a failed test in the failure message using JUnit's `publishReportEntry` mechanism.
+Since using Instancio in your tests runs your code against different inputs on each execution,
+the ability to reproduce failed tests with previously generated data becomes essential.
+Instancio supports this by reporting the seed value of a failed test in the failure message.
 
 ### Data Guarantees
 
 The library guarantees that the same data is generated for a given seed **and** version of the library.
-For this reason, making assertions against generated values is highly discouraged to avoid breaking changes.
+For this reason, hard-coding generated values in assertions is highly discouraged to avoid breaking changes.
 For example, the following test suffers from tight coupling with the random number generator implementation
 and may break when upgrading to a newer version of Instancio.
 
@@ -4379,136 +4636,6 @@ void verifyShippingAddress() {
 With the `@Seed` annotation in place, the data becomes effectively static.
 This allows the root cause to be established and fixed.
 Once the test is passing, the `@Seed` annotation can be removed so that new data will be generated on each subsequent test run.
-
-## Settings Injection
-
-The `InstancioExtension` also adds support for injecting {{Settings}} into a test class.
-The injected settings will be used by every test method within the class.
-This can be done using the {{WithSettings}} annotation.
-
-``` java linenums="1" title="Injecting Settings into a test class" hl_lines="4 10"
-@ExtendWith(InstancioExtension.class)
-class ExampleTest {
-
-    @WithSettings
-    private final Settings settings = Settings.create()
-        .set(Keys.COLLECTION_MIN_SIZE, 10);
-
-    @Test
-    void example() {
-        Person person = Instancio.create(Person.class);
-
-        assertThat(person.getPhoneNumbers())
-            .hasSizeGreaterThanOrEqualTo(10);
-    }
-}
-```
-!!! attention ""
-    <lnum>4</lnum> Inject custom settings to be used by every test method within the class.<br/>
-    <lnum>10</lnum> Every object will be created using the injected settings.
-
-!!! warning "There can be only one field annotated `@WithSettings` per test class."
-
-Instancio also supports overriding the injected settings using the `withSettings` method as shown below.
-The settings provided via the method take precedence over the injected settings (see [Settings Precedence](#settings-precedence) for further information).
-
-``` java linenums="1" title="Overriding injecting Settings" hl_lines="11"
-@ExtendWith(InstancioExtension.class)
-class ExampleTest {
-
-    @WithSettings
-    private final Settings settings = Settings.create()
-        .set(Keys.COLLECTION_MIN_SIZE, 10);
-
-    @Test
-    void overrideInjectedSettings() {
-        Person person = Instancio.of(Person.class)
-            .withSettings(Settings.create()
-                .set(Keys.COLLECTION_MAX_SIZE, 3))
-            .create();
-
-        assertThat(person.getPhoneNumbers())
-            .as("Injected settings can be overridden")
-            .hasSizeLessThanOrEqualTo(3);
-    }
-}
-```
-!!! attention ""
-    <lnum>11</lnum> Settings passed to the builder method take precedence over the injected settings.
-
-Instancio supports `@WithSettings` placed on static and non-static fields.
-However, if the test class contains a `@ParameterizedTest` method, then the settings field *must be static*.
-
-## Parameterized Tests
-
-The {{ InstancioSource }} annotation allows you to provide arguments directly to
-a `@ParameterizedTest` method. This works for both single and multiple arguments,
-with each class representing one argument.
-
-!!! warning "Using `@ParameterizedTest` requires the `junit-jupiter-params` dependency."
-    See <a href="https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-setup" target="_blank">JUnit documentation for details</a>.
-
-``` java linenums="1" title="Using @InstancioSource with @ParameterizedTest"
-@ExtendWith(InstancioExtension.class)
-class ExampleTest {
-
-    @ParameterizedTest
-    @InstancioSource
-    void singleArgument(Person person) {
-        // snip...
-    }
-
-    @ParameterizedTest
-    @InstancioSource
-    void multipleArguments(Foo foo, Bar bar, Baz baz) {
-        // snip...
-    }
-}
-```
-
-`@InstancioSource` can also be used with [data feeds](#data-feeds).
-For example, assuming we have a custom `PersonFeed`:
-
-```java linenums="1"
-@ParameterizedTest
-@InstancioSource
-void feedExample(PersonFeed feed) {
-    // snip...
-}
-```
-
-Methods annotated with `@InstancioSource` will execute multiple times, each time
-with a new set of random inputs to ensure better test coverage. The number of
-iterations can be configured using the `Keys.INSTANCIO_SOURCE_SAMPLES` setting,
-which defaults to `100`. In the following example, all test methods annotated
-with `@InstancioSource` in this test class will run `500` times:
-
-``` java linenums="1" hl_lines="5"
-@ExtendWith(InstancioExtension.class)
-class ExampleTest {
-
-    @WithSettings
-    private static final Settings settings = Settings.create()
-        .set(Keys.INSTANCIO_SOURCE_SAMPLES, 500);
-
-    @ParameterizedTest
-    @InstancioSource
-    void example(Person person) {
-        // ...
-    }
-}
-```
-
-Additionally, this can be overridden for a specific
-test method using the annotation's `samples` attribute:
-
-```java linenums="1" hl_lines="2"
-@ParameterizedTest
-@InstancioSource(samples = 250)
-void example(Person person) {
-    // will run this test method 250 times
-}
-```
 
 ---
 
