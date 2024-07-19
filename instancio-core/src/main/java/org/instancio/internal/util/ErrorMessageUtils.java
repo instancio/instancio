@@ -58,19 +58,29 @@ public final class ErrorMessageUtils {
         // non-instantiable
     }
 
-    public static String filterRetryLimitExceeded(final InternalNode node, final int maxGenerationAttempts) {
+    public static String maxGenerationAttemptsExceeded(final InternalNode node, final int maxGenerationAttempts) {
+
         return new StringBuilder(INITIAL_SB_SIZE)
-                .append("could not generate a sufficient number of values").append(NL)
+                .append("failed generating a value for node:").append(NL)
+                .append(NL)
+                .append(nodePathToRootBlock(node)).append(NL)
                 .append(NL)
                 .append(" -> Generation was abandoned after ").append(maxGenerationAttempts)
-                .append(" attempts to avoid an infinite loop.").append(NL)
+                .append(" attempts to avoid an infinite loop").append(NL)
+                .append("    (configured using the ").append(keyDesc(Keys.MAX_GENERATION_ATTEMPTS))
+                .append(" settings)").append(NL)
                 .append(NL)
                 .append("Possible causes:").append(NL)
                 .append(NL)
-                .append(" -> filter() predicate rejected too many generated values, exceeding the retry limit").append(NL)
-                .append(" -> withUnique() method unable to generate a sufficient number of values").append(NL)
+                .append(" -> filter() predicate rejected too many generated values, exceeding the maximum number of attempts")
                 .append(NL)
-                .append("Selector target: ").append(nodePathToRootBlock(node))
+                .append(" -> withUnique() method unable to generate a sufficient number of unique values").append(NL)
+                .append(" -> a hash-based collection (a Set or Map) of a given size could not be populated").append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> update the generation parameters to address the root cause").append(NL)
+                .append(" -> increase the value of the ").append(keyDesc(Keys.MAX_GENERATION_ATTEMPTS)).append(" setting")
                 .toString();
     }
 
