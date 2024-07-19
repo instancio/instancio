@@ -26,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.Year;
-import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 
@@ -49,7 +48,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getOffsetTime()).isBefore(OffsetTime.now(ZoneOffset.UTC));
         assertThat(result.getOffsetDateTime()).isInThePast();
         assertThat(result.getZonedDateTime()).isInThePast();
-        assertThat(result.getYearMonth()).isLessThan(YearMonth.now());
+        assertThat(result.getYearMonth()).isInThePast();
         assertThat(result.getYear()).isLessThan(Year.now());
         assertThat(result.getDate()).isInThePast();
         assertThat(result.getSqlDate()).isInThePast();
@@ -69,7 +68,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getOffsetTime()).isBefore(OffsetTime.now(ZoneOffset.UTC));
         assertThat(result.getOffsetDateTime()).isInThePast();
         assertThat(result.getZonedDateTime()).isInThePast();
-        assertThat(result.getYearMonth()).isLessThan(YearMonth.now());
+        assertThat(result.getYearMonth()).isInThePast();
         assertThat(result.getYear()).isLessThan(Year.now());
         assertThat(result.getDate()).isInThePast();
         assertThat(result.getSqlDate()).isInThePast();
@@ -89,7 +88,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getOffsetTime()).isAfter(OffsetTime.now(ZoneOffset.UTC));
         assertThat(result.getOffsetDateTime()).isInTheFuture();
         assertThat(result.getZonedDateTime()).isInTheFuture();
-        assertThat(result.getYearMonth()).isGreaterThan(YearMonth.now());
+        assertThat(result.getYearMonth()).isInTheFuture();
         assertThat(result.getYear()).isGreaterThan(Year.now());
         assertThat(result.getDate()).isInTheFuture();
         assertThat(result.getSqlDate()).isInTheFuture();
@@ -109,7 +108,7 @@ class TemporalPastFutureBVTest {
         assertThat(result.getOffsetTime()).isAfter(OffsetTime.now(ZoneOffset.UTC));
         assertThat(result.getOffsetDateTime()).isInTheFuture();
         assertThat(result.getZonedDateTime()).isInTheFuture();
-        assertThat(result.getYearMonth()).isGreaterThan(YearMonth.now());
+        assertThat(result.getYearMonth()).isInTheFuture();
         assertThat(result.getYear()).isGreaterThan(Year.now());
         assertThat(result.getDate()).isInTheFuture();
         assertThat(result.getSqlDate()).isInTheFuture();
