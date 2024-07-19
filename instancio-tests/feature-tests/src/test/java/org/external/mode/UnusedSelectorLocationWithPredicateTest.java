@@ -52,10 +52,10 @@ class UnusedSelectorLocationWithPredicateTest {
         int l = 46;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(5)
-                .generatorSelector(timestampSelector, line(getClass(), l++))
+                .setSelector(timestampSelector, line(getClass(), l++))
                 .ignoreSelector(types().annotated(Pojo.class).annotated(PersonName.class), line(getClass(), l++))
-                .generatorSelector(fields().named("foo"), line(getClass(), l++))
+                .supplySelector(fields().named("foo"), line(getClass(), l++))
                 .ignoreSelector(types(klass -> false), line(getClass(), l++))
-                .generatorSelector(fields(field -> false), line(getClass(), l++));
+                .supplySelector(fields(field -> false), line(getClass(), l++));
     }
 }

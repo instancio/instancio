@@ -20,6 +20,7 @@ import org.instancio.DepthSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.TargetSelector;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.util.ErrorMessageUtils;
@@ -36,6 +37,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
 
     private final List<Predicate<T>> predicates = new ArrayList<>(3);
     private final StringBuilder description = new StringBuilder(128);
+    private ApiMethodSelector apiMethodSelector;
     private List<Scope> scopes;
     private boolean isLenient;
 
@@ -53,6 +55,12 @@ abstract class PredicateSelectorBuilderTemplate<T>
 
     protected final StringBuilder description() {
         return description;
+    }
+
+    @Override
+    public final SelectorBuilder apiMethodSelector(final ApiMethodSelector apiMethodSelector) {
+        this.apiMethodSelector = apiMethodSelector;
+        return this;
     }
 
     @Override
@@ -107,6 +115,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
             builder.lenient();
         }
         return builder
+                .apiMethodSelector(apiMethodSelector)
                 .apiInvocationDescription(description.toString())
                 .build();
     }

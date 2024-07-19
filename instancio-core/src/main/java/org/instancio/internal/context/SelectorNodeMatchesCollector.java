@@ -18,39 +18,42 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.InternalSelector;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
 final class SelectorNodeMatchesCollector {
 
+    private final SelectorMap<?> assignDestinationToAssignmentsMap;
+    private final SelectorMap<?> assignOriginToDestinationSelectorsMap;
+    private final SelectorMap<?> feedSelectorMap;
+    private final SelectorMap<?> filterSelectorMap;
+    private final SelectorMap<?> generatorSelectorMap;
     private final SelectorMap<?> ignoredSelectorMap;
     private final SelectorMap<?> nullableSelectorMap;
     private final SelectorMap<?> onCompleteCallbackSelectorMap;
-    private final SelectorMap<?> filterSelectorMap;
-    private final SelectorMap<?> subtypeSelectorMap;
-    private final SelectorMap<?> generatorSelectorMap;
-    private final SelectorMap<?> assignDestinationToAssignmentsMap;
-    private final SelectorMap<?> assignOriginToDestinationSelectorsMap;
     private final SelectorMap<?> setModelSelectorMap;
-    private final SelectorMap<?> feedSelectorMap;
+    private final SelectorMap<?> subtypeSelectorMap;
 
     SelectorNodeMatchesCollector(final SelectorMaps selectorMaps) {
+        this.assignDestinationToAssignmentsMap = selectorMaps.getAssignmentSelectorMap().getDestinationToAssignmentsMap();
+        this.assignOriginToDestinationSelectorsMap = selectorMaps.getAssignmentSelectorMap().getOriginToDestinationSelectorsMap();
+        this.feedSelectorMap = selectorMaps.getFeedSelectorMap().getSelectorMap();
+        this.filterSelectorMap = selectorMaps.getFilterSelectorMap().getSelectorMap();
+        this.generatorSelectorMap = selectorMaps.getGeneratorSelectorMap().getSelectorMap();
         this.ignoredSelectorMap = selectorMaps.getIgnoreSelectorMap().getSelectorMap();
         this.nullableSelectorMap = selectorMaps.getWithNullableSelectorMap().getSelectorMap();
         this.onCompleteCallbackSelectorMap = selectorMaps.getOnCompleteSelectorMap().getSelectorMap();
-        this.filterSelectorMap = selectorMaps.getFilterSelectorMap().getSelectorMap();
-        this.subtypeSelectorMap = selectorMaps.getSubtypeSelectorMap().getSelectorMap();
-        this.generatorSelectorMap = selectorMaps.getGeneratorSelectorMap().getSelectorMap();
-        this.assignDestinationToAssignmentsMap = selectorMaps.getAssignmentSelectorMap().getDestinationToAssignmentsMap();
-        this.assignOriginToDestinationSelectorsMap = selectorMaps.getAssignmentSelectorMap().getOriginToDestinationSelectorsMap();
         this.setModelSelectorMap = selectorMaps.getSetModelSelectorMap().getSelectorMap();
-        this.feedSelectorMap = selectorMaps.getFeedSelectorMap().getSelectorMap();
+        this.subtypeSelectorMap = selectorMaps.getSubtypeSelectorMap().getSelectorMap();
     }
 
     public Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> getNodeMatches(final InternalNode rootNode) {
@@ -60,16 +63,19 @@ final class SelectorNodeMatchesCollector {
 
         while (!queue.isEmpty()) {
             final InternalNode node = queue.poll();
-            collectNodes(map, ApiMethodSelector.IGNORE, node, ignoredSelectorMap);
-            collectNodes(map, ApiMethodSelector.WITH_NULLABLE, node, nullableSelectorMap);
-            collectNodes(map, ApiMethodSelector.ON_COMPLETE, node, onCompleteCallbackSelectorMap);
-            collectNodes(map, ApiMethodSelector.FILTER_WITH_UNIQUE, node, filterSelectorMap);
-            collectNodes(map, ApiMethodSelector.SUBTYPE, node, subtypeSelectorMap);
-            collectNodes(map, ApiMethodSelector.GENERATE, node, generatorSelectorMap);
+            collectNodes(map, ApiMethodSelector.APPLY_FEED, node, feedSelectorMap);
             collectNodes(map, ApiMethodSelector.ASSIGN_DESTINATION, node, assignDestinationToAssignmentsMap);
             collectNodes(map, ApiMethodSelector.ASSIGN_ORIGIN, node, assignOriginToDestinationSelectorsMap);
+            collectNodes(map, ApiMethodSelector.FILTER, node, filterSelectorMap);
+            collectNodes(map, ApiMethodSelector.GENERATE, node, generatorSelectorMap);
+            collectNodes(map, ApiMethodSelector.IGNORE, node, ignoredSelectorMap);
+            collectNodes(map, ApiMethodSelector.ON_COMPLETE, node, onCompleteCallbackSelectorMap);
             collectNodes(map, ApiMethodSelector.SET_MODEL, node, setModelSelectorMap);
-            collectNodes(map, ApiMethodSelector.APPLY_FEED, node, feedSelectorMap);
+            collectNodes(map, ApiMethodSelector.SET, node, generatorSelectorMap);
+            collectNodes(map, ApiMethodSelector.SUBTYPE, node, subtypeSelectorMap);
+            collectNodes(map, ApiMethodSelector.SUPPLY, node, generatorSelectorMap);
+            collectNodes(map, ApiMethodSelector.WITH_NULLABLE, node, nullableSelectorMap);
+            collectNodes(map, ApiMethodSelector.WITH_UNIQUE, node, filterSelectorMap);
             queue.addAll(node.getChildren());
         }
         return map;
@@ -77,18 +83,21 @@ final class SelectorNodeMatchesCollector {
 
     private static void collectNodes(
             final Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> resultsMap,
-            final ApiMethodSelector method,
+            final ApiMethodSelector apiMethodSelector,
             final InternalNode node,
             final SelectorMap<?> selectorMap) {
 
         Map<TargetSelector, Set<InternalNode>> selectorNodeMap = resultsMap
-                .computeIfAbsent(method, k -> new LinkedHashMap<>());
+                .computeIfAbsent(apiMethodSelector, k -> new LinkedHashMap<>());
 
         final Set<TargetSelector> selectors = selectorMap.getSelectors(node);
 
         for (TargetSelector selector : selectors) {
-            Set<InternalNode> nodes = selectorNodeMap.computeIfAbsent(selector, k -> new LinkedHashSet<>());
-            nodes.add(node);
+            final InternalSelector internalSelector = (InternalSelector) selector;
+            if (internalSelector.getApiMethodSelector() == apiMethodSelector) {
+                Set<InternalNode> nodes = selectorNodeMap.computeIfAbsent(selector, k -> new LinkedHashSet<>());
+                nodes.add(node);
+            }
         }
     }
 
@@ -97,22 +106,18 @@ final class SelectorNodeMatchesCollector {
      * when doing a lookup. Therefore, this method must be called after the root
      * object has been created (all map lookups have been done).
      */
-    public Map<ApiMethodSelector, Set<TargetSelector>> getUnusedSelectors() {
-        Map<ApiMethodSelector, Set<TargetSelector>> map = new EnumMap<>(ApiMethodSelector.class);
-        map.put(ApiMethodSelector.IGNORE, collectSelectors(ignoredSelectorMap));
-        map.put(ApiMethodSelector.WITH_NULLABLE, collectSelectors(nullableSelectorMap));
-        map.put(ApiMethodSelector.ON_COMPLETE, collectSelectors(onCompleteCallbackSelectorMap));
-        map.put(ApiMethodSelector.FILTER_WITH_UNIQUE, collectSelectors(filterSelectorMap));
-        map.put(ApiMethodSelector.SUBTYPE, collectSelectors(subtypeSelectorMap));
-        map.put(ApiMethodSelector.GENERATE, collectSelectors(generatorSelectorMap));
-        map.put(ApiMethodSelector.ASSIGN_DESTINATION, collectSelectors(assignDestinationToAssignmentsMap));
-        map.put(ApiMethodSelector.ASSIGN_ORIGIN, collectSelectors(assignOriginToDestinationSelectorsMap));
-        map.put(ApiMethodSelector.SET_MODEL, collectSelectors(setModelSelectorMap));
-        map.put(ApiMethodSelector.APPLY_FEED, collectSelectors(feedSelectorMap));
-        return map;
-    }
-
-    private static Set<TargetSelector> collectSelectors(final SelectorMap<?> selectorMap) {
-        return selectorMap.getUnusedKeys();
+    public List<TargetSelector> getUnusedSelectors() {
+        List<TargetSelector> results = new ArrayList<>();
+        results.addAll(assignDestinationToAssignmentsMap.getUnusedKeys());
+        results.addAll(assignOriginToDestinationSelectorsMap.getUnusedKeys());
+        results.addAll(feedSelectorMap.getUnusedKeys());
+        results.addAll(filterSelectorMap.getUnusedKeys());
+        results.addAll(generatorSelectorMap.getUnusedKeys());
+        results.addAll(ignoredSelectorMap.getUnusedKeys());
+        results.addAll(nullableSelectorMap.getUnusedKeys());
+        results.addAll(onCompleteCallbackSelectorMap.getUnusedKeys());
+        results.addAll(setModelSelectorMap.getUnusedKeys());
+        results.addAll(subtypeSelectorMap.getUnusedKeys());
+        return results;
     }
 }

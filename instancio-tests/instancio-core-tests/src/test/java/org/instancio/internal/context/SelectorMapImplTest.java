@@ -20,6 +20,7 @@ import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioTerminatingException;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.internal.selectors.SelectorProcessor;
@@ -70,7 +71,7 @@ class SelectorMapImplTest {
             Person.class, Collections.emptyList(), new SetterSelectorHolder());
 
     private void put(final TargetSelector selector, final String value) {
-        final List<TargetSelector> processed = processor.process(selector);
+        final List<TargetSelector> processed = processor.process(selector, ApiMethodSelector.NONE);
         assertThat(processed).hasSize(1);
         selectorMap.put(processed.get(0), value);
     }
@@ -247,13 +248,14 @@ class SelectorMapImplTest {
         @Test
         void unusedUsingGetValue() {
             final TargetSelector nameSelector = processor.process(
-                            field(Person.class, "name"))
+                            field(Person.class, "name"), ApiMethodSelector.NONE)
                     .get(0);
 
             final TargetSelector addressOnePhoneSelector = processor.process(
                             allStrings().within(
                                     scope(RichPerson.class, "address1"),
-                                    scope(Phone.class)))
+                                    scope(Phone.class)),
+                            ApiMethodSelector.NONE)
                     .get(0);
 
             assertThat(selectorMap.getUnusedKeys()).isEmpty();

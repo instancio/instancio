@@ -18,11 +18,13 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
 import org.instancio.internal.util.Sonar;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.util.Constants.NL;
@@ -38,26 +40,27 @@ final class UnusedSelectorReporter {
 
     @SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
     void report() {
-        final Map<ApiMethodSelector, Set<TargetSelector>> unused = collector.getUnusedSelectors();
-        if (hasNoUnusedSelectors(unused)) {
+        final List<TargetSelector> unusedSelectors = collector.getUnusedSelectors();
+        if (unusedSelectors.isEmpty()) {
             return;
         }
+
+        final Map<ApiMethodSelector, List<TargetSelector>> unused = unusedSelectors.stream()
+                .collect(Collectors.groupingBy((TargetSelector s) -> {
+                    final InternalSelector selector = (InternalSelector) s;
+                    return selector.getApiMethodSelector();
+                }));
 
         final StringBuilder sb = new StringBuilder(2048)
                 .append(NL)
                 .append("Found unused selectors referenced in the following methods:")
                 .append(NL);
 
-        append(unused, sb, ApiMethodSelector.IGNORE);
-        append(unused, sb, ApiMethodSelector.WITH_NULLABLE);
-        append(unused, sb, ApiMethodSelector.GENERATE);
-        append(unused, sb, ApiMethodSelector.ON_COMPLETE);
-        append(unused, sb, ApiMethodSelector.SUBTYPE);
-        append(unused, sb, ApiMethodSelector.ASSIGN_ORIGIN);
-        append(unused, sb, ApiMethodSelector.ASSIGN_DESTINATION);
-        append(unused, sb, ApiMethodSelector.SET_MODEL);
-        append(unused, sb, ApiMethodSelector.FILTER_WITH_UNIQUE);
-        append(unused, sb, ApiMethodSelector.APPLY_FEED);
+        for (ApiMethodSelector apiMethodSelector : ApiMethodSelector.values()) {
+            if (apiMethodSelector != ApiMethodSelector.NONE) {
+                append(unused, sb, apiMethodSelector);
+            }
+        }
 
         sb.append(NL)
                 .append("This error aims to highlight potential problems and help maintain clean test code.").append(NL)
@@ -111,12 +114,12 @@ final class UnusedSelectorReporter {
     }
 
     private static void append(
-            final Map<ApiMethodSelector, Set<TargetSelector>> map,
+            final Map<ApiMethodSelector, List<TargetSelector>> map,
             final StringBuilder sb,
             final ApiMethodSelector apiMethod) {
 
-        final Set<TargetSelector> selectors = map.get(apiMethod);
-        if (!selectors.isEmpty()) {
+        final List<TargetSelector> selectors = map.get(apiMethod);
+        if (selectors != null) {
             sb.append(NL)
                     .append(" -> Unused selector in: ")
                     .append(apiMethod.getDescription())
@@ -126,16 +129,7 @@ final class UnusedSelectorReporter {
         }
     }
 
-    private static boolean hasNoUnusedSelectors(final Map<ApiMethodSelector, Set<TargetSelector>> unusedSelectorMap) {
-        for (Set<TargetSelector> unusedSelectors : unusedSelectorMap.values()) {
-            if (!unusedSelectors.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static String formatSelectors(final Set<TargetSelector> selectors) {
+    private static String formatSelectors(final List<TargetSelector> selectors) {
         final int[] count = {1};
         return selectors.stream()
                 .map(UnusedSelectorDescription.class::cast)

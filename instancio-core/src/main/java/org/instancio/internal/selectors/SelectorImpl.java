@@ -19,6 +19,7 @@ import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.Selector;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
@@ -46,19 +47,22 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
      * Three types of selectors can be created: field, method, class.
      * Which arguments are provided depends on the type of selector.
      *
-     * @param target           selector's target
-     * @param scopes           optional scopes specified top-down, from outermost to innermost
-     * @param parent           required only for {@link PrimitiveAndWrapperSelectorImpl} for checking unused selectors
-     * @param stackTraceHolder stacktrace for reporting locations of unused selectors
+     * @param apiMethodSelector the API method the selector was passed to
+     * @param target            selector's target
+     * @param scopes            optional scopes specified top-down, from outermost to innermost
+     * @param parent            required only for {@link PrimitiveAndWrapperSelectorImpl} for checking unused selectors
+     * @param stackTraceHolder  stacktrace for reporting locations of unused selectors
      */
-    private SelectorImpl(final Target target,
-                         @NotNull final List<Scope> scopes,
-                         @Nullable final Selector parent,
-                         @NotNull final Throwable stackTraceHolder,
-                         @Nullable final Integer depth,
-                         final boolean isLenient) {
+    private SelectorImpl(
+            final ApiMethodSelector apiMethodSelector,
+            final Target target,
+            @NotNull final List<Scope> scopes,
+            @Nullable final Selector parent,
+            @NotNull final Throwable stackTraceHolder,
+            @Nullable final Integer depth,
+            final boolean isLenient) {
 
-        super(scopes, stackTraceHolder, isLenient, /*isHiddenFromVerboseOutput*/ false);
+        super(apiMethodSelector, scopes, stackTraceHolder, isLenient, /*isHiddenFromVerboseOutput*/ false);
         this.target = target;
         this.parent = parent;
         this.depth = depth;
@@ -66,6 +70,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
 
     private SelectorImpl(final Builder builder) {
         this(
+                builder.apiMethodSelector,
                 builder.target,
                 ObjectUtils.defaultIfNull(builder.scopes, Collections.emptyList()),
                 builder.parent,
@@ -169,6 +174,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
 
     public Builder toBuilder() {
         Builder builder = new Builder();
+        builder.apiMethodSelector = this.getApiMethodSelector();
         builder.target = this.target;
         builder.scopes = this.getScopes();
         builder.parent = this.parent;
@@ -183,6 +189,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     }
 
     public static final class Builder {
+        private ApiMethodSelector apiMethodSelector;
         private Target target;
         private List<Scope> scopes;
         private Selector parent;
@@ -191,6 +198,11 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
         private boolean isLenient;
 
         private Builder() {
+        }
+
+        public Builder apiMethodSelector(final ApiMethodSelector apiMethodSelector) {
+            this.apiMethodSelector = apiMethodSelector;
+            return this;
         }
 
         public Builder target(final Target target) {

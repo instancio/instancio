@@ -43,6 +43,6 @@ class SameTargetUsingRegularAndPredicateFieldSelectorTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(fields().named("city"), line(getClass(), 42));
+                .setSelector(fields().named("city"), line(getClass(), 42));
     }
 }

@@ -104,7 +104,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     @Override
     public <V> InstancioApi<T> set(final TargetSelector selector, final V value) {
-        modelContextBuilder.withSupplier(selector, () -> value);
+        modelContextBuilder.withSet(selector, value);
         return this;
     }
 

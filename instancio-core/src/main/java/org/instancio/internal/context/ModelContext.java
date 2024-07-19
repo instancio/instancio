@@ -336,9 +336,10 @@ public final class ModelContext<T> {
         private <V> Builder<T> addSelector(
                 final Map<TargetSelector, V> map,
                 final TargetSelector selector,
-                final V value) {
+                final V value,
+                final ApiMethodSelector apiMethodSelector) {
 
-            final List<TargetSelector> processed = selectorProcessor.process(selector);
+            final List<TargetSelector> processed = selectorProcessor.process(selector, apiMethodSelector);
             for (TargetSelector s : processed) {
                 map.put(s, value);
             }
@@ -348,46 +349,68 @@ public final class ModelContext<T> {
         public Builder<T> withSubtype(final TargetSelector selector, final Class<?> subtype) {
             ApiValidator.notNull(subtype, "subtype must not be null");
             subtypeMap = CollectionUtils.newLinkedHashMapIfNull(subtypeMap);
-            return addSelector(subtypeMap, selector, subtype);
+            return addSelector(subtypeMap, selector, subtype, ApiMethodSelector.SUBTYPE);
         }
 
         public Builder<T> withGenerator(final TargetSelector selector, final Generator<?> generator) {
             ApiValidator.validateGeneratorNotNull(generator);
+            return addGenerator(selector, generator, ApiMethodSelector.GENERATE);
+        }
+
+        private Builder<T> addGenerator(
+                final TargetSelector selector,
+                final Generator<?> generator,
+                final ApiMethodSelector apiMethodSelector) {
+
             generatorMap = CollectionUtils.newLinkedHashMapIfNull(generatorMap);
-            return addSelector(generatorMap, selector, generator);
+            return addSelector(generatorMap, selector, generator, apiMethodSelector);
+        }
+
+        public Builder<T> withSet(final TargetSelector selector, final Object value) {
+            return addGenerator(selector, GeneratorDecorator.decorate(() -> value), ApiMethodSelector.SET);
         }
 
         public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
             ApiValidator.validateSupplierNotNull(supplier);
-            return withGenerator(selector, GeneratorDecorator.decorate(supplier));
+            return addGenerator(selector, GeneratorDecorator.decorate(supplier), ApiMethodSelector.SUPPLY);
         }
 
         public <V> Builder<T> withGeneratorSpec(final TargetSelector selector, final GeneratorSpecProvider<V> spec) {
             ApiValidator.validateGenerateSecondArgument(spec);
             generatorSpecMap = CollectionUtils.newLinkedHashMapIfNull(generatorSpecMap);
-            return addSelector(generatorSpecMap, selector, spec);
+            return addSelector(generatorSpecMap, selector, spec, ApiMethodSelector.GENERATE);
         }
 
         public Builder<T> withOnCompleteCallback(final TargetSelector selector, final OnCompleteCallback<?> callback) {
             onCompleteMap = CollectionUtils.newLinkedHashMapIfNull(onCompleteMap);
-            return addSelector(onCompleteMap, selector, callback);
+            return addSelector(onCompleteMap, selector, callback, ApiMethodSelector.ON_COMPLETE);
         }
 
         public Builder<T> filter(final TargetSelector selector, final Predicate<?> predicate) {
             ApiValidator.notNull(predicate, "predicate must not be null");
-            filterMap = CollectionUtils.newLinkedHashMapIfNull(filterMap);
-            return addSelector(filterMap, selector, predicate);
+            return addFilterPredicate(selector, predicate, ApiMethodSelector.FILTER);
         }
 
         public Builder<T> withUnique(final TargetSelector selector) {
-            return filter(selector, new FilterPredicate<Object>() {
+            final FilterPredicate<Object> predicate = new FilterPredicate<Object>() {
                 final Set<Object> generatedValues = new HashSet<>();
 
                 @Override
                 public boolean test(final Object obj) {
                     return generatedValues.add(obj);
                 }
-            });
+            };
+            // withUnique() is implemented using filter()
+            return addFilterPredicate(selector, predicate, ApiMethodSelector.WITH_UNIQUE);
+        }
+
+        private Builder<T> addFilterPredicate(
+                final TargetSelector selector,
+                final Predicate<?> predicate,
+                final ApiMethodSelector apiMethodSelector) {
+
+            filterMap = CollectionUtils.newLinkedHashMapIfNull(filterMap);
+            return addSelector(filterMap, selector, predicate, apiMethodSelector);
         }
 
         public Builder<T> applyFeed(final TargetSelector selector, final Feed feed) {
@@ -411,18 +434,18 @@ public final class ModelContext<T> {
                 final Function<GeneratorContext, Feed> feedFn) {
 
             feedMap = CollectionUtils.newLinkedHashMapIfNull(feedMap);
-            return addSelector(feedMap, selector, feedFn);
+            return addSelector(feedMap, selector, feedFn, ApiMethodSelector.APPLY_FEED);
         }
 
         public Builder<T> withIgnored(final TargetSelector selector) {
             ignoreSet = CollectionUtils.newLinkedHashSetIfNull(ignoreSet);
-            ignoreSet.addAll(selectorProcessor.process(selector));
+            ignoreSet.addAll(selectorProcessor.process(selector, ApiMethodSelector.IGNORE));
             return this;
         }
 
         public Builder<T> withNullable(final TargetSelector selector) {
             withNullableSet = CollectionUtils.newLinkedHashSetIfNull(withNullableSet);
-            withNullableSet.addAll(selectorProcessor.process(selector));
+            withNullableSet.addAll(selectorProcessor.process(selector, ApiMethodSelector.WITH_NULLABLE));
             return this;
         }
 
@@ -447,8 +470,12 @@ public final class ModelContext<T> {
             final List<InternalAssignment> assignments = ((Flattener<InternalAssignment>) assignment).flatten();
 
             for (InternalAssignment a : assignments) {
-                final List<TargetSelector> origin = selectorProcessor.process(a.getOrigin());
-                final List<TargetSelector> destinations = selectorProcessor.process(a.getDestination());
+
+                final List<TargetSelector> origin = selectorProcessor.process(
+                        a.getOrigin(), ApiMethodSelector.ASSIGN_ORIGIN);
+
+                final List<TargetSelector> destinations = selectorProcessor.process(
+                        a.getDestination(), ApiMethodSelector.ASSIGN_DESTINATION);
 
                 Verify.isTrue(origin.size() == 1, "Origin has multiple selectors");
 
@@ -495,7 +522,8 @@ public final class ModelContext<T> {
             if (Objects.equals(selector, Select.root())) {
                 setBlankTargets(); // special case for root selector (no scopes)
             } else {
-                final List<TargetSelector> processedSelectors = selectorProcessor.process(selector);
+                final List<TargetSelector> processedSelectors = selectorProcessor.process(
+                        selector, ApiMethodSelector.NONE);
 
                 for (TargetSelector processedSelector : processedSelectors) {
                     final InternalSelector target = (InternalSelector) processedSelector;
@@ -557,7 +585,8 @@ public final class ModelContext<T> {
         public Builder<T> setModel(final TargetSelector modelSelector, final Model<?> model) {
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
             final ModelContext<?> otherCtx = ((InternalModel<?>) model).getModelContext();
-            final List<TargetSelector> processedSelectors = selectorProcessor.process(modelSelector);
+            final List<TargetSelector> processedSelectors = selectorProcessor.process(
+                    modelSelector, ApiMethodSelector.SET_MODEL);
 
             for (TargetSelector modelTarget : processedSelectors) {
                 setModelMap.put(modelTarget, otherCtx);

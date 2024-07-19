@@ -49,7 +49,7 @@ class UnusedSelectorLocationRootFieldTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(expected, line(getClass(), 41));
+                .supplySelector(expected, line(getClass(), 41));
     }
 
 }

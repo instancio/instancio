@@ -16,6 +16,7 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.documentation.InternalApi;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.Constants;
@@ -60,7 +61,8 @@ public final class BlankSelectors {
 
     private static final class BlankSelector extends PredicateSelectorImpl {
         private BlankSelector(final Predicate<InternalNode> predicate, final String description) {
-            super(Constants.BLANK_SELECTOR_PRIORITY,
+            super(ApiMethodSelector.NONE,
+                    Constants.BLANK_SELECTOR_PRIORITY,
                     predicate,
                     Collections.emptyList(),
                     /* depth = */ null,

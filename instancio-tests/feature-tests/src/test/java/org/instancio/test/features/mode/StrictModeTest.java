@@ -98,10 +98,10 @@ class StrictModeTest {
 
             assertThrowsUnusedSelectorException(api)
                     .hasUnusedSelectorCount(4)
-                    .generatorSelector(field(Foo.class, "fooValue"))
-                    .generatorSelector(field(Bar.class, "barValue"))
-                    .generatorSelector(field(Baz.class, "bazValue"))
-                    .generatorSelector(all(SortedSet.class));
+                    .setSelector(field(Foo.class, "fooValue"))
+                    .setSelector(field(Bar.class, "barValue"))
+                    .setSelector(field(Baz.class, "bazValue"))
+                    .setSelector(all(SortedSet.class));
         }
 
         @Test
@@ -115,10 +115,10 @@ class StrictModeTest {
 
             assertThrowsUnusedSelectorException(api)
                     .hasUnusedSelectorCount(4)
-                    .generatorSelector(field(Foo.class, "fooValue"))
-                    .generatorSelector(field(Bar.class, "barValue"))
-                    .generatorSelector(field(Baz.class, "bazValue"))
-                    .generatorSelector(all(SortedSet.class));
+                    .generateSelector(field(Foo.class, "fooValue"))
+                    .generateSelector(field(Bar.class, "barValue"))
+                    .generateSelector(field(Baz.class, "bazValue"))
+                    .generateSelector(all(SortedSet.class));
         }
 
         @Test

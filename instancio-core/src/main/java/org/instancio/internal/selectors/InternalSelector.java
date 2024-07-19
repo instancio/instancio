@@ -21,6 +21,7 @@ import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.InternalApi;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.Flattener;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +33,8 @@ import java.util.List;
  */
 @InternalApi
 public interface InternalSelector extends ScopeableSelector, Flattener<TargetSelector> {
+
+    ApiMethodSelector getApiMethodSelector();
 
     @NotNull
     List<Scope> getScopes();
