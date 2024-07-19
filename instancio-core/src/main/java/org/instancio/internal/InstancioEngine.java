@@ -36,7 +36,6 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
-import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
@@ -83,6 +82,7 @@ class InstancioEngine {
     private final Assigner assigner;
     private final AssigmentObjectStore assigmentObjectStore;
     private final DelayedNodeQueue delayedNodeQueue = new DelayedNodeQueue();
+    private final int maxGenerationAttempts;
 
     InstancioEngine(InternalModel<?> model) {
         context = model.getModelContext();
@@ -93,6 +93,7 @@ class InstancioEngine {
         assigmentObjectStore = AssigmentObjectStore.create(context);
         generatorFacade = new GeneratorFacade(context, assigmentObjectStore);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
+        maxGenerationAttempts = context.getSettings().get(Keys.MAX_GENERATION_ATTEMPTS);
         nodeFilter = new NodeFilter(context);
         assigner = new AssignerImpl(context);
         listeners = new GenerationListener[]{
@@ -159,8 +160,9 @@ class InstancioEngine {
         int retryCount = 0;
 
         while (!context.isAccepted(node, generatorResult.getValue())) {
-            if (++retryCount > Constants.MAX_RETRIES) { // NOPMD
-                throw Fail.withUsageError(ErrorMessageUtils.filterRetryLimitExceeded(node));
+            if (++retryCount > maxGenerationAttempts) { // NOPMD
+                throw Fail.withUsageError(ErrorMessageUtils.filterRetryLimitExceeded(
+                        node, maxGenerationAttempts));
             }
             generatorResult = doCreateObject(node, isNullable);
         }
@@ -332,7 +334,7 @@ class InstancioEngine {
                 failedAdditions++;
             }
 
-            if (failedAdditions > Constants.MAX_RETRIES) {
+            if (failedAdditions > maxGenerationAttempts) {
                 if (!keyNode.isCyclic() && !valueNode.isCyclic()) {
                     errorHandler.conditionalFailOnError(() -> {
                         throw Fail.withInternalError(
@@ -430,7 +432,7 @@ class InstancioEngine {
                     && !hint.nullableElements()
                     && !elementResult.hasEmitNullHint()
                     && !context.isIgnored(elementNode)
-                    && failedAdditions < Constants.MAX_RETRIES) {
+                    && failedAdditions < maxGenerationAttempts) {
 
                 failedAdditions++;
                 elementValue = createObject(elementNode, false).getValue();
@@ -521,7 +523,7 @@ class InstancioEngine {
                 failedAdditions++;
             }
 
-            if (failedAdditions > Constants.MAX_RETRIES) {
+            if (failedAdditions > maxGenerationAttempts) {
                 if (!elementNode.isCyclic()) {
                     errorHandler.conditionalFailOnError(() -> {
                         throw Fail.withInternalError(
