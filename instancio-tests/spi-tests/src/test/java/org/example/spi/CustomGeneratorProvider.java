@@ -32,7 +32,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.ServiceProviderContext;
-import org.instancio.support.Global;
+import org.instancio.support.ThreadLocalRandom;
 import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
 import org.instancio.test.support.pojo.collections.lists.ListInteger;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerItemOfString;
@@ -59,6 +59,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CustomGeneratorProvider implements InstancioServiceProvider {
 
+    private static final GeneratorContext GENERATOR_CONTEXT = new GeneratorContext(
+            Settings.defaults(), ThreadLocalRandom.getInstance().get());
+
     public static final String STRING_GENERATOR_VALUE = "overridden string generator from SPI Generator!";
     public static final String FOO_RECORD_VALUE = "expected-foo-value";
     public static final Pattern PATTERN_GENERATOR_VALUE = Pattern.compile("baz");
@@ -78,8 +81,8 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         put(Pattern.class, new PatternGeneratorFromSpi());
         put(int.class, new CustomIntegerGenerator());
         put(Integer.class, new CustomIntegerGenerator());
-        put(byte.class, new IntegerSequenceGenerator(Global.generatorContext()).as(Integer::byteValue));
-        put(Byte.class, new IntegerSequenceGenerator(Global.generatorContext()).as(Integer::byteValue));
+        put(byte.class, new IntegerSequenceGenerator(GENERATOR_CONTEXT).as(Integer::byteValue));
+        put(Byte.class, new IntegerSequenceGenerator(GENERATOR_CONTEXT).as(Integer::byteValue));
         put(Address.class, new CustomAddressGenerator());
         put(Phone.class, new CustomPhoneGenerator());
         put(Field.class, new ExceptionThrowingGenerator());

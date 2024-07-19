@@ -17,7 +17,6 @@ package org.instancio.support;
 
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.context.PropertiesLoader;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -47,26 +46,6 @@ public final class Global {
     @Nullable
     public static Random getConfiguredRandom() {
         return CONFIGURED_RANDOM;
-    }
-
-    public static GeneratorContext generatorContext() {
-        final Random random;
-        if (CONFIGURED_RANDOM != null) {
-            random = CONFIGURED_RANDOM;
-        } else if (ThreadLocalRandom.getInstance().get() != null) {
-            random = ThreadLocalRandom.getInstance().get();
-        } else {
-            random = new DefaultRandom(); // random seed
-        }
-        return new GeneratorContext(resolveSettings(), random);
-    }
-
-    private static Settings resolveSettings() {
-        final Settings tls = ThreadLocalSettings.getInstance().get();
-
-        return tls == null
-                ? PROPERTIES_FILE_SETTINGS
-                : PROPERTIES_FILE_SETTINGS.merge(tls).lock();
     }
 
     private Global() {
