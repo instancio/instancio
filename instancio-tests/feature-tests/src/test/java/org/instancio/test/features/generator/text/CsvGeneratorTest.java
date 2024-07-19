@@ -96,7 +96,7 @@ class CsvGeneratorTest {
         final String result = Instancio.of(String.class)
                 .generate(allStrings(), gen -> gen.text().csv()
                         .rows(1)
-                        .separator(" || ")
+                        .delimiter(" || ")
                         .column("col1", random -> "val1")
                         .column("col2", random -> "val2"))
                 .create();
