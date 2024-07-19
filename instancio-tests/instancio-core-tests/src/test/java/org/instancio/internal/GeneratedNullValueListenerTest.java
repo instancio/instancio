@@ -79,7 +79,7 @@ class GeneratedNullValueListenerTest {
                         .build()),
 
                 Arguments.of(ModelContext.builder(String.class)
-                        .withModel(allStrings(), Instancio.of(String.class).toModel())
+                        .setModel(allStrings(), Instancio.of(String.class).toModel())
                         .build()),
 
                 Arguments.of(ModelContext.builder(String.class)

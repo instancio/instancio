@@ -120,7 +120,7 @@ public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
 
     @Override
     public <V> CartesianProductApi<T> setModel(final TargetSelector selector, final Model<V> model) {
-        modelContextBuilder.withModel(selector, model);
+        modelContextBuilder.setModel(selector, model);
         return this;
     }
 

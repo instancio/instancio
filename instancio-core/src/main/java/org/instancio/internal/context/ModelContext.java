@@ -554,7 +554,7 @@ public final class ModelContext<T> {
          * Copies (only) selectors from {@code otherContext} to this context.
          * Other data, such as maxDepth, seed, and settings are <b>not</b> copied.
          */
-        public Builder<T> withModel(final TargetSelector modelSelector, final Model<?> model) {
+        public Builder<T> setModel(final TargetSelector modelSelector, final Model<?> model) {
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
             final ModelContext<?> otherCtx = ((InternalModel<?>) model).getModelContext();
             final List<TargetSelector> processedSelectors = selectorProcessor.process(modelSelector);

@@ -36,7 +36,7 @@ class SetModelValidatingListenerTest {
     @Test
     void createShouldReturnSetModelValidatingListener_whenSetModelIsPresent() {
         final ModelContext<Object> ctx = ModelContext.builder(String.class)
-                .withModel(allStrings(), Instancio.of(String.class).toModel())
+                .setModel(allStrings(), Instancio.of(String.class).toModel())
                 .build();
 
         final GenerationListener result = SetModelValidatingListener.create(ctx);
