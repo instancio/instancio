@@ -15,6 +15,7 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.NonDeterministic;
 import org.instancio.generator.ValueSpec;
 
 import java.time.temporal.Temporal;
@@ -31,12 +32,14 @@ public interface TemporalSpec<T> extends ValueSpec<T>, TemporalGeneratorSpec<T> 
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     TemporalSpec<T> past();
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     TemporalSpec<T> future();
 
     /**

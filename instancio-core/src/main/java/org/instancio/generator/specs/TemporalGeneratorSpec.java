@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.NonDeterministic;
+
 /**
  * Generator spec for {@link java.time.temporal.Temporal} types.
  *
@@ -30,6 +32,7 @@ public interface TemporalGeneratorSpec<T> extends
      *
      * @return spec builder
      */
+    @NonDeterministic
     TemporalGeneratorSpec<T> past();
 
     /**
@@ -37,6 +40,7 @@ public interface TemporalGeneratorSpec<T> extends
      *
      * @return spec builder
      */
+    @NonDeterministic
     TemporalGeneratorSpec<T> future();
 
     /**

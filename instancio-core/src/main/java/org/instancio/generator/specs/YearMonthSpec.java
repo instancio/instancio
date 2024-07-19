@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.NonDeterministic;
+
 import java.time.YearMonth;
 
 /**
@@ -28,12 +30,14 @@ public interface YearMonthSpec extends TemporalSpec<YearMonth> {
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     YearMonthSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     YearMonthSpec future();
 
     /**

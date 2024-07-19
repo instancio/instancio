@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.NonDeterministic;
+
 import java.time.OffsetTime;
 import java.time.temporal.TemporalUnit;
 
@@ -31,12 +33,14 @@ public interface OffsetTimeGeneratorSpec extends
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     OffsetTimeGeneratorSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     OffsetTimeGeneratorSpec future();
 
     /**

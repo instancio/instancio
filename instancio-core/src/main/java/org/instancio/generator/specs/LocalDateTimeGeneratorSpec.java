@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.NonDeterministic;
+
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalUnit;
 
@@ -31,12 +33,14 @@ public interface LocalDateTimeGeneratorSpec extends
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     LocalDateTimeGeneratorSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     LocalDateTimeGeneratorSpec future();
 
     /**

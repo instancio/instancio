@@ -4531,8 +4531,13 @@ Instancio supports this by reporting the seed value of a failed test in the fail
 
 ### Data Guarantees
 
-The library guarantees that the same data is generated for a given seed **and** version of the library.
-For this reason, hard-coding generated values in assertions is highly discouraged to avoid breaking changes.
+The library guarantees that identical data is generated for a given seed **and** version of the library.
+This applies to all APIs except those marked with the `@NonDeterministic` annotation.
+An example of non-deterministic APIs are the `past()` and `future()` methods for generating temporal types.
+These methods depend on the current date as a reference point, which changes over time. Consequently,
+the same seed value might produce different results at different times.
+
+Hard-coding generated values in assertions is also highly discouraged to avoid breaking changes.
 For example, the following test suffers from tight coupling with the random number generator implementation
 and may break when upgrading to a newer version of Instancio.
 
