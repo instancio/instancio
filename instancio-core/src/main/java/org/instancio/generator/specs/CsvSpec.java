@@ -30,30 +30,59 @@ import java.util.function.Predicate;
 @ExperimentalApi
 public interface CsvSpec extends CsvGeneratorSpec, ValueSpec<String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     CsvSpec column(String name, Generator<?> generator);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     CsvSpec column(String name, GeneratorSpec<?> generatorSpec);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     CsvSpec rows(int rows);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     CsvSpec rows(int minRows, int maxRows);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     CsvSpec noHeader();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     CsvSpec wrapWith(String wrapWith);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     CsvSpec wrapIf(Predicate<Object> condition);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.0.0
+     */
     @Override
-    CsvSpec separator(String separator);
+    CsvSpec delimiter(String delimiter);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     CsvSpec lineSeparator(String lineSeparator);
 

@@ -144,14 +144,14 @@ public interface CsvGeneratorSpec extends GeneratorSpec<String> {
     CsvGeneratorSpec wrapIf(Predicate<Object> condition);
 
     /**
-     * Specifies the value separator.
-     * The default is comma: {@code ','}.
+     * Specifies the delimiter used to separate values.
+     * The default delimiter is a comma ({@code ','}).
      *
-     * @param separator for separating values
+     * @param delimiter the character used to separate values
      * @return spec builder
-     * @since 2.12.0
+     * @since 5.0.0
      */
-    CsvGeneratorSpec separator(String separator);
+    CsvGeneratorSpec delimiter(String delimiter);
 
     /**
      * Specifies the line separator.

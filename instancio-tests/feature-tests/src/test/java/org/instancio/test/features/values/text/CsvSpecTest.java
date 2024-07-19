@@ -42,7 +42,7 @@ class CsvSpecTest extends AbstractValueSpecTestTemplate<String> {
                 .column("col3", random -> 123)
                 .column("col4", random -> true)
                 .rows(3)
-                .separator("|")
+                .delimiter("|")
                 .wrapWith("'")
                 .wrapIf(obj -> obj.toString().contains(","))
                 .get();

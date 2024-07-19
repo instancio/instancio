@@ -34,7 +34,7 @@ public class CsvGenerator extends AbstractGenerator<String> implements CsvSpec {
     private boolean includeHeader = true;
     private String wrapWith;
     private Predicate<Object> wrapIf = o -> true;
-    private String separator = ",";
+    private String delimiter = ",";
     private String lineSeparator = System.lineSeparator();
     private final List<Column> columns = new ArrayList<>();
 
@@ -103,8 +103,8 @@ public class CsvGenerator extends AbstractGenerator<String> implements CsvSpec {
     }
 
     @Override
-    public CsvGenerator separator(final String separator) {
-        this.separator = separator;
+    public CsvGenerator delimiter(final String delimiter) {
+        this.delimiter = delimiter;
         return this;
     }
 
@@ -154,7 +154,7 @@ public class CsvGenerator extends AbstractGenerator<String> implements CsvSpec {
                 sb.append(wrapWith);
             }
             if (c < cols - 1) {
-                sb.append(separator);
+                sb.append(delimiter);
             }
         }
     }
@@ -163,7 +163,7 @@ public class CsvGenerator extends AbstractGenerator<String> implements CsvSpec {
         for (int c = 0; c < cols; c++) {
             sb.append(columns.get(c).name);
             if (c < cols - 1) {
-                sb.append(separator);
+                sb.append(delimiter);
             }
         }
         sb.append(lineSeparator);
