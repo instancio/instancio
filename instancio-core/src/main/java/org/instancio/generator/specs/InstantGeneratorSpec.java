@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.NonDeterministic;
+
 import java.time.Instant;
 import java.time.temporal.TemporalUnit;
 
@@ -31,12 +33,14 @@ public interface InstantGeneratorSpec extends
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     InstantGeneratorSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     InstantGeneratorSpec future();
 
     /**

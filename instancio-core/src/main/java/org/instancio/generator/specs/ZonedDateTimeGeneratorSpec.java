@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.documentation.NonDeterministic;
+
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalUnit;
 
@@ -31,12 +33,14 @@ public interface ZonedDateTimeGeneratorSpec extends
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     ZonedDateTimeGeneratorSpec past();
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @NonDeterministic
     ZonedDateTimeGeneratorSpec future();
 
     /**
