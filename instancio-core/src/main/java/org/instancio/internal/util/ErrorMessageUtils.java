@@ -58,11 +58,11 @@ public final class ErrorMessageUtils {
         // non-instantiable
     }
 
-    public static String filterRetryLimitExceeded(final InternalNode node) {
+    public static String filterRetryLimitExceeded(final InternalNode node, final int maxGenerationAttempts) {
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("could not generate a sufficient number of values").append(NL)
                 .append(NL)
-                .append(" -> Generation was abandoned after ").append(Constants.MAX_RETRIES)
+                .append(" -> Generation was abandoned after ").append(maxGenerationAttempts)
                 .append(" attempts to avoid an infinite loop.").append(NL)
                 .append(NL)
                 .append("Possible causes:").append(NL)

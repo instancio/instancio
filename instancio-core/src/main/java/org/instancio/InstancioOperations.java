@@ -356,7 +356,7 @@ interface InstancioOperations<T> {
      * Filters generated values using given {@code predicate}.
      * If a value is rejected, a new value will be generated,
      * which will also be tested against the {@code predicate}.
-     * If no value is accepted after {@code 1000} attempts,
+     * If no value is accepted after {@link Keys#MAX_GENERATION_ATTEMPTS},
      * an exception will be thrown.
      *
      * <p>A simple example is to generate a list of even numbers:
@@ -374,6 +374,7 @@ interface InstancioOperations<T> {
      * @param predicate that must be satisfied by the generated value
      * @param <V>       the type of object the predicate is evaluated against
      * @return API builder reference
+     * @see Keys#MAX_GENERATION_ATTEMPTS
      * @since 4.6.0
      */
     @ExperimentalApi

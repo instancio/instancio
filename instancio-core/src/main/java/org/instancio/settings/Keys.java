@@ -15,6 +15,9 @@
  */
 package org.instancio.settings;
 
+import org.instancio.FilterPredicate;
+import org.instancio.InstancioApi;
+import org.instancio.TargetSelector;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.feed.Feed;
 import org.instancio.generator.AfterGenerate;
@@ -363,6 +366,23 @@ public final class Keys {
      */
     public static final SettingKey<Integer> MAX_DEPTH = registerRequiredNonAdjustable(
             "max.depth", Integer.class, 8);
+
+    /**
+     * The maximum number of attempts to generate an object for a given node;
+     * default is {@code 1000}; property name {@code max.generation.attempts}.
+     *
+     * <p>This setting applicable to:
+     *
+     * <ul>
+     *   <li>{@link InstancioApi#filter(TargetSelector, FilterPredicate)} method</li>
+     *   <li>when generating values for hash-based collection</li>
+     * </ul>
+     *
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Integer> MAX_GENERATION_ATTEMPTS = registerRequiredNonAdjustable(
+            "max.generation.attempts", Integer.class, 1000);
 
     /**
      * Specifies the mode: strict (unused selectors will trigger an exception) or lenient;

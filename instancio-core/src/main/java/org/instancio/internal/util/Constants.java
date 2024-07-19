@@ -32,12 +32,6 @@ public final class Constants {
     public static final int RANGE_ADJUSTMENT_PERCENTAGE = 50;
 
     /**
-     * The number of times generating an object for a given node
-     * can be retried until it is aborted.
-     */
-    public static final int MAX_RETRIES = 1000;
-
-    /**
      * Default min array/collection size.
      */
     public static final int MIN_SIZE = 2;
