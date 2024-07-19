@@ -69,7 +69,7 @@ public final class InternalFeedContext<F extends Feed> {
         this.dataSource = resolveDataSource(feedSource, builder.feedClass, builder.dataSource, tagKey);
         this.formatOptions = builder.formatOptions != null
                 ? builder.formatOptions.apply(settings)
-                : null;
+                : null; //NOPMD
         this.feedFormatType = resolveDataFormatType(settings, feedClass, builder.feedFormatType);
         this.feedDataAccess = resolveFeedDataAccess(settings, feedClass, builder.feedDataAccess);
         this.feedDataEndAction = builder.feedDataEndAction != null

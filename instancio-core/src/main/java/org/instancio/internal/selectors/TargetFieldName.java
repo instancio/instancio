@@ -49,8 +49,8 @@ public final class TargetFieldName implements Target {
 
         final TargetFieldName that = (TargetFieldName) o;
 
-        if (!Objects.equals(targetClass, that.targetClass)) return false;
-        return Objects.equals(fieldName, that.fieldName);
+        return Objects.equals(targetClass, that.targetClass)
+                && Objects.equals(fieldName, that.fieldName);
     }
 
     @Override

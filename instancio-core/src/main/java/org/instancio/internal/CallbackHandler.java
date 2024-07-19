@@ -83,11 +83,11 @@ class CallbackHandler implements GenerationListener {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void invokeCallback(final OnCompleteCallback<?> callback,
+    private static void invokeCallback(final OnCompleteCallback callback,
                                        final Object result,
                                        final InternalNode node) {
         try {
-            ((OnCompleteCallback) callback).onComplete(result);
+            callback.onComplete(result);
         } catch (ClassCastException ex) {
             final String errorMsg = String.format(
                     "onComplete() callback error.%n%n" +

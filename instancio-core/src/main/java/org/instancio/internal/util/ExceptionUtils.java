@@ -47,7 +47,7 @@ public final class ExceptionUtils {
 
     @VisibleForTesting
     static String getCausedBy(final Throwable throwable) {
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder(1024);
 
         for (Throwable t = throwable; t != null; t = t.getCause()) {
             sb.append(Constants.NL)

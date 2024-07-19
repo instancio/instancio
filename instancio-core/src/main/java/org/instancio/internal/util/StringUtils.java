@@ -87,7 +87,7 @@ public final class StringUtils {
     }
 
     public static String capitalise(@Nullable final String s) {
-        if (s == null || s.equals("")) {
+        if (s == null || s.isEmpty()) {
             return s;
         }
         final String first = s.substring(0, 1).toUpperCase(Locale.getDefault());
@@ -119,7 +119,7 @@ public final class StringUtils {
 
         while (i < length) {
             if (pattern.charAt(i) == '$' && i + 1 < length && pattern.charAt(i + 1) == '{') {
-                final int j = pattern.indexOf("}", i + 2);
+                final int j = pattern.indexOf('}', i + 2);
 
                 if (j == -1) {
                     throw Fail.withUsageError(invalidStringTemplate(

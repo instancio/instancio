@@ -29,15 +29,16 @@ import org.instancio.internal.util.Sonar;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Set;
 
-public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumSet<E>> implements EnumSetGeneratorSpec<E> {
+public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<Set<E>> implements EnumSetGeneratorSpec<E> {
 
     private final Class<E> enumClass;
     private final int generateEntriesHint;
     private Integer minSize = 1;
     private Integer maxSize;
-    private EnumSet<E> including;
-    private EnumSet<E> excluding;
+    private Set<E> including;
+    private Set<E> excluding;
 
     public EnumSetGenerator(final GeneratorContext context, final Class<E> enumClass) {
         super(context);
@@ -95,7 +96,7 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumS
 
     @Override
     @SuppressWarnings({"PMD.ReturnEmptyCollectionRatherThanNull", Sonar.RETURN_EMPTY_COLLECTION})
-    protected EnumSet<E> tryGenerateNonNull(final Random random) {
+    protected Set<E> tryGenerateNonNull(final Random random) {
         // If enum class is known at this time (i.e. it was supplied by the user via the spec)
         // then generate an EnumSet internally.
         if (enumClass != null) {
@@ -106,14 +107,14 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumS
         return null;
     }
 
-    private EnumSet<E> createEnumSet(final Class<E> targetClass, final Random random) {
+    private Set<E> createEnumSet(final Class<E> targetClass, final Random random) {
 
         if (CollectionUtils.isNullOrEmpty(including) && CollectionUtils.isNullOrEmpty(excluding)) {
-            final EnumSet<E> choices = EnumSet.allOf(enumClass);
+            final Set<E> choices = EnumSet.allOf(enumClass);
             final int min = ObjectUtils.defaultIfNull(minSize, 1);
             final int max = ObjectUtils.defaultIfNull(maxSize, choices.size());
             final int size = random.intRange(min, max);
-            final EnumSet<E> result = EnumSet.noneOf(targetClass);
+            final Set<E> result = EnumSet.noneOf(targetClass);
 
             while (result.size() < size && !choices.isEmpty()) {
                 final E next = random.oneOf(choices);
@@ -128,8 +129,8 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumS
             final int max = ObjectUtils.defaultIfNull(maxSize, including.size());
             final int size = random.intRange(min, max);
 
-            final EnumSet<E> result = EnumSet.noneOf(targetClass);
-            final EnumSet<E> choices = EnumSet.copyOf(including);
+            final Set<E> result = EnumSet.noneOf(targetClass);
+            final Set<E> choices = EnumSet.copyOf(including);
 
             while (result.size() < size && !choices.isEmpty()) {
                 final E next = random.oneOf(choices);
@@ -139,7 +140,7 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumS
             return result;
         }
 
-        EnumSet<E> result = EnumSet.allOf(targetClass);
+        Set<E> result = EnumSet.allOf(targetClass);
 
         if (excluding != null) {
             excluding.forEach(result::remove);
@@ -159,7 +160,7 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<EnumS
                 .with(InternalContainerHint.builder()
                         .generateEntries(generateEntriesHint)
                         .createFunction(args -> EnumSet.noneOf((Class<E>) args[0].getClass()))
-                        .addFunction((EnumSet<E> enumSet, Object... args) -> enumSet.add((E) args[0]))
+                        .addFunction((Set<E> enumSet, Object... args) -> enumSet.add((E) args[0]))
                         .build())
                 .build();
     }

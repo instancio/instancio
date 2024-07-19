@@ -176,9 +176,7 @@ class DeclaredAndInheritedMemberCollector {
             if (!(o instanceof MethodKey)) return false;
 
             final MethodKey methodKey = (MethodKey) o;
-
-            if (!name.equals(methodKey.name)) return false;
-            return parameterType.equals(methodKey.parameterType);
+            return name.equals(methodKey.name) && parameterType.equals(methodKey.parameterType);
         }
 
         @Override

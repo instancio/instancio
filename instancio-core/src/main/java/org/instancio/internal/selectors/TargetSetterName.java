@@ -56,9 +56,9 @@ public final class TargetSetterName implements Target {
 
         final TargetSetterName that = (TargetSetterName) o;
 
-        if (!Objects.equals(targetClass, that.targetClass)) return false;
-        if (!Objects.equals(methodName, that.methodName)) return false;
-        return Objects.equals(parameterType, that.parameterType);
+        return Objects.equals(targetClass, that.targetClass)
+                && Objects.equals(methodName, that.methodName)
+                && Objects.equals(parameterType, that.parameterType);
     }
 
     @Override

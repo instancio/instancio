@@ -26,13 +26,14 @@ import org.instancio.internal.generator.InternalGeneratorHint;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Set;
 
 public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E>
         implements EnumSpec<E> {
 
     private final Class<E> enumClass;
-    private final EnumSet<E> values;
-    private EnumSet<E> valuesWithExclusions;
+    private final Set<E> values;
+    private Set<E> valuesWithExclusions;
 
     public EnumGenerator(final GeneratorContext context, final Class<E> enumClass) {
         super(context);
@@ -53,8 +54,7 @@ public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E>
 
         // Allow passing empty array, meaning 'no exclusions'
         if (values.length > 0) {
-            final EnumSet<E> exclusions = EnumSet.copyOf(Arrays.asList(values));
-            valuesWithExclusions = EnumSet.complementOf(exclusions);
+            valuesWithExclusions = EnumSet.complementOf(EnumSet.copyOf(Arrays.asList(values)));
         }
         return this;
     }

@@ -55,7 +55,7 @@ import static org.instancio.internal.util.ErrorMessageUtils.invalidFunctionSpecH
 import static org.instancio.internal.util.ReflectionUtils.getZeroArgMethod;
 import static org.instancio.internal.util.ReflectionUtils.setAccessible;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.GodClass"})
+@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.GodClass"})
 public abstract class AbstractFeed<R> implements InternalFeed {
     private static final boolean UPDATE_BITSET = true;
 

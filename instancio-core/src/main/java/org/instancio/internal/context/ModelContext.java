@@ -84,7 +84,7 @@ import static java.util.Collections.unmodifiableMap;
 import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
 public final class ModelContext<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
@@ -542,7 +542,7 @@ public final class ModelContext<T> {
             feedMap = new LinkedHashMap<>(src.getFeedMap());
 
             // Increment max depth to account for the additional layer added by the collection
-            maxDepth = otherContext.maxDepth == null ? null : otherContext.maxDepth + 1;
+            maxDepth = otherContext.maxDepth == null ? null : otherContext.maxDepth + 1; //NOPMD
             settings = Settings.from(otherContext.settings)
                     .set(Keys.MAX_DEPTH, otherContext.settings.get(Keys.MAX_DEPTH) + 1)
                     .lock();

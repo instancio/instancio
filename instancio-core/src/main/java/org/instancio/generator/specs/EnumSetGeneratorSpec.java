@@ -18,13 +18,14 @@ package org.instancio.generator.specs;
 import org.instancio.generator.GeneratorSpec;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * Generator spec for {@link EnumSet}.
  *
  * @since 2.0.0
  */
-public interface EnumSetGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<EnumSet<E>> {
+public interface EnumSetGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<Set<E>> {
 
     /**
      * Size of {@code EnumSet} to generate.

@@ -93,7 +93,7 @@ public final class InternalSettings implements Settings {
 
     @Override
     public InternalSettings merge(@Nullable final Settings other) {
-        final InternalSettings merged = InternalSettings.create();
+        final InternalSettings merged = create();
         merged.settingsMap.putAll(settingsMap);
         merged.subtypeMap.putAll(subtypeMap);
 

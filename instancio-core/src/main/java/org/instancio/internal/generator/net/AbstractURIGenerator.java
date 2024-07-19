@@ -73,7 +73,7 @@ abstract class AbstractURIGenerator<T> extends AbstractGenerator<T> {
     }
 
     final String getScheme(final Random random) {
-        return schemes.isEmpty() ? AbstractURIGenerator.DEFAULT_SCHEME : random.oneOf(schemes);
+        return schemes.isEmpty() ? DEFAULT_SCHEME : random.oneOf(schemes);
     }
 
     final int getPort(final Random random) {

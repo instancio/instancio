@@ -42,7 +42,7 @@ final class GeneratedNullValueListener implements GenerationListener {
         final boolean isLenient = context.getSettings().get(Keys.MODE) == Mode.LENIENT;
 
         return isLenient || context.getSelectorMaps().allEmpty()
-                ? GenerationListener.NOOP_LISTENER
+                ? NOOP_LISTENER
                 : new GeneratedNullValueListener(context);
     }
 

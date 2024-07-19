@@ -62,9 +62,9 @@ public final class ParameterizedTypeImpl implements ParameterizedType {
 
         final ParameterizedTypeImpl that = (ParameterizedTypeImpl) o;
 
-        if (!Objects.equals(ownerType, that.ownerType)) return false;
-        if (!Objects.equals(rawType, that.rawType)) return false;
-        return Arrays.equals(typeArguments, that.typeArguments);
+        return Objects.equals(ownerType, that.ownerType)
+                && Objects.equals(rawType, that.rawType)
+                && Arrays.equals(typeArguments, that.typeArguments);
     }
 
     @Override

@@ -140,8 +140,8 @@ final class ModelReporter {
 
             if (!StringUtils.isBlank(section)) {
                 final ApiMethodSelector method = entry.getKey();
-                sb.append(" -> Method: ").append(method.getDescription()).append(NL);
-                sb.append(section);
+                sb.append(" -> Method: ").append(method.getDescription()).append(NL)
+                        .append(section);
             }
         }
     }

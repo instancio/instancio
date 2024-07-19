@@ -60,6 +60,11 @@
             <property name="reportLevel" value="19"/>
         </properties>
     </rule>
+    <rule ref="category/java/design.xml/CouplingBetweenObjects">
+        <properties>
+            <property name="threshold" value="35"/>
+        </properties>
+    </rule>
     <rule ref="category/java/design.xml/CyclomaticComplexity">
         <properties>
             <property name="classReportLevel" value="80"/>
@@ -85,11 +90,11 @@
         <exclude name="AvoidAccessibilityAlteration"/>
         <exclude name="AvoidFieldNameMatchingMethodName"/>
         <exclude name="AvoidFieldNameMatchingTypeName"/>
+        <exclude name="ConstructorCallsOverridableMethod"/>
         <exclude name="MissingSerialVersionUID"/>
     </rule>
     <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
         <properties>
-            <property name="separator" value=","/>
             <property name="maxDuplicateLiterals" value="8"/>
             <property name="minimumLength" value="3"/>
             <property name="skipAnnotations" value="false"/>

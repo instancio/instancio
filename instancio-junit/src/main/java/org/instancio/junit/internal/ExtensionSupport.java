@@ -38,8 +38,8 @@ public final class ExtensionSupport {
             final ThreadLocalSettings threadLocalSettings) {
 
         try {
-            ExtensionSupport.processWithSettingsAnnotation(context, threadLocalSettings);
-            ExtensionSupport.processSeedAnnotation(context, threadLocalRandom);
+            processWithSettingsAnnotation(context, threadLocalSettings);
+            processSeedAnnotation(context, threadLocalRandom);
         } catch (Exception ex) {
             threadLocalRandom.remove();
             threadLocalSettings.remove();

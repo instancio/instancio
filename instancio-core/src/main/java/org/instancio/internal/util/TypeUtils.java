@@ -58,7 +58,7 @@ public final class TypeUtils {
         } else if (type instanceof GenericArrayType) {
             final GenericArrayType arrayType = (GenericArrayType) type;
             final Type genericComponent = arrayType.getGenericComponentType();
-            return Array.newInstance(TypeUtils.getRawType(genericComponent), 0).getClass();
+            return Array.newInstance(getRawType(genericComponent), 0).getClass();
         }
         throw new IllegalArgumentException("Could not resolve array class for type: " + type);
     }
@@ -84,7 +84,7 @@ public final class TypeUtils {
     @Nullable
     public static Class<?> getGenericSuperclassTypeArgument(final Class<?> klass) {
         final ParameterizedType type = findParameterizedSupertype(klass);
-        return type == null ? null : TypeUtils.getRawType(type.getActualTypeArguments()[0]);
+        return type == null ? null : getRawType(type.getActualTypeArguments()[0]);
     }
 
     @Nullable
@@ -151,7 +151,7 @@ public final class TypeUtils {
 
         final Type firstArg = ((ParameterizedType) type).getActualTypeArguments()[0];
         if (firstArg instanceof TypeVariable<?>) {
-            return TypeUtils.getRawType(type);
+            return getRawType(type);
         }
         return getFirstTypeArg(firstArg);
     }

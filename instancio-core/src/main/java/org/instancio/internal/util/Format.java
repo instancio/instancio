@@ -139,7 +139,7 @@ public final class Format {
                 .map(Format::withoutPackage)
                 .collect(joining(", "));
 
-        sb.append(METHOD_PADDING).append(Format.withoutPackage(method.getGenericReturnType()))
+        sb.append(METHOD_PADDING).append(withoutPackage(method.getGenericReturnType()))
                 .append(' ').append(method.getName())
                 .append('(').append(params).append(')');
 

@@ -220,7 +220,7 @@ public final class ApiValidator {
     }
 
     public static <T extends Comparable<T>> void validateStartEnd(final T min, final T max) {
-        ApiValidator.isTrue(min.compareTo(max) <= 0, "start must not exceed end: %s, %s", min, max);
+        isTrue(min.compareTo(max) <= 0, "start must not exceed end: %s, %s", min, max);
     }
 
     public static <T> T notNull(@Nullable final T obj, final String message) {
@@ -261,9 +261,9 @@ public final class ApiValidator {
     }
 
     public static void validateAssignmentOrigin(final TargetSelector selector) {
-        ApiValidator.notNull(selector, "origin selector must not be null");
+        notNull(selector, "origin selector must not be null");
 
-        ApiValidator.isFalse(selector instanceof SelectorGroup,
+        isFalse(selector instanceof SelectorGroup,
                 "invalid origin selector%n%n" +
                         "Assignment origin must not match more than one target." +
                         "Therefore origin selector cannot be a group such as:%n%n" +

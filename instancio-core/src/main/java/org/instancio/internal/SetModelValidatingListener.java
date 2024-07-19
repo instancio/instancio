@@ -39,7 +39,7 @@ final class SetModelValidatingListener implements GenerationListener {
     static GenerationListener create(final ModelContext<?> context) {
         return context.getSelectorMaps().hasSetModels()
                 ? new SetModelValidatingListener(context)
-                : GenerationListener.NOOP_LISTENER;
+                : NOOP_LISTENER;
     }
 
     /**

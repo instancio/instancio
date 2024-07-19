@@ -120,7 +120,7 @@ final class ApiValidatorMessageHelper {
             final Class<?> rootClass,
             final List<Type> rootTypeParameters) {
 
-        final StringBuilder sb = new StringBuilder()
+        final StringBuilder sb = new StringBuilder(1024)
                 .append(INCORRECT_TYPE_PARAMETERS_SPECIFIED).append(NL)
                 .append(NL)
                 .append(" -> Class ").append(rootClass.getName()).append(" requires ")

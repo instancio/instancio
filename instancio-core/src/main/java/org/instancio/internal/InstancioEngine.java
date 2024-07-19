@@ -66,7 +66,12 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  * <p>A new instance of this class should be created for each
  * object generated via {@link #createRootObject()}.
  */
-@SuppressWarnings({"PMD.GodClass", "PMD.CyclomaticComplexity", "PMD.ExcessiveImports"})
+@SuppressWarnings({
+        "PMD.CouplingBetweenObjects",
+        "PMD.CyclomaticComplexity",
+        "PMD.ExcessiveImports",
+        "PMD.GodClass"
+})
 class InstancioEngine {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioEngine.class);
 

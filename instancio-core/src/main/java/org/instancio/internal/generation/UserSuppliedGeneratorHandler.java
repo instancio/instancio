@@ -40,7 +40,7 @@ final class UserSuppliedGeneratorHandler implements NodeHandler {
                               final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
         return modelContext.getSelectorMaps().hasGenerators()
                 ? new UserSuppliedGeneratorHandler(modelContext, userSuppliedGeneratorProcessor)
-                : NodeHandler.NOOP_HANDLER;
+                : NOOP_HANDLER;
     }
 
     /**

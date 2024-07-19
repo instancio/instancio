@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public final class SelectorImpl extends BaseSelector implements Selector, GroupableSelector {
 
-    private static final SelectorImpl ROOT_SELECTOR = SelectorImpl.builder()
+    private static final SelectorImpl ROOT_SELECTOR = builder()
             .target(TargetRoot.INSTANCE)
             .depth(0)
             .build();
@@ -152,7 +152,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
             return "root()";
         }
 
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder(128);
         sb.append(target);
 
         if (depth != null) {

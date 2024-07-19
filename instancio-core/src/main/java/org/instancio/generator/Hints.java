@@ -52,7 +52,7 @@ public final class Hints {
      * @since 2.0.0
      */
     public static Hints afterGenerate(final AfterGenerate afterGenerate) {
-        return Hints.builder().afterGenerate(afterGenerate).build();
+        return builder().afterGenerate(afterGenerate).build();
     }
 
     public static Builder builder(final Hints copy) {

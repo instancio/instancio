@@ -81,7 +81,7 @@ public final class InternalServiceProviderImpl implements InternalServiceProvide
             Function<?, ?> result = null;
 
             if (targetType == EnumMap.class) {
-                result = (Function<Map<?, ?>, EnumMap<?, ?>>) other -> {
+                result = (Function<Map<?, ?>, Map<?, ?>>) other -> {
                     if (other.isEmpty()) {
                         return new EnumMap(typeArguments.iterator().next());
                     }

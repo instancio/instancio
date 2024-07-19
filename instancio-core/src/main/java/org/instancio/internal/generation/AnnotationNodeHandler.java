@@ -102,7 +102,7 @@ final class AnnotationNodeHandler implements NodeHandler {
 
         return bvOrJpaEnabled || !annotationProcessors.isEmpty()
                 ? new AnnotationNodeHandler(context, generatorResolver, annotationProcessors, bvOrJpaEnabled)
-                : NodeHandler.NOOP_HANDLER;
+                : NOOP_HANDLER;
     }
 
     private static Map<Class<?>, List<AnnotatedMethod>> collectAnnotatedMethods(
