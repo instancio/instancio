@@ -38,21 +38,28 @@ class FilterMaxRetriesExceededErrorMessageTest extends AbstractErrorMessageTestT
                 Error creating an object
                  -> at org.external.errorhandling.FilterMaxRetriesExceededErrorMessageTest.methodUnderTest(FilterMaxRetriesExceededErrorMessageTest.java:30)
 
-                Reason: could not generate a sufficient number of values
+                Reason: failed generating a value for node:
 
-                 -> Generation was abandoned after 1000 attempts to avoid an infinite loop.
-
-                Possible causes:
-
-                 -> filter() predicate rejected too many generated values, exceeding the retry limit
-                 -> withUnique() method unable to generate a sufficient number of values
-
-                Selector target: class String (depth=0)
+                class String (depth=0)
 
                  │ Path to root:
                  │   <0:String>   <-- Root
                  │
                  │ Format: <depth:class: field>
+
+                 -> Generation was abandoned after 1000 attempts to avoid an infinite loop
+                    (configured using the Keys.MAX_GENERATION_ATTEMPTS settings)
+
+                Possible causes:
+
+                 -> filter() predicate rejected too many generated values, exceeding the maximum number of attempts
+                 -> withUnique() method unable to generate a sufficient number of unique values
+                 -> a hash-based collection (a Set or Map) of a given size could not be populated
+
+                To resolve this error:
+
+                 -> update the generation parameters to address the root cause
+                 -> increase the value of the Keys.MAX_GENERATION_ATTEMPTS setting
 
                 """;
     }
