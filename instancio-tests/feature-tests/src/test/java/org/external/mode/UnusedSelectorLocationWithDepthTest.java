@@ -53,10 +53,10 @@ class UnusedSelectorLocationWithDepthTest {
         int l = 48;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(5)
-                .generatorSelector(timestampSelector, line(getClass(), 44)) // Special case: selector assigned to variable
+                .setSelector(timestampSelector, line(getClass(), 44)) // Special case: selector assigned to variable
                 .ignoreSelector(types().annotated(Pojo.class).annotated(PersonName.class).atDepth(2), line(getClass(), l++))
-                .generatorSelector(fields().named("foo").atDepth(3), line(getClass(), l++))
+                .supplySelector(fields().named("foo").atDepth(3), line(getClass(), l++))
                 .ignoreSelector(types(klass -> false).atDepth(o -> true), line(getClass(), l++))
-                .generatorSelector(fields(field -> false).atDepth(o -> true), line(getClass(), l++));
+                .supplySelector(fields(field -> false).atDepth(o -> true), line(getClass(), l++));
     }
 }

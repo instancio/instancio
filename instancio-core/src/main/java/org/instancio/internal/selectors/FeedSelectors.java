@@ -16,6 +16,7 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.documentation.InternalApi;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
 
@@ -27,7 +28,8 @@ public final class FeedSelectors {
 
     private static final class FeedSelector extends PredicateSelectorImpl {
         private FeedSelector(final Predicate<InternalNode> predicate, final String description) {
-            super(Constants.FEED_SELECTOR_PRIORITY,
+            super(ApiMethodSelector.NONE,
+                    Constants.FEED_SELECTOR_PRIORITY,
                     predicate,
                     Collections.emptyList(),
                     /* depth = */ null,

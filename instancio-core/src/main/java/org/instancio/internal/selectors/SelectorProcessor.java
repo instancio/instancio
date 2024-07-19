@@ -19,6 +19,7 @@ import org.instancio.GetMethodSelector;
 import org.instancio.Scope;
 import org.instancio.SetMethodSelector;
 import org.instancio.TargetSelector;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.spi.InternalServiceProvider.InternalGetterMethodFieldResolver;
 import org.instancio.internal.util.ErrorMessageUtils;
@@ -65,39 +66,48 @@ public final class SelectorProcessor {
      * @param selector to process
      * @return a processed selector
      */
-    public List<TargetSelector> process(@NotNull final TargetSelector selector) {
+    public List<TargetSelector> process(
+            @NotNull final TargetSelector selector,
+            @NotNull final ApiMethodSelector apiMethodSelector) {
+
         if (selector instanceof SelectorImpl) {
-            final SelectorImpl result = processTargetAndScope((SelectorImpl) selector);
+            final SelectorImpl result = processTargetAndScope((SelectorImpl) selector, apiMethodSelector);
             return Collections.singletonList(result);
 
         } else if (selector instanceof SelectorGroupImpl) {
-            return processGroup((SelectorGroupImpl) selector);
+            return processGroup((SelectorGroupImpl) selector, apiMethodSelector);
 
         } else if (selector instanceof GetMethodSelector<?, ?>) {
             return process(SelectorImpl.builder()
+                    .apiMethodSelector(apiMethodSelector)
                     .target(new TargetGetterReference((GetMethodSelector<?, ?>) selector))
-                    .build());
+                    .build(), apiMethodSelector);
 
         } else if (selector instanceof SetMethodSelector<?, ?>) {
             return process(SelectorImpl.builder()
+                    .apiMethodSelector(apiMethodSelector)
                     .target(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
-                    .build());
+                    .build(), apiMethodSelector);
 
         } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
             final PrimitiveAndWrapperSelectorImpl ps = (PrimitiveAndWrapperSelectorImpl) selector;
+            final SelectorImpl.Builder primitiveBuilder = ps.getPrimitive().toBuilder().apiMethodSelector(apiMethodSelector);
+            final SelectorImpl.Builder wrapperBuilder = ps.getWrapper().toBuilder().apiMethodSelector(apiMethodSelector);
+
             if (ps.isScoped()) {
                 final List<Scope> scopes = createScopeWithRootClass(ps.getPrimitive().getScopes());
 
                 return Arrays.asList(
-                        ps.getPrimitive().toBuilder().scopes(scopes).build(),
-                        ps.getWrapper().toBuilder().scopes(scopes).build());
+                        primitiveBuilder.scopes(scopes).build(),
+                        wrapperBuilder.scopes(scopes).build());
             }
 
-            return Arrays.asList(ps.getPrimitive(), ps.getWrapper());
+            return Arrays.asList(primitiveBuilder.build(), wrapperBuilder.build());
 
         } else if (selector instanceof PredicateSelectorImpl) {
             final PredicateSelectorImpl ps = (PredicateSelectorImpl) selector;
             final PredicateSelectorImpl processed = ps.toBuilder()
+                    .apiMethodSelector(apiMethodSelector)
                     .scopes(createScopeWithRootClass(ps.getScopes()))
                     .build();
 
@@ -105,12 +115,15 @@ public final class SelectorProcessor {
         } else {
             // only remaining option is SelectorBuilder
             final SelectorBuilder builder = (SelectorBuilder) selector;
-            return Collections.singletonList(builder.build());
+            return Collections.singletonList(builder.apiMethodSelector(apiMethodSelector).build());
         }
     }
 
     @NotNull
-    private SelectorImpl processTargetAndScope(final SelectorImpl selector) {
+    private SelectorImpl processTargetAndScope(
+            final SelectorImpl selector,
+            final ApiMethodSelector apiMethodSelector) {
+
         if (selector.getTarget() instanceof TargetRoot) {
             return selector;
         }
@@ -119,6 +132,7 @@ public final class SelectorProcessor {
         final Target target = createTargetWithRootClass(selector.getTarget());
 
         final SelectorImpl result = selector.toBuilder()
+                .apiMethodSelector(apiMethodSelector)
                 .target(target)
                 .scopes(processedScopes)
                 .build();
@@ -223,12 +237,15 @@ public final class SelectorProcessor {
         return results;
     }
 
-    private List<TargetSelector> processGroup(final SelectorGroupImpl selectorGroup) {
+    private List<TargetSelector> processGroup(
+            final SelectorGroupImpl selectorGroup,
+            final ApiMethodSelector apiMethodSelector) {
+
         final List<TargetSelector> flattened = selectorGroup.flatten();
         final List<TargetSelector> results = new ArrayList<>(flattened.size());
 
         for (TargetSelector selector : flattened) {
-            results.addAll(process(selector));
+            results.addAll(process(selector, apiMethodSelector));
         }
         return results;
     }

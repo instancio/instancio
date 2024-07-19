@@ -62,7 +62,7 @@ class StrictModeBasicTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(all(List.class));
+                .supplySelector(all(List.class));
     }
 
     @Test
@@ -72,7 +72,7 @@ class StrictModeBasicTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(all(List.class));
+                .generateSelector(all(List.class));
     }
 
     @Test

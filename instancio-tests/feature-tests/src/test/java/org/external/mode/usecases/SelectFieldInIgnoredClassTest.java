@@ -42,7 +42,7 @@ class SelectFieldInIgnoredClassTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(field(Phone.class, "number"),
+                .setSelector(field(Phone.class, "number"),
                         line(getClass(), 41));
     }
 }

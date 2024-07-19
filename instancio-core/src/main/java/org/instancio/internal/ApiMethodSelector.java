@@ -19,13 +19,21 @@ public enum ApiMethodSelector {
     APPLY_FEED("applyFeed()"),
     ASSIGN_DESTINATION("assign() destination"),
     ASSIGN_ORIGIN("assign() origin"),
-    GENERATE("generate(), set(), or supply()"),
+    FILTER("filter()"),
+    GENERATE("generate()"),
     IGNORE("ignore()"),
+    /**
+     * Only for internal selector (e.g. {@code setBlank()})
+     * that are not reported in "unused selectors" error message.
+     */
+    NONE(""),
     ON_COMPLETE("onComplete()"),
-    FILTER_WITH_UNIQUE("filter() or withUnique()"),
+    SET("set()"),
     SET_MODEL("setModel()"),
     SUBTYPE("subtype()"),
-    WITH_NULLABLE("withNullable()");
+    SUPPLY("supply()"),
+    WITH_NULLABLE("withNullable()"),
+    WITH_UNIQUE("withUnique()");
 
     private final String description;
 

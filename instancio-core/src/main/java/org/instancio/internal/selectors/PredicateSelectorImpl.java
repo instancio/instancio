@@ -19,6 +19,7 @@ import org.instancio.GroupableSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
@@ -46,6 +47,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
     private final String apiInvocationDescription;
 
     protected PredicateSelectorImpl(
+            final ApiMethodSelector apiMethodSelector,
             final int priority,
             final Predicate<InternalNode> nodePredicate,
             final List<Scope> scopes,
@@ -55,7 +57,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
             final String apiInvocationDescription,
             final Throwable stackTraceHolder) {
 
-        super(scopes, stackTraceHolder, isLenient, isHiddenFromVerboseOutput);
+        super(apiMethodSelector, scopes, stackTraceHolder, isLenient, isHiddenFromVerboseOutput);
         this.priority = priority;
         this.nodePredicate = nodePredicate;
         this.selectorDepth = selectorDepth;
@@ -64,6 +66,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
 
     private PredicateSelectorImpl(final Builder builder) {
         this(
+                builder.apiMethodSelector,
                 builder.priority,
                 builder.nodePredicate,
                 builder.scopes,
@@ -139,6 +142,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
 
     public Builder toBuilder() {
         Builder builder = new Builder();
+        builder.apiMethodSelector = getApiMethodSelector();
         builder.priority = priority;
         builder.nodePredicate = nodePredicate;
         builder.scopes = getScopes();
@@ -155,6 +159,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
     }
 
     public static final class Builder {
+        private ApiMethodSelector apiMethodSelector;
         private int priority;
         private Predicate<InternalNode> nodePredicate = Objects::nonNull;
         private List<Scope> scopes = new ArrayList<>(0);
@@ -165,6 +170,11 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
         private Throwable stackTraceHolder;
 
         private Builder() {
+        }
+
+        public Builder apiMethodSelector(final ApiMethodSelector apiMethodSelector) {
+            this.apiMethodSelector = apiMethodSelector;
+            return this;
         }
 
         public Builder fieldPredicate(final Predicate<Field> predicate) {

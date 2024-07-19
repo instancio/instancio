@@ -43,6 +43,6 @@ class SameTargetUsingRegularAndPredicateClassSelectorTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(types().of(Address.class), line(getClass(), 42));
+                .supplySelector(types().of(Address.class), line(getClass(), 42));
     }
 }

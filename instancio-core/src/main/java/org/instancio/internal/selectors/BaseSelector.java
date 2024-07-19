@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
+import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.util.Format;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,21 +26,29 @@ import java.util.List;
 
 abstract class BaseSelector implements UnusedSelectorDescription, InternalSelector {
 
+    private final ApiMethodSelector apiMethodSelector;
     private final List<Scope> scopes;
     private final Throwable stackTraceHolder;
     private final boolean isLenient;
     private final boolean isHiddenFromVerboseOutput;
 
     BaseSelector(
+            final ApiMethodSelector apiMethodSelector,
             final List<Scope> scopes,
             final Throwable stackTraceHolder,
             final boolean isLenient,
             final boolean isHiddenFromVerboseOutput) {
 
+        this.apiMethodSelector = apiMethodSelector;
         this.scopes = Collections.unmodifiableList(scopes);
         this.stackTraceHolder = stackTraceHolder;
         this.isLenient = isLenient;
         this.isHiddenFromVerboseOutput = isHiddenFromVerboseOutput;
+    }
+
+    @Override
+    public ApiMethodSelector getApiMethodSelector() {
+        return apiMethodSelector;
     }
 
     @NotNull

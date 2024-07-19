@@ -43,6 +43,6 @@ class SameTargetUsingFieldAndClassSelectorsTest {
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .generatorSelector(all(Address.class), line(getClass(), 42));
+                .supplySelector(all(Address.class), line(getClass(), 42));
     }
 }

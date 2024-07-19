@@ -121,7 +121,7 @@ class ModelReporterTest {
 
                         Selectors and matching nodes, if any:
 
-                         -> Method: generate(), set(), or supply()
+                         -> Method: supply()
                             - field(Phone, "countryCode")
                                \\_ Node[Phone.countryCode, depth=1, type=String]
 
