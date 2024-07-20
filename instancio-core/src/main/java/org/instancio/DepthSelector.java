@@ -18,7 +18,7 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 
 /**
- * Allows specifying selector target's depth.
+ * Interface for specifying the depth of a selector's target.
  *
  * @see DepthPredicateSelector
  * @see Selector
@@ -27,14 +27,20 @@ import org.instancio.documentation.ExperimentalApi;
 public interface DepthSelector {
 
     /**
-     * Restricts this selector's target(s) to the specified depth.
+     * Restricts this selector's targets to the specified depth.
+     * The selector will only apply to targets at the specified depth.
      *
-     * <p>When a selector {@code atDepth(N)} is converted {@code toScope()},
-     * the semantics of {@link Selector#within(Scope...)} method still hold,
-     * meaning: at depth equal to <b>or greater than</b> {@code N}.
+     * <p>When a selector with {@code atDepth(N)} is converted
+     * using {@code toScope()}, the semantics of the
+     * {@link Selector#within(Scope...)} method still apply,
+     * meaning that the selection applies to targets at depth
+     * equal to <b>or greater than</b> {@code N}.
      *
-     * @param depth the depth at which selector applies
-     * @return selector restricted to the specified depth
+     * <p>The root object is considered to be at depth 0.
+     *
+     * @param depth the depth at which the selector should apply
+     * @return a selector restricted to the specified depth
+     * @see DepthPredicateSelector
      * @since 2.14.0
      */
     @ExperimentalApi

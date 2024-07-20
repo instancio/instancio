@@ -41,12 +41,14 @@ interface SettingsApi {
     <V> SettingsApi withSetting(SettingKey<V> key, V value);
 
     /**
-     * Overrides default {@link Settings} for generating values.
-     * The {@link Settings} class supports various parameters, such as
-     * collection sizes, string lengths, numeric ranges, and more.
-     * For a list of overridable settings, refer to the {@link Keys} class.
+     * Merges the specified {@link Settings} with the current settings,
+     * allowing for the addition and update of settings.
      *
-     * @param settings the settings to use
+     * <p>Use this method to apply custom settings to override the default
+     * ones. The provided settings will be combined with the existing settings,
+     * updating any overlapping values and adding any new ones.
+     *
+     * @param settings the custom settings to merge with the current settings
      * @return API builder reference
      * @see Keys
      * @see #withSetting(SettingKey, Object)

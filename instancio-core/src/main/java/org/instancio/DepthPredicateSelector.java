@@ -20,7 +20,8 @@ import org.instancio.documentation.ExperimentalApi;
 import java.util.function.Predicate;
 
 /**
- * Allows specifying target depth using as a predicate.
+ * Interface for specifying the depth of a selector's
+ * target using a predicate.
  *
  * @see DepthSelector
  * @see PredicateSelector
@@ -29,11 +30,17 @@ import java.util.function.Predicate;
 public interface DepthPredicateSelector {
 
     /**
-     * Restricts this selector's target(s) to a depth
-     * that satisfies the given {@code predicate}.
+     * Restricts this selector's targets to a depth that
+     * satisfies the given {@code predicate}.
      *
-     * @param predicate specifying the depth
-     * @return selector restricted to the specified depth
+     * <p>For example, a predicate {@code atDepth(depth -> depth == 1)}
+     * will restrict the selector to targets at depth 1 only.
+     *
+     * <p>The root object is considered to be at depth 0.
+     *
+     * @param predicate the predicate specifying the acceptable depth
+     * @return a selector restricted to the specified depth
+     * @see DepthSelector
      * @since 2.14.0
      */
     @ExperimentalApi
