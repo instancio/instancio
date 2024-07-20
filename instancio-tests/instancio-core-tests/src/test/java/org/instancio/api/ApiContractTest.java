@@ -16,7 +16,7 @@
 package org.instancio.api;
 
 import org.instancio.Assignment;
-import org.instancio.InstancioCartesianProductApi;
+import org.instancio.CartesianProductApi;
 import org.instancio.DepthPredicateSelector;
 import org.instancio.FieldSelectorBuilder;
 import org.instancio.GivenOrigin;
@@ -243,7 +243,7 @@ class ApiContractTest {
      */
     @Test
     void methodsNotSupportedByCartesianProductApi() {
-        assertThatClass(InstancioCartesianProductApi.class)
+        assertThatClass(CartesianProductApi.class)
                 .hasNoMethodsNamed("asResult", "toModel");
     }
 

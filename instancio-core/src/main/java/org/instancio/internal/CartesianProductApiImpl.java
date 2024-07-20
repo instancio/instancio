@@ -16,9 +16,9 @@
 package org.instancio.internal;
 
 import org.instancio.Assignment;
+import org.instancio.CartesianProductApi;
 import org.instancio.FilterPredicate;
 import org.instancio.GeneratorSpecProvider;
-import org.instancio.InstancioCartesianProductApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Select;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<T> {
+public class CartesianProductApiImpl<T> implements CartesianProductApi<T> {
 
     private final ModelContext.Builder<T> modelContextBuilder;
     private final List<CartesianValues> cartesianValues = new ArrayList<>();
@@ -63,7 +63,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
 
     @SafeVarargs
     @Override
-    public final <V> InstancioCartesianProductApi<T> with(final TargetSelector selector, final V... values) {
+    public final <V> CartesianProductApi<T> with(final TargetSelector selector, final V... values) {
         ApiValidator.notEmpty(values, "with() requires a non-empty array, but got: %s", Arrays.toString(values));
         final CartesianValues cv = new CartesianValues(selector, (Object[]) values);
         cartesianValues.add(cv);
@@ -71,13 +71,13 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     }
 
     @Override
-    public InstancioCartesianProductApi<T> ignore(final TargetSelector selector) {
+    public CartesianProductApi<T> ignore(final TargetSelector selector) {
         modelContextBuilder.withIgnored(selector);
         return this;
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> generate(
+    public <V> CartesianProductApi<T> generate(
             final TargetSelector selector,
             final GeneratorSpecProvider<V> gen) {
 
@@ -86,7 +86,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> generate(
+    public <V> CartesianProductApi<T> generate(
             final TargetSelector selector,
             final GeneratorSpec<V> spec) {
 
@@ -95,7 +95,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> onComplete(
+    public <V> CartesianProductApi<T> onComplete(
             final TargetSelector selector,
             final OnCompleteCallback<V> callback) {
 
@@ -104,7 +104,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> filter(
+    public <V> CartesianProductApi<T> filter(
             final TargetSelector selector,
             final FilterPredicate<V> predicate) {
 
@@ -113,19 +113,19 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> set(final TargetSelector selector, final V value) {
+    public <V> CartesianProductApi<T> set(final TargetSelector selector, final V value) {
         modelContextBuilder.withSupplier(selector, () -> value);
         return this;
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> setModel(final TargetSelector selector, final Model<V> model) {
+    public <V> CartesianProductApi<T> setModel(final TargetSelector selector, final Model<V> model) {
         modelContextBuilder.setModel(selector, model);
         return this;
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> supply(
+    public <V> CartesianProductApi<T> supply(
             final TargetSelector selector,
             final Generator<V> generator) {
 
@@ -134,7 +134,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> supply(
+    public <V> CartesianProductApi<T> supply(
             final TargetSelector selector,
             final Supplier<V> supplier) {
 
@@ -143,7 +143,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     }
 
     @Override
-    public InstancioCartesianProductApi<T> subtype(
+    public CartesianProductApi<T> subtype(
             final TargetSelector selector,
             final Class<?> subtype) {
 
@@ -152,73 +152,73 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     }
 
     @Override
-    public InstancioCartesianProductApi<T> assign(final Assignment... assignments) {
+    public CartesianProductApi<T> assign(final Assignment... assignments) {
         modelContextBuilder.withAssignments(assignments);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> setBlank(final TargetSelector selector) {
+    public CartesianProductApi<T> setBlank(final TargetSelector selector) {
         modelContextBuilder.setBlank(selector);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> applyFeed(final TargetSelector selector, final Feed feed) {
+    public CartesianProductApi<T> applyFeed(final TargetSelector selector, final Feed feed) {
         modelContextBuilder.applyFeed(selector, feed);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> applyFeed(final TargetSelector selector, final FeedProvider provider) {
+    public CartesianProductApi<T> applyFeed(final TargetSelector selector, final FeedProvider provider) {
         modelContextBuilder.applyFeed(selector, provider);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> withUnique(final TargetSelector selector) {
+    public CartesianProductApi<T> withUnique(final TargetSelector selector) {
         modelContextBuilder.withUnique(selector);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> withSeed(final long seed) {
+    public CartesianProductApi<T> withSeed(final long seed) {
         modelContextBuilder.withSeed(seed);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> withMaxDepth(final int maxDepth) {
+    public CartesianProductApi<T> withMaxDepth(final int maxDepth) {
         modelContextBuilder.withMaxDepth(maxDepth);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> withNullable(final TargetSelector selector) {
+    public CartesianProductApi<T> withNullable(final TargetSelector selector) {
         modelContextBuilder.withNullable(selector);
         return this;
     }
 
     @Override
-    public <V> InstancioCartesianProductApi<T> withSetting(final SettingKey<V> key, final V value) {
+    public <V> CartesianProductApi<T> withSetting(final SettingKey<V> key, final V value) {
         modelContextBuilder.withSetting(key, value);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> withSettings(final Settings settings) {
+    public CartesianProductApi<T> withSettings(final Settings settings) {
         modelContextBuilder.withSettings(settings);
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> lenient() {
+    public CartesianProductApi<T> lenient() {
         modelContextBuilder.lenient();
         return this;
     }
 
     @Override
-    public InstancioCartesianProductApi<T> verbose() {
+    public CartesianProductApi<T> verbose() {
         modelContextBuilder.verbose();
         return this;
     }
