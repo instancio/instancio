@@ -2687,11 +2687,21 @@ Anything not listed is unsupported, including `*.List` annotations.
 - `@URL` (`protocol`, `host`, `port` are supported; `regexp` not supported)
 - `@UUID`
 
+#### Brazilian
+
+- `@CNPJ`
+- `@CPF`
+- `@TituloEleitoral`
+
 #### Polish
 
 - `@NIP`
 - `@PESEL`
 - `@REGON`
+
+#### Russian
+
+- `@INN`
 
 # JPA
 
