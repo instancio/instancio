@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  */
 public interface InstancioApi<T> extends
         InstancioOperations<T>,
-        InstancioWithSettingsApi,
+        InstancioSettingsApi,
         LenientMode,
         VerboseMode {
 

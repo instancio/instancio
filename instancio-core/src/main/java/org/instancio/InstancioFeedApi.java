@@ -35,7 +35,7 @@ import org.instancio.settings.Settings;
 @ExperimentalApi
 public interface InstancioFeedApi<F extends Feed> extends
         FeedOperations,
-        InstancioWithSettingsApi {
+        InstancioSettingsApi {
 
     /**
      * Creates an instance of the feed.

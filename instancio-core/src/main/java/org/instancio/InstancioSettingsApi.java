@@ -20,14 +20,15 @@ import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
 /**
- * Provides an API for specicyfing custom {@link Settings}.
+ * Provides an API for specifying custom {@link Settings}.
  *
  * @since 5.0.0
  */
-interface InstancioWithSettingsApi {
+interface InstancioSettingsApi {
 
     /**
-     * Override setting for the given {@code key} with the specified {@code value}.
+     * Overrides the setting for the given {@code key}
+     * with the specified {@code value}.
      *
      * @param key   the setting key to override
      * @param value the setting value
@@ -37,19 +38,19 @@ interface InstancioWithSettingsApi {
      * @see #withSettings(Settings)
      * @since 5.0.0
      */
-    <V> InstancioWithSettingsApi withSetting(SettingKey<V> key, V value);
+    <V> InstancioSettingsApi withSetting(SettingKey<V> key, V value);
 
     /**
-     * Override default {@link Settings} for generating values.
+     * Overrides default {@link Settings} for generating values.
      * The {@link Settings} class supports various parameters, such as
-     * collection sizes, string lengths, numeric ranges, and so on.
+     * collection sizes, string lengths, numeric ranges, and more.
      * For a list of overridable settings, refer to the {@link Keys} class.
      *
-     * @param settings to use
+     * @param settings the settings to use
      * @return API builder reference
      * @see Keys
      * @see #withSetting(SettingKey, Object)
      * @since 5.0.0
      */
-    InstancioWithSettingsApi withSettings(Settings settings);
+    InstancioSettingsApi withSettings(Settings settings);
 }
