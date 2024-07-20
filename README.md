@@ -155,7 +155,6 @@ by becoming a [sponsor](https://github.com/sponsors/armandino).
 
 A big thank you to the current project sponsors:
 
-- [@BjarkeTornager](https://github.com/BjarkeTornager)
 - [@darthblonderss](https://github.com/darthblonderss)
 
 Thanks to [JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com)
