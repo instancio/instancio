@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * @param <T> the type of object to create
  * @since 4.0.0
  */
-interface InstancioBaseApi<T> {
+interface BaseApi<T> {
 
     /**
      * Specifies that a class or field should be ignored.
@@ -87,7 +87,7 @@ interface InstancioBaseApi<T> {
      * @return API builder reference
      * @since 4.0.0
      */
-    InstancioBaseApi<T> ignore(TargetSelector selector);
+    BaseApi<T> ignore(TargetSelector selector);
 
     /**
      * Specifies that a field or class is nullable. By default, Instancio assigns
@@ -111,7 +111,7 @@ interface InstancioBaseApi<T> {
      * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
      */
-    InstancioBaseApi<T> withNullable(TargetSelector selector);
+    BaseApi<T> withNullable(TargetSelector selector);
 
     /**
      * Sets a value to matching selector targets.
@@ -139,7 +139,7 @@ interface InstancioBaseApi<T> {
      * @see #supply(TargetSelector, Supplier)
      * @since 4.0.0
      */
-    <V> InstancioBaseApi<T> set(TargetSelector selector, V value);
+    <V> BaseApi<T> set(TargetSelector selector, V value);
 
     /**
      * Applies given {@code model} to the specified {@code selector}.
@@ -192,7 +192,7 @@ interface InstancioBaseApi<T> {
      * @since 4.4.0
      */
     @ExperimentalApi
-    <V> InstancioBaseApi<T> setModel(TargetSelector selector, Model<V> model);
+    <V> BaseApi<T> setModel(TargetSelector selector, Model<V> model);
 
     /**
      * Supplies an object using a {@link Supplier}.
@@ -225,7 +225,7 @@ interface InstancioBaseApi<T> {
      * @see #supply(TargetSelector, Generator)
      * @since 4.0.0
      */
-    <V> InstancioBaseApi<T> supply(TargetSelector selector, Supplier<V> supplier);
+    <V> BaseApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
      * Supplies an object using a {@link Generator} to matching selector targets.
@@ -273,7 +273,7 @@ interface InstancioBaseApi<T> {
      * @see Keys#AFTER_GENERATE_HINT
      * @since 4.0.0
      */
-    <V> InstancioBaseApi<T> supply(TargetSelector selector, Generator<V> generator);
+    <V> BaseApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
      * Customises values using built-in generators provided by the {@code gen}
@@ -296,7 +296,7 @@ interface InstancioBaseApi<T> {
      * @see #generate(TargetSelector, GeneratorSpec)
      * @see Generators
      */
-    <V> InstancioBaseApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
+    <V> BaseApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
 
     /**
      * Customises values using arbitrary generator specs.
@@ -317,7 +317,7 @@ interface InstancioBaseApi<T> {
      * @see #generate(TargetSelector, GeneratorSpecProvider)
      * @since 4.0.0
      */
-    <V> InstancioBaseApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
+    <V> BaseApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
 
     /**
      * A callback that gets invoked after an object has been fully populated.
@@ -350,7 +350,7 @@ interface InstancioBaseApi<T> {
      * @return API builder reference
      * @since 4.0.0
      */
-    <V> InstancioBaseApi<T> onComplete(TargetSelector selector, OnCompleteCallback<V> callback);
+    <V> BaseApi<T> onComplete(TargetSelector selector, OnCompleteCallback<V> callback);
 
     /**
      * Filters generated values using given {@code predicate}.
@@ -378,7 +378,7 @@ interface InstancioBaseApi<T> {
      * @since 4.6.0
      */
     @ExperimentalApi
-    <V> InstancioBaseApi<T> filter(TargetSelector selector, FilterPredicate<V> predicate);
+    <V> BaseApi<T> filter(TargetSelector selector, FilterPredicate<V> predicate);
 
     /**
      * Maps target field or class to the given subtype. This can be used
@@ -420,7 +420,7 @@ interface InstancioBaseApi<T> {
      * @return API builder reference
      * @since 4.0.0
      */
-    InstancioBaseApi<T> subtype(TargetSelector selector, Class<?> subtype);
+    BaseApi<T> subtype(TargetSelector selector, Class<?> subtype);
 
     /**
      * Generates values based on given assignments.
@@ -495,7 +495,7 @@ interface InstancioBaseApi<T> {
      * @see Assign
      * @since 4.0.0
      */
-    InstancioBaseApi<T> assign(Assignment... assignments);
+    BaseApi<T> assign(Assignment... assignments);
 
     /**
      * Applies the provided {@code feed} to the specified {@code selector}.
@@ -562,7 +562,7 @@ interface InstancioBaseApi<T> {
      * @since 5.0.0
      */
     @ExperimentalApi
-    InstancioBaseApi<T> applyFeed(TargetSelector selector, Feed feed);
+    BaseApi<T> applyFeed(TargetSelector selector, Feed feed);
 
     /**
      * Creates a feed and applies it to the specified {@code selector}.
@@ -604,7 +604,7 @@ interface InstancioBaseApi<T> {
      * @since 5.0.0
      */
     @ExperimentalApi
-    InstancioBaseApi<T> applyFeed(TargetSelector selector, FeedProvider provider);
+    BaseApi<T> applyFeed(TargetSelector selector, FeedProvider provider);
 
     /**
      * Specifies the maximum depth for populating an object.
@@ -633,7 +633,7 @@ interface InstancioBaseApi<T> {
      * @return API builder reference
      * @since 4.0.0
      */
-    InstancioBaseApi<T> withMaxDepth(int maxDepth);
+    BaseApi<T> withMaxDepth(int maxDepth);
 
     /**
      * Sets the seed value for the random number generator. If the seed is not specified,
@@ -656,7 +656,7 @@ interface InstancioBaseApi<T> {
      * @return API builder reference
      * @since 4.0.0
      */
-    InstancioBaseApi<T> withSeed(long seed);
+    BaseApi<T> withSeed(long seed);
 
     /**
      * Specifies that a blank object should be generated for the selected target.
@@ -690,7 +690,7 @@ interface InstancioBaseApi<T> {
      * @since 4.7.0
      */
     @ExperimentalApi
-    InstancioBaseApi<T> setBlank(TargetSelector selector);
+    BaseApi<T> setBlank(TargetSelector selector);
 
     /**
      * Specifies that the given selector's target(s) should have unique values.
@@ -744,5 +744,5 @@ interface InstancioBaseApi<T> {
      * @since 4.8.0
      */
     @ExperimentalApi
-    InstancioBaseApi<T> withUnique(TargetSelector selector);
+    BaseApi<T> withUnique(TargetSelector selector);
 }

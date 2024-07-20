@@ -18,7 +18,6 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.feed.DataSourceProvider;
 import org.instancio.feed.Feed;
-import org.instancio.feed.FeedOperations;
 import org.instancio.feed.FormatOptionsProvider;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
@@ -34,8 +33,8 @@ import org.instancio.settings.Settings;
  */
 @ExperimentalApi
 public interface InstancioFeedApi<F extends Feed> extends
-        FeedOperations,
-        InstancioSettingsApi {
+        FeedApi,
+        SettingsApi {
 
     /**
      * Creates an instance of the feed.

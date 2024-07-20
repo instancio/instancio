@@ -34,10 +34,10 @@ import java.util.stream.Stream;
  * @since 1.0.1
  */
 public interface InstancioApi<T> extends
-        InstancioBaseApi<T>,
-        InstancioSettingsApi,
-        LenientMode,
-        VerboseMode {
+        BaseApi<T>,
+        SettingsApi,
+        LenientModeApi,
+        VerboseModeApi {
 
     /**
      * Creates a new instance of a class and populates it with data.

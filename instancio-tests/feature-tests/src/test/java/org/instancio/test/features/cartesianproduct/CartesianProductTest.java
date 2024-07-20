@@ -16,8 +16,8 @@
 package org.instancio.test.features.cartesianproduct;
 
 import lombok.Data;
-import org.instancio.InstancioCartesianProductApi;
 import org.instancio.Instancio;
+import org.instancio.InstancioCartesianProductApi;
 import org.instancio.Selector;
 import org.instancio.TypeToken;
 import org.instancio.exception.InstancioApiException;

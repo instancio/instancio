@@ -24,7 +24,7 @@ import org.instancio.settings.Settings;
  *
  * @since 5.0.0
  */
-interface InstancioSettingsApi {
+interface SettingsApi {
 
     /**
      * Overrides the setting for the given {@code key}
@@ -38,7 +38,7 @@ interface InstancioSettingsApi {
      * @see #withSettings(Settings)
      * @since 5.0.0
      */
-    <V> InstancioSettingsApi withSetting(SettingKey<V> key, V value);
+    <V> SettingsApi withSetting(SettingKey<V> key, V value);
 
     /**
      * Overrides default {@link Settings} for generating values.
@@ -52,5 +52,5 @@ interface InstancioSettingsApi {
      * @see #withSetting(SettingKey, Object)
      * @since 5.0.0
      */
-    InstancioSettingsApi withSettings(Settings settings);
+    SettingsApi withSettings(Settings settings);
 }

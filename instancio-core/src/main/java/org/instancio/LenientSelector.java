@@ -26,7 +26,7 @@ public interface LenientSelector extends TargetSelector {
     /**
      * Marks this selector as lenient, which prevents the selector from
      * producing "unused selector" error if it does not match any target.
-     * This provides an alternative to {@link LenientMode#lenient()},
+     * This provides an alternative to {@link LenientModeApi#lenient()},
      * which treats <b>all</b> selectors as lenient (not recommended).
      *
      * <p>This method can be useful when using Instancio to create
@@ -55,7 +55,7 @@ public interface LenientSelector extends TargetSelector {
      * section of the User Guide.
      *
      * @return a lenient selector
-     * @see LenientMode
+     * @see LenientModeApi
      * @since 4.4.0
      */
     TargetSelector lenient();

@@ -15,6 +15,7 @@
  */
 package org.instancio.feed;
 
+import org.instancio.FeedApi;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.ExperimentalApi;
@@ -44,7 +45,7 @@ public interface FeedProvider {
      * @since 5.0.0
      */
     @ExperimentalApi
-    FeedOperations get(FeedBuilderFactory feed);
+    FeedApi get(FeedBuilderFactory feed);
 
     /**
      * Factory for building instances of a {@link Feed}.
@@ -63,7 +64,7 @@ public interface FeedProvider {
          * @since 5.0.0
          */
         @ExperimentalApi
-        default <F extends Feed> FeedOperations of(Class<F> feedClass) {
+        default <F extends Feed> FeedApi of(Class<F> feedClass) {
             return builder(feedClass);
         }
 
@@ -75,7 +76,7 @@ public interface FeedProvider {
          * @since 5.0.0
          */
         @ExperimentalApi
-        default FeedOperations ofInputStream(InputStream inputStream) {
+        default FeedApi ofInputStream(InputStream inputStream) {
             return builder(source -> source.ofInputStream(inputStream));
         }
 
@@ -87,7 +88,7 @@ public interface FeedProvider {
          * @since 5.0.0
          */
         @ExperimentalApi
-        default FeedOperations ofFile(Path path) {
+        default FeedApi ofFile(Path path) {
             return builder(source -> source.ofFile(path));
         }
 
@@ -99,7 +100,7 @@ public interface FeedProvider {
          * @since 5.0.0
          */
         @ExperimentalApi
-        default FeedOperations ofResource(String name) {
+        default FeedApi ofResource(String name) {
             return builder(source -> source.ofResource(name));
         }
 
@@ -111,7 +112,7 @@ public interface FeedProvider {
          * @since 5.0.0
          */
         @ExperimentalApi
-        default FeedOperations ofString(String data) {
+        default FeedApi ofString(String data) {
             return builder(source -> source.ofString(data));
         }
     }

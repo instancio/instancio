@@ -27,7 +27,7 @@ import org.instancio.settings.Settings;
  * @since 5.0.0
  */
 @ExperimentalApi
-public interface InstancioGenApi extends InstancioSettingsApi, ValueSpecs {
+public interface InstancioGenApi extends SettingsApi, ValueSpecs {
 
     /**
      * {@inheritDoc}

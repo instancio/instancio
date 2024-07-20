@@ -15,11 +15,11 @@
  */
 package org.instancio.internal.feed;
 
+import org.instancio.FeedApi;
 import org.instancio.feed.DataSource;
 import org.instancio.feed.DataSourceProvider;
 import org.instancio.feed.DataSourceProvider.DataSourceFactory;
 import org.instancio.feed.Feed;
-import org.instancio.feed.FeedOperations;
 import org.instancio.feed.FormatOptionsProvider;
 import org.instancio.feed.FormatOptionsProvider.FormatOptions;
 import org.instancio.feed.FormatOptionsProvider.FormatOptionsFactory;
@@ -213,7 +213,7 @@ public final class InternalFeedContext<F extends Feed> {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public static final class Builder<F extends Feed> implements FeedOperations {
+    public static final class Builder<F extends Feed> implements FeedApi {
         private static final DataSourceFactory DATA_SOURCE_FACTORY = new DataSourceFactory() {};
         private static final FormatOptionsFactory DATA_FORMAT_FACTORY = new FormatOptionsFactory() {};
 

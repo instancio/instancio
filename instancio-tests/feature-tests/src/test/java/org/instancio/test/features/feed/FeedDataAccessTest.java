@@ -15,9 +15,9 @@
  */
 package org.instancio.test.features.feed;
 
+import org.instancio.FeedApi;
 import org.instancio.Instancio;
 import org.instancio.feed.Feed;
-import org.instancio.feed.FeedOperations;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.FeedDataAccess;
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Verifies precedence of data access, from highest:
  *
  * <ol>
- *   <li>{@link FeedOperations#dataAccess(FeedDataAccess)}</li>
+ *   <li>{@link FeedApi#dataAccess(FeedDataAccess)}</li>
  *   <li>{@link Feed.DataAccess} annotation</li>
  *   <li>{@link Settings}</li>
  * </ol>

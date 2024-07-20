@@ -36,7 +36,7 @@ import org.instancio.settings.Keys;
  * @see LenientSelector
  * @since 4.0.0
  */
-interface LenientMode {
+interface LenientModeApi {
 
     /**
      * Disables strict mode in which unused selectors trigger an error.
@@ -53,5 +53,5 @@ interface LenientMode {
      * @return API builder reference
      * @since 4.0.0
      */
-    LenientMode lenient();
+    LenientModeApi lenient();
 }

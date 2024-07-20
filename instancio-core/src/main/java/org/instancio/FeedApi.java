@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.feed;
+package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.feed.Feed;
+import org.instancio.feed.FormatOptionsProvider;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.FeedFormatType;
@@ -28,7 +30,7 @@ import org.instancio.settings.Keys;
  * @since 5.0.0
  */
 @ExperimentalApi
-public interface FeedOperations {
+public interface FeedApi {
 
     /**
      * Specifies the data format options of a {@link Feed}, for example:
@@ -47,7 +49,7 @@ public interface FeedOperations {
      * @since 5.0.0
      */
     @ExperimentalApi
-    FeedOperations formatOptions(FormatOptionsProvider provider);
+    FeedApi formatOptions(FormatOptionsProvider provider);
 
     /**
      * Specifies the data format type for the feed,
@@ -64,7 +66,7 @@ public interface FeedOperations {
      * @since 5.0.0
      */
     @ExperimentalApi
-    FeedOperations formatType(FeedFormatType feedFormatType);
+    FeedApi formatType(FeedFormatType feedFormatType);
 
     /**
      * Specifies the data access mode for the feed (sequential or random).
@@ -77,7 +79,7 @@ public interface FeedOperations {
      * @since 5.0.0
      */
     @ExperimentalApi
-    FeedOperations dataAccess(FeedDataAccess feedDataAccess);
+    FeedApi dataAccess(FeedDataAccess feedDataAccess);
 
     /**
      * Specifies the action to take when the end of the data feed is reached.
@@ -87,7 +89,7 @@ public interface FeedOperations {
      * @since 5.0.0
      */
     @ExperimentalApi
-    FeedOperations onDataEnd(FeedDataEndAction feedDataEndAction);
+    FeedApi onDataEnd(FeedDataEndAction feedDataEndAction);
 
     /**
      * Specifies the tag key for filtering records in the data feed.
@@ -97,7 +99,7 @@ public interface FeedOperations {
      * @since 5.0.0
      */
     @ExperimentalApi
-    FeedOperations withTagKey(String tagKey);
+    FeedApi withTagKey(String tagKey);
 
     /**
      * Specifies the tag value of the records to fetch.
@@ -107,5 +109,5 @@ public interface FeedOperations {
      * @since 5.0.0
      */
     @ExperimentalApi
-    FeedOperations withTagValue(String tagValue);
+    FeedApi withTagValue(String tagValue);
 }
