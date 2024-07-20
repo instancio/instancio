@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 
 /**
  * A predicate for testing values using the
- * {@link InstancioOperations#filter(TargetSelector, FilterPredicate)}
+ * {@link InstancioBaseApi#filter(TargetSelector, FilterPredicate)}
  * method.
  *
  * @param <T> the type being tested

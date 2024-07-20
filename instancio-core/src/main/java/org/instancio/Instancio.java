@@ -198,7 +198,7 @@ public final class Instancio {
      * @param type the type of blank object to create
      * @param <T>  the type of object
      * @return a blank object of the specified type
-     * @see InstancioOperations#setBlank(TargetSelector)
+     * @see InstancioBaseApi#setBlank(TargetSelector)
      * @see #ofBlank(Class)
      * @since 4.7.0
      */
@@ -418,7 +418,7 @@ public final class Instancio {
      * @param type the type of blank object to create
      * @param <T>  the type of object
      * @return API builder reference
-     * @see InstancioOperations#setBlank(TargetSelector)
+     * @see InstancioBaseApi#setBlank(TargetSelector)
      * @since 4.7.0
      */
     @ExperimentalApi

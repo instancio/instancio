@@ -43,7 +43,7 @@ import java.util.function.Supplier;
  */
 @ExperimentalApi
 public interface CartesianProductApi<T> extends
-        InstancioOperations<T>,
+        InstancioBaseApi<T>,
         InstancioSettingsApi,
         LenientMode,
         VerboseMode {
