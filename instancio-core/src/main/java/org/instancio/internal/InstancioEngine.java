@@ -361,7 +361,6 @@ class InstancioEngine {
     @SuppressWarnings({
             "PMD.CognitiveComplexity",
             "PMD.NPathComplexity",
-            "PMD.ForLoopVariableCount",
             "PMD.AvoidReassigningLoopVariables"})
     private GeneratorResult generateArray(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);

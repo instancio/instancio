@@ -31,7 +31,15 @@ public final class StringUtils {
     }
 
     public static boolean isBlank(@Nullable final String s) {
-        return s == null || s.trim().isEmpty();
+        if (isEmpty(s)) {
+            return true;
+        }
+        for (int i = 0, length = s.length(); i < length; i++) {
+            if (!Character.isWhitespace(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @NotNull
