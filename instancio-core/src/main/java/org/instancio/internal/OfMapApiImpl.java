@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 public final class OfMapApiImpl<K, V, M extends Map<K, V>>
-        extends OfClassApiImpl<M>
+        extends ClassApiImpl<M>
         implements InstancioOfCollectionApi<M> {
 
     public OfMapApiImpl(final Class<M> mapType, final Type keyType, final Type valueType) {

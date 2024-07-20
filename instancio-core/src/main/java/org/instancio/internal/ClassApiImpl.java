@@ -16,18 +16,18 @@
 package org.instancio.internal;
 
 import org.instancio.InstancioApi;
-import org.instancio.InstancioOfClassApi;
+import org.instancio.InstancioClassApi;
 import org.instancio.Model;
 
 import java.lang.reflect.Type;
 
-public class OfClassApiImpl<T> extends ApiImpl<T> implements InstancioOfClassApi<T> {
+public class ClassApiImpl<T> extends ApiImpl<T> implements InstancioClassApi<T> {
 
-    public OfClassApiImpl(final Type klass) {
+    public ClassApiImpl(final Type klass) {
         super(klass);
     }
 
-    OfClassApiImpl(final Model<T> model) {
+    ClassApiImpl(final Model<T> model) {
         super(model);
     }
 

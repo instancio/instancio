@@ -20,9 +20,9 @@ import org.instancio.feed.Feed;
 import org.instancio.internal.ApiImpl;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.CartesianProductApiImpl;
+import org.instancio.internal.ClassApiImpl;
 import org.instancio.internal.FeedApiImpl;
 import org.instancio.internal.GenApiImpl;
-import org.instancio.internal.OfClassApiImpl;
 import org.instancio.internal.OfCollectionApiImpl;
 import org.instancio.internal.OfMapApiImpl;
 import org.instancio.settings.Keys;
@@ -378,8 +378,8 @@ public final class Instancio {
      * @param <T>  the type of object
      * @return API builder reference
      */
-    public static <T> InstancioOfClassApi<T> of(final Class<T> type) {
-        return new OfClassApiImpl<>(type);
+    public static <T> InstancioClassApi<T> of(final Class<T> type) {
+        return new ClassApiImpl<>(type);
     }
 
     /**
@@ -422,8 +422,8 @@ public final class Instancio {
      * @since 4.7.0
      */
     @ExperimentalApi
-    public static <T> InstancioOfClassApi<T> ofBlank(final Class<T> type) {
-        final InstancioOfClassApi<T> api = new OfClassApiImpl<>(type);
+    public static <T> InstancioClassApi<T> ofBlank(final Class<T> type) {
+        final InstancioClassApi<T> api = new ClassApiImpl<>(type);
         api.setBlank(Select.root());
         return api;
     }

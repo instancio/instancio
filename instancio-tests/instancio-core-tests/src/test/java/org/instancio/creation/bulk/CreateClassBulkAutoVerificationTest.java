@@ -16,6 +16,7 @@
 package org.instancio.creation.bulk;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioClassApi;
 import org.instancio.test.support.pojo.generics.MiscFields;
 import org.instancio.test.support.pojo.generics.TripletAFooBarBazStringListOfB;
 import org.instancio.test.support.pojo.generics.basic.Item;
@@ -42,7 +43,7 @@ import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObje
 
 /**
  * Tests for creating objects via {@link Instancio#of(Class)} and
- * {@link org.instancio.InstancioOfClassApi#withTypeParameters(Class[])}.
+ * {@link InstancioClassApi#withTypeParameters(Class[])}.
  */
 @CreateTag
 class CreateClassBulkAutoVerificationTest {
