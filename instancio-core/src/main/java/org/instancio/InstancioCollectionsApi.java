@@ -21,7 +21,7 @@ package org.instancio;
  * @param <C> collection type to create
  * @since 2.0.0
  */
-public interface InstancioOfCollectionApi<C> extends InstancioApi<C> {
+public interface InstancioCollectionsApi<C> extends InstancioApi<C> {
 
     /**
      * Specifies collection size to generate.
@@ -59,6 +59,6 @@ public interface InstancioOfCollectionApi<C> extends InstancioApi<C> {
      * @return API builder reference
      * @since 2.0.0
      */
-    InstancioOfCollectionApi<C> size(int size);
+    InstancioCollectionsApi<C> size(int size);
 
 }

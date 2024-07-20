@@ -15,23 +15,23 @@
  */
 package org.instancio.internal;
 
-import org.instancio.InstancioOfCollectionApi;
+import org.instancio.InstancioCollectionsApi;
 import org.instancio.Select;
 import org.instancio.internal.reflect.ParameterizedTypeImpl;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public final class OfMapApiImpl<K, V, M extends Map<K, V>>
+public final class MapApiImpl<K, V, M extends Map<K, V>>
         extends ClassApiImpl<M>
-        implements InstancioOfCollectionApi<M> {
+        implements InstancioCollectionsApi<M> {
 
-    public OfMapApiImpl(final Class<M> mapType, final Type keyType, final Type valueType) {
+    public MapApiImpl(final Class<M> mapType, final Type keyType, final Type valueType) {
         super(new ParameterizedTypeImpl(mapType, keyType, valueType));
     }
 
     @Override
-    public InstancioOfCollectionApi<M> size(final int size) {
+    public InstancioCollectionsApi<M> size(final int size) {
         generate(Select.root(), gen -> gen.map().size(size));
         return this;
     }

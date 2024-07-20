@@ -15,7 +15,7 @@
  */
 package org.instancio.internal;
 
-import org.instancio.InstancioOfCollectionApi;
+import org.instancio.InstancioCollectionsApi;
 import org.instancio.Model;
 import org.instancio.Select;
 import org.instancio.internal.context.ModelContext;
@@ -24,19 +24,19 @@ import org.instancio.internal.reflect.ParameterizedTypeImpl;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-public final class OfCollectionApiImpl<T, C extends Collection<T>>
+public final class CollectionsApiImpl<T, C extends Collection<T>>
         extends ClassApiImpl<C>
-        implements InstancioOfCollectionApi<C> {
+        implements InstancioCollectionsApi<C> {
 
-    public OfCollectionApiImpl(final Class<C> collectionType, final Type elementType) {
+    public CollectionsApiImpl(final Class<C> collectionType, final Type elementType) {
         super(new ParameterizedTypeImpl(collectionType, elementType));
     }
 
-    private OfCollectionApiImpl(final Model<C> collectionModel) {
+    private CollectionsApiImpl(final Model<C> collectionModel) {
         super(collectionModel);
     }
 
-    public static <T, C extends Collection<T>> OfCollectionApiImpl<T, C> fromElementModel(
+    public static <T, C extends Collection<T>> CollectionsApiImpl<T, C> fromElementModel(
             final Class<C> collectionType,
             final Model<T> elementModel) {
 
@@ -45,11 +45,11 @@ public final class OfCollectionApiImpl<T, C extends Collection<T>>
                 .useModelAsTypeArgument(model.getModelContext())
                 .build();
 
-        return new OfCollectionApiImpl<>(new InternalModel<>(context));
+        return new CollectionsApiImpl<>(new InternalModel<>(context));
     }
 
     @Override
-    public InstancioOfCollectionApi<C> size(final int size) {
+    public InstancioCollectionsApi<C> size(final int size) {
         generate(Select.root(), gen -> gen.collection().size(size));
         return this;
     }
