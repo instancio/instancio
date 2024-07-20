@@ -15,73 +15,21 @@
  */
 package org.instancio.internal.settings;
 
-import org.instancio.generator.AfterGenerate;
-import org.instancio.settings.AssignmentType;
-import org.instancio.settings.BeanValidationTarget;
-import org.instancio.settings.FeedDataAccess;
-import org.instancio.settings.FeedDataEndAction;
-import org.instancio.settings.FeedDataTrim;
-import org.instancio.settings.FeedFormatType;
 import org.instancio.settings.Keys;
-import org.instancio.settings.Mode;
-import org.instancio.settings.OnSetFieldError;
-import org.instancio.settings.OnSetMethodError;
-import org.instancio.settings.OnSetMethodNotFound;
-import org.instancio.settings.OnSetMethodUnmatched;
-import org.instancio.settings.SetterStyle;
 import org.instancio.settings.SettingKey;
-import org.instancio.settings.StringCase;
-import org.instancio.settings.StringType;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
-@SuppressWarnings("PMD.CouplingBetweenObjects")
 final class SettingsSupport {
-
-    private static final Map<Class<?>, Function<String, Object>> VALUE_OF_FUNCTIONS = createValueOfFunctionsMap();
 
     private static final Map<SettingKey<?>, SettingKey<?>> AUTO_ADJUSTABLE_MAP = getAutoAdjustableKeys();
 
     @SuppressWarnings("unchecked")
-    static <T> Function<String, T> getFunction(final Class<T> type) {
-        return (Function<String, T>) VALUE_OF_FUNCTIONS.get(type);
-    }
-
-    @SuppressWarnings("unchecked")
     static <T> Optional<SettingKey<T>> getAutoAdjustable(final SettingKey<T> key) {
         return Optional.ofNullable((SettingKey<T>) AUTO_ADJUSTABLE_MAP.get(key));
-    }
-
-    private static Map<Class<?>, Function<String, Object>> createValueOfFunctionsMap() {
-        final Map<Class<?>, Function<String, Object>> fnMap = new HashMap<>();
-        fnMap.put(Boolean.class, Boolean::valueOf);
-        fnMap.put(Byte.class, Byte::valueOf);
-        fnMap.put(Short.class, Short::valueOf);
-        fnMap.put(Integer.class, Integer::valueOf);
-        fnMap.put(Long.class, Long::valueOf);
-        fnMap.put(Float.class, Float::valueOf);
-        fnMap.put(String.class, String::valueOf);
-        fnMap.put(Double.class, Double::valueOf);
-        fnMap.put(AfterGenerate.class, AfterGenerate::valueOf);
-        fnMap.put(AssignmentType.class, AssignmentType::valueOf);
-        fnMap.put(BeanValidationTarget.class, BeanValidationTarget::valueOf);
-        fnMap.put(FeedDataAccess.class, FeedDataAccess::valueOf);
-        fnMap.put(FeedDataEndAction.class, FeedDataEndAction::valueOf);
-        fnMap.put(FeedDataTrim.class, FeedDataTrim::valueOf);
-        fnMap.put(FeedFormatType.class, FeedFormatType::valueOf);
-        fnMap.put(Mode.class, Mode::valueOf);
-        fnMap.put(OnSetFieldError.class, OnSetFieldError::valueOf);
-        fnMap.put(OnSetMethodError.class, OnSetMethodError::valueOf);
-        fnMap.put(OnSetMethodNotFound.class, OnSetMethodNotFound::valueOf);
-        fnMap.put(OnSetMethodUnmatched.class, OnSetMethodUnmatched::valueOf);
-        fnMap.put(SetterStyle.class, SetterStyle::valueOf);
-        fnMap.put(StringCase.class, StringCase::valueOf);
-        fnMap.put(StringType.class, StringType::valueOf);
-        return Collections.unmodifiableMap(fnMap);
     }
 
     private static Map<SettingKey<?>, SettingKey<?>> getAutoAdjustableKeys() {

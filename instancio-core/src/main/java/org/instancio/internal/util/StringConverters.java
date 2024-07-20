@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.feed;
-
-import org.instancio.internal.util.Fail;
+package org.instancio.internal.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -34,9 +32,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-// TODO move out of feed package + refactor to avoid duplication in SettingsSupport
-@SuppressWarnings("PMD.CouplingBetweenObjects")
-final class StringConverters {
+public final class StringConverters {
     private static final Map<Class<?>, Function<String, ?>> MAPPERS = Collections.unmodifiableMap(getFunctionMap());
 
     private static Map<Class<?>, Function<String, ?>> getFunctionMap() {
@@ -66,7 +62,7 @@ final class StringConverters {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    static <T> Function<String, T> getConverter(final Class<T> targetType) {
+    public static <T> Function<String, T> getConverter(final Class<T> targetType) {
         final Function<String, T> mappingFn = (Function<String, T>) MAPPERS.get(targetType);
 
         if (mappingFn != null) {

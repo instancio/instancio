@@ -46,7 +46,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static org.instancio.internal.feed.StringConverters.getConverter;
 import static org.instancio.internal.util.ErrorMessageUtils.errorInvokingFunctionSpecHandlerMethod;
 import static org.instancio.internal.util.ErrorMessageUtils.errorMappingStringToTargetType;
 import static org.instancio.internal.util.ErrorMessageUtils.feedComponentMethodNotFound;
@@ -54,6 +53,7 @@ import static org.instancio.internal.util.ErrorMessageUtils.feedWithInvalidMetho
 import static org.instancio.internal.util.ErrorMessageUtils.invalidFunctionSpecHandlerMethod;
 import static org.instancio.internal.util.ReflectionUtils.getZeroArgMethod;
 import static org.instancio.internal.util.ReflectionUtils.setAccessible;
+import static org.instancio.internal.util.StringConverters.getConverter;
 
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.GodClass"})
 public abstract class AbstractFeed<R> implements InternalFeed {
