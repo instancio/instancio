@@ -21,7 +21,7 @@ package org.instancio;
  * @param <T> type to create
  * @since 1.0.1
  */
-public interface InstancioOfClassApi<T> extends InstancioApi<T> {
+public interface InstancioClassApi<T> extends InstancioApi<T> {
 
     /**
      * Method for supplying type parameters for generic classes.

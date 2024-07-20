@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 public final class OfCollectionApiImpl<T, C extends Collection<T>>
-        extends OfClassApiImpl<C>
+        extends ClassApiImpl<C>
         implements InstancioOfCollectionApi<C> {
 
     public OfCollectionApiImpl(final Class<C> collectionType, final Type elementType) {

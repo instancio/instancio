@@ -16,6 +16,7 @@
 package org.instancio.test.features.withtypeparameters;
 
 import org.instancio.Instancio;
+import org.instancio.InstancioClassApi;
 import org.instancio.TargetSelector;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
@@ -46,7 +47,7 @@ import static org.instancio.Select.fields;
 import static org.instancio.Select.types;
 
 /**
- * Adhoc tests for {@link org.instancio.InstancioOfClassApi#withTypeParameters(Class[])}.
+ * Adhoc tests for {@link InstancioClassApi#withTypeParameters(Class[])}.
  */
 @FeatureTag({
         Feature.WITH_TYPE_PARAMETERS,
