@@ -16,7 +16,7 @@
 package org.instancio.test.features.ofmap;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioOfCollectionApi;
+import org.instancio.InstancioCollectionsApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
@@ -62,7 +62,7 @@ class OfMapSizeTest {
 
     @Test
     void withNegativeSize() {
-        final InstancioOfCollectionApi<Map<String, Integer>> api = Instancio.ofMap(String.class, Integer.class).size(-1);
+        final InstancioCollectionsApi<Map<String, Integer>> api = Instancio.ofMap(String.class, Integer.class).size(-1);
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)

@@ -16,7 +16,7 @@
 package org.instancio.test.features.oflist;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioOfCollectionApi;
+import org.instancio.InstancioCollectionsApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Phone;
@@ -62,7 +62,7 @@ class OfListSizeTest {
 
     @Test
     void withNegativeSize() {
-        final InstancioOfCollectionApi<List<Phone>> api = Instancio.ofList(Phone.class).size(-1);
+        final InstancioCollectionsApi<List<Phone>> api = Instancio.ofList(Phone.class).size(-1);
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)

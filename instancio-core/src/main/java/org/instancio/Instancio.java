@@ -21,10 +21,10 @@ import org.instancio.internal.ApiImpl;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.CartesianProductApiImpl;
 import org.instancio.internal.ClassApiImpl;
+import org.instancio.internal.CollectionsApiImpl;
 import org.instancio.internal.FeedApiImpl;
 import org.instancio.internal.GenApiImpl;
-import org.instancio.internal.OfCollectionApiImpl;
-import org.instancio.internal.OfMapApiImpl;
+import org.instancio.internal.MapApiImpl;
 import org.instancio.settings.Keys;
 
 import java.util.List;
@@ -563,8 +563,8 @@ public final class Instancio {
      * @since 2.0.0
      */
     @SuppressWarnings("all")
-    public static <T> InstancioOfCollectionApi<List<T>> ofList(final Class<T> elementType) {
-        return new OfCollectionApiImpl(List.class, ApiValidator.validateOfListElementType(elementType));
+    public static <T> InstancioCollectionsApi<List<T>> ofList(final Class<T> elementType) {
+        return new CollectionsApiImpl(List.class, ApiValidator.validateOfListElementType(elementType));
     }
 
     /**
@@ -576,8 +576,8 @@ public final class Instancio {
      * @since 2.16.0
      */
     @SuppressWarnings("all")
-    public static <T> InstancioOfCollectionApi<List<T>> ofList(final TypeTokenSupplier<T> elementTypeToken) {
-        return new OfCollectionApiImpl(List.class, ApiValidator.validateTypeToken(elementTypeToken));
+    public static <T> InstancioCollectionsApi<List<T>> ofList(final TypeTokenSupplier<T> elementTypeToken) {
+        return new CollectionsApiImpl(List.class, ApiValidator.validateTypeToken(elementTypeToken));
     }
 
     /**
@@ -588,8 +588,8 @@ public final class Instancio {
      * @return API builder reference
      * @since 2.5.0
      */
-    public static <T> InstancioOfCollectionApi<List<T>> ofList(final Model<T> elementModel) {
-        return OfCollectionApiImpl.fromElementModel(cast(List.class), elementModel);
+    public static <T> InstancioCollectionsApi<List<T>> ofList(final Model<T> elementModel) {
+        return CollectionsApiImpl.fromElementModel(cast(List.class), elementModel);
     }
 
     /**
@@ -601,8 +601,8 @@ public final class Instancio {
      * @since 2.0.0
      */
     @SuppressWarnings("all")
-    public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final Class<T> elementType) {
-        return new OfCollectionApiImpl(Set.class, ApiValidator.validateOfSetElementType(elementType));
+    public static <T> InstancioCollectionsApi<Set<T>> ofSet(final Class<T> elementType) {
+        return new CollectionsApiImpl(Set.class, ApiValidator.validateOfSetElementType(elementType));
     }
 
     /**
@@ -614,8 +614,8 @@ public final class Instancio {
      * @since 2.16.0
      */
     @SuppressWarnings("all")
-    public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final TypeTokenSupplier<T> elementTypeToken) {
-        return new OfCollectionApiImpl(Set.class, ApiValidator.validateTypeToken(elementTypeToken));
+    public static <T> InstancioCollectionsApi<Set<T>> ofSet(final TypeTokenSupplier<T> elementTypeToken) {
+        return new CollectionsApiImpl(Set.class, ApiValidator.validateTypeToken(elementTypeToken));
     }
 
     /**
@@ -626,8 +626,8 @@ public final class Instancio {
      * @return API builder reference
      * @since 2.5.0
      */
-    public static <T> InstancioOfCollectionApi<Set<T>> ofSet(final Model<T> elementModel) {
-        return OfCollectionApiImpl.fromElementModel(cast(Set.class), elementModel);
+    public static <T> InstancioCollectionsApi<Set<T>> ofSet(final Model<T> elementModel) {
+        return CollectionsApiImpl.fromElementModel(cast(Set.class), elementModel);
     }
 
     /**
@@ -641,11 +641,11 @@ public final class Instancio {
      * @since 2.0.0
      */
     @SuppressWarnings("all")
-    public static <K, V> InstancioOfCollectionApi<Map<K, V>> ofMap(
+    public static <K, V> InstancioCollectionsApi<Map<K, V>> ofMap(
             final Class<K> keyType,
             final Class<V> valueType) {
 
-        return new OfMapApiImpl(Map.class,
+        return new MapApiImpl(Map.class,
                 ApiValidator.validateOfMapKeyOrValueType(keyType),
                 ApiValidator.validateOfMapKeyOrValueType(valueType));
     }
@@ -661,11 +661,11 @@ public final class Instancio {
      * @since 2.16.0
      */
     @SuppressWarnings("all")
-    public static <K, V> InstancioOfCollectionApi<Map<K, V>> ofMap(
+    public static <K, V> InstancioCollectionsApi<Map<K, V>> ofMap(
             final TypeTokenSupplier<K> keyTypeToken,
             final TypeTokenSupplier<V> valueTypeToken) {
 
-        return new OfMapApiImpl(Map.class,
+        return new MapApiImpl(Map.class,
                 ApiValidator.validateTypeToken(keyTypeToken),
                 ApiValidator.validateTypeToken(valueTypeToken));
     }

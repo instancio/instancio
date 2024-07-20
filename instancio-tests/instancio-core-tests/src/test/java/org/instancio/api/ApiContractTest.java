@@ -25,7 +25,7 @@ import org.instancio.GivenOriginDestinationAction;
 import org.instancio.GivenOriginPredicate;
 import org.instancio.GivenOriginPredicateAction;
 import org.instancio.GroupableSelector;
-import org.instancio.InstancioOfCollectionApi;
+import org.instancio.InstancioCollectionsApi;
 import org.instancio.LenientSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.Scope;
@@ -211,7 +211,7 @@ class ApiContractTest {
     @Test
     @DisplayName("ofList(), ofSet(), ofMap() should not expose withTypeParameters() method")
     void ofListWithTypeParametersNotAllowed() {
-        assertThatClass(InstancioOfCollectionApi.class).hasNoMethodsNamed("withTypeParameters");
+        assertThatClass(InstancioCollectionsApi.class).hasNoMethodsNamed("withTypeParameters");
     }
 
     /**
