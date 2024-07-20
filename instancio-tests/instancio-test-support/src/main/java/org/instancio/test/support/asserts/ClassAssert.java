@@ -38,6 +38,14 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
         return new ClassAssert(actual);
     }
 
+    public static ClassAssert assertThatSuperInterface(final Class<?> klass, final String interfaceSimpleName) {
+        final Class<?> superInterface = getSuperInterface(klass, interfaceSimpleName);
+        assertThat(superInterface)
+                .as("%s (%s)", klass, interfaceSimpleName)
+                .isNotNull();
+        return new ClassAssert(superInterface);
+    }
+
     public ClassAssert hasNoMethods() {
         assertThat(actual.getMethods()).isEmpty();
         return this;
@@ -97,5 +105,14 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
 
     public MethodsAssert withMethodNameMatching(final String methodName) {
         return withMethodsMatching(m -> m.getName().equals(methodName));
+    }
+
+    private static Class<?> getSuperInterface(final Class<?> klass, final String interfaceSimpleName) {
+        for (Class<?> c : klass.getInterfaces()) {
+            if (c.getSimpleName().equals(interfaceSimpleName)) {
+                return c;
+            }
+        }
+        return null;
     }
 }
