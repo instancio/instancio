@@ -152,7 +152,6 @@ public final class SelectorMaps {
         }
     }
 
-
     AssignmentSelectorMap getAssignmentSelectorMap() {
         return assignmentSelectorMap;
     }
@@ -193,8 +192,8 @@ public final class SelectorMaps {
         return !hasAssignments()
                 && !hasGenerators()
                 && !hasCallbacks()
-                && !hasFilters()
                 && !hasSetModels()
+                && filterSelectorMap.getSelectorMap().isEmpty()
                 && feedSelectorMap.getSelectorMap().isEmpty()
                 && ignoreSelectorMap.getSelectorMap().isEmpty()
                 && withNullableSelectorMap.getSelectorMap().isEmpty()
@@ -207,10 +206,6 @@ public final class SelectorMaps {
 
     public boolean hasCallbacks() {
         return !onCompleteSelectorMap.getSelectorMap().isEmpty();
-    }
-
-    public boolean hasFilters() {
-        return !filterSelectorMap.getSelectorMap().isEmpty();
     }
 
     public boolean hasAssignments() {
