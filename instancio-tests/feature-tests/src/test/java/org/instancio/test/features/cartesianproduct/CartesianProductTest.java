@@ -16,7 +16,7 @@
 package org.instancio.test.features.cartesianproduct;
 
 import lombok.Data;
-import org.instancio.CartesianProductApi;
+import org.instancio.InstancioCartesianProductApi;
 import org.instancio.Instancio;
 import org.instancio.Selector;
 import org.instancio.TypeToken;
@@ -232,7 +232,7 @@ class CartesianProductTest {
     void overflow() {
         final Integer[] range = IntStream.range(1, 50_000).boxed().toArray(Integer[]::new);
 
-        final CartesianProductApi<IntegerHolder> api = Instancio.ofCartesianProduct(IntegerHolder.class)
+        final InstancioCartesianProductApi<IntegerHolder> api = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), range)
                 .with(field(IntegerHolder::getWrapper), range);
 
@@ -316,7 +316,7 @@ class CartesianProductTest {
 
         @Test
         void maxDepthCausingUnusedSelectorError() {
-            final CartesianProductApi<IntegerHolder> api = Instancio.ofCartesianProduct(IntegerHolder.class)
+            final InstancioCartesianProductApi<IntegerHolder> api = Instancio.ofCartesianProduct(IntegerHolder.class)
                     .withMaxDepth(1)
                     .with(field(IntegerHolder::getPrimitive), 1, 2);
 
@@ -337,7 +337,7 @@ class CartesianProductTest {
     class NullTest {
         @Test
         void nullArray() {
-            final CartesianProductApi<Pair<Integer, Boolean>> api = Instancio.ofCartesianProduct(new TypeToken<Pair<Integer, Boolean>>() {});
+            final InstancioCartesianProductApi<Pair<Integer, Boolean>> api = Instancio.ofCartesianProduct(new TypeToken<Pair<Integer, Boolean>>() {});
             final Selector selector = allInts();
 
             assertThatThrownBy(() -> api.with(selector, (Object[]) null))
@@ -347,7 +347,7 @@ class CartesianProductTest {
 
         @Test
         void emptyArray() {
-            final CartesianProductApi<Pair<Integer, Boolean>> api = Instancio.ofCartesianProduct(new TypeToken<Pair<Integer, Boolean>>() {});
+            final InstancioCartesianProductApi<Pair<Integer, Boolean>> api = Instancio.ofCartesianProduct(new TypeToken<Pair<Integer, Boolean>>() {});
             final Selector selector = allInts();
 
             assertThatThrownBy(() -> api.with(selector, new Object[0]))

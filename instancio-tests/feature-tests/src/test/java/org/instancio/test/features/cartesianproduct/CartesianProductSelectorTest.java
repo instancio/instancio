@@ -16,7 +16,7 @@
 package org.instancio.test.features.cartesianproduct;
 
 import lombok.Data;
-import org.instancio.CartesianProductApi;
+import org.instancio.InstancioCartesianProductApi;
 import org.instancio.Instancio;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
@@ -127,7 +127,7 @@ class CartesianProductSelectorTest {
 
     @Test
     void selectorMatchesMultipleNodes() {
-        final CartesianProductApi<TwoIntegerHolders> api = Instancio.ofCartesianProduct(TwoIntegerHolders.class)
+        final InstancioCartesianProductApi<TwoIntegerHolders> api = Instancio.ofCartesianProduct(TwoIntegerHolders.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .with(field(IntegerHolder::getWrapper), 3, 4);
 

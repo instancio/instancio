@@ -512,7 +512,7 @@ public final class Instancio {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static <T> CartesianProductApi<T> ofCartesianProduct(final Class<T> type) {
+    public static <T> InstancioCartesianProductApi<T> ofCartesianProduct(final Class<T> type) {
         return new CartesianProductApiImpl<>(ApiValidator.validateOfCartesianProductElementType(type));
     }
 
@@ -531,7 +531,7 @@ public final class Instancio {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static <T> CartesianProductApi<T> ofCartesianProduct(final TypeTokenSupplier<T> typeToken) {
+    public static <T> InstancioCartesianProductApi<T> ofCartesianProduct(final TypeTokenSupplier<T> typeToken) {
         return new CartesianProductApiImpl<>(typeToken);
     }
 
@@ -550,7 +550,7 @@ public final class Instancio {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static <T> CartesianProductApi<T> ofCartesianProduct(final Model<T> model) {
+    public static <T> InstancioCartesianProductApi<T> ofCartesianProduct(final Model<T> model) {
         return new CartesianProductApiImpl<>(model);
     }
 
