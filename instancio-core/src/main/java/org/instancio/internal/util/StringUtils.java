@@ -27,11 +27,11 @@ import static org.instancio.internal.util.ErrorMessageUtils.invalidStringTemplat
 public final class StringUtils {
 
     public static boolean isEmpty(@Nullable final String s) {
-        return s == null || "".equals(s);
+        return s == null || s.isEmpty();
     }
 
     public static boolean isBlank(@Nullable final String s) {
-        return s == null || "".equals(s.trim());
+        return s == null || s.trim().isEmpty();
     }
 
     @NotNull
