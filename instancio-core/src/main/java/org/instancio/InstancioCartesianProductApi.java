@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * @since 4.0.0
  */
 @ExperimentalApi
-public interface CartesianProductApi<T> extends
+public interface InstancioCartesianProductApi<T> extends
         InstancioBaseApi<T>,
         InstancioSettingsApi,
         LenientMode,
@@ -101,7 +101,7 @@ public interface CartesianProductApi<T> extends
      */
     @ExperimentalApi
     @SuppressWarnings("unchecked")
-    <V> CartesianProductApi<T> with(TargetSelector selector, V... values);
+    <V> InstancioCartesianProductApi<T> with(TargetSelector selector, V... values);
 
     /**
      * Returns he Cartesian product generated from values specified via
@@ -119,7 +119,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    CartesianProductApi<T> ignore(TargetSelector selector);
+    InstancioCartesianProductApi<T> ignore(TargetSelector selector);
 
     /**
      * {@inheritDoc}
@@ -127,7 +127,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    CartesianProductApi<T> withNullable(TargetSelector selector);
+    InstancioCartesianProductApi<T> withNullable(TargetSelector selector);
 
     /**
      * {@inheritDoc}
@@ -135,7 +135,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> CartesianProductApi<T> set(TargetSelector selector, V value);
+    <V> InstancioCartesianProductApi<T> set(TargetSelector selector, V value);
 
     /**
      * {@inheritDoc}
@@ -144,7 +144,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    <V> CartesianProductApi<T> setModel(TargetSelector selector, Model<V> model);
+    <V> InstancioCartesianProductApi<T> setModel(TargetSelector selector, Model<V> model);
 
     /**
      * {@inheritDoc}
@@ -152,7 +152,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> CartesianProductApi<T> supply(TargetSelector selector, Supplier<V> supplier);
+    <V> InstancioCartesianProductApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
      * {@inheritDoc}
@@ -160,7 +160,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> CartesianProductApi<T> supply(TargetSelector selector, Generator<V> generator);
+    <V> InstancioCartesianProductApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
      * {@inheritDoc}
@@ -168,7 +168,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> CartesianProductApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
+    <V> InstancioCartesianProductApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
 
     /**
      * {@inheritDoc}
@@ -177,7 +177,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    <V> CartesianProductApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
+    <V> InstancioCartesianProductApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
 
     /**
      * {@inheritDoc}
@@ -185,7 +185,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> CartesianProductApi<T> onComplete(TargetSelector selector, OnCompleteCallback<V> callback);
+    <V> InstancioCartesianProductApi<T> onComplete(TargetSelector selector, OnCompleteCallback<V> callback);
 
     /**
      * {@inheritDoc}
@@ -194,7 +194,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    <V> CartesianProductApi<T> filter(TargetSelector selector, FilterPredicate<V> predicate);
+    <V> InstancioCartesianProductApi<T> filter(TargetSelector selector, FilterPredicate<V> predicate);
 
     /**
      * {@inheritDoc}
@@ -203,7 +203,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    CartesianProductApi<T> setBlank(TargetSelector selector);
+    InstancioCartesianProductApi<T> setBlank(TargetSelector selector);
 
     /**
      * {@inheritDoc}
@@ -211,7 +211,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    CartesianProductApi<T> subtype(TargetSelector selector, Class<?> subtype);
+    InstancioCartesianProductApi<T> subtype(TargetSelector selector, Class<?> subtype);
 
     /**
      * {@inheritDoc}
@@ -220,7 +220,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    CartesianProductApi<T> applyFeed(TargetSelector selector, Feed feed);
+    InstancioCartesianProductApi<T> applyFeed(TargetSelector selector, Feed feed);
 
     /**
      * {@inheritDoc}
@@ -229,7 +229,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    CartesianProductApi<T> applyFeed(TargetSelector selector, FeedProvider provider);
+    InstancioCartesianProductApi<T> applyFeed(TargetSelector selector, FeedProvider provider);
 
     /**
      * {@inheritDoc}
@@ -238,7 +238,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    CartesianProductApi<T> withUnique(TargetSelector selector);
+    InstancioCartesianProductApi<T> withUnique(TargetSelector selector);
 
     /**
      * {@inheritDoc}
@@ -247,7 +247,7 @@ public interface CartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    CartesianProductApi<T> assign(Assignment... assignments);
+    InstancioCartesianProductApi<T> assign(Assignment... assignments);
 
     /**
      * {@inheritDoc}
@@ -255,7 +255,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    CartesianProductApi<T> withMaxDepth(int maxDepth);
+    InstancioCartesianProductApi<T> withMaxDepth(int maxDepth);
 
     /**
      * {@inheritDoc}
@@ -263,7 +263,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.3.1
      */
     @Override
-    <V> CartesianProductApi<T> withSetting(SettingKey<V> key, V value);
+    <V> InstancioCartesianProductApi<T> withSetting(SettingKey<V> key, V value);
 
     /**
      * {@inheritDoc}
@@ -271,7 +271,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    CartesianProductApi<T> withSettings(Settings settings);
+    InstancioCartesianProductApi<T> withSettings(Settings settings);
 
     /**
      * {@inheritDoc}
@@ -279,7 +279,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    CartesianProductApi<T> withSeed(long seed);
+    InstancioCartesianProductApi<T> withSeed(long seed);
 
     /**
      * {@inheritDoc}
@@ -287,7 +287,7 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    CartesianProductApi<T> lenient();
+    InstancioCartesianProductApi<T> lenient();
 
     /**
      * {@inheritDoc}
@@ -295,5 +295,5 @@ public interface CartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    CartesianProductApi<T> verbose();
+    InstancioCartesianProductApi<T> verbose();
 }
