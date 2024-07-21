@@ -4402,7 +4402,7 @@ void example(@GivenProductCode String productCode) {
     Instancio will choose providers randomly from the specified classes.
 
 
-## Parameterized Tests
+## Parameterized Tests with `@InstancioSource`
 
 The {{InstancioSource}} annotation allows you to provide arguments directly to
 a `@ParameterizedTest` method. This works for both single and multiple arguments,
@@ -4474,6 +4474,22 @@ void example(Person person) {
     // will run this test method 250 times
 }
 ```
+
+#### Using `@Given` with `@InstancioSource`
+
+Methods annotated with `@InstancioSource` support the `@Given` annotation.
+Since `@InstancioSource` generates random arguments by default,
+the `@Given` annotation is only necessary when specifying a custom `InstanceProvider` attribute.
+
+```java linenums="1"
+@ParameterizedTest
+@InstancioSource
+void example(String randomString, @Given(CustomStringProvider.class) customString) {
+    // ...
+}
+```
+
+In this example, `randomString` is generated randomly, while `customString` is provided by `CustomStringProvider`.
 
 ## Settings Injection
 
