@@ -15,9 +15,8 @@
  */
 package org.instancio.internal.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -31,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 
 public final class TypeUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(TypeUtils.class);
 
     private TypeUtils() {
         // non-instantiable
@@ -63,11 +61,9 @@ public final class TypeUtils {
         throw new IllegalArgumentException("Could not resolve array class for type: " + type);
     }
 
-    @Nullable
+    @NotNull
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getRawType(final Type type) {
-        Verify.notNull(type, "null type");
-
         if (type instanceof Class) {
             return (Class<T>) type;
         } else if (type instanceof ParameterizedType) {
@@ -76,9 +72,7 @@ public final class TypeUtils {
             final Type genericComponentType = ((GenericArrayType) type).getGenericComponentType();
             return getRawType(genericComponentType);
         }
-
-        LOG.warn("Unhandled type: {}", type.getClass().getSimpleName());
-        return null;
+        throw Fail.withFataInternalError("Unhandled type: %s", type.getClass().getSimpleName());
     }
 
     @Nullable

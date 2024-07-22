@@ -17,6 +17,7 @@ package org.instancio.internal.util;
 
 import org.instancio.Random;
 import org.instancio.TypeToken;
+import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.text.TextPatternGenerator;
@@ -58,14 +59,9 @@ class TypeUtilsTest {
 
         @Test
         void withTypeVariable() {
-            assertThat(TypeUtils.getRawType(TYPE_VARIABLE)).isNull();
-        }
-
-        @Test
-        void withNullArgument() {
-            assertThatThrownBy(() -> TypeUtils.getRawType(null))
-                    .isExactlyInstanceOf(NullPointerException.class)
-                    .hasMessage("null type");
+            assertThatThrownBy(() -> TypeUtils.getRawType(TYPE_VARIABLE))
+                    .isExactlyInstanceOf(InstancioTerminatingException.class)
+                    .hasMessageContaining("Unhandled type: %s", TYPE_VARIABLE.getClass().getSimpleName());
         }
     }
 
