@@ -17,7 +17,6 @@ package org.instancio.junit.internal;
 
 import org.instancio.Random;
 import org.instancio.junit.InstancioSource;
-import org.instancio.junit.ObjectCreator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
@@ -86,7 +85,6 @@ public class InstancioSourceArgumentsProvider
                     final ElementAnnotations elementAnnotations = new ElementAnnotations(annotations);
                     return new ObjectCreator(settings, random)
                             .createObject(param, targetType, elementAnnotations);
-
                 })
                 .toArray();
     }

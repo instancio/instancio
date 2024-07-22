@@ -20,6 +20,7 @@ import org.instancio.internal.util.Sonar;
 import org.instancio.junit.internal.ElementAnnotations;
 import org.instancio.junit.internal.ExtensionSupport;
 import org.instancio.junit.internal.FieldAnnotationMap;
+import org.instancio.junit.internal.ObjectCreator;
 import org.instancio.junit.internal.ReflectionUtils;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;

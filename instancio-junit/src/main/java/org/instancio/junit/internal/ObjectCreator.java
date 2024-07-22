@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.junit;
+package org.instancio.junit.internal;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.InstancioFeedApi;
 import org.instancio.Random;
+import org.instancio.documentation.InternalApi;
 import org.instancio.feed.Feed;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
-import org.instancio.junit.internal.ElementAnnotations;
-import org.instancio.junit.internal.InternalElementContext;
-import org.instancio.junit.internal.ReflectionUtils;
+import org.instancio.junit.GivenProvider;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+@InternalApi
 public class ObjectCreator {
 
     private final Settings settings;

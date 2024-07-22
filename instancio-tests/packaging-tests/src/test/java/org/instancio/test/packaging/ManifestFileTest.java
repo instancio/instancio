@@ -126,7 +126,6 @@ class ManifestFileTest {
 
         assertThat(getExportedPackages(attrs)).containsExactlyInAnyOrder(
                 "org.instancio.junit",
-                "org.instancio.settings",
                 "org.junit.jupiter.api.extension",
                 "org.junit.jupiter.params.provider"
         );
