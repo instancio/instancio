@@ -62,7 +62,7 @@ import java.lang.annotation.Target;
  * }
  * }</pre>
  *
- * @see InstanceProvider
+ * @see GivenProvider
  * @since 5.0.0
  */
 @ExperimentalApi
@@ -86,5 +86,5 @@ public @interface Given {
      * @since 5.0.0
      */
     @ExperimentalApi
-    Class<? extends InstanceProvider>[] value() default {};
+    Class<? extends GivenProvider>[] value() default {};
 }

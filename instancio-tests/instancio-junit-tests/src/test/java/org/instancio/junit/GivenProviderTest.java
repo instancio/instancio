@@ -30,7 +30,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
-class InstanceProviderTest {
+class GivenProviderTest {
 
     private static final TypeToken<?> LIST_STRING = new TypeToken<List<String>>() {};
     private static final String FIELD_VALUE = "foo";
@@ -46,7 +46,7 @@ class InstanceProviderTest {
         assertThat(field).containsOnly(FIELD_VALUE);
     }
 
-    private static class FieldValueProvider implements InstanceProvider {
+    private static class FieldValueProvider implements GivenProvider {
         @Override
         public Object provide(final ElementContext context) {
             assertCommonFields(context);
@@ -70,7 +70,7 @@ class InstanceProviderTest {
         assertThat(param).containsOnly(PARAM_VALUE);
     }
 
-    private static class ParameterValueProvider implements InstanceProvider {
+    private static class ParameterValueProvider implements GivenProvider {
         @Override
         public Object provide(final ElementContext context) {
             assertCommonFields(context);
@@ -81,7 +81,7 @@ class InstanceProviderTest {
         }
     }
 
-    private static void assertCommonFields(final InstanceProvider.ElementContext context) {
+    private static void assertCommonFields(final GivenProvider.ElementContext context) {
         assertThat(context.getTargetType()).isEqualTo(LIST_STRING.get());
         assertThat(context.getTargetClass()).isEqualTo(List.class);
 

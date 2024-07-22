@@ -17,7 +17,7 @@ package org.instancio.junit.internal;
 
 import org.instancio.internal.ApiValidator;
 import org.instancio.junit.Given;
-import org.instancio.junit.InstanceProvider;
+import org.instancio.junit.GivenProvider;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class ElementAnnotations {
 
     private final List<Annotation> annotations;
-    private final List<Class<? extends InstanceProvider>> providerClasses;
+    private final List<Class<? extends GivenProvider>> providerClasses;
 
     public ElementAnnotations(final List<Annotation> annotations) {
         this.annotations = annotations;
@@ -54,7 +54,7 @@ public class ElementAnnotations {
         return (A) results.get(0);
     }
 
-    public List<Class<? extends InstanceProvider>> getProviderClasses() {
+    public List<Class<? extends GivenProvider>> getProviderClasses() {
         return providerClasses;
     }
 }

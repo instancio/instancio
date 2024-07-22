@@ -16,7 +16,7 @@
 package org.instancio.junit.given;
 
 import org.instancio.junit.Given;
-import org.instancio.junit.InstanceProvider;
+import org.instancio.junit.GivenProvider;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.MethodOrderer;
@@ -64,14 +64,14 @@ class GivenMultipleProvidersTest {
         assertThat(results).containsOnly("foo", "bar");
     }
 
-    private static class Provider1 implements InstanceProvider {
+    private static class Provider1 implements GivenProvider {
         @Override
         public Object provide(final ElementContext context) {
             return "foo";
         }
     }
 
-    private static class Provider2 implements InstanceProvider {
+    private static class Provider2 implements GivenProvider {
         @Override
         public Object provide(final ElementContext context) {
             return "bar";

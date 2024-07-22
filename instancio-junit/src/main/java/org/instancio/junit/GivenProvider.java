@@ -59,7 +59,7 @@ import java.lang.reflect.Type;
  * <p>where the {@code NumericStringProvider} can be implemented as:
  *
  * <pre>{@code
- * class NumericStringProvider implements InstanceProvider {
+ * class NumericStringProvider implements GivenProvider {
  *     @Override
  *     public Object provide(ElementContext context) {
  *         NumericString numericString = context.getAnnotation(NumericString.class);
@@ -72,7 +72,7 @@ import java.lang.reflect.Type;
  * @since 5.0.0
  */
 @ExperimentalApi
-public interface InstanceProvider {
+public interface GivenProvider {
 
     /**
      * Provides an instance of an object based on the given context.

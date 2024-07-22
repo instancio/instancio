@@ -18,7 +18,7 @@ package org.instancio.test.features.generator.misc;
 import org.instancio.Instancio;
 import org.instancio.IntervalSupplier;
 import org.instancio.junit.Given;
-import org.instancio.junit.InstanceProvider;
+import org.instancio.junit.GivenProvider;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.InstancioSource;
 import org.instancio.test.support.tags.Feature;
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class IntervalGeneratorTest {
 
-    private static class BetweenZeroAnd10 implements InstanceProvider {
+    private static class BetweenZeroAnd10 implements GivenProvider {
         @Override
         public Object provide(final ElementContext context) {
             return context.random().intRange(0, 10);

@@ -17,13 +17,13 @@ package org.instancio.junit.internal;
 
 import org.instancio.Random;
 import org.instancio.internal.util.TypeUtils;
-import org.instancio.junit.InstanceProvider;
+import org.instancio.junit.GivenProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 
-public class InternalElementContext implements InstanceProvider.ElementContext {
+public class InternalElementContext implements GivenProvider.ElementContext {
 
     private final AnnotatedElement targetElement;
     private final ElementAnnotations elementAnnotations;

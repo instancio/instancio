@@ -50,7 +50,7 @@ public class ObjectCreator {
             final Type targetType,
             final ElementAnnotations elementAnnotations) {
 
-        final List<Class<? extends InstanceProvider>> providerClasses = elementAnnotations.getProviderClasses();
+        final List<Class<? extends GivenProvider>> providerClasses = elementAnnotations.getProviderClasses();
         final Class<?> targetClass = TypeUtils.getRawType(targetType);
         final Type actualTargetType = targetClass == Supplier.class || targetClass == Stream.class
                 ? ((ParameterizedType) targetType).getActualTypeArguments()[0] //NOSONAR
@@ -65,7 +65,7 @@ public class ObjectCreator {
                 final InternalElementContext elementContext = new InternalElementContext(
                         annotatedElement, actualTargetType, elementAnnotations, random);
 
-                final InstanceProvider provider = ReflectionUtils.newInstance(random.oneOf(providerClasses));
+                final GivenProvider provider = ReflectionUtils.newInstance(random.oneOf(providerClasses));
                 return provider.provide(elementContext);
             };
         }

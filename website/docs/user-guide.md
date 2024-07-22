@@ -4344,11 +4344,11 @@ void withStream(@Given Stream<Integer> stream) {
 
 ### Using Custom `InstanceProvder`
 
-The `@Given` annotation can accept one or more `InstanceProvider` classes
-to provide customised values. The `InstanceProvider` interface is defined as follows:
+The `@Given` annotation can accept one or more `GivenProvider` classes
+to provide customised values. The `GivenProvider` interface is defined as follows:
 
 ```java linenums="1"
-public interface InstanceProvider {
+public interface GivenProvider {
     Object provide(ElementContext context);
 }
 ```
@@ -4360,7 +4360,7 @@ of `Random` for generating reproducible random values.
 For example, to generate a product code consisting of 3 letters followed by 5 digits (e.g. `ABC12345`):
 
 ```java linenums="1"
-class ProductCodeProvider implements InstanceProvider {
+class ProductCodeProvider implements GivenProvider {
     @Override
     public Object provide(ElementContext context) {
         Random random = context.random();
@@ -4479,7 +4479,7 @@ void example(Person person) {
 
 Methods annotated with `@InstancioSource` support the `@Given` annotation.
 Since `@InstancioSource` generates random arguments by default,
-the `@Given` annotation is only necessary when specifying a custom `InstanceProvider` attribute.
+the `@Given` annotation is only necessary when specifying a custom `GivenProvider` attribute.
 
 ```java linenums="1"
 @ParameterizedTest

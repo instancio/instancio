@@ -20,7 +20,7 @@ import org.instancio.Select;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.junit.Given;
-import org.instancio.junit.InstanceProvider;
+import org.instancio.junit.GivenProvider;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Keys;
@@ -37,7 +37,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
-class GivenWithInstanceProviderTest {
+class GivenWithProviderTest {
 
     @CollectionSize(5)
     private Set<String> setWithSize;
@@ -113,7 +113,7 @@ class GivenWithInstanceProviderTest {
         int value();
     }
 
-    private static class NumericStringProvider implements InstanceProvider {
+    private static class NumericStringProvider implements GivenProvider {
         @Override
         public Object provide(final ElementContext context) {
             // using provided Random
@@ -121,7 +121,7 @@ class GivenWithInstanceProviderTest {
         }
     }
 
-    private static class CollectionProvider implements InstanceProvider {
+    private static class CollectionProvider implements GivenProvider {
         @Override
         public Object provide(final ElementContext context) {
             CollectionSize size = context.getAnnotation(CollectionSize.class);
@@ -136,7 +136,7 @@ class GivenWithInstanceProviderTest {
         }
     }
 
-    private static class ArrayProvider implements InstanceProvider {
+    private static class ArrayProvider implements GivenProvider {
         @Override
         public Object provide(final ElementContext context) {
             ArrayLength size = context.getAnnotation(ArrayLength.class);

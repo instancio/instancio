@@ -16,7 +16,7 @@
 package org.instancio.junit.given;
 
 import org.instancio.junit.Given;
-import org.instancio.junit.InstanceProvider;
+import org.instancio.junit.GivenProvider;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.InstancioSource;
 import org.instancio.test.support.util.Constants;
@@ -61,7 +61,7 @@ class GivenSupplierTest {
 
     @Nested
     class WithCustomProviderTest {
-        private static class CustomProvider implements InstanceProvider {
+        private static class CustomProvider implements GivenProvider {
             @Override
             public Object provide(final ElementContext context) {
                 return context.random().trueOrFalse() ? "foo" : "bar";
