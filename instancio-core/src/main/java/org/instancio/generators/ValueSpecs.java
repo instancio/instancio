@@ -16,6 +16,7 @@
 package org.instancio.generators;
 
 import org.instancio.Instancio;
+import org.instancio.IntervalSupplier;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.generator.specs.ByteSpec;
@@ -25,6 +26,7 @@ import org.instancio.generator.specs.EnumSpec;
 import org.instancio.generator.specs.FloatSpec;
 import org.instancio.generator.specs.HashSpec;
 import org.instancio.generator.specs.IntegerSpec;
+import org.instancio.generator.specs.IntervalSpec;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
@@ -35,6 +37,7 @@ import org.instancio.generator.specs.StringSpec;
 import org.instancio.generator.specs.UUIDSpec;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 /**
  * Defines all built-in generators that are available
@@ -156,6 +159,65 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      */
     @Override
     <T> OneOfCollectionSpec<T> oneOf(Collection<T> choices);
+
+    /**
+     * A spec for generating intervals of various types, such as
+     * numeric and temporal values.
+     *
+     * <p>Generating intervals requires three inputs:
+     *
+     * <ul>
+     *   <li>The start value of the first interval</li>
+     *   <li>A function to calculate the end value based on the last start value</li>
+     *   <li>A function to calculate the subsequent start value based on the last end value</li>
+     * </ul>
+     *
+     * <p>To illustrate with an example, we will generate a list of
+     * vacations defined as:
+     *
+     * <pre>{@code
+     * record Vacation(LocalDate start, LocalDate end) {}
+     * }</pre>
+     *
+     * <p>The first vacation should start on {@code 2000-01-01}.
+     * Each vacation should last between {@code 1-3} weeks.
+     * There should be {@code 12-15} months between vacations.
+     *
+     * <pre>{@code
+     * IntervalSupplier<LocalDate> vacationDates = Instancio.gen()
+     *     .intervalStarting(LocalDate.of(2000, 1, 1))
+     *     .nextStart((end, random) -> end.plusMonths(random.intRange(12, 15)))
+     *     .nextEnd((start, random) -> start.plusWeeks(random.intRange(1, 3)))
+     *     .get();
+     * }</pre>
+     *
+     * <p>This method produces an {@link IntervalSupplier} containing
+     * {@code start} and {@code end} methods, which return a {@link Supplier}.
+     * Each call to {@code start()} and {@code end()} will produce
+     * new interval values.
+     *
+     * <pre>{@code
+     * List<Vacation> vacations = Instancio.ofList(Vacation.class)
+     *     .size(4)
+     *     .supply(field(Vacation::start), vacationDates.start())
+     *     .supply(field(Vacation::end), vacationDates.end())
+     *     .create();
+     *
+     * // Sample output:
+     * // [Vacation[start=2000-01-01, end=2000-01-15],
+     * //  Vacation[start=2001-02-15, end=2001-03-08],
+     * //  Vacation[start=2002-03-08, end=2002-03-15],
+     * //  Vacation[start=2003-06-15, end=2003-07-06]]
+     * }</pre>
+     *
+     * @param startingValue the starting value of the first interval
+     * @param <T>           the type of value underlying the interval
+     * @return API builder reference
+     * @see IntervalSupplier
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    <T> IntervalSpec<T> intervalStarting(T startingValue);
 
     /**
      * Creates a copy of the specified array and shuffles its elements.

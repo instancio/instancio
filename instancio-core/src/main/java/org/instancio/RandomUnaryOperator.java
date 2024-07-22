@@ -18,25 +18,28 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 
 /**
- * A function that accepts an argument and produces a randomised result.
+ * Represents a unary operator that produces a result of the same type
+ * as its operand. This operator can use an additional {@link Random}
+ * parameter for randomising the output, if necessary.
  *
- * @param <T> the input type
- * @param <R> the result type
- * @see RandomUnaryOperator
+ * @param <T> the type of the input and output of the function
+ * @see RandomFunction
  * @since 5.0.0
  */
 @ExperimentalApi
 @FunctionalInterface
-public interface RandomFunction<T, R> {
+public interface RandomUnaryOperator<T> extends RandomFunction<T, T> {
 
     /**
-     * Applies this function to the given {@code input}.
+     * Applies this operator to the given operand,
+     * using the provided {@link Random} instance.
      *
      * @param input  the function input
      * @param random instance for randomising the result
      * @return the function result
      * @since 5.0.0
      */
+    @Override
     @ExperimentalApi
-    R apply(T input, Random random);
+    T apply(T input, Random random);
 }
