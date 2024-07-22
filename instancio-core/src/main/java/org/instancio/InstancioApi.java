@@ -110,33 +110,49 @@ public interface InstancioApi<T> extends
     }
 
     /**
-     * Creates an infinite stream of distinct, fully populated object instances.
+     * Creates an infinite {@link Stream} of objects. Ensure {@code limit()}
+     * is called on the returned stream to prevent an infinite loop.
      *
-     * <p>Example:
+     * <p>Each object is generated separately when using this method.
+     * For instance, if a stateful generator like a sequence generator
+     * is used, the sequence will restart from one for each object:
+     *
      * <pre>{@code
      * List<Person> persons = Instancio.of(Person.class)
-     *     .generate(field(Person::getAge), gen -> gen.ints().range(18, 100))
+     *     .generate(field(Person::getId), gen -> gen.longSeq())
      *     .stream()
-     *     .limit(5)
+     *     .limit(3)
      *     .collect(Collectors.toList());
+     *
+     * // Output:
+     * // [Person[id=1], Person[id=1], Person[id=1]]
      * }</pre>
      *
-     * <p><b>Warning:</b> {@code limit()} must be called to avoid an infinite loop.
+     * <p>Compared to using {@code ofList()}, where the sequence is continuous:
      *
-     * <p>All objects in the stream are independent of each other.
+     * <pre>{@code
+     * List<Person> persons = Instancio.ofList(Person.class)
+     *     .size(3)
+     *     .generate(field(Person::getId), gen -> gen.longSeq())
+     *     .create();
      *
-     * @return an infinite stream of distinct object instances
+     * // Output:
+     * // [Person[id=1], Person[id=2], Person[id=3]]
+     * }</pre>
+     *
+     * @return an infinite stream of object instances
      * @since 1.1.9
      */
     Stream<T> stream();
 
     /**
-     * Creates a model containing all the information for populating a class.
+     * Creates a model containing generation parameters for creating an object
+     * A model acts as a template for creating objects or other models.
      *
-     * <p>The model can be useful when class population needs to be customised
-     * and the customisations need to be re-used in different parts of the code.
+     * <p>The example below illustrates how to create a reusable model
+     * with predefined attributes, which serves as a template for generating
+     * objects with base properties:
      *
-     * <p>Example:
      * <pre>{@code
      * Model<Person> simpsons = Instancio.of(Person.class)
      *     .set(field(Person::getLastName), "Simpson")
@@ -155,7 +171,17 @@ public interface InstancioApi<T> extends
      *     .create();
      * }</pre>
      *
+     * <p>For more information, see:
+     *
+     * <ul>
+     *   <li>The <a href="https://www.instancio.org/user-guide/#using-models">
+     *       Using Models</a> section of the user guide</li>
+     *   <li><a href="https://www.instancio.org/articles/creating-object-templates-using-models/">
+     *     Creating Object Templates Using Models</a> article at instancio.org</li>
+     * </ul>
+     *
      * @return a model that can be used as a template for creating objects
+     * @see #setModel(TargetSelector, Model)
      * @since 1.0.1
      */
     Model<T> toModel();

@@ -674,7 +674,8 @@ public final class Instancio {
      * A shorthand API for generating simple value types,
      * such as strings, numbers, dates, etc.
      *
-     * <p>This API supports generating a single value:
+     * <p>This API supports generating a single value
+     * using the {@code get()} method:
      *
      * <pre>{@code
      * URL url = Instancio.gen().net().url().get();
@@ -682,12 +683,22 @@ public final class Instancio {
      * String randomChoice = Instancio.gen().oneOf("foo", "bar", "baz").get();
      * }</pre>
      *
-     * <p>as  well as generating a list of values:
+     * <p>as  well as generating a list of values
+     * using the {@code list(int size)} method:
      *
      * <pre>{@code
      * List<LocalDate> pastDates = Instancio.gen().temporal().localDate().past().list(5);
      *
      * List<String> uuids = Instancio.gen().text().uuid().upperCase().withoutDashes().list(5);
+     * }</pre>
+     *
+     * <p>Additionally, the API can generate an infinite stream of values,
+     * for example a stream of strings in the {@code "ABC-123"} format:
+     *
+     * <pre>{@code
+     * Stream<String> pastDates = Instancio.gen().text().pattern("#C#C#C-#d#d#d")
+     *   .stream()
+     *   .limit(100); // limit must be called to avoid an infinite loop
      * }</pre>
      *
      * @return API builder reference
