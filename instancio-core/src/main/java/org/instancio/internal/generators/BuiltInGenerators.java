@@ -28,6 +28,7 @@ import org.instancio.generator.specs.EnumSpec;
 import org.instancio.generator.specs.FloatSpec;
 import org.instancio.generator.specs.HashSpec;
 import org.instancio.generator.specs.IntegerSpec;
+import org.instancio.generator.specs.IntervalSpec;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.generator.specs.NumericSequenceSpec;
@@ -65,6 +66,7 @@ import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.ShortGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.misc.EmitGenerator;
+import org.instancio.internal.generator.misc.IntervalGenerator;
 import org.instancio.internal.generator.sequence.IntegerSequenceGenerator;
 import org.instancio.internal.generator.sequence.LongSequenceGenerator;
 import org.instancio.internal.generator.shuffle.ShuffleGenerator;
@@ -208,6 +210,11 @@ public final class BuiltInGenerators implements Generators, ValueSpecs {
     @Override
     public <T> EmitGeneratorSpec<T> emit() {
         return new EmitGenerator<>(context);
+    }
+
+    @Override
+    public <T> IntervalSpec<T> intervalStarting(final T startingValue) {
+        return new IntervalGenerator<>(context, startingValue);
     }
 
     // AtomicSpecs not available (yet)

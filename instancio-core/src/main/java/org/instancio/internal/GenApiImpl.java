@@ -26,6 +26,7 @@ import org.instancio.generator.specs.EnumSpec;
 import org.instancio.generator.specs.FloatSpec;
 import org.instancio.generator.specs.HashSpec;
 import org.instancio.generator.specs.IntegerSpec;
+import org.instancio.generator.specs.IntervalSpec;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
@@ -146,6 +147,11 @@ public final class GenApiImpl implements InstancioGenApi {
     @Override
     public <T> OneOfCollectionSpec<T> oneOf(final Collection<T> choices) {
         return generators().oneOf(choices);
+    }
+
+    @Override
+    public <T> IntervalSpec<T> intervalStarting(final T startingValue) {
+        return generators().intervalStarting(startingValue);
     }
 
     @SuppressWarnings("unchecked")

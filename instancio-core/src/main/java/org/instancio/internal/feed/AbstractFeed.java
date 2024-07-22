@@ -30,6 +30,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.misc.SupplierBackedGenerator;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.PropertyBitSet;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.FeedDataAccess;

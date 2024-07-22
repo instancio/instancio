@@ -17,26 +17,33 @@ package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
 
+import java.util.function.Supplier;
+
 /**
- * A function that accepts an argument and produces a randomised result.
+ * A supplier of {@code start} and {@code end} interval values.
  *
- * @param <T> the input type
- * @param <R> the result type
- * @see RandomUnaryOperator
+ * @param <T> the type of value underlying the interval
+ * @see InstancioGenApi#intervalStarting(Object)
  * @since 5.0.0
  */
 @ExperimentalApi
-@FunctionalInterface
-public interface RandomFunction<T, R> {
+public interface IntervalSupplier<T> {
 
     /**
-     * Applies this function to the given {@code input}.
+     * Returns a supplier that produces interval start value.
      *
-     * @param input  the function input
-     * @param random instance for randomising the result
-     * @return the function result
+     * @return a supplier for interval start values
      * @since 5.0.0
      */
     @ExperimentalApi
-    R apply(T input, Random random);
+    Supplier<T> start();
+
+    /**
+     * Returns a supplier that produces interval end value.
+     *
+     * @return a supplier for interval end values
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    Supplier<T> end();
 }
