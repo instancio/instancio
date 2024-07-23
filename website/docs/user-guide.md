@@ -2737,7 +2737,7 @@ or
 
 ## Supported Attributes
 
-The following `@Column` attributes are suported:
+The following `@Column` attributes are supported:
 
 - `precision` -  supported by `BigDecimal` fields (with limitations described below)
 - `scale` - supported by `BigDecimal` fields
@@ -4745,6 +4745,8 @@ Generators
 │   ├── uri()
 │   └── url()
 │
+├── intervalStarting(T)
+│
 ├── io()
 │   └── file()
 │
@@ -4797,6 +4799,9 @@ Generators
 │   │   └── regon()
 │   └── usa()
 │       └── ssn()
+│
+├── shuffle(T...)
+├── shuffle(Collection<T>)
 │
 └── spatial()
     └── coordinate()
