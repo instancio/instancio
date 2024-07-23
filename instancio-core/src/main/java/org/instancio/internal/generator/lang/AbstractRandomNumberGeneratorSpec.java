@@ -62,13 +62,13 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public NumberGeneratorSpec<T> nullable() {
+    public AbstractRandomNumberGeneratorSpec<T> nullable() {
         super.nullable();
         return this;
     }
 
     @Override
-    public NumberGeneratorSpec<T> nullable(final boolean isNullable) {
+    public AbstractRandomNumberGeneratorSpec<T> nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
     }

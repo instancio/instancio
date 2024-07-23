@@ -82,7 +82,7 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
     }
 
     @Override
-    public TemporalGeneratorSpec<T> nullable() {
+    public JavaTimeTemporalGenerator<T> nullable() {
         super.nullable();
         return this;
     }

@@ -60,40 +60,40 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     }
 
     @Override
-    public ArrayGeneratorSpec<T> minLength(final int length) {
+    public ArrayGenerator<T> minLength(final int length) {
         this.minLength = ApiValidator.validateLength(length);
         this.maxLength = NumberUtils.calculateNewMaxSize(maxLength, minLength);
         return this;
     }
 
     @Override
-    public ArrayGeneratorSpec<T> maxLength(final int length) {
+    public ArrayGenerator<T> maxLength(final int length) {
         this.maxLength = ApiValidator.validateLength(length);
         this.minLength = NumberUtils.calculateNewMinSize(minLength, maxLength);
         return this;
     }
 
     @Override
-    public ArrayGeneratorSpec<T> length(final int length) {
+    public ArrayGenerator<T> length(final int length) {
         this.maxLength = ApiValidator.validateLength(length);
         this.minLength = length;
         return this;
     }
 
     @Override
-    public ArrayGeneratorSpec<T> nullable() {
+    public ArrayGenerator<T> nullable() {
         super.nullable();
         return this;
     }
 
     @Override
-    public ArrayGeneratorSpec<T> nullable(final boolean isNullable) {
+    public ArrayGenerator<T> nullable(final boolean isNullable) {
         super.nullable(isNullable);
         return this;
     }
 
     @Override
-    public ArrayGeneratorSpec<T> nullableElements() {
+    public ArrayGenerator<T> nullableElements() {
         this.nullableElements = true;
         return this;
     }
@@ -107,7 +107,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     @Override
     @SafeVarargs
-    public final ArrayGeneratorSpec<T> with(final T... elements) {
+    public final ArrayGenerator<T> with(final T... elements) {
         ApiValidator.notEmpty(elements, "'array().with(...)' must contain at least one element");
 
         if (withElements == null) {
