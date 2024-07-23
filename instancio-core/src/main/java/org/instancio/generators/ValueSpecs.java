@@ -184,7 +184,7 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      * There should be {@code 12-15} months between vacations.
      *
      * <pre>{@code
-     * IntervalSupplier<LocalDate> vacationDates = Instancio.gen()
+     * IntervalSupplier<LocalDate> intervals = Instancio.gen()
      *     .intervalStarting(LocalDate.of(2000, 1, 1))
      *     .nextStart((end, random) -> end.plusMonths(random.intRange(12, 15)))
      *     .nextEnd((start, random) -> start.plusWeeks(random.intRange(1, 3)))
@@ -197,17 +197,25 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      * new interval values.
      *
      * <pre>{@code
+     * for (int i = 0; i < 4; i++) {
+     *     System.out.println(interval.start().get() + " - " + interval.end().get());
+     * }
+     * // Sample output:
+     * // 2000-01-01 - 2000-01-15
+     * // 2001-02-15 - 2001-03-08
+     * // 2002-03-08 - 2002-03-15
+     * // 2003-06-15 - 2003-07-06
+     * }</pre>
+     *
+     * <p>The {@code start()} and {@code end()} can be used to populate
+     * {@code Vacation} objects, for example:
+     *
+     * <pre>{@code
      * List<Vacation> vacations = Instancio.ofList(Vacation.class)
      *     .size(4)
-     *     .supply(field(Vacation::start), vacationDates.start())
-     *     .supply(field(Vacation::end), vacationDates.end())
+     *     .supply(field(Vacation::start), intervals.start())
+     *     .supply(field(Vacation::end), intervals.end())
      *     .create();
-     *
-     * // Sample output:
-     * // [Vacation[start=2000-01-01, end=2000-01-15],
-     * //  Vacation[start=2001-02-15, end=2001-03-08],
-     * //  Vacation[start=2002-03-08, end=2002-03-15],
-     * //  Vacation[start=2003-06-15, end=2003-07-06]]
      * }</pre>
      *
      * @param startingValue the starting value of the first interval
