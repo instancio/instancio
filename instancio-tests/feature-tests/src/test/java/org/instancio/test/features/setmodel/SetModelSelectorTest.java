@@ -24,6 +24,7 @@ import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
@@ -43,6 +44,7 @@ import static org.instancio.Select.allInts;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
+import static org.instancio.Select.root;
 import static org.instancio.Select.types;
 
 @FeatureTag({Feature.MODEL, Feature.SET_MODEL})
@@ -387,5 +389,18 @@ class SetModelSelectorTest {
 
         assertThat(result.getPrimitive()).isBetween(-10, -1);
         assertThat(result.getWrapper()).isBetween(-10, -1);
+    }
+
+    @Test
+    void setModelWithRootSelector() {
+        final Model<StringHolder> model = Instancio.of(StringHolder.class)
+                .set(field(StringHolder::getValue), "foo")
+                .toModel();
+
+        final StringHolder result = Instancio.of(StringHolder.class)
+                .setModel(root(), model)
+                .create();
+
+        assertThat(result.getValue()).isEqualTo("foo");
     }
 }

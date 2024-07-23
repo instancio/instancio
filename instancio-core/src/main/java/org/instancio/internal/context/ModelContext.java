@@ -583,10 +583,14 @@ public final class ModelContext<T> {
          * Other data, such as maxDepth, seed, and settings are <b>not</b> copied.
          */
         public Builder<T> setModel(final TargetSelector modelSelector, final Model<?> model) {
+            final TargetSelector actualModelSelector = Select.root().equals(modelSelector)
+                    ? Select.all(TypeUtils.getRawType(rootType)).atDepth(0)
+                    : modelSelector;
+
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
             final ModelContext<?> otherCtx = ((InternalModel<?>) model).getModelContext();
             final List<TargetSelector> processedSelectors = selectorProcessor.process(
-                    modelSelector, ApiMethodSelector.SET_MODEL);
+                    actualModelSelector, ApiMethodSelector.SET_MODEL);
 
             for (TargetSelector modelTarget : processedSelectors) {
                 setModelMap.put(modelTarget, otherCtx);
