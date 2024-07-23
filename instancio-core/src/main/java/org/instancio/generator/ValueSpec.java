@@ -16,8 +16,6 @@
 package org.instancio.generator;
 
 import org.instancio.Instancio;
-import org.instancio.Random;
-import org.instancio.internal.generator.AbstractGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,15 +55,11 @@ public interface ValueSpec<T> extends GeneratorSpec<T>, Supplier<T> {
     /**
      * Generates a single value.
      *
-     * @return a random value
+     * @return generated value
      * @since 2.6.0
      */
-    @SuppressWarnings("unchecked")
     @Override
-    default T get() {
-        final Random random = ((AbstractGenerator<?>) this).getContext().random();
-        return ((Generator<T>) this).generate(random);
-    }
+    T get();
 
     /**
      * Generates a list of values of specified size.
@@ -84,15 +78,15 @@ public interface ValueSpec<T> extends GeneratorSpec<T>, Supplier<T> {
 
     /**
      * Returns an infinite {@link Stream} of values.
-     * <p>
-     * Since the stream is infinite, {@link Stream#limit(long)} must be called
-     * to avoid an infinite loop.
+     *
+     * <p>Note that {@link Stream#limit(long)}
+     * must be called to avoid an infinite loop.
      *
      * @return an infinite stream of values
      * @since 2.6.0
      */
     default Stream<T> stream() {
-        return Stream.generate(this::get);
+        return Stream.generate(this);
     }
 
     /**
