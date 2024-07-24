@@ -15,8 +15,6 @@
  */
 package org.instancio.internal.util;
 
-import org.instancio.internal.PrimitiveWrapperBiLookup;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -40,6 +38,14 @@ public final class StringConverters {
     private static Map<Class<?>, Function<String, ?>> getFunctionMap() {
         final Map<Class<?>, Function<String, ?>> map = new HashMap<>();
         map.put(String.class, Function.identity());
+        map.put(boolean.class, Boolean::valueOf);
+        map.put(char.class, s -> s.charAt(0));
+        map.put(int.class, Integer::valueOf);
+        map.put(long.class, Long::valueOf);
+        map.put(byte.class, Byte::valueOf);
+        map.put(short.class, Short::valueOf);
+        map.put(float.class, Float::valueOf);
+        map.put(double.class, Double::valueOf);
         map.put(Boolean.class, Boolean::valueOf);
         map.put(Character.class, s -> s.charAt(0));
         map.put(Integer.class, Integer::valueOf);
@@ -72,10 +78,6 @@ public final class StringConverters {
         }
         if (targetType.isEnum()) {
             return value -> (T) Enum.valueOf((Class) targetType, value);
-        }
-        if (targetType.isPrimitive()) {
-            final Class<?> wrapper = PrimitiveWrapperBiLookup.getEquivalent(targetType);
-            return (Function<String, T>) MAPPERS.get(wrapper);
         }
 
         return source -> {
