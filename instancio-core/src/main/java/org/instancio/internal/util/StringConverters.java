@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.internal.PrimitiveWrapperBiLookup;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -70,6 +72,10 @@ public final class StringConverters {
         }
         if (targetType.isEnum()) {
             return value -> (T) Enum.valueOf((Class) targetType, value);
+        }
+        if (targetType.isPrimitive()) {
+            final Class<?> wrapper = PrimitiveWrapperBiLookup.getEquivalent(targetType);
+            return (Function<String, T>) MAPPERS.get(wrapper);
         }
 
         return source -> {

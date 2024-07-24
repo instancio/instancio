@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.feed.applyfeed;
 
+import lombok.Data;
 import org.instancio.Instancio;
 import org.instancio.feed.Feed;
 import org.instancio.junit.InstancioExtension;
@@ -77,5 +78,33 @@ class ApplyFeedSupportedTypesTest {
         assertThat(result.getYear()).isEqualTo(Year.of(1991));
         assertThat(result.getUuid()).isEqualTo(UUID.fromString("5d418896-acf5-439e-902d-86a6c6fca4ae"));
         assertThat(result.getGender()).isEqualTo(Gender.FEMALE);
+    }
+
+    @Test
+    void applyToPojoWithPrimitiveFields() {
+        final PrimitiveTypes result = Instancio.of(PrimitiveTypes.class)
+                .applyFeed(root(), feed -> feed.ofResource(FeedSupportedTypes.CSV_FILE))
+                .create();
+
+        assertThat(result.is_boolean()).isTrue();
+        assertThat(result.getCharacter()).isEqualTo('Z');
+        assertThat(result.get_byte()).isEqualTo((byte) 1);
+        assertThat(result.get_short()).isEqualTo((short) 2);
+        assertThat(result.getInteger()).isEqualTo(3);
+        assertThat(result.get_long()).isEqualTo(4);
+        assertThat(result.get_double()).isEqualTo(5.1d);
+        assertThat(result.get_float()).isEqualTo(6.1f);
+    }
+
+    @Data
+    private static class PrimitiveTypes {
+        private boolean _boolean;
+        private char character;
+        private byte _byte;
+        private short _short;
+        private int integer;
+        private long _long;
+        private double _double;
+        private float _float;
     }
 }
