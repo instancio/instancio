@@ -87,6 +87,78 @@ Person marge = Instancio.of(simpsons)
     .create();
 ```
 
+6. Use data feeds for data defined in external sources (e.g. CSV or JSON):
+
+```java
+List<Person> person = Instancio.ofList(Person.class)
+    .size(10)
+    .applyFeed(all(Person.class), feed -> feed.ofResource("persons.csv"))
+    .create();
+```
+
+7. Define custom feeds for reuse across tests:
+
+```java
+@Feed.Source(resource = "persons.csv")
+interface PersonFeed extends Feed {
+
+  @TemplateSpec("${firstName} ${lastName}")
+  FeedSpec<String> fullName();
+
+  @FunctionSpec(params = {"fullName", "dateOfBirth"}, provider = BioProvider.class)
+  FeedSpec<String> bio();
+
+  class BioProvider implements FunctionProvider {
+
+    String describePerson(String fullName, LocalDate dateOfBirth) {
+      int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
+      return String.format("%s is %d years old", fullName, age);
+    }
+  }
+}
+
+// Usage:
+List<Person> person = Instancio.ofList(Person.class)
+    .applyFeed(all(Person.class), feed -> feed.of(PersonFeed.class))
+    .create();
+```
+
+8. Inject arguments into fields and parameters with JUnit 5:
+
+```java
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @Given
+    private List<String> randomList;
+
+    @Test
+    void example1(@Given String randomSting, @Given(SomeCustomProvider.class) customString) {
+        //...
+    }
+
+    @ValueSource(strings = {"foo", "bar"})
+    @ParameterizedTest
+    void example2(String fooOrBar, @Given long randomLong) {
+        // ...
+    }
+}
+```
+
+9. Run parameterized tests against many samples of generated inputs:
+
+```java
+@ExtendWith(InstancioExtension.class)
+class ExampleTest {
+
+    @InstancioSource(samples = 1000)
+    @ParameterizedTest
+    void example(UUID randomUuid, Foo randomFoo, @Given(BarProvider.class) Bar customBar) {
+        // runs the test method 1000 times against generated inputs
+    }
+}
+```
+
 ## Main Features
 
 - Fully reproducible data in case of test failures.
