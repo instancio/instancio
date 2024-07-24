@@ -4342,7 +4342,7 @@ void withStream(@Given Stream<Integer> stream) {
 }
 ```
 
-### Using Custom `InstanceProvder`
+### Using Custom `GivenProvider`
 
 The `@Given` annotation can accept one or more `GivenProvider` classes
 to provide customised values. The `GivenProvider` interface is defined as follows:
