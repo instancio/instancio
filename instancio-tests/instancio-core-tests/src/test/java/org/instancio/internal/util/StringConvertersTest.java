@@ -30,5 +30,13 @@ class StringConvertersTest {
         assertThat(StringConverters.getConverter(Long.class).apply("8")).isEqualTo(8L);
         assertThat(StringConverters.getConverter(Float.class).apply("10.8")).isEqualTo(10.8f);
         assertThat(StringConverters.getConverter(Double.class).apply("10.2")).isEqualTo(10.2d);
+        // primitives
+        assertThat(StringConverters.getConverter(boolean.class).apply("true")).isTrue();
+        assertThat(StringConverters.getConverter(byte.class).apply("5")).isEqualTo((byte) 5);
+        assertThat(StringConverters.getConverter(short.class).apply("6")).isEqualTo((short) 6);
+        assertThat(StringConverters.getConverter(int.class).apply("7")).isEqualTo(7);
+        assertThat(StringConverters.getConverter(long.class).apply("8")).isEqualTo(8L);
+        assertThat(StringConverters.getConverter(float.class).apply("10.8")).isEqualTo(10.8f);
+        assertThat(StringConverters.getConverter(double.class).apply("10.2")).isEqualTo(10.2d);
     }
 }
