@@ -125,23 +125,27 @@ public interface Settings {
     <T> Settings set(SettingKey<T> key, T value);
 
     /**
-     * Maps the supertype {@code from} supertype to 'to' subtype.
+     * Maps a supertype to a specified subtype, allowing the creation
+     * of instances of the subtype when the supertype is requested.
      *
-     * <p>Example:
+     * <p>Example usage:
      *
      * <pre>{@code
-     *   Settings settings = Settings.create()
-     *       .mapType(Animal.class, Dog.class);
+     * Settings settings = Settings.create()
+     *     .mapType(Animal.class, Dog.class);
      *
-     *   Animal animal = Instancio.of(Animal.class)
-     *       .withSettings(settings)
-     *       .create();
+     * Animal animal = Instancio.of(Animal.class)
+     *     .withSettings(settings)
+     *     .create();
      *
-     *   assertThat(animal).isExactlyInstanceOf(Dog.class);
+     * assertThat(animal).isExactlyInstanceOf(Dog.class);
      * }</pre>
+     * <p>
+     * This method is useful when you want to specify a concrete type for a
+     * given abstract or interface type during object generation.
      *
-     * @param type    the type to map to a subtype
-     * @param subtype the subtype class
+     * @param type    the supertype to map
+     * @param subtype the subtype to map to
      * @return this instance of settings
      */
     Settings mapType(Class<?> type, Class<?> subtype);

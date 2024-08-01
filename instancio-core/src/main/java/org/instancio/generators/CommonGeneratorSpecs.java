@@ -52,7 +52,7 @@ interface CommonGeneratorSpecs {
     StringGeneratorSpec string();
 
     /**
-     * Generator for {@link boolean} values.
+     * Generator for {@link Boolean} values.
      *
      * @return API builder reference
      * @since 5.0.0
@@ -60,7 +60,7 @@ interface CommonGeneratorSpecs {
     BooleanGeneratorSpec booleans();
 
     /**
-     * Generator for {@link char} values.
+     * Generator for {@link Character} values.
      *
      * @return API builder reference
      * @since 5.0.0
