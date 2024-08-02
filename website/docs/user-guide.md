@@ -1254,7 +1254,8 @@ For this reason, no guarantee is made as to the value that will be assigned to `
 
 ### Using `onComplete()`
 
-Another option for customising generated data is using the {{OnCompleteCallback}}, a functional interface with the following signature:
+Another option for customising generated data is using the {{OnCompleteCallback}},
+a functional interface with the following signature:
 
 ``` java linenums="1"
 interface OnCompleteCallback<T> {
@@ -1263,19 +1264,19 @@ interface OnCompleteCallback<T> {
 ```
 
 The `OnCompleteCallback` is invoked *after* the generated object has been fully populated.
-Callbacks can only be invoked on objects:
+Callbacks can be triggered only for objects:
 
 - created internally by the engine
-- created by custom generators via `supply(TargetSelector, Generator)` or generators registered via {{GeneratorProvider}}
-- created by internal generators using `generate(TargetSelector, Function)`
+- created by custom generators
 
 Callbacks are *never* invoked on objects provided using:
 
   - `supply(TargetSelector, Supplier)`
   - `set(TargetSelector, Object)`
 
-The following example shows how the `Address` can be modified using a callback.
-If the `Person` has a `List<Address>`, the callback will be invoked for every instance of the `Address` class that was generated.
+The following example demonstrates how an `Address` object can be modified using a callback.
+If a `Person` has a `List<Address>`, the callback will be invoked for every
+instance of the `Address` class that was generated.
 
 ``` java linenums="1" title="Example: modifying an object via a callback"
 Person person = Instancio.of(Person.class)

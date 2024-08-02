@@ -320,7 +320,7 @@ interface BaseApi<T> {
     <V> BaseApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
 
     /**
-     * A callback that gets invoked after an object has been fully populated.
+     * A callback that gets invoked after the root object has been fully populated.
      *
      * <p>Example:
      * <pre>{@code
@@ -338,9 +338,15 @@ interface BaseApi<T> {
      * </ul>
      *
      * <pre>{@code
+     * OnCompleteCallback<String> callback = (String value) -> {
+     *     // do something with the value
+     * };
+     *
      * Person person = Instancio.of(Person.class)
      *     .set(field(Phone::getCountryCode), "+1")
-     *     .onComplete(field(Phone::getCountryCode), ...) // will not be invoked!
+     *      // The callback will not be invoked because
+     *      // Phone.countryCode value was provided via set() method
+     *     .onComplete(field(Phone::getCountryCode), callback)
      *     .create();
      * }</pre>
      *
