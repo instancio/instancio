@@ -23,23 +23,22 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
+
+import static org.instancio.settings.FeedDataTrim.UNQUOTED;
 
 /**
- * A very basic CSV parser does not support quoted values
- * or escape characters.
+ * A very basic CSV parser does not support escape characters.
  */
 public final class CsvDataLoader implements DataLoader<List<String[]>> {
 
     private final FeedDataTrim feedDataTrim;
     private final String commentChar;
-    private final Pattern delimiterMatcher;
+    private final char delimiter;
 
     CsvDataLoader(final InternalCsvFormatOptions formatOptions) {
         this.feedDataTrim = formatOptions.getFeedDataTrim();
         this.commentChar = formatOptions.getCommentPrefix();
-        this.delimiterMatcher = Pattern.compile(
-                String.valueOf(formatOptions.getDelimiter()), Pattern.LITERAL);
+        this.delimiter = formatOptions.getDelimiter();
     }
 
     @Override
@@ -55,17 +54,68 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
                 if (line.isEmpty() || line.startsWith(commentChar)) {
                     continue;
                 }
-                final String[] tokens = delimiterMatcher.split(line);
-                for (int i = 0; i < tokens.length; i++) {
-                    final String val = feedDataTrim == FeedDataTrim.NONE
-                            ? tokens[i]
-                            : tokens[i].trim();
-
-                    tokens[i] = val.isEmpty() ? null : val; // NOPMD
-                }
+                String[] tokens = parseLine(line);
                 results.add(tokens);
             }
             return results;
         }
+    }
+    @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.EmptyControlStatement"})
+    private String[] parseLine(String line) {
+        List<String> tokens = new ArrayList<>();
+        StringBuilder currentToken = new StringBuilder();
+        boolean inQuotes = false;
+        boolean isQuotedToken = false;
+        int index = 0;
+        while (index < line.length()) {
+            char currentChar = line.charAt(index);
+
+            if (currentChar == '"') {
+                isQuotedToken = true;
+                if (inQuotes && index + 1 < line.length() && line.charAt(index + 1) == '"') {
+                    index++;
+                } else {
+                    inQuotes = !inQuotes;
+                    resetToken(inQuotes, currentToken);
+                }
+            } else if (currentChar == delimiter && !inQuotes) {
+                tokens.add(trimToken(currentToken.toString(), isQuotedToken));
+                currentToken.setLength(0);
+                isQuotedToken = false;
+            } else if (currentChar == ' ' && !inQuotes && isQuotedToken) {
+                // leading whitespaces after quote are skipped
+            } else {
+                currentToken.append(currentChar);
+            }
+            index++;
+            if (index == line.length()) {
+                tokens.add(trimToken(currentToken.toString(), isQuotedToken));
+            }
+        }
+
+        return tokens.toArray(new String[0]);
+    }
+
+    private void resetToken(boolean inQuotes, StringBuilder currentToken) {
+        if (inQuotes) {
+            currentToken.setLength(0);
+        }
+    }
+
+    private String trimToken(String token, boolean isQuotedToken) {
+        String result = token;
+        if (result.isEmpty()) {
+            return null;
+        }
+        if (isQuotedToken) {
+            return result;
+        }
+        if (feedDataTrim == UNQUOTED) {
+            return result.trim();
+        }
+        if (result.startsWith("\"") && result.endsWith("\"")) {
+            result = result.substring(1, result.length() - 1);
+        }
+        return result.replace("\"\"", "\"");
     }
 }
