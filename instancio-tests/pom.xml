@@ -21,7 +21,7 @@
         <version.apache.commons>3.16.0</version.apache.commons>
         <version.archunit>1.3.0</version.archunit>
         <version.assertj>3.26.3</version.assertj>
-        <version.equalsverifier>3.16.1</version.equalsverifier>
+        <version.equalsverifier>3.16.2</version.equalsverifier>
         <version.junit.pioneer>1.9.1</version.junit.pioneer>
         <version.logback>1.3.12</version.logback>
         <version.lombok>1.18.34</version.lombok>
