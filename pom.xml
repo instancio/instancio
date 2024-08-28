@@ -82,7 +82,7 @@
         <version.maven-enforcer-plugin>3.5.0</version.maven-enforcer-plugin>
         <version.maven-gpg-plugin>3.2.5</version.maven-gpg-plugin>
         <version.maven-jar-plugin>3.4.2</version.maven-jar-plugin>
-        <version.maven-javadoc-plugin>3.8.0</version.maven-javadoc-plugin>
+        <version.maven-javadoc-plugin>3.10.0</version.maven-javadoc-plugin>
         <version.maven-pmd-plugin>3.21.2</version.maven-pmd-plugin>
         <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
         <version.maven-site-plugin>3.20.0</version.maven-site-plugin>
