@@ -28,7 +28,7 @@
         <version.mockito>4.11.0</version.mockito>
         <!-- plugins -->
         <version.maven-failsafe-plugin>3.5.0</version.maven-failsafe-plugin>
-        <version.maven-surefire-plugin>3.4.0</version.maven-surefire-plugin>
+        <version.maven-surefire-plugin>3.5.0</version.maven-surefire-plugin>
     </properties>
 
     <!-- These test modules are run against Java 8 and higher.
