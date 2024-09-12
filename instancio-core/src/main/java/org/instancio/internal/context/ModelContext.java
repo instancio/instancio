@@ -73,7 +73,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -294,7 +293,7 @@ public final class ModelContext<T> {
         return new Builder<>(rootType);
     }
 
-    @SuppressWarnings("PMD.TooManyFields")
+    @SuppressWarnings({"PMD.GodClass", "PMD.TooManyFields"})
     public static final class Builder<T> {
         private final Type rootType;
         private List<Type> withTypeParametersList;
@@ -519,7 +518,7 @@ public final class ModelContext<T> {
         }
 
         public Builder<T> setBlank(final TargetSelector selector) {
-            if (Objects.equals(selector, Select.root())) {
+            if (selector instanceof InternalSelector && ((InternalSelector) selector).isRootSelector()) {
                 setBlankTargets(); // special case for root selector (no scopes)
             } else {
                 final List<TargetSelector> processedSelectors = selectorProcessor.process(
@@ -583,9 +582,13 @@ public final class ModelContext<T> {
          * Other data, such as maxDepth, seed, and settings are <b>not</b> copied.
          */
         public Builder<T> setModel(final TargetSelector modelSelector, final Model<?> model) {
-            final TargetSelector actualModelSelector = Select.root().equals(modelSelector)
-                    ? Select.all(TypeUtils.getRawType(rootType)).atDepth(0)
-                    : modelSelector;
+            final TargetSelector actualModelSelector;
+
+            if (modelSelector instanceof InternalSelector && ((InternalSelector) modelSelector).isRootSelector()) {
+                actualModelSelector = Select.all(TypeUtils.getRawType(rootType)).atDepth(0);
+            } else {
+                actualModelSelector = modelSelector;
+            }
 
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
             final ModelContext<?> otherCtx = ((InternalModel<?>) model).getModelContext();

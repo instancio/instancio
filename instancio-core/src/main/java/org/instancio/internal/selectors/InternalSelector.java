@@ -19,6 +19,7 @@ package org.instancio.internal.selectors;
 import org.instancio.InstancioApi;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
+import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.ApiMethodSelector;
@@ -46,4 +47,12 @@ public interface InternalSelector extends ScopeableSelector, Flattener<TargetSel
      * the output produced by {@link InstancioApi#verbose()}.
      */
     boolean isHiddenFromVerboseOutput();
+
+    /**
+     * Returns {@code true} if this selector is the root
+     * selector, that is {@link Select#root()}.
+     */
+    default boolean isRootSelector() {
+        return false;
+    }
 }

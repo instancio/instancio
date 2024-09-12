@@ -423,7 +423,7 @@ public final class Select {
      * @since 2.0.0
      */
     public static TargetSelector root() {
-        return SelectorImpl.getRootSelector();
+        return SelectorImpl.createRootSelector();
     }
 
     /**

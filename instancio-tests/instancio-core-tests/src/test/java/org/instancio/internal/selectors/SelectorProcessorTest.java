@@ -58,7 +58,7 @@ class SelectorProcessorTest {
                 .hasNullTargetClass()
                 .hasNoScope()
                 .hasToString("root()")
-                .isSameAs(input);
+                .isEqualTo(input);
     }
 
     @Test

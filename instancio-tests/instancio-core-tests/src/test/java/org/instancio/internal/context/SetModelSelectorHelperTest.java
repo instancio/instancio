@@ -31,6 +31,9 @@ import static org.instancio.Select.scope;
 import static org.instancio.testsupport.asserts.ScopeAssert.assertScope;
 
 class SetModelSelectorHelperTest {
+
+    private static final Class<Object> ROOT_CLASS = Object.class;
+
     //@formatter:off
     record Container(Outer outer) {}
     record Outer(Inner inner) {}
@@ -38,6 +41,8 @@ class SetModelSelectorHelperTest {
     record Foo(InnerFoo innerFoo, String value) {}
     record InnerFoo(String value) {}
     //@formatter:on
+
+    private final SetModelSelectorHelper setModelSelectorHelper = new SetModelSelectorHelper(ROOT_CLASS);
 
     @Test
     void applyModelSelectorScopes() {
@@ -48,7 +53,7 @@ class SetModelSelectorHelperTest {
         final TargetSelector modelSelector = allStrings().within(scope(InnerFoo.class));
 
         // When
-        final InternalSelector result = (InternalSelector) SetModelSelectorHelper
+        final InternalSelector result = (InternalSelector) setModelSelectorHelper
                 .applyModelSelectorScopes(modelTarget, modelSelector);
 
         // Then

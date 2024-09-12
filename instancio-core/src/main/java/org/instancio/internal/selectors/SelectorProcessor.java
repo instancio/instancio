@@ -125,7 +125,9 @@ public final class SelectorProcessor {
             final ApiMethodSelector apiMethodSelector) {
 
         if (selector.getTarget() instanceof TargetRoot) {
-            return selector;
+            return selector.toBuilder()
+                    .apiMethodSelector(apiMethodSelector)
+                    .build();
         }
 
         final List<Scope> processedScopes = createScopeWithRootClass(selector.getScopes());

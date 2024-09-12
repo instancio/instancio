@@ -18,11 +18,19 @@ package org.instancio.internal.context;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.selectors.InternalSelector;
+import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.TargetClass;
 
 import java.util.ArrayList;
 import java.util.List;
 
 final class SetModelSelectorHelper {
+
+    private final Class<?> rootClass;
+
+    SetModelSelectorHelper(final Class<?> rootClass) {
+        this.rootClass = rootClass;
+    }
 
     /**
      * Creates a new selector by applies scopes to the given {@code modelSelector}.
@@ -74,9 +82,20 @@ final class SetModelSelectorHelper {
      * @param modelSelector a selector within the Model provided to {@code setModel(TargetSelector, Model)}
      * @return a copy of {@code modelSelector} with updated scopes
      */
-    static TargetSelector applyModelSelectorScopes(final TargetSelector modelTarget, final TargetSelector modelSelector) {
+    TargetSelector applyModelSelectorScopes(
+            final TargetSelector modelTarget,
+            final TargetSelector modelSelector) {
+
         final InternalSelector internalModelTarget = (InternalSelector) modelTarget;
         final InternalSelector internalModelSelector = (InternalSelector) modelSelector;
+
+        if (internalModelSelector.isRootSelector()) {
+            // convert root() to a regular class selector
+            return SelectorImpl.builder()
+                    .target(new TargetClass(rootClass))
+                    .apiMethodSelector(internalModelTarget.getApiMethodSelector())
+                    .build();
+        }
 
         final List<Scope> scopes = new ArrayList<>(4);
         scopes.addAll(internalModelTarget.getScopes());
@@ -84,9 +103,5 @@ final class SetModelSelectorHelper {
         scopes.addAll(internalModelSelector.getScopes());
 
         return internalModelSelector.within(scopes.toArray(new Scope[0]));
-    }
-
-    private SetModelSelectorHelper() {
-        // non-instantiable
     }
 }

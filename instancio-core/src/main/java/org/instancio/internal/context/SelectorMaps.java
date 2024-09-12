@@ -23,14 +23,13 @@ import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.assignment.InternalAssignment;
+import org.instancio.internal.util.TypeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import static org.instancio.internal.context.SetModelSelectorHelper.applyModelSelectorScopes;
 
 public final class SelectorMaps {
 
@@ -81,40 +80,42 @@ public final class SelectorMaps {
     @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     private void copyToThisContext(final TargetSelector modelTarget, final ModelContext<?> otherCtx) {
         final ModelContextSource src = otherCtx.getContextSource();
+        final SetModelSelectorHelper setModelSelectorHelper = new SetModelSelectorHelper(
+                TypeUtils.getRawType(otherCtx.getRootType()));
 
         for (Map.Entry<TargetSelector, Function<GeneratorContext, Feed>> entry : src.getFeedMap().entrySet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             final Feed feed = entry.getValue().apply(generatorContext);
             feedSelectorMap.put(resolvedSelector, feed);
         }
 
         for (Map.Entry<TargetSelector, Generator<?>> entry : src.getGeneratorMap().entrySet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             generatorSelectorMap.putGenerator(resolvedSelector, entry.getValue());
         }
 
         for (Map.Entry<TargetSelector, GeneratorSpecProvider<?>> entry : src.getGeneratorSpecMap().entrySet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             generatorSelectorMap.putGeneratorSpec(resolvedSelector, entry.getValue());
         }
 
         for (TargetSelector ignoredTarget : src.getIgnoreSet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, ignoredTarget);
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, ignoredTarget);
             ignoreSelectorMap.add(resolvedSelector);
         }
 
         for (TargetSelector nullableTarget : src.getWithNullableSet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, nullableTarget);
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, nullableTarget);
             withNullableSelectorMap.add(resolvedSelector);
         }
 
         for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : src.getOnCompleteMap().entrySet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             onCompleteSelectorMap.put(resolvedSelector, entry.getValue());
         }
 
         for (Map.Entry<TargetSelector, Predicate<?>> entry : src.getFilterMap().entrySet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             filterSelectorMap.put(resolvedSelector, entry.getValue());
         }
 
@@ -125,8 +126,8 @@ public final class SelectorMaps {
 
             for (Assignment assignment : assignments) {
                 final InternalAssignment a = (InternalAssignment) assignment;
-                final TargetSelector updatedOrigin = applyModelSelectorScopes(modelTarget, a.getOrigin());
-                final TargetSelector updatedDestination = applyModelSelectorScopes(modelTarget, a.getDestination());
+                final TargetSelector updatedOrigin = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, a.getOrigin());
+                final TargetSelector updatedDestination = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, a.getDestination());
                 final InternalAssignment updatedAssignment = a.toBuilder()
                         .origin(updatedOrigin)
                         .destination(updatedDestination)
@@ -135,17 +136,17 @@ public final class SelectorMaps {
                 updatedAssignments.add(updatedAssignment);
             }
 
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, selector);
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, selector);
             assignmentSelectorMap.put(resolvedSelector, updatedAssignments);
         }
 
         for (Map.Entry<TargetSelector, Class<?>> entry : src.getSubtypeMap().entrySet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             subtypeSelectorMap.put(resolvedSelector, entry.getValue());
         }
 
         for (Map.Entry<TargetSelector, ModelContext<?>> entry : src.getSetModelMap().entrySet()) {
-            final TargetSelector resolvedSelector = applyModelSelectorScopes(modelTarget, entry.getKey());
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             setModelSelectorMap.put(resolvedSelector, entry.getValue());
 
             copyToThisContext(resolvedSelector, entry.getValue()); // recurse
