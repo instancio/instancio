@@ -1,0 +1,27 @@
+.linenodiv span.normal {
+    color: #ff9100;
+    font-weight: bold;
+}
+
+lnum {
+    color: #ff9100;
+    font-weight: bold;
+    font-family: Roboto Mono;
+}
+
+.md-footer-meta {
+    background-color: #292929;
+}
+
+.md-typeset {
+    font-size: 0.8rem;
+}
+
+/* border colour of the box providing additional details for code blocks */
+.md-typeset .admonition {
+    border: .05rem solid #ff9100;
+}
+
+footer .md-typeset {
+    font-size: 0.5rem;
+}
