@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.root;
 
 @FeatureTag(Feature.STREAM)
 @ExtendWith(InstancioExtension.class)
@@ -57,6 +58,7 @@ class CreateStreamVerboseTest {
 
         final List<Integer> results = Instancio.of(Integer.class)
                 .withSeed(seed)
+                .generate(root(), gen -> gen.ints().range(10, 99))
                 .verbose()
                 .stream()
                 .limit(3)
@@ -69,6 +71,12 @@ class CreateStreamVerboseTest {
         assertThat(outputStreamCaptor)
                 .asString()
                 .containsOnlyOnce("<0:Integer>")
-                .containsOnlyOnce("Seed ..................: " + seed);
+                .containsOnlyOnce("Seed ..................: " + seed)
+                // root() selector should be reported correctly
+                .containsSubsequence(
+                        " -> Method: generate()",
+                        "    - root()",
+                        "       \\_ Node[Integer, depth=0, type=Integer]"
+                );
     }
 }
