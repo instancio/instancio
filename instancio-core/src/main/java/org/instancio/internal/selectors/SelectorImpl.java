@@ -33,11 +33,6 @@ import java.util.Objects;
 
 public final class SelectorImpl extends BaseSelector implements Selector, GroupableSelector {
 
-    private static final SelectorImpl ROOT_SELECTOR = builder()
-            .target(TargetRoot.INSTANCE)
-            .depth(0)
-            .build();
-
     private final Target target;
     private final Selector parent;
     private final Integer depth;
@@ -81,8 +76,11 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
 
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
     // which can be confused with the public API method 'Selector.root()'
-    public static SelectorImpl getRootSelector() {
-        return ROOT_SELECTOR;
+    public static SelectorImpl createRootSelector() {
+        return builder()
+                .target(TargetRoot.INSTANCE)
+                .depth(0)
+                .build();
     }
 
     public Target getTarget() {
@@ -121,6 +119,11 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
 
     public Integer getDepth() {
         return depth;
+    }
+
+    @Override
+    public boolean isRootSelector() {
+        return target == TargetRoot.INSTANCE;
     }
 
     @Override
