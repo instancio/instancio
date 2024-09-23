@@ -52,6 +52,7 @@ class PersonBVTest {
     @Test
     void personList() {
         final List<PersonBV> results = Instancio.ofList(PersonBV.class)
+                .withSetting(Keys.COLLECTION_MIN_SIZE, 1)
                 .withSetting(Keys.COLLECTION_NULLABLE, false)
                 .create();
 
